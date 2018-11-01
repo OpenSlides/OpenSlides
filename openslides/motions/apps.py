@@ -1,3 +1,5 @@
+from typing import Any, Dict, Set
+
 from django.apps import AppConfig
 from django.db.models.signals import post_migrate
 
@@ -12,13 +14,12 @@ class MotionsAppConfig(AppConfig):
 
     def ready(self):
         # Import all required stuff.
-        from openslides.core.signals import permission_change, user_data_required
+        from openslides.core.signals import permission_change
         from openslides.utils.rest_api import router
         from .projector import get_projector_elements
         from .signals import (
             create_builtin_workflows,
             get_permission_change_data,
-            required_users,
         )
         from .views import (
             CategoryViewSet,
@@ -31,6 +32,7 @@ class MotionsAppConfig(AppConfig):
             StateViewSet,
             WorkflowViewSet,
         )
+        from ..utils.access_permissions import required_user
 
         # Define projector elements.
         register_projector_elements(get_projector_elements())
@@ -42,9 +44,6 @@ class MotionsAppConfig(AppConfig):
         permission_change.connect(
             get_permission_change_data,
             dispatch_uid='motions_get_permission_change_data')
-        user_data_required.connect(
-            required_users,
-            dispatch_uid='motions_required_users')
 
         # Register viewsets.
         router.register(self.get_model('Category').get_collection_string(), CategoryViewSet)
@@ -58,6 +57,9 @@ class MotionsAppConfig(AppConfig):
         router.register(self.get_model('MotionPoll').get_collection_string(), MotionPollViewSet)
         router.register(self.get_model('State').get_collection_string(), StateViewSet)
 
+        # Register required_users
+        required_user.add_collection_string(self.get_model('Motion').get_collection_string(), required_users)
+
     def get_config_variables(self):
         from .config_variables import get_config_variables
         return get_config_variables()
@@ -70,3 +72,14 @@ class MotionsAppConfig(AppConfig):
         for model_name in ('Category', 'StatuteParagraph', 'Motion', 'MotionBlock',
                            'Workflow', 'MotionChangeRecommendation', 'MotionCommentSection'):
             yield self.get_model(model_name)
+
+
+def required_users(element: Dict[str, Any]) -> Set[int]:
+    """
+    Returns all user ids that are displayed as as submitter or supporter in
+    any motion if request_user can see motions. This function may return an
+    empty set.
+    """
+    submitters_supporters = set([submitter['user_id'] for submitter in element['submitters']])
+    submitters_supporters.update(element['supporters_id'])
+    return submitters_supporters

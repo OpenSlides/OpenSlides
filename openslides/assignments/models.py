@@ -91,6 +91,7 @@ class Assignment(RESTModelMixin, models.Model):
     Model for assignments.
     """
     access_permissions = AssignmentAccessPermissions()
+    can_see_permission = 'assignments.can_see'
 
     objects = AssignmentManager()
 

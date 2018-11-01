@@ -1,6 +1,7 @@
 from collections import OrderedDict
 from typing import Any, Dict, Iterable, Optional, Type
 
+from asgiref.sync import async_to_sync
 from django.http import Http404
 from rest_framework import status
 from rest_framework.decorators import detail_route, list_route
@@ -42,7 +43,7 @@ from rest_framework.viewsets import (
 
 from .access_permissions import BaseAccessPermissions
 from .auth import user_to_collection_user
-from .collection import Collection, CollectionElement
+from .cache import element_cache
 
 
 __all__ = ['detail_route', 'DecimalField', 'list_route', 'SimpleMetadata',
@@ -187,11 +188,6 @@ class ModelSerializer(_ModelSerializer):
 class ListModelMixin(_ListModelMixin):
     """
     Mixin to add the caching system to list requests.
-
-    It is not allowed to use the method get_queryset() in derivated classes.
-    The attribute queryset has to be used in the following form:
-
-    queryset = Model.objects.all()
     """
     def list(self, request: Any, *args: Any, **kwargs: Any) -> Response:
         model = self.get_queryset().model
@@ -201,20 +197,14 @@ class ListModelMixin(_ListModelMixin):
             # The corresponding queryset does not support caching.
             response = super().list(request, *args, **kwargs)
         else:
-            collection = Collection(collection_string)
-            user = user_to_collection_user(request.user)
-            response = Response(collection.as_list_for_user(user))
+            all_restricted_data = async_to_sync(element_cache.get_all_restricted_data)(user_to_collection_user(request.user))
+            response = Response(all_restricted_data.get(collection_string, []))
         return response
 
 
 class RetrieveModelMixin(_RetrieveModelMixin):
     """
     Mixin to add the caching system to retrieve requests.
-
-    It is not allowed to use the method get_queryset() in derivated classes.
-    The attribute queryset has to be used in the following form:
-
-    queryset = Model.objects.all()
     """
     def retrieve(self, request: Any, *args: Any, **kwargs: Any) -> Response:
         model = self.get_queryset().model
@@ -225,15 +215,10 @@ class RetrieveModelMixin(_RetrieveModelMixin):
             response = super().retrieve(request, *args, **kwargs)
         else:
             lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
-            collection_element = CollectionElement.from_values(
-                collection_string, self.kwargs[lookup_url_kwarg])
             user = user_to_collection_user(request.user)
-            try:
-                content = collection_element.as_dict_for_user(user)
-            except collection_element.get_model().DoesNotExist:
-                raise Http404
+            content = async_to_sync(element_cache.get_element_restricted_data)(user, collection_string, self.kwargs[lookup_url_kwarg])
             if content is None:
-                self.permission_denied(request)
+                raise Http404
             response = Response(content)
         return response
 

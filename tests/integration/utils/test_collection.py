@@ -26,37 +26,3 @@ class TestCollectionElementCache(TestCase):
         """
         with self.assertRaises(Topic.DoesNotExist):
             collection.CollectionElement.from_values('topics/topic', 999)
-
-
-class TestCollectionCache(TestCase):
-    def test_with_cache(self):
-        """
-        Tests that no db query is used when the list is received twice.
-        """
-        Topic.objects.create(title='test topic1')
-        Topic.objects.create(title='test topic2')
-        Topic.objects.create(title='test topic3')
-        topic_collection = collection.Collection('topics/topic')
-        list(topic_collection.get_full_data())
-
-        with self.assertNumQueries(0):
-            instance_list = list(topic_collection.get_full_data())
-        self.assertEqual(len(instance_list), 3)
-
-    def test_deletion(self):
-        """
-        When an element is deleted, the cache should be updated automaticly via
-        the autoupdate system. So there should be no db queries.
-        """
-        Topic.objects.create(title='test topic1')
-        Topic.objects.create(title='test topic2')
-        topic3 = Topic.objects.create(title='test topic3')
-        topic_collection = collection.Collection('topics/topic')
-        list(topic_collection.get_full_data())
-
-        collection.CollectionElement.from_instance(topic3, deleted=True)
-        topic3.delete()
-
-        with self.assertNumQueries(0):
-            instance_list = list(collection.Collection('topics/topic').get_full_data())
-        self.assertEqual(len(instance_list), 2)

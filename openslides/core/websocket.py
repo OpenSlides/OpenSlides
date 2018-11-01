@@ -45,7 +45,7 @@ class NotifyWebsocketClientMessage(BaseWebsocketClientMessage):
                 "type": "send_notify",
                 "incomming": content,
                 "senderReplyChannelName": consumer.channel_name,
-                "senderUserId": consumer.scope['user'].id or 0,
+                "senderUserId": consumer.scope['user'].id if consumer.scope['user'] else 0,
             },
         )
 

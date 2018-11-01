@@ -50,7 +50,7 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
         elif self.action in ('speak', 'sort_speakers'):
             result = (has_perm(self.request.user, 'agenda.can_see') and
                       has_perm(self.request.user, 'agenda.can_manage_list_of_speakers'))
-        elif self.action in ('numbering'):
+        elif self.action in ('numbering', ):
             result = (has_perm(self.request.user, 'agenda.can_see') and
                       has_perm(self.request.user, 'agenda.can_manage'))
         else:

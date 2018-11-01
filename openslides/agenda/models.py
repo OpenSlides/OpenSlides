@@ -182,6 +182,7 @@ class Item(RESTModelMixin, models.Model):
     """
     access_permissions = ItemAccessPermissions()
     objects = ItemManager()
+    can_see_permission = 'agenda.can_see'
 
     AGENDA_ITEM = 1
     INTERNAL_ITEM = 2

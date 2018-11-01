@@ -13,19 +13,17 @@ from typing import (
 from django.apps import apps
 from typing_extensions import Protocol
 
+from .redis import use_redis
 from .utils import split_element_id, str_dict_to_bytes
+
+
+if use_redis:
+    from .redis import get_connection, aioredis
 
 
 if TYPE_CHECKING:
     # Dummy import Collection for mypy, can be fixed with python 3.7
     from .collection import CollectionElement  # noqa
-
-try:
-    import aioredis
-except ImportError:
-    no_redis_dependency = True
-else:
-    no_redis_dependency = False
 
 
 class ElementCacheProvider(Protocol):
@@ -34,8 +32,6 @@ class ElementCacheProvider(Protocol):
 
     See RedisCacheProvider as reverence implementation.
     """
-
-    def __init__(self, *args: Any) -> None: ...
 
     async def clear_cache(self) -> None: ...
 
@@ -57,7 +53,7 @@ class ElementCacheProvider(Protocol):
             user_id: Optional[int] = None,
             max_change_id: int = -1) -> Tuple[Dict[str, List[bytes]], List[str]]: ...
 
-    async def get_element(self, element_id: str) -> Optional[bytes]: ...
+    async def get_element(self, element_id: str, user_id: Optional[int] = None) -> Optional[bytes]: ...
 
     async def del_restricted_data(self, user_id: int) -> None: ...
 
@@ -76,41 +72,14 @@ class ElementCacheProvider(Protocol):
     async def get_lowest_change_id(self) -> Optional[int]: ...
 
 
-class RedisConnectionContextManager:
-    """
-    Async context manager for connections
-    """
-    # TODO: contextlib.asynccontextmanager can be used in python 3.7
-
-    def __init__(self, redis_address: str) -> None:
-        self.redis_address = redis_address
-
-    async def __aenter__(self) -> 'aioredis.RedisConnection':
-        self.conn = await aioredis.create_redis(self.redis_address)
-        return self.conn
-
-    async def __aexit__(self, exc_type: Any, exc: Any, tb: Any) -> None:
-        self.conn.close()
-
-
 class RedisCacheProvider:
     """
     Cache provider that loads and saves the data to redis.
     """
-    redis_pool: Optional[aioredis.RedisConnection] = None
     full_data_cache_key: str = 'full_data'
     restricted_user_cache_key: str = 'restricted_data:{user_id}'
     change_id_cache_key: str = 'change_id'
     prefix: str = 'element_cache_'
-
-    def __init__(self, redis: str) -> None:
-        self.redis_address = redis
-
-    def get_connection(self) -> RedisConnectionContextManager:
-        """
-        Returns contextmanager for a redis connection.
-        """
-        return RedisConnectionContextManager(self.redis_address)
 
     def get_full_data_cache_key(self) -> str:
         return "".join((self.prefix, self.full_data_cache_key))
@@ -125,14 +94,14 @@ class RedisCacheProvider:
         """
         Deleted all cache entries created with this element cache.
         """
-        async with self.get_connection() as redis:
+        async with get_connection() as redis:
             await redis.eval("return redis.call('del', 'fake_key', unpack(redis.call('keys', ARGV[1])))", keys=[], args=["{}*".format(self.prefix)])
 
     async def reset_full_cache(self, data: Dict[str, str]) -> None:
         """
         Deletes the full_data_cache and write new data in it.
         """
-        async with self.get_connection() as redis:
+        async with get_connection() as redis:
             tr = redis.multi_exec()
             tr.delete(self.get_full_data_cache_key())
             tr.hmset_dict(self.get_full_data_cache_key(), data)
@@ -145,7 +114,7 @@ class RedisCacheProvider:
         If user_id is None, the method tests for full_data. If user_id is an int, it tests
         for the restricted_data_cache for the user with the user_id. 0 is for anonymous.
         """
-        async with self.get_connection() as redis:
+        async with get_connection() as redis:
             if user_id is None:
                 cache_key = self.get_full_data_cache_key()
             else:
@@ -159,7 +128,7 @@ class RedisCacheProvider:
         elements is a list with an even len. the odd values are the element_ids and the even
         values are the elements. The elements have to be encoded, for example with json.
         """
-        async with self.get_connection() as redis:
+        async with get_connection() as redis:
             await redis.hmset(
                 self.get_full_data_cache_key(),
                 *elements)
@@ -173,7 +142,7 @@ class RedisCacheProvider:
         If user_id is None, the elements are deleted from the full_data cache. If user_id is an
         int, the elements are deleted one restricted_data_cache. 0 is for anonymous.
         """
-        async with self.get_connection() as redis:
+        async with get_connection() as redis:
             if user_id is None:
                 cache_key = self.get_full_data_cache_key()
             else:
@@ -188,7 +157,7 @@ class RedisCacheProvider:
 
         Generates and returns the change_id.
         """
-        async with self.get_connection() as redis:
+        async with get_connection() as redis:
             return int(await redis.eval(
                 lua_script_change_data,
                 keys=[self.get_change_id_cache_key()],
@@ -206,18 +175,24 @@ class RedisCacheProvider:
             cache_key = self.get_full_data_cache_key()
         else:
             cache_key = self.get_restricted_data_cache_key(user_id)
-        async with self.get_connection() as redis:
+
+        async with get_connection() as redis:
             return await redis.hgetall(cache_key)
 
-    async def get_element(self, element_id: str) -> Optional[bytes]:
+    async def get_element(self, element_id: str, user_id: Optional[int] = None) -> Optional[bytes]:
         """
-        Returns one element from the full_data_cache.
+        Returns one element from the cache.
 
         Returns None, when the element does not exist.
         """
-        async with self.get_connection() as redis:
+        if user_id is None:
+            cache_key = self.get_full_data_cache_key()
+        else:
+            cache_key = self.get_restricted_data_cache_key(user_id)
+
+        async with get_connection() as redis:
             return await redis.hget(
-                self.get_full_data_cache_key(),
+                cache_key,
                 element_id)
 
     async def get_data_since(
@@ -244,7 +219,7 @@ class RedisCacheProvider:
 
         # Convert max_change_id to a string. If its negative, use the string '+inf'
         redis_max_change_id = "+inf" if max_change_id < 0 else str(max_change_id)
-        async with self.get_connection() as redis:
+        async with get_connection() as redis:
             # lua script that returns gets all element_ids from change_id_cache_key
             # and then uses each element_id on full_data or restricted_data.
             # It returns a list where the odd values are the change_id and the
@@ -282,7 +257,7 @@ class RedisCacheProvider:
         """
         Deletes all restricted_data for an user. 0 is for the anonymous user.
         """
-        async with self.get_connection() as redis:
+        async with get_connection() as redis:
             await redis.delete(self.get_restricted_data_cache_key(user_id))
 
     async def set_lock(self, lock_name: str) -> bool:
@@ -294,14 +269,14 @@ class RedisCacheProvider:
         Returns False when the lock was already set.
         """
         # TODO: Improve lock. See: https://redis.io/topics/distlock
-        async with self.get_connection() as redis:
+        async with get_connection() as redis:
             return await redis.setnx("{}lock_{}".format(self.prefix, lock_name), 1)
 
     async def get_lock(self, lock_name: str) -> bool:
         """
         Returns True, when the lock for the restricted_data of an user is set. Else False.
         """
-        async with self.get_connection() as redis:
+        async with get_connection() as redis:
             return await redis.get("{}lock_{}".format(self.prefix, lock_name))
 
     async def del_lock(self, lock_name: str) -> None:
@@ -309,7 +284,7 @@ class RedisCacheProvider:
         Deletes the lock for the restricted_data of an user. Does nothing when the
         lock is not set.
         """
-        async with self.get_connection() as redis:
+        async with get_connection() as redis:
             await redis.delete("{}lock_{}".format(self.prefix, lock_name))
 
     async def get_change_id_user(self, user_id: int) -> Optional[int]:
@@ -318,7 +293,7 @@ class RedisCacheProvider:
 
         This is the change_id where the restricted_data was last calculated.
         """
-        async with self.get_connection() as redis:
+        async with get_connection() as redis:
             return await redis.hget(self.get_restricted_data_cache_key(user_id), '_config:change_id')
 
     async def update_restricted_data(self, user_id: int, data: Dict[str, str]) -> None:
@@ -328,14 +303,14 @@ class RedisCacheProvider:
         data has to be a dict where the key is an element_id and the value the (json-) encoded
         element.
         """
-        async with self.get_connection() as redis:
+        async with get_connection() as redis:
             await redis.hmset_dict(self.get_restricted_data_cache_key(user_id), data)
 
     async def get_current_change_id(self) -> List[Tuple[str, int]]:
         """
         Get the highest change_id from redis.
         """
-        async with self.get_connection() as redis:
+        async with get_connection() as redis:
             return await redis.zrevrangebyscore(
                 self.get_change_id_cache_key(),
                 withscores=True,
@@ -348,7 +323,7 @@ class RedisCacheProvider:
 
         Returns None if lowest score does not exist.
         """
-        async with self.get_connection() as redis:
+        async with get_connection() as redis:
             return await redis.zscore(
                 self.get_change_id_cache_key(),
                 '_config:lowest_change_id')
@@ -364,7 +339,7 @@ class MemmoryCacheProvider:
     When you use different processes they will use diffrent data.
     """
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
+    def __init__(self) -> None:
         self.set_data_dicts()
 
     def set_data_dicts(self) -> None:
@@ -428,8 +403,13 @@ class MemmoryCacheProvider:
 
         return str_dict_to_bytes(cache_dict)
 
-    async def get_element(self, element_id: str) -> Optional[bytes]:
-        value = self.full_data.get(element_id, None)
+    async def get_element(self, element_id: str, user_id: Optional[int] = None) -> Optional[bytes]:
+        if user_id is None:
+            cache_dict = self.full_data
+        else:
+            cache_dict = self.restricted_data.get(user_id, {})
+
+        value = cache_dict.get(element_id, None)
         return value.encode() if value is not None else None
 
     async def get_data_since(
@@ -516,7 +496,7 @@ class Cachable(Protocol):
         Returns all elements of the cachable.
         """
 
-    def restrict_elements(
+    async def restrict_elements(
             self,
             user: Optional['CollectionElement'],
             elements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:

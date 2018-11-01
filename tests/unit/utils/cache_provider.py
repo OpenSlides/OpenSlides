@@ -32,7 +32,7 @@ class Collection1:
             {'id': 1, 'value': 'value1'},
             {'id': 2, 'value': 'value2'}]
 
-    def restrict_elements(self, user: Optional[CollectionElement], elements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    async def restrict_elements(self, user: Optional[CollectionElement], elements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         return restrict_elements(user, elements)
 
 
@@ -45,7 +45,7 @@ class Collection2:
             {'id': 1, 'key': 'value1'},
             {'id': 2, 'key': 'value2'}]
 
-    def restrict_elements(self, user: Optional[CollectionElement], elements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    async def restrict_elements(self, user: Optional[CollectionElement], elements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         return restrict_elements(user, elements)
 
 

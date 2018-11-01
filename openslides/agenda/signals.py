@@ -1,11 +1,7 @@
-from typing import Set
-
 from django.apps import apps
 from django.contrib.contenttypes.models import ContentType
 
-from ..utils.auth import has_perm
 from ..utils.autoupdate import inform_changed_data
-from ..utils.collection import Collection
 from .models import Item
 
 
@@ -64,17 +60,3 @@ def get_permission_change_data(sender, permissions, **kwargs):
                 and permission.codename in ('can_see', 'can_see_internal_items')):
             yield from agenda_app.get_startup_elements()
             break
-
-
-def required_users(sender, request_user, **kwargs):
-    """
-    Returns all user ids that are displayed as speakers in any agenda item
-    if request_user can see the agenda. This function may return an empty
-    set.
-    """
-    speakers: Set[int] = set()
-    if has_perm(request_user, 'agenda.can_see'):
-        for item_collection_element in Collection(Item.get_collection_string()).element_generator():
-            full_data = item_collection_element.get_full_data()
-            speakers.update(speaker['user_id'] for speaker in full_data['speakers'])
-    return speakers

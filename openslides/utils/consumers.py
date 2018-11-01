@@ -23,8 +23,12 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
 
         Sends the startup data to the user.
         """
+        # If the user is the anonymous user, change the value to None
+        if self.scope['user'].id is None:
+            self.scope['user'] = None
+
         change_id = None
-        if not await async_anonymous_is_enabled() and self.scope['user'].id is None:
+        if not await async_anonymous_is_enabled() and self.scope['user'] is None:
             await self.close()
             return
 
@@ -61,7 +65,7 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
         """
         Send a notify message to the user.
         """
-        user_id = self.scope['user'].id or 0
+        user_id = self.scope['user'].id if self.scope['user'] else 0
 
         out = []
         for item in event['incomming']:

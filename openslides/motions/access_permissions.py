@@ -2,7 +2,7 @@ from copy import deepcopy
 from typing import Any, Dict, List, Optional
 
 from ..utils.access_permissions import BaseAccessPermissions
-from ..utils.auth import has_perm, in_some_groups
+from ..utils.auth import async_has_perm, async_in_some_groups
 from ..utils.collection import CollectionElement
 
 
@@ -10,11 +10,7 @@ class MotionAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for Motion and MotionViewSet.
     """
-    def check_permissions(self, user):
-        """
-        Returns True if the user has read access model instances.
-        """
-        return has_perm(user, 'motions.can_see')
+    base_permission = 'motions.can_see'
 
     def get_serializer_class(self, user=None):
         """
@@ -24,7 +20,7 @@ class MotionAccessPermissions(BaseAccessPermissions):
 
         return MotionSerializer
 
-    def get_restricted_data(
+    async def get_restricted_data(
             self,
             full_data: List[Dict[str, Any]],
             user: Optional[CollectionElement]) -> List[Dict[str, Any]]:
@@ -36,7 +32,7 @@ class MotionAccessPermissions(BaseAccessPermissions):
         personal notes.
         """
         # Parse data.
-        if has_perm(user, 'motions.can_see'):
+        if await async_has_perm(user, 'motions.can_see'):
             # TODO: Refactor this after personal_notes system is refactored.
             data = []
             for full in full_data:
@@ -52,8 +48,8 @@ class MotionAccessPermissions(BaseAccessPermissions):
                 required_permission_to_see = full['state_required_permission_to_see']
                 permission = (
                     not required_permission_to_see or
-                    has_perm(user, required_permission_to_see) or
-                    has_perm(user, 'motions.can_manage') or
+                    await async_has_perm(user, required_permission_to_see) or
+                    await async_has_perm(user, 'motions.can_manage') or
                     is_submitter)
 
                 # Parse single motion.
@@ -61,7 +57,7 @@ class MotionAccessPermissions(BaseAccessPermissions):
                     full_copy = deepcopy(full)
                     full_copy['comments'] = []
                     for comment in full['comments']:
-                        if in_some_groups(user, comment['read_groups_id']):
+                        if await async_in_some_groups(user, comment['read_groups_id']):
                             full_copy['comments'].append(comment)
                     data.append(full_copy)
         else:
@@ -74,11 +70,7 @@ class MotionChangeRecommendationAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for MotionChangeRecommendation and MotionChangeRecommendationViewSet.
     """
-    def check_permissions(self, user):
-        """
-        Returns True if the user has read access model instances.
-        """
-        return has_perm(user, 'motions.can_see')
+    base_permission = 'motions.can_see'
 
     def get_serializer_class(self, user=None):
         """
@@ -88,7 +80,7 @@ class MotionChangeRecommendationAccessPermissions(BaseAccessPermissions):
 
         return MotionChangeRecommendationSerializer
 
-    def get_restricted_data(
+    async def get_restricted_data(
             self,
             full_data: List[Dict[str, Any]],
             user: Optional[CollectionElement]) -> List[Dict[str, Any]]:
@@ -98,8 +90,8 @@ class MotionChangeRecommendationAccessPermissions(BaseAccessPermissions):
         the can_see permission.
         """
         # Parse data.
-        if has_perm(user, 'motions.can_see'):
-            has_manage_perms = has_perm(user, 'motion.can_manage')
+        if await async_has_perm(user, 'motions.can_see'):
+            has_manage_perms = await async_has_perm(user, 'motion.can_manage')
             data = []
             for full in full_data:
                 if not full['internal'] or has_manage_perms:
@@ -114,11 +106,7 @@ class MotionCommentSectionAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for MotionCommentSection and MotionCommentSectionViewSet.
     """
-    def check_permissions(self, user):
-        """
-        Returns True if the user has read access model instances.
-        """
-        return has_perm(user, 'motions.can_see')
+    base_permission = 'motions.can_see'
 
     def get_serializer_class(self, user=None):
         """
@@ -128,7 +116,7 @@ class MotionCommentSectionAccessPermissions(BaseAccessPermissions):
 
         return MotionCommentSectionSerializer
 
-    def get_restricted_data(
+    async def get_restricted_data(
             self,
             full_data: List[Dict[str, Any]],
             user: Optional[CollectionElement]) -> List[Dict[str, Any]]:
@@ -137,12 +125,12 @@ class MotionCommentSectionAccessPermissions(BaseAccessPermissions):
         will be removed, when the user is not in at least one of the read_groups.
         """
         data: List[Dict[str, Any]] = []
-        if has_perm(user, 'motions.can_manage'):
+        if await async_has_perm(user, 'motions.can_manage'):
             data = full_data
         else:
             for full in full_data:
                 read_groups = full.get('read_groups_id', [])
-                if in_some_groups(user, read_groups):
+                if await async_in_some_groups(user, read_groups):
                     data.append(full)
         return data
 
@@ -151,11 +139,7 @@ class StatuteParagraphAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for StatuteParagraph and StatuteParagraphViewSet.
     """
-    def check_permissions(self, user):
-        """
-        Returns True if the user has read access model instances.
-        """
-        return has_perm(user, 'motions.can_see')
+    base_permission = 'motions.can_see'
 
     def get_serializer_class(self, user=None):
         """
@@ -170,11 +154,7 @@ class CategoryAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for Category and CategoryViewSet.
     """
-    def check_permissions(self, user):
-        """
-        Returns True if the user has read access model instances.
-        """
-        return has_perm(user, 'motions.can_see')
+    base_permission = 'motions.can_see'
 
     def get_serializer_class(self, user=None):
         """
@@ -189,11 +169,7 @@ class MotionBlockAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for Category and CategoryViewSet.
     """
-    def check_permissions(self, user):
-        """
-        Returns True if the user has read access model instances.
-        """
-        return has_perm(user, 'motions.can_see')
+    base_permission = 'motions.can_see'
 
     def get_serializer_class(self, user=None):
         """
@@ -208,11 +184,7 @@ class WorkflowAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for Workflow and WorkflowViewSet.
     """
-    def check_permissions(self, user):
-        """
-        Returns True if the user has read access model instances.
-        """
-        return has_perm(user, 'motions.can_see')
+    base_permission = 'motions.can_see'
 
     def get_serializer_class(self, user=None):
         """

@@ -1,4 +1,5 @@
 import pytest
+from asgiref.sync import async_to_sync
 from django.test import TestCase, TransactionTestCase
 from pytest_django.django_compat import is_django_unittest
 from pytest_django.plugin import validate_django_db
@@ -68,4 +69,5 @@ def reset_cache(request):
     """
     if 'django_db' in request.node.keywords or is_django_unittest(request):
         # When the db is created, use the original cachables
+        async_to_sync(element_cache.cache_provider.clear_cache)()
         element_cache.ensure_cache(reset=True)

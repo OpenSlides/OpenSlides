@@ -93,6 +93,7 @@ class Motion(RESTModelMixin, models.Model):
     This class is the main entry point to all other classes related to a motion.
     """
     access_permissions = MotionAccessPermissions()
+    can_see_permission = 'motions.can_see'
 
     objects = MotionManager()
 

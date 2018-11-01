@@ -14,6 +14,7 @@ class Mediafile(RESTModelMixin, models.Model):
     Class for uploaded files which can be delivered under a certain url.
     """
     access_permissions = MediafileAccessPermissions()
+    can_see_permission = 'mediafiles.can_see'
 
     mediafile = models.FileField(upload_to='file')
     """

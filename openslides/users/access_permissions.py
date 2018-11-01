@@ -1,22 +1,17 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Set
 
-from django.contrib.auth.models import AnonymousUser
-
-from ..core.signals import user_data_required
-from ..utils.access_permissions import BaseAccessPermissions
-from ..utils.auth import anonymous_is_enabled, has_perm
-from ..utils.collection import CollectionElement
+from ..utils.access_permissions import BaseAccessPermissions, required_user
+from ..utils.auth import async_has_perm
+from ..utils.collection import (
+    CollectionElement,
+    get_model_from_collection_string,
+)
 
 
 class UserAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for User and UserViewSet.
     """
-    def check_permissions(self, user):
-        """
-        Every user has read access for their model instnces.
-        """
-        return True
 
     def get_serializer_class(self, user=None):
         """
@@ -26,7 +21,7 @@ class UserAccessPermissions(BaseAccessPermissions):
 
         return UserFullSerializer
 
-    def get_restricted_data(
+    async def get_restricted_data(
             self,
             full_data: List[Dict[str, Any]],
             user: Optional[CollectionElement]) -> List[Dict[str, Any]]:
@@ -62,9 +57,9 @@ class UserAccessPermissions(BaseAccessPermissions):
         litte_data_fields.discard('groups')
 
         # Check user permissions.
-        if has_perm(user, 'users.can_see_name'):
-            if has_perm(user, 'users.can_see_extra_data'):
-                if has_perm(user, 'users.can_manage'):
+        if await async_has_perm(user, 'users.can_see_name'):
+            if await async_has_perm(user, 'users.can_see_extra_data'):
+                if await async_has_perm(user, 'users.can_manage'):
                     data = [filtered_data(full, all_data_fields) for full in full_data]
                 else:
                     data = [filtered_data(full, many_data_fields) for full in full_data]
@@ -73,22 +68,20 @@ class UserAccessPermissions(BaseAccessPermissions):
         else:
             # Build a list of users, that can be seen without any permissions (with little fields).
 
-            user_ids = set()
-
             # Everybody can see himself. Also everybody can see every user
             # that is required e. g. as speaker, motion submitter or
             # assignment candidate.
 
+            can_see_collection_strings: Set[str] = set()
+            for collection_string in required_user.get_collection_strings():
+                if await async_has_perm(user, get_model_from_collection_string(collection_string).can_see_permission):
+                    can_see_collection_strings.add(collection_string)
+
+            user_ids = await required_user.get_required_users(can_see_collection_strings)
+
             # Add oneself.
             if user is not None:
                 user_ids.add(user.id)
-
-            # Get a list of all users, that are required by another app.
-            receiver_responses = user_data_required.send(
-                sender=self.__class__,
-                request_user=user)
-            for receiver, response in receiver_responses:
-                user_ids.update(response)
 
             # Parse data.
             data = [
@@ -104,13 +97,6 @@ class GroupAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for Groups. Everyone can see them
     """
-    def check_permissions(self, user):
-        """
-        Returns True if the user has read access model instances.
-        """
-        # Every authenticated user can retrieve groups. Anonymous users can do
-        # so if they are enabled.
-        return not isinstance(user, AnonymousUser) or anonymous_is_enabled()
 
     def get_serializer_class(self, user=None):
         """
@@ -126,12 +112,6 @@ class PersonalNoteAccessPermissions(BaseAccessPermissions):
     Access permissions container for personal notes. Every authenticated user
     can handle personal notes.
     """
-    def check_permissions(self, user):
-        """
-        Returns True if the user has read access model instances.
-        """
-        # Every authenticated user can retrieve personal notes.
-        return not isinstance(user, AnonymousUser)
 
     def get_serializer_class(self, user=None):
         """
@@ -141,7 +121,7 @@ class PersonalNoteAccessPermissions(BaseAccessPermissions):
 
         return PersonalNoteSerializer
 
-    def get_restricted_data(
+    async def get_restricted_data(
             self,
             full_data: List[Dict[str, Any]],
             user: Optional[CollectionElement]) -> List[Dict[str, Any]]:

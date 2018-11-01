@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Optional
 
 from ..utils.access_permissions import BaseAccessPermissions
-from ..utils.auth import has_perm
+from ..utils.auth import async_has_perm
 from ..utils.collection import CollectionElement
 
 
@@ -9,11 +9,7 @@ class MediafileAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for Mediafile and MediafileViewSet.
     """
-    def check_permissions(self, user):
-        """
-        Returns True if the user has read access model instances.
-        """
-        return has_perm(user, 'mediafiles.can_see')
+    base_permission = 'mediafiles.can_see'
 
     def get_serializer_class(self, user=None):
         """
@@ -23,7 +19,7 @@ class MediafileAccessPermissions(BaseAccessPermissions):
 
         return MediafileSerializer
 
-    def get_restricted_data(
+    async def get_restricted_data(
             self,
             full_data: List[Dict[str, Any]],
             user: Optional[CollectionElement]) -> List[Dict[str, Any]]:
@@ -32,9 +28,9 @@ class MediafileAccessPermissions(BaseAccessPermissions):
         for the user. Removes hidden mediafiles for  some users.
         """
         # Parse data.
-        if has_perm(user, 'mediafiles.can_see') and has_perm(user, 'mediafiles.can_see_hidden'):
+        if await async_has_perm(user, 'mediafiles.can_see') and await async_has_perm(user, 'mediafiles.can_see_hidden'):
             data = full_data
-        elif has_perm(user, 'mediafiles.can_see'):
+        elif await async_has_perm(user, 'mediafiles.can_see'):
             # Exclude hidden mediafiles.
             data = [full for full in full_data if not full['hidden']]
         else:

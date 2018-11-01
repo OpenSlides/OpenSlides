@@ -428,7 +428,7 @@ class RetrieveMotion(TestCase):
         inform_changed_data(self.motion)
 
         response = guest_client.get(reverse('motion-detail', args=[self.motion.pk]))
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, 404)
 
     def test_admin_state_with_required_permission_to_see(self):
         state = self.motion.state
@@ -461,6 +461,7 @@ class RetrieveMotion(TestCase):
         config['general_system_enable_anonymous'] = True
         guest_client = APIClient()
         inform_changed_data(group)
+        inform_changed_data(self.motion)
 
         response_1 = guest_client.get(reverse('motion-detail', args=[self.motion.pk]))
         self.assertEqual(response_1.status_code, status.HTTP_200_OK)
@@ -473,7 +474,7 @@ class RetrieveMotion(TestCase):
             password='password_ooth7taechai5Oocieya')
 
         response_3 = guest_client.get(reverse('user-detail', args=[extra_user.pk]))
-        self.assertEqual(response_3.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response_3.status_code, 404)
 
 
 class UpdateMotion(TestCase):
@@ -983,6 +984,7 @@ class TestMotionCommentSection(TestCase):
         section.save()
 
         response = self.client.get(reverse('motioncommentsection-list'))
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(isinstance(response.data, list))
         self.assertEqual(len(response.data), 1)
@@ -995,10 +997,12 @@ class TestMotionCommentSection(TestCase):
         """
         self.admin.groups.remove(self.group_in)  # group_in has motions.can_manage permission
         self.admin.groups.add(self.group_out)  # group_out does not.
+        inform_changed_data(self.admin)
 
         section = MotionCommentSection(name='test_name_f3mMD28LMcm29Coelwcm')
         section.save()
         section.read_groups.add(self.group_out, self.group_in)
+        inform_changed_data(section)
 
         response = self.client.get(reverse('motioncommentsection-list'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)

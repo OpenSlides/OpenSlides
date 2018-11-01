@@ -14,7 +14,7 @@ from typing import (
     Type,
 )
 
-from asgiref.sync import async_to_sync, sync_to_async
+from asgiref.sync import async_to_sync
 from django.conf import settings
 
 from .cache_providers import (
@@ -23,8 +23,8 @@ from .cache_providers import (
     MemmoryCacheProvider,
     RedisCacheProvider,
     get_all_cachables,
-    no_redis_dependency,
 )
+from .redis import use_redis
 from .utils import get_element_id, get_user_id, split_element_id
 
 
@@ -60,7 +60,6 @@ class ElementCache:
 
     def __init__(
             self,
-            redis: str,
             use_restricted_data_cache: bool = False,
             cache_provider_class: Type[ElementCacheProvider] = RedisCacheProvider,
             cachable_provider: Callable[[], List[Cachable]] = get_all_cachables,
@@ -71,7 +70,7 @@ class ElementCache:
         When restricted_data_cache is false, no restricted data is saved.
         """
         self.use_restricted_data_cache = use_restricted_data_cache
-        self.cache_provider = cache_provider_class(redis)
+        self.cache_provider = cache_provider_class()
         self.cachable_provider = cachable_provider
         self._cachables: Optional[Dict[str, Cachable]] = None
 
@@ -210,8 +209,6 @@ class ElementCache:
         """
         Returns one element as full data.
 
-        If the cache is empty, it is created.
-
         Returns None if the element does not exist.
         """
         element = await self.cache_provider.get_element(get_element_id(collection_string, id))
@@ -276,7 +273,7 @@ class ElementCache:
                 mapping = {}
                 for collection_string, full_data in full_data_elements.items():
                     restricter = self.cachables[collection_string].restrict_elements
-                    elements = await sync_to_async(restricter)(user, full_data)
+                    elements = await restricter(user, full_data)
                     for element in elements:
                         mapping.update(
                             {get_element_id(collection_string, element['id']):
@@ -303,7 +300,7 @@ class ElementCache:
             all_restricted_data = {}
             for collection_string, full_data in (await self.get_all_full_data()).items():
                 restricter = self.cachables[collection_string].restrict_elements
-                elements = await sync_to_async(restricter)(user, full_data)
+                elements = await restricter(user, full_data)
                 all_restricted_data[collection_string] = elements
             return all_restricted_data
 
@@ -335,7 +332,7 @@ class ElementCache:
             restricted_data = {}
             for collection_string, full_data in changed_elements.items():
                 restricter = self.cachables[collection_string].restrict_elements
-                elements = await sync_to_async(restricter)(user, full_data)
+                elements = await restricter(user, full_data)
                 restricted_data[collection_string] = elements
             return restricted_data, deleted_elements
 
@@ -357,6 +354,25 @@ class ElementCache:
             {collection_string: [json.loads(value.decode()) for value in value_list]
              for collection_string, value_list in raw_changed_elements.items()},
             deleted_elements)
+
+    async def get_element_restricted_data(self, user: Optional['CollectionElement'], collection_string: str, id: int) -> Optional[Dict[str, Any]]:
+        """
+        Returns the restricted_data of one element.
+
+        Returns None, if the element does not exists or the user has no permission to see it.
+        """
+        if not self.use_restricted_data_cache:
+            full_data = await self.get_element_full_data(collection_string, id)
+            if full_data is None:
+                return None
+            restricter = self.cachables[collection_string].restrict_elements
+            restricted_data = await restricter(user, [full_data])
+            return restricted_data[0] if restricted_data else None
+
+        await self.update_restricted_data(user)
+
+        out = await self.cache_provider.get_element(get_element_id(collection_string, id), get_user_id(user))
+        return json.loads(out.decode()) if out else None
 
     async def get_current_change_id(self) -> int:
         """
@@ -383,19 +399,18 @@ class ElementCache:
         return value
 
 
-def load_element_cache(redis_addr: str = '', restricted_data: bool = True) -> ElementCache:
+def load_element_cache(restricted_data: bool = True) -> ElementCache:
     """
     Generates an element cache instance.
     """
-    if not redis_addr:
-        return ElementCache(redis='', cache_provider_class=MemmoryCacheProvider)
+    if use_redis:
+        cache_provider_class: Type[ElementCacheProvider] = RedisCacheProvider
+    else:
+        cache_provider_class = MemmoryCacheProvider
 
-    if no_redis_dependency:
-        raise ImportError("OpenSlides is configured to use redis as cache backend, but aioredis is not installed.")
-    return ElementCache(redis=redis_addr, use_restricted_data_cache=restricted_data)
+    return ElementCache(cache_provider_class=cache_provider_class, use_restricted_data_cache=restricted_data)
 
 
 # Set the element_cache
-redis_address = getattr(settings, 'REDIS_ADDRESS', '')
 use_restricted_data = getattr(settings, 'RESTRICTED_DATA_CACHE', True)
-element_cache = load_element_cache(redis_addr=redis_address, restricted_data=use_restricted_data)
+element_cache = load_element_cache(restricted_data=use_restricted_data)

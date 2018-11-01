@@ -134,11 +134,11 @@ class RESTModelMixin:
         return [cls.get_access_permissions().get_full_data(instance) for instance in query.all()]
 
     @classmethod
-    def restrict_elements(
+    async def restrict_elements(
             cls,
             user: Optional['CollectionElement'],
             elements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """
         Converts a list of elements from full_data to restricted_data.
         """
-        return cls.get_access_permissions().get_restricted_data(elements, user)
+        return await cls.get_access_permissions().get_restricted_data(elements, user)

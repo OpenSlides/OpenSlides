@@ -69,7 +69,7 @@ class UserGetTest(TestCase):
 
         response = guest_client.get('/rest/users/user/1/')
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 404)
 
 
 class UserCreate(TestCase):
@@ -535,7 +535,7 @@ class PersonalNoteTest(TestCase):
         config['general_system_enable_anonymous'] = True
         guest_client = APIClient()
         response = guest_client.get(reverse('personalnote-detail', args=[personal_note.pk]))
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, 404)
 
     def test_admin_send_JSON(self):
         admin_client = APIClient()

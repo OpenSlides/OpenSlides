@@ -27,7 +27,7 @@ class TConfig:
             config.key_to_id[item.name] = id+1
         return elements
 
-    def restrict_elements(
+    async def restrict_elements(
             self,
             user: Optional['CollectionElement'],
             elements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -50,7 +50,7 @@ class TUser:
              'last_email_send': None, 'comment': '', 'is_active': True, 'default_password': 'admin',
              'session_auth_hash': '362d4f2de1463293cb3aaba7727c967c35de43ee'}]
 
-    def restrict_elements(
+    async def restrict_elements(
             self,
             user: Optional['CollectionElement'],
             elements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
