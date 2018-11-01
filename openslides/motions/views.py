@@ -21,6 +21,7 @@ from ..utils.rest_api import (
     GenericViewSet,
     ModelViewSet,
     Response,
+    ReturnDict,
     UpdateModelMixin,
     ValidationError,
     detail_route,
@@ -195,7 +196,12 @@ class MotionViewSet(ModelViewSet):
         inform_changed_data(new_users)
 
         headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        # Strip out response data so nobody gets unrestricted data.
+        data = ReturnDict(
+            id=serializer.data.get('id'),
+            serializer=serializer
+        )
+        return Response(data, status=status.HTTP_201_CREATED, headers=headers)
 
     def update(self, request, *args, **kwargs):
         """
@@ -256,7 +262,8 @@ class MotionViewSet(ModelViewSet):
         new_users = list(updated_motion.supporters.all())
         inform_changed_data(new_users)
 
-        return Response(serializer.data)
+        # We do not add serializer.data to response so nobody gets unrestricted data here.
+        return Response()
 
     @list_route(methods=['post'])
     def sort(self, request):
@@ -636,10 +643,10 @@ class MotionPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet):
         """
         Customized view endpoint to update a motion poll.
         """
-        result = super().update(*args, **kwargs)
+        response = super().update(*args, **kwargs)
         poll = self.get_object()
         poll.motion.write_log([ugettext_noop('Vote updated')], self.request.user)
-        return result
+        return response
 
     def destroy(self, *args, **kwargs):
         """
