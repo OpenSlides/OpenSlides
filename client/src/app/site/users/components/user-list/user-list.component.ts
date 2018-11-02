@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
+import { CsvExportService } from '../../../../core/services/csv-export.service';
 
 import { ViewUser } from '../../models/view-user';
 import { UserRepositoryService } from '../../services/user-repository.service';
@@ -17,6 +18,7 @@ import { Router, ActivatedRoute } from '@angular/router';
     styleUrls: ['./user-list.component.scss']
 })
 export class UserListComponent extends ListViewBaseComponent<ViewUser> implements OnInit {
+
     /**
      * The usual constructor for components
      * @param repo the user repository
@@ -28,7 +30,8 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
         protected titleService: Title,
         protected translate: TranslateService,
         private router: Router,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        protected csvExport: CsvExportService
     ) {
         super(titleService, translate);
     }
@@ -68,5 +71,27 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
      */
     public onPlusButton(): void {
         this.router.navigate(['./new'], { relativeTo: this.route });
+    }
+
+    // TODO save all data from the dataSource
+    public csvExportUserList(): void {
+        this.csvExport.export(
+            this.dataSource.data,
+            [
+                { property: 'title' },
+                { property: 'first_name', label: 'First Name' },
+                { property: 'last_name', label: 'Last Name' },
+                { property: 'structure_level', label: 'Structure Level' },
+                { property: 'participant_number', label: 'Participant Number' },
+                { property: 'groups', assemble: 'name'},
+                { property: 'comment' },
+                { property: 'is_active', label: 'Active' },
+                { property: 'is_present', label: 'Presence' },
+                { property: 'is_committee', label: 'Committee' },
+                { property: 'default_password', label: 'Default password' },
+                { property: 'email', label: 'E-Mail' }
+            ],
+            'export.csv'
+        );
     }
 }
