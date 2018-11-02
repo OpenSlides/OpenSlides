@@ -41,9 +41,15 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
             await self.channel_layer.group_add('autoupdate', self.channel_name)
 
         await self.accept()
+
         if change_id is not None:
-            data = await get_element_data(self.scope['user'], change_id)
-            await self.send_json(type='autoupdate', content=data)
+            try:
+                data = await get_element_data(self.scope['user'], change_id)
+            except ValueError:
+                # When the change_id is to big, do nothing
+                pass
+            else:
+                await self.send_json(type='autoupdate', content=data)
 
     async def disconnect(self, close_code: int) -> None:
         """

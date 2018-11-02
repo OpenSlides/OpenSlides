@@ -102,6 +102,17 @@ async def test_connection_with_invalid_change_id(get_communicator):
 
 
 @pytest.mark.asyncio
+async def test_connection_with_to_big_change_id(get_communicator):
+    await set_config('general_system_enable_anonymous', True)
+    communicator = get_communicator('change_id=1000000000000')
+
+    connected, __ = await communicator.connect()
+
+    assert connected is True
+    assert await communicator.receive_nothing()
+
+
+@pytest.mark.asyncio
 async def test_changed_data_autoupdate_off(communicator):
     await set_config('general_system_enable_anonymous', True)
     await communicator.connect()
