@@ -83,16 +83,8 @@
             </div>
         </mat-expansion-panel>
 
-        <!-- Personal Note -->
-        <mat-expansion-panel>
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    <mat-icon icon>speaker_notes</mat-icon>
-                    <span translate>Personal note</span>
-                </mat-panel-title>
-            </mat-expansion-panel-header>
-            TEST
-        </mat-expansion-panel>
+        <os-motion-comments [motion]="motion"></os-motion-comments>
+        <os-personal-note [motion]="motion"></os-personal-note>
 
         <!-- Content -->
         <mat-expansion-panel #contentPanel [expanded]='true'>
@@ -119,24 +111,8 @@
                 <ng-container *ngTemplateOutlet="metaInfoTemplate"></ng-container>
             </div>
 
-            <!-- Personal Note -->
-            <div class="personal-note">
-                <mat-card>
-                    <mat-card-header>
-                        <mat-card-title>
-                            <span translate>Personal Note</span>
-                            <div class="title-right">
-                                <mat-icon>add</mat-icon>
-                                <mat-icon>more_vert</mat-icon>
-                            </div>
-
-                        </mat-card-title>
-                    </mat-card-header>
-                    <mat-card-content>
-                        Hier könnte ihre Werbung stehen. 1 2 3 4 5 6 Hier könnte ihre Werbung stehen. 1 2 3 4 5 6
-                    </mat-card-content>
-                </mat-card>
-            </div>
+            <os-motion-comments [motion]="motion"></os-motion-comments>
+            <os-personal-note [motion]="motion"></os-personal-note>
 
         </div>
         <div class="desktop-right ">

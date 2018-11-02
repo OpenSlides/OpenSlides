@@ -1,0 +1,45 @@
+<ng-container *ngIf="vp.isMobile ; then mobileView; else desktopView"></ng-container>
+
+<ng-template #title><ng-content select=".meta-text-block-title"></ng-content></ng-template>
+<ng-template #content><ng-content select=".meta-text-block-content"></ng-content></ng-template>
+<ng-template #actionRow><ng-content select=".meta-text-block-action-row"></ng-content></ng-template>
+
+<ng-template #mobileView>
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                <mat-icon>{{ icon }}</mat-icon>
+                <ng-container *ngTemplateOutlet="title"></ng-container>
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <ng-container *ngTemplateOutlet="content"></ng-container>
+
+        <mat-action-row *ngIf="showActionRow">
+            <ng-container *ngTemplateOutlet="actionRow"></ng-container>
+        </mat-action-row>
+    </mat-expansion-panel>
+</ng-template>
+
+
+<ng-template #desktopView>
+    <mat-card class="meta-text-block">
+        <mat-card-header>
+            <mat-card-title>
+                <div class="title-container">
+                    <div>
+                        <ng-container *ngTemplateOutlet="title"></ng-container>
+                    </div>
+                    <div>
+                        <ng-container *ngTemplateOutlet="actionRow"></ng-container>
+                    </div>
+                </div>
+
+            </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <ng-container *ngTemplateOutlet="content"></ng-container>
+        </mat-card-content>
+    </mat-card>
+</ng-template>
+

@@ -1,0 +1,32 @@
+<os-meta-text-block showActionRow="true" icon="speaker_notes">
+    <ng-container class="meta-text-block-title">
+        <span translate>Personal note</span>
+    </ng-container>
+
+    <ng-container class="meta-text-block-content">
+        <ng-container *ngIf="!isEditMode">
+            <div *ngIf="personalNote" [innerHTML]="personalNote.note"></div>
+            <div class="no-content" *ngIf="!personalNote" translate>
+                No personal note
+            </div>
+        </ng-container>
+        <form [formGroup]="personalNoteForm" *ngIf="isEditMode">
+            <mat-form-field>
+                <textarea formControlName="note" matInput placeholder="{{'Personal note' | translate}}"></textarea>
+            </mat-form-field>
+        </form>
+    </ng-container>
+
+    <ng-container class="meta-text-block-action-row">
+        <button mat-icon-button *ngIf="!isEditMode" (click)="editPersonalNote()">
+            <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button *ngIf="isEditMode" (click)="savePersonalNote()">
+            <mat-icon>save</mat-icon>
+        </button>
+        <button mat-icon-button *ngIf="isEditMode" (click)="isEditMode = false">
+            <mat-icon>close</mat-icon>
+        </button>
+    </ng-container>
+</os-meta-text-block>
+

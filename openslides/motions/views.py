@@ -300,7 +300,7 @@ class MotionViewSet(ModelViewSet):
     @detail_route(methods=['POST', 'DELETE'])
     def manage_comments(self, request, pk=None):
         """
-        Create, update and delete motin comments.
+        Create, update and delete motion comments.
         Send a post request with {'section_id': <id>, 'comment': '<comment>'} to create
         a new comment or update an existing comment.
         Send a delete request with just {'section_id': <id>} to delete the comment.

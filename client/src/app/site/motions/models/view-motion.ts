@@ -5,6 +5,8 @@ import { Workflow } from '../../../shared/models/motions/workflow';
 import { WorkflowState } from '../../../shared/models/motions/workflow-state';
 import { BaseModel } from '../../../shared/models/base/base-model';
 import { BaseViewModel } from '../../base/base-view-model';
+import { ViewMotionCommentSection } from './view-motion-comment-section';
+import { MotionComment } from '../../../shared/models/motions/motion-comment';
 
 export enum LineNumberingMode {
     None,
@@ -146,29 +148,13 @@ export class ViewMotion extends BaseViewModel {
     }
 
     public set supporters(users: User[]) {
-        const userIDArr: number[] = [];
-        users.forEach(user => {
-            userIDArr.push(user.id);
-        });
         this._supporters = users;
-        this._motion.supporters_id = userIDArr;
+        this._motion.supporters_id = users.map(user => user.id);
     }
 
     public set submitters(users: User[]) {
-        // For the newer backend with weight:
-        // const submitterArr: MotionSubmitter[] = []
-        // users.forEach(user => {
-        //      const motionSub = new MotionSubmitter();
-        //     submitterArr.push(motionSub);
-        // });
-        // this._motion.submitters = submitterArr;
         this._submitters = users;
-        const submitterIDArr: number[] = [];
-        // for the older backend:
-        users.forEach(user => {
-            submitterIDArr.push(user.id);
-        });
-        this._motion.submitters_id = submitterIDArr;
+        this._motion.submitters_id = users.map(user => user.id);
     }
 
     public constructor(
@@ -202,6 +188,17 @@ export class ViewMotion extends BaseViewModel {
             return this.category.prefix + ' - ' + this.title;
         }
         return this.title;
+    }
+
+    /**
+     * Returns the motion comment for the given section. Null, if no comment exist.
+     * @param section The section to search the comment for.
+     */
+    public getCommentForSection(section: ViewMotionCommentSection): MotionComment {
+        if (!this.motion) {
+            return null;
+        }
+        return this.motion.comments.find(comment => comment.section_id === section.id);
     }
 
     /**

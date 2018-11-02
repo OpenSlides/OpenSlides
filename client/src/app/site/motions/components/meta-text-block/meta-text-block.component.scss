@@ -1,0 +1,39 @@
+mat-panel-title {
+    mat-icon {
+        margin-right: 35px;
+    }
+}
+
+.meta-text-block {
+    padding: 0px;
+    margin: 20px;
+    margin-right: 0;
+    min-width: 10hv;
+    min-width: 200px;
+
+    mat-card-header {
+        display: inherit;
+        padding: 10px;
+        margin: 0;
+        background-color: #eee;
+
+        mat-card-title {
+            margin: 0;
+
+            .title-container {
+                display: flex;
+                justify-content: space-between;
+
+                :host ::ng-deep button {
+                    width: 30px;
+                    height: 30px;
+                    line-height: 30px;
+                }
+            }
+        }
+    }
+
+    mat-card-content {
+        padding: 15px;
+    }
+}

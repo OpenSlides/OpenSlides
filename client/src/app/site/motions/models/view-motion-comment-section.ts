@@ -73,9 +73,7 @@ export class ViewMotionCommentSection extends BaseViewModel {
     }
 
     // TODO: Implement updating of groups
-    public updateGroup(group: Group): void {
-        console.log(this._section, group);
-    }
+    public updateGroup(group: Group): void {}
 
     /**
      * Duplicate this motion into a copy of itself
