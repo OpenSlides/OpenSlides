@@ -115,20 +115,18 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
 
     /**
      * Updates the this config field.
+     * @param value The new value to set.
      */
-    private async update(value: any): Promise<void> {
+    private update(value: any): void {
         // TODO: Fix the Datetimepicker parser and formatter.
         if (this.configItem.inputType === 'datetimepicker') {
             value = Date.parse(value);
         }
         this.debounceTimeout = null;
-        try {
-            await this.repo.update({ value: value }, this.configItem);
+        this.repo.update({ value: value }, this.configItem).then(() => {
             this.error = null;
             this.showSuccessIcon();
-        } catch (e) {
-            this.setError(e.error.detail);
-        }
+        }, this.setError.bind(this));
     }
 
     /**

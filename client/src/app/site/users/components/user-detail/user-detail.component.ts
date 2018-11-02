@@ -7,6 +7,11 @@ import { UserRepositoryService } from '../../services/user-repository.service';
 import { Group } from '../../../../shared/models/users/group';
 import { DataStoreService } from '../../../../core/services/data-store.service';
 import { OperatorService } from '../../../../core/services/operator.service';
+import { BaseViewComponent } from '../../../base/base-view';
+import { TranslateService } from '@ngx-translate/core';
+import { MatSnackBar } from '@angular/material';
+import { Title } from '@angular/platform-browser';
+import { PromptService } from '../../../../core/services/prompt.service';
 
 /**
  * Users detail component for both new and existing users
@@ -16,7 +21,7 @@ import { OperatorService } from '../../../../core/services/operator.service';
     templateUrl: './user-detail.component.html',
     styleUrls: ['./user-detail.component.scss']
 })
-export class UserDetailComponent implements OnInit {
+export class UserDetailComponent extends BaseViewComponent implements OnInit {
     /**
      * Info form object
      */
@@ -54,15 +59,32 @@ export class UserDetailComponent implements OnInit {
 
     /**
      * Constructor for user
+     *
+     * @param title Title
+     * @param translate TranslateService
+     * @param matSnackBar MatSnackBar
+     * @param formBuilder FormBuilder
+     * @param route ActivatedRoute
+     * @param router Router
+     * @param repo UserRepositoryService
+     * @param DS DataStoreService
+     * @param operator OperatorService
+     * @param promptService PromptService
      */
     public constructor(
+        title: Title,
+        translate: TranslateService,
+        matSnackBar: MatSnackBar,
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
         private router: Router,
         private repo: UserRepositoryService,
         private DS: DataStoreService,
-        private op: OperatorService
+        private operator: OperatorService,
+        private promptService: PromptService
     ) {
+        super(title, translate, matSnackBar);
+
         this.user = new ViewUser();
         if (route.snapshot.url[0] && route.snapshot.url[0].path === 'new') {
             this.newUser = true;
@@ -75,7 +97,7 @@ export class UserDetailComponent implements OnInit {
                 this.ownPage = this.opOwnsPage(Number(params.id));
 
                 // observe operator to find out if we see our own page or not
-                this.op.getObservable().subscribe(newOp => {
+                this.operator.getObservable().subscribe(newOp => {
                     if (newOp) {
                         this.ownPage = this.opOwnsPage(Number(params.id));
                     }
@@ -86,10 +108,12 @@ export class UserDetailComponent implements OnInit {
     }
 
     /**
-     * sets the ownPage variable if the operator owns the page
+     * Checks, if the given user id matches with the operator ones.
+     * @param userId The id to check, if it's the operator
+     * @returns If the user is the operator
      */
     public opOwnsPage(userId: number): boolean {
-        return this.op.user && this.op.user.id === userId;
+        return this.operator.user && this.operator.user.id === userId;
     }
 
     /**
@@ -108,15 +132,15 @@ export class UserDetailComponent implements OnInit {
     public isAllowed(action: string): boolean {
         switch (action) {
             case 'manage':
-                return this.op.hasPerms('users.can_manage');
+                return this.operator.hasPerms('users.can_manage');
             case 'seeName':
-                return this.op.hasPerms('users.can_see_name', 'users.can_manage') || this.ownPage;
+                return this.operator.hasPerms('users.can_see_name', 'users.can_manage') || this.ownPage;
             case 'seeExtra':
-                return this.op.hasPerms('users.can_see_extra_data', 'users.can_manage');
+                return this.operator.hasPerms('users.can_see_extra_data', 'users.can_manage');
             case 'seePersonal':
-                return this.op.hasPerms('users.can_see_extra_data', 'users.can_manage') || this.ownPage;
+                return this.operator.hasPerms('users.can_see_extra_data', 'users.can_manage') || this.ownPage;
             case 'changePersonal':
-                return this.op.hasPerms('user.cans_manage') || this.ownPage;
+                return this.operator.hasPerms('user.cans_manage') || this.ownPage;
             default:
                 return false;
         }
@@ -254,16 +278,20 @@ export class UserDetailComponent implements OnInit {
      * Save / Submit a user
      */
     public async saveUser(): Promise<void> {
-        if (this.newUser) {
-            const response = await this.repo.create(this.personalInfoForm.value);
-            this.newUser = false;
-            this.router.navigate([`./users/${response.id}`]);
-        } else {
-            // TODO (Issue #3962): We need a waiting-State, so if autoupdates come before the response,
-            // the user is also updated.
-            await this.repo.update(this.personalInfoForm.value, this.user);
-            this.setEditMode(false);
-            this.loadViewUser(this.user.id);
+        try {
+            if (this.newUser) {
+                const response = await this.repo.create(this.personalInfoForm.value);
+                this.newUser = false;
+                this.router.navigate([`./users/${response.id}`]);
+            } else {
+                // TODO (Issue #3962): We need a waiting-State, so if autoupdates come before the response,
+                // the user is also updated.
+                await this.repo.update(this.personalInfoForm.value, this.user);
+                this.setEditMode(false);
+                this.loadViewUser(this.user.id);
+            }
+        } catch (e) {
+            this.raiseError(e);
         }
     }
 
@@ -285,8 +313,10 @@ export class UserDetailComponent implements OnInit {
      * click on the delete user button
      */
     public async deleteUserButton(): Promise<void> {
-        await this.repo.delete(this.user);
-        this.router.navigate(['./users/']);
+        const content = this.translate.instant('Delete') + ` ${this.user.full_name}?`;
+        if (await this.promptService.open(this.translate.instant('Are you sure?'), content)) {
+            this.repo.delete(this.user).then(() => this.router.navigate(['./users/']), this.raiseError);
+        }
     }
 
     /**

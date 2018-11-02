@@ -1,13 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
-import { MatTableDataSource } from '@angular/material';
+import { MatTableDataSource, MatSnackBar } from '@angular/material';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { GroupRepositoryService } from '../../services/group-repository.service';
 import { ViewGroup } from '../../models/view-group';
 import { Group } from '../../../../shared/models/users/group';
-import { BaseComponent } from '../../../../base.component';
+import { BaseViewComponent } from '../../../base/base-view';
+import { PromptService } from '../../../../core/services/prompt.service';
 
 /**
  * Component for the Group-List and permission matrix
@@ -17,7 +18,7 @@ import { BaseComponent } from '../../../../base.component';
     templateUrl: './group-list.component.html',
     styleUrls: ['./group-list.component.scss']
 })
-export class GroupListComponent extends BaseComponent implements OnInit {
+export class GroupListComponent extends BaseViewComponent implements OnInit {
     /**
      * Holds all Groups
      */
@@ -51,22 +52,37 @@ export class GroupListComponent extends BaseComponent implements OnInit {
      *
      * @param titleService Title Service
      * @param translate Translations
-     * @param DS The Data Store
-     * @param constants Constants
+     * @param matSnackBar
+     * @param repo
+     * @param promptService
      */
-    public constructor(titleService: Title, translate: TranslateService, public repo: GroupRepositoryService) {
-        super(titleService, translate);
+    public constructor(
+        titleService: Title,
+        translate: TranslateService,
+        matSnackBar: MatSnackBar,
+        public repo: GroupRepositoryService,
+        private promptService: PromptService
+    ) {
+        super(titleService, translate, matSnackBar);
     }
 
-    public setEditMode(mode: boolean, newGroup: boolean = true): void {
-        this.editGroup = mode;
+    /**
+     * Set, if the view is in edit mode. If editMod eis false, the editing is canceled.
+     * @param editMode
+     * @param newGroup Set to true, if the edit mode is for creating instead of updating a group.
+     */
+    public setEditMode(editMode: boolean, newGroup: boolean = true): void {
+        this.editGroup = editMode;
         this.newGroup = newGroup;
 
-        if (!mode) {
+        if (!editMode) {
             this.cancelEditing();
         }
     }
 
+    /**
+     * Creates or updates a group.
+     */
     public saveGroup(): void {
         if (this.editGroup && this.newGroup) {
             this.submitNewGroup();
@@ -86,37 +102,39 @@ export class GroupListComponent extends BaseComponent implements OnInit {
 
     /**
      * Saves a newly created group.
-     * @param form form data given by the group
      */
-    public async submitNewGroup(): Promise<void> {
+    public submitNewGroup(): void {
         if (!this.groupForm.value || !this.groupForm.valid) {
             return;
         }
-        await this.repo.create(this.groupForm.value);
-        this.groupForm.reset();
-        this.cancelEditing();
+        this.repo.create(this.groupForm.value).then(() => {
+            this.groupForm.reset();
+            this.cancelEditing();
+        }, this.raiseError);
     }
 
     /**
      * Saves an edited group.
-     * @param form form data given by the group
      */
-    public async submitEditedGroup(): Promise<void> {
+    public submitEditedGroup(): void {
         if (!this.groupForm.value || !this.groupForm.valid) {
             return;
         }
         const updateData = new Group({ name: this.groupForm.value.name });
 
-        await this.repo.update(updateData, this.selectedGroup);
-        this.cancelEditing();
+        this.repo.update(updateData, this.selectedGroup).then(() => {
+            this.cancelEditing();
+        }, this.raiseError);
     }
 
     /**
      * Deletes the selected Group
      */
     public async deleteSelectedGroup(): Promise<void> {
-        await this.repo.delete(this.selectedGroup)
-        this.cancelEditing();
+        const content = this.translate.instant('Delete') + ` ${this.selectedGroup.name}?`;
+        if (await this.promptService.open(this.translate.instant('Are you sure?'), content)) {
+            this.repo.delete(this.selectedGroup).then(() => this.cancelEditing(), this.raiseError);
+        }
     }
 
     /**
@@ -130,12 +148,12 @@ export class GroupListComponent extends BaseComponent implements OnInit {
 
     /**
      * Triggers when a permission was toggled
-     * @param group
+     * @param viewGroup
      * @param perm
      */
-    public async togglePerm(viewGroup: ViewGroup, perm: string): Promise<void> {
+    public togglePerm(viewGroup: ViewGroup, perm: string): void {
         const updateData = new Group({ permissions: viewGroup.getAlteredPermissions(perm) });
-        await this.repo.update(updateData, viewGroup);
+        this.repo.update(updateData, viewGroup).then(null, this.raiseError);
     }
 
     /**

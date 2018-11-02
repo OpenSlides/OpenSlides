@@ -5,6 +5,7 @@ import { ViewItem } from '../models/view-item';
 import { ListViewBaseComponent } from '../../base/list-view-base';
 import { AgendaRepositoryService } from '../services/agenda-repository.service';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material';
 
 /**
  * List view for the agenda.
@@ -21,14 +22,18 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
      * The usual constructor for components
      * @param titleService
      * @param translate
+     * @param matSnackBar
+     * @param router
+     * @param repo
      */
     public constructor(
         titleService: Title,
         translate: TranslateService,
+        matSnackBar: MatSnackBar,
         private router: Router,
         private repo: AgendaRepositoryService
     ) {
-        super(titleService, translate);
+        super(titleService, translate, matSnackBar);
     }
 
     /**

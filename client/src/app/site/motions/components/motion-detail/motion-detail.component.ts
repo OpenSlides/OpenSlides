@@ -1,9 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog, MatExpansionPanel, MatSelectChange } from '@angular/material';
+import { MatDialog, MatExpansionPanel, MatSnackBar, MatSelectChange } from '@angular/material';
 
-import { BaseComponent } from '../../../../base.component';
 import { Category } from '../../../../shared/models/motions/category';
 import { ViewportService } from '../../../../core/services/viewport.service';
 import { MotionRepositoryService } from '../../services/motion-repository.service';
@@ -20,10 +19,10 @@ import {
 } from '../motion-change-recommendation/motion-change-recommendation.component';
 import { ChangeRecommendationRepositoryService } from '../../services/change-recommendation-repository.service';
 import { ViewChangeReco } from '../../models/view-change-reco';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
 import { ViewUnifiedChange } from '../../models/view-unified-change';
 import { OperatorService } from '../../../../core/services/operator.service';
-import { CategoryRepositoryService } from '../../services/category-repository.service';
+import { BaseViewComponent } from '../../../base/base-view';
 
 /**
  * Component for the motion detail view
@@ -33,7 +32,7 @@ import { CategoryRepositoryService } from '../../services/category-repository.se
     templateUrl: './motion-detail.component.html',
     styleUrls: ['./motion-detail.component.scss']
 })
-export class MotionDetailComponent extends BaseComponent implements OnInit {
+export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     /**
      * MatExpansionPanel for the meta info
      * Only relevant in mobile view
@@ -131,18 +130,24 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     /**
      * Constuct the detail view.
      *
+     * @param title
+     * @param translate
+     * @param matSnackBar
      * @param vp the viewport service
+     * @param op
      * @param router to navigate back to the motion list and to an existing motion
      * @param route determine if this is a new or an existing motion
      * @param formBuilder For reactive forms. Form Group and Form Control
      * @param dialogService For opening dialogs
-     * @param repo: Motion Repository
-     * @param changeRecoRepo: Change Recommendation Repository
-     * @param DS: The DataStoreService
-     * @param sanitizer: For making HTML SafeHTML
-     * @param translate: Translation Service
+     * @param repo Motion Repository
+     * @param changeRecoRepo Change Recommendation Repository
+     * @param DS The DataStoreService
+     * @param sanitizer For making HTML SafeHTML
      */
     public constructor(
+        title: Title,
+        translate: TranslateService,
+        matSnackBar: MatSnackBar,
         public vp: ViewportService,
         private op: OperatorService,
         private router: Router,
@@ -151,12 +156,10 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
         private dialogService: MatDialog,
         private repo: MotionRepositoryService,
         private changeRecoRepo: ChangeRecommendationRepositoryService,
-        private categoryRepo: CategoryRepositoryService,
         private DS: DataStoreService,
-        private sanitizer: DomSanitizer,
-        protected translate: TranslateService
+        private sanitizer: DomSanitizer
     ) {
-        super();
+        super(title, translate, matSnackBar);
         this.createForm();
         this.getMotionByUrl();
 
@@ -278,14 +281,17 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
         const fromForm = new Motion();
         fromForm.deserialize(newMotionValues);
 
-        if (this.newMotion) {
-            const response = await this.repo.create(fromForm);
-            this.router.navigate(['./motions/' + response.id]);
-        } else {
-            await this.repo.update(fromForm, this.motionCopy);
-            // if the motion was successfully updated, change the edit mode.
-            this.editMotion = false;
-            // TODO: Show errors if there appear here
+        try {
+            if (this.newMotion) {
+                const response = await this.repo.create(fromForm);
+                this.router.navigate(['./motions/' + response.id]);
+            } else {
+                await this.repo.update(fromForm, this.motionCopy);
+                // if the motion was successfully updated, change the edit mode.
+                this.editMotion = false;
+            }
+        } catch (e) {
+            this.raiseError(e);
         }
     }
 
@@ -319,13 +325,14 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     public deleteMotionButton(): void {
         this.repo.delete(this.motion).then(() => {
             this.router.navigate(['./motions/']);
-        });
-        const motList = this.categoryRepo.getMotionsOfCategory(this.motion.category);
+        }, this.raiseError);
+        // TODO: this needs to be in the autoupdate code.
+        /*const motList = this.categoryRepo.getMotionsOfCategory(this.motion.category);
         const index = motList.indexOf(this.motion.motion, 0);
         if (index > -1) {
             motList.splice(index, 1);
         }
-        this.categoryRepo.updateCategoryNumbering(this.motion.category, motList);
+        this.categoryRepo.updateCategoryNumbering(this.motion.category, motList);*/
     }
 
     /**

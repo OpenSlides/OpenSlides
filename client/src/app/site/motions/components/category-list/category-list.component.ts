@@ -3,7 +3,6 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseComponent } from '../../../../base.component';
 import { Category } from '../../../../shared/models/motions/category';
 import { CategoryRepositoryService } from '../../services/category-repository.service';
 import { ViewCategory } from '../../models/view-category';
@@ -11,6 +10,8 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Motion } from '../../../../shared/models/motions/motion';
 import { SortingListComponent } from '../../../../shared/components/sorting-list/sorting-list.component';
 import { PromptService } from 'app/core/services/prompt.service';
+import { BaseViewComponent } from '../../../base/base-view';
+import { MatSnackBar } from '@angular/material';
 
 /**
  * List view for the categories.
@@ -20,7 +21,7 @@ import { PromptService } from 'app/core/services/prompt.service';
     templateUrl: './category-list.component.html',
     styleUrls: ['./category-list.component.scss']
 })
-export class CategoryListComponent extends BaseComponent implements OnInit {
+export class CategoryListComponent extends BaseViewComponent implements OnInit {
     /**
      * Hold the category to create
      */
@@ -56,17 +57,20 @@ export class CategoryListComponent extends BaseComponent implements OnInit {
      * The usual component constructor
      * @param titleService
      * @param translate
+     * @param matSnackBar
      * @param repo
      * @param formBuilder
+     * @param promptService
      */
     public constructor(
-        protected titleService: Title,
-        protected translate: TranslateService,
+        titleService: Title,
+        translate: TranslateService,
+        matSnackBar: MatSnackBar,
         private repo: CategoryRepositoryService,
         private formBuilder: FormBuilder,
         private promptService: PromptService
     ) {
-        super(titleService, translate);
+        super(titleService, translate, matSnackBar);
 
         this.createForm = this.formBuilder.group({
             prefix: ['', Validators.required],
@@ -80,11 +84,12 @@ export class CategoryListComponent extends BaseComponent implements OnInit {
     }
 
     /**
-     * Event on Key Down in form
+     * Event on key-down in form
+     * @param event
+     * @param viewCategory
      */
     public keyDownFunction(event: KeyboardEvent, viewCategory?: ViewCategory): void {
         if (event.keyCode === 13) {
-            console.log('hit enter');
             if (viewCategory) {
                 this.onSaveButton(viewCategory);
             } else {
@@ -119,11 +124,10 @@ export class CategoryListComponent extends BaseComponent implements OnInit {
     /**
      * Creates a new category. Executed after hitting save.
      */
-    public async onCreateButton(): Promise<void> {
+    public onCreateButton(): void {
         if (this.createForm.valid) {
             this.categoryToCreate.patchValues(this.createForm.value as Category);
-            await this.repo.create(this.categoryToCreate)
-            this.categoryToCreate = null;
+            this.repo.create(this.categoryToCreate).then(() => (this.categoryToCreate = null), this.raiseError);
         }
     }
 
@@ -141,11 +145,17 @@ export class CategoryListComponent extends BaseComponent implements OnInit {
     }
 
     /**
-     * Saves the categories
+     * Saves the category
+     * @param viewCategory
      */
     public async onSaveButton(viewCategory: ViewCategory): Promise<void> {
         if (this.updateForm.valid) {
-            await this.repo.update(this.updateForm.value as Partial<Category>, viewCategory);
+            // TODO: Check the motion sorting code below. If it is removed, change to .then() syntax.
+            try {
+                await this.repo.update(this.updateForm.value as Partial<Category>, viewCategory);
+            } catch (e) {
+                this.raiseError(e);
+            }
             this.onCancelButton();
             this.sortDataSource();
         }
@@ -174,12 +184,12 @@ export class CategoryListComponent extends BaseComponent implements OnInit {
 
     /**
      * is executed, when the delete button is pressed
+     * @param viewCategory The category to delete
      */
     public async onDeleteButton(viewCategory: ViewCategory): Promise<void> {
         const content = this.translate.instant('Delete') + ` ${viewCategory.name}?`;
         if (await this.promptService.open('Are you sure?', content)) {
-            await this.repo.delete(viewCategory);
-            this.onCancelButton();
+            this.repo.delete(viewCategory).then(() => this.onCancelButton(), this.raiseError);
         }
     }
 

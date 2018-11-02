@@ -7,6 +7,7 @@ import { ViewUser } from '../../models/view-user';
 import { UserRepositoryService } from '../../services/user-repository.service';
 import { ListViewBaseComponent } from '../../../base/list-view-base';
 import { Router, ActivatedRoute } from '@angular/router';
+import { MatSnackBar } from '@angular/material';
 
 /**
  * Component for the user list view.
@@ -26,14 +27,15 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
      * @param translate
      */
     public constructor(
+        titleService: Title,
+        translate: TranslateService,
+        matSnackBar: MatSnackBar,
         private repo: UserRepositoryService,
-        protected titleService: Title,
-        protected translate: TranslateService,
         private router: Router,
         private route: ActivatedRoute,
         protected csvExport: CsvExportService
     ) {
-        super(titleService, translate);
+        super(titleService, translate, matSnackBar);
     }
 
     /**

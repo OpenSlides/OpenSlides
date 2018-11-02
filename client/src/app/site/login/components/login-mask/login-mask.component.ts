@@ -89,21 +89,18 @@ export class LoginMaskComponent extends BaseComponent implements OnInit, OnDestr
      * Observes the operator, if a user was already logged in, recreate to user and skip the login
      */
     public ngOnInit(): void {
-        // Get the login data. Save information to the login data service
-        this.http.get<any>(environment.urlPrefix + '/users/login/').then(
-            response => {
-                if (response.info_text) {
-                    this.installationNotice = this.matSnackBar.open(response.info_text, this.translate.instant('OK'), {
-                        duration: 5000
-                    });
-                }
-                this.loginDataService.setPrivacyPolicy(response.privacy_policy);
-                this.loginDataService.setLegalNotice(response.legal_notice);
-            },
-            () => {
-                // TODO: Error handling
+        // Get the login data. Save information to the login data service. If there is an
+        // error, ignore it.
+        // TODO: This has to be caught by the offline service
+        this.http.get<any>(environment.urlPrefix + '/users/login/').then(response => {
+            if (response.info_text) {
+                this.installationNotice = this.matSnackBar.open(response.info_text, this.translate.instant('OK'), {
+                    duration: 5000
+                });
             }
-        );
+            this.loginDataService.setPrivacyPolicy(response.privacy_policy);
+            this.loginDataService.setLegalNotice(response.legal_notice);
+        }, () => {});
     }
 
     public ngOnDestroy(): void {

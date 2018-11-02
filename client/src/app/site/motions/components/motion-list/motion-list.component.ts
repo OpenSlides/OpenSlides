@@ -8,6 +8,7 @@ import { MotionRepositoryService } from '../../services/motion-repository.servic
 import { ViewMotion } from '../../models/view-motion';
 import { WorkflowState } from '../../../../shared/models/motions/workflow-state';
 import { ListViewBaseComponent } from '../../../base/list-view-base';
+import { MatSnackBar } from '@angular/material';
 
 /**
  * Component that displays all the motions in a Table using DataSource.
@@ -42,11 +43,12 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
     public constructor(
         titleService: Title,
         translate: TranslateService,
+        matSnackBar: MatSnackBar,
         private router: Router,
         private route: ActivatedRoute,
         private repo: MotionRepositoryService
     ) {
-        super(titleService, translate);
+        super(titleService, translate, matSnackBar);
     }
 
     /**

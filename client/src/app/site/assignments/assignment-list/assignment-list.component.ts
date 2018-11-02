@@ -4,6 +4,7 @@ import { Title } from '@angular/platform-browser';
 import { ViewAssignment } from '../models/view-assignment';
 import { ListViewBaseComponent } from '../../base/list-view-base';
 import { AssignmentRepositoryService } from '../services/assignment-repository.service';
+import { MatSnackBar } from '@angular/material';
 
 /**
  * Listview for the assignments
@@ -18,12 +19,18 @@ export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignmen
     /**
      * Constructor.
      *
-     * @param repo the repository
      * @param titleService
      * @param translate
+     * @param matSnackBar
+     * @param repo the repository
      */
-    public constructor(private repo: AssignmentRepositoryService, titleService: Title, translate: TranslateService) {
-        super(titleService, translate);
+    public constructor(
+        titleService: Title,
+        translate: TranslateService,
+        matSnackBar: MatSnackBar,
+        private repo: AssignmentRepositoryService
+    ) {
+        super(titleService, translate, matSnackBar);
     }
 
     /**
