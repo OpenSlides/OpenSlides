@@ -16,14 +16,13 @@ a. Check requirements
 '''''''''''''''''''''
 
 Make sure that you have installed `Python (>= 3.6) <https://www.python.org/>`_,
-`Node.js (>=4.x) <https://nodejs.org/>`_, `Yarn <https://yarnpkg.com/>`_ and
+`Node.js (>=10.x) <https://nodejs.org/>`_ and
 `Git <http://git-scm.com/>`_ on your system. You also need build-essential
 packages and header files and a static library for Python.
 
-For Ubuntu 16.04 e. g. follow `Yarn installation instructions
-<https://yarnpkg.com/en/docs/install>`_ and run::
+For Debian based systems (Ubuntu, etc) run::
 
-    $ sudo apt-get install git nodejs nodejs-legacy npm build-essential python3-dev
+    $ sudo apt-get install git nodejs npm build-essential python3-dev
 
 
 b. Get OpenSlides source code
@@ -81,13 +80,13 @@ Go in the client's directory in a second command-line interface::
 Install all dependencies and start the development server::
 
     $ npm install
-    $ yarn start
+    $ npm start
 
 Now the client is available under ``localhost:4200``.
 
 If you do not need to work with the client, you can build the client and let it be delivered by the server directly::
 
-    $ yarn build
+    $ npm build
 
 The client's address is now ``localhost:8000``.
 
@@ -131,15 +130,15 @@ b. Client tests and commands
 
 Change to the client's directory to run every client related command. Run client tests::
 
-    $ yarn test
+    $ npm test
 
 Fix the code format and lint it with::
 
-    $ yarn pretty-quick && yarn lint
+    npm run lint
 
 To extract translations run::
 
-    $ yarn extract
+    $ npm run extract
 
 OpenSlides in big mode
 ======================
