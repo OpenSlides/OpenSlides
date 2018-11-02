@@ -15,6 +15,7 @@ import { ViewChangeReco } from '../models/view-change-reco';
 import { MotionChangeReco } from '../../../shared/models/motions/motion-change-reco';
 import { ViewUnifiedChange } from '../models/view-unified-change';
 import { Identifiable } from '../../../shared/models/base/identifiable';
+import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
 
 /**
  * Repository Services for motions (and potentially categories)
@@ -42,11 +43,12 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      */
     public constructor(
         DS: DataStoreService,
+        mapperService: CollectionStringModelMapperService,
         private dataSend: DataSendService,
         private readonly lineNumbering: LinenumberingService,
         private readonly diff: DiffService
     ) {
-        super(DS, Motion, [Category, User, Workflow]);
+        super(DS, mapperService, Motion, [Category, User, Workflow]);
     }
 
     /**

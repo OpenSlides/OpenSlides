@@ -6,6 +6,7 @@ import { Mediafile } from '../../../shared/models/mediafiles/mediafile';
 import { User } from '../../../shared/models/users/user';
 import { DataStoreService } from '../../../core/services/data-store.service';
 import { Identifiable } from '../../../shared/models/base/identifiable';
+import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
 
 /**
  * Repository for files
@@ -18,8 +19,8 @@ export class MediafileRepositoryService extends BaseRepository<ViewMediafile, Me
      * Consturctor for the file repo
      * @param DS the DataStore
      */
-    public constructor(DS: DataStoreService) {
-        super(DS, Mediafile, [User]);
+    public constructor(DS: DataStoreService, mapperService: CollectionStringModelMapperService) {
+        super(DS, mapperService, Mediafile, [User]);
     }
 
     /**

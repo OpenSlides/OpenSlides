@@ -7,6 +7,7 @@ import { DataStoreService } from '../../../core/services/data-store.service';
 import { DataSendService } from '../../../core/services/data-send.service';
 import { ConstantsService } from '../../../core/services/constants.service';
 import { Identifiable } from '../../../shared/models/base/identifiable';
+import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
 
 /**
  * Set rules to define the shape of an app permission
@@ -35,8 +36,13 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group> {
      * @param DS Store
      * @param dataSend Sending Data
      */
-    public constructor(DS: DataStoreService, private dataSend: DataSendService, private constants: ConstantsService) {
-        super(DS, Group);
+    public constructor(
+        DS: DataStoreService,
+        mapperService: CollectionStringModelMapperService,
+        private dataSend: DataSendService,
+        private constants: ConstantsService
+    ) {
+        super(DS, mapperService, Group);
         this.sortPermsPerApp();
     }
 

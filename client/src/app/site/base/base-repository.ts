@@ -30,6 +30,7 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
      */
     public constructor(
         protected DS: DataStoreService,
+        protected collectionStringModelMapperService: CollectionStringModelMapperService,
         protected baseModelCtor: ModelConstructor<M>,
         protected depsModelCtors?: ModelConstructor<BaseModel>[]
     ) {
@@ -67,7 +68,7 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
 
         // Watch the Observables for deleting
         this.DS.deletedObservable.subscribe(model => {
-            if (model.collection === CollectionStringModelMapperService.getCollectionString(this.baseModelCtor)) {
+            if (model.collection === this.collectionStringModelMapperService.getCollectionString(this.baseModelCtor)) {
                 delete this.viewModelStore[model.id];
                 this.updateAllObservables(model.id);
             }

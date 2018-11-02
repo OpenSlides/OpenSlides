@@ -5,6 +5,7 @@ import { BaseRepository } from '../../base/base-repository';
 import { ViewStatuteParagraph } from '../models/view-statute-paragraph';
 import { StatuteParagraph } from '../../../shared/models/motions/statute-paragraph';
 import { Identifiable } from '../../../shared/models/base/identifiable';
+import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
 
 /**
  * Repository Services for statute paragraphs
@@ -23,8 +24,12 @@ export class StatuteParagraphRepositoryService extends BaseRepository<ViewStatut
      * Handles CRUD using an observer to the DataStore
      * @param DataSend
      */
-    public constructor(protected DS: DataStoreService, private dataSend: DataSendService) {
-        super(DS, StatuteParagraph);
+    public constructor(
+        DS: DataStoreService,
+        mapperService: CollectionStringModelMapperService,
+        private dataSend: DataSendService
+    ) {
+        super(DS, mapperService, StatuteParagraph);
     }
 
     protected createViewModel(statuteParagraph: StatuteParagraph): ViewStatuteParagraph {
