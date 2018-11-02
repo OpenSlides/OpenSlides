@@ -39,7 +39,8 @@
 </mat-card>
 
 <mat-accordion class="os-card">
-    <mat-expansion-panel *ngFor="let category of this.categories" multiple="false">
+    <mat-expansion-panel *ngFor="let category of categories" (opened)="openId = category.id" (closed)="panelClosed(category)"
+    [expanded]="openId === category.id" multiple="false">
 
         <!-- Header shows Prefix and name -->
         <mat-expansion-panel-header>
@@ -50,7 +51,7 @@
                             {{ category.prefix }}
                         </div>
                         <div *ngIf="editId === category.id">
-                            {{ this.updateForm.get('prefix').value }}
+                            {{ updateForm.get('prefix').value }}
                         </div>
                     </div>
                     <div class="header-name">
@@ -58,7 +59,7 @@
                             {{ category.name }}
                         </div>
                         <div *ngIf="editId === category.id">
-                            {{ this.updateForm.get('name').value }}
+                            {{ updateForm.get('name').value }}
                         </div>
                     </div>
                     <div class="header-size">
@@ -69,17 +70,17 @@
         </mat-expansion-panel-header>
 
         <!-- Edit form shows during the edit event -->
-        <form [formGroup]='this.updateForm' *ngIf="editId === category.id" (keydown)="keyDownFunction($event, category)">
-            <span translate>Edit category details:</span><br>
+        <form id="updateForm" [formGroup]='updateForm' *ngIf="editId === category.id" (keydown)="keyDownFunction($event, category)">
+            <span translate>Edit category details</span>:<br>
             <mat-form-field>
-                <input formControlName="prefix" matInput placeholder="{{'Prefix' | translate}}">
-                <mat-hint>
+                <input formControlName="prefix" matInput placeholder="{{'Prefix' | translate}}" required>
+                <mat-hint *ngIf="!updateForm.controls.prefix.valid">
                     <span translate>Required</span>
                 </mat-hint>
             </mat-form-field>
             <mat-form-field>
-                <input formControlName="name" matInput placeholder="{{'Name' | translate}}">
-                <mat-hint>
+                <input formControlName="name" matInput placeholder="{{'Name' | translate}}" required>
+                <mat-hint *ngIf="!updateForm.controls.name.valid">
                     <span translate>Required</span>
                 </mat-hint>
             </mat-form-field>
@@ -87,10 +88,10 @@
 
         <!-- Show and sort corresponding motions-->
         <div *ngIf="motionsInCategory(category).length > 0">
-            <span translate>Motions:</span>
+            <span translate>Motions</span>:
             <div *ngIf="editId !== category.id">
                 <ul *ngFor="let motion of motionsInCategory(category)">
-                    <li>{{motion}}</li>
+                    <li>{{ motion }}</li>
                 </ul>
             </div>
             <div *ngIf="editId === category.id">

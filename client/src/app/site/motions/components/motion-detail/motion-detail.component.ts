@@ -323,16 +323,9 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * shows a "are you sure" dialog
      */
     public async deleteMotionButton(): Promise<void> {
-        await this.repo.delete(this.motion).then();
-        this.router.navigate(['./motions/']);
-
-        // This should happen during auto update
-        // const motList = this.categoryRepo.getMotionsOfCategory(this.motion.category);
-        // const index = motList.indexOf(this.motion.motion, 0);
-        // if (index > -1) {
-        //     motList.splice(index, 1);
-        // }
-        // this.categoryRepo.updateCategoryNumbering(this.motion.category, motList);
+        this.repo.delete(this.motion).then(() => {
+            this.router.navigate(['./motions/']);
+        }, this.raiseError);
     }
 
     /**
