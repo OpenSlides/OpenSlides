@@ -212,7 +212,7 @@ async def test_exists_restricted_data(element_cache):
         'app/collection2:1': '{"id": 1, "key": "value1"}',
         'app/collection2:2': '{"id": 2, "key": "value2"}'}}
 
-    result = await element_cache.exists_restricted_data(None)
+    result = await element_cache.exists_restricted_data(0)
 
     assert result
 
@@ -226,7 +226,7 @@ async def test_exists_restricted_data_do_not_use_restricted_data(element_cache):
         'app/collection2:1': '{"id": 1, "key": "value1"}',
         'app/collection2:2': '{"id": 2, "key": "value2"}'}}
 
-    result = await element_cache.exists_restricted_data(None)
+    result = await element_cache.exists_restricted_data(0)
 
     assert not result
 
@@ -240,7 +240,7 @@ async def test_del_user(element_cache):
         'app/collection2:1': '{"id": 1, "key": "value1"}',
         'app/collection2:2': '{"id": 2, "key": "value2"}'}}
 
-    await element_cache.del_user(None)
+    await element_cache.del_user(0)
 
     assert not element_cache.cache_provider.restricted_data
 
@@ -249,7 +249,7 @@ async def test_del_user(element_cache):
 async def test_del_user_for_empty_user(element_cache):
     element_cache.use_restricted_data_cache = True
 
-    await element_cache.del_user(None)
+    await element_cache.del_user(0)
 
     assert not element_cache.cache_provider.restricted_data
 
@@ -258,7 +258,7 @@ async def test_del_user_for_empty_user(element_cache):
 async def test_update_restricted_data(element_cache):
     element_cache.use_restricted_data_cache = True
 
-    await element_cache.update_restricted_data(None)
+    await element_cache.update_restricted_data(0)
 
     assert decode_dict(element_cache.cache_provider.restricted_data[0]) == decode_dict({
         'app/collection1:1': '{"id": 1, "value": "restricted_value1"}',
@@ -276,7 +276,7 @@ async def test_update_restricted_data(element_cache):
 async def test_update_restricted_data_disabled_restricted_data(element_cache):
     element_cache.use_restricted_data_cache = False
 
-    await element_cache.update_restricted_data(None)
+    await element_cache.update_restricted_data(0)
 
     assert not element_cache.cache_provider.restricted_data
 
@@ -289,7 +289,7 @@ async def test_update_restricted_data_to_low_change_id(element_cache):
     element_cache.cache_provider.change_id_data = {
         3: {'app/collection1:1'}}
 
-    await element_cache.update_restricted_data(None)
+    await element_cache.update_restricted_data(0)
 
     assert decode_dict(element_cache.cache_provider.restricted_data[0]) == decode_dict({
         'app/collection1:1': '{"id": 1, "value": "restricted_value1"}',
@@ -307,7 +307,7 @@ async def test_update_restricted_data_with_same_id(element_cache):
     element_cache.cache_provider.change_id_data = {
         1: {'app/collection1:1'}}
 
-    await element_cache.update_restricted_data(None)
+    await element_cache.update_restricted_data(0)
 
     # Same id means, there is nothing to do
     assert element_cache.cache_provider.restricted_data[0] == {
@@ -323,7 +323,7 @@ async def test_update_restricted_data_with_deleted_elements(element_cache):
     element_cache.cache_provider.change_id_data = {
         2: {'app/collection1:3'}}
 
-    await element_cache.update_restricted_data(None)
+    await element_cache.update_restricted_data(0)
 
     assert element_cache.cache_provider.restricted_data[0] == {
         '_config:change_id': '2'}
@@ -341,7 +341,7 @@ async def test_update_restricted_data_second_worker_on_different_server(element_
     await element_cache.cache_provider.set_lock("restricted_data_0")
     await element_cache.cache_provider.del_lock_after_wait("restricted_data_0")
 
-    await element_cache.update_restricted_data(None)
+    await element_cache.update_restricted_data(0)
 
     # Restricted_data_should not be set on second worker
     assert element_cache.cache_provider.restricted_data == {0: {}}
@@ -361,7 +361,7 @@ async def test_update_restricted_data_second_worker_on_same_server(element_cache
     await element_cache.cache_provider.set_lock("restricted_data_0")
     await element_cache.cache_provider.del_lock_after_wait("restricted_data_0", future)
 
-    await element_cache.update_restricted_data(None)
+    await element_cache.update_restricted_data(0)
 
     # Restricted_data_should not be set on second worker
     assert element_cache.cache_provider.restricted_data == {0: {}}
@@ -371,7 +371,7 @@ async def test_update_restricted_data_second_worker_on_same_server(element_cache
 async def test_get_all_restricted_data(element_cache):
     element_cache.use_restricted_data_cache = True
 
-    result = await element_cache.get_all_restricted_data(None)
+    result = await element_cache.get_all_restricted_data(0)
 
     assert sort_dict(result) == sort_dict({
         'app/collection1': [{"id": 1, "value": "restricted_value1"}, {"id": 2, "value": "restricted_value2"}],
@@ -381,7 +381,7 @@ async def test_get_all_restricted_data(element_cache):
 @pytest.mark.asyncio
 async def test_get_all_restricted_data_disabled_restricted_data_cache(element_cache):
     element_cache.use_restricted_data_cache = False
-    result = await element_cache.get_all_restricted_data(None)
+    result = await element_cache.get_all_restricted_data(0)
 
     assert sort_dict(result) == sort_dict({
         'app/collection1': [{"id": 1, "value": "restricted_value1"}, {"id": 2, "value": "restricted_value2"}],
@@ -392,7 +392,7 @@ async def test_get_all_restricted_data_disabled_restricted_data_cache(element_ca
 async def test_get_restricted_data_change_id_0(element_cache):
     element_cache.use_restricted_data_cache = True
 
-    result = await element_cache.get_restricted_data(None, 0)
+    result = await element_cache.get_restricted_data(0, 0)
 
     assert sort_dict(result[0]) == sort_dict({
         'app/collection1': [{"id": 1, "value": "restricted_value1"}, {"id": 2, "value": "restricted_value2"}],
@@ -404,7 +404,7 @@ async def test_get_restricted_data_disabled_restricted_data_cache(element_cache)
     element_cache.use_restricted_data_cache = False
     element_cache.cache_provider.change_id_data = {1: {'app/collection1:1', 'app/collection1:3'}}
 
-    result = await element_cache.get_restricted_data(None, 1)
+    result = await element_cache.get_restricted_data(0, 1)
 
     assert result == (
         {'app/collection1': [{"id": 1, "value": "restricted_value1"}]},
@@ -417,7 +417,7 @@ async def test_get_restricted_data_change_id_lower_then_in_redis(element_cache):
     element_cache.cache_provider.change_id_data = {2: {'app/collection1:1'}}
 
     with pytest.raises(RuntimeError):
-        await element_cache.get_restricted_data(None, 1)
+        await element_cache.get_restricted_data(0, 1)
 
 
 @pytest.mark.asyncio
@@ -425,7 +425,7 @@ async def test_get_restricted_data_change_with_id(element_cache):
     element_cache.use_restricted_data_cache = True
     element_cache.cache_provider.change_id_data = {2: {'app/collection1:1'}}
 
-    result = await element_cache.get_restricted_data(None, 2)
+    result = await element_cache.get_restricted_data(0, 2)
 
     assert result == ({'app/collection1': [{"id": 1, "value": "restricted_value1"}]}, [])
 

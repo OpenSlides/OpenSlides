@@ -1,13 +1,10 @@
 import asyncio
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List
 
 from openslides.utils.cache_providers import Cachable, MemmoryCacheProvider
-from openslides.utils.collection import CollectionElement
 
 
-def restrict_elements(
-        user: Optional[CollectionElement],
-        elements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+def restrict_elements(elements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """
     Adds the prefix 'restricted_' to all values except id.
     """
@@ -32,8 +29,8 @@ class Collection1:
             {'id': 1, 'value': 'value1'},
             {'id': 2, 'value': 'value2'}]
 
-    async def restrict_elements(self, user: Optional[CollectionElement], elements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        return restrict_elements(user, elements)
+    async def restrict_elements(self, user_id: int, elements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        return restrict_elements(elements)
 
 
 class Collection2:
@@ -45,8 +42,8 @@ class Collection2:
             {'id': 1, 'key': 'value1'},
             {'id': 2, 'key': 'value2'}]
 
-    async def restrict_elements(self, user: Optional[CollectionElement], elements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        return restrict_elements(user, elements)
+    async def restrict_elements(self, user_id: int, elements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        return restrict_elements(elements)
 
 
 def get_cachable_provider(cachables: List[Cachable] = [Collection1(), Collection2()]) -> Callable[[], List[Cachable]]:

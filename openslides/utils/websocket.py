@@ -4,8 +4,8 @@ from typing import Any, Dict, List, Optional
 import jsonschema
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
+from .autoupdate import AutoupdateFormat
 from .cache import element_cache
-from .collection import AutoupdateFormat, CollectionElement
 from .utils import split_element_id
 
 
@@ -126,7 +126,7 @@ def register_client_message(websocket_client_message: BaseWebsocketClientMessage
     schema['anyOf'].append(message_schema)
 
 
-async def get_element_data(user: Optional[CollectionElement], change_id: int = 0) -> AutoupdateFormat:
+async def get_element_data(user_id: int, change_id: int = 0) -> AutoupdateFormat:
     """
     Returns all element data since a change_id.
     """
@@ -134,10 +134,10 @@ async def get_element_data(user: Optional[CollectionElement], change_id: int = 0
     if change_id > current_change_id:
         raise ValueError("Requested change_id is higher this highest change_id.")
     try:
-        changed_elements, deleted_element_ids = await element_cache.get_restricted_data(user, change_id, current_change_id)
+        changed_elements, deleted_element_ids = await element_cache.get_restricted_data(user_id, change_id, current_change_id)
     except RuntimeError:
         # The change_id is lower the the lowerst change_id in redis. Return all data
-        changed_elements = await element_cache.get_all_restricted_data(user)
+        changed_elements = await element_cache.get_all_restricted_data(user_id)
         all_data = True
         deleted_elements: Dict[str, List[int]] = {}
     else:

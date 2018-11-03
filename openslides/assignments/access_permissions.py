@@ -1,8 +1,7 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from ..utils.access_permissions import BaseAccessPermissions
 from ..utils.auth import async_has_perm, has_perm
-from ..utils.collection import CollectionElement
 
 
 class AssignmentAccessPermissions(BaseAccessPermissions):
@@ -26,16 +25,16 @@ class AssignmentAccessPermissions(BaseAccessPermissions):
     async def get_restricted_data(
             self,
             full_data: List[Dict[str, Any]],
-            user: Optional[CollectionElement]) -> List[Dict[str, Any]]:
+            user_id: int) -> List[Dict[str, Any]]:
         """
         Returns the restricted serialized data for the instance prepared
         for the user. Removes unpublished polls for non admins so that they
         only get a result like the AssignmentShortSerializer would give them.
         """
         # Parse data.
-        if await async_has_perm(user, 'assignments.can_see') and await async_has_perm(user, 'assignments.can_manage'):
+        if await async_has_perm(user_id, 'assignments.can_see') and await async_has_perm(user_id, 'assignments.can_manage'):
             data = full_data
-        elif await async_has_perm(user, 'assignments.can_see'):
+        elif await async_has_perm(user_id, 'assignments.can_see'):
             # Exclude unpublished poll votes.
             data = []
             for full in full_data:

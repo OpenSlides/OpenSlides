@@ -2,9 +2,9 @@ from collections import defaultdict
 from typing import Any, Dict, List
 from urllib.parse import parse_qs
 
-from .auth import async_anonymous_is_enabled, user_to_collection_user
+from .auth import async_anonymous_is_enabled
+from .autoupdate import AutoupdateFormat
 from .cache import element_cache, split_element_id
-from .collection import AutoupdateFormat
 from .websocket import ProtocollAsyncJsonWebsocketConsumer, get_element_data
 
 
@@ -23,12 +23,10 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
 
         Sends the startup data to the user.
         """
-        # If the user is the anonymous user, change the value to None
-        if self.scope['user'].id is None:
-            self.scope['user'] = None
-
+        # self.scope['user'] is the full_data dict of the user. For an
+        # anonymous user is it the dict {'id': 0}
         change_id = None
-        if not await async_anonymous_is_enabled() and self.scope['user'] is None:
+        if not await async_anonymous_is_enabled() and not self.scope['user']['id']:
             await self.close()
             return
 
@@ -48,7 +46,7 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
 
         if change_id is not None:
             try:
-                data = await get_element_data(user_to_collection_user(self.scope['user']), change_id)
+                data = await get_element_data(self.scope['user']['id'], change_id)
             except ValueError:
                 # When the change_id is to big, do nothing
                 pass
@@ -65,7 +63,7 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
         """
         Send a notify message to the user.
         """
-        user_id = self.scope['user'].id if self.scope['user'] else 0
+        user_id = self.scope['user']['id']
 
         out = []
         for item in event['incomming']:
@@ -87,7 +85,7 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
         """
         change_id = event['change_id']
         changed_elements, deleted_elements_ids = await element_cache.get_restricted_data(
-            user_to_collection_user(self.scope['user']),
+            self.scope['user']['id'],
             change_id,
             max_change_id=change_id)
 

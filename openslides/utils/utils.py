@@ -1,12 +1,10 @@
 import re
-from typing import TYPE_CHECKING, Dict, Optional, Tuple, Union
+from typing import Dict, Generator, Tuple, Type, Union
 
 import roman
+from django.apps import apps
+from django.db.models import Model
 
-
-if TYPE_CHECKING:
-    # Dummy import Collection for mypy, can be fixed with python 3.7
-    from .collection import CollectionElement  # noqa
 
 CAMEL_CASE_TO_PSEUDO_SNAKE_CASE_CONVERSION_REGEX_1 = re.compile('(.)([A-Z][a-z]+)')
 CAMEL_CASE_TO_PSEUDO_SNAKE_CASE_CONVERSION_REGEX_2 = re.compile('([a-z0-9])([A-Z])')
@@ -54,19 +52,6 @@ def split_element_id(element_id: Union[str, bytes]) -> Tuple[str, int]:
     return (collection_str, int(id))
 
 
-def get_user_id(user: Optional['CollectionElement']) -> int:
-    """
-    Returns the user id for an CollectionElement user.
-
-    Returns 0 for anonymous.
-    """
-    if user is None:
-        user_id = 0
-    else:
-        user_id = user.id
-    return user_id
-
-
 def str_dict_to_bytes(str_dict: Dict[str, str]) -> Dict[bytes, bytes]:
     """
     Converts the key and the value of a dict from str to bytes.
@@ -75,3 +60,35 @@ def str_dict_to_bytes(str_dict: Dict[str, str]) -> Dict[bytes, bytes]:
     for key, value in str_dict.items():
         out[key.encode()] = value.encode()
     return out
+
+
+_models_to_collection_string: Dict[str, Type[Model]] = {}
+
+
+def get_model_from_collection_string(collection_string: str) -> Type[Model]:
+    """
+    Returns a model class which belongs to the argument collection_string.
+    """
+    def model_generator() -> Generator[Type[Model], None, None]:
+        """
+        Yields all models of all apps.
+        """
+        for app_config in apps.get_app_configs():
+            for model in app_config.get_models():
+                yield model
+
+    # On the first run, generate the dict. It can not change at runtime.
+    if not _models_to_collection_string:
+        for model in model_generator():
+            try:
+                get_collection_string = model.get_collection_string
+            except AttributeError:
+                # Skip models which do not have the method get_collection_string.
+                pass
+            else:
+                _models_to_collection_string[get_collection_string()] = model
+    try:
+        model = _models_to_collection_string[collection_string]
+    except KeyError:
+        raise ValueError('Invalid message. A valid collection_string is missing. Got {}'.format(collection_string))
+    return model

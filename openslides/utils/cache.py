@@ -3,16 +3,7 @@ import json
 from collections import defaultdict
 from datetime import datetime
 from time import sleep
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Callable,
-    Dict,
-    List,
-    Optional,
-    Tuple,
-    Type,
-)
+from typing import Any, Callable, Dict, List, Optional, Tuple, Type
 
 from asgiref.sync import async_to_sync
 from django.conf import settings
@@ -25,17 +16,12 @@ from .cache_providers import (
     get_all_cachables,
 )
 from .redis import use_redis
-from .utils import get_element_id, get_user_id, split_element_id
-
-
-if TYPE_CHECKING:
-    # Dummy import Collection for mypy, can be fixed with python 3.7
-    from .collection import CollectionElement  # noqa
+from .utils import get_element_id, split_element_id
 
 
 class ElementCache:
     """
-    Cache for the CollectionElements.
+    Cache for the elements.
 
     Saves the full_data and if enabled the restricted data.
 
@@ -217,23 +203,22 @@ class ElementCache:
             return None
         return json.loads(element.decode())
 
-    async def exists_restricted_data(self, user: Optional['CollectionElement']) -> bool:
+    async def exists_restricted_data(self, user_id: int) -> bool:
         """
         Returns True, if the restricted_data exists for the user.
         """
         if not self.use_restricted_data_cache:
             return False
 
-        return await self.cache_provider.data_exists(get_user_id(user))
+        return await self.cache_provider.data_exists(user_id)
 
-    async def del_user(self, user: Optional['CollectionElement']) -> None:
+    async def del_user(self, user_id: int) -> None:
         """
         Removes one user from the resticted_data_cache.
         """
-        await self.cache_provider.del_restricted_data(get_user_id(user))
+        await self.cache_provider.del_restricted_data(user_id)
 
-    async def update_restricted_data(
-            self, user: Optional['CollectionElement']) -> None:
+    async def update_restricted_data(self, user_id: int) -> None:
         """
         Updates the restricted data for an user from the full_data_cache.
         """
@@ -248,12 +233,12 @@ class ElementCache:
         # Try to write a special key.
         # If this succeeds, there is noone else currently updating the cache.
         # TODO: Make a timeout. Else this could block forever
-        lock_name = "restricted_data_{}".format(get_user_id(user))
+        lock_name = "restricted_data_{}".format(user_id)
         if await self.cache_provider.set_lock(lock_name):
             future: asyncio.Future = asyncio.Future()
-            self.restricted_data_cache_updater[get_user_id(user)] = future
+            self.restricted_data_cache_updater[user_id] = future
             # Get change_id for this user
-            value = await self.cache_provider.get_change_id_user(get_user_id(user))
+            value = await self.cache_provider.get_change_id_user(user_id)
             # If the change id is not in the cache yet, use -1 to get all data since 0
             user_change_id = int(value) if value else -1
             change_id = await self.get_current_change_id()
@@ -264,35 +249,35 @@ class ElementCache:
                     # The user_change_id is lower then the lowest change_id in the cache.
                     # The whole restricted_data for that user has to be recreated.
                     full_data_elements = await self.get_all_full_data()
-                    await self.cache_provider.del_restricted_data(get_user_id(user))
+                    await self.cache_provider.del_restricted_data(user_id)
                 else:
                     # Remove deleted elements
                     if deleted_elements:
-                        await self.cache_provider.del_elements(deleted_elements, get_user_id(user))
+                        await self.cache_provider.del_elements(deleted_elements, user_id)
 
                 mapping = {}
                 for collection_string, full_data in full_data_elements.items():
                     restricter = self.cachables[collection_string].restrict_elements
-                    elements = await restricter(user, full_data)
+                    elements = await restricter(user_id, full_data)
                     for element in elements:
                         mapping.update(
                             {get_element_id(collection_string, element['id']):
                              json.dumps(element)})
                 mapping['_config:change_id'] = str(change_id)
-                await self.cache_provider.update_restricted_data(get_user_id(user), mapping)
+                await self.cache_provider.update_restricted_data(user_id, mapping)
             # Unset the lock
             await self.cache_provider.del_lock(lock_name)
             future.set_result(1)
         else:
             # Wait until the update if finshed
-            if get_user_id(user) in self.restricted_data_cache_updater:
+            if user_id in self.restricted_data_cache_updater:
                 # The active worker is on the same asgi server, we can use the future
-                await self.restricted_data_cache_updater[get_user_id(user)]
+                await self.restricted_data_cache_updater[user_id]
             else:
                 while await self.cache_provider.get_lock(lock_name):
                     await asyncio.sleep(0.01)
 
-    async def get_all_restricted_data(self, user: Optional['CollectionElement']) -> Dict[str, List[Dict[str, Any]]]:
+    async def get_all_restricted_data(self, user_id: int) -> Dict[str, List[Dict[str, Any]]]:
         """
         Like get_all_full_data but with restricted_data for an user.
         """
@@ -300,14 +285,14 @@ class ElementCache:
             all_restricted_data = {}
             for collection_string, full_data in (await self.get_all_full_data()).items():
                 restricter = self.cachables[collection_string].restrict_elements
-                elements = await restricter(user, full_data)
+                elements = await restricter(user_id, full_data)
                 all_restricted_data[collection_string] = elements
             return all_restricted_data
 
-        await self.update_restricted_data(user)
+        await self.update_restricted_data(user_id)
 
         out: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
-        restricted_data = await self.cache_provider.get_all_data(get_user_id(user))
+        restricted_data = await self.cache_provider.get_all_data(user_id)
         for element_id, data in restricted_data.items():
             if element_id.decode().startswith('_config'):
                 continue
@@ -317,7 +302,7 @@ class ElementCache:
 
     async def get_restricted_data(
             self,
-            user: Optional['CollectionElement'],
+            user_id: int,
             change_id: int = 0,
             max_change_id: int = -1) -> Tuple[Dict[str, List[Dict[str, Any]]], List[str]]:
         """
@@ -325,14 +310,14 @@ class ElementCache:
         """
         if change_id == 0:
             # Return all data
-            return (await self.get_all_restricted_data(user), [])
+            return (await self.get_all_restricted_data(user_id), [])
 
         if not self.use_restricted_data_cache:
             changed_elements, deleted_elements = await self.get_full_data(change_id, max_change_id)
             restricted_data = {}
             for collection_string, full_data in changed_elements.items():
                 restricter = self.cachables[collection_string].restrict_elements
-                elements = await restricter(user, full_data)
+                elements = await restricter(user_id, full_data)
                 restricted_data[collection_string] = elements
             return restricted_data, deleted_elements
 
@@ -347,15 +332,15 @@ class ElementCache:
 
         # If another coroutine or another daphne server also updates the restricted
         # data, this waits until it is done.
-        await self.update_restricted_data(user)
+        await self.update_restricted_data(user_id)
 
-        raw_changed_elements, deleted_elements = await self.cache_provider.get_data_since(change_id, get_user_id(user), max_change_id)
+        raw_changed_elements, deleted_elements = await self.cache_provider.get_data_since(change_id, user_id, max_change_id)
         return (
             {collection_string: [json.loads(value.decode()) for value in value_list]
              for collection_string, value_list in raw_changed_elements.items()},
             deleted_elements)
 
-    async def get_element_restricted_data(self, user: Optional['CollectionElement'], collection_string: str, id: int) -> Optional[Dict[str, Any]]:
+    async def get_element_restricted_data(self, user_id: int, collection_string: str, id: int) -> Optional[Dict[str, Any]]:
         """
         Returns the restricted_data of one element.
 
@@ -366,12 +351,12 @@ class ElementCache:
             if full_data is None:
                 return None
             restricter = self.cachables[collection_string].restrict_elements
-            restricted_data = await restricter(user, [full_data])
+            restricted_data = await restricter(user_id, [full_data])
             return restricted_data[0] if restricted_data else None
 
-        await self.update_restricted_data(user)
+        await self.update_restricted_data(user_id)
 
-        out = await self.cache_provider.get_element(get_element_id(collection_string, id), get_user_id(user))
+        out = await self.cache_provider.get_element(get_element_id(collection_string, id), user_id)
         return json.loads(out.decode()) if out else None
 
     async def get_current_change_id(self) -> int:

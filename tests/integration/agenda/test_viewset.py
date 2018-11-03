@@ -14,7 +14,6 @@ from openslides.motions.models import Motion
 from openslides.topics.models import Topic
 from openslides.users.models import Group
 from openslides.utils.autoupdate import inform_changed_data
-from openslides.utils.collection import CollectionElement
 from openslides.utils.test import TestCase
 
 from ..helpers import count_queries
@@ -199,7 +198,6 @@ class ManageSpeaker(TestCase):
         admin.groups.add(group_delegates)
         admin.groups.remove(group_admin)
         inform_changed_data(admin)
-        CollectionElement.from_instance(admin)
 
         response = self.client.post(
             reverse('item-manage-speaker', args=[self.item.pk]),

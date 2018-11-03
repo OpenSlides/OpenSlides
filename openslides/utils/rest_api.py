@@ -42,7 +42,6 @@ from rest_framework.viewsets import (
 )
 
 from .access_permissions import BaseAccessPermissions
-from .auth import user_to_collection_user
 from .cache import element_cache
 
 
@@ -197,7 +196,7 @@ class ListModelMixin(_ListModelMixin):
             # The corresponding queryset does not support caching.
             response = super().list(request, *args, **kwargs)
         else:
-            all_restricted_data = async_to_sync(element_cache.get_all_restricted_data)(user_to_collection_user(request.user))
+            all_restricted_data = async_to_sync(element_cache.get_all_restricted_data)(request.user.pk or 0)
             response = Response(all_restricted_data.get(collection_string, []))
         return response
 
@@ -215,8 +214,8 @@ class RetrieveModelMixin(_RetrieveModelMixin):
             response = super().retrieve(request, *args, **kwargs)
         else:
             lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
-            user = user_to_collection_user(request.user)
-            content = async_to_sync(element_cache.get_element_restricted_data)(user, collection_string, self.kwargs[lookup_url_kwarg])
+            user_id = request.user.pk or 0
+            content = async_to_sync(element_cache.get_element_restricted_data)(user_id, collection_string, self.kwargs[lookup_url_kwarg])
             if content is None:
                 raise Http404
             response = Response(content)
