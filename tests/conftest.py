@@ -69,3 +69,6 @@ def reset_cache(request):
     if 'django_db' in request.node.keywords or is_django_unittest(request):
         # When the db is created, use the original cachables
         element_cache.ensure_cache(reset=True)
+
+    # Set constant start_time
+    element_cache.start_time = 1

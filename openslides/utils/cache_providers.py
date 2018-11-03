@@ -131,9 +131,17 @@ class RedisCacheProvider:
     async def reset_full_cache(self, data: Dict[str, str]) -> None:
         """
         Deletes the full_data_cache and write new data in it.
+
+        Also deletes the restricted_data_cache and the change_id_cache.
         """
         async with self.get_connection() as redis:
             tr = redis.multi_exec()
+            # like clear_cache but does not delete a lock
+            tr.eval(
+                "return redis.call('del', 'fake_key', unpack(redis.call('keys', ARGV[1])))",
+                keys=[],
+                args=["{}{}*".format(self.prefix, self.restricted_user_cache_key)])
+            tr.delete(self.get_change_id_cache_key())
             tr.delete(self.get_full_data_cache_key())
             tr.hmset_dict(self.get_full_data_cache_key(), data)
             await tr.execute()
