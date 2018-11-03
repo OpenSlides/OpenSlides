@@ -127,7 +127,7 @@ async def test_connection_with_invalid_change_id(get_communicator):
 @pytest.mark.asyncio
 async def test_connection_with_to_big_change_id(get_communicator):
     await set_config('general_system_enable_anonymous', True)
-    communicator = get_communicator('change_id=1000000000000')
+    communicator = get_communicator('change_id=100')
 
     connected, __ = await communicator.connect()
 
@@ -295,7 +295,7 @@ async def test_send_get_elements_to_big_change_id(communicator):
     await set_config('general_system_enable_anonymous', True)
     await communicator.connect()
 
-    await communicator.send_json_to({'type': 'getElements', 'content': {'change_id': 1_000_000_000_000}, 'id': 'test_id'})
+    await communicator.send_json_to({'type': 'getElements', 'content': {'change_id': 100}, 'id': 'test_id'})
     response = await communicator.receive_json_from()
 
     type = response.get('type')
@@ -346,7 +346,7 @@ async def test_send_connect_twice_with_clear_change_id_cache_same_change_id_then
     A client should not do this but request for change_id+1
     """
     await set_config('general_system_enable_anonymous', True)
-    element_cache.cache_provider.change_id_data = {}  # type: ignore
+    await element_cache.cache_provider.clear_cache()
     await communicator.connect()
     await communicator.send_json_to({'type': 'getElements', 'content': {'change_id': 0}, 'id': 'test_id'})
     response1 = await communicator.receive_json_from()

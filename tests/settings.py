@@ -31,6 +31,9 @@ SECRET_KEY = 'secret'
 
 DEBUG = False
 
+# Uncomment to test with the redis cache
+# REDIS_ADDRESS = "redis://127.0.0.1"
+
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
