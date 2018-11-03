@@ -93,6 +93,29 @@ async def test_connection_with_change_id(get_communicator):
 
 
 @pytest.mark.asyncio
+async def test_connection_with_change_id_get_restricted_data_with_restricted_data_cache(get_communicator):
+    """
+    Test, that the returned data is the restricted_data when restricted_data_cache is activated
+    """
+    try:
+        # Save the value of use_restricted_data_cache
+        original_use_restricted_data = element_cache.use_restricted_data_cache
+        element_cache.use_restricted_data_cache = True
+
+        await set_config('general_system_enable_anonymous', True)
+        communicator = get_communicator('change_id=0')
+        await communicator.connect()
+
+        response = await communicator.receive_json_from()
+
+        content = response.get('content')
+        assert content['changed']['app/collection1'][0]['value'] == 'restricted_value1'
+    finally:
+        # reset the value of use_restricted_data_cache
+        element_cache.use_restricted_data_cache = original_use_restricted_data
+
+
+@pytest.mark.asyncio
 async def test_connection_with_invalid_change_id(get_communicator):
     await set_config('general_system_enable_anonymous', True)
     communicator = get_communicator('change_id=invalid')
