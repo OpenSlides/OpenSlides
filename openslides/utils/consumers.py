@@ -2,7 +2,7 @@ from collections import defaultdict
 from typing import Any, Dict, List
 from urllib.parse import parse_qs
 
-from .auth import async_anonymous_is_enabled
+from .auth import async_anonymous_is_enabled, user_to_collection_user
 from .cache import element_cache, split_element_id
 from .collection import AutoupdateFormat
 from .websocket import ProtocollAsyncJsonWebsocketConsumer, get_element_data
@@ -48,7 +48,7 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
 
         if change_id is not None:
             try:
-                data = await get_element_data(self.scope['user'], change_id)
+                data = await get_element_data(user_to_collection_user(self.scope['user']), change_id)
             except ValueError:
                 # When the change_id is to big, do nothing
                 pass
@@ -86,7 +86,10 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
         Send changed or deleted elements to the user.
         """
         change_id = event['change_id']
-        changed_elements, deleted_elements_ids = await element_cache.get_restricted_data(self.scope['user'], change_id, max_change_id=change_id)
+        changed_elements, deleted_elements_ids = await element_cache.get_restricted_data(
+            user_to_collection_user(self.scope['user']),
+            change_id,
+            max_change_id=change_id)
 
         deleted_elements: Dict[str, List[int]] = defaultdict(list)
         for element_id in deleted_elements_ids:
