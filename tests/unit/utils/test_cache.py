@@ -30,7 +30,6 @@ def sort_dict(encoded_dict: Dict[str, List[Dict[str, Any]]]) -> Dict[str, List[D
 @pytest.fixture
 def element_cache():
     element_cache = ElementCache(
-        'test_redis',
         cache_provider_class=TTestCacheProvider,
         cachable_provider=get_cachable_provider(),
         start_time=0)

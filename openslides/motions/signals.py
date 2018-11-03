@@ -1,11 +1,7 @@
-from typing import Set
-
 from django.apps import apps
 from django.utils.translation import ugettext_noop
 
-from ..utils.auth import has_perm
-from ..utils.collection import Collection
-from .models import Motion, State, Workflow
+from .models import State, Workflow
 
 
 def create_builtin_workflows(sender, **kwargs):
@@ -108,19 +104,3 @@ def get_permission_change_data(sender, permissions, **kwargs):
         # There could be only one 'motions.can_see' and then we want to return data.
         if permission.content_type.app_label == motions_app.label and permission.codename == 'can_see':
             yield from motions_app.get_startup_elements()
-
-
-def required_users(sender, request_user, **kwargs):
-    """
-    Returns all user ids that are displayed as as submitter or supporter in
-    any motion if request_user can see motions. This function may return an
-    empty set.
-    """
-    submitters_supporters: Set[int] = set()
-    if has_perm(request_user, 'motions.can_see'):
-        for motion_collection_element in Collection(Motion.get_collection_string()).element_generator():
-            full_data = motion_collection_element.get_full_data()
-            submitters_supporters.update(
-                [submitter['user_id'] for submitter in full_data['submitters']])
-            submitters_supporters.update(full_data['supporters_id'])
-    return submitters_supporters

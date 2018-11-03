@@ -1,6 +1,6 @@
 from collections import OrderedDict
 from operator import attrgetter
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Set
 
 from django.apps import AppConfig
 from django.conf import settings
@@ -28,8 +28,6 @@ class CoreAppConfig(AppConfig):
             get_permission_change_data,
             permission_change,
             post_permission_creation,
-            required_users,
-            user_data_required,
         )
         from .views import (
             ChatMessageViewSet,
@@ -47,6 +45,7 @@ class CoreAppConfig(AppConfig):
             AutoupdateWebsocketClientMessage,
         )
         from ..utils.websocket import register_client_message
+        from ..utils.access_permissions import required_user
 
         # Collect all config variables before getting the constants.
         config.collect_config_variables_from_apps()
@@ -68,9 +67,6 @@ class CoreAppConfig(AppConfig):
         permission_change.connect(
             get_permission_change_data,
             dispatch_uid='core_get_permission_change_data')
-        user_data_required.connect(
-            required_users,
-            dispatch_uid='core_required_users')
 
         post_migrate.connect(call_save_default_values, sender=self, dispatch_uid='core_save_config_default_values')
 
@@ -94,6 +90,9 @@ class CoreAppConfig(AppConfig):
         register_client_message(ConstantsWebsocketClientMessage())
         register_client_message(GetElementsWebsocketClientMessage())
         register_client_message(AutoupdateWebsocketClientMessage())
+
+        # register required_users
+        required_user.add_collection_string(self.get_model('ChatMessage').get_collection_string(), required_users)
 
     def get_config_variables(self):
         from .config_variables import get_config_variables
@@ -154,3 +153,10 @@ class CoreAppConfig(AppConfig):
 def call_save_default_values(**kwargs):
     from .config import config
     config.save_default_values()
+
+
+def required_users(element: Dict[str, Any]) -> Set[int]:
+    """
+    Returns all user ids that are displayed as chatters.
+    """
+    return set(element['user_id'])

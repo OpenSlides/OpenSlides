@@ -30,7 +30,7 @@ from ..utils.autoupdate import (
     inform_data_collection_element_list,
 )
 from ..utils.cache import element_cache
-from ..utils.collection import Collection, CollectionElement
+from ..utils.collection import CollectionElement
 from ..utils.rest_api import (
     ModelViewSet,
     Response,
@@ -329,9 +329,11 @@ class GroupViewSet(ModelViewSet):
             if len(new_permissions) > 0:
                 collection_elements: List[CollectionElement] = []
                 signal_results = permission_change.send(None, permissions=new_permissions, action='added')
+                all_full_data = async_to_sync(element_cache.get_all_full_data)()
                 for receiver, signal_collections in signal_results:
                     for cachable in signal_collections:
-                        collection_elements.extend(Collection(cachable.get_collection_string()).element_generator())
+                        for element in all_full_data.get(cachable.get_collection_string(), {}):
+                            collection_elements.append(CollectionElement.from_values(cachable.get_collection_string(), element['id']))
                 inform_data_collection_element_list(collection_elements)
 
             # TODO: Some permissions are deleted.
@@ -462,8 +464,10 @@ class UserLoginView(APIView):
         else:
             # self.request.method == 'POST'
             context['user_id'] = self.user.pk
-            user_collection = CollectionElement.from_instance(self.user)
-            context['user'] = user_collection.as_dict_for_user(self.user)
+            context['user'] = async_to_sync(element_cache.get_element_restricted_data)(
+                CollectionElement.from_instance(self.user),
+                self.user.get_collection_string(),
+                self.user.pk)
         return super().get_context_data(**context)
 
 
@@ -494,8 +498,10 @@ class WhoAmIView(APIView):
         """
         user_id = self.request.user.pk
         if user_id is not None:
-            user_collection = CollectionElement.from_instance(self.request.user)
-            user_data = user_collection.as_dict_for_user(self.request.user)
+            user_data = async_to_sync(element_cache.get_element_restricted_data)(
+                user_to_collection_user(self.request.user),
+                self.request.user.get_collection_string(),
+                user_id)
         else:
             user_data = None
         return super().get_context_data(

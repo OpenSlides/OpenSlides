@@ -75,3 +75,6 @@ MOTION_IDENTIFIER_MIN_DIGITS = 1
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.MD5PasswordHasher',
 ]
+
+# Deactivate restricted_data_cache
+RESTRICTED_DATA_CACHE = False

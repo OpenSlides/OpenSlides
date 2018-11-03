@@ -239,6 +239,7 @@ class ChatMessage(RESTModelMixin, models.Model):
     At the moment we only have one global chat room for managers.
     """
     access_permissions = ChatMessageAccessPermissions()
+    can_see_permission = 'core.can_use_chat'
 
     message = models.TextField()
 

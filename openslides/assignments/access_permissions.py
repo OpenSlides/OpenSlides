@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Optional
 
 from ..utils.access_permissions import BaseAccessPermissions
-from ..utils.auth import has_perm
+from ..utils.auth import async_has_perm, has_perm
 from ..utils.collection import CollectionElement
 
 
@@ -9,11 +9,7 @@ class AssignmentAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for Assignment and AssignmentViewSet.
     """
-    def check_permissions(self, user):
-        """
-        Returns True if the user has read access model instances.
-        """
-        return has_perm(user, 'assignments.can_see')
+    base_permission = 'assignments.can_see'
 
     def get_serializer_class(self, user=None):
         """
@@ -27,7 +23,7 @@ class AssignmentAccessPermissions(BaseAccessPermissions):
             serializer_class = AssignmentShortSerializer
         return serializer_class
 
-    def get_restricted_data(
+    async def get_restricted_data(
             self,
             full_data: List[Dict[str, Any]],
             user: Optional[CollectionElement]) -> List[Dict[str, Any]]:
@@ -37,9 +33,9 @@ class AssignmentAccessPermissions(BaseAccessPermissions):
         only get a result like the AssignmentShortSerializer would give them.
         """
         # Parse data.
-        if has_perm(user, 'assignments.can_see') and has_perm(user, 'assignments.can_manage'):
+        if await async_has_perm(user, 'assignments.can_see') and await async_has_perm(user, 'assignments.can_manage'):
             data = full_data
-        elif has_perm(user, 'assignments.can_see'):
+        elif await async_has_perm(user, 'assignments.can_see'):
             # Exclude unpublished poll votes.
             data = []
             for full in full_data:

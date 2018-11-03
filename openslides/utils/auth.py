@@ -1,5 +1,6 @@
 from typing import Dict, List, Optional, Union, cast
 
+from asgiref.sync import async_to_sync
 from django.apps import apps
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -35,17 +36,28 @@ def has_perm(user: Optional[CollectionElement], perm: str) -> bool:
 
     User can be a CollectionElement of a user or None.
     """
-    group_collection_string = 'users/group'  # This is the hard coded collection string for openslides.users.models.Group
-
     # Convert user to right type
     # TODO: Remove this and make use, that user has always the right type
     user = user_to_collection_user(user)
-    if user is None and not anonymous_is_enabled():
+    return async_to_sync(async_has_perm)(user, perm)
+
+
+async def async_has_perm(user: Optional[CollectionElement], perm: str) -> bool:
+    """
+    Checks that user has a specific permission.
+
+    User can be a CollectionElement of a user or None.
+    """
+    group_collection_string = 'users/group'  # This is the hard coded collection string for openslides.users.models.Group
+
+    if user is None and not await async_anonymous_is_enabled():
         has_perm = False
     elif user is None:
         # Use the permissions from the default group.
-        default_group = CollectionElement.from_values(group_collection_string, GROUP_DEFAULT_PK)
-        has_perm = perm in default_group.get_full_data()['permissions']
+        default_group = await element_cache.get_element_full_data(group_collection_string, GROUP_DEFAULT_PK)
+        if default_group is None:
+            raise RuntimeError('Default Group does not exist.')
+        has_perm = perm in default_group['permissions']
     elif GROUP_ADMIN_PK in user.get_full_data()['groups_id']:
         # User in admin group (pk 2) grants all permissions.
         has_perm = True
@@ -54,8 +66,11 @@ def has_perm(user: Optional[CollectionElement], perm: str) -> bool:
         # permission. If the user has no groups, then use the default group.
         group_ids = user.get_full_data()['groups_id'] or [GROUP_DEFAULT_PK]
         for group_id in group_ids:
-            group = CollectionElement.from_values(group_collection_string, group_id)
-            if perm in group.get_full_data()['permissions']:
+            group = await element_cache.get_element_full_data(group_collection_string, group_id)
+            if group is None:
+                raise RuntimeError('User is in non existing group with id {}.'.format(group_id))
+
+            if perm in group['permissions']:
                 has_perm = True
                 break
         else:
@@ -78,7 +93,22 @@ def in_some_groups(user: Optional[CollectionElement], groups: List[int]) -> bool
     # Convert user to right type
     # TODO: Remove this and make use, that user has always the right type
     user = user_to_collection_user(user)
-    if user is None and not anonymous_is_enabled():
+    return async_to_sync(async_in_some_groups)(user, groups)
+
+
+async def async_in_some_groups(user: Optional[CollectionElement], groups: List[int]) -> bool:
+    """
+    Checks that user is in at least one given group. Groups can be given as a list
+    of ids. If the user is in the admin group (pk = 2) the result
+    is always true.
+
+    User can be a CollectionElement of a user or None.
+    """
+
+    if not len(groups):
+        return False  # early end here, if no groups are given.
+
+    if user is None and not await async_anonymous_is_enabled():
         in_some_groups = False
     elif user is None:
         # Use the permissions from the default group.

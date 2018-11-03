@@ -85,15 +85,6 @@ class CollectionElement:
         return (self.collection_string == collection_element.collection_string and
                 self.id == collection_element.id)
 
-    def as_dict_for_user(self, user: Optional['CollectionElement']) -> Optional[Dict[str, Any]]:
-        """
-        Returns a dict with the data for a user. Can be used for the rest api.
-
-        Returns None if the user does not has the permission to see the element.
-        """
-        restricted_data = self.get_access_permissions().get_restricted_data([self.get_full_data()], user)
-        return restricted_data[0] if restricted_data else None
-
     def get_model(self) -> Type[Model]:
         """
         Returns the django model that is used for this collection.
@@ -105,20 +96,6 @@ class CollectionElement:
         Returns the get_access_permissions object for the this collection element.
         """
         return self.get_model().get_access_permissions()
-
-    def get_element_from_db(self) -> Optional[Dict[str, Any]]:
-        # Hack for django 2.0 and channels 2.1 to stay in the same thread.
-        # This is needed for the tests.
-        try:
-            query = self.get_model().objects.get_full_queryset()
-        except AttributeError:
-            # If the model des not have to method get_full_queryset(), then use
-            # the default queryset from django.
-            query = self.get_model().objects
-        try:
-            return self.get_access_permissions().get_full_data(query.get(pk=self.id))
-        except self.get_model().DoesNotExist:
-            return None
 
     def get_full_data(self) -> Dict[str, Any]:
         """
@@ -151,95 +128,6 @@ class CollectionElement:
         return self.deleted
 
 
-class Collection:
-    """
-    Represents all elements of one collection.
-    """
-
-    def __init__(self, collection_string: str, full_data: List[Dict[str, Any]] = None) -> None:
-        """
-        Initiates a Collection. A collection_string has to be given. If
-        full_data (a list of dictionaries) is not given the method
-        get_full_data() exposes all data by iterating over all
-        CollectionElements.
-        """
-        self.collection_string = collection_string
-        self.full_data = full_data
-
-    def get_model(self) -> Type[Model]:
-        """
-        Returns the django model that is used for this collection.
-        """
-        return get_model_from_collection_string(self.collection_string)
-
-    def get_access_permissions(self) -> 'BaseAccessPermissions':
-        """
-        Returns the get_access_permissions object for the this collection.
-        """
-        return self.get_model().get_access_permissions()
-
-    def element_generator(self) -> Generator[CollectionElement, None, None]:
-        """
-        Generator that yields all collection_elements of this collection.
-        """
-        for full_data in self.get_full_data():
-            yield CollectionElement.from_values(
-                self.collection_string,
-                full_data['id'],
-                full_data=full_data)
-
-    def get_elements_from_db(self) ->Dict[str, List[Dict[str, Any]]]:
-        # Hack for django 2.0 and channels 2.1 to stay in the same thread.
-        # This is needed for the tests.
-        try:
-            query = self.get_model().objects.get_full_queryset()
-        except AttributeError:
-            # If the model des not have to method get_full_queryset(), then use
-            # the default queryset from django.
-            query = self.get_model().objects
-        return {self.collection_string: [self.get_model().get_access_permissions().get_full_data(instance) for instance in query.all()]}
-
-    def get_full_data(self) -> List[Dict[str, Any]]:
-        """
-        Returns a list of dictionaries with full_data of all collection
-        elements.
-        """
-        if self.full_data is None:
-            # The type of all_full_data has to be set for mypy
-            all_full_data: Dict[str, List[Dict[str, Any]]] = {}
-            all_full_data = async_to_sync(element_cache.get_all_full_data)()
-            self.full_data = all_full_data.get(self.collection_string, [])
-        return self.full_data  # type: ignore
-
-    def as_list_for_user(self, user: Optional[CollectionElement]) -> List[Dict[str, Any]]:
-        """
-        Returns a list of dictonaries to send them to a user, for example over
-        the rest api.
-        """
-        return self.get_access_permissions().get_restricted_data(self.get_full_data(), user)
-
-    def get_collection_string(self) -> str:
-        """
-        Returns the collection_string.
-        """
-        return self.collection_string
-
-    def get_elements(self) -> List[Dict[str, Any]]:
-        """
-        Returns all elements of the Collection as full_data.
-        """
-        return self.get_full_data()
-
-    def restrict_elements(
-            self,
-            user: Optional['CollectionElement'],
-            elements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """
-        Converts the full_data to restricted data.
-        """
-        return self.get_model().get_access_permissions().get_restricted_data(user, elements)
-
-
 _models_to_collection_string: Dict[str, Type[Model]] = {}
 
 
@@ -268,5 +156,5 @@ def get_model_from_collection_string(collection_string: str) -> Type[Model]:
     try:
         model = _models_to_collection_string[collection_string]
     except KeyError:
-        raise ValueError('Invalid message. A valid collection_string is missing.')
+        raise ValueError('Invalid message. A valid collection_string is missing. Got {}'.format(collection_string))
     return model

@@ -42,7 +42,7 @@ class RetrieveItem(TestCase):
 
     def test_hidden_by_anonymous_without_manage_perms(self):
         response = self.client.get(reverse('item-detail', args=[self.item.pk]))
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, 404)
 
     def test_hidden_by_anonymous_with_manage_perms(self):
         group = Group.objects.get(pk=1)  # Group with pk 1 is for anonymous users.

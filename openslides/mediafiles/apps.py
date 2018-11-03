@@ -1,3 +1,5 @@
+from typing import Any, Dict, Set
+
 from django.apps import AppConfig
 
 from ..utils.projector import register_projector_elements
@@ -11,11 +13,12 @@ class MediafilesAppConfig(AppConfig):
 
     def ready(self):
         # Import all required stuff.
-        from openslides.core.signals import permission_change, user_data_required
+        from openslides.core.signals import permission_change
         from openslides.utils.rest_api import router
         from .projector import get_projector_elements
-        from .signals import get_permission_change_data, required_users
+        from .signals import get_permission_change_data
         from .views import MediafileViewSet
+        from ..utils.access_permissions import required_user
 
         # Define projector elements.
         register_projector_elements(get_projector_elements())
@@ -24,12 +27,12 @@ class MediafilesAppConfig(AppConfig):
         permission_change.connect(
             get_permission_change_data,
             dispatch_uid='mediafiles_get_permission_change_data')
-        user_data_required.connect(
-            required_users,
-            dispatch_uid='mediafiles_required_users')
 
         # Register viewsets.
         router.register(self.get_model('Mediafile').get_collection_string(), MediafileViewSet)
+
+        # register required_users
+        required_user.add_collection_string(self.get_model('Mediafile').get_collection_string(), required_users)
 
     def get_startup_elements(self):
         """
@@ -37,3 +40,12 @@ class MediafilesAppConfig(AppConfig):
         connection.
         """
         yield self.get_model('Mediafile')
+
+
+def required_users(element: Dict[str, Any]) -> Set[int]:
+    """
+    Returns all user ids that are displayed as uploaders in any mediafile
+    if request_user can see mediafiles. This function may return an empty
+    set.
+    """
+    return set(element['uploader_id'])
