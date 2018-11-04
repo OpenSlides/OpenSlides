@@ -31,7 +31,7 @@ module.exports = function(config) {
             '/apps/': 'http://localhost:8000/apps/',
             '/media/': 'http://localhost:8000/media/',
             '/rest/': 'http://localhost:8000/rest/',
-            '/ws/site/': 'ws://localhost:8000/ws/site'
+            '/ws/': 'ws://localhost:8000/'
         }
     });
 };

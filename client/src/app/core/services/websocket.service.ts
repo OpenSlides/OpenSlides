@@ -1,5 +1,4 @@
 import { Injectable, NgZone, EventEmitter } from '@angular/core';
-import { Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
@@ -76,13 +75,11 @@ export class WebsocketService {
 
     /**
      * Constructor that handles the router
-     * @param router the URL Router
      * @param matSnackBar
      * @param zone
      * @param translate
      */
     public constructor(
-        private router: Router,
         private matSnackBar: MatSnackBar,
         private zone: NgZone,
         public translate: TranslateService
@@ -117,11 +114,12 @@ export class WebsocketService {
         }
 
         // Create the websocket
-        const socketProtocol = this.getWebSocketProtocol();
-        const socketServer = window.location.hostname + ':' + window.location.port;
-        const socketPath = this.getWebSocketPath(queryParams);
-        console.log('connect to', socketProtocol + socketServer + socketPath);
-        this.websocket = new WebSocket(socketProtocol + socketServer + socketPath);
+        let socketPath = location.protocol === 'https' ? 'wss://' : 'ws://';
+        socketPath += window.location.hostname + ':' + window.location.port + '/ws/';
+        socketPath += this.formatQueryParams(queryParams);
+
+        console.log('connect to', socketPath);
+        this.websocket = new WebSocket(socketPath);
 
         // connection established. If this connect attept was a retry,
         // The error notice will be removed and the reconnectSubject is published.
@@ -229,21 +227,15 @@ export class WebsocketService {
     }
 
     /**
-     * Delegates to socket-path for either the side or projector websocket.
+     * Formats query params for the url.
+     * @param queryParams
+     * @returns the formatted query params as string
      */
-    private getWebSocketPath(queryParams: QueryParams = {}): string {
-        // currentRoute does not end with '/'
-        const currentRoute = this.router.url;
-        let path: string;
-        if (currentRoute.includes('/projector') || currentRoute.includes('/real-projector')) {
-            path = '/ws/projector/';
-        } else {
-            path = '/ws/site/';
-        }
-
+    private formatQueryParams(queryParams: QueryParams = {}): string {
+        let params = '';
         const keys: string[] = Object.keys(queryParams);
         if (keys.length > 0) {
-            path +=
+            params =
                 '?' +
                 keys
                     .map(key => {
@@ -251,17 +243,6 @@ export class WebsocketService {
                     })
                     .join('&');
         }
-        return path;
-    }
-
-    /**
-     * returns the desired websocket protocol
-     */
-    private getWebSocketProtocol(): string {
-        if (location.protocol === 'https') {
-            return 'wss://';
-        } else {
-            return 'ws://';
-        }
+        return params;
     }
 }

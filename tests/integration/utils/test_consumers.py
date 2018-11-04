@@ -51,7 +51,7 @@ async def get_communicator():
         nonlocal communicator  # use the outer communicator variable
         if query_string:
             query_string = "?{}".format(query_string)
-        communicator = WebsocketCommunicator(application, "/ws/site/{}".format(query_string))
+        communicator = WebsocketCommunicator(application, "/ws/{}".format(query_string))
         return communicator
 
     yield get_communicator
@@ -181,7 +181,7 @@ async def test_with_user():
     session.save()
     scn = settings.SESSION_COOKIE_NAME
     cookies = (b'cookie', '{}={}'.format(scn, session.session_key).encode())
-    communicator = WebsocketCommunicator(application, "/ws/site/", headers=[cookies])
+    communicator = WebsocketCommunicator(application, "/ws/", headers=[cookies])
 
     connected, __ = await communicator.connect()
 
