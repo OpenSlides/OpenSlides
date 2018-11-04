@@ -12,7 +12,7 @@ import { DataStoreService } from '../../../../core/services/data-store.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Motion } from '../../../../shared/models/motions/motion';
 import { BehaviorSubject, Subscription, ReplaySubject, concat } from 'rxjs';
-import { LineRange } from '../../services/diff.service';
+import { DiffLinesInParagraph, LineRange } from '../../services/diff.service';
 import {
     MotionChangeRecommendationComponent,
     MotionChangeRecommendationComponentData
@@ -110,6 +110,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      */
     public preamble: string;
 
+    /**
+     * Value of the configuration variable `motions_amendments_enabled` - are amendments enabled?
+     * @TODO replace by direct access to config variable, once it's available from the templates
+     */
+    public amendmentsEnabled: boolean;
 
     /**
      * Copy of the motion that the user might edit
@@ -120,6 +125,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * All change recommendations to this motion
      */
     public changeRecommendations: ViewChangeReco[];
+
+    /**
+     * All amendments to this motions
+     */
+    public amendments: ViewMotion[];
 
     /**
      * All change recommendations AND amendments, sorted by line number.
@@ -185,6 +195,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * The subscription to the recommender config variable.
      */
     private recommenderSubscription: Subscription;
+
+    /**
+     * If this is a paragraph-based amendment, this indicates if the non-affected paragraphs should be shown as well
+     */
+    public showAmendmentContext = false;
 
     /**
      * Constuct the detail view.
@@ -255,9 +270,16 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
                 this.minSupporters = supporters;
             }
         );
+
         this.configService.get('motions_preamble').subscribe(
             (preamble: string): void => {
                 this.preamble = preamble;
+            }
+        );
+
+        this.configService.get('motions_amendments_enabled').subscribe(
+            (enabled: boolean): void => {
+                this.amendmentsEnabled = enabled;
             }
         );
     }
@@ -267,8 +289,25 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * Called each time one of these arrays changes.
      */
     private recalcUnifiedChanges(): void {
-        // @TODO implement amendments
-        this.allChangingObjects = this.changeRecommendations;
+        this.allChangingObjects = [];
+        if (this.changeRecommendations) {
+            this.changeRecommendations.forEach(
+                (change: ViewUnifiedChange): void => {
+                    this.allChangingObjects.push(change);
+                }
+            );
+        }
+        if (this.amendments) {
+            this.amendments.forEach(
+                (amendment: ViewMotion): void => {
+                    this.repo.getAmendmentAmendedParagraphs(amendment).forEach(
+                        (change: ViewUnifiedChange): void => {
+                            this.allChangingObjects.push(change);
+                        }
+                    );
+                }
+            );
+        }
         this.allChangingObjects.sort((a: ViewUnifiedChange, b: ViewUnifiedChange) => {
             if (a.getLineFrom() < b.getLineFrom()) {
                 return -1;
@@ -293,18 +332,23 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         } else {
             // load existing motion
             this.route.params.subscribe(params => {
-                this.repo.getViewModelObservable(params.id).subscribe(newViewMotion => {
+                const motionId: number = parseInt(params.id, 10);
+                this.repo.getViewModelObservable(motionId).subscribe(newViewMotion => {
                     if (newViewMotion) {
                         this.motion = newViewMotion;
                         this.patchForm(this.motion);
                     }
                 });
-                this.changeRecoRepo
-                    .getChangeRecosOfMotionObservable(parseInt(params.id, 10))
-                    .subscribe((recos: ViewChangeReco[]) => {
-                        this.changeRecommendations = recos;
+                this.repo.amendmentsTo(motionId).subscribe(
+                    (amendments: ViewMotion[]): void => {
+                        this.amendments = amendments;
                         this.recalcUnifiedChanges();
-                    });
+                    }
+                );
+                this.changeRecoRepo.getChangeRecosOfMotionObservable(motionId).subscribe((recos: ViewChangeReco[]) => {
+                    this.changeRecommendations = recos;
+                    this.recalcUnifiedChanges();
+                });
             });
         }
     }
@@ -323,6 +367,15 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         Object.keys(this.contentForm.controls).forEach(ctrl => {
             contentPatch[ctrl] = formMotion[ctrl];
         });
+
+        if (formMotion.isParagraphBasedAmendment()) {
+            contentPatch.text = formMotion.amendment_paragraphs.find(
+                (para: string): boolean => {
+                    return para !== null;
+                }
+            );
+        }
+
         const statuteAmendmentFieldName = 'statute_amendment';
         contentPatch[statuteAmendmentFieldName] = formMotion.isStatuteAmendment();
         this.contentForm.patchValue(contentPatch);
@@ -377,6 +430,18 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         const newMotionValues = { ...this.metaInfoForm.value, ...this.contentForm.value };
 
         const fromForm = new Motion();
+        if (this.motion.isParagraphBasedAmendment()) {
+            fromForm.amendment_paragraphs = this.motion.amendment_paragraphs.map(
+                (para: string): string => {
+                    if (para === null) {
+                        return null;
+                    } else {
+                        return newMotionValues.text;
+                    }
+                }
+            );
+            newMotionValues.text = '';
+        }
         fromForm.deserialize(newMotionValues);
 
         try {
@@ -409,11 +474,36 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     }
 
     /**
-     * get the formatted motion text from the repository, as SafeHTML for [innerHTML]
+     * Called from the template to make a HTML string compatible with [innerHTML]
+     * (otherwise line-number-data-attributes would be stripped out)
+     *
+     * @param {string} text
      * @returns {SafeHtml}
      */
-    public getFormattedText(): SafeHtml {
-        return this.sanitizer.bypassSecurityTrustHtml(this.getFormattedTextPlain());
+    public sanitizedText(text: string): SafeHtml {
+        return this.sanitizer.bypassSecurityTrustHtml(text);
+    }
+
+    /**
+     * If `this.motion` is an amendment, this returns the list of all changed paragraphs.
+     *
+     * @returns {DiffLinesInParagraph[]}
+     */
+    public getAmendedParagraphs(): DiffLinesInParagraph[] {
+        return this.repo.getAmendedParagraphs(this.motion);
+    }
+
+    /**
+     * If `this.motion` is an amendment, this returns a specified line range from the parent motion
+     * (e.g. to show the contect in which this amendment is happening)
+     *
+     * @param {number} from
+     * @param {number} to
+     * @returns {SafeHtml}
+     */
+    public getParentMotionRange(from: number, to: number): SafeHtml {
+        const str = this.repo.extractMotionLineRange(this.motion.parent_id, { from, to }, true);
+        return this.sanitizer.bypassSecurityTrustHtml(str);
     }
 
     /**
@@ -516,6 +606,13 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     }
 
     /**
+     * Goes to the amendment creation wizard. Executed via click.
+     */
+    public createAmendment(): void {
+        this.router.navigate(['./create-amendment'], { relativeTo: this.route });
+    }
+
+    /**
      * Comes from the head bar
      * @param mode
      */
@@ -539,14 +636,24 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         const configKey = isStatuteAmendment ? 'motions_statute_amendments_workflow' : 'motions_workflow';
         // TODO: This should just be a takeWhile(id => !id), but should include the last one where the id is OK.
         // takeWhile will get a inclusive parameter, see https://github.com/ReactiveX/rxjs/pull/4115
-        this.configService.get<string>(configKey).pipe(multicast(
-            () => new ReplaySubject(1),
-            (ids) => ids.pipe(takeWhile(id => !id), o => concat(o, ids.pipe(take(1))))
-        ), skipWhile(id => !id)).subscribe(id => {
-            this.metaInfoForm.patchValue({
-                workflow_id: parseInt(id, 10),
+        this.configService
+            .get<string>(configKey)
+            .pipe(
+                multicast(
+                    () => new ReplaySubject(1),
+                    ids =>
+                        ids.pipe(
+                            takeWhile(id => !id),
+                            o => concat(o, ids.pipe(take(1)))
+                        )
+                ),
+                skipWhile(id => !id)
+            )
+            .subscribe(id => {
+                this.metaInfoForm.patchValue({
+                    workflow_id: parseInt(id, 10)
+                });
             });
-        });
     }
 
     /**
@@ -655,7 +762,9 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * Observes the repository for changes in the motion recommender
      */
     public setupRecommender(): void {
-        const configKey = this.motion.isStatuteAmendment() ? 'motions_statute_recommendations_by' : 'motions_recommendations_by';
+        const configKey = this.motion.isStatuteAmendment()
+            ? 'motions_statute_recommendations_by'
+            : 'motions_recommendations_by';
         if (this.recommenderSubscription) {
             this.recommenderSubscription.unsubscribe();
         }

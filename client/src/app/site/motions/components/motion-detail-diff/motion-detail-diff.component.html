@@ -1,73 +1,78 @@
 <!-- A summary of all changes -->
 <section class="change-recommendation-overview">
-    <strong>
-        {{ 'Summary of changes' | translate }}:
-    </strong>
+    <strong> {{ 'Summary of changes' | translate }}: </strong>
 
     <!--
-    <button os-perms="motions.can_manage" class="btn btn-sm btn-default pull-right"
-        uib-tooltip="{{ 'Note: You have to reject all change recommendations if the plenum does not follow the recommendation. This does not affect amendments.' | translate }}"
-        ng-click="viewChangeRecommendations.rejectAllChangeRecommendations(motion)">
-      <i class="fa fa-thumbs-down"></i>
-      <translate>Reject all change recommendations</translate>
-    </button>
+        <button os-perms="motions.can_manage" class="btn btn-sm btn-default pull-right"
+            uib-tooltip="{{ 'Note: You have to reject all change recommendations if the plenum does not follow the recommendation. This does not affect amendments.' | translate }}"
+            ng-click="viewChangeRecommendations.rejectAllChangeRecommendations(motion)">
+          <i class="fa fa-thumbs-down"></i>
+          <translate>Reject all change recommendations</translate>
+        </button>
     -->
 
     <ul *ngIf="changes.length > 0">
         <li *ngFor="let change of changes">
-          <a href='' (click)="scrollToChangeClicked(change, $event)"
-             [class.amendment]="isAmendment(change)"
-             [class.recommendation]="isChangeRecommendation(change)">
-            <span *ngIf="change.getLineFrom() >= change.getLineTo() - 1" class="line-number">
-                {{ 'Line' | translate }} {{ change.getLineFrom() }}<span *ngIf="isChangeRecommendation(change)"></span>
-            </span>
-            <span *ngIf="change.getLineFrom() < change.getLineTo() - 1" class="line-number">
-                {{ 'Line' | translate }} {{ change.getLineFrom() }} -
-                    {{ change.getLineTo() - 1 }}<span *ngIf="isChangeRecommendation(change)"></span>
-            </span>
-            <span *ngIf="isChangeRecommendation(change)">({{ 'Change recommendation' | translate }})</span>
-            <span *ngIf="isAmendment(change)">@TODO Identifier</span>
-            <span class="operation" *ngIf="isChangeRecommendation(change)">–
-                {{ getRecommendationTypeName(change) }}
-                <!-- @TODO
-                <span ng-if="change.original.getType(motion.getVersion(version).text) == 3">
-                  { change.other_description }
+            <a
+                href=""
+                (click)="scrollToChangeClicked(change, $event)"
+                [class.amendment]="isAmendment(change)"
+                [class.recommendation]="isChangeRecommendation(change)"
+            >
+                <span *ngIf="change.getLineFrom() >= change.getLineTo() - 1" class="line-number">
+                    {{ 'Line' | translate }} {{ change.getLineFrom() }}
                 </span>
-                -->
-            </span>
-            <span class="status">
-                <ng-container *ngIf="change.isRejected()" translate>Rejected</ng-container>
-                <ng-container *ngIf="change.isAccepted() && isAmendment(change)" translate>Accepted</ng-container>
-            </span>
-          </a>
+                <span *ngIf="change.getLineFrom() < change.getLineTo() - 1" class="line-number">
+                    {{ 'Line' | translate }} {{ change.getLineFrom() }} - {{ change.getLineTo() - 1 }}
+                </span>
+                <span *ngIf="isChangeRecommendation(change)"> ({{ 'Change recommendation' | translate }})</span>
+                <span *ngIf="isAmendment(change)"> ({{ 'Amendment' | translate }} {{ change.getIdentifier() }})</span>
+                <span class="operation" *ngIf="isChangeRecommendation(change)"
+                    >– {{ getRecommendationTypeName(change) }}
+                    <!--
+                        @TODO
+                        <span ng-if="change.original.getType(motion.getVersion(version).text) == 3">
+                          { change.other_description }
+                        </span>
+                    -->
+                </span>
+                <span class="status">
+                    <ng-container *ngIf="change.isRejected()" translate>Rejected</ng-container>
+                    <ng-container *ngIf="change.isAccepted() && isAmendment(change)" translate>Accepted</ng-container>
+                </span>
+            </a>
         </li>
     </ul>
 
-    <div *ngIf="changes.length === 0" class="no-changes">
-        {{  'No change recommendations yet' | translate }}
-    </div>
+    <div *ngIf="changes.length === 0" class="no-changes">{{ 'No change recommendations yet' | translate }}</div>
 </section>
-
 
 <!-- The actual diff view -->
 <div class="motion-text-with-diffs">
     <div *ngFor="let change of changes; let i = index">
         <div class="motion-text line-numbers-outside">
             <os-motion-detail-original-change-recommendations
-                    [html]="getTextBetweenChanges(changes[i - 1], change)"
-                    [changeRecommendations]="[]"
-                    (createChangeRecommendation)="onCreateChangeRecommendation($event)"
+                [html]="getTextBetweenChanges(changes[i - 1], change)"
+                [changeRecommendations]="[]"
+                (createChangeRecommendation)="onCreateChangeRecommendation($event)"
             ></os-motion-detail-original-change-recommendations>
         </div>
 
-        <div [class.collides]="hasCollissions(change)"
-             class="diff-box diff-box-{{ change.getChangeId() }} clearfix">
-            <div class="collission-hint" *ngIf="hasCollissions(change)">
+        <div
+            class="diff-box diff-box-{{ change.getChangeId() }} clearfix"
+            [class.collides]="hasCollissions(change, changes)"
+        >
+            <div class="collission-hint" *ngIf="hasCollissions(change, changes)">
                 <mat-icon matTooltip="{{ 'This change collides with another one.' | translate }}">warning</mat-icon>
             </div>
             <div class="action-row" *osPerms="'motions.can_manage'">
-                <button mat-icon-button *ngIf="isRecommendation(change)" type="button"
-                        [matMenuTriggerFor]="changeRecommendationMenu" [matMenuTriggerData]="{change: change}" >
+                <button
+                    mat-icon-button
+                    *ngIf="isRecommendation(change)"
+                    type="button"
+                    [matMenuTriggerFor]="changeRecommendationMenu"
+                    [matMenuTriggerData]="{ change: change }"
+                >
                     <mat-icon>more_vert</mat-icon>
                 </button>
 
@@ -78,41 +83,53 @@
                         <i class="fa fa-info"></i>
                         {{ change.original.identifier }}
                     </a>
-                    -->
+                -->
             </div>
             <div class="status-row" *ngIf="change.isRejected()">
-                <i class="grey">{{ 'Rejected' | translate }}:</i>
+                <i class="grey">{{ 'Rejected' | translate }}</i>
             </div>
 
-            <div class="motion-text motion-text-diff line-numbers-outside"
-                 [attr.data-change-id]="change.getChangeId()"
-                 [innerHTML]="getDiff(change)"></div>
+            <div
+                class="motion-text motion-text-diff line-numbers-outside"
+                [attr.data-change-id]="change.getChangeId()"
+                [innerHTML]="getDiff(change)"
+            ></div>
         </div>
     </div>
 
     <div class="motion-text line-numbers-outside">
         <os-motion-detail-original-change-recommendations
-                [html]="getTextRemainderAfterLastChange()"
-                [changeRecommendations]="[]"
-                (createChangeRecommendation)="onCreateChangeRecommendation($event)"
+            [html]="getTextRemainderAfterLastChange()"
+            [changeRecommendations]="[]"
+            (createChangeRecommendation)="onCreateChangeRecommendation($event)"
         ></os-motion-detail-original-change-recommendations>
     </div>
 </div>
 
 <mat-menu #changeRecommendationMenu="matMenu">
     <ng-template matMenuContent let-change="change">
-        <button type="button" mat-menu-item [disabled]="hasCollissions(change)" (click)="setAcceptanceValue(change, 'accepted')">
+        <button
+            type="button"
+            mat-menu-item
+            [disabled]="hasCollissions(change)"
+            (click)="setAcceptanceValue(change, 'accepted')"
+        >
             <mat-icon>thumb_up</mat-icon>
             <span translate>Accept</span>
             <mat-icon *ngIf="change.isAccepted()" class="active-indicator">done</mat-icon>
         </button>
-        <button type="button" mat-menu-item [disabled]="hasCollissions(change)" (click)="setAcceptanceValue(change, 'rejected')">
+        <button
+            type="button"
+            mat-menu-item
+            [disabled]="hasCollissions(change)"
+            (click)="setAcceptanceValue(change, 'rejected')"
+        >
             <mat-icon>thumb_down</mat-icon>
             <span translate>Reject</span>
             <mat-icon *ngIf="change.isRejected()" class="active-indicator">done</mat-icon>
         </button>
         <button type="button" mat-menu-item (click)="setInternal(change, !change.internal)">
-            <mat-icon>{{ change.internal ? "check_box_outline_blank" : "check_box" }}</mat-icon>
+            <mat-icon>{{ change.internal ? 'check_box_outline_blank' : 'check_box' }}</mat-icon>
             <span translate>Public</span>
         </button>
         <button type="button" mat-menu-item (click)="deleteChangeRecommendation(change, $event)">

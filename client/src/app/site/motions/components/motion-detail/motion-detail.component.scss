@@ -268,4 +268,33 @@ span {
             display: none;
         }
     }
+
+    .os-split-before {
+        margin-top: 0;
+        padding-top: 0;
+    }
+
+    .os-split-after {
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    li.os-split-before {
+        list-style: none;
+    }
+}
+
+:host ::ng-deep .amendment-view {
+    .os-split-after {
+        margin-bottom: 0;
+    }
+    .os-split-before {
+        margin-top: 0;
+    }
+    .paragraph-context {
+        opacity: 0.5;
+    }
+    &.amendment-context .paragraph-context {
+        opacity: 1;
+    }
 }

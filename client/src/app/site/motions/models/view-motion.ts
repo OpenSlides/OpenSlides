@@ -205,6 +205,14 @@ export class ViewMotion extends BaseViewModel {
         return this.item ? this.item.speakerAmount : null;
     }
 
+    public get parent_id(): number {
+        return this.motion && this.motion.parent_id ? this.motion.parent_id : null;
+    }
+
+    public get amendment_paragraphs(): string[] {
+        return this.motion && this.motion.amendment_paragraphs ? this.motion.amendment_paragraphs : [];
+    }
+
     public constructor(
         motion?: Motion,
         category?: Category,
@@ -338,6 +346,14 @@ export class ViewMotion extends BaseViewModel {
 
     public isStatuteAmendment(): boolean {
         return !!this.statute_paragraph_id;
+    }
+
+    /**
+     * It's a paragraph-based amendments if only one paragraph is to be changed,
+     * specified by amendment_paragraphs-array
+     */
+    public isParagraphBasedAmendment(): boolean {
+        return this.amendment_paragraphs.length > 0;
     }
 
     /**

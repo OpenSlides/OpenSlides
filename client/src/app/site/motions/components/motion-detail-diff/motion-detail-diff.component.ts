@@ -84,11 +84,8 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
             to: change2 ? change2.getLineFrom() : null
         };
 
-        if (lineRange.from > lineRange.to) {
-            const msg = 'Inconsistent data.';
-            return '<em style="color: red; font-weight: bold;">' + msg + '</em>';
-        }
-        if (lineRange.from === lineRange.to) {
+        if (lineRange.from >= lineRange.to) {
+            // Empty space between two amendments, or between colliding amendments
             return '';
         }
 
@@ -97,11 +94,21 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
 
     /**
      * Returns true if this change is colliding with another change
-     * @param change
+     * @param {ViewUnifiedChange} change
+     * @param {ViewUnifiedChange[]} changes
      */
-    public hasCollissions(change: ViewUnifiedChange): boolean {
-        // @TODO Implementation
-        return false;
+    public hasCollissions(change: ViewUnifiedChange, changes: ViewUnifiedChange[]): boolean {
+        return (
+            changes.filter((otherChange: ViewUnifiedChange) => {
+                return (
+                    (otherChange.getChangeId() === change.getChangeId() &&
+                        (otherChange.getLineFrom() >= change.getLineFrom() &&
+                            otherChange.getLineFrom() < change.getLineTo())) ||
+                    (otherChange.getLineTo() > change.getLineFrom() && otherChange.getLineTo() <= change.getLineTo()) ||
+                    (otherChange.getLineFrom() < change.getLineFrom() && otherChange.getLineTo() > change.getLineTo())
+                );
+            }).length > 0
+        );
     }
 
     /**

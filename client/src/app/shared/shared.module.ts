@@ -23,7 +23,8 @@ import {
     DateAdapter,
     MatIconModule,
     MatButtonToggleModule,
-    MatBadgeModule
+    MatBadgeModule,
+    MatStepperModule
 } from '@angular/material';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material';
@@ -110,6 +111,7 @@ import { SortingTreeComponent } from './components/sorting-tree/sorting-tree.com
         MatIconModule,
         MatRadioModule,
         MatButtonToggleModule,
+        MatStepperModule,
         DragDropModule,
         TranslateModule.forChild(),
         RouterModule,
@@ -147,6 +149,7 @@ import { SortingTreeComponent } from './components/sorting-tree/sorting-tree.com
         MatIconModule,
         MatRadioModule,
         MatButtonToggleModule,
+        MatStepperModule,
         DragDropModule,
         NgxMatSelectSearchModule,
         FileDropModule,
