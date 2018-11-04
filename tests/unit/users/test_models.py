@@ -1,6 +1,8 @@
 from unittest import TestCase
 from unittest.mock import MagicMock, call, patch
 
+from django.core.exceptions import ObjectDoesNotExist
+
 from openslides.users.models import UserManager
 
 
@@ -127,7 +129,7 @@ class UserManagerCreateOrResetAdminUser(TestCase):
         """
         admin_user = MagicMock()
         manager = UserManager()
-        manager.get_or_create = MagicMock(return_value=(admin_user, False))
+        manager.get = MagicMock(return_value=(admin_user))
 
         manager.create_or_reset_admin_user()
 
@@ -139,7 +141,7 @@ class UserManagerCreateOrResetAdminUser(TestCase):
         """
         admin_user = MagicMock()
         manager = UserManager()
-        manager.get_or_create = MagicMock(return_value=(admin_user, False))
+        manager.get = MagicMock(return_value=(admin_user))
 
         staff_group = MagicMock(name="Staff")
         mock_group.objects.get_or_create = MagicMock(return_value=(staff_group, True))
@@ -150,16 +152,15 @@ class UserManagerCreateOrResetAdminUser(TestCase):
         self.assertEqual(
             admin_user.default_password,
             'admin')
-        admin_user.save.assert_called_once_with()
+        admin_user.save.assert_called_once_with(skip_autoupdate=True)
 
     @patch('openslides.users.models.User')
     def test_return_value(self, mock_user, mock_group, mock_permission):
         """
         Tests that the method returns True when a user is created.
         """
-        admin_user = MagicMock()
         manager = UserManager()
-        manager.get_or_create = MagicMock(return_value=(admin_user, True))
+        manager.get = MagicMock(side_effect=ObjectDoesNotExist)
         manager.model = mock_user
 
         staff_group = MagicMock(name="Staff")
@@ -179,7 +180,7 @@ class UserManagerCreateOrResetAdminUser(TestCase):
         """
         admin_user = MagicMock(username='admin', last_name='Administrator')
         manager = UserManager()
-        manager.get_or_create = MagicMock(return_value=(admin_user, True))
+        manager.get = MagicMock(side_effect=ObjectDoesNotExist)
         manager.model = mock_user
 
         staff_group = MagicMock(name="Staff")

@@ -1,3 +1,4 @@
+import datetime
 import os
 import uuid
 from typing import Any, Dict, List
@@ -16,7 +17,12 @@ from mypy_extensions import TypedDict
 from .. import __license__ as license, __url__ as url, __version__ as version
 from ..utils import views as utils_views
 from ..utils.arguments import arguments
-from ..utils.auth import anonymous_is_enabled, has_perm
+from ..utils.auth import (
+    GROUP_ADMIN_PK,
+    anonymous_is_enabled,
+    has_perm,
+    in_some_groups,
+)
 from ..utils.autoupdate import inform_changed_data, inform_deleted_data
 from ..utils.plugins import (
     get_plugin_description,
@@ -26,8 +32,11 @@ from ..utils.plugins import (
     get_plugin_version,
 )
 from ..utils.rest_api import (
+    GenericViewSet,
+    ListModelMixin,
     ModelViewSet,
     Response,
+    RetrieveModelMixin,
     ValidationError,
     detail_route,
     list_route,
@@ -36,6 +45,7 @@ from .access_permissions import (
     ChatMessageAccessPermissions,
     ConfigAccessPermissions,
     CountdownAccessPermissions,
+    HistoryAccessPermissions,
     ProjectorAccessPermissions,
     ProjectorMessageAccessPermissions,
     TagAccessPermissions,
@@ -46,6 +56,8 @@ from .models import (
     ChatMessage,
     ConfigStore,
     Countdown,
+    History,
+    HistoryData,
     ProjectionDefault,
     Projector,
     ProjectorMessage,
@@ -716,6 +728,50 @@ class CountdownViewSet(ModelViewSet):
         return result
 
 
+class HistoryViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
+    """
+    API endpoint for History.
+
+    There are the following views: list, retrieve, clear_history.
+    """
+    access_permissions = HistoryAccessPermissions()
+    queryset = History.objects.all()
+
+    def check_view_permissions(self):
+        """
+        Returns True if the user has required permissions.
+        """
+        if self.action in ('list', 'retrieve', 'clear_history'):
+            result = self.get_access_permissions().check_permissions(self.request.user)
+        else:
+            result = False
+        return result
+
+    @list_route(methods=['post'])
+    def clear_history(self, request):
+        """
+        Deletes and rebuilds the history.
+        """
+        # Collect all history objects with their collection_string and id.
+        args = []
+        for history_obj in History.objects.all():
+            args.append((history_obj.get_collection_string(), history_obj.pk))
+
+        # Delete history data and history (via CASCADE)
+        HistoryData.objects.all().delete()
+
+        # Trigger autoupdate.
+        if len(args) > 0:
+            inform_deleted_data(args)
+
+        # Rebuild history.
+        history_instances = History.objects.build_history()
+        inform_changed_data(history_instances)
+
+        # Setup response.
+        return Response({'detail': _('History was deleted successfully.')})
+
+
 # Special API views
 
 class ServerTime(utils_views.APIView):
@@ -755,3 +811,38 @@ class VersionView(utils_views.APIView):
                 'license': get_plugin_license(plugin),
                 'url': get_plugin_url(plugin)})
         return result
+
+
+class HistoryView(utils_views.APIView):
+    """
+    View to retrieve the history data of OpenSlides.
+
+    Use query paramter timestamp (UNIX timestamp) to get all elements from begin
+    until (including) this timestamp.
+    """
+    http_method_names = ['get']
+
+    def get_context_data(self, **context):
+        """
+        Checks if user is in admin group. If yes all history data until
+        (including) timestamp are added to the response data.
+        """
+        if not in_some_groups(self.request.user.pk or 0, [GROUP_ADMIN_PK]):
+            self.permission_denied(self.request)
+        try:
+            timestamp = int(self.request.query_params.get('timestamp', 0))
+        except (ValueError):
+            raise ValidationError({'detail': 'Invalid input. Timestamp  should be an integer.'})
+        data = []
+        queryset = History.objects.select_related('full_data')
+        if timestamp:
+            queryset = queryset.filter(now__lte=datetime.datetime.fromtimestamp(timestamp))
+        for instance in queryset:
+            data.append({
+                'full_data': instance.full_data.full_data,
+                'element_id': instance.element_id,
+                'timestamp': instance.now.timestamp(),
+                'information': instance.information,
+                'user_id': instance.user.pk if instance.user else None,
+            })
+        return data

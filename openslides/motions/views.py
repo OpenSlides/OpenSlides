@@ -14,7 +14,7 @@ from rest_framework import status
 from ..core.config import config
 from ..core.models import Tag
 from ..utils.auth import has_perm, in_some_groups
-from ..utils.autoupdate import inform_changed_data
+from ..utils.autoupdate import inform_changed_data, inform_deleted_data
 from ..utils.exceptions import OpenSlidesError
 from ..utils.rest_api import (
     CreateModelMixin,
@@ -107,7 +107,15 @@ class MotionViewSet(ModelViewSet):
                 motion.is_submitter(request.user) and motion.state.allow_submitter_edit)):
             self.permission_denied(request)
 
-        return super().destroy(request, *args, **kwargs)
+        result = super().destroy(request, *args, **kwargs)
+
+        # Fire autoupdate again to save information to OpenSlides history.
+        inform_deleted_data(
+            [(motion.get_collection_string(), motion.pk)],
+            information='Motion deleted',
+            user_id=request.user.pk)
+
+        return result
 
     def create(self, request, *args, **kwargs):
         """
@@ -278,6 +286,12 @@ class MotionViewSet(ModelViewSet):
         # without permission to see users may not have them but can get it now.
         new_users = list(updated_motion.supporters.all())
         inform_changed_data(new_users)
+
+        # Fire autoupdate again to save information to OpenSlides history.
+        inform_changed_data(
+            updated_motion,
+            information='Motion updated',
+            user_id=request.user.pk)
 
         # We do not add serializer.data to response so nobody gets unrestricted data here.
         return Response()
@@ -630,7 +644,7 @@ class MotionViewSet(ModelViewSet):
             message_list=[ugettext_noop('State set to'), ' ', motion.state.name],
             person=request.user,
             skip_autoupdate=True)
-        inform_changed_data(motion)
+        inform_changed_data(motion, information='State set to {}.'.format(motion.state.name))
         return Response({'detail': message})
 
     @detail_route(methods=['put'])

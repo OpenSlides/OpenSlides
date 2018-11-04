@@ -3,7 +3,6 @@ from django.contrib.auth.models import Permission
 from django.db.models import Q
 
 from ..utils.auth import GROUP_ADMIN_PK, GROUP_DEFAULT_PK
-from ..utils.autoupdate import inform_changed_data
 from .models import Group, User
 
 
@@ -81,11 +80,13 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict['mediafiles.can_see'],
         permission_dict['motions.can_see'],
         permission_dict['users.can_see_name'], )
-    group_default = Group.objects.create(pk=GROUP_DEFAULT_PK, name='Default')
+    group_default = Group(pk=GROUP_DEFAULT_PK, name='Default')
+    group_default.save(skip_autoupdate=True)
     group_default.permissions.add(*base_permissions)
 
     # Admin (pk 2 == GROUP_ADMIN_PK)
-    group_admin = Group.objects.create(pk=GROUP_ADMIN_PK, name='Admin')
+    group_admin = Group(pk=GROUP_ADMIN_PK, name='Admin')
+    group_admin.save(skip_autoupdate=True)
 
     # Delegates (pk 3)
     delegates_permissions = (
@@ -102,7 +103,8 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict['motions.can_create'],
         permission_dict['motions.can_support'],
         permission_dict['users.can_see_name'], )
-    group_delegates = Group.objects.create(pk=3, name='Delegates')
+    group_delegates = Group(pk=3, name='Delegates')
+    group_delegates.save(skip_autoupdate=True)
     group_delegates.permissions.add(*delegates_permissions)
 
     # Staff (pk 4)
@@ -132,16 +134,9 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict['users.can_manage'],
         permission_dict['users.can_see_extra_data'],
         permission_dict['mediafiles.can_see_hidden'],)
-    group_staff = Group.objects.create(pk=4, name='Staff')
+    group_staff = Group(pk=4, name='Staff')
+    group_staff.save(skip_autoupdate=True)
     group_staff.permissions.add(*staff_permissions)
-
-    # Add users.can_see_name permission to staff/admin
-    # group to ensure proper management possibilities
-    # TODO: Remove this redundancy after cleanup of the permission system.
-    group_staff.permissions.add(
-        permission_dict['users.can_see_name'])
-    group_admin.permissions.add(
-        permission_dict['users.can_see_name'])
 
     # Committees (pk 5)
     committees_permissions = (
@@ -155,13 +150,13 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict['motions.can_create'],
         permission_dict['motions.can_support'],
         permission_dict['users.can_see_name'], )
-    group_committee = Group.objects.create(pk=5, name='Committees')
+    group_committee = Group(pk=5, name='Committees')
+    group_committee.save(skip_autoupdate=True)
     group_committee.permissions.add(*committees_permissions)
 
     # Create or reset admin user
     User.objects.create_or_reset_admin_user()
 
     # After each group was created, the permissions (many to many fields) where
-    # added to the group. So we have to update the cache by calling
-    # inform_changed_data().
-    inform_changed_data((group_default, group_admin, group_delegates, group_staff, group_committee))
+    # added to the group. But we do not have to update the cache by calling
+    # inform_changed_data() because the cache is updated on server start.

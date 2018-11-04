@@ -11,7 +11,7 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 from django.core import mail
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import models
 from django.db.models import Prefetch
 from django.utils import timezone
@@ -62,12 +62,18 @@ class UserManager(BaseUserManager):
         exists, resets it. The password is (re)set to 'admin'. The user
         becomes member of the group 'Admin'.
         """
-        admin, created = self.get_or_create(
-            username='admin',
-            defaults={'last_name': 'Administrator'})
+        created = False
+        try:
+            admin = self.get(username='admin')
+        except ObjectDoesNotExist:
+            admin = self.model(
+                username='admin',
+                last_name='Administrator',
+            )
+            created = True
         admin.default_password = 'admin'
         admin.password = make_password(admin.default_password)
-        admin.save()
+        admin.save(skip_autoupdate=True)
         admin.groups.add(GROUP_ADMIN_PK)
         return created
 
