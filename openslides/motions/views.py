@@ -1,5 +1,5 @@
 import re
-from typing import List, Optional
+from typing import List
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -13,7 +13,6 @@ from rest_framework import status
 from ..core.config import config
 from ..utils.auth import has_perm, in_some_groups
 from ..utils.autoupdate import inform_changed_data
-from ..utils.collection import CollectionElement
 from ..utils.exceptions import OpenSlidesError
 from ..utils.rest_api import (
     CreateModelMixin,
@@ -117,9 +116,7 @@ class MotionViewSet(ModelViewSet):
         # Check if parent motion exists.
         if request.data.get('parent_id') is not None:
             try:
-                parent_motion: Optional[CollectionElement] = CollectionElement.from_values(
-                    Motion.get_collection_string(),
-                    request.data['parent_id'])
+                parent_motion = Motion.objects.get(pk=request.data['parent_id'])
             except Motion.DoesNotExist:
                 raise ValidationError({'detail': _('The parent motion does not exist.')})
         else:
@@ -143,8 +140,8 @@ class MotionViewSet(ModelViewSet):
                     'category_id',      # This will be set to the matching
                     'motion_block_id',  # values from parent_motion.
                 ])
-                request.data['category_id'] = parent_motion.get_full_data().get('category_id')
-                request.data['motion_block_id'] = parent_motion.get_full_data().get('motion_block_id')
+                request.data['category_id'] = parent_motion.category_id
+                request.data['motion_block_id'] = parent_motion.motion_block_id
             for key in keys:
                 if key not in whitelist:
                     del request.data[key]

@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from asgiref.sync import sync_to_async
 from django.db import DEFAULT_DB_ALIAS, connections
@@ -6,9 +6,7 @@ from django.test.utils import CaptureQueriesContext
 
 from openslides.core.config import config
 from openslides.users.models import User
-from openslides.utils.autoupdate import inform_data_collection_element_list
-from openslides.utils.cache import element_cache, get_element_id
-from openslides.utils.collection import CollectionElement
+from openslides.utils.autoupdate import Element, inform_changed_elements
 
 
 class TConfig:
@@ -29,7 +27,7 @@ class TConfig:
 
     async def restrict_elements(
             self,
-            user: Optional['CollectionElement'],
+            user_id: int,
             elements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         return elements
 
@@ -52,7 +50,7 @@ class TUser:
 
     async def restrict_elements(
             self,
-            user: Optional['CollectionElement'],
+            user_id: int,
             elements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         return elements
 
@@ -64,9 +62,8 @@ async def set_config(key, value):
     collection_string = config.get_collection_string()
     config_id = config.key_to_id[key]  # type: ignore
     full_data = {'id': config_id, 'key': key, 'value': value}
-    await element_cache.change_elements({get_element_id(collection_string, config_id): full_data})
-    await sync_to_async(inform_data_collection_element_list)([
-        CollectionElement.from_values(collection_string, config_id, full_data=full_data)])
+    await sync_to_async(inform_changed_elements)([
+        Element(id=config_id, collection_string=collection_string, full_data=full_data)])
 
 
 def count_queries(func, *args, **kwargs) -> int:

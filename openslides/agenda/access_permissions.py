@@ -1,8 +1,7 @@
-from typing import Any, Dict, Iterable, List, Optional
+from typing import Any, Dict, Iterable, List
 
 from ..utils.access_permissions import BaseAccessPermissions
 from ..utils.auth import async_has_perm
-from ..utils.collection import CollectionElement
 
 
 class ItemAccessPermissions(BaseAccessPermissions):
@@ -25,7 +24,7 @@ class ItemAccessPermissions(BaseAccessPermissions):
     async def get_restricted_data(
             self,
             full_data: List[Dict[str, Any]],
-            user: Optional[CollectionElement]) -> List[Dict[str, Any]]:
+            user_id: int) -> List[Dict[str, Any]]:
         """
         Returns the restricted serialized data for the instance prepared
         for the user.
@@ -43,11 +42,11 @@ class ItemAccessPermissions(BaseAccessPermissions):
             return {key: full_data[key] for key in whitelist}
 
         # Parse data.
-        if full_data and await async_has_perm(user, 'agenda.can_see'):
-            if await async_has_perm(user, 'agenda.can_manage') and await async_has_perm(user, 'agenda.can_see_internal_items'):
+        if full_data and await async_has_perm(user_id, 'agenda.can_see'):
+            if await async_has_perm(user_id, 'agenda.can_manage') and await async_has_perm(user_id, 'agenda.can_see_internal_items'):
                 # Managers with special permission can see everything.
                 data = full_data
-            elif await async_has_perm(user, 'agenda.can_see_internal_items'):
+            elif await async_has_perm(user_id, 'agenda.can_see_internal_items'):
                 # Non managers with special permission can see everything but
                 # comments and hidden items.
                 data = [full for full in full_data if not full['is_hidden']]  # filter hidden items
@@ -68,7 +67,7 @@ class ItemAccessPermissions(BaseAccessPermissions):
 
                 # In non internal case managers see everything and non managers see
                 # everything but comments.
-                if await async_has_perm(user, 'agenda.can_manage'):
+                if await async_has_perm(user_id, 'agenda.can_manage'):
                     blocked_keys_non_internal_hidden_case: Iterable[str] = []
                     can_see_hidden = True
                 else:

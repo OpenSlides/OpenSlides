@@ -20,7 +20,6 @@ from jsonfield import JSONField
 from ..core.config import config
 from ..core.models import Projector
 from ..utils.auth import GROUP_ADMIN_PK
-from ..utils.collection import CollectionElement
 from ..utils.models import RESTModelMixin
 from .access_permissions import (
     GroupAccessPermissions,
@@ -211,7 +210,6 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
         """
         if kwargs.get('update_fields') == ['last_login']:
             kwargs['skip_autoupdate'] = True
-            CollectionElement.from_instance(self)
         return super().save(*args, **kwargs)
 
     def delete(self, skip_autoupdate=False, *args, **kwargs):

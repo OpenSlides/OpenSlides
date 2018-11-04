@@ -1,15 +1,10 @@
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 
 from .access_permissions import BaseAccessPermissions
 from .utils import convert_camel_case_to_pseudo_snake_case
-
-
-if TYPE_CHECKING:
-    # Dummy import Collection for mypy, can be fixed with python 3.7
-    from .collection import CollectionElement  # noqa
 
 
 class MinMaxIntegerField(models.IntegerField):
@@ -78,10 +73,8 @@ class RESTModelMixin:
 
         If skip_autoupdate is set to True, then the autoupdate system is not
         informed about the model changed. This also means, that the model cache
-        is not updated. You have to do this manually, by creating a collection
-        element from the instance:
-
-        CollectionElement.from_instance(instance)
+        is not updated. You have to do this manually by calling
+        inform_changed_data().
         """
         # We don't know how to fix this circular import
         from .autoupdate import inform_changed_data
@@ -96,14 +89,8 @@ class RESTModelMixin:
 
         If skip_autoupdate is set to True, then the autoupdate system is not
         informed about the model changed. This also means, that the model cache
-        is not updated. You have to do this manually, by creating a collection
-        element from the instance:
-
-        CollectionElement.from_instance(instance, deleted=True)
-
-        or
-
-        CollectionElement.from_values(collection_string, id, deleted=True)
+        is not updated. You have to do this manually by calling
+        inform_deleted_data().
         """
         # We don't know how to fix this circular import
         from .autoupdate import inform_changed_data, inform_deleted_data
@@ -131,14 +118,20 @@ class RESTModelMixin:
             query = cls.objects  # type: ignore
 
         # Build a dict from the instance id to the full_data
-        return [cls.get_access_permissions().get_full_data(instance) for instance in query.all()]
+        return [instance.get_full_data() for instance in query.all()]
 
     @classmethod
     async def restrict_elements(
             cls,
-            user: Optional['CollectionElement'],
+            user_id: int,
             elements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """
         Converts a list of elements from full_data to restricted_data.
         """
-        return await cls.get_access_permissions().get_restricted_data(elements, user)
+        return await cls.get_access_permissions().get_restricted_data(elements, user_id)
+
+    def get_full_data(self) -> Dict[str, Any]:
+        """
+        Returns the full_data of the instance.
+        """
+        return self.get_access_permissions().get_full_data(self)

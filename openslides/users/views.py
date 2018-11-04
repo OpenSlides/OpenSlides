@@ -23,14 +23,13 @@ from ..utils.auth import (
     GROUP_DEFAULT_PK,
     anonymous_is_enabled,
     has_perm,
-    user_to_collection_user,
 )
 from ..utils.autoupdate import (
+    Element,
     inform_changed_data,
-    inform_data_collection_element_list,
+    inform_changed_elements,
 )
 from ..utils.cache import element_cache
-from ..utils.collection import CollectionElement
 from ..utils.rest_api import (
     ModelViewSet,
     Response,
@@ -112,7 +111,7 @@ class UserViewSet(ModelViewSet):
                     del request.data[key]
         response = super().update(request, *args, **kwargs)
         # Maybe some group assignments have changed. Better delete the restricted user cache
-        async_to_sync(element_cache.del_user)(user_to_collection_user(user))
+        async_to_sync(element_cache.del_user)(user.pk)
         return response
 
     def destroy(self, request, *args, **kwargs):
@@ -312,7 +311,7 @@ class GroupViewSet(ModelViewSet):
 
             # Delete the user chaches of all affected users
             for user in group.user_set.all():
-                async_to_sync(element_cache.del_user)(user_to_collection_user(user))
+                async_to_sync(element_cache.del_user)(user.pk)
 
             def diff(full, part):
                 """
@@ -327,14 +326,14 @@ class GroupViewSet(ModelViewSet):
 
             # Some permissions are added.
             if len(new_permissions) > 0:
-                collection_elements: List[CollectionElement] = []
+                elements: List[Element] = []
                 signal_results = permission_change.send(None, permissions=new_permissions, action='added')
                 all_full_data = async_to_sync(element_cache.get_all_full_data)()
                 for receiver, signal_collections in signal_results:
                     for cachable in signal_collections:
-                        for element in all_full_data.get(cachable.get_collection_string(), {}):
-                            collection_elements.append(CollectionElement.from_values(cachable.get_collection_string(), element['id']))
-                inform_data_collection_element_list(collection_elements)
+                        for full_data in all_full_data.get(cachable.get_collection_string(), {}):
+                            elements.append(Element(id=full_data['id'], collection_string=cachable.get_collection_string(), full_data=full_data))
+                inform_changed_elements(elements)
 
             # TODO: Some permissions are deleted.
 
@@ -465,7 +464,7 @@ class UserLoginView(APIView):
             # self.request.method == 'POST'
             context['user_id'] = self.user.pk
             context['user'] = async_to_sync(element_cache.get_element_restricted_data)(
-                CollectionElement.from_instance(self.user),
+                self.user.pk or 0,
                 self.user.get_collection_string(),
                 self.user.pk)
         return super().get_context_data(**context)
@@ -496,16 +495,16 @@ class WhoAmIView(APIView):
         user. Appends also a flag if guest users are enabled in the config.
         Appends also the serialized user if available.
         """
-        user_id = self.request.user.pk
-        if user_id is not None:
+        user_id = self.request.user.pk or 0
+        if user_id:
             user_data = async_to_sync(element_cache.get_element_restricted_data)(
-                user_to_collection_user(self.request.user),
+                user_id,
                 self.request.user.get_collection_string(),
                 user_id)
         else:
             user_data = None
         return super().get_context_data(
-            user_id=user_id,
+            user_id=user_id or None,
             guest_enabled=anonymous_is_enabled(),
             user=user_data,
             **context)

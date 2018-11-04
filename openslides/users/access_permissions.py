@@ -1,11 +1,8 @@
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, List, Set
 
 from ..utils.access_permissions import BaseAccessPermissions, required_user
 from ..utils.auth import async_has_perm
-from ..utils.collection import (
-    CollectionElement,
-    get_model_from_collection_string,
-)
+from ..utils.utils import get_model_from_collection_string
 
 
 class UserAccessPermissions(BaseAccessPermissions):
@@ -24,7 +21,7 @@ class UserAccessPermissions(BaseAccessPermissions):
     async def get_restricted_data(
             self,
             full_data: List[Dict[str, Any]],
-            user: Optional[CollectionElement]) -> List[Dict[str, Any]]:
+            user_id: int) -> List[Dict[str, Any]]:
         """
         Returns the restricted serialized data for the instance prepared
         for the user. Removes several fields for non admins so that they do
@@ -57,9 +54,9 @@ class UserAccessPermissions(BaseAccessPermissions):
         litte_data_fields.discard('groups')
 
         # Check user permissions.
-        if await async_has_perm(user, 'users.can_see_name'):
-            if await async_has_perm(user, 'users.can_see_extra_data'):
-                if await async_has_perm(user, 'users.can_manage'):
+        if await async_has_perm(user_id, 'users.can_see_name'):
+            if await async_has_perm(user_id, 'users.can_see_extra_data'):
+                if await async_has_perm(user_id, 'users.can_manage'):
                     data = [filtered_data(full, all_data_fields) for full in full_data]
                 else:
                     data = [filtered_data(full, many_data_fields) for full in full_data]
@@ -74,14 +71,14 @@ class UserAccessPermissions(BaseAccessPermissions):
 
             can_see_collection_strings: Set[str] = set()
             for collection_string in required_user.get_collection_strings():
-                if await async_has_perm(user, get_model_from_collection_string(collection_string).can_see_permission):
+                if await async_has_perm(user_id, get_model_from_collection_string(collection_string).can_see_permission):
                     can_see_collection_strings.add(collection_string)
 
             user_ids = await required_user.get_required_users(can_see_collection_strings)
 
             # Add oneself.
-            if user is not None:
-                user_ids.add(user.id)
+            if user_id:
+                user_ids.add(user_id)
 
             # Parse data.
             data = [
@@ -124,17 +121,17 @@ class PersonalNoteAccessPermissions(BaseAccessPermissions):
     async def get_restricted_data(
             self,
             full_data: List[Dict[str, Any]],
-            user: Optional[CollectionElement]) -> List[Dict[str, Any]]:
+            user_id: int) -> List[Dict[str, Any]]:
         """
         Returns the restricted serialized data for the instance prepared
         for the user. Everybody gets only his own personal notes.
         """
         # Parse data.
-        if user is None:
+        if not user_id:
             data: List[Dict[str, Any]] = []
         else:
             for full in full_data:
-                if full['user_id'] == user.id:
+                if full['user_id'] == user_id:
                     data = [full]
                     break
             else:

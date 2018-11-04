@@ -16,7 +16,6 @@ from django.utils.translation import ugettext as _
 from mypy_extensions import TypedDict
 
 from ..utils.cache import element_cache
-from ..utils.collection import CollectionElement
 from .exceptions import ConfigError, ConfigNotFound
 from .models import ConfigStore
 
@@ -58,9 +57,7 @@ class ConfigHandler:
         if not self.exists(key):
             raise ConfigNotFound(_('The config variable {} was not found.').format(key))
 
-        return CollectionElement.from_values(
-            self.get_collection_string(),
-            self.get_key_to_id()[key]).get_full_data()['value']
+        return async_to_sync(element_cache.get_element_full_data)(self.get_collection_string(), self.get_key_to_id()[key])['value']
 
     def get_key_to_id(self) -> Dict[str, int]:
         """

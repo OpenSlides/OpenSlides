@@ -45,7 +45,7 @@ class NotifyWebsocketClientMessage(BaseWebsocketClientMessage):
                 "type": "send_notify",
                 "incomming": content,
                 "senderReplyChannelName": consumer.channel_name,
-                "senderUserId": consumer.scope['user'].id if consumer.scope['user'] else 0,
+                "senderUserId": consumer.scope['user']['id'],
             },
         )
 
@@ -83,7 +83,7 @@ class GetElementsWebsocketClientMessage(BaseWebsocketClientMessage):
     async def receive_content(self, consumer: "ProtocollAsyncJsonWebsocketConsumer", content: Any, id: str) -> None:
         requested_change_id = content.get('change_id', 0)
         try:
-            element_data = await get_element_data(consumer.scope['user'], requested_change_id)
+            element_data = await get_element_data(consumer.scope['user']['id'], requested_change_id)
         except ValueError as error:
             await consumer.send_json(type='error', content=str(error), in_response=id)
         else:

@@ -1,16 +1,11 @@
-from typing import Any, Callable, Dict, List, Optional, Set
+from typing import Any, Callable, Dict, List, Set
 
 from asgiref.sync import async_to_sync
 from django.db.models import Model
 from rest_framework.serializers import Serializer
 
-from .auth import (
-    async_anonymous_is_enabled,
-    async_has_perm,
-    user_to_collection_user,
-)
+from .auth import async_anonymous_is_enabled, async_has_perm, user_to_user_id
 from .cache import element_cache
-from .collection import CollectionElement
 
 
 class BaseAccessPermissions:
@@ -28,31 +23,33 @@ class BaseAccessPermissions:
     If this string is empty, all users can see it.
     """
 
-    def check_permissions(self, user: Optional[CollectionElement]) -> bool:
+    def check_permissions(self, user_id: int) -> bool:
         """
         Returns True if the user has read access to model instances.
         """
         # Convert user to right type
         # TODO: Remove this and make sure, that user has always the right type
-        user = user_to_collection_user(user)
-        return async_to_sync(self.async_check_permissions)(user)
+        user_id = user_to_user_id(user_id)
+        return async_to_sync(self.async_check_permissions)(user_id)
 
-    async def async_check_permissions(self, user: Optional[CollectionElement]) -> bool:
+    async def async_check_permissions(self, user_id: int) -> bool:
         """
         Returns True if the user has read access to model instances.
         """
         if self.base_permission:
-            return await async_has_perm(user, self.base_permission)
+            return await async_has_perm(user_id, self.base_permission)
         else:
-            return user is not None or await async_anonymous_is_enabled()
+            return bool(user_id) or await async_anonymous_is_enabled()
 
-    def get_serializer_class(self, user: CollectionElement = None) -> Serializer:
+    def get_serializer_class(self, user_id: int = 0) -> Serializer:
         """
         Returns different serializer classes according to users permissions.
 
         This should return the serializer for full data access if user is
         None. See get_full_data().
         """
+        # TODO: Rewrite me by using an serializer_class attribute and removing
+        # the user_id argument.
         raise NotImplementedError(
             "You have to add the method 'get_serializer_class' to your "
             "access permissions class.".format(self))
@@ -61,27 +58,26 @@ class BaseAccessPermissions:
         """
         Returns all possible serialized data for the given instance.
         """
-        return self.get_serializer_class(user=None)(instance).data
+        return self.get_serializer_class()(instance).data
 
     async def get_restricted_data(
             self, full_data: List[Dict[str, Any]],
-            user: Optional[CollectionElement]) -> List[Dict[str, Any]]:
+            user_id: int) -> List[Dict[str, Any]]:
         """
         Returns the restricted serialized data for the instance prepared
         for the user.
 
-        The argument full_data has to be a list of full_data dicts as they are
-        created with CollectionElement.get_full_data(). The type of the return
-        is the same. Returns an empty list if the user has no read access.
-        Returns reduced data if the user has limited access.
-        Default: Returns full data if the user has read access to model instances.
+        The argument full_data has to be a list of full_data dicts. The type of
+        the return is the same. Returns an empty list if the user has no read
+        access. Returns reduced data if the user has limited access. Default:
+        Returns full data if the user has read access to model instances.
 
         Hint: You should override this method if your get_serializer_class()
         method returns different serializers for different users or if you
         have access restrictions in your view or viewset in methods like
         retrieve() or list().
         """
-        return full_data if await self.async_check_permissions(user) else []
+        return full_data if await self.async_check_permissions(user_id) else []
 
 
 class RequiredUsers:

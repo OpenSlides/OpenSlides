@@ -1,14 +1,5 @@
 from collections import defaultdict
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    Iterable,
-    List,
-    Optional,
-    Set,
-    Tuple,
-)
+from typing import Any, Dict, Iterable, List, Optional, Set, Tuple
 
 from django.apps import apps
 from typing_extensions import Protocol
@@ -19,11 +10,6 @@ from .utils import split_element_id, str_dict_to_bytes
 
 if use_redis:
     from .redis import get_connection, aioredis
-
-
-if TYPE_CHECKING:
-    # Dummy import Collection for mypy, can be fixed with python 3.7
-    from .collection import CollectionElement  # noqa
 
 
 class ElementCacheProvider(Protocol):
@@ -506,7 +492,7 @@ class Cachable(Protocol):
 
     async def restrict_elements(
             self,
-            user: Optional['CollectionElement'],
+            user_id: int,
             elements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """
         Converts full_data to restricted_data.

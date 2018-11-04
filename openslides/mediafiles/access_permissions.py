@@ -1,8 +1,7 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from ..utils.access_permissions import BaseAccessPermissions
 from ..utils.auth import async_has_perm
-from ..utils.collection import CollectionElement
 
 
 class MediafileAccessPermissions(BaseAccessPermissions):
@@ -22,15 +21,15 @@ class MediafileAccessPermissions(BaseAccessPermissions):
     async def get_restricted_data(
             self,
             full_data: List[Dict[str, Any]],
-            user: Optional[CollectionElement]) -> List[Dict[str, Any]]:
+            user_id: int) -> List[Dict[str, Any]]:
         """
         Returns the restricted serialized data for the instance prepared
-        for the user. Removes hidden mediafiles for  some users.
+        for the user. Removes hidden mediafiles for some users.
         """
         # Parse data.
-        if await async_has_perm(user, 'mediafiles.can_see') and await async_has_perm(user, 'mediafiles.can_see_hidden'):
+        if await async_has_perm(user_id, 'mediafiles.can_see') and await async_has_perm(user_id, 'mediafiles.can_see_hidden'):
             data = full_data
-        elif await async_has_perm(user, 'mediafiles.can_see'):
+        elif await async_has_perm(user_id, 'mediafiles.can_see'):
             # Exclude hidden mediafiles.
             data = [full for full in full_data if not full['hidden']]
         else:

@@ -4,9 +4,30 @@ from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.db.models import Model
+from mypy_extensions import TypedDict
 
 from .cache import element_cache, get_element_id
-from .collection import CollectionElement
+
+
+Element = TypedDict(
+    'Element',
+    {
+        'id': int,
+        'collection_string': str,
+        'full_data': Optional[Dict[str, Any]],
+    }
+)
+
+AutoupdateFormat = TypedDict(
+    'AutoupdateFormat',
+    {
+        'changed': Dict[str, List[Dict[str, Any]]],
+        'deleted': Dict[str, List[int]],
+        'from_change_id': int,
+        'to_change_id': int,
+        'all_data': bool,
+    },
+)
 
 
 def inform_changed_data(instances: Union[Iterable[Model], Model]) -> None:
@@ -27,53 +48,51 @@ def inform_changed_data(instances: Union[Iterable[Model], Model]) -> None:
             # Instance has no method get_root_rest_element. Just ignore it.
             pass
 
-    collection_elements = {}
+    elements: Dict[str, Element] = {}
     for root_instance in root_instances:
-        collection_element = CollectionElement.from_instance(root_instance)
         key = root_instance.get_collection_string() + str(root_instance.get_rest_pk())
-        collection_elements[key] = collection_element
+        elements[key] = Element(
+            id=root_instance.get_rest_pk(),
+            collection_string=root_instance.get_collection_string(),
+            full_data=root_instance.get_full_data())
 
     bundle = autoupdate_bundle.get(threading.get_ident())
     if bundle is not None:
-        # Put all collection elements into the autoupdate_bundle.
-        bundle.update(collection_elements)
+        # Put all elements into the autoupdate_bundle.
+        bundle.update(elements)
     else:
         # Send autoupdate directly
-        handle_collection_elements(collection_elements.values())
+        handle_changed_elements(elements.values())
 
 
-def inform_deleted_data(elements: Iterable[Tuple[str, int]]) -> None:
+def inform_deleted_data(deleted_elements: Iterable[Tuple[str, int]]) -> None:
     """
     Informs the autoupdate system and the caching system about the deletion of
     elements.
     """
-    collection_elements: Dict[str, Any] = {}
-    for element in elements:
-        collection_element = CollectionElement.from_values(
-            collection_string=element[0],
-            id=element[1],
-            deleted=True)
-        key = element[0] + str(element[1])
-        collection_elements[key] = collection_element
+    elements: Dict[str, Element] = {}
+    for deleted_element in deleted_elements:
+        key = deleted_element[0] + str(deleted_element[1])
+        elements[key] = Element(id=deleted_element[1], collection_string=deleted_element[0], full_data=None)
 
     bundle = autoupdate_bundle.get(threading.get_ident())
     if bundle is not None:
-        # Put all collection elements into the autoupdate_bundle.
-        bundle.update(collection_elements)
+        # Put all elements into the autoupdate_bundle.
+        bundle.update(elements)
     else:
         # Send autoupdate directly
-        handle_collection_elements(collection_elements.values())
+        handle_changed_elements(elements.values())
 
 
-def inform_data_collection_element_list(collection_elements: List[CollectionElement]) -> None:
+def inform_changed_elements(changed_elements: Iterable[Element]) -> None:
     """
     Informs the autoupdate system about some collection elements. This is
     used just to send some data to all users.
     """
     elements = {}
-    for collection_element in collection_elements:
-        key = collection_element.collection_string + str(collection_element.id)
-        elements[key] = collection_element
+    for changed_element in changed_elements:
+        key = changed_element['collection_string'] + str(changed_element['id'])
+        elements[key] = changed_element
 
     bundle = autoupdate_bundle.get(threading.get_ident())
     if bundle is not None:
@@ -81,13 +100,13 @@ def inform_data_collection_element_list(collection_elements: List[CollectionElem
         bundle.update(elements)
     else:
         # Send autoupdate directly
-        handle_collection_elements(elements.values())
+        handle_changed_elements(elements.values())
 
 
 """
 Global container for autoupdate bundles
 """
-autoupdate_bundle: Dict[int, Dict[str, CollectionElement]] = {}
+autoupdate_bundle: Dict[int, Dict[str, Element]] = {}
 
 
 class AutoupdateBundleMiddleware:
@@ -104,39 +123,36 @@ class AutoupdateBundleMiddleware:
 
         response = self.get_response(request)
 
-        bundle: Dict[str, CollectionElement] = autoupdate_bundle.pop(thread_id)
-        handle_collection_elements(bundle.values())
+        bundle: Dict[str, Element] = autoupdate_bundle.pop(thread_id)
+        handle_changed_elements(bundle.values())
         return response
 
 
-def handle_collection_elements(collection_elements: Iterable[CollectionElement]) -> None:
+def handle_changed_elements(elements: Iterable[Element]) -> None:
     """
-    Helper function, that sends collection_elements through a channel to the
+    Helper function, that sends elements through a channel to the
     autoupdate system and updates the cache.
 
-    Does nothing if collection_elements is empty.
+    Does nothing if elements is empty.
     """
-    async def update_cache(collection_elements: Iterable[CollectionElement]) -> int:
+    async def update_cache() -> int:
         """
         Async helper function to update the cache.
 
         Returns the change_id
         """
         cache_elements: Dict[str, Optional[Dict[str, Any]]] = {}
-        for element in collection_elements:
-            element_id = get_element_id(element.collection_string, element.id)
-            if element.is_deleted():
-                cache_elements[element_id] = None
-            else:
-                cache_elements[element_id] = element.get_full_data()
+        for element in elements:
+            element_id = get_element_id(element['collection_string'], element['id'])
+            cache_elements[element_id] = element['full_data']
         return await element_cache.change_elements(cache_elements)
 
-    async def async_handle_collection_elements(collection_elements: Iterable[CollectionElement]) -> None:
+    async def async_handle_collection_elements() -> None:
         """
         Async helper function to update cache and send autoupdate.
         """
         # Update cache
-        change_id = await update_cache(collection_elements)
+        change_id = await update_cache()
 
         # Send autoupdate
         channel_layer = get_channel_layer()
@@ -148,8 +164,8 @@ def handle_collection_elements(collection_elements: Iterable[CollectionElement])
             },
         )
 
-    if collection_elements:
+    if elements:
         # TODO: Save histroy here using sync code
 
         # Update cache and send autoupdate
-        async_to_sync(async_handle_collection_elements)(collection_elements)
+        async_to_sync(async_handle_collection_elements)()
