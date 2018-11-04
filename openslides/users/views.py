@@ -9,7 +9,7 @@ from django.contrib.auth import (
     logout as auth_logout,
     update_session_auth_hash,
 )
-from django.contrib.auth.forms import AuthenticationForm
+#from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
@@ -21,18 +21,13 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.translation import ugettext as _
 
 from ..core.config import config
-from ..core.signals import permission_change
 from ..utils.auth import (
     GROUP_ADMIN_PK,
     GROUP_DEFAULT_PK,
     anonymous_is_enabled,
     has_perm,
 )
-from ..utils.autoupdate import (
-    Element,
-    inform_changed_data,
-    inform_changed_elements,
-)
+from ..utils.autoupdate import inform_changed_data
 from ..utils.cache import element_cache
 from ..utils.rest_api import (
     ModelViewSet,
@@ -50,7 +45,7 @@ from .access_permissions import (
     UserAccessPermissions,
 )
 from .models import Group, PersonalNote, User
-from .serializers import GroupSerializer, PermissionRelatedField
+from .serializers import GroupSerializer
 
 
 # Viewsets for the REST API
@@ -291,63 +286,6 @@ class GroupViewSet(ModelViewSet):
             # Deny request in any other case.
             result = False
         return result
-
-    def update(self, request, *args, **kwargs):
-        """
-        Customized endpoint to update a group. Send the signal
-        'permission_change' if group permissions change.
-        """
-        group = self.get_object()
-
-        # Collect old and new (given) permissions to get the difference.
-        old_permissions = list(group.permissions.all())  # Force evaluation so the perms don't change anymore.
-        permission_names = request.data['permissions']
-        if isinstance(permission_names, str):
-            permission_names = [permission_names]
-        given_permissions = [
-            PermissionRelatedField(read_only=True).to_internal_value(data=perm) for perm in permission_names]
-
-        # Run super to update the group.
-        response = super().update(request, *args, **kwargs)
-
-        # Check status code and send 'permission_change' signal.
-        if response.status_code == 200:
-
-            # Delete the user chaches of all affected users
-            for user in group.user_set.all():
-                async_to_sync(element_cache.del_user)(user.pk)
-
-            def diff(full, part):
-                """
-                This helper function calculates the difference of two lists:
-                The result is a list of all elements of 'full' that are
-                not in 'part'.
-                """
-                part = set(part)
-                return [item for item in full if item not in part]
-
-            new_permissions = diff(given_permissions, old_permissions)
-
-            # Some permissions are added.
-            if len(new_permissions) > 0:
-                elements: List[Element] = []
-                signal_results = permission_change.send(None, permissions=new_permissions, action='added')
-                all_full_data = async_to_sync(element_cache.get_all_full_data)()
-                for receiver, signal_collections in signal_results:
-                    for cachable in signal_collections:
-                        for full_data in all_full_data.get(cachable.get_collection_string(), {}):
-                            elements.append(Element(
-                                id=full_data['id'],
-                                collection_string=cachable.get_collection_string(),
-                                full_data=full_data,
-                                information='',
-                                user_id=None,
-                                disable_history=True))
-                inform_changed_elements(elements)
-
-            # TODO: Some permissions are deleted.
-
-        return response
 
     def destroy(self, request, *args, **kwargs):
         """

@@ -1,5 +1,4 @@
 from django.apps import apps
-from django.contrib.auth.models import Permission
 from django.db.models import Q
 
 from ..utils.auth import GROUP_ADMIN_PK, GROUP_DEFAULT_PK
@@ -23,6 +22,7 @@ def create_builtin_groups_and_admin(**kwargs):
 
     Creates the builtin user: admin.
     """
+    #TODO
     # Check whether there are groups in the database.
     if Group.objects.exists():
         # Do completely nothing if there are already some groups in the database.

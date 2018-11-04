@@ -1,10 +1,9 @@
-from typing import Dict, List, Union, cast
+from typing import Dict, List, Set, Union, cast
 
 from asgiref.sync import async_to_sync
 from django.apps import apps
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Model
 
@@ -158,7 +157,8 @@ async def async_anonymous_is_enabled() -> bool:
     return False if element is None else element['value']
 
 
-AnyUser = Union[Model, int, AnonymousUser, None]
+#AnyUser = Union[Model, int, AnonymousUser, None]
+AnyUser = Union[Model, int, None]
 
 
 def user_to_user_id(user: AnyUser) -> int:
@@ -181,11 +181,22 @@ def user_to_user_id(user: AnyUser) -> int:
     elif isinstance(user, int):
         # Nothing to do
         user_id = user
-    elif isinstance(user, AnonymousUser):
-        user_id = 0
+    # elif isinstance(user, AnonymousUser):
+    #     user_id = 0
     elif isinstance(user, User):
         user_id = user.pk
     else:
         raise TypeError(
             "Unsupported type for user. User {} has type {}.".format(user, type(user)))
     return user_id
+
+
+def get_all_permissions() -> Set[str]:
+    """
+    Returns all permission strings.
+    """
+    all_permissions: Set[str] = set()
+    for app in apps.get_app_configs():
+        all_permissions.update(getattr(app, 'permissions', set()))
+
+    return all_permissions

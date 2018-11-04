@@ -1,7 +1,6 @@
 from django.apps import AppConfig
 from django.conf import settings
 from django.contrib.auth.signals import user_logged_in
-
 from ..utils.projector import register_projector_elements
 
 
@@ -13,19 +12,16 @@ class UsersAppConfig(AppConfig):
 
     def ready(self):
         # Import all required stuff.
-        from ..core.signals import post_permission_creation, permission_change
+        from ..core.signals import permission_change
         from ..utils.rest_api import router
         from .projector import get_projector_elements
-        from .signals import create_builtin_groups_and_admin, get_permission_change_data
+        from .signals import get_permission_change_data
         from .views import GroupViewSet, PersonalNoteViewSet, UserViewSet
 
         # Define projector elements.
         register_projector_elements(get_projector_elements())
 
         # Connect signals.
-        post_permission_creation.connect(
-            create_builtin_groups_and_admin,
-            dispatch_uid='create_builtin_groups_and_admin')
         permission_change.connect(
             get_permission_change_data,
             dispatch_uid='users_get_permission_change_data')
@@ -52,10 +48,10 @@ class UsersAppConfig(AppConfig):
             yield self.get_model(model_name)
 
     def get_angular_constants(self):
-        from django.contrib.auth.models import Permission
-
+        from ..utils.auth import get_all_permissions
+        #TODO
         permissions = []
-        for permission in Permission.objects.all():
+        for permission in get_all_permissions():
             permissions.append({
                 'display_name': permission.name,
                 'value': '.'.join((permission.content_type.app_label, permission.codename,))})

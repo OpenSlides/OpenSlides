@@ -1,6 +1,5 @@
 from typing import Any, Callable
 
-from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 
 
@@ -17,6 +16,7 @@ def add_permission_to_groups_based_on_existing_permission(
     permission. The migration just runs, if the base permission and content type do
     exist, so this does not run for a fresh database.
     """
+    #TODO
 
     def function(apps: Any, schema_editor: Any) -> None:
         content_type = ContentType.objects.filter(model=model, app_label=app_label)

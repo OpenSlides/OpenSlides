@@ -1,25 +1,22 @@
 import smtplib
 from random import choice
+from typing import List, Optional, Set
 
+from asgiref.sync import async_to_sync
+from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth.models import (
-    AbstractBaseUser,
-    BaseUserManager,
-    Group as DjangoGroup,
-    GroupManager as _GroupManager,
-    Permission,
-    PermissionsMixin,
-)
 from django.core import mail
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import models
-from django.db.models import Prefetch
 from django.utils import timezone
 from jsonfield import JSONField
 
 from ..core.config import config
 from ..core.models import Projector
+from ..core.signals import permission_change
 from ..utils.auth import GROUP_ADMIN_PK
+from ..utils.autoupdate import Element, inform_changed_elements
+from ..utils.cache import element_cache
 from ..utils.models import RESTModelMixin
 from .access_permissions import (
     GroupAccessPermissions,
@@ -33,19 +30,6 @@ class UserManager(BaseUserManager):
     Customized manager that creates new users only with a password and a
     username. It also supports our get_full_queryset method.
     """
-    def get_full_queryset(self):
-        """
-        Returns the normal queryset with all users. In the background all
-        groups are prefetched from the database together with all permissions
-        and content types.
-        """
-        return self.get_queryset().prefetch_related(Prefetch(
-            'groups',
-            queryset=Group.objects
-                          .select_related('group_ptr')
-                          .prefetch_related(Prefetch(
-                              'permissions',
-                              queryset=Permission.objects.select_related('content_type')))))
 
     def create_user(self, username, password, skip_autoupdate=False, **kwargs):
         """
@@ -114,7 +98,7 @@ class UserManager(BaseUserManager):
         return ''.join([choice(chars) for i in range(size)])
 
 
-class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
+class User(RESTModelMixin, AbstractBaseUser):
     """
     Model for users in OpenSlides. A client can login as an user with
     credentials. An user can also just be used as representation for a person
@@ -182,6 +166,8 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
 
     is_committee = models.BooleanField(
         default=False)
+
+    groups = models.ManyToManyField('Group')
 
     objects = UserManager()
 
@@ -292,31 +278,71 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
         return self.get_session_auth_hash()
 
 
-class GroupManager(_GroupManager):
-    """
-    Customized manager that supports our get_full_queryset method.
-    """
-    def get_full_queryset(self):
-        """
-        Returns the normal queryset with all groups. In the background all
-        permissions with the content types are prefetched from the database.
-        """
-        return (self.get_queryset()
-                    .select_related('group_ptr')
-                    .prefetch_related(Prefetch(
-                        'permissions',
-                        queryset=Permission.objects.select_related('content_type'))))
-
-
-class Group(RESTModelMixin, DjangoGroup):
+class Group(RESTModelMixin, models.Model):
     """
     Extend the django group with support of our REST and caching system.
     """
     access_permissions = GroupAccessPermissions()
-    objects = GroupManager()
 
-    class Meta:
-        default_permissions = ()
+    name = models.CharField('name', max_length=80, unique=True)
+    db_permissions = models.TextField()
+    """
+    Saves all permissions as comma separated string.
+    """
+
+    def save(self, *args, **kwargs):
+        """
+        Save the group. Updates the cache.
+        """
+        if self.id:
+            old_permissions: Optional[Set[str]] = set(async_to_sync(element_cache.get_element_full_data)(self.get_collection_string(), self.id))
+        else:
+            # First creation of user
+            old_permissions = None
+
+        # Save the group in the db
+        result = super().save(*args, **kwargs)
+
+        # Delete the user chaches of all affected users
+        for user in self.user_set.all():
+            async_to_sync(element_cache.del_user)(user.pk)
+
+        new_permissions = self.permissions - old_permissions
+
+        # Some permissions are added.
+        if len(new_permissions) > 0:
+            elements: List[Element] = []
+            signal_results = permission_change.send(None, permissions=new_permissions, action='added')
+            all_full_data = async_to_sync(element_cache.get_all_full_data)()
+            for receiver, signal_collections in signal_results:
+                for cachable in signal_collections:
+                    for full_data in all_full_data.get(cachable.get_collection_string(), {}):
+                        elements.append(Element(
+                            id=full_data['id'],
+                            collection_string=cachable.get_collection_string(),
+                            full_data=full_data,
+                            information='',
+                            user_id=None,
+                            disable_history=True))
+            inform_changed_elements(elements)
+
+        # TODO: Some permissions are deleted.
+
+        return result
+
+    @property
+    def permissions(self) -> Set[str]:
+        """
+        Get all permissions of the group.
+        """
+        return self.db_permissions.split(',')
+
+    @permissions.setter
+    def permissions(self, permissions: Set[str]) -> None:
+        """
+        Set all permissions of the group. All existing groups are deleted.
+        """
+        self.db_permissions = ','.join(permissions)
 
 
 class PersonalNoteManager(models.Manager):

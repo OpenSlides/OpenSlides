@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 import django.db.models.deletion
 from django.conf import settings
-from django.contrib.auth.models import AnonymousUser
 from django.db import migrations, models
 
 import openslides.utils.models
@@ -20,7 +19,7 @@ def move_submitters_to_own_model(apps, schema_editor):
             # We cannot use the add method here, so do it manually...
             if Submitter.objects.filter(user=user, motion=motion).exists():
                 continue  # The user is already a submitter. Skip this duplicate.
-            if isinstance(user, AnonymousUser):
+            if user.is_anonymous:
                 continue  # Skip the anonymous
 
             submitter = Submitter(user=user, motion=motion, weight=weight)

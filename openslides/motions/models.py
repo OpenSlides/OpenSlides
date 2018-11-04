@@ -1,7 +1,6 @@
 from typing import Any, Dict
 
 from django.conf import settings
-from django.contrib.auth.models import AnonymousUser
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.db import IntegrityError, models, transaction
@@ -660,7 +659,7 @@ class SubmitterManager(models.Manager):
         if self.filter(user=user, motion=motion).exists():
             raise OpenSlidesError(
                 _('{user} is already a submitter.').format(user=user))
-        if isinstance(user, AnonymousUser):
+        if user.is_anonymous:
             raise OpenSlidesError(
                 _('An anonymous user can not be a submitter.'))
         weight = (self.filter(motion=motion).aggregate(

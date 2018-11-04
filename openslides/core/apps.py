@@ -23,10 +23,8 @@ class CoreAppConfig(AppConfig):
         from ..utils.cache import element_cache
         from .projector import get_projector_elements
         from .signals import (
-            delete_django_app_permissions,
             get_permission_change_data,
             permission_change,
-            post_permission_creation,
         )
         from .views import (
             ChatMessageViewSet,
@@ -66,9 +64,6 @@ class CoreAppConfig(AppConfig):
         register_projector_elements(get_projector_elements())
 
         # Connect signals.
-        post_permission_creation.connect(
-            delete_django_app_permissions,
-            dispatch_uid='delete_django_app_permissions')
         permission_change.connect(
             get_permission_change_data,
             dispatch_uid='core_get_permission_change_data')
