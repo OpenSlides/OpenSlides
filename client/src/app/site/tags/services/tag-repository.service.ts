@@ -5,6 +5,7 @@ import { DataSendService } from '../../../core/services/data-send.service';
 import { DataStoreService } from '../../../core/services/data-store.service';
 import { BaseRepository } from '../../base/base-repository';
 import { Identifiable } from '../../../shared/models/base/identifiable';
+import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
 
 /**
  * Repository Services for Tags
@@ -26,8 +27,12 @@ export class TagRepositoryService extends BaseRepository<ViewTag, Tag> {
      * Handles CRUD using an observer to the DataStore
      * @param DataSend
      */
-    public constructor(protected DS: DataStoreService, private dataSend: DataSendService) {
-        super(DS, Tag);
+    public constructor(
+        protected DS: DataStoreService,
+        mapperService: CollectionStringModelMapperService,
+        private dataSend: DataSendService
+    ) {
+        super(DS, mapperService, Tag);
     }
 
     protected createViewModel(tag: Tag): ViewTag {

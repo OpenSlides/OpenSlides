@@ -11,6 +11,7 @@ import { DataStoreService } from '../../../core/services/data-store.service';
 import { MotionChangeReco } from '../../../shared/models/motions/motion-change-reco';
 import { ViewChangeReco } from '../models/view-change-reco';
 import { Identifiable } from '../../../shared/models/base/identifiable';
+import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
 
 /**
  * Repository Services for change recommendations
@@ -34,8 +35,12 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<ViewCh
      * @param DS
      * @param dataSend
      */
-    public constructor(DS: DataStoreService, private dataSend: DataSendService) {
-        super(DS, MotionChangeReco, [Category, User, Workflow]);
+    public constructor(
+        DS: DataStoreService,
+        mapperService: CollectionStringModelMapperService,
+        private dataSend: DataSendService
+    ) {
+        super(DS, mapperService, MotionChangeReco, [Category, User, Workflow]);
     }
 
     /**

@@ -8,6 +8,7 @@ import { DataStoreService } from '../../../core/services/data-store.service';
 import { ConstantsService } from '../../../core/services/constants.service';
 import { HttpService } from '../../../core/services/http.service';
 import { Identifiable } from '../../../shared/models/base/identifiable';
+import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
 
 /**
  * Holds a single config item.
@@ -86,8 +87,13 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
     /**
      * Constructor for ConfigRepositoryService. Requests the constants from the server and creates the config group structure.
      */
-    public constructor(DS: DataStoreService, private constantsService: ConstantsService, private http: HttpService) {
-        super(DS, Config);
+    public constructor(
+        DS: DataStoreService,
+        mapperService: CollectionStringModelMapperService,
+        private constantsService: ConstantsService,
+        private http: HttpService
+    ) {
+        super(DS, mapperService, Config);
 
         this.constantsService.get('OpenSlidesConfigVariables').subscribe(constant => {
             this.createConfigStructure(constant);
@@ -186,10 +192,7 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
         updatedConfig.patchValues(viewConfig.config);
         updatedConfig.patchValues(config);
         // TODO: Use datasendService, if it can switch correctly between put, post and patch
-        await this.http.put(
-            'rest/' + updatedConfig.collectionString + '/' + updatedConfig.key + '/',
-            updatedConfig
-        );
+        await this.http.put('rest/' + updatedConfig.collectionString + '/' + updatedConfig.key + '/', updatedConfig);
     }
 
     /**

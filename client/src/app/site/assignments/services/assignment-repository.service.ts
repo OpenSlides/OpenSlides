@@ -7,6 +7,7 @@ import { Item } from '../../../shared/models/agenda/item';
 import { BaseRepository } from '../../base/base-repository';
 import { DataStoreService } from '../../../core/services/data-store.service';
 import { Identifiable } from '../../../shared/models/base/identifiable';
+import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
 
 /**
  * Repository Service for Assignments.
@@ -21,8 +22,8 @@ export class AssignmentRepositoryService extends BaseRepository<ViewAssignment, 
      * Constructor for the Assignment Repository.
      *
      */
-    public constructor(DS: DataStoreService) {
-        super(DS, Assignment, [User, Item, Tag]);
+    public constructor(DS: DataStoreService, mapperService: CollectionStringModelMapperService) {
+        super(DS, mapperService, Assignment, [User, Item, Tag]);
     }
 
     public async update(assignment: Partial<Assignment>, viewAssignment: ViewAssignment): Promise<void> {

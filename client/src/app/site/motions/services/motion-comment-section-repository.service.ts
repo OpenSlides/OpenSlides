@@ -6,6 +6,7 @@ import { ViewMotionCommentSection } from '../models/view-motion-comment-section'
 import { MotionCommentSection } from '../../../shared/models/motions/motion-comment-section';
 import { Group } from '../../../shared/models/users/group';
 import { Identifiable } from '../../../shared/models/base/identifiable';
+import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
 
 /**
  * Repository Services for Categories
@@ -30,8 +31,12 @@ export class MotionCommentSectionRepositoryService extends BaseRepository<
      * Handles CRUD using an observer to the DataStore
      * @param DataSend
      */
-    public constructor(protected DS: DataStoreService, private dataSend: DataSendService) {
-        super(DS, MotionCommentSection, [Group]);
+    public constructor(
+        protected DS: DataStoreService,
+        mapperService: CollectionStringModelMapperService,
+        private dataSend: DataSendService
+    ) {
+        super(DS, mapperService, MotionCommentSection, [Group]);
     }
 
     protected createViewModel(section: MotionCommentSection): ViewMotionCommentSection {

@@ -7,6 +7,7 @@ import { ViewItem } from '../models/view-item';
 import { AgendaBaseModel } from '../../../shared/models/base/agenda-base-model';
 import { BaseModel } from '../../../shared/models/base/base-model';
 import { Identifiable } from '../../../shared/models/base/identifiable';
+import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
 
 /**
  * Repository service for users
@@ -17,8 +18,8 @@ import { Identifiable } from '../../../shared/models/base/identifiable';
     providedIn: 'root'
 })
 export class AgendaRepositoryService extends BaseRepository<ViewItem, Item> {
-    public constructor(DS: DataStoreService) {
-        super(DS, Item);
+    public constructor(DS: DataStoreService, mapperService: CollectionStringModelMapperService) {
+        super(DS, mapperService, Item);
     }
 
     /**
