@@ -22,6 +22,7 @@ class AgendaAppConfig(AppConfig):
             listen_to_related_object_post_delete,
             listen_to_related_object_post_save)
         from .views import ItemViewSet
+        from . import serializers  # noqa
         from ..utils.access_permissions import required_user
 
         # Define projector elements.

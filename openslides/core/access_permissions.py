@@ -8,27 +8,11 @@ class ProjectorAccessPermissions(BaseAccessPermissions):
     """
     base_permission = 'core.can_see_projector'
 
-    def get_serializer_class(self, user=None):
-        """
-        Returns serializer class.
-        """
-        from .serializers import ProjectorSerializer
-
-        return ProjectorSerializer
-
 
 class TagAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for Tag and TagViewSet.
     """
-
-    def get_serializer_class(self, user=None):
-        """
-        Returns serializer class.
-        """
-        from .serializers import TagSerializer
-
-        return TagSerializer
 
 
 class ChatMessageAccessPermissions(BaseAccessPermissions):
@@ -37,28 +21,12 @@ class ChatMessageAccessPermissions(BaseAccessPermissions):
     """
     base_permission = 'core.can_use_chat'
 
-    def get_serializer_class(self, user=None):
-        """
-        Returns serializer class.
-        """
-        from .serializers import ChatMessageSerializer
-
-        return ChatMessageSerializer
-
 
 class ProjectorMessageAccessPermissions(BaseAccessPermissions):
     """
     Access permissions for ProjectorMessage.
     """
     base_permission = 'core.can_see_projector'
-
-    def get_serializer_class(self, user=None):
-        """
-        Returns serializer class.
-        """
-        from .serializers import ProjectorMessageSerializer
-
-        return ProjectorMessageSerializer
 
 
 class CountdownAccessPermissions(BaseAccessPermissions):
@@ -67,28 +35,12 @@ class CountdownAccessPermissions(BaseAccessPermissions):
     """
     base_permission = 'core.can_see_projector'
 
-    def get_serializer_class(self, user=None):
-        """
-        Returns serializer class.
-        """
-        from .serializers import CountdownSerializer
-
-        return CountdownSerializer
-
 
 class ConfigAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for the config (ConfigStore and
     ConfigViewSet).
     """
-
-    def get_serializer_class(self, user=None):
-        """
-        Returns serializer class.
-        """
-        from .serializers import ConfigSerializer
-
-        return ConfigSerializer
 
 
 class HistoryAccessPermissions(BaseAccessPermissions):
@@ -102,11 +54,3 @@ class HistoryAccessPermissions(BaseAccessPermissions):
         model instances.
         """
         return await async_in_some_groups(user_id, [GROUP_ADMIN_PK])
-
-    def get_serializer_class(self, user=None):
-        """
-        Returns serializer class.
-        """
-        from .serializers import HistorySerializer
-
-        return HistorySerializer

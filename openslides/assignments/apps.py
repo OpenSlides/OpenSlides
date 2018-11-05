@@ -15,11 +15,12 @@ class AssignmentsAppConfig(AppConfig):
     def ready(self):
         # Import all required stuff.
         from ..core.signals import permission_change
+        from ..utils.access_permissions import required_user
         from ..utils.rest_api import router
+        from . import serializers  # noqa
         from .projector import get_projector_elements
         from .signals import get_permission_change_data
         from .views import AssignmentViewSet, AssignmentPollViewSet
-        from ..utils.access_permissions import required_user
 
         # Define projector elements.
         register_projector_elements(get_projector_elements())

@@ -10,14 +10,6 @@ class UserAccessPermissions(BaseAccessPermissions):
     Access permissions container for User and UserViewSet.
     """
 
-    def get_serializer_class(self, user=None):
-        """
-        Returns different serializer classes with respect user's permissions.
-        """
-        from .serializers import UserFullSerializer
-
-        return UserFullSerializer
-
     async def get_restricted_data(
             self,
             full_data: List[Dict[str, Any]],
@@ -95,28 +87,12 @@ class GroupAccessPermissions(BaseAccessPermissions):
     Access permissions container for Groups. Everyone can see them
     """
 
-    def get_serializer_class(self, user=None):
-        """
-        Returns serializer class.
-        """
-        from .serializers import GroupSerializer
-
-        return GroupSerializer
-
 
 class PersonalNoteAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for personal notes. Every authenticated user
     can handle personal notes.
     """
-
-    def get_serializer_class(self, user=None):
-        """
-        Returns serializer class.
-        """
-        from .serializers import PersonalNoteSerializer
-
-        return PersonalNoteSerializer
 
     async def get_restricted_data(
             self,
