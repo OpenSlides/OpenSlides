@@ -5,6 +5,7 @@ import { ViewAssignment } from '../models/view-assignment';
 import { ListViewBaseComponent } from '../../base/list-view-base';
 import { AssignmentRepositoryService } from '../services/assignment-repository.service';
 import { MatSnackBar } from '@angular/material';
+import { PromptService } from '../../../core/services/prompt.service';
 
 /**
  * Listview for the assignments
@@ -23,14 +24,18 @@ export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignmen
      * @param translate
      * @param matSnackBar
      * @param repo the repository
+     * @param promptService
      */
     public constructor(
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
-        private repo: AssignmentRepositoryService
+        private repo: AssignmentRepositoryService,
+        private promptService: PromptService
     ) {
         super(titleService, translate, matSnackBar);
+        // activate multiSelect mode for this listview
+        this.canMultiSelect = true;
     }
 
     /**
@@ -42,6 +47,7 @@ export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignmen
         this.initTable();
         this.repo.getViewModelListObservable().subscribe(newAssignments => {
             this.dataSource.data = newAssignments;
+            this.checkSelection();
         });
     }
 
@@ -53,10 +59,10 @@ export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignmen
     }
 
     /**
-     * Select an row in the table
-     * @param assignment
+     * Action to be performed after a click on a row in the table, if in single select mode
+     * @param assignment The entry of row clicked
      */
-    public selectAssignment(assignment: ViewAssignment): void {
+    public singleSelectAction(assignment: ViewAssignment): void {
         console.log('select assignment list: ', assignment);
     }
 
@@ -66,5 +72,26 @@ export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignmen
      */
     public downloadAssignmentButton(): void {
         console.log('Hello World');
+    }
+
+    /**
+     * Handler for deleting multiple entries. Needs items in selectedRows, which
+     * is only filled with any data in multiSelect mode
+     */
+    public async deleteSelected(): Promise<void> {
+        const content = this.translate.instant('This will delete all selected assignments.');
+        if (await this.promptService.open('Are you sure?', content)) {
+            for (const assignment of this.selectedRows) {
+                await this.repo.delete(assignment);
+            }
+        }
+    }
+
+    public getColumnDefintion(): string[] {
+        const list = ['title', 'phase', 'candidates'];
+        if (this.isMultiSelect) {
+            return ['selector'].concat(list);
+        }
+        return list;
     }
 }

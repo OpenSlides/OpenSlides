@@ -18,6 +18,10 @@
         margin-left: 10px;
     }
 }
+.toolbar-centered {
+    margin: auto;
+    vertical-align: baseline;
+}
 
 .toolbar-right {
     display: contents;
@@ -28,4 +32,8 @@
     ::ng-deep .extra-controls-slot {
         display: flex;
     }
+}
+
+mat-toolbar.multi-select {
+    background-color: #757575;
 }

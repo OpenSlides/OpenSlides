@@ -1,21 +1,50 @@
-<os-head-bar [mainButton]="true" (mainEvent)=onPlusButton()>
+<os-head-bar [mainButton]="true" (mainEvent)=onPlusButton() [multiSelectMode]="isMultiSelect">
     <!-- Title -->
     <div class="title-slot">
         <h2 translate>Agenda</h2>
     </div>
+    <!-- Menu -->
+    <div class="menu-slot">
+        <button type="button" mat-icon-button [matMenuTriggerFor]="agendaMenu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+    </div>
+
+    <!-- Multiselect info -->
+    <div class="central-info-slot">
+        <button mat-icon-button (click)="toggleMultiSelect()">
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+        <span>{{ selectedRows.length }}&nbsp;</span><span translate>selected</span>
+    </div>
+
+    <div class="extra-controls-slot on-transition-fade" *ngIf="isMultiSelect">
+        <button mat-icon-button (click)="deleteSelected()">
+            <mat-icon>delete</mat-icon>
+        </button>
+    </div>
+
 </os-head-bar>
 
+
 <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
+    <ng-container matColumnDef="selector">
+        <mat-header-cell *matHeaderCellDef mat-sort-header class="checkbox-cell"></mat-header-cell>
+        <mat-cell *matCellDef="let item" class="checkbox-cell">
+            <mat-icon>{{ isSelected(item) ? 'check_circle' : '' }}</mat-icon>
+        </mat-cell>
+    </ng-container>
+
     <!-- title column -->
     <ng-container matColumnDef="title">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Topic</mat-header-cell>
-        <mat-cell *matCellDef="let item" (click)="selectAgendaItem(item)">{{ item.getListTitle() }}</mat-cell>
+        <mat-cell *matCellDef="let item">{{ item.getListTitle() }}</mat-cell>
     </ng-container>
 
     <!-- Duration column -->
     <ng-container matColumnDef="duration">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Duration</mat-header-cell>
-        <mat-cell *matCellDef="let item" (click)="selectAgendaItem(item)">{{ item.duration }}</mat-cell>
+        <mat-cell *matCellDef="let item">{{ item.duration }}</mat-cell>
     </ng-container>
 
     <!-- Speakers column -->
@@ -32,7 +61,45 @@
         </mat-cell>
     </ng-container>
 
-    <mat-header-row *matHeaderRowDef="['title', 'duration', 'speakers']"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: ['title', 'duration', 'speakers']"></mat-row>
+    <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
+    <mat-row [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected': ''" (click)='selectItem(row, $event)'
+        *matRowDef="let row; columns: getColumnDefinition()"></mat-row>
 </mat-table>
 <mat-paginator class="on-transition-fade" [pageSizeOptions]="[25, 50, 75, 100, 125]"></mat-paginator>
+
+<mat-menu #agendaMenu="matMenu">
+    <div *ngIf="!isMultiSelect">
+        <button mat-menu-item *osPerms="'agenda.can_manage'" (click)="toggleMultiSelect()">
+            <mat-icon>library_add</mat-icon>
+            <span translate>MultiSelect</span>
+        </button>
+    </div>
+
+    <div *ngIf="isMultiSelect" >
+        <div *osPerms="'agenda.can_manage'">
+            <button mat-menu-item (click)="deleteSelected()">
+                <mat-icon>delete</mat-icon>
+                <span translate>Delete selected</span>
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item (click)="setClosedSelected(true)">
+                <mat-icon>done</mat-icon>
+                <span translate>Close selected</span>
+            </button>
+            <button mat-menu-item (click)="setClosedSelected(false)">
+                <mat-icon>redo</mat-icon>
+                <span translate>Open selected</span>
+            </button>
+
+            <mat-divider></mat-divider>
+            <button mat-menu-item (click)="setVisibilitySelected(true)">
+                <mat-icon>visibility</mat-icon>
+                <span translate>Set visible</span>
+            </button>
+            <button mat-menu-item (click)="setVisibilitySelected(false)">
+                <mat-icon>visibility_off</mat-icon>
+                <span translate>Set invisible</span>
+            </button>
+        </div>
+    </div>
+</mat-menu>

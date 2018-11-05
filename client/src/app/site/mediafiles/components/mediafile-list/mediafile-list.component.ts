@@ -84,6 +84,9 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile>
         public vp: ViewportService
     ) {
         super(titleService, translate, matSnackBar);
+
+        // emables multiSelection for this listView
+        this.canMultiSelect = true;
     }
 
     /**
@@ -170,18 +173,15 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile>
     }
 
     /**
-     * triggers a routine to delete all MediaFiles
-     * TODO: Remove after Multiselect
-     *
-     * @deprecated to be removed once multi selection is implemented
+     * Handler to delete several files at once. Requires data in selectedRows, which
+     * will be made available in multiSelect mode
      */
-    public async onDeleteAllFiles(): Promise<void> {
-        const content = this.translate.instant('This will delete all files.');
+    public async deleteSelected(): Promise<void> {
+        const content = this.translate.instant('This will delete all selected files.');
         if (await this.promptService.open('Are you sure?', content)) {
-            const viewMediafiles = this.dataSource.data;
-            viewMediafiles.forEach(file => {
-                this.repo.delete(file);
-            });
+            for (const mediafile of this.selectedRows) {
+                await this.repo.delete(mediafile);
+            }
         }
     }
 
@@ -257,7 +257,11 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile>
      * @returns the column definition for the screen size
      */
     public getColumnDefinition(): string[] {
-        return this.vp.isMobile ? this.displayedColumnsMobile : this.displayedColumnsDesktop;
+        const columns = this.vp.isMobile ? this.displayedColumnsMobile : this.displayedColumnsDesktop;
+        if (this.isMultiSelect){
+            return ['selector'].concat(columns);
+        }
+        return columns;
     }
 
     /**
@@ -265,7 +269,7 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile>
      *
      * @param file the select file to download
      */
-    public download(file: ViewMediafile): void {
+    public singleSelectAction(file: ViewMediafile): void {
         window.open(file.downloadUrl);
     }
 

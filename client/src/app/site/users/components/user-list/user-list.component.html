@@ -1,4 +1,4 @@
-<os-head-bar mainButton=true (mainEvent)=onPlusButton()>
+<os-head-bar mainButton=true (mainEvent)=onPlusButton() [multiSelectMode]="isMultiSelect">
     <!-- Title -->
     <div class="title-slot">
         <h2 translate>Participants</h2>
@@ -10,6 +10,21 @@
             <mat-icon>more_vert</mat-icon>
         </button>
     </div>
+
+    <!-- Multiselect info -->
+    <div class="central-info-slot">
+        <button mat-icon-button (click)="toggleMultiSelect()">
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+        <span>{{ selectedRows.length }}&nbsp;</span><span translate>selected</span>
+    </div>
+
+    <div class="extra-controls-slot on-transition-fade" *ngIf="isMultiSelect">
+        <button mat-icon-button (click)="deleteSelected()">
+            <mat-icon>delete</mat-icon>
+        </button>
+    </div>
+
 </os-head-bar>
 
 <div class="custom-table-header on-transition-fade">
@@ -22,6 +37,12 @@
 </div>
 
 <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
+    <ng-container matColumnDef="selector">
+        <mat-header-cell *matHeaderCellDef mat-sort-header class="checkbox-cell"></mat-header-cell>
+        <mat-cell *matCellDef="let user" class="checkbox-cell">
+            <mat-icon>{{ isSelected(user) ? 'check_circle' : '' }}</mat-icon>
+        </mat-cell>
+    </ng-container>
 
     <!-- name column -->
     <ng-container matColumnDef="name">
@@ -58,25 +79,91 @@
         </mat-cell>
     </ng-container>
 
-    <mat-header-row *matHeaderRowDef="['name', 'group', 'presence']"></mat-header-row>
-    <mat-row (click)="selectUser(row)" *matRowDef="let row; columns: ['name', 'group', 'presence']"></mat-row>
+    <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
+    <mat-row [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected': ''" (click)='selectItem(row, $event)'
+        *matRowDef="let row; columns: getColumnDefinition()">
+    </mat-row>
 </mat-table>
 
 <mat-paginator class="on-transition-fade" [pageSizeOptions]="[25, 50, 75, 100, 125]"></mat-paginator>
 
 <mat-menu #userMenu="matMenu">
-    <button mat-menu-item *osPerms="'users.can_manage'" routerLink="groups">
-        <mat-icon>people</mat-icon>
-        <span translate>Groups</span>
-    </button>
+    <div *ngIf="!isMultiSelect">
+        <button mat-menu-item *osPerms="'users.can_manage'" (click)="toggleMultiSelect()">
+            <mat-icon>library_add</mat-icon>
+            <span translate>MultiSelect</span>
+        </button>
 
-    <button mat-menu-item>
-        <mat-icon>save_alt</mat-icon>
-        <span translate>Import ...</span>
-    </button>
+        <button mat-menu-item *osPerms="'users.can_manage'" routerLink="groups">
+            <mat-icon>people</mat-icon>
+            <span translate>Groups</span>
+        </button>
 
-    <button mat-menu-item (click)="csvExportUserList()">
-        <mat-icon>archive</mat-icon>
-        <span translate>Export as CSV</span>
-    </button>
+        <button mat-menu-item>
+            <mat-icon>save_alt</mat-icon>
+            <span translate>Import ...</span>
+        </button>
+
+        <button mat-menu-item (click)="csvExportUserList()">
+            <mat-icon>archive</mat-icon>
+            <span translate>Export as CSV</span>
+        </button>
+    </div>
+    <div *ngIf="isMultiSelect">
+        <div *osPerms="'users.can_manage'">
+            <button mat-menu-item (click)="setGroupSelected(null)">
+                <mat-icon>archive</mat-icon>
+                <span translate>Set groups</span>
+                <!-- TODO bottomsheet/menu? -->
+            </button>
+
+            <mat-divider></mat-divider>
+
+            <button mat-menu-item (click)="setActiveSelected(true)">
+                <mat-icon>add_circle</mat-icon>
+                <span translate>Set active</span>
+            </button>
+
+            <button mat-menu-item (click)="setActiveSelected(false)">
+                <mat-icon>remove_circle</mat-icon>
+                <span translate>Set inactive</span>
+            </button>
+
+            <mat-divider></mat-divider>
+
+            <button mat-menu-item (click)="setPresentSelected(true)">
+                <mat-icon>add_circle</mat-icon>
+                <span translate>Set as present</span>
+            </button>
+
+            <button mat-menu-item (click)="setPresentSelected(false)">
+                <mat-icon>remove_circle</mat-icon>
+                <span translate>Set as not present</span>
+            </button>
+
+            <mat-divider></mat-divider>
+
+            <button mat-menu-item (click)="setCommitteeSelected(true)">
+                <mat-icon>add_circle</mat-icon>
+                <span translate>Set as committee</span>
+            </button>
+
+            <button mat-menu-item (click)="setCommitteeSelected(false)">
+                <mat-icon>remove_circle</mat-icon>
+                <span translate>Unset committee</span>
+            </button>
+
+            <mat-divider></mat-divider>
+
+            <button mat-menu-item (click)="sendInvitationSelected()">
+                <mat-icon>mail</mat-icon>
+                <span translate>Send invitations</span>
+            </button>
+
+            <button mat-menu-item (click)="deleteSelected()">
+                <mat-icon>delete</mat-icon>
+                <span translate>Delete selected</span>
+            </button>
+        </div>
+    </div>
 </mat-menu>
