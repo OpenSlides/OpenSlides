@@ -124,19 +124,12 @@ export class ViewMotion extends BaseViewModel {
         return this.motion && this.motion.recommendation_id ? this.motion.recommendation_id : null;
     }
 
-    /**
-     * FIXME:
-     * name of recommender exist in a config
-     * previously solved using `this.DS.filter<Config>(Config)`
-     * and checking: motionsRecommendationsByConfig.value
-     *
-     */
-    public get recommender(): string {
-        return null;
-    }
-
     public get recommendation(): WorkflowState {
         return this.recommendation_id && this.workflow ? this.workflow.getStateById(this.recommendation_id) : null;
+    }
+
+    public get possibleRecommendations(): WorkflowState[] {
+        return this.recommendation && this.workflow ? this.workflow.states : null;
     }
 
     public get origin(): string {

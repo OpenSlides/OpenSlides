@@ -16,6 +16,9 @@ import { MotionChangeReco } from '../../../shared/models/motions/motion-change-r
 import { ViewUnifiedChange } from '../models/view-unified-change';
 import { Identifiable } from '../../../shared/models/base/identifiable';
 import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
+import { HttpService } from 'app/core/services/http.service';
+import { ConfigService } from 'app/core/services/config.service';
+import { Observable } from 'rxjs';
 
 /**
  * Repository Services for motions (and potentially categories)
@@ -45,6 +48,8 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         DS: DataStoreService,
         mapperService: CollectionStringModelMapperService,
         private dataSend: DataSendService,
+        private httpService: HttpService,
+        private configService: ConfigService,
         private readonly lineNumbering: LinenumberingService,
         private readonly diff: DiffService
     ) {
@@ -111,6 +116,37 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      */
     public async delete(viewMotion: ViewMotion): Promise<void> {
         await this.dataSend.deleteModel(viewMotion.motion);
+    }
+
+    /**
+     * Set the state of a motion
+     *
+     * @param viewMotion target motion
+     * @param stateId the number that indicates the state
+     */
+    public async setState(viewMotion: ViewMotion, stateId: number): Promise<void> {
+        const restPath = `/rest/motions/motion/${viewMotion.id}/set_state/`;
+        await this.httpService.put(restPath, { state: stateId });
+    }
+
+    /**
+     * Set the recommenders state of a motion
+     *
+     * @param viewMotion target motion
+     * @param stateId the number that indicates the state
+     */
+    public async setRecommenderState(viewMotion: ViewMotion, stateId: number): Promise<void> {
+        const restPath = `/rest/motions/motion/${viewMotion.id}/set_recommendation/`;
+        await this.httpService.put(restPath, { recommendation: stateId });
+    }
+
+    /**
+     * Returns the motions_recommendations_by observable from the config service
+     *
+     * @return an observable that contains the motions "Recommended by" string
+     */
+    public getRecommenderObservable(): Observable<string> {
+        return this.configService.get('motions_recommendations_by');
     }
 
     /**
