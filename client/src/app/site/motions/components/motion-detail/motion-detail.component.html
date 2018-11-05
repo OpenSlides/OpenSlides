@@ -174,18 +174,14 @@
         </div>
 
         <!-- State -->
-        <div *ngIf='!newMotion && motion && motion.workflow && motion.state || editMotion'>
-            <div *ngIf='!editMotion'>
-                <h3 translate>State</h3>
-                {{motion.state}}
-            </div>
-            <mat-form-field *ngIf="editMotion && !newMotion">
-                <mat-select placeholder='State' formControlName='state_id'>
-                    <mat-option [value]="motionCopy.state_id">{{motionCopy.state}}</mat-option>
+        <div *ngIf='motion && motion.state'>
+            <mat-form-field *ngIf="!editMotion && !newMotion">
+                <mat-select placeholder='State' formControlName='state_id' (selectionChange)="onChangeState($event)">
+                    <mat-option [value]="motion.state_id">{{motion.state}}</mat-option>
                     <mat-divider></mat-divider>
-                    <mat-option *ngFor="let state of motionCopy.nextStates" [value]="state.id">{{state}}</mat-option>
+                    <mat-option *ngFor="let state of motion.nextStates" [value]="state.id">{{state}}</mat-option>
                     <mat-divider></mat-divider>
-                    <mat-option>
+                    <mat-option [value]="null">
                         <mat-icon>replay</mat-icon><span translate>Reset State</span>
                     </mat-option>
                 </mat-select>
@@ -194,21 +190,10 @@
 
         <!-- Recommendation -->
         <!-- The suggestion of the work group weather or not a motion should be accepted -->
-        <div *ngIf='motion && motion.recommender && (motion.recommendation_id || editMotion)'>
-            <div *ngIf='!editMotion'>
-                <h3>{{motion.recommender}}</h3>
-                {{motion.recommendation}}
-            </div>
-            <mat-form-field *ngIf="motion && editMotion">
-                <mat-select placeholder='Recommendation' formControlName='recommendation_id'>
-                    <mat-option *ngFor="let state of motionCopy.nextStates" [value]="state.id">{{state}}</mat-option>
-                    <mat-divider></mat-divider>
-
-                    <!-- TODO has no effect -->
-                    <mat-option>
-                        <mat-icon>replay</mat-icon>
-                        <span translate>Reset recommendation</span>
-                    </mat-option>
+        <div *ngIf='motion && motion.state && recommender'>
+            <mat-form-field *ngIf="!editMotion && !newMotion">
+                <mat-select [placeholder]=recommender formControlName='recommendation_id' (selectionChange)="onChangerRecommenderState($event)">
+                    <mat-option *ngFor="let state of motion.possibleRecommendations" [value]="state.id">{{state}}</mat-option>
                 </mat-select>
             </mat-form-field>
         </div>

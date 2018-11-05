@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog, MatExpansionPanel } from '@angular/material';
+import { MatDialog, MatExpansionPanel, MatSelectChange } from '@angular/material';
 
 import { BaseComponent } from '../../../../base.component';
 import { Category } from '../../../../shared/models/motions/category';
@@ -124,6 +124,11 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     public scrollToChange: ViewUnifiedChange = null;
 
     /**
+     * Custom recommender as set in the settings
+     */
+    public recommender: string;
+
+    /**
      * Constuct the detail view.
      *
      * @param vp the viewport service
@@ -204,7 +209,10 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
             // load existing motion
             this.route.params.subscribe(params => {
                 this.repo.getViewModelObservable(params.id).subscribe(newViewMotion => {
-                    this.motion = newViewMotion;
+                    if (newViewMotion) {
+                        this.motion = newViewMotion;
+                        this.patchForm(this.motion);
+                    }
                 });
                 this.changeRecoRepo
                     .getChangeRecosOfMotionObservable(parseInt(params.id, 10))
@@ -453,6 +461,31 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     }
 
     /**
+     * Executed after selecting a state
+     * @param selection MatSelectChange that contains the workflow id
+     */
+    public onChangeState(selection: MatSelectChange): void {
+        this.repo.setState(this.motion, selection.value);
+    }
+
+    /**
+     * Executed after selecting the recommenders state
+     * @param selection MatSelectChange that contains the workflow id
+     */
+    public onChangerRecommenderState(selection: MatSelectChange): void {
+        this.repo.setRecommenderState(this.motion, selection.value);
+    }
+
+    /**
+     * Observes the repository for changes in the motion recommender
+     */
+    public getRecommender(): void {
+        this.repo.getRecommenderObservable().subscribe(newRecommender => {
+            this.recommender = newRecommender;
+        });
+    }
+
+    /**
      * Determine if the user has the correct requirements to alter the motion
      */
     public opCanEdit(): boolean {
@@ -461,8 +494,10 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
 
     /**
      * Init.
+     * Calls getRecommender and sets the surrounding motions to navigate back and forth
      */
     public ngOnInit(): void {
+        this.getRecommender();
         this.repo.getViewModelListObservable().subscribe(newMotionList => {
             if (newMotionList) {
                 this.allMotions = newMotionList;
