@@ -6,7 +6,7 @@
         <form *ngIf="editTag" [formGroup]="tagForm" (ngSubmit)="saveTag()" (keydown)="keyDownFunction($event)">
             <mat-form-field>
                 <input type="text" matInput osAutofocus required formControlName="name" placeholder="{{ 'New tag name' | translate}}">
-                <mat-error *ngIf="tagForm.invalid" translate>A tag name is required</mat-error>
+                <mat-error *ngIf="tagForm.invalid" translate>Required</mat-error>
             </mat-form-field>
         </form>
     </div>

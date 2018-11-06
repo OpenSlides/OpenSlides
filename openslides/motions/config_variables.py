@@ -61,8 +61,8 @@ def get_config_variables():
         input_type='choice',
         label='Default line numbering',
         choices=(
-            {'value': 'outside', 'display_name': 'Outside'},
-            {'value': 'inline', 'display_name': 'Inline'},
+            {'value': 'outside', 'display_name': 'outside'},
+            {'value': 'inline', 'display_name': 'inline'},
             {'value': 'none', 'display_name': 'Disabled'}),
         weight=322,
         group='Motions',

@@ -33,8 +33,12 @@
 
     <!-- Save and Cancel buttons -->
     <mat-card-actions>
-        <button mat-button (click)="onCreateButton()" translate>Create</button>
-        <button mat-button (click)="categoryToCreate = null" translate>Abort</button>
+        <button mat-button (click)="onCreateButton()">
+            <span translate>Save</span>
+        </button>
+        <button mat-button (click)="categoryToCreate = null">
+            <span translate>Cancel</span>
+        </button>
     </mat-card-actions>
 </mat-card>
 
@@ -71,7 +75,8 @@
 
         <!-- Edit form shows during the edit event -->
         <form id="updateForm" [formGroup]='updateForm' *ngIf="editId === category.id" (keydown)="keyDownFunction($event, category)">
-            <span translate>Edit category details</span>:<br>
+            <span translate>Edit category:</span>:<br>
+
             <mat-form-field>
                 <input formControlName="prefix" matInput placeholder="{{'Prefix' | translate}}" required>
                 <mat-hint *ngIf="!updateForm.controls.prefix.valid">

@@ -43,8 +43,8 @@
 <mat-paginator class="on-transition-fade" [pageSizeOptions]="[25, 50, 75, 100, 125]"></mat-paginator>
 
 <mat-menu #mediafilesMenu="matMenu">
-    <button mat-menu-item (click)="deleteAllFiles()">
+    <button mat-menu-item class='red-warning-text' (click)="deleteAllFiles()">
         <mat-icon>delete</mat-icon>
-        <span translate>Delete All</span>
+        <span translate>Delete all files</span>
     </button>
 </mat-menu>

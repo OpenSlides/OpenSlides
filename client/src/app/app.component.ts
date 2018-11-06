@@ -33,7 +33,7 @@ export class AppComponent {
         constantsService: ConstantsService // Needs to be started, so it can register itself to the WebsocketService
     ) {
         // manually add the supported languages
-        translate.addLangs(['en', 'de', 'fr']);
+        translate.addLangs(['en', 'de', 'cs']);
         // this language will be used as a fallback when a translation isn't found in the current language
         translate.setDefaultLang('en');
         // get the browsers default language

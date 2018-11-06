@@ -133,7 +133,7 @@ export class ViewMotion extends BaseViewModel {
     }
 
     public get possibleRecommendations(): WorkflowState[] {
-        return this.recommendation && this.workflow ? this.workflow.states : null;
+        return this.workflow ? this.workflow.states.filter(recommendation => recommendation.recommendation_label !== undefined) : null;
     }
 
     public get origin(): string {

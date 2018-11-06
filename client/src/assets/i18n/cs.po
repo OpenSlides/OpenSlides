@@ -1,0 +1,376 @@
+# Translators:
+# fri, 2018
+# 
+msgid ""
+msgstr ""
+"Last-Translator: fri, 2018\n"
+"Language-Team: Czech (https://www.transifex.com/openslides/teams/14270/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
+
+msgid "About me"
+msgstr "O mě"
+
+msgid "Accept"
+msgstr "Přijmout"
+
+msgid "Accepted"
+msgstr "Přijato"
+
+msgid "Agenda"
+msgstr "Pořad jednání"
+
+msgid "All your changes are saved immediately."
+msgstr "Všechny vaše změny jsou okamžitě uloženy."
+
+msgid "Cancel"
+msgstr "Zrušit"
+
+msgid "Categories"
+msgstr "Skupiny"
+
+msgid "Category"
+msgstr "Obor činnosti"
+
+msgid "Change password"
+msgstr "Změnit heslo"
+
+msgid "Change recommendation"
+msgstr "Změnit doporučení"
+
+msgid "Changed version"
+msgstr "Změněná verze"
+
+msgid "Comment"
+msgstr "Poznámka"
+
+msgid "Comments"
+msgstr "Poznámky"
+
+msgid "Content"
+msgstr "Obsah"
+
+msgid "Create new category"
+msgstr "Vytvořit nový obor činnosti"
+
+msgid "Create new comment field"
+msgstr "Vytvořit nové poznámkové pole"
+
+msgid "Create new statute paragraph"
+msgstr "Vytvořit nový odstavec předpisu"
+
+msgid "Delete"
+msgstr "Smazat"
+
+msgid "Delete all files"
+msgstr "Smazat všechny soubory"
+
+msgid "Designates whether this user is in the room."
+msgstr "Určuje, zda je tento uživatel v místnosti."
+
+msgid "Designates whether this user should be treated as a committee."
+msgstr "Určuje, zda se s tímto uživatelem má zacházet jako s výborem."
+
+msgid ""
+"Designates whether this user should be treated as active. Unselect this "
+"instead of deleting the account."
+msgstr ""
+"Určuje, zda se má s tímto uživatelem zacházet jako s činným. Zrušte vybrání "
+"namísto smazání účtu."
+
+msgid "Diff version"
+msgstr "Znázornění změn"
+
+msgid "Edit"
+msgstr "Upravit"
+
+msgid "Edit category:"
+msgstr "Upravit obor činnosti:"
+
+msgid "Edit comment field:"
+msgstr "Upravit poznámkové pole:"
+
+msgid "Edit profile"
+msgstr "Upravit profil"
+
+msgid "Edit statute paragraph:"
+msgstr "Upravit odstavec předpisu:"
+
+msgid "Elections"
+msgstr ""
+
+msgid "Email"
+msgstr "E-mail"
+
+msgid "English"
+msgstr "Angličtina"
+
+msgid "Export ..."
+msgstr "Vyvést..."
+
+msgid "Export as csv"
+msgstr "Vyvést jako CSV"
+
+msgid "FILTER"
+msgstr "FILTR"
+
+msgid "Files"
+msgstr "Soubory"
+
+msgid "Final version"
+msgstr "Konečná verze"
+
+msgid "French"
+msgstr "Francouzština"
+
+msgid "German"
+msgstr "Němčina"
+
+msgid "Given name"
+msgstr "Křestní jméno"
+
+msgid "Groups"
+msgstr "Skupiny"
+
+msgid "Groups with read permissions"
+msgstr "Skupiny s oprávněním pro čtení"
+
+msgid "Groups with write permissions"
+msgstr "Skupiny s oprávněním pro zápis"
+
+msgid "Home"
+msgstr "Domovská stránka"
+
+msgid "Identifier"
+msgstr "Identifikátor"
+
+msgid "Import ..."
+msgstr "Zavést..."
+
+msgid "Initial password"
+msgstr "Počáteční heslo"
+
+msgid "Installed plugins"
+msgstr "Nainstalované přídavné moduly"
+
+msgid "Is a committee"
+msgstr "Je výbor"
+
+msgid "Is active"
+msgstr "Je činná"
+
+msgid "Is present"
+msgstr "Je přítomná"
+
+msgid "Legal notice"
+msgstr "Právní upozornění"
+
+msgid "License"
+msgstr "Povolení"
+
+msgid "Line"
+msgstr "Řádek"
+
+msgid "Login"
+msgstr "Přihlášení"
+
+msgid "Login as Guest"
+msgstr "Přihlásit se jako host"
+
+msgid "Logout"
+msgstr "Odhlásit se"
+
+msgid "Meta information"
+msgstr "Popisné informace"
+
+msgid "Motion"
+msgstr "Návrh"
+
+msgid "Motions"
+msgstr "Návrhy"
+
+msgid "Name"
+msgstr "Název"
+
+msgid "New group name"
+msgstr "Název nové skupiny"
+
+msgid "New motion"
+msgstr "Nový návrh"
+
+msgid "New tag name"
+msgstr "Název nové značky"
+
+msgid "No change recommendations yet"
+msgstr "Dosud žádná doporučení změn"
+
+msgid "No comment"
+msgstr "Bez poznámky"
+
+msgid "No groups selected"
+msgstr "Nevybrány žádné skupiny"
+
+msgid "No personal note"
+msgstr "Bez osobní poznámky"
+
+msgid "No statute paragraphs"
+msgstr "Žádné odstavce předpisu"
+
+msgid "None"
+msgstr "Žádné"
+
+msgid ""
+"Note: You have to reject all change recommendations if the plenum does not "
+"follow the recommendation. This does not affect amendments."
+msgstr ""
+"Poznámka: Musíte odmítnout všechna doporučení změn, pokud plenární zasedání "
+"nesleduje doporučení. Toto neovlivní dodatky."
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Offline mode: You can use OpenSlides but changes are not saved."
+msgstr ""
+"Režim nepřipojen k internetu: Můžete OpenSlides používat, ale změny nejsou "
+"ukládány."
+
+msgid "Only for internal notes."
+msgstr "Jen pro vnitřní poznámky."
+
+msgid "Origin"
+msgstr "Původ"
+
+msgid "Original version"
+msgstr "Původní verze"
+
+msgid "PDF"
+msgstr "PDF"
+
+msgid "Participant number"
+msgstr "Číslo účastníka"
+
+msgid "Participants"
+msgstr "Účastníci"
+
+msgid "Permissions"
+msgstr "Oprávnění"
+
+msgid "Personal note"
+msgstr "Osobní poznámka"
+
+msgid "Prefix"
+msgstr "Předpona"
+
+msgid "Present"
+msgstr "Přítomen"
+
+msgid "Privacy Policy"
+msgstr "Politika pro soukromí"
+
+msgid "Privacy policy"
+msgstr "Politika pro soukromí"
+
+msgid "Project"
+msgstr "Promítat"
+
+msgid "Projector"
+msgstr "Promítací přístroj"
+
+msgid "Public"
+msgstr "Veřejný"
+
+msgid "Reason"
+msgstr "Zdůvodnění"
+
+msgid "Reject"
+msgstr "Odmítnout"
+
+msgid "Rejected"
+msgstr "Odmítnuto"
+
+msgid "Required"
+msgstr "Požadováno"
+
+msgid "Reset recommendation"
+msgstr "Vynulovat doporučení"
+
+msgid "Reset state"
+msgstr "Obnovit stav"
+
+msgid "SORT"
+msgstr "TŘÍDIT"
+
+msgid "Save"
+msgstr "Uložit"
+
+msgid "Selected values"
+msgstr "Vybrané hodnoty"
+
+msgid "Settings"
+msgstr "Nastavení"
+
+msgid "Sort ..."
+msgstr "Třídit..."
+
+msgid "State"
+msgstr "Stav"
+
+msgid "Statute paragraph"
+msgstr "Odstavec předpisu"
+
+msgid "Statute paragraphs"
+msgstr "Odstavce předpisu"
+
+msgid "Structure level"
+msgstr "Úroveň rozčlenění"
+
+msgid "Submitters"
+msgstr "Navrhovatelé"
+
+msgid "Summary of changes"
+msgstr "Přehled změn"
+
+msgid "Supporters"
+msgstr "Podporovatel"
+
+msgid "Surname"
+msgstr "Příjmení"
+
+msgid "Tags"
+msgstr "Klíčová slova"
+
+msgid "The assembly may decide:"
+msgstr "Shromáždění se může usnést:"
+
+msgid "The event manager hasn't set up a privacy policy yet."
+msgstr "Správce událostí ještě nenastavil politiku soukromí."
+
+msgid "This change collides with another one."
+msgstr "Tato změna se střetává s jinou."
+
+msgid "Title"
+msgstr "Název"
+
+msgid "Username"
+msgstr "Uživatelské jméno"
+
+msgid "Welcome to OpenSlides"
+msgstr "Vítejte v OpenSlides"
+
+msgid "Yes"
+msgstr "Ano"
+
+msgid "by"
+msgstr "od"
+
+msgid "inline"
+msgstr "uvnitř"
+
+msgid "none"
+msgstr "žádné"
+
+msgid "outside"
+msgstr "vně"

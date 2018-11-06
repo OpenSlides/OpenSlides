@@ -18,8 +18,8 @@
         </ng-container>
 
         <!-- required for all kinds of input -->
-        <mat-label translate>{{ configItem.label }}</mat-label>
-        <mat-hint *ngIf="configItem.helpText" translate>{{ configItem.helpText }}</mat-hint>
+        <mat-label>{{ configItem.label | translate }}</mat-label>
+        <mat-hint *ngIf="configItem.helpText">{{ configItem.helpText | translate }}</mat-hint>
         <span matSuffix>
             <mat-icon pull="right" class="text-success" *ngIf="updateSuccessIcon">check_circle</mat-icon>
         </span>

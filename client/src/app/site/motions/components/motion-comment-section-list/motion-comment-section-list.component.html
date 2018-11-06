@@ -29,8 +29,12 @@
         </form>
     </mat-card-content>
     <mat-card-actions>
-        <button mat-button (click)="create()" translate>Create</button>
-        <button mat-button (click)="commentSectionToCreate = null" translate>Abort</button>
+        <button mat-button (click)="create()">
+            <span translate>Save</span>
+        </button>
+        <button mat-button (click)="commentSectionToCreate = null">
+            <span translate>Cancel</span>
+        </button>
     </mat-card-actions>
 </mat-card>
 <mat-accordion class="os-card">
@@ -60,7 +64,7 @@
             </mat-panel-title>
         </mat-expansion-panel-header>
         <form [formGroup]="updateForm" *ngIf="editId === section.id" (keydown)="keyDownFunction($event, section)">
-            <span translate>Edit section details:</span>
+            <span translate>Edit comment field:</span>
             <p>
                 <mat-form-field>
                     <input formControlName="name" matInput placeholder="{{'Name' | translate}}" required>
@@ -95,7 +99,7 @@
         <mat-action-row>
             <button *ngIf="editId !== section.id" mat-button class="on-transition-fade" (click)="onEditButton(section)"
                 mat-icon-button>
-                <mat-icon>add</mat-icon>
+                <mat-icon>edit</mat-icon>
             </button>
             <button *ngIf="editId === section.id" mat-button class="on-transition-fade" (click)="editId = null"
                 mat-icon-button>
