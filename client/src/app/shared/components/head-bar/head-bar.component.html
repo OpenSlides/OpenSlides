@@ -1,58 +1,51 @@
-<mat-toolbar color='primary' [ngClass]="{'during-scroll': stickyToolbar}">
-
-    <mat-toolbar-row [ngClass]="{'hidden-bar': stickyToolbar}">
+<mat-toolbar color='primary' *ngIf="!vp.isMobile"></mat-toolbar>
+<mat-toolbar color='primary' class="sticky-toolbar">
+    <div class="toolbar-left">
         <!-- Nav menu -->
-        <button mat-icon-button *ngIf="vp.isMobile && nav" (click)='clickHamburgerMenu()'>
+        <button mat-icon-button class="on-transition-fade" *ngIf="vp.isMobile && nav" (click)='clickHamburgerMenu()'>
             <mat-icon>menu</mat-icon>
         </button>
-    </mat-toolbar-row>
 
-    <mat-toolbar-row [ngClass]="{'during-scroll': stickyToolbar}">
-        <div class="toolbar-left on-transition-fade">
-            <!-- Fab Button "Plus" -->
-            <button mat-fab class="head-button" *ngIf="plusButton && !editMode" (click)=clickPlusButton()>
-                <mat-icon>add</mat-icon>
-            </button>
+        <!-- Exit / Back button -->
+        <button mat-icon-button class="on-transition-fade" *ngIf="!nav && !editMode" (click)="onBackButton()">
+            <mat-icon>arrow_back</mat-icon>
+        </button>
 
-            <!-- Exit / Back button -->
-            <button mat-icon-button class="on-transition-fade" *ngIf="backButton && !editMode" (click)="onBackButton()">
-                <mat-icon>arrow_back</mat-icon>
-            </button>
+        <!-- Cancel edit button -->
+        <button mat-icon-button class="on-transition-fade" *ngIf="editMode" (click)="sendMainEvent()">
+            <mat-icon>close</mat-icon>
+        </button>
 
-            <!-- Cancel edit button -->
-            <button mat-icon-button class="on-transition-fade" *ngIf="editMode" (click)="toggleEditMode()">
-                <mat-icon>close</mat-icon>
-            </button>
-
-            <div class="toolbar-left-text">
-                <!-- Title slot -->
-                <ng-content select=".title-slot"></ng-content>
-            </div>
+        <div class="toolbar-left-text on-transition-fade">
+            <!-- Title slot -->
+            <ng-content select=".title-slot"></ng-content>
         </div>
-        <div class="toolbar-right on-transition-fade" [ngClass]="{'toolbar-right-scroll': stickyToolbar, 'toolbar-right-top': !stickyToolbar}">
+    </div>
+    <div class=spacer></div>
+    <div class="toolbar-right">
 
-            <!-- Extra controls slot -->
-            <div class="extra-controls-wrapper on-transition-fade">
-                <ng-content select=".extra-controls-slot"></ng-content>
-            </div>
-
-            <!-- Save button -->
-            <button mat-button *ngIf="editMode" (click)="save()">
-                <strong translate class="upper">Save</strong>
-            </button>
-
-            <!-- Edit button-->
-            <button mat-icon-button *ngIf="!editMode && allowEdit" (click)="toggleEditMode()">
-                <mat-icon>{{ editIcon }}</mat-icon>
-            </button>
-
-            <!-- Menu button slot -->
-            <ng-content *ngIf="!editMode" select=".menu-slot"></ng-content>
+        <!-- Extra controls slot -->
+        <div class="extra-controls-wrapper on-transition-fade">
+            <ng-content select=".extra-controls-slot"></ng-content>
         </div>
 
-    </mat-toolbar-row>
+        <!-- Main action button - desktop -->
+        <button mat-mini-fab color="accent" class="on-transition-fade" *ngIf="mainButton && !editMode && !vp.isMobile"
+            (click)="sendMainEvent()">
+            <mat-icon>{{ buttonIcon }}</mat-icon>
+        </button>
 
+        <!-- Save button -->
+        <button mat-button *ngIf="editMode" (click)="save()">
+            <strong translate class="upper">Save</strong>
+        </button>
+
+        <!-- Menu button slot -->
+        <ng-content class="on-transition-fade" *ngIf="!editMode" select=".menu-slot"></ng-content>
+    </div>
 </mat-toolbar>
 
-<!-- fake mat-toolbar to keep the distance when the real one gets a fixed position -->
-<div class="fake-bar" [ngClass]="{'hidden-bar': !stickyToolbar}"></div>
+<!-- Main action button - mobile-->
+<button mat-fab class="head-button on-transition-fade" *ngIf="mainButton && !editMode && vp.isMobile" (click)=sendMainEvent()>
+    <mat-icon>{{ buttonIcon }}</mat-icon>
+</button>

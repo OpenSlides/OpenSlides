@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
+import { BehaviorSubject } from 'rxjs';
 
 /**
  * Viewport Service
@@ -8,16 +9,15 @@ import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/l
  *
  * ## Example:
  *
- * Provide the service via constructor and just use it like
+ * Provide the service via constructor and just use it like this this
  *
  * ```html
  * <div *ngIf="!vp.isMobile">Will only be shown of not mobile</div>
  * ```
  * or
  * ```ts
- * if (this.vp.isMobile) {
- *     ...
- * }
+ * this.vp.isMobileSubject.subscribe(mobile => (this.isMobile = mobile));
+ *
  * ```
  */
 @Injectable({
@@ -25,9 +25,15 @@ import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/l
 })
 export class ViewportService {
     /**
-     * True if Viewport equals mobile or small resolution.
+     * Simple boolean to determine whether the client is in mobile view or not
+     * Use in HTML with automatic change detection
      */
-    private _isMobile = false;
+    public isMobile: boolean;
+
+    /**
+     * Returns a subject that contains whether the viewport os mobile or not
+     */
+    public isMobileSubject = new BehaviorSubject<boolean>(false);
 
     /**
      * Get the BreakpointObserver
@@ -45,14 +51,12 @@ export class ViewportService {
             .observe([Breakpoints.Small, Breakpoints.HandsetPortrait])
             .subscribe((state: BreakpointState) => {
                 if (state.matches) {
-                    this._isMobile = true;
+                    this.isMobile = true;
+                    this.isMobileSubject.next(true);
                 } else {
-                    this._isMobile = false;
+                    this.isMobile = false;
+                    this.isMobileSubject.next(false);
                 }
             });
-    }
-
-    public get isMobile(): boolean {
-        return this._isMobile;
     }
 }

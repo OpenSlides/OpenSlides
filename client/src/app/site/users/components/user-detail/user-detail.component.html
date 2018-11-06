@@ -1,4 +1,4 @@
-<os-head-bar [nav]="false" [backButton]=true [allowEdit]="isAllowed('manage')" [editMode]="editUser" (editEvent)="setEditMode($event)"
+<os-head-bar [mainButton]="isAllowed('manage')" buttonIcon="edit" [nav]="false" [editMode]="editUser" (mainEvent)="setEditMode(!editUser)"
     (saveEvent)="saveUser()">
 
     <!-- Title -->

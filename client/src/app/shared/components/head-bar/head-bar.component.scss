@@ -1,46 +1,26 @@
-.during-scroll {
+.head-button {
     position: fixed;
-    z-index: 1;
+    right: 25px;
+    bottom: 25px;
+}
+
+.sticky-toolbar {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0px;
+    z-index: 2;
 }
 
 .toolbar-left {
-    position: absolute;
-    display: inherit;
-
-    .head-button {
-        bottom: -30px;
-    }
-
+    display: contents;
     .toolbar-left-text {
-        margin: auto 0 5px 20px;
+        display: initial;
+        margin-left: 10px;
     }
 }
 
 .toolbar-right {
-    display: inherit;
-}
-
-.toolbar-right-scroll {
-    position: fixed;
-    right: 30px; // fixed and absolute somehow have different ideas of distance
-}
-
-.toolbar-right-top {
-    position: absolute;
-    right: 15px;
-}
-
-// to hide the first mat-toolbar-row while scrolling and the fake-bar while on top
-.hidden-bar {
-    display: none;
-    position: inline;
-}
-
-// fake bar to simulate the size of the other one, show it when the position changes to fixed
-.fake-bar {
-    width: 100%;
-    height: 120px; // height of two normal mat-toolbars
-    z-index: -1;
+    display: contents;
 }
 
 .extra-controls-wrapper {
