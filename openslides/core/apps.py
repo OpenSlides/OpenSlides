@@ -6,7 +6,7 @@ from django.apps import AppConfig
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models.signals import post_migrate
-from django.db.utils import OperationalError
+from django.db.utils import OperationalError, ProgrammingError
 
 from ..utils.projector import register_projector_elements
 
@@ -53,7 +53,7 @@ class CoreAppConfig(AppConfig):
         # Set constants
         try:
             set_constants(get_constants_from_apps())
-        except (ImproperlyConfigured, OperationalError):
+        except (ImproperlyConfigured, OperationalError, ProgrammingError):
             # Database is not loaded. This happens in tests and migrations.
             pass
 
@@ -81,7 +81,7 @@ class CoreAppConfig(AppConfig):
         # Sets the cache
         try:
             element_cache.ensure_cache()
-        except (ImproperlyConfigured, OperationalError):
+        except (ImproperlyConfigured, OperationalError, ProgrammingError):
             # This happens in the tests or in migrations. Do nothing
             pass
 
