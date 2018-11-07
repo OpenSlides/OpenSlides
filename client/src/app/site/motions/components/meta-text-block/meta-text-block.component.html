@@ -1,8 +1,14 @@
 <ng-container *ngIf="vp.isMobile ; then mobileView; else desktopView"></ng-container>
 
-<ng-template #title><ng-content select=".meta-text-block-title"></ng-content></ng-template>
-<ng-template #content><ng-content select=".meta-text-block-content"></ng-content></ng-template>
-<ng-template #actionRow><ng-content select=".meta-text-block-action-row"></ng-content></ng-template>
+<ng-template #title>
+    <ng-content select=".meta-text-block-title"></ng-content>
+</ng-template>
+<ng-template #content>
+    <ng-content select=".meta-text-block-content"></ng-content>
+</ng-template>
+<ng-template #actionRow>
+    <ng-content select=".meta-text-block-action-row"></ng-content>
+</ng-template>
 
 <ng-template #mobileView>
     <mat-expansion-panel>
@@ -42,4 +48,3 @@
         </mat-card-content>
     </mat-card>
 </ng-template>
-

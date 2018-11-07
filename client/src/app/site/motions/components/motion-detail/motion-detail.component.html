@@ -1,4 +1,4 @@
-<os-head-bar [nav]="false" [backButton]=true [allowEdit]="opCanEdit()" [editMode]="editMotion" (editEvent)="setEditMode($event)"
+<os-head-bar [mainButton]="opCanEdit()" buttonIcon="edit" [nav]="false" [editMode]="editMotion" (mainEvent)="setEditMode(!editMotion)"
     (saveEvent)="saveMotion()">
 
     <!-- Title -->

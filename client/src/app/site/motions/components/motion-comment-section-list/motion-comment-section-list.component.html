@@ -1,17 +1,8 @@
-<os-head-bar [nav]="false" [backButton]=true [allowEdit]="false">
-
+<os-head-bar [nav]="false" [mainButton]="true" (mainEvent)="onPlusButton()">
     <!-- Title -->
     <div class="title-slot">
         <h2 translate>Comments</h2>
     </div>
-
-    <!-- Use the menu slot for an add button -->
-    <div class="menu-slot">
-        <button type="button" mat-icon-button (click)="onPlusButton()">
-            <mat-icon>add</mat-icon>
-        </button>
-    </div>
-
 </os-head-bar>
 
 <div class="head-spacer"></div>

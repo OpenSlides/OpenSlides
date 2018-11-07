@@ -1,5 +1,4 @@
-<os-head-bar [nav]="false" [backButton]=true [allowEdit]="true" [editMode]="editGroup" editIcon="add" (editEvent)="setEditMode($event)"
-    (saveEvent)="saveGroup()">
+<os-head-bar [mainButton]="true" [nav]="false" [editMode]="editGroup" (mainEvent)="setEditMode(!editGroup)" (saveEvent)="saveGroup()">
 
     <!-- Title -->
     <div class="title-slot">
