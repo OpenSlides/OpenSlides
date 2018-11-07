@@ -6,7 +6,7 @@ import { PersonalNote } from '../../shared/models/users/personal-note';
 export const UsersAppConfig: AppConfig = {
     name: 'users',
     models: [
-        { collectionString: 'users/user', model: User },
+        { collectionString: 'users/user', model: User, searchOrder: 4 },
         { collectionString: 'users/group', model: Group },
         { collectionString: 'users/personal-note', model: PersonalNote }
     ],

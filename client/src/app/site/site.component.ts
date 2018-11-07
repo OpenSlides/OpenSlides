@@ -1,17 +1,18 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-
-import { AuthService } from 'app/core/services/auth.service';
-import { OperatorService } from 'app/core/services/operator.service';
+import { FormGroup, FormControl } from '@angular/forms';
+import { MatDialog, MatSidenav } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
-import { BaseComponent } from 'app/base.component';
-import { pageTransition, navItemAnim } from 'app/shared/animations';
-import { MatDialog, MatSidenav } from '@angular/material';
+
+import { AuthService } from '../core/services/auth.service';
+import { OperatorService } from '../core/services/operator.service';
+import { BaseComponent } from '../base.component';
+import { pageTransition, navItemAnim } from '../shared/animations';
 import { ViewportService } from '../core/services/viewport.service';
 import { MainMenuService } from '../core/services/main-menu.service';
-import { OpenSlidesStatusService } from 'app/core/services/openslides-status.service';
-import { TimeTravelService } from 'app/core/services/time-travel.service';
+import { OpenSlidesStatusService } from '../core/services/openslides-status.service';
+import { TimeTravelService } from '../core/services/time-travel.service';
 
 @Component({
     selector: 'os-site',
@@ -47,6 +48,16 @@ export class SiteComponent extends BaseComponent implements OnInit {
     private swipeTime?: number;
 
     /**
+     * Holds the typed search query.
+     */
+    public searchform: FormGroup;
+
+    /**
+     * Flag, if the search bar shoud be shown.
+     */
+    public showSearch: boolean;
+
+    /**
      * Constructor
      *
      * @param authService
@@ -79,6 +90,14 @@ export class SiteComponent extends BaseComponent implements OnInit {
                 this.username = translate.instant('Guest');
             }
             this.isLoggedIn = !!user;
+        });
+
+        this.searchform = new FormGroup({ query: new FormControl([]) });
+
+        this.router.events.subscribe(event => {
+            if (event instanceof NavigationEnd) {
+                this.showSearch = !this.router.url.startsWith('/search');
+            }
         });
     }
 
@@ -183,5 +202,14 @@ export class SiteComponent extends BaseComponent implements OnInit {
                 this.toggleSideNav();
             }
         }
+    }
+
+    /**
+     * Handler for the search bar
+     */
+    public search(): void {
+        const query = this.searchform.get('query').value;
+        this.searchform.reset();
+        this.router.navigate(['/search'], { queryParams: { query: query } });
     }
 }

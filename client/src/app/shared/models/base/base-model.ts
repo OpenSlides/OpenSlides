@@ -21,16 +21,35 @@ export abstract class BaseModel<T = object> extends OpenSlidesComponent
     protected _collectionString: string;
 
     /**
+     * returns the collectionString.
+     *
+     * The server and the dataStore use it to identify the collection.
+     */
+    public get collectionString(): string {
+        return this._collectionString;
+    }
+
+    /**
+     * Children should also have a verbose name for generic display purposes
+     */
+    protected _verboseName: string;
+
+    /**
      * force children of BaseModel to have an id
      */
     public abstract id: number;
 
     /**
      * constructor that calls super from parent class
+     *
+     * @param collectionString
+     * @param verboseName
+     * @param input
      */
-    protected constructor(collectionString: string, input?: any) {
+    protected constructor(collectionString: string, verboseName: string, input?: any) {
         super();
         this._collectionString = collectionString;
+        this._verboseName = verboseName;
 
         if (input) {
             this.changeNullValuesToUndef(input);
@@ -68,12 +87,19 @@ export abstract class BaseModel<T = object> extends OpenSlidesComponent
     }
 
     /**
-     * returns the collectionString.
+     * Returns the verbose name. Makes it plural by adding a 's'.
      *
-     * The server and the dataStore use it to identify the collection.
+     * @param plural If the name should be plural
+     * @returns the verbose name of the model
      */
-    public get collectionString(): string {
-        return this._collectionString;
+    public getVerboseName(plural: boolean = false): string {
+        if (plural) {
+            return this._verboseName + 's'; // I love english. This works for all our models (participantS, electionS,
+            // topicS, motionS, (media)fileS, motion blockS, commentS, personal noteS, projectorS, messageS, countdownS, ...)
+            // Just categorIES need to overwrite this...
+        } else {
+            return this._verboseName
+        }
     }
 
     /**

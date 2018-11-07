@@ -16,7 +16,7 @@ export class Projector extends BaseModel<Projector> {
     public projectiondefaults: Object[];
 
     public constructor(input?: any) {
-        super('core/projector', input);
+        super('core/projector', 'Projector', input);
     }
 
     public getTitle(): string {

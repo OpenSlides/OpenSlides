@@ -17,7 +17,7 @@ export class MotionChangeReco extends BaseModel<MotionChangeReco> {
     public creation_time: string;
 
     public constructor(input?: any) {
-        super('motions/motion-change-recommendation', input);
+        super('motions/motion-change-recommendation', 'Change recommendation', input);
     }
 
     public getTitle(): string {

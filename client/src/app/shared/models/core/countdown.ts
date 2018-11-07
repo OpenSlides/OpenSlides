@@ -12,7 +12,7 @@ export class Countdown extends ProjectableBaseModel {
     public running: boolean;
 
     public constructor(input?: any) {
-        super('core/countdown');
+        super('core/countdown', 'Countdown', input);
     }
 
     public getTitle(): string {

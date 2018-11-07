@@ -4,7 +4,7 @@ import { Topic } from '../../shared/models/topics/topic';
 
 export const AgendaAppConfig: AppConfig = {
     name: 'agenda',
-    models: [{ collectionString: 'agenda/item', model: Item }, { collectionString: 'topics/topic', model: Topic }],
+    models: [{ collectionString: 'agenda/item', model: Item }, { collectionString: 'topics/topic', model: Topic, searchOrder: 1 }],
     mainMenuEntries: [
         {
             route: '/agenda',

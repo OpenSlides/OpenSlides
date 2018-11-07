@@ -1,6 +1,7 @@
 import { AssignmentUser } from './assignment-user';
 import { Poll } from './poll';
 import { AgendaBaseModel } from '../base/agenda-base-model';
+import { SearchRepresentation } from '../../../core/services/search.service';
 
 /**
  * Representation of an assignment.
@@ -19,7 +20,7 @@ export class Assignment extends AgendaBaseModel {
     public tags_id: number[];
 
     public constructor(input?: any) {
-        super('assignments/assignment', 'Assignment', input);
+        super('assignments/assignment', 'Election', input);
     }
 
     public get candidateIds(): number[] {
@@ -50,6 +51,10 @@ export class Assignment extends AgendaBaseModel {
 
     public getTitle(): string {
         return this.title;
+    }
+
+    public formatForSearch(): SearchRepresentation {
+        return [this.title, this.description];
     }
 
     public getDetailStateURL(): string {

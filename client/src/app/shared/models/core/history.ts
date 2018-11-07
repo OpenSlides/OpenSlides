@@ -30,7 +30,7 @@ export class History extends BaseModel {
     }
 
     public constructor(input?: any) {
-        super('core/history', input);
+        super('core/history', 'History', input);
     }
 
     public getTitle(): string {

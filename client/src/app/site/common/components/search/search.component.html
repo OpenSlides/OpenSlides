@@ -1,0 +1,58 @@
+<os-head-bar [nav]="false" [goBack]="true">
+    <!-- Title -->
+    <div class="title-slot"><h2 translate>Search results</h2></div>
+    <!-- Menu -->
+    <div class="menu-slot">
+        <button type="button" mat-icon-button [matMenuTriggerFor]="menu"><mat-icon>more_vert</mat-icon></button>
+    </div>
+</os-head-bar>
+
+<!-- search-field -->
+<div class="search-field">
+    <form [formGroup]="quickSearchform">
+        <mat-form-field>
+            <input matInput formControlName="query" (keyup)="quickSearch()" />
+            <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+    </form>
+</div>
+
+<mat-menu #menu="matMenu">
+    <button mat-menu-item *ngFor="let registeredModel of registeredModels" (click)="toggleModel(registeredModel)">
+        <mat-checkbox [checked]="registeredModel.enabled" (click)="$event.preventDefault()">
+            <span translate>{{ registeredModel.verboseNamePlural }}</span>
+        </mat-checkbox>
+    </button>
+</mat-menu>
+
+<div class="noSearchResults" *ngIf="searchResultCount === 0">
+    <span translate>No search result found for</span> "{{ query }}"
+</div>
+
+<ng-container *ngIf="searchResultCount > 0">
+    <h3>
+        <span translate>Found</span> {{ searchResultCount }}
+        <span *ngIf="searchResultCount === 1" translate>result</span>
+        <span *ngIf="searchResultCount > 1" translate>results</span>
+    </h3>
+
+    <ng-container *ngFor="let searchResult of searchResults">
+        <mat-card *ngIf="searchResult.models.length > 0">
+            <mat-card-title>
+                {{ searchResult.models.length }} {{ searchResult.verboseName | translate }}
+            </mat-card-title>
+            <mat-card-content>
+                <mat-list>
+                    <mat-list-item *ngFor="let model of searchResult.models">
+                        <a
+                            [routerLink]="model.getDetailStateURL()"
+                            target="{{ searchResult.collectionString === 'mediafiles/mediafile' ? '_blank' : '' }}"
+                        >
+                            {{ model.getTitle() }}
+                        </a>
+                    </mat-list-item>
+                </mat-list>
+            </mat-card-content>
+        </mat-card>
+    </ng-container>
+</ng-container>

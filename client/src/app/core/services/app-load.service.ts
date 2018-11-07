@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { plugins } from '../../../plugins';
 import { CommonAppConfig } from '../../site/common/common.config';
-import { AppConfig } from '../../site/base/app-config';
+import { AppConfig, SearchableModelEntry, ModelEntry } from '../../site/base/app-config';
 import { CollectionStringModelMapperService } from './collectionStringModelMapper.service';
 import { MediafileAppConfig } from '../../site/mediafiles/mediafile.config';
 import { MotionsAppConfig } from '../../site/motions/motions.config';
@@ -12,6 +12,8 @@ import { UsersAppConfig } from '../../site/users/users.config';
 import { TagAppConfig } from '../../site/tags/tag.config';
 import { MainMenuService } from './main-menu.service';
 import { HistoryAppConfig } from 'app/site/history/history.config';
+import { SearchService } from './search.service';
+import { isSearchable } from '../../shared/models/base/searchable';
 
 /**
  * A list of all app configurations of all delivered apps.
@@ -29,15 +31,23 @@ const appConfigs: AppConfig[] = [
 ];
 
 /**
- * Handles all incoming and outgoing notify messages via {@link WebsocketService}.
+ * Handles loading of all apps during the bootup process.
  */
 @Injectable({
     providedIn: 'root'
 })
 export class AppLoadService {
+    /**
+     * Constructor.
+     *
+     * @param modelMapper
+     * @param mainMenuService
+     * @param searchService
+     */
     public constructor(
         private modelMapper: CollectionStringModelMapperService,
-        private mainMenuService: MainMenuService
+        private mainMenuService: MainMenuService,
+        private searchService: SearchService
     ) {}
 
     public async loadApps(): Promise<void> {
@@ -52,11 +62,27 @@ export class AppLoadService {
             if (config.models) {
                 config.models.forEach(entry => {
                     this.modelMapper.registerCollectionElement(entry.collectionString, entry.model);
+                    if (this.isSearchableModelEntry(entry)) {
+                        this.searchService.registerModel(entry.collectionString, entry.model, entry.searchOrder);
+                    }
                 });
             }
             if (config.mainMenuEntries) {
                 this.mainMenuService.registerEntries(config.mainMenuEntries);
             }
         });
+    }
+
+    private isSearchableModelEntry(entry: ModelEntry | SearchableModelEntry): entry is SearchableModelEntry {
+        if ((<SearchableModelEntry>entry).searchOrder !== undefined) {
+            // We need to double check, because Typescipt cannot check contructors. If typescript could differentiate
+            // between  (ModelConstructor<BaseModel>) and (new (...args: any[]) => (BaseModel & Searchable)), we would not have
+            // to check if the result of the contructor (the model instance) is really a searchable.
+            if (!isSearchable(new entry.model())) {
+                throw Error(`Wrong configuration for ${entry.collectionString}: you gave a searchOrder, but the model is not searchable.`);
+            }
+            return true;
+        }
+        return false;
     }
 }

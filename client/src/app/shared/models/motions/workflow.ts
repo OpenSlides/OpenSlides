@@ -12,7 +12,7 @@ export class Workflow extends BaseModel<Workflow> {
     public first_state: number;
 
     public constructor(input?: any) {
-        super('motions/workflow', input);
+        super('motions/workflow', 'Workflow', input);
     }
 
     /**

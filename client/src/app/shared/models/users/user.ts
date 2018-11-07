@@ -1,10 +1,12 @@
 import { ProjectableBaseModel } from '../base/projectable-base-model';
+import { Searchable } from '../base/searchable';
+import { SearchRepresentation } from '../../../core/services/search.service';
 
 /**
  * Representation of a user in contrast to the operator.
  * @ignore
  */
-export class User extends ProjectableBaseModel {
+export class User extends ProjectableBaseModel implements Searchable {
     public id: number;
     public username: string;
     public title: string;
@@ -23,7 +25,7 @@ export class User extends ProjectableBaseModel {
     public default_password: string;
 
     public constructor(input?: any) {
-        super('users/user', input);
+        super('users/user', 'Participant', input);
     }
 
     public get full_name(): string {
@@ -87,5 +89,18 @@ export class User extends ProjectableBaseModel {
 
     public getListViewTitle(): string {
         return this.short_name;
+    }
+
+    public getDetailStateURL(): string {
+        return `/users/${this.id}`;
+    }
+
+    /**
+     * Formats the category for search
+     *
+     * @override
+     */
+    public formatForSearch(): SearchRepresentation {
+        return [this.title, this.first_name, this.last_name, this.structure_level, this.number];
     }
 }

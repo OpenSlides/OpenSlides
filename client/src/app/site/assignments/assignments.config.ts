@@ -3,7 +3,7 @@ import { Assignment } from '../../shared/models/assignments/assignment';
 
 export const AssignmentsAppConfig: AppConfig = {
     name: 'assignments',
-    models: [{ collectionString: 'assignments/assignment', model: Assignment }],
+    models: [{ collectionString: 'assignments/assignment', model: Assignment, searchOrder: 3 }],
     mainMenuEntries: [
         {
             route: '/assignments',

@@ -10,7 +10,7 @@ export class Group extends BaseModel<Group> {
     public permissions: string[];
 
     public constructor(input?: any) {
-        super('users/group', input);
+        super('users/group', 'Group', input);
         if (!input) {
             // permissions are required for new groups
             this.permissions = [];

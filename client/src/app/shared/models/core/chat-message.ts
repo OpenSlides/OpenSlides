@@ -11,7 +11,7 @@ export class ChatMessage extends BaseModel<ChatMessage> {
     public user_id: number;
 
     public constructor(input?: any) {
-        super('core/chat-message', input);
+        super('core/chat-message', 'Chatmessage', input);
     }
 
     public getTitle(): string {

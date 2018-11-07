@@ -41,7 +41,7 @@ export class Item extends ProjectableBaseModel {
     public parent_id: number;
 
     public constructor(input?: any) {
-        super('agenda/item', input);
+        super('agenda/item', 'Item', input);
     }
 
     public deserialize(input: any): void {

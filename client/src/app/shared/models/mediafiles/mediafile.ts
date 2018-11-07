@@ -1,11 +1,12 @@
 import { File } from './file';
 import { ProjectableBaseModel } from '../base/projectable-base-model';
+import { Searchable } from '../base/searchable';
 
 /**
  * Representation of MediaFile. Has the nested property "File"
  * @ignore
  */
-export class Mediafile extends ProjectableBaseModel {
+export class Mediafile extends ProjectableBaseModel implements Searchable {
     public id: number;
     public title: string;
     public mediafile: File;
@@ -16,7 +17,7 @@ export class Mediafile extends ProjectableBaseModel {
     public timestamp: string;
 
     public constructor(input?: any) {
-        super('mediafiles/mediafile', input);
+        super('mediafiles/mediafile', 'Mediafile', input);
     }
 
     public deserialize(input: any): void {
@@ -35,5 +36,13 @@ export class Mediafile extends ProjectableBaseModel {
 
     public getTitle(): string {
         return this.title;
+    }
+
+    public formatForSearch(): string[] {
+        return [this.title, this.mediafile.name];
+    }
+
+    public getDetailStateURL(): string {
+        return this.getDownloadUrl();
     }
 }

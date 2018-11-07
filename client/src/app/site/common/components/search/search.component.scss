@@ -1,0 +1,20 @@
+.search-field {
+    width: 100%;
+
+    form {
+        width: 80%;
+        margin: 8px auto;
+    }
+
+    mat-form-field {
+        width: 100%;
+    }
+}
+
+.noSearchResults {
+    text-align: center;
+}
+
+mat-card {
+    margin-bottom: 10px;
+}
