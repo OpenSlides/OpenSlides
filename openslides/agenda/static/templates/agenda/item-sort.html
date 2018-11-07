@@ -33,10 +33,10 @@
 
 <!-- Nested node template -->
 <script type="text/ng-template" id="nodes_renderer.html">
-  <div ui-tree-handle ng-if="!item.item.is_hidden">
+  <div ui-tree-handle ng-if="item.item.is_public">
     {{ item.item.getListViewTitle() }}
   </div>
-  <div ui-tree-handle ng-if="item.item.is_hidden && showInternalItems" class="internal">
+  <div ui-tree-handle ng-if="!item.item.is_public && showInternalItems" class="internal">
     <i class="fa fa-ban"></i> &nbsp;
     {{ item.item.getListViewTitle() }}
   </div>
