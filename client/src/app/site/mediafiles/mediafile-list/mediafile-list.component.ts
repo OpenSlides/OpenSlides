@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ViewMediafile } from '../models/view-mediafile';
 import { MediafileRepositoryService } from '../services/mediafile-repository.service';
 import { ListViewBaseComponent } from '../../base/list-view-base';
+import { MatSnackBar } from '@angular/material';
 
 /**
  * Lists all the uploaded files.
@@ -25,11 +26,12 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile>
      * @param translate
      */
     public constructor(
-        private repo: MediafileRepositoryService,
-        protected titleService: Title,
-        protected translate: TranslateService
+        titleService: Title,
+        translate: TranslateService,
+        matSnackBar: MatSnackBar,
+        private repo: MediafileRepositoryService
     ) {
-        super(titleService, translate);
+        super(titleService, translate, matSnackBar);
     }
 
     /**

@@ -1,11 +1,11 @@
 import { ViewChild } from '@angular/core';
-import { BaseComponent } from '../../base.component';
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
-import { MatTableDataSource, MatTable, MatSort, MatPaginator } from '@angular/material';
+import { MatTableDataSource, MatTable, MatSort, MatPaginator, MatSnackBar } from '@angular/material';
 import { BaseViewModel } from './base-view-model';
+import { BaseViewComponent } from './base-view';
 
-export abstract class ListViewBaseComponent<V extends BaseViewModel> extends BaseComponent {
+export abstract class ListViewBaseComponent<V extends BaseViewModel> extends BaseViewComponent {
     /**
      * The data source for a table. Requires to be initialised with a BaseViewModel
      */
@@ -33,9 +33,10 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel> extends Bas
      * Constructor for list view bases
      * @param titleService the title serivce
      * @param translate the translate service
+     * @param matSnackBar
      */
-    public constructor(titleService: Title, translate: TranslateService) {
-        super(titleService, translate);
+    public constructor(titleService: Title, translate: TranslateService, matSnackBar: MatSnackBar) {
+        super(titleService, translate, matSnackBar);
     }
 
     /**

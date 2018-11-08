@@ -54,17 +54,12 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<ViewCh
     }
 
     /**
-     * Given a change recommendation view object, a entry in the backend is created and the new
-     * change recommendation view object is returned (as an observable).
-     *
-     * @param {ViewChangeReco} view
-     * @deprecated Will not work with PR #3928. There will just be the id as response to create requests.
-     *  Two possibilities: Make a server change to still retrieve the created object or you have to wait for the
-     *  correct autoupdate.
+     * Given a change recommendation view object, a entry in the backend is created.
+     * @param view
+     * @returns The id of the created change recommendation
      */
     public async createByViewModel(view: ViewChangeReco): Promise<Identifiable> {
         return await this.dataSend.createModel(view.changeRecommendation);
-        // return new ViewChangeReco(cr);
     }
 
     /**

@@ -1,9 +1,12 @@
 import { Component, Inject } from '@angular/core';
 import { LineRange, ModificationType } from '../../services/diff.service';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ChangeRecommendationRepositoryService } from '../../services/change-recommendation-repository.service';
 import { ViewChangeReco } from '../../models/view-change-reco';
+import { BaseViewComponent } from '../../../base/base-view';
+import { Title } from '@angular/platform-browser';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Data that needs to be provided to the MotionChangeRecommendationComponent dialog
@@ -39,7 +42,7 @@ export interface MotionChangeRecommendationComponentData {
     templateUrl: './motion-change-recommendation.component.html',
     styleUrls: ['./motion-change-recommendation.component.scss']
 })
-export class MotionChangeRecommendationComponent {
+export class MotionChangeRecommendationComponent extends BaseViewComponent {
     /**
      * Determine if the change recommendation is edited
      */
@@ -86,10 +89,15 @@ export class MotionChangeRecommendationComponent {
 
     public constructor(
         @Inject(MAT_DIALOG_DATA) public data: MotionChangeRecommendationComponentData,
+        title: Title,
+        translate: TranslateService,
+        matSnackBar: MatSnackBar,
         private formBuilder: FormBuilder,
         private repo: ChangeRecommendationRepositoryService,
         private dialogRef: MatDialogRef<MotionChangeRecommendationComponent>
     ) {
+        super(title, translate, matSnackBar);
+
         this.editReco = data.editChangeRecommendation;
         this.newReco = data.newChangeRecommendation;
         this.changeReco = data.changeRecommendation;
@@ -116,14 +124,16 @@ export class MotionChangeRecommendationComponent {
             !this.contentForm.controls.public.value
         );
 
-        if (this.newReco) {
-            await this.repo.createByViewModel(this.changeReco);
-            this.dialogRef.close();
-            // @TODO Show an error message
-        } else {
-            await this.repo.update(this.changeReco.changeRecommendation, this.changeReco);
-            this.dialogRef.close();
-            // @TODO Show an error message
+        try {
+            if (this.newReco) {
+                await this.repo.createByViewModel(this.changeReco);
+                this.dialogRef.close();
+            } else {
+                await this.repo.update(this.changeReco.changeRecommendation, this.changeReco);
+                this.dialogRef.close();
+            }
+        } catch (e) {
+            this.raiseError(e);
         }
     }
 }

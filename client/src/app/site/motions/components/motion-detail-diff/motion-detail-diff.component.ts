@@ -1,16 +1,18 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output } from '@angular/core';
 import { ViewMotion } from '../../models/view-motion';
 import { ViewUnifiedChange, ViewUnifiedChangeType } from '../../models/view-unified-change';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
 import { MotionRepositoryService } from '../../services/motion-repository.service';
 import { LineRange, ModificationType } from '../../services/diff.service';
 import { ViewChangeReco } from '../../models/view-change-reco';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { ChangeRecommendationRepositoryService } from '../../services/change-recommendation-repository.service';
 import {
     MotionChangeRecommendationComponent,
     MotionChangeRecommendationComponentData
 } from '../motion-change-recommendation/motion-change-recommendation.component';
+import { BaseViewComponent } from '../../../base/base-view';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * This component displays the original motion text with the change blocks inside.
@@ -36,7 +38,7 @@ import {
     templateUrl: './motion-detail-diff.component.html',
     styleUrls: ['./motion-detail-diff.component.scss']
 })
-export class MotionDetailDiffComponent implements AfterViewInit {
+export class MotionDetailDiffComponent extends BaseViewComponent implements AfterViewInit {
     @Input()
     public motion: ViewMotion;
     @Input()
@@ -47,13 +49,28 @@ export class MotionDetailDiffComponent implements AfterViewInit {
     @Output()
     public createChangeRecommendation: EventEmitter<LineRange> = new EventEmitter<LineRange>();
 
+    /**
+     * @param title
+     * @param translate
+     * @param matSnackBar
+     * @param sanitizer
+     * @param motionRepo
+     * @param recoRepo
+     * @param dialogService
+     * @param el
+     */
     public constructor(
+        title: Title,
+        translate: TranslateService,
+        matSnackBar: MatSnackBar,
         private sanitizer: DomSanitizer,
         private motionRepo: MotionRepositoryService,
         private recoRepo: ChangeRecommendationRepositoryService,
         private dialogService: MatDialog,
         private el: ElementRef
-    ) {}
+    ) {
+        super(title, translate, matSnackBar);
+    }
 
     /**
      * Returns the part of this motion between two change objects
@@ -171,11 +188,15 @@ export class MotionDetailDiffComponent implements AfterViewInit {
      * @param {string} value
      */
     public async setAcceptanceValue(change: ViewChangeReco, value: string): Promise<void> {
-        if (value === 'accepted') {
-            await this.recoRepo.setAccepted(change);
-        }
-        if (value === 'rejected') {
-            await this.recoRepo.setRejected(change);
+        try {
+            if (value === 'accepted') {
+                await this.recoRepo.setAccepted(change);
+            }
+            if (value === 'rejected') {
+                await this.recoRepo.setRejected(change);
+            }
+        } catch (e) {
+            this.raiseError(e);
         }
     }
 
@@ -185,8 +206,8 @@ export class MotionDetailDiffComponent implements AfterViewInit {
      * @param {ViewChangeReco} change
      * @param {boolean} internal
      */
-    public async setInternal(change: ViewChangeReco, internal: boolean): Promise<void> {
-        await this.recoRepo.setInternal(change, internal);
+    public setInternal(change: ViewChangeReco, internal: boolean): void {
+        this.recoRepo.setInternal(change, internal).then(null, this.raiseError);
     }
 
     /**
@@ -196,10 +217,10 @@ export class MotionDetailDiffComponent implements AfterViewInit {
      * @param {ViewChangeReco} reco
      * @param {MouseEvent} $event
      */
-    public async deleteChangeRecommendation(reco: ViewChangeReco, $event: MouseEvent): Promise<void> {
+    public deleteChangeRecommendation(reco: ViewChangeReco, $event: MouseEvent): void {
         $event.stopPropagation();
         $event.preventDefault();
-        await this.recoRepo.delete(reco);
+        this.recoRepo.delete(reco).then(null, this.raiseError);
     }
 
     /**

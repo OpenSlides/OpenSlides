@@ -7,6 +7,7 @@ import { TagRepositoryService } from '../../services/tag-repository.service';
 import { ViewTag } from '../../models/view-tag';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { PromptService } from '../../../../core/services/prompt.service';
+import { MatSnackBar } from '@angular/material';
 
 /**
  * Listview for the complete lsit of available Tags
@@ -32,15 +33,18 @@ export class TagListComponent extends ListViewBaseComponent<ViewTag> implements 
      * Constructor.
      * @param titleService
      * @param translate
-     * @param repo the repository
+     * @param matSnackBar
+     * @param repo the tag repository
+     * @param promptService
      */
     public constructor(
         titleService: Title,
         translate: TranslateService,
+        matSnackBar: MatSnackBar,
         private repo: TagRepositoryService,
         private promptService: PromptService
     ) {
-        super(titleService, translate);
+        super(titleService, translate, matSnackBar);
     }
 
     /**
@@ -70,26 +74,26 @@ export class TagListComponent extends ListViewBaseComponent<ViewTag> implements 
     /**
      * Saves a newly created tag.
      */
-    public async submitNewTag(): Promise<void> {
+    public submitNewTag(): void {
         if (!this.tagForm.value || !this.tagForm.valid) {
             return;
         }
-        await this.repo.create(this.tagForm.value);
-        this.tagForm.reset();
-        this.cancelEditing();
+        this.repo.create(this.tagForm.value).then(() => {
+            this.tagForm.reset();
+            this.cancelEditing();
+        }, this.raiseError);
     }
 
     /**
      * Saves an edited tag.
      */
-    public async submitEditedTag(): Promise<void> {
+    public submitEditedTag(): void {
         if (!this.tagForm.value || !this.tagForm.valid) {
             return;
         }
         const updateData = new Tag({ name: this.tagForm.value.name });
 
-        await this.repo.update(updateData, this.selectedTag);
-        this.cancelEditing();
+        this.repo.update(updateData, this.selectedTag).then(() => this.cancelEditing(), this.raiseError);
     }
 
     /**
@@ -98,11 +102,13 @@ export class TagListComponent extends ListViewBaseComponent<ViewTag> implements 
     public async deleteSelectedTag(): Promise<void> {
         const content = this.translate.instant('Delete') + ` ${this.selectedTag.name}?`;
         if (await this.promptService.open(this.translate.instant('Are you sure?'), content)) {
-            await this.repo.delete(this.selectedTag);
-            this.cancelEditing();
+            this.repo.delete(this.selectedTag).then(() => this.cancelEditing(), this.raiseError);
         }
     }
 
+    /**
+     * Canceles the editing
+     */
     public cancelEditing(): void {
         this.newTag = false;
         this.editTag = false;
@@ -126,6 +132,11 @@ export class TagListComponent extends ListViewBaseComponent<ViewTag> implements 
             this.cancelEditing();
         }
     }
+
+    /**
+     * Handles keyboard events. On enter, the editing is canceled.
+     * @param event
+     */
     public keyDownFunction(event: KeyboardEvent): void {
         if (event.keyCode === 27) {
             this.cancelEditing();

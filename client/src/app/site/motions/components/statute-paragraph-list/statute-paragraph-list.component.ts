@@ -3,12 +3,13 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseComponent } from '../../../../base.component';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { PromptService } from '../../../../core/services/prompt.service';
 import { StatuteParagraph } from '../../../../shared/models/motions/statute-paragraph';
 import { ViewStatuteParagraph } from '../../models/view-statute-paragraph';
 import { StatuteParagraphRepositoryService } from '../../services/statute-paragraph-repository.service';
+import { BaseViewComponent } from '../../../base/base-view';
+import { MatSnackBar } from '@angular/material';
 
 /**
  * List view for the statute paragraphs.
@@ -18,7 +19,7 @@ import { StatuteParagraphRepositoryService } from '../../services/statute-paragr
     templateUrl: './statute-paragraph-list.component.html',
     styleUrls: ['./statute-paragraph-list.component.scss']
 })
-export class StatuteParagraphListComponent extends BaseComponent implements OnInit {
+export class StatuteParagraphListComponent extends BaseViewComponent implements OnInit {
     public statuteParagraphToCreate: StatuteParagraph | null;
 
     /**
@@ -40,17 +41,21 @@ export class StatuteParagraphListComponent extends BaseComponent implements OnIn
      * The usual component constructor
      * @param titleService
      * @param translate
+     * @param matSnackBar
      * @param repo
      * @param formBuilder
+     * @param promptService
      */
     public constructor(
-        protected titleService: Title,
-        protected translate: TranslateService,
+        titleService: Title,
+        translate: TranslateService,
+        matSnackBar: MatSnackBar,
         private repo: StatuteParagraphRepositoryService,
         private formBuilder: FormBuilder,
         private promptService: PromptService
     ) {
-        super(titleService, translate);
+        super(titleService, translate, matSnackBar);
+
         const form = {
             title: ['', Validators.required],
             text: ['', Validators.required]
@@ -85,11 +90,15 @@ export class StatuteParagraphListComponent extends BaseComponent implements OnIn
         }
     }
 
-    public async create(): Promise<void> {
+    /**
+     * Handler when clicking on create to create a new statute paragraph
+     */
+    public create(): void {
         if (this.createForm.valid) {
             this.statuteParagraphToCreate.patchValues(this.createForm.value as StatuteParagraph);
-            await this.repo.create(this.statuteParagraphToCreate);
-            this.statuteParagraphToCreate = null;
+            this.repo.create(this.statuteParagraphToCreate).then(() => {
+                this.statuteParagraphToCreate = null;
+            }, this.raiseError);
         }
     }
 
@@ -107,23 +116,25 @@ export class StatuteParagraphListComponent extends BaseComponent implements OnIn
     }
 
     /**
-     * Saves the statute paragrpah
+     * Saves the statute paragraph
+     * @param viewStatuteParagraph The statute paragraph to save
      */
-    public async onSaveButton(viewStatuteParagraph: ViewStatuteParagraph): Promise<void> {
+    public onSaveButton(viewStatuteParagraph: ViewStatuteParagraph): void {
         if (this.updateForm.valid) {
-            await this.repo.update(this.updateForm.value as Partial<StatuteParagraph>, viewStatuteParagraph);
-            this.openId = this.editId = null;
+            this.repo.update(this.updateForm.value as Partial<StatuteParagraph>, viewStatuteParagraph).then(() => {
+                this.openId = this.editId = null;
+            }, this.raiseError);
         }
     }
 
     /**
-     * is executed, when the delete button is pressed
+     * Is executed, when the delete button is pressed
+     * @param viewStatuteParagraph The statute paragraph to delete
      */
     public async onDeleteButton(viewStatuteParagraph: ViewStatuteParagraph): Promise<void> {
         const content = this.translate.instant('Delete') + ` ${viewStatuteParagraph.title}?`;
         if (await this.promptService.open('Are you sure?', content)) {
-            await this.repo.delete(viewStatuteParagraph);
-            this.openId = this.editId = null;
+            this.repo.delete(viewStatuteParagraph).then(() => (this.openId = this.editId = null), this.raiseError);
         }
     }
 

@@ -3,7 +3,6 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseComponent } from '../../../../base.component';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MotionCommentSection } from '../../../../shared/models/motions/motion-comment-section';
 import { ViewMotionCommentSection } from '../../models/view-motion-comment-section';
@@ -12,6 +11,8 @@ import { PromptService } from '../../../../core/services/prompt.service';
 import { BehaviorSubject } from 'rxjs';
 import { Group } from '../../../../shared/models/users/group';
 import { DataStoreService } from '../../../../core/services/data-store.service';
+import { BaseViewComponent } from '../../../base/base-view';
+import { MatSnackBar } from '@angular/material';
 
 /**
  * List view for the categories.
@@ -21,7 +22,7 @@ import { DataStoreService } from '../../../../core/services/data-store.service';
     templateUrl: './motion-comment-section-list.component.html',
     styleUrls: ['./motion-comment-section-list.component.scss']
 })
-export class MotionCommentSectionListComponent extends BaseComponent implements OnInit {
+export class MotionCommentSectionListComponent extends BaseViewComponent implements OnInit {
     public commentSectionToCreate: MotionCommentSection | null;
 
     /**
@@ -45,18 +46,23 @@ export class MotionCommentSectionListComponent extends BaseComponent implements 
      * The usual component constructor
      * @param titleService
      * @param translate
+     * @param matSnackBar
      * @param repo
      * @param formBuilder
+     * @param promptService
+     * @param DS
      */
     public constructor(
-        protected titleService: Title,
-        protected translate: TranslateService,
+        titleService: Title,
+        translate: TranslateService,
+        matSnackBar: MatSnackBar,
         private repo: MotionCommentSectionRepositoryService,
         private formBuilder: FormBuilder,
         private promptService: PromptService,
         private DS: DataStoreService
     ) {
-        super(titleService, translate);
+        super(titleService, translate, matSnackBar);
+
         const form = {
             name: ['', Validators.required],
             read_groups_id: [[]],
@@ -98,7 +104,7 @@ export class MotionCommentSectionListComponent extends BaseComponent implements 
     }
 
     /**
-     * Add a new Section.
+     * Opens the create form.
      */
     public onPlusButton(): void {
         if (!this.commentSectionToCreate) {
@@ -111,11 +117,15 @@ export class MotionCommentSectionListComponent extends BaseComponent implements 
         }
     }
 
-    public async create(): Promise<void> {
+    /**
+     * Creates the comment section from the create form.
+     */
+    public create(): void {
         if (this.createForm.valid) {
             this.commentSectionToCreate.patchValues(this.createForm.value as MotionCommentSection);
-            await this.repo.create(this.commentSectionToCreate);
-            this.commentSectionToCreate = null;
+            this.repo
+                .create(this.commentSectionToCreate)
+                .then(() => (this.commentSectionToCreate = null), this.raiseError);
         }
     }
 
@@ -135,22 +145,24 @@ export class MotionCommentSectionListComponent extends BaseComponent implements 
 
     /**
      * Saves the categories
+     * @param viewSection The section to save
      */
-    public async onSaveButton(viewSection: ViewMotionCommentSection): Promise<void> {
+    public onSaveButton(viewSection: ViewMotionCommentSection): void {
         if (this.updateForm.valid) {
-            await this.repo.update(this.updateForm.value as Partial<MotionCommentSection>, viewSection);
-            this.openId = this.editId = null;
+            this.repo.update(this.updateForm.value as Partial<MotionCommentSection>, viewSection).then(() => {
+                this.openId = this.editId = null;
+            }, this.raiseError);
         }
     }
 
     /**
      * is executed, when the delete button is pressed
+     * @param viewSection The section to delete
      */
     public async onDeleteButton(viewSection: ViewMotionCommentSection): Promise<void> {
         const content = this.translate.instant('Delete') + ` ${viewSection.name}?`;
         if (await this.promptService.open('Are you sure?', content)) {
-            await this.repo.delete(viewSection);
-            this.openId = this.editId = null;
+            this.repo.delete(viewSection).then(() => (this.openId = this.editId = null), this.raiseError);
         }
     }
 
