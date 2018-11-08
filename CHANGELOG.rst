@@ -17,6 +17,7 @@ Bugfixes:
    html tags for old and new text) [#3942].
  - Fixed motion/amendment diff bug: does not delete a paragraph/list item
    before an new one was inserted [#3943, #3946].
+ - Allow to hide internal items in agenda sort view [#3992].
 
 
 Version 2.3 (2018-09-20)
