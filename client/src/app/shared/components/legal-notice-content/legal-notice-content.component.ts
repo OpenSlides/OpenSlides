@@ -55,7 +55,7 @@ interface VersionResponse {
 }
 
 /**
- * Shared component to hold the content of the Legal Notice.
+ * Shared component to hold the content of the Legal notice.
  * Used in login and site container.
  */
 @Component({

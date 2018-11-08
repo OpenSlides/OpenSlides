@@ -19,11 +19,11 @@
                 </a>
                 <a *ngIf="isLoggedIn" (click)='editProfile()' mat-list-item>
                     <mat-icon>person</mat-icon>
-                    <span translate>Edit Profile</span>
+                    <span translate>Edit profile</span>
                 </a>
                 <a *ngIf="isLoggedIn" (click)='changePassword()' mat-list-item>
                     <mat-icon>vpn_key</mat-icon>
-                    <span translate>Change Password</span>
+                    <span translate>Change password</span>
                 </a>
                 <mat-divider></mat-divider>
                 <a *ngIf="isLoggedIn" (click)='logout()' mat-list-item>
@@ -40,7 +40,7 @@
         <mat-menu #languageMenu="matMenu">
             <button mat-menu-item (click)='selectLang("en")' translate>English</button>
             <button mat-menu-item (click)='selectLang("de")' translate>German</button>
-            <button mat-menu-item (click)='selectLang("fr")' translate>French</button>
+            <button mat-menu-item (click)='selectLang("cs")' translate>Czech</button>
         </mat-menu>
 
         <!-- navigation -->
@@ -49,7 +49,7 @@
                 <a [@navItemAnim] *osPerms="entry.permission" mat-list-item (click)='toggleSideNav()' [routerLink]='entry.route'
                     routerLinkActive='active' [routerLinkActiveOptions]="{exact: entry.route === '/'}">
                     <mat-icon>{{ entry.icon }}</mat-icon>
-                    <span translate>{{ entry.displayName | translate}}</span>
+                    <span>{{ entry.displayName | translate}}</span>
 
                 </a>
             </span>

@@ -41,13 +41,13 @@
 
             <!-- First name -->
             <mat-form-field class='form30 distance force-min-with' *ngIf='user.first_name || editUser && isAllowed("manage")'>
-                <input type='text' matInput placeholder='{{"First Name" | translate}}' formControlName='first_name'
+                <input type='text' matInput placeholder='{{"Given name" | translate}}' formControlName='first_name'
                     [value]='user.first_name'>
             </mat-form-field>
 
             <!-- Last name -->
             <mat-form-field class='form30  force-min-with' *ngIf='user.last_name || editUser && isAllowed("manage")'>
-                <input type='text' matInput placeholder='{{"Last Name" | translate}}' formControlName='last_name'
+                <input type='text' matInput placeholder='{{"Surname" | translate}}' formControlName='last_name'
                     [value]='user.last_name'>
             </mat-form-field>
         </div>
@@ -55,7 +55,7 @@
         <div *ngIf='isAllowed("seePersonal")'>
             <!-- E-Mail -->
             <mat-form-field class='form100' *ngIf="user.email || editUser">
-                <input type='email' matInput placeholder='{{"EMail" | translate}}' name="email" formControlName='email'
+                <input type='email' matInput placeholder='{{"Email" | translate}}' name="email" formControlName='email'
                     [value]='user.email'>
                 <mat-error *ngIf="personalInfoForm.get('email').hasError('email')">
                     Please enter a valid email address
@@ -66,13 +66,13 @@
         <div>
             <!-- Strucuture Level -->
             <mat-form-field class='form70 distance' *ngIf='user.structure_level || editUser && isAllowed("manage")'>
-                <input type='text' matInput placeholder='{{"Structure Level" | translate}}' formControlName='structure_level'
+                <input type='text' matInput placeholder='{{"Structure level" | translate}}' formControlName='structure_level'
                     [value]='user.structure_level'>
             </mat-form-field>
 
             <!-- Partizipant Number -->
             <mat-form-field class='form20 force-min-with' *ngIf='user.participant_number || editUser && isAllowed("manage")'>
-                <input type='text' matInput placeholder='{{"Participant Number" | translate}}' formControlName='number'
+                <input type='text' matInput placeholder='{{"Participant number" | translate}}' formControlName='number'
                     [value]='user.participant_number'>
             </mat-form-field>
         </div>
@@ -89,7 +89,7 @@
         <div *ngIf='isAllowed("manage")'>
             <!-- Initial Password -->
             <mat-form-field class='form100'>
-                <input matInput placeholder='{{"Initial Password" | translate}}' formControlName='default_password'
+                <input matInput placeholder='{{"Initial password" | translate}}' formControlName='default_password'
                     [value]='user.default_password'>
                 <mat-hint align="end">Generate</mat-hint>
                 <button type="button" mat-button matSuffix mat-icon-button [disabled]='!newUser' (click)='generatePassword()'>
@@ -102,7 +102,7 @@
             <!-- About me -->
             <!-- TODO: Needs Rich Text Editor -->
             <mat-form-field class='form100' *ngIf="user.about_me || editUser">
-                <textarea formControlName='about_me' matInput placeholder='{{"About Me" | translate}}' [value]='user.about_me'></textarea>
+                <textarea formControlName='about_me' matInput placeholder='{{"About me" | translate}}' [value]='user.about_me'></textarea>
             </mat-form-field>
         </div>
 
@@ -125,12 +125,12 @@
             <!-- Present? -->
             <mat-checkbox formControlName='is_present' matTooltip='{{"Designates whether this user is in the room." | translate}} '
                 [value]='user.is_present'>
-                <span translate>Is Present</span>
+                <span translate>Is present</span>
             </mat-checkbox>
             <!-- Active? -->
             <mat-checkbox *osPerms="'users.can_see_extra_data'" formControlName='is_active' matTooltip='{{"Designates whether this user should be treated as active. Unselect this instead of deleting the account." | translate}}'
                 [value]='user.is_active'>
-                <span translate>Is Active</span>
+                <span translate>Is active</span>
             </mat-checkbox>
             <!-- Commitee? -->
             <mat-checkbox formControlName='is_committee' matTooltip='{{"Designates whether this user should be treated as a committee." | translate}}'

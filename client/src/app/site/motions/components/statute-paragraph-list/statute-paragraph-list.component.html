@@ -40,8 +40,12 @@
         </form>
     </mat-card-content>
     <mat-card-actions>
-        <button mat-button (click)="create()" translate>Create</button>
-        <button mat-button (click)="statuteParagraphToCreate = null" translate>Abort</button>
+        <button mat-button (click)="create()">
+            <span translate>Save</span>
+        </button>
+        <button mat-button (click)="statuteParagraphToCreate = null">
+            <span translate>Cancel</span>
+        </button>
     </mat-card-actions>
 </mat-card>
 <mat-accordion class="os-card">
@@ -53,7 +57,7 @@
             </mat-panel-title>
         </mat-expansion-panel-header>
         <form [formGroup]="updateForm" *ngIf="editId === statuteParagraph.id">
-            <span translate>Edit statute paragraph details:</span>
+            <span translate>Edit statute paragraph:</span>
             <p>
                 <mat-form-field>
                     <input formControlName="title" matInput placeholder="{{'Title' | translate}}" required>
@@ -101,7 +105,7 @@
 </mat-accordion>
 <mat-card *ngIf="statuteParagraphs.length === 0">
     <mat-card-content>
-        <div class="no-content" translate>No statute paragraphs yet...</div>
+        <div class="no-content" translate>No statute paragraphs</div>
     </mat-card-content>
 </mat-card>
 

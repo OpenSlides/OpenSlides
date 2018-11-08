@@ -144,10 +144,10 @@
             <!-- <div *ngIf="editMotion"> -->
             <div *ngIf='!editMotion'>
                 <h3 translate>Identifier</h3>
-                {{motion.identifier}}
+                {{ motion.identifier }}
             </div>
             <mat-form-field *ngIf="editMotion">
-                <input matInput placeholder='Identifier' formControlName='identifier' [value]='motionCopy.identifier'>
+                <input matInput placeholder='{{ "Identifier" | translate }}' formControlName='identifier' [value]='motionCopy.identifier'>
             </mat-form-field>
         </div>
 
@@ -161,9 +161,9 @@
             </div>
             <div *ngIf="!editMotion || !newMotion">
                 <h3 translate>Submitters</h3>
-                <ul *ngFor="let submitter of motion.submitters">
-                    <li>{{submitter.full_name}}</li>
-                </ul>
+                <mat-chip-list *ngFor="let submitter of motion.submitters">
+                    <mat-chip>{{ submitter.full_name }}</mat-chip>
+                </mat-chip-list>
             </div>
         </div>
 
@@ -173,7 +173,7 @@
             <div *ngIf="editMotion">
                 <div *osPerms="['motions.can_manage', 'motions.can_manage_metadata']">
                     <os-search-value-selector ngDefaultControl [form]="metaInfoForm" [formControl]="this.metaInfoForm.get('supporters_id')"
-                        [multiple]="true" listname="Supporter" [InputListValues]="this.supporterObserver"></os-search-value-selector>
+                        [multiple]="true" listname="{{ 'Supporters' | translate }}" [InputListValues]="this.supporterObserver"></os-search-value-selector>
                 </div>
             </div>
             <div *ngIf="!editMotion && motion.hasSupporters()">
@@ -194,7 +194,7 @@
             </div>
             <div *ngIf="!editMotion">
                 <mat-form-field *osPerms="['motions.can_manage', 'motions.can_manage_metadata']">
-                    <mat-select placeholder='State' formControlName='state_id' (selectionChange)="onChangeState($event)">
+                    <mat-select placeholder="{{ 'State' | translate }}" formControlName='state_id' (selectionChange)="onChangeState($event)">
                         <mat-option [value]="motion.state_id">{{ motion.state }}</mat-option>
                         <mat-divider></mat-divider>
                         <mat-option *ngFor="let state of motion.nextStates" [value]="state.id">{{ state }}</mat-option>
@@ -209,11 +209,16 @@
         </div>
 
         <!-- Recommendation -->
-        <!-- The suggestion of the work group weather or not a motion should be accepted -->
         <div *ngIf='motion && motion.state && recommender'>
             <mat-form-field *ngIf="!editMotion && !newMotion">
                 <mat-select [placeholder]=recommender formControlName='recommendation_id' (selectionChange)="onChangerRecommenderState($event)">
-                    <mat-option *ngFor="let recommendation of motion.possibleRecommendations" [value]="recommendation.id">{{ recommendation }}</mat-option>
+                    <mat-option *ngFor="let recommendation of motion.possibleRecommendations" [value]="recommendation.id">
+                        {{ recommendation.recommendation_label | translate }}
+                    </mat-option>
+                    <mat-divider></mat-divider>
+                    <mat-option [value]="null">
+                        <mat-icon>replay</mat-icon><span translate>Reset recommendation</span>
+                    </mat-option>
                 </mat-select>
             </mat-form-field>
         </div>
@@ -222,11 +227,11 @@
         <div *ngIf="motion && motion.category_id || editMotion">
             <div *ngIf='!editMotion'>
                 <h3 translate>Category</h3>
-                {{motion.category}}
+                {{ motion.category }}
             </div>
             <div *ngIf="editMotion || newMotion">
                 <os-search-value-selector ngDefaultControl [form]="metaInfoForm" [formControl]="this.metaInfoForm.get('category_id')"
-                    [multiple]="false" listname="Category" [InputListValues]="this.categoryObserver"></os-search-value-selector>
+                    [multiple]="false" listname="{{ 'Category' | translate }}" [InputListValues]="this.categoryObserver"></os-search-value-selector>
             </div>
         </div>
 
@@ -238,7 +243,7 @@
             </div>
             <div *osPerms="['motions.can_manage', 'motions.can_manage_metadata']">
                 <mat-form-field *ngIf="editMotion">
-                    <input matInput placeholder='Origin' formControlName='origin' [value]='motionCopy.origin'>
+                    <input matInput placeholder="{{ 'Origin' | translate}}" formControlName='origin' [value]='motionCopy.origin'>
                 </mat-form-field>
             </div>
         </div>
@@ -255,10 +260,10 @@
 
         <!-- Line Number and Diff buttons-->
         <div class="motion-text-controls">
-            <button type="button" mat-icon-button [matMenuTriggerFor]="lineNumberingMenu">
+            <button type="button" mat-icon-button [matMenuTriggerFor]="lineNumberingMenu" matTooltip="{{ 'Line numbering' | translate }}">
                 <mat-icon>format_list_numbered</mat-icon>
             </button>
-            <button type="button" mat-icon-button [matMenuTriggerFor]="changeRecoMenu">
+            <button type="button" mat-icon-button [matMenuTriggerFor]="changeRecoMenu" matTooltip="{{ 'Change recommendations' | translate }}">
                 <mat-icon>rate_review</mat-icon>
             </button>
         </div>
@@ -269,7 +274,7 @@
                 <h4>{{motion.title}}</h4>
             </div>
             <mat-form-field *ngIf="editMotion" class="wide-form">
-                <input matInput osAutofocus placeholder='Title' formControlName='title' [value]='motionCopy.title'
+                <input matInput osAutofocus placeholder="{{ 'Title' | translate }}" formControlName='title' [value]='motionCopy.title'
                     required>
             </mat-form-field>
 
@@ -290,18 +295,18 @@
                 [scrollToChange]="scrollToChange" (createChangeRecommendation)="createChangeRecommendation($event)"></os-motion-detail-diff>
         </ng-container>
         <mat-form-field *ngIf="motion && editMotion" class="wide-form">
-            <textarea matInput placeholder='Motion Text' formControlName='text' [value]='motionCopy.text' required></textarea>
+            <textarea matInput placeholder="{{ 'Motion text' | translate }}" formControlName='text' [value]='motionCopy.text' required></textarea>
         </mat-form-field>
 
 
         <!-- Reason -->
         <div *ngIf="motion && motion.reason || editMotion">
-            <h5 translate>Reason</h5>
+            <h5 *ngIf="!editMotion" translate>Reason</h5>
             <div class="motion-text" *ngIf='!editMotion'>
                 <div [innerHtml]='motion.reason'></div>
             </div>
             <mat-form-field *ngIf="editMotion" class="wide-form">
-                <textarea matInput placeholder="Reason" formControlName='reason' [value]='motionCopy.reason'></textarea>
+                <textarea matInput placeholder="{{ 'Reason' | translate }}" formControlName='reason' [value]='motionCopy.reason'></textarea>
             </mat-form-field>
         </div>
 
@@ -309,10 +314,10 @@
 </ng-template>
 
 <!-- Line number Menu -->
-<mat-menu #lineNumberingMenu="matMenu">
-    <button mat-menu-item translate (click)=setLineNumberingMode(0)>None</button>
-    <button mat-menu-item translate (click)=setLineNumberingMode(1)>Inline</button>
-    <button mat-menu-item translate (click)=setLineNumberingMode(2)>Outside</button>
+<mat-menu #lineNumberingMenu="matMenu" >
+    <button mat-menu-item translate (click)=setLineNumberingMode(0)>none</button>
+    <button mat-menu-item translate (click)=setLineNumberingMode(1)>inline</button>
+    <button mat-menu-item translate (click)=setLineNumberingMode(2)>outside</button>
 </mat-menu>
 
 <!-- Diff View Menu -->

@@ -1,0 +1,1062 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "A password is required"
+msgstr ""
+
+msgid "About me"
+msgstr ""
+
+msgid "Accept"
+msgstr ""
+
+msgid "Acceptance"
+msgstr ""
+
+msgid "Accepted"
+msgstr ""
+
+msgid "Activate amendments"
+msgstr ""
+
+msgid "Adjourn"
+msgstr ""
+
+msgid "Adjournment"
+msgstr ""
+
+msgid "Agenda"
+msgstr ""
+
+msgid "Agenda visibility"
+msgstr ""
+
+msgid "All casted ballots"
+msgstr ""
+
+msgid "All valid ballots"
+msgstr ""
+
+msgid "All your changes are saved immediately."
+msgstr ""
+
+msgid "Allow access for anonymous guest users"
+msgstr ""
+
+msgid "Allow to disable versioning"
+msgstr ""
+
+msgid "Always Yes-No-Abstain per candidate"
+msgstr ""
+
+msgid "Always Yes/No per candidate"
+msgstr ""
+
+msgid "Always one option per candidate"
+msgstr ""
+
+msgid "Amendment"
+msgstr ""
+
+msgid "Amendment to"
+msgstr ""
+
+msgid "Amendments"
+msgstr ""
+
+msgid "An email with a password reset link was send!"
+msgstr ""
+
+msgid "Arabic"
+msgstr ""
+
+msgid "Automatic assign of method"
+msgstr ""
+
+msgid "Back to login"
+msgstr ""
+
+msgid "Background color of projector header and footer"
+msgstr ""
+
+msgid "Ballot and ballot papers"
+msgstr ""
+
+msgid "Begin of event"
+msgstr ""
+
+msgid "Can create motions"
+msgstr ""
+
+msgid "Can manage agenda"
+msgstr ""
+
+msgid "Can manage comments"
+msgstr ""
+
+msgid "Can manage configuration"
+msgstr ""
+
+msgid "Can manage elections"
+msgstr ""
+
+msgid "Can manage files"
+msgstr ""
+
+msgid "Can manage list of speakers"
+msgstr ""
+
+msgid "Can manage logos and fonts"
+msgstr ""
+
+msgid "Can manage motions"
+msgstr ""
+
+msgid "Can manage tags"
+msgstr ""
+
+msgid "Can manage the chat"
+msgstr ""
+
+msgid "Can manage the projector"
+msgstr ""
+
+msgid "Can manage users"
+msgstr ""
+
+msgid "Can nominate another participant"
+msgstr ""
+
+msgid "Can nominate oneself"
+msgstr ""
+
+msgid "Can put oneself on the list of speakers"
+msgstr ""
+
+msgid "Can see agenda"
+msgstr ""
+
+msgid "Can see comments"
+msgstr ""
+
+msgid "Can see elections"
+msgstr ""
+
+msgid "Can see extra data of users (e.g. present and comment)"
+msgstr ""
+
+msgid "Can see hidden files"
+msgstr ""
+
+msgid "Can see internal items and time scheduling of agenda"
+msgstr ""
+
+msgid "Can see motions"
+msgstr ""
+
+msgid "Can see names of users"
+msgstr ""
+
+msgid "Can see the front page"
+msgstr ""
+
+msgid "Can see the list of files"
+msgstr ""
+
+msgid "Can see the projector"
+msgstr ""
+
+msgid "Can support motions"
+msgstr ""
+
+msgid "Can upload files"
+msgstr ""
+
+msgid "Can use the chat"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Categories"
+msgstr ""
+
+msgid "Category"
+msgstr ""
+
+msgid "Center"
+msgstr ""
+
+msgid "Change password"
+msgstr ""
+
+msgid "Change recommendation"
+msgstr ""
+
+msgid "Change recommendations"
+msgstr ""
+
+msgid "Changed version"
+msgstr ""
+
+msgid "Choose 0 to disable the supporting system."
+msgstr ""
+
+msgid "Color for blanked projector"
+msgstr ""
+
+msgid "Comment"
+msgstr ""
+
+msgid "Comments"
+msgstr ""
+
+msgid "Complex Workflow"
+msgstr ""
+
+msgid "Content"
+msgstr ""
+
+msgid "Couple countdown with the list of speakers"
+msgstr ""
+
+msgid "Create new category"
+msgstr ""
+
+msgid "Create new comment field"
+msgstr ""
+
+msgid "Create new statute paragraph"
+msgstr ""
+
+msgid "Current browser language"
+msgstr ""
+
+msgid "Custom number of ballot papers"
+msgstr ""
+
+msgid "Custom translations"
+msgstr ""
+
+msgid "Czech"
+msgstr ""
+
+msgid ""
+"Dear {name},\n"
+"\n"
+"this is your OpenSlides login for the event {event_name}:\n"
+"\n"
+"    {url}\n"
+"    username: {username}\n"
+"    password: {password}\n"
+"\n"
+"This email was generated automatically."
+msgstr ""
+
+msgid "Default line numbering"
+msgstr ""
+
+msgid ""
+"Default method to check whether a candidate has reached the required "
+"majority."
+msgstr ""
+
+msgid "Default method to check whether a motion has reached the required majority."
+msgstr ""
+
+msgid "Default projector"
+msgstr ""
+
+msgid "Default text version for change recommendations"
+msgstr ""
+
+msgid "Default visibility for new agenda items (except topics)"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Delete all files"
+msgstr ""
+
+msgid "Designates whether this user is in the room."
+msgstr ""
+
+msgid "Designates whether this user should be treated as a committee."
+msgstr ""
+
+msgid ""
+"Designates whether this user should be treated as active. Unselect this "
+"instead of deleting the account."
+msgstr ""
+
+msgid "Diff version"
+msgstr ""
+
+msgid "Disabled"
+msgstr ""
+
+msgid "Disabled (no percents)"
+msgstr ""
+
+msgid "Display header and footer"
+msgstr ""
+
+msgid "Do not concern"
+msgstr ""
+
+msgid "Do not decide"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Edit category:"
+msgstr ""
+
+msgid "Edit comment field:"
+msgstr ""
+
+msgid "Edit profile"
+msgstr ""
+
+msgid "Edit statute paragraph:"
+msgstr ""
+
+msgid "Edit the whole motion text"
+msgstr ""
+
+msgid "Election method"
+msgstr ""
+
+msgid "Elections"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Email body"
+msgstr ""
+
+msgid "Email sender"
+msgstr ""
+
+msgid "Email subject"
+msgstr ""
+
+msgid "Empty text field"
+msgstr ""
+
+msgid "Enable numbering for agenda items"
+msgstr ""
+
+msgid "Enable participant presence view"
+msgstr ""
+
+msgid "English"
+msgstr ""
+
+msgid "Enter duration in seconds. Choose 0 to disable warning color."
+msgstr ""
+
+msgid "Enter your email to send the password reset link"
+msgstr ""
+
+msgid "Event"
+msgstr ""
+
+msgid "Event date"
+msgstr ""
+
+msgid "Event location"
+msgstr ""
+
+msgid "Event name"
+msgstr ""
+
+msgid "Event organizer"
+msgstr ""
+
+msgid "Export"
+msgstr ""
+
+msgid "Export ..."
+msgstr ""
+
+msgid "Export as csv"
+msgstr ""
+
+msgid "FILTER"
+msgstr ""
+
+msgid "Files"
+msgstr ""
+
+msgid "Final version"
+msgstr ""
+
+msgid "Finished"
+msgstr ""
+
+msgid "Font color of projector header and footer"
+msgstr ""
+
+msgid "Font color of projector headline"
+msgstr ""
+
+msgid "Front page text"
+msgstr ""
+
+msgid "Front page title"
+msgstr ""
+
+msgid "General"
+msgstr ""
+
+msgid "German"
+msgstr ""
+
+msgid "Given name"
+msgstr ""
+
+msgid "Groups"
+msgstr ""
+
+msgid "Groups with read permissions"
+msgstr ""
+
+msgid "Groups with write permissions"
+msgstr ""
+
+msgid "Help text for access data and welcome PDF"
+msgstr ""
+
+msgid "Hide internal items when projecting subitems"
+msgstr ""
+
+msgid "Hide meta information box on projector"
+msgstr ""
+
+msgid "Hide reason on projector"
+msgstr ""
+
+msgid "Hide recommendation on projector"
+msgstr ""
+
+msgid "Home"
+msgstr ""
+
+msgid "How to create new amendments"
+msgstr ""
+
+msgid "Identifier"
+msgstr ""
+
+msgid "Import ..."
+msgstr ""
+
+msgid "Include the sequential number in PDF and DOCX"
+msgstr ""
+
+msgid "Initial password"
+msgstr ""
+
+msgid "Input format: DD.MM.YYYY HH:MM"
+msgstr ""
+
+msgid "Installed plugins"
+msgstr ""
+
+msgid "Invalid input."
+msgstr ""
+
+msgid "Is a committee"
+msgstr ""
+
+msgid "Is active"
+msgstr ""
+
+msgid "Is present"
+msgstr ""
+
+msgid "Left"
+msgstr ""
+
+msgid "Legal notice"
+msgstr ""
+
+msgid "License"
+msgstr ""
+
+msgid "Line"
+msgstr ""
+
+msgid "Line length"
+msgstr ""
+
+msgid "Line numbering"
+msgstr ""
+
+msgid "List of speakers"
+msgstr ""
+
+msgid "List of speakers overlay"
+msgstr ""
+
+msgid "Login"
+msgstr ""
+
+msgid "Login as Guest"
+msgstr ""
+
+msgid "Logout"
+msgstr ""
+
+msgid "Meta information"
+msgstr ""
+
+msgid "Motion"
+msgstr ""
+
+msgid "Motion preamble"
+msgstr ""
+
+msgid "Motion text"
+msgstr ""
+
+msgid "Motions"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Name of recommender"
+msgstr ""
+
+msgid "Needs review"
+msgstr ""
+
+msgid "New group name"
+msgstr ""
+
+msgid "New motion"
+msgstr ""
+
+msgid "New password"
+msgstr ""
+
+msgid "New tag name"
+msgstr ""
+
+msgid "No change recommendations yet"
+msgstr ""
+
+msgid "No comment"
+msgstr ""
+
+msgid "No concernment"
+msgstr ""
+
+msgid "No decision"
+msgstr ""
+
+msgid "No encryption"
+msgstr ""
+
+msgid "No groups selected"
+msgstr ""
+
+msgid "No personal note"
+msgstr ""
+
+msgid "No statute paragraphs"
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid ""
+"Note: You have to reject all change recommendations if the plenum does not "
+"follow the recommendation. This does not affect amendments."
+msgstr ""
+
+msgid "Number of (minimum) required supporters for a motion"
+msgstr ""
+
+msgid "Number of all delegates"
+msgstr ""
+
+msgid "Number of all participants"
+msgstr ""
+
+msgid "Number of ballot papers (selection)"
+msgstr ""
+
+msgid "Number of last speakers to be shown on the projector"
+msgstr ""
+
+msgid "Numbered per category"
+msgstr ""
+
+msgid "Numbering prefix for agenda items"
+msgstr ""
+
+msgid "Numeral system for agenda items"
+msgstr ""
+
+msgid "OK"
+msgstr ""
+
+msgid "Offline mode: You can use OpenSlides but changes are not saved."
+msgstr ""
+
+msgid "Only for internal notes."
+msgstr ""
+
+msgid "Origin"
+msgstr ""
+
+msgid "Original version"
+msgstr ""
+
+msgid "PDF"
+msgstr ""
+
+msgid "PDF ballot paper logo"
+msgstr ""
+
+msgid "PDF footer logo (left)"
+msgstr ""
+
+msgid "PDF footer logo (right)"
+msgstr ""
+
+msgid "PDF header logo (left)"
+msgstr ""
+
+msgid "PDF header logo (right)"
+msgstr ""
+
+msgid "Page number alignment in PDF"
+msgstr ""
+
+msgid "Paragraph-based, Diff-enabled"
+msgstr ""
+
+msgid "Participant number"
+msgstr ""
+
+msgid "Participants"
+msgstr ""
+
+msgid "Permission"
+msgstr ""
+
+msgid "Permissions"
+msgstr ""
+
+msgid "Permit"
+msgstr ""
+
+msgid "Personal note"
+msgstr ""
+
+msgid "Please enter a valid email address"
+msgstr ""
+
+msgid "Please enter your new password"
+msgstr ""
+
+msgid "Preamble text for PDF and DOCX documents (all motions)"
+msgstr ""
+
+msgid "Preamble text for PDF document (all elections)"
+msgstr ""
+
+msgid "Predefined seconds of new countdowns"
+msgstr ""
+
+msgid "Prefix"
+msgstr ""
+
+msgid "Prefix for the identifier for amendments"
+msgstr ""
+
+msgid "Present"
+msgstr ""
+
+msgid "Presentation and assembly system"
+msgstr ""
+
+msgid "Privacy Policy"
+msgstr ""
+
+msgid "Privacy policy"
+msgstr ""
+
+msgid "Project"
+msgstr ""
+
+msgid "Projector"
+msgstr ""
+
+msgid "Projector header image"
+msgstr ""
+
+msgid "Projector language"
+msgstr ""
+
+msgid "Projector logo"
+msgstr ""
+
+msgid "Public"
+msgstr ""
+
+msgid "Put all candidates on the list of speakers"
+msgstr ""
+
+msgid "Reason"
+msgstr ""
+
+msgid "Refer to committee"
+msgstr ""
+
+msgid "Referral to committee"
+msgstr ""
+
+msgid "Reject"
+msgstr ""
+
+msgid "Reject (not authorized)"
+msgstr ""
+
+msgid "Rejected"
+msgstr ""
+
+msgid "Rejection"
+msgstr ""
+
+msgid "Rejection (not authorized)"
+msgstr ""
+
+msgid ""
+"Remove all supporters of a motion if a submitter edits his motion in early "
+"state"
+msgstr ""
+
+msgid "Required"
+msgstr ""
+
+msgid "Required majority"
+msgstr ""
+
+msgid "Reset password"
+msgstr ""
+
+msgid "Reset recommendation"
+msgstr ""
+
+msgid "Reset state"
+msgstr ""
+
+msgid "Right"
+msgstr ""
+
+msgid "Roman"
+msgstr ""
+
+msgid "SORT"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Searching for candidates"
+msgstr ""
+
+msgid "Selected values"
+msgstr ""
+
+msgid "Separator used for all csv exports and examples"
+msgstr ""
+
+msgid "Serially numbered"
+msgstr ""
+
+msgid "Set it manually"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "Short description of event"
+msgstr ""
+
+msgid "Show amendments together with motions"
+msgstr ""
+
+msgid "Show logo on projector"
+msgstr ""
+
+msgid "Show orange countdown in the last x seconds of speaking time"
+msgstr ""
+
+msgid "Show the clock on projector"
+msgstr ""
+
+msgid "Show this text on the login page"
+msgstr ""
+
+msgid "Show title and description of event on projector"
+msgstr ""
+
+msgid "Simple Workflow"
+msgstr ""
+
+msgid "Simple majority"
+msgstr ""
+
+msgid "Sort ..."
+msgstr ""
+
+msgid "Sort categories by"
+msgstr ""
+
+msgid "Sort name of participants by"
+msgstr ""
+
+msgid "Standard font size in PDF"
+msgstr ""
+
+msgid "State"
+msgstr ""
+
+msgid "Statute paragraph"
+msgstr ""
+
+msgid "Statute paragraphs"
+msgstr ""
+
+msgid "Stop submitting new motions by non-staff users"
+msgstr ""
+
+msgid "Structure level"
+msgstr ""
+
+msgid "Submitters"
+msgstr ""
+
+msgid "Summary of changes"
+msgstr ""
+
+msgid "Supporters"
+msgstr ""
+
+msgid "Surname"
+msgstr ""
+
+msgid "System"
+msgstr ""
+
+msgid "System URL"
+msgstr ""
+
+msgid "Tags"
+msgstr ""
+
+msgid "The 100 % base of a voting result consists of"
+msgstr ""
+
+msgid "The 100-%-base of an election result consists of"
+msgstr ""
+
+msgid "The assembly may decide:"
+msgstr ""
+
+msgid "The event manager hasn't set up a privacy policy yet."
+msgstr ""
+
+msgid "The link is broken. Please contact your system administrator."
+msgstr ""
+
+msgid ""
+"The maximum number of characters per line. Relevant when line numbering is "
+"enabled. Min: 40"
+msgstr ""
+
+msgid "The title of the motion is always applied."
+msgstr ""
+
+msgid "This change collides with another one."
+msgstr ""
+
+msgid "This prefix will be set if you run the automatic agenda numbering."
+msgstr ""
+
+msgid "Three-quarters majority"
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Title for PDF and DOCX documents (all motions)"
+msgstr ""
+
+msgid "Title for PDF document (all elections)"
+msgstr ""
+
+msgid "Title for access data and welcome PDF"
+msgstr ""
+
+msgid "Two-thirds majority"
+msgstr ""
+
+msgid "Use the following custom number"
+msgstr ""
+
+msgid ""
+"Use these placeholders: {name}, {event_name}, {url}, {username}, "
+"{password}. The url referrs to the system url."
+msgstr ""
+
+msgid "Used for QRCode in PDF of access data."
+msgstr ""
+
+msgid "Used for WLAN QRCode in PDF of access data."
+msgstr ""
+
+msgid "Username"
+msgstr ""
+
+msgid "Voting"
+msgstr ""
+
+msgid "Voting and ballot papers"
+msgstr ""
+
+msgid "WEP"
+msgstr ""
+
+msgid "WLAN encryption"
+msgstr ""
+
+msgid "WLAN name (SSID)"
+msgstr ""
+
+msgid "WLAN password"
+msgstr ""
+
+msgid "WPA/WPA2"
+msgstr ""
+
+msgid "Web interface header logo"
+msgstr ""
+
+msgid "Welcome to OpenSlides"
+msgstr ""
+
+msgid ""
+"Will be displayed as label before selected recommendation. Use an empty "
+"value to disable the recommendation system."
+msgstr ""
+
+msgid "Withdraw"
+msgstr ""
+
+msgid "Workflow of new motions"
+msgstr ""
+
+msgid "Yes"
+msgstr ""
+
+msgid "Yes/No"
+msgstr ""
+
+msgid "Yes/No per candidate"
+msgstr ""
+
+msgid "Yes/No/Abstain"
+msgstr ""
+
+msgid "Yes/No/Abstain per candidate"
+msgstr ""
+
+msgid ""
+"You can replace the logo by uploading an image and set it as the "
+"\"Projector logo\" in \"files\"."
+msgstr ""
+
+msgid "You can use {event_name} as a placeholder."
+msgstr ""
+
+msgid "Your login for {event_name}"
+msgstr ""
+
+msgid "Your password was resetted successfully!"
+msgstr ""
+
+msgid "[Begin speech] starts the countdown, [End speech] stops the countdown."
+msgstr ""
+
+msgid "[Place for your welcome and help text.]"
+msgstr ""
+
+msgid "[Space for your welcome text.]"
+msgstr ""
+
+msgid "accepted"
+msgstr ""
+
+msgid "adjourned"
+msgstr ""
+
+msgid "by"
+msgstr ""
+
+msgid "disabled"
+msgstr ""
+
+msgid "inline"
+msgstr ""
+
+msgid "needed"
+msgstr ""
+
+msgid "needs review"
+msgstr ""
+
+msgid "none"
+msgstr ""
+
+msgid "not concerned"
+msgstr ""
+
+msgid "not decided"
+msgstr ""
+
+msgid "outside"
+msgstr ""
+
+msgid "permitted"
+msgstr ""
+
+msgid "published"
+msgstr ""
+
+msgid "refered to committee"
+msgstr ""
+
+msgid "rejected"
+msgstr ""
+
+msgid "rejected (not authorized)"
+msgstr ""
+
+msgid "submitted"
+msgstr ""
+
+msgid "withdrawed"
+msgstr ""

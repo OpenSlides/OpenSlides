@@ -15,7 +15,11 @@
     </form>
 </mat-dialog-content>
 <mat-dialog-actions>
-    <button mat-button mat-dialog-close translate>Abort</button>
+    <button mat-button mat-dialog-close>
+        <span translate>Cancel</span>
+    </button>
     <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
-    <button mat-button (click)="saveChangeRecommendation()" translate>Save</button>
+    <button mat-button (click)="saveChangeRecommendation()">
+        <span translate>Save</span>
+    </button>
 </mat-dialog-actions>

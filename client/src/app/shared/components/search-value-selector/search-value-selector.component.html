@@ -12,7 +12,7 @@
 </mat-form-field>
 <div *ngIf="dispSelected">
     <p>
-        <span translate>Selected Values</span>:
+        <span translate>Selected values</span>:
     </p>
     <mat-chip-list #chipList>
         <mat-chip *ngFor="let selectedItem of thisSelector?.value" (removed)="remove(selectedItem)">{{selectedItem.name}}

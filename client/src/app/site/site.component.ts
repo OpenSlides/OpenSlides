@@ -109,7 +109,7 @@ export class SiteComponent extends BaseComponent implements OnInit {
 
     /**
      * Let the user change the language
-     * @param lang the desired language (en, de, fr, ...)
+     * @param lang the desired language (en, de, cs, ...)
      */
     public selectLang(selection: string): void {
         this.translate.use(selection).subscribe();
@@ -123,8 +123,8 @@ export class SiteComponent extends BaseComponent implements OnInit {
             return this.translate.instant('English');
         } else if (abbreviation === 'de') {
             return this.translate.instant('German');
-        } else if (abbreviation === 'fr') {
-            return this.translate.instant('French');
+        } else if (abbreviation === 'cs') {
+            return this.translate.instant('Czech');
         }
     }
 

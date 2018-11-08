@@ -52,7 +52,7 @@
         <mat-header-cell *matHeaderCellDef mat-sort-header>State</mat-header-cell>
         <mat-cell *matCellDef="let motion">
             <div *ngIf='isDisplayIcon(motion.state) && motion.state' class='innerTable'>
-                <mat-icon>{{getStateIcon(motion.state)}}></mat-icon>
+                <mat-icon>{{getStateIcon(motion.state)}}</mat-icon>
             </div>
         </mat-cell>
     </ng-container>
@@ -82,7 +82,7 @@
 
     <button mat-menu-item routerLink="statute-paragraphs">
         <mat-icon>account_balance</mat-icon>
-        <span translate>Statute paragrpahs</span>
+        <span translate>Statute paragraphs</span>
     </button>
 
 </mat-menu>

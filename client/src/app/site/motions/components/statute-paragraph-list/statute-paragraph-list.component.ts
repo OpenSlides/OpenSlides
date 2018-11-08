@@ -67,7 +67,7 @@ export class StatuteParagraphListComponent extends BaseViewComponent implements 
     /**
      * Init function.
      *
-     * Sets the title and gets/observes statute paragrpahs from DataStore
+     * Sets the title and gets/observes statute paragraphs from DataStore
      */
     public ngOnInit(): void {
         super.setTitle('Statute paragraphs');
@@ -149,14 +149,10 @@ export class StatuteParagraphListComponent extends BaseViewComponent implements 
         }
     }
 
-    public sortStatuteParagraphs(): void {
-        console.log('Not yet implemented. Depends on other Features');
-    }
-
     /**
      * TODO: navigate to a sorting view
      */
-    public sortStatuteParagrpahs(): void {
-        console.log('sort statute paragraphs');
+    public sortStatuteParagraphs(): void {
+        console.log('Not yet implemented. Depends on other Features');
     }
 }
