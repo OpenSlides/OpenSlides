@@ -5,7 +5,6 @@ import { DataSendService } from '../../../core/services/data-send.service';
 import { DataStoreService } from '../../../core/services/data-store.service';
 import { BaseRepository } from '../../base/base-repository';
 import { Motion } from '../../../shared/models/motions/motion';
-import { CategoryNumbering } from '../models/category-numbering';
 import { HttpService } from '../../../core/services/http.service';
 import { Identifiable } from '../../../shared/models/base/identifiable';
 import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
@@ -28,7 +27,9 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
      * Creates a CategoryRepository
      * Converts existing and incoming category to ViewCategories
      * Handles CRUD using an observer to the DataStore
-     * @param DataSend
+     * @param DS
+     * @param dataSend
+     * @param httpService
      */
     public constructor(
         protected DS: DataStoreService,
@@ -64,10 +65,10 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
     }
 
     /**
-     * Returns all Motions belonging to a category
+     * Returns all motions belonging to a category
      * @param category category
      */
-    public getMotionsOfCategory(category: Category): Array<Motion> {
+    public getMotionsOfCategory(category: Category): Motion[] {
         const motList = this.DS.getAll(Motion);
         const retList: Array<Motion> = [];
         motList.forEach(motion => {
@@ -89,23 +90,12 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
     }
 
     /**
-     * Updates a Categories numbering
+     * Updates a categories numbering.
      * @param category the category it should be updated in
      * @param motionList the list of motions on this category
      */
-    public async updateCategoryNumbering(category: Category, motionList: Motion[]): Promise<void> {
-        const categoryNumbering = new CategoryNumbering();
-        categoryNumbering.setMotions(motionList);
-        await this.sentCategoryNumbering(category, categoryNumbering);
-    }
-
-    /**
-     * Save category in the server
-     *
-     * @return Observable from
-     */
-    protected async sentCategoryNumbering(category: Category, categoryNumbering: CategoryNumbering): Promise<void> {
+    public async numberMotionsInCategory(category: Category, motionIds: number[]): Promise<void> {
         const collectionString = 'rest/motions/category/' + category.id + '/numbering/';
-        await this.httpService.post(collectionString, categoryNumbering);
+        await this.httpService.post(collectionString, { motions: motionIds });
     }
 }

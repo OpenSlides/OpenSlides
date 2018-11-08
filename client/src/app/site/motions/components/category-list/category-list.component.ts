@@ -33,9 +33,14 @@ export class CategoryListComponent extends BaseViewComponent implements OnInit {
     public editId: number | null;
 
     /**
+     * Determine which category is opened.
+     */
+    public openId: number | null;
+
+    /**
      * Source of the data
      */
-    public categories: Array<ViewCategory>;
+    public categories: ViewCategory[];
 
     /**
      * For new categories
@@ -146,31 +151,36 @@ export class CategoryListComponent extends BaseViewComponent implements OnInit {
 
     /**
      * Saves the category
+     *
+     * TODO: Do not number the motions. This needs to be a separate button (maybe with propting for confirmation), because
+     * not every body uses this and this would destroy their own order in motion identifiers.
+     * See issue #3969
+     *
      * @param viewCategory
      */
     public async onSaveButton(viewCategory: ViewCategory): Promise<void> {
-        if (this.updateForm.valid) {
-            // TODO: Check the motion sorting code below. If it is removed, change to .then() syntax.
-            try {
-                await this.repo.update(this.updateForm.value as Partial<Category>, viewCategory);
-            } catch (e) {
-                this.raiseError(e);
-            }
-            this.onCancelButton();
-            this.sortDataSource();
+        // get the sorted motions. Save them before updating the category.
+        let sortedMotionIds;
+        if (this.sortSelector) {
+            sortedMotionIds = this.sortSelector.array.map(selectable => selectable.id);
+            this.repo.numberMotionsInCategory(viewCategory.category, sortedMotionIds);
         }
 
-        // get the sorted motions
-        if (this.sortSelector) {
-            const manuallySortedMotions = this.sortSelector.array as Motion[];
-            await this.repo.updateCategoryNumbering(viewCategory.category, manuallySortedMotions);
+        if (this.updateForm.valid) {
+            // wait for the category to update; then the (maybe) changed prefix can be applied to the motions
+            await this.repo.update(this.updateForm.value as Partial<Category>, viewCategory);
+            this.onCancelButton();
+
+            if (this.sortSelector) {
+                this.repo.numberMotionsInCategory(viewCategory.category, sortedMotionIds);
+            }
         }
     }
 
     /**
      * sorts the categories by prefix
      */
-    protected sortDataSource(): void {
+    private sortDataSource(): void {
         this.categories.sort((viewCategory1, viewCategory2) => (viewCategory1 > viewCategory2 ? 1 : -1));
     }
 
@@ -196,10 +206,22 @@ export class CategoryListComponent extends BaseViewComponent implements OnInit {
     /**
      * Returns the motions corresponding to a category
      * @param category target
+     * @returns all motions in the category
      */
-    public motionsInCategory(category: Category): Array<Motion> {
-        const motList = this.repo.getMotionsOfCategory(category);
-        motList.sort((motion1, motion2) => (motion1 > motion2 ? 1 : -1));
-        return motList;
+    public motionsInCategory(category: Category): Motion[] {
+        const motions = this.repo.getMotionsOfCategory(category);
+        motions.sort((motion1, motion2) => (motion1 > motion2 ? 1 : -1));
+        return motions;
+    }
+
+    /**
+     * Is executed when a mat-extension-panel is closed
+     * @param viewCategory the category in the panel
+     */
+    public panelClosed(viewCategory: ViewCategory): void {
+        this.openId = null;
+        if (this.editId) {
+            this.onSaveButton(viewCategory);
+        }
     }
 }
