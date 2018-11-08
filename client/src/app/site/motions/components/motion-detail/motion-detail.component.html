@@ -83,8 +83,8 @@
             </div>
         </mat-expansion-panel>
 
-        <os-motion-comments [motion]="motion"></os-motion-comments>
-        <os-personal-note [motion]="motion"></os-personal-note>
+        <os-motion-comments *ngIf="!newMotion" [motion]="motion"></os-motion-comments>
+        <os-personal-note *ngIf="!newMotion" [motion]="motion"></os-personal-note>
 
         <!-- Content -->
         <mat-expansion-panel #contentPanel [expanded]='true'>
@@ -111,8 +111,8 @@
                 <ng-container *ngTemplateOutlet="metaInfoTemplate"></ng-container>
             </div>
 
-            <os-motion-comments [motion]="motion"></os-motion-comments>
-            <os-personal-note [motion]="motion"></os-personal-note>
+            <os-motion-comments *ngIf="!newMotion" [motion]="motion"></os-motion-comments>
+            <os-personal-note *ngIf="!newMotion" [motion]="motion"></os-personal-note>
 
         </div>
         <div class="desktop-right ">
@@ -142,8 +142,8 @@
 
         <!-- Submitter -->
         <div *ngIf="motion && motion.submitters || editMotion">
-            <div *ngIf="editMotion && newMotion">
-                <div *ngIf="motion && editMotion">
+            <div *ngIf="editMotion">
+                <div *osPerms="['motions.can_manage', 'motions.can_manage_metadata']">
                     <os-search-value-selector ngDefaultControl [form]="metaInfoForm" [formControl]="this.metaInfoForm.get('submitters_id')"
                         [multiple]="true" listname="Submitter" [InputListValues]="this.submitterObserver"></os-search-value-selector>
                 </div>
@@ -160,7 +160,7 @@
         <div *ngIf='motion && motion.hasSupporters() || editMotion'>
             <!-- print all motion supporters -->
             <div *ngIf="editMotion">
-                <div *ngIf="motion && editMotion">
+                <div *osPerms="['motions.can_manage', 'motions.can_manage_metadata']">
                     <os-search-value-selector ngDefaultControl [form]="metaInfoForm" [formControl]="this.metaInfoForm.get('supporters_id')"
                         [multiple]="true" listname="Supporter" [InputListValues]="this.supporterObserver"></os-search-value-selector>
                 </div>
@@ -168,24 +168,33 @@
             <div *ngIf="!editMotion && motion.hasSupporters()">
                 <h3 translate>Supporters</h3>
                 <ul *ngFor="let supporter of motion.supporters">
-                    <li>{{supporter.full_name}}</li>
+                    <li>{{ supporter.full_name }}</li>
                 </ul>
             </div>
         </div>
 
         <!-- State -->
         <div *ngIf='motion && motion.state'>
-            <mat-form-field *ngIf="!editMotion && !newMotion">
-                <mat-select placeholder='State' formControlName='state_id' (selectionChange)="onChangeState($event)">
-                    <mat-option [value]="motion.state_id">{{motion.state}}</mat-option>
-                    <mat-divider></mat-divider>
-                    <mat-option *ngFor="let state of motion.nextStates" [value]="state.id">{{state}}</mat-option>
-                    <mat-divider></mat-divider>
-                    <mat-option [value]="null">
-                        <mat-icon>replay</mat-icon><span translate>Reset State</span>
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
+            <div *osPerms="['motions.can_manage', 'motions.can_manage_metadata'];complement:true">
+                <ng-container *ngIf="!newMotion">
+                        <h3 translate>State</h3>
+                        {{ motion.state }}
+                </ng-container>
+            </div>
+            <div *ngIf="!editMotion">
+                <mat-form-field *osPerms="['motions.can_manage', 'motions.can_manage_metadata']">
+                    <mat-select placeholder='State' formControlName='state_id' (selectionChange)="onChangeState($event)">
+                        <mat-option [value]="motion.state_id">{{ motion.state }}</mat-option>
+                        <mat-divider></mat-divider>
+                        <mat-option *ngFor="let state of motion.nextStates" [value]="state.id">{{ state }}</mat-option>
+                        <mat-divider></mat-divider>
+                        <mat-option [value]="null">
+                            <mat-icon>replay</mat-icon>
+                            <span translate>Reset State</span>
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
         </div>
 
         <!-- Recommendation -->
@@ -193,7 +202,7 @@
         <div *ngIf='motion && motion.state && recommender'>
             <mat-form-field *ngIf="!editMotion && !newMotion">
                 <mat-select [placeholder]=recommender formControlName='recommendation_id' (selectionChange)="onChangerRecommenderState($event)">
-                    <mat-option *ngFor="let state of motion.possibleRecommendations" [value]="state.id">{{state}}</mat-option>
+                    <mat-option *ngFor="let recommendation of motion.possibleRecommendations" [value]="recommendation.id">{{ recommendation }}</mat-option>
                 </mat-select>
             </mat-form-field>
         </div>
@@ -204,7 +213,7 @@
                 <h3 translate>Category</h3>
                 {{motion.category}}
             </div>
-            <div *ngIf="editMotion">
+            <div *ngIf="editMotion || newMotion">
                 <os-search-value-selector ngDefaultControl [form]="metaInfoForm" [formControl]="this.metaInfoForm.get('category_id')"
                     [multiple]="false" listname="Category" [InputListValues]="this.categoryObserver"></os-search-value-selector>
             </div>
@@ -214,11 +223,13 @@
         <div *ngIf="motion && motion.origin || editMotion">
             <div *ngIf='!editMotion'>
                 <h3 translate> Origin</h3>
-                {{motion.origin}}
+                {{ motion.origin }}
             </div>
-            <mat-form-field *ngIf="editMotion">
-                <input matInput placeholder='Origin' formControlName='origin' [value]='motionCopy.origin'>
-            </mat-form-field>
+            <div *osPerms="['motions.can_manage', 'motions.can_manage_metadata']">
+                <mat-form-field *ngIf="editMotion">
+                    <input matInput placeholder='Origin' formControlName='origin' [value]='motionCopy.origin'>
+                </mat-form-field>
+            </div>
         </div>
 
         <!-- Voting -->
@@ -247,7 +258,8 @@
                 <h4>{{motion.title}}</h4>
             </div>
             <mat-form-field *ngIf="editMotion" class="wide-form">
-                <input matInput osAutofocus placeholder='Title' formControlName='title' [value]='motionCopy.title'>
+                <input matInput osAutofocus placeholder='Title' formControlName='title' [value]='motionCopy.title'
+                    required>
             </mat-form-field>
 
         </div>
@@ -267,7 +279,7 @@
                 [scrollToChange]="scrollToChange" (createChangeRecommendation)="createChangeRecommendation($event)"></os-motion-detail-diff>
         </ng-container>
         <mat-form-field *ngIf="motion && editMotion" class="wide-form">
-            <textarea matInput placeholder='Motion Text' formControlName='text' [value]='motionCopy.text'></textarea>
+            <textarea matInput placeholder='Motion Text' formControlName='text' [value]='motionCopy.text' required></textarea>
         </mat-form-field>
 
 

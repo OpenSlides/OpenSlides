@@ -134,14 +134,15 @@ class MotionViewSet(ModelViewSet):
                 'title',
                 'text',
                 'reason',
+                'category_id',
             ]
             if parent_motion is not None:
                 # For creating amendments.
                 whitelist.extend([
                     'parent_id',
                     'amendment_paragraphs',
-                    'category_id',      # This will be set to the matching
-                    'motion_block_id',  # values from parent_motion.
+                    'motion_block_id',  # This and the category_id will be set to the matching
+                                        # values from parent_motion.
                 ])
                 request.data['category_id'] = parent_motion.category_id
                 request.data['motion_block_id'] = parent_motion.motion_block_id

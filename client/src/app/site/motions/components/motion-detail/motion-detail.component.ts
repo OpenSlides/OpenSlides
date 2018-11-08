@@ -106,17 +106,17 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
     /**
      * Subject for the Categories
      */
-    public categoryObserver: BehaviorSubject<Array<Category>>;
+    public categoryObserver: BehaviorSubject<Category[]>;
 
     /**
      * Subject for the Submitters
      */
-    public submitterObserver: BehaviorSubject<Array<User>>;
+    public submitterObserver: BehaviorSubject<User[]>;
 
     /**
      * Subject for the Supporters
      */
-    public supporterObserver: BehaviorSubject<Array<User>>;
+    public supporterObserver: BehaviorSubject<User[]>;
 
     /**
      * Value for os-motion-detail-diff: when this is set, that component scrolls to the given change
@@ -489,7 +489,7 @@ export class MotionDetailComponent extends BaseComponent implements OnInit {
      * Determine if the user has the correct requirements to alter the motion
      */
     public opCanEdit(): boolean {
-        return this.op.hasPerms('motions.can_manage');
+        return this.op.hasPerms('motions.can_manage', 'motions.can_manage_metadata');
     }
 
     /**
