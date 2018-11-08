@@ -127,26 +127,27 @@ export class LoginMaskComponent extends BaseComponent implements OnInit, OnDestr
      *
      * Send username and password to the {@link AuthService}
      */
-    public formLogin(): void {
+    public async formLogin(): Promise<void> {
         this.loginErrorMsg = '';
         this.inProcess = true;
-        this.authService.login(this.loginForm.value.username, this.loginForm.value.password).subscribe(res => {
+        try {
+            const res = await this.authService.login(this.loginForm.value.username, this.loginForm.value.password);
             this.inProcess = false;
-
-            if (res instanceof HttpErrorResponse) {
+            this.OpenSlides.afterLoginBootup(res.user_id);
+            let redirect = this.OpenSlides.redirectUrl ? this.OpenSlides.redirectUrl : '/';
+            if (redirect.includes('login')) {
+                redirect = '/';
+            }
+            this.router.navigate([redirect]);
+        } catch (e) {
+            if (e instanceof HttpErrorResponse) {
                 this.loginForm.setErrors({
                     notFound: true
                 });
-                this.loginErrorMsg = res.error.detail;
-            } else {
-                this.OpenSlides.afterLoginBootup(res.user_id);
-                let redirect = this.OpenSlides.redirectUrl ? this.OpenSlides.redirectUrl : '/';
-                if (redirect.includes('login')) {
-                    redirect = '/';
-                }
-                this.router.navigate([redirect]);
+                this.loginErrorMsg = e.error.detail;
+                this.inProcess = false;
             }
-        });
+        }
     }
 
     /**

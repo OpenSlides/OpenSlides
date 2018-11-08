@@ -70,8 +70,16 @@ export class WebsocketService {
     private subjects: { [type: string]: Subject<any> } = {};
 
     /**
+     * Saves, if the service is in retry mode to get a connection to a previos connection lost.
+     */
+    private retry = false;
+
+    /**
      * Constructor that handles the router
      * @param router the URL Router
+     * @param matSnackBar
+     * @param zone
+     * @param translate
      */
     public constructor(
         private router: Router,
@@ -85,34 +93,46 @@ export class WebsocketService {
      *
      * Uses NgZone to let all callbacks run in the angular context.
      */
-    public connect(retry: boolean = false, changeId?: number): void {
+    public connect(
+        options: {
+            changeId?: number;
+            enableAutoupdates?: boolean;
+        } = {}
+    ): void {
         if (this.websocket) {
-            return;
+            this.close();
         }
+
+        // set defaults
+        options = Object.assign(options, {
+            enableAutoupdates: true
+        });
+
         const queryParams: QueryParams = {
-            'change_id': 0,
-            'autoupdate': true,
+            autoupdate: options.enableAutoupdates
         };
-        // comment-in if changes IDs are supported on server side.
-        /*if (changeId !== undefined) {
-            queryParams.changeId = changeId.toString();
-        }*/
+
+        if (options.changeId !== undefined) {
+            queryParams.change_id = options.changeId;
+        }
 
         // Create the websocket
         const socketProtocol = this.getWebSocketProtocol();
         const socketServer = window.location.hostname + ':' + window.location.port;
         const socketPath = this.getWebSocketPath(queryParams);
+        console.log('connect to', socketProtocol + socketServer + socketPath);
         this.websocket = new WebSocket(socketProtocol + socketServer + socketPath);
 
         // connection established. If this connect attept was a retry,
         // The error notice will be removed and the reconnectSubject is published.
         this.websocket.onopen = (event: Event) => {
             this.zone.run(() => {
-                if (retry) {
+                if (this.retry) {
                     if (this.connectionErrorNotice) {
                         this.connectionErrorNotice.dismiss();
                         this.connectionErrorNotice = null;
                     }
+                    this.retry = false;
                     this._reconnectEvent.emit();
                 }
                 this._connectEvent.emit();
@@ -151,7 +171,8 @@ export class WebsocketService {
                     // A random retry timeout between 2000 and 5000 ms.
                     const timeout = Math.floor(Math.random() * 3000 + 2000);
                     setTimeout(() => {
-                        this.connect((retry = true));
+                        this.retry = true;
+                        this.connect({ enableAutoupdates: true });
                     }, timeout);
                 }
             });
@@ -222,11 +243,13 @@ export class WebsocketService {
 
         const keys: string[] = Object.keys(queryParams);
         if (keys.length > 0) {
-            path += '?' + keys
-                .map(key => {
-                    return key + '=' + queryParams[key].toString();
-                })
-                .join('&');
+            path +=
+                '?' +
+                keys
+                    .map(key => {
+                        return key + '=' + queryParams[key].toString();
+                    })
+                    .join('&');
         }
         return path;
     }

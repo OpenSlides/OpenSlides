@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { tap, catchError } from 'rxjs/operators';
 import { OpenSlidesComponent } from 'app/openslides.component';
 import { Group } from 'app/shared/models/users/group';
 import { User } from '../../shared/models/users/user';
 import { environment } from 'environments/environment';
 import { DataStoreService } from './data-store.service';
+import { OfflineService } from './offline.service';
 
 /**
  * Permissions on the client are just strings. This makes clear, that
@@ -17,7 +17,7 @@ export type Permission = string;
 /**
  * Response format of the WHoAMI request.
  */
-interface WhoAmIResponse {
+export interface WhoAmIResponse {
     user_id: number;
     guest_enabled: boolean;
     user: User;
@@ -77,9 +77,14 @@ export class OperatorService extends OpenSlidesComponent {
     private operatorSubject: BehaviorSubject<User> = new BehaviorSubject<User>(null);
 
     /**
+     * Sets up an observer for watching changes in the DS. If the operator user or groups are changed,
+     * the operator's permissions are updated.
+     *
      * @param http HttpClient
+     * @param DS
+     * @param offlineService
      */
-    public constructor(private http: HttpClient, private DS: DataStoreService) {
+    public constructor(private http: HttpClient, private DS: DataStoreService, private offlineService: OfflineService) {
         super();
 
         this.DS.changeObservable.subscribe(newModel => {
@@ -101,16 +106,21 @@ export class OperatorService extends OpenSlidesComponent {
 
     /**
      * Calls `/apps/users/whoami` to find out the real operator.
+     * @returns The response of the WhoAmI request.
      */
-    public whoAmI(): Observable<WhoAmIResponse> {
-        return this.http.get<WhoAmIResponse>(environment.urlPrefix + '/users/whoami/').pipe(
-            tap((response: WhoAmIResponse) => {
-                if (response && response.user_id) {
-                    this.user = new User(response.user);
-                }
-            }),
-            catchError(this.handleError())
-        ) as Observable<WhoAmIResponse>;
+    public async whoAmI(): Promise<WhoAmIResponse> {
+        try {
+            const response = await this.http.get<WhoAmIResponse>(environment.urlPrefix + '/users/whoami/').toPromise();
+            if (response && response.user) {
+                this.user = new User(response.user);
+            }
+            return response;
+        } catch (e) {
+            // TODO: Implement the offline service. Currently a guest-whoami response is returned and
+            // the DS cleared.
+            this.offlineService.goOfflineBecauseFailedWhoAmI();
+            return this.offlineService.getLastWhoAmI();
+        }
     }
 
     /**
