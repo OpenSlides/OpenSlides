@@ -25,6 +25,6 @@ export class Topic extends AgendaBaseModel {
     }
 
     public getDetailStateURL(): string {
-        return 'TODO';
+        return `/agenda/topics/${this.id}`;
     }
 }

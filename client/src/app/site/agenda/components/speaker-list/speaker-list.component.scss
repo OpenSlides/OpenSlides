@@ -1,0 +1,63 @@
+.speaker-card {
+    margin: 0 20px 0 20px;
+    padding: 0;
+
+    .finished-list {
+        margin-bottom: 15px;
+        .finished-suffix {
+            color: slategray;
+            font-size: 80%;
+            margin-right: 10px;
+        }
+
+        .mat-list-item {
+            height: auto;
+        }
+
+        button {
+            margin-left: 10px;
+        }
+    }
+
+    .current-speaker {
+        padding: 10px 25px 15px 25px;
+        display: table;
+        .speaking-icon {
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        .speaking-name {
+            display: table-cell;
+            vertical-align: middle;
+            font-weight: bold;
+            padding-left: 10px;
+        }
+
+        button {
+            display: table-cell;
+            vertical-align: middle;
+            margin-left: 10px;
+        }
+    }
+
+    .waiting-list {
+        padding: 10px 25px 0 25px;
+    }
+
+    form {
+        padding: 15px 25px 10px 25px;
+        width: auto;
+
+        .search-users {
+            display: grid;
+            .mat-form-field {
+                width: 100%;
+            }
+        }
+    }
+
+    .add-self-buttons {
+        padding: 0 0 20px 25px;
+    }
+}

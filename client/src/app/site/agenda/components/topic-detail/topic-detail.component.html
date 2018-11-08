@@ -1,0 +1,83 @@
+<os-head-bar
+    [nav]="false"
+    [goBack]="true"
+    [editMode]="editTopic"
+    (mainEvent)="setEditMode(!editTopic)"
+    (saveEvent)="saveTopic()"
+>
+    <!-- Title -->
+    <div class="title-slot">
+        <h2>
+            <span *ngIf="newTopic && !editTopic" translate>New</span>
+            <span *ngIf="editTopic && !newTopic" translate>Edit</span>
+            <!-- Whitespace between "New" and "Topic" -->
+            <span>&nbsp;</span> <span translate>Topic</span>
+        </h2>
+    </div>
+
+    <!-- Menu -->
+    <div class="menu-slot">
+        <button type="button" mat-icon-button [matMenuTriggerFor]="topicExtraMenu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+    </div>
+</os-head-bar>
+
+<div *ngIf="topic" class="topic-container on-transition-fade">
+    <div class="topic-title">
+        <h2 *ngIf="!editTopic">{{ topic.title }}</h2>
+        <h2 *ngIf="editTopic">{{ topicForm.get('title').value }}</h2>
+    </div>
+
+    <mat-card *ngIf="topic || editTopic" class="topic-text">
+        <div>
+            <span *ngIf="!editTopic">
+                {{ topic.text }}
+                <div *ngIf="topic.text === ''" class="missing" translate>No description provided.</div>
+            </span>
+        </div>
+
+        <div *ngIf="topic.attachments && topic.attachments.length > 0">
+            <h3>
+                <span translate>Attachments</span> <span>:</span>
+                <!-- TODO: Mediafiles and attachments are not fully implemented -->
+            </h3>
+        </div>
+
+        <form *ngIf="editTopic" [formGroup]="topicForm" (ngSubmit)="saveTopic()" (keydown)="keyDownFunction($event)">
+            <div>
+                <mat-form-field>
+                    <input
+                        type="text"
+                        matInput
+                        osAutofocus
+                        required
+                        formControlName="title"
+                        placeholder="{{ 'Title' | translate}}"
+                    />
+                    <mat-error *ngIf="topicForm.invalid" translate>A name is required</mat-error>
+                </mat-form-field>
+            </div>
+
+            <div>
+                <mat-form-field>
+                    <textarea matInput formControlName="text" placeholder="{{ 'Description ' | translate}}"></textarea>
+                </mat-form-field>
+            </div>
+
+            <!-- TODO: Select Mediafiles as attachments here -->
+        </form>
+    </mat-card>
+</div>
+
+<mat-menu #topicExtraMenu="matMenu">
+    <button mat-menu-item *ngIf="topic" [routerLink]="getSpeakerLink()">
+        <mat-icon>mic</mat-icon>
+        <span translate>List of speakers</span>
+    </button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item class="red-warning-text" (click)="onDeleteButton()">
+        <mat-icon>delete</mat-icon>
+        <span translate>Delete</span>
+    </button>
+</mat-menu>

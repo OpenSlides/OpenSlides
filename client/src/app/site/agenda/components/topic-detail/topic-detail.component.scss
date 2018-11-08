@@ -1,0 +1,26 @@
+.topic-container {
+    max-width: 1200px;
+}
+
+.topic-title {
+    padding: 40px;
+    padding-left: 25px;
+    line-height: 180%;
+    font-size: 120%;
+    color: #317796; // TODO: put in theme as $primary
+
+    h2 {
+        margin: 0;
+        font-weight: normal;
+    }
+}
+
+.topic-text {
+    margin: 0 20px 0 20px;
+    padding: 25px;
+
+    .missing {
+        color: slategray; // TODO: Colors in theme
+        font-style: italic;
+    }
+}

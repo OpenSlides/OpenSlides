@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { TranslateService } from '@ngx-translate/core';
-import { ViewItem } from '../models/view-item';
-import { ListViewBaseComponent } from '../../base/list-view-base';
-import { AgendaRepositoryService } from '../services/agenda-repository.service';
-import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
+
+import { TranslateService } from '@ngx-translate/core';
+import { ViewItem } from '../../models/view-item';
+import { ListViewBaseComponent } from 'app/site/base/list-view-base';
+import { AgendaRepositoryService } from '../../services/agenda-repository.service';
 
 /**
  * List view for the agenda.
@@ -20,16 +21,18 @@ import { MatSnackBar } from '@angular/material';
 export class AgendaListComponent extends ListViewBaseComponent<ViewItem> implements OnInit {
     /**
      * The usual constructor for components
-     * @param titleService
-     * @param translate
-     * @param matSnackBar
-     * @param router
-     * @param repo
+     * @param titleService Setting the browser tab title
+     * @param translate translations
+     * @param matSnackBar Shows errors and messages
+     * @param route Angulars ActivatedRoute
+     * @param router Angulars router
+     * @param repo the agenda repository
      */
     public constructor(
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
+        private route: ActivatedRoute,
         private router: Router,
         private repo: AgendaRepositoryService
     ) {
@@ -51,13 +54,14 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
     /**
      * Handler for click events on agenda item rows
      * Links to the content object if any
+     *
+     * Gets content object from the repository rather than from the model
+     * to avoid race conditions
+     * @param item the item that was selected from the list view
      */
     public selectAgendaItem(item: ViewItem): void {
-        if (item.contentObject) {
-            this.router.navigate([item.contentObject.getDetailStateURL()]);
-        } else {
-            console.error(`The selected item ${item} has no content object`);
-        }
+        const contentObject = this.repo.getContentObject(item.item);
+        this.router.navigate([contentObject.getDetailStateURL()]);
     }
 
     /**
@@ -65,6 +69,6 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
      * Comes from the HeadBar Component
      */
     public onPlusButton(): void {
-        console.log('create new motion');
+        this.router.navigate(['topics/new'], { relativeTo: this.route });
     }
 }

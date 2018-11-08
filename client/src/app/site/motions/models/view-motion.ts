@@ -88,6 +88,10 @@ export class ViewMotion extends BaseViewModel {
         return this._category;
     }
 
+    public get agenda_item_id(): number {
+        return this.motion ? this.motion.agenda_item_id : null;
+    }
+
     public get category_id(): number {
         return this.motion && this.category ? this.motion.category_id : null;
     }

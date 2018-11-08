@@ -52,6 +52,7 @@ import { SearchValueSelectorComponent } from './components/search-value-selector
 import { OpenSlidesDateAdapter } from './date-adapter';
 import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.component';
 import { SortingListComponent } from './components/sorting-list/sorting-list.component';
+import { SpeakerListComponent } from 'app/site/agenda/components/speaker-list/speaker-list.component';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -151,7 +152,8 @@ import { SortingListComponent } from './components/sorting-list/sorting-list.com
         PrivacyPolicyContentComponent,
         SearchValueSelectorComponent,
         PromptDialogComponent,
-        SortingListComponent
+        SortingListComponent,
+        SpeakerListComponent
     ],
     providers: [
         { provide: DateAdapter, useClass: OpenSlidesDateAdapter },

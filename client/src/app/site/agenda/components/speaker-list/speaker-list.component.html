@@ -1,0 +1,116 @@
+<os-head-bar [nav]="false" [goBack]="true">
+    <!-- Title -->
+    <div class="title-slot">
+        <h2>
+            <span *ngIf="viewItem">{{ viewItem.getTitle() }}:</span> <span translate> List of speakers </span>
+        </h2>
+    </div>
+</os-head-bar>
+
+<mat-card class="speaker-card">
+    <!-- List of finished speakers -->
+    <mat-expansion-panel *ngIf="finishedSpeakers && finishedSpeakers.length > 0" class="finished-list">
+        <mat-expansion-panel-header>
+            <mat-panel-title translate> Last speakers </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-list>
+            <!-- {Number}. {full_name} {time} minutes (Start time: {begin_time}) [close button] -->
+            <mat-list-item *ngFor="let speaker of finishedSpeakers; let number = index">
+                <div class="finished-prefix">
+                    <span>{{ number + 1 }}</span> <span>.&nbsp;{{ speaker }}</span>
+                </div>
+                <div class="finished-suffix">
+                    <!-- TODO: No Date or time class yet -->
+                    <!-- <span> calc time here &nbsp;</span> -->
+                    <!-- <span translate>minutes</span> -->
+                    <span>&nbsp;(</span> <span translate>Start time</span> <span>:&nbsp;{{ speaker.begin_time }})</span>
+                </div>
+                <button
+                    mat-stroked-button
+                    matTooltip="{{ 'Remove' | translate }}"
+                    *osPerms="'agenda.can_manage_list_of_speakers'"
+                    (click)="onDeleteButton(speaker)"
+                >
+                    <mat-icon>close</mat-icon>
+                </button>
+            </mat-list-item>
+        </mat-list>
+    </mat-expansion-panel>
+
+    <!-- Current Speaker -->
+    <div class="current-speaker" *ngIf="activeSpeaker">
+        <mat-icon class="speaking-icon">play_arrow</mat-icon>
+        <span class="speaking-name">{{ activeSpeaker }}</span>
+
+        <button
+            mat-stroked-button
+            matTooltip="{{ 'End speech' | translate }}"
+            *osPerms="'agenda.can_manage_list_of_speakers'"
+            (click)="onStopButton()"
+        >
+            <mat-icon>mic_off</mat-icon>
+            <span translate>Stop</span>
+        </button>
+    </div>
+
+    <!-- Waiting speakers -->
+    <div *osPerms="'agenda.can_manage_list_of_speakers'">
+        <div class="waiting-list" *ngIf="speakers && speakers.length > 0">
+            <os-sorting-list [input]="speakers" [live]="true" [count]="true" (sortEvent)="onSortingChange($event)">
+                <!-- implicit item references into the component using ng-template slot -->
+                <ng-template let-item>
+                    <div class="speak-action-buttons">
+                        <mat-button-toggle-group>
+                            <mat-button-toggle
+                                matTooltip="{{ 'Begin speech' | translate }}"
+                                (click)="onStartButton(item)"
+                            >
+                                <mat-icon>mic</mat-icon>
+                                <span translate>Start</span>
+                            </mat-button-toggle>
+                            <mat-button-toggle
+                                matTooltip="{{ 'Mark speaker' | translate }}"
+                                (click)="onMarkButton(item)"
+                            >
+                                <mat-icon>{{ item.marked ? 'star' : 'star_border' }}</mat-icon>
+                            </mat-button-toggle>
+                            <mat-button-toggle matTooltip="{{ 'Remove' | translate }}" (click)="onDeleteButton(item)">
+                                <mat-icon>close</mat-icon>
+                            </mat-button-toggle>
+                        </mat-button-toggle-group>
+                    </div>
+                </ng-template>
+            </os-sorting-list>
+        </div>
+    </div>
+
+    <!-- Search for speakers -->
+    <div *osPerms="'agenda.can_manage_list_of_speakers'">
+        <form *ngIf="users && users.value.length > 0" [formGroup]="addSpeakerForm">
+            <os-search-value-selector
+                class="search-users"
+                ngDefaultControl
+                [form]="addSpeakerForm"
+                [formControl]="addSpeakerForm.get('user_id')"
+                [multiple]="false"
+                listname="{{ 'Select or search new speaker ...' | translate }}"
+                [InputListValues]="users"
+            ></os-search-value-selector>
+        </form>
+    </div>
+
+    <!-- Add me and remove me if OP has correct permission -->
+    <div *osPerms="'agenda.can_be_speaker'" class="add-self-buttons">
+        <div *ngIf="speakers">
+            <button mat-raised-button (click)="addNewSpeaker()" *ngIf="!isOpInList()">
+                <mat-icon>add</mat-icon>
+                <span translate>Add me</span>
+            </button>
+
+            <button mat-raised-button (click)="onDeleteButton()" *ngIf="isOpInList()">
+                <mat-icon>remove</mat-icon>
+                <span translate>Remove me</span>
+            </button>
+        </div>
+    </div>
+</mat-card>

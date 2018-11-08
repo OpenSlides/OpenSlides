@@ -1,10 +1,17 @@
 <div cdkDropList class="list" (cdkDropListDropped)="drop($event)">
-    <div class="box line" *ngFor="let item of array" cdkDrag>
+    <div class="box line" *ngFor="let item of array; let i = index" cdkDrag>
         <div class="section-one" cdkDragHandle>
-            <mat-icon>drag_handle</mat-icon>
+            <!-- TODO: drag_indicator after icon update -->
+            <mat-icon>unfold_more</mat-icon>
         </div>
         <div class="section-two">
-            {{item}}
+            <!-- {number}. {item.toString()} -->
+            <span *ngIf="count">{{ i+1 }}.&nbsp;</span>
+            <span>{{ item }}</span>
+        </div>
+        <div class="section-three">
+            <!-- Extra controls slot using implicit template references -->
+            <ng-template [ngTemplateOutlet]="templateRef" [ngTemplateOutletContext]="{ $implicit: item }"></ng-template>
         </div>
     </div>
 </div>
