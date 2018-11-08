@@ -78,6 +78,7 @@ import { ProjectorButtonComponent } from './components/projector-button/projecto
 import { ProjectionDialogComponent } from './components/projection-dialog/projection-dialog.component';
 import { ResizedDirective } from './directives/resized.directive';
 import { MetaTextBlockComponent } from './components/meta-text-block/meta-text-block.component';
+import { OpenSlidesTranslateModule } from '../core/translate/openslides-translate-module';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -128,7 +129,7 @@ import { MetaTextBlockComponent } from './components/meta-text-block/meta-text-b
         MatTabsModule,
         MatSliderModule,
         DragDropModule,
-        TranslateModule.forChild(),
+        OpenSlidesTranslateModule.forChild(),
         RouterModule,
         NgxMatSelectSearchModule,
         FileDropModule,
@@ -171,6 +172,7 @@ import { MetaTextBlockComponent } from './components/meta-text-block/meta-text-b
         NgxMatSelectSearchModule,
         FileDropModule,
         TranslateModule,
+        OpenSlidesTranslateModule,
         PermsDirective,
         DomChangeDirective,
         AutofocusDirective,

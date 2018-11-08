@@ -155,6 +155,10 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
         if (this.configItem.inputType === 'datetimepicker') {
             value = Date.parse(value);
         }
+        // TODO: Solve this via a custom input form.
+        if (this.configItem.inputType === 'translations') {
+            value = JSON.parse(value);
+        }
         this.debounceTimeout = null;
         this.repo.update({ value: value }, this.configItem).then(() => {
             this.error = null;

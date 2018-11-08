@@ -13,17 +13,21 @@ import { Observable } from 'rxjs';
  */
 export class PruningTranslationLoader implements TranslateLoader {
     /**
+     * Path to the language files. Can be adjusted of needed
+     */
+    private prefix = '/assets/i18n/';
+
+    /**
+     * Suffix of the translation files. Usually '.json'.
+     */
+    private suffix = '.json';
+
+    /**
      * Constructor to load the HttpClient
      *
      * @param http httpClient to load the translation files.
-     * @param prefix Path to the language files. Can be adjusted of needed
-     * @param suffix Suffix of the translation files. Usually '.json'.
      */
-    public constructor(
-        private http: HttpClient,
-        private prefix: string = '/assets/i18n/',
-        private suffix: string = '.json'
-    ) {}
+    public constructor(private http: HttpClient) {}
 
     /**
      * Loads a language file, stores the content, give it to the process function.
