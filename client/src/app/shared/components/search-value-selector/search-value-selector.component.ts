@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Subject, ReplaySubject, BehaviorSubject } from 'rxjs';
+import { Subject, ReplaySubject, BehaviorSubject, Subscription } from 'rxjs';
 import { MatSelect } from '@angular/material';
 import { takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
@@ -35,7 +35,7 @@ import { Selectable } from '../selectable';
     templateUrl: './search-value-selector.component.html',
     styleUrls: ['./search-value-selector.component.scss']
 })
-export class SearchValueSelectorComponent implements OnInit {
+export class SearchValueSelectorComponent implements OnInit, OnDestroy {
     /**
      * ngModel variable - Deprecated with Angular 7
      * DO NOT USE: READ AT remove() FUNCTION!
@@ -53,16 +53,36 @@ export class SearchValueSelectorComponent implements OnInit {
     public filteredItems: ReplaySubject<Selectable[]> = new ReplaySubject<Selectable[]>(1);
 
     /**
+     * The inputlist subject.
+     */
+    private _inputListSubject: BehaviorSubject<Selectable[]>;
+
+    /**
+     * Saves the current subscription to _inputListSubject.
+     */
+    private _inputListSubscription: Subscription = null;
+
+    /**
      * Decide if this should be a single or multi-select-field
      */
     @Input()
     public multiple: boolean;
 
     /**
-     * The Input List Values
+     * The inputlist subject. Subscribes to it and updates the selector, if the subject
+     * changes its values.
      */
     @Input()
-    public InputListValues: BehaviorSubject<Selectable[]>;
+    public set InputListValues(value: BehaviorSubject<Selectable[]>) {
+        // unsubscribe to old subscription.
+        if (this._inputListSubscription) {
+            this._inputListSubscription.unsubscribe();
+        }
+        this._inputListSubject = value;
+        this._inputListSubscription = this._inputListSubject.subscribe(values => {
+            this.filterItems();
+        });
+    }
 
     /**
      * Placeholder of the List
@@ -111,7 +131,9 @@ export class SearchValueSelectorComponent implements OnInit {
      * onInit with filter ans subscription on filter
      */
     public ngOnInit(): void {
-        this.filteredItems.next(this.InputListValues.getValue());
+        if (this._inputListSubject) {
+            this.filteredItems.next(this._inputListSubject.getValue());
+        }
         // listen to value changes
         this.filterControl.valueChanges.pipe(takeUntil(this._onDestroy)).subscribe(() => {
             this.filterItems();
@@ -119,23 +141,33 @@ export class SearchValueSelectorComponent implements OnInit {
     }
 
     /**
+     * Unsubscribe on destroing.
+     */
+    public ngOnDestroy(): void {
+        if (this._inputListSubscription) {
+            this._inputListSubscription.unsubscribe();
+        }
+        this._onDestroy.next();
+    }
+
+    /**
      * the filter function itself
      */
     private filterItems(): void {
-        if (!this.InputListValues) {
+        if (!this._inputListSubject) {
             return;
         }
         // get the search keyword
         let search = this.filterControl.value;
         if (!search) {
-            this.filteredItems.next(this.InputListValues.getValue());
+            this.filteredItems.next(this._inputListSubject.getValue());
             return;
         } else {
             search = search.toLowerCase();
         }
         // filter the values
         this.filteredItems.next(
-            this.InputListValues.getValue().filter(
+            this._inputListSubject.getValue().filter(
                 selectedItem =>
                     selectedItem
                         .toString()

@@ -40,6 +40,13 @@ export class PermsDirective extends OpenSlidesComponent {
     private alternative: boolean;
 
     /**
+     * Switch, to invert the result of checkPermission. Usefull for using osPerms as if-else:
+     * For one element you can use `*osPerms="'perm'"` and for the else-element use
+     * `*osPerms="'perm';complement: true"`.
+     */
+    private complement: boolean;
+
+    /**
      * Constructs the directive once. Observes the operator for it's groups so the
      * directive can perform changes dynamically
      *
@@ -86,6 +93,15 @@ export class PermsDirective extends OpenSlidesComponent {
     }
 
     /**
+     * COmes from the view.
+     */
+    @Input('osPermsComplement')
+    public set osPermsComplement(value: boolean) {
+        this.complement = value;
+        this.updateView();
+    }
+
+    /**
      * Shows or hides certain content in the view.
      */
     private updateView(): void {
@@ -108,6 +124,11 @@ export class PermsDirective extends OpenSlidesComponent {
      * Returns true if the users permissions fit.
      */
     private checkPermissions(): boolean {
-        return this.permissions.length === 0 || this.operator.hasPerms(...this.permissions);
+        const hasPerms = this.permissions.length === 0 || this.operator.hasPerms(...this.permissions);
+        if (this.complement) {
+            return !hasPerms;
+        } else {
+            return hasPerms;
+        }
     }
 }
