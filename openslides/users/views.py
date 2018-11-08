@@ -1,4 +1,5 @@
 import smtplib
+import textwrap
 from typing import List
 
 from asgiref.sync import async_to_sync
@@ -10,10 +11,13 @@ from django.contrib.auth import (
 )
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.password_validation import validate_password
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.sites.shortcuts import get_current_site
 from django.core import mail
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
-from django.utils.encoding import force_text
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.translation import ugettext as _
 
 from ..core.config import config
@@ -529,3 +533,113 @@ class SetPasswordView(APIView):
         else:
             raise ValidationError({'detail': _('Old password does not match.')})
         return super().post(request, *args, **kwargs)
+
+
+class PasswordResetView(APIView):
+    """
+    Users can send an email to themselves to get a password reset email.
+
+    Send POST request with {'email': <email addresss>} and all users with this
+    address will receive an email (means Django sends one or more emails to
+    this address) with a one-use only link.
+    """
+    http_method_names = ['post']
+    use_https = False  # TODO: Do we use https?
+
+    def post(self, request, *args, **kwargs):
+        """
+        Loop over all users and send emails.
+        """
+        to_email = request.data.get('email')
+        for user in self.get_users(to_email):
+            current_site = get_current_site(request)
+            site_name = current_site.name
+            context = {
+                'email': to_email,
+                'site_name': site_name,
+                'protocol': 'https' if self.use_https else 'http',
+                'domain': current_site.domain,
+                'path': '/login/reset-password-confirm/',
+                'user_id': urlsafe_base64_encode(force_bytes(user.pk)).decode(),
+                'token': default_token_generator.make_token(user),
+                'username': user.get_username(),
+            }
+            # Send a django.core.mail.EmailMessage to `to_email`.
+            subject = _('Password reset for {}').format(site_name)
+            subject = ''.join(subject.splitlines())
+            body = self.get_email_body(**context)
+            from_email = None  # TODO: Add nice from_email here.
+            email_message = mail.EmailMessage(subject, body, from_email, [to_email])
+            email_message.send()
+        return super().post(request, *args, **kwargs)
+
+    def get_users(self, email):
+        """Given an email, return matching user(s) who should receive a reset.
+
+        This allows subclasses to more easily customize the default policies
+        that prevent inactive users and users with unusable passwords from
+        resetting their password.
+        """
+        active_users = User.objects.filter(**{
+            'email__iexact': email,
+            'is_active': True,
+        })
+        return (u for u in active_users if u.has_usable_password())
+
+    def get_email_body(self, **context):
+        """
+        Add context to email template and return the complete body.
+        """
+        return textwrap.dedent(
+            """
+            You're receiving this email because you requested a password reset for your user account at {site_name}.
+
+            Please go to the following page and choose a new password:
+
+            {protocol}://{domain}{path}?user_id={user_id}&token={token}
+
+            Your username, in case you've forgotten: {username}
+
+            Thanks for using our site!
+
+            The {site_name} team.
+            """
+        ).format(**context)
+
+
+class PasswordResetConfirmView(APIView):
+    """
+    View to reset the password.
+
+    Send POST request with {'user_id': <encoded user id>, 'token': <token>,
+    'password' <new password>} to set password of this user to the new one.
+    """
+    http_method_names = ['post']
+
+    def post(self, request, *args, **kwargs):
+        uidb64 = request.data.get('user_id')
+        token = request.data.get('token')
+        password = request.data.get('password')
+        if not (uidb64 and token and password):
+            raise ValidationError({'detail': _('You have to provide user_id, token and password.')})
+        user = self.get_user(uidb64)
+        if user is None:
+            raise ValidationError({'detail': _('User does not exist.')})
+        if not default_token_generator.check_token(user, token):
+            raise ValidationError({'detail': _('Invalid token.')})
+        try:
+            validate_password(password, user=user)
+        except DjangoValidationError as errors:
+            raise ValidationError({'detail': ' '.join(errors)})
+        user.set_password(password)
+        user.save()
+        return super().post(request, *args, **kwargs)
+
+    def get_user(self, uidb64):
+        try:
+            # urlsafe_base64_decode() decodes to bytestring
+            uid = urlsafe_base64_decode(uidb64).decode()
+            user = User.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+        return user

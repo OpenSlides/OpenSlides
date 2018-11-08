@@ -20,4 +20,12 @@ urlpatterns = [
     url(r'^setpassword/$',
         views.SetPasswordView.as_view(),
         name='user_setpassword'),
+
+    url(r'^reset-password/$',
+        views.PasswordResetView.as_view(),
+        name='user_reset_password'),
+
+    url(r'^reset-password-confirm/$',
+        views.PasswordResetConfirmView.as_view(),
+        name='password_reset_confirm'),
 ]

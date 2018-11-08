@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { BaseComponent } from 'app/base.component';
 import { AuthService } from 'app/core/services/auth.service';
@@ -72,6 +72,7 @@ export class LoginMaskComponent extends BaseComponent implements OnInit, OnDestr
         private authService: AuthService,
         private operator: OperatorService,
         private router: Router,
+        private route: ActivatedRoute,
         private formBuilder: FormBuilder,
         private http: HttpService,
         private matSnackBar: MatSnackBar,
@@ -151,10 +152,10 @@ export class LoginMaskComponent extends BaseComponent implements OnInit, OnDestr
     }
 
     /**
-     * TODO, should open an edit view for the users password.
+     * Go to the reset password view
      */
     public resetPassword(): void {
-        console.log('TODO');
+        this.router.navigate(['./reset-password'], { relativeTo: this.route });
     }
 
     /**
