@@ -1,5 +1,5 @@
-<os-head-bar [mainButton]="opCanEdit()" buttonIcon="edit" [nav]="false" [editMode]="editMotion" (mainEvent)="setEditMode(!editMotion)"
-    (saveEvent)="saveMotion()">
+<os-head-bar [mainButton]="opCanEdit()" mainButtonIcon="edit" [nav]="false" [editMode]="editMotion"
+    (mainEvent)="setEditMode(!editMotion)" (saveEvent)="saveMotion()">
 
     <!-- Title -->
     <div class="title-slot">
@@ -73,7 +73,7 @@
     <h2 *ngIf="editMotion">{{ contentForm.get("title").value }}</h2>
 </div>
 
-<ng-container *ngIf="vp.isMobile ; then mobileView; else desktopView"></ng-container>
+<ng-container *ngIf="vp.isMobile; then mobileView; else desktopView"></ng-container>
 
 <ng-template #mobileView>
     <mat-accordion multi='true' class='on-transition-fade'>
@@ -297,7 +297,6 @@
         <mat-form-field *ngIf="motion && editMotion" class="wide-form">
             <textarea matInput placeholder="{{ 'Motion text' | translate }}" formControlName='text' [value]='motionCopy.text' required></textarea>
         </mat-form-field>
-
 
         <!-- Reason -->
         <div *ngIf="motion && motion.reason || editMotion">

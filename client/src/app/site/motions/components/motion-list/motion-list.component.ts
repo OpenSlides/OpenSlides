@@ -60,7 +60,14 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
         super.setTitle('Motions');
         this.initTable();
         this.repo.getViewModelListObservable().subscribe(newMotions => {
-            this.dataSource.data = newMotions;
+            // TODO: This is for testing purposes. Can be removed with #3963
+            this.dataSource.data = newMotions.sort((a, b) => {
+                if (a.weight !== b.weight) {
+                    return a.weight - b.weight;
+                } else {
+                    return a.id - b.id;
+                }
+            });
         });
     }
 

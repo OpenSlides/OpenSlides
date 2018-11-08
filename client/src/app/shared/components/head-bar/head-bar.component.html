@@ -32,7 +32,7 @@
         <!-- Main action button - desktop -->
         <button mat-mini-fab color="accent" class="on-transition-fade" *ngIf="mainButton && !editMode && !vp.isMobile"
             (click)="sendMainEvent()">
-            <mat-icon>{{ buttonIcon }}</mat-icon>
+            <mat-icon>{{ mainButtonIcon }}</mat-icon>
         </button>
 
         <!-- Save button -->
@@ -47,5 +47,5 @@
 
 <!-- Main action button - mobile-->
 <button mat-fab class="head-button on-transition-fade" *ngIf="mainButton && !editMode && vp.isMobile" (click)=sendMainEvent()>
-    <mat-icon>{{ buttonIcon }}</mat-icon>
+    <mat-icon>{{ mainButtonIcon }}</mat-icon>
 </button>

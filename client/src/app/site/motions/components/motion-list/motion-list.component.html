@@ -12,7 +12,7 @@
     </div>
 </os-head-bar>
 
-<div class='custom-table-header on-transition-fade'>
+<div class="custom-table-header on-transition-fade">
     <button mat-button>
         <span translate>SORT</span>
     </button>
@@ -21,13 +21,13 @@
     </button>
 </div>
 
-<mat-table class='os-listview-table on-transition-fade' [dataSource]="dataSource" matSort>
+<mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
     <!-- identifier column -->
     <ng-container matColumnDef="identifier">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Identifier</mat-header-cell>
         <mat-cell *matCellDef="let motion">
-            <div class='innerTable'>
-                {{motion.identifier}}
+            <div class="innerTable">
+                {{ motion.identifier }}
             </div>
         </mat-cell>
     </ng-container>
@@ -36,12 +36,12 @@
     <ng-container matColumnDef="title">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
         <mat-cell *matCellDef="let motion">
-            <div class='innerTable'>
-                <span class='motion-list-title'>{{motion.title}}</span>
+            <div class="innerTable">
+                <span class="motion-list-title">{{ motion.title }}</span>
                 <br>
-                <span class='motion-list-from'>
+                <span class="motion-list-from">
                     <span translate>by</span>
-                    {{motion.submitters}}
+                    {{ motion.submitters }}
                 </span>
             </div>
         </mat-cell>
@@ -51,20 +51,19 @@
     <ng-container matColumnDef="state">
         <mat-header-cell *matHeaderCellDef mat-sort-header>State</mat-header-cell>
         <mat-cell *matCellDef="let motion">
-            <div *ngIf='isDisplayIcon(motion.state) && motion.state' class='innerTable'>
-                <mat-icon>{{getStateIcon(motion.state)}}</mat-icon>
+            <div *ngIf="isDisplayIcon(motion.state) && motion.state" class="innerTable">
+                <mat-icon>{{ getStateIcon(motion.state) }}</mat-icon>
             </div>
         </mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="columnsToDisplayMinWidth"></mat-header-row>
-    <mat-row (click)='selectMotion(row)' *matRowDef="let row; columns: columnsToDisplayMinWidth"></mat-row>
+    <mat-row (click)="selectMotion(row)" *matRowDef="let row; columns: columnsToDisplayMinWidth"></mat-row>
 </mat-table>
 
 <mat-paginator class="on-transition-fade" [pageSizeOptions]="[25, 50, 75, 100, 125]"></mat-paginator>
 
 <mat-menu #motionListMenu="matMenu">
-
     <button mat-menu-item (click)="downloadMotions()">
         <mat-icon>archive</mat-icon>
         <span translate>Export ...</span>
@@ -85,4 +84,8 @@
         <span translate>Statute paragraphs</span>
     </button>
 
+    <button mat-menu-item *osPerms="'motions.can_manage'" routerLink="call-list">
+        <mat-icon>sort</mat-icon>
+        <span translate>Call list</span>
+    </button>
 </mat-menu>

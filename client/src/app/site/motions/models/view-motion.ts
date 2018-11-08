@@ -84,6 +84,14 @@ export class ViewMotion extends BaseViewModel {
         return this.motion ? this.motion.reason : null;
     }
 
+    public get weight(): number {
+        return this.motion ? this.motion.weight : null;
+    }
+
+    public get sort_parent_id(): number {
+        return this.motion ? this.motion.sort_parent_id : null;
+    }
+
     public get category(): Category {
         return this._category;
     }
@@ -133,7 +141,9 @@ export class ViewMotion extends BaseViewModel {
     }
 
     public get possibleRecommendations(): WorkflowState[] {
-        return this.workflow ? this.workflow.states.filter(recommendation => recommendation.recommendation_label !== undefined) : null;
+        return this.workflow
+            ? this.workflow.states.filter(recommendation => recommendation.recommendation_label !== undefined)
+            : null;
     }
 
     public get origin(): string {
@@ -179,10 +189,9 @@ export class ViewMotion extends BaseViewModel {
         this.highlightedLine = null;
     }
 
-    // TODO aware of issues here?
     public getTitle(): string {
-        if (this.category) {
-            return this.category.prefix + ' - ' + this.title;
+        if (this.identifier) {
+            return this.identifier + ' - ' + this.title;
         }
         return this.title;
     }

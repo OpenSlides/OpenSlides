@@ -1,12 +1,13 @@
-<os-head-bar [mainButton]="true" [nav]="false" [editMode]="editGroup" (mainEvent)="setEditMode(!editGroup)" (saveEvent)="saveGroup()">
-
+<os-head-bar [mainButton]="true" [nav]="false" [editMode]="editGroup"
+    (mainEvent)="setEditMode(!editGroup)" (saveEvent)="saveGroup()">
     <!-- Title -->
     <div class="title-slot">
         <h2 *ngIf="!editGroup && !newGroup" translate>Groups</h2>
 
         <form *ngIf="editGroup" [formGroup]="groupForm" (ngSubmit)="saveGroup()" (keydown)="keyDownFunction($event)">
             <mat-form-field>
-                <input type="text" matInput osAutofocus required formControlName="name" placeholder="{{ 'New group name' | translate}}">
+                <input type="text" matInput osAutofocus required formControlName="name"
+                    placeholder="{{ 'New group name' | translate}}">
                 <mat-error *ngIf="groupForm.invalid" translate>Required</mat-error>
             </mat-form-field>
         </form>
@@ -35,7 +36,7 @@
         </mat-expansion-panel-header>
 
         <div class="scrollable-perm-matrix">
-            <table mat-table class='on-transition-fade' [dataSource]="getTableDataSource(app.permissions)">
+            <table mat-table class="on-transition-fade" [dataSource]="getTableDataSource(app.permissions)">
                 <ng-container matColumnDef="perm" sticky>
                     <mat-header-cell *matHeaderCellDef translate>Permissions</mat-header-cell>
                     <mat-cell *matCellDef="let perm">
@@ -53,7 +54,7 @@
                         <mat-cell *matCellDef="let perm">
                             <div class="inner-table">
                                 <mat-checkbox *ngIf="group.id !== 2" [checked]="group.hasPermission(perm.value)"
-                                    (change)='togglePerm(group, perm.value)'></mat-checkbox>
+                                    (change)="togglePerm(group, perm.value)"></mat-checkbox>
                                 <mat-checkbox *ngIf="group.id === 2" [checked]="true" [disabled]="true"></mat-checkbox>
                             </div>
                         </mat-cell>

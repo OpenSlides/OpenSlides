@@ -150,6 +150,16 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
     }
 
     /**
+     * Sorts motions for the call list by the given list of ids (as identifiables with
+     * the format `{id: <id>}`).
+     * @param motionIds all motion ids in the new order.
+     */
+    public async sortMotions(motionIds: Identifiable[]): Promise<void> {
+        const url = '/rest/motions/motion/sort/';
+        await this.httpService.post(url, { nodes: motionIds });
+    }
+
+    /**
      * Format the motion text using the line numbering and change
      * reco algorithm.
      *

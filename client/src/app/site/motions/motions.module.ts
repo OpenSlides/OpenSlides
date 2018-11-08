@@ -14,6 +14,7 @@ import { MotionDetailDiffComponent } from './components/motion-detail-diff/motio
 import { MotionCommentsComponent } from './components/motion-comments/motion-comments.component';
 import { MetaTextBlockComponent } from './components/meta-text-block/meta-text-block.component';
 import { PersonalNoteComponent } from './components/personal-note/personal-note.component';
+import { CallListComponent } from './components/call-list/call-list.component';
 
 @NgModule({
     imports: [CommonModule, MotionsRoutingModule, SharedModule],
@@ -28,7 +29,8 @@ import { PersonalNoteComponent } from './components/personal-note/personal-note.
         MotionDetailDiffComponent,
         MotionCommentsComponent,
         MetaTextBlockComponent,
-        PersonalNoteComponent
+        PersonalNoteComponent,
+        CallListComponent
     ],
     entryComponents: [
         MotionChangeRecommendationComponent,
