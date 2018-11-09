@@ -51,9 +51,12 @@
     <ng-container matColumnDef="state">
         <mat-header-cell *matHeaderCellDef mat-sort-header>State</mat-header-cell>
         <mat-cell *matCellDef="let motion">
-            <div *ngIf="isDisplayIcon(motion.state) && motion.state" class="innerTable">
+            <!--div *ngIf='isDisplayIcon(motion.state) && motion.state' class='innerTable'>
                 <mat-icon>{{ getStateIcon(motion.state) }}</mat-icon>
-            </div>
+            </div>-->
+            <mat-chip-list>
+                <mat-chip color="accent">{{ motion.state }}</mat-chip>
+            </mat-chip-list>
         </mat-cell>
     </ng-container>
 

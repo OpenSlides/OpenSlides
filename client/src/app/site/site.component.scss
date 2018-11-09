@@ -5,17 +5,26 @@
 }
 
 .os-logo-container {
-    min-width: 240px;
+    width: 200px;
+    margin-left: 10px;
     background-image: url(/assets/img/openslides-logo-h-dark-transparent.svg);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
     cursor: pointer;
 }
+.os-logo-container:focus,
+.os-logo-container:active,
+.os-logo-container:hover,
+ {
+    border: none;
+    outline: none;
+}
 
 .side-panel {
     border: 0;
     box-shadow: 3px 0px 10px 0px rgba(0, 0, 0, 0.2);
+    width: 260px;
 }
 
 .content {

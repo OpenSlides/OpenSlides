@@ -143,7 +143,7 @@
         <div *ngIf="editMotion && !newMotion">
             <!-- <div *ngIf="editMotion"> -->
             <div *ngIf='!editMotion'>
-                <h3 translate>Identifier</h3>
+                <h4 translate>Identifier</h4>
                 {{ motion.identifier }}
             </div>
             <mat-form-field *ngIf="editMotion">
@@ -152,15 +152,15 @@
         </div>
 
         <!-- Submitter -->
-        <div *ngIf="motion && motion.submitters || editMotion">
-            <div *ngIf="editMotion">
+        <div *ngIf="motion && motion.submitters || newMotion">
+            <div *ngIf="newMotion">
                 <div *osPerms="['motions.can_manage', 'motions.can_manage_metadata']">
                     <os-search-value-selector ngDefaultControl [form]="metaInfoForm" [formControl]="this.metaInfoForm.get('submitters_id')"
-                        [multiple]="true" listname="Submitter" [InputListValues]="this.submitterObserver"></os-search-value-selector>
+                        [multiple]="true" listname="{{ 'Submitters' | translate }}" [InputListValues]="this.submitterObserver"></os-search-value-selector>
                 </div>
             </div>
-            <div *ngIf="!editMotion || !newMotion">
-                <h3 translate>Submitters</h3>
+            <div *ngIf="!editMotion && !newMotion">
+                <h4 translate>Submitters</h4>
                 <mat-chip-list *ngFor="let submitter of motion.submitters">
                     <mat-chip>{{ submitter.full_name }}</mat-chip>
                 </mat-chip-list>
@@ -177,7 +177,7 @@
                 </div>
             </div>
             <div *ngIf="!editMotion && motion.hasSupporters()">
-                <h3 translate>Supporters</h3>
+                <h4 translate>Supporters</h4>
                 <ul *ngFor="let supporter of motion.supporters">
                     <li>{{ supporter.full_name }}</li>
                 </ul>
@@ -188,7 +188,7 @@
         <div *ngIf='motion && motion.state'>
             <div *osPerms="['motions.can_manage', 'motions.can_manage_metadata'];complement:true">
                 <ng-container *ngIf="!newMotion">
-                        <h3 translate>State</h3>
+                        <h4 translate>State</h4>
                         {{ motion.state }}
                 </ng-container>
             </div>
@@ -226,7 +226,7 @@
         <!-- Category -->
         <div *ngIf="motion && motion.category_id || editMotion">
             <div *ngIf='!editMotion'>
-                <h3 translate>Category</h3>
+                <h4 translate>Category</h4>
                 {{ motion.category }}
             </div>
             <div *ngIf="editMotion || newMotion">
@@ -238,7 +238,7 @@
         <!-- Origin -->
         <div *ngIf="motion && motion.origin || editMotion">
             <div *ngIf='!editMotion'>
-                <h3 translate> Origin</h3>
+                <h4 translate>Origin</h4>
                 {{ motion.origin }}
             </div>
             <div *osPerms="['motions.can_manage', 'motions.can_manage_metadata']">
@@ -250,7 +250,7 @@
 
         <!-- Voting -->
         <!-- <div *ngIf='motion.polls && motion.polls.length > 0 || editMotion'>
-                <h3 translate>Voting</h3>
+                <h4 translate>Voting</h4>
             </div> -->
     </form>
 </ng-template>
@@ -259,7 +259,7 @@
     <form class="motion-content" [formGroup]='contentForm' (ngSubmit)='saveMotion()'>
 
         <!-- Line Number and Diff buttons-->
-        <div class="motion-text-controls">
+        <div *ngIf="!editMotion" class="motion-text-controls">
             <button type="button" mat-icon-button [matMenuTriggerFor]="lineNumberingMenu" matTooltip="{{ 'Line numbering' | translate }}">
                 <mat-icon>format_list_numbered</mat-icon>
             </button>

@@ -9,8 +9,7 @@
     /** identifier */
     .mat-column-identifier {
         padding-left: 10px;
-        padding-right: 30px;
-        flex: 0 0 40px;
+        flex: 0 0 50px;
         line-height: 60px; // set the text in the vertical middle, since vertical-align will not work
         display: initial; // reset display
         text-align: center; // center text
@@ -35,8 +34,8 @@
 
     /** State */
     .mat-column-state {
-        flex: 0 0 30px;
-        text-align: center;
+        flex: 0 0 160px;
+        justify-content:flex-end !important;
 
         mat-icon {
             font-size: 150%;
