@@ -19,7 +19,11 @@ import { CollectionStringModelMapperService } from '../../../core/services/colle
 })
 export class UserRepositoryService extends BaseRepository<ViewUser, User> {
     /**
-     * Constructor calls the parent constructor
+     * Constructor for the user repo
+     *
+     * @param DS The DataStore
+     * @param mapperService Maps collection strings to classes
+     * @param dataSend sending changed objects
      */
     public constructor(
         DS: DataStoreService,

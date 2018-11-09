@@ -11,6 +11,7 @@ import { AssignmentsAppConfig } from '../../site/assignments/assignments.config'
 import { UsersAppConfig } from '../../site/users/users.config';
 import { TagAppConfig } from '../../site/tags/tag.config';
 import { MainMenuService } from './main-menu.service';
+import { HistoryAppConfig } from 'app/site/history/history.config';
 
 /**
  * A list of all app configurations of all delivered apps.
@@ -23,7 +24,8 @@ const appConfigs: AppConfig[] = [
     MotionsAppConfig,
     MediafileAppConfig,
     TagAppConfig,
-    UsersAppConfig
+    UsersAppConfig,
+    HistoryAppConfig
 ];
 
 /**

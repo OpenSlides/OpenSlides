@@ -86,6 +86,11 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
 
     /**
      * Constructor for ConfigRepositoryService. Requests the constants from the server and creates the config group structure.
+     *
+     * @param DS The DataStore
+     * @param mapperService Maps collection strings to classes
+     * @param dataSend sending changed objects
+     * @param http OpenSlides own HTTP Service
      */
     public constructor(
         DS: DataStoreService,

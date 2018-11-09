@@ -1,3 +1,7 @@
+<div class="history-mode-indicator" *ngIf="OSStatus.isInHistoryMode">
+    <span translate>You are using the history mode of OpenSlides. Changes will not be saved.</span>
+    <a (click)="timeTravel.resumeTime()" translate>Exit</a>
+</div>
 <mat-sidenav-container #siteContainer class='main-container' (backdropClick)="toggleSideNav()">
     <mat-sidenav #sideNav [mode]="vp.isMobile ? 'push' : 'side'" [opened]='!vp.isMobile' disableClose='!vp.isMobile'
         class="side-panel">

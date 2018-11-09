@@ -10,6 +10,8 @@ import { pageTransition, navItemAnim } from 'app/shared/animations';
 import { MatDialog, MatSidenav } from '@angular/material';
 import { ViewportService } from '../core/services/viewport.service';
 import { MainMenuService } from '../core/services/main-menu.service';
+import { OpenSlidesStatusService } from 'app/core/services/openslides-status.service';
+import { TimeTravelService } from 'app/core/services/time-travel.service';
 
 @Component({
     selector: 'os-site',
@@ -48,11 +50,14 @@ export class SiteComponent extends BaseComponent implements OnInit {
      * Constructor
      *
      * @param authService
-     * @param router
+     * @param route
      * @param operator
      * @param vp
      * @param translate
      * @param dialog
+     * @param mainMenuService
+     * @param OSStatus
+     * @param timeTravel
      */
     public constructor(
         private authService: AuthService,
@@ -61,7 +66,9 @@ export class SiteComponent extends BaseComponent implements OnInit {
         public vp: ViewportService,
         public translate: TranslateService,
         public dialog: MatDialog,
-        public mainMenuService: MainMenuService // used in the component
+        public mainMenuService: MainMenuService,
+        public OSStatus: OpenSlidesStatusService,
+        public timeTravel: TimeTravelService
     ) {
         super();
 

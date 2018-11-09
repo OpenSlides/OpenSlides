@@ -46,6 +46,10 @@ const routes: Routes = [
             {
                 path: 'tags',
                 loadChildren: './tags/tag.module#TagModule'
+            },
+            {
+                path: 'history',
+                loadChildren: './history/history.module#HistoryModule'
             }
         ],
         canActivateChild: [AuthGuard]

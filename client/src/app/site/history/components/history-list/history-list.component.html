@@ -1,0 +1,58 @@
+<os-head-bar>
+    <!-- Title -->
+    <div class="title-slot">History</div>
+
+    <!-- Menu -->
+    <div class="menu-slot">
+        <button type="button" mat-icon-button [matMenuTriggerFor]="historyMenu"><mat-icon>more_vert</mat-icon></button>
+    </div>
+</os-head-bar>
+
+<mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
+    <!-- Timestamp -->
+    <ng-container matColumnDef="time">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Time</mat-header-cell>
+        <mat-cell *matCellDef="let history"> {{ history.getLocaleString('DE-de') }} </mat-cell>
+    </ng-container>
+
+    <!-- Info -->
+    <ng-container matColumnDef="info">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Info</mat-header-cell>
+        <mat-cell *matCellDef="let history"> {{ history.information }} </mat-cell>
+    </ng-container>
+
+    <!-- Element -->
+    <ng-container matColumnDef="element">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Element</mat-header-cell>
+
+        <!-- <mat-cell *matCellDef="let history"> {{ history.element_id }} </mat-cell> -->
+        <mat-cell *matCellDef="let history">
+            <div *ngIf="getElementInfo(history)">{{ getElementInfo(history) }}</div>
+            <div
+                class="no-info"
+                matTooltip="{{ 'Select an entry where information at this time was still present' | translate }}"
+                *ngIf="!getElementInfo(history)"
+            >
+                <span>{{ 'No information available' | translate }} ({{ history.element_id }})</span>
+            </div>
+        </mat-cell>
+    </ng-container>
+
+    <!-- User -->
+    <ng-container matColumnDef="user">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>User</mat-header-cell>
+        <mat-cell *matCellDef="let history"> {{ history.user }} </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="getRowDef()"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: getRowDef()" (click)="onClickRow(row)"></mat-row>
+</mat-table>
+
+<mat-paginator class="on-transition-fade" [pageSizeOptions]="[25, 50, 75, 100, 125]"></mat-paginator>
+
+<mat-menu #historyMenu="matMenu">
+    <button mat-menu-item class="red-warning-text" (click)="onDeleteAllButton()">
+        <mat-icon>delete</mat-icon>
+        <span translate>Delete whole history</span>
+    </button>
+</mat-menu>

@@ -16,11 +16,7 @@ export class LocalPermissionsService {
         private configService: ConfigService,
     ) {
         // load config variables
-        this.configService.get('motions_min_supporters').subscribe(
-            (supporters: number): void => {
-                this.configMinSupporters = supporters;
-            }
-        );
+        this.configService.get('motions_min_supporters').subscribe(supporters => (this.configMinSupporters = supporters));
     }
 
     /**

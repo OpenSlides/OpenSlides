@@ -40,15 +40,19 @@ import { ViewMotionAmendedParagraph } from '../models/view-motion-amended-paragr
     providedIn: 'root'
 })
 export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> {
+
     /**
      * Creates a MotionRepository
      *
      * Converts existing and incoming motions to ViewMotions
      * Handles CRUD using an observer to the DataStore
-     * @param {DataStoreService} DS
-     * @param {DataSendService} dataSend
-     * @param {LinenumberingService} lineNumbering
-     * @param {DiffService} diff
+     *
+     * @param DS The DataStore
+     * @param mapperService Maps collection strings to classes
+     * @param dataSend sending changed objects
+     * @param httpService OpenSlides own Http service
+     * @param lineNumbering Line numbering for motion text
+     * @param diff Display changes in motion text as diff.
      */
     public constructor(
         DS: DataStoreService,

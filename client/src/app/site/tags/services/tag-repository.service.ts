@@ -25,7 +25,10 @@ export class TagRepositoryService extends BaseRepository<ViewTag, Tag> {
      * Creates a TagRepository
      * Converts existing and incoming Tags to ViewTags
      * Handles CRUD using an observer to the DataStore
-     * @param DataSend
+     *
+     * @param DS DataStore
+     * @param mapperService Maps collection strings to classes
+     * @param dataSend sending changed objects
      */
     public constructor(
         protected DS: DataStoreService,

@@ -32,8 +32,10 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<ViewCh
      *
      * Converts existing and incoming motions to ViewMotions
      * Handles CRUD using an observer to the DataStore
-     * @param DS
-     * @param dataSend
+     *
+     * @param DS The DataStore
+     * @param mapperService Maps collection strings to classes
+     * @param dataSend sending changed objects
      */
     public constructor(
         DS: DataStoreService,

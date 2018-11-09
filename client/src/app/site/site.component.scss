@@ -15,8 +15,7 @@
 }
 .os-logo-container:focus,
 .os-logo-container:active,
-.os-logo-container:hover,
- {
+.os-logo-container:hover {
     border: none;
     outline: none;
 }
@@ -40,6 +39,31 @@ mat-sidenav-container {
 .relax {
     position: initial;
     padding-bottom: 70px;
+}
+
+.history-mode-indicator {
+    position: fixed;
+    width: 100%;
+    z-index: 10;
+    background: repeating-linear-gradient(45deg, #ffee00, #ffee00 10px, #070600 10px, #000000 20px);
+    text-align: center;
+    line-height: 20px;
+    height: 20px;
+
+    span {
+        padding: 2px;
+        color: #000000;
+        background: #ffee00;
+    }
+
+    a {
+        padding: 2px;
+        cursor: pointer;
+        font-weight: bold;
+        text-decoration: none;
+        background: #ffee00;
+        color: #000000;
+    }
 }
 
 main {

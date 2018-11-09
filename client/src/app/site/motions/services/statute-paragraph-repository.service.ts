@@ -22,7 +22,10 @@ export class StatuteParagraphRepositoryService extends BaseRepository<ViewStatut
      * Creates a StatuteParagraphRepository
      * Converts existing and incoming statute paragraphs to ViewStatuteParagraphs
      * Handles CRUD using an observer to the DataStore
-     * @param DataSend
+     *
+     * @param DS The DataStore
+     * @param mapperService Maps collection strings to classes
+     * @param dataSend sending changed objects
      */
     public constructor(
         DS: DataStoreService,
