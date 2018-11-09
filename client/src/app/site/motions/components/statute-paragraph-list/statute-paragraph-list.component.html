@@ -1,5 +1,4 @@
 <os-head-bar [nav]="false" [mainButton]="true" (mainEvent)="onPlusButton()">
-
     <!-- Title -->
     <div class="title-slot">
         <h2 translate>Statute paragraphs</h2>
@@ -11,9 +10,7 @@
             <mat-icon>more_vert</mat-icon>
         </button>
     </div>
-
 </os-head-bar>
-
 
 <div class="head-spacer"></div>
 <mat-card *ngIf="statuteParagraphToCreate">
@@ -48,6 +45,7 @@
         </button>
     </mat-card-actions>
 </mat-card>
+
 <mat-accordion class="os-card">
     <mat-expansion-panel *ngFor="let statuteParagraph of this.statuteParagraphs" (opened)="openId = statuteParagraph.id"
         (closed)="panelClosed(statuteParagraph)" [expanded]="openId === statuteParagraph.id" multiple="false">
@@ -103,6 +101,7 @@
         </mat-action-row>
     </mat-expansion-panel>
 </mat-accordion>
+
 <mat-card *ngIf="statuteParagraphs.length === 0">
     <mat-card-content>
         <div class="no-content" translate>No statute paragraphs</div>

@@ -5,19 +5,19 @@
     </div>
 </os-head-bar>
 
-<mat-table class='os-listview-table on-transition-fade' [dataSource]="dataSource" matSort>
+<mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
     <!-- title column -->
     <ng-container matColumnDef="title">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> Topic </mat-header-cell>
-        <mat-cell *matCellDef="let item"> {{item.getListTitle()}} </mat-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Topic</mat-header-cell>
+        <mat-cell *matCellDef="let item">{{ item.getListTitle() }}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="duration">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> Duration </mat-header-cell>
-        <mat-cell *matCellDef="let item"> {{item.duration}} </mat-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Duration</mat-header-cell>
+        <mat-cell *matCellDef="let item">{{ item.duration }}</mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="['title', 'duration']"></mat-header-row>
-    <mat-row (click)='selectAgendaItem(row)' *matRowDef="let row; columns: ['title', 'duration']"></mat-row>
+    <mat-row (click)="selectAgendaItem(row)" *matRowDef="let row; columns: ['title', 'duration']"></mat-row>
 </mat-table>
 <mat-paginator class="on-transition-fade" [pageSizeOptions]="[25, 50, 75, 100, 125]"></mat-paginator>

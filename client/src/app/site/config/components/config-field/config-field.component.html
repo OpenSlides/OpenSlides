@@ -1,6 +1,5 @@
 <form class="config-form-group" [formGroup]="form" *ngIf="configItem.inputType !== 'boolean'">
     <mat-form-field>
-
         <!-- Decides which input-type to take (i.e) date, select, textarea, input) -->
         <ng-container [ngSwitch]="configItem.inputType">
             <ng-container *ngSwitchCase="'datetimepicker'">
@@ -50,9 +49,9 @@
             <input matInput formControlName="value" [value]="configItem.value" [errorStateMatcher]="matcher"
             [type]="formType(configItem.inputType)">
         </ng-template>
-
     </mat-form-field>
 </form>
+
 <div class="config-form-group" *ngIf="configItem.inputType === 'boolean'">
     <mat-checkbox [checked]="configItem.value" (change)="onChange($event.checked)">
         {{ configItem.label | translate }}

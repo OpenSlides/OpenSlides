@@ -25,12 +25,8 @@
                     <!-- <span translate>minutes</span> -->
                     <span>&nbsp;(</span> <span translate>Start time</span> <span>:&nbsp;{{ speaker.begin_time }})</span>
                 </div>
-                <button
-                    mat-stroked-button
-                    matTooltip="{{ 'Remove' | translate }}"
-                    *osPerms="'agenda.can_manage_list_of_speakers'"
-                    (click)="onDeleteButton(speaker)"
-                >
+                <button mat-stroked-button matTooltip="{{ 'Remove' | translate }}"
+                    *osPerms="'agenda.can_manage_list_of_speakers'" (click)="onDeleteButton(speaker)">
                     <mat-icon>close</mat-icon>
                 </button>
             </mat-list-item>
@@ -42,12 +38,8 @@
         <mat-icon class="speaking-icon">play_arrow</mat-icon>
         <span class="speaking-name">{{ activeSpeaker }}</span>
 
-        <button
-            mat-stroked-button
-            matTooltip="{{ 'End speech' | translate }}"
-            *osPerms="'agenda.can_manage_list_of_speakers'"
-            (click)="onStopButton()"
-        >
+        <button mat-stroked-button matTooltip="{{ 'End speech' | translate }}"
+            *osPerms="'agenda.can_manage_list_of_speakers'" (click)="onStopButton()">
             <mat-icon>mic_off</mat-icon>
             <span translate>Stop</span>
         </button>
@@ -61,17 +53,13 @@
                 <ng-template let-item>
                     <div class="speak-action-buttons">
                         <mat-button-toggle-group>
-                            <mat-button-toggle
-                                matTooltip="{{ 'Begin speech' | translate }}"
-                                (click)="onStartButton(item)"
-                            >
+                            <mat-button-toggle matTooltip="{{ 'Begin speech' | translate }}"
+                                (click)="onStartButton(item)">
                                 <mat-icon>mic</mat-icon>
                                 <span translate>Start</span>
                             </mat-button-toggle>
-                            <mat-button-toggle
-                                matTooltip="{{ 'Mark speaker' | translate }}"
-                                (click)="onMarkButton(item)"
-                            >
+                            <mat-button-toggle matTooltip="{{ 'Mark speaker' | translate }}"
+                                (click)="onMarkButton(item)">
                                 <mat-icon>{{ item.marked ? 'star' : 'star_border' }}</mat-icon>
                             </mat-button-toggle>
                             <mat-button-toggle matTooltip="{{ 'Remove' | translate }}" (click)="onDeleteButton(item)">

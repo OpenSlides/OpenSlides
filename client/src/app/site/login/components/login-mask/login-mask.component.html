@@ -2,7 +2,8 @@
     <mat-spinner *ngIf="inProcess"></mat-spinner>
     <form [formGroup]="loginForm" class="login-form" (ngSubmit)="formLogin()">
         <mat-form-field>
-            <input matInput osAutofocus required placeholder="User name" formControlName="username" [errorStateMatcher]="parentErrorStateMatcher">
+            <input matInput osAutofocus required placeholder="User name"
+                formControlName="username" [errorStateMatcher]="parentErrorStateMatcher">
         </mat-form-field>
         <br>
         <mat-form-field>
@@ -15,13 +16,15 @@
 
         <!-- forgot password button -->
         <br>
-        <button type="button" class='forgot-password-button' (click)="resetPassword()" mat-button>Forgot Password?</button>
+        <button type="button" class="forgot-password-button" (click)="resetPassword()" mat-button>Forgot Password?</button>
 
         <!-- login button -->
         <br>
         <!-- TODO: Next to each other...-->
-        <button mat-raised-button color="primary" class='login-button' type="submit" translate>Login</button>
-        <button mat-raised-button *ngIf="areGuestsEnabled()" color="primary" class='login-button' type="button" (click)="guestLogin()"
-            translate>Login as Guest</button>
+        <button mat-raised-button color="primary" class="login-button" type="submit" translate>Login</button>
+        <button mat-raised-button *ngIf="areGuestsEnabled()" color="primary" class="login-button" type="button"
+            (click)="guestLogin()" translate>
+            Login as Guest
+        </button>
     </form>
 </div>

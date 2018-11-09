@@ -10,9 +10,6 @@ import { MainMenuService } from '../../../core/services/main-menu.service';
  *
  * Will translate the title automatically.
  *
- * Use `PlusButton=true` and `(plusButtonClicked)=myFunction()` if a plus button is needed
- *
- *
  * ## Examples:
  *
  * ### Usage of the selector:
@@ -21,7 +18,7 @@ import { MainMenuService } from '../../../core/services/main-menu.service';
  * <os-head-bar
  *   [nav]="false"
  *   [mainButton]="opCanEdit()"
- *   [buttonIcon]="edit"
+ *   [mainButtonIcon]="edit"
  *   [editMode]="editMotion"
  *   (mainEvent)="setEditMode(!editMotion)"
  *   (saveEvent)="saveMotion()">
@@ -56,7 +53,7 @@ export class HeadBarComponent {
      * Custom icon if necessary
      */
     @Input()
-    public buttonIcon = 'add';
+    public mainButtonIcon = 'add';
 
     /**
      * Determine edit mode

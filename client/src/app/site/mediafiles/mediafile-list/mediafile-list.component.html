@@ -12,25 +12,26 @@
     </div>
 </os-head-bar>
 
-<mat-table class='os-listview-table on-transition-fade' [dataSource]="dataSource" matSort>
+<mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
     <!-- name column -->
     <ng-container matColumnDef="title">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
-        <mat-cell (click)='selectFile(file)' *matCellDef="let file"> {{file.title}} </mat-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
+        <mat-cell (click)="selectFile(file)" *matCellDef="let file">{{ file.title }}</mat-cell>
     </ng-container>
 
     <!-- prefix column -->
     <ng-container matColumnDef="info">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> Group </mat-header-cell>
-        <mat-cell (click)='selectFile(file)' *matCellDef="let file">
-            {{file.type}}
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Group</mat-header-cell>
+        <mat-cell (click)="selectFile(file)" *matCellDef="let file">
+            {{ file.type }}
             <br>
-            {{file.size}}
+            {{ file.size }}
         </mat-cell>
     </ng-container>
+
     <!-- prefix column -->
     <ng-container matColumnDef="download">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> Download </mat-header-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Download</mat-header-cell>
         <mat-cell (click)="download(file)" *matCellDef="let file">
             <mat-icon>save_alt</mat-icon>
         </mat-cell>
@@ -43,7 +44,7 @@
 <mat-paginator class="on-transition-fade" [pageSizeOptions]="[25, 50, 75, 100, 125]"></mat-paginator>
 
 <mat-menu #mediafilesMenu="matMenu">
-    <button mat-menu-item class='red-warning-text' (click)="deleteAllFiles()">
+    <button mat-menu-item class="red-warning-text" (click)="deleteAllFiles()">
         <mat-icon>delete</mat-icon>
         <span translate>Delete all files</span>
     </button>

@@ -289,7 +289,6 @@ class MotionViewSet(ModelViewSet):
         Note: This view is not tested! Maybe needs to be refactored. Add documentation
         abou the data to be send.
         """
-        raise ValidationError({'detail': _('This view needs testing and refactoring!')})
         nodes = request.data.get('nodes', [])
         sort_parent_id = request.data.get('sort_parent_id')
         motions = []

@@ -13,7 +13,7 @@ import { MatSnackBar } from '@angular/material';
 @Component({
     selector: 'os-assignment-list',
     templateUrl: './assignment-list.component.html',
-    styleUrls: ['./assignment-list.component.css']
+    styleUrls: ['./assignment-list.component.scss']
 })
 export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignment> implements OnInit {
     /**
