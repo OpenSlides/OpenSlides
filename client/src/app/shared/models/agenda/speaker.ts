@@ -1,4 +1,4 @@
-import { BaseModel } from '../base/base-model';
+import { Deserializer } from '../base/deserializer';
 
 /**
  * Representation of a speaker in an agenda item.
@@ -7,7 +7,7 @@ import { BaseModel } from '../base/base-model';
  * Part of the 'speakers' list.
  * @ignore
  */
-export class Speaker extends BaseModel {
+export class Speaker extends Deserializer {
     public id: number;
     public user_id: number;
     public begin_time: string; // TODO this is a time object
