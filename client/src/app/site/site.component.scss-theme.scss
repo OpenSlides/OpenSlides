@@ -60,6 +60,9 @@
                 color: mat-color($background, raised-button);
             }
 
+            .mat-expansion-panel-header {
+                padding: 0 16px !important;
+            }
             .mat-expansion-panel-header:hover {
                 // prevent the panel to become white after collapse
                 background: mat-color($primary, darker) !important;

@@ -67,7 +67,7 @@ export class SiteComponent extends BaseComponent implements OnInit {
 
         this.operator.getObservable().subscribe(user => {
             if (user) {
-                this.username = user.full_name;
+                this.username = user.short_name;
             } else {
                 this.username = translate.instant('Guest');
             }
