@@ -1,5 +1,5 @@
 import { ProjectableBaseModel } from '../base/projectable-base-model';
-import { Speaker } from './speaker';
+import { Speaker, SpeakerState } from './speaker';
 
 /**
  * The representation of the content object for agenda items. The unique combination
@@ -42,6 +42,13 @@ export class Item extends ProjectableBaseModel {
                 return new Speaker(speakerData);
             });
         }
+    }
+
+    /**
+     * Gets the amount of waiting speakers
+     */
+    public get speakerAmount(): number {
+        return this.speakers.filter(speaker => speaker.state === SpeakerState.WAITING).length;
     }
 
     public getTitle(): string {

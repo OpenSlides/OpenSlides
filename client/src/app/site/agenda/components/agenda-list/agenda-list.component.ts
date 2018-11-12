@@ -10,13 +10,11 @@ import { AgendaRepositoryService } from '../../services/agenda-repository.servic
 
 /**
  * List view for the agenda.
- *
- * TODO: Not yet implemented
  */
 @Component({
     selector: 'os-agenda-list',
     templateUrl: './agenda-list.component.html',
-    styleUrls: ['./agenda-list.component.css']
+    styleUrls: ['./agenda-list.component.scss']
 })
 export class AgendaListComponent extends ListViewBaseComponent<ViewItem> implements OnInit {
     /**
@@ -62,6 +60,14 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
     public selectAgendaItem(item: ViewItem): void {
         const contentObject = this.repo.getContentObject(item.item);
         this.router.navigate([contentObject.getDetailStateURL()]);
+    }
+
+    /**
+     * Handler for the speakers button
+     * @param item indicates the row that was clicked on
+     */
+    public onSpeakerIcon(item: ViewItem): void {
+        this.router.navigate([`${item.id}/speakers`], { relativeTo: this.route });
     }
 
     /**

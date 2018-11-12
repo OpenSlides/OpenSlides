@@ -1,6 +1,15 @@
 import { Deserializer } from '../base/deserializer';
 
 /**
+ * Determine the state of the speaker
+ */
+export enum SpeakerState {
+    WAITING,
+    CURRENT,
+    FINISHED
+}
+
+/**
  * Representation of a speaker in an agenda item.
  *
  * Needs to be a baseModel since it has an own view class.
@@ -22,6 +31,22 @@ export class Speaker extends Deserializer {
      */
     public constructor(input?: any) {
         super(input);
+    }
+
+    /**
+     * @returns
+     *  - waiting if there is no begin nor end time
+     *  - current if there is a begin time and not end time
+     *  - finished if there are both begin and end time
+     */
+    public get state(): SpeakerState {
+        if (!this.begin_time && !this.end_time) {
+            return SpeakerState.WAITING;
+        } else if (this.begin_time && !this.end_time) {
+            return SpeakerState.CURRENT;
+        } else {
+            return SpeakerState.FINISHED;
+        }
     }
 
     /**

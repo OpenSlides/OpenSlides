@@ -41,4 +41,10 @@
             font-size: 150%;
         }
     }
+
+    /** Speakers indicator */
+    .mat-column-speakers {
+        flex: 0 0 100px;
+        justify-content: flex-end !important;
+    }
 }

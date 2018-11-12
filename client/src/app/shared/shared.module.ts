@@ -21,7 +21,8 @@ import {
     MatNativeDateModule,
     DateAdapter,
     MatIconModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    MatBadgeModule
 } from '@angular/material';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material';
@@ -90,6 +91,7 @@ import { SpeakerListComponent } from 'app/site/agenda/components/speaker-list/sp
         MatSnackBarModule,
         MatChipsModule,
         MatTooltipModule,
+        MatBadgeModule,
         // TODO: there is an error with missing icons
         // we either wait or include a fixed version manually (dirty)
         // https://github.com/google/material-design-icons/issues/786
@@ -125,6 +127,7 @@ import { SpeakerListComponent } from 'app/site/agenda/components/speaker-list/sp
         MatSnackBarModule,
         MatChipsModule,
         MatTooltipModule,
+        MatBadgeModule,
         MatIconModule,
         MatRadioModule,
         MatButtonToggleModule,
