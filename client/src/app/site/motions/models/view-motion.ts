@@ -7,6 +7,7 @@ import { BaseModel } from '../../../shared/models/base/base-model';
 import { BaseViewModel } from '../../base/base-view-model';
 import { ViewMotionCommentSection } from './view-motion-comment-section';
 import { MotionComment } from '../../../shared/models/motions/motion-comment';
+import { Item } from 'app/shared/models/agenda/item';
 
 export enum LineNumberingMode {
     None,
@@ -35,6 +36,7 @@ export class ViewMotion extends BaseViewModel {
     private _supporters: User[];
     private _workflow: Workflow;
     private _state: WorkflowState;
+    private _item: Item;
 
     /**
      * Indicates the LineNumberingMode Mode.
@@ -164,13 +166,22 @@ export class ViewMotion extends BaseViewModel {
         this._motion.submitters_id = users.map(user => user.id);
     }
 
+    public get item(): Item {
+        return this._item;
+    }
+
+    public get agendaSpeakerAmount(): number {
+        return this.item ? this.item.speakerAmount : null
+    }
+
     public constructor(
         motion?: Motion,
         category?: Category,
         submitters?: User[],
         supporters?: User[],
         workflow?: Workflow,
-        state?: WorkflowState
+        state?: WorkflowState,
+        item?: Item,
     ) {
         super();
 
@@ -180,6 +191,7 @@ export class ViewMotion extends BaseViewModel {
         this._supporters = supporters;
         this._workflow = workflow;
         this._state = state;
+        this._item = item;
 
         // TODO: Should be set using a a config variable
         this.lnMode = LineNumberingMode.Outside;
@@ -216,13 +228,16 @@ export class ViewMotion extends BaseViewModel {
             this.updateWorkflow(update as Workflow);
         } else if (update instanceof Category) {
             this.updateCategory(update as Category);
+        } else if (update instanceof Item) {
+            this.updateItem(update as Item);
         }
         // TODO: There is no way (yet) to add Submitters to a motion
         //       Thus, this feature could not be tested
     }
 
     /**
-     * Updates the Category
+     * Update routine for the category
+     * @param update potentially the changed category. Needs manual verification
      */
     public updateCategory(update: Category): void {
         if (this.motion && update.id === this.motion.category_id) {
@@ -231,11 +246,22 @@ export class ViewMotion extends BaseViewModel {
     }
 
     /**
-     * updates the Workflow
+     * Update routine for the workflow
+     * @param update potentially the changed workflow (state). Needs manual verification
      */
     public updateWorkflow(update: Workflow): void {
         if (this.motion && update.id === this.motion.workflow_id) {
             this._workflow = update as Workflow;
+        }
+    }
+
+    /**
+     * Update routine for the agenda Item
+     * @param update potentially the changed agenda Item. Needs manual verification
+     */
+    public updateItem(update: Item): void {
+        if (this.motion && update.id === this.motion.agenda_item_id) {
+            this._item = update as Item;
         }
     }
 

@@ -19,6 +19,7 @@ import { CollectionStringModelMapperService } from '../../../core/services/colle
 import { HttpService } from 'app/core/services/http.service';
 import { ConfigService } from 'app/core/services/config.service';
 import { Observable } from 'rxjs';
+import { Item } from 'app/shared/models/agenda/item';
 
 /**
  * Repository Services for motions (and potentially categories)
@@ -53,7 +54,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         private readonly lineNumbering: LinenumberingService,
         private readonly diff: DiffService
     ) {
-        super(DS, mapperService, Motion, [Category, User, Workflow]);
+        super(DS, mapperService, Motion, [Category, User, Workflow, Item]);
     }
 
     /**
@@ -69,11 +70,12 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         const submitters = this.DS.getMany(User, motion.submitterIds);
         const supporters = this.DS.getMany(User, motion.supporters_id);
         const workflow = this.DS.get(Workflow, motion.workflow_id);
+        const item = this.DS.get(Item, motion.agenda_item_id);
         let state: WorkflowState = null;
         if (workflow) {
             state = workflow.getStateById(motion.state_id);
         }
-        return new ViewMotion(motion, category, submitters, supporters, workflow, state);
+        return new ViewMotion(motion, category, submitters, supporters, workflow, state, item);
     }
 
     /**

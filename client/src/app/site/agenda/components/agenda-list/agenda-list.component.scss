@@ -1,0 +1,19 @@
+.os-listview-table {
+
+    /** Title */
+    .mat-column-title {
+        padding-left: 26px;
+        flex: 1 0 200px;
+    }
+
+    /** Duration */
+    .mat-column-duration {
+        flex: 0 0 100px;
+    }
+
+    /** Speakers indicator */
+    .mat-column-speakers {
+        flex: 0 0 100px;
+        justify-content: flex-end !important;
+    }
+}

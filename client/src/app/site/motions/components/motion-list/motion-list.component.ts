@@ -22,14 +22,14 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
     /**
      * Use for minimal width
      */
-    public columnsToDisplayMinWidth = ['identifier', 'title', 'state'];
+    public columnsToDisplayMinWidth = ['identifier', 'title', 'state', 'speakers'];
 
     /**
      * Use for maximal width
      *
      * TODO: Needs vp.desktop check
      */
-    public columnsToDisplayFullWidth = ['identifier', 'title', 'meta', 'state'];
+    public columnsToDisplayFullWidth = ['identifier', 'title', 'state', 'speakers'];
 
     /**
      * Constructor implements title and translation Module.
@@ -108,6 +108,14 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
         } else {
             return false;
         }
+    }
+
+    /**
+     * Handler for the speakers button
+     * @param motion indicates the row that was clicked on
+     */
+    public onSpeakerIcon(motion: ViewMotion): void {
+        this.router.navigate([`/agenda/${motion.agenda_item_id}/speakers`]);
     }
 
     /**

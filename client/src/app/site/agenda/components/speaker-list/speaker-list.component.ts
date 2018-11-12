@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ViewSpeaker, SpeakerState } from '../../models/view-speaker';
-import { User } from 'app/shared/models/users/user';
 import { FormGroup, FormControl } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
+
+import { SpeakerState } from 'app/shared/models/agenda/speaker';
+import { User } from 'app/shared/models/users/user';
+import { ViewSpeaker } from '../../models/view-speaker';
 import { DataStoreService } from 'app/core/services/data-store.service';
 import { AgendaRepositoryService } from '../../services/agenda-repository.service';
 import { ViewItem } from '../../models/view-item';

@@ -22,6 +22,10 @@ export class ViewItem extends BaseViewModel {
         return this.item ? this.item.duration : null;
     }
 
+    public get speakerAmount(): number {
+        return this.item ? this.item.speakerAmount : null;
+    }
+
     public constructor(item: Item, contentObject: AgendaBaseModel) {
         super();
         this._item = item;

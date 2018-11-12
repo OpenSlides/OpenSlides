@@ -25,7 +25,7 @@
     <!-- identifier column -->
     <ng-container matColumnDef="identifier">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Identifier</mat-header-cell>
-        <mat-cell *matCellDef="let motion">
+        <mat-cell *matCellDef="let motion" (click)="selectMotion(motion)">
             <div class="innerTable">
                 {{ motion.identifier }}
             </div>
@@ -35,7 +35,7 @@
     <!-- title column -->
     <ng-container matColumnDef="title">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
-        <mat-cell *matCellDef="let motion">
+        <mat-cell *matCellDef="let motion" (click)="selectMotion(motion)">
             <div class="innerTable">
                 <span class="motion-list-title">{{ motion.title }}</span>
                 <br>
@@ -50,7 +50,7 @@
     <!-- state column -->
     <ng-container matColumnDef="state">
         <mat-header-cell *matHeaderCellDef mat-sort-header>State</mat-header-cell>
-        <mat-cell *matCellDef="let motion">
+        <mat-cell *matCellDef="let motion" (click)="selectMotion(motion)">
             <!--div *ngIf='isDisplayIcon(motion.state) && motion.state' class='innerTable'>
                 <mat-icon>{{ getStateIcon(motion.state) }}</mat-icon>
             </div>-->
@@ -60,8 +60,22 @@
         </mat-cell>
     </ng-container>
 
+    <!-- Speakers column -->
+    <ng-container matColumnDef="speakers">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Speakers</mat-header-cell>
+        <mat-cell *matCellDef="let motion">
+            <button mat-icon-button (click)="onSpeakerIcon(motion)">
+                <mat-icon
+                    [matBadge]="motion.agendaSpeakerAmount > 0 ? motion.agendaSpeakerAmount : null"
+                    matBadgeColor="accent">
+                    mic
+                </mat-icon>
+            </button>
+        </mat-cell>
+    </ng-container>
+
     <mat-header-row *matHeaderRowDef="columnsToDisplayMinWidth"></mat-header-row>
-    <mat-row (click)="selectMotion(row)" *matRowDef="let row; columns: columnsToDisplayMinWidth"></mat-row>
+    <mat-row *matRowDef="let row; columns: columnsToDisplayMinWidth"></mat-row>
 </mat-table>
 
 <mat-paginator class="on-transition-fade" [pageSizeOptions]="[25, 50, 75, 100, 125]"></mat-paginator>
