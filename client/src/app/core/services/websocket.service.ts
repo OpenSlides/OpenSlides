@@ -114,7 +114,7 @@ export class WebsocketService {
         }
 
         // Create the websocket
-        let socketPath = location.protocol === 'https' ? 'wss://' : 'ws://';
+        let socketPath = location.protocol === 'https:' ? 'wss://' : 'ws://';
         socketPath += window.location.hostname + ':' + window.location.port + '/ws/';
         socketPath += this.formatQueryParams(queryParams);
 
