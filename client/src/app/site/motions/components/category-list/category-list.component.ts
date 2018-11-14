@@ -94,7 +94,7 @@ export class CategoryListComponent extends BaseViewComponent implements OnInit {
      * @param viewCategory
      */
     public keyDownFunction(event: KeyboardEvent, viewCategory?: ViewCategory): void {
-        if (event.keyCode === 13) {
+        if (event.key === "Enter") {
             if (viewCategory) {
                 this.onSaveButton(viewCategory);
             } else {

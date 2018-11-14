@@ -178,7 +178,7 @@ export class TopicDetailComponent {
      * @param event has the code
      */
     public keyDownFunction(event: KeyboardEvent): void {
-        if (event.keyCode === 27) {
+        if (event.key === "Escape") {
             this.setEditMode(false);
         }
     }

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { plugins } from '../../../plugins';
 import { CommonAppConfig } from '../../site/common/common.config';
-import { ModelConstructor, BaseModel } from '../../shared/models/base/base-model';
 import { AppConfig } from '../../site/base/app-config';
 import { CollectionStringModelMapperService } from './collectionStringModelMapper.service';
 import { MediafileAppConfig } from '../../site/mediafiles/mediafile.config';

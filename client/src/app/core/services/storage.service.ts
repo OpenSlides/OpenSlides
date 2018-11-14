@@ -32,11 +32,15 @@ export class StorageService {
 
     /**
      * get a value from the store. You need to subscribe to the request to retrieve the value.
+     *
+     * TODO: This needs adjustment to ensure safe access.
+     * Since angular 7 `LocalStorrage.getItem` will return "unknown" instead of any.
+     * https://github.com/cyrilletuzi/angular-async-local-storage/blob/master/docs/MIGRATION_TO_V7.md
      * @param key The key to get the value from
      * @returns The requested value to the key
      */
     public async get<T>(key: string): Promise<T> {
-        return await this.localStorage.getItem<T>(key).toPromise();
+        return await this.localStorage.getUnsafeItem<T>(key).toPromise();
     }
 
     /**
