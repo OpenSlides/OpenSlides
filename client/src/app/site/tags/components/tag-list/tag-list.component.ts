@@ -138,7 +138,7 @@ export class TagListComponent extends ListViewBaseComponent<ViewTag> implements 
      * @param event
      */
     public keyDownFunction(event: KeyboardEvent): void {
-        if (event.keyCode === 27) {
+        if (event.key === "Enter") {
             this.cancelEditing();
         }
     }
