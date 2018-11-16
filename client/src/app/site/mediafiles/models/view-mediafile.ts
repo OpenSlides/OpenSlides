@@ -34,6 +34,10 @@ export class ViewMediafile extends BaseViewModel {
         return this.mediafile ? this.mediafile.media_url_prefix : null;
     }
 
+    public get hidden(): boolean {
+        return this.mediafile ? this.mediafile.hidden : null;
+    }
+
     public get fileName(): string {
         return this.mediafile && this.mediafile.mediafile ? this.mediafile.mediafile.name : null;
     }
@@ -50,6 +54,63 @@ export class ViewMediafile extends BaseViewModel {
 
     public getTitle(): string {
         return this.title;
+    }
+
+    /**
+     * Determine if the file is an image
+     *
+     * @returns true or false
+     */
+    public isImage(): boolean {
+        return ['image/png', 'image/jpeg', 'image/gif'].includes(this.type);
+    }
+
+    /**
+     * Determine if the file is a font
+     *
+     * @returns true or false
+     */
+    public isFont(): boolean {
+        return ['font/ttf', 'font/woff'].includes(this.type);
+    }
+
+    /**
+     * Determine if the file is a pdf
+     *
+     * @returns true or false
+     */
+    public isPdf(): boolean {
+        return ['application/pdf'].includes(this.type);
+    }
+
+    /**
+     * Determine if the file is a video
+     *
+     * @returns true or false
+     */
+    public isVideo(): boolean {
+        return [
+            'video/quicktime',
+            'video/mp4',
+            'video/webm',
+            'video/ogg',
+            'video/x-flv',
+            'application/x-mpegURL',
+            'video/MP2T',
+            'video/3gpp',
+            'video/x-msvideo',
+            'video/x-ms-wmv',
+            'video/x-matroska',
+        ].includes(this.type);
+    }
+
+    /**
+     * Determine if the file is presentable
+     *
+     * @returns true or false
+     */
+    public isPresentable(): boolean {
+        return this.isPdf() || this.isImage() || this.isVideo();
     }
 
     public updateValues(update: Mediafile): void {

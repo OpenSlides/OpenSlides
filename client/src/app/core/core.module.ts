@@ -1,7 +1,6 @@
 import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Title } from '@angular/platform-browser';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 // Core Services, Directives
 import { AuthGuard } from './services/auth-guard.service';
@@ -10,7 +9,6 @@ import { AutoupdateService } from './services/autoupdate.service';
 import { DataStoreService } from './services/data-store.service';
 import { OperatorService } from './services/operator.service';
 import { WebsocketService } from './services/websocket.service';
-import { AddHeaderInterceptor } from './http-interceptor';
 import { DataSendService } from './services/data-send.service';
 import { ViewportService } from './services/viewport.service';
 import { PromptDialogComponent } from '../shared/components/prompt-dialog/prompt-dialog.component';
@@ -31,12 +29,7 @@ import { HttpService } from './services/http.service';
         HttpService,
         OperatorService,
         ViewportService,
-        WebsocketService,
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: AddHeaderInterceptor,
-            multi: true
-        }
+        WebsocketService
     ],
     entryComponents: [PromptDialogComponent]
 })

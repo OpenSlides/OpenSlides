@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 
 import { MediafilesRoutingModule } from './mediafiles-routing.module';
 import { SharedModule } from '../../shared/shared.module';
-import { MediafileListComponent } from './mediafile-list/mediafile-list.component';
+import { MediafileListComponent } from './components/mediafile-list/mediafile-list.component';
+import { MediaUploadComponent } from './components/media-upload/media-upload.component';
 
 @NgModule({
     imports: [CommonModule, MediafilesRoutingModule, SharedModule],
-    declarations: [MediafileListComponent]
+    declarations: [MediafileListComponent, MediaUploadComponent]
 })
 export class MediafilesModule {}

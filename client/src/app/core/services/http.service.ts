@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 
 /**
@@ -21,12 +21,21 @@ export enum HTTPMethod {
 })
 export class HttpService {
     /**
+     * http headers used by most requests
+     */
+    private defaultHeaders: HttpHeaders;
+
+    /**
      * Construct a HttpService
+     *
+     * Sets the default headers to application/json
      *
      * @param http The HTTP Client
      * @param translate
      */
-    public constructor(private http: HttpClient, private translate: TranslateService) {}
+    public constructor(private http: HttpClient, private translate: TranslateService) {
+        this.defaultHeaders = new HttpHeaders().set('Content-Type', 'application/json')
+    }
 
     /**
      * Send the a http request the the given URL.
@@ -35,14 +44,17 @@ export class HttpService {
      * @param url the target url, usually starting with /rest
      * @param method the required HTTP method (i.e get, post, put)
      * @param data optional, if sending a data body is required
+     * @param customHeader optional custom HTTP header of required
+     * @returns a promise containing a generic
      */
-    private async send<T>(url: string, method: HTTPMethod, data?: any): Promise<T> {
+    private async send<T>(url: string, method: HTTPMethod, data?: any, customHeader?: HttpHeaders): Promise<T> {
         if (!url.endsWith('/')) {
             url += '/';
         }
 
         const options = {
-            body: data
+            body: data,
+            headers: customHeader ? customHeader : this.defaultHeaders
         };
 
         try {
@@ -96,6 +108,7 @@ export class HttpService {
      * Errors from the servers may be string or array of strings. This function joins the strings together,
      * if an array is send.
      * @param str a string or a string array to join together.
+     * @returns Error text(s) as single string
      */
     private processErrorTexts(str: string | string[]): string {
         if (str instanceof Array) {
@@ -109,44 +122,54 @@ export class HttpService {
      * Exectures a get on a url with a certain object
      * @param url The url to send the request to.
      * @param data An optional payload for the request.
+     * @param header optional HTTP header if required
+     * @returns A promise holding a generic
      */
-    public async get<T>(url: string, data?: any): Promise<T> {
-        return await this.send<T>(url, HTTPMethod.GET, data);
+    public async get<T>(url: string, data?: any, header?: HttpHeaders): Promise<T> {
+        return await this.send<T>(url, HTTPMethod.GET, data, header);
     }
 
     /**
      * Exectures a post on a url with a certain object
      * @param url string of the url to send semothing to
      * @param data The data to send
+     * @param header optional HTTP header if required
+     * @returns A promise holding a generic
      */
-    public async post<T>(url: string, data: any): Promise<T> {
-        return await this.send<T>(url, HTTPMethod.POST, data);
+    public async post<T>(url: string, data: any, header?: HttpHeaders): Promise<T> {
+        return await this.send<T>(url, HTTPMethod.POST, data, header);
     }
 
     /**
      * Exectures a put on a url with a certain object
      * @param url string of the url to send semothing to
      * @param data the object that should be send
+     * @param header optional HTTP header if required
+     * @returns A promise holding a generic
      */
-    public async patch<T>(url: string, data: any): Promise<T> {
-        return await this.send<T>(url, HTTPMethod.PATCH, data);
+    public async patch<T>(url: string, data: any, header?: HttpHeaders): Promise<T> {
+        return await this.send<T>(url, HTTPMethod.PATCH, data, header);
     }
 
     /**
      * Exectures a put on a url with a certain object
      * @param url the url that should be called
      * @param data: The data to send
+     * @param header optional HTTP header if required
+     * @returns A promise holding a generic
      */
-    public async put<T>(url: string, data: any): Promise<T> {
-        return await this.send<T>(url, HTTPMethod.PUT, data);
+    public async put<T>(url: string, data: any, header?: HttpHeaders): Promise<T> {
+        return await this.send<T>(url, HTTPMethod.PUT, data, header);
     }
 
     /**
      * Makes a delete request.
      * @param url the url that should be called
      * @param data An optional data to send in the requestbody.
+     * @param header optional HTTP header if required
+     * @returns A promise holding a generic
      */
-    public async delete<T>(url: string, data?: any): Promise<T> {
-        return await this.send<T>(url, HTTPMethod.DELETE, data);
+    public async delete<T>(url: string, data?: any, header?: HttpHeaders): Promise<T> {
+        return await this.send<T>(url, HTTPMethod.DELETE, data, header);
     }
 }

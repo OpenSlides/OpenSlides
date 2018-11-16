@@ -10,6 +10,7 @@ import {
     MatToolbarModule,
     MatCardModule,
     MatInputModule,
+    MatProgressBarModule,
     MatProgressSpinnerModule,
     MatSidenavModule,
     MatSnackBarModule,
@@ -22,7 +23,7 @@ import {
     DateAdapter,
     MatIconModule,
     MatButtonToggleModule,
-    MatBadgeModule
+    MatBadgeModule,
 } from '@angular/material';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material';
@@ -38,6 +39,9 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 
 // ngx-translate
 import { TranslateModule } from '@ngx-translate/core';
+
+// ngx-file-drop
+import { FileDropModule } from 'ngx-file-drop';
 
 // directives
 import { PermsDirective } from './directives/perms.directive';
@@ -82,6 +86,7 @@ import { SpeakerListComponent } from 'app/site/agenda/components/speaker-list/sp
         MatTableModule,
         MatSortModule,
         MatPaginatorModule,
+        MatProgressBarModule,
         MatProgressSpinnerModule,
         MatSidenavModule,
         MatListModule,
@@ -101,7 +106,8 @@ import { SpeakerListComponent } from 'app/site/agenda/components/speaker-list/sp
         DragDropModule,
         TranslateModule.forChild(),
         RouterModule,
-        NgxMatSelectSearchModule
+        NgxMatSelectSearchModule,
+        FileDropModule
     ],
     exports: [
         FormsModule,
@@ -118,6 +124,7 @@ import { SpeakerListComponent } from 'app/site/agenda/components/speaker-list/sp
         MatTableModule,
         MatSortModule,
         MatPaginatorModule,
+        MatProgressBarModule,
         MatProgressSpinnerModule,
         MatSidenavModule,
         MatListModule,
@@ -133,6 +140,7 @@ import { SpeakerListComponent } from 'app/site/agenda/components/speaker-list/sp
         MatButtonToggleModule,
         DragDropModule,
         NgxMatSelectSearchModule,
+        FileDropModule,
         TranslateModule,
         PermsDirective,
         DomChangeDirective,
