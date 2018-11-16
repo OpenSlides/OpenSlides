@@ -290,18 +290,19 @@ class MotionViewSet(ModelViewSet):
         abou the data to be send.
         """
         nodes = request.data.get('nodes', [])
-        sort_parent_id = request.data.get('sort_parent_id')
+        sort_parent_id = request.data.get('parent_id')
         motions = []
         with transaction.atomic():
             for index, node in enumerate(nodes):
-                motion = Motion.objects.get(pk=node['id'])
+                id = node['id']
+                motion = Motion.objects.get(pk=id)
                 motion.sort_parent_id = sort_parent_id
                 motion.weight = index
                 motion.save(skip_autoupdate=True)
                 motions.append(motion)
 
                 # Now check consistency. TODO: Try to use less DB queries.
-                motion = Motion.objects.get(pk=node['id'])
+                motion = Motion.objects.get(pk=id)
                 ancestor = motion.sort_parent
                 while ancestor is not None:
                     if ancestor == motion:

@@ -51,6 +51,9 @@ import { PermsDirective } from './directives/perms.directive';
 import { DomChangeDirective } from './directives/dom-change.directive';
 import { AutofocusDirective } from './directives/autofocus.directive';
 
+// tree sorting
+import { TreeModule } from 'angular-tree-component';
+
 // components
 import { HeadBarComponent } from './components/head-bar/head-bar.component';
 import { FooterComponent } from './components/footer/footer.component';
@@ -61,6 +64,7 @@ import { OpenSlidesDateAdapter } from './date-adapter';
 import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.component';
 import { SortingListComponent } from './components/sorting-list/sorting-list.component';
 import { SpeakerListComponent } from 'app/site/agenda/components/speaker-list/speaker-list.component';
+import { SortingTreeComponent } from './components/sorting-tree/sorting-tree.component';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -111,7 +115,8 @@ import { SpeakerListComponent } from 'app/site/agenda/components/speaker-list/sp
         RouterModule,
         NgxMatSelectSearchModule,
         FileDropModule,
-        EditorModule
+        EditorModule,
+        TreeModule.forRoot()
     ],
     exports: [
         FormsModule,
@@ -156,7 +161,9 @@ import { SpeakerListComponent } from 'app/site/agenda/components/speaker-list/sp
         PrivacyPolicyContentComponent,
         PromptDialogComponent,
         SortingListComponent,
-        EditorModule
+        EditorModule,
+        SortingTreeComponent,
+        TreeModule
     ],
     declarations: [
         PermsDirective,
@@ -169,12 +176,14 @@ import { SpeakerListComponent } from 'app/site/agenda/components/speaker-list/sp
         SearchValueSelectorComponent,
         PromptDialogComponent,
         SortingListComponent,
-        SpeakerListComponent
+        SpeakerListComponent,
+        SortingTreeComponent
     ],
     providers: [
         { provide: DateAdapter, useClass: OpenSlidesDateAdapter },
         SearchValueSelectorComponent,
-        SortingListComponent
+        SortingListComponent,
+        SortingTreeComponent
     ]
 })
 export class SharedModule {}

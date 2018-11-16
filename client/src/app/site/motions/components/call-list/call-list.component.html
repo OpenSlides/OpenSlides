@@ -3,15 +3,12 @@
     <div class="title-slot">
         <h2 translate>Call list</h2>
     </div>
-
-    <div class="menu-slot">
-        <button mat-button (click)="save()">
-            <strong translate class="upper">Save</strong>
-        </button>
-    </div>
 </os-head-bar>
 
 <mat-card>
-    <os-sorting-list #sorter [input]="motions">
-    </os-sorting-list>
+    <button mat-button (click)="expandCollapseAll(true)" translate>Expand</button>
+    <button mat-button (click)="expandCollapseAll(false)" translate>Collapse</button>
+    <os-sorting-tree #sorter (sort)="sort($event)" parentIdKey="sort_parent_id"
+        weightKey="weight" [modelsObservable]="motionsObservable" [expandCollapseAll]="expandCollapse">
+    </os-sorting-tree>
 </mat-card>
