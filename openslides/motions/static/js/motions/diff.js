@@ -1338,6 +1338,32 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
         };
 
         /**
+         * Add the CSS-class to the existing "class"-attribute, or add one.
+         * Works on strings, not nodes
+         *
+         * @param {string} tagStr
+         * @param {string} className
+         * @returns {string}
+         * @private
+         */
+        this._addClassToHtmlTag = function (tagStr, className) {
+            return tagStr.replace(/<(\w+)( [^>]*)?>/gi, function(whole, tag, tagArguments) {
+                tagArguments = (tagArguments ? tagArguments : '');
+                if (tagArguments.match(/class="/gi)) {
+                    // class="someclass" => class="someclass insert"
+                    tagArguments = tagArguments.replace(/(class\s*=\s*)(["'])([^\2]*)\2/gi,
+                        function (classWhole, attr, para, content) {
+                            return attr + para + content + ' ' + className + para;
+                        }
+                    );
+                } else {
+                    tagArguments += ' class="' + className + '"';
+                }
+                return '<' + tag + tagArguments + '>';
+            });
+        };
+
+        /**
          * This function removes color-Attributes from the styles of this node or a descendant,
          * as they interfer with the green/red color in HTML and PDF
          *
@@ -1469,35 +1495,8 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                 }
             );
 
+            // Merging individual insert/delete statements into bigger blocks
             diffUnnormalized = diffUnnormalized.replace(/<\/ins><ins>/gi, '').replace(/<\/del><del>/gi, '');
-
-            // Move whitespaces around inserted P's out of the INS-tag
-            diffUnnormalized = diffUnnormalized.replace(
-                /<ins>(\s*)(<p( [^>]*)?>[\s\S]*?<\/p>)(\s*)<\/ins>/gim,
-                function(match, whiteBefore, inner, tagInner, whiteAfter) {
-                    return whiteBefore +
-                        inner
-                        .replace(/<p( [^>]*)?>/gi, function(match) {
-                            return match + "<ins>";
-                        })
-                        .replace(/<\/p>/gi, "</ins></p>") +
-                        whiteAfter;
-                }
-            );
-
-            // Fixes HTML produced by the diff like this:
-            // from: <del></P></del><ins> Inserted Text</P>\n<P>More inserted text</P></ins>
-            // into: <ins> Inserted Text</ins></P>\n<P>More inserted text</ins></P>
-            diffUnnormalized = diffUnnormalized.replace(
-                /<del><\/p><\/del><ins>([\s\S]*?)<\/p><\/ins>/gim,
-                "<ins>$1</ins></p>"
-            );
-            diffUnnormalized = diffUnnormalized.replace(
-                /<ins>[\s\S]*?<\/ins>/gim,
-                function(match) {
-                    return match.replace(/(<\/p>\s*<p>)/gi, "</ins>$1<ins>");
-                }
-            );
 
             // If only a few characters of a word have changed, don't display this as a replacement of the whole word,
             // but only of these specific characters
@@ -1546,33 +1545,36 @@ angular.module('OpenSlidesApp.motions.diff', ['OpenSlidesApp.motions.lineNumberi
                 }
             );
 
-            // <ins><li>...</li></ins> => <li class="insert">...</li>
+            // If larger inserted HTML text contains block elements, we separate the inserted text into
+            // inline <ins> elements and "insert"-class-based block elements.
+            // <ins>...<div>...</div>...</ins> => <ins>...</ins><div class="insert">...</div><ins>...</ins>
+            var diffService = this;
+            diffUnnormalized = diffUnnormalized.replace(/<(ins|del)>([\s\S]*?)<\/\1>/gi, function(whole, insDel) {
+                var modificationClass = (insDel.toLowerCase() === 'ins' ? 'insert' : 'delete');
+                return whole.replace(/(<(p|div|blockquote|li)[^>]*>)([\s\S]*?)(<\/\2>)/gi, function(whole2, opening, blockTag, content, closing) {
+                    var modifiedTag = diffService._addClassToHtmlTag(opening, modificationClass);
+                    return '</' + insDel + '>' + modifiedTag + content + closing + '<' + insDel + '>';
+                });
+            });
+
+            // Cleanup leftovers from the operation above, when <ins></ins>-tags ore <ins> </ins>-tags are left
+            // around block tags. It should be safe to remove them and just leave the whitespaces.
+            diffUnnormalized = diffUnnormalized.replace(/<(ins|del)>(\s*)<\/\1>/gi, function (whole, insDel, space) {
+                return space;
+            });
+
+            // <del></p><ins> Added text</p></ins> -> <ins> Added text</ins></p>
             diffUnnormalized = diffUnnormalized.replace(
-                /<(ins|del)><(p|div|blockquote|li)([^>]*)>([\s\S]*)<\/\2><\/\1>/gi,
-                function(whole, insDel, block, blockArguments, content) {
-                    // Prevent accidental matches like <ins><p>...</p>...</ins><ins>...<p></p></ins>
-                    if (content.match(/<(ins|del)>/gi)) {
-                        return whole;
-                    }
-
-                    // Add the CSS-class to the existing "class"-attribute, or add one
-                    var newArguments = blockArguments;
-                    var modificationClass = (insDel.toLowerCase() === 'ins' ? 'insert' : 'delete');
-                    if (newArguments.match(/class="/gi)) {
-                        // class="someclass" => class="someclass insert"
-                        newArguments = newArguments.replace(/(class\s*=\s*)(["'])([^\2]*)\2/gi,
-                            function(classWhole, attr, para, content) {
-                                return attr + para + content + ' ' + modificationClass + para;
-                            }
-                        );
-                    } else {
-                        newArguments += ' class="' + modificationClass + '"';
-                    }
-
-                    return '<' + block + newArguments + '>' + content + '</' + block + '>';
+                /<del><\/(p|div|blockquote|li)><\/del><ins>([\s\S]*?)<\/\1>(\s*)<\/ins>/gi,
+                function(whole, blockTag, content, space) {
+                    return '<ins>' + content + '</ins></' + blockTag + '>' + space;
                 }
             );
 
+            // </p> </ins> -> </ins></p>
+            diffUnnormalized = diffUnnormalized.replace(/(<\/(p|div|blockquote|li)>)(\s*)<\/(ins|del)>/gi, function (whole, ending, blockTag, space, insdel) {
+                return '</' + insdel + '>' + ending + space;
+            });
 
             if (diffUnnormalized.substr(0, workaroundPrepend.length) === workaroundPrepend) {
                 diffUnnormalized = diffUnnormalized.substring(workaroundPrepend.length);

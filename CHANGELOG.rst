@@ -15,8 +15,7 @@ Bugfixes:
  - Fixed missing output of special poll values (for motions and elections) [#3932].
  - Fixed amendment csv export (added missing submitters and recommendation, removed
    html tags for old and new text) [#3942].
- - Fixed motion/amendment diff bug: does not delete a paragraph/list item
-   before an new one was inserted [#3943, #3946].
+ - Fixed motion/amendment diff bug [#3943, #3946, #4020].
  - Allow to hide internal items in agenda sort view [#3992].
 
 
