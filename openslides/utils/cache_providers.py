@@ -418,16 +418,18 @@ class MemmoryCacheProvider:
         else:
             cache_dict = self.restricted_data.get(user_id, {})
 
+        all_element_ids: Set[str] = set()
         for data_change_id, element_ids in self.change_id_data.items():
-            if data_change_id < change_id or (max_change_id > -1 and data_change_id > max_change_id):
-                continue
-            for element_id in element_ids:
-                element_json = cache_dict.get(element_id, None)
-                if element_json is None:
-                    deleted_elements.append(element_id)
-                else:
-                    collection_string, id = split_element_id(element_id)
-                    changed_elements[collection_string].append(element_json.encode())
+            if data_change_id >= change_id and (max_change_id == -1 or data_change_id <= max_change_id):
+                all_element_ids.update(element_ids)
+
+        for element_id in all_element_ids:
+            element_json = cache_dict.get(element_id, None)
+            if element_json is None:
+                deleted_elements.append(element_id)
+            else:
+                collection_string, id = split_element_id(element_id)
+                changed_elements[collection_string].append(element_json.encode())
         return changed_elements, deleted_elements
 
     async def del_restricted_data(self, user_id: int) -> None:
