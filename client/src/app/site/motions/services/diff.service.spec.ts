@@ -669,7 +669,7 @@ describe('DiffService', () => {
                 const diff = service.diff(before, after);
                 expect(diff).toBe(
                     '<p><span class="line-number-5 os-line-number" contenteditable="false" data-line-number="5">&nbsp;</span>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>\n' +
-                        '<p><ins>Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu.</ins></p>'
+                        '<p class="insert">Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu.</p>'
                 );
             }
         ));
@@ -762,7 +762,7 @@ describe('DiffService', () => {
                     '<p>Test 123</p>',
                 expected =
                     "<p>rief sie alle sieben herbei und sprach 'liebe Kinder, ich will hinaus in den Wald, seid<ins> Noch</ins></p>" +
-                    '<p><ins>Test 123</ins></p>';
+                    '<p class="insert">Test 123</p>';
 
             const diff = service.diff(before, after);
             expect(diff).toBe(expected);
@@ -778,7 +778,7 @@ describe('DiffService', () => {
                     '<p>Stet clita kasd gubergren, no sea takimata sanctus est.</p>',
                 expected =
                     '<p><span class="line-number-1 os-line-number" contenteditable="false" data-line-number="1">&nbsp;</span>Lorem ipsum dolor sit amet, consetetur sadipscing elitr,<ins> sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</ins></p>\n' +
-                    '<p class="os-split-after"><ins>Stet clita kasd gubergren, no sea takimata sanctus est.</ins></p>';
+                    '<p class="insert os-split-after">Stet clita kasd gubergren, no sea takimata sanctus est.</p>';
 
             const diff = service.diff(before, after);
             expect(diff).toBe(expected);
@@ -792,8 +792,8 @@ describe('DiffService', () => {
                     '<p style="text-align: justify;"><span style="color: #000000;">Neither should this line</span></p>',
                 expected =
                     '<p>This is a random first line that remains unchanged.</p>' +
-                    '<p style="text-align: justify;"><ins><span style="color: #000000;">Inserting this line should not make any troubles, especially not affect the first line</span></ins></p>' +
-                    '<p style="text-align: justify;"><ins><span style="color: #000000;">Neither should this line</span></ins></p>';
+                    '<p style="text-align: justify;" class="insert"><span style="color: #000000;">Inserting this line should not make any troubles, especially not affect the first line</span></p>' +
+                    '<p style="text-align: justify;" class="insert"><span style="color: #000000;">Neither should this line</span></p>';
 
             const diff = service.diff(before, after);
             expect(diff).toBe(expected);
@@ -935,6 +935,16 @@ describe('DiffService', () => {
             }
         ));
 
+        it('works with multiple inserted paragraphs', inject(
+            [DiffService],
+            (service: DiffService) => {
+                const before = '<p>This is the text before</p>',
+                    after = "<p>This is the text before</p>\n<p>This is one added line</p>\n<p>Another added line</p>";
+                const diff = service.diff(before, after);
+                expect(diff).toBe("<p>This is the text before</p>\n<p class=\"insert\">This is one added line</p>\n<p class=\"insert\">Another added line</p>");
+            }
+        ));
+
         it('does not a change in a very specific case', inject([DiffService], (service: DiffService) => {
             // See diff._fixWrongChangeDetection
             const inHtml =
@@ -1007,7 +1017,7 @@ describe('DiffService', () => {
                         'their grammar, their pronunciation and their most common words. Everyone ' +
                         brMarkup(3) +
                         'realizes why a</p>\n' +
-                        '<p><ins>NEW PARAGRAPH 2.</ins></p>'
+                        '<p class="insert">NEW PARAGRAPH 2.</p>'
                 );
             }
         ));
@@ -1033,8 +1043,8 @@ describe('DiffService', () => {
                         'their grammar, their pronunciation and their most common words. Everyone ' +
                         brMarkup(3) +
                         'realizes why a</p>\n' +
-                        '<p><ins>NEW PARAGRAPH 1.</ins></p>\n' +
-                        '<p><ins>NEW PARAGRAPH 2.</ins></p>\n' +
+                        '<p class="insert">NEW PARAGRAPH 1.</p>\n' +
+                        '<p class="insert">NEW PARAGRAPH 2.</p>\n' +
                         '<div>' +
                         noMarkup(4) +
                         'Go on</div>'
