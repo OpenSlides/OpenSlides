@@ -2,9 +2,12 @@ import { Component } from '@angular/core';
 import { Location } from '@angular/common';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Title } from '@angular/platform-browser';
+import { MatSnackBar } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { BaseViewComponent } from 'app/site/base/base-view';
 import { PromptService } from 'app/core/services/prompt.service';
 import { TopicRepositoryService } from '../../services/topic-repository.service';
 import { ViewTopic } from '../../models/view-topic';
@@ -17,7 +20,7 @@ import { ViewTopic } from '../../models/view-topic';
     templateUrl: './topic-detail.component.html',
     styleUrls: ['./topic-detail.component.scss']
 })
-export class TopicDetailComponent {
+export class TopicDetailComponent extends BaseViewComponent {
     /**
      * Determine if the topic is in edit mode
      */
@@ -40,24 +43,28 @@ export class TopicDetailComponent {
 
     /**
      * Constructor for the topic detail page.
-     *
+     * @param title Setting the browsers title
+     * @param matSnackBar display errors and other messages
+     * @param translate Handles translations
      * @param route Angulars ActivatedRoute
      * @param router Angulars Router
      * @param location Enables to navigate back
      * @param formBuilder Angulars FormBuilder
-     * @param translate Handles translations
      * @param repo The topic repository
      * @param promptService Allows warning before deletion attempts
      */
     public constructor(
+        title: Title,
+        matSnackBar: MatSnackBar,
+        protected translate: TranslateService,
         private route: ActivatedRoute,
         private router: Router,
         private location: Location,
         private formBuilder: FormBuilder,
-        private translate: TranslateService,
         private repo: TopicRepositoryService,
         private promptService: PromptService
     ) {
+        super(title, translate, matSnackBar);
         this.getTopicByUrl();
         this.createForm();
     }

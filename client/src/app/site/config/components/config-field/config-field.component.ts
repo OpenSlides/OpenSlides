@@ -1,6 +1,9 @@
 import { Component, OnInit, Input, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { Title } from '@angular/platform-browser';
+import { distinctUntilChanged } from 'rxjs/operators';
+
 import { TranslateService } from '@ngx-translate/core';
+
 import { ViewConfig } from '../../models/view-config';
 import { BaseComponent } from '../../../../base.component';
 import { FormGroup, FormBuilder } from '@angular/forms';
@@ -95,9 +98,13 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
         this.form.patchValue({
             value: this.configItem.value
         });
-        this.form.valueChanges.subscribe(form => {
-            this.onChange(form.value);
-        });
+        this.form.valueChanges
+            // The editor fires changes whenever content was changed. Even by AutoUpdate.
+            // This checks for discting content
+            .pipe(distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)))
+            .subscribe(form => {
+                this.onChange(form.value);
+            });
     }
 
     /**
@@ -156,6 +163,9 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
     /**
      * Uses the configItem to determine the kind of interation:
      * input, textarea, choice or date
+     *
+     * @param type: the type of a config item
+     * @returns the template type
      */
     public formType(type: string): string {
         switch (type) {
@@ -166,5 +176,16 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
             default:
                 return 'text';
         }
+    }
+
+    /**
+     * Checks of the config.type can be part of the form
+     *
+     * @param type the config.type of a setting
+     * @returns wheather it should be excluded or not
+     */
+    public isExcludedType(type: string): boolean {
+        const excluded = ['boolean', 'markupText'];
+        return excluded.includes(type);
     }
 }

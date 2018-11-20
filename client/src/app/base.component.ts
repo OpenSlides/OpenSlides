@@ -18,6 +18,27 @@ export abstract class BaseComponent extends OpenSlidesComponent {
     private titleSuffix = ' - OpenSlides 3';
 
     /**
+     * Settings for the TinyMCE editor selector
+     */
+    public tinyMceSettings = {
+        // TODO: language_url: '/static/tinymce/i18n/' + gettextCatalog.getCurrentLanguage() + '.js',
+        // TODO: theme_url: '/static/js/openslides-libs.js',
+        skin_url: '/assets/tinymce/skins/lightgray',
+        inline: false,
+        statusbar: false,
+        browser_spellcheck: true,
+        image_advtab: true,
+        height: 320,
+        // TODO: image_list: images,
+        plugins: `autolink charmap code colorpicker fullscreen image imagetools
+            lists link paste preview searchreplace textcolor`,
+        menubar: '',
+        toolbar: `undo redo searchreplace | styleselect | bold italic underline strikethrough
+            | forecolor backcolor removeformat | bullist numlist | outdent indent |
+            link image charmap table | code preview fullscreen`
+    };
+
+    /**
      * Child constructor that implements the titleServices and calls Super from OpenSlidesComponent
      */
     public constructor(protected titleService?: Title, protected translate?: TranslateService) {

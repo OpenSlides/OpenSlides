@@ -98,13 +98,16 @@
             </mat-form-field>
         </div>
 
+        <!-- About me -->
         <div *ngIf="isAllowed('seePersonal')">
-            <!-- About me -->
-            <!-- TODO: Needs Rich Text Editor -->
-            <mat-form-field class="form100" *ngIf="user.about_me || editUser">
-                <textarea formControlName="about_me" matInput placeholder="{{ 'About me' | translate }}"
-                    [value]="user.about_me"></textarea>
-            </mat-form-field>
+            <!-- The HTML Editor -->
+            <h4 translate *ngIf="user.about_me || editUser">About me</h4>
+            <editor
+                formControlName='about_me'
+                [init]="tinyMceSettings"
+                *ngIf="editUser"
+            ></editor>
+            <div *ngIf="user.about_me && !editUser" [innerHTML]="user.about_me"></div>
         </div>
 
         <div *ngIf="isAllowed('seePersonal')">

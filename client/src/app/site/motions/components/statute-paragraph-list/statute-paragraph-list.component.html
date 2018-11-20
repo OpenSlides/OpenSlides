@@ -25,15 +25,14 @@
                     </mat-hint>
                 </mat-form-field>
             </p>
-            <p>
-                <mat-form-field>
-                    <textarea formControlName="text" matInput placeholder="{{'Statute paragraph' | translate}}"
-                        required></textarea>
-                    <mat-hint *ngIf="!createForm.controls.text.valid">
-                        <span translate>Required</span>
-                    </mat-hint>
-                </mat-form-field>
-            </p>
+            <span>
+                <!-- The HTML Editor -->
+                <h4>Statute paragraph</h4>
+                <editor
+                    formControlName='text'
+                    [init]="tinyMceSettings"
+                ></editor>
+            </span>
         </form>
     </mat-card-content>
     <mat-card-actions>
@@ -64,15 +63,14 @@
                     </mat-hint>
                 </mat-form-field>
             </p>
-            <p>
-                <mat-form-field>
-                    <textarea formControlName="text" matInput placeholder="{{'Statute paragraph' | translate}}"
-                        required></textarea>
-                    <mat-hint *ngIf="!createForm.controls.text.valid">
-                        <span translate>Required</span>
-                    </mat-hint>
-                </mat-form-field>
-            </p>
+            <span>
+                <!-- The HTML Editor -->
+                <h4>Statute paragraph</h4>
+                <editor
+                    formControlName='text'
+                    [init]="tinyMceSettings"
+                ></editor>
+            </span>
         </form>
         <ng-container *ngIf="editId !== statuteParagraph.id">
             <mat-card>
@@ -89,7 +87,7 @@
             </button>
             <button *ngIf="editId === statuteParagraph.id" mat-button class="on-transition-fade" (click)="editId = null"
                 mat-icon-button>
-                <mat-icon>cancel</mat-icon>
+                <mat-icon>close</mat-icon>
             </button>
             <button *ngIf="editId === statuteParagraph.id" mat-button class="on-transition-fade" (click)="onSaveButton(statuteParagraph)"
                 mat-icon-button>

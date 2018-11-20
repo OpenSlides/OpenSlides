@@ -23,7 +23,7 @@ import {
     DateAdapter,
     MatIconModule,
     MatButtonToggleModule,
-    MatBadgeModule,
+    MatBadgeModule
 } from '@angular/material';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material';
@@ -42,6 +42,9 @@ import { TranslateModule } from '@ngx-translate/core';
 
 // ngx-file-drop
 import { FileDropModule } from 'ngx-file-drop';
+
+// TinyMCE
+import { EditorModule } from '@tinymce/tinymce-angular';
 
 // directives
 import { PermsDirective } from './directives/perms.directive';
@@ -107,7 +110,8 @@ import { SpeakerListComponent } from 'app/site/agenda/components/speaker-list/sp
         TranslateModule.forChild(),
         RouterModule,
         NgxMatSelectSearchModule,
-        FileDropModule
+        FileDropModule,
+        EditorModule
     ],
     exports: [
         FormsModule,
@@ -151,7 +155,8 @@ import { SpeakerListComponent } from 'app/site/agenda/components/speaker-list/sp
         LegalNoticeContentComponent,
         PrivacyPolicyContentComponent,
         PromptDialogComponent,
-        SortingListComponent
+        SortingListComponent,
+        EditorModule
     ],
     declarations: [
         PermsDirective,
