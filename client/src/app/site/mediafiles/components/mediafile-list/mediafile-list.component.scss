@@ -1,0 +1,46 @@
+.os-listview-table {
+    /** Title */
+    .mat-column-title {
+        flex: 2 0 50px;
+    }
+
+    /** Info */
+    .mat-column-info {
+        width: 100%;
+        flex: 1 0 40px;
+    }
+
+    /** Indicator */
+    .mat-column-indicator {
+        flex: 1 0 30px;
+    }
+
+    /** Menu */
+    .mat-column-menu {
+        flex: 0 0 30px;
+    }
+}
+
+// multi line tooltip
+::ng-deep .mat-tooltip {
+    white-space: pre-line !important;
+}
+
+
+.edit-file-form {
+    mat-form-field + mat-form-field {
+        margin: 1em;
+    }
+}
+
+// duplicate. Put into own file
+.file-info-cell {
+    display: grid;
+    margin: 0;
+
+    span {
+        .mat-icon {
+            font-size: 130%;
+        }
+    }
+}

@@ -1,21 +1,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MediafileListComponent } from './mediafile-list.component';
-import { E2EImportsModule } from '../../../../e2e-imports.module';
+import { MediaUploadComponent } from './media-upload.component';
+import { E2EImportsModule } from 'e2e-imports.module';
 
-describe('MediafileListComponent', () => {
-    let component: MediafileListComponent;
-    let fixture: ComponentFixture<MediafileListComponent>;
+describe('MediaUploadComponent', () => {
+    let component: MediaUploadComponent;
+    let fixture: ComponentFixture<MediaUploadComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [E2EImportsModule],
-            declarations: [MediafileListComponent]
+            declarations: [MediaUploadComponent],
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(MediafileListComponent);
+        fixture = TestBed.createComponent(MediaUploadComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

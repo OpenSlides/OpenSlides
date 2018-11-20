@@ -150,3 +150,10 @@ mat-expansion-panel {
 mat-panel-title mat-icon {
     padding-right: 30px;
 }
+
+// ngx-file-drop requires the custom style in the global css file
+.file-drop-style {
+    margin: auto;
+    height: 100px;
+    border: 2px dotted #0782d0;
+}
