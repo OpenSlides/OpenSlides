@@ -234,7 +234,7 @@
                   <i class="fa fa-cog"></i>
                 </span>
                 <ul uib-dropdown-menu class="dropdown-menu" aria-labelledby="recommendation-dropdown">
-                  <li ng-repeat="recommendation in motion.state.getRecommendations()">
+                  <li ng-repeat="recommendation in motion.state.getRecommendations() | orderBy:'id'">
                     <a href ng-click="motion.setRecommendation(recommendation.id)">
                       {{ recommendation.recommendation_label | translate }}
                       <span ng-if="recommendation.show_recommendation_extension_field">...</span>

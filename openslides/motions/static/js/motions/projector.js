@@ -72,13 +72,16 @@ angular.module('OpenSlidesApp.motions.projector', [
             return Motion.lastModified(motionId);
         }, function () {
             $scope.motion = Motion.get(motionId);
-            $scope.amendment_diff_paragraphs = $scope.motion.getAmendmentParagraphsLinesDiff();
-            $scope.viewChangeRecommendations.setVersion($scope.motion, $scope.motion.active_version);
-            _.forEach($scope.motion.polls, function (poll) {
-                MotionPollDecimalPlaces.getPlaces(poll, true).then(function (decimalPlaces) {
-                    precisionCache[poll.id] = decimalPlaces;
+            if ($scope.motion) {
+                $scope.amendment_diff_paragraphs = $scope.motion.getAmendmentParagraphsLinesDiff();
+                $scope.viewChangeRecommendations.setVersion($scope.motion, $scope.motion.active_version);
+                _.forEach($scope.motion.polls, function (poll) {
+                    MotionPollDecimalPlaces.getPlaces(poll, true).then(function (decimalPlaces) {
+                        precisionCache[poll.id] = decimalPlaces;
+                    });
                 });
-            });
+                $scope.viewChangeRecommendations.initProjector($scope, $scope.motion, $scope.mode);
+            }
         });
 
         var precisionCache = {};

@@ -197,15 +197,20 @@ angular.module('OpenSlidesApp.core.pdf', [])
                     });
                 }
 
-                var line1 = [
-                    Config.translate(Config.get('general_event_name').value),
-                    Config.translate(Config.get('general_event_description').value)
-                ].filter(Boolean).join(' – ');
-                var line2 = [
-                    Config.get('general_event_location').value,
-                    Config.get('general_event_date').value
-                ].filter(Boolean).join(', ');
-                var text = [line1, line2].join('\n');
+                var text;
+                if (logoHeaderLeftUrl && logoHeaderRightUrl) {
+                    text = '';
+                } else {
+                    var line1 = [
+                        Config.translate(Config.get('general_event_name').value),
+                        Config.translate(Config.get('general_event_description').value)
+                    ].filter(Boolean).join(' – ');
+                    var line2 = [
+                        Config.get('general_event_location').value,
+                        Config.get('general_event_date').value
+                    ].filter(Boolean).join(', ');
+                    text = [line1, line2].join('\n');
+                }
                 columns.push({
                     text: text,
                     fontSize: 10,
@@ -220,6 +225,7 @@ angular.module('OpenSlidesApp.core.pdf', [])
                     columns.push({
                         image: logoHeaderRightUrl,
                         fit: [180, 40],
+                        alignment: 'right',
                         width: '20%'
                     });
                 }

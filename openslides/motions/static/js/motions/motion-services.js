@@ -609,17 +609,19 @@ angular.module('OpenSlidesApp.motions.motionservices', ['OpenSlidesApp.motions',
             }, function () {
                 $scope.change_recommendations = [];
                 $scope.title_change_recommendation = null;
-                MotionChangeRecommendation.filter({
-                    'where': {'motion_version_id': {'==': motion.active_version}}
-                }).forEach(function (change) {
-                    if (change.isTextRecommendation()) {
-                        $scope.change_recommendations.push(change);
-                    }
-                    if (change.isTitleRecommendation()) {
-                        $scope.title_change_recommendation = change;
-                    }
-                });
-                rebuild_amendments_crs();
+                if (motion) {
+                    MotionChangeRecommendation.filter({
+                        'where': {'motion_version_id': {'==': motion.active_version}}
+                    }).forEach(function (change) {
+                        if (change.isTextRecommendation()) {
+                            $scope.change_recommendations.push(change);
+                        }
+                        if (change.isTitleRecommendation()) {
+                            $scope.title_change_recommendation = change;
+                        }
+                    });
+                    rebuild_amendments_crs();
+                }
             });
 
             $scope.$watch(function () {

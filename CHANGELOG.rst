@@ -17,6 +17,11 @@ Bugfixes:
    html tags for old and new text) [#3942].
  - Fixed motion/amendment diff bug [#3943, #3946, #4020].
  - Allow to hide internal items in agenda sort view [#3992].
+ - Several minor bug fixes [#4023], especially:
+
+   - Fixed motion slide: project diff mode by default (if selected in config)
+   - PDF export: Added missing alignment for pdf header logo (right).
+   - Fixed set motion block multi action.
 
 
 Version 2.3 (2018-09-20)
