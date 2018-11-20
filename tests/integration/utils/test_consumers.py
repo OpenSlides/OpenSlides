@@ -360,6 +360,32 @@ async def test_send_connect_twice_with_clear_change_id_cache_same_change_id_then
 
 
 @pytest.mark.asyncio
+async def test_request_changed_elements_no_douple_elements(communicator):
+    """
+    Test, that when an elements is changed twice, it is only returned
+    onces when ask a range of change ids.
+
+    Test when all_data is false
+    """
+    await set_config('general_system_enable_anonymous', True)
+    await communicator.connect()
+    # Change element twice
+    await set_config('general_event_name', 'Test Event')
+    await set_config('general_event_name', 'Other value')
+    # Ask for all elements
+    await communicator.send_json_to({'type': 'getElements', 'content': {'change_id': 2}, 'id': 'test_id'})
+
+    response = await communicator.receive_json_from()
+    type = response.get('type')
+    content = response.get('content')
+    assert type == 'autoupdate'
+    assert not response.get('content')['all_data']
+    config_ids = [e['id'] for e in content['changed']['core/config']]
+    # test that config_ids are unique
+    assert len(config_ids) == len(set(config_ids))
+
+
+@pytest.mark.asyncio
 async def test_send_invalid_get_elements(communicator):
     await set_config('general_system_enable_anonymous', True)
     await communicator.connect()
