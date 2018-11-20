@@ -406,6 +406,7 @@ class MotionSerializer(ModelSerializer):
             'state',
             'state_extension',
             'state_required_permission_to_see',
+            'statute_paragraph',
             'workflow_id',
             'recommendation',
             'recommendation_extension',
@@ -461,6 +462,7 @@ class MotionSerializer(ModelSerializer):
         motion.motion_block = validated_data.get('motion_block')
         motion.origin = validated_data.get('origin', '')
         motion.parent = validated_data.get('parent')
+        motion.statute_paragraph = validated_data.get('statute_paragraph')
         motion.reset_state(validated_data.get('workflow_id'))
         motion.agenda_item_update_information['type'] = validated_data.get('agenda_type')
         motion.agenda_item_update_information['parent_id'] = validated_data.get('agenda_parent_id')

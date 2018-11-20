@@ -115,6 +115,7 @@ _('Default text version for change recommendations');
 // subgroup Amendments
 _('Amendments');
 _('Activate amendments');
+_('Activate statutes');
 _('Show amendments together with motions');
 _('Prefix for the identifier for amendments');
 _('The title of the motion is always applied.');

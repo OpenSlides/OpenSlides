@@ -259,7 +259,7 @@
     <form class="motion-content" [formGroup]='contentForm' (ngSubmit)='saveMotion()'>
 
         <!-- Line Number and Diff buttons-->
-        <div *ngIf="!editMotion" class="motion-text-controls">
+        <div *ngIf="motion && !editMotion && !motion.isStatuteAmendment()" class="motion-text-controls">
             <button type="button" mat-icon-button [matMenuTriggerFor]="lineNumberingMenu" matTooltip="{{ 'Line numbering' | translate }}">
                 <mat-icon>format_list_numbered</mat-icon>
             </button>
@@ -268,11 +268,29 @@
             </button>
         </div>
 
+        <!-- Selecting statute paragraphs for amendment -->
+        <div class="statute-amendment-selector" *ngIf="editMotion && statuteParagraphs.length > 0 && statutesEnabled">
+            <mat-checkbox formControlName='statute_amendment' translate (change)="onStatuteAmendmentChange($event)">
+                Statute amendment
+            </mat-checkbox>
+
+            <mat-form-field *ngIf="contentForm.value.statute_amendment">
+                <mat-select [placeholder]="'Select paragraph to amend' | translate"
+                            formControlName='statute_paragraph_id'
+                            (valueChange)="onStatuteParagraphChange($event)">
+                    <mat-option *ngFor="let paragraph of statuteParagraphs" [value]="paragraph.id">
+                        {{ paragraph.title }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
         <!-- Title -->
         <div *ngIf="motion && motion.title || editMotion">
             <div *ngIf='!editMotion'>
                 <h4>{{motion.title}}</h4>
             </div>
+
             <mat-form-field *ngIf="editMotion" class="wide-form">
                 <input matInput osAutofocus placeholder="{{ 'Title' | translate }}" formControlName='title' [value]='motionCopy.title'
                     required>
@@ -283,7 +301,7 @@
         <!-- Text -->
         <!-- TODO: this is a config variable. Read it out -->
         <span class="text-prefix-label" translate>The assembly may decide:</span>
-        <ng-container *ngIf='motion && !editMotion'>
+        <ng-container *ngIf='motion && !editMotion && !motion.isStatuteAmendment()'>
             <div *ngIf="!isRecoModeDiff()" class="motion-text" [class.line-numbers-none]="isLineNumberingNone()"
                 [class.line-numbers-inline]="isLineNumberingInline()" [class.line-numbers-outside]="isLineNumberingOutside()">
                 <os-motion-detail-original-change-recommendations *ngIf="isLineNumberingOutside() && isRecoModeOriginal()"
@@ -294,6 +312,10 @@
             <os-motion-detail-diff *ngIf="isRecoModeDiff()" [motion]="motion" [changes]="allChangingObjects"
                 [scrollToChange]="scrollToChange" (createChangeRecommendation)="createChangeRecommendation($event)"></os-motion-detail-diff>
         </ng-container>
+        <div class="motion-text line-numbers-none" *ngIf="motion && !editMotion && motion.isStatuteAmendment()"
+             [innerHTML]="getFormattedStatuteAmendment()">
+        </div>
+
         <mat-form-field *ngIf="motion && editMotion" class="wide-form">
             <textarea matInput placeholder="{{ 'Motion text' | translate }}" formControlName='text' [value]='motionCopy.text' required></textarea>
         </mat-form-field>

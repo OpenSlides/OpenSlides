@@ -14,6 +14,7 @@ import { DiffService, LineRange, ModificationType } from './diff.service';
 import { ViewChangeReco } from '../models/view-change-reco';
 import { MotionChangeReco } from '../../../shared/models/motions/motion-change-reco';
 import { ViewUnifiedChange } from '../models/view-unified-change';
+import { ViewStatuteParagraph }  from '../models/view-statute-paragraph';
 import { Identifiable } from '../../../shared/models/base/identifiable';
 import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
 import { HttpService } from 'app/core/services/http.service';
@@ -223,6 +224,13 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         } else {
             return null;
         }
+    }
+
+    public formatStatuteAmendment(paragraphs: ViewStatuteParagraph[], amendment: ViewMotion, lineLength: number): string {
+        const origParagraph = paragraphs.find(paragraph => paragraph.id === amendment.statute_paragraph_id);
+        let diffHtml = this.diff.diff(origParagraph.text, amendment.text);
+        diffHtml = this.lineNumbering.insertLineBreaksWithoutNumbers(diffHtml, lineLength, true);
+        return diffHtml;
     }
 
     /**

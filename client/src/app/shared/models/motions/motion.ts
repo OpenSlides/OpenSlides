@@ -30,6 +30,7 @@ export class Motion extends AgendaBaseModel {
     public state_id: number;
     public state_extension: string;
     public state_required_permission_to_see: string;
+    public statute_paragraph_id: number;
     public recommendation_id: number;
     public recommendation_extension: string;
     public tags_id: number[];

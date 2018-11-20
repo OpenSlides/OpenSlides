@@ -96,7 +96,7 @@
         <span translate>Comment sections</span>
     </button>
 
-    <button mat-menu-item routerLink="statute-paragraphs">
+    <button mat-menu-item routerLink="statute-paragraphs" *ngIf="statutesEnabled">
         <mat-icon>account_balance</mat-icon>
         <span translate>Statute paragraphs</span>
     </button>

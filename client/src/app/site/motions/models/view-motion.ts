@@ -138,6 +138,10 @@ export class ViewMotion extends BaseViewModel {
         return this.motion && this.motion.recommendation_id ? this.motion.recommendation_id : null;
     }
 
+    public get statute_paragraph_id(): number {
+        return this.motion && this.motion.statute_paragraph_id ? this.motion.statute_paragraph_id : null;
+    }
+
     public get recommendation(): WorkflowState {
         return this.recommendation_id && this.workflow ? this.workflow.getStateById(this.recommendation_id) : null;
     }
@@ -267,6 +271,10 @@ export class ViewMotion extends BaseViewModel {
 
     public hasSupporters(): boolean {
         return !!(this.supporters && this.supporters.length > 0);
+    }
+
+    public isStatuteAmendment(): boolean {
+        return !!this.statute_paragraph_id;
     }
 
     /**
