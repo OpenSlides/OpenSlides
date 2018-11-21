@@ -137,7 +137,7 @@
 </ng-template>
 
 <ng-template #metaInfoTemplate>
-    <form [formGroup]='metaInfoForm' (ngSubmit)='saveMotion()'>
+    <form [formGroup]='metaInfoForm' (keydown)="onKeyDown($event)" (ngSubmit)='saveMotion()'>
 
         <!-- Identifier -->
         <div *ngIf="editMotion && !newMotion">
@@ -256,7 +256,7 @@
 </ng-template>
 
 <ng-template #contentTemplate>
-    <form class="motion-content" [formGroup]='contentForm' (ngSubmit)='saveMotion()'>
+    <form class="motion-content" [formGroup]='contentForm'  (clickdown)="onKeyDown($event)" (keydown)="onKeyDown($event)" (ngSubmit)='saveMotion()'>
 
         <!-- Line Number and Diff buttons-->
         <div *ngIf="motion && !editMotion && !motion.isStatuteAmendment()" class="motion-text-controls">

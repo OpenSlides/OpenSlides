@@ -275,6 +275,17 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
     }
 
     /**
+     * clicking Shift and Enter will save automatically
+     *
+     * @param event has the code
+     */
+    public onKeyDown(event: KeyboardEvent): void {
+        if (event.key === 'Enter' && event.shiftKey) {
+            this.saveUser();
+        }
+    }
+
+    /**
      * Save / Submit a user
      */
     public async saveUser(): Promise<void> {

@@ -292,6 +292,17 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     }
 
     /**
+     * clicking Shift and Enter will save automatically
+     *
+     * @param event has the code
+     */
+    public onKeyDown(event: KeyboardEvent): void {
+        if (event.key === 'Enter' && event.shiftKey) {
+            this.saveMotion();
+        }
+    }
+
+    /**
      * Save a motion. Calls the "patchValues" function in the MotionObject
      *
      * http:post the motion to the server.

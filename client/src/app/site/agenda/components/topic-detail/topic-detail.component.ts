@@ -174,11 +174,17 @@ export class TopicDetailComponent {
     }
 
     /**
+     * clicking Shift and Enter will save automatically
      * Hitting escape while in topicForm should cancel editing
+     *
      * @param event has the code
      */
-    public keyDownFunction(event: KeyboardEvent): void {
-        if (event.key === "Escape") {
+    public onKeyDown(event: KeyboardEvent): void {
+        if (event.key === 'Enter' && event.shiftKey) {
+            this.saveTopic();
+        }
+
+        if (event.key === 'Escape') {
             this.setEditMode(false);
         }
     }

@@ -29,7 +29,7 @@
 </os-head-bar>
 
 <mat-card class="os-card" *osPerms="'users.can_see_name'">
-    <form [ngClass]="{'mat-form-field-enabled': editUser}" [formGroup]="personalInfoForm" (ngSubmit)="saveUser()" *ngIf="user">
+    <form [ngClass]="{'mat-form-field-enabled': editUser}" [formGroup]="personalInfoForm" (ngSubmit)="saveUser()" *ngIf="user" (keydown)="onKeyDown($event)">
         <!-- <h3 translate>Personal Data</h3> -->
         <div *ngIf="isAllowed('seeName')">
             <!-- Title -->
