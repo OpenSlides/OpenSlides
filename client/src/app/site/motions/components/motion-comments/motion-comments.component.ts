@@ -1,14 +1,15 @@
 import { Component, Input } from '@angular/core';
+import { MatSnackBar } from '@angular/material';
+import { Title } from '@angular/platform-browser';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
 
-import { BaseComponent } from '../../../../base.component';
-import { ViewportService } from '../../../../core/services/viewport.service';
+import { BaseViewComponent } from '../../../../site/base/base-view';
 import { MotionCommentSectionRepositoryService } from '../../services/motion-comment-section-repository.service';
 import { ViewMotionCommentSection } from '../../models/view-motion-comment-section';
 import { OperatorService } from '../../../../core/services/operator.service';
-import { FormGroup, FormBuilder } from '@angular/forms';
 import { MotionComment } from '../../../../shared/models/motions/motion-comment';
 import { ViewMotion } from '../../models/view-motion';
-import { HttpService } from '../../../../core/services/http.service';
 
 /**
  * Component for the motion comments view
@@ -18,7 +19,7 @@ import { HttpService } from '../../../../core/services/http.service';
     templateUrl: './motion-comments.component.html',
     styleUrls: ['./motion-comments.component.scss']
 })
-export class MotionCommentsComponent extends BaseComponent {
+export class MotionCommentsComponent extends BaseViewComponent {
     /**
      * An array of all sections the operator can see.
      */
@@ -39,6 +40,11 @@ export class MotionCommentsComponent extends BaseComponent {
      */
     private _motion: ViewMotion;
 
+    /**
+     * Set to true if an error was detected to prevent automatic navigation
+     */
+    public error = false;
+
     @Input()
     public set motion(motion: ViewMotion) {
         this._motion = motion;
@@ -52,15 +58,23 @@ export class MotionCommentsComponent extends BaseComponent {
     /**
      * Watches for changes in sections and the operator. If one of them changes, the sections are reloaded
      * and the comments updated.
+     *
+     * @param commentRepo The repository that handles server communication
+     * @param formBuilder Form builder to handle text editing
+     * @param operator service to get the sections
+     * @param titleService set the browser title
+     * @param translate the translation service
+     * @param matSnackBar showing errors and information
      */
     public constructor(
         private commentRepo: MotionCommentSectionRepositoryService,
-        private http: HttpService,
         private formBuilder: FormBuilder,
-        public vp: ViewportService,
-        private operator: OperatorService
+        private operator: OperatorService,
+        titleService: Title,
+        translate: TranslateService,
+        matSnackBar: MatSnackBar
     ) {
-        super();
+        super(titleService, translate, matSnackBar);
 
         this.commentRepo.getViewModelListObservable().subscribe(sections => this.setSections(sections));
         this.operator.getObservable().subscribe(() => this.setSections(this.commentRepo.getViewModelList()));
@@ -68,6 +82,7 @@ export class MotionCommentsComponent extends BaseComponent {
 
     /**
      * sets the `sections` member with sections, if the operator has reading permissions.
+     *
      * @param allSections A list of all sections available
      */
     private setSections(allSections: ViewMotionCommentSection[]): void {
@@ -77,6 +92,7 @@ export class MotionCommentsComponent extends BaseComponent {
 
     /**
      * Returns true if the operator has write permissions for the given section, so he can edit the comment.
+     *
      * @param section The section to judge about
      */
     public canEditSection(section: ViewMotionCommentSection): boolean {
@@ -98,6 +114,7 @@ export class MotionCommentsComponent extends BaseComponent {
 
     /**
      * Puts the comment into edit mode.
+     *
      * @param section The section for the comment.
      */
     public editComment(section: ViewMotionCommentSection): void {
@@ -110,25 +127,27 @@ export class MotionCommentsComponent extends BaseComponent {
 
     /**
      * Saves the comment. Makes a request to the server.
+     *
      * @param section The section for the comment to save
      */
     public async saveComment(section: ViewMotionCommentSection): Promise<void> {
         const commentText = this.commentForms[section.id].get('comment').value;
-        try {
-            await this.http
-                .post(`rest/motions/motion/${this.motion.id}/manage_comments/`, {
-                    section_id: section.id,
-                    comment: commentText
-                });
-            this.cancelEditing(section);
-        } catch (e) {
-            console.log(e);
-            // TODO: Errorhandling
-        }
+        const sectionId = section.id;
+        const motionId = this.motion.id;
+        await this.commentRepo.saveComment(motionId, sectionId, commentText).then(
+            () => {
+                this.cancelEditing(section);
+            },
+            error => {
+                this.error = true;
+                this.raiseError(`${error} :"${section.name}"`);
+            }
+        );
     }
 
     /**
      * Cancles the editing for a comment.
+     *
      * @param section The section for the comment
      */
     public cancelEditing(section: ViewMotionCommentSection): void {
@@ -137,7 +156,9 @@ export class MotionCommentsComponent extends BaseComponent {
 
     /**
      * Returns true, if the comment is edited.
+     *
      * @param section The section for the comment.
+     * @returns a boolean of the comments is edited
      */
     public isCommentEdited(section: ViewMotionCommentSection): boolean {
         return Object.keys(this.commentForms).includes('' + section.id);
