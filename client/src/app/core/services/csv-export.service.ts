@@ -1,7 +1,9 @@
-import { BaseViewModel } from '../../site/base/base-view-model';
 import { Injectable } from '@angular/core';
-import { FileExportService } from './file-export.service';
 import { TranslateService } from '@ngx-translate/core';
+
+import { BaseViewModel } from '../../site/base/base-view-model';
+import { FileExportService } from './file-export.service';
+import { ConfigService } from './config.service';
 
 @Injectable({
     providedIn: 'root'
@@ -9,8 +11,16 @@ import { TranslateService } from '@ngx-translate/core';
 export class CsvExportService {
     /**
      * Constructor
+     *
+     * @param exporter helper to export something as file
+     * @param translate translation serivice
+     * @param config Configuration Service
      */
-    public constructor(protected exporter: FileExportService, private translate: TranslateService) {}
+    public constructor(
+        protected exporter: FileExportService,
+        private translate: TranslateService,
+        private config: ConfigService
+    ) {}
 
     /**
      * Saves an array of model data to a CSV.
@@ -29,11 +39,16 @@ export class CsvExportService {
             assemble?: string; // (if property is further child object, the property of these to be used)
         }[],
         filename: string,
-        { lineSeparator = '\r\n', columnSeparator = ';' }: { lineSeparator?: string; columnSeparator?: string } = {}
+        {
+            lineSeparator = '\r\n',
+            columnSeparator = this.config.instant('general_csv_separator')
+        }: {
+            lineSeparator?: string;
+            columnSeparator?: string;
+        } = {}
     ): void {
         const allLines = []; // Array of arrays of entries
         const usedColumns = []; // mapped properties to be included
-
         // initial array of usable text separators. The first character not used
         // in any text data or as column separator will be used as text separator
         let tsList = ['"', "'", '`', '/', '\\', ';', '.'];
@@ -58,15 +73,17 @@ export class CsvExportService {
         // create lines
         data.forEach(item => {
             const line = [];
-            for (let i = 0; i < usedColumns.length; i++ ){
+            for (let i = 0; i < usedColumns.length; i++) {
                 const property = usedColumns[i];
                 let prop: any = item[property];
-                if (columns[i].assemble){
-                    prop = item[property].map(subitem => this.translate.instant(subitem[columns[i].assemble])).join(',');
+                if (columns[i].assemble) {
+                    prop = item[property]
+                        .map(subitem => this.translate.instant(subitem[columns[i].assemble]))
+                        .join(',');
                 }
                 tsList = this.checkCsvTextSafety(prop, tsList);
                 line.push(prop);
-            };
+            }
             allLines.push(line);
         });
 
@@ -100,11 +117,13 @@ export class CsvExportService {
      * Checks if a given input contains any of the characters defined in a list
      * used for textseparators. The list is then returned without the 'special'
      * characters, as they may not be used as text separator in this csv.
+     *
      * @param input any input to be sent to CSV
      * @param tsList The list of special characters to check.
+     * @returns the cleand CSV String list
      */
     public checkCsvTextSafety(input: any, tsList: string[]): string[] {
-        if (input === null || input === undefined ) {
+        if (input === null || input === undefined) {
             return tsList;
         }
 
@@ -112,6 +131,12 @@ export class CsvExportService {
         return tsList.filter(char => inputAsString.indexOf(char) < 0);
     }
 
+    /**
+     * Capitalizes the first letter of a string
+     *
+     * @param input String that should be capitalized
+     * @returns capitalized string
+     */
     private capitalizeTranslate(input: string): string {
         const temp = input.charAt(0).toUpperCase() + input.slice(1);
         return this.translate.instant(temp);

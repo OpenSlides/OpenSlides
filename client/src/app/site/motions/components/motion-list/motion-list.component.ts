@@ -9,7 +9,8 @@ import { ViewMotion } from '../../models/view-motion';
 import { WorkflowState } from '../../../../shared/models/motions/workflow-state';
 import { ListViewBaseComponent } from '../../../base/list-view-base';
 import { MatSnackBar } from '@angular/material';
-import { ConfigService } from "../../../../core/services/config.service";
+import { ConfigService } from '../../../../core/services/config.service';
+import { CsvExportService } from 'app/core/services/csv-export.service';
 
 /**
  * Component that displays all the motions in a Table using DataSource.
@@ -48,6 +49,7 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
      * @param route Current route
      * @param configService The configuration provider
      * @param repo Motion Repository
+     * @param csvExport CSV Export Service
      */
     public constructor(
         titleService: Title,
@@ -56,7 +58,8 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
         private router: Router,
         private route: ActivatedRoute,
         private configService: ConfigService,
-        private repo: MotionRepositoryService
+        private repo: MotionRepositoryService,
+        private csvExport: CsvExportService
     ) {
         super(titleService, translate, matSnackBar);
     }
@@ -79,9 +82,11 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
                 }
             });
         });
-        this.configService.get('motions_statutes_enabled').subscribe((enabled: boolean): void => {
-            this.statutesEnabled = enabled;
-        });
+        this.configService.get('motions_statutes_enabled').subscribe(
+            (enabled: boolean): void => {
+                this.statutesEnabled = enabled;
+            }
+        );
     }
 
     /**
@@ -96,7 +101,9 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
     /**
      * Get the icon to the corresponding Motion Status
      * TODO Needs to be more accessible (Motion workflow needs adjustment on the server)
+     *
      * @param state the name of the state
+     * @returns the icon string
      */
     public getStateIcon(state: WorkflowState): string {
         const stateName = state.name;
@@ -113,7 +120,9 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
 
     /**
      * Determines if an icon should be shown in the list view
-     * @param state
+     *
+     * @param state the workflowstate
+     * @returns a boolean if the icon should be shown
      */
     public isDisplayIcon(state: WorkflowState): boolean {
         if (state) {
@@ -125,6 +134,7 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
 
     /**
      * Handler for the speakers button
+     *
      * @param motion indicates the row that was clicked on
      */
     public onSpeakerIcon(motion: ViewMotion): void {
@@ -139,11 +149,21 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
     }
 
     /**
-     * Download all motions As PDF and DocX
-     *
-     * TODO: Currently does nothing
+     * Export all motions as CSV
      */
-    public downloadMotions(): void {
-        console.log('Download Motions Button');
+    public csvExportMotionList(): void {
+        this.csvExport.export(
+            this.dataSource.data,
+            [
+                { property: 'identifier' },
+                { property: 'title' },
+                { property: 'text' },
+                { property: 'reason' },
+                { property: 'submitters' },
+                { property: 'category' },
+                { property: 'origin' }
+            ],
+            this.translate.instant('Motions') + '.csv'
+        );
     }
 }

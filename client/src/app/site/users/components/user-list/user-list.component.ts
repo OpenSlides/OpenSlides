@@ -19,12 +19,16 @@ import { MatSnackBar } from '@angular/material';
     styleUrls: ['./user-list.component.scss']
 })
 export class UserListComponent extends ListViewBaseComponent<ViewUser> implements OnInit {
-
     /**
      * The usual constructor for components
+     *
+     * @param titleService Serivce for setting the title
+     * @param translate Service for translation handling
+     * @param matSnackBar Helper to diplay errors
      * @param repo the user repository
-     * @param titleService
-     * @param translate
+     * @param router the router service
+     * @param route the local route
+     * @param csvExport CSV export Service
      */
     public constructor(
         titleService: Title,
@@ -62,6 +66,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
 
     /**
      * Handles the click on a user row
+     *
      * @param row selected row
      */
     public selectUser(row: ViewUser): void {
@@ -75,25 +80,27 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
         this.router.navigate(['./new'], { relativeTo: this.route });
     }
 
-    // TODO save all data from the dataSource
+    /**
+     * Export all users as CSV
+     */
     public csvExportUserList(): void {
         this.csvExport.export(
             this.dataSource.data,
             [
                 { property: 'title' },
-                { property: 'first_name', label: 'First Name' },
-                { property: 'last_name', label: 'Last Name' },
-                { property: 'structure_level', label: 'Structure Level' },
-                { property: 'participant_number', label: 'Participant Number' },
-                { property: 'groups', assemble: 'name'},
+                { property: 'first_name', label: 'Given name' },
+                { property: 'last_name', label: 'Surname' },
+                { property: 'structure_level', label: 'Structure level' },
+                { property: 'participant_number', label: 'Participant number' },
+                { property: 'groups', assemble: 'name' },
                 { property: 'comment' },
-                { property: 'is_active', label: 'Active' },
-                { property: 'is_present', label: 'Presence' },
-                { property: 'is_committee', label: 'Committee' },
-                { property: 'default_password', label: 'Default password' },
-                { property: 'email', label: 'E-Mail' }
+                { property: 'is_active', label: 'Is active' },
+                { property: 'is_present', label: 'Is present' },
+                { property: 'is_committee', label: 'Is a committee' },
+                { property: 'default_password', label: 'Initial password' },
+                { property: 'email' }
             ],
-            'export.csv'
+            this.translate.instant('Participants') + '.csv'
         );
     }
 }
