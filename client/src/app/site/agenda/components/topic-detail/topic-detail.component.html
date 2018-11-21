@@ -1,5 +1,10 @@
-<os-head-bar [nav]="false" [goBack]="true" [editMode]="editTopic"
-    (mainEvent)="setEditMode(!editTopic)" (saveEvent)="saveTopic()">
+<os-head-bar
+    [nav]="false"
+    [goBack]="true"
+    [editMode]="editTopic"
+    (mainEvent)="setEditMode(!editTopic)"
+    (saveEvent)="saveTopic()"
+>
     <!-- Title -->
     <div class="title-slot">
         <h2>
@@ -20,15 +25,13 @@
 
 <div *ngIf="topic" class="topic-container on-transition-fade">
     <div class="topic-title">
-        <h2 *ngIf="!editTopic">{{ topic.title }}</h2>
-        <h2 *ngIf="editTopic">{{ topicForm.get('title').value }}</h2>
+        <h2 *ngIf="!editTopic">{{ topic.title }}</h2> <h2 *ngIf="editTopic">{{ topicForm.get('title').value }}</h2>
     </div>
 
     <mat-card *ngIf="topic || editTopic" class="topic-text">
         <div>
             <span *ngIf="!editTopic">
-                {{ topic.text }}
-                <div *ngIf="topic.text === ''" class="missing" translate>No description provided.</div>
+                {{ topic.text }} <div *ngIf="topic.text === ''" class="missing" translate>No description provided.</div>
             </span>
         </div>
 
@@ -39,11 +42,17 @@
             </h3>
         </div>
 
-        <form *ngIf="editTopic" [formGroup]="topicForm" (ngSubmit)="saveTopic()" (keydown)="keyDownFunction($event)">
+        <form *ngIf="editTopic" [formGroup]="topicForm" (keydown)="onKeyDown($event)" (ngSubmit)="saveTopic()">
             <div>
                 <mat-form-field>
-                    <input type="text" matInput osAutofocus required
-                        formControlName="title" placeholder="{{ 'Title' | translate}}"/>
+                    <input
+                        type="text"
+                        matInput
+                        osAutofocus
+                        required
+                        formControlName="title"
+                        placeholder="{{ 'Title' | translate}}"
+                    />
                     <mat-error *ngIf="topicForm.invalid" translate>A name is required</mat-error>
                 </mat-form-field>
             </div>
