@@ -1013,6 +1013,34 @@ export class DiffService {
     }
 
     /**
+     * Add the CSS-class to the existing "class"-attribute, or add one.
+     * Works on strings, not nodes
+     *
+     * @param {string} tagStr
+     * @param {string} className
+     * @returns {string}
+     */
+    private addClassToHtmlTag(tagStr: string, className: string): string {
+        return tagStr.replace(
+            /<(\w+)( [^>]*)?>/gi,
+            (whole: string, tag: string, tagArguments: string): string => {
+                tagArguments = (tagArguments ? tagArguments : '');
+                if (tagArguments.match(/class="/gi)) {
+                    // class="someclass" => class="someclass insert"
+                    tagArguments = tagArguments.replace(/(class\s*=\s*)(["'])([^\2]*)\2/gi,
+                        (classWhole: string, attr: string, para: string, content: string): string => {
+                            return attr + para + content + ' ' + className + para;
+                        }
+                    );
+                } else {
+                    tagArguments += ' class="' + className + '"';
+                }
+                return '<' + tag + tagArguments + '>';
+            }
+        );
+    };
+
+    /**
      * This fixes a very specific, really weird bug that is tested in the test case "does not a change in a very specific case".
      *
      * @param {string}diffStr
@@ -1831,40 +1859,8 @@ export class DiffService {
             }
         );
 
+        // Merging individual insert/delete statements into bigger blocks
         diffUnnormalized = diffUnnormalized.replace(/<\/ins><ins>/gi, '').replace(/<\/del><del>/gi, '');
-
-        // Move whitespaces around inserted P's out of the INS-tag
-        diffUnnormalized = diffUnnormalized.replace(
-            /<ins>(\s*)(<p( [^>]*)?>[\s\S]*?<\/p>)(\s*)<\/ins>/gim,
-            (match: string, whiteBefore: string, inner: string, tagInner: string, whiteAfter: string): string => {
-                return (
-                    whiteBefore +
-                    inner
-                        .replace(
-                            /<p( [^>]*)?>/gi,
-                            (match2: string): string => {
-                                return match2 + '<ins>';
-                            }
-                        )
-                        .replace(/<\/p>/gi, '</ins></p>') +
-                    whiteAfter
-                );
-            }
-        );
-
-        // Fixes HTML produced by the diff like this:
-        // from: <del></P></del><ins> Inserted Text</P>\n<P>More inserted text</P></ins>
-        // into: <ins> Inserted Text</ins></P>\n<P>More inserted text</ins></P>
-        diffUnnormalized = diffUnnormalized.replace(
-            /<del><\/p><\/del><ins>([\s\S]*?)<\/p><\/ins>/gim,
-            '<ins>$1</ins></p>'
-        );
-        diffUnnormalized = diffUnnormalized.replace(
-            /<ins>[\s\S]*?<\/ins>/gim,
-            (match: string): string => {
-                return match.replace(/(<\/p>\s*<p>)/gi, '</ins>$1<ins>');
-            }
-        );
 
         // If only a few characters of a word have changed, don't display this as a replacement of the whole word,
         // but only of these specific characters
@@ -1919,28 +1915,43 @@ export class DiffService {
             }
         );
 
-        // <ins><li>...</li></ins> => <li class="insert">...</li>
+        // If larger inserted HTML text contains block elements, we separate the inserted text into
+        // inline <ins> elements and "insert"-class-based block elements.
+        // <ins>...<div>...</div>...</ins> => <ins>...</ins><div class="insert">...</div><ins>...</ins>
         diffUnnormalized = diffUnnormalized.replace(
-            /<(ins|del)><(p|div|blockquote|li)([^>]*)>([\s\S]*)<\/\2><\/\1>/gi,
-            (whole: string, insDel: string, block: string, blockArguments: string, content: string): string => {
-                // Prevent accidental matches like <ins><p>...</p>...</ins><ins>...<p></p></ins>
-                if (content.match(/<(ins|del)>/gi)) {
-                    return whole;
-                }
-                // Add the CSS-class to the existing "class"-attribute, or add one
-                let newArguments = blockArguments;
+            /<(ins|del)>([\s\S]*?)<\/\1>/gi,
+            (whole: string, insDel: string): string => {
                 const modificationClass = (insDel.toLowerCase() === 'ins' ? 'insert' : 'delete');
-                if (newArguments.match(/class="/gi)) {
-                    // class="someclass" => class="someclass insert"
-                    newArguments = newArguments.replace(/(class\s*=\s*)(["'])([^\2]*)\2/gi,
-                        (classWhole: string, attr: string, para: string, classContent: string): string => {
-                            return attr + para + classContent + ' ' + modificationClass + para;
-                        }
-                    );
-                } else {
-                    newArguments += ' class="' + modificationClass + '"';
-                }
-                return '<' + block + newArguments + '>' + content + '</' + block + '>';
+                return whole.replace(
+                    /(<(p|div|blockquote|li)[^>]*>)([\s\S]*?)(<\/\2>)/gi,
+                    (whole2: string, opening: string, blockTag: string, content: string, closing: string): string => {
+                        const modifiedTag = this.addClassToHtmlTag(opening, modificationClass);
+                        return '</' + insDel + '>' + modifiedTag + content + closing + '<' + insDel + '>';
+                    }
+                );
+            }
+        );
+
+        // Cleanup leftovers from the operation above, when <ins></ins>-tags ore <ins> </ins>-tags are left
+        // around block tags. It should be safe to remove them and just leave the whitespaces.
+        diffUnnormalized = diffUnnormalized.replace(
+            /<(ins|del)>(\s*)<\/\1>/gi,
+            (whole: string, insDel: string, space: string): string => space
+        );
+
+        // <del></p><ins> Added text</p></ins> -> <ins> Added text</ins></p>
+        diffUnnormalized = diffUnnormalized.replace(
+            /<del><\/(p|div|blockquote|li)><\/del><ins>([\s\S]*?)<\/\1>(\s*)<\/ins>/gi,
+            (whole: string, blockTag: string, content: string, space: string): string => {
+                return '<ins>' + content + '</ins></' + blockTag + '>' + space;
+            }
+        );
+
+        // </p> </ins> -> </ins></p>
+        diffUnnormalized = diffUnnormalized.replace(
+            /(<\/(p|div|blockquote|li)>)(\s*)<\/(ins|del)>/gi,
+            (whole: string, ending: string, blockTag: string, space: string, insdel: string): string => {
+                return '</' + insdel + '>' + ending + space;
             }
         );
 
