@@ -7,24 +7,16 @@ import { Subscription, Observable } from 'rxjs';
 
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { Displayable } from 'app/shared/models/base/displayable';
-
-/**
- * An representation of our nodes. Saves the displayed name, the id and children to build a full tree.
- */
-interface OSTreeNode {
-    name: string;
-    id: number;
-    children?: OSTreeNode[];
-}
+import { OSTreeNode, TreeService } from 'app/core/services/tree.service';
 
 /**
  * The data representation for the sort event.
  */
-export interface OSTreeSortEvent {
+export interface OSTreeSortEvent<T> {
     /**
      * Gives all nodes to be inserted below the parent_id.
      */
-    nodes: OSTreeNode[];
+    nodes: OSTreeNode<T>[];
 
     /**
      * Provides the parent id for the nodes array. Do not provide it, if it's the
@@ -62,8 +54,8 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
         if (this.modelSubscription) {
             this.modelSubscription.unsubscribe();
         }
-        this.modelSubscription = models.pipe(auditTime(100)).subscribe(m => {
-            this.nodes = this.makeTree(m);
+        this.modelSubscription = models.pipe(auditTime(10)).subscribe(items => {
+            this.nodes = this.treeService.makeTree(items, this.weightKey, this.parentIdKey);
             setTimeout(() => this.tree.treeModel.expandAll());
         });
     }
@@ -93,7 +85,7 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
      * sorted part of the tree.
      */
     @Output()
-    public readonly sort = new EventEmitter<OSTreeSortEvent>();
+    public readonly sort = new EventEmitter<OSTreeSortEvent<T>>();
 
     /**
      * Options for the tree. As a default drag and drop is allowed.
@@ -112,12 +104,12 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
     /**
      * This is our actual tree represented by our own nodes.
      */
-    public nodes: OSTreeNode[] = [];
+    public nodes: OSTreeNode<T>[] = [];
 
     /**
      * Constructor. Adds the eventhandler for the drop event to the tree.
      */
-    public constructor() {
+    public constructor(private treeService: TreeService) {
         this.treeOptions.actionMapping = {
             mouse: {
                 drop: this.drop.bind(this)
@@ -149,9 +141,13 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
      * @param param3 The previous and new position os the node
      */
     private drop(tree: TreeModel, node: TreeNode, $event: any, { from, to }: { from: any; to: any }): void {
-        // check if dropped itself
-        if (from.id === to.parent.id) {
-            return;
+        // check if dropped itself by going the tree upwards and check, if one of them is the "from"-node.
+        let parent = to.parent;
+        while (parent !== null) {
+            if (from.id === parent.id) {
+                return;
+            }
+            parent = parent.parent;
         }
 
         let parentId;
@@ -164,87 +160,5 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
         }
         transferArrayItem(fromArray, to.parent.data.children, from.index, to.index);
         this.sort.emit({ nodes: to.parent.data.children, parent_id: parentId });
-    }
-
-    /**
-     * Returns the weight casted to a number from a given model.
-     *
-     * @param model The model to get the weight from.
-     * @returns the weight of the model
-     */
-    private getWeight(model: T): number {
-        return (<any>model[this.weightKey]) as number;
-    }
-
-    /**
-     * Returns the parent id casted to a number from a given model.
-     *
-     * @param model The model to get the parent id from.
-     * @returns the parent id of the model
-     */
-    private getParentId(model: T): number {
-        return (<any>model[this.parentIdKey]) as number;
-    }
-
-    /**
-     * Build our representation of a tree node given the model and optional children
-     * to append to this node.
-     *
-     * @param model The model to create a node of.
-     * @param children Optional children to append to this node.
-     * @returns The created node.
-     */
-    private buildTreeNode(model: T, children?: OSTreeNode[]): OSTreeNode {
-        return {
-            name: model.getTitle(),
-            id: model.id,
-            children: children
-        };
-    }
-
-    /**
-     * Creates a tree from the given models with their parent and weight properties.
-     *
-     * @param models All models to build the tree of
-     * @returns The first layer of the tree given as an array of nodes, because this tree may not have a single root.
-     */
-    private makeTree(models: T[]): OSTreeNode[] {
-        // copy references to avoid side effects:
-        models = models.map(x => x);
-
-        // Sort items after there weight
-        models.sort((a, b) => this.getWeight(a) - this.getWeight(b));
-
-        // Build a dict with all children (dict-value) to a specific
-        // item id (dict-key).
-        const children: { [parendId: number]: T[] } = {};
-
-        models.forEach(model => {
-            if (model[this.parentIdKey]) {
-                const parentId = this.getParentId(model);
-                if (children[parentId]) {
-                    children[parentId].push(model);
-                } else {
-                    children[parentId] = [model];
-                }
-            }
-        });
-
-        // Recursive function that generates a nested list with all
-        // items with there children
-        const getChildren: (_models?: T[]) => OSTreeNode[] = _models => {
-            if (!_models) {
-                return;
-            }
-            const nodes: OSTreeNode[] = [];
-            _models.forEach(_model => {
-                nodes.push(this.buildTreeNode(_model, getChildren(children[_model.id])));
-            });
-            return nodes;
-        };
-
-        // Generates the list of root items (with no parents)
-        const parentItems = models.filter(model => !this.getParentId(model));
-        return getChildren(parentItems);
     }
 }

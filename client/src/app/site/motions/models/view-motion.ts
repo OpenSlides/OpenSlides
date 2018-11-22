@@ -62,6 +62,12 @@ export class ViewMotion extends BaseViewModel {
      */
     public highlightedLine: number;
 
+    /**
+     * Is set by the repository; this is the order of the flat call list given by
+     * the properties weight and sort_parent_id
+     */
+    public callListWeight: number;
+
     public get motion(): Motion {
         return this._motion;
     }
@@ -179,7 +185,7 @@ export class ViewMotion extends BaseViewModel {
     }
 
     public get agendaSpeakerAmount(): number {
-        return this.item ? this.item.speakerAmount : null
+        return this.item ? this.item.speakerAmount : null;
     }
 
     public constructor(
@@ -189,7 +195,7 @@ export class ViewMotion extends BaseViewModel {
         supporters?: User[],
         workflow?: Workflow,
         state?: WorkflowState,
-        item?: Item,
+        item?: Item
     ) {
         super();
 

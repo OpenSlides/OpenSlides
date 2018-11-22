@@ -75,8 +75,8 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
         this.repo.getViewModelListObservable().subscribe(newMotions => {
             // TODO: This is for testing purposes. Can be removed with #3963
             this.dataSource.data = newMotions.sort((a, b) => {
-                if (a.weight !== b.weight) {
-                    return a.weight - b.weight;
+                if (a.callListWeight !== b.callListWeight) {
+                    return a.callListWeight - b.callListWeight;
                 } else {
                     return a.id - b.id;
                 }
