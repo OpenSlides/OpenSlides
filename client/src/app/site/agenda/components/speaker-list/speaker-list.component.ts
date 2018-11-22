@@ -10,6 +10,10 @@ import { DataStoreService } from 'app/core/services/data-store.service';
 import { AgendaRepositoryService } from '../../services/agenda-repository.service';
 import { ViewItem } from '../../models/view-item';
 import { OperatorService } from 'app/core/services/operator.service';
+import { BaseViewComponent } from 'app/site/base/base-view';
+import { Title } from '@angular/platform-browser';
+import { TranslateService } from '@ngx-translate/core';
+import { MatSnackBar } from '@angular/material';
 
 /**
  * The list of speakers for agenda items.
@@ -19,7 +23,7 @@ import { OperatorService } from 'app/core/services/operator.service';
     templateUrl: './speaker-list.component.html',
     styleUrls: ['./speaker-list.component.scss']
 })
-export class SpeakerListComponent implements OnInit {
+export class SpeakerListComponent extends BaseViewComponent implements OnInit {
     /**
      * Holds the view item to the given topic
      */
@@ -52,17 +56,24 @@ export class SpeakerListComponent implements OnInit {
 
     /**
      * Constructor for speaker list component
+     * @param title
+     * @param translate
+     * @param snackBar
      * @param route Angulars ActivatedRoute
      * @param DS the DataStore
      * @param itemRepo Repository fpr agenda items
      * @param op the current operator
      */
     public constructor(
+        title: Title,
+        translate: TranslateService,
+        snackBar: MatSnackBar,
         private route: ActivatedRoute,
         private DS: DataStoreService,
         private itemRepo: AgendaRepositoryService,
         private op: OperatorService
     ) {
+        super(title, translate, snackBar)
         this.addSpeakerForm = new FormGroup({ user_id: new FormControl([]) });
         this.getAgendaItemByUrl();
     }
@@ -115,9 +126,8 @@ export class SpeakerListComponent implements OnInit {
      * Create a speaker out of an id
      * @param userId the user id to add to the list. No parameter adds the operators user as speaker.
      */
-    public async addNewSpeaker(userId?: number): Promise<void> {
-        await this.itemRepo.addSpeaker(userId, this.viewItem.item);
-        this.addSpeakerForm.reset();
+    public addNewSpeaker(userId?: number): void {
+        this.itemRepo.addSpeaker(userId, this.viewItem.item).then(() => this.addSpeakerForm.reset(), this.raiseError);
     }
 
     /**
@@ -128,7 +138,7 @@ export class SpeakerListComponent implements OnInit {
     public onSortingChange(listInNewOrder: ViewSpeaker[]): void {
         // extract the ids from the ViewSpeaker array
         const userIds = listInNewOrder.map(speaker => speaker.id);
-        this.itemRepo.sortSpeakers(userIds, this.viewItem.item);
+        this.itemRepo.sortSpeakers(userIds, this.viewItem.item).then(null, this.raiseError);
     }
 
     /**
@@ -136,14 +146,14 @@ export class SpeakerListComponent implements OnInit {
      * @param item the speaker marked in the list
      */
     public onStartButton(item: ViewSpeaker): void {
-        this.itemRepo.startSpeaker(item.id, this.viewItem.item);
+        this.itemRepo.startSpeaker(item.id, this.viewItem.item).then(null, this.raiseError);
     }
 
     /**
      * Click on the mic-cross button
      */
     public onStopButton(): void {
-        this.itemRepo.stopSpeaker(this.viewItem.item);
+        this.itemRepo.stopSpeaker(this.viewItem.item).then(null, this.raiseError);
     }
 
     /**
@@ -151,7 +161,7 @@ export class SpeakerListComponent implements OnInit {
      * @param item
      */
     public onMarkButton(item: ViewSpeaker): void {
-        this.itemRepo.markSpeaker(item.user.id, !item.marked, this.viewItem.item);
+        this.itemRepo.markSpeaker(item.user.id, !item.marked, this.viewItem.item).then(null, this.raiseError);
     }
 
     /**
@@ -159,7 +169,7 @@ export class SpeakerListComponent implements OnInit {
      * @param item
      */
     public onDeleteButton(item?: ViewSpeaker): void {
-        this.itemRepo.deleteSpeaker(this.viewItem.item, item ? item.id : null);
+        this.itemRepo.deleteSpeaker(this.viewItem.item, item ? item.id : null).then(null, this.raiseError);
     }
 
     /**

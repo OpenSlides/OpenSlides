@@ -29,7 +29,6 @@ INPUT_TYPE_MAPPING = {
     'choice': str,
     'colorpicker': str,
     'datetimepicker': int,
-    'majorityMethod': str,
     'static': dict,
     'translations': list,
 }

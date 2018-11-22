@@ -11,7 +11,7 @@ import { User } from '../../../../shared/models/users/user';
 import { DataStoreService } from '../../../../core/services/data-store.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Motion } from '../../../../shared/models/motions/motion';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription, ReplaySubject, concat } from 'rxjs';
 import { LineRange } from '../../services/diff.service';
 import {
     MotionChangeRecommendationComponent,
@@ -26,6 +26,8 @@ import { BaseViewComponent } from '../../../base/base-view';
 import { ViewStatuteParagraph } from '../../models/view-statute-paragraph';
 import { StatuteParagraphRepositoryService } from '../../services/statute-paragraph-repository.service';
 import { ConfigService } from '../../../../core/services/config.service';
+import { Workflow } from 'app/shared/models/motions/workflow';
+import { take, takeWhile, multicast, skipWhile } from 'rxjs/operators';
 
 /**
  * Component for the motion detail view
@@ -71,9 +73,25 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     public newMotion = false;
 
     /**
-     * Target motion. Might be new or old
+     * Sets the motions, e.g. via an autoupdate. Reload important things here:
+     * - Reload the recommendation. Not changed with autoupdates, but if the motion is loaded this needs to run.
      */
-    public motion: ViewMotion;
+    public set motion(value: ViewMotion) {
+        this._motion = value;
+        this.setupRecommender();
+    }
+
+    /**
+     * Returns the target motion. Might be the new one or old.
+     */
+    public get motion(): ViewMotion {
+        return this._motion;
+    }
+
+    /**
+     * Saves the target motion. Accessed via the getter and setter.
+     */
+    private _motion: ViewMotion;
 
     /**
      * Value of the configuration variable `motions_statutes_enabled` - are statutes enabled?
@@ -122,6 +140,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     public categoryObserver: BehaviorSubject<Category[]>;
 
     /**
+     * Subject for the Categories
+     */
+    public workflowObserver: BehaviorSubject<Workflow[]>;
+
+    /**
      * Subject for the Submitters
      */
     public submitterObserver: BehaviorSubject<User[]>;
@@ -140,6 +163,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * Custom recommender as set in the settings
      */
     public recommender: string;
+
+    /**
+     * The subscription to the recommender config variable.
+     */
+    private recommenderSubscription: Subscription;
 
     /**
      * Constuct the detail view.
@@ -185,15 +213,17 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         this.submitterObserver = new BehaviorSubject(DS.getAll(User));
         this.supporterObserver = new BehaviorSubject(DS.getAll(User));
         this.categoryObserver = new BehaviorSubject(DS.getAll(Category));
+        this.workflowObserver = new BehaviorSubject(DS.getAll(Workflow));
 
         // Make sure the subjects are updated, when a new Model for the type arrives
         this.DS.changeObservable.subscribe(newModel => {
             if (newModel instanceof User) {
                 this.submitterObserver.next(DS.getAll(User));
                 this.supporterObserver.next(DS.getAll(User));
-            }
-            if (newModel instanceof Category) {
+            } else if (newModel instanceof Category) {
                 this.categoryObserver.next(DS.getAll(Category));
+            } else if (newModel instanceof Workflow) {
+                this.workflowObserver.next(DS.getAll(Workflow));
             }
         });
         this.configService.get('motions_statutes_enabled').subscribe(
@@ -282,6 +312,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
             recommendation_id: [''],
             submitters_id: [],
             supporters_id: [],
+            workflow_id: [],
             origin: ['']
         });
         this.contentForm = this.formBuilder.group({
@@ -291,6 +322,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
             statute_amendment: [''], // Internal value for the checkbox, not saved to the model
             statute_paragraph_id: ['']
         });
+        this.updateWorkflowIdForCreateForm();
     }
 
     /**
@@ -474,6 +506,21 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         }
     }
 
+    public updateWorkflowIdForCreateForm(): void {
+        const isStatuteAmendment = !!this.contentForm.get('statute_amendment').value;
+        const configKey = isStatuteAmendment ? 'motions_statute_amendments_workflow' : 'motions_workflow';
+        // TODO: This should just be a takeWhile(id => !id), but should include the last one where the id is OK.
+        // takeWhile will get a inclusive parameter, see https://github.com/ReactiveX/rxjs/pull/4115
+        this.configService.get<string>(configKey).pipe(multicast(
+            () => new ReplaySubject(1),
+            (ids) => ids.pipe(takeWhile(id => !id), o => concat(o, ids.pipe(take(1))))
+        ), skipWhile(id => !id)).subscribe(id => {
+            this.metaInfoForm.patchValue({
+                workflow_id: parseInt(id, 10),
+            });
+        });
+    }
+
     /**
      * If the checkbox is deactivated, the statute_paragraph_id-field needs to be reset, as only that field is saved
      * @param {MatCheckboxChange} $event
@@ -482,6 +529,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         this.contentForm.patchValue({
             statute_paragraph_id: null
         });
+        this.updateWorkflowIdForCreateForm();
     }
 
     /**
@@ -548,9 +596,13 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     /**
      * Observes the repository for changes in the motion recommender
      */
-    public getRecommender(): void {
-        this.repo.getRecommenderObservable().subscribe(newRecommender => {
-            this.recommender = newRecommender;
+    public setupRecommender(): void {
+        const configKey = this.motion.isStatuteAmendment() ? 'motions_statute_recommendations_by' : 'motions_recommendations_by';
+        if (this.recommenderSubscription) {
+            this.recommenderSubscription.unsubscribe();
+        }
+        this.recommenderSubscription = this.configService.get(configKey).subscribe(recommender => {
+            this.recommender = recommender;
         });
     }
 
@@ -571,10 +623,9 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
 
     /**
      * Init.
-     * Calls getRecommender and sets the surrounding motions to navigate back and forth
+     * Sets the surrounding motions to navigate back and forth
      */
     public ngOnInit(): void {
-        this.getRecommender();
         this.repo.getViewModelListObservable().subscribe(newMotionList => {
             if (newMotionList) {
                 this.allMotions = newMotionList;

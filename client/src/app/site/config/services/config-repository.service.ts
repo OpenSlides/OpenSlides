@@ -220,8 +220,7 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
      * @param config
      */
     public createViewModel(config: Config): ViewConfig {
-        const vm = new ViewConfig(config);
-        return vm;
+        return new ViewConfig(config);
     }
 
     /**

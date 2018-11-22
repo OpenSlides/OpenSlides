@@ -15,7 +15,6 @@ type ConfigInputType =
     | 'boolean'
     | 'markupText'
     | 'integer'
-    | 'majorityMethod'
     | 'choice'
     | 'datetimepicker'
     | 'colorpicker'
