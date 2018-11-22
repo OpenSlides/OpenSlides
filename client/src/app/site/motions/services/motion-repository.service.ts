@@ -14,13 +14,14 @@ import { DiffService, LineRange, ModificationType } from './diff.service';
 import { ViewChangeReco } from '../models/view-change-reco';
 import { MotionChangeReco } from '../../../shared/models/motions/motion-change-reco';
 import { ViewUnifiedChange } from '../models/view-unified-change';
-import { ViewStatuteParagraph }  from '../models/view-statute-paragraph';
+import { ViewStatuteParagraph } from '../models/view-statute-paragraph';
 import { Identifiable } from '../../../shared/models/base/identifiable';
 import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
 import { HttpService } from 'app/core/services/http.service';
 import { ConfigService } from 'app/core/services/config.service';
 import { Observable } from 'rxjs';
 import { Item } from 'app/shared/models/agenda/item';
+import { OSTreeSortEvent } from 'app/shared/components/sorting-tree/sorting-tree.component';
 
 /**
  * Repository Services for motions (and potentially categories)
@@ -153,13 +154,13 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
     }
 
     /**
-     * Sorts motions for the call list by the given list of ids (as identifiables with
-     * the format `{id: <id>}`).
-     * @param motionIds all motion ids in the new order.
+     * Sends the changed nodes to the server.
+     *
+     * @param data The reordered data from the sorting
      */
-    public async sortMotions(motionIds: Identifiable[]): Promise<void> {
+    public async sortMotions(data: OSTreeSortEvent): Promise<void> {
         const url = '/rest/motions/motion/sort/';
-        await this.httpService.post(url, { nodes: motionIds });
+        await this.httpService.post(url, data);
     }
 
     /**
@@ -226,7 +227,11 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         }
     }
 
-    public formatStatuteAmendment(paragraphs: ViewStatuteParagraph[], amendment: ViewMotion, lineLength: number): string {
+    public formatStatuteAmendment(
+        paragraphs: ViewStatuteParagraph[],
+        amendment: ViewMotion,
+        lineLength: number
+    ): string {
         const origParagraph = paragraphs.find(paragraph => paragraph.id === amendment.statute_paragraph_id);
         let diffHtml = this.diff.diff(origParagraph.text, amendment.text);
         diffHtml = this.lineNumbering.insertLineBreaksWithoutNumbers(diffHtml, lineLength, true);

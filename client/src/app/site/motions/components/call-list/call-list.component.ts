@@ -1,14 +1,15 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, EventEmitter } from '@angular/core';
 import { Title } from '@angular/platform-browser';
+import { MatSnackBar } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
+import { Observable } from 'rxjs';
 
 import { BaseViewComponent } from '../../../base/base-view';
-import { MatSnackBar } from '@angular/material';
 import { MotionRepositoryService } from '../../services/motion-repository.service';
 import { ViewMotion } from '../../models/view-motion';
 import { SortingListComponent } from '../../../../shared/components/sorting-list/sorting-list.component';
-import { Router, ActivatedRoute } from '@angular/router';
+import { OSTreeSortEvent } from 'app/shared/components/sorting-tree/sorting-tree.component';
 
 /**
  * Sort view for the call list.
@@ -21,7 +22,12 @@ export class CallListComponent extends BaseViewComponent {
     /**
      * All motions sorted first by weight, then by id.
      */
-    public motions: ViewMotion[];
+    public motionsObservable: Observable<ViewMotion[]>;
+
+    /**
+     * Emits true for expand and false for collaps. Informs the sorter component about this actions.
+     */
+    public readonly expandCollapse: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     /**
      * The sort component
@@ -40,29 +46,27 @@ export class CallListComponent extends BaseViewComponent {
         title: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
-        private motionRepo: MotionRepositoryService,
-        private router: Router,
-        private route: ActivatedRoute
+        private motionRepo: MotionRepositoryService
     ) {
         super(title, translate, matSnackBar);
 
-        this.motionRepo.getViewModelListObservable().subscribe(motions => {
-            this.motions = motions.sort((a, b) => {
-                if (a.weight !== b.weight) {
-                    return a.weight - b.weight;
-                } else {
-                    return a.id - b.id;
-                }
-            });
-        });
+        this.motionsObservable = this.motionRepo.getViewModelListObservable();
     }
 
     /**
-     * Saves the new motion order to the server.
+     * Handler for the sort event. The data to change is given to
+     * the repo, sending it to the server.
      */
-    public save(): void {
-        this.motionRepo.sortMotions(this.sorter.array.map(s => ({ id: s.id }))).then(() => {
-            this.router.navigate(['../'], { relativeTo: this.route });
-        }, this.raiseError);
+    public sort(data: OSTreeSortEvent): void {
+        this.motionRepo.sortMotions(data).then(null, this.raiseError);
+    }
+
+    /**
+     * Fires the expandCollapse event emitter.
+     *
+     * @param expand True, if the tree should be expanded. Otherwise collapsed
+     */
+    public expandCollapseAll(expand: boolean): void {
+        this.expandCollapse.emit(expand);
     }
 }
