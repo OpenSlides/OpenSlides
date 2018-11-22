@@ -23,9 +23,9 @@ import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
 import { ViewUnifiedChange } from '../../models/view-unified-change';
 import { OperatorService } from '../../../../core/services/operator.service';
 import { BaseViewComponent } from '../../../base/base-view';
-import { ViewStatuteParagraph } from "../../models/view-statute-paragraph";
-import { StatuteParagraphRepositoryService } from "../../services/statute-paragraph-repository.service";
-import { ConfigService } from "../../../../core/services/config.service";
+import { ViewStatuteParagraph } from '../../models/view-statute-paragraph';
+import { StatuteParagraphRepositoryService } from '../../services/statute-paragraph-repository.service';
+import { ConfigService } from '../../../../core/services/config.service';
 
 /**
  * Component for the motion detail view
@@ -196,9 +196,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
                 this.categoryObserver.next(DS.getAll(Category));
             }
         });
-        this.configService.get('motions_statutes_enabled').subscribe((enabled: boolean): void => {
-            this.statutesEnabled = enabled;
-        });
+        this.configService.get('motions_statutes_enabled').subscribe(
+            (enabled: boolean): void => {
+                this.statutesEnabled = enabled;
+            }
+        );
     }
 
     /**
@@ -258,7 +260,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         });
         this.metaInfoForm.patchValue(metaInfoPatch);
 
-        const contentPatch: {[key: string]: any} = {};
+        const contentPatch: { [key: string]: any } = {};
         Object.keys(this.contentForm.controls).forEach(ctrl => {
             contentPatch[ctrl] = formMotion[ctrl];
         });

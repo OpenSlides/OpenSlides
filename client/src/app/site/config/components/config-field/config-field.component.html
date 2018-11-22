@@ -1,15 +1,13 @@
-<form class="config-form-group" [formGroup]="form" *ngIf="configItem.inputType !== 'boolean'">
-    <mat-form-field>
-        <!-- Decides which input-type to take (i.e) date, select, textarea, input) -->
+<form class="config-form-group" [formGroup]="form">
+    <mat-form-field *ngIf="!isExcludedType(configItem.inputType)">
+
+        <!-- Decides which input-type to take (i.e) date, select, input) -->
         <ng-container [ngSwitch]="configItem.inputType">
             <ng-container *ngSwitchCase="'datetimepicker'">
                 <ng-container *ngTemplateOutlet="date"></ng-container>
             </ng-container>
             <ng-container *ngSwitchCase="'choice'">
                 <ng-container *ngTemplateOutlet="select"></ng-container>
-            </ng-container>
-            <ng-container *ngSwitchCase="'markupText'">
-                <ng-container *ngTemplateOutlet="textarea"></ng-container>
             </ng-container>
             <ng-container *ngSwitchDefault>
                 <ng-container *ngTemplateOutlet="input"></ng-container>
@@ -28,7 +26,7 @@
 
         <!-- templates for exchangeable inputs. Add more here if necessary -->
         <ng-template #date ngProjectAs="[matInput]">
-            <input matInput formControlName="value" [matDatepicker]="picker" [errorStateMatcher]="matcher">
+            <input matInput formControlName="value" [matDatepicker]="picker" [errorStateMatcher]="matcher" />
             <mat-datepicker-toggle matPrefix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
         </ng-template>
@@ -41,25 +39,27 @@
             </mat-select>
         </ng-template>
 
-        <ng-template #textarea ngProjectAs="[matInput]">
-            <textarea matInput formControlName="value" [value]="configItem.value" [errorStateMatcher]="matcher"></textarea>
-        </ng-template>
-
         <ng-template #input ngProjectAs="[matInput]">
             <input matInput formControlName="value" [value]="configItem.value" [errorStateMatcher]="matcher"
             [type]="formType(configItem.inputType)">
         </ng-template>
     </mat-form-field>
-</form>
 
-<div class="config-form-group" *ngIf="configItem.inputType === 'boolean'">
-    <mat-checkbox [checked]="configItem.value" (change)="onChange($event.checked)">
-        {{ configItem.label | translate }}
-    </mat-checkbox>
-    <div class="hint" *ngIf="configItem.helpText && !error">
-        {{ configItem.helpText | translate }}
+    <div class="config-form-group" *ngIf="isExcludedType(configItem.inputType)">
+
+        <div *ngIf="configItem.inputType === 'boolean'">
+            <mat-checkbox formControlName="value">
+                {{ configItem.label | translate }}
+            </mat-checkbox>
+            <div class="hint" *ngIf="configItem.helpText && !error">{{ configItem.helpText | translate }}</div>
+            <div class="error" *ngIf="error">{{ error }}</div>
+        </div>
+
+        <!-- The editor -->
+        <div *ngIf="configItem.inputType === 'markupText'">
+            <h4>{{ configItem.label | translate }}</h4>
+            <editor formControlName="value" [init]="tinyMceSettings"></editor>
+        </div>
+
     </div>
-    <div class="error" *ngIf="error">
-        {{ error }}
-    </div>
-</div>
+</form>

@@ -7,9 +7,12 @@
             <mat-radio-button *ngFor="let radio of replacementTypes" [value]="radio.value">{{ radio.title }}</mat-radio-button>
         </mat-radio-group>
 
-        <mat-form-field class="wide-form">
-            <textarea matInput placeholder='Change recommendation Text' formControlName='text'></textarea>
-        </mat-form-field>
+        <!-- The HTML Editor -->
+        <h4 translate>Change recommendation Text</h4>
+        <editor
+            formControlName='text'
+            [init]="tinyMceSettings"
+        ></editor>
 
         <mat-checkbox formControlName="public">{{ 'Public' | translate }}</mat-checkbox>
     </form>

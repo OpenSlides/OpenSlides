@@ -11,9 +11,12 @@
             </div>
         </ng-container>
         <form [formGroup]="commentForms[section.id]" *ngIf="isCommentEdited(section)">
-            <mat-form-field>
-                <textarea formControlName="comment" matInput placeholder="{{'Comment' | translate}}"></textarea>
-            </mat-form-field>
+            <!-- The HTML Editor -->
+            <h4 translate>Comment</h4>
+            <editor
+                formControlName='comment'
+                [init]="tinyMceSettings"
+            ></editor>
         </form>
     </ng-container>
 

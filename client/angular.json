@@ -24,7 +24,23 @@
                         "tsConfig": "src/tsconfig.app.json",
                         "assets": ["src/favicon.ico", "src/assets"],
                         "styles": ["src/styles.scss", "node_modules/material-design-icons/iconfont/material-icons.css"],
-                        "scripts": []
+                        "scripts": [
+                            "node_modules/tinymce/tinymce.min.js",
+                            "node_modules/tinymce/themes/modern/theme.js",
+                            "node_modules/tinymce/plugins/autolink/plugin.js",
+                            "node_modules/tinymce/plugins/charmap/plugin.js",
+                            "node_modules/tinymce/plugins/code/plugin.js",
+                            "node_modules/tinymce/plugins/colorpicker/plugin.js",
+                            "node_modules/tinymce/plugins/fullscreen/plugin.js",
+                            "node_modules/tinymce/plugins/image/plugin.js",
+                            "node_modules/tinymce/plugins/imagetools/plugin.js",
+                            "node_modules/tinymce/plugins/lists/plugin.js",
+                            "node_modules/tinymce/plugins/link/plugin.js",
+                            "node_modules/tinymce/plugins/paste/plugin.js",
+                            "node_modules/tinymce/plugins/preview/plugin.js",
+                            "node_modules/tinymce/plugins/searchreplace/plugin.js",
+                            "node_modules/tinymce/plugins/textcolor/plugin.js"
+                        ]
                     },
                     "configurations": {
                         "production": {
@@ -71,7 +87,9 @@
                         "tsConfig": "src/tsconfig.spec.json",
                         "karmaConfig": "src/karma.conf.js",
                         "styles": ["src/styles.scss"],
-                        "scripts": [],
+                        "scripts": [
+                            "node_modules/tinymce/tinymce.min.js"
+                        ],
                         "assets": ["src/favicon.ico", "src/assets"]
                     }
                 },

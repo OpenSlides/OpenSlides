@@ -316,19 +316,27 @@
              [innerHTML]="getFormattedStatuteAmendment()">
         </div>
 
-        <mat-form-field *ngIf="motion && editMotion" class="wide-form">
-            <textarea matInput placeholder="{{ 'Motion text' | translate }}" formControlName='text' [value]='motionCopy.text' required></textarea>
-        </mat-form-field>
+        <!-- The HTML Editor -->
+        <editor
+            formControlName='text'
+            [init]="tinyMceSettings"
+            *ngIf="motion && editMotion"
+        ></editor>
 
         <!-- Reason -->
-        <div *ngIf="motion && motion.reason || editMotion">
-            <h5 *ngIf="!editMotion" translate>Reason</h5>
+        <div *ngIf="motion || editMotion">
+            <h5 *ngIf="motion.reason || editMotion" translate>Reason</h5>
             <div class="motion-text" *ngIf='!editMotion'>
                 <div [innerHtml]='motion.reason'></div>
             </div>
-            <mat-form-field *ngIf="editMotion" class="wide-form">
-                <textarea matInput placeholder="{{ 'Reason' | translate }}" formControlName='reason' [value]='motionCopy.reason'></textarea>
-            </mat-form-field>
+
+            <!-- The HTML Editor -->
+            <editor
+                formControlName='reason'
+                [init]="tinyMceSettings"
+                *ngIf="editMotion"
+            ></editor>
+
         </div>
 
     </form>
