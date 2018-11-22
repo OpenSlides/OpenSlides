@@ -25,19 +25,21 @@
 
 <div *ngIf="topic" class="topic-container on-transition-fade">
     <div class="topic-title">
-        <h2 *ngIf="!editTopic">{{ topic.title }}</h2> <h2 *ngIf="editTopic">{{ topicForm.get('title').value }}</h2>
+        <h2 *ngIf="!editTopic">{{ topic.title }}</h2>
+        <h2 *ngIf="editTopic">{{ topicForm.get('title').value }}</h2>
     </div>
 
     <mat-card *ngIf="topic || editTopic" class="topic-text">
         <div>
             <span *ngIf="!editTopic">
-                {{ topic.text }} <div *ngIf="topic.text === ''" class="missing" translate>No description provided.</div>
+                {{ topic.text }}
+                <div *ngIf="topic.text === ''" class="missing" translate>No description provided.</div>
             </span>
         </div>
 
         <div *ngIf="topic.attachments && topic.attachments.length > 0">
             <h3>
-                <span translate>Attachments</span> <span>:</span>
+                <span translate>Attachments</span>:
                 <!-- TODO: Mediafiles and attachments are not fully implemented -->
             </h3>
         </div>
@@ -56,13 +58,11 @@
                     <mat-error *ngIf="topicForm.invalid" translate>A name is required</mat-error>
                 </mat-form-field>
             </div>
-
             <div>
                 <mat-form-field>
                     <textarea matInput formControlName="text" placeholder="{{ 'Description ' | translate }}"></textarea>
                 </mat-form-field>
             </div>
-
             <!-- TODO: Select Mediafiles as attachments here -->
         </form>
     </mat-card>
