@@ -4,7 +4,7 @@
     "singleQuote": true,
     "useTabs": false,
     "bracketSpacing": true,
-    "htmlWhitespaceSensitivity": "strict",
+    "htmlWhitespaceSensitivity": "css",
     "semi": true,
     "trailingComma": "none",
     "arrowParens": "avoid"
