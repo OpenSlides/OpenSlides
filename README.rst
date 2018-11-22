@@ -115,6 +115,20 @@ Download the latest portable version of OpenSlides for Windows from
 install steps. Simply unzip the downloaded file and run ``openslides.exe``.
 
 
+Using the Dockerfile
+===============================
+
+You can either pull the image ``openslides/openslides`` or build it yourself
+(via `docker build -t openslides/openslides .`). You have all prequistes installed
+it to start a quick server. To see how it should be used to setup an
+production environment, see `openslides-docker
+<https://github.com/OpenSlides/openslides-docker>`_.
+
+You can start a quick-setup (not for production purposes, only local testing) with:
+
+    $ docker run -v /path/to/save/something:/app/personal_data -p 4200:4200 openslides/openslides /bin/bash -c "python manage.py createsettings && python manage.py migrate && (python manage.py runserver & (cd client && npm start))"
+
+
 Development
 ===========
 
@@ -122,11 +136,6 @@ If you want to contribute to OpenSlides, have a look at `OpenSlides website
 <https://openslides.org/>`_ and write us an email. There is also an
 `instruction to install the development version
 <https://github.com/OpenSlides/OpenSlides/blob/master/DEVELOPMENT.rst>`_.
-
-In OpenSlides repository you find a ``Dockerfile`` but this is not for
-production use. See our `Multi instance backend for OpenSlides
-<https://github.com/OpenSlides/openslides-multiinstance-backend>`_ for more
-information.
 
 
 Installation for big assemblies
