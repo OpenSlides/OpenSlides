@@ -5,6 +5,7 @@ import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model
 import { CollectionStringModelMapperService } from '../../core/services/collectionStringModelMapper.service';
 import { DataStoreService } from '../../core/services/data-store.service';
 import { Identifiable } from '../../shared/models/base/identifiable';
+import { auditTime } from 'rxjs/operators';
 
 export abstract class BaseRepository<V extends BaseViewModel, M extends BaseModel> extends OpenSlidesComponent {
     /**
@@ -20,7 +21,7 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
     /**
      * Observable subject for the whole list
      */
-    protected viewModelListSubject: BehaviorSubject<V[]> = new BehaviorSubject<V[]>(null);
+    protected readonly viewModelListSubject: BehaviorSubject<V[]> = new BehaviorSubject<V[]>([]);
 
     /**
      *
@@ -42,9 +43,12 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
         // Populate the local viewModelStore with ViewModel Objects.
         this.DS.getAll(this.baseModelCtor).forEach((model: M) => {
             this.viewModelStore[model.id] = this.createViewModel(model);
+        });
+        // Update the list and then all models on their own
+        this.updateViewModelListObservable();
+        this.DS.getAll(this.baseModelCtor).forEach((model: M) => {
             this.updateViewModelObservable(model.id);
         });
-        this.updateViewModelListObservable();
 
         // Could be raise in error if the root injector is not known
         this.DS.changeObservable.subscribe(model => {
@@ -131,10 +135,14 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
     }
 
     /**
-     * return the Observable of the whole store
+     * Return the Observable of the whole store.
+     *
+     * All data is piped through an auditTime of 1ms. This is to prevent massive
+     * updates, if e.g. an autoupdate with a lot motions come in. The result is just one
+     * update of the new list instead of many unnecessary updates.
      */
     public getViewModelListObservable(): Observable<V[]> {
-        return this.viewModelListSubject.asObservable();
+        return this.viewModelListSubject.asObservable().pipe(auditTime(1));
     }
 
     /**

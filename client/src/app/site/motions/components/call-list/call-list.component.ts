@@ -56,8 +56,11 @@ export class CallListComponent extends BaseViewComponent {
     /**
      * Handler for the sort event. The data to change is given to
      * the repo, sending it to the server.
+     *
+     * @param data The event data. The representation fits the servers requirements, so it can directly
+     * be send to the server via the repository.
      */
-    public sort(data: OSTreeSortEvent): void {
+    public sort(data: OSTreeSortEvent<ViewMotion>): void {
         this.motionRepo.sortMotions(data).then(null, this.raiseError);
     }
 

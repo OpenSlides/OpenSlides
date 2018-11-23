@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+
 import { DataSendService } from '../../../core/services/data-send.service';
 import { Motion } from '../../../shared/models/motions/motion';
 import { User } from '../../../shared/models/users/user';
@@ -20,6 +23,7 @@ import { CollectionStringModelMapperService } from '../../../core/services/colle
 import { HttpService } from 'app/core/services/http.service';
 import { Item } from 'app/shared/models/agenda/item';
 import { OSTreeSortEvent } from 'app/shared/components/sorting-tree/sorting-tree.component';
+import { TreeService } from 'app/core/services/tree.service';
 
 /**
  * Repository Services for motions (and potentially categories)
@@ -51,7 +55,8 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         private dataSend: DataSendService,
         private httpService: HttpService,
         private readonly lineNumbering: LinenumberingService,
-        private readonly diff: DiffService
+        private readonly diff: DiffService,
+        private treeService: TreeService
     ) {
         super(DS, mapperService, Motion, [Category, User, Workflow, Item]);
     }
@@ -75,6 +80,19 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
             state = workflow.getStateById(motion.state_id);
         }
         return new ViewMotion(motion, category, submitters, supporters, workflow, state, item);
+    }
+
+    public getViewModelListObservable(): Observable<ViewMotion[]> {
+        return super.getViewModelListObservable().pipe(
+            tap(motions => {
+                const iterator = this.treeService.traverseItems(motions, 'weight', 'sort_parent_id');
+                let m: IteratorResult<ViewMotion>;
+                let virtualWeightCounter = 0;
+                while (!(m = iterator.next()).done) {
+                    m.value.callListWeight = virtualWeightCounter++;
+                }
+            })
+        );
     }
 
     /**
@@ -146,7 +164,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      *
      * @param data The reordered data from the sorting
      */
-    public async sortMotions(data: OSTreeSortEvent): Promise<void> {
+    public async sortMotions(data: OSTreeSortEvent<ViewMotion>): Promise<void> {
         const url = '/rest/motions/motion/sort/';
         await this.httpService.post(url, data);
     }
