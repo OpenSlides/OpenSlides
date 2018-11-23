@@ -1,12 +1,11 @@
+import sys
 from collections import OrderedDict
 from operator import attrgetter
 from typing import Any, Dict, List, Set
 
 from django.apps import AppConfig
 from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured
 from django.db.models.signals import post_migrate
-from django.db.utils import OperationalError, ProgrammingError
 
 from ..utils.projector import register_projector_elements
 
@@ -50,12 +49,17 @@ class CoreAppConfig(AppConfig):
         # Collect all config variables before getting the constants.
         config.collect_config_variables_from_apps()
 
+        # Skip all database related accesses during migrations.
+        is_normal_server_start = False
+        for sys_part in sys.argv:
+            for entry in ('runserver', 'gunicorn', 'daphne'):
+                if sys_part.endswith(entry):
+                    is_normal_server_start = True
+                    break
+
         # Set constants
-        try:
+        if is_normal_server_start:
             set_constants(get_constants_from_apps())
-        except (ImproperlyConfigured, OperationalError, ProgrammingError):
-            # Database is not loaded. This happens in tests and migrations.
-            pass
 
         # Define projector elements.
         register_projector_elements(get_projector_elements())
@@ -79,11 +83,8 @@ class CoreAppConfig(AppConfig):
         router.register(self.get_model('Countdown').get_collection_string(), CountdownViewSet)
 
         # Sets the cache
-        try:
+        if is_normal_server_start:
             element_cache.ensure_cache()
-        except (ImproperlyConfigured, OperationalError, ProgrammingError):
-            # This happens in the tests or in migrations. Do nothing
-            pass
 
         # Register client messages
         register_client_message(NotifyWebsocketClientMessage())
