@@ -99,7 +99,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
                 { property: 'last_name', label: 'Surname' },
                 { property: 'structure_level', label: 'Structure level' },
                 { property: 'participant_number', label: 'Participant number' },
-                { property: 'groups', assemble: 'name' },
+                { label: 'groups', map: user => user.groups.map(group => group.name).join(',') },
                 { property: 'comment' },
                 { property: 'is_active', label: 'Is active' },
                 { property: 'is_present', label: 'Is present' },

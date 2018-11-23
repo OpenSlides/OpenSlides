@@ -10,6 +10,7 @@ import { MotionRepositoryService } from '../../services/motion-repository.servic
 import { ViewMotion } from '../../models/view-motion';
 import { SortingListComponent } from '../../../../shared/components/sorting-list/sorting-list.component';
 import { OSTreeSortEvent } from 'app/shared/components/sorting-tree/sorting-tree.component';
+import { MotionCsvExportService } from '../../services/motion-csv-export.service';
 
 /**
  * Sort view for the call list.
@@ -23,6 +24,11 @@ export class CallListComponent extends BaseViewComponent {
      * All motions sorted first by weight, then by id.
      */
     public motionsObservable: Observable<ViewMotion[]>;
+
+    /**
+     * Holds all motions for the export.
+     */
+    private motions: ViewMotion[] = [];
 
     /**
      * Emits true for expand and false for collaps. Informs the sorter component about this actions.
@@ -46,11 +52,16 @@ export class CallListComponent extends BaseViewComponent {
         title: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
-        private motionRepo: MotionRepositoryService
+        private motionRepo: MotionRepositoryService,
+        private motionCsvExport: MotionCsvExportService
     ) {
         super(title, translate, matSnackBar);
 
         this.motionsObservable = this.motionRepo.getViewModelListObservable();
+        this.motionsObservable.subscribe(motions => {
+            // Sort motions and make a copy, so it will stay sorted.
+            this.motions = motions.map(x => x).sort((a, b) => a.callListWeight - b.callListWeight);
+        });
     }
 
     /**
@@ -71,5 +82,12 @@ export class CallListComponent extends BaseViewComponent {
      */
     public expandCollapseAll(expand: boolean): void {
         this.expandCollapse.emit(expand);
+    }
+
+    /**
+     * Export the full call list as csv.
+     */
+    public csvExportCallList(): void {
+        this.motionCsvExport.exportCallList(this.motions);
     }
 }

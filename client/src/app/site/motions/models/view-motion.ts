@@ -8,6 +8,7 @@ import { BaseViewModel } from '../../base/base-view-model';
 import { ViewMotionCommentSection } from './view-motion-comment-section';
 import { MotionComment } from '../../../shared/models/motions/motion-comment';
 import { Item } from 'app/shared/models/agenda/item';
+import { MotionBlock } from 'app/shared/models/motions/motion-block';
 
 export enum LineNumberingMode {
     None,
@@ -37,6 +38,7 @@ export class ViewMotion extends BaseViewModel {
     private _workflow: Workflow;
     private _state: WorkflowState;
     private _item: Item;
+    private _block: MotionBlock;
 
     /**
      * Indicates the LineNumberingMode Mode.
@@ -82,6 +84,13 @@ export class ViewMotion extends BaseViewModel {
 
     public get title(): string {
         return this.motion ? this.motion.title : null;
+    }
+
+    public get identifierOrTitle(): string {
+        if (!this.motion) {
+            return null;
+        }
+        return this.identifier ? this.identifier : this.title;
     }
 
     public get text(): string {
@@ -184,6 +193,14 @@ export class ViewMotion extends BaseViewModel {
         return this._item;
     }
 
+    public get motion_block_id(): number {
+        return this.motion ? this.motion.motion_block_id : null;
+    }
+
+    public get motion_block(): MotionBlock {
+        return this._block;
+    }
+
     public get agendaSpeakerAmount(): number {
         return this.item ? this.item.speakerAmount : null;
     }
@@ -195,7 +212,8 @@ export class ViewMotion extends BaseViewModel {
         supporters?: User[],
         workflow?: Workflow,
         state?: WorkflowState,
-        item?: Item
+        item?: Item,
+        block?: MotionBlock
     ) {
         super();
 
@@ -206,6 +224,7 @@ export class ViewMotion extends BaseViewModel {
         this._workflow = workflow;
         this._state = state;
         this._item = item;
+        this._block = block;
 
         // TODO: Should be set using a a config variable
         this.lnMode = LineNumberingMode.Outside;
@@ -244,6 +263,8 @@ export class ViewMotion extends BaseViewModel {
             this.updateCategory(update as Category);
         } else if (update instanceof Item) {
             this.updateItem(update as Item);
+        } else if (update instanceof MotionBlock) {
+            this.updateMotionBlock(update);
         }
         // TODO: There is no way (yet) to add Submitters to a motion
         //       Thus, this feature could not be tested
@@ -251,31 +272,41 @@ export class ViewMotion extends BaseViewModel {
 
     /**
      * Update routine for the category
-     * @param update potentially the changed category. Needs manual verification
+     * @param category potentially the changed category. Needs manual verification
      */
-    public updateCategory(update: Category): void {
-        if (this.motion && update.id === this.motion.category_id) {
-            this._category = update as Category;
+    public updateCategory(category: Category): void {
+        if (this.motion && category.id === this.motion.category_id) {
+            this._category = category;
         }
     }
 
     /**
      * Update routine for the workflow
-     * @param update potentially the changed workflow (state). Needs manual verification
+     * @param workflow potentially the changed workflow (state). Needs manual verification
      */
-    public updateWorkflow(update: Workflow): void {
-        if (this.motion && update.id === this.motion.workflow_id) {
-            this._workflow = update as Workflow;
+    public updateWorkflow(workflow: Workflow): void {
+        if (this.motion && workflow.id === this.motion.workflow_id) {
+            this._workflow = workflow;
         }
     }
 
     /**
      * Update routine for the agenda Item
-     * @param update potentially the changed agenda Item. Needs manual verification
+     * @param item potentially the changed agenda Item. Needs manual verification
      */
-    public updateItem(update: Item): void {
-        if (this.motion && update.id === this.motion.agenda_item_id) {
-            this._item = update as Item;
+    public updateItem(item: Item): void {
+        if (this.motion && item.id === this.motion.agenda_item_id) {
+            this._item = item;
+        }
+    }
+
+    /**
+     * Update routine for the motion block
+     * @param block potentially the changed motion block. Needs manual verification
+     */
+    public updateMotionBlock(block: MotionBlock): void {
+        if (this.motion && block.id === this.motion.motion_block_id) {
+            this._block = block;
         }
     }
 

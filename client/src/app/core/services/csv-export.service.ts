@@ -5,6 +5,51 @@ import { BaseViewModel } from '../../site/base/base-view-model';
 import { FileExportService } from './file-export.service';
 import { ConfigService } from './config.service';
 
+/**
+ * Defines a csv column with a property of the model and an optional label. If this is not given, the
+ * translated and capitalized property name is used.
+ */
+interface CsvColumnDefinitionProperty<T> {
+    label?: string;
+    property: keyof T;
+}
+
+/**
+ * Type assertion for CsvColumnDefinitionProperty<T>
+ *
+ * @param obj Any object to test.
+ * @returns true, if the object is a property definition. This is also asserted for TypeScript.
+ */
+function isPropertyDefinition<T>(obj: any): obj is CsvColumnDefinitionProperty<T> {
+    return 'property' in obj;
+}
+
+/**
+ * Defines a csv column with a map function. Here, the user of this service can define hat should happen with
+ * all the models. This map function is called for every model and the user should return a string that is
+ * put into the csv. Also a column label must be given, that is capitalized and translated.
+ */
+interface CsvColumnDefinitionMap<T> {
+    label: string;
+    map: (model: T) => string;
+}
+
+/**
+ * Type assertion for CsvColumnDefinitionMap<T>
+ *
+ * @param obj Any object to test.
+ * @returns true, if the objct is a map definition. This is also asserted for TypeScript.
+ */
+function isMapDefinition<T>(obj: any): obj is CsvColumnDefinitionMap<T> {
+    return 'map' in obj;
+}
+
+/**
+ * The definition of columns in the export. Either use a property for every model or do a custom mapping to
+ * a string to be put into the csv.
+ */
+type CsvColumnsDefinition<T> = (CsvColumnDefinitionProperty<T> | CsvColumnDefinitionMap<T>)[];
+
 @Injectable({
     providedIn: 'root'
 })
@@ -24,7 +69,7 @@ export class CsvExportService {
 
     /**
      * Saves an array of model data to a CSV.
-     * @param data Array of Model instances to be saved
+     * @param models Array of model instances to be saved
      * @param columns Column definitions
      * @param filename name of the resulting file
      * @param options optional:
@@ -32,12 +77,8 @@ export class CsvExportService {
      *      columnseparator defaults to semicolon (other usual separators are ',' '\T' (tab), ' 'whitespace)
      */
     public export<T extends BaseViewModel>(
-        data: T[],
-        columns: {
-            property: keyof T; // name of the property used for export
-            label?: string;
-            assemble?: string; // (if property is further child object, the property of these to be used)
-        }[],
+        models: T[],
+        columns: CsvColumnsDefinition<T>,
         filename: string,
         {
             lineSeparator = '\r\n',
@@ -47,8 +88,7 @@ export class CsvExportService {
             columnSeparator?: string;
         } = {}
     ): void {
-        const allLines = []; // Array of arrays of entries
-        const usedColumns = []; // mapped properties to be included
+        let csvContent = []; // Holds all lines as arrays with each column-value
         // initial array of usable text separators. The first character not used
         // in any text data or as column separator will be used as text separator
         let tsList = ['"', "'", '`', '/', '\\', ';', '.'];
@@ -61,56 +101,55 @@ export class CsvExportService {
         tsList = this.checkCsvTextSafety(columnSeparator, tsList);
 
         // create header data
-        const header = [];
-        columns.forEach(column => {
-            const rawLabel: string = column.label ? column.label : (column.property as string);
-            const colLabel = this.capitalizeTranslate(rawLabel);
-            tsList = this.checkCsvTextSafety(colLabel, tsList);
-            header.push(colLabel);
-            usedColumns.push(column.property);
-        });
-        allLines.push(header);
-        // create lines
-        data.forEach(item => {
-            const line = [];
-            for (let i = 0; i < usedColumns.length; i++) {
-                const property = usedColumns[i];
-                let prop: any = item[property];
-                if (columns[i].assemble) {
-                    prop = item[property]
-                        .map(subitem => this.translate.instant(subitem[columns[i].assemble]))
-                        .join(',');
-                }
-                tsList = this.checkCsvTextSafety(prop, tsList);
-                line.push(prop);
+        const header = columns.map(column => {
+            let label: string;
+            if (isPropertyDefinition(column)) {
+                label = column.label ? column.label : (column.property as string);
+            } else if (isMapDefinition(column)) {
+                label = column.label;
             }
-            allLines.push(line);
+            label = this.capitalizeTranslate(label);
+            tsList = this.checkCsvTextSafety(label, tsList);
+            return label;
         });
+        csvContent.push(header);
+
+        // create lines
+        csvContent = csvContent.concat(models.map(model => {
+            return columns.map(column => {
+                let value: string;
+
+                if (isPropertyDefinition(column)) {
+                    const property: any = model[column.property];
+                    if (typeof property === 'number') {
+                        value = property.toString(10);
+                    } else if (!property) {
+                        value = '';
+                    } else if (property === true) {
+                        value = '1';
+                    } else if (property === false) {
+                        value = '0';
+                    } else {
+                        value = property.toString();
+                    }
+                } else if (isMapDefinition(column)) {
+                    value = column.map(model);
+                }
+                tsList = this.checkCsvTextSafety(value, tsList);
+
+                return value;
+            });
+        }));
 
         // assemble lines, putting text separator in place
         if (!tsList.length) {
             throw new Error('no usable text separator left for valid csv text');
         }
 
-        const allLinesAssembled = [];
-        allLines.forEach(line => {
-            const assembledLine = [];
-            line.forEach(item => {
-                if (typeof item === 'number') {
-                    assembledLine.push(item.toString(10));
-                } else if (item === null || item === undefined || item === '') {
-                    assembledLine.push('');
-                } else if (item === true) {
-                    assembledLine.push('1');
-                } else if (item === false) {
-                    assembledLine.push('0');
-                } else {
-                    assembledLine.push(tsList[0] + item + tsList[0]);
-                }
-            });
-            allLinesAssembled.push(assembledLine.join(columnSeparator));
-        });
-        this.exporter.saveFile(allLinesAssembled.join(lineSeparator), filename);
+        const csvContentAsString: string = csvContent.map(line => {
+            return line.map(entry => tsList[0] + entry + tsList[0]).join(columnSeparator);
+        }).join(lineSeparator);
+        this.exporter.saveFile(csvContentAsString, filename);
     }
 
     /**
@@ -122,13 +161,12 @@ export class CsvExportService {
      * @param tsList The list of special characters to check.
      * @returns the cleand CSV String list
      */
-    public checkCsvTextSafety(input: any, tsList: string[]): string[] {
+    public checkCsvTextSafety(input: string, tsList: string[]): string[] {
         if (input === null || input === undefined) {
             return tsList;
         }
 
-        const inputAsString = String(input);
-        return tsList.filter(char => inputAsString.indexOf(char) < 0);
+        return tsList.filter(char => input.indexOf(char) < 0);
     }
 
     /**
