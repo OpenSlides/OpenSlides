@@ -1,6 +1,6 @@
 # Translators:
 # fri, 2018
-# 
+#
 msgid ""
 msgstr ""
 "Last-Translator: fri, 2018\n"
@@ -111,7 +111,7 @@ msgstr "Angličtina"
 msgid "Export ..."
 msgstr "Vyvést..."
 
-msgid "Export as csv"
+msgid "Export as CSV"
 msgstr "Vyvést jako CSV"
 
 msgid "FILTER"

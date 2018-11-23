@@ -1,6 +1,6 @@
 # Translators:
 # Emanuel Schütze <emanuel.schuetze@intevation.de>, 2018
-# 
+#
 msgid ""
 msgstr ""
 "Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>, 2018\n"
@@ -417,7 +417,7 @@ msgstr "Export"
 msgid "Export ..."
 msgstr "Exportieren ..."
 
-msgid "Export as csv"
+msgid "Export as CSV"
 msgstr "Exportieren als CSV"
 
 msgid "FILTER"

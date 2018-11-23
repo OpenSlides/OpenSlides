@@ -386,7 +386,7 @@ msgstr ""
 msgid "Export ..."
 msgstr ""
 
-msgid "Export as csv"
+msgid "Export as CSV"
 msgstr ""
 
 msgid "FILTER"

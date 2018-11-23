@@ -81,11 +81,6 @@
 <mat-paginator class="on-transition-fade" [pageSizeOptions]="[25, 50, 75, 100, 125]"></mat-paginator>
 
 <mat-menu #motionListMenu="matMenu">
-    <button mat-menu-item (click)="downloadMotions()">
-        <mat-icon>archive</mat-icon>
-        <span translate>Export ...</span>
-    </button>
-
     <button mat-menu-item routerLink="category">
         <mat-icon>device_hub</mat-icon>
         <span translate>Categories</span>
@@ -104,5 +99,9 @@
     <button mat-menu-item *osPerms="'motions.can_manage'" routerLink="call-list">
         <mat-icon>sort</mat-icon>
         <span translate>Call list</span>
+    </button>
+    <button mat-menu-item (click)="csvExportMotionList()">
+        <mat-icon>archive</mat-icon>
+        <span translate>Export as CSV</span>
     </button>
 </mat-menu>
