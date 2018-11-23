@@ -227,6 +227,11 @@ export class ViewMotion extends BaseViewModel {
         this._block = block;
 
         // TODO: Should be set using a a config variable
+        /*this._configService.get('motions_default_line_numbering').subscribe(
+            (mode: string): void => {
+                this.lnMode = LineNumberingMode.Outside;
+            }
+        );*/
         this.lnMode = LineNumberingMode.Outside;
         this.crMode = ChangeRecoMode.Original;
         this.lineLength = 80;
@@ -265,9 +270,9 @@ export class ViewMotion extends BaseViewModel {
             this.updateItem(update as Item);
         } else if (update instanceof MotionBlock) {
             this.updateMotionBlock(update);
+        } else if (update instanceof User) {
+            this.updateUser(update as User);
         }
-        // TODO: There is no way (yet) to add Submitters to a motion
-        //       Thus, this feature could not be tested
     }
 
     /**
@@ -307,6 +312,23 @@ export class ViewMotion extends BaseViewModel {
     public updateMotionBlock(block: MotionBlock): void {
         if (this.motion && block.id === this.motion.motion_block_id) {
             this._block = block;
+        }
+    }
+
+    /**
+     * Update routine for the agenda Item
+     * @param update potentially the changed agenda Item. Needs manual verification
+     */
+    public updateUser(update: User): void {
+        if (this.motion) {
+            if (this.motion.submitters && this.motion.submitters.findIndex(user => user.user_id === update.id)) {
+                const userIndex = this.submitters.findIndex(user => user.id === update.id);
+                this.submitters[userIndex] = update as User;
+            }
+            if (this.motion.supporters_id && this.motion.supporters_id.includes(update.id)) {
+                const userIndex = this.supporters.findIndex(user => user.id === update.id);
+                this.supporters[userIndex] = update as User;
+            }
         }
     }
 

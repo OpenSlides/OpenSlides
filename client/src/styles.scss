@@ -41,6 +41,10 @@ body {
     padding: 0;
 }
 
+.small {
+    font-size: 90%;
+}
+
 .generic-mini-button {
     bottom: -28px;
     z-index: 100;
@@ -114,6 +118,9 @@ body {
         cursor: pointer;
         background-color: rgba(0, 0, 0, 0.055);
     }
+    mat-row.lg {
+        height: 90px;
+    }
 }
 
 .card-plus-distance {
@@ -157,7 +164,6 @@ mat-panel-title mat-icon {
     padding-right: 30px;
 }
 
-
 .hidden-cell {
     flex: 0;
     width: 0;
@@ -187,4 +193,60 @@ mat-panel-title mat-icon {
     tree-loading-component {
         display: none;
     }
+}
+
+.mat-chip,
+.mat-basic-chip {
+    font-size: 12px;
+    min-height: 22px !important;
+    border-radius: 5px !important;
+    padding: 4px 8px !important;
+    margin: 8px 8px 8px 0;
+}
+
+.mat-chip:focus,
+.mat-basic-chip:focus {
+    outline: none;
+}
+button.mat-menu-item.selected {
+    font-weight: bold !important;
+}
+
+/** Colors **/
+.lightblue {
+    background-color: rgb(33, 150, 243) !important;
+    color: white !important;
+}
+
+.darkblue {
+    background-color: rgb(63, 81, 181) !important;
+    color: white !important;
+}
+
+.green,
+.success {
+    background-color: rgb(76, 175, 80) !important;
+    color: white !important;
+}
+
+.red,
+.error {
+    background-color: rgb(255, 82, 82) !important;
+    color: white !important;
+}
+
+.yellow,
+.warning {
+    background-color: rgb(255, 193, 7) !important;
+    color: white !important;
+}
+
+.bluegrey {
+    background-color: rgb(96, 125, 139) !important;
+    color: white !important;
+}
+
+.grey {
+    background-color: #e0e0e0 !important;
+    color: rgba(0, 0, 0, 0.87) !important;
 }

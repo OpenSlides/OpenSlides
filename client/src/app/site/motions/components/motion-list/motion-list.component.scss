@@ -1,8 +1,8 @@
 /** css hacks https://codepen.io/edge0703/pen/iHJuA */
 .innerTable {
     display: inline-block;
-    vertical-align: middle;
-    line-height: normal;
+    vertical-align: top;
+    line-height: 150%;
 }
 
 .os-listview-table {
@@ -23,10 +23,10 @@
 
         .motion-list-title {
             font-weight: bold;
+            font-size: 16px;
         }
 
         .motion-list-from {
-            margin-top: 5px;
             color: rgba(0, 0, 0, 0.5);
             font-size: 90%;
         }

@@ -106,7 +106,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      * Creates a (real) motion with patched data and delegate it
      * to the {@link DataSendService}
      *
-     * @param update the form data containing the update values
+     * @param update the form data containing the updated values
      * @param viewMotion The View Motion. If not present, a new motion will be created
      * TODO: Remove the viewMotion and make it actually distignuishable from save()
      */
@@ -123,7 +123,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      * Creates a (real) motion with patched data and delegate it
      * to the {@link DataSendService}
      *
-     * @param update the form data containing the update values
+     * @param update the form data containing the updated values
      * @param viewMotion The View Motion. If not present, a new motion will be created
      */
     public async update(update: Partial<Motion>, viewMotion: ViewMotion): Promise<void> {
@@ -158,11 +158,23 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      * Set the recommenders state of a motion
      *
      * @param viewMotion target motion
-     * @param stateId the number that indicates the state
+     * @param recommendationId the number that indicates the recommendation
      */
-    public async setRecommenderState(viewMotion: ViewMotion, stateId: number): Promise<void> {
+    public async setRecommendation(viewMotion: ViewMotion, recommendationId: number): Promise<void> {
         const restPath = `/rest/motions/motion/${viewMotion.id}/set_recommendation/`;
-        await this.httpService.put(restPath, { recommendation: stateId });
+        await this.httpService.put(restPath, { recommendation: recommendationId });
+    }
+
+    /**
+     * Set the category of a motion
+     *
+     * @param viewMotion target motion
+     * @param categoryId the number that indicates the category
+     */
+    public async setCatetory(viewMotion: ViewMotion, categoryId: number): Promise<void> {
+        const motion = viewMotion.motion;
+        motion.category_id = categoryId;
+        await this.update(motion, viewMotion);
     }
 
     /**
@@ -173,6 +185,26 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
     public async sortMotions(data: OSTreeSortEvent<ViewMotion>): Promise<void> {
         const url = '/rest/motions/motion/sort/';
         await this.httpService.post(url, data);
+    }
+
+    /**
+     * Supports the motion
+     *
+     * @param viewMotion target motion
+     */
+    public async support(viewMotion: ViewMotion): Promise<void> {
+        const url = `/rest/motions/motion/${viewMotion.id}/support/`;
+        await this.httpService.post(url);
+    }
+
+    /**
+     * Unsupports the motion
+     *
+     * @param viewMotion target motion
+     */
+    public async unsupport(viewMotion: ViewMotion): Promise<void> {
+        const url = `/rest/motions/motion/${viewMotion.id}/support/`;
+        await this.httpService.delete(url);
     }
 
     /**
