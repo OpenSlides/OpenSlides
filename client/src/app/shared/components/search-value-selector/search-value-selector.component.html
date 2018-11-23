@@ -1,12 +1,14 @@
 <mat-form-field [formGroup]="form">
-    <mat-select [formControl]="formControl" [placeholder]="listname" [multiple]="multiple" #thisSelector>
+    <mat-select [formControl]="formControl" placeholder="{{ listname | translate }}" [multiple]="multiple" #thisSelector>
         <ngx-mat-select-search [formControl]="filterControl"></ngx-mat-select-search>
-        <div *ngIf="!multiple">
-            <mat-option [value]="null"><span translate>None</span></mat-option>
+        <div *ngIf="!multiple && includeNone">
+            <mat-option [value]="null">
+                <span translate>None</span>
+            </mat-option>
             <mat-divider></mat-divider>
         </div>
         <mat-option *ngFor="let selectedItem of filteredItems | async" [value]="selectedItem.id">
-            {{selectedItem.getTitle(translate)}}
+            {{ selectedItem.getTitle(translate) }}
         </mat-option>
     </mat-select>
 </mat-form-field>
@@ -15,7 +17,8 @@
         <span translate>Selected values</span>:
     </p>
     <mat-chip-list #chipList>
-        <mat-chip *ngFor="let selectedItem of thisSelector?.value" (removed)="remove(selectedItem)">{{selectedItem.name}}
+        <mat-chip *ngFor="let selectedItem of thisSelector?.value" (removed)="remove(selectedItem)">
+            {{ selectedItem.name }}
             <mat-icon (click)="remove(selectedItem)">cancel</mat-icon>
         </mat-chip>
     </mat-chip-list>

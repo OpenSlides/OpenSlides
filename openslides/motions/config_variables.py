@@ -1,6 +1,7 @@
 from django.core.validators import MinValueValidator
 
 from openslides.core.config import ConfigVariable
+from openslides.poll.majority import majorityMethods
 
 from .models import Workflow
 
@@ -31,6 +32,16 @@ def get_config_variables():
         label='Workflow of new motions',
         choices=get_workflow_choices,
         weight=310,
+        group='Motions',
+        subgroup='General')
+
+    yield ConfigVariable(
+        name='motions_statute_amendments_workflow',
+        default_value='1',
+        input_type='choice',
+        label='Workflow of new statute amendments',
+        choices=get_workflow_choices,
+        weight=312,
         group='Motions',
         subgroup='General')
 
@@ -125,6 +136,16 @@ def get_config_variables():
         subgroup='General')
 
     yield ConfigVariable(
+        name='motions_statute_recommendations_by',
+        default_value='',
+        label='Name of statute recommender',
+        help_text='Will be displayed as label before selected statute recommendation. ' +
+                  'Use an empty value to disable the statute recommendation system.',
+        weight=333,
+        group='Motions',
+        subgroup='General')
+
+    yield ConfigVariable(
         name='motions_recommendation_text_mode',
         default_value='original',
         input_type='choice',
@@ -134,7 +155,7 @@ def get_config_variables():
             {'value': 'changed', 'display_name': 'Changed version'},
             {'value': 'diff', 'display_name': 'Diff version'},
             {'value': 'agreed', 'display_name': 'Final version'}),
-        weight=333,
+        weight=334,
         group='Motions',
         subgroup='General')
 
@@ -145,7 +166,7 @@ def get_config_variables():
         default_value=False,
         input_type='boolean',
         label='Activate statutes',
-        weight=334,
+        weight=335,
         group='Motions',
         subgroup='General')
 
@@ -155,7 +176,7 @@ def get_config_variables():
         default_value=False,
         input_type='boolean',
         label='Activate amendments',
-        weight=335,
+        weight=336,
         group='Motions',
         subgroup='Amendments')
 
@@ -233,8 +254,9 @@ def get_config_variables():
     # TODO: Add server side validation of the choices.
     yield ConfigVariable(
         name='motions_poll_default_majority_method',
-        default_value='simple_majority',
-        input_type='majorityMethod',
+        default_value=majorityMethods[0]['value'],
+        input_type='choice',
+        choices=majorityMethods,
         label='Required majority',
         help_text='Default method to check whether a motion has reached the required majority.',
         weight=357,

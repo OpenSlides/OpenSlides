@@ -18,8 +18,6 @@ import { ViewStatuteParagraph } from '../models/view-statute-paragraph';
 import { Identifiable } from '../../../shared/models/base/identifiable';
 import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
 import { HttpService } from 'app/core/services/http.service';
-import { ConfigService } from 'app/core/services/config.service';
-import { Observable } from 'rxjs';
 import { Item } from 'app/shared/models/agenda/item';
 import { OSTreeSortEvent } from 'app/shared/components/sorting-tree/sorting-tree.component';
 
@@ -52,7 +50,6 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         mapperService: CollectionStringModelMapperService,
         private dataSend: DataSendService,
         private httpService: HttpService,
-        private configService: ConfigService,
         private readonly lineNumbering: LinenumberingService,
         private readonly diff: DiffService
     ) {
@@ -142,15 +139,6 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
     public async setRecommenderState(viewMotion: ViewMotion, stateId: number): Promise<void> {
         const restPath = `/rest/motions/motion/${viewMotion.id}/set_recommendation/`;
         await this.httpService.put(restPath, { recommendation: stateId });
-    }
-
-    /**
-     * Returns the motions_recommendations_by observable from the config service
-     *
-     * @return an observable that contains the motions "Recommended by" string
-     */
-    public getRecommenderObservable(): Observable<string> {
-        return this.configService.get('motions_recommendations_by');
     }
 
     /**

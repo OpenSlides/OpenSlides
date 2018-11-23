@@ -22,8 +22,8 @@ import { Selectable } from '../selectable';
  *   ngDefaultControl
  *   [multiple]="true"
  *   placeholder="Placeholder"
- *   [InputListValues]="myListValues",
- *   [form]="myform_name",
+ *   [InputListValues]="myListValues"
+ *   [form]="myform_name"
  *   [formControl]="myformcontrol">
  * </os-search-value-selector>
  * ```
@@ -67,6 +67,12 @@ export class SearchValueSelectorComponent implements OnInit, OnDestroy {
      */
     @Input()
     public multiple: boolean;
+
+    /**
+     * Decide, if none should be included, if multiple is false.
+     */
+    @Input()
+    public includeNone = false;
 
     /**
      * The inputlist subject. Subscribes to it and updates the selector, if the subject

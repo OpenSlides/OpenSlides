@@ -126,6 +126,10 @@ export class ViewMotion extends BaseViewModel {
         return this._workflow;
     }
 
+    public get workflow_id(): number {
+        return this.motion ? this.motion.workflow_id : null;
+    }
+
     public get state(): WorkflowState {
         return this._state;
     }

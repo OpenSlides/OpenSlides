@@ -1,6 +1,7 @@
 from django.core.validators import MinValueValidator
 
 from openslides.core.config import ConfigVariable
+from openslides.poll.majority import majorityMethods
 
 
 def get_config_variables():
@@ -47,8 +48,9 @@ def get_config_variables():
     # TODO: Add server side validation of the choices.
     yield ConfigVariable(
         name='assignments_poll_default_majority_method',
-        default_value='simple_majority',
-        input_type='majorityMethod',
+        default_value=majorityMethods[0]['value'],
+        input_type='choice',
+        choices=majorityMethods,
         label='Required majority',
         help_text='Default method to check whether a candidate has reached the required majority.',
         weight=425,
