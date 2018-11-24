@@ -27,6 +27,7 @@ Motions:
  - Added new permission to manage metadata, i. e. set motion state, set and
    follow recommendation, manage submitters and supporters, change motion
    category, motion block and origin and manage motion polls [#3913].
+ - Added multi select action to manage submitters, tags and recommendations [#4037].
 
 User:
  - Added new admin group which grants all permissions. Users of existing group
