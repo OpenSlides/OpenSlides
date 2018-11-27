@@ -123,7 +123,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
     public async update(update: Partial<Motion>, viewMotion: ViewMotion): Promise<void> {
         const motion = viewMotion.motion;
         motion.patchValues(update);
-        await this.dataSend.partialUpdateModel(motion);
+        return await this.dataSend.partialUpdateModel(motion);
     }
 
     /**
@@ -134,7 +134,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      * @param viewMotion
      */
     public async delete(viewMotion: ViewMotion): Promise<void> {
-        await this.dataSend.deleteModel(viewMotion.motion);
+        return await this.dataSend.deleteModel(viewMotion.motion);
     }
 
     /**

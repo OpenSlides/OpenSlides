@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-
 import { TranslateService } from '@ngx-translate/core';
 
 import { MotionRepositoryService } from '../../services/motion-repository.service';
@@ -11,6 +10,8 @@ import { ListViewBaseComponent } from '../../../base/list-view-base';
 import { MatSnackBar } from '@angular/material';
 import { ConfigService } from '../../../../core/services/config.service';
 import { CsvExportService } from 'app/core/services/csv-export.service';
+import { Category } from '../../../../shared/models/motions/category';
+import { PromptService } from '../../../../core/services/prompt.service';
 
 /**
  * Component that displays all the motions in a Table using DataSource.
@@ -22,13 +23,14 @@ import { CsvExportService } from 'app/core/services/csv-export.service';
 })
 export class MotionListComponent extends ListViewBaseComponent<ViewMotion> implements OnInit {
     /**
-     * Use for minimal width
+     * Use for minimal width. Please note the 'selector' row for multiSelect mode,
+     * to be able to display an indicator for the state of selection
      */
     public columnsToDisplayMinWidth = ['identifier', 'title', 'state', 'speakers'];
 
     /**
-     * Use for maximal width
-     *
+     * Use for maximal width. Please note the 'selector' row for multiSelect mode,
+     * to be able to display an indicator for the state of selection
      * TODO: Needs vp.desktop check
      */
     public columnsToDisplayFullWidth = ['identifier', 'title', 'state', 'speakers'];
@@ -50,6 +52,7 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
      * @param configService The configuration provider
      * @param repo Motion Repository
      * @param csvExport CSV Export Service
+     * @param promptService
      */
     public constructor(
         titleService: Title,
@@ -59,9 +62,13 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
         private route: ActivatedRoute,
         private configService: ConfigService,
         private repo: MotionRepositoryService,
-        private csvExport: CsvExportService
+        private csvExport: CsvExportService,
+        private promptService: PromptService
     ) {
         super(titleService, translate, matSnackBar);
+
+        // enable multiSelect for this listView
+        this.canMultiSelect = true;
     }
 
     /**
@@ -73,6 +80,7 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
         super.setTitle('Motions');
         this.initTable();
         this.repo.getViewModelListObservable().subscribe(newMotions => {
+            this.checkSelection();
             // TODO: This is for testing purposes. Can be removed with #3963
             this.dataSource.data = newMotions.sort((a, b) => {
                 if (a.callListWeight !== b.callListWeight) {
@@ -90,11 +98,10 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
     }
 
     /**
-     * Select a motion from list. Executed via click.
-     *
+     * The action performed on a click in single select modus
      * @param motion The row the user clicked at
      */
-    public selectMotion(motion: ViewMotion): void {
+    public singleSelectAction(motion: ViewMotion): void {
         this.router.navigate(['./' + motion.id], { relativeTo: this.route });
     }
 
@@ -137,7 +144,8 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
      *
      * @param motion indicates the row that was clicked on
      */
-    public onSpeakerIcon(motion: ViewMotion): void {
+    public onSpeakerIcon(motion: ViewMotion, event: MouseEvent): void {
+        event.stopPropagation();
         this.router.navigate([`/agenda/${motion.agenda_item_id}/speakers`]);
     }
 
@@ -165,5 +173,63 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
             ],
             this.translate.instant('Motions') + '.csv'
         );
+    }
+
+    /**
+     * Deletes the items selected.
+     * SelectedRows is only filled with data in multiSelect mode
+     */
+    public async deleteSelected(): Promise<void> {
+        const content = this.translate.instant('This will delete all selected motions.');
+        if (await this.promptService.open('Are you sure?', content)) {
+            for (const motion of this.selectedRows) {
+                await this.repo.delete(motion);
+            }
+        }
+    }
+
+    /**
+     * Set the status in bulk.
+     * SelectedRows is only filled with data in multiSelect mode
+     * TODO: currently not yet functional, because no status (or state_id) is being selected
+     * in the ui
+     * @param status TODO: May still change type
+     */
+    public async setStatusSelected(status: Partial<WorkflowState>): Promise<void> {
+        // TODO: check if id is there
+        for (const motion of this.selectedRows) {
+            await this.repo.update({ state_id: status.id }, motion);
+        }
+    }
+
+    /**
+     * Set the category for all selected items.
+     * SelectedRows is only filled with data in multiSelect mode
+     * TODO: currently not yet functional, because no category is being selected in the ui
+     * @param category TODO: May still change type
+     */
+    public async setCategorySelected(category: Partial<Category>): Promise<void> {
+        for (const motion of this.selectedRows) {
+            await this.repo.update({ state_id: category.id }, motion);
+        }
+    }
+
+    /**
+     * TODO: Open an extra submenu. Design still undecided. Will be used for deciding
+     * the status of setStatusSelected
+     */
+    public openSetStatusMenu(): void {}
+
+    /**
+     * TODO: Open an extra submenu. Design still undecided. Will be used for deciding
+     * the status of setCategorySelected
+     */
+    public openSetCategoryMenu(): void {}
+
+    public getColumnDefinition(): string[] {
+        if (this.isMultiSelect) {
+            return ['selector'].concat(this.columnsToDisplayMinWidth);
+        }
+        return this.columnsToDisplayMinWidth;
     }
 }

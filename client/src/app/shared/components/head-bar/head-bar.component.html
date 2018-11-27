@@ -1,13 +1,13 @@
-<mat-toolbar color='primary' *ngIf="!vp.isMobile"></mat-toolbar>
-<mat-toolbar color='primary' class="sticky-toolbar">
+<mat-toolbar color="primary" [ngClass]="multiSelectMode ? 'multi-select' : '' " *ngIf="!vp.isMobile"></mat-toolbar>
+<mat-toolbar color="primary" [ngClass]="multiSelectMode ? 'multi-select' : '' " class="sticky-toolbar">
     <div class="toolbar-left">
         <!-- Nav menu -->
-        <button mat-icon-button class="on-transition-fade" *ngIf="vp.isMobile && nav" (click)='clickHamburgerMenu()'>
+        <button mat-icon-button class="on-transition-fade" *ngIf="vp.isMobile && nav && !multiSelectMode" (click)='clickHamburgerMenu()'>
             <mat-icon>menu</mat-icon>
         </button>
 
         <!-- Exit / Back button -->
-        <button mat-icon-button class="on-transition-fade" *ngIf="!nav && !editMode" (click)="onBackButton()">
+        <button mat-icon-button class="on-transition-fade" *ngIf="!nav && !editMode && !multiSelectMode" (click)="onBackButton()">
             <mat-icon>arrow_back</mat-icon>
         </button>
 
@@ -16,22 +16,28 @@
             <mat-icon>close</mat-icon>
         </button>
 
-        <div class="toolbar-left-text on-transition-fade">
+        <div class="toolbar-left-text on-transition-fade" *ngIf="!multiSelectMode">
             <!-- Title slot -->
             <ng-content select=".title-slot"></ng-content>
         </div>
     </div>
-    <div class=spacer></div>
-    <div class="toolbar-right">
 
+    <!-- centered information slot-->
+    <div *ngIf="multiSelectMode" class=spacer></div>
+    <div class="toolbar-centered on-transition-fade" *ngIf="multiSelectMode">
+        <ng-content select=".central-info-slot"></ng-content>
+    </div>
+    <div class=spacer></div>
+
+    <div class="toolbar-right">
         <!-- Extra controls slot -->
         <div class="extra-controls-wrapper on-transition-fade">
             <ng-content select=".extra-controls-slot"></ng-content>
         </div>
 
         <!-- Main action button - desktop -->
-        <button mat-mini-fab color="accent" class="on-transition-fade" *ngIf="mainButton && !editMode && !vp.isMobile"
-            (click)="sendMainEvent()">
+        <button mat-mini-fab color="accent" class="on-transition-fade"
+            *ngIf="mainButton && !editMode && !vp.isMobile && !multiSelectMode" (click)="sendMainEvent()">
             <mat-icon>{{ mainButtonIcon }}</mat-icon>
         </button>
 
@@ -46,6 +52,8 @@
 </mat-toolbar>
 
 <!-- Main action button - mobile-->
-<button mat-fab class="head-button on-transition-fade" *ngIf="mainButton && !editMode && vp.isMobile" (click)=sendMainEvent()>
+
+<button mat-fab class="head-button on-transition-fade"
+    *ngIf="mainButton && !editMode && vp.isMobile && !multiSelectMode" (click)=sendMainEvent()>
     <mat-icon>{{ mainButtonIcon }}</mat-icon>
 </button>

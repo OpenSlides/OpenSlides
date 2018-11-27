@@ -47,14 +47,14 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
             updateUser.username = viewUser.username;
         }
 
-        await this.dataSend.updateModel(updateUser);
+        return await this.dataSend.updateModel(updateUser);
     }
 
     /**
      * Deletes a given user
      */
     public async delete(viewUser: ViewUser): Promise<void> {
-        await this.dataSend.deleteModel(viewUser.user);
+        return await this.dataSend.deleteModel(viewUser.user);
     }
 
     /**

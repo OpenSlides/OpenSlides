@@ -20,6 +20,7 @@ import { MainMenuService } from '../../../core/services/main-menu.service';
  *   [mainButton]="opCanEdit()"
  *   [mainButtonIcon]="edit"
  *   [editMode]="editMotion"
+ *   [multiSelectMode]="isMultiSelect"
  *   (mainEvent)="setEditMode(!editMotion)"
  *   (saveEvent)="saveMotion()">
  *
@@ -34,6 +35,13 @@ import { MainMenuService } from '../../../core/services/main-menu.service';
  *             <mat-icon>more_vert</mat-icon>
  *         </button>
  *     </div>
+ *     <!-- MultiSelect info -->
+ *     <div class="central-info-slot">
+ *     <button mat-icon-button (click)="toggleMultiSelect()">
+ *         <mat-icon>arrow_back</mat-icon>
+ *     </button>
+ *         <span>{{ selectedRows.length }}&nbsp;</span><span translate>selected</span>
+ * </div>
  * </os-head-bar>
  * ```
  */
@@ -60,6 +68,12 @@ export class HeadBarComponent {
      */
     @Input()
     public editMode = false;
+
+    /**
+     * Determine multiSelect mode: changed interactions and head bar
+     */
+    @Input()
+    public multiSelectMode = false;
 
     /**
      * Determine if there should be the main action button

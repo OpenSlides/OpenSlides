@@ -116,10 +116,10 @@ export class TagListComponent extends ListViewBaseComponent<ViewTag> implements 
     }
 
     /**
-     * Select a row in the table
+     * Handler for a click on a row in the table
      * @param viewTag
      */
-    public selectTag(viewTag: ViewTag): void {
+    public singleSelectAction(viewTag: ViewTag): void {
         this.selectedTag = viewTag;
         this.setEditMode(true, false);
         this.tagForm.setValue({ name: this.selectedTag.name });

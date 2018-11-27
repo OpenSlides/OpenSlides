@@ -1,4 +1,4 @@
-<os-head-bar [mainButton]="true" (mainEvent)=onPlusButton()>
+<os-head-bar [mainButton]="true" (mainEvent)=onPlusButton() [multiSelectMode]="isMultiSelect">
     <!-- Title -->
     <div class="title-slot">
         <h2 translate>Motions</h2>
@@ -10,6 +10,21 @@
             <mat-icon>more_vert</mat-icon>
         </button>
     </div>
+
+    <!-- Multiselect info -->
+    <div class="central-info-slot">
+        <button mat-icon-button (click)="toggleMultiSelect()">
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+        <span>{{ selectedRows.length }}&nbsp;</span><span translate>selected</span>
+    </div>
+
+    <div class="extra-controls-slot on-transition-fade" *ngIf="isMultiSelect">
+        <button mat-icon-button (click)="deleteSelected()">
+            <mat-icon>delete</mat-icon>
+        </button>
+    </div>
+
 </os-head-bar>
 
 <div class="custom-table-header on-transition-fade">
@@ -22,10 +37,17 @@
 </div>
 
 <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
+    <ng-container matColumnDef="selector" >
+        <mat-header-cell *matHeaderCellDef mat-sort-header class="checkbox-cell"></mat-header-cell>
+        <mat-cell *matCellDef="let motion" class="checkbox-cell">
+            <mat-icon>{{ isSelected(motion) ? 'check_circle' : '' }}</mat-icon>
+        </mat-cell>
+    </ng-container>
+
     <!-- identifier column -->
     <ng-container matColumnDef="identifier">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Identifier</mat-header-cell>
-        <mat-cell *matCellDef="let motion" (click)="selectMotion(motion)">
+        <mat-cell *matCellDef="let motion">
             <div class="innerTable">
                 {{ motion.identifier }}
             </div>
@@ -35,7 +57,7 @@
     <!-- title column -->
     <ng-container matColumnDef="title">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
-        <mat-cell *matCellDef="let motion" (click)="selectMotion(motion)">
+        <mat-cell *matCellDef="let motion">
             <div class="innerTable">
                 <span class="motion-list-title">{{ motion.title }}</span>
                 <br>
@@ -50,7 +72,7 @@
     <!-- state column -->
     <ng-container matColumnDef="state">
         <mat-header-cell *matHeaderCellDef mat-sort-header>State</mat-header-cell>
-        <mat-cell *matCellDef="let motion" (click)="selectMotion(motion)">
+        <mat-cell *matCellDef="let motion">
             <!--div *ngIf='isDisplayIcon(motion.state) && motion.state' class='innerTable'>
                 <mat-icon>{{ getStateIcon(motion.state) }}</mat-icon>
             </div>-->
@@ -64,7 +86,7 @@
     <ng-container matColumnDef="speakers">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Speakers</mat-header-cell>
         <mat-cell *matCellDef="let motion">
-            <button mat-icon-button (click)="onSpeakerIcon(motion)">
+            <button mat-icon-button (click)="onSpeakerIcon(motion, $event)">
                 <mat-icon
                     [matBadge]="motion.agendaSpeakerAmount > 0 ? motion.agendaSpeakerAmount : null"
                     matBadgeColor="accent">
@@ -74,34 +96,55 @@
         </mat-cell>
     </ng-container>
 
-    <mat-header-row *matHeaderRowDef="columnsToDisplayMinWidth"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: columnsToDisplayMinWidth"></mat-row>
+    <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
+    <mat-row [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected': ''" (click)='selectItem(row, $event)'
+        *matRowDef="let row; columns: getColumnDefinition()">
+    </mat-row>
 </mat-table>
 
 <mat-paginator class="on-transition-fade" [pageSizeOptions]="[25, 50, 75, 100, 125]"></mat-paginator>
 
 <mat-menu #motionListMenu="matMenu">
-    <button mat-menu-item routerLink="category">
-        <mat-icon>device_hub</mat-icon>
-        <span translate>Categories</span>
-    </button>
+    <div *ngIf="!isMultiSelect">
+        <button mat-menu-item *osPerms="'motions.can_manage'" (click)="toggleMultiSelect()">
+            <mat-icon>library_add</mat-icon>
+            <span translate>MultiSelect</span>
+        </button>
+        <button mat-menu-item routerLink="category">
+            <mat-icon>device_hub</mat-icon>
+            <span translate>Categories</span>
+        </button>
 
-    <button mat-menu-item routerLink="comment-section">
-        <mat-icon>speaker_notes</mat-icon>
-        <span translate>Comment sections</span>
-    </button>
+        <button mat-menu-item routerLink="comment-section">
+            <mat-icon>speaker_notes</mat-icon>
+            <span translate>Comment sections</span>
+        </button>
 
-    <button mat-menu-item routerLink="statute-paragraphs" *ngIf="statutesEnabled">
-        <mat-icon>account_balance</mat-icon>
-        <span translate>Statute paragraphs</span>
-    </button>
-
-    <button mat-menu-item *osPerms="'motions.can_manage'" routerLink="call-list">
-        <mat-icon>sort</mat-icon>
-        <span translate>Call list</span>
-    </button>
-    <button mat-menu-item (click)="csvExportMotionList()">
-        <mat-icon>archive</mat-icon>
-        <span translate>Export as CSV</span>
-    </button>
+        <button mat-menu-item routerLink="statute-paragraphs" *ngIf="statutesEnabled">
+            <mat-icon>account_balance</mat-icon>
+            <span translate>Statute paragraphs</span>
+        </button>
+    </div>
+    <div *ngIf="isMultiSelect">
+        <div *osPerms="'motions.can_manage'">
+            <button mat-menu-item  (click)="deleteSelected()">
+                <mat-icon>delete</mat-icon>
+                <span translate>Delete selected</span>
+            </button>
+            <button mat-menu-item (click)="openSetStatusMenu()">
+                <mat-icon>sentiment_satisfied</mat-icon>
+                <!-- TODO: icon -->
+                <span translate>Set status</span>
+            </button>
+            <button mat-menu-item (click)="openSetCategoryMenu()">
+                <mat-icon>sentiment_satisfied</mat-icon>
+                <!-- TODO: icon -->
+                <span translate>Set categories</span>
+            </button>
+        </div>
+        <button mat-menu-item (click)="csvExportMotionList()">
+            <mat-icon>archive</mat-icon>
+            <span translate>Export as CSV</span>
+        </button>
+    </div>
 </mat-menu>

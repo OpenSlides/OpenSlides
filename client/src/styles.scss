@@ -2,7 +2,7 @@
 @include mat-core();
 
 /** Import brand theme and (new) component themes */
-@import './assets/styles/openslides-theme';
+@import './assets/styles/openslides-theme.scss';
 @import './app/site/site.component.scss-theme';
 @import '../node_modules/roboto-fontface/css/roboto/roboto-fontface.css';
 @import '../node_modules/roboto-fontface/css/roboto-condensed/roboto-condensed-fontface.css';
@@ -110,6 +110,10 @@ body {
         cursor: pointer;
         background-color: rgba(0, 0, 0, 0.025);
     }
+    mat-row.selected {
+        cursor: pointer;
+        background-color: rgba(0, 0, 0, 0.055);
+    }
 }
 
 .card-plus-distance {
@@ -151,6 +155,18 @@ mat-expansion-panel {
 
 mat-panel-title mat-icon {
     padding-right: 30px;
+}
+
+
+.hidden-cell {
+    flex: 0;
+    width: 0;
+    display: none;
+}
+
+.checkbox-cell {
+    flex: 1;
+    max-width: 30px;
 }
 
 // ngx-file-drop requires the custom style in the global css file
