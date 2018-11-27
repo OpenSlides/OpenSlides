@@ -13,6 +13,7 @@ import { DataSendService } from './services/data-send.service';
 import { ViewportService } from './services/viewport.service';
 import { PromptDialogComponent } from '../shared/components/prompt-dialog/prompt-dialog.component';
 import { HttpService } from './services/http.service';
+import { ChoiceDialogComponent } from '../shared/components/choice-dialog/choice-dialog.component';
 
 /** Global Core Module. Contains all global (singleton) services
  *
@@ -31,7 +32,7 @@ import { HttpService } from './services/http.service';
         ViewportService,
         WebsocketService
     ],
-    entryComponents: [PromptDialogComponent]
+    entryComponents: [PromptDialogComponent, ChoiceDialogComponent]
 })
 export class CoreModule {
     /** make sure CoreModule is imported only by one NgModule, the AppModule */

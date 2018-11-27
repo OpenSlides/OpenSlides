@@ -153,6 +153,12 @@ export class ViewMotion extends BaseViewModel {
         return this.motion && this.motion.state_id ? this.motion.state_id : null;
     }
 
+    public get possibleStates(): WorkflowState[] {
+        return this.workflow
+            ? this.workflow.states
+            : null;
+    }
+
     public get recommendation_id(): number {
         return this.motion && this.motion.recommendation_id ? this.motion.recommendation_id : null;
     }
@@ -211,6 +217,10 @@ export class ViewMotion extends BaseViewModel {
 
     public get amendment_paragraphs(): string[] {
         return this.motion && this.motion.amendment_paragraphs ? this.motion.amendment_paragraphs : [];
+    }
+
+    public get tags_id(): number[] {
+        return this._motion ? this._motion.tags_id : null;
     }
 
     public constructor(

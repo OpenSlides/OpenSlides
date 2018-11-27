@@ -100,6 +100,7 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
     /**
      * Sets multiple entries' open/closed state. Needs items in selectedRows, which
      * is only filled with any data in multiSelect mode
+     *
      * @param closed true if the item is to be considered done
      */
     public async setClosedSelected(closed: boolean): Promise<void> {
@@ -111,6 +112,7 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
     /**
      * Sets multiple entries' visibility. Needs items in selectedRows, which
      * is only filled with any data in multiSelect mode.
+     *
      * @param visible true if the item is to be shown
      */
     public async setVisibilitySelected(visible: boolean): Promise<void> {

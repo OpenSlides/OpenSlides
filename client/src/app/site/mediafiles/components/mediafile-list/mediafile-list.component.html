@@ -44,14 +44,6 @@
             <mat-icon>more_vert</mat-icon>
         </button>
     </div>
-
-    <!-- Multiselect menu -->
-    <div class="multiselect-menu-slot">
-        <button type="button" mat-icon-button [matMenuTriggerFor]="mediafilesMultiSelectMenu">
-            <mat-icon>more_vert</mat-icon>
-        </button>
-    </div>
-
     <!-- Multiselect info -->
     <div *ngIf="this.isMultiSelect" class="central-info-slot">
         <button mat-icon-button (click)="toggleMultiSelect()">
@@ -167,14 +159,21 @@
 
 <!-- Menu for Mediafiles -->
 <mat-menu #mediafilesMenu="matMenu">
-    <button mat-menu-item *osPerms="'mediafiles.can_manage'" (click)="toggleMultiSelect()">
+    <div *ngIf="!isMultiSelect">
+        <button mat-menu-item *osPerms="'mediafiles.can_manage'" (click)="toggleMultiSelect()">
+                <mat-icon>library_add</mat-icon>
+                <span translate>Multiselect</span>
+        </button>
+    </div>
+    <div *ngIf="isMultiSelect">
+        <button mat-menu-item (click)="toggleMultiSelect()">
             <mat-icon>library_add</mat-icon>
-            <span translate>MultiSelect</span>
-    </button>
-</mat-menu>
-<mat-menu #mediafilesMultiSelectMenu="matMenu">
-    <button mat-menu-item *osPerms="'mediafiles.can_manage'" (click)="deleteSelected()">
-        <mat-icon>delete</mat-icon>
-        <span translate>Delete selected</span>
-    </button>
+            <span translate>Exit multiselect</span>
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item *osPerms="'mediafiles.can_manage'" (click)="deleteSelected()">
+            <mat-icon>delete</mat-icon>
+            <span translate>Delete selected</span>
+        </button>
+    </div>
 </mat-menu>

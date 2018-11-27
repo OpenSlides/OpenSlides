@@ -71,16 +71,12 @@
     <div *ngIf="!isMultiSelect">
         <button mat-menu-item *osPerms="'agenda.can_manage'" (click)="toggleMultiSelect()">
             <mat-icon>library_add</mat-icon>
-            <span translate>MultiSelect</span>
+            <span translate>Multiselect</span>
         </button>
     </div>
 
     <div *ngIf="isMultiSelect" >
         <div *osPerms="'agenda.can_manage'">
-            <button mat-menu-item (click)="deleteSelected()">
-                <mat-icon>delete</mat-icon>
-                <span translate>Delete selected</span>
-            </button>
             <mat-divider></mat-divider>
             <button mat-menu-item (click)="setClosedSelected(true)">
                 <mat-icon>done</mat-icon>
@@ -99,6 +95,11 @@
             <button mat-menu-item (click)="setVisibilitySelected(false)">
                 <mat-icon>visibility_off</mat-icon>
                 <span translate>Set invisible</span>
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item class="red-warning-text" (click)="deleteSelected()">
+                <mat-icon>delete</mat-icon>
+                <span translate>Delete selected</span>
             </button>
         </div>
     </div>

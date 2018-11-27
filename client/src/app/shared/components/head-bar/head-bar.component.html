@@ -23,7 +23,7 @@
     </div>
 
     <!-- centered information slot-->
-    <div *ngIf="multiSelectMode" class=spacer></div>
+    <div *ngIf="!multiSelectMode" class=spacer></div>
     <div class="toolbar-centered on-transition-fade" *ngIf="multiSelectMode">
         <ng-content select=".central-info-slot"></ng-content>
     </div>

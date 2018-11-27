@@ -69,7 +69,7 @@
     <div *ngIf="!isMultiSelect">
         <button mat-menu-item *osPerms="'assignment.can_manage'" (click)="toggleMultiSelect()">
             <mat-icon>library_add</mat-icon>
-            <span translate>MultiSelect</span>
+            <span translate>Multiselect</span>
         </button>
         <button mat-menu-item (click)="downloadAssignmentButton()">
             <mat-icon>archive</mat-icon>
@@ -78,7 +78,12 @@
     </div>
 
     <div *ngIf="isMultiSelect">
-        <button mat-menu-item *osPerms="'assignment.can_manage'" (click)="deleteSelected()">
+        <button mat-menu-item (click)="toggleMultiSelect()">
+            <mat-icon>library_add</mat-icon>
+            <span translate>Exit multiselect</span>
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item class="red-warning-text" *osPerms="'assignment.can_manage'" (click)="deleteSelected()">
             <mat-icon>delete</mat-icon>
             <span translate>Delete assignments</span>
         </button>

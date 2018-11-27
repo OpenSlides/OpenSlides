@@ -18,13 +18,6 @@
         </button>
         <span>{{ selectedRows.length }}&nbsp;</span><span translate>selected</span>
     </div>
-
-    <div class="extra-controls-slot on-transition-fade" *ngIf="isMultiSelect">
-        <button mat-icon-button (click)="deleteSelected()">
-            <mat-icon>delete</mat-icon>
-        </button>
-    </div>
-
 </os-head-bar>
 
 <div class="custom-table-header on-transition-fade">
@@ -86,9 +79,9 @@
     <!-- state column -->
     <ng-container matColumnDef="state">
         <mat-header-cell *matHeaderCellDef mat-sort-header>State</mat-header-cell>
-        <mat-cell *matCellDef="let motion" (click)="selectMotion(motion)">
+        <mat-cell *matCellDef="let motion">
             <div *ngIf='motion.category' class='small'>
-                <mat-icon>device_hub</mat-icon> {{ motion.category }}
+                <mat-icon>device_hub</mat-icon>{{ motion.category }}
             </div>
         </mat-cell>
     </ng-container>
@@ -119,7 +112,7 @@
     <div *ngIf="!isMultiSelect">
         <button mat-menu-item *osPerms="'motions.can_manage'" (click)="toggleMultiSelect()">
             <mat-icon>library_add</mat-icon>
-            <span translate>MultiSelect</span>
+            <span translate>Multiselect</span>
         </button>
         <button mat-menu-item routerLink="category">
             <mat-icon>device_hub</mat-icon>
@@ -139,25 +132,62 @@
         </button>
     </div>
     <div *ngIf="isMultiSelect">
+        <button mat-menu-item (click)="toggleMultiSelect()">
+            <mat-icon>library_add</mat-icon>
+            <span translate>Exit multiselect</span>
+        </button>
         <div *osPerms="'motions.can_manage'">
-            <button mat-menu-item  (click)="deleteSelected()">
-                <mat-icon>delete</mat-icon>
-                <span translate>Delete selected</span>
+                <mat-divider></mat-divider>
+            <button mat-menu-item>
+                <!-- TODO: Not implemented yet -->
+                <mat-icon>sort</mat-icon>
+                <span translate>Move to agenda item</span>
             </button>
-            <button mat-menu-item (click)="openSetStatusMenu()">
-                <mat-icon>sentiment_satisfied</mat-icon>
-                <!-- TODO: icon -->
+            <button mat-menu-item (click)="multiselectService.setStatus(selectedRows); toggleMultiSelect()">
+                <mat-icon>label</mat-icon>
                 <span translate>Set status</span>
             </button>
-            <button mat-menu-item (click)="openSetCategoryMenu()">
-                <mat-icon>sentiment_satisfied</mat-icon>
+            <button mat-menu-item (click)="multiselectService.setRecommendation(selectedRows); toggleMultiSelect()">
+                <mat-icon>report</mat-icon>
+                 <!-- TODO: better icon -->
+                <span translate>Set recommendation</span>
+            </button>
+            <button mat-menu-item (click)="multiselectService.setCategory(selectedRows); toggleMultiSelect()">
+                <mat-icon>device_hub</mat-icon>
                 <!-- TODO: icon -->
                 <span translate>Set categories</span>
             </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item (click)="multiselectService.addSubmitters(selectedRows); toggleMultiSelect()">
+                <mat-icon>person_add</mat-icon>
+                 <!-- TODO: icon -->
+                <span translate>Add submitters</span>
+            </button>
+            <button mat-menu-item (click)="multiselectService.removeSubmitters(selectedRows); toggleMultiSelect()">
+                <mat-icon>person_outline</mat-icon>
+                 <!-- TODO: icon -->
+                <span translate>remove submitters</span>
+            </button>
+            <button mat-menu-item (click)="multiselectService.addTags(selectedRows); toggleMultiSelect()">
+                <mat-icon>bookmarks</mat-icon>
+                 <!-- TODO: icon -->
+                <span translate>Add tags</span>
+            </button>
+            <button mat-menu-item (click)="multiselectService.removeTags(selectedRows); toggleMultiSelect()">
+                <mat-icon>bookmark_border</mat-icon>
+                 <!-- TODO: icon -->
+                <span translate>Remove tags</span>
+            </button>
         </div>
-        <button mat-menu-item (click)="csvExportMotionList()">
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="csvExportMotionList(); toggleMultiSelect()">
             <mat-icon>archive</mat-icon>
             <span translate>Export as CSV</span>
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item class="red-warning-text" (click)="multiselectService.delete(selectedRows); toggleMultiSelect()">
+            <mat-icon>delete</mat-icon>
+            <span translate>Delete selected</span>
         </button>
     </div>
 </mat-menu>

@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
-import { CsvExportService } from '../../../../core/services/csv-export.service';
 
-import { ViewUser } from '../../models/view-user';
-import { UserRepositoryService } from '../../services/user-repository.service';
+import { CsvExportService } from '../../../../core/services/csv-export.service';
 import { ListViewBaseComponent } from '../../../base/list-view-base';
-import { Router, ActivatedRoute } from '@angular/router';
-import { MatSnackBar } from '@angular/material';
-import { Group } from '../../../../shared/models/users/group';
+import { GroupRepositoryService } from '../../services/group-repository.service';
 import { PromptService } from '../../../../core/services/prompt.service';
+import { UserRepositoryService } from '../../services/user-repository.service';
+import { ViewUser } from '../../models/view-user';
+import { ChoiceService } from '../../../../core/services/choice.service';
 
 /**
  * Component for the user list view.
@@ -28,6 +29,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
      * @param translate Service for translation handling
      * @param matSnackBar Helper to diplay errors
      * @param repo the user repository
+     * @param groupRepo: The user group repository
      * @param router the router service
      * @param route the local route
      * @param csvExport CSV export Service,
@@ -38,10 +40,12 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
         translate: TranslateService,
         matSnackBar: MatSnackBar,
         private repo: UserRepositoryService,
+        private groupRepo: GroupRepositoryService,
+        private choiceService: ChoiceService,
         private router: Router,
         private route: ActivatedRoute,
         protected csvExport: CsvExportService,
-        private promptService: PromptService
+        private promptService: PromptService,
     ) {
         super(titleService, translate, matSnackBar);
 
@@ -124,31 +128,31 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
     }
 
     /**
-     * TODO: Not yet as expected
-     * Bulk sets the group for users. TODO: Group is still not decided in the ui
-     * @param group TODO: type may still change
-     * @param unset toggle for adding or removing from the group
+     * Opens a dialog and sets the group(s) for all selected users.
+     * SelectedRows is only filled with data in multiSelect mode
      */
-    public async setGroupSelected(group: Partial<Group>, unset?: boolean): Promise<void> {
-        this.selectedRows.forEach(vm => {
-            const groups = vm.groupIds;
-            const idx = groups.indexOf(group.id);
-            if (unset && idx >= 0) {
-                groups.slice(idx, 1);
-            } else if (!unset && idx < 0) {
-                groups.push(group.id);
+    public async setGroupSelected(add: boolean): Promise<void> {
+        let content: string;
+        if (add){
+            content = this.translate.instant('This will add the following groups to all selected users:');
+        } else {
+            content = this.translate.instant('This will remove the following groups from all selected users:');
+        }
+        const selectedChoice = await this.choiceService.open(content, this.groupRepo.getViewModelList(), true);
+        if (selectedChoice) {
+            for (const user of this.selectedRows) {
+                const newGroups = [...user.groups_id];
+                (selectedChoice as number[]).forEach(newChoice => {
+                    const idx = newGroups.indexOf(newChoice);
+                    if (idx < 0 && add) {
+                        newGroups.push(newChoice);
+                    } else if (idx >= 0 && !add) {
+                        newGroups.slice(idx, 1);
+                    }
+                });
+                await this.repo.update({ groups_id: newGroups }, user);
             }
-        });
-    }
-
-    /**
-     * Handler for bulk resetting passwords. Needs multiSelect mode.
-     * TODO: Not yet implemented (no service yet)
-     */
-    public async resetPasswordsSelected(): Promise<void> {
-        // for (const user of this.selectedRows) {
-        //     await this.resetPassword(user);
-        // }
+        }
     }
 
     /**
@@ -183,12 +187,20 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
 
     /**
      * Handler for bulk sending e-mail invitations. Uses selectedRows defined via
-     * multiSelect mode. TODO: Not yet implemented (no service)
+     * multiSelect mode.
      */
-    public async sendInvitationSelected(): Promise<void> {
-        // this.selectedRows.forEach(vm => {
-        // TODO if !vm.emailSent {vm.sendInvitation}
-        // });
+    public sendInvitationEmailSelected(): void {
+        this.repo.sendInvitationEmail(this.selectedRows).then(this.raiseError, this.raiseError);
+    }
+
+    /**
+     * Handler for bulk resetting passwords. Needs multiSelect mode.
+     */
+    public async resetPasswordsSelected(): Promise<void> {
+        for (const user of this.selectedRows) {
+            const password = this.repo.getRandomPassword();
+            this.repo.resetPassword(user, password);
+        }
     }
 
     public getColumnDefinition(): string[] {
