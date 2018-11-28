@@ -1,3 +1,5 @@
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FOpenSlides%2FOpenSlides.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FOpenSlides%2FOpenSlides?ref=badge_shield)
+
 ============
  OpenSlides
 ============
@@ -174,3 +176,7 @@ License and authors
 OpenSlides is Free/Libre Open Source Software (FLOSS), and distributed
 under the MIT License, see ``LICENSE`` file. The authors of OpenSlides are
 mentioned in the ``AUTHORS`` file.
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FOpenSlides%2FOpenSlides.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FOpenSlides%2FOpenSlides?ref=badge_large)
