@@ -8,8 +8,10 @@ mat-radio-group {
 }
 
 .scrollmenu {
-    padding: 4px;
-    overflow-y: auto;
+    padding: 5px;
     display: block;
-    overflow-y: auto;
+}
+
+.scrollmenu-outer {
+    max-height:inherit;
 }
