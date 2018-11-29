@@ -115,6 +115,44 @@ export interface LineRange {
 }
 
 /**
+ * An object representing a paragraph with some changed lines
+ */
+export interface DiffLinesInParagraph {
+    /**
+     * The paragraph number
+     */
+    paragraphNo: number;
+    /**
+     * The first line of the paragraph
+     */
+    paragraphLineFrom: number;
+    /**
+     * The end line number (after the paragraph)
+     */
+    paragraphLineTo: number;
+    /**
+     * The first line number with changes
+     */
+    diffLineFrom: number;
+    /**
+     * The line number after the last change
+     */
+    diffLineTo: number;
+    /**
+     * The HTML of the not-changed lines before the changed ones
+     */
+    textPre: string;
+    /**
+     * The HTML of the changed lines
+     */
+    text: string;
+    /**
+     * The HTML of the not-changed lines after the changed ones
+     */
+    textPost: string;
+}
+
+/**
  * Functionality regarding diffing, merging and extracting line ranges.
  *
  * ## Examples
@@ -1024,10 +1062,11 @@ export class DiffService {
         return tagStr.replace(
             /<(\w+)( [^>]*)?>/gi,
             (whole: string, tag: string, tagArguments: string): string => {
-                tagArguments = (tagArguments ? tagArguments : '');
+                tagArguments = tagArguments ? tagArguments : '';
                 if (tagArguments.match(/class="/gi)) {
                     // class="someclass" => class="someclass insert"
-                    tagArguments = tagArguments.replace(/(class\s*=\s*)(["'])([^\2]*)\2/gi,
+                    tagArguments = tagArguments.replace(
+                        /(class\s*=\s*)(["'])([^\2]*)\2/gi,
                         (classWhole: string, attr: string, para: string, content: string): string => {
                             return attr + para + content + ' ' + className + para;
                         }
@@ -1038,7 +1077,7 @@ export class DiffService {
                 return '<' + tag + tagArguments + '>';
             }
         );
-    };
+    }
 
     /**
      * This fixes a very specific, really weird bug that is tested in the test case "does not a change in a very specific case".
@@ -1451,6 +1490,18 @@ export class DiffService {
     }
 
     /**
+     * Convenience method that takes the html-attribute from an extractRangeByLineNumbers()-method and
+     * wraps it with the context.
+     *
+     * @param {ExtractedContent} diff
+     */
+    public formatDiff(diff: ExtractedContent): string {
+        return (
+            diff.outerContextStart + diff.innerContextStart + diff.html + diff.innerContextEnd + diff.outerContextEnd
+        );
+    }
+
+    /**
      * Convenience method that takes the html-attribute from an extractRangeByLineNumbers()-method,
      * wraps it with the context and adds line numbers.
      *
@@ -1459,8 +1510,7 @@ export class DiffService {
      * @param {number} firstLine
      */
     public formatDiffWithLineNumbers(diff: ExtractedContent, lineLength: number, firstLine: number): string {
-        let text =
-            diff.outerContextStart + diff.innerContextStart + diff.html + diff.innerContextEnd + diff.outerContextEnd;
+        let text = this.formatDiff(diff);
         text = this.lineNumberingService.insertLineNumbers(text, lineLength, null, null, firstLine);
         return text;
     }
@@ -1921,7 +1971,7 @@ export class DiffService {
         diffUnnormalized = diffUnnormalized.replace(
             /<(ins|del)>([\s\S]*?)<\/\1>/gi,
             (whole: string, insDel: string): string => {
-                const modificationClass = (insDel.toLowerCase() === 'ins' ? 'insert' : 'delete');
+                const modificationClass = insDel.toLowerCase() === 'ins' ? 'insert' : 'delete';
                 return whole.replace(
                     /(<(p|div|blockquote|li)[^>]*>)([\s\S]*?)(<\/\2>)/gi,
                     (whole2: string, opening: string, blockTag: string, content: string, closing: string): string => {
@@ -2016,5 +2066,63 @@ export class DiffService {
         html = this.lineNumberingService.insertLineNumbers(html, lineLength, highlightLine, null, 1);
 
         return html;
+    }
+
+    /**
+     * This is used to extract affected lines of a paragraph with the possibility to show the context (lines before
+     * and after) the changed lines and displaying the line numbers.
+     *
+     * @param {number} paragraphNo The paragraph number
+     * @param {string} origText The original text - needs to be line-numbered
+     * @param {string} newText The changed text
+     * @param {number} lineLength the line length
+     * @return {DiffLinesInParagraph|null}
+     */
+    public getAmendmentParagraphsLinesByMode(
+        paragraphNo: number,
+        origText: string,
+        newText: string,
+        lineLength: number
+    ): DiffLinesInParagraph {
+        const paragraph_line_range = this.lineNumberingService.getLineNumberRange(origText),
+            diff = this.diff(origText, newText),
+            affected_lines = this.detectAffectedLineRange(diff);
+
+        if (affected_lines === null) {
+            return null;
+        }
+
+        let textPre = '';
+        let textPost = '';
+        if (affected_lines.from > paragraph_line_range.from) {
+            textPre = this.formatDiffWithLineNumbers(
+                this.extractRangeByLineNumbers(diff, paragraph_line_range.from, affected_lines.from),
+                lineLength,
+                paragraph_line_range.from
+            );
+        }
+        if (paragraph_line_range.to > affected_lines.to) {
+            textPost = this.formatDiffWithLineNumbers(
+                this.extractRangeByLineNumbers(diff, affected_lines.to, paragraph_line_range.to),
+                lineLength,
+                affected_lines.to
+            );
+        }
+        const text = this.formatDiffWithLineNumbers(
+            this.extractRangeByLineNumbers(diff, affected_lines.from, affected_lines.to),
+            lineLength,
+            affected_lines.from
+        );
+
+        return {
+            paragraphNo: paragraphNo,
+            paragraphLineFrom: paragraph_line_range.from,
+            paragraphLineTo: paragraph_line_range.to,
+            diffLineFrom: affected_lines.from,
+            diffLineTo: affected_lines.to,
+            textPre: textPre,
+            text: text,
+            textPost: textPost
+        } as DiffLinesInParagraph;
     }
 }

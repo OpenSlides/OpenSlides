@@ -2,6 +2,15 @@ import { Deserializer } from '../base/deserializer';
 import { Workflow } from './workflow';
 
 /**
+ * Specifies if an amendment of this state/recommendation should be merged into the motion
+ */
+export enum MergeAmendment {
+    NO = -1,
+    UNDEFINED = 0,
+    YES = 1
+}
+
+/**
  * Representation of a workflow state
  *
  * Part of the 'states'-array in motion/workflow
@@ -18,7 +27,8 @@ export class WorkflowState extends Deserializer {
     public allow_create_poll: boolean;
     public allow_submitter_edit: boolean;
     public dont_set_identifier: boolean;
-    public show_state_extension_field: boolean;
+    public show_state_extension_field: number;
+    public merge_amendment_into_final: MergeAmendment;
     public show_recommendation_extension_field: boolean;
     public next_states_id: number[];
     public workflow_id: number;

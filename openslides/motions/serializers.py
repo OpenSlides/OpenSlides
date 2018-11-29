@@ -103,6 +103,7 @@ class StateSerializer(ModelSerializer):
             'allow_submitter_edit',
             'dont_set_identifier',
             'show_state_extension_field',
+            'merge_amendment_into_final',
             'show_recommendation_extension_field',
             'next_states',
             'workflow')

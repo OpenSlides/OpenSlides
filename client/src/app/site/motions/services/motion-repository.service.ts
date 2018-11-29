@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { tap, map } from 'rxjs/operators';
 
 import { DataSendService } from '../../../core/services/data-send.service';
 import { Motion } from '../../../shared/models/motions/motion';
@@ -13,7 +13,7 @@ import { ChangeRecoMode, ViewMotion } from '../models/view-motion';
 import { BaseRepository } from '../../base/base-repository';
 import { DataStoreService } from '../../../core/services/data-store.service';
 import { LinenumberingService } from './linenumbering.service';
-import { DiffService, LineRange, ModificationType } from './diff.service';
+import { DiffLinesInParagraph, DiffService, LineRange, ModificationType } from './diff.service';
 import { ViewChangeReco } from '../models/view-change-reco';
 import { MotionChangeReco } from '../../../shared/models/motions/motion-change-reco';
 import { ViewUnifiedChange } from '../models/view-unified-change';
@@ -24,6 +24,7 @@ import { HttpService } from 'app/core/services/http.service';
 import { Item } from 'app/shared/models/agenda/item';
 import { OSTreeSortEvent } from 'app/shared/components/sorting-tree/sorting-tree.component';
 import { TreeService } from 'app/core/services/tree.service';
+import { ViewMotionAmendedParagraph } from '../models/view-motion-amended-paragraph';
 
 /**
  * Repository Services for motions (and potentially categories)
@@ -207,6 +208,25 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         await this.httpService.delete(url);
     }
 
+    /** Returns an observable returning the amendments to a given motion
+     *
+     * @param {number} motionId
+     * @returns {Observable<ViewMotion[]>}
+     */
+    public amendmentsTo(motionId: number): Observable<ViewMotion[]> {
+        return this.getViewModelListObservable().pipe(
+            map(
+                (motions: ViewMotion[]): ViewMotion[] => {
+                    return motions.filter(
+                        (motion: ViewMotion): boolean => {
+                            return motion.parent_id === motionId;
+                        }
+                    );
+                }
+            )
+        );
+    }
+
     /**
      * Format the motion text using the line numbering and change
      * reco algorithm.
@@ -311,6 +331,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      * @param {ViewMotion} motion
      * @param {ViewUnifiedChange[]} changes
      * @param {number} highlight
+     * @returns {string}
      */
     public getTextRemainderAfterLastChange(
         motion: ViewMotion,
@@ -381,6 +402,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      * @param {ViewMotion} motion
      * @param {ViewUnifiedChange} change
      * @param {number} highlight
+     * @returns {string}
      */
     public getChangeDiff(motion: ViewMotion, change: ViewUnifiedChange, highlight?: number): string {
         const lineLength = motion.lineLength,
@@ -426,5 +448,107 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         }
 
         return diff;
+    }
+
+    /**
+     * Given an amendment, this returns the motion affected by this amendments
+     *
+     * @param {ViewMotion} amendment
+     * @returns {ViewMotion}
+     */
+    public getAmendmentBaseMotion(amendment: ViewMotion): ViewMotion {
+        return this.getViewModel(amendment.parent_id);
+    }
+
+    /**
+     * Splits a motion into paragraphs, optionally adding line numbers
+     *
+     * @param {ViewMotion} motion
+     * @param {boolean} lineBreaks
+     * @returns {string[]}
+     */
+    public getTextParagraphs(motion: ViewMotion, lineBreaks: boolean): string[] {
+        if (!motion) {
+            return [];
+        }
+        let html = motion.text;
+        if (lineBreaks) {
+            const lineLength = motion.lineLength;
+            html = this.lineNumbering.insertLineNumbers(html, lineLength);
+        }
+        return this.lineNumbering.splitToParagraphs(html);
+    }
+
+    /**
+     * Returns all paragraphs that are affected by the given amendment in diff-format
+     *
+     * @param {ViewMotion} amendment
+     * @returns {DiffLinesInParagraph}
+     */
+    public getAmendedParagraphs(amendment: ViewMotion): DiffLinesInParagraph[] {
+        const motion = this.getAmendmentBaseMotion(amendment);
+        const baseParagraphs = this.getTextParagraphs(motion, true);
+        const lineLength = amendment.lineLength;
+
+        return amendment.amendment_paragraphs
+            .map(
+                (newText: string, paraNo: number): DiffLinesInParagraph => {
+                    if (newText === null) {
+                        return null;
+                    }
+                    // Hint: can be either DiffLinesInParagraph or null, if no changes are made
+                    return this.diff.getAmendmentParagraphsLinesByMode(
+                        paraNo,
+                        baseParagraphs[paraNo],
+                        newText,
+                        lineLength
+                    );
+                }
+            )
+            .filter((para: DiffLinesInParagraph) => para !== null);
+    }
+
+    /**
+     * Returns all paragraphs that are affected by the given amendment as unified change objects.
+     *
+     * @param {ViewMotion} amendment
+     * @returns {ViewMotionAmendedParagraph[]}
+     */
+    public getAmendmentAmendedParagraphs(amendment: ViewMotion): ViewMotionAmendedParagraph[] {
+        const motion = this.getAmendmentBaseMotion(amendment);
+        const baseParagraphs = this.getTextParagraphs(motion, true);
+        const lineLength = amendment.lineLength;
+
+        return amendment.amendment_paragraphs
+            .map(
+                (newText: string, paraNo: number): ViewMotionAmendedParagraph => {
+                    if (newText === null) {
+                        return null;
+                    }
+
+                    const origText = baseParagraphs[paraNo],
+                        paragraphLines = this.lineNumbering.getLineNumberRange(origText),
+                        diff = this.diff.diff(origText, newText),
+                        affectedLines = this.diff.detectAffectedLineRange(diff);
+
+                    if (affectedLines === null) {
+                        return null;
+                    }
+
+                    let newTextLines = this.lineNumbering.insertLineNumbers(
+                        newText,
+                        lineLength,
+                        null,
+                        null,
+                        paragraphLines.from
+                    );
+                    newTextLines = this.diff.formatDiff(
+                        this.diff.extractRangeByLineNumbers(newTextLines, affectedLines.from, affectedLines.to)
+                    );
+
+                    return new ViewMotionAmendedParagraph(amendment, paraNo, newTextLines, affectedLines);
+                }
+            )
+            .filter((para: ViewMotionAmendedParagraph) => para !== null);
     }
 }

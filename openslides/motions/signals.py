@@ -24,7 +24,8 @@ def create_builtin_workflows(sender, **kwargs):
                                      workflow=workflow_1,
                                      action_word='Accept',
                                      recommendation_label='Acceptance',
-                                     css_class='success')
+                                     css_class='success',
+                                     merge_amendment_into_final=True)
     state_1_3 = State.objects.create(name=ugettext_noop('rejected'),
                                      workflow=workflow_1,
                                      action_word='Reject',
@@ -55,7 +56,8 @@ def create_builtin_workflows(sender, **kwargs):
                                      workflow=workflow_2,
                                      action_word='Accept',
                                      recommendation_label='Acceptance',
-                                     css_class='success')
+                                     css_class='success',
+                                     merge_amendment_into_final=True)
     state_2_4 = State.objects.create(name=ugettext_noop('rejected'),
                                      workflow=workflow_2,
                                      action_word='Reject',

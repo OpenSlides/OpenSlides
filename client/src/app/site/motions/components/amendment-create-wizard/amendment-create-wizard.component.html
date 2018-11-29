@@ -1,0 +1,52 @@
+<os-head-bar [nav]="false">
+    <!-- Title -->
+    <div class="title-slot"><h2 translate>Create amendment</h2></div>
+</os-head-bar>
+
+<form [formGroup]="contentForm" (ngSubmit)="saveAmendment()" class="on-transition-fade">
+    <mat-horizontal-stepper linear>
+        <mat-step [label]="'Select paragraph' | translate" [completed]="contentForm.value.selectedParagraph">
+            <ng-template matStepLabel translate>Select paragraph</ng-template>
+            <div>
+                <section
+                    *ngFor="let paragraph of paragraphs"
+                    class="paragraph-row"
+                    [class.active]="selectedParagraph === paragraph.paragraphNo"
+                    (click)="selectParagraph(paragraph)"
+                >
+                    <mat-radio-button
+                        class="paragraph-select"
+                        [checked]="contentForm.value.selectedParagraph === paragraph.paragraphNo"
+                    ></mat-radio-button>
+                    <div class="paragraph-text motion-text" [innerHTML]="paragraph.safeHtml"></div>
+                </section>
+            </div>
+            <div>
+                <button
+                    type="button"
+                    mat-button
+                    matStepperNext
+                    [disabled]="contentForm.value.selectedParagraph === null"
+                >
+                    <span translate>Next</span>
+                </button>
+            </div>
+        </mat-step>
+        <mat-step [label]="'Specify the change' | translate">
+            <ng-template matStepLabel translate>Specify changes</ng-template>
+
+            <h5 translate>Amended paragraph</h5>
+            <!-- The HTML Editor -->
+            <editor formControlName="text" [init]="tinyMceSettings"></editor>
+
+            <h5 translate>Reason</h5>
+            <!-- The HTML Editor -->
+            <editor formControlName="reason" [init]="tinyMceSettings"></editor>
+
+            <div>
+                <button type="button" mat-button matStepperPrevious><span translate>Back</span></button>
+                <button type="button" mat-button (click)="saveAmendment()"><span translate>Create</span></button>
+            </div>
+        </mat-step>
+    </mat-horizontal-stepper>
+</form>

@@ -7,6 +7,7 @@ import { MotionCommentSectionListComponent } from './components/motion-comment-s
 import { StatuteParagraphListComponent } from './components/statute-paragraph-list/statute-paragraph-list.component';
 import { SpeakerListComponent } from '../agenda/components/speaker-list/speaker-list.component';
 import { CallListComponent } from './components/call-list/call-list.component';
+import { AmendmentCreateWizardComponent } from './components/amendment-create-wizard/amendment-create-wizard.component';
 
 const routes: Routes = [
     { path: '', component: MotionListComponent },
@@ -16,7 +17,8 @@ const routes: Routes = [
     { path: 'call-list', component: CallListComponent },
     { path: 'new', component: MotionDetailComponent },
     { path: ':id', component: MotionDetailComponent },
-    { path: ':id/speakers', component: SpeakerListComponent }
+    { path: ':id/speakers', component: SpeakerListComponent },
+    { path: ':id/create-amendment', component: AmendmentCreateWizardComponent }
 ];
 
 @NgModule({

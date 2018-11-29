@@ -1099,6 +1099,20 @@ class State(RESTModelMixin, models.Model):
     state name and the entered value of this input field.
     """
 
+    merge_amendment_into_final = models.SmallIntegerField(default=0)
+    """
+    Relevant for amendments:
+     1: Amendments of this statue or recommendation will be merged into the
+        final version of the motion.
+     0: Undefined.
+    -1: Amendments of this status or recommendation will not be merged into the
+        final version of the motion.
+
+    (Hint: The status field takes precedence. That means, if status is 1 or -1,
+    this is the final decision. The recommendation only is considered if the
+    status is 0)
+    """
+
     show_recommendation_extension_field = models.BooleanField(default=False)
     """
     If true, an additional input field (from motion comment) is visible
