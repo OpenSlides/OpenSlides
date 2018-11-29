@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog, MatExpansionPanel, MatSnackBar, MatSelectChange, MatCheckboxChange } from '@angular/material';
+import { MatDialog, MatExpansionPanel, MatSnackBar, MatCheckboxChange } from '@angular/material';
 
 import { Category } from '../../../../shared/models/motions/category';
 import { ViewportService } from '../../../../core/services/viewport.service';
@@ -28,6 +28,7 @@ import { StatuteParagraphRepositoryService } from '../../services/statute-paragr
 import { ConfigService } from '../../../../core/services/config.service';
 import { Workflow } from 'app/shared/models/motions/workflow';
 import { take, takeWhile, multicast, skipWhile } from 'rxjs/operators';
+import { LocalPermissionsService } from '../../services/local-permissions.service';
 
 /**
  * Component for the motion detail view
@@ -94,10 +95,21 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     private _motion: ViewMotion;
 
     /**
-     * Value of the configuration variable `motions_statutes_enabled` - are statutes enabled?
+     * Value of the config variable `motions_statutes_enabled` - are statutes enabled?
      * @TODO replace by direct access to config variable, once it's available from the templates
      */
     public statutesEnabled: boolean;
+
+    /**
+     * Value of the config variable `motions_min_supporters`
+     */
+    public minSupporters: number;
+
+    /**
+     * Value of the config variable `motions_preamble`
+     */
+    public preamble: string;
+
 
     /**
      * Copy of the motion that the user might edit
@@ -155,6 +167,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     public supporterObserver: BehaviorSubject<User[]>;
 
     /**
+     * Determine if the name of supporters are visible
+     */
+    public showSupporters = false;
+
+    /**
      * Value for os-motion-detail-diff: when this is set, that component scrolls to the given change
      */
     public scrollToChange: ViewUnifiedChange = null;
@@ -193,6 +210,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         translate: TranslateService,
         matSnackBar: MatSnackBar,
         public vp: ViewportService,
+        public perms: LocalPermissionsService,
         private op: OperatorService,
         private router: Router,
         private route: ActivatedRoute,
@@ -226,9 +244,20 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
                 this.workflowObserver.next(DS.getAll(Workflow));
             }
         });
+        // load config variables
         this.configService.get('motions_statutes_enabled').subscribe(
             (enabled: boolean): void => {
                 this.statutesEnabled = enabled;
+            }
+        );
+        this.configService.get('motions_min_supporters').subscribe(
+            (supporters: number): void => {
+                this.minSupporters = supporters;
+            }
+        );
+        this.configService.get('motions_preamble').subscribe(
+            (preamble: string): void => {
+                this.preamble = preamble;
             }
         );
     }
@@ -343,7 +372,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * The AutoUpdate-Service should see a change once it arrives and show it
      * in the list view automatically
      *
-     * TODO: state is not yet saved. Need a special "put" command. Repo should handle this.
      */
     public async saveMotion(): Promise<void> {
         const newMotionValues = { ...this.metaInfoForm.value, ...this.contentForm.value };
@@ -410,7 +438,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
 
     /**
      * Sets the motions line numbering mode
-     * @param mode Needs to fot to the enum defined in ViewMotion
+     * @param mode Needs to got the enum defined in ViewMotion
      */
     public setLineNumberingMode(mode: LineNumberingMode): void {
         this.motion.lnMode = mode;
@@ -578,19 +606,49 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     }
 
     /**
-     * Executed after selecting a state
-     * @param selection MatSelectChange that contains the workflow id
+     * Supports the motion (as requested user)
      */
-    public onChangeState(selection: MatSelectChange): void {
-        this.repo.setState(this.motion, selection.value);
+    public support(): void {
+        this.repo.support(this.motion).then(null, this.raiseError);
     }
 
     /**
-     * Executed after selecting the recommenders state
-     * @param selection MatSelectChange that contains the workflow id
+     * Unsupports the motion
      */
-    public onChangerRecommenderState(selection: MatSelectChange): void {
-        this.repo.setRecommenderState(this.motion, selection.value);
+    public unsupport(): void {
+        this.repo.unsupport(this.motion).then(null, this.raiseError);
+    }
+
+    /**
+     * Opens the dialog with all supporters.
+     * TODO: open dialog here!
+     */
+    public openSupportersDialog(): void {
+        this.showSupporters = !this.showSupporters;
+    }
+
+    /**
+     * Sets the state
+     * @param id Motion state id
+     */
+    public setState(id: number): void {
+        this.repo.setState(this.motion, id);
+    }
+
+    /**
+     * Sets the recommendation
+     * @param id Motion recommendation id
+     */
+    public setRecommendation(id: number): void {
+        this.repo.setRecommendation(this.motion, id);
+    }
+
+    /**
+     * Sets the category for current motion
+     * @param id Motion category id
+     */
+    public setCategory(id: number): void {
+        this.repo.setCatetory(this.motion, id);
     }
 
     /**

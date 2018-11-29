@@ -131,19 +131,19 @@ export class HttpService {
 
     /**
      * Exectures a post on a url with a certain object
-     * @param url string of the url to send semothing to
-     * @param data The data to send
+     * @param url The url to send the request to.
+     * @param data An optional payload for the request.
      * @param header optional HTTP header if required
      * @returns A promise holding a generic
      */
-    public async post<T>(url: string, data: any, header?: HttpHeaders): Promise<T> {
+    public async post<T>(url: string, data?: any, header?: HttpHeaders): Promise<T> {
         return await this.send<T>(url, HTTPMethod.POST, data, header);
     }
 
     /**
      * Exectures a put on a url with a certain object
-     * @param url string of the url to send semothing to
-     * @param data the object that should be send
+     * @param url The url to send the request to.
+     * @param data The payload for the request.
      * @param header optional HTTP header if required
      * @returns A promise holding a generic
      */
@@ -153,8 +153,8 @@ export class HttpService {
 
     /**
      * Exectures a put on a url with a certain object
-     * @param url the url that should be called
-     * @param data: The data to send
+     * @param url The url to send the request to.
+     * @param data: The payload for the request.
      * @param header optional HTTP header if required
      * @returns A promise holding a generic
      */
@@ -164,7 +164,7 @@ export class HttpService {
 
     /**
      * Makes a delete request.
-     * @param url the url that should be called
+     * @param url The url to send the request to.
      * @param data An optional data to send in the requestbody.
      * @param header optional HTTP header if required
      * @returns A promise holding a generic

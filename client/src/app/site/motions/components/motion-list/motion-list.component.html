@@ -65,6 +65,20 @@
                     <span translate>by</span>
                     {{ motion.submitters }}
                 </span>
+                <br>
+                <!-- state -->
+                <mat-basic-chip [ngClass]="{
+                        'green': motion.state.css_class === 'success',
+                        'red': motion.state.css_class === 'danger',
+                        'grey': motion.state.css_class === 'default',
+                        'lightblue': motion.state.css_class === 'primary' }">
+                    {{ motion.state.name | translate }}
+                </mat-basic-chip>
+
+                <!-- recommendation -->
+                <span *ngIf="motion.recommendation" >
+                    <mat-basic-chip class="bluegrey">{{ motion.recommendation.recommendation_label | translate }}</mat-basic-chip>
+                </span>
             </div>
         </mat-cell>
     </ng-container>
@@ -72,13 +86,10 @@
     <!-- state column -->
     <ng-container matColumnDef="state">
         <mat-header-cell *matHeaderCellDef mat-sort-header>State</mat-header-cell>
-        <mat-cell *matCellDef="let motion">
-            <!--div *ngIf='isDisplayIcon(motion.state) && motion.state' class='innerTable'>
-                <mat-icon>{{ getStateIcon(motion.state) }}</mat-icon>
-            </div>-->
-            <mat-chip-list>
-                <mat-chip color="accent">{{ motion.state }}</mat-chip>
-            </mat-chip-list>
+        <mat-cell *matCellDef="let motion" (click)="selectMotion(motion)">
+            <div *ngIf='motion.category' class='small'>
+                <mat-icon>device_hub</mat-icon> {{ motion.category }}
+            </div>
         </mat-cell>
     </ng-container>
 
@@ -98,7 +109,7 @@
 
     <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
     <mat-row [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected': ''" (click)='selectItem(row, $event)'
-        *matRowDef="let row; columns: getColumnDefinition()">
+        *matRowDef="let row; columns: getColumnDefinition()" class="lg">
     </mat-row>
 </mat-table>
 
