@@ -386,33 +386,35 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
             raise ValidationError({'detail': 'Parent item {} does not exist'.format(request.data['parent_id'])})
 
         # Collect ancestors
-        ancestors = []
+        ancestors = [parent.pk]
         grandparent = parent.parent
         while grandparent is not None:
             ancestors.append(grandparent.pk)
             grandparent = grandparent.parent
 
-        item_result = []
+        # First validate all items before changeing them.
+        items = []
         for item_id in request.data['items']:
             # Prevent hierarchical loops.
-            if item_id == parent.pk or item_id in ancestors:
+            if item_id in ancestors:
                 raise ValidationError({'detail': 'Assigning item {} to one of its children is not possible.'.format(item_id)})
 
             # Check every item
             try:
-                item = Item.objects.get(pk=item_id)
+                items.append(Item.objects.get(pk=item_id))
             except Item.DoesNotExist:
                 raise ValidationError({'detail': 'Item {} does not exist'.format(item_id)})
 
+        # OK, assign new parents.
+        for item in items:
             # Assign new parent.
             item.parent = parent
             item.save(skip_autoupdate=True)
-            item_result.append(item)
 
         # Now inform all clients.
-        inform_changed_data(item_result)
+        inform_changed_data(items)
 
         # Send response.
         return Response({
-            'detail': _('{number} items successfully assigned.').format(number=len(item_result)),
+            'detail': _('{number} items successfully assigned.').format(number=len(items)),
         })
