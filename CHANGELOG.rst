@@ -21,12 +21,16 @@ Core:
  - Switch from Yarn back to npm [#3964].
  - Added password reset link (password reset via email) [#3914].
 
+Agenda:
+ - Added viewpoint to assign multiple items to a new parent item [#4037].
+
 Motions:
  - Option to customly sort motions [#3894].
  - Added support for adding a statute [#3894].
  - Added new permission to manage metadata, i. e. set motion state, set and
    follow recommendation, manage submitters and supporters, change motion
    category, motion block and origin and manage motion polls [#3913].
+ - Added multi select action to manage submitters, tags and recommendations [#4037].
 
 User:
  - Added new admin group which grants all permissions. Users of existing group

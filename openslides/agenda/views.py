@@ -1,3 +1,4 @@
+import jsonschema
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.utils.translation import ugettext as _
@@ -27,8 +28,7 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
     """
     API endpoint for agenda items.
 
-    There are the following views: metadata, list, retrieve, create,
-    partial_update, update, destroy, manage_speaker, speak and tree.
+    There are some views, see check_view_permissions.
     """
     access_permissions = ItemAccessPermissions()
     queryset = Item.objects.all()
@@ -43,7 +43,7 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
             result = has_perm(self.request.user, 'agenda.can_see')
             # For manage_speaker and tree requests the rest of the check is
             # done in the specific method. See below.
-        elif self.action in ('partial_update', 'update', 'sort'):
+        elif self.action in ('partial_update', 'update', 'sort', 'assign'):
             result = (has_perm(self.request.user, 'agenda.can_see') and
                       has_perm(self.request.user, 'agenda.can_see_internal_items') and
                       has_perm(self.request.user, 'agenda.can_manage'))
@@ -339,3 +339,82 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
 
         inform_changed_data(items)
         return Response({'detail': _('The agenda has been sorted.')})
+
+    @list_route(methods=['post'])
+    @transaction.atomic
+    def assign(self, request):
+        """
+        Assign multiple agenda items to a new parent item.
+
+        Send POST {... see schema ...} to assign the new parent.
+
+        This aslo checks the parent field to prevent hierarchical loops.
+        """
+        schema = {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "title": "Agenda items assign new parent schema",
+            "description": "An object containing an array of agenda item ids and the new parent id the items should be assigned to.",
+            "type": "object",
+            "propterties": {
+                "items": {
+                    "description": "An array of agenda item ids where the items should be assigned to the new parent id.",
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                    },
+                    "minItems": 1,
+                    "uniqueItems": True,
+                },
+                "parent_id": {
+                    "description": "The agenda item id of the new parent item.",
+                    "type": "integer",
+                },
+            },
+            "required": ["items", "parent_id"],
+        }
+
+        # Validate request data.
+        try:
+            jsonschema.validate(request.data, schema)
+        except jsonschema.ValidationError as err:
+            raise ValidationError({'detail': str(err)})
+
+        # Check parent item
+        try:
+            parent = Item.objects.get(pk=request.data['parent_id'])
+        except Item.DoesNotExist:
+            raise ValidationError({'detail': 'Parent item {} does not exist'.format(request.data['parent_id'])})
+
+        # Collect ancestors
+        ancestors = [parent.pk]
+        grandparent = parent.parent
+        while grandparent is not None:
+            ancestors.append(grandparent.pk)
+            grandparent = grandparent.parent
+
+        # First validate all items before changeing them.
+        items = []
+        for item_id in request.data['items']:
+            # Prevent hierarchical loops.
+            if item_id in ancestors:
+                raise ValidationError({'detail': 'Assigning item {} to one of its children is not possible.'.format(item_id)})
+
+            # Check every item
+            try:
+                items.append(Item.objects.get(pk=item_id))
+            except Item.DoesNotExist:
+                raise ValidationError({'detail': 'Item {} does not exist'.format(item_id)})
+
+        # OK, assign new parents.
+        for item in items:
+            # Assign new parent.
+            item.parent = parent
+            item.save(skip_autoupdate=True)
+
+        # Now inform all clients.
+        inform_changed_data(items)
+
+        # Send response.
+        return Response({
+            'detail': _('{number} items successfully assigned.').format(number=len(items)),
+        })

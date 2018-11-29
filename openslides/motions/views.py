@@ -1,6 +1,7 @@
 import re
 from typing import List
 
+import jsonschema
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError as DjangoValidationError
@@ -11,6 +12,7 @@ from django.utils.translation import ugettext as _, ugettext_noop
 from rest_framework import status
 
 from ..core.config import config
+from ..core.models import Tag
 from ..utils.auth import has_perm, in_some_groups
 from ..utils.autoupdate import inform_changed_data
 from ..utils.exceptions import OpenSlidesError
@@ -58,9 +60,7 @@ class MotionViewSet(ModelViewSet):
     """
     API endpoint for motions.
 
-    There are the following views: metadata, list, retrieve, create,
-    partial_update, update, destroy, support, set_state and
-    create_poll.
+    There are a lot of views. See check_view_permissions().
     """
     access_permissions = MotionAccessPermissions()
     queryset = Motion.objects.all()
@@ -80,9 +80,10 @@ class MotionViewSet(ModelViewSet):
                       has_perm(self.request.user, 'motions.can_create') and
                       (not config['motions_stop_submitting'] or
                        has_perm(self.request.user, 'motions.can_manage')))
-        elif self.action in ('set_state', 'set_recommendation',
+        elif self.action in ('set_state', 'set_recommendation', 'manage_multiple_recommendation',
                              'follow_recommendation', 'manage_submitters',
-                             'sort_submitters', 'create_poll'):
+                             'sort_submitters', 'manage_multiple_submitters',
+                             'manage_multiple_tags', 'create_poll'):
             result = (has_perm(self.request.user, 'motions.can_see') and
                       has_perm(self.request.user, 'motions.can_manage_metadata'))
         elif self.action in ('sort', 'manage_comments'):
@@ -477,6 +478,85 @@ class MotionViewSet(ModelViewSet):
         # Initiate response.
         return Response({'detail': _('Submitters successfully sorted.')})
 
+    @list_route(methods=['post'])
+    @transaction.atomic
+    def manage_multiple_submitters(self, request):
+        """
+        Set or reset submitters of multiple motions.
+
+        Send POST {"motions": [... see schema ...]} to changed the submitters.
+        """
+        motions = request.data.get('motions')
+
+        schema = {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "title": "Motion manage multiple submitters schema",
+            "description": "An array of motion ids with the respective user ids that should be set as submitter.",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "The id of the motion.",
+                        "type": "integer",
+                    },
+                    "submitters": {
+                        "description": "An array of user ids the should become submitters. Use an empty array to clear submitter field.",
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                        },
+                        "uniqueItems": True,
+                    },
+                },
+                "required": ["id", "submitters"],
+            },
+            "uniqueItems": True,
+        }
+
+        # Validate request data.
+        try:
+            jsonschema.validate(motions, schema)
+        except jsonschema.ValidationError as err:
+            raise ValidationError({'detail': str(err)})
+
+        motion_result = []
+        new_submitters = []
+        for item in motions:
+            # Get motion.
+            try:
+                motion = Motion.objects.get(pk=item['id'])
+            except Motion.DoesNotExist:
+                raise ValidationError({'detail': 'Motion {} does not exist'.format(item['id'])})
+
+            # Remove all submitters.
+            Submitter.objects.filter(motion=motion).delete()
+
+            # Set new submitters.
+            for submitter_id in item['submitters']:
+                try:
+                    submitter = get_user_model().objects.get(pk=submitter_id)
+                except get_user_model().DoesNotExist:
+                    raise ValidationError({'detail': 'Submitter {} does not exist'.format(submitter_id)})
+                Submitter.objects.add(submitter, motion)
+                new_submitters.append(submitter)
+
+            # Finish motion.
+            motion_result.append(motion)
+
+        # Now inform all clients.
+        inform_changed_data(motion_result)
+
+        # Also send all new submitters via autoupdate because users without
+        # permission to see users may not have them but can get it now.
+        # TODO: Skip history.
+        inform_changed_data(new_submitters)
+
+        # Send response.
+        return Response({
+            'detail': _('{number} motions successfully updated.').format(number=len(motion_result)),
+        })
+
     @detail_route(methods=['post', 'delete'])
     def support(self, request, pk=None):
         """
@@ -583,15 +663,98 @@ class MotionViewSet(ModelViewSet):
             motion.recommendation = None
 
         # Save motion.
-        motion.save(update_fields=['recommendation'])
+        motion.save(update_fields=['recommendation'], skip_autoupdate=True)
         label = motion.recommendation.recommendation_label if motion.recommendation else 'None'
         message = _('The recommendation of the motion was set to %s.') % label
 
         # Write the log message and initiate response.
         motion.write_log(
             message_list=[ugettext_noop('Recommendation set to'), ' ', label],
-            person=request.user)
+            person=request.user,
+            skip_autoupdate=True)
+        inform_changed_data(motion)
         return Response({'detail': message})
+
+    @list_route(methods=['post'])
+    @transaction.atomic
+    def manage_multiple_recommendation(self, request):
+        """
+        Set or reset recommendations of multiple motions.
+
+        Send POST {"motions": [... see schema ...]} to changed the recommendations.
+        """
+        motions = request.data.get('motions')
+
+        schema = {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "title": "Motion manage multiple recommendations schema",
+            "description": "An array of motion ids with the respective state ids that should be set as recommendation.",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "The id of the motion.",
+                        "type": "integer",
+                    },
+                    "recommendation": {
+                        "description": "The state id the should become recommendation. Use 0 to clear recommendation field.",
+                        "type": "integer",
+                    },
+                },
+                "required": ["id", "recommendation"],
+            },
+            "uniqueItems": True,
+        }
+
+        # Validate request data.
+        try:
+            jsonschema.validate(motions, schema)
+        except jsonschema.ValidationError as err:
+            raise ValidationError({'detail': str(err)})
+
+        motion_result = []
+        for item in motions:
+            # Get motion.
+            try:
+                motion = Motion.objects.get(pk=item['id'])
+            except Motion.DoesNotExist:
+                raise ValidationError({'detail': 'Motion {} does not exist'.format(item['id'])})
+
+            # Set or reset recommendation.
+            recommendation_state_id = item['recommendation']
+            if recommendation_state_id == 0:
+                # Reset recommendation.
+                motion.recommendation = None
+            else:
+                # Check data and set recommendation.
+                recommendable_states = State.objects.filter(workflow=motion.workflow_id, recommendation_label__isnull=False)
+                if recommendation_state_id not in [item.id for item in recommendable_states]:
+                    raise ValidationError(
+                        {'detail': _('You can not set the recommendation to {recommendation_state_id}.').format(
+                            recommendation_state_id=recommendation_state_id)})
+                motion.set_recommendation(recommendation_state_id)
+
+            # Save motion.
+            motion.save(update_fields=['recommendation'], skip_autoupdate=True)
+            label = motion.recommendation.recommendation_label if motion.recommendation else 'None'
+
+            # Write the log message.
+            motion.write_log(
+                message_list=[ugettext_noop('Recommendation set to'), ' ', label],
+                person=request.user,
+                skip_autoupdate=True)
+
+            # Finish motion.
+            motion_result.append(motion)
+
+        # Now inform all clients.
+        inform_changed_data(motion_result)
+
+        # Send response.
+        return Response({
+            'detail': _('{number} motions successfully updated.').format(number=len(motion_result)),
+        })
 
     @detail_route(methods=['post'])
     def follow_recommendation(self, request, pk=None):
@@ -639,6 +802,73 @@ class MotionViewSet(ModelViewSet):
         return Response({
             'detail': _('Vote created successfully.'),
             'createdPollId': poll.pk})
+
+    @list_route(methods=['post'])
+    @transaction.atomic
+    def manage_multiple_tags(self, request):
+        """
+        Set or reset tags of multiple motions.
+
+        Send POST {"motions": [... see schema ...]} to changed the tags.
+        """
+        motions = request.data.get('motions')
+
+        schema = {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "title": "Motion manage multiple tags schema",
+            "description": "An array of motion ids with the respective tags ids that should be set as tag.",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "The id of the motion.",
+                        "type": "integer",
+                    },
+                    "tags": {
+                        "description": "An array of tag ids the should become tags. Use an empty array to clear tag field.",
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                        },
+                        "uniqueItems": True,
+                    },
+                },
+                "required": ["id", "tags"],
+            },
+            "uniqueItems": True,
+        }
+
+        # Validate request data.
+        try:
+            jsonschema.validate(motions, schema)
+        except jsonschema.ValidationError as err:
+            raise ValidationError({'detail': str(err)})
+
+        motion_result = []
+        for item in motions:
+            # Get motion.
+            try:
+                motion = Motion.objects.get(pk=item['id'])
+            except Motion.DoesNotExist:
+                raise ValidationError({'detail': 'Motion {} does not exist'.format(item['id'])})
+
+            # Set new tags
+            for tag_id in item['tags']:
+                if not Tag.objects.filter(pk=tag_id).exists():
+                    raise ValidationError({'detail': 'Tag {} does not exist'.format(tag_id)})
+            motion.tags.set(item['tags'])
+
+            # Finish motion.
+            motion_result.append(motion)
+
+        # Now inform all clients.
+        inform_changed_data(motion_result)
+
+        # Send response.
+        return Response({
+            'detail': _('{number} motions successfully updated.').format(number=len(motion_result)),
+        })
 
 
 class MotionPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet):
