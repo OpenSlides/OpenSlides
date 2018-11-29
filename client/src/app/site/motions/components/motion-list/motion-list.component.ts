@@ -9,9 +9,9 @@ import { WorkflowState } from '../../../../shared/models/motions/workflow-state'
 import { ListViewBaseComponent } from '../../../base/list-view-base';
 import { MatSnackBar } from '@angular/material';
 import { ConfigService } from '../../../../core/services/config.service';
-import { CsvExportService } from 'app/core/services/csv-export.service';
 import { Category } from '../../../../shared/models/motions/category';
 import { PromptService } from '../../../../core/services/prompt.service';
+import { MotionCsvExportService } from '../../services/motion-csv-export.service';
 
 /**
  * Component that displays all the motions in a Table using DataSource.
@@ -62,8 +62,8 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
         private route: ActivatedRoute,
         private configService: ConfigService,
         private repo: MotionRepositoryService,
-        private csvExport: CsvExportService,
-        private promptService: PromptService
+        private promptService: PromptService,
+        private motionCsvExport: MotionCsvExportService
     ) {
         super(titleService, translate, matSnackBar);
 
@@ -160,19 +160,7 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
      * Export all motions as CSV
      */
     public csvExportMotionList(): void {
-        this.csvExport.export(
-            this.dataSource.data,
-            [
-                { property: 'identifier' },
-                { property: 'title' },
-                { property: 'text' },
-                { property: 'reason' },
-                { property: 'submitters' },
-                { property: 'category' },
-                { property: 'origin' }
-            ],
-            this.translate.instant('Motions') + '.csv'
-        );
+       this.motionCsvExport.exportMotionList(this.dataSource.data);
     }
 
     /**

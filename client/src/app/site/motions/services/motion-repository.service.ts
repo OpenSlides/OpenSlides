@@ -82,6 +82,12 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         return new ViewMotion(motion, category, submitters, supporters, workflow, state, item);
     }
 
+    /**
+     * Add custom hook into the observables. The motions get a virtual weight (a sequential number) for the
+     * call list order. One can just sort for this number instead of dealing with the sort parent id and weight.
+     *
+     * @override
+     */
     public getViewModelListObservable(): Observable<ViewMotion[]> {
         return super.getViewModelListObservable().pipe(
             tap(motions => {

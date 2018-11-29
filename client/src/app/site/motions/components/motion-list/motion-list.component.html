@@ -114,12 +114,14 @@
             <mat-icon>device_hub</mat-icon>
             <span translate>Categories</span>
         </button>
-
         <button mat-menu-item routerLink="comment-section">
             <mat-icon>speaker_notes</mat-icon>
             <span translate>Comment sections</span>
         </button>
-
+        <button mat-menu-item *osPerms="'motions.can_manage'" routerLink="call-list">
+            <mat-icon>sort</mat-icon>
+            <span translate>Call list</span>
+        </button>
         <button mat-menu-item routerLink="statute-paragraphs" *ngIf="statutesEnabled">
             <mat-icon>account_balance</mat-icon>
             <span translate>Statute paragraphs</span>
