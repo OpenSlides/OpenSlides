@@ -1099,7 +1099,7 @@ class State(RESTModelMixin, models.Model):
     merge_amendment_into_final = models.SmallIntegerField(default=0)
     """
     Relevant for amendments:
-     1: Amendments of this statue or recommendation will be merged into the
+     1: Amendments of this status or recommendation will be merged into the
         final version of the motion.
      0: Undefined.
     -1: Amendments of this status or recommendation will not be merged into the
