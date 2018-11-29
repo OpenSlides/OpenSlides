@@ -11,10 +11,7 @@ describe('MotionMultiselectService', () => {
         });
     });
 
-    it('should be created', inject(
-        [MotionMultiselectService],
-        (service: MotionMultiselectService) => {
-            expect(service).toBeTruthy();
-        }
-    ));
+    it('should be created', inject([MotionMultiselectService], (service: MotionMultiselectService) => {
+        expect(service).toBeTruthy();
+    }));
 });

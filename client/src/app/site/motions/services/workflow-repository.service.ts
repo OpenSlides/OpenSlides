@@ -69,12 +69,11 @@ export class WorkflowRepositoryService extends BaseRepository<ViewWorkflow, Work
         return wfList.find(workflow => workflow.id === workflow_id);
     }
 
-    public getAllWorkflowStates(): WorkflowState[]{
+    public getAllWorkflowStates(): WorkflowState[] {
         let states: WorkflowState[] = [];
         this.DS.getAll(Workflow).forEach(workflow => {
             states = states.concat(workflow.states);
-        })
+        });
         return states;
     }
-
 }

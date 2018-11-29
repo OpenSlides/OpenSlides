@@ -1,39 +1,25 @@
-<os-head-bar mainButton=true (mainEvent)=onPlusButton() [multiSelectMode]="isMultiSelect">
+<os-head-bar mainButton="true" (mainEvent)="onPlusButton()" [multiSelectMode]="isMultiSelect">
     <!-- Title -->
-    <div class="title-slot">
-        <h2 translate>Participants</h2>
-    </div>
+    <div class="title-slot"><h2 translate>Participants</h2></div>
 
     <!-- Menu -->
     <div class="menu-slot">
-        <button type="button" mat-icon-button [matMenuTriggerFor]="userMenu">
-            <mat-icon>more_vert</mat-icon>
-        </button>
+        <button type="button" mat-icon-button [matMenuTriggerFor]="userMenu"><mat-icon>more_vert</mat-icon></button>
     </div>
 
     <!-- Multiselect info -->
     <div class="central-info-slot">
-        <button mat-icon-button (click)="toggleMultiSelect()">
-            <mat-icon>arrow_back</mat-icon>
-        </button>
+        <button mat-icon-button (click)="toggleMultiSelect()"><mat-icon>arrow_back</mat-icon></button>
         <span>{{ selectedRows.length }}&nbsp;</span><span translate>selected</span>
     </div>
 
     <div class="extra-controls-slot on-transition-fade" *ngIf="isMultiSelect">
-        <button mat-icon-button (click)="deleteSelected()">
-            <mat-icon>delete</mat-icon>
-        </button>
+        <button mat-icon-button (click)="deleteSelected()"><mat-icon>delete</mat-icon></button>
     </div>
-
 </os-head-bar>
 
 <div class="custom-table-header on-transition-fade">
-    <button mat-button>
-        <span translate>SORT</span>
-    </button>
-    <button mat-button>
-        <span translate>FILTER</span>
-    </button>
+    <button mat-button><span translate>SORT</span></button> <button mat-button><span translate>FILTER</span></button>
 </div>
 
 <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
@@ -54,12 +40,12 @@
     <ng-container matColumnDef="group">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Group</mat-header-cell>
         <mat-cell *matCellDef="let user">
-            <div class='groupsCell'>
+            <div class="groupsCell">
                 <span *ngIf="user.groups.length > 0">
                     <mat-icon>people</mat-icon>
                     {{ user.groups }}
                 </span>
-                <br *ngIf="user.groups && user.structureLevel">
+                <br *ngIf="user.groups && user.structureLevel" />
                 <span *ngIf="user.structureLevel">
                     <mat-icon>flag</mat-icon>
                     {{ user.structure_level }}
@@ -80,8 +66,11 @@
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
-    <mat-row [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected': ''" (click)='selectItem(row, $event)'
-        *matRowDef="let row; columns: getColumnDefinition()">
+    <mat-row
+        [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected' : ''"
+        (click)="selectItem(row, $event)"
+        *matRowDef="let row; columns: getColumnDefinition()"
+    >
     </mat-row>
 </mat-table>
 
@@ -115,7 +104,7 @@
             <span translate>Exit multiselect</span>
         </button>
         <div *osPerms="'users.can_manage'">
-                <mat-divider></mat-divider>
+            <mat-divider></mat-divider>
             <button mat-menu-item (click)="setGroupSelected(true)">
                 <mat-icon>people</mat-icon>
                 <span translate>Add groups</span>

@@ -81,7 +81,7 @@ export class ChoiceDialogComponent {
      * For multiSelect: Activates/deactivates a multi-Choice option
      * @param choice
      */
-    public toggleChoice(choice: Identifiable) : void {
+    public toggleChoice(choice: Identifiable): void {
         const idx = this.selectedMultiChoices.indexOf(choice.id);
         if (idx < 0) {
             this.selectedMultiChoices.push(choice.id);

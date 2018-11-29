@@ -120,7 +120,7 @@ export class MotionMultiselectService {
         const title = this.translate.instant('This will add the following submitters of all selected motions:');
         const selectedChoice = await this.choiceService.open(title, this.userRepo.getViewModelList(), true);
         if (selectedChoice) {
-            throw new Error("Not implemented on the server");
+            throw new Error('Not implemented on the server');
         }
     }
 
@@ -133,7 +133,7 @@ export class MotionMultiselectService {
         const title = this.translate.instant('This will remove the following submitters from all selected motions:');
         const selectedChoice = await this.choiceService.open(title, this.userRepo.getViewModelList(), true);
         if (selectedChoice) {
-            throw new Error("Not implemented on the server");
+            throw new Error('Not implemented on the server');
         }
     }
 

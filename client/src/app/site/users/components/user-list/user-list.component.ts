@@ -45,7 +45,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
         private router: Router,
         private route: ActivatedRoute,
         protected csvExport: CsvExportService,
-        private promptService: PromptService,
+        private promptService: PromptService
     ) {
         super(titleService, translate, matSnackBar);
 
@@ -133,7 +133,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
      */
     public async setGroupSelected(add: boolean): Promise<void> {
         let content: string;
-        if (add){
+        if (add) {
             content = this.translate.instant('This will add the following groups to all selected users:');
         } else {
             content = this.translate.instant('This will remove the following groups from all selected users:');

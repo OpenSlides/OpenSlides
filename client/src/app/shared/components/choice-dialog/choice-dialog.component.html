@@ -1,8 +1,14 @@
 <h2 mat-dialog-title>{{ data.title | translate }}</h2>
 <div class="scrollmenu">
-    <mat-radio-group #radio name="choice" *ngIf="!data.multiSelect" class="choice-radio-group" [(ngModel)]="selectedChoice">
+    <mat-radio-group
+        #radio
+        name="choice"
+        *ngIf="!data.multiSelect"
+        class="choice-radio-group"
+        [(ngModel)]="selectedChoice"
+    >
         <mat-radio-button class="choice-button" *ngFor="let choice of data.choices" [value]="choice.id">
-            {{ getChoiceTitle(choice)  | translate}}
+            {{ getChoiceTitle(choice) | translate }}
         </mat-radio-button>
     </mat-radio-group>
 

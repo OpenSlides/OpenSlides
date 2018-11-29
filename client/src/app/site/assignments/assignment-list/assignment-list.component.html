@@ -1,9 +1,6 @@
-<os-head-bar plusButton=true (plusButtonClicked)=onPlusButton() [multiSelectMode]="isMultiSelect">
+<os-head-bar plusButton="true" (plusButtonClicked)="onPlusButton()" [multiSelectMode]="isMultiSelect">
     <!-- Title -->
-    <div class="title-slot">
-
-        <h2 translate>Elections</h2>
-    </div>
+    <div class="title-slot"><h2 translate>Elections</h2></div>
     <!-- Menu -->
     <div class="menu-slot">
         <button type="button" mat-icon-button [matMenuTriggerFor]="assignmentMenu">
@@ -13,25 +10,19 @@
 
     <!-- Multiselect info -->
     <div class="central-info-slot">
-        <button mat-icon-button (click)="toggleMultiSelect()">
-            <mat-icon>arrow_back</mat-icon>
-        </button>
+        <button mat-icon-button (click)="toggleMultiSelect()"><mat-icon>arrow_back</mat-icon></button>
         <span>{{ selectedRows.length }}&nbsp;</span><span translate>selected</span>
     </div>
 
     <div class="extra-controls-slot on-transition-fade" *ngIf="isMultiSelect">
-        <button mat-icon-button (click)="deleteSelected()">
-            <mat-icon>delete</mat-icon>
-        </button>
+        <button mat-icon-button (click)="deleteSelected()"><mat-icon>delete</mat-icon></button>
     </div>
-
 </os-head-bar>
-
 
 <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
     <ng-container matColumnDef="selector">
-        <mat-header-cell *matHeaderCellDef mat-sort-header class="checkbox-cell" ></mat-header-cell>
-        <mat-cell *matCellDef="let assignment" class="checkbox-cell" >
+        <mat-header-cell *matHeaderCellDef mat-sort-header class="checkbox-cell"></mat-header-cell>
+        <mat-cell *matCellDef="let assignment" class="checkbox-cell">
             <mat-icon>{{ isSelected(assignment) ? 'check_circle' : '' }}</mat-icon>
         </mat-cell>
     </ng-container>
@@ -58,8 +49,11 @@
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="getColumnDefintion()"></mat-header-row>
-    <mat-row [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected': ''" (click)='selectItem(row, $event)'
-        *matRowDef="let row; columns: getColumnDefintion()">
+    <mat-row
+        [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected' : ''"
+        (click)="selectItem(row, $event)"
+        *matRowDef="let row; columns: getColumnDefintion()"
+    >
     </mat-row>
 </mat-table>
 

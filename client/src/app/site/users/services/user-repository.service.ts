@@ -116,11 +116,14 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
         const subject = this.translate.instant(this.configService.instant('users_email_subject'));
         const message = this.translate.instant(this.configService.instant('users_email_body'));
 
-        const response = await this.httpService.post<{count: Number; no_email_ids: number[]}>('/rest/users/user/mass_invite_email/', {
+        const response = await this.httpService.post<{ count: Number; no_email_ids: number[] }>(
+            '/rest/users/user/mass_invite_email/',
+            {
                 user_ids: user_ids,
                 subject: subject,
-                message: message,
-        });
+                message: message
+            }
+        );
         const numEmails = response.count;
         const noEmailIds = response.no_email_ids;
         let msg;
@@ -136,19 +139,26 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
             msg += ' ';
 
             if (noEmailIds.length === 1) {
-                msg += this.translate.instant('The user %user% has no email, so the invitation email could not be send.');
+                msg += this.translate.instant(
+                    'The user %user% has no email, so the invitation email could not be send.'
+                );
             } else {
-                msg += this.translate.instant('The users %user% have no email, so the invitation emails could not be send.');
+                msg += this.translate.instant(
+                    'The users %user% have no email, so the invitation emails could not be send.'
+                );
             }
 
             // This one builds a username string like "user1, user2 and user3" with the full names.
-            const usernames = noEmailIds.map(id => this.getViewModel(id)).filter(user => !!user).map(user => user.short_name);
+            const usernames = noEmailIds
+                .map(id => this.getViewModel(id))
+                .filter(user => !!user)
+                .map(user => user.short_name);
             let userString;
             if (usernames.length > 1) {
                 const lastUsername = usernames.pop();
                 userString = usernames.join(', ') + ' ' + this.translate.instant('and') + ' ' + lastUsername;
             } else {
-                userString = usernames.join(', ')
+                userString = usernames.join(', ');
             }
             msg = msg.replace('%user%', userString);
         }

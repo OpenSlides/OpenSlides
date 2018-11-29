@@ -154,9 +154,7 @@ export class ViewMotion extends BaseViewModel {
     }
 
     public get possibleStates(): WorkflowState[] {
-        return this.workflow
-            ? this.workflow.states
-            : null;
+        return this.workflow ? this.workflow.states : null;
     }
 
     public get recommendation_id(): number {

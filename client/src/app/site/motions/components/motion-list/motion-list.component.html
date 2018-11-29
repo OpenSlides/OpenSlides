@@ -1,8 +1,6 @@
-<os-head-bar [mainButton]="true" (mainEvent)=onPlusButton() [multiSelectMode]="isMultiSelect">
+<os-head-bar [mainButton]="true" (mainEvent)="onPlusButton()" [multiSelectMode]="isMultiSelect">
     <!-- Title -->
-    <div class="title-slot">
-        <h2 translate>Motions</h2>
-    </div>
+    <div class="title-slot"><h2 translate>Motions</h2></div>
 
     <!-- Menu -->
     <div class="menu-slot">
@@ -13,24 +11,17 @@
 
     <!-- Multiselect info -->
     <div class="central-info-slot">
-        <button mat-icon-button (click)="toggleMultiSelect()">
-            <mat-icon>arrow_back</mat-icon>
-        </button>
+        <button mat-icon-button (click)="toggleMultiSelect()"><mat-icon>arrow_back</mat-icon></button>
         <span>{{ selectedRows.length }}&nbsp;</span><span translate>selected</span>
     </div>
 </os-head-bar>
 
 <div class="custom-table-header on-transition-fade">
-    <button mat-button>
-        <span translate>SORT</span>
-    </button>
-    <button mat-button>
-        <span translate>FILTER</span>
-    </button>
+    <button mat-button><span translate>SORT</span></button> <button mat-button><span translate>FILTER</span></button>
 </div>
 
 <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
-    <ng-container matColumnDef="selector" >
+    <ng-container matColumnDef="selector">
         <mat-header-cell *matHeaderCellDef mat-sort-header class="checkbox-cell"></mat-header-cell>
         <mat-cell *matCellDef="let motion" class="checkbox-cell">
             <mat-icon>{{ isSelected(motion) ? 'check_circle' : '' }}</mat-icon>
@@ -41,9 +32,7 @@
     <ng-container matColumnDef="identifier">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Identifier</mat-header-cell>
         <mat-cell *matCellDef="let motion">
-            <div class="innerTable">
-                {{ motion.identifier }}
-            </div>
+            <div class="innerTable">{{ motion.identifier }}</div>
         </mat-cell>
     </ng-container>
 
@@ -52,25 +41,25 @@
         <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
         <mat-cell *matCellDef="let motion">
             <div class="innerTable">
-                <span class="motion-list-title">{{ motion.title }}</span>
-                <br>
-                <span class="motion-list-from">
-                    <span translate>by</span>
-                    {{ motion.submitters }}
-                </span>
-                <br>
+                <span class="motion-list-title">{{ motion.title }}</span> <br />
+                <span class="motion-list-from"> <span translate>by</span> {{ motion.submitters }} </span> <br />
                 <!-- state -->
-                <mat-basic-chip [ngClass]="{
-                        'green': motion.state.css_class === 'success',
-                        'red': motion.state.css_class === 'danger',
-                        'grey': motion.state.css_class === 'default',
-                        'lightblue': motion.state.css_class === 'primary' }">
+                <mat-basic-chip
+                    [ngClass]="{
+                        green: motion.state.css_class === 'success',
+                        red: motion.state.css_class === 'danger',
+                        grey: motion.state.css_class === 'default',
+                        lightblue: motion.state.css_class === 'primary'
+                    }"
+                >
                     {{ motion.state.name | translate }}
                 </mat-basic-chip>
 
                 <!-- recommendation -->
-                <span *ngIf="motion.recommendation" >
-                    <mat-basic-chip class="bluegrey">{{ motion.recommendation.recommendation_label | translate }}</mat-basic-chip>
+                <span *ngIf="motion.recommendation">
+                    <mat-basic-chip class="bluegrey">{{
+                        motion.recommendation.recommendation_label | translate
+                    }}</mat-basic-chip>
                 </span>
             </div>
         </mat-cell>
@@ -80,9 +69,7 @@
     <ng-container matColumnDef="state">
         <mat-header-cell *matHeaderCellDef mat-sort-header>State</mat-header-cell>
         <mat-cell *matCellDef="let motion">
-            <div *ngIf='motion.category' class='small'>
-                <mat-icon>device_hub</mat-icon>{{ motion.category }}
-            </div>
+            <div *ngIf="motion.category" class="small"><mat-icon>device_hub</mat-icon>{{ motion.category }}</div>
         </mat-cell>
     </ng-container>
 
@@ -93,7 +80,8 @@
             <button mat-icon-button (click)="onSpeakerIcon(motion, $event)">
                 <mat-icon
                     [matBadge]="motion.agendaSpeakerAmount > 0 ? motion.agendaSpeakerAmount : null"
-                    matBadgeColor="accent">
+                    matBadgeColor="accent"
+                >
                     mic
                 </mat-icon>
             </button>
@@ -101,8 +89,12 @@
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
-    <mat-row [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected': ''" (click)='selectItem(row, $event)'
-        *matRowDef="let row; columns: getColumnDefinition()" class="lg">
+    <mat-row
+        [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected' : ''"
+        (click)="selectItem(row, $event)"
+        *matRowDef="let row; columns: getColumnDefinition()"
+        class="lg"
+    >
     </mat-row>
 </mat-table>
 
@@ -137,7 +129,7 @@
             <span translate>Exit multiselect</span>
         </button>
         <div *osPerms="'motions.can_manage'">
-                <mat-divider></mat-divider>
+            <mat-divider></mat-divider>
             <button mat-menu-item>
                 <!-- TODO: Not implemented yet -->
                 <mat-icon>sort</mat-icon>
@@ -149,7 +141,7 @@
             </button>
             <button mat-menu-item (click)="multiselectService.setRecommendation(selectedRows); toggleMultiSelect()">
                 <mat-icon>report</mat-icon>
-                 <!-- TODO: better icon -->
+                <!-- TODO: better icon -->
                 <span translate>Set recommendation</span>
             </button>
             <button mat-menu-item (click)="multiselectService.setCategory(selectedRows); toggleMultiSelect()">
@@ -160,22 +152,22 @@
             <mat-divider></mat-divider>
             <button mat-menu-item (click)="multiselectService.addSubmitters(selectedRows); toggleMultiSelect()">
                 <mat-icon>person_add</mat-icon>
-                 <!-- TODO: icon -->
+                <!-- TODO: icon -->
                 <span translate>Add submitters</span>
             </button>
             <button mat-menu-item (click)="multiselectService.removeSubmitters(selectedRows); toggleMultiSelect()">
                 <mat-icon>person_outline</mat-icon>
-                 <!-- TODO: icon -->
+                <!-- TODO: icon -->
                 <span translate>remove submitters</span>
             </button>
             <button mat-menu-item (click)="multiselectService.addTags(selectedRows); toggleMultiSelect()">
                 <mat-icon>bookmarks</mat-icon>
-                 <!-- TODO: icon -->
+                <!-- TODO: icon -->
                 <span translate>Add tags</span>
             </button>
             <button mat-menu-item (click)="multiselectService.removeTags(selectedRows); toggleMultiSelect()">
                 <mat-icon>bookmark_border</mat-icon>
-                 <!-- TODO: icon -->
+                <!-- TODO: icon -->
                 <span translate>Remove tags</span>
             </button>
         </div>
@@ -185,7 +177,11 @@
             <span translate>Export as CSV</span>
         </button>
         <mat-divider></mat-divider>
-        <button mat-menu-item class="red-warning-text" (click)="multiselectService.delete(selectedRows); toggleMultiSelect()">
+        <button
+            mat-menu-item
+            class="red-warning-text"
+            (click)="multiselectService.delete(selectedRows); toggleMultiSelect()"
+        >
             <mat-icon>delete</mat-icon>
             <span translate>Delete selected</span>
         </button>

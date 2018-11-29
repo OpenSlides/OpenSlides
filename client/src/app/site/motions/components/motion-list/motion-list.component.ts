@@ -160,7 +160,7 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
      * Export all motions as CSV
      */
     public csvExportMotionList(): void {
-       this.motionCsvExport.exportMotionList(this.dataSource.data);
+        this.motionCsvExport.exportMotionList(this.dataSource.data);
     }
 
     /**

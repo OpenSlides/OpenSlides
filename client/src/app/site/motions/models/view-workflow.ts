@@ -34,7 +34,7 @@ export class ViewWorkflow extends BaseViewModel {
         return this.workflow ? this.workflow.name : null;
     }
 
-    public get states() : WorkflowState[] {
+    public get states(): WorkflowState[] {
         return this.workflow ? this.workflow.states : null;
     }
 
