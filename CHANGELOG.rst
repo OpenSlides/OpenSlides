@@ -20,6 +20,7 @@ Core:
  - Add a change-id system to get only new elements [#3938].
  - Switch from Yarn back to npm [#3964].
  - Added password reset link (password reset via email) [#3914].
+ - Added global history mode [#3977].
 
 Agenda:
  - Added viewpoint to assign multiple items to a new parent item [#4037].

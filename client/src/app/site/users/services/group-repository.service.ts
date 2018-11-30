@@ -33,8 +33,10 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group> {
 
     /**
      * Constructor calls the parent constructor
-     * @param DS Store
-     * @param dataSend Sending Data
+     * @param DS The DataStore
+     * @param mapperService Maps collection strings to classes
+     * @param dataSend sending changed objects
+     * @param constants reading out the OpenSlides constants
      */
     public constructor(
         DS: DataStoreService,

@@ -1,4 +1,5 @@
 from ..utils.access_permissions import BaseAccessPermissions
+from ..utils.auth import GROUP_ADMIN_PK, async_in_some_groups
 
 
 class ProjectorAccessPermissions(BaseAccessPermissions):
@@ -88,3 +89,24 @@ class ConfigAccessPermissions(BaseAccessPermissions):
         from .serializers import ConfigSerializer
 
         return ConfigSerializer
+
+
+class HistoryAccessPermissions(BaseAccessPermissions):
+    """
+    Access permissions container for the Histroy.
+    """
+
+    async def async_check_permissions(self, user_id: int) -> bool:
+        """
+        Returns True if the user is in admin group and has read access to
+        model instances.
+        """
+        return await async_in_some_groups(user_id, [GROUP_ADMIN_PK])
+
+    def get_serializer_class(self, user=None):
+        """
+        Returns serializer class.
+        """
+        from .serializers import HistorySerializer
+
+        return HistorySerializer

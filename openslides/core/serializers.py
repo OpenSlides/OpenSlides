@@ -5,6 +5,7 @@ from .models import (
     ChatMessage,
     ConfigStore,
     Countdown,
+    History,
     ProjectionDefault,
     Projector,
     ProjectorMessage,
@@ -110,3 +111,14 @@ class CountdownSerializer(ModelSerializer):
     class Meta:
         model = Countdown
         fields = ('id', 'description', 'default_time', 'countdown_time', 'running', )
+
+
+class HistorySerializer(ModelSerializer):
+    """
+    Serializer for core.models.Countdown objects.
+
+    Does not contain full data of history object.
+    """
+    class Meta:
+        model = History
+        fields = ('id', 'element_id', 'now', 'information', 'user', )

@@ -32,6 +32,7 @@ class CoreAppConfig(AppConfig):
             ChatMessageViewSet,
             ConfigViewSet,
             CountdownViewSet,
+            HistoryViewSet,
             ProjectorMessageViewSet,
             ProjectorViewSet,
             TagViewSet,
@@ -81,10 +82,12 @@ class CoreAppConfig(AppConfig):
         router.register(self.get_model('ConfigStore').get_collection_string(), ConfigViewSet, 'config')
         router.register(self.get_model('ProjectorMessage').get_collection_string(), ProjectorMessageViewSet)
         router.register(self.get_model('Countdown').get_collection_string(), CountdownViewSet)
+        router.register(self.get_model('History').get_collection_string(), HistoryViewSet)
 
-        # Sets the cache
+        # Sets the cache and builds the startup history
         if is_normal_server_start:
             element_cache.ensure_cache()
+            self.get_model('History').objects.build_history()
 
         # Register client messages
         register_client_message(NotifyWebsocketClientMessage())
@@ -104,7 +107,7 @@ class CoreAppConfig(AppConfig):
         Yields all Cachables required on startup i. e. opening the websocket
         connection.
         """
-        for model_name in ('Projector', 'ChatMessage', 'Tag', 'ProjectorMessage', 'Countdown', 'ConfigStore'):
+        for model_name in ('Projector', 'ChatMessage', 'Tag', 'ProjectorMessage', 'Countdown', 'ConfigStore', 'History'):
             yield self.get_model(model_name)
 
     def get_angular_constants(self):

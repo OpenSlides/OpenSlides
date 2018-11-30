@@ -1,14 +1,18 @@
+from asgiref.sync import async_to_sync
 from django.conf import settings
-from django.db import models
+from django.db import models, transaction
 from django.utils.timezone import now
 from jsonfield import JSONField
 
+from ..utils.autoupdate import Element
+from ..utils.cache import element_cache, get_element_id
 from ..utils.models import RESTModelMixin
 from ..utils.projector import get_all_projector_elements
 from .access_permissions import (
     ChatMessageAccessPermissions,
     ConfigAccessPermissions,
     CountdownAccessPermissions,
+    HistoryAccessPermissions,
     ProjectorAccessPermissions,
     ProjectorMessageAccessPermissions,
     TagAccessPermissions,
@@ -324,3 +328,100 @@ class Countdown(RESTModelMixin, models.Model):
             self.running = False
             self.countdown_time = self.default_time
         self.save(skip_autoupdate=skip_autoupdate)
+
+
+class HistoryData(models.Model):
+    """
+    Django model to save the history of OpenSlides.
+
+    This is not a RESTModel. It is not cachable and can only be reached by a
+    special viewset.
+    """
+    full_data = JSONField()
+
+    class Meta:
+        default_permissions = ()
+
+
+class HistoryManager(models.Manager):
+    """
+    Customized model manager for the history model.
+    """
+    def add_elements(self, elements):
+        """
+        Method to add elements to the history. This does not trigger autoupdate.
+        """
+        with transaction.atomic():
+            instances = []
+            for element in elements:
+                if element['disable_history'] or element['collection_string'] == self.model.get_collection_string():
+                    # Do not update history for history elements itself or if history is disabled.
+                    continue
+                # HistoryData is not a root rest element so there is no autoupdate and not history saving here.
+                data = HistoryData.objects.create(full_data=element['full_data'])
+                instance = self.model(
+                    element_id=get_element_id(element['collection_string'], element['id']),
+                    information=element['information'],
+                    user_id=element['user_id'],
+                    full_data=data,
+                )
+                instance.save(skip_autoupdate=True)  # Skip autoupdate and of course history saving.
+                instances.append(instance)
+        return instances
+
+    def build_history(self):
+        """
+        Method to add all cachables to the history.
+        """
+        # TODO: Add lock to prevent multiple history builds at once. See #4039.
+        instances = None
+        if self.all().count() == 0:
+            elements = []
+            all_full_data = async_to_sync(element_cache.get_all_full_data)()
+            for collection_string, data in all_full_data.items():
+                for full_data in data:
+                    elements.append(Element(
+                        id=full_data['id'],
+                        collection_string=collection_string,
+                        full_data=full_data,
+                        information='',
+                        user_id=None,
+                        disable_history=False,
+                    ))
+            instances = self.add_elements(elements)
+        return instances
+
+
+class History(RESTModelMixin, models.Model):
+    """
+    Django model to save the history of OpenSlides.
+
+    This model itself is not part of the history. This means that if you
+    delete a user you may lose the information of the user field here.
+    """
+    access_permissions = HistoryAccessPermissions()
+
+    objects = HistoryManager()
+
+    element_id = models.CharField(
+        max_length=255,
+    )
+
+    now = models.DateTimeField(auto_now_add=True)
+
+    information = models.CharField(
+        max_length=255,
+    )
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        on_delete=models.SET_NULL)
+
+    full_data = models.OneToOneField(
+        HistoryData,
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        default_permissions = ()

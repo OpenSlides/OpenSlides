@@ -53,8 +53,8 @@ def register_projector_elements(elements: Generator[Type[ProjectorElement], None
 
     Has to be called in the app.ready method.
     """
-    for Element in elements:
-        element = Element()
+    for AppProjectorElement in elements:
+        element = AppProjectorElement()
         projector_elements[element.name] = element  # type: ignore
 
 

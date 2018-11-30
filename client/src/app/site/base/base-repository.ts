@@ -1,5 +1,6 @@
-import { OpenSlidesComponent } from '../../openslides.component';
 import { BehaviorSubject, Observable } from 'rxjs';
+
+import { OpenSlidesComponent } from '../../openslides.component';
 import { BaseViewModel } from './base-view-model';
 import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model';
 import { CollectionStringModelMapperService } from '../../core/services/collectionStringModelMapper.service';
@@ -24,7 +25,10 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
     protected readonly viewModelListSubject: BehaviorSubject<V[]> = new BehaviorSubject<V[]>([]);
 
     /**
+     * Construction routine for the base repository
      *
+     * @param DS: The DataStore
+     * @param collectionStringModelMapperService Mapping strings to their corresponding classes
      * @param baseModelCtor The model constructor of which this repository is about.
      * @param depsModelCtors A list of constructors that are used in the view model.
      * If one of those changes, the view models will be updated.
@@ -33,7 +37,7 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
         protected DS: DataStoreService,
         protected collectionStringModelMapperService: CollectionStringModelMapperService,
         protected baseModelCtor: ModelConstructor<M>,
-        protected depsModelCtors?: ModelConstructor<BaseModel>[]
+        protected depsModelCtors?: ModelConstructor<BaseModel>[],
     ) {
         super();
         this.setup();

@@ -330,12 +330,25 @@ export class DataStoreService {
     /**
      * Resets the DataStore and set the given models as the new content.
      * @param models A list of models to set the DataStore to.
-     * @param newMaxChangeId Optional. If given, the max change id will be updated.
+     * @param newMaxChangeId Optional. If given, the max change id will be updated
+     * and the store flushed to the storage
      */
-    public async set(models: BaseModel[], newMaxChangeId?: number): Promise<void> {
+    public async set(models?: BaseModel[], newMaxChangeId?: number): Promise<void> {
+        const modelStoreReference = this.modelStore;
         this.modelStore = {};
         this.jsonStore = {};
-        await this.add(models, newMaxChangeId);
+        // Inform about the deletion
+        Object.keys(modelStoreReference).forEach(collectionString => {
+            Object.keys(modelStoreReference[collectionString]).forEach(id => {
+                this.deletedSubject.next({
+                    collection: collectionString,
+                    id: +id
+                });
+            })
+        });
+        if (models && models.length) {
+            await this.add(models, newMaxChangeId);
+        }
     }
 
     /**

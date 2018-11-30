@@ -2,15 +2,7 @@ import { Injectable, NgZone, EventEmitter } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
-
-type QueryParamValue = string | number | boolean;
-
-/**
- * A key value mapping for params, that should be appendet to the url on a new connection.
- */
-interface QueryParams {
-    [key: string]: QueryParamValue;
-}
+import { formatQueryParams, QueryParams } from '../query-params';
 
 /**
  * The generic message format in which messages are send and recieved by the server.
@@ -116,7 +108,7 @@ export class WebsocketService {
         // Create the websocket
         let socketPath = location.protocol === 'https:' ? 'wss://' : 'ws://';
         socketPath += window.location.hostname + ':' + window.location.port + '/ws/';
-        socketPath += this.formatQueryParams(queryParams);
+        socketPath += formatQueryParams(queryParams);
 
         console.log('connect to', socketPath);
         this.websocket = new WebSocket(socketPath);
@@ -224,25 +216,5 @@ export class WebsocketService {
             }
         }
         this.websocket.send(JSON.stringify(message));
-    }
-
-    /**
-     * Formats query params for the url.
-     * @param queryParams
-     * @returns the formatted query params as string
-     */
-    private formatQueryParams(queryParams: QueryParams = {}): string {
-        let params = '';
-        const keys: string[] = Object.keys(queryParams);
-        if (keys.length > 0) {
-            params =
-                '?' +
-                keys
-                    .map(key => {
-                        return key + '=' + queryParams[key].toString();
-                    })
-                    .join('&');
-        }
-        return params;
     }
 }

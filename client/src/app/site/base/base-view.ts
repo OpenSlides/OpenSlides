@@ -1,8 +1,10 @@
-import { BaseComponent } from '../../base.component';
-import { Title } from '@angular/platform-browser';
-import { TranslateService } from '@ngx-translate/core';
-import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material';
 import { OnDestroy } from '@angular/core';
+import { Title } from '@angular/platform-browser';
+import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material';
+
+import { TranslateService } from '@ngx-translate/core';
+
+import { BaseComponent } from '../../base.component';
 
 /**
  * A base class for all views. Implements a generic error handling by raising a snack bar

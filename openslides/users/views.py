@@ -336,7 +336,13 @@ class GroupViewSet(ModelViewSet):
                 for receiver, signal_collections in signal_results:
                     for cachable in signal_collections:
                         for full_data in all_full_data.get(cachable.get_collection_string(), {}):
-                            elements.append(Element(id=full_data['id'], collection_string=cachable.get_collection_string(), full_data=full_data))
+                            elements.append(Element(
+                                id=full_data['id'],
+                                collection_string=cachable.get_collection_string(),
+                                full_data=full_data,
+                                information='',
+                                user_id=None,
+                                disable_history=True))
                 inform_changed_elements(elements)
 
             # TODO: Some permissions are deleted.

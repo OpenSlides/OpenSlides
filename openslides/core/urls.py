@@ -11,4 +11,8 @@ urlpatterns = [
     url(r'^version/$',
         views.VersionView.as_view(),
         name='core_version'),
+
+    url(r'^history/$',
+        views.HistoryView.as_view(),
+        name='core_history'),
 ]

@@ -28,9 +28,11 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
      * Creates a CategoryRepository
      * Converts existing and incoming category to ViewCategories
      * Handles CRUD using an observer to the DataStore
-     * @param DS
-     * @param dataSend
-     * @param httpService
+     *
+     * @param DS The DataStore
+     * @param mapperService Maps collection strings to classes
+     * @param dataSend sending changed objects
+     * @param httpService OpenSlides own HTTP service
      */
     public constructor(
         protected DS: DataStoreService,

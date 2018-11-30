@@ -21,7 +21,8 @@ class MotionViewSetUpdate(TestCase):
     @patch('openslides.motions.views.has_perm')
     @patch('openslides.motions.views.config')
     def test_simple_update(self, mock_config, mock_has_perm, mock_icd):
-        self.request.user = 1
+        self.request.user = MagicMock()
+        self.request.user.pk = 1
         self.request.data.get.return_value = MagicMock()
         mock_has_perm.return_value = True
 

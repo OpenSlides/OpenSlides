@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { LocalStorage } from '@ngx-pwa/local-storage';
+import { OpenSlidesStatusService } from './openslides-status.service';
 
 /**
  * Provides an async API to an key-value store using ngx-pwa which is internally
@@ -13,7 +14,7 @@ export class StorageService {
      * Constructor to create the StorageService. Needs the localStorage service.
      * @param localStorage
      */
-    public constructor(private localStorage: LocalStorage) {}
+    public constructor(private localStorage: LocalStorage, private OSStatus: OpenSlidesStatusService) {}
 
     /**
      * Sets the item into the store asynchronously.
@@ -21,6 +22,7 @@ export class StorageService {
      * @param item
      */
     public async set(key: string, item: any): Promise<void> {
+        this.assertNotHistroyMode();
         if (item === null || item === undefined) {
             await this.remove(key); // You cannot do a setItem with null or undefined...
         } else {
@@ -48,6 +50,7 @@ export class StorageService {
      * @param key The key to remove the value from
      */
     public async remove(key: string): Promise<void> {
+        this.assertNotHistroyMode();
         if (!(await this.localStorage.removeItem(key).toPromise())) {
             throw new Error('Could not delete the item.');
         }
@@ -57,9 +60,18 @@ export class StorageService {
      * Clear the whole cache
      */
     public async clear(): Promise<void> {
-        console.log('clear storage');
+        this.assertNotHistroyMode();
         if (!(await this.localStorage.clear().toPromise())) {
             throw new Error('Could not clear the storage.');
+        }
+    }
+
+    /**
+     * Throws an error, if we are in history mode.
+     */
+    private assertNotHistroyMode(): void {
+        if (this.OSStatus.isInHistoryMode) {
+            throw new Error('You cannot use the storageService in histroy mode.');
         }
     }
 }
