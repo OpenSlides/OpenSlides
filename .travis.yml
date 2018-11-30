@@ -4,6 +4,7 @@ sudo: true
 matrix:
   include:
     - language: python
+      name: "Server: Tests Python 3.6"
       cache:
         pip: true
       python:
@@ -21,6 +22,7 @@ matrix:
         - python -W ignore -m pytest --cov --cov-fail-under=70
 
     - language: python
+      name: "Server: Tests Python 3.7"
       cache:
         pip: true
       python:
@@ -38,6 +40,39 @@ matrix:
         - python -W ignore -m pytest --cov --cov-fail-under=70
 
     - language: node_js
+      name: "Client: Linting"
+      node_js:
+        - "10.5"
+      cache:
+        directories:
+          - node_modules
+      before_install:
+        - npm install -g @angular/cli
+        - ng --version
+        - cd client
+      install:
+        - npm install
+      script:
+        - npm run lint
+
+    - language: node_js
+      name: "Client: Code Formatting Check"
+      node_js:
+        - "10.5"
+      cache:
+        directories:
+          - node_modules
+      before_install:
+        - npm install -g @angular/cli
+        - ng --version
+        - cd client
+      install:
+        - npm install
+      script:
+        - npm run prettify-all
+
+    - language: node_js
+      name: "Client: Testing"
       node_js:
         - "10.5"
       apt:
@@ -58,24 +93,16 @@ matrix:
       install:
         - npm install
       script:
-        - npm run lint
         - ng test --watch=false
 
     - language: node_js
+      name: "Client: Build"
       node_js:
         - "10.5"
-      apt:
-        sources:
-          - google-chrome
-        packages:
-          - google-chrome-stable
       cache:
         directories:
           - node_modules
       before_install:
-        - sh -e /etc/init.d/xvfb start
-        - export CHROME_BIN=/usr/bin/google-chrome
-        - export DISPLAY=:99.0
         - npm install -g @angular/cli
         - ng --version
         - cd client
@@ -85,20 +112,13 @@ matrix:
         - ng build
 
     - language: node_js
+      name: "Client: Production Build"
       node_js:
         - "10.5"
-      apt:
-        sources:
-          - google-chrome
-        packages:
-          - google-chrome-stable
       cache:
         directories:
           - node_modules
       before_install:
-        - sh -e /etc/init.d/xvfb start
-        - export CHROME_BIN=/usr/bin/google-chrome
-        - export DISPLAY=:99.0
         - npm install -g @angular/cli
         - ng --version
         - cd client
