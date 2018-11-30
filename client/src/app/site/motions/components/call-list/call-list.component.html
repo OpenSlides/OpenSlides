@@ -13,8 +13,8 @@
 </os-head-bar>
 
 <mat-card>
-    <button mat-button (click)="expandCollapseAll(true)" translate>Expand</button>
-    <button mat-button (click)="expandCollapseAll(false)" translate>Collapse</button>
+    <button mat-button (click)="expandCollapseAll(true)">{{ 'Expand all' | translate }}</button>
+    <button mat-button (click)="expandCollapseAll(false)">{{ 'Collapse all' | translate }}</button>
     <os-sorting-tree #sorter (sort)="sort($event)" parentIdKey="sort_parent_id"
         weightKey="weight" [modelsObservable]="motionsObservable" [expandCollapseAll]="expandCollapse">
     </os-sorting-tree>

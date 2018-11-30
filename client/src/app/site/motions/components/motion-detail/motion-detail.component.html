@@ -64,7 +64,7 @@
                 *ngIf="amendmentsEnabled && motion && !motion.isParagraphBasedAmendment()"
             >
                 <mat-icon>add</mat-icon>
-                <span translate>Create amendment</span>
+                <span translate>New amendment</span>
             </button>
 
             <button
@@ -73,7 +73,7 @@
                 *ngIf="motion && motion.isParagraphBasedAmendment()"
             >
                 <mat-icon>{{ !showAmendmentContext ? 'check_box_outline_blank' : 'check_box' }}</mat-icon>
-                <span translate>Show context</span>
+                <span translate>Show entire motion text</span>
             </button>
 
             <mat-divider></mat-divider>
@@ -254,7 +254,7 @@
 
         <!-- Recommendation -->
         <div *ngIf='motion && recommender && !editMotion'>
-            <h4 translate>{{ recommender }}</h4>
+            <h4>{{ recommender }}</h4>
             <mat-menu #recommendationMenu='matMenu'>
                 <button *ngFor='let recommendation of motion.possibleRecommendations' mat-menu-item
                     (click)=setRecommendation(recommendation.id)>{{ recommendation.recommendation_label | translate }}
@@ -358,13 +358,13 @@
 
         <!-- Selecting statute paragraphs for amendment -->
         <div class="statute-amendment-selector" *ngIf="editMotion && statuteParagraphs.length > 0 && statutesEnabled">
-            <mat-checkbox formControlName="statute_amendment" translate (change)="onStatuteAmendmentChange($event)">
-                Statute amendment
+            <mat-checkbox formControlName="statute_amendment" (change)="onStatuteAmendmentChange($event)">
+                {{ 'Statute amendment' | translate }}
             </mat-checkbox>
 
             <mat-form-field *ngIf="contentForm.value.statute_amendment">
                 <mat-select
-                    [placeholder]="'Select paragraph to amend' | translate"
+                    [placeholder]="'Statute paragraph' | translate"
                     formControlName="statute_paragraph_id"
                     (valueChange)="onStatuteParagraphChange($event)"
                 >

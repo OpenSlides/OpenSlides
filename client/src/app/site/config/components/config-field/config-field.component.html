@@ -40,7 +40,7 @@
         </ng-template>
 
         <ng-template #input ngProjectAs="[matInput]">
-            <input matInput formControlName="value" [value]="configItem.value" [errorStateMatcher]="matcher"
+            <input matInput formControlName="value" [value]="translatedValue" [errorStateMatcher]="matcher"
             [type]="formType(configItem.inputType)">
         </ng-template>
     </mat-form-field>

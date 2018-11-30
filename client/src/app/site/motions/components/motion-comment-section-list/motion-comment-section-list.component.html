@@ -1,13 +1,13 @@
 <os-head-bar [nav]="false" [mainButton]="true" (mainEvent)="onPlusButton()">
     <!-- Title -->
     <div class="title-slot">
-        <h2 translate>Comments</h2>
+        <h2 translate>Comment fields</h2>
     </div>
 </os-head-bar>
 
 <div class="head-spacer"></div>
 <mat-card *ngIf="commentSectionToCreate">
-    <mat-card-title translate>Create new comment field</mat-card-title>
+    <mat-card-title translate>New comment field</mat-card-title>
     <mat-card-content>
         <form [formGroup]="createForm" (keydown)="keyDownFunction($event)">
             <p>

@@ -1,7 +1,7 @@
 <os-head-bar [nav]="false" [mainButton]="true" (mainEvent)="onPlusButton()">
     <!-- Title -->
     <div class="title-slot">
-        <h2 translate>Statute paragraphs</h2>
+        <h2 translate>Statute</h2>
     </div>
 
     <!-- Use the menu slot for an add button -->
@@ -14,7 +14,7 @@
 
 <div class="head-spacer"></div>
 <mat-card *ngIf="statuteParagraphToCreate">
-    <mat-card-title translate>Create new statute paragraph</mat-card-title>
+    <mat-card-title translate>New statute paragraph</mat-card-title>
     <mat-card-content>
         <form [formGroup]="createForm">
             <p>

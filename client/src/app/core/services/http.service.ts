@@ -115,7 +115,7 @@ export class HttpService {
         } else if (e.status === 500) {
             error += this.translate.instant('A server error occured. Please contact your system administrator.');
         } else if (e.status > 500) {
-            error += this.translate.instant('The server cound not be reached') + ` (${e.status})`;
+            error += this.translate.instant('The server could not be reached.') + ` (${e.status})`;
         } else {
             error += e.message;
         }

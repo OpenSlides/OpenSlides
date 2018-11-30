@@ -95,6 +95,7 @@ _('Hidden item');
 // subgroup general
 _('General');
 _('Workflow of new motions');
+_('Workflow of new statute amendments');
 _('Numbered per category');
 _('Serially numbered');
 _('Set it manually');
@@ -111,11 +112,13 @@ _('Stop submitting new motions by non-staff users');
 _('Allow to disable versioning');
 _('Name of recommender');
 _('Will be displayed as label before selected recommendation. Use an empty value to disable the recommendation system.');
+_('Name of recommender for statute amendments');
+_('Will be displayed as label before selected recommendation for statute amendments. Use an empty value to disable the recommendation system.');
 _('Default text version for change recommendations');
 // subgroup Amendments
 _('Amendments');
+_('Activate statute amendments')
 _('Activate amendments');
-_('Activate statutes');
 _('Show amendments together with motions');
 _('Prefix for the identifier for amendments');
 _('The title of the motion is always applied.');
@@ -156,6 +159,7 @@ _('Include the sequential number in PDF and DOCX');
 _('needed');
 _('Amendment');
 _('Amendment to');
+_('Statute amendment for');
 // motion workflow 1
 _('Simple Workflow');
 _('submitted');
@@ -196,6 +200,12 @@ _('Needs review');
 _('rejected (not authorized)');
 _('Reject (not authorized)');
 _('Rejection (not authorized)');
+// misc for motions
+_('Called');
+_('Called with');
+_('Recommendation');
+_('Motion block');
+
 
 // Assignment config strings
 _('Election method');
@@ -304,3 +314,10 @@ _('You can use {event_name} as a placeholder.');
 _('Email body');
 _('Dear {name},\n\nthis is your OpenSlides login for the event {event_name}:\n\n    {url}\n    username: {username}\n    password: {password}\n\nThis email was generated automatically.');
 _('Use these placeholders: {name}, {event_name}, {url}, {username}, {password}. The url referrs to the system url.');
+
+// default groups
+_('Default');
+_('Admin');
+_('Delegates');
+_('Staff');
+_('Committees');

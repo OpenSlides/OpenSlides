@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>Create a change recommendation</h2>
+<h2 mat-dialog-title>New change recommendation</h2>
 <mat-dialog-content>
     <form class="motion-content" [formGroup]='contentForm' (ngSubmit)='saveChangeRecommendation()'>
         <h3>Change from line {{ lineRange.from }} to {{ lineRange.to }}:</h3>
@@ -8,7 +8,7 @@
         </mat-radio-group>
 
         <!-- The HTML Editor -->
-        <h4 translate>Change recommendation Text</h4>
+        <h4 translate>Changed version</h4>
         <editor
             formControlName='text'
             [init]="tinyMceSettings"

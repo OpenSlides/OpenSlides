@@ -1,6 +1,6 @@
 <os-head-bar>
     <!-- Title -->
-    <div class="title-slot">History</div>
+    <div class="title-slot" translate>History</div>
 
     <!-- Menu -->
     <div class="menu-slot">
@@ -27,10 +27,10 @@
 
         <!-- <mat-cell *matCellDef="let history"> {{ history.element_id }} </mat-cell> -->
         <mat-cell *matCellDef="let history">
-            <div *ngIf="getElementInfo(history)">{{ getElementInfo(history) }}</div>
+            <div *ngIf="getElementInfo(history)">{{ getElementInfo(history) | translate }}</div>
             <div
                 class="no-info"
-                matTooltip="{{ 'Select an entry where information at this time was still present' | translate }}"
+                matTooltip="{{ 'This element does not exist at this time.' | translate }}"
                 *ngIf="!getElementInfo(history)"
             >
                 <span>{{ 'No information available' | translate }} ({{ history.element_id }})</span>

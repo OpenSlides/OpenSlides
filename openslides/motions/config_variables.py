@@ -138,9 +138,9 @@ def get_config_variables():
     yield ConfigVariable(
         name='motions_statute_recommendations_by',
         default_value='',
-        label='Name of statute recommender',
-        help_text='Will be displayed as label before selected statute recommendation. ' +
-                  'Use an empty value to disable the statute recommendation system.',
+        label='Name of recommender for statute amendments',
+        help_text='Will be displayed as label before selected recommendation in statute amendments. ' +
+                  'Use an empty value to disable the recommendation system for statute amendments.',
         weight=333,
         group='Motions',
         subgroup='General')
@@ -159,18 +159,17 @@ def get_config_variables():
         group='Motions',
         subgroup='General')
 
-    # Statutes
+    # Amendments
 
     yield ConfigVariable(
         name='motions_statutes_enabled',
         default_value=False,
         input_type='boolean',
-        label='Activate statutes',
+        label='Activate statute amendments',
         weight=335,
         group='Motions',
-        subgroup='General')
+        subgroup='Amendments')
 
-    # Amendments
     yield ConfigVariable(
         name='motions_amendments_enabled',
         default_value=False,

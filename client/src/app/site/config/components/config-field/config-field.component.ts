@@ -45,6 +45,11 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
     public error: string | null = null;
 
     /**
+     * Translated config value for template
+     */
+    public translatedValue: object;
+
+    /**
      * The config item for this component. Just accept components with already populated constants-info.
      */
     @Input()
@@ -95,8 +100,16 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
         this.form = this.formBuilder.group({
             value: ['']
         });
+
+        this.translatedValue = this.configItem.value;
+        if (this.configItem.inputType === 'string' || this.configItem.inputType === 'markupText') {
+            if (typeof this.configItem.value === 'string' && this.configItem.value !== '') {
+                this.translatedValue = this.translate.instant(this.configItem.value);
+            }
+        }
+
         this.form.patchValue({
-            value: this.configItem.value
+            value: this.translatedValue
         });
         this.form.valueChanges
             // The editor fires changes whenever content was changed. Even by AutoUpdate.
@@ -121,7 +134,7 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
     }
 
     /**
-     * Updates the this config field.
+     * Updates the config field.
      * @param value The new value to set.
      */
     private update(value: any): void {
