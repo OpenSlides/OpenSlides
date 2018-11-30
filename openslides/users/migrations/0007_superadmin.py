@@ -22,10 +22,18 @@ def create_superadmin_group(apps, schema_editor):
         return
 
     # Get the new superadmin group (or the old delegates)
-    superadmin, created_superadmin_group = Group.objects.get_or_create(pk=2, defaults={'name': '__temp__'})
+    # we cannot use Group.objects.get_or_create here, because this would trigger an autoupdate
+    try:
+        superadmin = Group.objects.get(pk=2)
+        created_superadmin_group = False
+    except Group.DoesNotExist:
+        superadmin = Group(pk=2, name='__temp__')
+        superadmin.save(skip_autoupdate=True)
+        created_superadmin_group = True
 
     if not created_superadmin_group:
-        new_delegate = Group.objects.create(name='Delegates2')
+        new_delegate = Group(name='Delegates2')
+        new_delegate.save(skip_autoupdate=True)
         new_delegate.permissions.set(superadmin.permissions.all())
         superadmin.permissions.set([])
 
