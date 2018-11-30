@@ -25,6 +25,7 @@ import { Item } from 'app/shared/models/agenda/item';
 import { OSTreeSortEvent } from 'app/shared/components/sorting-tree/sorting-tree.component';
 import { TreeService } from 'app/core/services/tree.service';
 import { ViewMotionAmendedParagraph } from '../models/view-motion-amended-paragraph';
+import { CreateMotion } from '../models/create-motion';
 
 /**
  * Repository Services for motions (and potentially categories)
@@ -109,12 +110,8 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      *
      * @param update the form data containing the updated values
      * @param viewMotion The View Motion. If not present, a new motion will be created
-     * TODO: Remove the viewMotion and make it actually distignuishable from save()
      */
-    public async create(motion: Motion): Promise<Identifiable> {
-        if (!motion.supporters_id) {
-            delete motion.supporters_id;
-        }
+    public async create(motion: CreateMotion): Promise<Identifiable> {
         return await this.dataSend.createModel(motion);
     }
 

@@ -25,7 +25,7 @@ describe('ResetPasswordConfirmComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(ResetPasswordConfirmComponent);
         component = fixture.componentInstance;
-        fixture.detectChanges();
+        // fixture.detectChanges();
     });
 
     it('should create', () => {

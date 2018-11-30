@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+
 import { Tag } from '../../../shared/models/core/tag';
 import { ViewTag } from '../models/view-tag';
 import { DataSendService } from '../../../core/services/data-send.service';

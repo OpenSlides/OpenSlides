@@ -5,7 +5,6 @@
     (mainEvent)="onMainEvent()"
     (saveEvent)="onSaveEditedFile()"
 >
-
     <!-- Title -->
     <div class="title-slot">
         <h2 *ngIf="!editFile" translate>Files</h2>
@@ -44,31 +43,18 @@
             <mat-icon>more_vert</mat-icon>
         </button>
     </div>
-
-    <!-- Multiselect menu -->
-    <div class="multiselect-menu-slot">
-        <button type="button" mat-icon-button [matMenuTriggerFor]="mediafilesMultiSelectMenu">
-            <mat-icon>more_vert</mat-icon>
-        </button>
-    </div>
-
     <!-- Multiselect info -->
     <div *ngIf="this.isMultiSelect" class="central-info-slot">
-        <button mat-icon-button (click)="toggleMultiSelect()">
-            <mat-icon >arrow_back</mat-icon>
-        </button>
+        <button mat-icon-button (click)="toggleMultiSelect()"><mat-icon>arrow_back</mat-icon></button>
         <span>{{ selectedRows.length }}&nbsp;</span><span translate>selected</span>
     </div>
 
     <div class="extra-controls-slot on-transition-fade" *ngIf="isMultiSelect">
-        <button mat-icon-button (click)="deleteSelected()">
-            <mat-icon>delete</mat-icon>
-        </button>
+        <button mat-icon-button (click)="deleteSelected()"><mat-icon>delete</mat-icon></button>
     </div>
 </os-head-bar>
 
 <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
-
     <ng-container matColumnDef="selector">
         <mat-header-cell *matHeaderCellDef mat-sort-header class="checkbox-cell"></mat-header-cell>
         <mat-cell *matCellDef="let item" class="checkbox-cell">
@@ -122,8 +108,11 @@
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: getColumnDefinition()"
-        [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected': ''" (click)='selectItem(row, $event)'></mat-row>
+    <mat-row
+        *matRowDef="let row; columns: getColumnDefinition()"
+        [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected' : ''"
+        (click)="selectItem(row, $event)"
+    ></mat-row>
 </mat-table>
 
 <mat-paginator class="on-transition-fade" [pageSizeOptions]="[25, 50, 75, 100, 125]"></mat-paginator>
@@ -167,14 +156,21 @@
 
 <!-- Menu for Mediafiles -->
 <mat-menu #mediafilesMenu="matMenu">
-    <button mat-menu-item *osPerms="'mediafiles.can_manage'" (click)="toggleMultiSelect()">
+    <div *ngIf="!isMultiSelect">
+        <button mat-menu-item *osPerms="'mediafiles.can_manage'" (click)="toggleMultiSelect()">
             <mat-icon>library_add</mat-icon>
-            <span translate>MultiSelect</span>
-    </button>
-</mat-menu>
-<mat-menu #mediafilesMultiSelectMenu="matMenu">
-    <button mat-menu-item *osPerms="'mediafiles.can_manage'" (click)="deleteSelected()">
-        <mat-icon>delete</mat-icon>
-        <span translate>Delete selected</span>
-    </button>
+            <span translate>Multiselect</span>
+        </button>
+    </div>
+    <div *ngIf="isMultiSelect">
+        <button mat-menu-item (click)="toggleMultiSelect()">
+            <mat-icon>library_add</mat-icon>
+            <span translate>Exit multiselect</span>
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item *osPerms="'mediafiles.can_manage'" (click)="deleteSelected()">
+            <mat-icon>delete</mat-icon>
+            <span translate>Delete selected</span>
+        </button>
+    </div>
 </mat-menu>

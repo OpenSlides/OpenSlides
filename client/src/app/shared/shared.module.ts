@@ -66,6 +66,7 @@ import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.
 import { SortingListComponent } from './components/sorting-list/sorting-list.component';
 import { SpeakerListComponent } from 'app/site/agenda/components/speaker-list/speaker-list.component';
 import { SortingTreeComponent } from './components/sorting-tree/sorting-tree.component';
+import { ChoiceDialogComponent } from './components/choice-dialog/choice-dialog.component';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -180,7 +181,8 @@ import { SortingTreeComponent } from './components/sorting-tree/sorting-tree.com
         PromptDialogComponent,
         SortingListComponent,
         SpeakerListComponent,
-        SortingTreeComponent
+        SortingTreeComponent,
+        ChoiceDialogComponent
     ],
     providers: [
         { provide: DateAdapter, useClass: OpenSlidesDateAdapter },

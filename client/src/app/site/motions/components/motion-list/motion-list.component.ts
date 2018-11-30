@@ -3,15 +3,14 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
+import { ConfigService } from '../../../../core/services/config.service';
+import { MotionCsvExportService } from '../../services/motion-csv-export.service';
+import { ListViewBaseComponent } from '../../../base/list-view-base';
+import { MatSnackBar } from '@angular/material';
 import { MotionRepositoryService } from '../../services/motion-repository.service';
 import { ViewMotion } from '../../models/view-motion';
 import { WorkflowState } from '../../../../shared/models/motions/workflow-state';
-import { ListViewBaseComponent } from '../../../base/list-view-base';
-import { MatSnackBar } from '@angular/material';
-import { ConfigService } from '../../../../core/services/config.service';
-import { Category } from '../../../../shared/models/motions/category';
-import { PromptService } from '../../../../core/services/prompt.service';
-import { MotionCsvExportService } from '../../services/motion-csv-export.service';
+import { MotionMultiselectService } from '../../services/motion-multiselect.service';
 
 /**
  * Component that displays all the motions in a Table using DataSource.
@@ -51,8 +50,13 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
      * @param route Current route
      * @param configService The configuration provider
      * @param repo Motion Repository
-     * @param csvExport CSV Export Service
      * @param promptService
+     * @param motionCsvExport
+     * @param workflowRepo Workflow Repository
+     * @param categoryRepo
+     * @param userRepo
+     * @param tagRepo
+     * @param choiceService
      */
     public constructor(
         titleService: Title,
@@ -62,8 +66,8 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
         private route: ActivatedRoute,
         private configService: ConfigService,
         private repo: MotionRepositoryService,
-        private promptService: PromptService,
-        private motionCsvExport: MotionCsvExportService
+        private motionCsvExport: MotionCsvExportService,
+        public multiselectService: MotionMultiselectService
     ) {
         super(titleService, translate, matSnackBar);
 
@@ -90,11 +94,7 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
                 }
             });
         });
-        this.configService.get('motions_statutes_enabled').subscribe(
-            (enabled: boolean): void => {
-                this.statutesEnabled = enabled;
-            }
-        );
+        this.configService.get('motions_statutes_enabled').subscribe(enabled => (this.statutesEnabled = enabled));
     }
 
     /**
@@ -160,64 +160,25 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
      * Export all motions as CSV
      */
     public csvExportMotionList(): void {
-       this.motionCsvExport.exportMotionList(this.dataSource.data);
+        this.motionCsvExport.exportMotionList(this.dataSource.data);
     }
 
     /**
-     * Deletes the items selected.
-     * SelectedRows is only filled with data in multiSelect mode
+     * Returns current definitions for the listView table
      */
-    public async deleteSelected(): Promise<void> {
-        const content = this.translate.instant('This will delete all selected motions.');
-        if (await this.promptService.open('Are you sure?', content)) {
-            for (const motion of this.selectedRows) {
-                await this.repo.delete(motion);
-            }
-        }
-    }
-
-    /**
-     * Set the status in bulk.
-     * SelectedRows is only filled with data in multiSelect mode
-     * TODO: currently not yet functional, because no status (or state_id) is being selected
-     * in the ui
-     * @param status TODO: May still change type
-     */
-    public async setStatusSelected(status: Partial<WorkflowState>): Promise<void> {
-        // TODO: check if id is there
-        for (const motion of this.selectedRows) {
-            await this.repo.update({ state_id: status.id }, motion);
-        }
-    }
-
-    /**
-     * Set the category for all selected items.
-     * SelectedRows is only filled with data in multiSelect mode
-     * TODO: currently not yet functional, because no category is being selected in the ui
-     * @param category TODO: May still change type
-     */
-    public async setCategorySelected(category: Partial<Category>): Promise<void> {
-        for (const motion of this.selectedRows) {
-            await this.repo.update({ state_id: category.id }, motion);
-        }
-    }
-
-    /**
-     * TODO: Open an extra submenu. Design still undecided. Will be used for deciding
-     * the status of setStatusSelected
-     */
-    public openSetStatusMenu(): void {}
-
-    /**
-     * TODO: Open an extra submenu. Design still undecided. Will be used for deciding
-     * the status of setCategorySelected
-     */
-    public openSetCategoryMenu(): void {}
-
     public getColumnDefinition(): string[] {
         if (this.isMultiSelect) {
             return ['selector'].concat(this.columnsToDisplayMinWidth);
         }
         return this.columnsToDisplayMinWidth;
+    }
+
+    /**
+     * Wraps multiselect actions to close the multiselect mode or throw an error if one happens.
+     *
+     * @param multiselectPromise The promise returned by multiselect actions.
+     */
+    public multiselectWrapper(multiselectPromise: Promise<void>): void {
+        multiselectPromise.then(() => this.toggleMultiSelect(), this.raiseError);
     }
 }

@@ -1,0 +1,17 @@
+mat-radio-group {
+    display: inline-flex;
+    flex-direction: column;
+
+    mat-radio-button {
+        margin: 5px;
+    }
+}
+
+.scrollmenu {
+    padding: 5px;
+    display: block;
+}
+
+.scrollmenu-outer {
+    max-height: inherit;
+}

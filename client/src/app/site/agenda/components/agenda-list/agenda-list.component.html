@@ -1,31 +1,21 @@
-<os-head-bar [mainButton]="true" (mainEvent)=onPlusButton() [multiSelectMode]="isMultiSelect">
+<os-head-bar [mainButton]="true" (mainEvent)="onPlusButton()" [multiSelectMode]="isMultiSelect">
     <!-- Title -->
-    <div class="title-slot">
-        <h2 translate>Agenda</h2>
-    </div>
+    <div class="title-slot"><h2 translate>Agenda</h2></div>
     <!-- Menu -->
     <div class="menu-slot">
-        <button type="button" mat-icon-button [matMenuTriggerFor]="agendaMenu">
-            <mat-icon>more_vert</mat-icon>
-        </button>
+        <button type="button" mat-icon-button [matMenuTriggerFor]="agendaMenu"><mat-icon>more_vert</mat-icon></button>
     </div>
 
     <!-- Multiselect info -->
     <div class="central-info-slot">
-        <button mat-icon-button (click)="toggleMultiSelect()">
-            <mat-icon>arrow_back</mat-icon>
-        </button>
+        <button mat-icon-button (click)="toggleMultiSelect()"><mat-icon>arrow_back</mat-icon></button>
         <span>{{ selectedRows.length }}&nbsp;</span><span translate>selected</span>
     </div>
 
     <div class="extra-controls-slot on-transition-fade" *ngIf="isMultiSelect">
-        <button mat-icon-button (click)="deleteSelected()">
-            <mat-icon>delete</mat-icon>
-        </button>
+        <button mat-icon-button (click)="deleteSelected()"><mat-icon>delete</mat-icon></button>
     </div>
-
 </os-head-bar>
-
 
 <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
     <ng-container matColumnDef="selector">
@@ -52,9 +42,7 @@
         <mat-header-cell *matHeaderCellDef mat-sort-header>Speakers</mat-header-cell>
         <mat-cell *matCellDef="let item">
             <button mat-icon-button (click)="onSpeakerIcon(item)">
-                <mat-icon
-                    [matBadge]="item.speakerAmount > 0 ? item.speakerAmount : null"
-                    matBadgeColor="accent">
+                <mat-icon [matBadge]="item.speakerAmount > 0 ? item.speakerAmount : null" matBadgeColor="accent">
                     mic
                 </mat-icon>
             </button>
@@ -62,8 +50,11 @@
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
-    <mat-row [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected': ''" (click)='selectItem(row, $event)'
-        *matRowDef="let row; columns: getColumnDefinition()"></mat-row>
+    <mat-row
+        [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected' : ''"
+        (click)="selectItem(row, $event)"
+        *matRowDef="let row; columns: getColumnDefinition()"
+    ></mat-row>
 </mat-table>
 <mat-paginator class="on-transition-fade" [pageSizeOptions]="[25, 50, 75, 100, 125]"></mat-paginator>
 
@@ -71,16 +62,12 @@
     <div *ngIf="!isMultiSelect">
         <button mat-menu-item *osPerms="'agenda.can_manage'" (click)="toggleMultiSelect()">
             <mat-icon>library_add</mat-icon>
-            <span translate>MultiSelect</span>
+            <span translate>Multiselect</span>
         </button>
     </div>
 
-    <div *ngIf="isMultiSelect" >
+    <div *ngIf="isMultiSelect">
         <div *osPerms="'agenda.can_manage'">
-            <button mat-menu-item (click)="deleteSelected()">
-                <mat-icon>delete</mat-icon>
-                <span translate>Delete selected</span>
-            </button>
             <mat-divider></mat-divider>
             <button mat-menu-item (click)="setClosedSelected(true)">
                 <mat-icon>done</mat-icon>
@@ -99,6 +86,11 @@
             <button mat-menu-item (click)="setVisibilitySelected(false)">
                 <mat-icon>visibility_off</mat-icon>
                 <span translate>Set invisible</span>
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item class="red-warning-text" (click)="deleteSelected()">
+                <mat-icon>delete</mat-icon>
+                <span translate>Delete selected</span>
             </button>
         </div>
     </div>

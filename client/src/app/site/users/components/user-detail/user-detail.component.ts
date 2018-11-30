@@ -259,18 +259,10 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
 
     /**
      * Handler for the generate Password button.
-     * Generates a password using 8 pseudo-random letters
-     * from the `characters` const.
      */
     public generatePassword(): void {
-        let pw = '';
-        const characters = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-        const amount = 8;
-        for (let i = 0; i < amount; i++) {
-            pw += characters.charAt(Math.floor(Math.random() * characters.length));
-        }
         this.personalInfoForm.patchValue({
-            default_password: pw
+            default_password: this.repo.getRandomPassword()
         });
     }
 

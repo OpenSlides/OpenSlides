@@ -31,14 +31,14 @@ export enum ChangeRecoMode {
  * @ignore
  */
 export class ViewMotion extends BaseViewModel {
-    private _motion: Motion;
-    private _category: Category;
-    private _submitters: User[];
-    private _supporters: User[];
-    private _workflow: Workflow;
-    private _state: WorkflowState;
-    private _item: Item;
-    private _block: MotionBlock;
+    protected _motion: Motion;
+    protected _category: Category;
+    protected _submitters: User[];
+    protected _supporters: User[];
+    protected _workflow: Workflow;
+    protected _state: WorkflowState;
+    protected _item: Item;
+    protected _block: MotionBlock;
 
     /**
      * Indicates the LineNumberingMode Mode.
@@ -126,7 +126,7 @@ export class ViewMotion extends BaseViewModel {
     }
 
     public get submitters_id(): number[] {
-        return this.motion ? this.motion.submitters_id : null;
+        return this.motion ? this.motion.submitterIds : null;
     }
 
     public get supporters(): User[] {
@@ -184,11 +184,6 @@ export class ViewMotion extends BaseViewModel {
         this._motion.supporters_id = users.map(user => user.id);
     }
 
-    public set submitters(users: User[]) {
-        this._submitters = users;
-        this._motion.submitters_id = users.map(user => user.id);
-    }
-
     public get item(): Item {
         return this._item;
     }
@@ -211,6 +206,10 @@ export class ViewMotion extends BaseViewModel {
 
     public get amendment_paragraphs(): string[] {
         return this.motion && this.motion.amendment_paragraphs ? this.motion.amendment_paragraphs : [];
+    }
+
+    public get tags_id(): number[] {
+        return this._motion ? this._motion.tags_id : null;
     }
 
     public constructor(

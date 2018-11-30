@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 
-import { ViewGroup } from '../models/view-group';
 import { BaseRepository } from '../../base/base-repository';
-import { Group } from '../../../shared/models/users/group';
-import { DataStoreService } from '../../../core/services/data-store.service';
-import { DataSendService } from '../../../core/services/data-send.service';
-import { ConstantsService } from '../../../core/services/constants.service';
-import { Identifiable } from '../../../shared/models/base/identifiable';
 import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
+import { ConstantsService } from '../../../core/services/constants.service';
+import { DataSendService } from '../../../core/services/data-send.service';
+import { DataStoreService } from '../../../core/services/data-store.service';
+import { Group } from '../../../shared/models/users/group';
+import { Identifiable } from '../../../shared/models/base/identifiable';
+import { ViewGroup } from '../models/view-group';
 
 /**
  * Set rules to define the shape of an app permission
