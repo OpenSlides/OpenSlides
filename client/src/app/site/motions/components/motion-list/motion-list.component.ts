@@ -179,6 +179,6 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
      * @param multiselectPromise The promise returned by multiselect actions.
      */
     public multiselectWrapper(multiselectPromise: Promise<void>): void {
-        multiselectPromise.then(() => this.toggleMultiSelect());
+        multiselectPromise.then(() => this.toggleMultiSelect(), this.raiseError);
     }
 }

@@ -133,7 +133,7 @@
         </button>
         <div *osPerms="'motions.can_manage'">
             <mat-divider></mat-divider>
-            <button mat-menu-item>
+            <button mat-menu-item (click)="multiselectWrapper(multiselectService.moveToItem(selectedRows))">
                 <!-- TODO: Not implemented yet -->
                 <mat-icon>sort</mat-icon>
                 <span translate>Move to agenda item</span>

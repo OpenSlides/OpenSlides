@@ -11,6 +11,9 @@ import { WorkflowRepositoryService } from './workflow-repository.service';
 import { CategoryRepositoryService } from './category-repository.service';
 import { TagRepositoryService } from 'app/site/tags/services/tag-repository.service';
 import { HttpService } from 'app/core/services/http.service';
+import { AgendaRepositoryService } from 'app/site/agenda/services/agenda-repository.service';
+import { Displayable } from 'app/shared/models/base/displayable';
+import { Identifiable } from 'app/shared/models/base/identifiable';
 
 /**
  * Contains all multiselect actions for the motion list view.
@@ -40,6 +43,7 @@ export class MotionMultiselectService {
         private workflowRepo: WorkflowRepositoryService,
         private categoryRepo: CategoryRepositoryService,
         private tagRepo: TagRepositoryService,
+        private agendaRepo: AgendaRepositoryService,
         private httpService: HttpService
     ) {}
 
@@ -54,6 +58,22 @@ export class MotionMultiselectService {
             for (const motion of motions) {
                 await this.repo.delete(motion);
             }
+        }
+    }
+
+    /**
+     * Moves the related agenda items from the motions as childs under a selected (parent) agenda item.
+     */
+    public async moveToItem(motions: ViewMotion[]): Promise<void> {
+        const title = this.translate.instant('This will move all selected motions as childs to:');
+        const choices: (Displayable & Identifiable)[] = this.agendaRepo.getViewModelList();
+        const selectedChoice = await this.choiceService.open(title, choices);
+        if (selectedChoice) {
+            const requestData = {
+                items: motions.map(motion => motion.agenda_item_id),
+                parent_id: selectedChoice as number
+            };
+            await this.httpService.post('/rest/agenda/item/assign', requestData);
         }
     }
 
