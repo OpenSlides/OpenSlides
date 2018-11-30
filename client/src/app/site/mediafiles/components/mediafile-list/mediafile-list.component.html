@@ -163,6 +163,7 @@
         </button>
     </div>
     <div *ngIf="isMultiSelect">
+        <mat-divider></mat-divider>
         <button mat-menu-item (click)="toggleMultiSelect()">
             <mat-icon>library_add</mat-icon>
             <span translate>Exit multiselect</span>
@@ -170,7 +171,7 @@
         <mat-divider></mat-divider>
         <button mat-menu-item *osPerms="'mediafiles.can_manage'" (click)="deleteSelected()">
             <mat-icon>delete</mat-icon>
-            <span translate>Delete selected</span>
+            <span translate>Delete</span>
         </button>
     </div>
 </mat-menu>

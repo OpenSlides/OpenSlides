@@ -1,12 +1,12 @@
 <os-head-bar [nav]="false">
     <!-- Title -->
-    <div class="title-slot"><h2 translate>Create amendment</h2></div>
+    <div class="title-slot"><h2 translate>New amendment</h2></div>
 </os-head-bar>
 
 <form [formGroup]="contentForm" (ngSubmit)="saveAmendment()" class="on-transition-fade">
     <mat-horizontal-stepper linear>
-        <mat-step [label]="'Select paragraph' | translate" [completed]="contentForm.value.selectedParagraph">
-            <ng-template matStepLabel translate>Select paragraph</ng-template>
+        <mat-step [completed]="contentForm.value.selectedParagraph">
+            <ng-template matStepLabel>{{ 'Select paragraph' | translate }}</ng-template>
             <div>
                 <section
                     *ngFor="let paragraph of paragraphs"
@@ -26,16 +26,15 @@
                     type="button"
                     mat-button
                     matStepperNext
-                    [disabled]="contentForm.value.selectedParagraph === null"
-                >
+                    [disabled]="contentForm.value.selectedParagraph === null">
                     <span translate>Next</span>
                 </button>
             </div>
         </mat-step>
-        <mat-step [label]="'Specify the change' | translate">
-            <ng-template matStepLabel translate>Specify changes</ng-template>
+        <mat-step>
+            <ng-template matStepLabel>{{ 'Change paragraph' | translate }}</ng-template>
 
-            <h5 translate>Amended paragraph</h5>
+            <h5 translate>Amendment text</h5>
             <!-- The HTML Editor -->
             <editor formControlName="text" [init]="tinyMceSettings"></editor>
 

@@ -119,7 +119,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
      * Bulk deletes users. Needs multiSelect mode to fill selectedRows
      */
     public async deleteSelected(): Promise<void> {
-        const content = this.translate.instant('This will delete all selected assignments.');
+        const content = this.translate.instant('This will delete all selected users.');
         if (await this.promptService.open('Are you sure?', content)) {
             for (const user of this.selectedRows) {
                 await this.repo.delete(user);

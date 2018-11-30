@@ -4,7 +4,16 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+msgid "%num% emails were send sucessfully."
+msgstr ""
+
+msgid "A name is required"
+msgstr ""
+
 msgid "A password is required"
+msgstr ""
+
+msgid "A server error occured. Please contact your system administrator."
 msgstr ""
 
 msgid "About me"
@@ -22,10 +31,28 @@ msgstr ""
 msgid "Activate amendments"
 msgstr ""
 
+msgid "Activate statute amendments"
+msgstr ""
+
+msgid "Add groups"
+msgstr ""
+
+msgid "Add me"
+msgstr ""
+
+msgid "Add submitters"
+msgstr ""
+
+msgid "Add tags"
+msgstr ""
+
 msgid "Adjourn"
 msgstr ""
 
 msgid "Adjournment"
+msgstr ""
+
+msgid "Admin"
 msgstr ""
 
 msgid "Agenda"
@@ -35,6 +62,9 @@ msgid "Agenda visibility"
 msgstr ""
 
 msgid "All casted ballots"
+msgstr ""
+
+msgid "All selected files will be deleted!"
 msgstr ""
 
 msgid "All valid ballots"
@@ -61,6 +91,9 @@ msgstr ""
 msgid "Amendment"
 msgstr ""
 
+msgid "Amendment text"
+msgstr ""
+
 msgid "Amendment to"
 msgstr ""
 
@@ -70,10 +103,19 @@ msgstr ""
 msgid "An email with a password reset link was send!"
 msgstr ""
 
+msgid "An unknown error occurred."
+msgstr ""
+
 msgid "Arabic"
 msgstr ""
 
+msgid "Attachments"
+msgstr ""
+
 msgid "Automatic assign of method"
+msgstr ""
+
+msgid "Back"
 msgstr ""
 
 msgid "Back to login"
@@ -86,6 +128,18 @@ msgid "Ballot and ballot papers"
 msgstr ""
 
 msgid "Begin of event"
+msgstr ""
+
+msgid "Begin speech"
+msgstr ""
+
+msgid "Call list"
+msgstr ""
+
+msgid "Called"
+msgstr ""
+
+msgid "Called with"
 msgstr ""
 
 msgid "Can create motions"
@@ -190,6 +244,9 @@ msgstr ""
 msgid "Center"
 msgstr ""
 
+msgid "Change paragraph"
+msgstr ""
+
 msgid "Change password"
 msgstr ""
 
@@ -205,13 +262,25 @@ msgstr ""
 msgid "Choose 0 to disable the supporting system."
 msgstr ""
 
+msgid "Clear list"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "Collapse all"
+msgstr ""
+
 msgid "Color for blanked projector"
 msgstr ""
 
 msgid "Comment"
 msgstr ""
 
-msgid "Comments"
+msgid "Comment fields"
+msgstr ""
+
+msgid "Committees"
 msgstr ""
 
 msgid "Complex Workflow"
@@ -223,13 +292,10 @@ msgstr ""
 msgid "Couple countdown with the list of speakers"
 msgstr ""
 
+msgid "Create"
+msgstr ""
+
 msgid "Create new category"
-msgstr ""
-
-msgid "Create new comment field"
-msgstr ""
-
-msgid "Create new statute paragraph"
 msgstr ""
 
 msgid "Current browser language"
@@ -256,6 +322,9 @@ msgid ""
 "This email was generated automatically."
 msgstr ""
 
+msgid "Default"
+msgstr ""
+
 msgid "Default line numbering"
 msgstr ""
 
@@ -276,10 +345,13 @@ msgstr ""
 msgid "Default visibility for new agenda items (except topics)"
 msgstr ""
 
+msgid "Delegates"
+msgstr ""
+
 msgid "Delete"
 msgstr ""
 
-msgid "Delete all files"
+msgid "Delete whole history"
 msgstr ""
 
 msgid "Designates whether this user is in the room."
@@ -309,6 +381,12 @@ msgid "Do not concern"
 msgstr ""
 
 msgid "Do not decide"
+msgstr ""
+
+msgid "Do you want to delete this file?"
+msgstr ""
+
+msgid "Drop files into this area OR select files"
 msgstr ""
 
 msgid "Edit"
@@ -356,6 +434,9 @@ msgstr ""
 msgid "Enable participant presence view"
 msgstr ""
 
+msgid "End speech"
+msgstr ""
+
 msgid "English"
 msgstr ""
 
@@ -363,6 +444,9 @@ msgid "Enter duration in seconds. Choose 0 to disable warning color."
 msgstr ""
 
 msgid "Enter your email to send the password reset link"
+msgstr ""
+
+msgid "Error"
 msgstr ""
 
 msgid "Event"
@@ -380,6 +464,15 @@ msgstr ""
 msgid "Event organizer"
 msgstr ""
 
+msgid "Exit"
+msgstr ""
+
+msgid "Exit multiselect"
+msgstr ""
+
+msgid "Expand all"
+msgstr ""
+
 msgid "Export"
 msgstr ""
 
@@ -390,6 +483,12 @@ msgid "Export as CSV"
 msgstr ""
 
 msgid "FILTER"
+msgstr ""
+
+msgid "File information"
+msgstr ""
+
+msgid "File name"
 msgstr ""
 
 msgid "Files"
@@ -416,6 +515,9 @@ msgstr ""
 msgid "General"
 msgstr ""
 
+msgid "Generate new passwords"
+msgstr ""
+
 msgid "German"
 msgstr ""
 
@@ -434,6 +536,12 @@ msgstr ""
 msgid "Help text for access data and welcome PDF"
 msgstr ""
 
+msgid "Hidden"
+msgstr ""
+
+msgid "Hidden item"
+msgstr ""
+
 msgid "Hide internal items when projecting subitems"
 msgstr ""
 
@@ -444,6 +552,9 @@ msgid "Hide reason on projector"
 msgstr ""
 
 msgid "Hide recommendation on projector"
+msgstr ""
+
+msgid "History"
 msgstr ""
 
 msgid "Home"
@@ -470,6 +581,9 @@ msgstr ""
 msgid "Installed plugins"
 msgstr ""
 
+msgid "Internal item"
+msgstr ""
+
 msgid "Invalid input."
 msgstr ""
 
@@ -479,7 +593,22 @@ msgstr ""
 msgid "Is active"
 msgstr ""
 
+msgid "Is committee"
+msgstr ""
+
+msgid "Is inactive"
+msgstr ""
+
+msgid "Is no committee"
+msgstr ""
+
+msgid "Is not present"
+msgstr ""
+
 msgid "Is present"
+msgstr ""
+
+msgid "Last speakers"
 msgstr ""
 
 msgid "Left"
@@ -515,19 +644,28 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
+msgid "Mark speaker"
+msgstr ""
+
 msgid "Meta information"
 msgstr ""
 
 msgid "Motion"
 msgstr ""
 
+msgid "Motion block"
+msgstr ""
+
 msgid "Motion preamble"
 msgstr ""
 
-msgid "Motion text"
+msgid "Motions"
 msgstr ""
 
-msgid "Motions"
+msgid "Move to agenda item"
+msgstr ""
+
+msgid "Multiselect"
 msgstr ""
 
 msgid "Name"
@@ -536,7 +674,22 @@ msgstr ""
 msgid "Name of recommender"
 msgstr ""
 
+msgid "Name of recommender for statute amendments"
+msgstr ""
+
 msgid "Needs review"
+msgstr ""
+
+msgid "New"
+msgstr ""
+
+msgid "New amendment"
+msgstr ""
+
+msgid "New comment field"
+msgstr ""
+
+msgid "New file name"
 msgstr ""
 
 msgid "New group name"
@@ -548,10 +701,22 @@ msgstr ""
 msgid "New password"
 msgstr ""
 
+msgid "New statute paragraph"
+msgstr ""
+
 msgid "New tag name"
 msgstr ""
 
+msgid "Next"
+msgstr ""
+
 msgid "No change recommendations yet"
+msgstr ""
+
+msgid "No changes at the text."
+msgstr ""
+
+msgid "No choices available"
 msgstr ""
 
 msgid "No comment"
@@ -563,10 +728,16 @@ msgstr ""
 msgid "No decision"
 msgstr ""
 
+msgid "No emails were send."
+msgstr ""
+
 msgid "No encryption"
 msgstr ""
 
 msgid "No groups selected"
+msgstr ""
+
+msgid "No information available"
 msgstr ""
 
 msgid "No personal note"
@@ -613,7 +784,16 @@ msgstr ""
 msgid "Offline mode: You can use OpenSlides but changes are not saved."
 msgstr ""
 
+msgid "Ok"
+msgstr ""
+
+msgid "One email was send sucessfully."
+msgstr ""
+
 msgid "Only for internal notes."
+msgstr ""
+
+msgid "Open"
 msgstr ""
 
 msgid "Origin"
@@ -644,6 +824,9 @@ msgid "Page number alignment in PDF"
 msgstr ""
 
 msgid "Paragraph-based, Diff-enabled"
+msgstr ""
+
+msgid "Parallel upload"
 msgstr ""
 
 msgid "Participant number"
@@ -715,10 +898,16 @@ msgstr ""
 msgid "Public"
 msgstr ""
 
+msgid "Public item"
+msgstr ""
+
 msgid "Put all candidates on the list of speakers"
 msgstr ""
 
 msgid "Reason"
+msgstr ""
+
+msgid "Recommendation"
 msgstr ""
 
 msgid "Refer to committee"
@@ -742,9 +931,21 @@ msgstr ""
 msgid "Rejection (not authorized)"
 msgstr ""
 
+msgid "Remove"
+msgstr ""
+
 msgid ""
 "Remove all supporters of a motion if a submitter edits his motion in early "
 "state"
+msgstr ""
+
+msgid "Remove groups"
+msgstr ""
+
+msgid "Remove me"
+msgstr ""
+
+msgid "Remove tags"
 msgstr ""
 
 msgid "Required"
@@ -777,7 +978,16 @@ msgstr ""
 msgid "Searching for candidates"
 msgstr ""
 
+msgid "Select or search new speaker ..."
+msgstr ""
+
+msgid "Select paragraph"
+msgstr ""
+
 msgid "Selected values"
+msgstr ""
+
+msgid "Send invitation email"
 msgstr ""
 
 msgid "Separator used for all csv exports and examples"
@@ -786,7 +996,22 @@ msgstr ""
 msgid "Serially numbered"
 msgstr ""
 
+msgid "Set category"
+msgstr ""
+
+msgid "Set invisible"
+msgstr ""
+
 msgid "Set it manually"
+msgstr ""
+
+msgid "Set recommendation"
+msgstr ""
+
+msgid "Set status"
+msgstr ""
+
+msgid "Set visible"
 msgstr ""
 
 msgid "Settings"
@@ -796,6 +1021,9 @@ msgid "Short description of event"
 msgstr ""
 
 msgid "Show amendments together with motions"
+msgstr ""
+
+msgid "Show entire motion text"
 msgstr ""
 
 msgid "Show logo on projector"
@@ -828,16 +1056,34 @@ msgstr ""
 msgid "Sort name of participants by"
 msgstr ""
 
+msgid "Staff"
+msgstr ""
+
 msgid "Standard font size in PDF"
+msgstr ""
+
+msgid "Start"
+msgstr ""
+
+msgid "Start time"
 msgstr ""
 
 msgid "State"
 msgstr ""
 
+msgid "Statute"
+msgstr ""
+
+msgid "Statute amendment"
+msgstr ""
+
+msgid "Statute amendment for"
+msgstr ""
+
 msgid "Statute paragraph"
 msgstr ""
 
-msgid "Statute paragraphs"
+msgid "Stop"
 msgstr ""
 
 msgid "Stop submitting new motions by non-staff users"
@@ -850,6 +1096,9 @@ msgid "Submitters"
 msgstr ""
 
 msgid "Summary of changes"
+msgstr ""
+
+msgid "Support"
 msgstr ""
 
 msgid "Supporters"
@@ -887,13 +1136,55 @@ msgid ""
 "enabled. Min: 40"
 msgstr ""
 
+msgid "The server could not be reached."
+msgstr ""
+
+msgid "The server didn't respond."
+msgstr ""
+
 msgid "The title of the motion is always applied."
+msgstr ""
+
+msgid "The user %user% has no email, so the invitation email could not be send."
+msgstr ""
+
+msgid "The users %user% have no email, so the invitation emails could not be send."
 msgstr ""
 
 msgid "This change collides with another one."
 msgstr ""
 
+msgid "This element does not exist at this time."
+msgstr ""
+
 msgid "This prefix will be set if you run the automatic agenda numbering."
+msgstr ""
+
+msgid "This will add the following submitters of all selected motions:"
+msgstr ""
+
+msgid "This will add the following tags to all selected motions:"
+msgstr ""
+
+msgid "This will delete all selected motions."
+msgstr ""
+
+msgid "This will move all selected motions as childs to:"
+msgstr ""
+
+msgid "This will remove the following submitters from all selected motions:"
+msgstr ""
+
+msgid "This will remove the following tags from all selected motions:"
+msgstr ""
+
+msgid "This will set the category of all selected motions to:"
+msgstr ""
+
+msgid "This will set the recommendation for all selected motions to:"
+msgstr ""
+
+msgid "This will set the state of all selected motions to:"
 msgstr ""
 
 msgid "Three-quarters majority"
@@ -911,7 +1202,19 @@ msgstr ""
 msgid "Title for access data and welcome PDF"
 msgstr ""
 
+msgid "Topic"
+msgstr ""
+
 msgid "Two-thirds majority"
+msgstr ""
+
+msgid "Unsupport"
+msgstr ""
+
+msgid "Upload"
+msgstr ""
+
+msgid "Upload files"
 msgstr ""
 
 msgid "Use the following custom number"
@@ -929,6 +1232,12 @@ msgid "Used for WLAN QRCode in PDF of access data."
 msgstr ""
 
 msgid "Username"
+msgstr ""
+
+msgid "Visibility"
+msgstr ""
+
+msgid "Visible"
 msgstr ""
 
 msgid "Voting"
@@ -959,6 +1268,11 @@ msgid "Welcome to OpenSlides"
 msgstr ""
 
 msgid ""
+"Will be displayed as label before selected recommendation for statute "
+"amendments. Use an empty value to disable the recommendation system."
+msgstr ""
+
+msgid ""
 "Will be displayed as label before selected recommendation. Use an empty "
 "value to disable the recommendation system."
 msgstr ""
@@ -966,7 +1280,13 @@ msgstr ""
 msgid "Withdraw"
 msgstr ""
 
+msgid "Workflow"
+msgstr ""
+
 msgid "Workflow of new motions"
+msgstr ""
+
+msgid "Workflow of new statute amendments"
 msgstr ""
 
 msgid "Yes"
@@ -982,6 +1302,9 @@ msgid "Yes/No/Abstain"
 msgstr ""
 
 msgid "Yes/No/Abstain per candidate"
+msgstr ""
+
+msgid "You are using the history mode of OpenSlides. Changes will not be saved."
 msgstr ""
 
 msgid ""
@@ -1013,6 +1336,9 @@ msgstr ""
 msgid "adjourned"
 msgstr ""
 
+msgid "and"
+msgstr ""
+
 msgid "by"
 msgstr ""
 
@@ -1037,6 +1363,9 @@ msgstr ""
 msgid "not decided"
 msgstr ""
 
+msgid "not set"
+msgstr ""
+
 msgid "outside"
 msgstr ""
 
@@ -1055,7 +1384,16 @@ msgstr ""
 msgid "rejected (not authorized)"
 msgstr ""
 
+msgid "remove submitters"
+msgstr ""
+
+msgid "selected"
+msgstr ""
+
 msgid "submitted"
+msgstr ""
+
+msgid "supporters"
 msgstr ""
 
 msgid "withdrawed"

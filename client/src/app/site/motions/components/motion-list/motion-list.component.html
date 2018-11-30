@@ -109,21 +109,21 @@
             <mat-icon>library_add</mat-icon>
             <span translate>Multiselect</span>
         </button>
-        <button mat-menu-item routerLink="category">
-            <mat-icon>device_hub</mat-icon>
-            <span translate>Categories</span>
-        </button>
-        <button mat-menu-item routerLink="comment-section">
-            <mat-icon>speaker_notes</mat-icon>
-            <span translate>Comment sections</span>
-        </button>
         <button mat-menu-item *osPerms="'motions.can_manage'" routerLink="call-list">
             <mat-icon>sort</mat-icon>
             <span translate>Call list</span>
         </button>
+        <button mat-menu-item routerLink="category">
+            <mat-icon>device_hub</mat-icon>
+            <span translate>Categories</span>
+        </button>
         <button mat-menu-item routerLink="statute-paragraphs" *ngIf="statutesEnabled">
             <mat-icon>account_balance</mat-icon>
-            <span translate>Statute paragraphs</span>
+            <span translate>Statute</span>
+        </button>
+        <button mat-menu-item routerLink="comment-section">
+            <mat-icon>speaker_notes</mat-icon>
+            <span translate>Comment fields</span>
         </button>
     </div>
     <div *ngIf="isMultiSelect">
@@ -150,7 +150,7 @@
             <button mat-menu-item (click)="multiselectWrapper(multiselectService.setCategory(selectedRows))">
                 <mat-icon>device_hub</mat-icon>
                 <!-- TODO: icon -->
-                <span translate>Set categories</span>
+                <span translate>Set category</span>
             </button>
             <mat-divider></mat-divider>
             <button mat-menu-item (click)="multiselectWrapper(multiselectService.addSubmitters(selectedRows))">
@@ -186,7 +186,7 @@
             (click)="multiselectService.delete(selectedRows); toggleMultiSelect()"
         >
             <mat-icon>delete</mat-icon>
-            <span translate>Delete selected</span>
+            <span translate>Delete</span>
         </button>
     </div>
 </mat-menu>

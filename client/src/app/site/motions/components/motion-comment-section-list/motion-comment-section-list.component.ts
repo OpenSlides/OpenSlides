@@ -91,7 +91,7 @@ export class MotionCommentSectionListComponent extends BaseViewComponent impleme
      * Sets the title and gets/observes categories from DataStore
      */
     public ngOnInit(): void {
-        super.setTitle('Comment Sections');
+        super.setTitle('Comment fields');
         this.groups = new BehaviorSubject(this.DS.getAll(Group));
         this.DS.changeObservable.subscribe(model => {
             if (model instanceof Group) {

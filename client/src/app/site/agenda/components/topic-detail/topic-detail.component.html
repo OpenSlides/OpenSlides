@@ -33,7 +33,6 @@
         <div>
             <span *ngIf="!editTopic">
                 <div [innerHTML]="topic.text"></div>
-                <div *ngIf="topic.text === ''" class="missing" translate>No description provided.</div>
             </span>
         </div>
 

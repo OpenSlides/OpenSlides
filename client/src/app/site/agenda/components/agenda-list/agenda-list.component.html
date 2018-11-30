@@ -68,14 +68,13 @@
 
     <div *ngIf="isMultiSelect">
         <div *osPerms="'agenda.can_manage'">
-            <mat-divider></mat-divider>
             <button mat-menu-item (click)="setClosedSelected(true)">
                 <mat-icon>done</mat-icon>
-                <span translate>Close selected</span>
+                <span translate>Close</span>
             </button>
             <button mat-menu-item (click)="setClosedSelected(false)">
                 <mat-icon>redo</mat-icon>
-                <span translate>Open selected</span>
+                <span translate>Open</span>
             </button>
 
             <mat-divider></mat-divider>
@@ -90,7 +89,7 @@
             <mat-divider></mat-divider>
             <button mat-menu-item class="red-warning-text" (click)="deleteSelected()">
                 <mat-icon>delete</mat-icon>
-                <span translate>Delete selected</span>
+                <span translate>Delete</span>
             </button>
         </div>
     </div>
