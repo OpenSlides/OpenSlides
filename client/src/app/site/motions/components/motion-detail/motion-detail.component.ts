@@ -29,6 +29,8 @@ import { ConfigService } from '../../../../core/services/config.service';
 import { Workflow } from 'app/shared/models/motions/workflow';
 import { take, takeWhile, multicast, skipWhile } from 'rxjs/operators';
 import { LocalPermissionsService } from '../../services/local-permissions.service';
+import { ViewCreateMotion } from '../../models/view-create-motion';
+import { CreateMotion } from '../../models/create-motion';
 
 /**
  * Component for the motion detail view
@@ -260,28 +262,10 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
             }
         });
         // load config variables
-        this.configService.get('motions_statutes_enabled').subscribe(
-            (enabled: boolean): void => {
-                this.statutesEnabled = enabled;
-            }
-        );
-        this.configService.get('motions_min_supporters').subscribe(
-            (supporters: number): void => {
-                this.minSupporters = supporters;
-            }
-        );
-
-        this.configService.get('motions_preamble').subscribe(
-            (preamble: string): void => {
-                this.preamble = preamble;
-            }
-        );
-
-        this.configService.get('motions_amendments_enabled').subscribe(
-            (enabled: boolean): void => {
-                this.amendmentsEnabled = enabled;
-            }
-        );
+        this.configService.get('motions_statutes_enabled').subscribe(enabled => (this.statutesEnabled = enabled));
+        this.configService.get('motions_min_supporters').subscribe(supporters => (this.minSupporters = supporters));
+        this.configService.get('motions_preamble').subscribe(preamble => (this.preamble = preamble));
+        this.configService.get('motions_amendments_enabled').subscribe(enabled => (this.amendmentsEnabled = enabled));
     }
 
     /**
@@ -327,8 +311,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
             // creates a new motion
             this.newMotion = true;
             this.editMotion = true;
-            this.motion = new ViewMotion();
-            this.motionCopy = new ViewMotion();
+            this.motion = new ViewCreateMotion();
+            this.motionCopy = new ViewCreateMotion();
         } else {
             // load existing motion
             this.route.params.subscribe(params => {
@@ -393,7 +377,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
             state_id: [''],
             recommendation_id: [''],
             submitters_id: [],
-            supporters_id: [],
+            supporters_id: [[]],
             workflow_id: [],
             origin: ['']
         });
@@ -419,42 +403,62 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     }
 
     /**
-     * Save a motion. Calls the "patchValues" function in the MotionObject
+     * Before updating or creating, the motions needs to be prepared for paragraph based amendments.
+     * A motion of type T is created, prepared and deserialized from the given motionValues
      *
-     * http:post the motion to the server.
-     * The AutoUpdate-Service should see a change once it arrives and show it
-     * in the list view automatically
-     *
+     * @param motionValues valus for the new motion
+     * @param ctor The motion constructor, so different motion types can be created.
      */
-    public async saveMotion(): Promise<void> {
-        const newMotionValues = { ...this.metaInfoForm.value, ...this.contentForm.value };
-
-        const fromForm = new Motion();
+    private prepareMotionForSave<T extends Motion>(motionValues: any, ctor: new (...args: any[]) => T): T {
+        const motion = new ctor();
         if (this.motion.isParagraphBasedAmendment()) {
-            fromForm.amendment_paragraphs = this.motion.amendment_paragraphs.map(
-                (para: string): string => {
-                    if (para === null) {
+            motion.amendment_paragraphs = this.motion.amendment_paragraphs.map(
+                (paragraph: string): string => {
+                    if (paragraph === null) {
                         return null;
                     } else {
-                        return newMotionValues.text;
+                        return motionValues.text;
                     }
                 }
             );
-            newMotionValues.text = '';
+            motionValues.text = '';
         }
-        fromForm.deserialize(newMotionValues);
+        motion.deserialize(motionValues);
+        return motion;
+    }
+
+    /**
+     * Creates a motion. Calls the "patchValues" function in the MotionObject
+     */
+    public async createMotion(): Promise<void> {
+        const newMotionValues = { ...this.metaInfoForm.value, ...this.contentForm.value };
+        const motion = this.prepareMotionForSave(newMotionValues, CreateMotion);
 
         try {
-            if (this.newMotion) {
-                const response = await this.repo.create(fromForm);
-                this.router.navigate(['./motions/' + response.id]);
-            } else {
-                await this.repo.update(fromForm, this.motionCopy);
-                // if the motion was successfully updated, change the edit mode.
-                this.editMotion = false;
-            }
+            const response = await this.repo.create(motion);
+            this.router.navigate(['./motions/' + response.id]);
         } catch (e) {
             this.raiseError(e);
+        }
+    }
+
+    /**
+     * Save a motion. Calls the "patchValues" function in the MotionObject
+     */
+    public async updateMotion(): Promise<void> {
+        const newMotionValues = { ...this.metaInfoForm.value, ...this.contentForm.value };
+        const motion = this.prepareMotionForSave(newMotionValues, Motion);
+        this.repo.update(motion, this.motionCopy).then(() => (this.editMotion = false), this.raiseError);
+    }
+
+    /**
+     * In the ui are no distinct buttons for update or create. This is decided here.
+     */
+    public saveMotion(): void {
+        if (this.newMotion) {
+            this.createMotion();
+        } else {
+            this.updateMotion();
         }
     }
 

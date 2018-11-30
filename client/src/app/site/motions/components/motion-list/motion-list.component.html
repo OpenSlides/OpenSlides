@@ -42,7 +42,10 @@
         <mat-cell *matCellDef="let motion">
             <div class="innerTable">
                 <span class="motion-list-title">{{ motion.title }}</span> <br />
-                <span class="motion-list-from"> <span translate>by</span> {{ motion.submitters }} </span> <br />
+                <span class="motion-list-from" *ngIf="motion.submitters.length">
+                    <span translate>by</span> {{ motion.submitters }}
+                </span>
+                <br *ngIf="motion.submitters.length" />
                 <!-- state -->
                 <mat-basic-chip
                     [ngClass]="{
@@ -135,37 +138,37 @@
                 <mat-icon>sort</mat-icon>
                 <span translate>Move to agenda item</span>
             </button>
-            <button mat-menu-item (click)="multiselectService.setStatus(selectedRows); toggleMultiSelect()">
+            <button mat-menu-item (click)="multiselectWrapper(multiselectService.setStatus(selectedRows))">
                 <mat-icon>label</mat-icon>
                 <span translate>Set status</span>
             </button>
-            <button mat-menu-item (click)="multiselectService.setRecommendation(selectedRows); toggleMultiSelect()">
+            <button mat-menu-item (click)="multiselectWrapper(multiselectService.setRecommendation(selectedRows))">
                 <mat-icon>report</mat-icon>
                 <!-- TODO: better icon -->
                 <span translate>Set recommendation</span>
             </button>
-            <button mat-menu-item (click)="multiselectService.setCategory(selectedRows); toggleMultiSelect()">
+            <button mat-menu-item (click)="multiselectWrapper(multiselectService.setCategory(selectedRows))">
                 <mat-icon>device_hub</mat-icon>
                 <!-- TODO: icon -->
                 <span translate>Set categories</span>
             </button>
             <mat-divider></mat-divider>
-            <button mat-menu-item (click)="multiselectService.addSubmitters(selectedRows); toggleMultiSelect()">
+            <button mat-menu-item (click)="multiselectWrapper(multiselectService.addSubmitters(selectedRows))">
                 <mat-icon>person_add</mat-icon>
                 <!-- TODO: icon -->
                 <span translate>Add submitters</span>
             </button>
-            <button mat-menu-item (click)="multiselectService.removeSubmitters(selectedRows); toggleMultiSelect()">
+            <button mat-menu-item (click)="multiselectWrapper(multiselectService.removeSubmitters(selectedRows))">
                 <mat-icon>person_outline</mat-icon>
                 <!-- TODO: icon -->
                 <span translate>remove submitters</span>
             </button>
-            <button mat-menu-item (click)="multiselectService.addTags(selectedRows); toggleMultiSelect()">
+            <button mat-menu-item (click)="multiselectWrapper(multiselectService.addTags(selectedRows))">
                 <mat-icon>bookmarks</mat-icon>
                 <!-- TODO: icon -->
                 <span translate>Add tags</span>
             </button>
-            <button mat-menu-item (click)="multiselectService.removeTags(selectedRows); toggleMultiSelect()">
+            <button mat-menu-item (click)="multiselectWrapper(multiselectService.removeTags(selectedRows))">
                 <mat-icon>bookmark_border</mat-icon>
                 <!-- TODO: icon -->
                 <span translate>Remove tags</span>

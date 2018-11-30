@@ -10,6 +10,7 @@ import { UserRepositoryService } from 'app/site/users/services/user-repository.s
 import { WorkflowRepositoryService } from './workflow-repository.service';
 import { CategoryRepositoryService } from './category-repository.service';
 import { TagRepositoryService } from 'app/site/tags/services/tag-repository.service';
+import { HttpService } from 'app/core/services/http.service';
 
 /**
  * Contains all multiselect actions for the motion list view.
@@ -38,7 +39,8 @@ export class MotionMultiselectService {
         private userRepo: UserRepositoryService,
         private workflowRepo: WorkflowRepositoryService,
         private categoryRepo: CategoryRepositoryService,
-        private tagRepo: TagRepositoryService
+        private tagRepo: TagRepositoryService,
+        private httpService: HttpService
     ) {}
 
     /**
@@ -88,11 +90,16 @@ export class MotionMultiselectService {
                 id: workflowState.id,
                 label: workflowState.recommendation_label
             }));
+        choices.push({ id: 0, label: 'Delete recommendation' });
         const selectedChoice = await this.choiceService.open(title, choices);
-        if (selectedChoice) {
-            for (const motion of motions) {
-                await this.repo.setRecommendation(motion, selectedChoice as number);
-            }
+        if (typeof selectedChoice === 'number') {
+            const requestData = motions.map(motion => ({
+                id: motion.id,
+                recommendation: selectedChoice
+            }));
+            await this.httpService.post('/rest/motions/motion/manage_multiple_recommendation', {
+                motions: requestData
+            });
         }
     }
 
@@ -120,7 +127,15 @@ export class MotionMultiselectService {
         const title = this.translate.instant('This will add the following submitters of all selected motions:');
         const selectedChoice = await this.choiceService.open(title, this.userRepo.getViewModelList(), true);
         if (selectedChoice) {
-            throw new Error('Not implemented on the server');
+            const requestData = motions.map(motion => {
+                let submitterIds = [...motion.submitters_id, ...(selectedChoice as number[])];
+                submitterIds = submitterIds.filter((id, index, self) => self.indexOf(id) === index); // remove duplicates
+                return {
+                    id: motion.id,
+                    submitters: submitterIds
+                };
+            });
+            await this.httpService.post('/rest/motions/motion/manage_multiple_submitters', { motions: requestData });
         }
     }
 
@@ -133,7 +148,15 @@ export class MotionMultiselectService {
         const title = this.translate.instant('This will remove the following submitters from all selected motions:');
         const selectedChoice = await this.choiceService.open(title, this.userRepo.getViewModelList(), true);
         if (selectedChoice) {
-            throw new Error('Not implemented on the server');
+            const requestData = motions.map(motion => {
+                const submitterIdsToRemove = selectedChoice as number[];
+                const submitterIds = motion.submitters_id.filter(id => !submitterIdsToRemove.includes(id));
+                return {
+                    id: motion.id,
+                    submitters: submitterIds
+                };
+            });
+            await this.httpService.post('/rest/motions/motion/manage_multiple_submitters', { motions: requestData });
         }
     }
 
@@ -146,11 +169,15 @@ export class MotionMultiselectService {
         const title = this.translate.instant('This will add the following tags to all selected motions:');
         const selectedChoice = await this.choiceService.open(title, this.tagRepo.getViewModelList(), true);
         if (selectedChoice) {
-            for (const motion of motions) {
+            const requestData = motions.map(motion => {
                 let tagIds = [...motion.tags_id, ...(selectedChoice as number[])];
-                tagIds = tagIds.filter((id, index, self) => self.indexOf(id) === index);
-                await this.repo.update({ tags_id: tagIds }, motion);
-            }
+                tagIds = tagIds.filter((id, index, self) => self.indexOf(id) === index); // remove duplicates
+                return {
+                    id: motion.id,
+                    tags: tagIds
+                };
+            });
+            await this.httpService.post('/rest/motions/motion/manage_multiple_tags', { motions: requestData });
         }
     }
 
@@ -163,11 +190,15 @@ export class MotionMultiselectService {
         const title = this.translate.instant('This will remove the following tags from all selected motions:');
         const selectedChoice = await this.choiceService.open(title, this.tagRepo.getViewModelList(), true);
         if (selectedChoice) {
-            for (const motion of motions) {
+            const requestData = motions.map(motion => {
                 const tagIdsToRemove = selectedChoice as number[];
                 const tagIds = motion.tags_id.filter(id => !tagIdsToRemove.includes(id));
-                await this.repo.update({ tags_id: tagIds }, motion);
-            }
+                return {
+                    id: motion.id,
+                    tags: tagIds
+                };
+            });
+            await this.httpService.post('/rest/motions/motion/manage_multiple_tags', { motions: requestData });
         }
     }
 }

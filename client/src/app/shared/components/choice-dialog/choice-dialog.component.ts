@@ -14,9 +14,23 @@ type ChoiceDialogOption = (Identifiable & Displayable) | (Identifiable & { label
  */
 export type ChoiceDialogOptions = (Identifiable & Displayable)[] | (Identifiable & { label: string })[];
 
+/**
+ * All data needed for this dialog
+ */
 interface ChoiceDialogData {
+    /**
+     * A title to display
+     */
     title: string;
+
+    /**
+     * The choices to display
+     */
     choices: ChoiceDialogOptions;
+
+    /**
+     * Select, if this should be a multiselect choice
+     */
     multiSelect: boolean;
 }
 
@@ -50,6 +64,12 @@ export class ChoiceDialogComponent {
         @Inject(MAT_DIALOG_DATA) public data: ChoiceDialogData
     ) {}
 
+    /**
+     * Get the title from a choice. Maybe saved in a label property or using getTitle().
+     *
+     * @param choice The choice
+     * @return the title
+     */
     public getChoiceTitle(choice: ChoiceDialogOption): string {
         if ('label' in choice) {
             return choice.label;

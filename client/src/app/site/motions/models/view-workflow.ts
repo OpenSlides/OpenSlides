@@ -12,13 +12,8 @@ import { BaseViewModel } from '../../base/base-view-model';
 export class ViewWorkflow extends BaseViewModel {
     private _workflow: Workflow;
 
-    public constructor(workflow?: Workflow, id?: number, name?: string) {
+    public constructor(workflow?: Workflow) {
         super();
-        if (!workflow) {
-            workflow = new Workflow();
-            workflow.id = id;
-            workflow.name = name;
-        }
         this._workflow = workflow;
     }
 

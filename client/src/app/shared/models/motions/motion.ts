@@ -23,7 +23,6 @@ export class Motion extends AgendaBaseModel {
     public motion_block_id: number;
     public origin: string;
     public submitters: MotionSubmitter[];
-    public submitters_id: number[];
     public supporters_id: number[];
     public comments: MotionComment[];
     public workflow_id: number;

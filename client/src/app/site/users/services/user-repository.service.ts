@@ -105,12 +105,25 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
         return pw;
     }
 
+    /**
+     * Updates the default password and sets the real password.
+     *
+     * @param user The user to update
+     * @param password The password to set
+     */
     public async resetPassword(user: ViewUser, password: string): Promise<void> {
         await this.update({ default_password: password }, user);
         const path = `/rest/users/user/${user.id}/reset_password/`;
         await this.httpService.post(path, { password: password });
     }
 
+    /**
+     * Sends invitation emails to all given users. Returns a prepared string to show the user.
+     * This string should always be shown, becuase even in success cases, some users may not get
+     * an email and the user should be notified about this.
+     *
+     * @param users All affected users
+     */
     public async sendInvitationEmail(users: ViewUser[]): Promise<string> {
         const user_ids = users.map(user => user.id);
         const subject = this.translate.instant(this.configService.instant('users_email_subject'));

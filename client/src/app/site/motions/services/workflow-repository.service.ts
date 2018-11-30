@@ -29,7 +29,7 @@ export class WorkflowRepositoryService extends BaseRepository<ViewWorkflow, Work
      * @param dataSend
      */
     public constructor(
-        protected DS: DataStoreService,
+        DS: DataStoreService,
         mapperService: CollectionStringModelMapperService,
         private dataSend: DataSendService
     ) {
@@ -61,17 +61,11 @@ export class WorkflowRepositoryService extends BaseRepository<ViewWorkflow, Work
     }
 
     /**
-     * Returns the workflow for the ID
-     * @param workflow_id workflow ID
+     * Collects all existing states from all workflows
      */
-    public getWorkflowByID(workflow_id: number): Workflow {
-        const wfList = this.DS.getAll(Workflow);
-        return wfList.find(workflow => workflow.id === workflow_id);
-    }
-
     public getAllWorkflowStates(): WorkflowState[] {
         let states: WorkflowState[] = [];
-        this.DS.getAll(Workflow).forEach(workflow => {
+        this.getViewModelList().forEach(workflow => {
             states = states.concat(workflow.states);
         });
         return states;

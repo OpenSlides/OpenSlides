@@ -9,8 +9,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { MotionRepositoryService } from '../../services/motion-repository.service';
 import { ViewMotion } from '../../models/view-motion';
 import { LinenumberingService } from '../../services/linenumbering.service';
-import { Motion } from '../../../../shared/models/motions/motion';
 import { BaseViewComponent } from '../../../base/base-view';
+import { CreateMotion } from '../../models/create-motion';
 
 /**
  * Describes the single paragraphs from the base motion.
@@ -167,10 +167,10 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
             amendment_paragraphs: amendedParagraphs
         };
 
-        const fromForm = new Motion();
-        fromForm.deserialize(newMotionValues);
+        const motion = new CreateMotion();
+        motion.deserialize(newMotionValues);
 
-        const response = await this.repo.create(fromForm);
+        const response = await this.repo.create(motion);
         this.router.navigate(['./motions/' + response.id]);
     }
 }

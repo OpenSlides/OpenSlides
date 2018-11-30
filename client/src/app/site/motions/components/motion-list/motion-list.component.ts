@@ -172,4 +172,13 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
         }
         return this.columnsToDisplayMinWidth;
     }
+
+    /**
+     * Wraps multiselect actions to close the multiselect mode or throw an error if one happens.
+     *
+     * @param multiselectPromise The promise returned by multiselect actions.
+     */
+    public multiselectWrapper(multiselectPromise: Promise<void>): void {
+        multiselectPromise.then(() => this.toggleMultiSelect());
+    }
 }

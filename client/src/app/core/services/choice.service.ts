@@ -36,7 +36,7 @@ export class ChoiceService extends OpenSlidesComponent {
     ): Promise<ChoiceAnswer> {
         const dialogRef = this.dialog.open(ChoiceDialogComponent, {
             minWidth: '250px',
-            maxHeight:'90vh',
+            maxHeight: '90vh',
             data: { title: title, choices: choices, multiSelect: multiSelect }
         });
         return dialogRef.afterClosed().toPromise();
