@@ -82,10 +82,15 @@ if use_redis:
     # Django Channels
 
     # https://channels.readthedocs.io/en/latest/topics/channel_layers.html#configuration
-
-    CHANNEL_LAYERS['default']['BACKEND'] = 'channels_redis.core.RedisChannelLayer'
-    CHANNEL_LAYERS['default']['CONFIG'] = {"capacity": 100000}
-
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {
+                "hosts": [("localhost", 6379)],
+                "capacity": 100000,
+            },
+        },
+    }
     # Collection Cache
 
     # Can be:
