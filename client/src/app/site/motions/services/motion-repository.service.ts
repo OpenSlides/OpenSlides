@@ -149,6 +149,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      * @param viewMotion The View Motion. If not present, a new motion will be created
      */
     public async create(motion: CreateMotion): Promise<Identifiable> {
+        // TODO how to handle category id and motion_block id in  CreateMotion?
         return await this.dataSend.createModel(motion);
     }
 
@@ -617,5 +618,18 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
                 }
             )
             .filter((para: ViewMotionAmendedParagraph) => para !== null);
+    }
+
+    /**
+     * Returns all Motion duplicates (sharing specific values given in input)
+     * @param viewMotion the ViewMotion to compare against the list of Motions
+     * in the data
+     * @param sharedValues properties that must be equal to consider it a duplicate
+     */
+    public getMotionDuplicates(motion: Motion): ViewMotion[] {
+        const duplicates = this.DS.filter(Motion, item => motion.identifier === item.identifier);
+        const viewMotions: ViewMotion[] = [];
+        duplicates.forEach(item => viewMotions.push(this.createViewModel(item)));
+        return viewMotions;
     }
 }

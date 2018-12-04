@@ -288,6 +288,21 @@ export class DataStoreService {
     }
 
     /**
+     * Finds a model item in the dataStore by type.
+     *
+     * @param collectionType The desired BaseModel type to be read from the dataStore
+     * @param callback a find function
+     * @return The first BaseModel item matching the filter function
+     * @example this.DS.find<User>(User, myUser => myUser.first_name === "Jenny")
+     */
+    public find<T extends BaseModel<T>>(
+        collectionType: ModelConstructor<T> | string,
+        callback: (model: T) => boolean
+    ): T {
+        return this.getAll<T>(collectionType).find(callback);
+    }
+
+    /**
      * Add one or multiple models to dataStore.
      *
      * @param models BaseModels to add to the store
