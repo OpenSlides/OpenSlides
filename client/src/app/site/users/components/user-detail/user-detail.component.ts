@@ -38,6 +38,11 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
     public editUser = false;
 
     /**
+     * Set new Password
+     */
+    public newPassword = false;
+
+    /**
      * True if a new user is created
      */
     public newUser = false;
@@ -140,7 +145,7 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
             case 'seePersonal':
                 return this.operator.hasPerms('users.can_see_extra_data', 'users.can_manage') || this.ownPage;
             case 'changePersonal':
-                return this.operator.hasPerms('user.cans_manage') || this.ownPage;
+                return this.operator.hasPerms('users.can_manage') || this.ownPage;
             default:
                 return false;
         }
@@ -320,6 +325,13 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
         if (await this.promptService.open(this.translate.instant('Are you sure?'), content)) {
             this.repo.delete(this.user).then(() => this.router.navigate(['./users/']), this.raiseError);
         }
+    }
+
+    /**
+     * navigate to the change Password site
+     */
+    public changePassword(): void {
+        this.router.navigate([`./users/password/${this.user.id}`]);
     }
 
     /**
