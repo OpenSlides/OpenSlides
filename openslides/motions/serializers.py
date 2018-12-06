@@ -94,7 +94,6 @@ class StateSerializer(ModelSerializer):
         fields = (
             'id',
             'name',
-            'action_word',
             'recommendation_label',
             'css_class',
             'required_permission_to_see',
@@ -129,7 +128,6 @@ class WorkflowSerializer(ModelSerializer):
         workflow = super().create(validated_data)
         first_state = State.objects.create(
             name='new',
-            action_word='new',
             workflow=workflow,
             allow_create_poll=True,
             allow_support=True,
