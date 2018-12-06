@@ -11,6 +11,7 @@ MODULE_DIR = os.path.realpath(os.path.dirname(os.path.abspath(__file__)))
 INSTALLED_APPS = [
     'openslides.core',
     'openslides.users',
+    'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.staticfiles',

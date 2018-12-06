@@ -44,9 +44,6 @@ class Migration(migrations.Migration):
                 'default_permissions': (),
             },
             bases=(openslides.utils.models.RESTModelMixin, 'auth.group'),
-            managers=[
-                ('objects', openslides.users.models.GroupManager()),
-            ],
         ),
         migrations.RunPython(
             create_openslides_groups,

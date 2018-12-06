@@ -335,6 +335,9 @@ class Group(RESTModelMixin, models.Model):
         """
         Get all permissions of the group.
         """
+        if self.db_permissions == '':
+            return []
+
         return self.db_permissions.split(',')
 
     @permissions.setter

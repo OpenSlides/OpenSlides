@@ -9,7 +9,7 @@ from django.contrib.auth import (
     logout as auth_logout,
     update_session_auth_hash,
 )
-#from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
