@@ -193,6 +193,22 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
     }
 
     /**
+     * Sets the submitters by sending a request to the server,
+     *
+     * @param viewMotion The motion to change the submitters from
+     * @param submitters The submitters to set
+     */
+    public async setSubmitters(viewMotion: ViewMotion, submitters: User[]): Promise<void> {
+        const requestData = {
+            motions: [{
+                id: viewMotion.id,
+                submitters: submitters.map(s => s.id),
+            }]
+        };
+        this.httpService.post('/rest/motions/motion/manage_multiple_submitters/', requestData);
+    }
+
+    /**
      * Sends the changed nodes to the server.
      *
      * @param data The reordered data from the sorting

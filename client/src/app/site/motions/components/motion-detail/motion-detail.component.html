@@ -183,10 +183,7 @@
                 </div>
             </div>
             <div *ngIf="!editMotion && !newMotion">
-                <h4 translate>Submitters</h4>
-                <mat-chip-list *ngFor="let submitter of motion.submitters">
-                    <mat-chip>{{ submitter.full_name }}</mat-chip>
-                </mat-chip-list>
+                <os-manage-submitters [motion]="motion"></os-manage-submitters>
             </div>
         </div>
 

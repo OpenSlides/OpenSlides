@@ -1,8 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter, ContentChild, TemplateRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ContentChild, TemplateRef, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Selectable } from '../selectable';
 import { EmptySelectable } from '../empty-selectable';
+import { Observable, Subscription } from 'rxjs';
 
 /**
  * Reusable Sorting List
@@ -28,7 +29,7 @@ import { EmptySelectable } from '../empty-selectable';
     templateUrl: './sorting-list.component.html',
     styleUrls: ['./sorting-list.component.scss']
 })
-export class SortingListComponent implements OnInit {
+export class SortingListComponent implements OnInit, OnDestroy {
     /**
      * Sorted and returned
      */
@@ -64,25 +65,38 @@ export class SortingListComponent implements OnInit {
      *
      * If live updates are disabled, new values are processed when the auto update adds
      * or removes relevant objects
+     *
+     * One can pass the values as an array or an observalbe. If the observable is chosen,
+     * every time the observable changes, the array is updated with the rules above.
      */
     @Input()
-    public set input(newValues: Array<Selectable>) {
+    public set input(newValues: Selectable[] | Observable<Selectable[]>) {
         if (newValues) {
-            if (this.array.length !== newValues.length || this.live) {
-                this.array = [];
-                this.array = newValues.map(val => val);
-            } else if (this.array.length === 0) {
-                this.array.push(new EmptySelectable(this.translate));
+            if (this.inputSubscription) {
+                this.inputSubscription.unsubscribe();
+            }
+            if (newValues instanceof Observable) {
+                this.inputSubscription = newValues.subscribe(values => {
+                    this.updateArray(values);
+                })
+            } else {
+                this.inputSubscription = null;
+                this.updateArray(newValues);
             }
         }
     }
+
+    /**
+     * Saves the subscription, if observables are used. Cleared in the onDestroy hook.
+     */
+    private inputSubscription: Subscription | null;
 
     /**
      * Inform the parent view about sorting.
      * Alternative approach to submit a new order of elements
      */
     @Output()
-    public sortEvent = new EventEmitter<Array<Selectable>>();
+    public sortEvent = new EventEmitter<Selectable[]>();
 
     /**
      * Constructor for the sorting list.
@@ -98,6 +112,30 @@ export class SortingListComponent implements OnInit {
      * Required by components using the selector as directive
      */
     public ngOnInit(): void {}
+
+    /**
+     * Unsubscribe every subscription.
+     */
+    public ngOnDestroy(): void {
+        if (this.inputSubscription) {
+            this.inputSubscription.unsubscribe();
+        }
+    }
+
+    /**
+     * Updates the array with the new data. This is called, if the input changes
+     *
+     * @param newValues The new values to set.
+     */
+    private updateArray(newValues: Selectable[]): void {
+        if (this.array.length !== newValues.length || this.live) {
+            this.array = [];
+            this.array = newValues.map(val => val);
+            console.log(newValues);
+        } else if (this.array.length === 0) {
+            this.array.push(new EmptySelectable(this.translate));
+        }
+    }
 
     /**
      * drop event

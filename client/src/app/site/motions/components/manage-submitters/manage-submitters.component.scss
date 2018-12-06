@@ -1,0 +1,21 @@
+.search-users {
+    display: grid;
+    .mat-form-field {
+        width: 100%;
+    }
+}
+
+h4 {
+    margin: 0;
+}
+
+.small-button ::ng-deep {
+    width: 20px;
+    height: 20px;
+
+    line-height: inherit;
+
+    mat-icon {
+        font-size: 100%;
+    }
+}

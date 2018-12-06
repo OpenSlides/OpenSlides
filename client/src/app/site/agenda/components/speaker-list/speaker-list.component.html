@@ -51,22 +51,20 @@
             <os-sorting-list [input]="speakers" [live]="true" [count]="true" (sortEvent)="onSortingChange($event)">
                 <!-- implicit item references into the component using ng-template slot -->
                 <ng-template let-item>
-                    <div class="speak-action-buttons">
-                        <mat-button-toggle-group>
-                            <mat-button-toggle matTooltip="{{ 'Begin speech' | translate }}"
-                                (click)="onStartButton(item)">
-                                <mat-icon>mic</mat-icon>
-                                <span translate>Start</span>
-                            </mat-button-toggle>
-                            <mat-button-toggle matTooltip="{{ 'Mark speaker' | translate }}"
-                                (click)="onMarkButton(item)">
-                                <mat-icon>{{ item.marked ? 'star' : 'star_border' }}</mat-icon>
-                            </mat-button-toggle>
-                            <mat-button-toggle matTooltip="{{ 'Remove' | translate }}" (click)="onDeleteButton(item)">
-                                <mat-icon>close</mat-icon>
-                            </mat-button-toggle>
-                        </mat-button-toggle-group>
-                    </div>
+                    <mat-button-toggle-group>
+                        <mat-button-toggle matTooltip="{{ 'Begin speech' | translate }}"
+                            (click)="onStartButton(item)">
+                            <mat-icon>mic</mat-icon>
+                            <span translate>Start</span>
+                        </mat-button-toggle>
+                        <mat-button-toggle matTooltip="{{ 'Mark speaker' | translate }}"
+                            (click)="onMarkButton(item)">
+                            <mat-icon>{{ item.marked ? 'star' : 'star_border' }}</mat-icon>
+                        </mat-button-toggle>
+                        <mat-button-toggle matTooltip="{{ 'Remove' | translate }}" (click)="onDeleteButton(item)">
+                            <mat-icon>close</mat-icon>
+                        </mat-button-toggle>
+                    </mat-button-toggle-group>
                 </ng-template>
             </os-sorting-list>
         </div>

@@ -18,6 +18,7 @@ import { CallListComponent } from './components/call-list/call-list.component';
 import { AmendmentCreateWizardComponent } from './components/amendment-create-wizard/amendment-create-wizard.component';
 import { MotionBlockListComponent } from './components/motion-block-list/motion-block-list.component';
 import { MotionBlockDetailComponent } from './components/motion-block-detail/motion-block-detail.component';
+import { ManageSubmittersComponent } from './components/manage-submitters/manage-submitters.component';
 
 @NgModule({
     imports: [CommonModule, MotionsRoutingModule, SharedModule],
@@ -36,7 +37,8 @@ import { MotionBlockDetailComponent } from './components/motion-block-detail/mot
         CallListComponent,
         AmendmentCreateWizardComponent,
         MotionBlockListComponent,
-        MotionBlockDetailComponent
+        MotionBlockDetailComponent,
+        ManageSubmittersComponent
     ],
     entryComponents: [
         MotionChangeRecommendationComponent,
@@ -44,7 +46,8 @@ import { MotionBlockDetailComponent } from './components/motion-block-detail/mot
         MotionCommentsComponent,
         MotionCommentSectionListComponent,
         MetaTextBlockComponent,
-        PersonalNoteComponent
+        PersonalNoteComponent,
+        ManageSubmittersComponent
     ]
 })
 export class MotionsModule {}
