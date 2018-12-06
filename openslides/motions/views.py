@@ -15,7 +15,6 @@ from ..core.config import config
 from ..core.models import Tag
 from ..utils.auth import has_perm, in_some_groups
 from ..utils.autoupdate import inform_changed_data, inform_deleted_data
-from ..utils.exceptions import OpenSlidesError
 from ..utils.rest_api import (
     CreateModelMixin,
     DestroyModelMixin,
@@ -81,8 +80,7 @@ class MotionViewSet(ModelViewSet):
                       (not config['motions_stop_submitting'] or
                        has_perm(self.request.user, 'motions.can_manage')))
         elif self.action in ('set_state', 'set_recommendation', 'manage_multiple_recommendation',
-                             'follow_recommendation', 'manage_submitters',
-                             'sort_submitters', 'manage_multiple_submitters',
+                             'follow_recommendation', 'manage_multiple_submitters',
                              'manage_multiple_tags', 'create_poll'):
             result = (has_perm(self.request.user, 'motions.can_see') and
                       has_perm(self.request.user, 'motions.can_manage_metadata'))
@@ -391,106 +389,6 @@ class MotionViewSet(ModelViewSet):
             message = _('Comment {} deleted').format(section.name)
 
         return Response({'detail': message})
-
-    @detail_route(methods=['POST', 'DELETE'])
-    def manage_submitters(self, request, pk=None):
-        """
-        POST: Add a user as a submitter to this motion.
-        DELETE: Remove the user as a submitter from this motion.
-        For both cases provide ['user': <user_id>} for the user to add or remove.
-        """
-        motion = self.get_object()
-
-        if request.method == 'POST':
-            user_id = request.data.get('user')
-
-            # Check permissions and other conditions. Get user instance.
-            if user_id is None:
-                raise ValidationError({'detail': _('You have to provide a user.')})
-            else:
-                try:
-                    user = get_user_model().objects.get(pk=int(user_id))
-                except (ValueError, get_user_model().DoesNotExist):
-                    raise ValidationError({'detail': _('User does not exist.')})
-
-            # Try to add the user. This ensurse that a user is not twice a submitter
-            try:
-                Submitter.objects.add(user, motion)
-            except OpenSlidesError as e:
-                raise ValidationError({'detail': str(e)})
-            message = _('User %s was successfully added as a submitter.') % user
-
-            # Send new submitter via autoupdate because users without permission
-            # to see users may not have it but can get it now.
-            inform_changed_data(user)
-
-        else:  # DELETE
-            user_id = request.data.get('user')
-
-            # Check permissions and other conditions. Get user instance.
-            if user_id is None:
-                raise ValidationError({'detail': _('You have to provide a user.')})
-            else:
-                try:
-                    user = get_user_model().objects.get(pk=int(user_id))
-                except (ValueError, get_user_model().DoesNotExist):
-                    raise ValidationError({'detail': _('User does not exist.')})
-
-                queryset = Submitter.objects.filter(motion=motion, user=user)
-                try:
-                    # We assume that there aren't multiple entries because this
-                    # is forbidden by the Manager's add method. We assume that
-                    # there is only one submitter instance or none.
-                    submitter = queryset.get()
-                except Submitter.DoesNotExist:
-                    raise ValidationError({'detail': _('The user is not a submitter.')})
-                else:
-                    name = str(submitter.user)
-                    submitter.delete()
-                    message = _('User {} successfully removed as a submitter.').format(name)
-
-        # Initiate response.
-        return Response({'detail': message})
-
-    @detail_route(methods=['POST'])
-    def sort_submitters(self, request, pk=None):
-        """
-        Special view endpoint to sort the submitters.
-        Send {'submitters': [<submitter_id_1>, <submitter_id_2>, ...]} as payload.
-        """
-        # Retrieve motion.
-        motion = self.get_object()
-
-        # Check data
-        submitter_ids = request.data.get('submitters')
-        if not isinstance(submitter_ids, list):
-            raise ValidationError(
-                {'detail': _('Invalid data.')})
-
-        # Get all submitters
-        submitters = {}
-        for submitter in motion.submitters.all():
-            submitters[submitter.pk] = submitter
-
-        # Check and sort submitters
-        valid_submitters = []
-        for submitter_id in submitter_ids:
-            if not isinstance(submitter_id, int) or submitters.get(submitter_id) is None:
-                raise ValidationError(
-                    {'detail': _('Invalid data.')})
-            valid_submitters.append(submitters[submitter_id])
-        weight = 1
-        with transaction.atomic():
-            for submitter in valid_submitters:
-                submitter.weight = weight
-                submitter.save(skip_autoupdate=True)
-                weight += 1
-
-        # send autoupdate
-        inform_changed_data(motion)
-
-        # Initiate response.
-        return Response({'detail': _('Submitters successfully sorted.')})
 
     @list_route(methods=['post'])
     @transaction.atomic

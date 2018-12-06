@@ -1,0 +1,45 @@
+<h4 translate>
+    <span translate>Submitters</span>
+    <button class="small-button" type="button" mat-icon-button disableRipple *ngIf="!isEditMode" (click)="onEdit()">
+        <mat-icon>edit</mat-icon>
+    </button>
+    <span *ngIf="isEditMode">
+        <button class="small-button" type="button" mat-icon-button disableRipple (click)="onSave()">
+            <mat-icon>save</mat-icon>
+        </button>
+        <button class="small-button" type="button" mat-icon-button disableRipple (click)="onCancel()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </span>
+</h4>
+
+<div *ngIf="!isEditMode">
+    <mat-chip-list *ngFor="let submitter of motion.submitters">
+        <mat-chip>{{ submitter.full_name }}</mat-chip>
+    </mat-chip-list>
+</div>
+<div *ngIf="isEditMode">
+    <mat-card>
+        <form *ngIf="users && users.value.length > 0" [formGroup]="addSubmitterForm">
+            <os-search-value-selector
+                class="search-users"
+                ngDefaultControl
+                [form]="addSubmitterForm"
+                [formControl]="addSubmitterForm.get('userId')"
+                [multiple]="false"
+                listname="{{ 'Select or search new submitter ...' | translate }}"
+                [InputListValues]="users"
+            ></os-search-value-selector>
+        </form>
+
+        <os-sorting-list class="testclass" [input]="editSubmitterObservable" [live]="true" [count]="true" (sortEvent)="onSortingChange($event)">
+            <!-- implicit user references into the component using ng-template slot -->
+            <ng-template let-user>
+                <button type="button" mat-icon-button matTooltip="{{ 'Remove' | translate }}" (click)="onRemove(user)">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </ng-template>
+        </os-sorting-list>
+    </mat-card>
+</div>
+

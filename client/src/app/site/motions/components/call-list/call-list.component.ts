@@ -1,4 +1,4 @@
-import { Component, ViewChild, EventEmitter } from '@angular/core';
+import { Component, EventEmitter } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material';
 
@@ -8,7 +8,6 @@ import { Observable } from 'rxjs';
 import { BaseViewComponent } from '../../../base/base-view';
 import { MotionRepositoryService } from '../../services/motion-repository.service';
 import { ViewMotion } from '../../models/view-motion';
-import { SortingListComponent } from '../../../../shared/components/sorting-list/sorting-list.component';
 import { OSTreeSortEvent } from 'app/shared/components/sorting-tree/sorting-tree.component';
 import { MotionCsvExportService } from '../../services/motion-csv-export.service';
 
@@ -34,12 +33,6 @@ export class CallListComponent extends BaseViewComponent {
      * Emits true for expand and false for collaps. Informs the sorter component about this actions.
      */
     public readonly expandCollapse: EventEmitter<boolean> = new EventEmitter<boolean>();
-
-    /**
-     * The sort component
-     */
-    @ViewChild('sorter')
-    public sorter: SortingListComponent;
 
     /**
      * Updates the motions member, and sorts it.

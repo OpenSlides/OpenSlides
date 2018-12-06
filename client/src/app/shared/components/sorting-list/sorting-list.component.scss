@@ -1,6 +1,5 @@
 .list {
-    width: 75%;
-    max-width: 100%;
+    width: 100%;
     border: solid 1px #ccc;
     display: block;
     background: white; // TODO theme
@@ -37,7 +36,7 @@
 
 .line {
     display: table;
-    min-height: 60px;
+    min-height: 50px;
 
     .section-one {
         display: table-cell;

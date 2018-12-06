@@ -75,7 +75,7 @@
 
         <!-- Edit form shows during the edit event -->
         <form id="updateForm" [formGroup]='updateForm' *ngIf="editId === category.id" (keydown)="keyDownFunction($event, category)">
-            <span translate>Edit category:</span>:<br>
+            <span translate>Edit category</span>:<br>
 
             <mat-form-field>
                 <input formControlName="prefix" matInput placeholder="{{'Prefix' | translate}}" required>
@@ -99,7 +99,7 @@
                     <li>{{ motion }}</li>
                 </ul>
             </div>
-            <div *ngIf="editId === category.id">
+            <div *ngIf="editId === category.id" class="half-width">
                 <os-sorting-list [input]="motionsInCategory(category)" #sorter></os-sorting-list>
             </div>
         </div>
