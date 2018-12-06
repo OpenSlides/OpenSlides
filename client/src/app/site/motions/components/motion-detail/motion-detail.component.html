@@ -274,8 +274,12 @@
         <div *ngIf="motion && !editMotion">
             <h4 translate>Category</h4>
             <mat-menu #categoryMenu='matMenu'>
-                <button *ngFor='let category of categoryObserver.value' mat-menu-item
-                    (click)=setCategory(category.id)>{{ category }}
+                <button
+                    mat-menu-item
+                    *ngFor="let category of categoryObserver.value"
+                    (click)="setCategory(category.id)"
+                >
+                    {{ category }}
                 </button>
                 <button mat-menu-item (click)=setCategory(null)>
                     ---
@@ -283,6 +287,27 @@
             </mat-menu>
             <mat-basic-chip [matMenuTriggerFor]='categoryMenu' class="grey">
                 {{ motion.category ? motion.category : ('not set' | translate) }}
+            </mat-basic-chip>
+        </div>
+
+        <!-- Block -->
+        <div *ngIf="motion && !editMotion">
+            <h4 translate>Motion block</h4>
+
+            <mat-menu #blockMenu='matMenu'>
+                <button
+                    mat-menu-item
+                    *ngFor="let block of blockObserver.value"
+                    (click)="setBlock(block.id)"
+                >
+                    {{ block }}
+                </button>
+                <button mat-menu-item (click)="setBlock(null)">
+                    ---
+                </button>
+            </mat-menu>
+            <mat-basic-chip [matMenuTriggerFor]='blockMenu' class="grey">
+                 {{ motion.motion_block ? motion.motion_block : ('not set' | translate) }}
             </mat-basic-chip>
         </div>
 

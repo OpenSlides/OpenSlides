@@ -72,7 +72,16 @@
     <ng-container matColumnDef="state">
         <mat-header-cell *matHeaderCellDef mat-sort-header>State</mat-header-cell>
         <mat-cell *matCellDef="let motion">
-            <div *ngIf="motion.category" class="small"><mat-icon>device_hub</mat-icon>{{ motion.category }}</div>
+            <div class="innerTable">
+                <div class="small" *ngIf="motion.category">
+                    <mat-icon>device_hub</mat-icon>
+                    {{ motion.category }}
+                </div>
+                <div class="small" *ngIf="motion.motion_block">
+                    <mat-icon>widgets</mat-icon>
+                    {{ motion.motion_block.title }}
+                </div>
+            </div>
         </mat-cell>
     </ng-container>
 
@@ -117,6 +126,15 @@
             <mat-icon>device_hub</mat-icon>
             <span translate>Categories</span>
         </button>
+        <button mat-menu-item routerLink="blocks">
+            <!-- possible icons:
+                dashboard
+                widgets
+                view_module
+             -->
+            <mat-icon>widgets</mat-icon>
+            <span translate>Motion blocks</span>
+        </button>
         <button mat-menu-item routerLink="statute-paragraphs" *ngIf="statutesEnabled">
             <mat-icon>account_balance</mat-icon>
             <span translate>Statute</span>
@@ -138,7 +156,7 @@
                 <mat-icon>sort</mat-icon>
                 <span translate>Move to agenda item</span>
             </button>
-            <button mat-menu-item (click)="multiselectWrapper(multiselectService.setStatus(selectedRows))">
+            <button mat-menu-item (click)="multiselectWrapper(multiselectService.setStateOfMultiple(selectedRows))">
                 <mat-icon>label</mat-icon>
                 <span translate>Set status</span>
             </button>

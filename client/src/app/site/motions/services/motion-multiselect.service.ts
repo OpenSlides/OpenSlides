@@ -82,7 +82,7 @@ export class MotionMultiselectService {
      *
      * @param motions The motions to change
      */
-    public async setStatus(motions: ViewMotion[]): Promise<void> {
+    public async setStateOfMultiple(motions: ViewMotion[]): Promise<void> {
         const title = this.translate.instant('This will set the state of all selected motions to:');
         const choices = this.workflowRepo.getAllWorkflowStates().map(workflowState => ({
             id: workflowState.id,

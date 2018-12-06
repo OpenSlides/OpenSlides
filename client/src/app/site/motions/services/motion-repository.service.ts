@@ -26,6 +26,7 @@ import { OSTreeSortEvent } from 'app/shared/components/sorting-tree/sorting-tree
 import { TreeService } from 'app/core/services/tree.service';
 import { ViewMotionAmendedParagraph } from '../models/view-motion-amended-paragraph';
 import { CreateMotion } from '../models/create-motion';
+import { MotionBlock } from 'app/shared/models/motions/motion-block';
 
 /**
  * Repository Services for motions (and potentially categories)
@@ -41,7 +42,6 @@ import { CreateMotion } from '../models/create-motion';
     providedIn: 'root'
 })
 export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> {
-
     /**
      * Creates a MotionRepository
      *
@@ -64,7 +64,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         private readonly diff: DiffService,
         private treeService: TreeService
     ) {
-        super(DS, mapperService, Motion, [Category, User, Workflow, Item]);
+        super(DS, mapperService, Motion, [Category, User, Workflow, Item, MotionBlock]);
     }
 
     /**
@@ -81,11 +81,12 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         const supporters = this.DS.getMany(User, motion.supporters_id);
         const workflow = this.DS.get(Workflow, motion.workflow_id);
         const item = this.DS.get(Item, motion.agenda_item_id);
+        const block = this.DS.get(MotionBlock, motion.motion_block_id);
         let state: WorkflowState = null;
         if (workflow) {
             state = workflow.getStateById(motion.state_id);
         }
-        return new ViewMotion(motion, category, submitters, supporters, workflow, state, item);
+        return new ViewMotion(motion, category, submitters, supporters, workflow, state, item, block);
     }
 
     /**
@@ -176,6 +177,18 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
     public async setCatetory(viewMotion: ViewMotion, categoryId: number): Promise<void> {
         const motion = viewMotion.motion;
         motion.category_id = categoryId;
+        await this.update(motion, viewMotion);
+    }
+
+    /**
+     * Add the motion to a motion block
+     *
+     * @param viewMotion the motion to add
+     * @param blockId the ID of the motion block
+     */
+    public async setBlock(viewMotion: ViewMotion, blockId: number): Promise<void> {
+        const motion = viewMotion.motion;
+        motion.motion_block_id = blockId;
         await this.update(motion, viewMotion);
     }
 

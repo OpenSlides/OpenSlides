@@ -16,6 +16,29 @@
 
 @import '~angular-tree-component/dist/angular-tree-component.css';
 
+// Shared scss definitions
+%os-table {
+    width: 100%;
+
+    /** size of the mat row  */
+    mat-row {
+        height: 60px;
+    }
+
+    mat-row:hover {
+        cursor: pointer;
+        background-color: rgba(0, 0, 0, 0.025);
+    }
+
+    mat-row.selected {
+        cursor: pointer;
+        background-color: rgba(0, 0, 0, 0.055);
+    }
+    mat-row.lg {
+        height: 90px;
+    }
+}
+
 * {
     font-family: Roboto, Arial, Helvetica, sans-serif;
 }
@@ -98,29 +121,16 @@ body {
 }
 
 .os-listview-table {
-    width: 100%;
+    @extend %os-table;
 
     /** hide mat header row */
     .mat-header-row {
         display: none;
     }
+}
 
-    /** size of the mat row  */
-    mat-row {
-        height: 60px;
-    }
-
-    mat-row:hover {
-        cursor: pointer;
-        background-color: rgba(0, 0, 0, 0.025);
-    }
-    mat-row.selected {
-        cursor: pointer;
-        background-color: rgba(0, 0, 0, 0.055);
-    }
-    mat-row.lg {
-        height: 90px;
-    }
+.os-headed-listview-table {
+    @extend %os-table;
 }
 
 .card-plus-distance {
@@ -202,6 +212,18 @@ mat-panel-title mat-icon {
     border-radius: 5px !important;
     padding: 4px 8px !important;
     margin: 8px 8px 8px 0;
+}
+
+// to display quantities. Use in span or div
+.os-amount-chip {
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    padding: 3px;
+    background: lightgray;
+    color: #000;
+    text-align: center;
 }
 
 .mat-chip:focus,

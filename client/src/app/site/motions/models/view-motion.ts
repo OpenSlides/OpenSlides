@@ -348,6 +348,13 @@ export class ViewMotion extends BaseViewModel {
     }
 
     /**
+     * Determine if the motion is in its final workflow state
+     */
+    public isInFinalState(): boolean {
+        return this.nextStates.length === 0;
+    }
+
+    /**
      * It's a paragraph-based amendments if only one paragraph is to be changed,
      * specified by amendment_paragraphs-array
      */

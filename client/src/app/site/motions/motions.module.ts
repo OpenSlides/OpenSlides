@@ -16,6 +16,8 @@ import { MetaTextBlockComponent } from './components/meta-text-block/meta-text-b
 import { PersonalNoteComponent } from './components/personal-note/personal-note.component';
 import { CallListComponent } from './components/call-list/call-list.component';
 import { AmendmentCreateWizardComponent } from './components/amendment-create-wizard/amendment-create-wizard.component';
+import { MotionBlockListComponent } from './components/motion-block-list/motion-block-list.component';
+import { MotionBlockDetailComponent } from './components/motion-block-detail/motion-block-detail.component';
 
 @NgModule({
     imports: [CommonModule, MotionsRoutingModule, SharedModule],
@@ -32,7 +34,9 @@ import { AmendmentCreateWizardComponent } from './components/amendment-create-wi
         MetaTextBlockComponent,
         PersonalNoteComponent,
         CallListComponent,
-        AmendmentCreateWizardComponent
+        AmendmentCreateWizardComponent,
+        MotionBlockListComponent,
+        MotionBlockDetailComponent
     ],
     entryComponents: [
         MotionChangeRecommendationComponent,

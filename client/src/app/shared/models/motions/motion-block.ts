@@ -17,7 +17,12 @@ export class MotionBlock extends AgendaBaseModel {
         return this.title;
     }
 
+    /**
+     * Get the URL to the motion block
+     *
+     * @returns the URL as string
+     */
     public getDetailStateURL(): string {
-        return 'TODO';
+        return `/motions/blocks/${this.id}`;
     }
 }
