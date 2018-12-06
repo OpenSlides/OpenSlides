@@ -8,6 +8,8 @@ import { StatuteParagraphListComponent } from './components/statute-paragraph-li
 import { SpeakerListComponent } from '../agenda/components/speaker-list/speaker-list.component';
 import { CallListComponent } from './components/call-list/call-list.component';
 import { AmendmentCreateWizardComponent } from './components/amendment-create-wizard/amendment-create-wizard.component';
+import { MotionBlockListComponent } from './components/motion-block-list/motion-block-list.component';
+import { MotionBlockDetailComponent } from './components/motion-block-detail/motion-block-detail.component';
 
 const routes: Routes = [
     { path: '', component: MotionListComponent },
@@ -15,6 +17,8 @@ const routes: Routes = [
     { path: 'comment-section', component: MotionCommentSectionListComponent },
     { path: 'statute-paragraphs', component: StatuteParagraphListComponent },
     { path: 'call-list', component: CallListComponent },
+    { path: 'blocks', component: MotionBlockListComponent },
+    { path: 'blocks/:id', component: MotionBlockDetailComponent },
     { path: 'new', component: MotionDetailComponent },
     { path: ':id', component: MotionDetailComponent },
     { path: ':id/speakers', component: SpeakerListComponent },

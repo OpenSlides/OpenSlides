@@ -31,6 +31,7 @@ import { take, takeWhile, multicast, skipWhile } from 'rxjs/operators';
 import { LocalPermissionsService } from '../../services/local-permissions.service';
 import { ViewCreateMotion } from '../../models/view-create-motion';
 import { CreateMotion } from '../../models/create-motion';
+import { MotionBlock } from 'app/shared/models/motions/motion-block';
 
 /**
  * Component for the motion detail view
@@ -179,6 +180,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     public supporterObserver: BehaviorSubject<User[]>;
 
     /**
+     * Subject for the motion blocks
+     */
+    public blockObserver: BehaviorSubject<MotionBlock[]>;
+
+    /**
      * Determine if the name of supporters are visible
      */
     public showSupporters = false;
@@ -249,6 +255,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         this.supporterObserver = new BehaviorSubject(DS.getAll(User));
         this.categoryObserver = new BehaviorSubject(DS.getAll(Category));
         this.workflowObserver = new BehaviorSubject(DS.getAll(Workflow));
+        this.blockObserver = new BehaviorSubject(DS.getAll(MotionBlock));
 
         // Make sure the subjects are updated, when a new Model for the type arrives
         this.DS.changeObservable.subscribe(newModel => {
@@ -259,6 +266,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
                 this.categoryObserver.next(DS.getAll(Category));
             } else if (newModel instanceof Workflow) {
                 this.workflowObserver.next(DS.getAll(Workflow));
+            } else if (newModel instanceof MotionBlock) {
+                this.blockObserver.next(DS.getAll(MotionBlock));
             }
         });
         // load config variables
@@ -760,6 +769,15 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      */
     public setCategory(id: number): void {
         this.repo.setCatetory(this.motion, id);
+    }
+
+    /**
+     * Add the current motion to a motion block
+     *
+     * @param id Motion block id
+     */
+    public setBlock(id: number): void {
+        this.repo.setBlock(this.motion, id);
     }
 
     /**

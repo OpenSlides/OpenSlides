@@ -11,6 +11,16 @@ interface ContentObject {
 }
 
 /**
+ * Determine visibility states for agenda items
+ * Coming from "OpenSlidesConfigVariables" property "agenda_hide_internal_items_on_projector"
+ */
+export const itemVisibilityChoices = [
+    { key: 1, name: 'Public item' },
+    { key: 2, name: 'Internal item' },
+    { key: 3, name: 'Hidden item' }
+];
+
+/**
  * Representations of agenda Item
  * @ignore
  */
