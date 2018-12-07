@@ -633,11 +633,10 @@ class ManageMultipleSubmitters(TestCase):
             text='test_text_kg39KFGm,ao)22FK9lLu')
         self.motion2.save()
 
-    @pytest.mark.skip(reason="This throws an json validation error I'm not sure about")
     def test_set_submitters(self):
         response = self.client.post(
             reverse('motion-manage-multiple-submitters'),
-            {
+            json.dumps({
                 'motions': [
                     {
                         'id': self.motion1.id,
@@ -652,14 +651,15 @@ class ManageMultipleSubmitters(TestCase):
                         ]
                     }
                 ]
-            })
-        print(response.data['detail'])
+            }),
+            content_type='application/json'
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self.motion1.submitters.count(), 1)
         self.assertEqual(self.motion2.submitters.count(), 1)
         self.assertEqual(
-            self.motion1.submitters.get().pk,
-            self.motion2.submitters.get().pk)
+            self.motion1.submitters.get().user.pk,
+            self.motion2.submitters.get().user.pk)
 
     def test_non_existing_user(self):
         response = self.client.post(
