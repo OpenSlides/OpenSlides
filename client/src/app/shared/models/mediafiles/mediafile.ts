@@ -24,6 +24,15 @@ export class Mediafile extends ProjectableBaseModel {
         this.mediafile = new File(input.mediafile);
     }
 
+    /**
+     * Determine the downloadURL
+     *
+     * @returns the download URL for the specific file as string
+     */
+    public getDownloadUrl(): string {
+        return `${this.media_url_prefix}${this.mediafile.name}`;
+    }
+
     public getTitle(): string {
         return this.title;
     }

@@ -43,7 +43,7 @@ export class ViewMediafile extends BaseViewModel {
     }
 
     public get downloadUrl(): string {
-        return this.mediafile && this.mediafile.mediafile ? `${this.prefix}${this.fileName}` : null;
+        return this.mediafile ? this.mediafile.getDownloadUrl() : null;
     }
 
     public constructor(mediafile?: Mediafile, uploader?: User) {
@@ -100,7 +100,7 @@ export class ViewMediafile extends BaseViewModel {
             'video/3gpp',
             'video/x-msvideo',
             'video/x-ms-wmv',
-            'video/x-matroska',
+            'video/x-matroska'
         ].includes(this.type);
     }
 

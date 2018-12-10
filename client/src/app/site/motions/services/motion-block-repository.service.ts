@@ -12,7 +12,6 @@ import { ViewMotion } from '../models/view-motion';
 import { Observable } from 'rxjs';
 import { MotionRepositoryService } from './motion-repository.service';
 import { map } from 'rxjs/operators';
-import { ConfigService } from 'app/core/services/config.service';
 
 /**
  * Repository service for motion blocks
@@ -28,14 +27,12 @@ export class MotionBlockRepositoryService extends BaseRepository<ViewMotionBlock
      * @param mapperService Mapping collection strings to classes
      * @param dataSend Send models to the server
      * @param motionRepo Accessing the motion repository
-     * @param config To access config variables
      */
     public constructor(
         DS: DataStoreService,
         mapperService: CollectionStringModelMapperService,
         private dataSend: DataSendService,
         private motionRepo: MotionRepositoryService,
-        private config: ConfigService
     ) {
         super(DS, mapperService, MotionBlock);
     }
@@ -101,15 +98,6 @@ export class MotionBlockRepositoryService extends BaseRepository<ViewMotionBlock
      */
     public getMotionAmountByBlock(block: MotionBlock): number {
         return this.DS.filter(Motion, motion => motion.motion_block_id === block.id).length;
-    }
-
-    /**
-     * Get agenda visibility from the config
-     *
-     * @return An observable to the default agenda visibility
-     */
-    public getDefaultAgendaVisibility(): Observable<number> {
-        return this.config.get('agenda_new_items_default_visibility').pipe(map(key => +key));
     }
 
     /**

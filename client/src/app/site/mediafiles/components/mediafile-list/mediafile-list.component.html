@@ -168,6 +168,10 @@
             <mat-icon>library_add</mat-icon>
             <span translate>Exit multiselect</span>
         </button>
+        <button mat-menu-item (click)="selectAll()">
+            <mat-icon>done_all</mat-icon>
+            <span translate>Select all</span>
+        </button>
         <mat-divider></mat-divider>
         <button mat-menu-item *osPerms="'mediafiles.can_manage'" (click)="deleteSelected()">
             <mat-icon>delete</mat-icon>
