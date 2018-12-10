@@ -27,6 +27,7 @@ import { TreeService } from 'app/core/services/tree.service';
 import { ViewMotionAmendedParagraph } from '../models/view-motion-amended-paragraph';
 import { CreateMotion } from '../models/create-motion';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
+import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 
 /**
  * Repository Services for motions (and potentially categories)
@@ -64,7 +65,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         private readonly diff: DiffService,
         private treeService: TreeService
     ) {
-        super(DS, mapperService, Motion, [Category, User, Workflow, Item, MotionBlock]);
+        super(DS, mapperService, Motion, [Category, User, Workflow, Item, MotionBlock, Mediafile]);
     }
 
     /**
@@ -82,11 +83,12 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         const workflow = this.DS.get(Workflow, motion.workflow_id);
         const item = this.DS.get(Item, motion.agenda_item_id);
         const block = this.DS.get(MotionBlock, motion.motion_block_id);
+        const attachments = this.DS.getMany(Mediafile, motion.attachments_id);
         let state: WorkflowState = null;
         if (workflow) {
             state = workflow.getStateById(motion.state_id);
         }
-        return new ViewMotion(motion, category, submitters, supporters, workflow, state, item, block);
+        return new ViewMotion(motion, category, submitters, supporters, workflow, state, item, block, attachments);
     }
 
     /**

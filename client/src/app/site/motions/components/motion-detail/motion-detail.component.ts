@@ -1,7 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatExpansionPanel, MatSnackBar, MatCheckboxChange } from '@angular/material';
+import { take, takeWhile, multicast, skipWhile } from 'rxjs/operators';
 
 import { Category } from '../../../../shared/models/motions/category';
 import { ViewportService } from '../../../../core/services/viewport.service';
@@ -19,7 +21,7 @@ import {
 } from '../motion-change-recommendation/motion-change-recommendation.component';
 import { ChangeRecommendationRepositoryService } from '../../services/change-recommendation-repository.service';
 import { ViewChangeReco } from '../../models/view-change-reco';
-import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
+
 import { ViewUnifiedChange } from '../../models/view-unified-change';
 import { OperatorService } from '../../../../core/services/operator.service';
 import { BaseViewComponent } from '../../../base/base-view';
@@ -27,11 +29,14 @@ import { ViewStatuteParagraph } from '../../models/view-statute-paragraph';
 import { StatuteParagraphRepositoryService } from '../../services/statute-paragraph-repository.service';
 import { ConfigService } from '../../../../core/services/config.service';
 import { Workflow } from 'app/shared/models/motions/workflow';
-import { take, takeWhile, multicast, skipWhile } from 'rxjs/operators';
 import { LocalPermissionsService } from '../../services/local-permissions.service';
 import { ViewCreateMotion } from '../../models/view-create-motion';
 import { CreateMotion } from '../../models/create-motion';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
+import { itemVisibilityChoices, Item } from 'app/shared/models/agenda/item';
+import { PromptService } from 'app/core/services/prompt.service';
+import { AgendaRepositoryService } from 'app/site/agenda/services/agenda-repository.service';
+import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 
 /**
  * Component for the motion detail view
@@ -55,11 +60,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      */
     @ViewChild('contentPanel')
     public contentPanel: MatExpansionPanel;
-
-    /**
-     * Motions meta-info
-     */
-    public metaInfoForm: FormGroup;
 
     /**
      * Motion content. Can be a new version
@@ -185,6 +185,16 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     public blockObserver: BehaviorSubject<MotionBlock[]>;
 
     /**
+     * Subject for mediafiles
+     */
+    public mediafilesObserver: BehaviorSubject<Mediafile[]>;
+
+    /**
+     * Subject for agenda items
+     */
+    public agendaItemObserver: BehaviorSubject<Item[]>;
+
+    /**
      * Determine if the name of supporters are visible
      */
     public showSupporters = false;
@@ -210,6 +220,16 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     public showAmendmentContext = false;
 
     /**
+     * Determines the default agenda item visibility
+     */
+    public defaultVisibility: number;
+
+    /**
+     * Determine visibility states for the agenda that will be created implicitly
+     */
+    public itemVisibility = itemVisibilityChoices;
+
+    /**
      * Constuct the detail view.
      *
      * @param title
@@ -222,11 +242,13 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * @param formBuilder For reactive forms. Form Group and Form Control
      * @param dialogService For opening dialogs
      * @param repo Motion Repository
+     * @param agendaRepo Read out agenda variables
      * @param changeRecoRepo Change Recommendation Repository
      * @param statuteRepo: Statute Paragraph Repository
      * @param DS The DataStoreService
      * @param configService The configuration provider
      * @param sanitizer For making HTML SafeHTML
+     * @param promptService ensure safe deletion
      */
     public constructor(
         title: Title,
@@ -240,15 +262,15 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         private formBuilder: FormBuilder,
         private dialogService: MatDialog,
         private repo: MotionRepositoryService,
+        private agendaRepo: AgendaRepositoryService,
         private changeRecoRepo: ChangeRecommendationRepositoryService,
         private statuteRepo: StatuteParagraphRepositoryService,
         private DS: DataStoreService,
         private configService: ConfigService,
-        private sanitizer: DomSanitizer
+        private sanitizer: DomSanitizer,
+        private promptService: PromptService
     ) {
         super(title, translate, matSnackBar);
-        this.createForm();
-        this.getMotionByUrl();
 
         // Initial Filling of the Subjects
         this.submitterObserver = new BehaviorSubject(DS.getAll(User));
@@ -256,6 +278,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         this.categoryObserver = new BehaviorSubject(DS.getAll(Category));
         this.workflowObserver = new BehaviorSubject(DS.getAll(Workflow));
         this.blockObserver = new BehaviorSubject(DS.getAll(MotionBlock));
+        this.mediafilesObserver = new BehaviorSubject(DS.getAll(Mediafile));
+        this.agendaItemObserver = new BehaviorSubject(DS.getAll(Item));
 
         // Make sure the subjects are updated, when a new Model for the type arrives
         this.DS.changeObservable.subscribe(newModel => {
@@ -268,13 +292,57 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
                 this.workflowObserver.next(DS.getAll(Workflow));
             } else if (newModel instanceof MotionBlock) {
                 this.blockObserver.next(DS.getAll(MotionBlock));
+            } else if (newModel instanceof Mediafile) {
+                this.mediafilesObserver.next(DS.getAll(Mediafile));
+            } else if (newModel instanceof Item) {
+                this.agendaItemObserver.next(DS.getAll(Item));
             }
         });
+
         // load config variables
         this.configService.get('motions_statutes_enabled').subscribe(enabled => (this.statutesEnabled = enabled));
         this.configService.get('motions_min_supporters').subscribe(supporters => (this.minSupporters = supporters));
         this.configService.get('motions_preamble').subscribe(preamble => (this.preamble = preamble));
         this.configService.get('motions_amendments_enabled').subscribe(enabled => (this.amendmentsEnabled = enabled));
+    }
+
+    /**
+     * Init.
+     * Sets the surrounding motions to navigate back and forth
+     */
+    public ngOnInit(): void {
+        this.createForm();
+        this.getMotionByUrl();
+
+        this.repo.getViewModelListObservable().subscribe(newMotionList => {
+            if (newMotionList) {
+                this.allMotions = newMotionList;
+                this.setSurroundingMotions();
+            }
+        });
+
+        this.statuteRepo.getViewModelListObservable().subscribe(newViewStatuteParagraphs => {
+            this.statuteParagraphs = newViewStatuteParagraphs;
+        });
+
+        // Set the default visibility using observers
+        this.agendaRepo.getDefaultAgendaVisibility().subscribe(visibility => {
+            if (visibility && this.newMotion) {
+                this.contentForm.get('agenda_type').setValue(visibility);
+            }
+        });
+
+        // disable the selector for attachments if there are none
+        this.mediafilesObserver.subscribe(files => {
+            if (this.createForm) {
+                const attachmentsCtrl = this.contentForm.get('attachments_id');
+                if (this.mediafilesObserver.value.length === 0) {
+                    attachmentsCtrl.disable();
+                } else {
+                    attachmentsCtrl.enable();
+                }
+            }
+        });
     }
 
     /**
@@ -350,12 +418,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * Async load the values of the motion in the Form.
      */
     public patchForm(formMotion: ViewMotion): void {
-        const metaInfoPatch = {};
-        Object.keys(this.metaInfoForm.controls).forEach(ctrl => {
-            metaInfoPatch[ctrl] = formMotion[ctrl];
-        });
-        this.metaInfoForm.patchValue(metaInfoPatch);
-
         const contentPatch: { [key: string]: any } = {};
         Object.keys(this.contentForm.controls).forEach(ctrl => {
             contentPatch[ctrl] = formMotion[ctrl];
@@ -380,20 +442,19 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * TODO: Build a custom form validator
      */
     public createForm(): void {
-        this.metaInfoForm = this.formBuilder.group({
-            identifier: [''],
-            category_id: [''],
-            state_id: [''],
-            recommendation_id: [''],
-            submitters_id: [],
-            supporters_id: [[]],
-            workflow_id: [],
-            origin: ['']
-        });
         this.contentForm = this.formBuilder.group({
+            identifier: [''],
             title: ['', Validators.required],
             text: ['', Validators.required],
             reason: [''],
+            category_id: [''],
+            attachments_id: [[]],
+            parent_id: [],
+            agenda_type: [''],
+            submitters_id: [],
+            supporters_id: [[]],
+            workflow_id: [],
+            origin: [''],
             statute_amendment: [''], // Internal value for the checkbox, not saved to the model
             statute_paragraph_id: ['']
         });
@@ -417,6 +478,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      *
      * @param motionValues valus for the new motion
      * @param ctor The motion constructor, so different motion types can be created.
+     *
+     * @returns the motion to save
      */
     private prepareMotionForSave<T extends Motion>(motionValues: any, ctor: new (...args: any[]) => T): T {
         const motion = new ctor();
@@ -440,7 +503,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * Creates a motion. Calls the "patchValues" function in the MotionObject
      */
     public async createMotion(): Promise<void> {
-        const newMotionValues = { ...this.metaInfoForm.value, ...this.contentForm.value };
+        const newMotionValues = { ...this.contentForm.value };
         const motion = this.prepareMotionForSave(newMotionValues, CreateMotion);
 
         try {
@@ -455,7 +518,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * Save a motion. Calls the "patchValues" function in the MotionObject
      */
     public async updateMotion(): Promise<void> {
-        const newMotionValues = { ...this.metaInfoForm.value, ...this.contentForm.value };
+        const newMotionValues = { ...this.contentForm.value };
         const motion = this.prepareMotionForSave(newMotionValues, Motion);
         this.repo.update(motion, this.motionCopy).then(() => (this.editMotion = false), this.raiseError);
     }
@@ -473,6 +536,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
 
     /**
      * get the formated motion text from the repository.
+     *
+     * @returns formated motion texts
      */
     public getFormattedTextPlain(): string {
         // Prevent this.allChangingObjects to be reordered from within formatMotion
@@ -510,9 +575,9 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * If `this.motion` is an amendment, this returns a specified line range from the parent motion
      * (e.g. to show the contect in which this amendment is happening)
      *
-     * @param {number} from
-     * @param {number} to
-     * @returns {SafeHtml}
+     * @param from the line number to start
+     * @param to the line number to stop
+     * @returns safe html strings
      */
     public getParentMotionRange(from: number, to: number): SafeHtml {
         const str = this.repo.extractMotionLineRange(this.motion.parent_id, { from, to }, true);
@@ -521,7 +586,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
 
     /**
      * get the diff html from the statute amendment, as SafeHTML for [innerHTML]
-     * @returns {SafeHtml}
+     *
+     * @returns safe html strings
      */
     public getFormattedStatuteAmendment(): SafeHtml {
         const diffHtml = this.repo.formatStatuteAmendment(this.statuteParagraphs, this.motion, this.motion.lineLength);
@@ -530,17 +596,18 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
 
     /**
      * Trigger to delete the motion.
-     * Sends a delete request over the repository and
-     * shows a "are you sure" dialog
      */
     public async deleteMotionButton(): Promise<void> {
-        this.repo.delete(this.motion).then(() => {
+        const content = this.translate.instant('Are you sure you want to delete this motion block?');
+        if (await this.promptService.open(this.motion.title, content)) {
+            await this.repo.delete(this.motion);
             this.router.navigate(['./motions/']);
-        }, this.raiseError);
+        }
     }
 
     /**
      * Sets the motions line numbering mode
+     *
      * @param mode Needs to got the enum defined in ViewMotion
      */
     public setLineNumberingMode(mode: LineNumberingMode): void {
@@ -549,6 +616,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
 
     /**
      * Returns true if no line numbers are to be shown.
+     *
+     * @returns whether there are line numbers at all
      */
     public isLineNumberingNone(): boolean {
         return this.motion.lnMode === LineNumberingMode.None;
@@ -556,6 +625,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
 
     /**
      * Returns true if the line numbers are to be shown within the text with no line breaks.
+     *
+     * @returns whether the line numberings are inside
      */
     public isLineNumberingInline(): boolean {
         return this.motion.lnMode === LineNumberingMode.Inside;
@@ -563,6 +634,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
 
     /**
      * Returns true if the line numbers are to be shown to the left of the text.
+     *
+     * @returns whether the line numberings are outside
      */
     public isLineNumberingOutside(): boolean {
         return this.motion.lnMode === LineNumberingMode.Outside;
@@ -627,6 +700,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
 
     /**
      * Comes from the head bar
+     *
      * @param mode
      */
     public setEditMode(mode: boolean): void {
@@ -644,6 +718,9 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         }
     }
 
+    /**
+     * Sets the default workflow ID during form creation
+     */
     public updateWorkflowIdForCreateForm(): void {
         const isStatuteAmendment = !!this.contentForm.get('statute_amendment').value;
         const configKey = isStatuteAmendment ? 'motions_statute_amendments_workflow' : 'motions_workflow';
@@ -663,7 +740,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
                 skipWhile(id => !id)
             )
             .subscribe(id => {
-                this.metaInfoForm.patchValue({
+                this.contentForm.patchValue({
                     workflow_id: parseInt(id, 10)
                 });
             });
@@ -671,6 +748,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
 
     /**
      * If the checkbox is deactivated, the statute_paragraph_id-field needs to be reset, as only that field is saved
+     *
      * @param {MatCheckboxChange} $event
      */
     public onStatuteAmendmentChange($event: MatCheckboxChange): void {
@@ -682,6 +760,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
 
     /**
      * The paragraph of the statute to amend was changed -> change the input fields below
+     *
      * @param {number} newValue
      */
     public onStatuteParagraphChange(newValue: number): void {
@@ -694,6 +773,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
 
     /**
      * Navigates the user to the given ViewMotion
+     *
      * @param motion target
      */
     public navigateToMotion(motion: ViewMotion): void {
@@ -749,6 +829,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
 
     /**
      * Sets the state
+     *
      * @param id Motion state id
      */
     public setState(id: number): void {
@@ -757,6 +838,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
 
     /**
      * Sets the recommendation
+     *
      * @param id Motion recommendation id
      */
     public setRecommendation(id: number): void {
@@ -765,6 +847,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
 
     /**
      * Sets the category for current motion
+     *
      * @param id Motion category id
      */
     public setCategory(id: number): void {
@@ -797,6 +880,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
 
     /**
      * Create the absolute path to the corresponding list of speakers
+     *
      * @returns the link to the corresponding list of speakers as string
      */
     public getSpeakerLink(): string {
@@ -804,25 +888,21 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     }
 
     /**
-     * Determine if the user has the correct requirements to alter the motion
+     * Click handler for attachments
+     *
+     * @param attachment the selected file
      */
-    public opCanEdit(): boolean {
-        return this.op.hasPerms('motions.can_manage', 'motions.can_manage_metadata');
+    public onClickAttacment(attachment: Mediafile): void {
+        window.open(attachment.getDownloadUrl());
     }
 
     /**
-     * Init.
-     * Sets the surrounding motions to navigate back and forth
+     * Determine if the user has the correct requirements to alter the motion
+     * TODO: All views should probably have a "isAllowedTo" routine to simplify this process
+     *
+     * @returns whether or not the OP is allowed to edit the motion
      */
-    public ngOnInit(): void {
-        this.repo.getViewModelListObservable().subscribe(newMotionList => {
-            if (newMotionList) {
-                this.allMotions = newMotionList;
-                this.setSurroundingMotions();
-            }
-        });
-        this.statuteRepo.getViewModelListObservable().subscribe(newViewStatuteParagraphs => {
-            this.statuteParagraphs = newViewStatuteParagraphs;
-        });
+    public opCanEdit(): boolean {
+        return this.op.hasPerms('motions.can_manage', 'motions.can_manage_metadata');
     }
 }

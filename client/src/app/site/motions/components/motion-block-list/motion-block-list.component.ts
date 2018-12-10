@@ -13,6 +13,7 @@ import { Item, itemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { DataStoreService } from 'app/core/services/data-store.service';
 import { MotionBlockRepositoryService } from '../../services/motion-block-repository.service';
 import { ViewMotionBlock } from '../../models/view-motion-block';
+import { AgendaRepositoryService } from 'app/site/agenda/services/agenda-repository.service';
 
 /**
  * Table for the motion blocks
@@ -57,6 +58,7 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
      * @param router routing to children
      * @param route determine the local route
      * @param repo the motion block repository
+     * @param agendaRepo the agenda repository service
      * @param DS the dataStore
      * @param formBuilder creates forms
      */
@@ -67,6 +69,7 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
         private router: Router,
         private route: ActivatedRoute,
         private repo: MotionBlockRepositoryService,
+        private agendaRepo: AgendaRepositoryService,
         private DS: DataStoreService,
         private formBuilder: FormBuilder
     ) {
@@ -98,7 +101,7 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
             this.dataSource.data = newMotionblocks;
         });
 
-        this.repo.getDefaultAgendaVisibility().subscribe(visibility => (this.defaultVisibility = visibility));
+        this.agendaRepo.getDefaultAgendaVisibility().subscribe(visibility => (this.defaultVisibility = visibility));
     }
 
     /**

@@ -41,13 +41,21 @@
         <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
         <mat-cell *matCellDef="let motion">
             <div class="innerTable">
-                <span class="motion-list-title">{{ motion.title }}</span> <br />
+                <span class="motion-list-title">{{ motion.title }}</span>
+                <!-- attachments -->
+                <span class="attached-files" *ngIf="motion.hasAttachments()">
+                    <!-- <mat-basic-chip class="bluegrey"> <mat-icon>attach_file</mat-icon> </mat-basic-chip> -->
+                    <mat-icon>attach_file</mat-icon>
+                </span>
+
+                <br />
                 <span class="motion-list-from" *ngIf="motion.submitters.length">
                     <span translate>by</span> {{ motion.submitters }}
                 </span>
                 <br *ngIf="motion.submitters.length" />
                 <!-- state -->
                 <mat-basic-chip
+                    *ngIf="motion.state"
                     [ngClass]="{
                         green: motion.state.css_class === 'success',
                         red: motion.state.css_class === 'danger',

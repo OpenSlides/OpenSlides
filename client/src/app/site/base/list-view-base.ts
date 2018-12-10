@@ -79,7 +79,7 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel> extends Bas
             this.singleSelectAction(row);
         } else {
             const idx = this.selectedRows.indexOf(row);
-            if ( idx < 0){
+            if (idx < 0) {
                 this.selectedRows.push(row);
             } else {
                 this.selectedRows.splice(idx, 1);
@@ -92,19 +92,25 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel> extends Bas
      * Should be overridden by implementations. Currently there is no default action.
      * @param row a ViewModel
      */
-    public singleSelectAction(row: V) : void {
-    }
+    public singleSelectAction(row: V): void {}
 
     /**
      * enables/disables the multiSelect Mode
      */
-    public toggleMultiSelect() : void {
+    public toggleMultiSelect(): void {
         if (!this.canMultiSelect || this.isMultiSelect) {
             this._multiSelectModus = false;
             this.clearSelection();
         } else {
             this._multiSelectModus = true;
         }
+    }
+
+    /**
+     * Select all files in the current data source
+     */
+    public selectAll(): void {
+        this.selectedRows = this.dataSource.data;
     }
 
     /**

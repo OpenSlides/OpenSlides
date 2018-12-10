@@ -12,7 +12,7 @@
             <span translate>Motion</span>
             <!-- Whitespace between "Motion" and identifier -->
             <span>&nbsp;</span> <span *ngIf="!editMotion">{{ motion.identifier }}</span>
-            <span *ngIf="editMotion">{{ metaInfoForm.get('identifier').value }}</span>
+            <span *ngIf="editMotion">{{ contentForm.get('identifier').value }}</span>
         </h2>
         <h2 *ngIf="newMotion" translate>New motion</h2>
     </div>
@@ -21,14 +21,32 @@
     <div *ngIf="!editMotion" class="extra-controls-slot on-transition-fade">
         <div *ngIf="previousMotion">
             <button mat-button (click)="navigateToMotion(previousMotion)">
-                <mat-icon>navigate_before</mat-icon>
+                <!-- possible icons:
+                    arrow_left
+                    chevron_left
+                    first_page
+                    arrow_back
+                    arrow_back_ios
+                    navigate_before
+                    fast_rewind
+                -->
+                <mat-icon>chevron_left</mat-icon>
                 <span>{{ previousMotion.identifier }}</span>
             </button>
         </div>
         <div *ngIf="nextMotion">
             <button mat-button (click)="navigateToMotion(nextMotion)">
                 <span>{{ nextMotion.identifier }}</span>
-                <mat-icon>navigate_next</mat-icon>
+                <!-- possible icons:
+                    arrow_right
+                    chevron_right
+                    last_page
+                    arrow_forward
+                    arrow_forward_ios
+                    navigate_next
+                    fast_forward
+                -->
+                <mat-icon>chevron_right</mat-icon>
             </button>
         </div>
     </div>
@@ -87,18 +105,16 @@
 </os-head-bar>
 
 <!-- Title -->
-<div *ngIf="motion" class="motion-title on-transition-fade">
-    <h2 *ngIf="!editMotion">{{ motion.title }}</h2>
-    <h2 *ngIf="editMotion">{{ contentForm.get('title').value }}</h2>
+<div class="motion-title on-transition-fade" *ngIf="motion && !editMotion">
+    <h2>{{ motion.title }}</h2>
 </div>
 
-<ng-container *ngIf="vp.isMobile; then: mobileView; else: desktopView"></ng-container>
+<ng-container *ngIf="vp.isMobile; then mobileView; else desktopView"></ng-container>
 
 <ng-template #mobileView>
-    <mat-accordion multi='true' class='on-transition-fade'>
-
+    <mat-accordion multi="true" class="on-transition-fade">
         <!-- MetaInfo Panel-->
-        <mat-expansion-panel #metaInfoPanel [expanded]="true" class='meta-info-block meta-info-panel'>
+        <mat-expansion-panel #metaInfoPanel [expanded]="true" class="meta-info-block meta-info-panel">
             <mat-expansion-panel-header>
                 <mat-panel-title>
                     <mat-icon>info</mat-icon>
@@ -126,8 +142,8 @@
             </div>
         </mat-expansion-panel>
 
-        <os-motion-comments *ngIf="!newMotion" [motion]="motion"></os-motion-comments>
-        <os-personal-note *ngIf="!newMotion" [motion]="motion"></os-personal-note>
+        <os-motion-comments *ngIf="!editMotion" [motion]="motion"></os-motion-comments>
+        <os-personal-note *ngIf="!editMotion" [motion]="motion"></os-personal-note>
     </mat-accordion>
 </ng-template>
 
@@ -139,8 +155,8 @@
                 <ng-container *ngTemplateOutlet="metaInfoTemplate"></ng-container>
             </div>
 
-            <os-motion-comments *ngIf="!newMotion" [motion]="motion"></os-motion-comments>
-            <os-personal-note *ngIf="!newMotion" [motion]="motion"></os-personal-note>
+            <os-motion-comments *ngIf="!editMotion" [motion]="motion"></os-motion-comments>
+            <os-personal-note *ngIf="!editMotion" [motion]="motion"></os-personal-note>
         </div>
         <div class="desktop-right ">
             <!-- Content -->
@@ -150,99 +166,72 @@
 </ng-template>
 
 <ng-template #metaInfoTemplate>
-    <form [formGroup]="metaInfoForm" (keydown)="onKeyDown($event)" (ngSubmit)="saveMotion()">
-        <!-- Identifier -->
-        <div *ngIf="editMotion && !newMotion">
-            <!-- <div *ngIf="editMotion"> -->
-            <div *ngIf="!editMotion">
-                <h4 translate>Identifier</h4>
-                {{ motion.identifier }}
-            </div>
-            <mat-form-field *ngIf="editMotion">
-                <input
-                    matInput
-                    placeholder="{{ &quot;Identifier&quot; | translate }}"
-                    formControlName="identifier"
-                    [value]="motionCopy.identifier"
-                />
-            </mat-form-field>
-        </div>
-
+    <div *ngIf="motion">
         <!-- Submitters -->
-        <div *ngIf="motion && motion.submitters || newMotion">
-            <div *ngIf="newMotion">
-                <div *osPerms="['motions.can_manage', 'motions.can_manage_metadata']">
-                    <os-search-value-selector
-                        ngDefaultControl
-                        [form]="metaInfoForm"
-                        [formControl]="metaInfoForm.get('submitters_id')"
-                        [multiple]="true"
-                        listname="{{ 'Submitters' | translate }}"
-                        [InputListValues]="submitterObserver"
-                    ></os-search-value-selector>
-                </div>
-            </div>
-            <div *ngIf="!editMotion && !newMotion">
-                <os-manage-submitters [motion]="motion"></os-manage-submitters>
-            </div>
+        <div *ngIf="motion.submitters || newMotion">
+            <div *ngIf="!editMotion"><os-manage-submitters [motion]="motion"></os-manage-submitters></div>
         </div>
 
-        <!-- Supporters -->
-        <div *ngIf='motion && minSupporters'>
-            <div *ngIf="editMotion">
-                <div *osPerms="['motions.can_manage', 'motions.can_manage_metadata']">
-                    <os-search-value-selector
-                        ngDefaultControl
-                        [form]="metaInfoForm"
-                        [formControl]="metaInfoForm.get('supporters_id')"
-                        [multiple]="true"
-                        listname="{{ 'Supporters' | translate }}"
-                        [InputListValues]="supporterObserver"
-                    ></os-search-value-selector>
-                </div>
-            </div>
-            <div *ngIf="!editMotion">
-                <h4 *ngIf="perms.isAllowed('support', motion) || motion.hasSupporters()" translate>Supporters</h4>
-                <!-- support button -->
-                <button type="button" *ngIf="perms.isAllowed('support', motion)" (click)=support() mat-raised-button color="primary">
-                    <mat-icon>thumb_up</mat-icon>
-                    {{ 'Support' | translate }}
-                </button>
-                <!-- unsupport button -->
-                <button type="button" *ngIf="perms.isAllowed('unsupport', motion)" (click)=unsupport() mat-raised-button color="primary">
-                    <mat-icon>thumb_down</mat-icon>
-                    {{ 'Unsupport' | translate }}
-                </button>
-                <!-- show supporters (TODO: open in dialog) -->
-                <button type="button" *ngIf="motion.hasSupporters()" (click)=openSupportersDialog() mat-button>
-                    {{ motion.supporters.length }} {{ 'supporters' | translate }}
-                </button>
-                <p *ngIf="showSupporters">
-                    <mat-chip-list *ngFor="let supporter of motion.supporters">
-                        <mat-chip>{{ supporter.full_name }}</mat-chip>
-                    </mat-chip-list>
-                </p>
-            </div>
+        <!-- do Support -->
+        <div *ngIf="minSupporters && !editMotion">
+            <h4 *ngIf="perms.isAllowed('support', motion) || motion.hasSupporters()" translate>Supporters</h4>
 
+            <!-- support button -->
+            <button
+                type="button"
+                mat-raised-button
+                color="primary"
+                (click)="support()"
+                *ngIf="perms.isAllowed('support', motion)"
+            >
+                <mat-icon>thumb_up</mat-icon>
+                {{ 'Support' | translate }}
+            </button>
+
+            <!-- unsupport button -->
+            <button
+                type="button"
+                *ngIf="perms.isAllowed('unsupport', motion)"
+                (click)="unsupport()"
+                mat-raised-button
+                color="primary"
+            >
+                <mat-icon>thumb_down</mat-icon>
+                {{ 'Unsupport' | translate }}
+            </button>
+            <!-- show supporters (TODO: open in dialog) -->
+            <button type="button" *ngIf="motion.hasSupporters()" (click)="openSupportersDialog()" mat-button>
+                {{ motion.supporters.length }} {{ 'supporters' | translate }}
+            </button>
+            <p *ngIf="showSupporters">
+                <mat-chip-list *ngFor="let supporter of motion.supporters">
+                    <mat-chip>{{ supporter.full_name }}</mat-chip>
+                </mat-chip-list>
+            </p>
         </div>
 
-        <!-- State -->
-        <div *ngIf='motion && !editMotion'>
+        <!-- Set State -->
+        <div *ngIf="!editMotion">
             <h4 translate>State</h4>
-            <mat-menu #stateMenu='matMenu'>
-                <button *ngFor='let state of motion.nextStates' mat-menu-item
-                    (click)=setState(state.id)>{{ state.name | translate }}
+            <mat-menu #stateMenu="matMenu">
+                <button *ngFor="let state of motion.nextStates" mat-menu-item (click)="setState(state.id)">
+                    {{ state.name | translate }}
                 </button>
                 <mat-divider></mat-divider>
-                <button mat-menu-item (click)=setState(null)>
+                <button mat-menu-item (click)="setState(null)">
                     <mat-icon>replay</mat-icon> {{ 'Reset state' | translate }}
                 </button>
             </mat-menu>
-            <mat-basic-chip [matMenuTriggerFor]='stateMenu' [ngClass]="{
-                    'green': motion.state.css_class === 'success',
-                    'red': motion.state.css_class === 'danger',
-                    'grey': motion.state.css_class === 'default',
-                    'lightblue': motion.state.css_class === 'primary' }">
+            <mat-basic-chip
+                *ngIf="motion.state"
+                [matMenuTriggerFor]="stateMenu"
+                [ngClass]="{
+                    green: motion.state.css_class === 'success',
+                    red: motion.state.css_class === 'danger',
+                    grey: motion.state.css_class === 'default',
+                    lightblue: motion.state.css_class === 'primary'
+                }"
+            >
                 {{ motion.state.name | translate }}
             </mat-basic-chip>
 
@@ -250,27 +239,35 @@
         </div>
 
         <!-- Recommendation -->
-        <div *ngIf='motion && recommender && !editMotion'>
+        <div *ngIf="recommender && !editMotion">
             <h4>{{ recommender }}</h4>
-            <mat-menu #recommendationMenu='matMenu'>
-                <button *ngFor='let recommendation of motion.possibleRecommendations' mat-menu-item
-                    (click)=setRecommendation(recommendation.id)>{{ recommendation.recommendation_label | translate }}
+            <mat-menu #recommendationMenu="matMenu">
+                <button
+                    *ngFor="let recommendation of motion.possibleRecommendations"
+                    mat-menu-item
+                    (click)="setRecommendation(recommendation.id)"
+                >
+                    {{ recommendation.recommendation_label | translate }}
                 </button>
                 <mat-divider></mat-divider>
-                <button mat-menu-item (click)=setRecommendation(null)>
+                <button mat-menu-item (click)="setRecommendation(null)">
                     <mat-icon>replay</mat-icon> {{ 'Reset recommendation' | translate }}
                 </button>
             </mat-menu>
-            <mat-basic-chip [matMenuTriggerFor]='recommendationMenu' class="bluegrey">
-                {{ motion.recommendation ? (motion.recommendation.recommendation_label | translate) : ('not set' | translate) }}
+            <mat-basic-chip [matMenuTriggerFor]="recommendationMenu" class="bluegrey">
+                {{
+                    motion.recommendation
+                        ? (motion.recommendation.recommendation_label | translate)
+                        : ('not set' | translate)
+                }}
             </mat-basic-chip>
         </div>
 
         <!-- Category -->
         <!-- Disabled during "new motion" since changing has no effect -->
-        <div *ngIf="motion && !editMotion">
+        <div *ngIf="!editMotion">
             <h4 translate>Category</h4>
-            <mat-menu #categoryMenu='matMenu'>
+            <mat-menu #categoryMenu="matMenu">
                 <button
                     mat-menu-item
                     *ngFor="let category of categoryObserver.value"
@@ -278,75 +275,34 @@
                 >
                     {{ category }}
                 </button>
-                <button mat-menu-item (click)=setCategory(null)>
-                    ---
-                </button>
+                <button mat-menu-item (click)="setCategory(null)">---</button>
             </mat-menu>
-            <mat-basic-chip [matMenuTriggerFor]='categoryMenu' class="grey">
+            <mat-basic-chip [matMenuTriggerFor]="categoryMenu" class="grey">
                 {{ motion.category ? motion.category : ('not set' | translate) }}
             </mat-basic-chip>
         </div>
 
         <!-- Block -->
-        <div *ngIf="motion && !editMotion">
+        <div *ngIf="!editMotion">
             <h4 translate>Motion block</h4>
 
-            <mat-menu #blockMenu='matMenu'>
-                <button
-                    mat-menu-item
-                    *ngFor="let block of blockObserver.value"
-                    (click)="setBlock(block.id)"
-                >
+            <mat-menu #blockMenu="matMenu">
+                <button mat-menu-item *ngFor="let block of blockObserver.value" (click)="setBlock(block.id)">
                     {{ block }}
                 </button>
-                <button mat-menu-item (click)="setBlock(null)">
-                    ---
-                </button>
+                <button mat-menu-item (click)="setBlock(null)">---</button>
             </mat-menu>
-            <mat-basic-chip [matMenuTriggerFor]='blockMenu' class="grey">
-                 {{ motion.motion_block ? motion.motion_block : ('not set' | translate) }}
+            <mat-basic-chip [matMenuTriggerFor]="blockMenu" class="grey">
+                {{ motion.motion_block ? motion.motion_block : ('not set' | translate) }}
             </mat-basic-chip>
         </div>
 
-        <!-- Workflow -->
-        <div *ngIf="editMotion">
-            <div *osPerms="['motions.can_manage', 'motions.can_manage_metadata']">
-                <os-search-value-selector
-                    ngDefaultControl
-                    [form]="metaInfoForm"
-                    [formControl]="metaInfoForm.get('workflow_id')"
-                    [multiple]="false"
-                    listname="{{ 'Workflow' | translate }}"
-                    [InputListValues]="workflowObserver"
-                ></os-search-value-selector>
-            </div>
+        <!-- Origin - display only -->
+        <div *ngIf="!editMotion && motion.origin">
+            <h4 translate>Origin</h4>
+            {{ motion.origin }}
         </div>
-
-        <!-- Origin -->
-        <div *ngIf="(motion && motion.origin) || editMotion">
-            <div *ngIf="!editMotion">
-                <h4 translate>Origin</h4>
-                {{ motion.origin }}
-            </div>
-            <div *osPerms="['motions.can_manage', 'motions.can_manage_metadata']">
-                <mat-form-field *ngIf="editMotion">
-                    <input
-                        matInput
-                        placeholder="{{ 'Origin' | translate}}"
-                        formControlName="origin"
-                        [value]="motionCopy.origin"
-                    />
-                </mat-form-field>
-            </div>
-        </div>
-
-        <!-- Voting -->
-        <!--
-            <div *ngIf='motion.polls && motion.polls.length > 0 || editMotion'>
-                <h4 translate>Voting</h4>
-            </div>
-        -->
-    </form>
+    </div>
 </ng-template>
 
 <ng-template #contentTemplate>
@@ -356,9 +312,10 @@
         (clickdown)="onKeyDown($event)"
         (keydown)="onKeyDown($event)"
         (ngSubmit)="saveMotion()"
+        *ngIf="motion"
     >
         <!-- Line Number and Diff buttons -->
-        <div *ngIf="motion && !editMotion && !motion.isStatuteAmendment()" class="motion-text-controls">
+        <div *ngIf="!editMotion && !motion.isStatuteAmendment()" class="motion-text-controls">
             <button
                 type="button"
                 mat-icon-button
@@ -397,31 +354,53 @@
             </mat-form-field>
         </div>
 
-        <!-- Title -->
-        <div *ngIf="(motion && motion.title) || editMotion">
-            <div *ngIf="!editMotion">
-                <h4>{{ motion.title }}</h4>
+        <!-- Submitter -->
+        <div *ngIf="newMotion" class="content-field form100">
+            <div *osPerms="['motions.can_manage', 'motions.can_manage_metadata']">
+                <os-search-value-selector
+                    ngDefaultControl
+                    [form]="contentForm"
+                    [formControl]="contentForm.get('submitters_id')"
+                    [multiple]="true"
+                    listname="{{ 'Submitters' | translate }}"
+                    [InputListValues]="submitterObserver"
+                ></os-search-value-selector>
+            </div>
+        </div>
+
+        <div class="form-id-title">
+            <!-- Identifier -->
+            <div *ngIf="editMotion && !newMotion" class="content-field form-identifier">
+                <mat-form-field *ngIf="editMotion">
+                    <input
+                        matInput
+                        placeholder="{{ 'Identifier' | translate }}"
+                        formControlName="identifier"
+                        [value]="motionCopy.identifier"
+                    />
+                </mat-form-field>
             </div>
 
-            <mat-form-field *ngIf="editMotion" class="wide-form">
-                <input
-                    matInput
-                    osAutofocus
-                    placeholder="{{ 'Title' | translate }}"
-                    formControlName="title"
-                    [value]="motionCopy.title"
-                    required
-                />
-            </mat-form-field>
+            <!-- Title -->
+            <div *ngIf="editMotion" class="content-field form-title">
+                <mat-form-field *ngIf="editMotion">
+                    <input
+                        matInput
+                        osAutofocus
+                        placeholder="{{ 'Title' | translate }}"
+                        formControlName="title"
+                        [value]="motionCopy.title"
+                        required
+                    />
+                </mat-form-field>
+            </div>
         </div>
 
         <!-- Text -->
         <span class="text-prefix-label">{{ preamble | translate }}</span>
 
         <!-- Regular motions or traditional amendments -->
-        <ng-container
-            *ngIf="motion && !editMotion && !motion.isStatuteAmendment() && !motion.isParagraphBasedAmendment()"
-        >
+        <ng-container *ngIf="!editMotion && !motion.isStatuteAmendment() && !motion.isParagraphBasedAmendment()">
             <div
                 *ngIf="!isRecoModeDiff()"
                 class="motion-text"
@@ -451,7 +430,7 @@
         </ng-container>
         <div
             class="motion-text line-numbers-none"
-            *ngIf="motion && !editMotion && motion.isStatuteAmendment()"
+            *ngIf="!editMotion && motion.isStatuteAmendment()"
             [innerHTML]="getFormattedStatuteAmendment()"
         ></div>
 
@@ -459,21 +438,120 @@
         <editor formControlName="text" [init]="tinyMceSettings" *ngIf="motion && editMotion"></editor>
 
         <!-- Paragraph-based amendments -->
-        <ng-container *ngIf="motion && !editMotion && motion.isParagraphBasedAmendment()">
+        <ng-container *ngIf="!editMotion && motion.isParagraphBasedAmendment()">
             <ng-container *ngTemplateOutlet="paragraphBasedAmendment"></ng-container>
         </ng-container>
 
         <!-- Reason -->
-        <div *ngIf="motion || editMotion">
-            <h5 *ngIf="motion.reason || editMotion" translate>Reason</h5>
+        <div *ngIf="motion.reason || editMotion">
+            <h3 translate>Reason</h3>
             <div class="motion-text" *ngIf="!editMotion"><div [innerHtml]="motion.reason"></div></div>
 
             <!-- The HTML Editor -->
-            <editor
-                formControlName='reason'
-                [init]="tinyMceSettings"
-                *ngIf="editMotion"
-            ></editor>
+            <editor formControlName="reason" [init]="tinyMceSettings" *ngIf="editMotion"></editor>
+        </div>
+
+        <div class="extra-data">
+            <!-- Attachments -->
+            <div *ngIf="motion.hasAttachments() || editMotion" class="content-field form100">
+                <div *ngIf="!editMotion">
+                    <h4 translate>Attachments</h4>
+                    <mat-list dense>
+                        <mat-list-item *ngFor="let file of motion.attachments">
+                            <a [routerLink]="" (click)="onClickAttacment(file)">{{ file.title }}</a>
+                        </mat-list-item>
+                    </mat-list>
+                </div>
+                <div *ngIf="editMotion">
+                    <os-search-value-selector
+                        ngDefaultControl
+                        [form]="contentForm"
+                        [formControl]="contentForm.get('attachments_id')"
+                        [multiple]="true"
+                        listname="{{ 'Attachments' | translate }}"
+                        [InputListValues]="mediafilesObserver"
+                    ></os-search-value-selector>
+                </div>
+            </div>
+
+            <!-- Category form -->
+            <div class="content-field form100" *ngIf="newMotion && categoryObserver.value.length > 0">
+                <os-search-value-selector
+                    ngDefaultControl
+                    [form]="contentForm"
+                    [formControl]="contentForm.get('category_id')"
+                    [multiple]="false"
+                    [includeNone]="true"
+                    listname="{{ 'Category' | translate }}"
+                    [InputListValues]="categoryObserver"
+                ></os-search-value-selector>
+            </div>
+
+            <!-- Parent item -->
+            <div class="content-field form100" *ngIf="newMotion && agendaItemObserver.value.length > 0">
+                <os-search-value-selector
+                    ngDefaultControl
+                    [form]="contentForm"
+                    [formControl]="contentForm.get('parent_id')"
+                    [multiple]="false"
+                    [includeNone]="true"
+                    listname="{{ 'Parent Item' | translate }}"
+                    [InputListValues]="agendaItemObserver"
+                ></os-search-value-selector>
+            </div>
+
+            <!-- Visibility -->
+            <div class="content-field form100" *ngIf="newMotion">
+                <mat-form-field>
+                    <mat-select formControlName="agenda_type" placeholder="{{ 'Agenda visibility' | translate }}">
+                        <mat-option *ngFor="let type of itemVisibility" [value]="type.key">
+                            <span>{{ type.name | translate }}</span>
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+            <!-- Supporter form -->
+            <div class="content-field form100" *ngIf="editMotion && minSupporters">
+                <div *osPerms="['motions.can_manage', 'motions.can_manage_metadata']">
+                    <os-search-value-selector
+                        ngDefaultControl
+                        [form]="contentForm"
+                        [formControl]="contentForm.get('supporters_id')"
+                        [multiple]="true"
+                        listname="{{ 'Supporters' | translate }}"
+                        [InputListValues]="supporterObserver"
+                    ></os-search-value-selector>
+                </div>
+            </div>
+
+            <!-- Workflow -->
+            <div class="content-field form100" *ngIf="editMotion && workflowObserver.value.length > 1">
+                <div *osPerms="['motions.can_manage', 'motions.can_manage_metadata']">
+                    <os-search-value-selector
+                        ngDefaultControl
+                        [form]="contentForm"
+                        [formControl]="contentForm.get('workflow_id')"
+                        [multiple]="false"
+                        listname="{{ 'Workflow' | translate }}"
+                        [InputListValues]="workflowObserver"
+                    ></os-search-value-selector>
+                </div>
+            </div>
+
+            <!-- Origin form -->
+            <div class="content-field form100" *ngIf="editMotion">
+                <div *osPerms="['motions.can_manage', 'motions.can_manage_metadata']">
+                    <mat-form-field>
+                        <input
+                            matInput
+                            placeholder="{{ 'Origin' | translate }}"
+                            formControlName="origin"
+                            [value]="motionCopy.origin"
+                        />
+                    </mat-form-field>
+                </div>
+            </div>
         </div>
     </form>
 </ng-template>
@@ -522,9 +600,15 @@
 <!-- Line number Menu -->
 <mat-menu #lineNumberingMenu="matMenu">
     <div *ngIf="motion">
-        <button mat-menu-item translate (click)=setLineNumberingMode(0) [ngClass]="{ 'selected': motion.lnMode === 0 }">none</button>
-        <button mat-menu-item translate (click)=setLineNumberingMode(1) [ngClass]="{ 'selected': motion.lnMode === 1 }">inline</button>
-        <button mat-menu-item translate (click)=setLineNumberingMode(2) [ngClass]="{ 'selected': motion.lnMode === 2 }">outside</button>
+        <button mat-menu-item translate (click)="setLineNumberingMode(0)" [ngClass]="{ selected: motion.lnMode === 0 }">
+            none
+        </button>
+        <button mat-menu-item translate (click)="setLineNumberingMode(1)" [ngClass]="{ selected: motion.lnMode === 1 }">
+            inline
+        </button>
+        <button mat-menu-item translate (click)="setLineNumberingMode(2)" [ngClass]="{ selected: motion.lnMode === 2 }">
+            outside
+        </button>
     </div>
 </mat-menu>
 

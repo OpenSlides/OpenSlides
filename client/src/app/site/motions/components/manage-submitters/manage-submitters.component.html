@@ -3,14 +3,6 @@
     <button class="small-button" type="button" mat-icon-button disableRipple *ngIf="!isEditMode" (click)="onEdit()">
         <mat-icon>edit</mat-icon>
     </button>
-    <span *ngIf="isEditMode">
-        <button class="small-button" type="button" mat-icon-button disableRipple (click)="onSave()">
-            <mat-icon>save</mat-icon>
-        </button>
-        <button class="small-button" type="button" mat-icon-button disableRipple (click)="onCancel()">
-            <mat-icon>close</mat-icon>
-        </button>
-    </span>
 </h4>
 
 <div *ngIf="!isEditMode">
@@ -32,7 +24,13 @@
             ></os-search-value-selector>
         </form>
 
-        <os-sorting-list class="testclass" [input]="editSubmitterObservable" [live]="true" [count]="true" (sortEvent)="onSortingChange($event)">
+        <os-sorting-list
+            class="testclass"
+            [input]="editSubmitterObservable"
+            [live]="true"
+            [count]="true"
+            (sortEvent)="onSortingChange($event)"
+        >
             <!-- implicit user references into the component using ng-template slot -->
             <ng-template let-user>
                 <button type="button" mat-icon-button matTooltip="{{ 'Remove' | translate }}" (click)="onRemove(user)">
@@ -40,6 +38,9 @@
                 </button>
             </ng-template>
         </os-sorting-list>
+        <mat-card-actions>
+            <button type="button" mat-button (click)="onSave()"><span translate>Save</span></button>
+            <button type="button" mat-button (click)="onCancel()"><span translate>Cancel</span></button>
+        </mat-card-actions>
     </mat-card>
 </div>
-

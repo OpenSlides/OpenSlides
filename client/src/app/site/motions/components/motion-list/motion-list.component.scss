@@ -30,6 +30,17 @@
             color: rgba(0, 0, 0, 0.5);
             font-size: 90%;
         }
+
+        .attached-files {
+            .mat-icon {
+                display: inline-flex;
+                vertical-align: middle;
+                $icon-size: 16px;
+                font-size: $icon-size;
+                height: $icon-size;
+                width: $icon-size;
+            }
+        }
     }
 
     /** State */

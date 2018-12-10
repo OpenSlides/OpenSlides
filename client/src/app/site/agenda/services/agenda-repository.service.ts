@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 import { BaseRepository } from '../../base/base-repository';
 import { DataStoreService } from '../../../core/services/data-store.service';
@@ -12,6 +14,7 @@ import { ViewSpeaker } from '../models/view-speaker';
 import { Speaker } from 'app/shared/models/agenda/speaker';
 import { User } from 'app/shared/models/users/user';
 import { HttpService } from 'app/core/services/http.service';
+import { ConfigService } from 'app/core/services/config.service';
 
 /**
  * Repository service for users
@@ -27,11 +30,13 @@ export class AgendaRepositoryService extends BaseRepository<ViewItem, Item> {
      * @param DS The DataStore
      * @param httpService OpenSlides own HttpService
      * @param mapperService OpenSlides mapping service for collection strings
+     * @param config Read config variables
      */
     public constructor(
         protected DS: DataStoreService,
         private httpService: HttpService,
-        mapperService: CollectionStringModelMapperService
+        mapperService: CollectionStringModelMapperService,
+        private config: ConfigService
     ) {
         super(DS, mapperService, Item);
     }
@@ -178,5 +183,14 @@ export class AgendaRepositoryService extends BaseRepository<ViewItem, Item> {
     public createViewModel(item: Item): ViewItem {
         const contentObject = this.getContentObject(item);
         return new ViewItem(item, contentObject);
+    }
+
+    /**
+     * Get agenda visibility from the config
+     *
+     * @return An observable to the default agenda visibility
+     */
+    public getDefaultAgendaVisibility(): Observable<number> {
+        return this.config.get('agenda_new_items_default_visibility').pipe(map(key => +key));
     }
 }
