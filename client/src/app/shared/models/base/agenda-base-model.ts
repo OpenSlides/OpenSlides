@@ -34,9 +34,18 @@ export abstract class AgendaBaseModel extends ProjectableBaseModel implements Ag
     }
 
     /**
+     * @returns the (optional) descriptive text to be exported in the CSV.
+     * May be overridden by inheriting classes
+     */
+    public getCSVExportText(): string {
+        return '';
+    }
+
+    /**
      * Should return a string representation of the object, so there can be searched for.
      */
     public abstract formatForSearch(): SearchRepresentation;
+
 
     /**
      * Should return the URL to the detail view. Used for the agenda, that the

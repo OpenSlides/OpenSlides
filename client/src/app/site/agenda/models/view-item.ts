@@ -34,16 +34,21 @@ export class ViewItem extends BaseViewModel {
         return this.item ? this.item.type : null;
     }
 
-    public get verboseType(): string {
-        return this.item.verboseType;
-    }
-
-    public get comment(): string {
-        return this.item ? this.item.comment : null;
-    }
-
     public get closed(): boolean {
         return this.item ? this.item.closed : null;
+    }
+    public get comment(): string {
+        if (this.item && this.item.comment) {
+            return this.item.comment;
+        }
+        return '';
+    }
+
+    public get verboseType() : string {
+        if (this.item && this.item.verboseType) {
+            return this.item.verboseType;
+        }
+        return '';
     }
 
     public constructor(item: Item, contentObject: AgendaBaseModel) {
