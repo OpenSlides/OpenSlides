@@ -21,7 +21,7 @@
     <!-- selector column -->
     <ng-container matColumnDef="selector">
         <mat-header-cell *matHeaderCellDef mat-sort-header class="checkbox-cell"></mat-header-cell>
-        <mat-cell *matCellDef="let item" class="checkbox-cell">
+        <mat-cell (click)="selectItem(item, $event)" *matCellDef="let item" class="checkbox-cell">
             <mat-icon>{{ isSelected(item) ? 'check_circle' : '' }}</mat-icon>
         </mat-cell>
     </ng-container>
@@ -29,13 +29,32 @@
     <!-- title column -->
     <ng-container matColumnDef="title">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Topic</mat-header-cell>
-        <mat-cell *matCellDef="let item">{{ item.getListTitle() }}</mat-cell>
+        <!-- <mat-cell (click)="onTitleColumn(item)" *matCellDef="let item"> -->
+        <mat-cell (click)="selectItem(item, $event)" *matCellDef="let item">
+            <span *ngIf="item.closed"> <mat-icon class="done-check">check</mat-icon> </span>
+            <span> {{ item.getListTitle() }} </span>
+        </mat-cell>
     </ng-container>
 
-    <!-- Duration column -->
-    <ng-container matColumnDef="duration">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Duration</mat-header-cell>
-        <mat-cell *matCellDef="let item">{{ item.duration }}</mat-cell>
+    <!-- Info column -->
+    <ng-container matColumnDef="info">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Info</mat-header-cell>
+        <mat-cell (click)="openEditInfo(item)" *matCellDef="let item">
+            <div class="info-col-items">
+                <div *ngIf="item.verboseType">
+                    <mat-icon>visibility</mat-icon>
+                    {{ item.verboseType | translate }}
+                </div>
+                <div *ngIf="item.duration">
+                    <mat-icon>access_time</mat-icon>
+                    {{ durationService.durationToString(item.duration) }}
+                </div>
+                <div *ngIf="item.comment">
+                    <mat-icon>comment</mat-icon>
+                    {{ item.comment }}
+                </div>
+            </div>
+        </mat-cell>
     </ng-container>
 
     <!-- Speakers column -->
@@ -50,10 +69,20 @@
         </mat-cell>
     </ng-container>
 
+    <!-- menu -->
+    <ng-container matColumnDef="menu">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Menu</mat-header-cell>
+        <mat-cell *matCellDef="let item">
+            <button mat-icon-button [matMenuTriggerFor]="singleItemMenu" [matMenuTriggerData]="{ item: item }">
+                <mat-icon>more_vert</mat-icon>
+            </button>
+        </mat-cell>
+    </ng-container>
+
     <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
     <mat-row
+        class="lg"
         [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected' : ''"
-        (click)="selectItem(row, $event)"
         *matRowDef="let row; columns: getColumnDefinition()"
     ></mat-row>
 </mat-table>
@@ -61,50 +90,109 @@
 
 <mat-menu #agendaMenu="matMenu">
     <div *ngIf="!isMultiSelect">
-        <button mat-menu-item *osPerms="'agenda.can_manage'" (click)="toggleMultiSelect()">
-            <mat-icon>library_add</mat-icon>
-            <span translate>Multiselect</span>
-        </button>
+        <div *osPerms="'agenda.can_manage'">
+            <!-- Enable multi select -->
+            <button mat-menu-item (click)="toggleMultiSelect()">
+                <mat-icon>library_add</mat-icon>
+                <span translate>Multiselect</span>
+            </button>
+
+            <!-- automatic numbering -->
+            <button mat-menu-item *ngIf="isNumberingAllowed" (click)="onAutoNumbering()">
+                <mat-icon>format_list_numbered</mat-icon>
+                <span translate>Numbering</span>
+            </button>
+        </div>
     </div>
 
     <div *ngIf="isMultiSelect">
+        <!-- Exit multi select -->
         <button mat-menu-item (click)="toggleMultiSelect()">
             <mat-icon>library_add</mat-icon>
             <span translate>Exit multiselect</span>
         </button>
+
+        <!-- Select all -->
         <button mat-menu-item (click)="selectAll()">
             <mat-icon>done_all</mat-icon>
             <span translate>Select all</span>
         </button>
+
+        <!-- Deselect all -->
         <button mat-menu-item (click)="deselectAll()">
             <mat-icon>clear</mat-icon>
             <span translate>Deselect all</span>
         </button>
         <mat-divider></mat-divider>
         <div *osPerms="'agenda.can_manage'">
+            <!-- Close selected -->
             <button mat-menu-item (click)="setClosedSelected(true)">
                 <mat-icon>done</mat-icon>
                 <span translate>Close</span>
             </button>
+
+            <!-- Open selected -->
             <button mat-menu-item (click)="setClosedSelected(false)">
                 <mat-icon>redo</mat-icon>
                 <span translate>Open</span>
             </button>
 
             <mat-divider></mat-divider>
-            <button mat-menu-item (click)="setVisibilitySelected(true)">
-                <mat-icon>visibility</mat-icon>
-                <span translate>Set visible</span>
+
+            <!-- Set multiple to public -->
+            <button mat-menu-item (click)="setAgendaType(1)">
+                <mat-icon>public</mat-icon>
+                <span translate>Set public</span>
             </button>
-            <button mat-menu-item (click)="setVisibilitySelected(false)">
+
+            <!-- Set multiple to internal -->
+            <button mat-menu-item (click)="setAgendaType(2)">
+                <mat-icon>visibility</mat-icon>
+                <span translate>Set internal</span>
+            </button>
+
+            <!-- Set multiple to hidden -->
+            <button mat-menu-item (click)="setAgendaType(3)">
                 <mat-icon>visibility_off</mat-icon>
-                <span translate>Set invisible</span>
+                <span translate>Set hidden</span>
             </button>
             <mat-divider></mat-divider>
+
+            <!-- Delete selected -->
             <button mat-menu-item class="red-warning-text" (click)="deleteSelected()">
                 <mat-icon>delete</mat-icon>
                 <span translate>Delete</span>
             </button>
         </div>
     </div>
+</mat-menu>
+
+<mat-menu #singleItemMenu="matMenu">
+    <ng-template matMenuContent let-item="item">
+        <!-- Done check -->
+        <button mat-menu-item (click)="onDoneSingleButton(item)">
+            <mat-icon color="accent"> {{ item.closed ? 'check_box' : 'check_box_outline_blank' }} </mat-icon>
+            <span translate>Done</span>
+        </button>
+
+        <!-- List of speakers for mobile -->
+        <button mat-menu-item (click)="onSpeakerIcon(item)" *ngIf="vp.isMobile">
+            <mat-icon [matBadge]="item.speakerAmount > 0 ? item.speakerAmount : null" matBadgeColor="accent">
+                mic
+            </mat-icon>
+            <span translate>List of speakers</span>
+        </button>
+
+        <!-- Edit button -->
+        <button mat-menu-item (click)="openEditInfo(item)">
+            <mat-icon>edit</mat-icon>
+            <span translate>Edit</span>
+        </button>
+
+        <!-- Delete Button -->
+        <button mat-menu-item class="red-warning-text" (click)="onDelete(item)">
+            <mat-icon>delete</mat-icon>
+            <span translate>Delete</span>
+        </button>
+    </ng-template>
 </mat-menu>

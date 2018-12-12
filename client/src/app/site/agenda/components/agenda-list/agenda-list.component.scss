@@ -3,17 +3,42 @@
     /** Title */
     .mat-column-title {
         padding-left: 26px;
-        flex: 1 0 200px;
+        flex: 2 0 0;
+
+        .done-check {
+            margin-right: 10px;
+        }
     }
 
     /** Duration */
-    .mat-column-duration {
-        flex: 0 0 100px;
+    .mat-column-info {
+        flex: 2 0 0;
+
+        .info-col-items {
+            display: inline-block;
+            white-space: nowrap;
+
+            font-size: 14px;
+            .mat-icon {
+                display: inline-flex;
+                vertical-align: middle;
+                $icon-size: 18px;
+                font-size: $icon-size;
+                height: $icon-size;
+                width: $icon-size;
+            }
+
+        }
     }
 
     /** Speakers indicator */
     .mat-column-speakers {
-        flex: 0 0 100px;
+        flex: 0 0 50px;
+    }
+
+    /** menu indicator */
+    .mat-column-menu {
+        flex: 0 0 50px;
         justify-content: flex-end !important;
     }
 }

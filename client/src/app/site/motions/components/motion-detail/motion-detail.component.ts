@@ -449,7 +449,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
             reason: [''],
             category_id: [''],
             attachments_id: [[]],
-            parent_id: [],
+            agenda_parent_id: [],
             agenda_type: [''],
             submitters_id: [],
             supporters_id: [[]],
@@ -495,6 +495,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
             );
             motionValues.text = '';
         }
+
         motion.deserialize(motionValues);
         return motion;
     }
@@ -504,6 +505,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      */
     public async createMotion(): Promise<void> {
         const newMotionValues = { ...this.contentForm.value };
+
+        if (!newMotionValues.agenda_parent_id) {
+            delete newMotionValues.agenda_parent_id;
+        }
+
         const motion = this.prepareMotionForSave(newMotionValues, CreateMotion);
 
         try {
