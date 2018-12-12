@@ -10,6 +10,7 @@ import { CollectionStringModelMapperService } from '../../../core/services/colle
 import { ConfigService } from 'app/core/services/config.service';
 import { HttpService } from 'app/core/services/http.service';
 import { TranslateService } from '@ngx-translate/core';
+import { environment } from '../../../../environments/environment';
 
 /**
  * Repository service for users
@@ -110,15 +111,27 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
     }
 
     /**
-     * Updates the default password and sets the real password.
+     * Updates the password and sets the password without checking for the old one
      *
      * @param user The user to update
      * @param password The password to set
      */
     public async resetPassword(user: ViewUser, password: string): Promise<void> {
-        await this.update({ default_password: password }, user);
         const path = `/rest/users/user/${user.id}/reset_password/`;
         await this.httpService.post(path, { password: password });
+    }
+
+    /**
+     * Updates the password and sets a new one, if the old one was correct.
+     *
+     * @param oldPassword the old password
+     * @param newPassword the new password
+     */
+    public async setNewPassword(oldPassword: string, newPassword: string): Promise<void> {
+        await this.httpService.post(`${environment.urlPrefix}/users/setpassword/`, {
+                old_password: oldPassword,
+                new_password: newPassword
+        });
     }
 
     /**

@@ -3,11 +3,20 @@ import { Routes, RouterModule } from '@angular/router';
 import { UserListComponent } from './components/user-list/user-list.component';
 import { UserDetailComponent } from './components/user-detail/user-detail.component';
 import { GroupListComponent } from './components/group-list/group-list.component';
+import { PasswordComponent } from './components/password/password.component';
 
 const routes: Routes = [
     {
         path: '',
         component: UserListComponent
+    },
+    {
+        path: 'password',
+        component: PasswordComponent
+    },
+    {
+        path: 'password/:id',
+        component: PasswordComponent
     },
     {
         path: 'new',

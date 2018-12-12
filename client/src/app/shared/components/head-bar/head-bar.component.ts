@@ -17,6 +17,7 @@ import { MainMenuService } from '../../../core/services/main-menu.service';
  * ```html
  * <os-head-bar
  *   [nav]="false"
+ *   [goBack]="true"
  *   [mainButton]="opCanEdit()"
  *   [mainButtonIcon]="edit"
  *   [editMode]="editMotion"

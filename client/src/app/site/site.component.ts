@@ -142,8 +142,12 @@ export class SiteComponent extends BaseComponent implements OnInit {
         }
     }
 
-    // TODO: Implement this
-    public changePassword(): void {}
+    /**
+     * Redirects to the change password component
+     */
+    public changePassword(): void {
+        this.router.navigate([`./users/password`]);
+    }
 
     /**
      * Function to log out the current user
