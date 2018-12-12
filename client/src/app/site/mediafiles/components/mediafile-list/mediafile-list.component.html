@@ -3,8 +3,7 @@
     [editMode]="editFile"
     [multiSelectMode]="isMultiSelect"
     (mainEvent)="onMainEvent()"
-    (saveEvent)="onSaveEditedFile()"
->
+    (saveEvent)="onSaveEditedFile()">
     <!-- Title -->
     <div class="title-slot">
         <h2 *ngIf="!editFile" translate>Files</h2>
@@ -14,8 +13,7 @@
             *ngIf="editFile"
             [formGroup]="fileEditForm"
             (ngSubmit)="onSaveEditedFile()"
-            (keydown)="keyDownFunction($event)"
-        >
+            (keydown)="keyDownFunction($event)">
             <mat-form-field>
                 <input
                     type="text"
@@ -23,13 +21,12 @@
                     osAutofocus
                     required
                     formControlName="title"
-                    placeholder="{{ 'New file name' | translate}}"
-                />
+                    placeholder="{{ 'New file name' | translate }}"/>
                 <mat-error *ngIf="fileEditForm.invalid" translate>Required</mat-error>
             </mat-form-field>
 
             <mat-form-field>
-                <mat-select formControlName="hidden" placeholder="{{ 'Visibility' | translate}}">
+                <mat-select formControlName="hidden" placeholder="{{ 'Visibility' | translate }}">
                     <mat-option [value]="true"> <span translate>Hidden</span> </mat-option>
                     <mat-option [value]="false"><span translate>Visible</span></mat-option>
                 </mat-select>
@@ -55,9 +52,10 @@
 </os-head-bar>
 
 <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
+    <!-- Selector Column -->
     <ng-container matColumnDef="selector">
         <mat-header-cell *matHeaderCellDef mat-sort-header class="checkbox-cell"></mat-header-cell>
-        <mat-cell *matCellDef="let item" class="checkbox-cell">
+        <mat-cell *matCellDef="let item" class="checkbox-cell" (click)="selectItem(item, $event)">
             <mat-icon>{{ isSelected(item) ? 'check_circle' : '' }}</mat-icon>
         </mat-cell>
     </ng-container>
@@ -65,13 +63,13 @@
     <!-- Filename -->
     <ng-container matColumnDef="title">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
-        <mat-cell *matCellDef="let file">{{ file.title }}</mat-cell>
+        <mat-cell *matCellDef="let file" (click)="selectItem(file, $event)">{{ file.title }}</mat-cell>
     </ng-container>
 
     <!-- Info -->
     <ng-container matColumnDef="info">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Group</mat-header-cell>
-        <mat-cell *matCellDef="let file">
+        <mat-cell *matCellDef="let file" (click)="selectItem(file, $event)">
             <div class="file-info-cell">
                 <span> <mat-icon [inline]="true">insert_drive_file</mat-icon> {{ file.type }} </span>
                 <span> <mat-icon [inline]="true">data_usage</mat-icon> {{ file.size }} </span>
@@ -82,15 +80,14 @@
     <!-- indicator -->
     <ng-container matColumnDef="indicator">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Indicator</mat-header-cell>
-        <mat-cell *matCellDef="let file">
+        <mat-cell *matCellDef="let file" (click)="selectItem(file, $event)">
             <!-- check if the file is managed -->
 
             <div
                 *ngIf="getFileSettings(file).length > 0"
                 [matMenuTriggerFor]="singleFileMenu"
                 [matMenuTriggerData]="{ file: file }"
-                [matTooltip]="formatIndicatorTooltip(file)"
-            >
+                [matTooltip]="formatIndicatorTooltip(file)">
                 <mat-icon *ngIf="file.isFont()">text_fields</mat-icon>
                 <mat-icon *ngIf="file.isImage()">insert_photo</mat-icon>
             </div>
@@ -111,7 +108,6 @@
     <mat-row
         *matRowDef="let row; columns: getColumnDefinition()"
         [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected' : ''"
-        (click)="selectItem(row, $event)"
     ></mat-row>
 </mat-table>
 
@@ -171,6 +167,10 @@
         <button mat-menu-item (click)="selectAll()">
             <mat-icon>done_all</mat-icon>
             <span translate>Select all</span>
+        </button>
+        <button mat-menu-item (click)="deselectAll()">
+            <mat-icon>clear</mat-icon>
+            <span translate>Deselect all</span>
         </button>
         <mat-divider></mat-divider>
         <button mat-menu-item *osPerms="'mediafiles.can_manage'" (click)="deleteSelected()">

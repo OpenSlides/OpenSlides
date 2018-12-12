@@ -18,6 +18,7 @@
 </os-head-bar>
 
 <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
+    <!-- selector column -->
     <ng-container matColumnDef="selector">
         <mat-header-cell *matHeaderCellDef mat-sort-header class="checkbox-cell"></mat-header-cell>
         <mat-cell *matCellDef="let item" class="checkbox-cell">
@@ -67,6 +68,19 @@
     </div>
 
     <div *ngIf="isMultiSelect">
+        <button mat-menu-item (click)="toggleMultiSelect()">
+            <mat-icon>library_add</mat-icon>
+            <span translate>Exit multiselect</span>
+        </button>
+        <button mat-menu-item (click)="selectAll()">
+            <mat-icon>done_all</mat-icon>
+            <span translate>Select all</span>
+        </button>
+        <button mat-menu-item (click)="deselectAll()">
+            <mat-icon>clear</mat-icon>
+            <span translate>Deselect all</span>
+        </button>
+        <mat-divider></mat-divider>
         <div *osPerms="'agenda.can_manage'">
             <button mat-menu-item (click)="setClosedSelected(true)">
                 <mat-icon>done</mat-icon>

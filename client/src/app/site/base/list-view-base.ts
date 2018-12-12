@@ -113,6 +113,10 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel> extends Bas
         this.selectedRows = this.dataSource.data;
     }
 
+    public deselectAll(): void {
+        this.selectedRows = [];
+    }
+
     /**
      * Returns the current state of the multiSelect modus
      */

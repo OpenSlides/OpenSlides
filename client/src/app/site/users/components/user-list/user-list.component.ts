@@ -203,11 +203,26 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
         }
     }
 
+    /**
+     * returns the column definition
+     *
+     * @returns column definition
+     */
     public getColumnDefinition(): string[] {
         const columns = ['name', 'group', 'presence'];
         if (this.isMultiSelect) {
             return ['selector'].concat(columns);
         }
         return columns;
+    }
+
+    /**
+     * Sets the user present
+     *
+     * @param viewUser the viewUser Object
+     */
+    public async setPresent(viewUser: ViewUser): Promise<void> {
+        viewUser.user.is_present = !viewUser.user.is_present;
+        await this.repo.update(viewUser.user, viewUser);
     }
 }
