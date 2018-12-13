@@ -168,7 +168,7 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile>
     public async onDelete(file: ViewMediafile): Promise<void> {
         const content = this.translate.instant('Do you want to delete this file?') + `<p><strong>${file}</strong>`;
         if (await this.promptService.open('Are you sure?', content)) {
-            this.repo.delete(file);
+            this.repo.delete(file).then(null, this.raiseError);
         }
     }
 

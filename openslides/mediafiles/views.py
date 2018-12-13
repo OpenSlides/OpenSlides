@@ -1,7 +1,11 @@
+from typing import List
+
+from django.db.models import Model
 from django.http import HttpResponseForbidden, HttpResponseNotFound
 from django.views.static import serve
 
 from ..utils.auth import has_perm
+from ..utils.autoupdate import inform_changed_data
 from ..utils.rest_api import ModelViewSet, ValidationError
 from .access_permissions import MediafileAccessPermissions
 from .models import Mediafile
@@ -61,14 +65,29 @@ class MediafileViewSet(ModelViewSet):
 
         Does also delete the file from filesystem.
         """
+        mediafile = self.get_object()
+
+        # We need to inform all models, that might have this mediafile as an
+        # attachment. Because this are m2m relations, Django will not call 'save'
+        # on these models. We assume, that every reverse set from the mediafile
+        # is one of the attachment m2m relations. In `set_attributes` are all
+        # attributes collected, that ends with '_set'. Then all models from these m2m
+        # relations are collected to be informed after the deletion.
+        models_to_inform: List[Model] = []
+        set_attributes = list(filter(lambda a: a.endswith('_set'), dir(mediafile)))
+        for attribute_name in set_attributes:
+            set_attribute = getattr(mediafile, attribute_name)
+            models_to_inform.extend(set_attribute.all())
+
         # To avoid Django calling save() and triggering autoupdate we do not
         # use the builtin method mediafile.mediafile.delete() but call
         # mediafile.mediafile.storage.delete(...) directly. This may have
         # unattended side effects so be careful especially when accessing files
         # on server via Django methods (file, open(), save(), ...).
-        mediafile = self.get_object()
         mediafile.mediafile.storage.delete(mediafile.mediafile.name)
-        return super().destroy(request, *args, **kwargs)
+        response = super().destroy(request, *args, **kwargs)
+        inform_changed_data(models_to_inform)
+        return response
 
 
 def protected_serve(request, path, document_root=None, show_indexes=False):
