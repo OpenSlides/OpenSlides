@@ -1043,9 +1043,6 @@ class State(RESTModelMixin, models.Model):
     name = models.CharField(max_length=255)
     """A string representing the state."""
 
-    action_word = models.CharField(max_length=255, blank=True)
-    """An alternative string to be used for a button to switch to this state."""
-
     recommendation_label = models.CharField(max_length=255, null=True)
     """A string for a recommendation to set the motion to this state."""
 
@@ -1138,10 +1135,6 @@ class State(RESTModelMixin, models.Model):
             raise WorkflowError('The field recommendation_label of {} must not '
                                 'be an empty string.'.format(self))
         super(State, self).save(**kwargs)
-
-    def get_action_word(self):
-        """Returns the alternative name of the state if it exists."""
-        return self.action_word or self.name
 
     def check_next_states(self):
         """Checks whether all next states of a state belong to the correct workflow."""

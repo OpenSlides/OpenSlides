@@ -19,7 +19,6 @@ export enum MergeAmendment {
 export class WorkflowState extends Deserializer {
     public id: number;
     public name: string;
-    public action_word: string;
     public recommendation_label: string;
     public css_class: string;
     public required_permission_to_see: string;

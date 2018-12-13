@@ -24,20 +24,17 @@ def create_builtin_workflows(sender, **kwargs):
     state_1_1.save(skip_autoupdate=True)
     state_1_2 = State(name=ugettext_noop('accepted'),
                       workflow=workflow_1,
-                      action_word='Accept',
                       recommendation_label='Acceptance',
                       css_class='success',
                       merge_amendment_into_final=True)
     state_1_2.save(skip_autoupdate=True)
     state_1_3 = State(name=ugettext_noop('rejected'),
                       workflow=workflow_1,
-                      action_word='Reject',
                       recommendation_label='Rejection',
                       css_class='danger')
     state_1_3.save(skip_autoupdate=True)
     state_1_4 = State(name=ugettext_noop('not decided'),
                       workflow=workflow_1,
-                      action_word='Do not decide',
                       recommendation_label='No decision',
                       css_class='default')
     state_1_4.save(skip_autoupdate=True)
@@ -55,55 +52,46 @@ def create_builtin_workflows(sender, **kwargs):
     state_2_1.save(skip_autoupdate=True)
     state_2_2 = State(name=ugettext_noop('permitted'),
                       workflow=workflow_2,
-                      action_word='Permit',
                       recommendation_label='Permission',
                       allow_create_poll=True,
                       allow_submitter_edit=True)
     state_2_2.save(skip_autoupdate=True)
     state_2_3 = State(name=ugettext_noop('accepted'),
                       workflow=workflow_2,
-                      action_word='Accept',
                       recommendation_label='Acceptance',
                       css_class='success',
                       merge_amendment_into_final=True)
     state_2_3.save(skip_autoupdate=True)
     state_2_4 = State(name=ugettext_noop('rejected'),
                       workflow=workflow_2,
-                      action_word='Reject',
                       recommendation_label='Rejection',
                       css_class='danger')
     state_2_4.save(skip_autoupdate=True)
     state_2_5 = State(name=ugettext_noop('withdrawed'),
                       workflow=workflow_2,
-                      action_word='Withdraw',
                       css_class='default')
     state_2_5.save(skip_autoupdate=True)
     state_2_6 = State(name=ugettext_noop('adjourned'),
                       workflow=workflow_2,
-                      action_word='Adjourn',
                       recommendation_label='Adjournment',
                       css_class='default')
     state_2_6.save(skip_autoupdate=True)
     state_2_7 = State(name=ugettext_noop('not concerned'),
                       workflow=workflow_2,
-                      action_word='Do not concern',
                       recommendation_label='No concernment',
                       css_class='default')
     state_2_7.save(skip_autoupdate=True)
     state_2_8 = State(name=ugettext_noop('refered to committee'),
                       workflow=workflow_2,
-                      action_word='Refer to committee',
                       recommendation_label='Referral to committee',
                       css_class='default')
     state_2_8.save(skip_autoupdate=True)
     state_2_9 = State(name=ugettext_noop('needs review'),
                       workflow=workflow_2,
-                      action_word='Needs review',
                       css_class='default')
     state_2_9.save(skip_autoupdate=True)
     state_2_10 = State(name=ugettext_noop('rejected (not authorized)'),
                        workflow=workflow_2,
-                       action_word='Reject (not authorized)',
                        recommendation_label='Rejection (not authorized)',
                        css_class='default')
     state_2_10.save(skip_autoupdate=True)
