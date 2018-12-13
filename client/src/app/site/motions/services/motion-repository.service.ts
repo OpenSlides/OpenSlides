@@ -343,6 +343,19 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
                 case ChangeRecoMode.Final:
                     const appliedChanges: ViewUnifiedChange[] = changes.filter(change => change.isAccepted());
                     return this.diff.getTextWithChanges(targetMotion, appliedChanges, lineLength, highlightLine);
+                case ChangeRecoMode.ModifiedFinal:
+                    if (targetMotion.modified_final_version) {
+                        return this.lineNumbering.insertLineNumbers(
+                            targetMotion.modified_final_version,
+                            lineLength,
+                            highlightLine,
+                            null,
+                            1
+                        );
+                    } else {
+                        // Use the final version as fallback, if the modified does not exist.
+                        return this.formatMotion(id, ChangeRecoMode.Final, changes, lineLength, highlightLine);
+                    }
                 default:
                     console.error('unrecognized ChangeRecoMode option (' + crMode + ')');
                     return null;
