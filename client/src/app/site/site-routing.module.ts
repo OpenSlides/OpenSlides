@@ -51,6 +51,7 @@ const routes: Routes = [
                 path: 'history',
                 loadChildren: './history/history.module#HistoryModule'
             }
+
         ],
         canActivateChild: [AuthGuard]
     }

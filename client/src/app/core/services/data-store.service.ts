@@ -69,7 +69,7 @@ export class DataStoreService {
     /**
      * Observable subject for changed models in the datastore.
      */
-    private changedSubject: Subject<BaseModel> = new Subject<BaseModel>();
+    private readonly changedSubject: Subject<BaseModel> = new Subject<BaseModel>();
 
     /**
      * Observe the datastore for changes.
@@ -83,7 +83,7 @@ export class DataStoreService {
     /**
      * Observable subject for changed models in the datastore.
      */
-    private deletedSubject: Subject<DeletedInformation> = new Subject<DeletedInformation>();
+    private readonly deletedSubject: Subject<DeletedInformation> = new Subject<DeletedInformation>();
 
     /**
      * Observe the datastore for deletions.
@@ -92,6 +92,20 @@ export class DataStoreService {
      */
     public get deletedObservable(): Observable<DeletedInformation> {
         return this.deletedSubject.asObservable();
+    }
+
+    /**
+     * Observable subject for changed or deleted models in the datastore.
+     */
+    private readonly changedOrDeletedSubject: Subject<BaseModel | DeletedInformation> = new Subject<BaseModel | DeletedInformation>();
+
+    /**
+     * Observe the datastore for changes and deletions.
+     *
+     * @return an observable for changed and deleted objects.
+     */
+    public get changedOrDeletedObservable(): Observable<BaseModel | DeletedInformation> {
+        return this.changedOrDeletedSubject.asObservable();
     }
 
     /**
@@ -137,7 +151,7 @@ export class DataStoreService {
             // update observers
             Object.keys(this.modelStore).forEach(collection => {
                 Object.keys(this.modelStore[collection]).forEach(id => {
-                    this.changedSubject.next(this.modelStore[collection][id]);
+                    this.publishChangedInformation(this.modelStore[collection][id]);
                 });
             });
         } else {
@@ -293,7 +307,7 @@ export class DataStoreService {
                 this.jsonStore[collection] = {};
             }
             this.jsonStore[collection][model.id] = JSON.stringify(model);
-            this.changedSubject.next(model);
+            this.publishChangedInformation(model);
         });
         if (changeId) {
             await this.flushToStorage(changeId);
@@ -317,7 +331,7 @@ export class DataStoreService {
             if (this.jsonStore[collectionString]) {
                 delete this.jsonStore[collectionString][id];
             }
-            this.deletedSubject.next({
+            this.publishDeletedInformation({
                 collection: collectionString,
                 id: id
             });
@@ -340,15 +354,35 @@ export class DataStoreService {
         // Inform about the deletion
         Object.keys(modelStoreReference).forEach(collectionString => {
             Object.keys(modelStoreReference[collectionString]).forEach(id => {
-                this.deletedSubject.next({
+                this.publishDeletedInformation({
                     collection: collectionString,
-                    id: +id
+                    id: +id // needs casting, because Objects.keys gives all keys as strings...
                 });
             })
         });
         if (models && models.length) {
             await this.add(models, newMaxChangeId);
         }
+    }
+
+    /**
+     * Informs the changed and changedOrDeleted subject about a change.
+     *
+     * @param model The model to publish
+     */
+    private publishChangedInformation(model: BaseModel): void {
+        this.changedSubject.next(model);
+        this.changedOrDeletedSubject.next(model);
+    }
+
+    /**
+     * Informs the deleted and changedOrDeleted subject about a deletion.
+     *
+     * @param information The information about the deleted model
+     */
+    private publishDeletedInformation(information: DeletedInformation): void {
+        this.deletedSubject.next(information);
+        this.changedOrDeletedSubject.next(information);
     }
 
     /**

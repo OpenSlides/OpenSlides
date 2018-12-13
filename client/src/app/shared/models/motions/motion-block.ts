@@ -1,4 +1,5 @@
 import { AgendaBaseModel } from '../base/agenda-base-model';
+import { SearchRepresentation } from '../../../core/services/search.service';
 
 /**
  * Representation of a motion block.
@@ -15,6 +16,15 @@ export class MotionBlock extends AgendaBaseModel {
 
     public getTitle(): string {
         return this.title;
+    }
+
+    /**
+     * Formats the category for search
+     *
+     * @override
+     */
+    public formatForSearch(): SearchRepresentation {
+        return [this.title];
     }
 
     /**

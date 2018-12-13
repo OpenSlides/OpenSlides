@@ -2,6 +2,7 @@ import { MotionSubmitter } from './motion-submitter';
 import { MotionLog } from './motion-log';
 import { MotionComment } from './motion-comment';
 import { AgendaBaseModel } from '../base/agenda-base-model';
+import { SearchRepresentation } from '../../../core/services/search.service';
 
 /**
  * Representation of Motion.
@@ -75,8 +76,21 @@ export class Motion extends AgendaBaseModel {
         if (this.identifier) {
             return 'Motion ' + this.identifier;
         } else {
-            return this.getTitle() + ' (' + this.verboseName + ')';
+            return this.getTitle() + ' (' + this.getVerboseName() + ')';
         }
+    }
+
+    /**
+     * Formats the category for search
+     *
+     * @override
+     */
+    public formatForSearch(): SearchRepresentation {
+        let searchValues = [this.title, this.text, this.reason]
+        if (this.amendment_paragraphs) {
+            searchValues = searchValues.concat(this.amendment_paragraphs.filter(x => !!x));
+        }
+        return searchValues;
     }
 
     public getDetailStateURL(): string {

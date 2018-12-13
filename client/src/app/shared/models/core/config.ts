@@ -10,7 +10,7 @@ export class Config extends BaseModel {
     public value: Object;
 
     public constructor(input?: any) {
-        super('core/config', input);
+        super('core/config', 'Config', input);
     }
 
     public getTitle(): string {

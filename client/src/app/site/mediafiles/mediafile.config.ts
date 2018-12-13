@@ -3,7 +3,7 @@ import { Mediafile } from '../../shared/models/mediafiles/mediafile';
 
 export const MediafileAppConfig: AppConfig = {
     name: 'mediafiles',
-    models: [{ collectionString: 'mediafiles/mediafile', model: Mediafile }],
+    models: [{ collectionString: 'mediafiles/mediafile', model: Mediafile, searchOrder: 5 }],
     mainMenuEntries: [
         {
             route: '/mediafiles',

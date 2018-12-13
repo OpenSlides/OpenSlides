@@ -54,7 +54,7 @@ export class PersonalNote extends BaseModel<PersonalNote> implements PersonalNot
     public notes: PersonalNotesFormat;
 
     public constructor(input: any) {
-        super('users/personal-note', input);
+        super('users/personal-note', 'Personal note', input);
     }
 
     public getTitle(): string {

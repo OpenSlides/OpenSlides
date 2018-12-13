@@ -9,7 +9,7 @@ export class ProjectorMessage extends ProjectableBaseModel {
     public message: string;
 
     public constructor(input?: any) {
-        super('core/projector-message', input);
+        super('core/projector-message', 'Message', input);
     }
 
     public getTitle(): string {

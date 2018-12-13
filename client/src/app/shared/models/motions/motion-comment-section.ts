@@ -11,7 +11,7 @@ export class MotionCommentSection extends BaseModel<MotionCommentSection> {
     public write_groups_id: number[];
 
     public constructor(input?: any) {
-        super('motions/motion-comment-section', input);
+        super('motions/motion-comment-section', 'Comment section', input);
     }
 
     public getTitle(): string {

@@ -10,13 +10,13 @@ import { StatuteParagraph } from '../../shared/models/motions/statute-paragraph'
 export const MotionsAppConfig: AppConfig = {
     name: 'motions',
     models: [
-        { collectionString: 'motions/motion', model: Motion },
-        { collectionString: 'motions/category', model: Category },
+        { collectionString: 'motions/motion', model: Motion, searchOrder: 2 },
+        { collectionString: 'motions/category', model: Category, searchOrder: 6 },
         { collectionString: 'motions/workflow', model: Workflow },
         { collectionString: 'motions/motion-comment-section', model: MotionCommentSection },
         { collectionString: 'motions/motion-change-recommendation', model: MotionChangeReco },
-        { collectionString: 'motions/motion-block', model: MotionBlock },
-        { collectionString: 'motions/statute-paragraph', model: StatuteParagraph }
+        { collectionString: 'motions/motion-block', model: MotionBlock, searchOrder: 7 },
+        { collectionString: 'motions/statute-paragraph', model: StatuteParagraph, searchOrder: 9 }
     ],
     mainMenuEntries: [
         {
