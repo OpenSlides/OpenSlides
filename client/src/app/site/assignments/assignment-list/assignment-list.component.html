@@ -20,6 +20,7 @@
 </os-head-bar>
 
 <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
+    <!-- slector column -->
     <ng-container matColumnDef="selector">
         <mat-header-cell *matHeaderCellDef mat-sort-header class="checkbox-cell"></mat-header-cell>
         <mat-cell *matCellDef="let assignment" class="checkbox-cell">
@@ -31,6 +32,7 @@
         <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
         <mat-cell *matCellDef="let assignment">{{ assignment.getTitle() }}</mat-cell>
     </ng-container>
+    <!-- pahse column-->
     <ng-container matColumnDef="phase">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Phase</mat-header-cell>
         <mat-cell *matCellDef="let assignment">
@@ -38,7 +40,20 @@
                 <mat-chip color="primary" selected>{{ assignment.phase }}</mat-chip>
             </mat-chip-list>
         </mat-cell>
+        <button mat-menu-item (click)="toggleMultiSelect()">
+            <mat-icon>library_add</mat-icon>
+            <span translate>Exit multiselect</span>
+        </button>
+        <button mat-menu-item (click)="selectAll()">
+            <mat-icon>done_all</mat-icon>
+            <span translate>Select all</span>
+        </button>
+        <button mat-menu-item (click)="deselectAll()">
+            <mat-icon>clear</mat-icon>
+            <span translate>Deselect all</span>
+        </button>
     </ng-container>
+    <!-- candidates column -->
     <ng-container matColumnDef="candidates">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Candidates</mat-header-cell>
         <mat-cell *matCellDef="let assignment">
@@ -75,6 +90,10 @@
         <button mat-menu-item (click)="toggleMultiSelect()">
             <mat-icon>library_add</mat-icon>
             <span translate>Exit multiselect</span>
+        </button>
+        <button mat-menu-item (click)="selectAll()">
+            <mat-icon>done_all</mat-icon>
+            <span translate>Select all</span>
         </button>
         <mat-divider></mat-divider>
         <button mat-menu-item class="red-warning-text" *osPerms="'assignment.can_manage'" (click)="deleteSelected()">

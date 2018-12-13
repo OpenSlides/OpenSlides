@@ -1,16 +1,19 @@
-<os-head-bar [mainButton]="isAllowed('manage')" mainButtonIcon="edit" [nav]="false" [editMode]="editUser"
-    (mainEvent)="setEditMode(!editUser)" (saveEvent)="saveUser()">
+<os-head-bar
+    [mainButton]="isAllowed('manage')"
+    mainButtonIcon="edit"
+    [nav]="false"
+    [editMode]="editUser"
+    (mainEvent)="setEditMode(!editUser)"
+    (saveEvent)="saveUser()"
+>
     <!-- Title -->
     <div class="title-slot">
         <h2 *ngIf="editUser">
-            {{ personalInfoForm.get('title').value }}
-            {{ personalInfoForm.get('first_name').value }}
+            {{ personalInfoForm.get('title').value }} {{ personalInfoForm.get('first_name').value }}
             {{ personalInfoForm.get('last_name').value }}
         </h2>
 
-        <h2 *ngIf="!editUser">
-            {{ user.full_name }}
-        </h2>
+        <h2 *ngIf="!editUser">{{ user.full_name }}</h2>
     </div>
 
     <!-- Menu -->
@@ -33,33 +36,60 @@
 </os-head-bar>
 
 <mat-card class="os-card" *osPerms="'users.can_see_name'">
-    <form [ngClass]="{'mat-form-field-enabled': editUser}" [formGroup]="personalInfoForm" (ngSubmit)="saveUser()" *ngIf="user" (keydown)="onKeyDown($event)">
+    <form
+        [ngClass]="{ 'mat-form-field-enabled': editUser }"
+        [formGroup]="personalInfoForm"
+        (ngSubmit)="saveUser()"
+        *ngIf="user"
+        (keydown)="onKeyDown($event)">
         <!-- <h3 translate>Personal Data</h3> -->
         <div *ngIf="isAllowed('seeName')">
             <!-- Title -->
-            <mat-form-field class="form30 distance force-min-with" *ngIf="user.title || editUser && isAllowed('manage')">
-                <input type="text" matInput osAutofocus placeholder="{{ 'Title' | translate }}" formControlName="title"
-                    [value]="user.title">
+            <mat-form-field
+                class="form30 distance force-min-with"
+                *ngIf="user.title || (editUser && isAllowed('manage'))">
+                <input
+                    type="text"
+                    matInput
+                    osAutofocus
+                    placeholder="{{ 'Title' | translate }}"
+                    formControlName="title"
+                    [value]="user.title"/>
             </mat-form-field>
 
             <!-- First name -->
-            <mat-form-field class="form30 distance force-min-with" *ngIf="user.first_name || editUser && isAllowed('manage')">
-                <input type="text" matInput placeholder="{{ 'Given name' | translate }}" formControlName="first_name"
-                    [value]="user.first_name">
+            <mat-form-field
+                class="form30 distance force-min-with"
+                *ngIf="user.first_name || (editUser && isAllowed('manage'))">
+                <input
+                    type="text"
+                    matInput
+                    placeholder="{{ 'Given name' | translate }}"
+                    formControlName="first_name"
+                    [value]="user.first_name"/>
             </mat-form-field>
 
             <!-- Last name -->
-            <mat-form-field class="form30  force-min-with" *ngIf="user.last_name || editUser && isAllowed('manage')">
-                <input type="text" matInput placeholder="{{ 'Surname' | translate }}" formControlName="last_name"
-                    [value]="user.last_name">
+            <mat-form-field class="form30  force-min-with" *ngIf="user.last_name || (editUser && isAllowed('manage'))">
+                <input
+                    type="text"
+                    matInput
+                    placeholder="{{ 'Surname' | translate }}"
+                    formControlName="last_name"
+                    [value]="user.last_name"/>
             </mat-form-field>
         </div>
 
         <div *ngIf="isAllowed('seePersonal')">
             <!-- E-Mail -->
             <mat-form-field class="form100" *ngIf="user.email || editUser">
-                <input type="email" matInput placeholder="{{ 'Email' | translate }}" name="email" formControlName="email"
-                    [value]="user.email">
+                <input
+                    type="email"
+                    matInput
+                    placeholder="{{ 'Email' | translate }}"
+                    name="email"
+                    formControlName="email"
+                    [value]="user.email"/>
                 <mat-error *ngIf="personalInfoForm.get('email').hasError('email')" translate>
                     Please enter a valid email address
                 </mat-error>
@@ -68,22 +98,32 @@
 
         <div>
             <!-- Strucuture Level -->
-            <mat-form-field class="form70 distance" *ngIf="user.structure_level || editUser && isAllowed('manage')">
-                <input type="text" matInput placeholder="{{ 'Structure level' | translate }}" formControlName="structure_level"
-                    [value]="user.structure_level">
+            <mat-form-field class="form70 distance" *ngIf="user.structure_level || (editUser && isAllowed('manage'))">
+                <input
+                    type="text"
+                    matInput
+                    placeholder="{{ 'Structure level' | translate }}"
+                    formControlName="structure_level"
+                    [value]="user.structure_level"/>
             </mat-form-field>
 
-            <!-- Partizipant Number -->
-            <mat-form-field class="form20 force-min-with" *ngIf="user.participant_number || editUser && isAllowed('manage')">
-                <input type="text" matInput placeholder="{{ 'Participant number' | translate }}" formControlName="number"
-                    [value]="user.participant_number">
+            <!-- Participant Number -->
+            <mat-form-field
+                class="form20 force-min-with"
+                *ngIf="user.participant_number || (editUser && isAllowed('manage'))">
+                <input
+                    type="text"
+                    matInput
+                    placeholder="{{ 'Participant number' | translate }}"
+                    formControlName="number"
+                    [value]="user.participant_number"/>
             </mat-form-field>
         </div>
 
         <div>
             <!-- Groups -->
-            <mat-form-field class="form100" *ngIf="user.groups && user.groups.length > 0 || editUser">
-                <mat-select placeholder="{{ 'Groups'  | translate }}" formControlName="groups_id" multiple>
+            <mat-form-field class="form100" *ngIf="(user.groups && user.groups.length > 0) || editUser">
+                <mat-select placeholder="{{ 'Groups' | translate }}" formControlName="groups_id" multiple>
                     <mat-option *ngFor="let group of groups" [value]="group.id">{{ group }}</mat-option>
                 </mat-select>
             </mat-form-field>
@@ -92,10 +132,18 @@
         <div *ngIf="isAllowed('manage')">
             <!-- Initial Password -->
             <mat-form-field class="form100">
-                <input matInput placeholder="{{ 'Initial password' | translate }}" formControlName="default_password"
-                    [value]="user.default_password">
+                <input
+                    matInput
+                    placeholder="{{ 'Initial password' | translate }}"
+                    formControlName="default_password"
+                    [value]="user.default_password"/>
                 <mat-hint align="end">Generate</mat-hint>
-                <button type="button" mat-button matSuffix mat-icon-button [disabled]="!newUser"
+                <button
+                    type="button"
+                    mat-button
+                    matSuffix
+                    mat-icon-button
+                    [disabled]="!newUser"
                     (click)="generatePassword()">
                     <mat-icon>sync_problem</mat-icon>
                 </button>
@@ -106,45 +154,59 @@
         <div *ngIf="isAllowed('seePersonal')">
             <!-- The HTML Editor -->
             <h4 translate *ngIf="user.about_me || editUser">About me</h4>
-            <editor
-                formControlName='about_me'
-                [init]="tinyMceSettings"
-                *ngIf="editUser"
-            ></editor>
+            <editor formControlName="about_me" [init]="tinyMceSettings" *ngIf="editUser"></editor>
             <div *ngIf="user.about_me && !editUser" [innerHTML]="user.about_me"></div>
         </div>
 
         <div *ngIf="isAllowed('seePersonal')">
             <!-- username -->
             <mat-form-field class="form100" *ngIf="user.username || editUser">
-                <input type="text" matInput placeholder="{{ 'Username' | translate }}" formControlName="username"
-                    [value]="user.username">
+                <input
+                    type="text"
+                    matInput
+                    placeholder="{{ 'Username' | translate }}"
+                    formControlName="username"
+                    [value]="user.username"/>
             </mat-form-field>
         </div>
 
         <div *ngIf="isAllowed('seeExtra')">
             <!-- Comment -->
             <mat-form-field class="form100" *ngIf="user.comment || editUser">
-                <input matInput placeholder="{{ 'Comment' | translate }}" formControlName="comment" [value]="user.comment">
+                <input
+                    matInput
+                    placeholder="{{ 'Comment' | translate }}"
+                    formControlName="comment"
+                    [value]="user.comment"/>
                 <mat-hint translate>Only for internal notes.</mat-hint>
             </mat-form-field>
         </div>
 
         <div *ngIf="isAllowed('seeExtra')">
             <!-- Present? -->
-            <mat-checkbox formControlName="is_present"
-                matTooltip="{{ 'Designates whether this user is in the room.' | translate }}" [value]="user.is_present">
+            <mat-checkbox
+                formControlName="is_present"
+                matTooltip="{{ 'Designates whether this user is in the room.' | translate }}"
+                [value]="user.is_present">
                 <span translate>Is present</span>
             </mat-checkbox>
 
             <!-- Active? -->
-            <mat-checkbox *osPerms="'users.can_see_extra_data'" formControlName="is_active" [value]="user.is_active"
-                matTooltip="{{ 'Designates whether this user should be treated as active. Unselect this instead of deleting the account.' | translate }}">
+            <mat-checkbox
+                *osPerms="'users.can_see_extra_data'"
+                formControlName="is_active"
+                [value]="user.is_active"
+                matTooltip="{{
+                    'Designates whether this user should be treated as active. Unselect this instead of deleting the account.'
+                        | translate
+                }}">
                 <span translate>Is active</span>
             </mat-checkbox>
 
             <!-- Commitee? -->
-            <mat-checkbox formControlName="is_committee" [value]="user.is_committee"
+            <mat-checkbox
+                formControlName="is_committee"
+                [value]="user.is_committee"
                 matTooltip="{{ 'Designates whether this user should be treated as a committee.' | translate }}">
                 <span translate>Is a committee</span>
             </mat-checkbox>
