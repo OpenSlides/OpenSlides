@@ -18,8 +18,8 @@
         "compodoc": "./node_modules/.bin/compodoc --hideGenerator -p src/tsconfig.app.json -n 'OpenSlides Documentation' -d ../Compodoc -s -w -t -o --port",
         "extract": "ngx-translate-extract -i ./src -o ./src/assets/i18n/template-en.pot -clean --sort --format pot -m _",
         "po2json": "./node_modules/.bin/po2json -f mf src/assets/i18n/de.po src/assets/i18n/de.json && ./node_modules/.bin/po2json -f mf src/assets/i18n/cs.po src/assets/i18n/cs.json",
-        "prettify-changes": "pretty-quick --staged",
-        "prettify-all": "pretty-quick"
+        "prettify-check": "prettier --config ./.prettierrc --list-different \"src/{app,environments}/**/*{.ts,.js,.json,.css,.scss}\"",
+        "prettify-write": "prettier --config ./.prettierrc --write \"src/{app,environments}/**/*{.ts,.js,.json,.css,.scss}\""
     },
     "dependencies": {
         "@angular/animations": "^7.1.1",
@@ -71,7 +71,6 @@
         "karma-jasmine-html-reporter": "^0.2.2",
         "npm-run-all": "^4.1.5",
         "prettier": "^1.15.3",
-        "pretty-quick": "^1.8.0",
         "protractor": "^5.4.1",
         "ts-node": "~7.0.1",
         "tslint": "~5.11.0",
