@@ -127,7 +127,7 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
             state_id: [''],
             recommendation_id: [''],
             submitters_id: [],
-            supporters_id: [],
+            supporters_id: [[]],
             origin: ['']
         });
     }
