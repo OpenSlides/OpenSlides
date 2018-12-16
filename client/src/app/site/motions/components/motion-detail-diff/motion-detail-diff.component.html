@@ -111,7 +111,7 @@
         <button
             type="button"
             mat-menu-item
-            [disabled]="hasCollissions(change)"
+            [disabled]="hasCollissions(change, changes)"
             (click)="setAcceptanceValue(change, 'accepted')"
         >
             <mat-icon>thumb_up</mat-icon>
@@ -121,7 +121,7 @@
         <button
             type="button"
             mat-menu-item
-            [disabled]="hasCollissions(change)"
+            [disabled]="hasCollissions(change, changes)"
             (click)="setAcceptanceValue(change, 'rejected')"
         >
             <mat-icon>thumb_down</mat-icon>
