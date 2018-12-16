@@ -10,17 +10,8 @@ class ItemAccessPermissions(BaseAccessPermissions):
     """
     base_permission = 'agenda.can_see'
 
-    def get_serializer_class(self, user=None):
-        """
-        Returns serializer class.
-        """
-        from .serializers import ItemSerializer
-
-        return ItemSerializer
-
     # TODO: In the following method we use full_data['is_hidden'] and
     # full_data['is_internal'] but this can be out of date.
-
     async def get_restricted_data(
             self,
             full_data: List[Dict[str, Any]],

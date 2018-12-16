@@ -2,6 +2,7 @@ from collections import OrderedDict
 from typing import Any, Dict, Iterable, Optional, Type
 
 from asgiref.sync import async_to_sync
+from django.db.models import Model
 from django.http import Http404
 from rest_framework import status
 from rest_framework.decorators import detail_route, list_route
@@ -32,6 +33,7 @@ from rest_framework.serializers import (
     PrimaryKeyRelatedField,
     RelatedField,
     Serializer,
+    SerializerMetaclass,
     SerializerMethodField,
     ValidationError,
 )
@@ -152,17 +154,44 @@ class PermissionMixin:
 
     def get_serializer_class(self) -> Type[Serializer]:
         """
-        Overridden method to return the serializer class given by the
-        access permissions container.
+        Overridden method to return the serializer class for the model.
         """
-        if self.get_access_permissions() is not None:
-            serializer_class = self.get_access_permissions().get_serializer_class(self.request.user)  # type: ignore
+        model = self.get_queryset().model  # type: ignore
+        try:
+            return model_serializer_classes[model]
+        except AttributeError:
+            # If there is no known serializer class for the model, return the
+            # default serializer class.
+            return super().get_serializer_class()  # type: ignore
+
+
+model_serializer_classes: Dict[Type[Model], Serializer] = {}
+
+
+class ModelSerializerRegisterer(SerializerMetaclass):
+    """
+    Meta class for model serializer that detects the corresponding model
+    and saves it.
+    """
+
+    def __new__(cls, name, bases, attrs):  # type: ignore
+        """
+        Detects the corresponding model from the ModelSerializer by
+        looking into the Meta-class.
+
+        Does nothing, if the Meta-class does not have the model attribute.
+        """
+        serializer_class = super().__new__(cls, name, bases, attrs)
+        try:
+            model = serializer_class.Meta.model
+        except AttributeError:
+            pass
         else:
-            serializer_class = super().get_serializer_class()  # type: ignore
+            model_serializer_classes[model] = serializer_class
         return serializer_class
 
 
-class ModelSerializer(_ModelSerializer):
+class ModelSerializer(_ModelSerializer, metaclass=ModelSerializerRegisterer):
     """
     ModelSerializer that changes the field names of related fields to
     FIELD_NAME_id.

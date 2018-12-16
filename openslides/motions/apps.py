@@ -21,6 +21,7 @@ class MotionsAppConfig(AppConfig):
             create_builtin_workflows,
             get_permission_change_data,
         )
+        from . import serializers  # noqa
         from .views import (
             CategoryViewSet,
             StatuteParagraphViewSet,

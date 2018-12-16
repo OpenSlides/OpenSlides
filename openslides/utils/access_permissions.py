@@ -1,8 +1,6 @@
 from typing import Any, Callable, Dict, List, Set
 
 from asgiref.sync import async_to_sync
-from django.db.models import Model
-from rest_framework.serializers import Serializer
 
 from .auth import async_anonymous_is_enabled, async_has_perm, user_to_user_id
 from .cache import element_cache
@@ -41,25 +39,6 @@ class BaseAccessPermissions:
         else:
             return bool(user_id) or await async_anonymous_is_enabled()
 
-    def get_serializer_class(self, user_id: int = 0) -> Serializer:
-        """
-        Returns different serializer classes according to users permissions.
-
-        This should return the serializer for full data access if user is
-        None. See get_full_data().
-        """
-        # TODO: Rewrite me by using an serializer_class attribute and removing
-        # the user_id argument.
-        raise NotImplementedError(
-            "You have to add the method 'get_serializer_class' to your "
-            "access permissions class.".format(self))
-
-    def get_full_data(self, instance: Model) -> Dict[str, Any]:
-        """
-        Returns all possible serialized data for the given instance.
-        """
-        return self.get_serializer_class()(instance).data
-
     async def get_restricted_data(
             self, full_data: List[Dict[str, Any]],
             user_id: int) -> List[Dict[str, Any]]:
@@ -71,11 +50,6 @@ class BaseAccessPermissions:
         the return is the same. Returns an empty list if the user has no read
         access. Returns reduced data if the user has limited access. Default:
         Returns full data if the user has read access to model instances.
-
-        Hint: You should override this method if your get_serializer_class()
-        method returns different serializers for different users or if you
-        have access restrictions in your view or viewset in methods like
-        retrieve() or list().
         """
         return full_data if await self.async_check_permissions(user_id) else []
 

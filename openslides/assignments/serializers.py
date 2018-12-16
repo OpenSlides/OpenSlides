@@ -238,31 +238,3 @@ class AssignmentFullSerializer(ModelSerializer):
         assignment.agenda_item_update_information['parent_id'] = agenda_parent_id
         assignment.save()
         return assignment
-
-
-class AssignmentShortSerializer(AssignmentFullSerializer):
-    """
-    Serializer for assignment.models.Assignment objects. Without unpublished poll.
-    """
-    assignment_related_users = AssignmentRelatedUserSerializer(many=True, read_only=True)
-    polls = AssignmentShortPollSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Assignment
-        fields = (
-            'id',
-            'title',
-            'description',
-            'open_posts',
-            'phase',
-            'assignment_related_users',
-            'poll_description_default',
-            'polls',
-            'agenda_item_id',
-            'tags',)
-        validators = (posts_validator,)
-
-    def validate(self, data):
-        if 'description' in data:
-            data['description'] = validate_html(data['description'])
-        return data

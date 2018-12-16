@@ -22,6 +22,7 @@ class CoreAppConfig(AppConfig):
         from ..utils.rest_api import router
         from ..utils.cache import element_cache
         from .projector import get_projector_elements
+        from . import serializers  # noqa
         from .signals import (
             delete_django_app_permissions,
             get_permission_change_data,

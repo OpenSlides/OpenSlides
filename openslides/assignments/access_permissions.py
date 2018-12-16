@@ -1,7 +1,7 @@
 from typing import Any, Dict, List
 
 from ..utils.access_permissions import BaseAccessPermissions
-from ..utils.auth import async_has_perm, has_perm
+from ..utils.auth import async_has_perm
 
 
 class AssignmentAccessPermissions(BaseAccessPermissions):
@@ -9,18 +9,6 @@ class AssignmentAccessPermissions(BaseAccessPermissions):
     Access permissions container for Assignment and AssignmentViewSet.
     """
     base_permission = 'assignments.can_see'
-
-    def get_serializer_class(self, user=None):
-        """
-        Returns different serializer classes according to users permissions.
-        """
-        from .serializers import AssignmentFullSerializer, AssignmentShortSerializer
-
-        if user is None or (has_perm(user, 'assignments.can_see') and has_perm(user, 'assignments.can_manage')):
-            serializer_class = AssignmentFullSerializer
-        else:
-            serializer_class = AssignmentShortSerializer
-        return serializer_class
 
     async def get_restricted_data(
             self,
