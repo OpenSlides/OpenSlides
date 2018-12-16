@@ -1,13 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatDialog } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 
 import { ViewItem } from '../../models/view-item';
 import { ListViewBaseComponent } from 'app/site/base/list-view-base';
 import { AgendaRepositoryService } from '../../services/agenda-repository.service';
 import { PromptService } from '../../../../core/services/prompt.service';
+import { ItemInfoDialogComponent } from '../item-info-dialog/item-info-dialog.component';
+import { ViewportService } from 'app/core/services/viewport.service';
+import { DurationService } from 'app/site/core/services/duration.service';
+import { ConfigService } from 'app/core/services/config.service';
 
 /**
  * List view for the agenda.
@@ -19,6 +23,18 @@ import { PromptService } from '../../../../core/services/prompt.service';
 })
 export class AgendaListComponent extends ListViewBaseComponent<ViewItem> implements OnInit {
     /**
+     * Determine the display columns in desktop view
+     */
+    public displayedColumnsDesktop: string[] = ['title', 'info', 'speakers', 'menu'];
+
+    /**
+     * Determine the display columns in mobile view
+     */
+    public displayedColumnsMobile: string[] = ['title', 'menu'];
+
+    public isNumberingAllowed: boolean;
+
+    /**
      * The usual constructor for components
      * @param titleService Setting the browser tab title
      * @param translate translations
@@ -26,8 +42,11 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
      * @param route Angulars ActivatedRoute
      * @param router Angulars router
      * @param repo the agenda repository,
-     * promptService:
-     *
+     * @param promptService the delete prompt
+     * @param dialog to change info values
+     * @param config read out config values
+     * @param vp determine the viewport
+     * @param durationService Converts numbers to readable duration strings
      */
     public constructor(
         titleService: Title,
@@ -36,7 +55,11 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
         private route: ActivatedRoute,
         private router: Router,
         private repo: AgendaRepositoryService,
-        private promptService: PromptService
+        private promptService: PromptService,
+        private dialog: MatDialog,
+        private config: ConfigService,
+        public vp: ViewportService,
+        public durationService: DurationService
     ) {
         super(titleService, translate, matSnackBar);
 
@@ -55,12 +78,17 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
             this.dataSource.data = newAgendaItem;
             this.checkSelection();
         });
+
+        this.config
+            .get('agenda_enable_numbering')
+            .subscribe(autoNumbering => (this.isNumberingAllowed = autoNumbering));
     }
 
     /**
-     * Handler for click events on an agenda item row. Links to the content object
+     * Links to the content object.
      * Gets content object from the repository rather than from the model
      * to avoid race conditions
+     *
      * @param item the item that was selected from the list view
      */
     public singleSelectAction(item: ViewItem): void {
@@ -69,7 +97,47 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
     }
 
     /**
+     * Opens the item-info-dialog.
+     * Enable direct changing of various information
+     *
+     * @param item The view item that was clicked
+     */
+    public openEditInfo(item: ViewItem): void {
+        const dialogRef = this.dialog.open(ItemInfoDialogComponent, {
+            width: '400px',
+            data: item
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                if (result.durationText) {
+                    result.duration = this.durationService.stringToDuration(result.durationText);
+                }
+                this.repo.update(result, item);
+            }
+        });
+    }
+
+    /**
+     * Click handler for the numbering button to enable auto numbering
+     */
+    public async onAutoNumbering(): Promise<void> {
+        const content = this.translate.instant('Are you sure you want to number all agenda items?');
+        if (await this.promptService.open('', content)) {
+            await this.repo.autoNumbering().then(null, this.raiseError);
+        }
+    }
+
+    /**
+     * Click handler for the done button in the dot-menu
+     */
+    public async onDoneSingleButton(item: ViewItem): Promise<void> {
+        await this.repo.update({ closed: !item.closed }, item).then(null, this.raiseError);
+    }
+
+    /**
      * Handler for the speakers button
+     *
      * @param item indicates the row that was clicked on
      */
     public onSpeakerIcon(item: ViewItem): void {
@@ -82,6 +150,18 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
      */
     public onPlusButton(): void {
         this.router.navigate(['topics/new'], { relativeTo: this.route });
+    }
+
+    /**
+     * Delete handler for a single item
+     *
+     * @param item The item to delete
+     */
+    public async onDelete(item: ViewItem): Promise<void> {
+        const content = this.translate.instant('Delete') + ` ${item.getTitle()}?`;
+        if (await this.promptService.open('Are you sure?', content)) {
+            await this.repo.delete(item).then(null, this.raiseError);
+        }
     }
 
     /**
@@ -110,19 +190,24 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
     }
 
     /**
-     * Sets multiple entries' visibility. Needs items in selectedRows, which
+     * Sets multiple entries' agenda type. Needs items in selectedRows, which
      * is only filled with any data in multiSelect mode.
      *
      * @param visible true if the item is to be shown
      */
-    public async setVisibilitySelected(visible: boolean): Promise<void> {
+    public async setAgendaType(agendaType: number): Promise<void> {
         for (const agenda of this.selectedRows) {
-            await this.repo.update({ is_hidden: visible }, agenda);
+            await this.repo.update({ type: agendaType }, agenda).then(null, this.raiseError);
         }
     }
 
+    /**
+     * Determine what columns to show
+     *
+     * @returns an array of strings with the dialogs to show
+     */
     public getColumnDefinition(): string[] {
-        const list = ['title', 'duration', 'speakers'];
+        const list = this.vp.isMobile ? this.displayedColumnsMobile : this.displayedColumnsDesktop;
         if (this.isMultiSelect) {
             return ['selector'].concat(list);
         }

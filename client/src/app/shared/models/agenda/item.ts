@@ -61,6 +61,17 @@ export class Item extends ProjectableBaseModel {
         return this.speakers.filter(speaker => speaker.state === SpeakerState.WAITING).length;
     }
 
+    /**
+     * Return the type as string
+     */
+    public get verboseType(): string {
+        if (this.type) {
+            return itemVisibilityChoices.find(visibilityType => visibilityType.key === this.type).name;
+        } else {
+            return '';
+        }
+    }
+
     public getTitle(): string {
         return this.title;
     }

@@ -15,6 +15,7 @@ import { Speaker } from 'app/shared/models/agenda/speaker';
 import { User } from 'app/shared/models/users/user';
 import { HttpService } from 'app/core/services/http.service';
 import { ConfigService } from 'app/core/services/config.service';
+import { DataSendService } from 'app/core/services/data-send.service';
 
 /**
  * Repository service for users
@@ -27,16 +28,19 @@ import { ConfigService } from 'app/core/services/config.service';
 export class AgendaRepositoryService extends BaseRepository<ViewItem, Item> {
     /**
      * Contructor for agenda repository.
+     *
      * @param DS The DataStore
      * @param httpService OpenSlides own HttpService
      * @param mapperService OpenSlides mapping service for collection strings
      * @param config Read config variables
+     * @param dataSend send models to the server
      */
     public constructor(
         protected DS: DataStoreService,
         private httpService: HttpService,
         mapperService: CollectionStringModelMapperService,
-        private config: ConfigService
+        private config: ConfigService,
+        private dataSend: DataSendService
     ) {
         super(DS, mapperService, Item);
     }
@@ -44,6 +48,7 @@ export class AgendaRepositoryService extends BaseRepository<ViewItem, Item> {
     /**
      * Returns the corresponding content object to a given {@link Item} as an {@link AgendaBaseModel}
      * Used dynamically because of heavy race conditions
+     *
      * @param agendaItem the target agenda Item
      * @returns the content object of the given item. Might be null if it was not found.
      */
@@ -68,6 +73,7 @@ export class AgendaRepositoryService extends BaseRepository<ViewItem, Item> {
 
     /**
      * Generate viewSpeaker objects from a given agenda Item
+     *
      * @param item agenda Item holding speakers
      * @returns the list of view speakers corresponding to the given item
      */
@@ -88,8 +94,8 @@ export class AgendaRepositoryService extends BaseRepository<ViewItem, Item> {
     /**
      * Add a new speaker to an agenda item.
      * Sends the users ID to the server
-     *
      * Might need another repo
+     *
      * @param id {@link User} id of the new speaker
      * @param agenda the target agenda item
      */
@@ -100,6 +106,7 @@ export class AgendaRepositoryService extends BaseRepository<ViewItem, Item> {
 
     /**
      * Sets the given speaker ID to Speak
+     *
      * @param id the speakers id
      * @param agenda the target agenda item
      */
@@ -110,6 +117,7 @@ export class AgendaRepositoryService extends BaseRepository<ViewItem, Item> {
 
     /**
      * Stops the current speaker
+     *
      * @param agenda the target agenda item
      */
     public async stopSpeaker(agenda: Item): Promise<void> {
@@ -119,6 +127,7 @@ export class AgendaRepositoryService extends BaseRepository<ViewItem, Item> {
 
     /**
      * Marks the current speaker
+     *
      * @param id {@link User} id of the new speaker
      * @param mark determine if the user was marked or not
      * @param agenda the target agenda item
@@ -130,6 +139,7 @@ export class AgendaRepositoryService extends BaseRepository<ViewItem, Item> {
 
     /**
      * Deletes the given speaker for the agenda
+     *
      * @param id the speakers id
      * @param agenda the target agenda item
      */
@@ -140,6 +150,7 @@ export class AgendaRepositoryService extends BaseRepository<ViewItem, Item> {
 
     /**
      * Posts an (manually) sorted speaker list to the server
+     *
      * @param ids array of speaker id numbers
      * @param Item the target agenda item
      */
@@ -149,34 +160,48 @@ export class AgendaRepositoryService extends BaseRepository<ViewItem, Item> {
     }
 
     /**
-     * @ignore
+     * Updates an agenda item
      *
-     * TODO: used over not-yet-existing detail view
+     * @param update contains the update data
+     * @param viewItem the item to update
      */
-    public async update(item: Partial<Item>, viewUser: ViewItem): Promise<void> {
-        return null;
+    public async update(update: Partial<Item>, viewItem: ViewItem): Promise<void> {
+        const updateItem = viewItem.item;
+        updateItem.patchValues(update);
+        return await this.dataSend.partialUpdateModel(updateItem);
+    }
+
+    /**
+     * Trigger the automatic numbering sequence on the server
+     */
+    public async autoNumbering(): Promise<void> {
+        await this.httpService.post('/rest/agenda/item/numbering/');
     }
 
     /**
      * @ignore
      *
-     * TODO: used over not-yet-existing detail view
+     * TODO: Usually, agenda items are deleted with their corresponding content object
+     *       However, deleting an agenda item might be interpretet with "removing an item
+     *       from the agenda" permanently. Usually, items might juse be hidden but not
+     *       deleted (right now)
      */
-    public async delete(item: ViewItem): Promise<void> {
-        return null;
+    public delete(item: ViewItem): Promise<void> {
+        throw new Error("Method not implemented.");
     }
 
     /**
      * @ignore
      *
-     * TODO: used over not-yet-existing detail view
+     * Agenda items are created implicitly and do not have on create functions
      */
     public async create(item: Item): Promise<Identifiable> {
-        return null;
+        throw new Error("Method not implemented.");
     }
 
     /**
      * Creates the viewItem out of a given item
+     *
      * @param item the item that should be converted to view item
      * @returns a new view item
      */

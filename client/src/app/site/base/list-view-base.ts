@@ -7,7 +7,7 @@ import { BaseViewComponent } from './base-view';
 
 export abstract class ListViewBaseComponent<V extends BaseViewModel> extends BaseViewComponent {
     /**
-     * The data source for a table. Requires to be initialised with a BaseViewModel
+     * The data source for a table. Requires to be initialized with a BaseViewModel
      */
     public dataSource: MatTableDataSource<V>;
 
@@ -17,12 +17,12 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel> extends Bas
     protected canMultiSelect = false;
 
     /**
-     * Current state of the multiSelect mode. TODO Could be merged with edit mode?
+     * Current state of the multi select mode. TODO Could be merged with edit mode?
      */
-    private _multiSelectModus = false;
+    private _multiSelectMode = false;
 
     /**
-     * An array of currently selected items, upon which multiselect actions can be performed
+     * An array of currently selected items, upon which multi select actions can be performed
      * see {@link selectItem}.
      */
     public selectedRows: V[];
@@ -75,7 +75,7 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel> extends Bas
      */
     public selectItem(row: V, event: MouseEvent): void {
         event.stopPropagation();
-        if (!this._multiSelectModus) {
+        if (!this._multiSelectMode) {
             this.singleSelectAction(row);
         } else {
             const idx = this.selectedRows.indexOf(row);
@@ -99,10 +99,10 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel> extends Bas
      */
     public toggleMultiSelect(): void {
         if (!this.canMultiSelect || this.isMultiSelect) {
-            this._multiSelectModus = false;
+            this._multiSelectMode = false;
             this.clearSelection();
         } else {
-            this._multiSelectModus = true;
+            this._multiSelectMode = true;
         }
     }
 
@@ -121,7 +121,7 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel> extends Bas
      * Returns the current state of the multiSelect modus
      */
     public get isMultiSelect(): boolean {
-        return this._multiSelectModus;
+        return this._multiSelectMode;
     }
 
     /**
@@ -129,7 +129,7 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel> extends Bas
      * @param item The row's entry
      */
     public isSelected(item: V): boolean {
-        if (!this._multiSelectModus) {
+        if (!this._multiSelectMode) {
             return false;
         }
         return this.selectedRows.indexOf(item) >= 0;

@@ -309,7 +309,6 @@
     <form
         class="motion-content"
         [formGroup]="contentForm"
-        (clickdown)="onKeyDown($event)"
         (keydown)="onKeyDown($event)"
         (ngSubmit)="saveMotion()"
         *ngIf="motion"
@@ -492,7 +491,7 @@
                 <os-search-value-selector
                     ngDefaultControl
                     [form]="contentForm"
-                    [formControl]="contentForm.get('parent_id')"
+                    [formControl]="contentForm.get('agenda_parent_id')"
                     [multiple]="false"
                     [includeNone]="true"
                     listname="{{ 'Parent Item' | translate }}"

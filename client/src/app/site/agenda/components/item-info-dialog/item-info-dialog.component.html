@@ -1,0 +1,39 @@
+<h1 mat-dialog-title>{{ 'Change values for' | translate }} {{ item.getTitle() }}</h1>
+<div mat-dialog-content>
+    <form class="itemDialogForm" [formGroup]="agendaInfoForm" (keydown)="onKeyDown($event)" (ngSubmit)="saveItemInfo()">
+        <!-- Visibility -->
+        <mat-form-field>
+            <mat-select formControlName="type" placeholder="{{ 'Agenda visibility' | translate }}">
+                <mat-option *ngFor="let type of itemVisibility" [value]="type.key">
+                    <span>{{ type.name | translate }}</span>
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <!-- Duration -->
+        <mat-form-field>
+            <input type="string" matInput placeholder="{{ 'Duration' | translate }}" formControlName="durationText" />
+        </mat-form-field>
+
+        <!-- Item number (prefix) -->
+        <mat-form-field>
+            <input matInput placeholder="{{ 'Item number' | translate }}" formControlName="item_number" />
+        </mat-form-field>
+
+        <!-- Comment -->
+        <mat-form-field>
+            <textarea
+                matInput
+                formControlName="comment"
+                placeholder="{{ 'Comment' | translate }}"
+                cdkTextareaAutosize
+                cdkAutosizeMinRows="3"
+                cdkAutosizeMaxRows="5"
+            ></textarea>
+        </mat-form-field>
+    </form>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="saveItemInfo()"><span translate>Save</span></button>
+    <button mat-button (click)="onCancelButton()"><span translate>Cancel</span></button>
+</div>

@@ -11,6 +11,11 @@ import { BaseViewComponent } from 'app/site/base/base-view';
 import { PromptService } from 'app/core/services/prompt.service';
 import { TopicRepositoryService } from '../../services/topic-repository.service';
 import { ViewTopic } from '../../models/view-topic';
+import { OperatorService } from 'app/core/services/operator.service';
+import { BehaviorSubject } from 'rxjs';
+import { DataStoreService } from 'app/core/services/data-store.service';
+import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
+import { Item, itemVisibilityChoices } from 'app/shared/models/agenda/item';
 
 /**
  * Detail page for topics.
@@ -42,7 +47,23 @@ export class TopicDetailComponent extends BaseViewComponent {
     public topicForm: FormGroup;
 
     /**
+     * Subject for mediafiles
+     */
+    public mediafilesObserver: BehaviorSubject<Mediafile[]>;
+
+    /**
+     * Subject for agenda items
+     */
+    public agendaItemObserver: BehaviorSubject<Item[]>;
+
+    /**
+     * Determine visibility states for the agenda that will be created implicitly
+     */
+    public itemVisibility = itemVisibilityChoices;
+
+    /**
      * Constructor for the topic detail page.
+     *
      * @param title Setting the browsers title
      * @param matSnackBar display errors and other messages
      * @param translate Handles translations
@@ -52,6 +73,8 @@ export class TopicDetailComponent extends BaseViewComponent {
      * @param formBuilder Angulars FormBuilder
      * @param repo The topic repository
      * @param promptService Allows warning before deletion attempts
+     * @param operator The current user
+     * @param DS Data Store
      */
     public constructor(
         title: Title,
@@ -62,15 +85,29 @@ export class TopicDetailComponent extends BaseViewComponent {
         private location: Location,
         private formBuilder: FormBuilder,
         private repo: TopicRepositoryService,
-        private promptService: PromptService
+        private promptService: PromptService,
+        private operator: OperatorService,
+        private DS: DataStoreService
     ) {
         super(title, translate, matSnackBar);
         this.getTopicByUrl();
         this.createForm();
+
+        this.mediafilesObserver = new BehaviorSubject(this.DS.getAll(Mediafile));
+        this.agendaItemObserver = new BehaviorSubject(this.DS.getAll(Item));
+
+        this.DS.changeObservable.subscribe(newModel => {
+            if (newModel instanceof Item) {
+                this.agendaItemObserver.next(DS.getAll(Item));
+            } else if (newModel instanceof Mediafile) {
+                this.mediafilesObserver.next(DS.getAll(Mediafile));
+            }
+        });
     }
 
     /**
      * Set the edit mode to the given Status
+     *
      * @param mode
      */
     public setEditMode(mode: boolean): void {
@@ -88,13 +125,17 @@ export class TopicDetailComponent extends BaseViewComponent {
      */
     public async saveTopic(): Promise<void> {
         if (this.newTopic && this.topicForm.valid) {
+            if (!this.topicForm.value.agenda_parent_id) {
+                delete this.topicForm.value.agenda_parent_id;
+            }
+
             const response = await this.repo.create(this.topicForm.value);
             this.router.navigate([`/agenda/topics/${response.id}`]);
             // after creating a new topic, go "back" to agenda list view
             this.location.replaceState('/agenda/');
         } else {
-            await this.repo.update(this.topicForm.value, this.topic);
             this.setEditMode(false);
+            await this.repo.update(this.topicForm.value, this.topic);
         }
     }
 
@@ -103,9 +144,14 @@ export class TopicDetailComponent extends BaseViewComponent {
      */
     public createForm(): void {
         this.topicForm = this.formBuilder.group({
-            title: ['', Validators.required],
-            text: ['']
+            agenda_type: [],
+            agenda_parent_id: [],
+            attachments_id: [[]],
+            text: [''],
+            title: ['', Validators.required]
         });
+
+        this.topicForm.get('agenda_type').setValue(1);
     }
 
     /**
@@ -116,6 +162,7 @@ export class TopicDetailComponent extends BaseViewComponent {
         Object.keys(this.topicForm.controls).forEach(ctrl => {
             topicPatch[ctrl] = this.topic[ctrl];
         });
+
         this.topicForm.patchValue(topicPatch);
     }
 
@@ -139,6 +186,7 @@ export class TopicDetailComponent extends BaseViewComponent {
 
     /**
      * Loads a top from the repository
+     *
      * @param id the id of the required topic
      */
     public loadTopic(id: number): void {
@@ -172,11 +220,28 @@ export class TopicDetailComponent extends BaseViewComponent {
     /**
      * Handler for the delete button. Uses the PromptService
      */
-    public async onDeleteButton(): Promise<any> {
+    public async onDeleteButton(): Promise<void> {
         const content = this.translate.instant('Delete') + ` ${this.topic.title}?`;
         if (await this.promptService.open('Are you sure?', content)) {
-            await this.repo.delete(this.topic);
+            await this.repo.delete(this.topic).then(null, this.raiseError);
             this.router.navigate(['/agenda']);
+        }
+    }
+
+    /**
+     * Checks if the operator is allowed to perform one of the given actions
+     *
+     * @param action the desired action
+     * @returns true if the operator has the correct permissions, false of not
+     */
+    public isAllowed(action: string): boolean {
+        switch (action) {
+            case 'see':
+                return this.operator.hasPerms('agenda.can_manage');
+            case 'edit':
+                return this.operator.hasPerms('agenda.can_see');
+            case 'default':
+                return false;
         }
     }
 

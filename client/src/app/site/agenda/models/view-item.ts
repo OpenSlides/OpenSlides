@@ -18,12 +18,32 @@ export class ViewItem extends BaseViewModel {
         return this.item ? this.item.id : null;
     }
 
+    public get itemNumber(): string {
+        return this.item ? this.item.item_number : null;
+    }
+
     public get duration(): number {
         return this.item ? this.item.duration : null;
     }
 
     public get speakerAmount(): number {
         return this.item ? this.item.speakerAmount : null;
+    }
+
+    public get type(): number {
+        return this.item ? this.item.type : null;
+    }
+
+    public get verboseType(): string {
+        return this.item.verboseType;
+    }
+
+    public get comment(): string {
+        return this.item ? this.item.comment : null;
+    }
+
+    public get closed(): boolean {
+        return this.item ? this.item.closed : null;
     }
 
     public constructor(item: Item, contentObject: AgendaBaseModel) {
@@ -40,12 +60,20 @@ export class ViewItem extends BaseViewModel {
         }
     }
 
+    /**
+     * Create the list view title.
+     * If a number was given, 'whitespac-dot-whitespace' will be added to the prefix number
+     *
+     * @returns the agenda list title as string
+     */
     public getListTitle(): string {
         const contentObject: AgendaBaseModel = this.contentObject;
+        const numberPrefix = this.itemNumber ? `${this.itemNumber} · ` : '';
+
         if (contentObject) {
-            return contentObject.getAgendaTitleWithType();
+            return numberPrefix + contentObject.getAgendaTitleWithType();
         } else {
-            return this.item ? this.item.title_with_type : null;
+            return this.item ? numberPrefix + this.item.title_with_type : null;
         }
     }
 

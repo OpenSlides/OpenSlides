@@ -34,6 +34,7 @@ export class TopicRepositoryService extends BaseRepository<ViewTopic, Topic> {
 
     /**
      * Creates a new viewModel out of the given model
+     *
      * @param topic The topic that shall be converted into a view topic
      * @returns a new view topic
      */
@@ -56,6 +57,7 @@ export class TopicRepositoryService extends BaseRepository<ViewTopic, Topic> {
 
     /**
      * Save a new topic
+     *
      * @param topicData Partial topic data to be created
      * @returns an Identifiable (usually id) as promise
      */
@@ -81,6 +83,7 @@ export class TopicRepositoryService extends BaseRepository<ViewTopic, Topic> {
 
     /**
      * Delete a topic
+     *
      * @param viewTopic the topic that should be removed
      */
     public async delete(viewTopic: ViewTopic): Promise<void> {
