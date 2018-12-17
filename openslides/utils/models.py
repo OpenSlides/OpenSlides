@@ -135,5 +135,13 @@ class RESTModelMixin:
         """
         Returns the full_data of the instance.
         """
-        serializer_class = model_serializer_classes[type(self)]
+        try:
+            serializer_class = model_serializer_classes[type(self)]
+        except KeyError:
+            # Because of the order of imports, it can happen, that the serializer
+            # for a model is not imported yet. Try to guess the name of the
+            # module and import it.
+            module_name = type(self).__module__.rsplit(".", 1)[0] + ".serializers"
+            __import__(module_name)
+            serializer_class = model_serializer_classes[type(self)]
         return serializer_class(self).data
