@@ -15,9 +15,9 @@ interface ContentObject {
  * Coming from "OpenSlidesConfigVariables" property "agenda_hide_internal_items_on_projector"
  */
 export const itemVisibilityChoices = [
-    { key: 1, name: 'Public item' },
-    { key: 2, name: 'Internal item' },
-    { key: 3, name: 'Hidden item' }
+    { key: 1, name: 'Public item', csvName: '' },
+    { key: 2, name: 'Internal item', csvName: 'internal' },
+    { key: 3, name: 'Hidden item', csvName: 'hidden' }
 ];
 
 /**
@@ -71,6 +71,18 @@ export class Item extends ProjectableBaseModel {
         }
         const type = itemVisibilityChoices.find(choice => choice.key === this.type);
         return type ? type.name : '';
+    }
+
+    /**
+     * Gets a shortened string for CSV export
+     * @returns empty string if it is a public item, 'internal' or 'hidden' otherwise
+     */
+    public get verboseCsvType(): string {
+        if (!this.type) {
+            return '';
+        }
+        const type = itemVisibilityChoices.find(choice => choice.key === this.type);
+        return type ? type.csvName : '';
     }
 
     public getTitle(): string {

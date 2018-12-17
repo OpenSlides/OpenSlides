@@ -33,7 +33,7 @@ export class AgendaCsvExportService {
                 { label: 'Text', map: viewItem => viewItem.contentObject ? viewItem.contentObject.getCSVExportText() : '' },
                 { label: 'Duration', property: 'duration' },
                 { label: 'Comment', property: 'comment' },
-                { label: 'Item type', property: 'verboseType' }
+                { label: 'Item type', property: 'verboseCsvType' }
             ],
             this.translate.instant('Agenda') + '.csv'
         );
