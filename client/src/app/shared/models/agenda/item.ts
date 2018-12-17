@@ -62,14 +62,15 @@ export class Item extends ProjectableBaseModel {
     }
 
     /**
-     * Return the type as string
+     * Gets the string representation of the item type
+     * @returns The visibility for this item, as defined in {@link itemVisibilityChoices}
      */
     public get verboseType(): string {
-        if (this.type) {
-            return itemVisibilityChoices.find(visibilityType => visibilityType.key === this.type).name;
-        } else {
+        if (!this.type) {
             return '';
         }
+        const type = itemVisibilityChoices.find(choice => choice.key === this.type);
+        return type ? type.name : '';
     }
 
     public getTitle(): string {

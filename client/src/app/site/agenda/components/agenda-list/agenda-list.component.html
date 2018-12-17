@@ -103,6 +103,10 @@
                 <span translate>Numbering</span>
             </button>
         </div>
+        <button mat-menu-item (click)="csvExportItemList();">
+            <mat-icon>archive</mat-icon>
+            <span translate>Export as CSV</span>
+        </button>
     </div>
 
     <div *ngIf="isMultiSelect">

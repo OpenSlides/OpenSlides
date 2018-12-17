@@ -8,6 +8,8 @@ import { ViewItem } from '../../models/view-item';
 import { ListViewBaseComponent } from 'app/site/base/list-view-base';
 import { AgendaRepositoryService } from '../../services/agenda-repository.service';
 import { PromptService } from '../../../../core/services/prompt.service';
+
+import { AgendaCsvExportService } from '../../services/agenda-csv-export.service';
 import { ItemInfoDialogComponent } from '../item-info-dialog/item-info-dialog.component';
 import { ViewportService } from 'app/core/services/viewport.service';
 import { DurationService } from 'app/site/core/services/duration.service';
@@ -47,6 +49,7 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
      * @param config read out config values
      * @param vp determine the viewport
      * @param durationService Converts numbers to readable duration strings
+     * @param csvExport Handles the exporting into csv
      */
     public constructor(
         titleService: Title,
@@ -59,7 +62,8 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
         private dialog: MatDialog,
         private config: ConfigService,
         public vp: ViewportService,
-        public durationService: DurationService
+        public durationService: DurationService,
+        private csvExport: AgendaCsvExportService
     ) {
         super(titleService, translate, matSnackBar);
 
@@ -212,5 +216,12 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
             return ['selector'].concat(list);
         }
         return list;
+    }
+
+    /**
+     * Export all items as CSV
+     */
+    public csvExportItemList(): void {
+        this.csvExport.exportItemList(this.dataSource.data);
     }
 }

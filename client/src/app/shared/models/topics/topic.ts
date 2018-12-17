@@ -37,4 +37,12 @@ export class Topic extends AgendaBaseModel {
     public getDetailStateURL(): string {
         return `/agenda/topics/${this.id}`;
     }
+
+    /**
+     * Returns the text to be inserted in csv exports
+     * @override
+     */
+    public getCSVExportText(): string {
+        return this.text;
+    }
 }
