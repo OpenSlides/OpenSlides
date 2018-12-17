@@ -13,6 +13,7 @@ class UsersAppConfig(AppConfig):
 
     def ready(self):
         # Import all required stuff.
+        from . import serializers  # noqa
         from ..core.signals import post_permission_creation, permission_change
         from ..utils.rest_api import router
         from .projector import get_projector_elements
