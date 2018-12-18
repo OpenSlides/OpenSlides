@@ -131,23 +131,20 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
      * Opens a dialog and sets the group(s) for all selected users.
      * SelectedRows is only filled with data in multiSelect mode
      */
-    public async setGroupSelected(add: boolean): Promise<void> {
-        let content: string;
-        if (add) {
-            content = this.translate.instant('This will add the following groups to all selected users:');
-        } else {
-            content = this.translate.instant('This will remove the following groups from all selected users:');
-        }
-        const selectedChoice = await this.choiceService.open(content, this.groupRepo.getViewModelList(), true);
+    public async setGroupSelected(): Promise<void> {
+        const content = this.translate.instant('This will add or remove the following groups for all selected users:');
+        const choices = ['Add group(s)', 'Remove group(s)'];
+        const selectedChoice = await this.choiceService.open(content,
+            this.groupRepo.getViewModelList(), true, choices);
         if (selectedChoice) {
             for (const user of this.selectedRows) {
                 const newGroups = [...user.groups_id];
-                (selectedChoice as number[]).forEach(newChoice => {
+                (selectedChoice.items as number[]).forEach(newChoice => {
                     const idx = newGroups.indexOf(newChoice);
-                    if (idx < 0 && add) {
+                    if (idx < 0 && selectedChoice.action === choices[0]) {
                         newGroups.push(newChoice);
-                    } else if (idx >= 0 && !add) {
-                        newGroups.slice(idx, 1);
+                    } else if (idx >= 0 && selectedChoice.action === choices[1]) {
+                        newGroups.splice(idx, 1);
                     }
                 });
                 await this.repo.update({ groups_id: newGroups }, user);
@@ -159,9 +156,15 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
      * Handler for bulk setting/unsetting the 'active' attribute.
      * Uses selectedRows defined via multiSelect mode.
      */
-    public async setActiveSelected(active: boolean): Promise<void> {
-        for (const user of this.selectedRows) {
-            await this.repo.update({ is_active: active }, user);
+    public async setActiveSelected(): Promise<void> {
+        const content = this.translate.instant('Set the active status for the selected users');
+        const options = ['Active', 'Not active'];
+        const selectedChoice = await this.choiceService.open(content, null, false, options);
+        if (selectedChoice) {
+            const active = selectedChoice.action === options[0];
+            for (const user of this.selectedRows) {
+                await this.repo.update({ is_active: active }, user);
+            }
         }
     }
 
@@ -169,9 +172,15 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
      * Handler for bulk setting/unsetting the 'is present' attribute.
      * Uses selectedRows defined via multiSelect mode.
      */
-    public async setPresentSelected(present: boolean): Promise<void> {
-        for (const user of this.selectedRows) {
-            await this.repo.update({ is_present: present }, user);
+    public async setPresentSelected(): Promise<void> {
+    const content = this.translate.instant('Set the presence status for the selected users');
+        const options = ['Present', 'Not present'];
+        const selectedChoice = await this.choiceService.open(content, null, false, options);
+        if (selectedChoice) {
+            const present = selectedChoice.action === options[0];
+            for (const user of this.selectedRows) {
+                await this.repo.update({ is_present: present }, user);
+            }
         }
     }
 
@@ -179,9 +188,16 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
      * Handler for bulk setting/unsetting the 'is committee' attribute.
      * Uses selectedRows defined via multiSelect mode.
      */
-    public async setCommitteeSelected(is_committee: boolean): Promise<void> {
-        for (const user of this.selectedRows) {
-            await this.repo.update({ is_committee: is_committee }, user);
+    public async setCommitteeSelected(): Promise<void> {
+        const content = this.translate.instant(
+            'Sets/unsets the committee status for the selected users');
+        const options = ['Is committee', 'Is not committee'];
+        const selectedChoice = await this.choiceService.open(content, null, false, options);
+        if (selectedChoice) {
+            const committee = selectedChoice.action === options[0];
+            for (const user of this.selectedRows) {
+                await this.repo.update({ is_committee: committee }, user);
+            }
         }
     }
 
@@ -194,7 +210,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
     }
 
     /**
-     * Handler for bulk resetting passwords. Needs multiSelect mode.
+     * Handler for bulk setting new passwords. Needs multiSelect mode.
      */
     public async resetPasswordsSelected(): Promise<void> {
         for (const user of this.selectedRows) {

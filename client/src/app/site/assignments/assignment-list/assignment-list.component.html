@@ -13,10 +13,6 @@
         <button mat-icon-button (click)="toggleMultiSelect()"><mat-icon>arrow_back</mat-icon></button>
         <span>{{ selectedRows.length }}&nbsp;</span><span translate>selected</span>
     </div>
-
-    <div class="extra-controls-slot on-transition-fade" *ngIf="isMultiSelect">
-        <button mat-icon-button (click)="deleteSelected()"><mat-icon>delete</mat-icon></button>
-    </div>
 </os-head-bar>
 
 <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
@@ -40,10 +36,6 @@
                 <mat-chip color="primary" selected>{{ assignment.phase }}</mat-chip>
             </mat-chip-list>
         </mat-cell>
-        <button mat-menu-item (click)="toggleMultiSelect()">
-            <mat-icon>library_add</mat-icon>
-            <span translate>Exit multiselect</span>
-        </button>
         <button mat-menu-item (click)="selectAll()">
             <mat-icon>done_all</mat-icon>
             <span translate>Select all</span>
@@ -87,10 +79,6 @@
     </div>
 
     <div *ngIf="isMultiSelect">
-        <button mat-menu-item (click)="toggleMultiSelect()">
-            <mat-icon>library_add</mat-icon>
-            <span translate>Exit multiselect</span>
-        </button>
         <button mat-menu-item (click)="selectAll()">
             <mat-icon>done_all</mat-icon>
             <span translate>Select all</span>

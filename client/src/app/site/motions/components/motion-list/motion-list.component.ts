@@ -11,6 +11,14 @@ import { MotionRepositoryService } from '../../services/motion-repository.servic
 import { ViewMotion } from '../../models/view-motion';
 import { WorkflowState } from '../../../../shared/models/motions/workflow-state';
 import { MotionMultiselectService } from '../../services/motion-multiselect.service';
+import { TagRepositoryService } from 'app/site/tags/services/tag-repository.service';
+import { MotionBlockRepositoryService } from '../../services/motion-block-repository.service';
+import { CategoryRepositoryService } from '../../services/category-repository.service';
+import { ViewTag } from 'app/site/tags/models/view-tag';
+import { ViewWorkflow } from '../../models/view-workflow';
+import { ViewCategory } from '../../models/view-category';
+import { ViewMotionBlock } from '../../models/view-motion-block';
+import { WorkflowRepositoryService } from '../../services/workflow-repository.service';
 
 /**
  * Component that displays all the motions in a Table using DataSource.
@@ -39,6 +47,13 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
      * @TODO replace by direct access to config variable, once it's available from the templates
      */
     public statutesEnabled: boolean;
+    public recomendationEnabled: boolean;
+
+
+    public tags: ViewTag[] = [];
+    public workflows: ViewWorkflow[] = [];
+    public categories: ViewCategory[] = [];
+    public motionBlocks: ViewMotionBlock[] = [];
 
     /**
      * Constructor implements title and translation Module.
@@ -50,13 +65,11 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
      * @param route Current route
      * @param configService The configuration provider
      * @param repo Motion Repository
-     * @param promptService
-     * @param motionCsvExport
-     * @param workflowRepo Workflow Repository
+     * @param tagRepo Tag Repository
+     * @param motionBlockRepo
      * @param categoryRepo
-     * @param userRepo
-     * @param tagRepo
-     * @param choiceService
+     * @param motionCsvExport
+     * @param multiselectService Service for the multiSelect actions
      */
     public constructor(
         titleService: Title,
@@ -66,6 +79,10 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
         private route: ActivatedRoute,
         private configService: ConfigService,
         private repo: MotionRepositoryService,
+        private tagRepo: TagRepositoryService,
+        private motionBlockRepo: MotionBlockRepositoryService,
+        private categoryRepo: CategoryRepositoryService,
+        private workflowRepo: WorkflowRepositoryService,
         private motionCsvExport: MotionCsvExportService,
         public multiselectService: MotionMultiselectService
     ) {
@@ -84,7 +101,6 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
         super.setTitle('Motions');
         this.initTable();
         this.repo.getViewModelListObservable().subscribe(newMotions => {
-            this.checkSelection();
             // TODO: This is for testing purposes. Can be removed with #3963
             this.dataSource.data = newMotions.sort((a, b) => {
                 if (a.callListWeight !== b.callListWeight) {
@@ -93,8 +109,14 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
                     return a.id - b.id;
                 }
             });
+            this.checkSelection();
         });
         this.configService.get('motions_statutes_enabled').subscribe(enabled => (this.statutesEnabled = enabled));
+        this.configService.get('motions_recommendations_by').subscribe(id => (this.recomendationEnabled = !!id));
+        this.motionBlockRepo.getViewModelListObservable().subscribe(mBs => this.motionBlocks = mBs);
+        this.categoryRepo.getViewModelListObservable().subscribe(cats => this.categories = cats);
+        this.tagRepo.getViewModelListObservable().subscribe(tags => this.tags = tags);
+        this.workflowRepo.getViewModelListObservable().subscribe(wfs => this.workflows = wfs);
     }
 
     /**
@@ -178,7 +200,11 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
      *
      * @param multiselectPromise The promise returned by multiselect actions.
      */
-    public multiselectWrapper(multiselectPromise: Promise<void>): void {
-        multiselectPromise.then(() => this.toggleMultiSelect(), this.raiseError);
+    public async multiselectWrapper(multiselectPromise: Promise<void>): Promise<void> {
+        try {
+            await multiselectPromise;
+        } catch (e) {
+            this.raiseError(e);
+        }
     }
 }
