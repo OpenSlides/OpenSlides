@@ -51,6 +51,13 @@ export class ViewItem extends BaseViewModel {
         return '';
     }
 
+    public get verboseCsvType() : string {
+        if (this.item) {
+            return this.item.verboseCsvType;
+        }
+        return '';
+    }
+
     public constructor(item: Item, contentObject: AgendaBaseModel) {
         super();
         this._item = item;
