@@ -304,6 +304,16 @@
             <h4 translate>Origin</h4>
             {{ motion.origin }}
         </div>
+
+        <!-- motion polls -->
+        <div *ngIf="!editMotion">
+            <os-motion-poll *ngFor="let poll of motion.motion.polls; let i = index" [rawPoll]="poll" [pollIndex]="i">
+            </os-motion-poll>
+            <button mat-button *ngIf="perms.isAllowed('createpoll', motion)" (click)="createPoll()">
+                <mat-icon class="main-nav-color">poll</mat-icon>
+                <span translate>Create poll</span>
+            </button>
+        </div>
     </div>
 </ng-template>
 
@@ -601,16 +611,28 @@
 <!-- Line number Menu -->
 <mat-menu #lineNumberingMenu="matMenu">
     <div *ngIf="motion">
-        <button mat-menu-item translate (click)="setLineNumberingMode(LineNumberingMode.None)"
-                [ngClass]="{ selected: motion.lnMode === LineNumberingMode.None }">
+        <button
+            mat-menu-item
+            translate
+            (click)="setLineNumberingMode(LineNumberingMode.None)"
+            [ngClass]="{ selected: motion.lnMode === LineNumberingMode.None }"
+        >
             none
         </button>
-        <button mat-menu-item translate (click)="setLineNumberingMode(LineNumberingMode.Inside)"
-                [ngClass]="{ selected: motion.lnMode === LineNumberingMode.Inside }">
+        <button
+            mat-menu-item
+            translate
+            (click)="setLineNumberingMode(LineNumberingMode.Inside)"
+            [ngClass]="{ selected: motion.lnMode === LineNumberingMode.Inside }"
+        >
             inline
         </button>
-        <button mat-menu-item translate (click)="setLineNumberingMode(LineNumberingMode.Outside)"
-                [ngClass]="{ selected: motion.lnMode === LineNumberingMode.Outside }">
+        <button
+            mat-menu-item
+            translate
+            (click)="setLineNumberingMode(LineNumberingMode.Outside)"
+            [ngClass]="{ selected: motion.lnMode === LineNumberingMode.Outside }"
+        >
             outside
         </button>
     </div>
@@ -618,12 +640,36 @@
 
 <!-- Diff View Menu -->
 <mat-menu #changeRecoMenu="matMenu">
-    <button mat-menu-item translate (click)="setChangeRecoMode(ChangeRecoMode.Original)"
-            [ngClass]="{ selected: motion?.crMode === ChangeRecoMode.Original }">Original version</button>
-    <button mat-menu-item translate (click)="setChangeRecoMode(ChangeRecoMode.Changed)"
-            [ngClass]="{ selected: motion?.crMode === ChangeRecoMode.Changed }">Changed version</button>
-    <button mat-menu-item translate (click)="setChangeRecoMode(ChangeRecoMode.Diff)"
-            [ngClass]="{ selected: motion?.crMode === ChangeRecoMode.Diff }">Diff version</button>
-    <button mat-menu-item translate (click)="setChangeRecoMode(ChangeRecoMode.Final)"
-            [ngClass]="{ selected: motion?.crMode === ChangeRecoMode.Final }">Final version</button>
+    <button
+        mat-menu-item
+        translate
+        (click)="setChangeRecoMode(ChangeRecoMode.Original)"
+        [ngClass]="{ selected: motion?.crMode === ChangeRecoMode.Original }"
+    >
+        Original version
+    </button>
+    <button
+        mat-menu-item
+        translate
+        (click)="setChangeRecoMode(ChangeRecoMode.Changed)"
+        [ngClass]="{ selected: motion?.crMode === ChangeRecoMode.Changed }"
+    >
+        Changed version
+    </button>
+    <button
+        mat-menu-item
+        translate
+        (click)="setChangeRecoMode(ChangeRecoMode.Diff)"
+        [ngClass]="{ selected: motion?.crMode === ChangeRecoMode.Diff }"
+    >
+        Diff version
+    </button>
+    <button
+        mat-menu-item
+        translate
+        (click)="setChangeRecoMode(ChangeRecoMode.Final)"
+        [ngClass]="{ selected: motion?.crMode === ChangeRecoMode.Final }"
+    >
+        Final version
+    </button>
 </mat-menu>

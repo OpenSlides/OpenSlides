@@ -22,6 +22,8 @@ export class LocalPermissionsService {
      *
      * actions might be:
      * - support
+     * - unsupport
+     * - createpoll
      *
      * @param action the action the user tries to perform
      */
@@ -38,6 +40,8 @@ export class LocalPermissionsService {
                     );
                 case 'unsupport':
                     return motion.state.allow_support && motion.supporters.indexOf(this.operator.user) !== -1;
+                case 'createpoll':
+                    return this.operator.hasPerms('motions.can_manage') && motion.state.allow_create_poll;
                 default:
                     return false;
             }

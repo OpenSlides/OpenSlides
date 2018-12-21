@@ -3,6 +3,7 @@ import { MotionLog } from './motion-log';
 import { MotionComment } from './motion-comment';
 import { AgendaBaseModel } from '../base/agenda-base-model';
 import { SearchRepresentation } from '../../../core/services/search.service';
+import { MotionPoll } from './motion-poll';
 
 /**
  * Representation of Motion.
@@ -35,7 +36,7 @@ export class Motion extends AgendaBaseModel {
     public recommendation_extension: string;
     public tags_id: number[];
     public attachments_id: number[];
-    public polls: Object[];
+    public polls: MotionPoll[];
     public agenda_item_id: number;
     public log_messages: MotionLog[];
     public weight: number;

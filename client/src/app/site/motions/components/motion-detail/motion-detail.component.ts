@@ -921,4 +921,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     public opCanEdit(): boolean {
         return this.op.hasPerms('motions.can_manage', 'motions.can_manage_metadata');
     }
+
+    public async createPoll(): Promise<void> {
+        await this.repo.createPoll(this.motion);
+    }
 }
