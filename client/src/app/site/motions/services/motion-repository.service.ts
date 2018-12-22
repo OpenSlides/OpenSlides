@@ -9,7 +9,7 @@ import { User } from '../../../shared/models/users/user';
 import { Category } from '../../../shared/models/motions/category';
 import { Workflow } from '../../../shared/models/motions/workflow';
 import { WorkflowState } from '../../../shared/models/motions/workflow-state';
-import { ChangeRecoMode, ViewMotion } from '../models/view-motion';
+import { ChangeRecoMode, LineNumberingMode, ViewMotion } from '../models/view-motion';
 import { BaseRepository } from '../../base/base-repository';
 import { DataStoreService } from '../../../core/services/data-store.service';
 import { LinenumberingService } from './linenumbering.service';
@@ -28,6 +28,7 @@ import { ViewMotionAmendedParagraph } from '../models/view-motion-amended-paragr
 import { CreateMotion } from '../models/create-motion';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
+import { ConfigService } from "../../../core/services/config.service";
 
 /**
  * Repository Services for motions (and potentially categories)
@@ -43,6 +44,16 @@ import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
     providedIn: 'root'
 })
 export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> {
+
+    // The line length; comes from the config variable motions_line_length
+    private lineLength = 90;
+
+    // The default line numbering mode; comes from the config variable motions_default_line_numbering
+    private defaultLineNumbering = LineNumberingMode.Outside;
+
+    // The default line numbering mode; comes from the config variable motions_recommendation_text_mode
+    private defaultCrMode = ChangeRecoMode.Original;
+
     /**
      * Creates a MotionRepository
      *
@@ -55,6 +66,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      * @param httpService OpenSlides own Http service
      * @param lineNumbering Line numbering for motion text
      * @param diff Display changes in motion text as diff.
+     * @param configService The configuration provider
      */
     public constructor(
         DS: DataStoreService,
@@ -63,9 +75,15 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         private httpService: HttpService,
         private readonly lineNumbering: LinenumberingService,
         private readonly diff: DiffService,
+        private readonly configService: ConfigService,
         private treeService: TreeService
     ) {
         super(DS, mapperService, Motion, [Category, User, Workflow, Item, MotionBlock, Mediafile]);
+
+        // load config variables
+        this.configService.get('motions_line_length').subscribe(lineLength => this.lineLength = lineLength);
+        this.configService.get('motions_default_line_numbering').subscribe(mode => this.defaultLineNumbering = mode);
+        this.configService.get('motions_recommendation_text_mode').subscribe(mode => this.defaultCrMode = mode);
     }
 
     /**
@@ -88,7 +106,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         if (workflow) {
             state = workflow.getStateById(motion.state_id);
         }
-        return new ViewMotion(motion, category, submitters, supporters, workflow, state, item, block, attachments);
+        return new ViewMotion(motion, category, submitters, supporters, workflow, state, item, block, attachments, this.lineLength, this.defaultLineNumbering, this.defaultCrMode);
     }
 
     /**
@@ -315,7 +333,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
                     const appliedChanges: ViewUnifiedChange[] = changes.filter(change => change.isAccepted());
                     return this.diff.getTextWithChanges(targetMotion, appliedChanges, lineLength, highlightLine);
                 default:
-                    console.error('unrecognized ChangeRecoMode option');
+                    console.error('unrecognized ChangeRecoMode option (' + crMode + ')');
                     return null;
             }
         } else {
@@ -342,8 +360,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      * @param {boolean} lineNumbers - weather to add line numbers to the returned HTML string
      */
     public extractMotionLineRange(id: number, lineRange: LineRange, lineNumbers: boolean): string {
-        // @TODO flexible line numbers
-        const origHtml = this.formatMotion(id, ChangeRecoMode.Original, [], 80);
+        const origHtml = this.formatMotion(id, ChangeRecoMode.Original, [], this.lineLength);
         const extracted = this.diff.extractRangeByLineNumbers(origHtml, lineRange.from, lineRange.to);
         let html =
             extracted.outerContextStart +
@@ -370,7 +387,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         changes: ViewUnifiedChange[],
         highlight?: number
     ): string {
-        let maxLine = 0;
+        let maxLine = 1;
         changes.forEach((change: ViewUnifiedChange) => {
             if (change.getLineTo() > maxLine) {
                 maxLine = change.getLineTo();
@@ -378,6 +395,10 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         }, 0);
 
         const numberedHtml = this.lineNumbering.insertLineNumbers(motion.text, motion.lineLength);
+        if (changes.length === 0) {
+            return numberedHtml;
+        }
+
         let data;
 
         try {

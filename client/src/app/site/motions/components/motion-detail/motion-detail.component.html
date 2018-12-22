@@ -599,13 +599,16 @@
 <!-- Line number Menu -->
 <mat-menu #lineNumberingMenu="matMenu">
     <div *ngIf="motion">
-        <button mat-menu-item translate (click)="setLineNumberingMode(0)" [ngClass]="{ selected: motion.lnMode === 0 }">
+        <button mat-menu-item translate (click)="setLineNumberingMode(LineNumberingMode.None)"
+                [ngClass]="{ selected: motion.lnMode === LineNumberingMode.None }">
             none
         </button>
-        <button mat-menu-item translate (click)="setLineNumberingMode(1)" [ngClass]="{ selected: motion.lnMode === 1 }">
+        <button mat-menu-item translate (click)="setLineNumberingMode(LineNumberingMode.Inside)"
+                [ngClass]="{ selected: motion.lnMode === LineNumberingMode.Inside }">
             inline
         </button>
-        <button mat-menu-item translate (click)="setLineNumberingMode(2)" [ngClass]="{ selected: motion.lnMode === 2 }">
+        <button mat-menu-item translate (click)="setLineNumberingMode(LineNumberingMode.Outside)"
+                [ngClass]="{ selected: motion.lnMode === LineNumberingMode.Outside }">
             outside
         </button>
     </div>
@@ -613,8 +616,12 @@
 
 <!-- Diff View Menu -->
 <mat-menu #changeRecoMenu="matMenu">
-    <button mat-menu-item translate (click)="setChangeRecoMode(0)">Original version</button>
-    <button mat-menu-item translate (click)="setChangeRecoMode(1)">Changed version</button>
-    <button mat-menu-item translate (click)="setChangeRecoMode(2)">Diff version</button>
-    <button mat-menu-item translate (click)="setChangeRecoMode(3)">Final version</button>
+    <button mat-menu-item translate (click)="setChangeRecoMode(ChangeRecoMode.Original)"
+            [ngClass]="{ selected: motion?.crMode === ChangeRecoMode.Original }">Original version</button>
+    <button mat-menu-item translate (click)="setChangeRecoMode(ChangeRecoMode.Changed)"
+            [ngClass]="{ selected: motion?.crMode === ChangeRecoMode.Changed }">Changed version</button>
+    <button mat-menu-item translate (click)="setChangeRecoMode(ChangeRecoMode.Diff)"
+            [ngClass]="{ selected: motion?.crMode === ChangeRecoMode.Diff }">Diff version</button>
+    <button mat-menu-item translate (click)="setChangeRecoMode(ChangeRecoMode.Final)"
+            [ngClass]="{ selected: motion?.crMode === ChangeRecoMode.Final }">Final version</button>
 </mat-menu>

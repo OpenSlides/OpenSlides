@@ -1,3 +1,11 @@
+::ng-deep h3 {
+    margin-top: 0.3em;
+    margin-bottom: 0.3em;
+    font-size: 1em;
+}
+::ng-deep .mat-dialog-content {
+  overflow: visible;
+}
 .wide-form {
     textarea {
         height: 100px;

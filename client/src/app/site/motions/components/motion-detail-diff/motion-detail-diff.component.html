@@ -50,7 +50,11 @@
 <!-- The actual diff view -->
 <div class="motion-text-with-diffs">
     <div *ngFor="let change of changes; let i = index">
-        <div class="motion-text line-numbers-outside">
+        <div class="motion-text"
+                [class.line-numbers-none]="isLineNumberingNone()"
+                [class.line-numbers-inline]="isLineNumberingInline()"
+                [class.line-numbers-outside]="isLineNumberingOutside()"
+        >
             <os-motion-detail-original-change-recommendations
                 [html]="getTextBetweenChanges(changes[i - 1], change)"
                 [changeRecommendations]="[]"
@@ -90,14 +94,21 @@
             </div>
 
             <div
-                class="motion-text motion-text-diff line-numbers-outside"
+                class="motion-text motion-text-diff"
+                [class.line-numbers-none]="isLineNumberingNone()"
+                [class.line-numbers-inline]="isLineNumberingInline()"
+                [class.line-numbers-outside]="isLineNumberingOutside()"
                 [attr.data-change-id]="change.getChangeId()"
                 [innerHTML]="getDiff(change)"
             ></div>
         </div>
     </div>
 
-    <div class="motion-text line-numbers-outside">
+    <div class="motion-text"
+            [class.line-numbers-none]="isLineNumberingNone()"
+            [class.line-numbers-inline]="isLineNumberingInline()"
+            [class.line-numbers-outside]="isLineNumberingOutside()"
+    >
         <os-motion-detail-original-change-recommendations
             [html]="getTextRemainderAfterLastChange()"
             [changeRecommendations]="[]"

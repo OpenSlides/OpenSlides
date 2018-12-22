@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output } from '@angular/core';
-import { ViewMotion } from '../../models/view-motion';
+import { LineNumberingMode, ViewMotion } from '../../models/view-motion';
 import { ViewUnifiedChange, ViewUnifiedChangeType } from '../../models/view-unified-change';
 import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
 import { MotionRepositoryService } from '../../services/motion-repository.service';
@@ -136,6 +136,33 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
      */
     public isRecommendation(change: ViewUnifiedChange): boolean {
         return change.getChangeType() === ViewUnifiedChangeType.TYPE_CHANGE_RECOMMENDATION;
+    }
+
+    /**
+     * Returns true if no line numbers are to be shown.
+     *
+     * @returns whether there are line numbers at all
+     */
+    public isLineNumberingNone(): boolean {
+        return this.motion.lnMode === LineNumberingMode.None;
+    }
+
+    /**
+     * Returns true if the line numbers are to be shown within the text with no line breaks.
+     *
+     * @returns whether the line numberings are inside
+     */
+    public isLineNumberingInline(): boolean {
+        return this.motion.lnMode === LineNumberingMode.Inside;
+    }
+
+    /**
+     * Returns true if the line numbers are to be shown to the left of the text.
+     *
+     * @returns whether the line numberings are outside
+     */
+    public isLineNumberingOutside(): boolean {
+        return this.motion.lnMode === LineNumberingMode.Outside;
     }
 
     /**

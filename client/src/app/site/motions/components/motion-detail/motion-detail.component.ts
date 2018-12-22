@@ -230,6 +230,16 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     public itemVisibility = itemVisibilityChoices;
 
     /**
+     * For using the enum constants from the template
+     */
+    public ChangeRecoMode = ChangeRecoMode;
+
+    /**
+     * For using the enum constants from the template
+     */
+    public LineNumberingMode = LineNumberingMode;
+
+    /**
      * Constuct the detail view.
      *
      * @param title
@@ -651,7 +661,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * Sets the motions change reco mode
      * @param mode Needs to fot to the enum defined in ViewMotion
      */
-    public setChangeRecoMode(mode: number): void {
+    public setChangeRecoMode(mode: ChangeRecoMode): void {
         this.motion.crMode = mode;
     }
 
@@ -659,14 +669,14 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * Returns true if the original version (including change recommendation annotation) is to be shown
      */
     public isRecoModeOriginal(): boolean {
-        return this.motion.crMode === ChangeRecoMode.Original;
+        return this.motion.crMode === ChangeRecoMode.Original || this.allChangingObjects.length === 0;
     }
 
     /**
      * Returns true if the diff version is to be shown
      */
     public isRecoModeDiff(): boolean {
-        return this.motion.crMode === ChangeRecoMode.Diff;
+        return this.motion.crMode === ChangeRecoMode.Diff && this.allChangingObjects.length > 0;
     }
 
     /**
