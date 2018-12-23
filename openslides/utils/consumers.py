@@ -15,6 +15,10 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
 
     groups = ["site"]
 
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        self.projector_hash: Dict[int, int] = {}
+        super().__init__(*args, **kwargs)
+
     async def connect(self) -> None:
         """
         A user connects to the site.
@@ -110,3 +114,21 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
                 all_data=False,
             ),
         )
+
+    async def projector_changed(self, event: Dict[str, Any]) -> None:
+        """
+        The projector has changed.
+        """
+        all_projector_data = event["data"]
+        projector_data: Dict[int, Dict[str, Any]] = {}
+        for projector_id in self.listen_projector_ids:
+            data = all_projector_data.get(
+                projector_id, {"error": "No data for projector {}".format(projector_id)}
+            )
+            new_hash = hash(str(data))
+            if new_hash != self.projector_hash[projector_id]:
+                projector_data[projector_id] = data
+                self.projector_hash[projector_id] = new_hash
+
+        if projector_data:
+            await self.send_json(type="projector", content=projector_data)

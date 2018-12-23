@@ -154,16 +154,28 @@ class ElementCache:
 
     async def get_all_full_data(self) -> Dict[str, List[Dict[str, Any]]]:
         """
-        Returns all full_data. If it does not exist, it is created.
+        Returns all full_data.
 
         The returned value is a dict where the key is the collection_string and
         the value is a list of data.
         """
+        all_data = await self.get_all_full_data_ordered()
         out: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
+        for collection_string, collection_data in all_data.items():
+            for data in collection_data.values():
+                out[collection_string].append(data)
+        return dict(out)
+
+    async def get_all_full_data_ordered(self) -> Dict[str, Dict[int, Dict[str, Any]]]:
+        """
+        Like get_all_full_data but orders the element of one collection by there
+        id.
+        """
+        out: Dict[str, Dict[int, Dict[str, Any]]] = defaultdict(dict)
         full_data = await self.cache_provider.get_all_data()
         for element_id, data in full_data.items():
-            collection_string, __ = split_element_id(element_id)
-            out[collection_string].append(json.loads(data.decode()))
+            collection_string, id = split_element_id(element_id)
+            out[collection_string][id] = json.loads(data.decode())
         return dict(out)
 
     async def get_full_data(

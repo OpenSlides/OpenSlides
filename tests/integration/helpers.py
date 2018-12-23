@@ -4,7 +4,9 @@ from django.db import DEFAULT_DB_ALIAS, connections
 from django.test.utils import CaptureQueriesContext
 
 from openslides.core.config import config
+from openslides.core.models import Projector
 from openslides.users.models import User
+from openslides.utils.projector import get_config, register_projector_element
 
 
 class TConfig:
@@ -33,7 +35,7 @@ class TConfig:
 
 class TUser:
     """
-    Cachable, that fills the cache with the default values of the config variables.
+    Cachable, that fills the cache with fake users.
     """
 
     def get_collection_string(self) -> str:
@@ -66,6 +68,45 @@ class TUser:
         self, user_id: int, elements: List[Dict[str, Any]]
     ) -> List[Dict[str, Any]]:
         return elements
+
+
+class TProjector:
+    """
+    Cachable, that mocks the projector.
+    """
+
+    def get_collection_string(self) -> str:
+        return Projector.get_collection_string()
+
+    def get_elements(self) -> List[Dict[str, Any]]:
+        return [
+            {"id": 1, "config": {"uid1": {"name": "test/slide1", "id": 1}}},
+            {"id": 2, "config": {"uid2": {"name": "test/slide2", "id": 1}}},
+        ]
+
+    async def restrict_elements(
+        self, user_id: int, elements: List[Dict[str, Any]]
+    ) -> List[Dict[str, Any]]:
+        return elements
+
+
+def slide1(
+    config: Dict[str, Any], all_data: Dict[str, Dict[int, Dict[str, Any]]]
+) -> Dict[str, Any]:
+    """
+    Slide that shows the general_event_name.
+    """
+    return {"name": "slide1", "event_name": get_config(all_data, "general_event_name")}
+
+
+def slide2(
+    config: Dict[str, Any], all_data: Dict[str, Dict[int, Dict[str, Any]]]
+) -> Dict[str, Any]:
+    return {"name": "slide2"}
+
+
+register_projector_element("test/slide1", slide1)
+register_projector_element("test/slide2", slide2)
 
 
 def count_queries(func, *args, **kwargs) -> int:

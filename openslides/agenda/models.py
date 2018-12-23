@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext as _, ugettext_lazy
 
 from openslides.core.config import config
-from openslides.core.models import Countdown, Projector
+from openslides.core.models import Countdown
 from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import RESTModelMixin
@@ -290,18 +290,6 @@ class Item(RESTModelMixin, models.Model):
 
     def __str__(self):
         return self.title
-
-    def delete(self, skip_autoupdate=False, *args, **kwargs):
-        """
-        Customized method to delete an agenda item. Ensures that a respective
-        list of speakers projector element is disabled.
-        """
-        Projector.remove_any(
-            skip_autoupdate=skip_autoupdate, name="agenda/list-of-speakers", id=self.pk
-        )
-        return super().delete(  # type: ignore
-            skip_autoupdate=skip_autoupdate, *args, **kwargs
-        )
 
     @property
     def title(self):

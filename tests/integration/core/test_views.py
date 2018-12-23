@@ -29,19 +29,7 @@ class ProjectorAPI(TestCase):
         default_projector.save()
 
         response = self.client.get(reverse("projector-detail", args=["1"]))
-        content = json.loads(response.content.decode())
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(
-            content["elements"],
-            {
-                "aae4a07b26534cfb9af4232f361dce73": {
-                    "id": topic.id,
-                    "uuid": "aae4a07b26534cfb9af4232f361dce73",
-                    "name": "topics/topic",
-                    "agenda_item_id": topic.agenda_item_id,
-                }
-            },
-        )
 
     def test_invalid_slide_on_default_projector(self):
         self.client.login(username="admin", password="admin")
@@ -60,12 +48,8 @@ class ProjectorAPI(TestCase):
             content,
             {
                 "id": 1,
-                "elements": {
-                    "fc6ef43b624043068c8e6e7a86c5a1b0": {
-                        "name": "invalid_slide",
-                        "uuid": "fc6ef43b624043068c8e6e7a86c5a1b0",
-                        "error": "Projector element does not exist.",
-                    }
+                "config": {
+                    "fc6ef43b624043068c8e6e7a86c5a1b0": {"name": "invalid_slide"}
                 },
                 "scale": 0,
                 "scroll": 0,

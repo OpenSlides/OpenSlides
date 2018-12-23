@@ -3,14 +3,11 @@ from typing import Any, Dict, List, Set
 from django.apps import AppConfig
 from mypy_extensions import TypedDict
 
-from ..utils.projector import register_projector_elements
-
 
 class AssignmentsAppConfig(AppConfig):
     name = "openslides.assignments"
     verbose_name = "OpenSlides Assignments"
     angular_site_module = True
-    angular_projector_module = True
 
     def ready(self):
         # Import all required stuff.
@@ -18,12 +15,12 @@ class AssignmentsAppConfig(AppConfig):
         from ..utils.access_permissions import required_user
         from ..utils.rest_api import router
         from . import serializers  # noqa
-        from .projector import get_projector_elements
+        from .projector import register_projector_elements
         from .signals import get_permission_change_data
         from .views import AssignmentViewSet, AssignmentPollViewSet
 
         # Define projector elements.
-        register_projector_elements(get_projector_elements())
+        register_projector_elements()
 
         # Connect signals.
         permission_change.connect(

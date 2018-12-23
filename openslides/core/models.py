@@ -7,7 +7,6 @@ from jsonfield import JSONField
 from ..utils.autoupdate import Element
 from ..utils.cache import element_cache, get_element_id
 from ..utils.models import RESTModelMixin
-from ..utils.projector import get_all_projector_elements
 from .access_permissions import (
     ChatMessageAccessPermissions,
     ConfigAccessPermissions,
@@ -17,7 +16,6 @@ from .access_permissions import (
     ProjectorMessageAccessPermissions,
     TagAccessPermissions,
 )
-from .exceptions import ProjectorException
 
 
 class ProjectorManager(models.Manager):
@@ -34,6 +32,7 @@ class ProjectorManager(models.Manager):
 
 
 class Projector(RESTModelMixin, models.Model):
+    # TODO: Fix docstring
     """
     Model for all projectors.
 
@@ -102,66 +101,6 @@ class Projector(RESTModelMixin, models.Model):
             ("can_manage_projector", "Can manage the projector"),
             ("can_see_frontpage", "Can see the front page"),
         )
-
-    @property
-    def elements(self):
-        """
-        Retrieve all projector elements given in the config field. For
-        every element the method check_and_update_data() is called and its
-        result is also used.
-        """
-        # Get all elements from all apps.
-        elements = get_all_projector_elements()
-
-        # Parse result
-        result = {}
-        for key, value in self.config.items():
-            # Use a copy here not to change the origin value in the config field.
-            result[key] = value.copy()
-            result[key]["uuid"] = key
-            element = elements.get(value["name"])
-            if element is None:
-                result[key]["error"] = "Projector element does not exist."
-            else:
-                try:
-                    result[key].update(
-                        element.check_and_update_data(
-                            projector_object=self, config_entry=value
-                        )
-                    )
-                except ProjectorException as e:
-                    result[key]["error"] = str(e)
-        return result
-
-    @classmethod
-    def remove_any(cls, skip_autoupdate=False, **kwargs):
-        """
-        Removes all projector elements from all projectors with matching kwargs.
-        Additional properties of active projector elements are ignored:
-
-        Example: Sending {'name': 'assignments/assignment', 'id': 1} will remove
-        also projector elements with {'name': 'assignments/assignment', 'id': 1, 'poll': 2}.
-        """
-        # Loop over all projectors.
-        for projector in cls.objects.all():
-            change_projector_config = False
-            projector_config = {}
-            # Loop over all projector elements of this projector.
-            for key, value in projector.config.items():
-                # Check if the kwargs match this element.
-                for kwarg_key, kwarg_value in kwargs.items():
-                    if not value.get(kwarg_key) == kwarg_value:
-                        # No match so the element should stay. Write it into
-                        # new config field and break the loop.
-                        projector_config[key] = value
-                        break
-                else:
-                    # All kwargs match this projector element. So mark this
-                    # projector to be changed. Do not write it into new config field.
-                    change_projector_config = True
-            if change_projector_config:
-                projector.config = projector_config
-                projector.save(skip_autoupdate=skip_autoupdate)
 
 
 class ProjectionDefault(RESTModelMixin, models.Model):
@@ -275,18 +214,6 @@ class ProjectorMessage(RESTModelMixin, models.Model):
     class Meta:
         default_permissions = ()
 
-    def delete(self, skip_autoupdate=False, *args, **kwargs):
-        """
-        Customized method to delete a projector message. Ensures that a respective
-        projector message projector element is disabled.
-        """
-        Projector.remove_any(
-            skip_autoupdate=skip_autoupdate, name="core/projector-message", id=self.pk
-        )
-        return super().delete(  # type: ignore
-            skip_autoupdate=skip_autoupdate, *args, **kwargs
-        )
-
 
 class Countdown(RESTModelMixin, models.Model):
     """
@@ -305,18 +232,6 @@ class Countdown(RESTModelMixin, models.Model):
 
     class Meta:
         default_permissions = ()
-
-    def delete(self, skip_autoupdate=False, *args, **kwargs):
-        """
-        Customized method to delete a countdown. Ensures that a respective
-        countdown projector element is disabled.
-        """
-        Projector.remove_any(
-            skip_autoupdate=skip_autoupdate, name="core/countdown", id=self.pk
-        )
-        return super().delete(  # type: ignore
-            skip_autoupdate=skip_autoupdate, *args, **kwargs
-        )
 
     def control(self, action, skip_autoupdate=False):
         if action not in ("start", "stop", "reset"):

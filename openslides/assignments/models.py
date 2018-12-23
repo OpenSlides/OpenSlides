@@ -10,7 +10,7 @@ from django.utils.translation import ugettext as _, ugettext_noop
 
 from openslides.agenda.models import Item, Speaker
 from openslides.core.config import config
-from openslides.core.models import Projector, Tag
+from openslides.core.models import Tag
 from openslides.poll.models import (
     BaseOption,
     BasePoll,
@@ -158,18 +158,6 @@ class Assignment(RESTModelMixin, models.Model):
 
     def __str__(self):
         return self.title
-
-    def delete(self, skip_autoupdate=False, *args, **kwargs):
-        """
-        Customized method to delete an assignment. Ensures that a respective
-        assignment projector element is disabled.
-        """
-        Projector.remove_any(
-            skip_autoupdate=skip_autoupdate, name="assignments/assignment", id=self.pk
-        )
-        return super().delete(  # type: ignore
-            skip_autoupdate=skip_autoupdate, *args, **kwargs
-        )
 
     @property
     def candidates(self):
@@ -431,21 +419,6 @@ class AssignmentPoll(  # type: ignore
 
     class Meta:
         default_permissions = ()
-
-    def delete(self, skip_autoupdate=False, *args, **kwargs):
-        """
-        Customized method to delete an assignment poll. Ensures that a respective
-        assignment projector element (with poll, so called poll slide) is disabled.
-        """
-        Projector.remove_any(
-            skip_autoupdate=skip_autoupdate,
-            name="assignments/assignment",
-            id=self.assignment.pk,
-            poll=self.pk,
-        )
-        return super().delete(  # type: ignore
-            skip_autoupdate=skip_autoupdate, *args, **kwargs
-        )
 
     def get_assignment(self):
         return self.assignment

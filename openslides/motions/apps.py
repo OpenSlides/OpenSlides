@@ -3,20 +3,17 @@ from typing import Any, Dict, Set
 from django.apps import AppConfig
 from django.db.models.signals import post_migrate
 
-from ..utils.projector import register_projector_elements
-
 
 class MotionsAppConfig(AppConfig):
     name = "openslides.motions"
     verbose_name = "OpenSlides Motion"
     angular_site_module = True
-    angular_projector_module = True
 
     def ready(self):
         # Import all required stuff.
         from openslides.core.signals import permission_change
         from openslides.utils.rest_api import router
-        from .projector import get_projector_elements
+        from .projector import register_projector_elements
         from .signals import create_builtin_workflows, get_permission_change_data
         from . import serializers  # noqa
         from .views import (
@@ -33,7 +30,7 @@ class MotionsAppConfig(AppConfig):
         from ..utils.access_permissions import required_user
 
         # Define projector elements.
-        register_projector_elements(get_projector_elements())
+        register_projector_elements()
 
         # Connect signals.
         post_migrate.connect(

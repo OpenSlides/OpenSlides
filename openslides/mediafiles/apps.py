@@ -2,27 +2,24 @@ from typing import Any, Dict, Set
 
 from django.apps import AppConfig
 
-from ..utils.projector import register_projector_elements
-
 
 class MediafilesAppConfig(AppConfig):
     name = "openslides.mediafiles"
     verbose_name = "OpenSlides Mediafiles"
     angular_site_module = True
-    angular_projector_module = True
 
     def ready(self):
         # Import all required stuff.
         from openslides.core.signals import permission_change
         from openslides.utils.rest_api import router
-        from .projector import get_projector_elements
+        from .projector import register_projector_elements
         from .signals import get_permission_change_data
         from .views import MediafileViewSet
         from . import serializers  # noqa
         from ..utils.access_permissions import required_user
 
         # Define projector elements.
-        register_projector_elements(get_projector_elements())
+        register_projector_elements()
 
         # Connect signals.
         permission_change.connect(

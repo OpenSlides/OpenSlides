@@ -8,6 +8,7 @@ from django.db.models import Model
 from mypy_extensions import TypedDict
 
 from .cache import element_cache, get_element_id
+from .projector import get_projectot_data
 
 
 Element = TypedDict(
@@ -190,6 +191,13 @@ def handle_changed_elements(elements: Iterable[Element]) -> None:
         channel_layer = get_channel_layer()
         await channel_layer.group_send(
             "autoupdate", {"type": "send_data", "change_id": change_id}
+        )
+
+        projector_data = await get_projectot_data()
+        # Send projector
+        channel_layer = get_channel_layer()
+        await channel_layer.group_send(
+            "projector", {"type": "projector_changed", "data": projector_data}
         )
 
     if elements:
