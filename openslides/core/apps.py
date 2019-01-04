@@ -54,7 +54,7 @@ class CoreAppConfig(AppConfig):
         # Skip all database related accesses during migrations.
         is_normal_server_start = False
         for sys_part in sys.argv:
-            for entry in ('runserver', 'gunicorn', 'daphne'):
+            for entry in ('runserver', 'gunicorn', 'daphne', 'create-example-data'):
                 if sys_part.endswith(entry):
                     is_normal_server_start = True
                     break
