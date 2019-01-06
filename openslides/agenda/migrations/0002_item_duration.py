@@ -11,7 +11,7 @@ def convert_duration(apps, schema_editor):
     IntegerField. It uses the temporary field for proper renaming the field
     in the end.
     """
-    Item = apps.get_model('agenda', 'Item')
+    Item = apps.get_model("agenda", "Item")
     for item in Item.objects.all():
         duration = item.duration
         item.duration_tmp = None
@@ -20,7 +20,7 @@ def convert_duration(apps, schema_editor):
             item.duration_tmp = int(duration)
         elif isinstance(duration, str):
             # Assuming format (h)h:(m)m. If not, new value is None.
-            split = duration.split(':')
+            split = duration.split(":")
             if len(split) == 2 and is_int(split[0]) and is_int(split[1]):
                 # Calculate new duration: hours * 60 + minutes.
                 item.duration_tmp = int(split[0]) * 60 + int(split[1])
@@ -41,26 +41,17 @@ def is_int(s):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('agenda', '0001_initial'),
-    ]
+    dependencies = [("agenda", "0001_initial")]
 
     operations = [
         migrations.AddField(
-            model_name='item',
-            name='duration_tmp',
+            model_name="item",
+            name="duration_tmp",
             field=models.IntegerField(blank=True, null=True),
         ),
-        migrations.RunPython(
-            convert_duration
-        ),
-        migrations.RemoveField(
-            model_name='item',
-            name='duration',
-        ),
+        migrations.RunPython(convert_duration),
+        migrations.RemoveField(model_name="item", name="duration"),
         migrations.RenameField(
-            model_name='item',
-            old_name='duration_tmp',
-            new_name='duration',
+            model_name="item", old_name="duration_tmp", new_name="duration"
         ),
     ]

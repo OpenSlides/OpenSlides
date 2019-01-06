@@ -18,7 +18,7 @@ def test_topic_item_db_queries():
     * 1 request to get the agenda item
     """
     for index in range(10):
-        Topic.objects.create(title='topic-{}'.format(index))
+        Topic.objects.create(title="topic-{}".format(index))
 
     assert count_queries(Topic.get_elements) == 3
 
@@ -27,19 +27,20 @@ class TopicCreate(TestCase):
     """
     Tests creation of new topics.
     """
+
     def setUp(self):
-        self.client.login(
-            username='admin',
-            password='admin',
-        )
+        self.client.login(username="admin", password="admin")
 
     def test_simple_create(self):
         response = self.client.post(
-            reverse('topic-list'),
-            {'title': 'test_title_ahyo1uifoo9Aiph2av5a',
-             'text': 'test_text_chu9Uevoo5choo0Xithe'})
+            reverse("topic-list"),
+            {
+                "title": "test_title_ahyo1uifoo9Aiph2av5a",
+                "text": "test_text_chu9Uevoo5choo0Xithe",
+            },
+        )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         topic = Topic.objects.get()
-        self.assertEqual(topic.title, 'test_title_ahyo1uifoo9Aiph2av5a')
-        self.assertEqual(topic.text, 'test_text_chu9Uevoo5choo0Xithe')
+        self.assertEqual(topic.title, "test_title_ahyo1uifoo9Aiph2av5a")
+        self.assertEqual(topic.text, "test_text_chu9Uevoo5choo0Xithe")
         self.assertEqual(Item.objects.get(), topic.agenda_item)

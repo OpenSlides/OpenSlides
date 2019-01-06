@@ -1,1 +1,1 @@
-default_app_config = 'openslides.mediafiles.apps.MediafilesAppConfig'
+default_app_config = "openslides.mediafiles.apps.MediafilesAppConfig"

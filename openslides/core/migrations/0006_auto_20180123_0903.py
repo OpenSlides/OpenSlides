@@ -7,19 +7,17 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0005_auto_20170412_1258'),
-    ]
+    dependencies = [("core", "0005_auto_20170412_1258")]
 
     operations = [
         migrations.AlterField(
-            model_name='projector',
-            name='height',
+            model_name="projector",
+            name="height",
             field=models.PositiveIntegerField(default=768),
         ),
         migrations.AlterField(
-            model_name='projector',
-            name='width',
+            model_name="projector",
+            name="width",
             field=models.PositiveIntegerField(default=1024),
         ),
     ]

@@ -10,10 +10,12 @@ class Command(_Command):
     Migration command that does nearly the same as Django's migration command
     but also calls the post_permission_creation signal.
     """
+
     def handle(self, *args, **options):
         from django.conf import settings
+
         # Creates the folder for a SQLite3 database if necessary.
-        if settings.DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
+        if settings.DATABASES["default"]["ENGINE"] == "django.db.backends.sqlite3":
             try:
                 os.makedirs(settings.OPENSLIDES_USER_DATA_PATH)
             except (FileExistsError, AttributeError):

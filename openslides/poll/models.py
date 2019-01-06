@@ -17,7 +17,8 @@ class BaseOption(models.Model):
     which has to be a subclass of BaseVote. Otherwise you have to override the
     get_vote_class method.
     """
-    vote_class: Optional[Type['BaseVote']] = None
+
+    vote_class: Optional[Type["BaseVote"]] = None
 
     class Meta:
         abstract = True
@@ -27,7 +28,9 @@ class BaseOption(models.Model):
 
     def get_vote_class(self):
         if self.vote_class is None:
-            raise NotImplementedError('The option class %s has to have an attribute vote_class.' % self)
+            raise NotImplementedError(
+                "The option class %s has to have an attribute vote_class." % self
+            )
         return self.vote_class
 
     def __getitem__(self, name):
@@ -44,8 +47,14 @@ class BaseVote(models.Model):
     Subclasses have to define an option field. This must be a ForeignKeyField
     to a subclass of BasePoll.
     """
-    weight = models.DecimalField(default=Decimal('1'), null=True, validators=[
-        MinValueValidator(Decimal('-2'))], max_digits=15, decimal_places=6)
+
+    weight = models.DecimalField(
+        default=Decimal("1"),
+        null=True,
+        validators=[MinValueValidator(Decimal("-2"))],
+        max_digits=15,
+        decimal_places=6,
+    )
     value = models.CharField(max_length=255, null=True)
 
     class Meta:
@@ -73,12 +82,28 @@ class CollectDefaultVotesMixin(models.Model):
     Mixin for a poll to collect the default vote values for valid votes,
     invalid votes and votes cast.
     """
-    votesvalid = models.DecimalField(null=True, blank=True, validators=[
-        MinValueValidator(Decimal('-2'))], max_digits=15, decimal_places=6)
-    votesinvalid = models.DecimalField(null=True, blank=True, validators=[
-        MinValueValidator(Decimal('-2'))], max_digits=15, decimal_places=6)
-    votescast = models.DecimalField(null=True, blank=True, validators=[
-        MinValueValidator(Decimal('-2'))], max_digits=15, decimal_places=6)
+
+    votesvalid = models.DecimalField(
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(Decimal("-2"))],
+        max_digits=15,
+        decimal_places=6,
+    )
+    votesinvalid = models.DecimalField(
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(Decimal("-2"))],
+        max_digits=15,
+        decimal_places=6,
+    )
+    votescast = models.DecimalField(
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(Decimal("-2"))],
+        max_digits=15,
+        decimal_places=6,
+    )
 
     class Meta:
         abstract = True
@@ -87,13 +112,16 @@ class CollectDefaultVotesMixin(models.Model):
         """
         Returns one of the strings of the percent base.
         """
-        raise NotImplementedError('You have to provide a get_percent_base_choice() method.')
+        raise NotImplementedError(
+            "You have to provide a get_percent_base_choice() method."
+        )
 
 
 class PublishPollMixin(models.Model):
     """
     Mixin for a poll to add a flag whether the poll is published or not.
     """
+
     published = models.BooleanField(default=False)
 
     class Meta:
@@ -108,7 +136,8 @@ class BasePoll(models.Model):
     """
     Base poll class.
     """
-    vote_values = ['Votes']
+
+    vote_values = ["Votes"]
 
     class Meta:
         abstract = True
@@ -183,7 +212,7 @@ class BasePoll(models.Model):
             try:
                 vote = self.get_votes().filter(option=option_id).get(value=value)
             except ObjectDoesNotExist:
-                values.append(self.get_vote_class()(value=value, weight=''))
+                values.append(self.get_vote_class()(value=value, weight=""))
             else:
                 values.append(vote)
         return values
@@ -195,15 +224,18 @@ def print_value(value, percent_base=0):
     'undocumented' or the vote value with percent value if so.
     """
     if value == -1:
-        verbose_value = _('majority')
+        verbose_value = _("majority")
     elif value == -2:
-        verbose_value = _('undocumented')
+        verbose_value = _("undocumented")
     elif value is None:
-        verbose_value = _('undocumented')
+        verbose_value = _("undocumented")
     else:
         if percent_base:
-            locale.setlocale(locale.LC_ALL, '')
-            verbose_value = u'%d (%s %%)' % (value, locale.format('%.1f', value * percent_base))
+            locale.setlocale(locale.LC_ALL, "")
+            verbose_value = "%d (%s %%)" % (
+                value,
+                locale.format("%.1f", value * percent_base),
+            )
         else:
-            verbose_value = u'%s' % value
+            verbose_value = "%s" % value
     return verbose_value

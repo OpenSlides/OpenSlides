@@ -4,8 +4,8 @@ from ..utils.projector import register_projector_elements
 
 
 class TopicsAppConfig(AppConfig):
-    name = 'openslides.topics'
-    verbose_name = 'OpenSlides Topics'
+    name = "openslides.topics"
+    verbose_name = "OpenSlides Topics"
     angular_site_module = True
     angular_projector_module = True
 
@@ -23,15 +23,15 @@ class TopicsAppConfig(AppConfig):
 
         # Connect signals.
         permission_change.connect(
-            get_permission_change_data,
-            dispatch_uid='topics_get_permission_change_data')
+            get_permission_change_data, dispatch_uid="topics_get_permission_change_data"
+        )
 
         # Register viewsets.
-        router.register(self.get_model('Topic').get_collection_string(), TopicViewSet)
+        router.register(self.get_model("Topic").get_collection_string(), TopicViewSet)
 
     def get_startup_elements(self):
         """
         Yields all Cachables required on startup i. e. opening the websocket
         connection.
         """
-        yield self.get_model('Topic')
+        yield self.get_model("Topic")

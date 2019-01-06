@@ -12,24 +12,24 @@ def change_motions_comments(apps, schema_editor):
     """
     # We get the model from the versioned app registry;
     # if we directly import it, it will be the wrong version.
-    ConfigStore = apps.get_model('core', 'ConfigStore')
-    Motion = apps.get_model('motions', 'Motion')
+    ConfigStore = apps.get_model("core", "ConfigStore")
+    Motion = apps.get_model("motions", "Motion")
 
     try:
-        config_comments_fields = ConfigStore.objects.get(key='motions_comments').value
+        config_comments_fields = ConfigStore.objects.get(key="motions_comments").value
     except ConfigStore.DoesNotExist:
         config_comments_fields = []  # The old default: An empty list.
 
     comments_fields = {}
     for index, field in enumerate(config_comments_fields):
-        comments_fields[index+1] = field
+        comments_fields[index + 1] = field
 
-    max_index = len(config_comments_fields)-1
+    max_index = len(config_comments_fields) - 1
 
     try:
-        db_value = ConfigStore.objects.get(key='motions_comments')
+        db_value = ConfigStore.objects.get(key="motions_comments")
     except ConfigStore.DoesNotExist:
-        db_value = ConfigStore(key='motions_comments')
+        db_value = ConfigStore(key="motions_comments")
     db_value.value = comments_fields
     # We cannot provide skip_autoupdate=True here, becuase this object is a fake object. It does *not*
     # inherit from the RESTModelMixin, so the save() methos from base_model.py (django's default)
@@ -42,19 +42,13 @@ def change_motions_comments(apps, schema_editor):
         for index, comment in enumerate(motion.comments or []):
             if index > max_index:
                 break
-            comments[index+1] = comment
+            comments[index + 1] = comment
         motion.comments = comments
         motion.save(skip_autoupdate=True)
 
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('motions', '0002_misc_features'),
-    ]
+    dependencies = [("motions", "0002_misc_features")]
 
-    operations = [
-        migrations.RunPython(
-            change_motions_comments
-        ),
-    ]
+    operations = [migrations.RunPython(change_motions_comments)]

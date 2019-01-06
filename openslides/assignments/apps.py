@@ -7,8 +7,8 @@ from ..utils.projector import register_projector_elements
 
 
 class AssignmentsAppConfig(AppConfig):
-    name = 'openslides.assignments'
-    verbose_name = 'OpenSlides Assignments'
+    name = "openslides.assignments"
+    verbose_name = "OpenSlides Assignments"
     angular_site_module = True
     angular_projector_module = True
 
@@ -28,17 +28,23 @@ class AssignmentsAppConfig(AppConfig):
         # Connect signals.
         permission_change.connect(
             get_permission_change_data,
-            dispatch_uid='assignments_get_permission_change_data')
+            dispatch_uid="assignments_get_permission_change_data",
+        )
 
         # Register viewsets.
-        router.register(self.get_model('Assignment').get_collection_string(), AssignmentViewSet)
-        router.register('assignments/poll', AssignmentPollViewSet)
+        router.register(
+            self.get_model("Assignment").get_collection_string(), AssignmentViewSet
+        )
+        router.register("assignments/poll", AssignmentPollViewSet)
 
         # Register required_users
-        required_user.add_collection_string(self.get_model('Assignment').get_collection_string(), required_users)
+        required_user.add_collection_string(
+            self.get_model("Assignment").get_collection_string(), required_users
+        )
 
     def get_config_variables(self):
         from .config_variables import get_config_variables
+
         return get_config_variables()
 
     def get_startup_elements(self):
@@ -46,18 +52,15 @@ class AssignmentsAppConfig(AppConfig):
         Yields all Cachables required on startup i. e. opening the websocket
         connection.
         """
-        yield self.get_model('Assignment')
+        yield self.get_model("Assignment")
 
     def get_angular_constants(self):
-        assignment = self.get_model('Assignment')
-        Item = TypedDict('Item', {'value': int, 'display_name': str})
+        assignment = self.get_model("Assignment")
+        Item = TypedDict("Item", {"value": int, "display_name": str})
         phases: List[Item] = []
         for phase in assignment.PHASES:
-            phases.append({
-                'value': phase[0],
-                'display_name': phase[1],
-            })
-        return {'AssignmentPhases': phases}
+            phases.append({"value": phase[0], "display_name": phase[1]})
+        return {"AssignmentPhases": phases}
 
 
 def required_users(element: Dict[str, Any]) -> Set[int]:
@@ -65,7 +68,9 @@ def required_users(element: Dict[str, Any]) -> Set[int]:
     Returns all user ids that are displayed as candidates (including poll
     options) in the assignment element.
     """
-    candidates = set(related_user['user_id'] for related_user in element['assignment_related_users'])
-    for poll in element['polls']:
-        candidates.update(option['candidate_id'] for option in poll['options'])
+    candidates = set(
+        related_user["user_id"] for related_user in element["assignment_related_users"]
+    )
+    for poll in element["polls"]:
+        candidates.update(option["candidate_id"] for option in poll["options"])
     return candidates

@@ -11,44 +11,47 @@ from openslides.utils.migrations import (
 
 
 def delete_old_can_see_hidden_permission(apps, schema_editor):
-    perm = Permission.objects.filter(codename='can_see_hidden_items')
+    perm = Permission.objects.filter(codename="can_see_hidden_items")
     if len(perm):
         perm = perm.delete()
 
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('agenda', '0004_speaker_marked'),
-    ]
+    dependencies = [("agenda", "0004_speaker_marked")]
 
     operations = [
         migrations.AlterModelOptions(
-            name='item',
+            name="item",
             options={
-                'default_permissions': (),
-                'permissions': (
-                    ('can_see', 'Can see agenda'),
-                    ('can_manage', 'Can manage agenda'),
-                    ('can_manage_list_of_speakers', 'Can manage list of speakers'),
-                    ('can_see_internal_items', 'Can see internal items and time scheduling of agenda')
-                )
+                "default_permissions": (),
+                "permissions": (
+                    ("can_see", "Can see agenda"),
+                    ("can_manage", "Can manage agenda"),
+                    ("can_manage_list_of_speakers", "Can manage list of speakers"),
+                    (
+                        "can_see_internal_items",
+                        "Can see internal items and time scheduling of agenda",
+                    ),
+                ),
             },
         ),
         migrations.AlterField(
-            model_name='item',
-            name='type',
+            model_name="item",
+            name="type",
             field=models.IntegerField(
-                choices=[
-                    (1, 'Agenda item'),
-                    (2, 'Internal item'),
-                    (3, 'Hidden item')
-                ],
-                default=3
+                choices=[(1, "Agenda item"), (2, "Internal item"), (3, "Hidden item")],
+                default=3,
             ),
         ),
-        migrations.RunPython(add_permission_to_groups_based_on_existing_permission(
-            'can_see_hidden_items', 'item', 'agenda', 'can_see_internal_items', 'Can see internal items and time scheduling of agenda'
-        )),
+        migrations.RunPython(
+            add_permission_to_groups_based_on_existing_permission(
+                "can_see_hidden_items",
+                "item",
+                "agenda",
+                "can_see_internal_items",
+                "Can see internal items and time scheduling of agenda",
+            )
+        ),
         migrations.RunPython(delete_old_can_see_hidden_permission),
     ]

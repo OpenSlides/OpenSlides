@@ -7,18 +7,13 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('assignments', '0001_initial'),
-    ]
+    dependencies = [("assignments", "0001_initial")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='assignmentpoll',
-            name='yesnoabstain',
-        ),
+        migrations.RemoveField(model_name="assignmentpoll", name="yesnoabstain"),
         migrations.AddField(
-            model_name='assignmentpoll',
-            name='pollmethod',
-            field=models.CharField(default='yna', max_length=5),
+            model_name="assignmentpoll",
+            name="pollmethod",
+            field=models.CharField(default="yna", max_length=5),
         ),
     ]

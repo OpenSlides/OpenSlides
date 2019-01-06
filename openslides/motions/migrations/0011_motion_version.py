@@ -10,7 +10,7 @@ def copy_motion_version_content_to_motion(apps, schema_editor):
     """
     Move all motion version content of the active version to the motion.
     """
-    Motion = apps.get_model('motions', 'Motion')
+    Motion = apps.get_model("motions", "Motion")
 
     for motion in Motion.objects.all():
         motion.title = motion.active_version.title
@@ -26,7 +26,7 @@ def migrate_active_change_recommendations(apps, schema_editor):
     Delete all change recommendation of motion versions, that are not active. For active
     change recommendations the motion id will be set.
     """
-    MotionChangeRecommendation = apps.get_model('motions', 'MotionChangeRecommendation')
+    MotionChangeRecommendation = apps.get_model("motions", "MotionChangeRecommendation")
     to_delete = []
     for cr in MotionChangeRecommendation.objects.all():
         # chack if version id matches the active version of the motion
@@ -43,89 +43,65 @@ def migrate_active_change_recommendations(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('motions', '0010_auto_20180822_1042'),
-    ]
+    dependencies = [("motions", "0010_auto_20180822_1042")]
 
     operations = [
         # Create new fields. Title and Text have empty defaults, but the values
         # should be overwritten by copy_motion_version_content_to_motion. In the next
         # migration file these defaults are removed.
         migrations.AddField(
-            model_name='motion',
-            name='title',
-            field=models.CharField(max_length=255, default=''),
+            model_name="motion",
+            name="title",
+            field=models.CharField(max_length=255, default=""),
         ),
         migrations.AddField(
-            model_name='motion',
-            name='text',
-            field=models.TextField(default=''),
+            model_name="motion", name="text", field=models.TextField(default="")
         ),
         migrations.AddField(
-            model_name='motion',
-            name='reason',
+            model_name="motion",
+            name="reason",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='motion',
-            name='modified_final_version',
+            model_name="motion",
+            name="modified_final_version",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='motion',
-            name='amendment_paragraphs',
+            model_name="motion",
+            name="amendment_paragraphs",
             field=jsonfield.fields.JSONField(
                 dump_kwargs={
-                    'cls': jsonfield.encoder.JSONEncoder,
-                    'separators': (',', ':')
+                    "cls": jsonfield.encoder.JSONEncoder,
+                    "separators": (",", ":"),
                 },
                 load_kwargs={},
-                null=True),
+                null=True,
+            ),
         ),
-
         # Copy old motion version data
         migrations.RunPython(copy_motion_version_content_to_motion),
-
         # Change recommendations
         migrations.AddField(
-            model_name='motionchangerecommendation',
-            name='motion',
+            model_name="motionchangerecommendation",
+            name="motion",
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
                 null=True,  # This is reverted in the next migration
-                related_name='change_recommendations',
-                to='motions.Motion'),
+                related_name="change_recommendations",
+                to="motions.Motion",
+            ),
         ),
         migrations.RunPython(migrate_active_change_recommendations),
         migrations.RemoveField(
-            model_name='motionchangerecommendation',
-            name='motion_version',
+            model_name="motionchangerecommendation", name="motion_version"
         ),
-
         # remove motion version references from motion and state.
-        migrations.RemoveField(
-            model_name='motion',
-            name='active_version',
-        ),
-        migrations.AlterUniqueTogether(
-            name='motionversion',
-            unique_together=set(),
-        ),
-        migrations.RemoveField(
-            model_name='motionversion',
-            name='motion',
-        ),
-        migrations.RemoveField(
-            model_name='state',
-            name='leave_old_version_active',
-        ),
-        migrations.RemoveField(
-            model_name='state',
-            name='versioning',
-        ),
-
+        migrations.RemoveField(model_name="motion", name="active_version"),
+        migrations.AlterUniqueTogether(name="motionversion", unique_together=set()),
+        migrations.RemoveField(model_name="motionversion", name="motion"),
+        migrations.RemoveField(model_name="state", name="leave_old_version_active"),
+        migrations.RemoveField(model_name="state", name="versioning"),
         # Delete motion version.
-        migrations.DeleteModel(
-            name='MotionVersion',
-        ),
+        migrations.DeleteModel(name="MotionVersion"),
     ]

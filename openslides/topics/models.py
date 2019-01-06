@@ -14,19 +14,21 @@ class TopicManager(models.Manager):
     """
     Customized model manager to support our get_full_queryset method.
     """
+
     def get_full_queryset(self):
         """
         Returns the normal queryset with all topics. In the background all
         attachments and the related agenda item are prefetched from the
         database.
         """
-        return self.get_queryset().prefetch_related('attachments', 'agenda_items')
+        return self.get_queryset().prefetch_related("attachments", "agenda_items")
 
 
 class Topic(RESTModelMixin, models.Model):
     """
     Model for slides with custom content. Used to be called custom slide.
     """
+
     access_permissions = TopicAccessPermissions()
 
     objects = TopicManager()
@@ -37,7 +39,7 @@ class Topic(RESTModelMixin, models.Model):
 
     # In theory there could be one then more agenda_item. But we support only
     # one. See the property agenda_item.
-    agenda_items = GenericRelation(Item, related_name='topics')
+    agenda_items = GenericRelation(Item, related_name="topics")
 
     class Meta:
         default_permissions = ()
@@ -51,10 +53,11 @@ class Topic(RESTModelMixin, models.Model):
         topic projector element is disabled.
         """
         Projector.remove_any(
-            skip_autoupdate=skip_autoupdate,
-            name='topics/topic',
-            id=self.pk)
-        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)  # type: ignore
+            skip_autoupdate=skip_autoupdate, name="topics/topic", id=self.pk
+        )
+        return super().delete(  # type: ignore
+            skip_autoupdate=skip_autoupdate, *args, **kwargs
+        )
 
     """
     Container for runtime information for agenda app (on create or update of this instance).

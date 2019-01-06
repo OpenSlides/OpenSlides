@@ -6,24 +6,15 @@ from openslides.utils.websocket import schema
 
 def test_notify_schema_validation():
     # This raises a validaten error if it fails
-    message = {
-        'id': 'test-message',
-        'type': 'notify',
-        'content': [{
-            'users': [5],
-        }]
-    }
+    message = {"id": "test-message", "type": "notify", "content": [{"users": [5]}]}
     jsonschema.validate(message, schema)
 
 
 def test_notify_schema_invalid_str_in_list():
     message = {
-        'type': 'notify',
-        'content': [
-            {},
-            'testmessage'
-        ],
-        'id': 'test_send_invalid_notify_str_in_list',
+        "type": "notify",
+        "content": [{}, "testmessage"],
+        "id": "test_send_invalid_notify_str_in_list",
     }
     with pytest.raises(jsonschema.ValidationError):
         jsonschema.validate(message, schema)
@@ -31,9 +22,9 @@ def test_notify_schema_invalid_str_in_list():
 
 def test_notify_schema_invalid_no_elements():
     message = {
-        'type': 'notify',
-        'content': [],
-        'id': 'test_send_invalid_notify_str_in_list',
+        "type": "notify",
+        "content": [],
+        "id": "test_send_invalid_notify_str_in_list",
     }
     with pytest.raises(jsonschema.ValidationError):
         jsonschema.validate(message, schema)
@@ -41,9 +32,9 @@ def test_notify_schema_invalid_no_elements():
 
 def test_notify_schema_invalid_not_a_list():
     message = {
-        'type': 'notify',
-        'content': {'testmessage': 'foobar, what else.'},
-        'id': 'test_send_invalid_notify_str_in_list',
+        "type": "notify",
+        "content": {"testmessage": "foobar, what else."},
+        "id": "test_send_invalid_notify_str_in_list",
     }
     with pytest.raises(jsonschema.ValidationError):
         jsonschema.validate(message, schema)

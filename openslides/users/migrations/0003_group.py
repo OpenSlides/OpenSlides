@@ -15,8 +15,8 @@ def create_openslides_groups(apps, schema_editor):
     """
     # We get the model from the versioned app registry;
     # if we directly import it, it will be the wrong version.
-    DjangoGroup = apps.get_model('auth', 'Group')
-    Group = apps.get_model('users', 'Group')
+    DjangoGroup = apps.get_model("auth", "Group")
+    Group = apps.get_model("users", "Group")
     for group in DjangoGroup.objects.all():
         Group.objects.create(group_ptr_id=group.pk, name=group.name)
 
@@ -24,31 +24,29 @@ def create_openslides_groups(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('auth', '0008_alter_user_username_max_length'),
-        ('users', '0002_user_misc_default_groups'),
+        ("auth", "0008_alter_user_username_max_length"),
+        ("users", "0002_user_misc_default_groups"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Group',
-            fields=[(
-                'group_ptr',
-                models.OneToOneField(
-                    auto_created=True,
-                    on_delete=django.db.models.deletion.CASCADE,
-                    parent_link=True,
-                    primary_key=True,
-                    serialize=False,
-                    to='auth.Group'))],
-            options={
-                'default_permissions': (),
-            },
-            bases=(openslides.utils.models.RESTModelMixin, 'auth.group'),
-            managers=[
-                ('objects', openslides.users.models.GroupManager()),
+            name="Group",
+            fields=[
+                (
+                    "group_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="auth.Group",
+                    ),
+                )
             ],
+            options={"default_permissions": ()},
+            bases=(openslides.utils.models.RESTModelMixin, "auth.group"),
+            managers=[("objects", openslides.users.models.GroupManager())],
         ),
-        migrations.RunPython(
-            create_openslides_groups,
-        ),
+        migrations.RunPython(create_openslides_groups),
     ]

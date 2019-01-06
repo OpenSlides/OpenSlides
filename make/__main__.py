@@ -5,7 +5,7 @@ from parser import parser
 
 
 if len(sys.argv) < 2:
-    args = parser.parse_args(['--help'])
+    args = parser.parse_args(["--help"])
 else:
     args = parser.parse_args()
 

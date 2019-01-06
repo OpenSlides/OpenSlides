@@ -12,6 +12,7 @@ class TopicViewSet(ModelViewSet):
     There are the following views: metadata, list, retrieve, create,
     partial_update, update and destroy.
     """
+
     access_permissions = TopicAccessPermissions()
     queryset = Topic.objects.all()
 
@@ -19,8 +20,8 @@ class TopicViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('list', 'retrieve'):
+        if self.action in ("list", "retrieve"):
             result = self.get_access_permissions().check_permissions(self.request.user)
         else:
-            result = has_perm(self.request.user, 'agenda.can_manage')
+            result = has_perm(self.request.user, "agenda.can_manage")
         return result

@@ -7,14 +7,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('motions', '0008_auto_20180702_1128'),
-    ]
+    dependencies = [("motions", "0008_auto_20180702_1128")]
 
     operations = [
         migrations.AddField(
-            model_name='motionversion',
-            name='modified_final_version',
+            model_name="motionversion",
+            name="modified_final_version",
             field=models.TextField(blank=True, null=True),
-        ),
+        )
     ]

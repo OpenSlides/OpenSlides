@@ -5,24 +5,22 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('motions', '0014_motionchangerecommendation_internal'),
-    ]
+    dependencies = [("motions", "0014_motionchangerecommendation_internal")]
 
     operations = [
         migrations.AlterModelOptions(
-            name='motion',
+            name="motion",
             options={
-                'default_permissions': (),
-                'ordering': ('identifier',),
-                'permissions': (
-                    ('can_see', 'Can see motions'),
-                    ('can_create', 'Can create motions'),
-                    ('can_support', 'Can support motions'),
-                    ('can_manage_metadata', 'Can manage motion metadata'),
-                    ('can_manage', 'Can manage motions')
+                "default_permissions": (),
+                "ordering": ("identifier",),
+                "permissions": (
+                    ("can_see", "Can see motions"),
+                    ("can_create", "Can create motions"),
+                    ("can_support", "Can support motions"),
+                    ("can_manage_metadata", "Can manage motion metadata"),
+                    ("can_manage", "Can manage motions"),
                 ),
-                'verbose_name': 'Motion'
+                "verbose_name": "Motion",
             },
-        ),
+        )
     ]

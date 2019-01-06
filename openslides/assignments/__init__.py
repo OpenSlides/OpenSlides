@@ -1,1 +1,1 @@
-default_app_config = 'openslides.assignments.apps.AssignmentsAppConfig'
+default_app_config = "openslides.assignments.apps.AssignmentsAppConfig"

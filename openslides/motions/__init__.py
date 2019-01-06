@@ -1,1 +1,1 @@
-default_app_config = 'openslides.motions.apps.MotionsAppConfig'
+default_app_config = "openslides.motions.apps.MotionsAppConfig"

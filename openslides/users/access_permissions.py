@@ -11,15 +11,17 @@ class UserAccessPermissions(BaseAccessPermissions):
     """
 
     async def get_restricted_data(
-            self,
-            full_data: List[Dict[str, Any]],
-            user_id: int) -> List[Dict[str, Any]]:
+        self, full_data: List[Dict[str, Any]], user_id: int
+    ) -> List[Dict[str, Any]]:
         """
         Returns the restricted serialized data for the instance prepared
         for the user. Removes several fields for non admins so that they do
         not get the fields they should not get.
         """
-        from .serializers import USERCANSEESERIALIZER_FIELDS, USERCANSEEEXTRASERIALIZER_FIELDS
+        from .serializers import (
+            USERCANSEESERIALIZER_FIELDS,
+            USERCANSEEEXTRASERIALIZER_FIELDS,
+        )
 
         def filtered_data(full_data, whitelist):
             """
@@ -36,19 +38,19 @@ class UserAccessPermissions(BaseAccessPermissions):
 
         # Prepare field set for users with "all" data, "many" data and with "little" data.
         all_data_fields = set(USERCANSEEEXTRASERIALIZER_FIELDS)
-        all_data_fields.add('groups_id')
-        all_data_fields.discard('groups')
-        all_data_fields.add('default_password')
+        all_data_fields.add("groups_id")
+        all_data_fields.discard("groups")
+        all_data_fields.add("default_password")
         many_data_fields = all_data_fields.copy()
-        many_data_fields.discard('default_password')
+        many_data_fields.discard("default_password")
         litte_data_fields = set(USERCANSEESERIALIZER_FIELDS)
-        litte_data_fields.add('groups_id')
-        litte_data_fields.discard('groups')
+        litte_data_fields.add("groups_id")
+        litte_data_fields.discard("groups")
 
         # Check user permissions.
-        if await async_has_perm(user_id, 'users.can_see_name'):
-            if await async_has_perm(user_id, 'users.can_see_extra_data'):
-                if await async_has_perm(user_id, 'users.can_manage'):
+        if await async_has_perm(user_id, "users.can_see_name"):
+            if await async_has_perm(user_id, "users.can_see_extra_data"):
+                if await async_has_perm(user_id, "users.can_manage"):
                     data = [filtered_data(full, all_data_fields) for full in full_data]
                 else:
                     data = [filtered_data(full, many_data_fields) for full in full_data]
@@ -63,10 +65,17 @@ class UserAccessPermissions(BaseAccessPermissions):
 
             can_see_collection_strings: Set[str] = set()
             for collection_string in required_user.get_collection_strings():
-                if await async_has_perm(user_id, get_model_from_collection_string(collection_string).can_see_permission):
+                if await async_has_perm(
+                    user_id,
+                    get_model_from_collection_string(
+                        collection_string
+                    ).can_see_permission,
+                ):
                     can_see_collection_strings.add(collection_string)
 
-            user_ids = await required_user.get_required_users(can_see_collection_strings)
+            user_ids = await required_user.get_required_users(
+                can_see_collection_strings
+            )
 
             # Add oneself.
             if user_id:
@@ -75,9 +84,9 @@ class UserAccessPermissions(BaseAccessPermissions):
             # Parse data.
             data = [
                 filtered_data(full, litte_data_fields)
-                for full
-                in full_data
-                if full['id'] in user_ids]
+                for full in full_data
+                if full["id"] in user_ids
+            ]
 
         return data
 
@@ -95,9 +104,8 @@ class PersonalNoteAccessPermissions(BaseAccessPermissions):
     """
 
     async def get_restricted_data(
-            self,
-            full_data: List[Dict[str, Any]],
-            user_id: int) -> List[Dict[str, Any]]:
+        self, full_data: List[Dict[str, Any]], user_id: int
+    ) -> List[Dict[str, Any]]:
         """
         Returns the restricted serialized data for the instance prepared
         for the user. Everybody gets only his own personal notes.
@@ -107,7 +115,7 @@ class PersonalNoteAccessPermissions(BaseAccessPermissions):
             data: List[Dict[str, Any]] = []
         else:
             for full in full_data:
-                if full['user_id'] == user_id:
+                if full["user_id"] == user_id:
                     data = [full]
                     break
             else:

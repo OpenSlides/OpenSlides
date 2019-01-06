@@ -10,17 +10,18 @@ class Command(BaseCommand):
     """
     Command to backup the SQLite3 database.
     """
-    help = 'Backups the SQLite3 database.'
+
+    help = "Backups the SQLite3 database."
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--path',
-            default='database_backup.sqlite',
-            help='Path for the backup file (Default: database_backup.sqlite).'
+            "--path",
+            default="database_backup.sqlite",
+            help="Path for the backup file (Default: database_backup.sqlite).",
         )
 
     def handle(self, *args, **options):
-        path = options.get('path')
+        path = options.get("path")
 
         @transaction.atomic
         def do_backup(src_path, dest_path):
@@ -39,8 +40,11 @@ class Command(BaseCommand):
         database_path = get_database_path_from_settings()
         if database_path:
             do_backup(database_path, path)
-            self.stdout.write('Database %s successfully stored at %s.' % (database_path, path))
+            self.stdout.write(
+                "Database %s successfully stored at %s." % (database_path, path)
+            )
         else:
             raise CommandError(
-                'Default database is not SQLite3. Only SQLite3 databases'
-                'can currently be backuped.')
+                "Default database is not SQLite3. Only SQLite3 databases"
+                "can currently be backuped."
+            )

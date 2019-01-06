@@ -16,27 +16,27 @@ class UserCreateUpdateSerializerTest(TestCase):
         with self.assertRaises(ValidationError):
             serializer.validate(data)
 
-    @patch('openslides.users.serializers.User.objects.generate_username')
+    @patch("openslides.users.serializers.User.objects.generate_username")
     def test_validate_no_username(self, generate_username):
         """
         Tests, that an empty username is generated.
         """
-        generate_username.return_value = 'test_value'
+        generate_username.return_value = "test_value"
         serializer = UserFullSerializer()
-        data = {'first_name': 'TestName'}
+        data = {"first_name": "TestName"}
 
         new_data = serializer.validate(data)
 
-        self.assertEqual(new_data['username'], 'test_value')
+        self.assertEqual(new_data["username"], "test_value")
 
     def test_validate_no_username_in_patch_request(self):
         """
         Tests, that an empty username is not set in a patch request context.
         """
-        view = MagicMock(action='partial_update')
-        serializer = UserFullSerializer(context={'view': view})
-        data = {'first_name': 'TestName'}
+        view = MagicMock(action="partial_update")
+        serializer = UserFullSerializer(context={"view": view})
+        data = {"first_name": "TestName"}
 
         new_data = serializer.validate(data)
 
-        self.assertIsNone(new_data.get('username'))
+        self.assertIsNone(new_data.get("username"))

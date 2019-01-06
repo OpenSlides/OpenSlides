@@ -7,14 +7,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('agenda', '0003_auto_20170818_1202'),
-    ]
+    dependencies = [("agenda", "0003_auto_20170818_1202")]
 
     operations = [
         migrations.AddField(
-            model_name='speaker',
-            name='marked',
+            model_name="speaker",
+            name="marked",
             field=models.BooleanField(default=False),
-        ),
+        )
     ]

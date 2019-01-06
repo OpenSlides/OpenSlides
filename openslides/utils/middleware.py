@@ -18,6 +18,7 @@ class CollectionAuthMiddleware(AuthMiddleware):
     Like the channels AuthMiddleware but returns a user dict id instead of
     a django Model as user.
     """
+
     def populate_scope(self, scope: Dict[str, Any]) -> None:
         # Make sure we have a session
         if "session" not in scope:
@@ -41,7 +42,9 @@ async def get_user(scope: Dict[str, Any]) -> Dict[str, Any]:
     # This code is basicly from channels.auth:
     # https://github.com/django/channels/blob/d5e81a78e96770127da79248349808b6ee6ec2a7/channels/auth.py#L16
     if "session" not in scope:
-        raise ValueError("Cannot find session in scope. You should wrap your consumer in SessionMiddleware.")
+        raise ValueError(
+            "Cannot find session in scope. You should wrap your consumer in SessionMiddleware."
+        )
     session = scope["session"]
     user: Optional[Dict[str, Any]] = None
     try:
@@ -56,13 +59,15 @@ async def get_user(scope: Dict[str, Any]) -> Dict[str, Any]:
                 # Verify the session
                 session_hash = session.get(HASH_SESSION_KEY)
                 session_hash_verified = session_hash and constant_time_compare(
-                    session_hash,
-                    user['session_auth_hash'])
+                    session_hash, user["session_auth_hash"]
+                )
                 if not session_hash_verified:
                     session.flush()
                     user = None
-    return user or {'id': 0}
+    return user or {"id": 0}
 
 
 # Handy shortcut for applying all three layers at once
-AuthMiddlewareStack = lambda inner: CookieMiddleware(SessionMiddleware(CollectionAuthMiddleware(inner)))  # noqa
+AuthMiddlewareStack = lambda inner: CookieMiddleware(  # noqa
+    SessionMiddleware(CollectionAuthMiddleware(inner))
+)

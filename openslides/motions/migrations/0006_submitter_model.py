@@ -11,8 +11,8 @@ import openslides.utils.models
 
 
 def move_submitters_to_own_model(apps, schema_editor):
-    Motion = apps.get_model('motions', 'Motion')
-    Submitter = apps.get_model('motions', 'Submitter')
+    Motion = apps.get_model("motions", "Motion")
+    Submitter = apps.get_model("motions", "Submitter")
 
     for motion in Motion.objects.all():
         weight = 0
@@ -32,41 +32,46 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('motions', '0005_auto_20180202_1318'),
+        ("motions", "0005_auto_20180202_1318"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='motion',
-            old_name='submitters',
-            new_name='submittersOld',
+            model_name="motion", old_name="submitters", new_name="submittersOld"
         ),
         migrations.CreateModel(
-            name='Submitter',
+            name="Submitter",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('weight', models.IntegerField(null=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("weight", models.IntegerField(null=True)),
             ],
-            options={
-                'default_permissions': (),
-            },
+            options={"default_permissions": ()},
             bases=(openslides.utils.models.RESTModelMixin, models.Model),
         ),
         migrations.AddField(
-            model_name='submitter',
-            name='motion',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='submitters', to='motions.Motion'),
+            model_name="submitter",
+            name="motion",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="submitters",
+                to="motions.Motion",
+            ),
         ),
         migrations.AddField(
-            model_name='submitter',
-            name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            model_name="submitter",
+            name="user",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+            ),
         ),
-        migrations.RunPython(
-            move_submitters_to_own_model
-        ),
-        migrations.RemoveField(
-            model_name='motion',
-            name='submittersOld',
-        ),
+        migrations.RunPython(move_submitters_to_own_model),
+        migrations.RemoveField(model_name="motion", name="submittersOld"),
     ]

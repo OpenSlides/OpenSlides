@@ -31,16 +31,13 @@ class AssignmentRelatedUser(RESTModelMixin, models.Model):
     """
 
     assignment = models.ForeignKey(
-        'Assignment',
-        on_delete=models.CASCADE,
-        related_name='assignment_related_users')
+        "Assignment", on_delete=models.CASCADE, related_name="assignment_related_users"
+    )
     """
     ForeinKey to the assignment.
     """
 
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     """
     ForeinKey to the user who is related to the assignment.
     """
@@ -57,7 +54,7 @@ class AssignmentRelatedUser(RESTModelMixin, models.Model):
 
     class Meta:
         default_permissions = ()
-        unique_together = ('assignment', 'user')
+        unique_together = ("assignment", "user")
 
     def __str__(self):
         return "%s <-> %s" % (self.assignment, self.user)
@@ -73,6 +70,7 @@ class AssignmentManager(models.Manager):
     """
     Customized model manager to support our get_full_queryset method.
     """
+
     def get_full_queryset(self):
         """
         Returns the normal queryset with all assignments. In the background
@@ -80,18 +78,17 @@ class AssignmentManager(models.Manager):
         polls are prefetched from the database.
         """
         return self.get_queryset().prefetch_related(
-            'related_users',
-            'agenda_items',
-            'polls',
-            'tags')
+            "related_users", "agenda_items", "polls", "tags"
+        )
 
 
 class Assignment(RESTModelMixin, models.Model):
     """
     Model for assignments.
     """
+
     access_permissions = AssignmentAccessPermissions()
-    can_see_permission = 'assignments.can_see'
+    can_see_permission = "assignments.can_see"
 
     objects = AssignmentManager()
 
@@ -100,19 +97,17 @@ class Assignment(RESTModelMixin, models.Model):
     PHASE_FINISHED = 2
 
     PHASES = (
-        (PHASE_SEARCH, 'Searching for candidates'),
-        (PHASE_VOTING, 'Voting'),
-        (PHASE_FINISHED, 'Finished'),
+        (PHASE_SEARCH, "Searching for candidates"),
+        (PHASE_VOTING, "Voting"),
+        (PHASE_FINISHED, "Finished"),
     )
 
-    title = models.CharField(
-        max_length=100)
+    title = models.CharField(max_length=100)
     """
     Title of the assignment.
     """
 
-    description = models.TextField(
-        blank=True)
+    description = models.TextField(blank=True)
     """
     Text to describe the assignment.
     """
@@ -122,23 +117,19 @@ class Assignment(RESTModelMixin, models.Model):
     The number of members to be elected.
     """
 
-    poll_description_default = models.CharField(
-        max_length=79,
-        blank=True)
+    poll_description_default = models.CharField(max_length=79, blank=True)
     """
     Default text for the poll description.
     """
 
-    phase = models.IntegerField(
-        choices=PHASES,
-        default=PHASE_SEARCH)
+    phase = models.IntegerField(choices=PHASES, default=PHASE_SEARCH)
     """
     Phase in which the assignment is.
     """
 
     related_users = models.ManyToManyField(
-        settings.AUTH_USER_MODEL,
-        through='AssignmentRelatedUser')
+        settings.AUTH_USER_MODEL, through="AssignmentRelatedUser"
+    )
     """
     Users that are candidates or elected.
 
@@ -152,18 +143,18 @@ class Assignment(RESTModelMixin, models.Model):
 
     # In theory there could be one then more agenda_item. But we support only
     # one. See the property agenda_item.
-    agenda_items = GenericRelation(Item, related_name='assignments')
+    agenda_items = GenericRelation(Item, related_name="assignments")
 
     class Meta:
         default_permissions = ()
         permissions = (
-            ('can_see', 'Can see elections'),
-            ('can_nominate_other', 'Can nominate another participant'),
-            ('can_nominate_self', 'Can nominate oneself'),
-            ('can_manage', 'Can manage elections'),
+            ("can_see", "Can see elections"),
+            ("can_nominate_other", "Can nominate another participant"),
+            ("can_nominate_self", "Can nominate oneself"),
+            ("can_manage", "Can manage elections"),
         )
-        ordering = ('title', )
-        verbose_name = ugettext_noop('Election')
+        ordering = ("title",)
+        verbose_name = ugettext_noop("Election")
 
     def __str__(self):
         return self.title
@@ -174,26 +165,25 @@ class Assignment(RESTModelMixin, models.Model):
         assignment projector element is disabled.
         """
         Projector.remove_any(
-            skip_autoupdate=skip_autoupdate,
-            name='assignments/assignment',
-            id=self.pk)
-        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)  # type: ignore # TODO fix typing
+            skip_autoupdate=skip_autoupdate, name="assignments/assignment", id=self.pk
+        )
+        return super().delete(  # type: ignore
+            skip_autoupdate=skip_autoupdate, *args, **kwargs
+        )
 
     @property
     def candidates(self):
         """
         Queryset that represents the candidates for the assignment.
         """
-        return self.related_users.filter(
-            assignmentrelateduser__elected=False)
+        return self.related_users.filter(assignmentrelateduser__elected=False)
 
     @property
     def elected(self):
         """
         Queryset that represents all elected users for the assignment.
         """
-        return self.related_users.filter(
-            assignmentrelateduser__elected=True)
+        return self.related_users.filter(assignmentrelateduser__elected=True)
 
     def is_candidate(self, user):
         """
@@ -215,22 +205,22 @@ class Assignment(RESTModelMixin, models.Model):
         """
         Adds the user as candidate.
         """
-        weight = self.assignment_related_users.aggregate(
-            models.Max('weight'))['weight__max'] or 0
-        defaults = {
-            'elected': False,
-            'weight': weight + 1}
+        weight = (
+            self.assignment_related_users.aggregate(models.Max("weight"))["weight__max"]
+            or 0
+        )
+        defaults = {"elected": False, "weight": weight + 1}
         related_user, __ = self.assignment_related_users.update_or_create(
-            user=user,
-            defaults=defaults)
+            user=user, defaults=defaults
+        )
 
     def set_elected(self, user):
         """
         Makes user an elected user for this assignment.
         """
         related_user, __ = self.assignment_related_users.update_or_create(
-            user=user,
-            defaults={'elected': True})
+            user=user, defaults={"elected": True}
+        )
 
     def delete_related_user(self, user):
         """
@@ -258,39 +248,43 @@ class Assignment(RESTModelMixin, models.Model):
         candidates = self.candidates.all()
 
         # Find out the method of the election
-        if config['assignments_poll_vote_values'] == 'votes':
-            pollmethod = 'votes'
-        elif config['assignments_poll_vote_values'] == 'yesnoabstain':
-            pollmethod = 'yna'
-        elif config['assignments_poll_vote_values'] == 'yesno':
-            pollmethod = 'yn'
+        if config["assignments_poll_vote_values"] == "votes":
+            pollmethod = "votes"
+        elif config["assignments_poll_vote_values"] == "yesnoabstain":
+            pollmethod = "yna"
+        elif config["assignments_poll_vote_values"] == "yesno":
+            pollmethod = "yn"
         else:
             # config['assignments_poll_vote_values'] == 'auto'
             # candidates <= available posts -> yes/no/abstain
             if len(candidates) <= (self.open_posts - self.elected.count()):
-                pollmethod = 'yna'
+                pollmethod = "yna"
             else:
-                pollmethod = 'votes'
+                pollmethod = "votes"
 
         # Create the poll with the candidates.
         poll = self.polls.create(
-            description=self.poll_description_default,
-            pollmethod=pollmethod)
+            description=self.poll_description_default, pollmethod=pollmethod
+        )
         options = []
-        related_users = AssignmentRelatedUser.objects.filter(assignment__id=self.id).exclude(elected=True)
+        related_users = AssignmentRelatedUser.objects.filter(
+            assignment__id=self.id
+        ).exclude(elected=True)
         for related_user in related_users:
-            options.append({
-                'candidate': related_user.user,
-                'weight': related_user.weight})
+            options.append(
+                {"candidate": related_user.user, "weight": related_user.weight}
+            )
         poll.set_options(options, skip_autoupdate=True)
         inform_changed_data(self)
 
         # Add all candidates to list of speakers of related agenda item
         # TODO: Try to do this in a bulk create
-        if config['assignments_add_candidates_to_list_of_speakers']:
+        if config["assignments_add_candidates_to_list_of_speakers"]:
             for candidate in self.candidates:
                 try:
-                    Speaker.objects.add(candidate, self.agenda_item, skip_autoupdate=True)
+                    Speaker.objects.add(
+                        candidate, self.agenda_item, skip_autoupdate=True
+                    )
                 except OpenSlidesError:
                     # The Speaker is already on the list. Do nothing.
                     # TODO: Find a smart way not to catch the error concerning AnonymousUser.
@@ -349,7 +343,7 @@ class Assignment(RESTModelMixin, models.Model):
         Return a title for the agenda with the appended assignment verbose name.
         Note: It has to be the same return value like in JavaScript.
         """
-        return '%s (%s)' % (self.get_agenda_title(), _(self._meta.verbose_name))
+        return "%s (%s)" % (self.get_agenda_title(), _(self._meta.verbose_name))
 
     @property
     def agenda_item(self):
@@ -370,9 +364,8 @@ class Assignment(RESTModelMixin, models.Model):
 
 class AssignmentVote(RESTModelMixin, BaseVote):
     option = models.ForeignKey(
-        'AssignmentOption',
-        on_delete=models.CASCADE,
-        related_name='votes')
+        "AssignmentOption", on_delete=models.CASCADE, related_name="votes"
+    )
 
     class Meta:
         default_permissions = ()
@@ -386,12 +379,9 @@ class AssignmentVote(RESTModelMixin, BaseVote):
 
 class AssignmentOption(RESTModelMixin, BaseOption):
     poll = models.ForeignKey(
-        'AssignmentPoll',
-        on_delete=models.CASCADE,
-        related_name='options')
-    candidate = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE)
+        "AssignmentPoll", on_delete=models.CASCADE, related_name="options"
+    )
+    candidate = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     weight = models.IntegerField(default=0)
 
     vote_class = AssignmentVote
@@ -411,26 +401,32 @@ class AssignmentOption(RESTModelMixin, BaseOption):
 
 # TODO: remove the type-ignoring in the next line, after this is solved:
 #       https://github.com/python/mypy/issues/3855
-class AssignmentPoll(RESTModelMixin, CollectDefaultVotesMixin,  # type: ignore
-                     PublishPollMixin, BasePoll):
+class AssignmentPoll(  # type: ignore
+    RESTModelMixin, CollectDefaultVotesMixin, PublishPollMixin, BasePoll
+):
     option_class = AssignmentOption
 
     assignment = models.ForeignKey(
-        Assignment,
-        on_delete=models.CASCADE,
-        related_name='polls')
-    pollmethod = models.CharField(
-        max_length=5,
-        default='yna')
-    description = models.CharField(
-        max_length=79,
-        blank=True)
+        Assignment, on_delete=models.CASCADE, related_name="polls"
+    )
+    pollmethod = models.CharField(max_length=5, default="yna")
+    description = models.CharField(max_length=79, blank=True)
 
-    votesabstain = models.DecimalField(null=True, blank=True, validators=[
-        MinValueValidator(Decimal('-2'))], max_digits=15, decimal_places=6)
+    votesabstain = models.DecimalField(
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(Decimal("-2"))],
+        max_digits=15,
+        decimal_places=6,
+    )
     """ General abstain votes, used for pollmethod 'votes' """
-    votesno = models.DecimalField(null=True, blank=True, validators=[
-        MinValueValidator(Decimal('-2'))], max_digits=15, decimal_places=6)
+    votesno = models.DecimalField(
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(Decimal("-2"))],
+        max_digits=15,
+        decimal_places=6,
+    )
     """ General no votes, used for pollmethod 'votes' """
 
     class Meta:
@@ -443,27 +439,30 @@ class AssignmentPoll(RESTModelMixin, CollectDefaultVotesMixin,  # type: ignore
         """
         Projector.remove_any(
             skip_autoupdate=skip_autoupdate,
-            name='assignments/assignment',
+            name="assignments/assignment",
             id=self.assignment.pk,
-            poll=self.pk)
-        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)  # type: ignore  # TODO: fix typing
+            poll=self.pk,
+        )
+        return super().delete(  # type: ignore
+            skip_autoupdate=skip_autoupdate, *args, **kwargs
+        )
 
     def get_assignment(self):
         return self.assignment
 
     def get_vote_values(self):
-        if self.pollmethod == 'yna':
-            return ['Yes', 'No', 'Abstain']
-        elif self.pollmethod == 'yn':
-            return ['Yes', 'No']
+        if self.pollmethod == "yna":
+            return ["Yes", "No", "Abstain"]
+        elif self.pollmethod == "yn":
+            return ["Yes", "No"]
         else:
-            return ['Votes']
+            return ["Votes"]
 
     def get_ballot(self):
         return self.assignment.polls.filter(id__lte=self.pk).count()
 
     def get_percent_base_choice(self):
-        return config['assignments_poll_100_percent_base']
+        return config["assignments_poll_100_percent_base"]
 
     def get_root_rest_element(self):
         """

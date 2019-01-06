@@ -7,23 +7,29 @@ from openslides.utils.test import TestCase
 
 class ListOfSpeakerModelTests(TestCase):
     def setUp(self):
-        self.item1 = Topic.objects.create(title='item1').agenda_item
-        self.item2 = Topic.objects.create(title='item2').agenda_item
-        self.speaker1 = User.objects.create(username='user1')
-        self.speaker2 = User.objects.create(username='user2')
+        self.item1 = Topic.objects.create(title="item1").agenda_item
+        self.item2 = Topic.objects.create(title="item2").agenda_item
+        self.speaker1 = User.objects.create(username="user1")
+        self.speaker2 = User.objects.create(username="user2")
 
     def test_append_speaker(self):
         # Append speaker1 to the list of item1
         speaker1_item1 = Speaker.objects.add(self.speaker1, self.item1)
-        self.assertTrue(Speaker.objects.filter(user=self.speaker1, item=self.item1).exists())
+        self.assertTrue(
+            Speaker.objects.filter(user=self.speaker1, item=self.item1).exists()
+        )
 
         # Append speaker1 to the list of item2
         speaker1_item2 = Speaker.objects.add(self.speaker1, self.item2)
-        self.assertTrue(Speaker.objects.filter(user=self.speaker1, item=self.item2).exists())
+        self.assertTrue(
+            Speaker.objects.filter(user=self.speaker1, item=self.item2).exists()
+        )
 
         # Append speaker2 to the list of item1
         speaker2_item1 = Speaker.objects.add(self.speaker2, self.item1)
-        self.assertTrue(Speaker.objects.filter(user=self.speaker2, item=self.item1).exists())
+        self.assertTrue(
+            Speaker.objects.filter(user=self.speaker2, item=self.item1).exists()
+        )
 
         # Try to append speaker 1 again to the list of item1
         with self.assertRaises(OpenSlidesError):
@@ -60,5 +66,7 @@ class ListOfSpeakerModelTests(TestCase):
         self.assertIsNone(speaker1_item1.end_time)
         self.assertIsNone(speaker2_item1.begin_time)
         speaker2_item1.begin_speech()
-        self.assertIsNotNone(Speaker.objects.get(user=self.speaker1, item=self.item1).end_time)
+        self.assertIsNotNone(
+            Speaker.objects.get(user=self.speaker1, item=self.item1).end_time
+        )
         self.assertIsNotNone(speaker2_item1.begin_time)

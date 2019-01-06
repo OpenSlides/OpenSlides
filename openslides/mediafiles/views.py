@@ -9,6 +9,7 @@ from .models import Mediafile
 
 # Viewsets for the REST API
 
+
 class MediafileViewSet(ModelViewSet):
     """
     API endpoint for mediafile objects.
@@ -16,6 +17,7 @@ class MediafileViewSet(ModelViewSet):
     There are the following views: metadata, list, retrieve, create,
     partial_update, update and destroy.
     """
+
     access_permissions = MediafileAccessPermissions()
     queryset = Mediafile.objects.all()
 
@@ -23,20 +25,24 @@ class MediafileViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('list', 'retrieve'):
+        if self.action in ("list", "retrieve"):
             result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action == 'metadata':
-            result = has_perm(self.request.user, 'mediafiles.can_see')
-        elif self.action == 'create':
-            result = (has_perm(self.request.user, 'mediafiles.can_see') and
-                      has_perm(self.request.user, 'mediafiles.can_upload'))
-        elif self.action in ('partial_update', 'update'):
-            result = (has_perm(self.request.user, 'mediafiles.can_see') and
-                      has_perm(self.request.user, 'mediafiles.can_upload') and
-                      has_perm(self.request.user, 'mediafiles.can_manage'))
-        elif self.action == 'destroy':
-            result = (has_perm(self.request.user, 'mediafiles.can_see') and
-                      has_perm(self.request.user, 'mediafiles.can_manage'))
+        elif self.action == "metadata":
+            result = has_perm(self.request.user, "mediafiles.can_see")
+        elif self.action == "create":
+            result = has_perm(self.request.user, "mediafiles.can_see") and has_perm(
+                self.request.user, "mediafiles.can_upload"
+            )
+        elif self.action in ("partial_update", "update"):
+            result = (
+                has_perm(self.request.user, "mediafiles.can_see")
+                and has_perm(self.request.user, "mediafiles.can_upload")
+                and has_perm(self.request.user, "mediafiles.can_manage")
+            )
+        elif self.action == "destroy":
+            result = has_perm(self.request.user, "mediafiles.can_see") and has_perm(
+                self.request.user, "mediafiles.can_manage"
+            )
         else:
             result = False
         return result
@@ -46,13 +52,15 @@ class MediafileViewSet(ModelViewSet):
         Customized view endpoint to upload a new file.
         """
         # Check permission to check if the uploader has to be changed.
-        uploader_id = self.request.data.get('uploader_id')
-        if (uploader_id and
-                not has_perm(request.user, 'mediafiles.can_manage') and
-                str(self.request.user.pk) != str(uploader_id)):
+        uploader_id = self.request.data.get("uploader_id")
+        if (
+            uploader_id
+            and not has_perm(request.user, "mediafiles.can_manage")
+            and str(self.request.user.pk) != str(uploader_id)
+        ):
             self.permission_denied(request)
-        if not self.request.data.get('mediafile'):
-            raise ValidationError({'detail': 'You forgot to provide a file.'})
+        if not self.request.data.get("mediafile"):
+            raise ValidationError({"detail": "You forgot to provide a file."})
         return super().create(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
@@ -77,9 +85,11 @@ def protected_serve(request, path, document_root=None, show_indexes=False):
     except Mediafile.DoesNotExist:
         return HttpResponseNotFound(content="Not found.")
 
-    can_see = has_perm(request.user, 'mediafiles.can_see')
+    can_see = has_perm(request.user, "mediafiles.can_see")
     is_special_file = mediafile.is_logo() or mediafile.is_font()
-    is_hidden_but_no_perms = mediafile.hidden and not has_perm(request.user, 'mediafiles.can_see_hidden')
+    is_hidden_but_no_perms = mediafile.hidden and not has_perm(
+        request.user, "mediafiles.can_see_hidden"
+    )
 
     if not is_special_file and (not can_see or is_hidden_but_no_perms):
         return HttpResponseForbidden(content="Forbidden.")

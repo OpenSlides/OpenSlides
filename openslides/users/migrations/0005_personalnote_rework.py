@@ -12,32 +12,34 @@ import openslides.utils.models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0004_personalnote'),
-    ]
+    dependencies = [("users", "0004_personalnote")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='personalnote',
-            name='content_type',
-        ),
-        migrations.RemoveField(
-            model_name='personalnote',
-            name='user',
-        ),
-        migrations.DeleteModel(
-            name='PersonalNote',
-        ),
+        migrations.RemoveField(model_name="personalnote", name="content_type"),
+        migrations.RemoveField(model_name="personalnote", name="user"),
+        migrations.DeleteModel(name="PersonalNote"),
         migrations.CreateModel(
-            name='PersonalNote',
+            name="PersonalNote",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('notes', jsonfield.fields.JSONField()),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("notes", jsonfield.fields.JSONField()),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
-            options={
-                'default_permissions': (),
-            },
+            options={"default_permissions": ()},
             bases=(openslides.utils.models.RESTModelMixin, models.Model),
         ),
     ]

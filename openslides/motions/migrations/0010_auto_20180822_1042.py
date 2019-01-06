@@ -8,49 +8,51 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('motions', '0009_motionversion_modified_final_version'),
-    ]
+    dependencies = [("motions", "0009_motionversion_modified_final_version")]
 
     operations = [
         migrations.AlterField(
-            model_name='motionpoll',
-            name='votescast',
+            model_name="motionpoll",
+            name="votescast",
             field=models.DecimalField(
                 blank=True,
                 decimal_places=6,
                 max_digits=15,
                 null=True,
-                validators=[django.core.validators.MinValueValidator(Decimal('-2'))]),
+                validators=[django.core.validators.MinValueValidator(Decimal("-2"))],
+            ),
         ),
         migrations.AlterField(
-            model_name='motionpoll',
-            name='votesinvalid',
+            model_name="motionpoll",
+            name="votesinvalid",
             field=models.DecimalField(
                 blank=True,
                 decimal_places=6,
                 max_digits=15,
                 null=True,
-                validators=[django.core.validators.MinValueValidator(Decimal('-2'))]),
+                validators=[django.core.validators.MinValueValidator(Decimal("-2"))],
+            ),
         ),
         migrations.AlterField(
-            model_name='motionpoll',
-            name='votesvalid',
+            model_name="motionpoll",
+            name="votesvalid",
             field=models.DecimalField(
                 blank=True,
                 decimal_places=6,
                 max_digits=15,
                 null=True,
-                validators=[django.core.validators.MinValueValidator(Decimal('-2'))]),
+                validators=[django.core.validators.MinValueValidator(Decimal("-2"))],
+            ),
         ),
         migrations.AlterField(
-            model_name='motionvote',
-            name='weight',
+            model_name="motionvote",
+            name="weight",
             field=models.DecimalField(
                 decimal_places=6,
-                default=Decimal('1'),
+                default=Decimal("1"),
                 max_digits=15,
                 null=True,
-                validators=[django.core.validators.MinValueValidator(Decimal('-2'))]),
+                validators=[django.core.validators.MinValueValidator(Decimal("-2"))],
+            ),
         ),
     ]

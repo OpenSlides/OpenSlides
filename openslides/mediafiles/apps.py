@@ -6,8 +6,8 @@ from ..utils.projector import register_projector_elements
 
 
 class MediafilesAppConfig(AppConfig):
-    name = 'openslides.mediafiles'
-    verbose_name = 'OpenSlides Mediafiles'
+    name = "openslides.mediafiles"
+    verbose_name = "OpenSlides Mediafiles"
     angular_site_module = True
     angular_projector_module = True
 
@@ -27,20 +27,25 @@ class MediafilesAppConfig(AppConfig):
         # Connect signals.
         permission_change.connect(
             get_permission_change_data,
-            dispatch_uid='mediafiles_get_permission_change_data')
+            dispatch_uid="mediafiles_get_permission_change_data",
+        )
 
         # Register viewsets.
-        router.register(self.get_model('Mediafile').get_collection_string(), MediafileViewSet)
+        router.register(
+            self.get_model("Mediafile").get_collection_string(), MediafileViewSet
+        )
 
         # register required_users
-        required_user.add_collection_string(self.get_model('Mediafile').get_collection_string(), required_users)
+        required_user.add_collection_string(
+            self.get_model("Mediafile").get_collection_string(), required_users
+        )
 
     def get_startup_elements(self):
         """
         Yields all Cachables required on startup i. e. opening the websocket
         connection.
         """
-        yield self.get_model('Mediafile')
+        yield self.get_model("Mediafile")
 
 
 def required_users(element: Dict[str, Any]) -> Set[int]:
@@ -49,4 +54,4 @@ def required_users(element: Dict[str, Any]) -> Set[int]:
     if request_user can see mediafiles. This function may return an empty
     set.
     """
-    return set(element['uploader_id'])
+    return set(element["uploader_id"])

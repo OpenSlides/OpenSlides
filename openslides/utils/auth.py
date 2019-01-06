@@ -15,8 +15,8 @@ GROUP_DEFAULT_PK = 1  # This is the hard coded pk for the default group.
 GROUP_ADMIN_PK = 2  # This is the hard coded pk for the admin group.
 
 # Hard coded collection string for users and groups
-group_collection_string = 'users/group'
-user_collection_string = 'users/user'
+group_collection_string = "users/group"
+user_collection_string = "users/user"
 
 
 def get_group_model() -> Model:
@@ -26,10 +26,13 @@ def get_group_model() -> Model:
     try:
         return apps.get_model(settings.AUTH_GROUP_MODEL, require_ready=False)
     except ValueError:
-        raise ImproperlyConfigured("AUTH_GROUP_MODEL must be of the form 'app_label.model_name'")
+        raise ImproperlyConfigured(
+            "AUTH_GROUP_MODEL must be of the form 'app_label.model_name'"
+        )
     except LookupError:
         raise ImproperlyConfigured(
-            "AUTH_GROUP_MODEL refers to model '%s' that has not been installed" % settings.AUTH_GROUP_MODEL
+            "AUTH_GROUP_MODEL refers to model '%s' that has not been installed"
+            % settings.AUTH_GROUP_MODEL
         )
 
 
@@ -55,27 +58,35 @@ async def async_has_perm(user_id: int, perm: str) -> bool:
         has_perm = False
     elif not user_id:
         # Use the permissions from the default group.
-        default_group = await element_cache.get_element_full_data(group_collection_string, GROUP_DEFAULT_PK)
+        default_group = await element_cache.get_element_full_data(
+            group_collection_string, GROUP_DEFAULT_PK
+        )
         if default_group is None:
-            raise RuntimeError('Default Group does not exist.')
-        has_perm = perm in default_group['permissions']
+            raise RuntimeError("Default Group does not exist.")
+        has_perm = perm in default_group["permissions"]
     else:
-        user_data = await element_cache.get_element_full_data(user_collection_string, user_id)
+        user_data = await element_cache.get_element_full_data(
+            user_collection_string, user_id
+        )
         if user_data is None:
-            raise RuntimeError('User with id {} does not exist.'.format(user_id))
-        if GROUP_ADMIN_PK in user_data['groups_id']:
+            raise RuntimeError("User with id {} does not exist.".format(user_id))
+        if GROUP_ADMIN_PK in user_data["groups_id"]:
             # User in admin group (pk 2) grants all permissions.
             has_perm = True
         else:
             # Get all groups of the user and then see, if one group has the required
             # permission. If the user has no groups, then use the default group.
-            group_ids = user_data['groups_id'] or [GROUP_DEFAULT_PK]
+            group_ids = user_data["groups_id"] or [GROUP_DEFAULT_PK]
             for group_id in group_ids:
-                group = await element_cache.get_element_full_data(group_collection_string, group_id)
+                group = await element_cache.get_element_full_data(
+                    group_collection_string, group_id
+                )
                 if group is None:
-                    raise RuntimeError('User is in non existing group with id {}.'.format(group_id))
+                    raise RuntimeError(
+                        "User is in non existing group with id {}.".format(group_id)
+                    )
 
-                if perm in group['permissions']:
+                if perm in group["permissions"]:
                     has_perm = True
                     break
             else:
@@ -119,16 +130,18 @@ async def async_in_some_groups(user_id: int, groups: List[int]) -> bool:
         # Use the permissions from the default group.
         in_some_groups = GROUP_DEFAULT_PK in groups
     else:
-        user_data = await element_cache.get_element_full_data(user_collection_string, user_id)
+        user_data = await element_cache.get_element_full_data(
+            user_collection_string, user_id
+        )
         if user_data is None:
-            raise RuntimeError('User with id {} does not exist.'.format(user_id))
-        if GROUP_ADMIN_PK in user_data['groups_id']:
+            raise RuntimeError("User with id {} does not exist.".format(user_id))
+        if GROUP_ADMIN_PK in user_data["groups_id"]:
             # User in admin group (pk 2) grants all permissions.
             in_some_groups = True
         else:
             # Get all groups of the user and then see, if one group has the required
             # permission. If the user has no groups, then use the default group.
-            group_ids = user_data['groups_id'] or [GROUP_DEFAULT_PK]
+            group_ids = user_data["groups_id"] or [GROUP_DEFAULT_PK]
             for group_id in group_ids:
                 if group_id in groups:
                     in_some_groups = True
@@ -143,7 +156,8 @@ def anonymous_is_enabled() -> bool:
     Returns True if the anonymous user is enabled in the settings.
     """
     from ..core.config import config
-    return config['general_system_enable_anonymous']
+
+    return config["general_system_enable_anonymous"]
 
 
 async def async_anonymous_is_enabled() -> bool:
@@ -151,11 +165,15 @@ async def async_anonymous_is_enabled() -> bool:
     Like anonymous_is_enabled but async.
     """
     from ..core.config import config
+
     if config.key_to_id is None:
         await config.build_key_to_id()
         config.key_to_id = cast(Dict[str, int], config.key_to_id)
-    element = await element_cache.get_element_full_data(config.get_collection_string(), config.key_to_id['general_system_enable_anonymous'])
-    return False if element is None else element['value']
+    element = await element_cache.get_element_full_data(
+        config.get_collection_string(),
+        config.key_to_id["general_system_enable_anonymous"],
+    )
+    return False if element is None else element["value"]
 
 
 AnyUser = Union[Model, int, AnonymousUser, None]
@@ -187,5 +205,6 @@ def user_to_user_id(user: AnyUser) -> int:
         user_id = user.pk
     else:
         raise TypeError(
-            "Unsupported type for user. User {} has type {}.".format(user, type(user)))
+            "Unsupported type for user. User {} has type {}.".format(user, type(user))
+        )
     return user_id

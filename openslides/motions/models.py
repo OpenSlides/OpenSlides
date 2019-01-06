@@ -40,6 +40,7 @@ class StatuteParagraph(RESTModelMixin, models.Model):
     """
     Model for parts of the statute
     """
+
     access_permissions = StatuteParagraphAccessPermissions()
 
     title = models.CharField(max_length=255)
@@ -55,7 +56,7 @@ class StatuteParagraph(RESTModelMixin, models.Model):
 
     class Meta:
         default_permissions = ()
-        ordering = ['weight', 'title']
+        ordering = ["weight", "title"]
 
     def __str__(self):
         return self.title
@@ -65,25 +66,29 @@ class MotionManager(models.Manager):
     """
     Customized model manager to support our get_full_queryset method.
     """
+
     def get_full_queryset(self):
         """
         Returns the normal queryset with all motions. In the background we
         join and prefetch all related models.
         """
-        return (self.get_queryset()
-                .select_related('state')
-                .prefetch_related(
-                    'state__workflow',
-                    'comments',
-                    'comments__section',
-                    'comments__section__read_groups',
-                    'agenda_items',
-                    'log_messages',
-                    'polls',
-                    'attachments',
-                    'tags',
-                    'submitters',
-                    'supporters'))
+        return (
+            self.get_queryset()
+            .select_related("state")
+            .prefetch_related(
+                "state__workflow",
+                "comments",
+                "comments__section",
+                "comments__section__read_groups",
+                "agenda_items",
+                "log_messages",
+                "polls",
+                "attachments",
+                "tags",
+                "submitters",
+                "supporters",
+            )
+        )
 
 
 class Motion(RESTModelMixin, models.Model):
@@ -92,8 +97,9 @@ class Motion(RESTModelMixin, models.Model):
 
     This class is the main entry point to all other classes related to a motion.
     """
+
     access_permissions = MotionAccessPermissions()
-    can_see_permission = 'motions.can_see'
+    can_see_permission = "motions.can_see"
 
     objects = MotionManager()
 
@@ -119,10 +125,11 @@ class Motion(RESTModelMixin, models.Model):
     """The reason for a motion."""
 
     state = models.ForeignKey(
-        'State',
-        related_name='+',
+        "State",
+        related_name="+",
         on_delete=models.PROTECT,  # Do not let the user delete states, that are used for motions
-        null=True)  # TODO: Check whether null=True is necessary.
+        null=True,
+    )  # TODO: Check whether null=True is necessary.
     """
     The related state object.
 
@@ -135,10 +142,8 @@ class Motion(RESTModelMixin, models.Model):
     """
 
     recommendation = models.ForeignKey(
-        'State',
-        related_name='+',
-        on_delete=models.SET_NULL,
-        null=True)
+        "State", related_name="+", on_delete=models.SET_NULL, null=True
+    )
     """
     The recommendation of a person or committee for this motion.
     """
@@ -148,8 +153,7 @@ class Motion(RESTModelMixin, models.Model):
     A text field fo additional information about the recommendation.
     """
 
-    identifier = models.CharField(max_length=255, null=True, blank=True,
-                                  unique=True)
+    identifier = models.CharField(max_length=255, null=True, blank=True, unique=True)
     """
     A string as human readable identifier for the motion.
     """
@@ -167,29 +171,26 @@ class Motion(RESTModelMixin, models.Model):
     """
 
     sort_parent = models.ForeignKey(
-        'self',
+        "self",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='children')
+        related_name="children",
+    )
     """
     A parent field for multi-depth sorting of motions.
     """
 
     category = models.ForeignKey(
-        'Category',
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True)
+        "Category", on_delete=models.SET_NULL, null=True, blank=True
+    )
     """
     ForeignKey to one category of motions.
     """
 
     motion_block = models.ForeignKey(
-        'MotionBlock',
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True)
+        "MotionBlock", on_delete=models.SET_NULL, null=True, blank=True
+    )
     """
     ForeignKey to one block of motions.
     """
@@ -206,11 +207,12 @@ class Motion(RESTModelMixin, models.Model):
     """
 
     parent = models.ForeignKey(
-        'self',
+        "self",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='amendments')
+        related_name="amendments",
+    )
     """
     Field for amendments to reference to the motion that should be altered.
 
@@ -222,7 +224,8 @@ class Motion(RESTModelMixin, models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='motions')
+        related_name="motions",
+    )
     """
     Field to reference to a statute paragraph if this motion is a
     statute-amendment.
@@ -235,26 +238,28 @@ class Motion(RESTModelMixin, models.Model):
     Tags to categorise motions.
     """
 
-    supporters = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='motion_supporters', blank=True)
+    supporters = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name="motion_supporters", blank=True
+    )
     """
     Users who support this motion.
     """
 
     # In theory there could be one then more agenda_item. But we support only
     # one. See the property agenda_item.
-    agenda_items = GenericRelation(Item, related_name='motions')
+    agenda_items = GenericRelation(Item, related_name="motions")
 
     class Meta:
         default_permissions = ()
         permissions = (
-            ('can_see', 'Can see motions'),
-            ('can_create', 'Can create motions'),
-            ('can_support', 'Can support motions'),
-            ('can_manage_metadata', 'Can manage motion metadata'),
-            ('can_manage', 'Can manage motions'),
+            ("can_see", "Can see motions"),
+            ("can_create", "Can create motions"),
+            ("can_support", "Can support motions"),
+            ("can_manage_metadata", "Can manage motion metadata"),
+            ("can_manage", "Can manage motions"),
         )
-        ordering = ('identifier', )
-        verbose_name = ugettext_noop('Motion')
+        ordering = ("identifier",)
+        verbose_name = ugettext_noop("Motion")
 
     def __str__(self):
         """
@@ -284,14 +289,15 @@ class Motion(RESTModelMixin, models.Model):
             try:
                 # Always skip autoupdate. Maybe we run it later in this method.
                 with transaction.atomic():
-                    super(Motion, self).save(skip_autoupdate=True, *args, **kwargs)  # type: ignore
+                    super(Motion, self).save(  # type: ignore
+                        skip_autoupdate=True, *args, **kwargs
+                    )
             except IntegrityError:
                 # Identifier is already used.
-                if hasattr(self, '_identifier_prefix'):
+                if hasattr(self, "_identifier_prefix"):
                     # Calculate a new one and try again.
                     self.identifier_number, self.identifier = self.increment_identifier_number(
-                        self.identifier_number,
-                        self._identifier_prefix,
+                        self.identifier_number, self._identifier_prefix
                     )
                 else:
                     # Do not calculate a new one but reraise the IntegrityError.
@@ -310,10 +316,11 @@ class Motion(RESTModelMixin, models.Model):
         motion projector element is disabled.
         """
         Projector.remove_any(
-            skip_autoupdate=skip_autoupdate,
-            name='motions/motion',
-            id=self.pk)
-        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)  # type: ignore
+            skip_autoupdate=skip_autoupdate, name="motions/motion", id=self.pk
+        )
+        return super().delete(  # type: ignore
+            skip_autoupdate=skip_autoupdate, *args, **kwargs
+        )
 
     def set_identifier(self):
         """
@@ -321,27 +328,36 @@ class Motion(RESTModelMixin, models.Model):
         it is not set yet.
         """
         # The identifier is already set or should be set manually.
-        if config['motions_identifier'] == 'manually' or self.identifier:
+        if config["motions_identifier"] == "manually" or self.identifier:
             # Do not set an identifier.
             return
 
         # If MOTION_IDENTIFIER_WITHOUT_BLANKS is set, don't use blanks when building identifier.
-        without_blank = hasattr(settings, 'MOTION_IDENTIFIER_WITHOUT_BLANKS') and settings.MOTION_IDENTIFIER_WITHOUT_BLANKS
+        without_blank = (
+            hasattr(settings, "MOTION_IDENTIFIER_WITHOUT_BLANKS")
+            and settings.MOTION_IDENTIFIER_WITHOUT_BLANKS
+        )
 
         # Build prefix.
         if self.is_amendment():
-            parent_identifier = self.parent.identifier or ''
+            parent_identifier = self.parent.identifier or ""
             if without_blank:
-                prefix = '%s%s' % (parent_identifier, config['motions_amendments_prefix'])
+                prefix = "%s%s" % (
+                    parent_identifier,
+                    config["motions_amendments_prefix"],
+                )
             else:
-                prefix = '%s %s ' % (parent_identifier, config['motions_amendments_prefix'])
+                prefix = "%s %s " % (
+                    parent_identifier,
+                    config["motions_amendments_prefix"],
+                )
         elif self.category is None or not self.category.prefix:
-            prefix = ''
+            prefix = ""
         else:
             if without_blank:
-                prefix = '%s' % self.category.prefix
+                prefix = "%s" % self.category.prefix
             else:
-                prefix = '%s ' % self.category.prefix
+                prefix = "%s " % self.category.prefix
         self._identifier_prefix = prefix
 
         # Use the already assigned identifier_number, if the motion has one.
@@ -354,20 +370,22 @@ class Motion(RESTModelMixin, models.Model):
             if self.is_amendment():
                 motions = self.parent.amendments.all()
             # The motions should be counted per category.
-            elif config['motions_identifier'] == 'per_category':
+            elif config["motions_identifier"] == "per_category":
                 motions = Motion.objects.filter(category=self.category)
             # The motions should be counted over all.
             else:
                 motions = Motion.objects.all()
 
-            number = motions.aggregate(Max('identifier_number'))['identifier_number__max'] or 0
+            number = (
+                motions.aggregate(Max("identifier_number"))["identifier_number__max"]
+                or 0
+            )
             initial_increment = True
 
         # Calculate new identifier.
         number, identifier = self.increment_identifier_number(
-            number,
-            prefix,
-            initial_increment=initial_increment)
+            number, prefix, initial_increment=initial_increment
+        )
 
         # Set identifier and identifier_number.
         self.identifier = identifier
@@ -380,10 +398,10 @@ class Motion(RESTModelMixin, models.Model):
         """
         if initial_increment:
             number += 1
-        identifier = '%s%s' % (prefix, self.extend_identifier_number(number))
+        identifier = "%s%s" % (prefix, self.extend_identifier_number(number))
         while Motion.objects.filter(identifier=identifier).exists():
             number += 1
-            identifier = '%s%s' % (prefix, self.extend_identifier_number(number))
+            identifier = "%s%s" % (prefix, self.extend_identifier_number(number))
         return number, identifier
 
     def extend_identifier_number(self, number):
@@ -393,10 +411,18 @@ class Motion(RESTModelMixin, models.Model):
         MOTION_IDENTIFIER_MIN_DIGITS.
         """
         result = str(number)
-        if hasattr(settings, 'MOTION_IDENTIFIER_MIN_DIGITS') and settings.MOTION_IDENTIFIER_MIN_DIGITS:
+        if (
+            hasattr(settings, "MOTION_IDENTIFIER_MIN_DIGITS")
+            and settings.MOTION_IDENTIFIER_MIN_DIGITS
+        ):
             if not isinstance(settings.MOTION_IDENTIFIER_MIN_DIGITS, int):
-                raise ImproperlyConfigured('Settings value MOTION_IDENTIFIER_MIN_DIGITS must be an integer.')
-            result = '0' * (settings.MOTION_IDENTIFIER_MIN_DIGITS - len(str(number))) + result
+                raise ImproperlyConfigured(
+                    "Settings value MOTION_IDENTIFIER_MIN_DIGITS must be an integer."
+                )
+            result = (
+                "0" * (settings.MOTION_IDENTIFIER_MIN_DIGITS - len(str(number)))
+                + result
+            )
         return result
 
     def is_submitter(self, user):
@@ -423,7 +449,9 @@ class Motion(RESTModelMixin, models.Model):
             poll.set_options(skip_autoupdate=skip_autoupdate)
             return poll
         else:
-            raise WorkflowError('You can not create a poll in state %s.' % self.state.name)
+            raise WorkflowError(
+                "You can not create a poll in state %s." % self.state.name
+            )
 
     @property
     def workflow_id(self):
@@ -464,8 +492,10 @@ class Motion(RESTModelMixin, models.Model):
         elif self.state:
             new_state = self.state.workflow.first_state
         else:
-            new_state = (Workflow.objects.get(pk=config['motions_workflow']).first_state or
-                         Workflow.objects.get(pk=config['motions_workflow']).states.all()[0])
+            new_state = (
+                Workflow.objects.get(pk=config["motions_workflow"]).first_state
+                or Workflow.objects.get(pk=config["motions_workflow"]).states.all()[0]
+            )
         self.set_state(new_state)
 
     def set_recommendation(self, recommendation):
@@ -499,7 +529,7 @@ class Motion(RESTModelMixin, models.Model):
         Note: It has to be the same return value like in JavaScript.
         """
         if self.identifier:
-            title = '%s %s' % (_(self._meta.verbose_name), self.identifier)
+            title = "%s %s" % (_(self._meta.verbose_name), self.identifier)
         else:
             title = self.title
         return title
@@ -512,9 +542,9 @@ class Motion(RESTModelMixin, models.Model):
         Note: It has to be the same return value like in JavaScript.
         """
         if self.identifier:
-            title = '%s %s' % (_(self._meta.verbose_name), self.identifier)
+            title = "%s %s" % (_(self._meta.verbose_name), self.identifier)
         else:
-            title = '%s (%s)' % (self.title, _(self._meta.verbose_name))
+            title = "%s (%s)" % (self.title, _(self._meta.verbose_name))
         return title
 
     @property
@@ -552,7 +582,7 @@ class Motion(RESTModelMixin, models.Model):
         A motion is a amendment if amendments are activated in the config and
         the motion has a parent.
         """
-        return config['motions_amendments_enabled'] and self.parent is not None
+        return config["motions_amendments_enabled"] and self.parent is not None
 
     def is_paragraph_based_amendment(self):
         """
@@ -574,7 +604,12 @@ class Motion(RESTModelMixin, models.Model):
         """
         Returns a list of all paragraph-based amendments to this motion
         """
-        return list(filter(lambda amend: amend.is_paragraph_based_amendment(), self.amendments.all()))
+        return list(
+            filter(
+                lambda amend: amend.is_paragraph_based_amendment(),
+                self.amendments.all(),
+            )
+        )
 
 
 class MotionCommentSection(RESTModelMixin, models.Model):
@@ -582,6 +617,7 @@ class MotionCommentSection(RESTModelMixin, models.Model):
     The model for comment sections for motions. Each comment is related to one section, so
     each motions has the ability to have comments from the same section.
     """
+
     access_permissions = MotionCommentSectionAccessPermissions()
 
     name = models.CharField(max_length=255)
@@ -590,17 +626,15 @@ class MotionCommentSection(RESTModelMixin, models.Model):
     """
 
     read_groups = models.ManyToManyField(
-        settings.AUTH_GROUP_MODEL,
-        blank=True,
-        related_name='read_comments')
+        settings.AUTH_GROUP_MODEL, blank=True, related_name="read_comments"
+    )
     """
     These groups have read-access to the section.
     """
 
     write_groups = models.ManyToManyField(
-        settings.AUTH_GROUP_MODEL,
-        blank=True,
-        related_name='write_comments')
+        settings.AUTH_GROUP_MODEL, blank=True, related_name="write_comments"
+    )
     """
     These groups have write-access to the section.
     """
@@ -621,24 +655,22 @@ class MotionComment(RESTModelMixin, models.Model):
     """
 
     motion = models.ForeignKey(
-        Motion,
-        on_delete=models.CASCADE,
-        related_name='comments')
+        Motion, on_delete=models.CASCADE, related_name="comments"
+    )
     """
     The motion where this comment belongs to.
     """
 
     section = models.ForeignKey(
-        MotionCommentSection,
-        on_delete=models.PROTECT,
-        related_name='comments')
+        MotionCommentSection, on_delete=models.PROTECT, related_name="comments"
+    )
     """
     The section of the comment.
     """
 
     class Meta:
         default_permissions = ()
-        unique_together = ('motion', 'section')
+        unique_together = ("motion", "section")
 
     def get_root_rest_element(self):
         """
@@ -651,6 +683,7 @@ class SubmitterManager(models.Manager):
     """
     Manager for Submitter model. Provides a customized add method.
     """
+
     def add(self, user, motion, skip_autoupdate=False):
         """
         Customized manager method to prevent anonymous users to be a
@@ -658,13 +691,13 @@ class SubmitterManager(models.Manager):
         for the initial sorting of the submitters.
         """
         if self.filter(user=user, motion=motion).exists():
-            raise OpenSlidesError(
-                _('{user} is already a submitter.').format(user=user))
+            raise OpenSlidesError(_("{user} is already a submitter.").format(user=user))
         if isinstance(user, AnonymousUser):
-            raise OpenSlidesError(
-                _('An anonymous user can not be a submitter.'))
-        weight = (self.filter(motion=motion).aggregate(
-            models.Max('weight'))['weight__max'] or 0)
+            raise OpenSlidesError(_("An anonymous user can not be a submitter."))
+        weight = (
+            self.filter(motion=motion).aggregate(models.Max("weight"))["weight__max"]
+            or 0
+        )
         submitter = self.model(user=user, motion=motion, weight=weight + 1)
         submitter.save(force_insert=True, skip_autoupdate=skip_autoupdate)
         return submitter
@@ -680,17 +713,14 @@ class Submitter(RESTModelMixin, models.Model):
     Use custom Manager.
     """
 
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     """
     ForeignKey to the user who is the submitter.
     """
 
     motion = models.ForeignKey(
-        Motion,
-        on_delete=models.CASCADE,
-        related_name='submitters')
+        Motion, on_delete=models.CASCADE, related_name="submitters"
+    )
     """
     ForeignKey to the motion.
     """
@@ -714,6 +744,7 @@ class MotionChangeRecommendationManager(models.Manager):
     """
     Customized model manager to support our get_full_queryset method.
     """
+
     def get_full_queryset(self):
         """
         Returns the normal queryset with all change recommendations. In the background we
@@ -732,9 +763,8 @@ class MotionChangeRecommendation(RESTModelMixin, models.Model):
     objects = MotionChangeRecommendationManager()
 
     motion = models.ForeignKey(
-        Motion,
-        on_delete=models.CASCADE,
-        related_name='change_recommendations')
+        Motion, on_delete=models.CASCADE, related_name="change_recommendations"
+    )
     """The motion to which the change recommendation belongs."""
 
     rejected = models.BooleanField(default=False)
@@ -759,9 +789,8 @@ class MotionChangeRecommendation(RESTModelMixin, models.Model):
     """The replacement for the section of the original text specified by motion, line_from and line_to"""
 
     author = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        null=True)
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
+    )
     """A user object, who created this change recommendation. Optional."""
 
     creation_time = models.DateTimeField(auto_now=True)
@@ -769,20 +798,27 @@ class MotionChangeRecommendation(RESTModelMixin, models.Model):
 
     def collides_with_other_recommendation(self, recommendations):
         for recommendation in recommendations:
-            if (not (self.line_from < recommendation.line_from and self.line_to <= recommendation.line_from) and
-                    not (self.line_from >= recommendation.line_to and self.line_to > recommendation.line_to)):
+            if not (
+                self.line_from < recommendation.line_from
+                and self.line_to <= recommendation.line_from
+            ) and not (
+                self.line_from >= recommendation.line_to
+                and self.line_to > recommendation.line_to
+            ):
                 return True
 
         return False
 
     def save(self, *args, **kwargs):
-        recommendations = (MotionChangeRecommendation.objects
-                           .filter(motion=self.motion)
-                           .exclude(pk=self.pk))
+        recommendations = MotionChangeRecommendation.objects.filter(
+            motion=self.motion
+        ).exclude(pk=self.pk)
 
         if self.collides_with_other_recommendation(recommendations):
-            raise ValidationError('The recommendation collides with an existing one (line %s - %s).' %
-                                  (self.line_from, self.line_to))
+            raise ValidationError(
+                "The recommendation collides with an existing one (line %s - %s)."
+                % (self.line_from, self.line_to)
+            )
 
         return super().save(*args, **kwargs)
 
@@ -791,13 +827,18 @@ class MotionChangeRecommendation(RESTModelMixin, models.Model):
 
     def __str__(self):
         """Return a string, representing this object."""
-        return "Recommendation for Motion %s, line %s - %s" % (self.motion_id, self.line_from, self.line_to)
+        return "Recommendation for Motion %s, line %s - %s" % (
+            self.motion_id,
+            self.line_from,
+            self.line_to,
+        )
 
 
 class Category(RESTModelMixin, models.Model):
     """
     Model for categories of motions.
     """
+
     access_permissions = CategoryAccessPermissions()
 
     name = models.CharField(max_length=255)
@@ -811,7 +852,7 @@ class Category(RESTModelMixin, models.Model):
 
     class Meta:
         default_permissions = ()
-        ordering = ['prefix']
+        ordering = ["prefix"]
 
     def __str__(self):
         return self.name
@@ -821,18 +862,20 @@ class MotionBlockManager(models.Manager):
     """
     Customized model manager to support our get_full_queryset method.
     """
+
     def get_full_queryset(self):
         """
         Returns the normal queryset with all motion blocks. In the
         background the related agenda item is prefetched from the database.
         """
-        return self.get_queryset().prefetch_related('agenda_items')
+        return self.get_queryset().prefetch_related("agenda_items")
 
 
 class MotionBlock(RESTModelMixin, models.Model):
     """
     Model for blocks of motions.
     """
+
     access_permissions = MotionBlockAccessPermissions()
 
     objects = MotionBlockManager()
@@ -841,10 +884,10 @@ class MotionBlock(RESTModelMixin, models.Model):
 
     # In theory there could be one then more agenda_item. But we support only
     # one. See the property agenda_item.
-    agenda_items = GenericRelation(Item, related_name='topics')
+    agenda_items = GenericRelation(Item, related_name="topics")
 
     class Meta:
-        verbose_name = ugettext_noop('Motion block')
+        verbose_name = ugettext_noop("Motion block")
         default_permissions = ()
 
     def __str__(self):
@@ -856,10 +899,11 @@ class MotionBlock(RESTModelMixin, models.Model):
         motion block projector element is disabled.
         """
         Projector.remove_any(
-            skip_autoupdate=skip_autoupdate,
-            name='motions/motion-block',
-            id=self.pk)
-        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)  # type: ignore
+            skip_autoupdate=skip_autoupdate, name="motions/motion-block", id=self.pk
+        )
+        return super().delete(  # type: ignore
+            skip_autoupdate=skip_autoupdate, *args, **kwargs
+        )
 
     """
     Container for runtime information for agenda app (on create or update of this instance).
@@ -886,16 +930,15 @@ class MotionBlock(RESTModelMixin, models.Model):
         return self.title
 
     def get_agenda_title_with_type(self):
-        return '%s (%s)' % (self.get_agenda_title(), _(self._meta.verbose_name))
+        return "%s (%s)" % (self.get_agenda_title(), _(self._meta.verbose_name))
 
 
 class MotionLog(RESTModelMixin, models.Model):
     """Save a logmessage for a motion."""
 
     motion = models.ForeignKey(
-        Motion,
-        on_delete=models.CASCADE,
-        related_name='log_messages')
+        Motion, on_delete=models.CASCADE, related_name="log_messages"
+    )
     """The motion to witch the object belongs."""
 
     message_list = JSONField()
@@ -904,9 +947,8 @@ class MotionLog(RESTModelMixin, models.Model):
     """
 
     person = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        null=True)
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
+    )
     """A user object, who created the log message. Optional."""
 
     time = models.DateTimeField(auto_now=True)
@@ -914,18 +956,20 @@ class MotionLog(RESTModelMixin, models.Model):
 
     class Meta:
         default_permissions = ()
-        ordering = ['-time']
+        ordering = ["-time"]
 
     def __str__(self):
         """
         Return a string, representing the log message.
         """
         localtime = timezone.localtime(self.time)
-        time = formats.date_format(localtime, 'DATETIME_FORMAT')
-        time_and_messages = '%s ' % time + ''.join(map(_, self.message_list))
+        time = formats.date_format(localtime, "DATETIME_FORMAT")
+        time_and_messages = "%s " % time + "".join(map(_, self.message_list))
         if self.person is not None:
-            return _('%(time_and_messages)s by %(person)s') % {'time_and_messages': time_and_messages,
-                                                               'person': self.person}
+            return _("%(time_and_messages)s by %(person)s") % {
+                "time_and_messages": time_and_messages,
+                "person": self.person,
+            }
         return time_and_messages
 
     def get_root_rest_element(self):
@@ -941,9 +985,7 @@ class MotionVote(RESTModelMixin, BaseVote):
     There should allways be three MotionVote objects for each poll,
     one for 'yes', 'no', and 'abstain'."""
 
-    option = models.ForeignKey(
-        'MotionOption',
-        on_delete=models.CASCADE)
+    option = models.ForeignKey("MotionOption", on_delete=models.CASCADE)
     """The option object, to witch the vote belongs."""
 
     class Meta:
@@ -961,9 +1003,7 @@ class MotionOption(RESTModelMixin, BaseOption):
 
     There should be one MotionOption object for each poll."""
 
-    poll = models.ForeignKey(
-        'MotionPoll',
-        on_delete=models.CASCADE)
+    poll = models.ForeignKey("MotionPoll", on_delete=models.CASCADE)
     """The poll object, to witch the object belongs."""
 
     vote_class = MotionVote
@@ -984,16 +1024,13 @@ class MotionOption(RESTModelMixin, BaseOption):
 class MotionPoll(RESTModelMixin, CollectDefaultVotesMixin, BasePoll):  # type: ignore
     """The Class to saves the vote result for a motion poll."""
 
-    motion = models.ForeignKey(
-        Motion,
-        on_delete=models.CASCADE,
-        related_name='polls')
+    motion = models.ForeignKey(Motion, on_delete=models.CASCADE, related_name="polls")
     """The motion to witch the object belongs."""
 
     option_class = MotionOption
     """The option class, witch links between this object the the votes."""
 
-    vote_values = ['Yes', 'No', 'Abstain']
+    vote_values = ["Yes", "No", "Abstain"]
     """The possible anwers for the poll. 'Yes, 'No' and 'Abstain'."""
 
     class Meta:
@@ -1003,7 +1040,7 @@ class MotionPoll(RESTModelMixin, CollectDefaultVotesMixin, BasePoll):  # type: i
         """
         Representation method only for debugging purposes.
         """
-        return 'MotionPoll for motion %s' % self.motion
+        return "MotionPoll for motion %s" % self.motion
 
     def set_options(self, skip_autoupdate=False):
         """Create the option class for this poll."""
@@ -1012,7 +1049,7 @@ class MotionPoll(RESTModelMixin, CollectDefaultVotesMixin, BasePoll):  # type: i
         self.get_option_class()(poll=self).save(skip_autoupdate=skip_autoupdate)
 
     def get_percent_base_choice(self):
-        return config['motions_poll_100_percent_base']
+        return config["motions_poll_100_percent_base"]
 
     def get_slide_context(self, **context):
         return super(MotionPoll, self).get_slide_context(poll=self)
@@ -1047,15 +1084,14 @@ class State(RESTModelMixin, models.Model):
     """A string for a recommendation to set the motion to this state."""
 
     workflow = models.ForeignKey(
-        'Workflow',
-        on_delete=models.CASCADE,
-        related_name='states')
+        "Workflow", on_delete=models.CASCADE, related_name="states"
+    )
     """A many-to-one relation to a workflow."""
 
-    next_states = models.ManyToManyField('self', symmetrical=False, blank=True)
+    next_states = models.ManyToManyField("self", symmetrical=False, blank=True)
     """A many-to-many relation to all states, that can be choosen from this state."""
 
-    css_class = models.CharField(max_length=255, default='primary')
+    css_class = models.CharField(max_length=255, default="primary")
     """
     A css class string for showing the state name in a coloured label based on bootstrap,
     e.g. 'danger' (red), 'success' (green), 'warning' (yellow), 'default' (grey).
@@ -1131,9 +1167,11 @@ class State(RESTModelMixin, models.Model):
         recommendation_label is not an empty string.
         """
         self.check_next_states()
-        if self.recommendation_label == '':
-            raise WorkflowError('The field recommendation_label of {} must not '
-                                'be an empty string.'.format(self))
+        if self.recommendation_label == "":
+            raise WorkflowError(
+                "The field recommendation_label of {} must not "
+                "be an empty string.".format(self)
+            )
         super(State, self).save(**kwargs)
 
     def check_next_states(self):
@@ -1143,7 +1181,10 @@ class State(RESTModelMixin, models.Model):
             return
         for state in self.next_states.all():
             if not state.workflow == self.workflow:
-                raise WorkflowError('%s can not be next state of %s because it does not belong to the same workflow.' % (state, self))
+                raise WorkflowError(
+                    "%s can not be next state of %s because it does not belong to the same workflow."
+                    % (state, self)
+                )
 
     def get_root_rest_element(self):
         """
@@ -1156,21 +1197,25 @@ class WorkflowManager(models.Manager):
     """
     Customized model manager to support our get_full_queryset method.
     """
+
     def get_full_queryset(self):
         """
         Returns the normal queryset with all workflows. In the background
         the first state is joined and all states and next states are
         prefetched from the database.
         """
-        return (self.get_queryset()
-                .select_related('first_state')
-                .prefetch_related('states', 'states__next_states'))
+        return (
+            self.get_queryset()
+            .select_related("first_state")
+            .prefetch_related("states", "states__next_states")
+        )
 
 
 class Workflow(RESTModelMixin, models.Model):
     """
     Defines a workflow for a motion.
     """
+
     access_permissions = WorkflowAccessPermissions()
 
     objects = WorkflowManager()
@@ -1179,11 +1224,8 @@ class Workflow(RESTModelMixin, models.Model):
     """A string representing the workflow."""
 
     first_state = models.OneToOneField(
-        State,
-        on_delete=models.SET_NULL,
-        related_name='+',
-        null=True,
-        blank=True)
+        State, on_delete=models.SET_NULL, related_name="+", null=True, blank=True
+    )
     """A one-to-one relation to a state, the starting point for the workflow."""
 
     class Meta:
@@ -1205,5 +1247,6 @@ class Workflow(RESTModelMixin, models.Model):
         """Checks whether the first_state itself belongs to the workflow."""
         if self.first_state and not self.first_state.workflow == self:
             raise WorkflowError(
-                '%s can not be first state of %s because it '
-                'does not belong to it.' % (self.first_state, self))
+                "%s can not be first state of %s because it "
+                "does not belong to it." % (self.first_state, self)
+            )
