@@ -65,7 +65,7 @@ def min_requirements(args=None):
     print(' '.join(get_lowest_versions(args.requirements)))
 
 
-@command('clear',
+@command('clean',
          help='Deletes unneeded files and folders')
 def clean(args=None):
     """
@@ -76,7 +76,8 @@ def clean(args=None):
     call('find -type d -empty -delete')
 
 
-@command('isort',
-         help='Sorts all imports in all python files.')
+@command('format',
+         help='Format code with isort and black')
 def isort(args=None):
-    return call('isort --recursive openslides tests')
+    call('isort --recursive openslides tests')
+    call('black --py36 openslides tests')
