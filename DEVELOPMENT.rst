@@ -84,11 +84,12 @@ Install all dependencies and start the development server::
 
 Now the client is available under ``localhost:4200``.
 
-If you do not need to work with the client, you can build the client and let it be delivered by the server directly::
+If you want to provide the client statically, you can build it via::
 
-    $ npm build
+    $ npm run build
 
-The client's address is now ``localhost:8000``.
+The build client files are availible from the root directory in
+``openslides/static`` and can be provided via ``nginx`` (Point 4).
 
 
 2. Installation on Windows
@@ -128,7 +129,8 @@ To run some server tests see `.travis.yml
 b. Client tests and commands
 ''''''''''''''''''''''''''''
 
-Change to the client's directory to run every client related command. Run client tests::
+Change to the client's directory to run every client related command. Run
+client tests::
 
     $ npm test
 
@@ -143,8 +145,8 @@ To extract translations run::
 OpenSlides in big mode
 ======================
 
-In the so called big mode you should use OpenSlides with Redis, PostgreSQL and a
-webserver like Apache HTTP Server or nginx as proxy server in front of your
+In the so called big mode you should use OpenSlides with Redis, PostgreSQL and
+a webserver like Apache HTTP Server or nginx as proxy server in front of your
 OpenSlides interface server.
 
 
@@ -185,40 +187,64 @@ Populate your new database::
 3. Run OpenSlides
 -----------------
 
-To start gunicorn with uvicorn as protocol server run::
+To start Daphne, run::
 
     $ export DJANGO_SETTINGS_MODULE=settings
     $ export PYTHONPATH=personal_data/var/
-    $ gunicorn -w 4 -k uvicorn.workers.UvicornWorker openslides.asgi:application
+    $ daphne -b 0.0.0.0 -p 8000 openslides.asgi:application
 
-This example uses 4 instances. The recommendation is to use CPU cores * 2.
+The last line may be interchangeable with gunicorn and uvicorn as protocol server::
 
+    $ gunicorn -w 4 -b 0.0.0.0:8000 -k uvicorn.workers.UvicornWorker openslides.asgi:application
 
 4. Use Nginx (optional)
 -----------------------
 
-When using Nginx as a proxy for delivering staticfiles the performance of the setup will increase very much. For delivering staticfiles you have to collect those::
+When using Nginx as a proxy for delivering static files the performance of the
+setup will increase.
 
-    $ python manage.py collectstatic
+This is an example ``nginx.conf`` configuration for Daphne listing on port 8000::
 
-This is an example configuration for a single Daphne listen on port 8000::
+    worker_processes  1;
 
-    server {
-         listen 80;
-         listen [::]:80;
+    events {
+        worker_connections  1024;
+    }
 
-         server_name _;
+    http {
+        server {
+            listen 80;
+            server_name  localhost;
 
-         location ~* ^/(ws|wss|media|rest|apps).*$ {
-             proxy_pass http://localhost:8000;
-             proxy_http_version 1.1;
-             proxy_set_header Upgrade $http_upgrade;
-             proxy_set_header Connection "upgrade";
-             proxy_set_header Host $http_host;
-             proxy_set_header X-Real-IP $remote_addr;
-             proxy_set_header X-Scheme $scheme;
-         }
-         location / {
-             alias <your path to>/collected-static;
-         }
-     }
+            root   $YOUR_OS_ROOT_FOLDER/openslides/static;
+            index  index.html index.htm;
+            include /etc/nginx/mime.types;
+
+            client_max_body_size 100M;
+
+            gzip on;
+            gzip_min_length 1000;
+            gzip_proxied expired no-cache no-store private auth;
+            gzip_types text/plain text/css application/json application/javascript application/x-javascript text/xml application/xml application/xml+rss text/javascript;
+
+            location / {
+                try_files $uri $uri/ /index.html;
+            }
+            location /apps {
+                proxy_pass http://localhost:8000;
+            }
+            location /media {
+                proxy_pass http://localhost:8000;
+            }
+            location /rest {
+                proxy_pass http://localhost:8000;
+            }
+            location /ws {
+                proxy_pass http://localhost:8000;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection "Upgrade";
+            }
+
+        }
+    }

@@ -1,6 +1,13 @@
 {
     "name": "OpenSlides3-Client",
-    "version": "0.0.0",
+    "version": "3.0.0-alpha",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/OpenSlides/OpenSlides.git"
+    },
+    "license": "MIT",
+    "description": "OpenSlides 3.0 (Client)",
+    "README": "https://github.com/OpenSlides/OpenSlides/blob/master/client/README.md",
     "scripts": {
         "ng": "ng",
         "start": "ng serve --proxy-config proxy.conf.json --host=0.0.0.0",
@@ -14,7 +21,6 @@
         "prettify-changes": "pretty-quick --staged",
         "prettify-all": "pretty-quick"
     },
-    "private": true,
     "dependencies": {
         "@angular/animations": "^7.1.1",
         "@angular/cdk": "^7.1.0",
