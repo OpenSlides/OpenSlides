@@ -155,4 +155,49 @@ export class StatuteParagraphListComponent extends BaseViewComponent implements 
     public sortStatuteParagraphs(): void {
         console.log('Not yet implemented. Depends on other Features');
     }
+
+    /**
+     * clicking Shift and Enter will save automatically
+     * clicking Escape will cancel the process
+     *
+     * @param event has the code
+     */
+    public onKeyDownCreate(event: KeyboardEvent): void {
+        if (event.key === 'Enter' && event.shiftKey) {
+            this.create();
+        }
+        if (event.key === 'Escape') {
+            this.onCancelCreate();
+        }
+    }
+
+    /**
+     * Cancels the current form action
+     */
+    public onCancelCreate(): void {
+        this.statuteParagraphToCreate = null;
+    }
+
+    /**
+     * clicking Shift and Enter will save automatically
+     * clicking Escape will cancel the process
+     *
+     * @param event has the code
+     */
+    public onKeyDownUpdate(event: KeyboardEvent): void {
+        if (event.key === 'Enter' && event.shiftKey) {
+            const myParagraph = this.statuteParagraphs.find(x => x.id === this.editId);
+            this.onSaveButton(myParagraph);
+        }
+        if (event.key === 'Escape') {
+            this.onCancelUpdate();
+        }
+    }
+
+    /**
+     * Cancels the current form action
+     */
+    public onCancelUpdate(): void {
+        this.editId = null;
+    }
 }

@@ -73,14 +73,24 @@ export class MotionCommentSectionListComponent extends BaseViewComponent impleme
     }
 
     /**
-     * Event on Key Down in update or create form. Do not provide the viewSection for the create form.
+     * Event on Key Down in update or create form.
+     *
+     * @param event the keyboard event
+     * @param the current view in scope
      */
     public keyDownFunction(event: KeyboardEvent, viewSection?: ViewMotionCommentSection): void {
-        if (event.key === "Escape") {
+        if (event.key === 'Enter' && event.shiftKey) {
             if (viewSection) {
                 this.onSaveButton(viewSection);
             } else {
                 this.create();
+            }
+        }
+        if (event.key === 'Escape') {
+            if (viewSection) {
+                this.editId = null;
+            } else {
+                this.commentSectionToCreate = null;
             }
         }
     }

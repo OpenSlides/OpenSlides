@@ -16,7 +16,8 @@
 <mat-card *ngIf="statuteParagraphToCreate">
     <mat-card-title translate>New statute paragraph</mat-card-title>
     <mat-card-content>
-        <form [formGroup]="createForm">
+        <form [formGroup]="createForm"
+            (keydown)="onKeyDownCreate($event)">
             <p>
                 <mat-form-field>
                     <input formControlName="title" matInput placeholder="{{'Title' | translate}}" required>
@@ -39,7 +40,7 @@
         <button mat-button (click)="create()">
             <span translate>Save</span>
         </button>
-        <button mat-button (click)="statuteParagraphToCreate = null">
+        <button mat-button (click)="onCancel()">
             <span translate>Cancel</span>
         </button>
     </mat-card-actions>
@@ -53,7 +54,9 @@
                 {{ statuteParagraph.title }}
             </mat-panel-title>
         </mat-expansion-panel-header>
-        <form [formGroup]="updateForm" *ngIf="editId === statuteParagraph.id">
+        <form [formGroup]="updateForm"
+            *ngIf="editId === statuteParagraph.id"
+            (keydown)="onKeyDownUpdate($event)">
             <span translate>Edit statute paragraph:</span>
             <p>
                 <mat-form-field>
@@ -85,7 +88,7 @@
                 mat-icon-button>
                 <mat-icon>edit</mat-icon>
             </button>
-            <button *ngIf="editId === statuteParagraph.id" mat-button class="on-transition-fade" (click)="editId = null"
+            <button *ngIf="editId === statuteParagraph.id" mat-button class="on-transition-fade" (click)="onCancelUpdate()"
                 mat-icon-button>
                 <mat-icon>close</mat-icon>
             </button>

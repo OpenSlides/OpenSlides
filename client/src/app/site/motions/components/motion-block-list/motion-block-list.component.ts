@@ -169,4 +169,26 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
         // set a form control as "touched" to trigger potential error messages
         this.createBlockForm.get('title').markAsTouched();
     }
+
+    /**
+     * clicking Shift and Enter will save automatically
+     * clicking Escape will cancel the process
+     *
+     * @param event has the code
+     */
+    public onKeyDown(event: KeyboardEvent): void {
+        if (event.key === 'Enter' && event.shiftKey) {
+            this.onSaveNewButton();
+        }
+        if (event.key === 'Escape') {
+            this.onCancel();
+        }
+    }
+
+    /**
+     * Cancels the current form action
+     */
+    public onCancel(): void {
+        this.blockToCreate = null;
+    }
 }
