@@ -103,6 +103,10 @@ export class MotionChangeRecommendationComponent extends BaseViewComponent {
         this.changeReco = data.changeRecommendation;
         this.lineRange = data.lineRange;
 
+        this.tinyMceSettings.height = 50;
+        this.tinyMceSettings.toolbar = `undo redo | bold italic underline strikethrough
+            | removeformat | bullist numlist | outdent indent | link charmap code`;
+
         this.createForm();
     }
 

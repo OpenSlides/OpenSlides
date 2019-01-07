@@ -4,7 +4,7 @@ import { Workflow } from '../../../shared/models/motions/workflow';
 import { WorkflowState } from '../../../shared/models/motions/workflow-state';
 import { Item } from 'app/shared/models/agenda/item';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
-import { ViewMotion } from './view-motion';
+import { LineNumberingMode, ViewMotion } from './view-motion';
 import { CreateMotion } from './create-motion';
 
 /**
@@ -43,7 +43,7 @@ export class ViewCreateMotion extends ViewMotion {
         item?: Item,
         block?: MotionBlock
     ) {
-        super(motion, category, submitters, supporters, workflow, state, item, block);
+        super(motion, category, submitters, supporters, workflow, state, item, block, null, 80, LineNumberingMode.None);
     }
 
     /**

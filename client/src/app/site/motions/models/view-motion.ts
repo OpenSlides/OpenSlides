@@ -11,17 +11,24 @@ import { Item } from 'app/shared/models/agenda/item';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 
+/**
+ * The line numbering mode for the motion detail view.
+ * The constants need to be in sync with the values saved in the config store.
+ */
 export enum LineNumberingMode {
-    None,
-    Inside,
-    Outside
+    None = 'none',
+    Inside = 'inline',
+    Outside = 'outside'
 }
 
+/**
+ * The change recommendation mode for the motion detail view.
+ */
 export enum ChangeRecoMode {
-    Original,
-    Changed,
-    Diff,
-    Final
+    Original = 'original',
+    Changed = 'changed',
+    Diff = 'diff',
+    Final = 'agreed'
 }
 
 /**
@@ -236,6 +243,9 @@ export class ViewMotion extends BaseViewModel {
         item?: Item,
         block?: MotionBlock,
         attachments?: Mediafile[],
+        lineLength: number = 80,
+        lineNumberingMode?: LineNumberingMode,
+        crMode?: ChangeRecoMode
     ) {
         super();
         this._motion = motion;
@@ -248,15 +258,9 @@ export class ViewMotion extends BaseViewModel {
         this._block = block;
         this._attachments = attachments;
 
-        // TODO: Should be set using a a config variable
-        /*this._configService.get('motions_default_line_numbering').subscribe(
-            (mode: string): void => {
-                this.lnMode = LineNumberingMode.Outside;
-            }
-        );*/
-        this.lnMode = LineNumberingMode.Outside;
-        this.crMode = ChangeRecoMode.Original;
-        this.lineLength = 80;
+        this.lnMode = lineNumberingMode;
+        this.crMode = crMode;
+        this.lineLength = lineLength;
 
         this.highlightedLine = null;
     }
@@ -417,7 +421,10 @@ export class ViewMotion extends BaseViewModel {
             this._state,
             this._item,
             this._block,
-            this._attachments
+            this._attachments,
+            this.lineLength,
+            this.lnMode,
+            this.crMode
         );
     }
 }
