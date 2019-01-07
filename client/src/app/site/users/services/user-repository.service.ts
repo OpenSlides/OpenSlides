@@ -111,7 +111,8 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
     }
 
     /**
-     * Updates the password and sets the password without checking for the old one
+     * Updates the password and sets the password without checking for the old one.
+     * Also resets the 'default password' to the newly created one.
      *
      * @param user The user to update
      * @param password The password to set
@@ -119,6 +120,7 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
     public async resetPassword(user: ViewUser, password: string): Promise<void> {
         const path = `/rest/users/user/${user.id}/reset_password/`;
         await this.httpService.post(path, { password: password });
+        await this.update({default_password: password}, user);
     }
 
     /**

@@ -46,9 +46,6 @@
         <span>{{ selectedRows.length }}&nbsp;</span><span translate>selected</span>
     </div>
 
-    <div class="extra-controls-slot on-transition-fade" *ngIf="isMultiSelect">
-        <button mat-icon-button (click)="deleteSelected()"><mat-icon>delete</mat-icon></button>
-    </div>
 </os-head-bar>
 
 <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
@@ -160,10 +157,6 @@
     </div>
     <div *ngIf="isMultiSelect">
         <mat-divider></mat-divider>
-        <button mat-menu-item (click)="toggleMultiSelect()">
-            <mat-icon>library_add</mat-icon>
-            <span translate>Exit multiselect</span>
-        </button>
         <button mat-menu-item (click)="selectAll()">
             <mat-icon>done_all</mat-icon>
             <span translate>Select all</span>

@@ -12,10 +12,6 @@
         <button mat-icon-button (click)="toggleMultiSelect()"><mat-icon>arrow_back</mat-icon></button>
         <span>{{ selectedRows.length }}&nbsp;</span><span translate>selected</span>
     </div>
-
-    <div class="extra-controls-slot on-transition-fade" *ngIf="isMultiSelect">
-        <button mat-icon-button (click)="deleteSelected()"><mat-icon>delete</mat-icon></button>
-    </div>
 </os-head-bar>
 
 <div class="custom-table-header on-transition-fade">
@@ -100,10 +96,6 @@
         </button>
     </div>
     <div *ngIf="isMultiSelect">
-        <button mat-menu-item (click)="toggleMultiSelect()">
-            <mat-icon>library_add</mat-icon>
-            <span translate>Exit multiselect</span>
-        </button>
         <button mat-menu-item (click)="selectAll()">
             <mat-icon>done_all</mat-icon>
             <span translate>Select all</span>
@@ -114,42 +106,23 @@
         </button>
         <div *osPerms="'users.can_manage'">
             <mat-divider></mat-divider>
-            <button mat-menu-item (click)="setGroupSelected(true)">
+            <button mat-menu-item (click)="setGroupSelected()">
                 <mat-icon>people</mat-icon>
-                <span translate>Add groups</span>
-            </button>
-            <button mat-menu-item (click)="setGroupSelected(false)">
-                <mat-icon>people_outline</mat-icon>
-                <span translate>Remove groups</span>
+                <span translate>Add/remove groups</span>
             </button>
 
-            <mat-divider></mat-divider>
-
-            <button mat-menu-item (click)="setActiveSelected(true)">
+            <button mat-menu-item (click)="setActiveSelected()">
                 <mat-icon>add_circle</mat-icon>
-                <span translate>Is active</span>
+                <span translate>Set/unset active</span>
             </button>
-            <button mat-menu-item (click)="setActiveSelected(false)">
-                <mat-icon>remove_circle</mat-icon>
-                <span translate>Is inactive</span>
-            </button>
-            <mat-divider></mat-divider>
-            <button mat-menu-item (click)="setPresentSelected(true)">
+
+            <button mat-menu-item (click)="setPresentSelected()">
                 <mat-icon>check_box</mat-icon>
-                <span translate>Is present</span>
+                <span translate>Set/unset presence</span>
             </button>
-            <button mat-menu-item (click)="setPresentSelected(false)">
-                <mat-icon>check_box_outline_blank</mat-icon>
-                <span translate>Is not present</span>
-            </button>
-            <mat-divider></mat-divider>
-            <button mat-menu-item (click)="setCommitteeSelected(true)">
+            <button mat-menu-item (click)="setCommitteeSelected()">
                 <mat-icon>account_balance</mat-icon>
-                <span translate>Is committee</span>
-            </button>
-            <button mat-menu-item (click)="setCommitteeSelected(false)">
-                <mat-icon>account_balance</mat-icon>
-                <span translate>Is no committee</span>
+                <span translate>Set/unset committee</span>
             </button>
 
             <mat-divider></mat-divider>

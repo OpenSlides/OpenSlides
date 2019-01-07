@@ -7,6 +7,7 @@ import { BaseRepository } from '../../base/base-repository';
 import { Identifiable } from '../../../shared/models/base/identifiable';
 import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
 import { WorkflowState } from 'app/shared/models/motions/workflow-state';
+import { ViewMotion } from '../models/view-motion';
 
 /**
  * Repository Services for Categories
@@ -66,6 +67,20 @@ export class WorkflowRepositoryService extends BaseRepository<ViewWorkflow, Work
     public getAllWorkflowStates(): WorkflowState[] {
         let states: WorkflowState[] = [];
         this.getViewModelList().forEach(workflow => {
+            states = states.concat(workflow.states);
+        });
+        return states;
+    }
+
+    /**
+     * Returns all workflowStates that cover the list of viewMotions given
+     * @param motions
+     */
+    public getWorkflowStatesForMotions(motions: ViewMotion[]): WorkflowState[] {
+        let states: WorkflowState[] = [];
+        const workflowIds = motions.map(motion => motion.workflow_id).filter((value, index, self) => self.indexOf(value) === index);
+        workflowIds.forEach(id => {
+            const workflow = this.getViewModel(id);
             states = states.concat(workflow.states);
         });
         return states;

@@ -29,19 +29,33 @@ interface ChoiceDialogData {
     choices: ChoiceDialogOptions;
 
     /**
-     * Select, if this should be a multiselect choice
+     * Select if this should be a multiselect choice
      */
     multiSelect: boolean;
+
+    /**
+     * Additional action buttons which will add their value to the
+     * {@link closeDialog} feedback if chosen
+     */
+    actionButtons?: string[];
+
+    /**
+     * An optional string for 'explicitly select none of the options'. Only
+     * displayed in the single-select variation
+     */
+    clearChoice?: string;
 }
 
 /**
  * undefined is returned, if the dialog is closed. If a choice is submitted,
- * it might be a number oder an array of numbers for multiselect.
+ * it will be an array of numbers and optionally an action string for multichoice
+ * dialogs
  */
-export type ChoiceAnswer = undefined | number | number[];
+export type ChoiceAnswer = undefined | { action?: string; items: number | number[]};
 
 /**
  * A dialog with choice fields.
+ *
  */
 @Component({
     selector: 'os-choice-dialog',
@@ -81,9 +95,15 @@ export class ChoiceDialogComponent {
     /**
      * Closes the dialog with the selected choices
      */
-    public closeDialog(ok: boolean): void {
+    public closeDialog(ok: boolean, action?: string): void {
+        if (!this.data.multiSelect && this.selectedChoice === null) {
+            action = this.data.clearChoice;
+        }
         if (ok) {
-            this.dialogRef.close(this.data.multiSelect ? this.selectedMultiChoices : this.selectedChoice);
+            this.dialogRef.close({
+                action: action ? action : null,
+                items: this.data.multiSelect ? this.selectedMultiChoices : this.selectedChoice
+            });
         } else {
             this.dialogRef.close();
         }
