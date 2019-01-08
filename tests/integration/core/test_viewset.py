@@ -29,7 +29,7 @@ def test_chat_message_db_queries():
     Tests that only the following db queries are done:
     * 1 requests to get the list of all chatmessages.
     """
-    user = User.objects.get(username='admin')
+    user = User.objects.get(username="admin")
     for index in range(10):
         ChatMessage.objects.create(user=user)
 
@@ -43,7 +43,7 @@ def test_tag_db_queries():
     * 1 requests to get the list of all tags.
     """
     for index in range(10):
-        Tag.objects.create(name='tag{}'.format(index))
+        Tag.objects.create(name="tag{}".format(index))
 
     assert count_queries(Tag.get_elements) == 1
 
@@ -63,12 +63,15 @@ class ChatMessageViewSet(TestCase):
     """
     Tests requests to deal with chat messages.
     """
+
     def setUp(self):
-        admin = User.objects.get(username='admin')
+        admin = User.objects.get(username="admin")
         self.client.force_login(admin)
-        ChatMessage.objects.create(message='test_message_peechiel8IeZoohaem9e', user=admin)
+        ChatMessage.objects.create(
+            message="test_message_peechiel8IeZoohaem9e", user=admin
+        )
 
     def test_clear_chat(self):
-        response = self.client.post(reverse('chatmessage-clear'))
+        response = self.client.post(reverse("chatmessage-clear"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(ChatMessage.objects.all().count(), 0)

@@ -16,13 +16,17 @@ from openslides.utils.main import (
 
 # Methods to collect plugins.
 
+
 def collect_plugins_from_entry_points() -> Tuple[str, ...]:
     """
     Collects all entry points in the group openslides_plugins from all
     distributions in the default working set and returns their module names as
     tuple.
     """
-    return tuple(entry_point.module_name for entry_point in iter_entry_points('openslides_plugins'))
+    return tuple(
+        entry_point.module_name
+        for entry_point in iter_entry_points("openslides_plugins")
+    )
 
 
 def collect_plugins_from_dir(plugin_dir: str) -> Tuple[str, ...]:
@@ -42,8 +46,7 @@ def collect_plugins() -> Tuple[str, ...]:
 
     # Collect plugins in plugins/ directory of portable.
     if detect_openslides_type() == WINDOWS_PORTABLE_VERSION:
-        plugins_dir = os.path.join(
-            get_win32_portable_user_data_dir(), 'plugins')
+        plugins_dir = os.path.join(get_win32_portable_user_data_dir(), "plugins")
         if plugins_dir not in sys.path:
             sys.path.append(plugins_dir)
         collected_plugins += collect_plugins_from_dir(plugins_dir)
@@ -52,6 +55,7 @@ def collect_plugins() -> Tuple[str, ...]:
 
 
 # Methods to retrieve plugin metadata and urlpatterns.
+
 
 def get_plugin_verbose_name(plugin: str) -> str:
     """
@@ -73,7 +77,7 @@ def get_plugin_description(plugin: str) -> str:
         try:
             description = plugin_app_config.description
         except AttributeError:
-            description = ''
+            description = ""
     return description
 
 
@@ -89,7 +93,7 @@ def get_plugin_version(plugin: str) -> str:
         try:
             version = plugin_app_config.version
         except AttributeError:
-            version = 'unknown'
+            version = "unknown"
     return version
 
 
@@ -105,7 +109,7 @@ def get_plugin_license(plugin: str) -> str:
         try:
             license = plugin_app_config.license
         except AttributeError:
-            license = ''
+            license = ""
     return license
 
 
@@ -121,7 +125,7 @@ def get_plugin_url(plugin: str) -> str:
         try:
             url = plugin_app_config.url
         except AttributeError:
-            url = ''
+            url = ""
     return url
 
 

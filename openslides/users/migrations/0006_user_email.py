@@ -7,19 +7,17 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0005_personalnote_rework'),
-    ]
+    dependencies = [("users", "0005_personalnote_rework")]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='email',
+            model_name="user",
+            name="email",
             field=models.EmailField(blank=True, max_length=254),
         ),
         migrations.AddField(
-            model_name='user',
-            name='last_email_send',
+            model_name="user",
+            name="last_email_send",
             field=models.DateTimeField(blank=True, null=True),
         ),
     ]

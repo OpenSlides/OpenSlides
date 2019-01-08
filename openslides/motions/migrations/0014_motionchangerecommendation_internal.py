@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('motions', '0013_motion_sorting_and_statute'),
-    ]
+    dependencies = [("motions", "0013_motion_sorting_and_statute")]
 
     operations = [
         migrations.AddField(
-            model_name='motionchangerecommendation',
-            name='internal',
+            model_name="motionchangerecommendation",
+            name="internal",
             field=models.BooleanField(default=False),
-        ),
+        )
     ]

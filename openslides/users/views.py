@@ -28,11 +28,7 @@ from ..utils.auth import (
     anonymous_is_enabled,
     has_perm,
 )
-from ..utils.autoupdate import (
-    Element,
-    inform_changed_data,
-    inform_changed_elements,
-)
+from ..utils.autoupdate import Element, inform_changed_data, inform_changed_elements
 from ..utils.cache import element_cache
 from ..utils.rest_api import (
     ModelViewSet,
@@ -55,6 +51,7 @@ from .serializers import GroupSerializer, PermissionRelatedField
 
 # Viewsets for the REST API
 
+
 class UserViewSet(ModelViewSet):
     """
     API endpoint for users.
@@ -62,6 +59,7 @@ class UserViewSet(ModelViewSet):
     There are the following views: metadata, list, retrieve, create,
     partial_update, update, destroy and reset_password.
     """
+
     access_permissions = UserAccessPermissions()
     queryset = User.objects.all()
 
@@ -69,16 +67,24 @@ class UserViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('list', 'retrieve'):
+        if self.action in ("list", "retrieve"):
             result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action == 'metadata':
-            result = has_perm(self.request.user, 'users.can_see_name')
-        elif self.action in ('update', 'partial_update'):
+        elif self.action == "metadata":
+            result = has_perm(self.request.user, "users.can_see_name")
+        elif self.action in ("update", "partial_update"):
             result = self.request.user.is_authenticated
-        elif self.action in ('create', 'destroy', 'reset_password', 'mass_import', 'mass_invite_email'):
-            result = (has_perm(self.request.user, 'users.can_see_name') and
-                      has_perm(self.request.user, 'users.can_see_extra_data') and
-                      has_perm(self.request.user, 'users.can_manage'))
+        elif self.action in (
+            "create",
+            "destroy",
+            "reset_password",
+            "mass_import",
+            "mass_invite_email",
+        ):
+            result = (
+                has_perm(self.request.user, "users.can_see_name")
+                and has_perm(self.request.user, "users.can_see_extra_data")
+                and has_perm(self.request.user, "users.can_manage")
+            )
         else:
             result = False
         return result
@@ -94,16 +100,18 @@ class UserViewSet(ModelViewSet):
         """
         user = self.get_object()
         # Check permissions.
-        if (has_perm(self.request.user, 'users.can_see_name') and
-                has_perm(request.user, 'users.can_see_extra_data') and
-                has_perm(request.user, 'users.can_manage')):
+        if (
+            has_perm(self.request.user, "users.can_see_name")
+            and has_perm(request.user, "users.can_see_extra_data")
+            and has_perm(request.user, "users.can_manage")
+        ):
             # The user has all permissions so he may update every user.
-            if request.data.get('is_active') is False and user == request.user:
+            if request.data.get("is_active") is False and user == request.user:
                 # But a user can not deactivate himself.
-                raise ValidationError({'detail': _('You can not deactivate yourself.')})
+                raise ValidationError({"detail": _("You can not deactivate yourself.")})
         else:
             # The user does not have all permissions so he may only update himself.
-            if str(request.user.pk) != self.kwargs['pk']:
+            if str(request.user.pk) != self.kwargs["pk"]:
                 self.permission_denied(request)
 
             # This is a hack to make request.data mutable. Otherwise fields can not be deleted.
@@ -111,7 +119,7 @@ class UserViewSet(ModelViewSet):
             # Remove fields that the user is not allowed to change.
             # The list() is required because we want to use del inside the loop.
             for key in list(request.data.keys()):
-                if key not in ('username', 'about_me'):
+                if key not in ("username", "about_me"):
                     del request.data[key]
         response = super().update(request, *args, **kwargs)
         # Maybe some group assignments have changed. Better delete the restricted user cache
@@ -126,28 +134,28 @@ class UserViewSet(ModelViewSet):
         """
         instance = self.get_object()
         if instance == self.request.user:
-            raise ValidationError({'detail': _('You can not delete yourself.')})
+            raise ValidationError({"detail": _("You can not delete yourself.")})
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @detail_route(methods=['post'])
+    @detail_route(methods=["post"])
     def reset_password(self, request, pk=None):
         """
         View to reset the password using the requested password.
         """
         user = self.get_object()
-        if isinstance(request.data.get('password'), str):
+        if isinstance(request.data.get("password"), str):
             try:
-                validate_password(request.data.get('password'), user=request.user)
+                validate_password(request.data.get("password"), user=request.user)
             except DjangoValidationError as errors:
-                raise ValidationError({'detail': ' '.join(errors)})
-            user.set_password(request.data.get('password'))
+                raise ValidationError({"detail": " ".join(errors)})
+            user.set_password(request.data.get("password"))
             user.save()
-            return Response({'detail': _('Password successfully reset.')})
+            return Response({"detail": _("Password successfully reset.")})
         else:
-            raise ValidationError({'detail': 'Password has to be a string.'})
+            raise ValidationError({"detail": "Password has to be a string."})
 
-    @list_route(methods=['post'])
+    @list_route(methods=["post"])
     @transaction.atomic
     def mass_import(self, request):
         """
@@ -155,9 +163,9 @@ class UserViewSet(ModelViewSet):
 
         Example: {"users": [{"first_name": "Max"}, {"first_name": "Maxi"}]}
         """
-        users = request.data.get('users')
+        users = request.data.get("users")
         if not isinstance(users, list):
-            raise ValidationError({'detail': 'Users has to be a list.'})
+            raise ValidationError({"detail": "Users has to be a list."})
 
         created_users = []
         # List of all track ids of all imported users. The track ids are just used in the client.
@@ -171,42 +179,47 @@ class UserViewSet(ModelViewSet):
                 # Skip invalid users.
                 continue
             data = serializer.prepare_password(serializer.data)
-            groups = data['groups_id']
-            del data['groups_id']
+            groups = data["groups_id"]
+            del data["groups_id"]
 
             db_user = User(**data)
             db_user.save(skip_autoupdate=True)
             db_user.groups.add(*groups)
             created_users.append(db_user)
-            if 'importTrackId' in user:
-                imported_track_ids.append(user['importTrackId'])
+            if "importTrackId" in user:
+                imported_track_ids.append(user["importTrackId"])
 
         # Now infom all clients and send a response
         inform_changed_data(created_users)
-        return Response({
-            'detail': _('{number} users successfully imported.').format(number=len(created_users)),
-            'importedTrackIds': imported_track_ids})
+        return Response(
+            {
+                "detail": _("{number} users successfully imported.").format(
+                    number=len(created_users)
+                ),
+                "importedTrackIds": imported_track_ids,
+            }
+        )
 
-    @list_route(methods=['post'])
+    @list_route(methods=["post"])
     def mass_invite_email(self, request):
         """
         Endpoint to send invitation emails to all given users (by id). Returns the
         number of emails send.
         """
-        user_ids = request.data.get('user_ids')
+        user_ids = request.data.get("user_ids")
         if not isinstance(user_ids, list):
-            raise ValidationError({'detail': 'User_ids has to be a list.'})
+            raise ValidationError({"detail": "User_ids has to be a list."})
         for user_id in user_ids:
             if not isinstance(user_id, int):
-                raise ValidationError({'detail': 'User_id has to be an int.'})
+                raise ValidationError({"detail": "User_id has to be an int."})
         # Get subject and body from the response. Do not use the config values
         # because they might not be translated.
-        subject = request.data.get('subject')
-        message = request.data.get('message')
+        subject = request.data.get("subject")
+        message = request.data.get("message")
         if not isinstance(subject, str):
-            raise ValidationError({'detail': 'Subject has to be a string.'})
+            raise ValidationError({"detail": "Subject has to be a string."})
         if not isinstance(message, str):
-            raise ValidationError({'detail': 'Message has to be a string.'})
+            raise ValidationError({"detail": "Message has to be a string."})
         users = User.objects.filter(pk__in=user_ids)
 
         # Sending Emails. Keep track, which users gets an email.
@@ -215,18 +228,24 @@ class UserViewSet(ModelViewSet):
         try:
             connection.open()
         except ConnectionRefusedError:
-            raise ValidationError({'detail': 'Cannot connect to SMTP server on {}:{}'.format(
-                settings.EMAIL_HOST,
-                settings.EMAIL_PORT)})
+            raise ValidationError(
+                {
+                    "detail": "Cannot connect to SMTP server on {}:{}".format(
+                        settings.EMAIL_HOST, settings.EMAIL_PORT
+                    )
+                }
+            )
         except smtplib.SMTPException as e:
-            raise ValidationError({'detail': '{}: {}'.format(e.errno, e.strerror)})
+            raise ValidationError({"detail": "{}: {}".format(e.errno, e.strerror)})
 
         success_users = []
         user_pks_without_email = []
         try:
             for user in users:
                 if user.email:
-                    if user.send_invitation_email(connection, subject, message, skip_autoupdate=True):
+                    if user.send_invitation_email(
+                        connection, subject, message, skip_autoupdate=True
+                    ):
                         success_users.append(user)
                 else:
                     user_pks_without_email.append(user.pk)
@@ -235,25 +254,28 @@ class UserViewSet(ModelViewSet):
 
         connection.close()
         inform_changed_data(success_users)
-        return Response({
-            'count': len(success_users),
-            'no_email_ids': user_pks_without_email})
+        return Response(
+            {"count": len(success_users), "no_email_ids": user_pks_without_email}
+        )
 
 
 class GroupViewSetMetadata(SimpleMetadata):
     """
     Customized metadata class for OPTIONS requests.
     """
+
     def get_field_info(self, field):
         """
         Customized method to change the display name of permission choices.
         """
         field_info = super().get_field_info(field)
-        if field.field_name == 'permissions':
-            field_info['choices'] = [
+        if field.field_name == "permissions":
+            field_info["choices"] = [
                 {
-                    'value': choice_value,
-                    'display_name': force_text(choice_name, strings_only=True).split(' | ')[2]
+                    "value": choice_value,
+                    "display_name": force_text(choice_name, strings_only=True).split(
+                        " | "
+                    )[2],
                 }
                 for choice_value, choice_name in field.choices.items()
             ]
@@ -267,6 +289,7 @@ class GroupViewSet(ModelViewSet):
     There are the following views: metadata, list, retrieve, create,
     partial_update, update and destroy.
     """
+
     metadata_class = GroupViewSetMetadata
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
@@ -276,17 +299,19 @@ class GroupViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('list', 'retrieve'):
+        if self.action in ("list", "retrieve"):
             result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action == 'metadata':
+        elif self.action == "metadata":
             # Every authenticated user can see the metadata.
             # Anonymous users can do so if they are enabled.
             result = self.request.user.is_authenticated or anonymous_is_enabled()
-        elif self.action in ('create', 'partial_update', 'update', 'destroy'):
+        elif self.action in ("create", "partial_update", "update", "destroy"):
             # Users with all app permissions can edit groups.
-            result = (has_perm(self.request.user, 'users.can_see_name') and
-                      has_perm(self.request.user, 'users.can_see_extra_data') and
-                      has_perm(self.request.user, 'users.can_manage'))
+            result = (
+                has_perm(self.request.user, "users.can_see_name")
+                and has_perm(self.request.user, "users.can_see_extra_data")
+                and has_perm(self.request.user, "users.can_manage")
+            )
         else:
             # Deny request in any other case.
             result = False
@@ -300,12 +325,16 @@ class GroupViewSet(ModelViewSet):
         group = self.get_object()
 
         # Collect old and new (given) permissions to get the difference.
-        old_permissions = list(group.permissions.all())  # Force evaluation so the perms don't change anymore.
-        permission_names = request.data['permissions']
+        old_permissions = list(
+            group.permissions.all()
+        )  # Force evaluation so the perms don't change anymore.
+        permission_names = request.data["permissions"]
         if isinstance(permission_names, str):
             permission_names = [permission_names]
         given_permissions = [
-            PermissionRelatedField(read_only=True).to_internal_value(data=perm) for perm in permission_names]
+            PermissionRelatedField(read_only=True).to_internal_value(data=perm)
+            for perm in permission_names
+        ]
 
         # Run super to update the group.
         response = super().update(request, *args, **kwargs)
@@ -331,18 +360,25 @@ class GroupViewSet(ModelViewSet):
             # Some permissions are added.
             if len(new_permissions) > 0:
                 elements: List[Element] = []
-                signal_results = permission_change.send(None, permissions=new_permissions, action='added')
+                signal_results = permission_change.send(
+                    None, permissions=new_permissions, action="added"
+                )
                 all_full_data = async_to_sync(element_cache.get_all_full_data)()
                 for receiver, signal_collections in signal_results:
                     for cachable in signal_collections:
-                        for full_data in all_full_data.get(cachable.get_collection_string(), {}):
-                            elements.append(Element(
-                                id=full_data['id'],
-                                collection_string=cachable.get_collection_string(),
-                                full_data=full_data,
-                                information='',
-                                user_id=None,
-                                disable_history=True))
+                        for full_data in all_full_data.get(
+                            cachable.get_collection_string(), {}
+                        ):
+                            elements.append(
+                                Element(
+                                    id=full_data["id"],
+                                    collection_string=cachable.get_collection_string(),
+                                    full_data=full_data,
+                                    information="",
+                                    user_id=None,
+                                    disable_history=True,
+                                )
+                            )
                 inform_changed_elements(elements)
 
             # TODO: Some permissions are deleted.
@@ -357,7 +393,7 @@ class GroupViewSet(ModelViewSet):
         if instance.pk in (GROUP_DEFAULT_PK, GROUP_ADMIN_PK):
             self.permission_denied(request)
         # The list() is required to evaluate the query
-        affected_users_ids = list(instance.user_set.values_list('pk', flat=True))
+        affected_users_ids = list(instance.user_set.values_list("pk", flat=True))
 
         # Delete the group
         self.perform_destroy(instance)
@@ -375,6 +411,7 @@ class PersonalNoteViewSet(ModelViewSet):
     There are the following views: metadata, list, retrieve, create,
     partial_update, update, and destroy.
     """
+
     access_permissions = PersonalNoteAccessPermissions()
     queryset = PersonalNote.objects.all()
 
@@ -382,9 +419,15 @@ class PersonalNoteViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('list', 'retrieve'):
+        if self.action in ("list", "retrieve"):
             result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action in ('metadata', 'create', 'partial_update', 'update', 'destroy'):
+        elif self.action in (
+            "metadata",
+            "create",
+            "partial_update",
+            "update",
+            "destroy",
+        ):
             # Every authenticated user can see metadata and create personal
             # notes for himself and can manipulate only his own personal notes.
             # See self.perform_create(), self.update() and self.destroy().
@@ -421,19 +464,23 @@ class PersonalNoteViewSet(ModelViewSet):
 
 # Special API views
 
+
 class UserLoginView(APIView):
     """
     Login the user.
     """
-    http_method_names = ['get', 'post']
+
+    http_method_names = ["get", "post"]
 
     def post(self, *args, **kwargs):
         # If the client tells that cookies are disabled, do not continue as guest (if enabled)
-        if not self.request.data.get('cookies', True):
-            raise ValidationError({'detail': _('Cookies have to be enabled to use OpenSlides.')})
+        if not self.request.data.get("cookies", True):
+            raise ValidationError(
+                {"detail": _("Cookies have to be enabled to use OpenSlides.")}
+            )
         form = AuthenticationForm(self.request, data=self.request.data)
         if not form.is_valid():
-            raise ValidationError({'detail': _('Username or password is not correct.')})
+            raise ValidationError({"detail": _("Username or password is not correct.")})
         self.user = form.get_user()
         auth_login(self.request, self.user)
         return super().post(*args, **kwargs)
@@ -448,35 +495,36 @@ class UserLoginView(APIView):
 
         For POST requests adds the id of the current user to the context.
         """
-        if self.request.method == 'GET':
-            if config['general_login_info_text']:
-                context['info_text'] = config['general_login_info_text']
+        if self.request.method == "GET":
+            if config["general_login_info_text"]:
+                context["info_text"] = config["general_login_info_text"]
             else:
                 try:
-                    user = User.objects.get(username='admin')
+                    user = User.objects.get(username="admin")
                 except User.DoesNotExist:
-                    context['info_text'] = ''
+                    context["info_text"] = ""
                 else:
-                    if user.check_password('admin'):
-                        context['info_text'] = _(
-                            'Installation was successfully. Use {username} and '
-                            '{password} for first login. Important: Please change '
-                            'your password!').format(
-                                username='<strong>admin</strong>',
-                                password='<strong>admin</strong>')
+                    if user.check_password("admin"):
+                        context["info_text"] = _(
+                            "Installation was successfully. Use {username} and "
+                            "{password} for first login. Important: Please change "
+                            "your password!"
+                        ).format(
+                            username="<strong>admin</strong>",
+                            password="<strong>admin</strong>",
+                        )
                     else:
-                        context['info_text'] = ''
+                        context["info_text"] = ""
             # Add the privacy policy and legal notice, so the client can display it
             # even, it is not logged in.
-            context['privacy_policy'] = config['general_event_privacy_policy']
-            context['legal_notice'] = config['general_event_legal_notice']
+            context["privacy_policy"] = config["general_event_privacy_policy"]
+            context["legal_notice"] = config["general_event_legal_notice"]
         else:
             # self.request.method == 'POST'
-            context['user_id'] = self.user.pk
-            context['user'] = async_to_sync(element_cache.get_element_restricted_data)(
-                self.user.pk or 0,
-                self.user.get_collection_string(),
-                self.user.pk)
+            context["user_id"] = self.user.pk
+            context["user"] = async_to_sync(element_cache.get_element_restricted_data)(
+                self.user.pk or 0, self.user.get_collection_string(), self.user.pk
+            )
         return super().get_context_data(**context)
 
 
@@ -484,11 +532,12 @@ class UserLogoutView(APIView):
     """
     Logout the user.
     """
-    http_method_names = ['post']
+
+    http_method_names = ["post"]
 
     def post(self, *args, **kwargs):
         if not self.request.user.is_authenticated:
-            raise ValidationError({'detail': _('You are not authenticated.')})
+            raise ValidationError({"detail": _("You are not authenticated.")})
         auth_logout(self.request)
         return super().post(*args, **kwargs)
 
@@ -497,7 +546,8 @@ class WhoAmIView(APIView):
     """
     Returns the id of the requesting user.
     """
-    http_method_names = ['get']
+
+    http_method_names = ["get"]
 
     def get_context_data(self, **context):
         """
@@ -508,36 +558,37 @@ class WhoAmIView(APIView):
         user_id = self.request.user.pk or 0
         if user_id:
             user_data = async_to_sync(element_cache.get_element_restricted_data)(
-                user_id,
-                self.request.user.get_collection_string(),
-                user_id)
+                user_id, self.request.user.get_collection_string(), user_id
+            )
         else:
             user_data = None
         return super().get_context_data(
             user_id=user_id or None,
             guest_enabled=anonymous_is_enabled(),
             user=user_data,
-            **context)
+            **context,
+        )
 
 
 class SetPasswordView(APIView):
     """
     Users can set a new password for themselves.
     """
-    http_method_names = ['post']
+
+    http_method_names = ["post"]
 
     def post(self, request, *args, **kwargs):
         user = request.user
-        if user.check_password(request.data['old_password']):
+        if user.check_password(request.data["old_password"]):
             try:
-                validate_password(request.data.get('new_password'), user=user)
+                validate_password(request.data.get("new_password"), user=user)
             except DjangoValidationError as errors:
-                raise ValidationError({'detail': ' '.join(errors)})
-            user.set_password(request.data['new_password'])
+                raise ValidationError({"detail": " ".join(errors)})
+            user.set_password(request.data["new_password"])
             user.save()
             update_session_auth_hash(request, user)
         else:
-            raise ValidationError({'detail': _('Old password does not match.')})
+            raise ValidationError({"detail": _("Old password does not match.")})
         return super().post(request, *args, **kwargs)
 
 
@@ -549,30 +600,31 @@ class PasswordResetView(APIView):
     address will receive an email (means Django sends one or more emails to
     this address) with a one-use only link.
     """
-    http_method_names = ['post']
+
+    http_method_names = ["post"]
     use_https = False  # TODO: Do we use https?
 
     def post(self, request, *args, **kwargs):
         """
         Loop over all users and send emails.
         """
-        to_email = request.data.get('email')
+        to_email = request.data.get("email")
         for user in self.get_users(to_email):
             current_site = get_current_site(request)
             site_name = current_site.name
             context = {
-                'email': to_email,
-                'site_name': site_name,
-                'protocol': 'https' if self.use_https else 'http',
-                'domain': current_site.domain,
-                'path': '/login/reset-password-confirm/',
-                'user_id': urlsafe_base64_encode(force_bytes(user.pk)).decode(),
-                'token': default_token_generator.make_token(user),
-                'username': user.get_username(),
+                "email": to_email,
+                "site_name": site_name,
+                "protocol": "https" if self.use_https else "http",
+                "domain": current_site.domain,
+                "path": "/login/reset-password-confirm/",
+                "user_id": urlsafe_base64_encode(force_bytes(user.pk)).decode(),
+                "token": default_token_generator.make_token(user),
+                "username": user.get_username(),
             }
             # Send a django.core.mail.EmailMessage to `to_email`.
-            subject = _('Password reset for {}').format(site_name)
-            subject = ''.join(subject.splitlines())
+            subject = _("Password reset for {}").format(site_name)
+            subject = "".join(subject.splitlines())
             body = self.get_email_body(**context)
             from_email = None  # TODO: Add nice from_email here.
             email_message = mail.EmailMessage(subject, body, from_email, [to_email])
@@ -586,10 +638,9 @@ class PasswordResetView(APIView):
         that prevent inactive users and users with unusable passwords from
         resetting their password.
         """
-        active_users = User.objects.filter(**{
-            'email__iexact': email,
-            'is_active': True,
-        })
+        active_users = User.objects.filter(
+            **{"email__iexact": email, "is_active": True}
+        )
         return (u for u in active_users if u.has_usable_password())
 
     def get_email_body(self, **context):
@@ -620,23 +671,26 @@ class PasswordResetConfirmView(APIView):
     Send POST request with {'user_id': <encoded user id>, 'token': <token>,
     'password' <new password>} to set password of this user to the new one.
     """
-    http_method_names = ['post']
+
+    http_method_names = ["post"]
 
     def post(self, request, *args, **kwargs):
-        uidb64 = request.data.get('user_id')
-        token = request.data.get('token')
-        password = request.data.get('password')
+        uidb64 = request.data.get("user_id")
+        token = request.data.get("token")
+        password = request.data.get("password")
         if not (uidb64 and token and password):
-            raise ValidationError({'detail': _('You have to provide user_id, token and password.')})
+            raise ValidationError(
+                {"detail": _("You have to provide user_id, token and password.")}
+            )
         user = self.get_user(uidb64)
         if user is None:
-            raise ValidationError({'detail': _('User does not exist.')})
+            raise ValidationError({"detail": _("User does not exist.")})
         if not default_token_generator.check_token(user, token):
-            raise ValidationError({'detail': _('Invalid token.')})
+            raise ValidationError({"detail": _("Invalid token.")})
         try:
             validate_password(password, user=user)
         except DjangoValidationError as errors:
-            raise ValidationError({'detail': ' '.join(errors)})
+            raise ValidationError({"detail": " ".join(errors)})
         user.set_password(password)
         user.save()
         return super().post(request, *args, **kwargs)

@@ -10,9 +10,8 @@ from .models import Mediafile
 
 
 class AngularCompatibleFileField(FileField):
-
     def to_internal_value(self, data):
-        if data == '':
+        if data == "":
             return None
         return super(AngularCompatibleFileField, self).to_internal_value(data)
 
@@ -20,20 +19,17 @@ class AngularCompatibleFileField(FileField):
         if value is None:
             return None
         filetype = mimetypes.guess_type(value.path)[0]
-        result = {
-            'name': value.name,
-            'type': filetype
-        }
-        if filetype == 'application/pdf':
+        result = {"name": value.name, "type": filetype}
+        if filetype == "application/pdf":
             try:
-                result['pages'] = PdfFileReader(open(value.path, 'rb')).getNumPages()
+                result["pages"] = PdfFileReader(open(value.path, "rb")).getNumPages()
             except FileNotFoundError:
                 # File was deleted from server. Set 'pages' to 0.
-                result['pages'] = 0
+                result["pages"] = 0
             except PdfReadError:
                 # File could be encrypted but not be detected by PyPDF.
-                result['pages'] = 0
-                result['encrypted'] = True
+                result["pages"] = 0
+                result["encrypted"] = True
         return result
 
 
@@ -41,6 +37,7 @@ class MediafileSerializer(ModelSerializer):
     """
     Serializer for mediafile.models.Mediafile objects.
     """
+
     media_url_prefix = SerializerMethodField()
     filesize = SerializerMethodField()
 
@@ -52,19 +49,20 @@ class MediafileSerializer(ModelSerializer):
         super(MediafileSerializer, self).__init__(*args, **kwargs)
         self.serializer_field_mapping[dbmodels.FileField] = AngularCompatibleFileField
         if self.instance is not None:
-            self.fields['mediafile'].read_only = True
+            self.fields["mediafile"].read_only = True
 
     class Meta:
         model = Mediafile
         fields = (
-            'id',
-            'title',
-            'mediafile',
-            'media_url_prefix',
-            'uploader',
-            'filesize',
-            'hidden',
-            'timestamp',)
+            "id",
+            "title",
+            "mediafile",
+            "media_url_prefix",
+            "uploader",
+            "filesize",
+            "hidden",
+            "timestamp",
+        )
 
     def get_filesize(self, mediafile):
         return mediafile.get_filesize()

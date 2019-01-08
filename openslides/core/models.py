@@ -24,13 +24,13 @@ class ProjectorManager(models.Manager):
     """
     Customized model manager to support our get_full_queryset method.
     """
+
     def get_full_queryset(self):
         """
         Returns the normal queryset with all projectors. In the background
         projector defaults are prefetched from the database.
         """
-        return self.get_queryset().prefetch_related(
-            'projectiondefaults')
+        return self.get_queryset().prefetch_related("projectiondefaults")
 
 
 class Projector(RESTModelMixin, models.Model):
@@ -72,6 +72,7 @@ class Projector(RESTModelMixin, models.Model):
     The projector can be controlled using the REST API with POST requests
     on e. g. the URL /rest/core/projector/1/activate_elements/.
     """
+
     access_permissions = ProjectorAccessPermissions()
 
     objects = ProjectorManager()
@@ -86,24 +87,21 @@ class Projector(RESTModelMixin, models.Model):
 
     height = models.PositiveIntegerField(default=768)
 
-    name = models.CharField(
-        max_length=255,
-        unique=True,
-        blank=True)
+    name = models.CharField(max_length=255, unique=True, blank=True)
 
-    blank = models.BooleanField(
-        blank=False,
-        default=False)
+    blank = models.BooleanField(blank=False, default=False)
 
     class Meta:
         """
         Contains general permissions that can not be placed in a specific app.
         """
+
         default_permissions = ()
         permissions = (
-            ('can_see_projector', 'Can see the projector'),
-            ('can_manage_projector', 'Can manage the projector'),
-            ('can_see_frontpage', 'Can see the front page'),)
+            ("can_see_projector", "Can see the projector"),
+            ("can_manage_projector", "Can manage the projector"),
+            ("can_see_frontpage", "Can see the front page"),
+        )
 
     @property
     def elements(self):
@@ -120,17 +118,19 @@ class Projector(RESTModelMixin, models.Model):
         for key, value in self.config.items():
             # Use a copy here not to change the origin value in the config field.
             result[key] = value.copy()
-            result[key]['uuid'] = key
-            element = elements.get(value['name'])
+            result[key]["uuid"] = key
+            element = elements.get(value["name"])
             if element is None:
-                result[key]['error'] = 'Projector element does not exist.'
+                result[key]["error"] = "Projector element does not exist."
             else:
                 try:
-                    result[key].update(element.check_and_update_data(
-                        projector_object=self,
-                        config_entry=value))
+                    result[key].update(
+                        element.check_and_update_data(
+                            projector_object=self, config_entry=value
+                        )
+                    )
                 except ProjectorException as e:
-                    result[key]['error'] = str(e)
+                    result[key]["error"] = str(e)
         return result
 
     @classmethod
@@ -173,14 +173,14 @@ class ProjectionDefault(RESTModelMixin, models.Model):
     special name like 'list_of_speakers'. The display_name is the shown
     name on the front end for the user.
     """
+
     name = models.CharField(max_length=256)
 
     display_name = models.CharField(max_length=256)
 
     projector = models.ForeignKey(
-        Projector,
-        on_delete=models.CASCADE,
-        related_name='projectiondefaults')
+        Projector, on_delete=models.CASCADE, related_name="projectiondefaults"
+    )
 
     def get_root_rest_element(self):
         return self.projector
@@ -197,17 +197,15 @@ class Tag(RESTModelMixin, models.Model):
     Model for tags. This tags can be used for other models like agenda items,
     motions or assignments.
     """
+
     access_permissions = TagAccessPermissions()
 
-    name = models.CharField(
-        max_length=255,
-        unique=True)
+    name = models.CharField(max_length=255, unique=True)
 
     class Meta:
-        ordering = ('name',)
+        ordering = ("name",)
         default_permissions = ()
-        permissions = (
-            ('can_manage_tags', 'Can manage tags'),)
+        permissions = (("can_manage_tags", "Can manage tags"),)
 
     def __str__(self):
         return self.name
@@ -217,6 +215,7 @@ class ConfigStore(RESTModelMixin, models.Model):
     """
     A model class to store all config variables in the database.
     """
+
     access_permissions = ConfigAccessPermissions()
 
     key = models.CharField(max_length=255, unique=True, db_index=True)
@@ -228,12 +227,13 @@ class ConfigStore(RESTModelMixin, models.Model):
     class Meta:
         default_permissions = ()
         permissions = (
-            ('can_manage_config', 'Can manage configuration'),
-            ('can_manage_logos_and_fonts', 'Can manage logos and fonts'))
+            ("can_manage_config", "Can manage configuration"),
+            ("can_manage_logos_and_fonts", "Can manage logos and fonts"),
+        )
 
     @classmethod
     def get_collection_string(cls):
-        return 'core/config'
+        return "core/config"
 
 
 class ChatMessage(RESTModelMixin, models.Model):
@@ -242,31 +242,32 @@ class ChatMessage(RESTModelMixin, models.Model):
 
     At the moment we only have one global chat room for managers.
     """
+
     access_permissions = ChatMessageAccessPermissions()
-    can_see_permission = 'core.can_use_chat'
+    can_see_permission = "core.can_use_chat"
 
     message = models.TextField()
 
     timestamp = models.DateTimeField(auto_now_add=True)
 
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     class Meta:
         default_permissions = ()
         permissions = (
-            ('can_use_chat', 'Can use the chat'),
-            ('can_manage_chat', 'Can manage the chat'),)
+            ("can_use_chat", "Can use the chat"),
+            ("can_manage_chat", "Can manage the chat"),
+        )
 
     def __str__(self):
-        return 'Message {}'.format(self.timestamp)
+        return "Message {}".format(self.timestamp)
 
 
 class ProjectorMessage(RESTModelMixin, models.Model):
     """
     Model for ProjectorMessages.
     """
+
     access_permissions = ProjectorMessageAccessPermissions()
 
     message = models.TextField(blank=True)
@@ -280,16 +281,18 @@ class ProjectorMessage(RESTModelMixin, models.Model):
         projector message projector element is disabled.
         """
         Projector.remove_any(
-            skip_autoupdate=skip_autoupdate,
-            name='core/projector-message',
-            id=self.pk)
-        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)  # type: ignore
+            skip_autoupdate=skip_autoupdate, name="core/projector-message", id=self.pk
+        )
+        return super().delete(  # type: ignore
+            skip_autoupdate=skip_autoupdate, *args, **kwargs
+        )
 
 
 class Countdown(RESTModelMixin, models.Model):
     """
     Model for countdowns.
     """
+
     access_permissions = CountdownAccessPermissions()
 
     description = models.CharField(max_length=256, blank=True)
@@ -309,19 +312,22 @@ class Countdown(RESTModelMixin, models.Model):
         countdown projector element is disabled.
         """
         Projector.remove_any(
-            skip_autoupdate=skip_autoupdate,
-            name='core/countdown',
-            id=self.pk)
-        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)  # type: ignore
+            skip_autoupdate=skip_autoupdate, name="core/countdown", id=self.pk
+        )
+        return super().delete(  # type: ignore
+            skip_autoupdate=skip_autoupdate, *args, **kwargs
+        )
 
     def control(self, action, skip_autoupdate=False):
-        if action not in ('start', 'stop', 'reset'):
-            raise ValueError("Action must be 'start', 'stop' or 'reset', not {}.".format(action))
+        if action not in ("start", "stop", "reset"):
+            raise ValueError(
+                "Action must be 'start', 'stop' or 'reset', not {}.".format(action)
+            )
 
-        if action == 'start':
+        if action == "start":
             self.running = True
             self.countdown_time = now().timestamp() + self.default_time
-        elif action == 'stop' and self.running:
+        elif action == "stop" and self.running:
             self.running = False
             self.countdown_time = self.countdown_time - now().timestamp()
         else:  # reset
@@ -337,6 +343,7 @@ class HistoryData(models.Model):
     This is not a RESTModel. It is not cachable and can only be reached by a
     special viewset.
     """
+
     full_data = JSONField()
 
     class Meta:
@@ -347,6 +354,7 @@ class HistoryManager(models.Manager):
     """
     Customized model manager for the history model.
     """
+
     def add_elements(self, elements):
         """
         Method to add elements to the history. This does not trigger autoupdate.
@@ -354,18 +362,26 @@ class HistoryManager(models.Manager):
         with transaction.atomic():
             instances = []
             for element in elements:
-                if element['disable_history'] or element['collection_string'] == self.model.get_collection_string():
+                if (
+                    element["disable_history"]
+                    or element["collection_string"]
+                    == self.model.get_collection_string()
+                ):
                     # Do not update history for history elements itself or if history is disabled.
                     continue
                 # HistoryData is not a root rest element so there is no autoupdate and not history saving here.
-                data = HistoryData.objects.create(full_data=element['full_data'])
+                data = HistoryData.objects.create(full_data=element["full_data"])
                 instance = self.model(
-                    element_id=get_element_id(element['collection_string'], element['id']),
-                    information=element['information'],
-                    user_id=element['user_id'],
+                    element_id=get_element_id(
+                        element["collection_string"], element["id"]
+                    ),
+                    information=element["information"],
+                    user_id=element["user_id"],
                     full_data=data,
                 )
-                instance.save(skip_autoupdate=True)  # Skip autoupdate and of course history saving.
+                instance.save(
+                    skip_autoupdate=True
+                )  # Skip autoupdate and of course history saving.
                 instances.append(instance)
         return instances
 
@@ -380,14 +396,16 @@ class HistoryManager(models.Manager):
             all_full_data = async_to_sync(element_cache.get_all_full_data)()
             for collection_string, data in all_full_data.items():
                 for full_data in data:
-                    elements.append(Element(
-                        id=full_data['id'],
-                        collection_string=collection_string,
-                        full_data=full_data,
-                        information='',
-                        user_id=None,
-                        disable_history=False,
-                    ))
+                    elements.append(
+                        Element(
+                            id=full_data["id"],
+                            collection_string=collection_string,
+                            full_data=full_data,
+                            information="",
+                            user_id=None,
+                            disable_history=False,
+                        )
+                    )
             instances = self.add_elements(elements)
         return instances
 
@@ -399,29 +417,22 @@ class History(RESTModelMixin, models.Model):
     This model itself is not part of the history. This means that if you
     delete a user you may lose the information of the user field here.
     """
+
     access_permissions = HistoryAccessPermissions()
 
     objects = HistoryManager()
 
-    element_id = models.CharField(
-        max_length=255,
-    )
+    element_id = models.CharField(max_length=255)
 
     now = models.DateTimeField(auto_now_add=True)
 
-    information = models.CharField(
-        max_length=255,
-    )
+    information = models.CharField(max_length=255)
 
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        null=True,
-        on_delete=models.SET_NULL)
-
-    full_data = models.OneToOneField(
-        HistoryData,
-        on_delete=models.CASCADE,
+        settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL
     )
+
+    full_data = models.OneToOneField(HistoryData, on_delete=models.CASCADE)
 
     class Meta:
         default_permissions = ()

@@ -5,11 +5,9 @@ from openslides.utils.consumers import SiteConsumer
 from openslides.utils.middleware import AuthMiddlewareStack
 
 
-application = ProtocolTypeRouter({
-    # WebSocket chat handler
-    "websocket": AuthMiddlewareStack(
-        URLRouter([
-            url(r"^ws/$", SiteConsumer),
-        ])
-    )
-})
+application = ProtocolTypeRouter(
+    {
+        # WebSocket chat handler
+        "websocket": AuthMiddlewareStack(URLRouter([url(r"^ws/$", SiteConsumer)]))
+    }
+)

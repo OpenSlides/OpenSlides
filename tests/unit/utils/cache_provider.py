@@ -12,41 +12,43 @@ def restrict_elements(elements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     for element in elements:
         restricted_element = {}
         for key, value in element.items():
-            if key == 'id':
+            if key == "id":
                 restricted_element[key] = value
             else:
-                restricted_element[key] = 'restricted_{}'.format(value)
+                restricted_element[key] = "restricted_{}".format(value)
         out.append(restricted_element)
     return out
 
 
 class Collection1:
     def get_collection_string(self) -> str:
-        return 'app/collection1'
+        return "app/collection1"
 
     def get_elements(self) -> List[Dict[str, Any]]:
-        return [
-            {'id': 1, 'value': 'value1'},
-            {'id': 2, 'value': 'value2'}]
+        return [{"id": 1, "value": "value1"}, {"id": 2, "value": "value2"}]
 
-    async def restrict_elements(self, user_id: int, elements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    async def restrict_elements(
+        self, user_id: int, elements: List[Dict[str, Any]]
+    ) -> List[Dict[str, Any]]:
         return restrict_elements(elements)
 
 
 class Collection2:
     def get_collection_string(self) -> str:
-        return 'app/collection2'
+        return "app/collection2"
 
     def get_elements(self) -> List[Dict[str, Any]]:
-        return [
-            {'id': 1, 'key': 'value1'},
-            {'id': 2, 'key': 'value2'}]
+        return [{"id": 1, "key": "value1"}, {"id": 2, "key": "value2"}]
 
-    async def restrict_elements(self, user_id: int, elements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    async def restrict_elements(
+        self, user_id: int, elements: List[Dict[str, Any]]
+    ) -> List[Dict[str, Any]]:
         return restrict_elements(elements)
 
 
-def get_cachable_provider(cachables: List[Cachable] = [Collection1(), Collection2()]) -> Callable[[], List[Cachable]]:
+def get_cachable_provider(
+    cachables: List[Cachable] = [Collection1(), Collection2()]
+) -> Callable[[], List[Cachable]]:
     """
     Returns a cachable_provider.
     """
@@ -55,12 +57,9 @@ def get_cachable_provider(cachables: List[Cachable] = [Collection1(), Collection
 
 def example_data():
     return {
-        'app/collection1': [
-            {'id': 1, 'value': 'value1'},
-            {'id': 2, 'value': 'value2'}],
-        'app/collection2': [
-            {'id': 1, 'key': 'value1'},
-            {'id': 2, 'key': 'value2'}]}
+        "app/collection1": [{"id": 1, "value": "value1"}, {"id": 2, "value": "value2"}],
+        "app/collection2": [{"id": 1, "key": "value1"}, {"id": 2, "key": "value2"}],
+    }
 
 
 class TTestCacheProvider(MemmoryCacheProvider):
@@ -69,11 +68,15 @@ class TTestCacheProvider(MemmoryCacheProvider):
     testing.
     """
 
-    async def del_lock_after_wait(self, lock_name: str, future: asyncio.Future = None) -> None:
+    async def del_lock_after_wait(
+        self, lock_name: str, future: asyncio.Future = None
+    ) -> None:
         if future is None:
             asyncio.ensure_future(self.del_lock(lock_name))
         else:
+
             async def set_future() -> None:
                 await self.del_lock(lock_name)
                 future.set_result(1)  # type: ignore
+
             asyncio.ensure_future(set_future())

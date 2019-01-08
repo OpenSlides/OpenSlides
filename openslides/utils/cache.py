@@ -45,11 +45,12 @@ class ElementCache:
     """
 
     def __init__(
-            self,
-            use_restricted_data_cache: bool = False,
-            cache_provider_class: Type[ElementCacheProvider] = RedisCacheProvider,
-            cachable_provider: Callable[[], List[Cachable]] = get_all_cachables,
-            start_time: int = None) -> None:
+        self,
+        use_restricted_data_cache: bool = False,
+        cache_provider_class: Type[ElementCacheProvider] = RedisCacheProvider,
+        cachable_provider: Callable[[], List[Cachable]] = get_all_cachables,
+        start_time: int = None,
+    ) -> None:
         """
         Initializes the cache.
 
@@ -63,7 +64,9 @@ class ElementCache:
         # Start time is used as first change_id if there is non in redis
         if start_time is None:
             # Use the miliseconds (rounted) since the 2016-02-29.
-            start_time = int((datetime.utcnow() - datetime(2016, 2, 29)).total_seconds()) * 1000
+            start_time = (
+                int((datetime.utcnow() - datetime(2016, 2, 29)).total_seconds()) * 1000
+            )
         self.start_time = start_time
 
         # Contains Futures to controll, that only one client updates the restricted_data.
@@ -79,7 +82,10 @@ class ElementCache:
         """
         # This method is neccessary to lazy load the cachables
         if self._cachables is None:
-            self._cachables = {cachable.get_collection_string(): cachable for cachable in self.cachable_provider()}
+            self._cachables = {
+                cachable.get_collection_string(): cachable
+                for cachable in self.cachable_provider()
+            }
         return self._cachables
 
     def ensure_cache(self, reset: bool = False) -> None:
@@ -93,7 +99,7 @@ class ElementCache:
         cache_exists = async_to_sync(self.cache_provider.data_exists)()
 
         if reset or not cache_exists:
-            lock_name = 'ensure_cache'
+            lock_name = "ensure_cache"
             # Set a lock so only one process builds the cache
             if async_to_sync(self.cache_provider.set_lock)(lock_name):
                 try:
@@ -101,8 +107,12 @@ class ElementCache:
                     for collection_string, cachable in self.cachables.items():
                         for element in cachable.get_elements():
                             mapping.update(
-                                {get_element_id(collection_string, element['id']):
-                                 json.dumps(element)})
+                                {
+                                    get_element_id(
+                                        collection_string, element["id"]
+                                    ): json.dumps(element)
+                                }
+                            )
                     async_to_sync(self.cache_provider.reset_full_cache)(mapping)
                 finally:
                     async_to_sync(self.cache_provider.del_lock)(lock_name)
@@ -113,7 +123,8 @@ class ElementCache:
         self.ensured = True
 
     async def change_elements(
-            self, elements: Dict[str, Optional[Dict[str, Any]]]) -> int:
+        self, elements: Dict[str, Optional[Dict[str, Any]]]
+    ) -> int:
         """
         Changes elements in the cache.
 
@@ -137,7 +148,9 @@ class ElementCache:
         if deleted_elements:
             await self.cache_provider.del_elements(deleted_elements)
 
-        return await self.cache_provider.add_changed_elements(self.start_time + 1, elements.keys())
+        return await self.cache_provider.add_changed_elements(
+            self.start_time + 1, elements.keys()
+        )
 
     async def get_all_full_data(self) -> Dict[str, List[Dict[str, Any]]]:
         """
@@ -154,7 +167,8 @@ class ElementCache:
         return dict(out)
 
     async def get_full_data(
-            self, change_id: int = 0, max_change_id: int = -1) -> Tuple[Dict[str, List[Dict[str, Any]]], List[str]]:
+        self, change_id: int = 0, max_change_id: int = -1
+    ) -> Tuple[Dict[str, List[Dict[str, Any]]], List[str]]:
         """
         Returns all full_data since change_id until max_change_id (including).
         max_change_id -1 means the highest change_id.
@@ -182,22 +196,33 @@ class ElementCache:
             # not inform the user about deleted elements.
             raise RuntimeError(
                 "change_id {} is lower then the lowest change_id in redis {}. "
-                "Catch this exception and rerun the method with change_id=0."
-                .format(change_id, lowest_change_id))
+                "Catch this exception and rerun the method with change_id=0.".format(
+                    change_id, lowest_change_id
+                )
+            )
 
-        raw_changed_elements, deleted_elements = await self.cache_provider.get_data_since(change_id, max_change_id=max_change_id)
+        raw_changed_elements, deleted_elements = await self.cache_provider.get_data_since(
+            change_id, max_change_id=max_change_id
+        )
         return (
-            {collection_string: [json.loads(value.decode()) for value in value_list]
-             for collection_string, value_list in raw_changed_elements.items()},
-            deleted_elements)
+            {
+                collection_string: [json.loads(value.decode()) for value in value_list]
+                for collection_string, value_list in raw_changed_elements.items()
+            },
+            deleted_elements,
+        )
 
-    async def get_element_full_data(self, collection_string: str, id: int) -> Optional[Dict[str, Any]]:
+    async def get_element_full_data(
+        self, collection_string: str, id: int
+    ) -> Optional[Dict[str, Any]]:
         """
         Returns one element as full data.
 
         Returns None if the element does not exist.
         """
-        element = await self.cache_provider.get_element(get_element_id(collection_string, id))
+        element = await self.cache_provider.get_element(
+            get_element_id(collection_string, id)
+        )
 
         if element is None:
             return None
@@ -244,7 +269,9 @@ class ElementCache:
             change_id = await self.get_current_change_id()
             if change_id > user_change_id:
                 try:
-                    full_data_elements, deleted_elements = await self.get_full_data(user_change_id + 1)
+                    full_data_elements, deleted_elements = await self.get_full_data(
+                        user_change_id + 1
+                    )
                 except RuntimeError:
                     # The user_change_id is lower then the lowest change_id in the cache.
                     # The whole restricted_data for that user has to be recreated.
@@ -253,7 +280,9 @@ class ElementCache:
                 else:
                     # Remove deleted elements
                     if deleted_elements:
-                        await self.cache_provider.del_elements(deleted_elements, user_id)
+                        await self.cache_provider.del_elements(
+                            deleted_elements, user_id
+                        )
 
                 mapping = {}
                 for collection_string, full_data in full_data_elements.items():
@@ -261,9 +290,13 @@ class ElementCache:
                     elements = await restricter(user_id, full_data)
                     for element in elements:
                         mapping.update(
-                            {get_element_id(collection_string, element['id']):
-                             json.dumps(element)})
-                mapping['_config:change_id'] = str(change_id)
+                            {
+                                get_element_id(
+                                    collection_string, element["id"]
+                                ): json.dumps(element)
+                            }
+                        )
+                mapping["_config:change_id"] = str(change_id)
                 await self.cache_provider.update_restricted_data(user_id, mapping)
             # Unset the lock
             await self.cache_provider.del_lock(lock_name)
@@ -277,13 +310,17 @@ class ElementCache:
                 while await self.cache_provider.get_lock(lock_name):
                     await asyncio.sleep(0.01)
 
-    async def get_all_restricted_data(self, user_id: int) -> Dict[str, List[Dict[str, Any]]]:
+    async def get_all_restricted_data(
+        self, user_id: int
+    ) -> Dict[str, List[Dict[str, Any]]]:
         """
         Like get_all_full_data but with restricted_data for an user.
         """
         if not self.use_restricted_data_cache:
             all_restricted_data = {}
-            for collection_string, full_data in (await self.get_all_full_data()).items():
+            for collection_string, full_data in (
+                await self.get_all_full_data()
+            ).items():
                 restricter = self.cachables[collection_string].restrict_elements
                 elements = await restricter(user_id, full_data)
                 all_restricted_data[collection_string] = elements
@@ -294,17 +331,15 @@ class ElementCache:
         out: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
         restricted_data = await self.cache_provider.get_all_data(user_id)
         for element_id, data in restricted_data.items():
-            if element_id.decode().startswith('_config'):
+            if element_id.decode().startswith("_config"):
                 continue
             collection_string, __ = split_element_id(element_id)
             out[collection_string].append(json.loads(data.decode()))
         return dict(out)
 
     async def get_restricted_data(
-            self,
-            user_id: int,
-            change_id: int = 0,
-            max_change_id: int = -1) -> Tuple[Dict[str, List[Dict[str, Any]]], List[str]]:
+        self, user_id: int, change_id: int = 0, max_change_id: int = -1
+    ) -> Tuple[Dict[str, List[Dict[str, Any]]], List[str]]:
         """
         Like get_full_data but with restricted_data for an user.
         """
@@ -313,7 +348,9 @@ class ElementCache:
             return (await self.get_all_restricted_data(user_id), [])
 
         if not self.use_restricted_data_cache:
-            changed_elements, deleted_elements = await self.get_full_data(change_id, max_change_id)
+            changed_elements, deleted_elements = await self.get_full_data(
+                change_id, max_change_id
+            )
             restricted_data = {}
             for collection_string, full_data in changed_elements.items():
                 restricter = self.cachables[collection_string].restrict_elements
@@ -327,20 +364,29 @@ class ElementCache:
             # not inform the user about deleted elements.
             raise RuntimeError(
                 "change_id {} is lower then the lowest change_id in redis {}. "
-                "Catch this exception and rerun the method with change_id=0."
-                .format(change_id, lowest_change_id))
+                "Catch this exception and rerun the method with change_id=0.".format(
+                    change_id, lowest_change_id
+                )
+            )
 
         # If another coroutine or another daphne server also updates the restricted
         # data, this waits until it is done.
         await self.update_restricted_data(user_id)
 
-        raw_changed_elements, deleted_elements = await self.cache_provider.get_data_since(change_id, user_id, max_change_id)
+        raw_changed_elements, deleted_elements = await self.cache_provider.get_data_since(
+            change_id, user_id, max_change_id
+        )
         return (
-            {collection_string: [json.loads(value.decode()) for value in value_list]
-             for collection_string, value_list in raw_changed_elements.items()},
-            deleted_elements)
+            {
+                collection_string: [json.loads(value.decode()) for value in value_list]
+                for collection_string, value_list in raw_changed_elements.items()
+            },
+            deleted_elements,
+        )
 
-    async def get_element_restricted_data(self, user_id: int, collection_string: str, id: int) -> Optional[Dict[str, Any]]:
+    async def get_element_restricted_data(
+        self, user_id: int, collection_string: str, id: int
+    ) -> Optional[Dict[str, Any]]:
         """
         Returns the restricted_data of one element.
 
@@ -356,7 +402,9 @@ class ElementCache:
 
         await self.update_restricted_data(user_id)
 
-        out = await self.cache_provider.get_element(get_element_id(collection_string, id), user_id)
+        out = await self.cache_provider.get_element(
+            get_element_id(collection_string, id), user_id
+        )
         return json.loads(out.decode()) if out else None
 
     async def get_current_change_id(self) -> int:
@@ -379,7 +427,7 @@ class ElementCache:
         """
         value = await self.cache_provider.get_lowest_change_id()
         if not value:
-            raise RuntimeError('There is no known change_id.')
+            raise RuntimeError("There is no known change_id.")
         # Return the score (second element) of the first (and only) element
         return value
 
@@ -393,9 +441,12 @@ def load_element_cache(restricted_data: bool = True) -> ElementCache:
     else:
         cache_provider_class = MemmoryCacheProvider
 
-    return ElementCache(cache_provider_class=cache_provider_class, use_restricted_data_cache=restricted_data)
+    return ElementCache(
+        cache_provider_class=cache_provider_class,
+        use_restricted_data_cache=restricted_data,
+    )
 
 
 # Set the element_cache
-use_restricted_data = getattr(settings, 'RESTRICTED_DATA_CACHE', True)
+use_restricted_data = getattr(settings, "RESTRICTED_DATA_CACHE", True)
 element_cache = load_element_cache(restricted_data=use_restricted_data)

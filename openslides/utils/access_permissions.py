@@ -14,7 +14,7 @@ class BaseAccessPermissions:
     from this base class for every autoupdate root model.
     """
 
-    base_permission = ''
+    base_permission = ""
     """
     Set to a permission the user needs to see the element.
 
@@ -40,8 +40,8 @@ class BaseAccessPermissions:
             return bool(user_id) or await async_anonymous_is_enabled()
 
     async def get_restricted_data(
-            self, full_data: List[Dict[str, Any]],
-            user_id: int) -> List[Dict[str, Any]]:
+        self, full_data: List[Dict[str, Any]], user_id: int
+    ) -> List[Dict[str, Any]]:
         """
         Returns the restricted serialized data for the instance prepared
         for the user.
@@ -67,7 +67,9 @@ class RequiredUsers:
         """
         return set(self.callables.keys())
 
-    def add_collection_string(self, collection_string: str, callable: Callable[[Dict[str, Any]], Set[int]]) -> None:
+    def add_collection_string(
+        self, collection_string: str, callable: Callable[[Dict[str, Any]], Set[int]]
+    ) -> None:
         """
         Add a callable for a collection_string to get the required users of the
         elements.

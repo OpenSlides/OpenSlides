@@ -11,22 +11,29 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        ('mediafiles', '0001_initial'),
-    ]
+    dependencies = [("mediafiles", "0001_initial")]
 
     operations = [
         migrations.CreateModel(
-            name='Topic',
+            name="Topic",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=256)),
-                ('text', models.TextField(blank=True)),
-                ('attachments', models.ManyToManyField(blank=True, to='mediafiles.Mediafile')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=256)),
+                ("text", models.TextField(blank=True)),
+                (
+                    "attachments",
+                    models.ManyToManyField(blank=True, to="mediafiles.Mediafile"),
+                ),
             ],
-            options={
-                'default_permissions': (),
-            },
+            options={"default_permissions": ()},
             bases=(openslides.utils.models.RESTModelMixin, models.Model),
-        ),
+        )
     ]

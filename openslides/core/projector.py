@@ -9,29 +9,32 @@ class Clock(ProjectorElement):
     """
     Clock on the projector.
     """
-    name = 'core/clock'
+
+    name = "core/clock"
 
 
 class CountdownElement(ProjectorElement):
     """
     Countdown slide for the projector.
     """
-    name = 'core/countdown'
+
+    name = "core/countdown"
 
     def check_data(self):
-        if not Countdown.objects.filter(pk=self.config_entry.get('id')).exists():
-            raise ProjectorException('Countdown does not exists.')
+        if not Countdown.objects.filter(pk=self.config_entry.get("id")).exists():
+            raise ProjectorException("Countdown does not exists.")
 
 
 class ProjectorMessageElement(ProjectorElement):
     """
     Short message on the projector. Rendered as overlay.
     """
-    name = 'core/projector-message'
+
+    name = "core/projector-message"
 
     def check_data(self):
-        if not ProjectorMessage.objects.filter(pk=self.config_entry.get('id')).exists():
-            raise ProjectorException('Message does not exists.')
+        if not ProjectorMessage.objects.filter(pk=self.config_entry.get("id")).exists():
+            raise ProjectorException("Message does not exists.")
 
 
 def get_projector_elements() -> Generator[Type[ProjectorElement], None, None]:

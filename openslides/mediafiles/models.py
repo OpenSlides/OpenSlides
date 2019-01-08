@@ -13,10 +13,11 @@ class Mediafile(RESTModelMixin, models.Model):
     """
     Class for uploaded files which can be delivered under a certain url.
     """
-    access_permissions = MediafileAccessPermissions()
-    can_see_permission = 'mediafiles.can_see'
 
-    mediafile = models.FileField(upload_to='file')
+    access_permissions = MediafileAccessPermissions()
+    can_see_permission = "mediafiles.can_see"
+
+    mediafile = models.FileField(upload_to="file")
     """
     See https://docs.djangoproject.com/en/dev/ref/models/fields/#filefield
     for more information.
@@ -26,10 +27,8 @@ class Mediafile(RESTModelMixin, models.Model):
     """A string representing the title of the file."""
 
     uploader = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True)
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True
+    )
     """A user – the uploader of a file."""
 
     hidden = models.BooleanField(default=False)
@@ -42,13 +41,15 @@ class Mediafile(RESTModelMixin, models.Model):
         """
         Meta class for the mediafile model.
         """
-        ordering = ['title']
+
+        ordering = ["title"]
         default_permissions = ()
         permissions = (
-            ('can_see', 'Can see the list of files'),
-            ('can_see_hidden', 'Can see hidden files'),
-            ('can_upload', 'Can upload files'),
-            ('can_manage', 'Can manage files'))
+            ("can_see", "Can see the list of files"),
+            ("can_see_hidden", "Can see hidden files"),
+            ("can_upload", "Can upload files"),
+            ("can_manage", "Can manage files"),
+        )
 
     def __str__(self):
         """
@@ -72,10 +73,11 @@ class Mediafile(RESTModelMixin, models.Model):
         mediafile projector element is disabled.
         """
         Projector.remove_any(
-            skip_autoupdate=skip_autoupdate,
-            name='mediafiles/mediafile',
-            id=self.pk)
-        return super().delete(skip_autoupdate=skip_autoupdate, *args, **kwargs)  # type: ignore
+            skip_autoupdate=skip_autoupdate, name="mediafiles/mediafile", id=self.pk
+        )
+        return super().delete(  # type: ignore
+            skip_autoupdate=skip_autoupdate, *args, **kwargs
+        )
 
     def get_filesize(self):
         """
@@ -85,26 +87,26 @@ class Mediafile(RESTModelMixin, models.Model):
         try:
             size = self.mediafile.size
         except OSError:
-            size_string = _('unknown')
+            size_string = _("unknown")
         else:
             if size < 1024:
-                size_string = '< 1 kB'
+                size_string = "< 1 kB"
             elif size >= 1024 * 1024:
                 mB = size / 1024 / 1024
-                size_string = '%d MB' % mB
+                size_string = "%d MB" % mB
             else:
                 kB = size / 1024
-                size_string = '%d kB' % kB
+                size_string = "%d kB" % kB
         return size_string
 
     def is_logo(self):
-        for key in config['logos_available']:
-            if config[key]['path'] == self.mediafile.url:
+        for key in config["logos_available"]:
+            if config[key]["path"] == self.mediafile.url:
                 return True
         return False
 
     def is_font(self):
-        for key in config['fonts_available']:
-            if config[key]['path'] == self.mediafile.url:
+        for key in config["fonts_available"]:
+            if config[key]["path"] == self.mediafile.url:
                 return True
         return False

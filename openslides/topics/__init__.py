@@ -1,1 +1,1 @@
-default_app_config = 'openslides.topics.apps.TopicsAppConfig'
+default_app_config = "openslides.topics.apps.TopicsAppConfig"

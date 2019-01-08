@@ -8,14 +8,12 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('motions', '0006_submitter_model'),
-    ]
+    dependencies = [("motions", "0006_submitter_model")]
 
     operations = [
         migrations.AddField(
-            model_name='motionversion',
-            name='amendment_paragraphs',
+            model_name="motionversion",
+            name="amendment_paragraphs",
             field=jsonfield.fields.JSONField(null=True),
-        ),
+        )
     ]

@@ -19,23 +19,31 @@ class MotionChangeRecommendationTest(TestCase):
         new_recommendation1 = MotionChangeRecommendation()
         new_recommendation1.line_from = 3
         new_recommendation1.line_to = 5
-        collides = new_recommendation1.collides_with_other_recommendation(other_recommendations)
+        collides = new_recommendation1.collides_with_other_recommendation(
+            other_recommendations
+        )
         self.assertFalse(collides)
 
         new_recommendation2 = MotionChangeRecommendation()
         new_recommendation2.line_from = 3
         new_recommendation2.line_to = 6
-        collides = new_recommendation2.collides_with_other_recommendation(other_recommendations)
+        collides = new_recommendation2.collides_with_other_recommendation(
+            other_recommendations
+        )
         self.assertTrue(collides)
 
         new_recommendation3 = MotionChangeRecommendation()
         new_recommendation3.line_from = 6
         new_recommendation3.line_to = 8
-        collides = new_recommendation3.collides_with_other_recommendation(other_recommendations)
+        collides = new_recommendation3.collides_with_other_recommendation(
+            other_recommendations
+        )
         self.assertTrue(collides)
 
         new_recommendation4 = MotionChangeRecommendation()
         new_recommendation4.line_from = 7
         new_recommendation4.line_to = 9
-        collides = new_recommendation4.collides_with_other_recommendation(other_recommendations)
+        collides = new_recommendation4.collides_with_other_recommendation(
+            other_recommendations
+        )
         self.assertFalse(collides)

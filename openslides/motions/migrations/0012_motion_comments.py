@@ -8,16 +8,18 @@ from django.db import migrations, models
 import openslides
 
 
-def create_comment_sections_from_config_and_move_comments_to_own_model(apps, schema_editor):
-    ConfigStore = apps.get_model('core', 'ConfigStore')
-    Motion = apps.get_model('motions', 'Motion')
-    MotionComment = apps.get_model('motions', 'MotionComment')
-    MotionCommentSection = apps.get_model('motions', 'MotionCommentSection')
+def create_comment_sections_from_config_and_move_comments_to_own_model(
+    apps, schema_editor
+):
+    ConfigStore = apps.get_model("core", "ConfigStore")
+    Motion = apps.get_model("motions", "Motion")
+    MotionComment = apps.get_model("motions", "MotionComment")
+    MotionCommentSection = apps.get_model("motions", "MotionCommentSection")
     Group = apps.get_model(settings.AUTH_GROUP_MODEL)
 
     # try to get old motions_comments config variable, where all comment fields are saved
     try:
-        motions_comments = ConfigStore.objects.get(key='motions_comments')
+        motions_comments = ConfigStore.objects.get(key="motions_comments")
     except ConfigStore.DoesNotExist:
         return
     comments_sections = motions_comments.value
@@ -26,14 +28,14 @@ def create_comment_sections_from_config_and_move_comments_to_own_model(apps, sch
     motions_comments.delete()
 
     # Get can_see_comments and can_manage_comments permissions and the associated groups
-    can_see_comments = Permission.objects.filter(codename='can_see_comments')
+    can_see_comments = Permission.objects.filter(codename="can_see_comments")
     if len(can_see_comments) == 1:
         # Save groups. list() is necessary to evaluate the database query right now.
         can_see_groups = list(can_see_comments.get().group_set.all())
     else:
         can_see_groups = Group.objects.all()
 
-    can_manage_comments = Permission.objects.filter(codename='can_manage_comments')
+    can_manage_comments = Permission.objects.filter(codename="can_manage_comments")
     if len(can_manage_comments) == 1:
         # Save groups. list() is necessary to evaluate the database query right now.
         can_manage_groups = list(can_manage_comments.get().group_set.all())
@@ -50,12 +52,12 @@ def create_comment_sections_from_config_and_move_comments_to_own_model(apps, sch
     for id, section in comments_sections.items():
         if section is None:
             continue
-        if section.get('forState', False):
+        if section.get("forState", False):
             forStateId = id
-        elif section.get('forRecommendation', False):
+        elif section.get("forRecommendation", False):
             forRecommendationId = id
         else:
-            comment_section = MotionCommentSection(name=section['name'])
+            comment_section = MotionCommentSection(name=section["name"])
             comment_section.save(skip_autoupdate=True)
             comment_section.read_groups.add(*[group.id for group in can_see_groups])
             comment_section.write_groups.add(*[group.id for group in can_manage_groups])
@@ -70,7 +72,7 @@ def create_comment_sections_from_config_and_move_comments_to_own_model(apps, sch
         for section_id, comment_value in motion.comments.items():
             # Skip empty sections.
             comment_value = comment_value.strip()
-            if comment_value == '':
+            if comment_value == "":
                 continue
             # Special comments will be moved to separate fields.
             if section_id == forStateId:
@@ -83,136 +85,147 @@ def create_comment_sections_from_config_and_move_comments_to_own_model(apps, sch
                 comment = MotionComment(
                     comment=comment_value,
                     motion=motion,
-                    section=old_id_mapping[section_id])
+                    section=old_id_mapping[section_id],
+                )
                 comments.append(comment)
     MotionComment.objects.bulk_create(comments)
 
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('users', '0006_user_email'),
-        ('motions', '0011_motion_version'),
-    ]
+    dependencies = [("users", "0006_user_email"), ("motions", "0011_motion_version")]
 
     operations = [
         # Cleanup from last migration. Somehow cannot be done there.
         migrations.AlterField(  # remove default=''
-            model_name='motion',
-            name='text',
-            field=models.TextField(),
+            model_name="motion", name="text", field=models.TextField()
         ),
         migrations.AlterField(  # remove default=''
-            model_name='motion',
-            name='title',
-            field=models.CharField(max_length=255),
+            model_name="motion", name="title", field=models.CharField(max_length=255)
         ),
         migrations.AlterField(  # remove null=True
-            model_name='motionchangerecommendation',
-            name='motion',
+            model_name="motionchangerecommendation",
+            name="motion",
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
-                related_name='change_recommendations',
-                to='motions.Motion'),
+                related_name="change_recommendations",
+                to="motions.Motion",
+            ),
         ),
-
         # Add extension fields for former "special comments". No hack anymore..
         migrations.AddField(
-            model_name='motion',
-            name='recommendation_extension',
+            model_name="motion",
+            name="recommendation_extension",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='motion',
-            name='state_extension',
+            model_name="motion",
+            name="state_extension",
             field=models.TextField(blank=True, null=True),
         ),
-
         migrations.AlterModelOptions(
-            name='motion',
+            name="motion",
             options={
-                'default_permissions': (),
-                'ordering': ('identifier',),
-                'permissions': (
-                    ('can_see', 'Can see motions'),
-                    ('can_create', 'Can create motions'),
-                    ('can_support', 'Can support motions'),
-                    ('can_manage', 'Can manage motions')),
-                'verbose_name': 'Motion'},
+                "default_permissions": (),
+                "ordering": ("identifier",),
+                "permissions": (
+                    ("can_see", "Can see motions"),
+                    ("can_create", "Can create motions"),
+                    ("can_support", "Can support motions"),
+                    ("can_manage", "Can manage motions"),
+                ),
+                "verbose_name": "Motion",
+            },
         ),
         # Comments and CommentsSection models
         migrations.CreateModel(
-            name='MotionComment',
+            name="MotionComment",
             fields=[
-                ('id', models.AutoField(
+                (
+                    "id",
+                    models.AutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name='ID')),
-                ('comment', models.TextField()),
+                        verbose_name="ID",
+                    ),
+                ),
+                ("comment", models.TextField()),
             ],
-            options={
-                'default_permissions': (),
-            },
-            bases=(openslides.utils.models.RESTModelMixin, models.Model),  # type: ignore
+            options={"default_permissions": ()},
+            bases=(
+                openslides.utils.models.RESTModelMixin,  # type: ignore
+                models.Model,
+            ),
         ),
         migrations.CreateModel(
-            name='MotionCommentSection',
+            name="MotionCommentSection",
             fields=[
-                ('id', models.AutoField(
-                    auto_created=True,
-                    primary_key=True,
-                    serialize=False,
-                    verbose_name='ID')),
-                ('name', models.CharField(max_length=255)),
-                ('read_groups', models.ManyToManyField(
-                    blank=True,
-                    related_name='read_comments',
-                    to=settings.AUTH_GROUP_MODEL)),
-                ('write_groups', models.ManyToManyField(
-                    blank=True,
-                    related_name='write_comments',
-                    to=settings.AUTH_GROUP_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=255)),
+                (
+                    "read_groups",
+                    models.ManyToManyField(
+                        blank=True,
+                        related_name="read_comments",
+                        to=settings.AUTH_GROUP_MODEL,
+                    ),
+                ),
+                (
+                    "write_groups",
+                    models.ManyToManyField(
+                        blank=True,
+                        related_name="write_comments",
+                        to=settings.AUTH_GROUP_MODEL,
+                    ),
+                ),
             ],
-            options={
-                'default_permissions': (),
-            },
-            bases=(openslides.utils.models.RESTModelMixin, models.Model),  # type: ignore
+            options={"default_permissions": ()},
+            bases=(
+                openslides.utils.models.RESTModelMixin,  # type: ignore
+                models.Model,
+            ),
         ),
         migrations.AddField(
-            model_name='motioncomment',
-            name='section',
+            model_name="motioncomment",
+            name="section",
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.PROTECT,
-                related_name='comments',
-                to='motions.MotionCommentSection'),
+                related_name="comments",
+                to="motions.MotionCommentSection",
+            ),
         ),
         migrations.AddField(
-            model_name='motioncomment',
-            name='motion',
+            model_name="motioncomment",
+            name="motion",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE,
-                to='motions.Motion'),
+                on_delete=django.db.models.deletion.CASCADE, to="motions.Motion"
+            ),
         ),
         migrations.AlterUniqueTogether(
-            name='motioncomment',
-            unique_together={('motion', 'section')},
+            name="motioncomment", unique_together={("motion", "section")}
         ),
-
         # Move the comments and sections
-        migrations.RunPython(create_comment_sections_from_config_and_move_comments_to_own_model),
-
-        # Remove old comment field from motion, use the new model instead
-        migrations.RemoveField(
-            model_name='motion',
-            name='comments',
+        migrations.RunPython(
+            create_comment_sections_from_config_and_move_comments_to_own_model
         ),
+        # Remove old comment field from motion, use the new model instead
+        migrations.RemoveField(model_name="motion", name="comments"),
         migrations.AlterField(
-            model_name='motioncomment',
-            name='motion',
+            model_name="motioncomment",
+            name="motion",
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
-                related_name='comments',
-                to='motions.Motion'),
+                related_name="comments",
+                to="motions.Motion",
+            ),
         ),
     ]

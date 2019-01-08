@@ -11,7 +11,7 @@ def delete_old_comment_permission(apps, schema_editor):
     Deletes the old 'can_see_and_manage_comments' permission which is
     split up into two seperate permissions.
     """
-    perm = Permission.objects.filter(codename='can_see_and_manage_comments')
+    perm = Permission.objects.filter(codename="can_see_and_manage_comments")
 
     if len(perm):
         perm = perm.get()
@@ -26,13 +26,15 @@ def delete_old_comment_permission(apps, schema_editor):
 
         # Create new permission
         perm_see = Permission.objects.create(
-            codename='can_see_comments',
-            name='Can see comments',
-            content_type=content_type)
+            codename="can_see_comments",
+            name="Can see comments",
+            content_type=content_type,
+        )
         perm_manage = Permission.objects.create(
-            codename='can_manage_comments',
-            name='Can manage comments',
-            content_type=content_type)
+            codename="can_manage_comments",
+            name="Can manage comments",
+            content_type=content_type,
+        )
 
         for group in groups:
             group.permissions.add(perm_see)
@@ -42,28 +44,24 @@ def delete_old_comment_permission(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('motions', '0004_motionchangerecommendation_other_description'),
-    ]
+    dependencies = [("motions", "0004_motionchangerecommendation_other_description")]
 
     operations = [
         migrations.AlterModelOptions(
-            name='motion',
+            name="motion",
             options={
-                'default_permissions': (),
-                'ordering': ('identifier',),
-                'permissions': (
-                    ('can_see', 'Can see motions'),
-                    ('can_create', 'Can create motions'),
-                    ('can_support', 'Can support motions'),
-                    ('can_see_comments', 'Can see comments'),
-                    ('can_manage_comments', 'Can manage comments'),
-                    ('can_manage', 'Can manage motions')
+                "default_permissions": (),
+                "ordering": ("identifier",),
+                "permissions": (
+                    ("can_see", "Can see motions"),
+                    ("can_create", "Can create motions"),
+                    ("can_support", "Can support motions"),
+                    ("can_see_comments", "Can see comments"),
+                    ("can_manage_comments", "Can manage comments"),
+                    ("can_manage", "Can manage motions"),
                 ),
-                'verbose_name': 'Motion'
+                "verbose_name": "Motion",
             },
         ),
-        migrations.RunPython(
-            delete_old_comment_permission
-        ),
+        migrations.RunPython(delete_old_comment_permission),
     ]

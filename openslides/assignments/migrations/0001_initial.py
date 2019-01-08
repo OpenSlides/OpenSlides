@@ -15,104 +15,196 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('core', '0001_initial'),
+        ("core", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Assignment',
+            name="Assignment",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=100)),
-                ('description', models.TextField(blank=True)),
-                ('open_posts', models.PositiveSmallIntegerField()),
-                ('poll_description_default', models.CharField(blank=True, max_length=79)),
-                ('phase', models.IntegerField(choices=[(0, 'Searching for candidates'), (1, 'Voting'), (2, 'Finished')], default=0)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=100)),
+                ("description", models.TextField(blank=True)),
+                ("open_posts", models.PositiveSmallIntegerField()),
+                (
+                    "poll_description_default",
+                    models.CharField(blank=True, max_length=79),
+                ),
+                (
+                    "phase",
+                    models.IntegerField(
+                        choices=[
+                            (0, "Searching for candidates"),
+                            (1, "Voting"),
+                            (2, "Finished"),
+                        ],
+                        default=0,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Election',
-                'default_permissions': (),
-                'permissions': (
-                    ('can_see', 'Can see elections'),
-                    ('can_nominate_other', 'Can nominate another participant'),
-                    ('can_nominate_self', 'Can nominate oneself'),
-                    ('can_manage', 'Can manage elections')),
-                'ordering': ('title',),
+                "verbose_name": "Election",
+                "default_permissions": (),
+                "permissions": (
+                    ("can_see", "Can see elections"),
+                    ("can_nominate_other", "Can nominate another participant"),
+                    ("can_nominate_self", "Can nominate oneself"),
+                    ("can_manage", "Can manage elections"),
+                ),
+                "ordering": ("title",),
             },
             bases=(openslides.utils.models.RESTModelMixin, models.Model),
         ),
         migrations.CreateModel(
-            name='AssignmentOption',
+            name="AssignmentOption",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('candidate', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "candidate",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
-            options={
-                'default_permissions': (),
-            },
+            options={"default_permissions": ()},
             bases=(openslides.utils.models.RESTModelMixin, models.Model),
         ),
         migrations.CreateModel(
-            name='AssignmentPoll',
+            name="AssignmentPoll",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('votesvalid', openslides.utils.models.MinMaxIntegerField(blank=True, null=True)),
-                ('votesinvalid', openslides.utils.models.MinMaxIntegerField(blank=True, null=True)),
-                ('votescast', openslides.utils.models.MinMaxIntegerField(blank=True, null=True)),
-                ('published', models.BooleanField(default=False)),
-                ('yesnoabstain', models.BooleanField(default=False)),
-                ('description', models.CharField(blank=True, max_length=79)),
-                ('assignment', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='polls', to='assignments.Assignment')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "votesvalid",
+                    openslides.utils.models.MinMaxIntegerField(blank=True, null=True),
+                ),
+                (
+                    "votesinvalid",
+                    openslides.utils.models.MinMaxIntegerField(blank=True, null=True),
+                ),
+                (
+                    "votescast",
+                    openslides.utils.models.MinMaxIntegerField(blank=True, null=True),
+                ),
+                ("published", models.BooleanField(default=False)),
+                ("yesnoabstain", models.BooleanField(default=False)),
+                ("description", models.CharField(blank=True, max_length=79)),
+                (
+                    "assignment",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="polls",
+                        to="assignments.Assignment",
+                    ),
+                ),
             ],
-            options={
-                'default_permissions': (),
-            },
+            options={"default_permissions": ()},
             bases=(openslides.utils.models.RESTModelMixin, models.Model),
         ),
         migrations.CreateModel(
-            name='AssignmentRelatedUser',
+            name="AssignmentRelatedUser",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('elected', models.BooleanField(default=False)),
-                ('assignment', models.ForeignKey(
-                    on_delete=django.db.models.deletion.CASCADE, related_name='assignment_related_users', to='assignments.Assignment')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("elected", models.BooleanField(default=False)),
+                (
+                    "assignment",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="assignment_related_users",
+                        to="assignments.Assignment",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
-            options={
-                'default_permissions': (),
-            },
+            options={"default_permissions": ()},
             bases=(openslides.utils.models.RESTModelMixin, models.Model),
         ),
         migrations.CreateModel(
-            name='AssignmentVote',
+            name="AssignmentVote",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('weight', models.IntegerField(default=1, null=True)),
-                ('value', models.CharField(max_length=255, null=True)),
-                ('option', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='votes', to='assignments.AssignmentOption')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("weight", models.IntegerField(default=1, null=True)),
+                ("value", models.CharField(max_length=255, null=True)),
+                (
+                    "option",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="votes",
+                        to="assignments.AssignmentOption",
+                    ),
+                ),
             ],
-            options={
-                'default_permissions': (),
-            },
+            options={"default_permissions": ()},
             bases=(openslides.utils.models.RESTModelMixin, models.Model),
         ),
         migrations.AddField(
-            model_name='assignmentoption',
-            name='poll',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='options', to='assignments.AssignmentPoll'),
+            model_name="assignmentoption",
+            name="poll",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="options",
+                to="assignments.AssignmentPoll",
+            ),
         ),
         migrations.AddField(
-            model_name='assignment',
-            name='related_users',
-            field=models.ManyToManyField(through='assignments.AssignmentRelatedUser', to=settings.AUTH_USER_MODEL),
+            model_name="assignment",
+            name="related_users",
+            field=models.ManyToManyField(
+                through="assignments.AssignmentRelatedUser", to=settings.AUTH_USER_MODEL
+            ),
         ),
         migrations.AddField(
-            model_name='assignment',
-            name='tags',
-            field=models.ManyToManyField(blank=True, to='core.Tag'),
+            model_name="assignment",
+            name="tags",
+            field=models.ManyToManyField(blank=True, to="core.Tag"),
         ),
         migrations.AlterUniqueTogether(
-            name='assignmentrelateduser',
-            unique_together=set([('assignment', 'user')]),
+            name="assignmentrelateduser", unique_together=set([("assignment", "user")])
         ),
     ]

@@ -17,12 +17,7 @@ from mypy_extensions import TypedDict
 from .. import __license__ as license, __url__ as url, __version__ as version
 from ..utils import views as utils_views
 from ..utils.arguments import arguments
-from ..utils.auth import (
-    GROUP_ADMIN_PK,
-    anonymous_is_enabled,
-    has_perm,
-    in_some_groups,
-)
+from ..utils.auth import GROUP_ADMIN_PK, anonymous_is_enabled, has_perm, in_some_groups
 from ..utils.autoupdate import inform_changed_data, inform_deleted_data
 from ..utils.plugins import (
     get_plugin_description,
@@ -67,6 +62,7 @@ from .models import (
 
 # Special Django views
 
+
 class IndexView(View):
     """
     The primary view for the OpenSlides client. Serves static files. If a file
@@ -83,11 +79,11 @@ class IndexView(View):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
 
-        no_caching = arguments.get('no_template_caching', False)
-        if 'index' not in self.cache or no_caching:
-            self.cache['index'] = finders.find('index.html')
+        no_caching = arguments.get("no_template_caching", False)
+        if "index" not in self.cache or no_caching:
+            self.cache["index"] = finders.find("index.html")
 
-        self.index_document_root, self.index_path = os.path.split(self.cache['index'])
+        self.index_document_root, self.index_path = os.path.split(self.cache["index"])
 
     def get(self, request, path, **kwargs) -> HttpResponse:
         """
@@ -97,11 +93,17 @@ class IndexView(View):
         try:
             response = serve(request, path, **kwargs)
         except Http404:
-            response = static.serve(request, self.index_path, document_root=self.index_document_root, **kwargs)
+            response = static.serve(
+                request,
+                self.index_path,
+                document_root=self.index_document_root,
+                **kwargs,
+            )
         return response
 
 
 # Viewsets for the REST API
+
 
 class ProjectorViewSet(ModelViewSet):
     """
@@ -109,6 +111,7 @@ class ProjectorViewSet(ModelViewSet):
 
     There are the following views: See strings in check_view_permissions().
     """
+
     access_permissions = ProjectorAccessPermissions()
     queryset = Projector.objects.all()
 
@@ -116,18 +119,31 @@ class ProjectorViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('list', 'retrieve'):
+        if self.action in ("list", "retrieve"):
             result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action == 'metadata':
-            result = has_perm(self.request.user, 'core.can_see_projector')
+        elif self.action == "metadata":
+            result = has_perm(self.request.user, "core.can_see_projector")
         elif self.action in (
-            'create', 'update', 'partial_update', 'destroy',
-            'activate_elements', 'prune_elements', 'update_elements', 'deactivate_elements', 'clear_elements',
-            'project', 'control_view', 'set_resolution', 'set_scroll', 'control_blank',
-            'broadcast', 'set_projectiondefault',
+            "create",
+            "update",
+            "partial_update",
+            "destroy",
+            "activate_elements",
+            "prune_elements",
+            "update_elements",
+            "deactivate_elements",
+            "clear_elements",
+            "project",
+            "control_view",
+            "set_resolution",
+            "set_scroll",
+            "control_blank",
+            "broadcast",
+            "set_projectiondefault",
         ):
-            result = (has_perm(self.request.user, 'core.can_see_projector') and
-                      has_perm(self.request.user, 'core.can_manage_projector'))
+            result = has_perm(self.request.user, "core.can_see_projector") and has_perm(
+                self.request.user, "core.can_manage_projector"
+            )
         else:
             result = False
         return result
@@ -144,11 +160,11 @@ class ProjectorViewSet(ModelViewSet):
             if projection_default.projector.id == projector_instance.id:
                 projection_default.projector_id = 1
                 projection_default.save()
-        if config['projector_broadcast'] == projector_instance.pk:
-            config['projector_broadcast'] = 0
+        if config["projector_broadcast"] == projector_instance.pk:
+            config["projector_broadcast"] = 0
         return super(ProjectorViewSet, self).destroy(*args, **kwargs)
 
-    @detail_route(methods=['post'])
+    @detail_route(methods=["post"])
     def activate_elements(self, request, pk):
         """
         REST API operation to activate projector elements. It expects a POST
@@ -156,21 +172,25 @@ class ProjectorViewSet(ModelViewSet):
         of dictionaries to be appended to the projector config entry.
         """
         if not isinstance(request.data, list):
-            raise ValidationError({'detail': 'Data must be a list.'})
+            raise ValidationError({"detail": "Data must be a list."})
 
         projector_instance = self.get_object()
         projector_config = projector_instance.config
         for element in request.data:
-            if element.get('name') is None:
-                raise ValidationError({'detail': 'Invalid projector element. Name is missing.'})
+            if element.get("name") is None:
+                raise ValidationError(
+                    {"detail": "Invalid projector element. Name is missing."}
+                )
             projector_config[uuid.uuid4().hex] = element
 
-        serializer = self.get_serializer(projector_instance, data={'config': projector_config}, partial=False)
+        serializer = self.get_serializer(
+            projector_instance, data={"config": projector_config}, partial=False
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
 
-    @detail_route(methods=['post'])
+    @detail_route(methods=["post"])
     def prune_elements(self, request, pk):
         """
         REST API operation to activate projector elements. It expects a POST
@@ -179,17 +199,19 @@ class ProjectorViewSet(ModelViewSet):
         entries are deleted but not entries with stable == True.
         """
         if not isinstance(request.data, list):
-            raise ValidationError({'detail': 'Data must be a list.'})
+            raise ValidationError({"detail": "Data must be a list."})
 
         projector = self.get_object()
         elements = request.data
         if not isinstance(elements, list):
-            raise ValidationError({'detail': _('The data has to be a list.')})
+            raise ValidationError({"detail": _("The data has to be a list.")})
         for element in elements:
             if not isinstance(element, dict):
-                raise ValidationError({'detail': _('All elements have to be dicts.')})
-            if element.get('name') is None:
-                raise ValidationError({'detail': 'Invalid projector element. Name is missing.'})
+                raise ValidationError({"detail": _("All elements have to be dicts.")})
+            if element.get("name") is None:
+                raise ValidationError(
+                    {"detail": "Invalid projector element. Name is missing."}
+                )
         return Response(self.prune(projector, elements))
 
     def prune(self, projector, elements):
@@ -201,21 +223,23 @@ class ProjectorViewSet(ModelViewSet):
         """
         projector_config = {}
         for key, value in projector.config.items():
-            if value.get('stable'):
+            if value.get("stable"):
                 projector_config[key] = value
         for element in elements:
             projector_config[uuid.uuid4().hex] = element
 
-        serializer = self.get_serializer(projector, data={'config': projector_config}, partial=False)
+        serializer = self.get_serializer(
+            projector, data={"config": projector_config}, partial=False
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save()
         # reset scroll level
-        if (projector.scroll != 0):
+        if projector.scroll != 0:
             projector.scroll = 0
             projector.save()
         return serializer.data
 
-    @detail_route(methods=['post'])
+    @detail_route(methods=["post"])
     def update_elements(self, request, pk):
         """
         REST API operation to update projector elements. It expects a POST
@@ -237,8 +261,10 @@ class ProjectorViewSet(ModelViewSet):
         }
         """
         if not isinstance(request.data, dict):
-            raise ValidationError({'detail': 'Data must be a dictionary.'})
-        error = {'detail': 'Data must be a dictionary with UUIDs as keys and dictionaries as values.'}
+            raise ValidationError({"detail": "Data must be a dictionary."})
+        error = {
+            "detail": "Data must be a dictionary with UUIDs as keys and dictionaries as values."
+        }
         for key, value in request.data.items():
             try:
                 uuid.UUID(hex=str(key))
@@ -251,15 +277,19 @@ class ProjectorViewSet(ModelViewSet):
         projector_config = projector_instance.config
         for key, value in request.data.items():
             if key not in projector_config:
-                raise ValidationError({'detail': 'Invalid projector element. Wrong UUID.'})
+                raise ValidationError(
+                    {"detail": "Invalid projector element. Wrong UUID."}
+                )
             projector_config[key].update(request.data[key])
 
-        serializer = self.get_serializer(projector_instance, data={'config': projector_config}, partial=False)
+        serializer = self.get_serializer(
+            projector_instance, data={"config": projector_config}, partial=False
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
 
-    @detail_route(methods=['post'])
+    @detail_route(methods=["post"])
     def deactivate_elements(self, request, pk):
         """
         REST API operation to deactivate projector elements. It expects a
@@ -268,12 +298,12 @@ class ProjectorViewSet(ModelViewSet):
         that should be deleted.
         """
         if not isinstance(request.data, list):
-            raise ValidationError({'detail': 'Data must be a list of hex UUIDs.'})
+            raise ValidationError({"detail": "Data must be a list of hex UUIDs."})
         for item in request.data:
             try:
                 uuid.UUID(hex=str(item))
             except ValueError:
-                raise ValidationError({'detail': 'Data must be a list of hex UUIDs.'})
+                raise ValidationError({"detail": "Data must be a list of hex UUIDs."})
 
         projector_instance = self.get_object()
         projector_config = projector_instance.config
@@ -281,14 +311,16 @@ class ProjectorViewSet(ModelViewSet):
             try:
                 del projector_config[key]
             except KeyError:
-                raise ValidationError({'detail': 'Invalid UUID.'})
+                raise ValidationError({"detail": "Invalid UUID."})
 
-        serializer = self.get_serializer(projector_instance, data={'config': projector_config}, partial=False)
+        serializer = self.get_serializer(
+            projector_instance, data={"config": projector_config}, partial=False
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
 
-    @detail_route(methods=['post'])
+    @detail_route(methods=["post"])
     def clear_elements(self, request, pk):
         """
         REST API operation to deactivate all projector elements but not
@@ -301,15 +333,17 @@ class ProjectorViewSet(ModelViewSet):
     def clear(self, projector):
         projector_config = {}
         for key, value in projector.config.items():
-            if value.get('stable'):
+            if value.get("stable"):
                 projector_config[key] = value
 
-        serializer = self.get_serializer(projector, data={'config': projector_config}, partial=False)
+        serializer = self.get_serializer(
+            projector, data={"config": projector_config}, partial=False
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return serializer.data
 
-    @list_route(methods=['post'])
+    @list_route(methods=["post"])
     def project(self, request, *args, **kwargs):
         """
         REST API operation. Does a combination of clear_elements and prune_elements:
@@ -327,33 +361,46 @@ class ProjectorViewSet(ModelViewSet):
         """
         # The data has to be a dict.
         if not isinstance(request.data, dict):
-            raise ValidationError({'detail': _('The data has to be a dict.')})
+            raise ValidationError({"detail": _("The data has to be a dict.")})
 
         # Get projector ids to clear
-        clear_projector_ids = request.data.get('clear_ids', [])
+        clear_projector_ids = request.data.get("clear_ids", [])
         for id in clear_projector_ids:
             if not isinstance(id, int):
-                raise ValidationError({'detail': _('The id "{}" has to be int.').format(id)})
+                raise ValidationError(
+                    {"detail": _('The id "{}" has to be int.').format(id)}
+                )
 
         # Get the projector id and validate element to prune. This is optional.
-        prune = request.data.get('prune')
+        prune = request.data.get("prune")
         if prune is not None:
             if not isinstance(prune, dict):
-                raise ValidationError({'detail': _('Prune has to be an object.')})
-            prune_projector_id = prune.get('id')
+                raise ValidationError({"detail": _("Prune has to be an object.")})
+            prune_projector_id = prune.get("id")
             if not isinstance(prune_projector_id, int):
-                raise ValidationError({'detail': _('The prune projector id has to be int.')})
+                raise ValidationError(
+                    {"detail": _("The prune projector id has to be int.")}
+                )
 
             # Get the projector after all clear operations, but check, if it exist.
             if not Projector.objects.filter(pk=prune_projector_id).exists():
-                raise ValidationError({
-                    'detail': _('The projector with id "{}" does not exist').format(prune_projector_id)})
+                raise ValidationError(
+                    {
+                        "detail": _('The projector with id "{}" does not exist').format(
+                            prune_projector_id
+                        )
+                    }
+                )
 
-            prune_element = prune.get('element', {})
+            prune_element = prune.get("element", {})
             if not isinstance(prune_element, dict):
-                raise ValidationError({'detail': _('Prune element has to be a dict or not given.')})
-            if prune_element.get('name') is None:
-                raise ValidationError({'detail': 'Invalid projector element. Name is missing.'})
+                raise ValidationError(
+                    {"detail": _("Prune element has to be a dict or not given.")}
+                )
+            if prune_element.get("name") is None:
+                raise ValidationError(
+                    {"detail": "Invalid projector element. Name is missing."}
+                )
 
         # First step: Clear all given projectors
         for projector in Projector.objects.filter(pk__in=clear_projector_ids):
@@ -367,7 +414,7 @@ class ProjectorViewSet(ModelViewSet):
 
         return Response()
 
-    @detail_route(methods=['post'])
+    @detail_route(methods=["post"])
     def set_resolution(self, request, pk):
         """
         REST API operation to set the resolution.
@@ -388,26 +435,34 @@ class ProjectorViewSet(ModelViewSet):
         }
         """
         if not isinstance(request.data, dict):
-            raise ValidationError({'detail': 'Data must be a dictionary.'})
-        if request.data.get('width') is None or request.data.get('height') is None:
-            raise ValidationError({'detail': 'A width and a height have to be given.'})
-        if not isinstance(request.data['width'], int) or not isinstance(request.data['height'], int):
-            raise ValidationError({'detail': 'Data has to be integers.'})
-        if (request.data['width'] < 800 or request.data['width'] > 3840 or
-                request.data['height'] < 340 or request.data['height'] > 2880):
-            raise ValidationError({'detail': 'The Resolution have to be between 800x340 and 3840x2880.'})
+            raise ValidationError({"detail": "Data must be a dictionary."})
+        if request.data.get("width") is None or request.data.get("height") is None:
+            raise ValidationError({"detail": "A width and a height have to be given."})
+        if not isinstance(request.data["width"], int) or not isinstance(
+            request.data["height"], int
+        ):
+            raise ValidationError({"detail": "Data has to be integers."})
+        if (
+            request.data["width"] < 800
+            or request.data["width"] > 3840
+            or request.data["height"] < 340
+            or request.data["height"] > 2880
+        ):
+            raise ValidationError(
+                {"detail": "The Resolution have to be between 800x340 and 3840x2880."}
+            )
 
         projector_instance = self.get_object()
-        projector_instance.width = request.data['width']
-        projector_instance.height = request.data['height']
+        projector_instance.width = request.data["width"]
+        projector_instance.height = request.data["height"]
         projector_instance.save()
 
-        message = 'Changing resolution to {width}x{height} was successful.'.format(
-            width=request.data['width'],
-            height=request.data['height'])
-        return Response({'detail': message})
+        message = "Changing resolution to {width}x{height} was successful.".format(
+            width=request.data["width"], height=request.data["height"]
+        )
+        return Response({"detail": message})
 
-    @detail_route(methods=['post'])
+    @detail_route(methods=["post"])
     def control_view(self, request, pk):
         """
         REST API operation to control the projector view, i. e. scale and
@@ -426,27 +481,32 @@ class ProjectorViewSet(ModelViewSet):
         }
         """
         if not isinstance(request.data, dict):
-            raise ValidationError({'detail': 'Data must be a dictionary.'})
-        if (request.data.get('action') not in ('scale', 'scroll') or
-                request.data.get('direction') not in ('up', 'down', 'reset')):
-            raise ValidationError({'detail': "Data must be a dictionary with an action ('scale' or 'scroll') "
-                                             "and a direction ('up', 'down' or 'reset')."})
+            raise ValidationError({"detail": "Data must be a dictionary."})
+        if request.data.get("action") not in ("scale", "scroll") or request.data.get(
+            "direction"
+        ) not in ("up", "down", "reset"):
+            raise ValidationError(
+                {
+                    "detail": "Data must be a dictionary with an action ('scale' or 'scroll') "
+                    "and a direction ('up', 'down' or 'reset')."
+                }
+            )
 
         projector_instance = self.get_object()
-        if request.data['action'] == 'scale':
-            if request.data['direction'] == 'up':
-                projector_instance.scale = F('scale') + 1
-            elif request.data['direction'] == 'down':
-                projector_instance.scale = F('scale') - 1
+        if request.data["action"] == "scale":
+            if request.data["direction"] == "up":
+                projector_instance.scale = F("scale") + 1
+            elif request.data["direction"] == "down":
+                projector_instance.scale = F("scale") - 1
             else:
                 # request.data['direction'] == 'reset'
                 projector_instance.scale = 0
         else:
             # request.data['action'] == 'scroll'
-            if request.data['direction'] == 'up':
-                projector_instance.scroll = F('scroll') + 1
-            elif request.data['direction'] == 'down':
-                projector_instance.scroll = F('scroll') - 1
+            if request.data["direction"] == "up":
+                projector_instance.scroll = F("scroll") + 1
+            elif request.data["direction"] == "down":
+                projector_instance.scroll = F("scroll") - 1
             else:
                 # request.data['direction'] == 'reset'
                 projector_instance.scroll = 0
@@ -454,12 +514,13 @@ class ProjectorViewSet(ModelViewSet):
         projector_instance.save(skip_autoupdate=True)
         projector_instance.refresh_from_db()
         inform_changed_data(projector_instance)
-        message = '{action} {direction} was successful.'.format(
-            action=request.data['action'].capitalize(),
-            direction=request.data['direction'])
-        return Response({'detail': message})
+        message = "{action} {direction} was successful.".format(
+            action=request.data["action"].capitalize(),
+            direction=request.data["direction"],
+        )
+        return Response({"detail": message})
 
-    @detail_route(methods=['post'])
+    @detail_route(methods=["post"])
     def set_scroll(self, request, pk):
         """
         REST API operation to scroll the projector.
@@ -468,17 +529,18 @@ class ProjectorViewSet(ModelViewSet):
         /rest/core/projector/<pk>/set_scroll/ with a new value for scroll.
         """
         if not isinstance(request.data, int):
-            raise ValidationError({'detail': 'Data must be an int.'})
+            raise ValidationError({"detail": "Data must be an int."})
 
         projector_instance = self.get_object()
         projector_instance.scroll = request.data
 
         projector_instance.save()
-        message = 'Setting scroll to {scroll} was successful.'.format(
-            scroll=request.data)
-        return Response({'detail': message})
+        message = "Setting scroll to {scroll} was successful.".format(
+            scroll=request.data
+        )
+        return Response({"detail": message})
 
-    @detail_route(methods=['post'])
+    @detail_route(methods=["post"])
     def control_blank(self, request, pk):
         """
         REST API operation to blank the projector.
@@ -487,16 +549,17 @@ class ProjectorViewSet(ModelViewSet):
         /rest/core/projector/<pk>/control_blank/ with a value for blank.
         """
         if not isinstance(request.data, bool):
-            raise ValidationError({'detail': 'Data must be a bool.'})
+            raise ValidationError({"detail": "Data must be a bool."})
 
         projector_instance = self.get_object()
         projector_instance.blank = request.data
         projector_instance.save()
         message = "Setting 'blank' to {blank} was successful.".format(
-            blank=request.data)
-        return Response({'detail': message})
+            blank=request.data
+        )
+        return Response({"detail": message})
 
-    @detail_route(methods=['post'])
+    @detail_route(methods=["post"])
     def broadcast(self, request, pk):
         """
         REST API operation to (un-)broadcast the given projector.
@@ -505,16 +568,17 @@ class ProjectorViewSet(ModelViewSet):
         It expects a POST request to
         /rest/core/projector/<pk>/broadcast/ without an argument
         """
-        if config['projector_broadcast'] == 0:
-            config['projector_broadcast'] = pk
+        if config["projector_broadcast"] == 0:
+            config["projector_broadcast"] = pk
             message = "Setting projector {id} as broadcast projector was successful.".format(
-                id=pk)
+                id=pk
+            )
         else:
-            config['projector_broadcast'] = 0
+            config["projector_broadcast"] = 0
             message = "Disabling broadcast was successful."
-        return Response({'detail': message})
+        return Response({"detail": message})
 
-    @detail_route(methods=['post'])
+    @detail_route(methods=["post"])
     def set_projectiondefault(self, request, pk):
         """
         REST API operation to set a projectiondefault to the requested projector. The argument
@@ -524,21 +588,28 @@ class ProjectorViewSet(ModelViewSet):
         /rest/core/projector/<pk>/set_projectiondefault/ with the projectiondefault id as the argument
         """
         if not isinstance(request.data, int):
-            raise ValidationError({'detail': 'Data must be an int.'})
+            raise ValidationError({"detail": "Data must be an int."})
 
         try:
             projectiondefault = ProjectionDefault.objects.get(pk=request.data)
         except ProjectionDefault.DoesNotExist:
-            raise ValidationError({'detail': 'The projectiondefault with pk={pk} was not found.'.format(
-                pk=request.data)})
+            raise ValidationError(
+                {
+                    "detail": "The projectiondefault with pk={pk} was not found.".format(
+                        pk=request.data
+                    )
+                }
+            )
         else:
             projector_instance = self.get_object()
             projectiondefault.projector = projector_instance
             projectiondefault.save()
 
-        return Response('Setting projectiondefault "{name}" to projector {projector_id} was successful.'.format(
-            name=projectiondefault.display_name,
-            projector_id=projector_instance.pk))
+        return Response(
+            'Setting projectiondefault "{name}" to projector {projector_id} was successful.'.format(
+                name=projectiondefault.display_name, projector_id=projector_instance.pk
+            )
+        )
 
 
 class TagViewSet(ModelViewSet):
@@ -548,6 +619,7 @@ class TagViewSet(ModelViewSet):
     There are the following views: metadata, list, retrieve, create,
     partial_update, update and destroy.
     """
+
     access_permissions = TagAccessPermissions()
     queryset = Tag.objects.all()
 
@@ -555,14 +627,14 @@ class TagViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('list', 'retrieve'):
+        if self.action in ("list", "retrieve"):
             result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action == 'metadata':
+        elif self.action == "metadata":
             # Every authenticated user can see the metadata.
             # Anonymous users can do so if they are enabled.
             result = self.request.user.is_authenticated or anonymous_is_enabled()
-        elif self.action in ('create', 'partial_update', 'update', 'destroy'):
-            result = has_perm(self.request.user, 'core.can_manage_tags')
+        elif self.action in ("create", "partial_update", "update", "destroy"):
+            result = has_perm(self.request.user, "core.can_manage_tags")
         else:
             result = False
         return result
@@ -575,6 +647,7 @@ class ConfigViewSet(ModelViewSet):
     There are the following views: metadata, list, retrieve, update and
     partial_update.
     """
+
     access_permissions = ConfigAccessPermissions()
     queryset = ConfigStore.objects.all()
 
@@ -582,22 +655,22 @@ class ConfigViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('list', 'retrieve'):
+        if self.action in ("list", "retrieve"):
             result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action == 'metadata':
+        elif self.action == "metadata":
             # Every authenticated user can see the metadata and list or
             # retrieve the config. Anonymous users can do so if they are
             # enabled.
             result = self.request.user.is_authenticated or anonymous_is_enabled()
-        elif self.action in ('partial_update', 'update'):
+        elif self.action in ("partial_update", "update"):
             # The user needs 'core.can_manage_logos_and_fonts' for all config values
             # starting with 'logo' and 'font'. For all other config values th euser needs
             # the default permissions 'core.can_manage_config'.
-            pk = self.kwargs['pk']
-            if pk.startswith('logo') or pk.startswith('font'):
-                result = has_perm(self.request.user, 'core.can_manage_logos_and_fonts')
+            pk = self.kwargs["pk"]
+            if pk.startswith("logo") or pk.startswith("font"):
+                result = has_perm(self.request.user, "core.can_manage_logos_and_fonts")
             else:
-                result = has_perm(self.request.user, 'core.can_manage_config')
+                result = has_perm(self.request.user, "core.can_manage_config")
         else:
             result = False
         return result
@@ -608,10 +681,10 @@ class ConfigViewSet(ModelViewSet):
 
         Example: {"value": 42}
         """
-        key = kwargs['pk']
-        value = request.data.get('value')
+        key = kwargs["pk"]
+        value = request.data.get("value")
         if value is None:
-            raise ValidationError({'detail': 'Invalid input. Config value is missing.'})
+            raise ValidationError({"detail": "Invalid input. Config value is missing."})
 
         # Validate and change value.
         try:
@@ -619,10 +692,10 @@ class ConfigViewSet(ModelViewSet):
         except ConfigNotFound:
             raise Http404
         except ConfigError as e:
-            raise ValidationError({'detail': str(e)})
+            raise ValidationError({"detail": str(e)})
 
         # Return response.
-        return Response({'key': key, 'value': value})
+        return Response({"key": key, "value": value})
 
 
 class ChatMessageViewSet(ModelViewSet):
@@ -632,6 +705,7 @@ class ChatMessageViewSet(ModelViewSet):
     There are the following views: metadata, list, retrieve and create.
     The views partial_update, update and destroy are disabled.
     """
+
     access_permissions = ChatMessageAccessPermissions()
     queryset = ChatMessage.objects.all()
 
@@ -639,18 +713,18 @@ class ChatMessageViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('list', 'retrieve'):
+        if self.action in ("list", "retrieve"):
             result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action in ('metadata', 'create'):
+        elif self.action in ("metadata", "create"):
             # We do not want anonymous users to use the chat even the anonymous
             # group has the permission core.can_use_chat.
-            result = (
-                self.request.user.is_authenticated and
-                has_perm(self.request.user, 'core.can_use_chat'))
-        elif self.action == 'clear':
-            result = (
-                has_perm(self.request.user, 'core.can_use_chat') and
-                has_perm(self.request.user, 'core.can_manage_chat'))
+            result = self.request.user.is_authenticated and has_perm(
+                self.request.user, "core.can_use_chat"
+            )
+        elif self.action == "clear":
+            result = has_perm(self.request.user, "core.can_use_chat") and has_perm(
+                self.request.user, "core.can_manage_chat"
+            )
         else:
             result = False
         return result
@@ -665,7 +739,7 @@ class ChatMessageViewSet(ModelViewSet):
         # to see users may not have it but can get it now.
         inform_changed_data([self.request.user])
 
-    @list_route(methods=['post'])
+    @list_route(methods=["post"])
     def clear(self, request):
         """
         Deletes all chat messages.
@@ -679,7 +753,7 @@ class ChatMessageViewSet(ModelViewSet):
         # Trigger autoupdate and setup response.
         if len(args) > 0:
             inform_deleted_data(args)
-        return Response({'detail': _('All chat messages deleted successfully.')})
+        return Response({"detail": _("All chat messages deleted successfully.")})
 
 
 class ProjectorMessageViewSet(ModelViewSet):
@@ -689,6 +763,7 @@ class ProjectorMessageViewSet(ModelViewSet):
     There are the following views: list, retrieve, create, update,
     partial_update and destroy.
     """
+
     access_permissions = ProjectorMessageAccessPermissions()
     queryset = ProjectorMessage.objects.all()
 
@@ -696,10 +771,10 @@ class ProjectorMessageViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('list', 'retrieve'):
+        if self.action in ("list", "retrieve"):
             result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action in ('create', 'partial_update', 'update', 'destroy'):
-            result = has_perm(self.request.user, 'core.can_manage_projector')
+        elif self.action in ("create", "partial_update", "update", "destroy"):
+            result = has_perm(self.request.user, "core.can_manage_projector")
         else:
             result = False
         return result
@@ -712,6 +787,7 @@ class CountdownViewSet(ModelViewSet):
     There are the following views: list, retrieve, create, update,
     partial_update and destroy.
     """
+
     access_permissions = CountdownAccessPermissions()
     queryset = Countdown.objects.all()
 
@@ -719,10 +795,10 @@ class CountdownViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('list', 'retrieve'):
+        if self.action in ("list", "retrieve"):
             result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action in ('create', 'partial_update', 'update', 'destroy'):
-            result = has_perm(self.request.user, 'core.can_manage_projector')
+        elif self.action in ("create", "partial_update", "update", "destroy"):
+            result = has_perm(self.request.user, "core.can_manage_projector")
         else:
             result = False
         return result
@@ -734,6 +810,7 @@ class HistoryViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
 
     There are the following views: list, retrieve, clear_history.
     """
+
     access_permissions = HistoryAccessPermissions()
     queryset = History.objects.all()
 
@@ -741,13 +818,13 @@ class HistoryViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('list', 'retrieve', 'clear_history'):
+        if self.action in ("list", "retrieve", "clear_history"):
             result = self.get_access_permissions().check_permissions(self.request.user)
         else:
             result = False
         return result
 
-    @list_route(methods=['post'])
+    @list_route(methods=["post"])
     def clear_history(self, request):
         """
         Deletes and rebuilds the history.
@@ -769,16 +846,18 @@ class HistoryViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         inform_changed_data(history_instances)
 
         # Setup response.
-        return Response({'detail': _('History was deleted successfully.')})
+        return Response({"detail": _("History was deleted successfully.")})
 
 
 # Special API views
+
 
 class ServerTime(utils_views.APIView):
     """
     Returns the server time as UNIX timestamp.
     """
-    http_method_names = ['get']
+
+    http_method_names = ["get"]
 
     def get_context_data(self, **context):
         return now().timestamp()
@@ -789,27 +868,36 @@ class VersionView(utils_views.APIView):
     Returns a dictionary with the OpenSlides version and the version of all
     plugins.
     """
-    http_method_names = ['get']
+
+    http_method_names = ["get"]
 
     def get_context_data(self, **context):
-        Result = TypedDict('Result', {
-            'openslides_version': str,
-            'openslides_license': str,
-            'openslides_url': str,
-            'plugins': List[Dict[str, str]]})
+        Result = TypedDict(
+            "Result",
+            {
+                "openslides_version": str,
+                "openslides_license": str,
+                "openslides_url": str,
+                "plugins": List[Dict[str, str]],
+            },
+        )
         result: Result = dict(
             openslides_version=version,
             openslides_license=license,
             openslides_url=url,
-            plugins=[])
+            plugins=[],
+        )
         # Versions of plugins.
         for plugin in settings.INSTALLED_PLUGINS:
-            result['plugins'].append({
-                'verbose_name': get_plugin_verbose_name(plugin),
-                'description': get_plugin_description(plugin),
-                'version': get_plugin_version(plugin),
-                'license': get_plugin_license(plugin),
-                'url': get_plugin_url(plugin)})
+            result["plugins"].append(
+                {
+                    "verbose_name": get_plugin_verbose_name(plugin),
+                    "description": get_plugin_description(plugin),
+                    "version": get_plugin_version(plugin),
+                    "license": get_plugin_license(plugin),
+                    "url": get_plugin_url(plugin),
+                }
+            )
         return result
 
 
@@ -820,7 +908,8 @@ class HistoryView(utils_views.APIView):
     Use query paramter timestamp (UNIX timestamp) to get all elements from begin
     until (including) this timestamp.
     """
-    http_method_names = ['get']
+
+    http_method_names = ["get"]
 
     def get_context_data(self, **context):
         """
@@ -830,19 +919,25 @@ class HistoryView(utils_views.APIView):
         if not in_some_groups(self.request.user.pk or 0, [GROUP_ADMIN_PK]):
             self.permission_denied(self.request)
         try:
-            timestamp = int(self.request.query_params.get('timestamp', 0))
+            timestamp = int(self.request.query_params.get("timestamp", 0))
         except (ValueError):
-            raise ValidationError({'detail': 'Invalid input. Timestamp  should be an integer.'})
+            raise ValidationError(
+                {"detail": "Invalid input. Timestamp  should be an integer."}
+            )
         data = []
-        queryset = History.objects.select_related('full_data')
+        queryset = History.objects.select_related("full_data")
         if timestamp:
-            queryset = queryset.filter(now__lte=datetime.datetime.fromtimestamp(timestamp))
+            queryset = queryset.filter(
+                now__lte=datetime.datetime.fromtimestamp(timestamp)
+            )
         for instance in queryset:
-            data.append({
-                'full_data': instance.full_data.full_data,
-                'element_id': instance.element_id,
-                'timestamp': instance.now.timestamp(),
-                'information': instance.information,
-                'user_id': instance.user.pk if instance.user else None,
-            })
+            data.append(
+                {
+                    "full_data": instance.full_data.full_data,
+                    "element_id": instance.element_id,
+                    "timestamp": instance.now.timestamp(),
+                    "information": instance.information,
+                    "user_id": instance.user.pk if instance.user else None,
+                }
+            )
         return data

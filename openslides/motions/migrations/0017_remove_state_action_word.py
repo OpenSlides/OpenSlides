@@ -5,13 +5,6 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('motions', '0016_merge_amendment_into_final'),
-    ]
+    dependencies = [("motions", "0016_merge_amendment_into_final")]
 
-    operations = [
-        migrations.RemoveField(
-            model_name='state',
-            name='action_word',
-        ),
-    ]
+    operations = [migrations.RemoveField(model_name="state", name="action_word")]

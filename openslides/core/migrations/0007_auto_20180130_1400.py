@@ -15,7 +15,7 @@ def delete_old_logo_permission(apps, schema_editor):
     If this is an old database, the new permission will be created and the old
     one deleted. Also it will be assigned to the groups, which had the old permission.
     """
-    perm = Permission.objects.filter(codename='can_manage_logos')
+    perm = Permission.objects.filter(codename="can_manage_logos")
 
     if len(perm):
         perm = perm.get()
@@ -30,9 +30,10 @@ def delete_old_logo_permission(apps, schema_editor):
 
         # Create new permission
         perm = Permission.objects.create(
-            codename='can_manage_logos_and_fonts',
-            name='Can manage logos and fonts',
-            content_type=content_type)
+            codename="can_manage_logos_and_fonts",
+            name="Can manage logos and fonts",
+            content_type=content_type,
+        )
 
         for group in groups:
             group.permissions.add(perm)
@@ -41,22 +42,18 @@ def delete_old_logo_permission(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0006_auto_20180123_0903'),
-    ]
+    dependencies = [("core", "0006_auto_20180123_0903")]
 
     operations = [
         migrations.AlterModelOptions(
-            name='configstore',
+            name="configstore",
             options={
-                'default_permissions': (),
-                'permissions': (
-                    ('can_manage_config', 'Can manage configuration'),
-                    ('can_manage_logos_and_fonts', 'Can manage logos and fonts')
-                )
+                "default_permissions": (),
+                "permissions": (
+                    ("can_manage_config", "Can manage configuration"),
+                    ("can_manage_logos_and_fonts", "Can manage logos and fonts"),
+                ),
             },
         ),
-        migrations.RunPython(
-            delete_old_logo_permission
-        ),
+        migrations.RunPython(delete_old_logo_permission),
     ]

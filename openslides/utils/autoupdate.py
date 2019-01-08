@@ -11,33 +11,34 @@ from .cache import element_cache, get_element_id
 
 
 Element = TypedDict(
-    'Element',
+    "Element",
     {
-        'id': int,
-        'collection_string': str,
-        'full_data': Optional[Dict[str, Any]],
-        'information': str,
-        'user_id': Optional[int],
-        'disable_history': bool,
-    }
+        "id": int,
+        "collection_string": str,
+        "full_data": Optional[Dict[str, Any]],
+        "information": str,
+        "user_id": Optional[int],
+        "disable_history": bool,
+    },
 )
 
 AutoupdateFormat = TypedDict(
-    'AutoupdateFormat',
+    "AutoupdateFormat",
     {
-        'changed': Dict[str, List[Dict[str, Any]]],
-        'deleted': Dict[str, List[int]],
-        'from_change_id': int,
-        'to_change_id': int,
-        'all_data': bool,
+        "changed": Dict[str, List[Dict[str, Any]]],
+        "deleted": Dict[str, List[int]],
+        "from_change_id": int,
+        "to_change_id": int,
+        "all_data": bool,
     },
 )
 
 
 def inform_changed_data(
-        instances: Union[Iterable[Model], Model],
-        information: str = '',
-        user_id: Optional[int] = None) -> None:
+    instances: Union[Iterable[Model], Model],
+    information: str = "",
+    user_id: Optional[int] = None,
+) -> None:
     """
     Informs the autoupdate system and the caching system about the creation or
     update of an element.
@@ -48,7 +49,7 @@ def inform_changed_data(
     """
     root_instances = set()
     if not isinstance(instances, Iterable):
-        instances = (instances, )
+        instances = (instances,)
 
     for instance in instances:
         try:
@@ -79,9 +80,10 @@ def inform_changed_data(
 
 
 def inform_deleted_data(
-        deleted_elements: Iterable[Tuple[str, int]],
-        information: str = '',
-        user_id: Optional[int] = None) -> None:
+    deleted_elements: Iterable[Tuple[str, int]],
+    information: str = "",
+    user_id: Optional[int] = None,
+) -> None:
     """
     Informs the autoupdate system and the caching system about the deletion of
     elements.
@@ -119,7 +121,7 @@ def inform_changed_elements(changed_elements: Iterable[Element]) -> None:
     """
     elements = {}
     for changed_element in changed_elements:
-        key = changed_element['collection_string'] + str(changed_element['id'])
+        key = changed_element["collection_string"] + str(changed_element["id"])
         elements[key] = changed_element
 
     bundle = autoupdate_bundle.get(threading.get_ident())
@@ -141,6 +143,7 @@ class AutoupdateBundleMiddleware:
     """
     Middleware to handle autoupdate bundling.
     """
+
     def __init__(self, get_response: Any) -> None:
         self.get_response = get_response
         # One-time configuration and initialization.
@@ -163,6 +166,7 @@ def handle_changed_elements(elements: Iterable[Element]) -> None:
 
     Does nothing if elements is empty.
     """
+
     async def update_cache(elements: Iterable[Element]) -> int:
         """
         Async helper function to update the cache.
@@ -171,8 +175,8 @@ def handle_changed_elements(elements: Iterable[Element]) -> None:
         """
         cache_elements: Dict[str, Optional[Dict[str, Any]]] = {}
         for element in elements:
-            element_id = get_element_id(element['collection_string'], element['id'])
-            cache_elements[element_id] = element['full_data']
+            element_id = get_element_id(element["collection_string"], element["id"])
+            cache_elements[element_id] = element["full_data"]
         return await element_cache.change_elements(cache_elements)
 
     async def async_handle_collection_elements(elements: Iterable[Element]) -> None:
@@ -185,11 +189,7 @@ def handle_changed_elements(elements: Iterable[Element]) -> None:
         # Send autoupdate
         channel_layer = get_channel_layer()
         await channel_layer.group_send(
-            "autoupdate",
-            {
-                "type": "send_data",
-                "change_id": change_id,
-            },
+            "autoupdate", {"type": "send_data", "change_id": change_id}
         )
 
     if elements:
@@ -199,14 +199,16 @@ def handle_changed_elements(elements: Iterable[Element]) -> None:
         # Convert history instances to Elements.
         history_elements: List[Element] = []
         for history_instance in history_instances:
-            history_elements.append(Element(
-                id=history_instance.get_rest_pk(),
-                collection_string=history_instance.get_collection_string(),
-                full_data=history_instance.get_full_data(),
-                information='',
-                user_id=None,
-                disable_history=True,  # This does not matter because history elements can never be part of the history itself.
-            ))
+            history_elements.append(
+                Element(
+                    id=history_instance.get_rest_pk(),
+                    collection_string=history_instance.get_collection_string(),
+                    full_data=history_instance.get_full_data(),
+                    information="",
+                    user_id=None,
+                    disable_history=True,  # This does not matter because history elements can never be part of the history itself.
+                )
+            )
 
         # Chain elements and history elements.
         itertools.chain(elements, history_elements)
@@ -217,7 +219,9 @@ def handle_changed_elements(elements: Iterable[Element]) -> None:
         )
 
 
-def save_history(elements: Iterable[Element]) -> Iterable:  # TODO: Try to write Iterable[History] here
+def save_history(
+    elements: Iterable[Element]
+) -> Iterable:  # TODO: Try to write Iterable[History] here
     """
     Thin wrapper around the call of history saving manager method.
 

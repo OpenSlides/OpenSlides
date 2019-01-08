@@ -11,14 +11,14 @@ def logos_available_default_to_database(apps, schema_editor):
     """
     Writes the new default value of the 'logos_available' into the database.
     """
-    ConfigStore = apps.get_model('core', 'ConfigStore')
+    ConfigStore = apps.get_model("core", "ConfigStore")
 
     try:
-        logos_available = ConfigStore.objects.get(key='logos_available')
+        logos_available = ConfigStore.objects.get(key="logos_available")
     except ConfigStore.DoesNotExist:
         return  # The key is not in the database, nothing to change here
 
-    default_value = config.config_variables['logos_available'].default_value
+    default_value = config.config_variables["logos_available"].default_value
     logos_available.value = default_value
     logos_available.save()
 
@@ -28,16 +28,16 @@ def move_old_logo_settings(apps, schema_editor):
     moves the value of 'logo_pdf_header' to 'logo_pdf_header_L' and the same
     for the footer. The old ones are deleted.
     """
-    ConfigStore = apps.get_model('core', 'ConfigStore')
+    ConfigStore = apps.get_model("core", "ConfigStore")
 
-    for place in ('header', 'footer'):
+    for place in ("header", "footer"):
         try:
-            logo_pdf = ConfigStore.objects.get(key='logo_pdf_{}'.format(place))
+            logo_pdf = ConfigStore.objects.get(key="logo_pdf_{}".format(place))
         except ConfigStore.DoesNotExist:
             continue  # The old entry is not in the database, nothing to change here
 
         # The key of the new entry
-        new_value_key = 'logo_pdf_{}_L'.format(place)
+        new_value_key = "logo_pdf_{}_L".format(place)
         try:
             logo_pdf_L = ConfigStore.objects.get(key=new_value_key)
         except ConfigStore.DoesNotExist:
@@ -45,7 +45,7 @@ def move_old_logo_settings(apps, schema_editor):
             logo_pdf_L.value = {}
 
         # Move the path to the new configentry
-        logo_pdf_L.value['path'] = logo_pdf.value.get('path', '')
+        logo_pdf_L.value["path"] = logo_pdf.value.get("path", "")
         # Save the new one, delete the old
         logo_pdf_L.save()
         logo_pdf.delete()
@@ -53,15 +53,9 @@ def move_old_logo_settings(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0007_auto_20180130_1400'),
-    ]
+    dependencies = [("core", "0007_auto_20180130_1400")]
 
     operations = [
-        migrations.RunPython(
-            logos_available_default_to_database
-        ),
-        migrations.RunPython(
-            move_old_logo_settings
-        ),
+        migrations.RunPython(logos_available_default_to_database),
+        migrations.RunPython(move_old_logo_settings),
     ]

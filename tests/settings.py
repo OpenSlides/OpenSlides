@@ -11,15 +11,13 @@ from openslides.global_settings import *  # noqa
 
 OPENSLIDES_USER_DATA_PATH = os.path.realpath(os.path.dirname(os.path.abspath(__file__)))
 
-EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
+EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
 
 # OpenSlides plugins
 
 # Add plugins to this list.
 
-INSTALLED_PLUGINS += (  # noqa
-    'tests.integration.test_plugin',
-)
+INSTALLED_PLUGINS += ("tests.integration.test_plugin",)  # noqa
 
 INSTALLED_APPS += INSTALLED_PLUGINS  # noqa
 
@@ -27,7 +25,7 @@ INSTALLED_APPS += INSTALLED_PLUGINS  # noqa
 # Important settings for production use
 # https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
-SECRET_KEY = 'secret'
+SECRET_KEY = "secret"
 
 DEBUG = False
 
@@ -40,30 +38,26 @@ DEBUG = False
 
 # Change this setting to use e. g. PostgreSQL or MySQL.
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-    }
-}
+DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3"}}
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
-TIME_ZONE = 'Europe/Berlin'
+TIME_ZONE = "Europe/Berlin"
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
-STATICFILES_DIRS.insert(0, os.path.join(OPENSLIDES_USER_DATA_PATH, 'static'))  # noqa
+STATICFILES_DIRS.insert(0, os.path.join(OPENSLIDES_USER_DATA_PATH, "static"))  # noqa
 
 
 # Files
 # https://docs.djangoproject.com/en/1.10/topics/files/
 
-MEDIA_ROOT = os.path.join(OPENSLIDES_USER_DATA_PATH, '')
+MEDIA_ROOT = os.path.join(OPENSLIDES_USER_DATA_PATH, "")
 
 
 # Customization of OpenSlides apps
@@ -75,9 +69,7 @@ MOTION_IDENTIFIER_MIN_DIGITS = 1
 
 # Use a faster password hasher.
 
-PASSWORD_HASHERS = [
-    'django.contrib.auth.hashers.MD5PasswordHasher',
-]
+PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
 
 # Deactivate restricted_data_cache
 RESTRICTED_DATA_CACHE = False

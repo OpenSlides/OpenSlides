@@ -8,69 +8,73 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('assignments', '0004_auto_20180703_1523'),
-    ]
+    dependencies = [("assignments", "0004_auto_20180703_1523")]
 
     operations = [
         migrations.AlterField(
-            model_name='assignmentpoll',
-            name='votescast',
+            model_name="assignmentpoll",
+            name="votescast",
             field=models.DecimalField(
                 blank=True,
                 decimal_places=6,
                 max_digits=15,
                 null=True,
-                validators=[django.core.validators.MinValueValidator(Decimal('-2'))]),
+                validators=[django.core.validators.MinValueValidator(Decimal("-2"))],
+            ),
         ),
         migrations.AlterField(
-            model_name='assignmentpoll',
-            name='votesinvalid',
+            model_name="assignmentpoll",
+            name="votesinvalid",
             field=models.DecimalField(
                 blank=True,
                 decimal_places=6,
                 max_digits=15,
                 null=True,
-                validators=[django.core.validators.MinValueValidator(Decimal('-2'))]),
+                validators=[django.core.validators.MinValueValidator(Decimal("-2"))],
+            ),
         ),
         migrations.AlterField(
-            model_name='assignmentpoll',
-            name='votesvalid',
+            model_name="assignmentpoll",
+            name="votesvalid",
             field=models.DecimalField(
                 blank=True,
                 decimal_places=6,
                 max_digits=15,
                 null=True,
-                validators=[django.core.validators.MinValueValidator(Decimal('-2'))]),
+                validators=[django.core.validators.MinValueValidator(Decimal("-2"))],
+            ),
         ),
         migrations.AlterField(
-            model_name='assignmentvote',
-            name='weight',
+            model_name="assignmentvote",
+            name="weight",
             field=models.DecimalField(
                 decimal_places=6,
-                default=Decimal('1'),
+                default=Decimal("1"),
                 max_digits=15,
                 null=True,
-                validators=[django.core.validators.MinValueValidator(Decimal('-2'))]),
+                validators=[django.core.validators.MinValueValidator(Decimal("-2"))],
+            ),
         ),
         migrations.AlterField(
-            model_name='assignmentpoll',
-            name='votesabstain',
-            field=models.DecimalField(
-                blank=True,
-                decimal_places=6,
-                max_digits=15,
-                null=True,
-                validators=[django.core.validators.MinValueValidator(Decimal('-2'))]),
-        ),
-        migrations.AlterField(
-            model_name='assignmentpoll',
-            name='votesno',
+            model_name="assignmentpoll",
+            name="votesabstain",
             field=models.DecimalField(
                 blank=True,
                 decimal_places=6,
                 max_digits=15,
                 null=True,
-                validators=[django.core.validators.MinValueValidator(Decimal('-2'))]),
+                validators=[django.core.validators.MinValueValidator(Decimal("-2"))],
+            ),
+        ),
+        migrations.AlterField(
+            model_name="assignmentpoll",
+            name="votesno",
+            field=models.DecimalField(
+                blank=True,
+                decimal_places=6,
+                max_digits=15,
+                null=True,
+                validators=[django.core.validators.MinValueValidator(Decimal("-2"))],
+            ),
         ),
     ]

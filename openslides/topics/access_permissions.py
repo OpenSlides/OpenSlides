@@ -5,4 +5,5 @@ class TopicAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for Topic and TopicViewSet.
     """
-    base_permission = 'agenda.can_see'
+
+    base_permission = "agenda.can_see"

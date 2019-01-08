@@ -2,7 +2,7 @@ from argparse import Namespace
 from typing import Any, Optional
 
 
-class OpenSlidesArguments():
+class OpenSlidesArguments:
     args: Optional[Namespace] = None
 
     def __getitem__(self, key: str) -> Any:

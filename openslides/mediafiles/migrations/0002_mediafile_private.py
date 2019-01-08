@@ -7,22 +7,25 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('mediafiles', '0001_initial'),
-    ]
+    dependencies = [("mediafiles", "0001_initial")]
 
     operations = [
         migrations.AlterModelOptions(
-            name='mediafile',
-            options={'default_permissions': (), 'ordering': ['title'], 'permissions': (
-                ('can_see', 'Can see the list of files'),
-                ('can_see_hidden', 'Can see hidden files'),
-                ('can_upload', 'Can upload files'),
-                ('can_manage', 'Can manage files'))},
+            name="mediafile",
+            options={
+                "default_permissions": (),
+                "ordering": ["title"],
+                "permissions": (
+                    ("can_see", "Can see the list of files"),
+                    ("can_see_hidden", "Can see hidden files"),
+                    ("can_upload", "Can upload files"),
+                    ("can_manage", "Can manage files"),
+                ),
+            },
         ),
         migrations.AddField(
-            model_name='mediafile',
-            name='hidden',
+            model_name="mediafile",
+            name="hidden",
             field=models.BooleanField(default=False),
         ),
     ]

@@ -9,11 +9,12 @@ class UserSlide(ProjectorElement):
     """
     Slide definitions for User model.
     """
-    name = 'users/user'
+
+    name = "users/user"
 
     def check_data(self):
-        if not User.objects.filter(pk=self.config_entry.get('id')).exists():
-            raise ProjectorException('User does not exist.')
+        if not User.objects.filter(pk=self.config_entry.get("id")).exists():
+            raise ProjectorException("User does not exist.")
 
 
 def get_projector_elements() -> Generator[Type[ProjectorElement], None, None]:

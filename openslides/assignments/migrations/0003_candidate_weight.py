@@ -7,19 +7,17 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('assignments', '0002_assignmentpoll_pollmethod'),
-    ]
+    dependencies = [("assignments", "0002_assignmentpoll_pollmethod")]
 
     operations = [
         migrations.AddField(
-            model_name='assignmentrelateduser',
-            name='weight',
+            model_name="assignmentrelateduser",
+            name="weight",
             field=models.IntegerField(default=0),
         ),
         migrations.AddField(
-            model_name='assignmentoption',
-            name='weight',
+            model_name="assignmentoption",
+            name="weight",
             field=models.IntegerField(default=0),
         ),
     ]

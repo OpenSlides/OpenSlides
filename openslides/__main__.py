@@ -42,7 +42,7 @@ def main():
     else:
         # Check for unknown_args.
         if unknown_args:
-            parser.error('Unknown arguments {}'.format(' '.join(unknown_args)))
+            parser.error("Unknown arguments {}".format(" ".join(unknown_args)))
 
         # Save arguments, if one wants to access them later.
         arguments.set_arguments(known_args)
@@ -59,11 +59,11 @@ def get_parser():
     if len(sys.argv) == 1:
         # Use start subcommand if called by openslides console script without
         # any other arguments.
-        sys.argv.append('start')
+        sys.argv.append("start")
 
     # Init parser
-    description = 'Start script for OpenSlides.'
-    if 'manage.py' not in sys.argv[0]:
+    description = "Start script for OpenSlides."
+    if "manage.py" not in sys.argv[0]:
         description += """
             If it is called without any argument, this will be treated as
             if it is called with the 'start' subcommand. That means
@@ -77,109 +77,116 @@ def get_parser():
         (without the two hyphen-minus characters) to list them all. Type
         '%(prog)s help <subcommand>' for help on a specific subcommand.
         """
-    parser = ExceptionArgumentParser(
-        description=description,
-        epilog=epilog)
+    parser = ExceptionArgumentParser(description=description, epilog=epilog)
 
     # Add version argument
     parser.add_argument(
-        '--version',
-        action='version',
+        "--version",
+        action="version",
         version=openslides.__version__,
-        help='Show version number and exit.')
+        help="Show version number and exit.",
+    )
 
     # Init subparsers
     subparsers = parser.add_subparsers(
-        dest='subcommand',
-        title='Available subcommands',
+        dest="subcommand",
+        title="Available subcommands",
         description="Type '%s <subcommand> --help' for help on a "
-                    "specific subcommand." % parser.prog,  # type: ignore
-        help='You can choose only one subcommand at once.',
-        metavar='')
+        "specific subcommand." % parser.prog,  # type: ignore
+        help="You can choose only one subcommand at once.",
+        metavar="",
+    )
 
     # Subcommand start
     start_help = (
-        'Setup settings and database, start webserver, launch the '
-        'default web browser and open the webinterface. The environment '
-        'variable DJANGO_SETTINGS_MODULE is ignored.')
+        "Setup settings and database, start webserver, launch the "
+        "default web browser and open the webinterface. The environment "
+        "variable DJANGO_SETTINGS_MODULE is ignored."
+    )
     subcommand_start = subparsers.add_parser(
-        'start',
-        description=start_help,
-        help=start_help)
+        "start", description=start_help, help=start_help
+    )
     subcommand_start.set_defaults(callback=start)
     subcommand_start.add_argument(
-        '--no-browser',
-        action='store_true',
-        help='Do not launch the default web browser.')
+        "--no-browser",
+        action="store_true",
+        help="Do not launch the default web browser.",
+    )
     subcommand_start.add_argument(
-        '--debug-email',
-        action='store_true',
-        help='Change the email backend to console output.')
+        "--debug-email",
+        action="store_true",
+        help="Change the email backend to console output.",
+    )
     subcommand_start.add_argument(
-        '--no-template-caching',
-        action='store_true',
+        "--no-template-caching",
+        action="store_true",
         default=False,
-        help='Disables caching of templates.')
+        help="Disables caching of templates.",
+    )
     subcommand_start.add_argument(
-        '--host',
-        action='store',
-        default='0.0.0.0',
-        help='IP address to listen on. Default is 0.0.0.0.')
+        "--host",
+        action="store",
+        default="0.0.0.0",
+        help="IP address to listen on. Default is 0.0.0.0.",
+    )
     subcommand_start.add_argument(
-        '--port',
-        action='store',
-        default='8000',
-        help='Port to listen on. Default is 8000.')
+        "--port",
+        action="store",
+        default="8000",
+        help="Port to listen on. Default is 8000.",
+    )
     subcommand_start.add_argument(
-        '--settings_dir',
-        action='store',
-        default=None,
-        help='The settings directory.')
+        "--settings_dir", action="store", default=None, help="The settings directory."
+    )
     subcommand_start.add_argument(
-        '--settings_filename',
-        action='store',
-        default='settings.py',
-        help='The used settings file name. The file is created, if it does not exist.')
+        "--settings_filename",
+        action="store",
+        default="settings.py",
+        help="The used settings file name. The file is created, if it does not exist.",
+    )
     subcommand_start.add_argument(
-        '--local-installation',
-        action='store_true',
-        help='Store settings and user files in a local directory.')
+        "--local-installation",
+        action="store_true",
+        help="Store settings and user files in a local directory.",
+    )
 
     # Subcommand createsettings
-    createsettings_help = 'Creates the settings file.'
+    createsettings_help = "Creates the settings file."
     subcommand_createsettings = subparsers.add_parser(
-        'createsettings',
-        description=createsettings_help,
-        help=createsettings_help)
+        "createsettings", description=createsettings_help, help=createsettings_help
+    )
     subcommand_createsettings.set_defaults(callback=createsettings)
     subcommand_createsettings.add_argument(
-        '--settings_dir',
-        action='store',
+        "--settings_dir",
+        action="store",
         default=None,
-        help='The used settings file directory. All settings files are created, even if they exist.')
+        help="The used settings file directory. All settings files are created, even if they exist.",
+    )
     subcommand_createsettings.add_argument(
-        '--settings_filename',
-        action='store',
-        default='settings.py',
-        help='The used settings file name. The file is created, if it does not exist.')
+        "--settings_filename",
+        action="store",
+        default="settings.py",
+        help="The used settings file name. The file is created, if it does not exist.",
+    )
     subcommand_createsettings.add_argument(
-        '--local-installation',
-        action='store_true',
-        help='Store settings and user files in a local directory.')
+        "--local-installation",
+        action="store_true",
+        help="Store settings and user files in a local directory.",
+    )
 
     # Help text for several Django subcommands
     django_subcommands = (
-        ('backupdb', 'Backups the SQLite3 database.'),
-        ('createsuperuser', 'Creates or resets the admin user.'),
-        ('migrate', 'Updates database schema.'),
-        ('runserver', 'Starts the Tornado webserver.'),
+        ("backupdb", "Backups the SQLite3 database."),
+        ("createsuperuser", "Creates or resets the admin user."),
+        ("migrate", "Updates database schema."),
+        ("runserver", "Starts the Tornado webserver."),
     )
     for django_subcommand, help_text in django_subcommands:
         subparsers._choices_actions.append(  # type: ignore
             subparsers._ChoicesPseudoAction(  # type: ignore
-                django_subcommand,
-                (),
-                help_text))
+                django_subcommand, (), help_text
+            )
+        )
 
     return parser
 
@@ -188,8 +195,10 @@ def start(args):
     """
     Starts OpenSlides: Runs migrations and runs runserver.
     """
-    raise OpenSlidesError('The start command does not work anymore. ' +
-                          'Please use `createsettings`, `migrate` and `runserver`.')
+    raise OpenSlidesError(
+        "The start command does not work anymore. "
+        + "Please use `createsettings`, `migrate` and `runserver`."
+    )
     settings_dir = args.settings_dir
     settings_filename = args.settings_filename
     local_installation = is_local_installation()
@@ -212,10 +221,10 @@ def start(args):
     from django.conf import settings
 
     if args.debug_email:
-        settings.EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+        settings.EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
     # Migrate database
-    call_command('migrate')
+    call_command("migrate")
 
     # Open the browser
     if not args.no_browser:
@@ -229,8 +238,8 @@ def start(args):
     #
     # Use flag --insecure to serve static files even if DEBUG is False.
     call_command(
-        'runserver',
-        '{}:{}'.format(args.host, args.port),
+        "runserver",
+        "{}:{}".format(args.host, args.port),
         noreload=False,  # Means True, see above.
         insecure=True,
     )
@@ -248,11 +257,14 @@ def createsettings(args):
         if settings_dir is None:
             settings_dir = get_local_settings_dir()
         context = {
-            'openslides_user_data_dir': repr(os.path.join(os.getcwd(), 'personal_data', 'var')),
-            'debug': 'True'}
+            "openslides_user_data_dir": repr(
+                os.path.join(os.getcwd(), "personal_data", "var")
+            ),
+            "debug": "True",
+        }
 
     settings_path = write_settings(settings_dir, args.settings_filename, **context)
-    print('Settings created at %s' % settings_path)
+    print("Settings created at %s" % settings_path)
 
 
 if __name__ == "__main__":

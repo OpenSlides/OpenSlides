@@ -5,14 +5,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('motions', '0015_metadata_permission'),
-    ]
+    dependencies = [("motions", "0015_metadata_permission")]
 
     operations = [
         migrations.AddField(
-            model_name='state',
-            name='merge_amendment_into_final',
+            model_name="state",
+            name="merge_amendment_into_final",
             field=models.SmallIntegerField(default=0),
-        ),
+        )
     ]

@@ -13,12 +13,14 @@ class MinMaxIntegerField(models.IntegerField):
     IntegerField with options to set a min- and a max-value.
     """
 
-    def __init__(self, min_value: int = None, max_value: int = None, *args: Any, **kwargs: Any) -> None:
+    def __init__(
+        self, min_value: int = None, max_value: int = None, *args: Any, **kwargs: Any
+    ) -> None:
         self.min_value, self.max_value = min_value, max_value
         super(MinMaxIntegerField, self).__init__(*args, **kwargs)
 
     def formfield(self, **kwargs: Any) -> Any:
-        defaults = {'min_value': self.min_value, 'max_value': self.max_value}
+        defaults = {"min_value": self.min_value, "max_value": self.max_value}
         defaults.update(kwargs)
         return super(MinMaxIntegerField, self).formfield(**defaults)
 
@@ -45,7 +47,9 @@ class RESTModelMixin:
         its corresponding viewset.
         """
         if cls.access_permissions is None:
-            raise ImproperlyConfigured("A RESTModel needs to have an access_permission.")
+            raise ImproperlyConfigured(
+                "A RESTModel needs to have an access_permission."
+            )
         return cls.access_permissions
 
     @classmethod
@@ -57,9 +61,12 @@ class RESTModelMixin:
         # TODO Check if this is a root rest element class and return None if not.
         app_label = cls._meta.app_label  # type: ignore
         object_name = cls._meta.object_name  # type: ignore
-        return '/'.join(
-            (convert_camel_case_to_pseudo_snake_case(app_label),
-             convert_camel_case_to_pseudo_snake_case(object_name)))
+        return "/".join(
+            (
+                convert_camel_case_to_pseudo_snake_case(app_label),
+                convert_camel_case_to_pseudo_snake_case(object_name),
+            )
+        )
 
     def get_rest_pk(self) -> int:
         """
@@ -79,6 +86,7 @@ class RESTModelMixin:
         """
         # We don't know how to fix this circular import
         from .autoupdate import inform_changed_data
+
         return_value = super().save(*args, **kwargs)  # type: ignore
         if not skip_autoupdate:
             inform_changed_data(self.get_root_rest_element())
@@ -95,6 +103,7 @@ class RESTModelMixin:
         """
         # We don't know how to fix this circular import
         from .autoupdate import inform_changed_data, inform_deleted_data
+
         instance_pk = self.pk  # type: ignore
         return_value = super().delete(*args, **kwargs)  # type: ignore
         if not skip_autoupdate:
@@ -123,9 +132,8 @@ class RESTModelMixin:
 
     @classmethod
     async def restrict_elements(
-            cls,
-            user_id: int,
-            elements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        cls, user_id: int, elements: List[Dict[str, Any]]
+    ) -> List[Dict[str, Any]]:
         """
         Converts a list of elements from full_data to restricted_data.
         """

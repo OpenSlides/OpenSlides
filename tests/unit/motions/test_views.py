@@ -8,6 +8,7 @@ class MotionViewSetUpdate(TestCase):
     """
     Tests update view of MotionViewSet.
     """
+
     def setUp(self):
         self.request = MagicMock()
         self.view_instance = MotionViewSet()
@@ -17,9 +18,9 @@ class MotionViewSetUpdate(TestCase):
         self.view_instance.get_serializer = get_serializer_mock = MagicMock()
         get_serializer_mock.return_value = self.mock_serializer = MagicMock()
 
-    @patch('openslides.motions.views.inform_changed_data')
-    @patch('openslides.motions.views.has_perm')
-    @patch('openslides.motions.views.config')
+    @patch("openslides.motions.views.inform_changed_data")
+    @patch("openslides.motions.views.has_perm")
+    @patch("openslides.motions.views.config")
     def test_simple_update(self, mock_config, mock_has_perm, mock_icd):
         self.request.user = MagicMock()
         self.request.user.pk = 1

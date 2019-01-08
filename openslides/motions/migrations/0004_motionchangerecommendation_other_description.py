@@ -7,14 +7,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('motions', '0003_motion_comments'),
-    ]
+    dependencies = [("motions", "0003_motion_comments")]
 
     operations = [
         migrations.AddField(
-            model_name='motionchangerecommendation',
-            name='other_description',
+            model_name="motionchangerecommendation",
+            name="other_description",
             field=models.TextField(blank=True),
-        ),
+        )
     ]

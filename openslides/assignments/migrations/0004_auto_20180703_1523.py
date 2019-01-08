@@ -9,19 +9,17 @@ from openslides.utils.models import MinMaxIntegerField
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('assignments', '0003_candidate_weight'),
-    ]
+    dependencies = [("assignments", "0003_candidate_weight")]
 
     operations = [
         migrations.AddField(
-            model_name='assignmentpoll',
-            name='votesabstain',
+            model_name="assignmentpoll",
+            name="votesabstain",
             field=MinMaxIntegerField(null=True, blank=True, min_value=-2),
         ),
         migrations.AddField(
-            model_name='assignmentpoll',
-            name='votesno',
+            model_name="assignmentpoll",
+            name="votesno",
             field=MinMaxIntegerField(null=True, blank=True, min_value=-2),
         ),
     ]

@@ -11,22 +11,16 @@ def remove_session_content_type(apps, schema_editor):
     """
     # We get the model from the versioned app registry;
     # if we directly import it, it will be the wrong version.
-    ContentType = apps.get_model('contenttypes', 'ContentType')
-    Session = apps.get_model('core', 'Session')
+    ContentType = apps.get_model("contenttypes", "ContentType")
+    Session = apps.get_model("core", "Session")
     ContentType.objects.get_for_model(Session).delete()
 
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0002_misc_features'),
-    ]
+    dependencies = [("core", "0002_misc_features")]
 
     operations = [
-        migrations.RunPython(
-            remove_session_content_type
-        ),
-        migrations.DeleteModel(
-            name='Session',
-        ),
+        migrations.RunPython(remove_session_content_type),
+        migrations.DeleteModel(name="Session"),
     ]

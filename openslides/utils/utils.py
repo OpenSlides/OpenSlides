@@ -6,8 +6,8 @@ from django.apps import apps
 from django.db.models import Model
 
 
-CAMEL_CASE_TO_PSEUDO_SNAKE_CASE_CONVERSION_REGEX_1 = re.compile('(.)([A-Z][a-z]+)')
-CAMEL_CASE_TO_PSEUDO_SNAKE_CASE_CONVERSION_REGEX_2 = re.compile('([a-z0-9])([A-Z])')
+CAMEL_CASE_TO_PSEUDO_SNAKE_CASE_CONVERSION_REGEX_1 = re.compile("(.)([A-Z][a-z]+)")
+CAMEL_CASE_TO_PSEUDO_SNAKE_CASE_CONVERSION_REGEX_2 = re.compile("([a-z0-9])([A-Z])")
 
 
 def convert_camel_case_to_pseudo_snake_case(text: str) -> str:
@@ -19,8 +19,8 @@ def convert_camel_case_to_pseudo_snake_case(text: str) -> str:
 
     Credits: epost (http://stackoverflow.com/a/1176023)
     """
-    s1 = CAMEL_CASE_TO_PSEUDO_SNAKE_CASE_CONVERSION_REGEX_1.sub(r'\1-\2', text)
-    return CAMEL_CASE_TO_PSEUDO_SNAKE_CASE_CONVERSION_REGEX_2.sub(r'\1-\2', s1).lower()
+    s1 = CAMEL_CASE_TO_PSEUDO_SNAKE_CASE_CONVERSION_REGEX_1.sub(r"\1-\2", text)
+    return CAMEL_CASE_TO_PSEUDO_SNAKE_CASE_CONVERSION_REGEX_2.sub(r"\1-\2", s1).lower()
 
 
 def to_roman(number: int) -> str:
@@ -69,6 +69,7 @@ def get_model_from_collection_string(collection_string: str) -> Type[Model]:
     """
     Returns a model class which belongs to the argument collection_string.
     """
+
     def model_generator() -> Generator[Type[Model], None, None]:
         """
         Yields all models of all apps.
@@ -90,5 +91,9 @@ def get_model_from_collection_string(collection_string: str) -> Type[Model]:
     try:
         model = _models_to_collection_string[collection_string]
     except KeyError:
-        raise ValueError('Invalid message. A valid collection_string is missing. Got {}'.format(collection_string))
+        raise ValueError(
+            "Invalid message. A valid collection_string is missing. Got {}".format(
+                collection_string
+            )
+        )
     return model

@@ -13,25 +13,43 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-    ]
+    dependencies = [migrations.swappable_dependency(settings.AUTH_USER_MODEL)]
 
     operations = [
         migrations.CreateModel(
-            name='Mediafile',
+            name="Mediafile",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('mediafile', models.FileField(upload_to='file')),
-                ('title', models.CharField(max_length=255, unique=True)),
-                ('timestamp', models.DateTimeField(auto_now_add=True)),
-                ('uploader', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("mediafile", models.FileField(upload_to="file")),
+                ("title", models.CharField(max_length=255, unique=True)),
+                ("timestamp", models.DateTimeField(auto_now_add=True)),
+                (
+                    "uploader",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'permissions': (('can_see', 'Can see the list of files'), ('can_upload', 'Can upload files'), ('can_manage', 'Can manage files')),
-                'default_permissions': (),
-                'ordering': ['title'],
+                "permissions": (
+                    ("can_see", "Can see the list of files"),
+                    ("can_upload", "Can upload files"),
+                    ("can_manage", "Can manage files"),
+                ),
+                "default_permissions": (),
+                "ordering": ["title"],
             },
             bases=(openslides.utils.models.RESTModelMixin, models.Model),
-        ),
+        )
     ]

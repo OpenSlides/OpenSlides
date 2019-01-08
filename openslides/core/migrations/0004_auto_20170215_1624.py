@@ -13,25 +13,19 @@ def rename_projector_message_slides(apps, schema_editor):
     """
     # We get the model from the versioned app registry;
     # if we directly import it, it will be the wrong version.
-    Projector = apps.get_model('core', 'Projector')
+    Projector = apps.get_model("core", "Projector")
     for projector in Projector.objects.all():
         new_config = {}
         for key, value in projector.config.items():
             new_config[key] = value
-            if value['name'] == 'core/projectormessage':
-                new_config[key]['name'] = 'core/projector-message'
+            if value["name"] == "core/projectormessage":
+                new_config[key]["name"] = "core/projector-message"
         projector.config = new_config
         projector.save(skip_autoupdate=True)
 
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0003_auto_20161217_1158'),
-    ]
+    dependencies = [("core", "0003_auto_20161217_1158")]
 
-    operations = [
-        migrations.RunPython(
-            rename_projector_message_slides
-        ),
-    ]
+    operations = [migrations.RunPython(rename_projector_message_slides)]

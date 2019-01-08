@@ -11,22 +11,26 @@ from openslides.utils.migrations import (
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0004_auto_20170215_1624'),
-    ]
+    dependencies = [("core", "0004_auto_20170215_1624")]
 
     operations = [
         migrations.AlterModelOptions(
-            name='configstore',
+            name="configstore",
             options={
-                'default_permissions': (),
-                'permissions': (
-                    ('can_manage_config', 'Can manage configuration'),
-                    ('can_manage_logos', 'Can manage logos')
-                )
+                "default_permissions": (),
+                "permissions": (
+                    ("can_manage_config", "Can manage configuration"),
+                    ("can_manage_logos", "Can manage logos"),
+                ),
             },
         ),
-        migrations.RunPython(add_permission_to_groups_based_on_existing_permission(
-            'can_manage_config', 'configstore', 'core', 'can_manage_logos', 'Can manage logos'
-        )),
+        migrations.RunPython(
+            add_permission_to_groups_based_on_existing_permission(
+                "can_manage_config",
+                "configstore",
+                "core",
+                "can_manage_logos",
+                "Can manage logos",
+            )
+        ),
     ]

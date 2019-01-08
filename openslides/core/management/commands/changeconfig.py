@@ -8,25 +8,28 @@ class Command(BaseCommand):
     """
     Command to change OpenSlides config values.
     """
-    help = 'Changes OpenSlides config values.'
+
+    help = "Changes OpenSlides config values."
 
     def add_arguments(self, parser):
         parser.add_argument(
-            'key',
-            help='Config key. See config_variables.py in every app.'
+            "key", help="Config key. See config_variables.py in every app."
         )
         parser.add_argument(
-            'value',
-            help='New config value. For a falsy boolean use "False".'
+            "value", help='New config value. For a falsy boolean use "False".'
         )
 
     def handle(self, *args, **options):
-        if options['value'].lower() == 'false':
-            options['value'] = False
+        if options["value"].lower() == "false":
+            options["value"] = False
         try:
-            config[options['key']] = options['value']
+            config[options["key"]] = options["value"]
         except (ConfigError, ConfigNotFound) as e:
             raise CommandError(str(e))
         self.stdout.write(
-            self.style.SUCCESS('Config {key} successfully changed to {value}.'.format(
-                key=options['key'], value=config[options['key']])))
+            self.style.SUCCESS(
+                "Config {key} successfully changed to {value}.".format(
+                    key=options["key"], value=config[options["key"]]
+                )
+            )
+        )

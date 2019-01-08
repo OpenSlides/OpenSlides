@@ -9,6 +9,7 @@ class ProjectorElement:
     subclassing from this base class with different names. The name attribute
     has to be set.
     """
+
     name: Optional[str] = None
 
     def check_and_update_data(self, projector_object: Any, config_entry: Any) -> Any:
@@ -19,8 +20,9 @@ class ProjectorElement:
         """
         self.projector_object = projector_object
         self.config_entry = config_entry
-        assert self.config_entry.get('name') == self.name, (
-            'To get data of a projector element, the correct config entry has to be given.')
+        assert (
+            self.config_entry.get("name") == self.name
+        ), "To get data of a projector element, the correct config entry has to be given."
         self.check_data()
         return self.update_data() or {}
 
@@ -47,7 +49,9 @@ class ProjectorElement:
 projector_elements: Dict[str, ProjectorElement] = {}
 
 
-def register_projector_elements(elements: Generator[Type[ProjectorElement], None, None]) -> None:
+def register_projector_elements(
+    elements: Generator[Type[ProjectorElement], None, None]
+) -> None:
     """
     Registers projector elements for later use.
 

@@ -11,30 +11,33 @@ class AssignmentSlide(ProjectorElement):
 
     You can send a poll id to get a poll slide.
     """
-    name = 'assignments/assignment'
+
+    name = "assignments/assignment"
 
     def check_data(self):
-        if not Assignment.objects.filter(pk=self.config_entry.get('id')).exists():
-            raise ProjectorException('Election does not exist.')
-        poll_id = self.config_entry.get('poll')
+        if not Assignment.objects.filter(pk=self.config_entry.get("id")).exists():
+            raise ProjectorException("Election does not exist.")
+        poll_id = self.config_entry.get("poll")
         if poll_id:
             # Poll slide.
             try:
                 poll = AssignmentPoll.objects.get(pk=poll_id)
             except AssignmentPoll.DoesNotExist:
-                raise ProjectorException('Poll does not exist.')
-            if poll.assignment_id != self.config_entry.get('id'):
-                raise ProjectorException('Assignment id and poll do not belong together.')
+                raise ProjectorException("Poll does not exist.")
+            if poll.assignment_id != self.config_entry.get("id"):
+                raise ProjectorException(
+                    "Assignment id and poll do not belong together."
+                )
 
     def update_data(self):
         data = None
         try:
-            assignment = Assignment.objects.get(pk=self.config_entry.get('id'))
+            assignment = Assignment.objects.get(pk=self.config_entry.get("id"))
         except Assignment.DoesNotExist:
             # Assignment does not exist, so just do nothing.
             pass
         else:
-            data = {'agenda_item_id': assignment.agenda_item_id}
+            data = {"agenda_item_id": assignment.agenda_item_id}
         return data
 
 

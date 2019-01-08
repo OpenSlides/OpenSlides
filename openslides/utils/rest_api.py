@@ -47,10 +47,24 @@ from .access_permissions import BaseAccessPermissions
 from .cache import element_cache
 
 
-__all__ = ['detail_route', 'DecimalField', 'list_route', 'SimpleMetadata',
-           'DestroyModelMixin', 'CharField', 'DictField', 'FileField',
-           'IntegerField', 'JSONField', 'ListField', 'ListSerializer', 'status', 'RelatedField',
-           'SerializerMethodField', 'ValidationError']
+__all__ = [
+    "detail_route",
+    "DecimalField",
+    "list_route",
+    "SimpleMetadata",
+    "DestroyModelMixin",
+    "CharField",
+    "DictField",
+    "FileField",
+    "IntegerField",
+    "JSONField",
+    "ListField",
+    "ListSerializer",
+    "status",
+    "RelatedField",
+    "SerializerMethodField",
+    "ValidationError",
+]
 
 
 router = DefaultRouter()
@@ -63,7 +77,8 @@ class IdManyRelatedField(ManyRelatedField):
     Only works together with the IdPrimaryKeyRelatedField and our
     ModelSerializer.
     """
-    field_name_suffix = '_id'
+
+    field_name_suffix = "_id"
 
     def bind(self, field_name: str, parent: Any) -> None:
         """
@@ -71,7 +86,7 @@ class IdManyRelatedField(ManyRelatedField):
 
         See IdPrimaryKeyRelatedField for more informations.
         """
-        self.source = field_name[:-len(self.field_name_suffix)]
+        self.source = field_name[: -len(self.field_name_suffix)]
         super().bind(field_name, parent)
 
 
@@ -81,7 +96,8 @@ class IdPrimaryKeyRelatedField(PrimaryKeyRelatedField):
 
     Only works together the our ModelSerializer.
     """
-    field_name_suffix = '_id'
+
+    field_name_suffix = "_id"
 
     def bind(self, field_name: str, parent: Any) -> None:
         """
@@ -94,7 +110,7 @@ class IdPrimaryKeyRelatedField(PrimaryKeyRelatedField):
             # field_name is an empty string when the field is created with the
             # attribute many=True. In this case the suffix is added with the
             # IdManyRelatedField class.
-            self.source = field_name[:-len(self.field_name_suffix)]
+            self.source = field_name[: -len(self.field_name_suffix)]
         super().bind(field_name, parent)
 
     @classmethod
@@ -104,7 +120,7 @@ class IdPrimaryKeyRelatedField(PrimaryKeyRelatedField):
         IdManyRelatedField class instead of
         rest_framework.relations.ManyRelatedField class.
         """
-        list_kwargs = {'child_relation': cls(*args, **kwargs)}
+        list_kwargs = {"child_relation": cls(*args, **kwargs)}
         for key in kwargs.keys():
             if key in MANY_RELATION_KWARGS:
                 list_kwargs[key] = kwargs[key]
@@ -122,6 +138,7 @@ class PermissionMixin:
     Also connects container to handle access permissions for model and
     viewset.
     """
+
     access_permissions: Optional[BaseAccessPermissions] = None
 
     def get_permissions(self) -> Iterable[str]:
@@ -196,6 +213,7 @@ class ModelSerializer(_ModelSerializer, metaclass=ModelSerializerRegisterer):
     ModelSerializer that changes the field names of related fields to
     FIELD_NAME_id.
     """
+
     serializer_related_field = IdPrimaryKeyRelatedField
 
     def get_fields(self) -> Any:
@@ -217,6 +235,7 @@ class ListModelMixin(_ListModelMixin):
     """
     Mixin to add the caching system to list requests.
     """
+
     def list(self, request: Any, *args: Any, **kwargs: Any) -> Response:
         model = self.get_queryset().model
         try:
@@ -225,7 +244,9 @@ class ListModelMixin(_ListModelMixin):
             # The corresponding queryset does not support caching.
             response = super().list(request, *args, **kwargs)
         else:
-            all_restricted_data = async_to_sync(element_cache.get_all_restricted_data)(request.user.pk or 0)
+            all_restricted_data = async_to_sync(element_cache.get_all_restricted_data)(
+                request.user.pk or 0
+            )
             response = Response(all_restricted_data.get(collection_string, []))
         return response
 
@@ -234,6 +255,7 @@ class RetrieveModelMixin(_RetrieveModelMixin):
     """
     Mixin to add the caching system to retrieve requests.
     """
+
     def retrieve(self, request: Any, *args: Any, **kwargs: Any) -> Response:
         model = self.get_queryset().model
         try:
@@ -244,7 +266,9 @@ class RetrieveModelMixin(_RetrieveModelMixin):
         else:
             lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
             user_id = request.user.pk or 0
-            content = async_to_sync(element_cache.get_element_restricted_data)(user_id, collection_string, self.kwargs[lookup_url_kwarg])
+            content = async_to_sync(element_cache.get_element_restricted_data)(
+                user_id, collection_string, self.kwargs[lookup_url_kwarg]
+            )
             if content is None:
                 raise Http404
             response = Response(content)
@@ -255,6 +279,7 @@ class CreateModelMixin(_CreateModelMixin):
     """
     Mixin to override create requests.
     """
+
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         """
         Just remove all response data (except 'id') so nobody may get
@@ -264,8 +289,8 @@ class CreateModelMixin(_CreateModelMixin):
         """
         response = super().create(request, *args, **kwargs)
         response.data = ReturnDict(
-            id=response.data.get('id'),
-            serializer=response.data.serializer  # This kwarg is not send to the client.
+            id=response.data.get("id"),
+            serializer=response.data.serializer,  # This kwarg is not send to the client.
         )
         return response
 
@@ -274,6 +299,7 @@ class UpdateModelMixin(_UpdateModelMixin):
     """
     Mixin to override update requests.
     """
+
     def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         """
         Just remove all response data so nobody may get unrestricted data.
@@ -289,6 +315,12 @@ class GenericViewSet(PermissionMixin, _GenericViewSet):
     pass
 
 
-class ModelViewSet(PermissionMixin, ListModelMixin, RetrieveModelMixin,
-                   CreateModelMixin, UpdateModelMixin, _ModelViewSet):
+class ModelViewSet(
+    PermissionMixin,
+    ListModelMixin,
+    RetrieveModelMixin,
+    CreateModelMixin,
+    UpdateModelMixin,
+    _ModelViewSet,
+):
     pass

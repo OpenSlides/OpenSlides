@@ -10,8 +10,12 @@ def default_votes_validator(data):
     than or equal to -2.
     """
     for key in data:
-        if (key in ('votesvalid', 'votesinvalid', 'votescast') and
-                data[key] is not None and
-                data[key] < -2):
-            raise ValidationError({'detail': _('Value for {} must not be less than -2').format(key)})
+        if (
+            key in ("votesvalid", "votesinvalid", "votescast")
+            and data[key] is not None
+            and data[key] < -2
+        ):
+            raise ValidationError(
+                {"detail": _("Value for {} must not be less than -2").format(key)}
+            )
     return data
