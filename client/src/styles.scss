@@ -110,6 +110,11 @@ body {
     margin-right: auto;
 }
 
+@keyframes fadeIn {
+    0%   {width:0%; margin-left:0;}
+    100% {width:100%;margin-left:-100%;}
+}
+
 //custom table header for search button, filtering and more. Used in ListViews
 .custom-table-header {
     width: 100%;
@@ -118,6 +123,32 @@ body {
     text-align: right;
     background: white;
     border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    display: flex;
+    justify-content: flex-end;
+
+    button {
+        border-radius: 0%;
+    }
+
+    input {
+        position: relative;
+        max-width: 400px;
+        z-index: 2;
+        background-color: #EEE;
+        padding-right: 5px;
+        margin-right: 0px;
+    }
+
+    input.vp {
+        margin-left: -100%;
+        max-width: 100%;
+        animation-name: fadeIn;
+        animation-duration: 0.3s;
+    }
+
+    mat-icon {
+        vertical-align: text-bottom;
+    }
 }
 
 .os-listview-table {
@@ -271,4 +302,8 @@ button.mat-menu-item.selected {
 .grey {
     background-color: #e0e0e0 !important;
     color: rgba(0, 0, 0, 0.87) !important;
+}
+
+.os-listview-table {
+    min-height: 800px;
 }

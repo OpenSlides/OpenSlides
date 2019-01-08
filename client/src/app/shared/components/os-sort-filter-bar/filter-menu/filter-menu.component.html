@@ -1,0 +1,27 @@
+<mat-accordion (keyup)=checkKeyEvent($event)>
+    <mat-expansion-panel *ngFor="let filter of service.filterDefinitions">
+        <mat-expansion-panel-header *ngIf="filter.options && filter.options.length">
+            <mat-panel-title>
+                <mat-icon>
+                    {{ filter.count ? 'checked' : ''}}
+                </mat-icon>
+                <span translate>{{ service.getFilterName(filter) }}</span>
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="indent" *ngIf="filter.options && filter.options.length">
+            <mat-action-list class="filtermenu-expanded">
+                <div *ngFor="let option of filter.options">
+                    <div *ngIf="isFilter(option)">
+                        <mat-checkbox [checked]="option.isActive" (change)="service.toggleFilterOption(filter.property, option)">
+                            {{ option.label |translate }}
+                        </mat-checkbox>
+                    </div>
+                    <div class="filter-subtitle" *ngIf="!isFilter(option)">
+                        <mat-divider *ngIf="option === '-'"></mat-divider>
+                        <span *ngIf="option !== '-'" translate> {{option}}</span>
+                    </div>
+                </div>
+            </mat-action-list>
+        </div>
+    </mat-expansion-panel>
+</mat-accordion>

@@ -1,11 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { Title } from '@angular/platform-browser';
-import { ViewAssignment } from '../models/view-assignment';
-import { ListViewBaseComponent } from '../../base/list-view-base';
+
+import { AssignmentFilterListService } from '../services/assignment-filter.service';
 import { AssignmentRepositoryService } from '../services/assignment-repository.service';
-import { MatSnackBar } from '@angular/material';
+import { ListViewBaseComponent } from '../../base/list-view-base';
 import { PromptService } from '../../../core/services/prompt.service';
+import { ViewAssignment } from '../models/view-assignment';
+import { AssignmentSortListService } from '../services/assignment-sort-list.service';
+
+
 
 /**
  * Listview for the assignments
@@ -17,21 +22,25 @@ import { PromptService } from '../../../core/services/prompt.service';
     styleUrls: ['./assignment-list.component.scss']
 })
 export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignment> implements OnInit {
+
     /**
      * Constructor.
-     *
      * @param titleService
      * @param translate
      * @param matSnackBar
      * @param repo the repository
      * @param promptService
+     * @param filterService: A service to supply the filtered datasource
+     * @param sortService: Service to sort the filtered dataSource
      */
     public constructor(
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
-        private repo: AssignmentRepositoryService,
-        private promptService: PromptService
+        public repo: AssignmentRepositoryService,
+        private promptService: PromptService,
+        public filterService: AssignmentFilterListService,
+        public sortService: AssignmentSortListService
     ) {
         super(titleService, translate, matSnackBar);
         // activate multiSelect mode for this listview
@@ -40,13 +49,18 @@ export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignmen
 
     /**
      * Init function.
-     * Sets the title, inits the table and calls the repo.
+     * Sets the title, inits the table, sets sorting and filter definitions, subscribes to filtered
+     * data and sorting service
      */
     public ngOnInit(): void {
         super.setTitle('Assignments');
         this.initTable();
-        this.repo.getViewModelListObservable().subscribe(newAssignments => {
-            this.dataSource.data = newAssignments;
+
+        this.filterService.filter().subscribe(filteredData => {
+            this.sortService.data = filteredData;
+        });
+        this.sortService.sort().subscribe(sortedData => {
+            this.dataSource.data = sortedData;
             this.checkSelection();
         });
     }

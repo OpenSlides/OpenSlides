@@ -1,0 +1,48 @@
+<div class="custom-table-header on-transition-fade">
+    <button mat-button *ngIf="hasFilters" (click)="filterMenu.opened ? filterMenu.close() : filterMenu.open()">
+        <span *ngIf="filterService.hasActiveFilters > 0">{{ filterService.hasActiveFilters }}&nbsp;</span>
+        <span class="upper" translate>Filter</span>
+    </button>
+    <button mat-button *ngIf="vp.isMobile && hasSorting" (click)="openSortDropDown()">
+        <span class="upper" translate>Sort</span>
+    </button>
+    <button mat-button *ngIf="!vp.isMobile && hasSorting" [matMenuTriggerFor]="menu">
+        <span class="upper" translate>Sort</span>
+    </button>
+    <input
+        matInput
+        *ngIf="isSearchBar"
+        (keyup)="applySearch($event, $event.target.value)"
+        osAutofocus
+        placeholder="{{ translate.instant('Search') }}"
+        [ngClass]="vp.isMobile ? 'vp' : ''"
+    />
+    <button mat-button (click)="toggleSearchBar()">
+        <mat-icon>{{ isSearchBar ? 'keyboard_arrow_right' : 'search' }}</mat-icon>
+    </button>
+</div>
+
+<!-- Header for the filter side bar -->
+<mat-drawer #filterMenu mode="push" position="end">
+    <div class="custom-table-header filter-menu" (click)="this.filterMenu.toggle()">
+        <span><mat-icon>keyboard_arrow_right</mat-icon></span>
+        <span class="right-with-margin" translate>Filter options:</span>
+    </div>
+    <os-filter-menu *ngIf="filterService" (dismissed)="this.filterMenu.close()" [service]="filterService">
+    </os-filter-menu>
+</mat-drawer>
+
+<!-- non-mobile sorting menu -->
+<mat-menu #menu>
+    <div *ngIf="hasSorting">
+        <mat-list-item
+            *ngFor="let option of sortService.sortOptions.options"
+            (click)="sortService.sortProperty = option.property"
+        >
+            <button mat-menu-item>
+                <mat-icon>{{ sortService.getSortIcon(option) }}</mat-icon>
+                <span translate> {{ sortService.getSortLabel(option) }}</span>
+            </button>
+        </mat-list-item>
+    </div>
+</mat-menu>

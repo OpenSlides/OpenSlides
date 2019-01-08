@@ -12,7 +12,12 @@ import { MediafileRepositoryService } from '../../services/mediafile-repository.
 import { MediaManageService } from '../../services/media-manage.service';
 import { PromptService } from 'app/core/services/prompt.service';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
+import { MediafileFilterListService } from '../../services/mediafile-filter.service';
+import { MediafilesSortListService } from '../../services/mediafiles-sort-list.service';
 import { ViewportService } from 'app/core/services/viewport.service';
+
+
+
 
 /**
  * Lists all the uploaded files.
@@ -81,11 +86,13 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile>
         private repo: MediafileRepositoryService,
         private mediaManage: MediaManageService,
         private promptService: PromptService,
-        public vp: ViewportService
+        public vp: ViewportService,
+        public filterService: MediafileFilterListService,
+        public sortService: MediafilesSortListService
     ) {
         super(titleService, translate, matSnackBar);
 
-        // emables multiSelection for this listView
+        // embles multiSelection for this listView
         this.canMultiSelect = true;
     }
 
@@ -102,8 +109,12 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile>
             hidden: new FormControl(),
         });
 
-        this.repo.getViewModelListObservable().subscribe(newFiles => {
-            this.dataSource.data = newFiles;
+        this.filterService.filter().subscribe(filteredData => {
+            this.sortService.data = filteredData;
+        });
+
+        this.sortService.sort().subscribe(sortedData => {
+            this.dataSource.data = sortedData;
         });
 
         // Observe the logo actions

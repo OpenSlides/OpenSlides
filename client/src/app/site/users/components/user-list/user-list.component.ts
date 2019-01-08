@@ -5,12 +5,14 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
 import { CsvExportService } from '../../../../core/services/csv-export.service';
+import { ChoiceService } from '../../../../core/services/choice.service';
 import { ListViewBaseComponent } from '../../../base/list-view-base';
 import { GroupRepositoryService } from '../../services/group-repository.service';
 import { PromptService } from '../../../../core/services/prompt.service';
 import { UserRepositoryService } from '../../services/user-repository.service';
 import { ViewUser } from '../../models/view-user';
-import { ChoiceService } from '../../../../core/services/choice.service';
+import { UserFilterListService } from '../../services/user-filter-list.service';
+import { UserSortListService } from '../../services/user-sort-list.service';
 
 /**
  * Component for the user list view.
@@ -22,9 +24,10 @@ import { ChoiceService } from '../../../../core/services/choice.service';
     styleUrls: ['./user-list.component.scss']
 })
 export class UserListComponent extends ListViewBaseComponent<ViewUser> implements OnInit {
+
     /**
+     * /**
      * The usual constructor for components
-     *
      * @param titleService Serivce for setting the title
      * @param translate Service for translation handling
      * @param matSnackBar Helper to diplay errors
@@ -34,6 +37,9 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
      * @param route the local route
      * @param csvExport CSV export Service,
      * @param promptService
+     * @param groupRepo
+     * @param filterService
+     * @param sortService
      */
     public constructor(
         titleService: Title,
@@ -45,7 +51,9 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
         private router: Router,
         private route: ActivatedRoute,
         protected csvExport: CsvExportService,
-        private promptService: PromptService
+        private promptService: PromptService,
+        public filterService: UserFilterListService,
+        public sortService: UserSortListService
     ) {
         super(titleService, translate, matSnackBar);
 
@@ -56,13 +64,19 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
     /**
      * Init function
      *
-     * sets the title, inits the table and calls the repo
+     * sets the title, inits the table, sets sorting and filter options, subscribes
+     * to filter/sort services
      */
     public ngOnInit(): void {
         super.setTitle('Users');
         this.initTable();
-        this.repo.getViewModelListObservable().subscribe(newUsers => {
-            this.dataSource.data = newUsers;
+
+
+        this.filterService.filter().subscribe(filteredData => {
+                this.sortService.data = filteredData;
+            });
+        this.sortService.sort().subscribe(sortedData => {
+            this.dataSource.data = sortedData;
             this.checkSelection();
         });
     }
@@ -240,5 +254,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
     public async setPresent(viewUser: ViewUser): Promise<void> {
         viewUser.user.is_present = !viewUser.user.is_present;
         await this.repo.update(viewUser.user, viewUser);
+
     }
+
 }

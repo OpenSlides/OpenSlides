@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { ViewMotionBlock } from '../models/view-motion-block';
@@ -9,9 +11,7 @@ import { DataSendService } from 'app/core/services/data-send.service';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { Motion } from 'app/shared/models/motions/motion';
 import { ViewMotion } from '../models/view-motion';
-import { Observable } from 'rxjs';
 import { MotionRepositoryService } from './motion-repository.service';
-import { map } from 'rxjs/operators';
 
 /**
  * Repository service for motion blocks

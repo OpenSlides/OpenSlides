@@ -16,9 +16,10 @@
     </div>
 </os-head-bar>
 
-<div class="custom-table-header on-transition-fade">
-    <button mat-button><span translate>SORT</span></button> <button mat-button><span translate>FILTER</span></button>
-</div>
+<mat-drawer-container class="on-transition-fade">
+<os-sort-filter-bar [filterService]="filterService" [sortService]="sortService"
+    (searchFieldChange)="searchFilter($event)">
+</os-sort-filter-bar>
 
 <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
     <!-- Selector column -->
@@ -219,3 +220,4 @@
         </button>
     </div>
 </mat-menu>
+</mat-drawer-container>

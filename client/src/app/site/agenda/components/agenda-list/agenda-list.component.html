@@ -13,6 +13,7 @@
     </div>
 
 </os-head-bar>
+<os-sort-filter-bar [filterService] = "filterService" (searchFieldChange)="searchFilter($event)"></os-sort-filter-bar>
 
 <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
     <!-- selector column -->

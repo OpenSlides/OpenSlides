@@ -7,18 +7,20 @@ import { ConfigService } from '../../../../core/services/config.service';
 import { MotionCsvExportService } from '../../services/motion-csv-export.service';
 import { ListViewBaseComponent } from '../../../base/list-view-base';
 import { MatSnackBar } from '@angular/material';
-import { MotionRepositoryService } from '../../services/motion-repository.service';
 import { ViewMotion } from '../../models/view-motion';
 import { WorkflowState } from '../../../../shared/models/motions/workflow-state';
 import { MotionMultiselectService } from '../../services/motion-multiselect.service';
 import { TagRepositoryService } from 'app/site/tags/services/tag-repository.service';
-import { MotionBlockRepositoryService } from '../../services/motion-block-repository.service';
 import { CategoryRepositoryService } from '../../services/category-repository.service';
+import { MotionBlockRepositoryService } from '../../services/motion-block-repository.service';
+import { MotionFilterListService } from '../../services/motion-filter-list.service';
+import { MotionSortListService } from '../../services/motion-sort-list.service';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewWorkflow } from '../../models/view-workflow';
 import { ViewCategory } from '../../models/view-category';
 import { ViewMotionBlock } from '../../models/view-motion-block';
 import { WorkflowRepositoryService } from '../../services/workflow-repository.service';
+
 
 /**
  * Component that displays all the motions in a Table using DataSource.
@@ -29,6 +31,7 @@ import { WorkflowRepositoryService } from '../../services/workflow-repository.se
     styleUrls: ['./motion-list.component.scss']
 })
 export class MotionListComponent extends ListViewBaseComponent<ViewMotion> implements OnInit {
+
     /**
      * Use for minimal width. Please note the 'selector' row for multiSelect mode,
      * to be able to display an indicator for the state of selection
@@ -68,8 +71,13 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
      * @param tagRepo Tag Repository
      * @param motionBlockRepo
      * @param categoryRepo
+     * @param categoryRepo: Repo for categories. Used to define filters
+     * @param workflowRepo: Repo for Workflows. Used to define filters
      * @param motionCsvExport
      * @param multiselectService Service for the multiSelect actions
+     * @param userRepo
+     * @param sortService
+     * @param filterService
      */
     public constructor(
         titleService: Title,
@@ -78,13 +86,14 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
         private router: Router,
         private route: ActivatedRoute,
         private configService: ConfigService,
-        private repo: MotionRepositoryService,
         private tagRepo: TagRepositoryService,
         private motionBlockRepo: MotionBlockRepositoryService,
         private categoryRepo: CategoryRepositoryService,
         private workflowRepo: WorkflowRepositoryService,
         private motionCsvExport: MotionCsvExportService,
-        public multiselectService: MotionMultiselectService
+        public multiselectService: MotionMultiselectService,
+        public sortService: MotionSortListService,
+        public filterService: MotionFilterListService
     ) {
         super(titleService, translate, matSnackBar);
 
@@ -95,28 +104,23 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
     /**
      * Init function.
      *
-     * Sets the title, inits the table and calls the repository
+     * Sets the title, inits the table, defines the filter/sorting options and
+     * subscribes to filter and sorting services
      */
     public ngOnInit(): void {
         super.setTitle('Motions');
         this.initTable();
-        this.repo.getViewModelListObservable().subscribe(newMotions => {
-            // TODO: This is for testing purposes. Can be removed with #3963
-            this.dataSource.data = newMotions.sort((a, b) => {
-                if (a.callListWeight !== b.callListWeight) {
-                    return a.callListWeight - b.callListWeight;
-                } else {
-                    return a.id - b.id;
-                }
-            });
-            this.checkSelection();
-        });
         this.configService.get('motions_statutes_enabled').subscribe(enabled => (this.statutesEnabled = enabled));
         this.configService.get('motions_recommendations_by').subscribe(id => (this.recomendationEnabled = !!id));
         this.motionBlockRepo.getViewModelListObservable().subscribe(mBs => this.motionBlocks = mBs);
         this.categoryRepo.getViewModelListObservable().subscribe(cats => this.categories = cats);
         this.tagRepo.getViewModelListObservable().subscribe(tags => this.tags = tags);
         this.workflowRepo.getViewModelListObservable().subscribe(wfs => this.workflows = wfs);
+        this.filterService.filter().subscribe(filteredData => this.sortService.data = filteredData);
+        this.sortService.sort().subscribe(sortedData => {
+            this.dataSource.data = sortedData;
+            this.checkSelection();
+        });
     }
 
     /**
@@ -207,4 +211,6 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
             this.raiseError(e);
         }
     }
+
+
 }

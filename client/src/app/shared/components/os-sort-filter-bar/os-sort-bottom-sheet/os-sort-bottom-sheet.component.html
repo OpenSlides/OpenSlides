@@ -1,0 +1,8 @@
+<mat-nav-list class='main-nav'>
+    <mat-list-item *ngFor="let option of this.data.sortOptions.options" (click)="clickedOption(option.property)">
+        <button mat-menu-item>
+            <mat-icon>{{ data.getSortIcon(option) }}</mat-icon>
+        <span translate>{{ data.getSortLabel(option) }}</span>
+        </button>
+    </mat-list-item>
+</mat-nav-list>
