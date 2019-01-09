@@ -7,7 +7,6 @@ import { OperatorService } from 'app/core/services/operator.service';
 import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import { HttpErrorResponse } from '@angular/common/http';
 import { environment } from 'environments/environment';
 import { OpenSlidesService } from '../../../../core/services/openslides.service';
 import { LoginDataService } from '../../../../core/services/login-data.service';
@@ -141,13 +140,11 @@ export class LoginMaskComponent extends BaseComponent implements OnInit, OnDestr
             }
             this.router.navigate([redirect]);
         } catch (e) {
-            if (e instanceof HttpErrorResponse) {
-                this.loginForm.setErrors({
-                    notFound: true
-                });
-                this.loginErrorMsg = e.error.detail;
-                this.inProcess = false;
-            }
+            this.loginForm.setErrors({
+                notFound: true
+            });
+            this.loginErrorMsg = e;
+            this.inProcess = false;
         }
     }
 
