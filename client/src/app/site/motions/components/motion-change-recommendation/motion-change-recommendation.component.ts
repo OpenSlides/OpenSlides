@@ -75,15 +75,15 @@ export class MotionChangeRecommendationComponent extends BaseViewComponent {
     public replacementTypes = [
         {
             value: ModificationType.TYPE_REPLACEMENT,
-            title: 'Replacement'
+            title: this.translate.instant('Replacement')
         },
         {
             value: ModificationType.TYPE_INSERTION,
-            title: 'Insertion'
+            title: this.translate.instant('Insertion')
         },
         {
             value: ModificationType.TYPE_DELETION,
-            title: 'Deletion'
+            title: this.translate.instant('Deletion')
         }
     ];
 

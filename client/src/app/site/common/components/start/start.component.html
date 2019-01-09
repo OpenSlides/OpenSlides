@@ -6,9 +6,8 @@
 
 <mat-card class="os-card">
     <div class="app-content" translate>
-        <h4> {{welcomeTitle | translate}} </h4>
-        <span> {{welcomeText | translate}} </span>
-
-        <button mat-button (click)="giveDataStore()">print the dataStore</button>
+        <h1>{{ welcomeTitle | translate }}</h1>
+        <!-- TOODO: translate welcomeText-->
+        <div [innerHTML]="welcomeText"></div>
     </div>
 </mat-card>

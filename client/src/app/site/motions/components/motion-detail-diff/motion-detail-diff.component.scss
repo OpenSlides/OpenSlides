@@ -15,6 +15,10 @@
         }
     }
 
+    .mat-icon-button {
+        margin-top: -20px;
+    }
+
     .action-row {
         font-size: 0.8em;
         padding-top: 5px;
@@ -54,7 +58,7 @@
     border: solid 1px #ddd;
     border-radius: 3px;
     margin-bottom: 5px;
-    padding: 5px 5px 0 5px;
+    padding: 5px 10px;
 
     a,
     a:link,

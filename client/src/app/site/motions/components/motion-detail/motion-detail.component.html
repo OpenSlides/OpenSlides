@@ -105,9 +105,9 @@
 </os-head-bar>
 
 <!-- Title -->
-<div class="motion-title on-transition-fade" *ngIf="motion && !editMotion">
-    <h2>{{ motion.title }}</h2>
-</div>
+<h1 class="title-left on-transition-fade" *ngIf="motion && !editMotion">
+    {{ motion.title }}
+</h1>
 
 <ng-container *ngIf="vp.isMobile; then mobileView; else desktopView"></ng-container>
 
@@ -160,7 +160,9 @@
         </div>
         <div class="desktop-right ">
             <!-- Content -->
-            <mat-card> <ng-container *ngTemplateOutlet="contentTemplate"></ng-container> </mat-card>
+            <mat-card [ngClass]="editMotion ? 'os-form-card' : 'os-card'">
+                <ng-container *ngTemplateOutlet="contentTemplate"></ng-container>
+            </mat-card>
         </div>
     </div>
 </ng-template>
@@ -354,7 +356,7 @@
         </div>
 
         <!-- Submitter -->
-        <div *ngIf="newMotion" class="content-field form100">
+        <div *ngIf="newMotion" class="content-field">
             <div *osPerms="['motions.can_manage', 'motions.can_manage_metadata']">
                 <os-search-value-selector
                     ngDefaultControl
@@ -452,9 +454,9 @@
 
         <div class="extra-data">
             <!-- Attachments -->
-            <div *ngIf="motion.hasAttachments() || editMotion" class="content-field form100">
+            <div *ngIf="motion.hasAttachments() || editMotion" class="content-field">
                 <div *ngIf="!editMotion">
-                    <h4 translate>Attachments</h4>
+                    <h3>{{ "Attachments" | translate }}<mat-icon>attach_file</mat-icon></h3>
                     <mat-list dense>
                         <mat-list-item *ngFor="let file of motion.attachments">
                             <a [routerLink]="" (click)="onClickAttacment(file)">{{ file.title }}</a>
@@ -474,7 +476,7 @@
             </div>
 
             <!-- Category form -->
-            <div class="content-field form100" *ngIf="newMotion && categoryObserver.value.length > 0">
+            <div class="content-field" *ngIf="newMotion && categoryObserver.value.length > 0">
                 <os-search-value-selector
                     ngDefaultControl
                     [form]="contentForm"
@@ -487,7 +489,7 @@
             </div>
 
             <!-- Parent item -->
-            <div class="content-field form100" *ngIf="newMotion && agendaItemObserver.value.length > 0">
+            <div class="content-field" *ngIf="newMotion && agendaItemObserver.value.length > 0">
                 <os-search-value-selector
                     ngDefaultControl
                     [form]="contentForm"
@@ -500,7 +502,7 @@
             </div>
 
             <!-- Visibility -->
-            <div class="content-field form100" *ngIf="newMotion">
+            <div class="content-field" *ngIf="newMotion">
                 <mat-form-field>
                     <mat-select formControlName="agenda_type" placeholder="{{ 'Agenda visibility' | translate }}">
                         <mat-option *ngFor="let type of itemVisibility" [value]="type.key">
@@ -511,7 +513,7 @@
             </div>
 
             <!-- Supporter form -->
-            <div class="content-field form100" *ngIf="editMotion && minSupporters">
+            <div class="content-field" *ngIf="editMotion && minSupporters">
                 <div *osPerms="['motions.can_manage', 'motions.can_manage_metadata']">
                     <os-search-value-selector
                         ngDefaultControl
@@ -525,7 +527,7 @@
             </div>
 
             <!-- Workflow -->
-            <div class="content-field form100" *ngIf="editMotion && workflowObserver.value.length > 1">
+            <div class="content-field" *ngIf="editMotion && workflowObserver.value.length > 1">
                 <div *osPerms="['motions.can_manage', 'motions.can_manage_metadata']">
                     <os-search-value-selector
                         ngDefaultControl
@@ -539,7 +541,7 @@
             </div>
 
             <!-- Origin form -->
-            <div class="content-field form100" *ngIf="editMotion">
+            <div class="content-field" *ngIf="editMotion">
                 <div *osPerms="['motions.can_manage', 'motions.can_manage_metadata']">
                     <mat-form-field>
                         <input

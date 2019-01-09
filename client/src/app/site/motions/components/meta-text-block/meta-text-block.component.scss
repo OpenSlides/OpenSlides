@@ -1,28 +1,25 @@
 .meta-text-block {
     padding: 0px;
-    margin: 20px;
-    margin-right: 0;
-    min-width: 10hv;
+    margin: 20px 10px 20px 0;
     min-width: 200px;
 
     mat-card-header {
         display: inherit;
-        padding: 10px;
+        padding-top: 10px;
         margin: 0;
         background-color: #eee;
 
+        .mat-card-header-text {
+            margin: 0 10px;
+        }
         mat-card-title {
             margin: 0;
+            font-size: 16px;
+            font-weight: 400;
 
             .title-container {
                 display: flex;
                 justify-content: space-between;
-
-                :host ::ng-deep button {
-                    width: 30px;
-                    height: 30px;
-                    line-height: 30px;
-                }
             }
         }
     }

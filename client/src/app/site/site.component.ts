@@ -53,11 +53,6 @@ export class SiteComponent extends BaseComponent implements OnInit {
     public searchform: FormGroup;
 
     /**
-     * Flag, if the search bar shoud be shown.
-     */
-    public showSearch: boolean;
-
-    /**
      * Constructor
      *
      * @param authService
@@ -93,12 +88,6 @@ export class SiteComponent extends BaseComponent implements OnInit {
         });
 
         this.searchform = new FormGroup({ query: new FormControl([]) });
-
-        this.router.events.subscribe(event => {
-            if (event instanceof NavigationEnd) {
-                this.showSearch = !this.router.url.startsWith('/search');
-            }
-        });
     }
 
     /**

@@ -8,12 +8,10 @@
 >
     <!-- Title -->
     <div class="title-slot">
-        <h2 *ngIf="editUser">
-            {{ personalInfoForm.get('title').value }} {{ personalInfoForm.get('first_name').value }}
-            {{ personalInfoForm.get('last_name').value }}
+        <h2>
+            <span *ngIf="newUser" translate>New participant</span>
+            <span *ngIf="!newUser">{{ user.full_name }}</span>
         </h2>
-
-        <h2 *ngIf="!editUser">{{ user.full_name }}</h2>
     </div>
 
     <!-- Menu -->
@@ -35,7 +33,7 @@
     </mat-menu>
 </os-head-bar>
 
-<mat-card class="os-card" *osPerms="'users.can_see_name'">
+<mat-card [ngClass]="editUser ? 'os-form-card' : 'os-card'" *osPerms="'users.can_see_name'">
     <form
         [ngClass]="{ 'mat-form-field-enabled': editUser }"
         [formGroup]="personalInfoForm"
@@ -46,7 +44,7 @@
         <div *ngIf="isAllowed('seeName')">
             <!-- Title -->
             <mat-form-field
-                class="form30 distance force-min-with"
+                class="form16 distance force-min-with"
                 *ngIf="user.title || (editUser && isAllowed('manage'))">
                 <input
                     type="text"
@@ -59,7 +57,7 @@
 
             <!-- First name -->
             <mat-form-field
-                class="form30 distance force-min-with"
+                class="form37 distance force-min-with"
                 *ngIf="user.first_name || (editUser && isAllowed('manage'))">
                 <input
                     type="text"
@@ -70,7 +68,9 @@
             </mat-form-field>
 
             <!-- Last name -->
-            <mat-form-field class="form30  force-min-with" *ngIf="user.last_name || (editUser && isAllowed('manage'))">
+            <mat-form-field
+                class="form37 force-min-with"
+                *ngIf="user.last_name || (editUser && isAllowed('manage'))">
                 <input
                     type="text"
                     matInput
@@ -82,7 +82,7 @@
 
         <div *ngIf="isAllowed('seePersonal')">
             <!-- E-Mail -->
-            <mat-form-field class="form100" *ngIf="user.email || editUser">
+            <mat-form-field *ngIf="user.email || editUser">
                 <input
                     type="email"
                     matInput
@@ -109,7 +109,7 @@
 
             <!-- Participant Number -->
             <mat-form-field
-                class="form20 force-min-with"
+                class="form25 force-min-with"
                 *ngIf="user.participant_number || (editUser && isAllowed('manage'))">
                 <input
                     type="text"
@@ -122,7 +122,7 @@
 
         <div>
             <!-- Groups -->
-            <mat-form-field class="form100" *ngIf="(user.groups && user.groups.length > 0) || editUser">
+            <mat-form-field *ngIf="(user.groups && user.groups.length > 0) || editUser">
                 <mat-select placeholder="{{ 'Groups' | translate }}" formControlName="groups_id" multiple>
                     <mat-option *ngFor="let group of groups" [value]="group.id">{{ group }}</mat-option>
                 </mat-select>
@@ -131,7 +131,7 @@
 
         <div *ngIf="isAllowed('manage')">
             <!-- Initial Password -->
-            <mat-form-field class="form100">
+            <mat-form-field>
                 <input
                     matInput
                     placeholder="{{ 'Initial password' | translate }}"
@@ -151,7 +151,7 @@
         </div>
 
         <!-- About me -->
-        <div *ngIf="isAllowed('seePersonal')">
+        <div *ngIf="isAllowed('seePersonal')" class="spacer-bottom-20">
             <!-- The HTML Editor -->
             <h4 translate *ngIf="user.about_me || editUser">About me</h4>
             <editor formControlName="about_me" [init]="tinyMceSettings" *ngIf="editUser"></editor>
@@ -160,7 +160,7 @@
 
         <div *ngIf="isAllowed('seePersonal')">
             <!-- username -->
-            <mat-form-field class="form100" *ngIf="user.username || editUser">
+            <mat-form-field *ngIf="user.username || editUser">
                 <input
                     type="text"
                     matInput
@@ -172,7 +172,7 @@
 
         <div *ngIf="isAllowed('seeExtra')">
             <!-- Comment -->
-            <mat-form-field class="form100" *ngIf="user.comment || editUser">
+            <mat-form-field *ngIf="user.comment || editUser">
                 <input
                     matInput
                     placeholder="{{ 'Comment' | translate }}"
@@ -182,7 +182,7 @@
             </mat-form-field>
         </div>
 
-        <div *ngIf="isAllowed('seeExtra')">
+        <div *ngIf="isAllowed('seeExtra')" class="spacer-top-20">
             <!-- Present? -->
             <mat-checkbox
                 formControlName="is_present"

@@ -17,18 +17,6 @@ span {
     }
 }
 
-.motion-title {
-    padding: 40px;
-    padding-left: 25px;
-    line-height: 180%;
-    font-size: 120%;
-    color: #317796; // TODO: put in theme as $primary
-    h2 {
-        margin: 0;
-        font-weight: normal;
-    }
-}
-
 .motion-content {
     display: flow-root;
 }
@@ -70,14 +58,14 @@ span {
     h4 {
         margin: 10px 10px 15px 0;
         display: block;
-        font-weight: bold;
+        font-weight: 500;
         font-size: 110%;
     }
 
     h5 {
         margin: 15px 10px 10px 0;
         display: block;
-        font-weight: bold;
+        font-weight: 500;
         font-size: 100%;
     }
 
@@ -88,7 +76,7 @@ span {
     //the assembly may decide ...
     .text-prefix-label {
         display: block;
-        margin: 0 10px 7px 0px;
+        margin: 0 10px 20px 0px;
     }
 
     .extra-data {
@@ -97,23 +85,7 @@ span {
 
     .content-field {
         display: inline-block;
-        ::ng-deep {
-            .mat-form-field {
-                width: 100%;
-            }
-        }
-    }
-
-    .form100 {
         width: 100%;
-    }
-
-    .form70 {
-        width: 70%;
-    }
-
-    .form30 {
-        width: 30%;
     }
 
     .form-id-title {
@@ -135,20 +107,23 @@ span {
     .desktop-left {
         width: 30%;
         float: left;
-
-        .meta-info-desktop {
-            padding-left: 20px;
-        }
+        padding-left: 65px;
+        padding-right: 25px;
     }
 
     .desktop-right {
         display: grid;
 
-        min-width: 70%;
+        min-width: calc(70% - 90px);
 
         mat-card {
             display: inline;
             margin: 0px 40px 10px 10px;
+        }
+        .os-card {
+            width: 900px;
+            margin-left: 0 !important;
+            margin-top: 0 !important;
         }
     }
 }

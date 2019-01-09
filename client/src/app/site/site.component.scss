@@ -1,13 +1,42 @@
-.projector-button {
-    position: fixed;
-    bottom: 10px;
-    right: 20px;
+/* Main navigation */
+mat-sidenav-container {
+    height: 100vh;
+    width: 100%;
+
+    mat-sidenav.side-panel {
+        border: 0;
+        box-shadow: 3px 0px 10px 0px rgba(0, 0, 0, 0.2);
+        width: 260px;
+
+        mat-toolbar,
+        mat-toolbar-row {
+            height: 80px;
+        }
+
+        mat-nav-list {
+            padding-top: 0;
+            padding-bottom: 20px;
+        }
+        mat-nav-list.main-nav {
+            border-top-width: 1px;
+            border-top-style: solid;
+            span {
+                font-weight: 400;
+            }
+        }
+
+        mat-icon {
+            min-width: 20px; //puts the text to the right on the same level
+            margin-right: 25px;
+        }
+    }
 }
 
+/* Logo container */
 .os-logo-container {
     width: 200px;
     margin-left: 10px;
-    background-image: url(/assets/img/openslides-logo-h-dark-transparent.svg);
+    background-image: url(/assets/img/openslides-logo-h.svg);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -20,31 +49,26 @@
     outline: none;
 }
 
-.side-panel {
-    border: 0;
-    box-shadow: 3px 0px 10px 0px rgba(0, 0, 0, 0.2);
-    width: 260px;
-}
-
+/* Content container */
 .content {
     min-height: 100%;
     position: relative;
+
+    main {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        position: relative;
+        z-index: 50;
+        flex: 1;
+        > *:not(router-outlet) {
+            flex: 1;
+            display: block;
+        }
+    }
 }
 
-mat-sidenav-container {
-    height: 100vh;
-    width: 100%;
-}
-
-.main-nav form {
-    margin: 0 1em;
-}
-
-.relax {
-    position: initial;
-    padding-bottom: 70px;
-}
-
+/* History mode top bar*/
 .history-mode-indicator {
     position: fixed;
     width: 100%;
@@ -67,18 +91,5 @@ mat-sidenav-container {
         text-decoration: none;
         background: #ffee00;
         color: #000000;
-    }
-}
-
-main {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    position: relative;
-    z-index: 50;
-    flex: 1;
-    > *:not(router-outlet) {
-        flex: 1;
-        display: block;
     }
 }

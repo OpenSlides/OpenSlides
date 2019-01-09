@@ -1,12 +1,16 @@
 <!-- The actual form -->
 <header>
     <mat-toolbar class="login-logo-bar" color="primary">
-        <img src="/assets/img/openslides-logo-h-dark-transparent.svg" alt="OpenSlides-logo">
+        <a routerLink="/login"><img src="/assets/img/openslides-logo-h-dark-transparent.svg" alt="OpenSlides-logo"></a>
     </mat-toolbar>
 </header>
 <main>
     <router-outlet></router-outlet>
 </main>
-<footer class="page-footer">
-    <os-footer></os-footer>
-</footer>
+<div class="footer">
+    <a href='https://openslides.org/' target='_bank'>© Copyright by OpenSlides</a>
+    &middot;
+    <a routerLink='/login/legalnotice' translate>Legal notice</a>
+    &middot;
+    <a routerLink='/login/privacypolicy' translate>Privacy policy</a>
+</div>

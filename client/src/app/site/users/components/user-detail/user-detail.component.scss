@@ -29,32 +29,32 @@
 
 // angular material does not have this class. This is virtually set using ngClass
 .mat-form-field-enabled {
-    .form100 {
-        ::ng-deep {
-            width: 100%;
-        }
-    }
-
     .form70 {
         ::ng-deep {
             width: 70%;
         }
     }
 
-    .force-min-with {
-        min-width: 150px;
-    }
-
-    .form30 {
+    .form37 {
         ::ng-deep {
-            width: 30%;
+            width: 37%;
         }
     }
 
-    .form20 {
+    .form25 {
         ::ng-deep {
             width: 25%;
         }
+    }
+
+    .form16 {
+        ::ng-deep {
+            width: 16%;
+        }
+    }
+
+    .force-min-with {
+        min-width: 110px;
     }
 
     .distance {

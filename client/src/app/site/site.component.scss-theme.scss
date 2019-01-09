@@ -8,74 +8,28 @@
     $foreground: map-get($theme, foreground);
     $background: map-get($theme, background);
 
-    /** the name of the selector */
     os-site {
-        mat-sidenav-container {
-            /** nav panel on the left */
-            mat-sidenav {
-                /** rules for icons in the whole site-view */
-                mat-icon {
-                    min-width: 20px; //puts the text to the right on the same level
-                    margin-right: 10px; // the distance from the icon to the text
-                }
-            }
-        }
-
-        /** adjust the color of the main container to our theme */
+        /* main background color */
         .main-container {
-            background-color: mat-color($background, background);
+            background-color: $os-background;
         }
-
-        /** change the nav-toolbar to the darker nuance of the current theme*/
         .nav-toolbar {
-            height: 80px;
-            background-color: mat-color($primary, darker);
-
-            mat-toolbar-row {
-                height: 80px;
-            }
+            background-color: mat-color($background, card); //TODO
         }
 
-        /** make the .user-menu expansion panel look like the nav-toolbar above */
-        .user-menu {
-            background: mat-color($primary, darker);
-            // background-color: mat-color($primary, darker);
-            color: mat-color($background, raised-button);
-            min-height: 48px;
-
-            /** color of the divider just above the log out button */
-            mat-divider {
-                border-top-color: rgba(255, 255, 255, 0.25);
-            }
-
-            mat-icon {
-                color: mat-color($background, raised-button);
-            }
-
-            span {
-                color: mat-color($background, raised-button);
-            }
-
-            .mat-expansion-indicator:after {
-                color: mat-color($background, raised-button);
-            }
-
-            .mat-expansion-panel-header {
-                padding: 0 16px !important;
-            }
-            .mat-expansion-panel-header:hover {
-                // prevent the panel to become white after collapse
-                background: mat-color($primary, darker) !important;
-            }
+        /* seperator */
+        mat-nav-list.main-nav,
+        mat-divider {
+            border-top-color: $os-outline;
         }
 
         /** style and align the nav icons the icons*/
-        .main-nav {
+        .main-nav,
+        .user-menu {
             mat-icon {
                 color: mat-color($foreground, icon);
             }
             span {
-                font-weight: bold;
                 color: mat-color($foreground, text);
             }
         }
@@ -83,10 +37,10 @@
         /** style the active link */
         .active {
             mat-icon {
-                color: mat-color($primary);
+                color: $os-primary;
             }
             span {
-                color: mat-color($primary);
+                color: $os-primary;
             }
         }
     }
