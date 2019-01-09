@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.conf.urls import include, url
-from django.views.generic import RedirectView
 
 from openslides.mediafiles.views import protected_serve
 from openslides.utils.rest_api import router
@@ -15,9 +14,6 @@ urlpatterns = [
         protected_serve,
         {"document_root": settings.MEDIA_ROOT},
     ),
-    # When a url without a leading slash is requested, redirect to the url with
-    # the slash. This line has to be after static and media files.
-    url(r"^(?P<url>.*[^/])$", RedirectView.as_view(url="/%(url)s/", permanent=True)),
     # URLs for the rest system
     url(r"^rest/", include(router.urls)),
     # Other urls defined by modules and plugins
