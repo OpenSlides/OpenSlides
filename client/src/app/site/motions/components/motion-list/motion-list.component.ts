@@ -34,15 +34,16 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
     /**
      * Use for minimal width. Please note the 'selector' row for multiSelect mode,
      * to be able to display an indicator for the state of selection
+     * TODO: Remove projector, if columnsToDisplayFullWidth is used..
      */
-    public columnsToDisplayMinWidth = ['identifier', 'title', 'state', 'speakers'];
+    public columnsToDisplayMinWidth = ['projector', 'identifier', 'title', 'state', 'speakers'];
 
     /**
      * Use for maximal width. Please note the 'selector' row for multiSelect mode,
      * to be able to display an indicator for the state of selection
      * TODO: Needs vp.desktop check
      */
-    public columnsToDisplayFullWidth = ['identifier', 'title', 'state', 'speakers'];
+    public columnsToDisplayFullWidth = ['projector', 'identifier', 'title', 'state', 'speakers'];
 
     /**
      * Value of the configuration variable `motions_statutes_enabled` - are statutes enabled?

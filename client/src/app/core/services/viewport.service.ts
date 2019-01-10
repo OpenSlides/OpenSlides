@@ -28,12 +28,18 @@ export class ViewportService {
      * Simple boolean to determine whether the client is in mobile view or not
      * Use in HTML with automatic change detection
      */
-    public isMobile: boolean;
+    public get isMobile(): boolean {
+        return this._isMobileSubject.getValue();
+    }
+
+    private _isMobileSubject = new BehaviorSubject<boolean>(false);
 
     /**
      * Returns a subject that contains whether the viewport os mobile or not
      */
-    public isMobileSubject = new BehaviorSubject<boolean>(false);
+    public get isMobileSubject(): BehaviorSubject<boolean> {
+        return this._isMobileSubject;
+    }
 
     /**
      * Get the BreakpointObserver
@@ -49,14 +55,6 @@ export class ViewportService {
     public checkForChange(): void {
         this.breakpointObserver
             .observe([Breakpoints.Handset, '(min-width: 600px) and (max-width: 899.99px)'])
-            .subscribe((state: BreakpointState) => {
-                if (state.matches) {
-                    this.isMobile = true;
-                    this.isMobileSubject.next(true);
-                } else {
-                    this.isMobile = false;
-                    this.isMobileSubject.next(false);
-                }
-            });
+            .subscribe((state: BreakpointState) => this._isMobileSubject.next(state.matches));
     }
 }

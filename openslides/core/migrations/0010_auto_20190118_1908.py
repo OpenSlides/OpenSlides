@@ -16,6 +16,7 @@ class Migration(migrations.Migration):
             model_name="projector",
             name="elements",
             field=jsonfield.fields.JSONField(
+                default=list,
                 dump_kwargs={
                     "cls": jsonfield.encoder.JSONEncoder,
                     "separators": (",", ":"),
@@ -28,6 +29,7 @@ class Migration(migrations.Migration):
             model_name="projector",
             name="elements_history",
             field=jsonfield.fields.JSONField(
+                default=list,
                 dump_kwargs={
                     "cls": jsonfield.encoder.JSONEncoder,
                     "separators": (",", ":"),
@@ -40,6 +42,7 @@ class Migration(migrations.Migration):
             model_name="projector",
             name="elements_preview",
             field=jsonfield.fields.JSONField(
+                default=list,
                 dump_kwargs={
                     "cls": jsonfield.encoder.JSONEncoder,
                     "separators": (",", ":"),

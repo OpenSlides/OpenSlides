@@ -15,6 +15,8 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { PruningTranslationLoader } from './core/pruning-loader';
 import { LoginModule } from './site/login/login.module';
 import { AppLoadService } from './core/services/app-load.service';
+import { ProjectorModule } from './site/projector/projector.module';
+import { SlidesModule } from './slides/slides.module';
 
 // PWA
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -60,7 +62,9 @@ export function AppLoaderFactory(appLoadService: AppLoadService): () => Promise<
         CoreModule,
         LoginModule,
         PapaParseModule,
-        ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+        ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+        ProjectorModule,
+        SlidesModule.forRoot()
     ],
     providers: [{ provide: APP_INITIALIZER, useFactory: AppLoaderFactory, deps: [AppLoadService], multi: true }],
     bootstrap: [AppComponent]

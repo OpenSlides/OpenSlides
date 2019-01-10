@@ -1,12 +1,12 @@
 import { File } from './file';
-import { ProjectableBaseModel } from '../base/projectable-base-model';
 import { Searchable } from '../base/searchable';
+import { BaseModel } from '../base/base-model';
 
 /**
  * Representation of MediaFile. Has the nested property "File"
  * @ignore
  */
-export class Mediafile extends ProjectableBaseModel implements Searchable {
+export class Mediafile extends BaseModel<Mediafile> implements Searchable {
     public id: number;
     public title: string;
     public mediafile: File;

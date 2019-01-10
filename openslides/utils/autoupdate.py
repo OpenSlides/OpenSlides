@@ -8,7 +8,7 @@ from django.db.models import Model
 from mypy_extensions import TypedDict
 
 from .cache import element_cache, get_element_id
-from .projector import get_projectot_data
+from .projector import get_projector_data
 from .utils import get_model_from_collection_string
 
 
@@ -205,7 +205,7 @@ def handle_changed_elements(elements: Iterable[Element]) -> None:
             "autoupdate", {"type": "send_data", "change_id": change_id}
         )
 
-        projector_data = await get_projectot_data()
+        projector_data = await get_projector_data()
         # Send projector
         channel_layer = get_channel_layer()
         await channel_layer.group_send(

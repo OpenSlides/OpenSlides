@@ -43,6 +43,10 @@ export class WebsocketService {
      */
     private _connectEvent: EventEmitter<void> = new EventEmitter<void>();
 
+    private connectionOpen = false;
+
+    private sendQueueWhileNotConnected: string[] = [];
+
     /**
      * Getter for the connect event.
      */
@@ -122,6 +126,11 @@ export class WebsocketService {
                     this._reconnectEvent.emit();
                 }
                 this._connectEvent.emit();
+                this.connectionOpen = true;
+                this.sendQueueWhileNotConnected.forEach(entry => {
+                    this.websocket.send(entry);
+                });
+                this.sendQueueWhileNotConnected = [];
             });
         };
 
@@ -143,6 +152,7 @@ export class WebsocketService {
         this.websocket.onclose = (event: CloseEvent) => {
             this.zone.run(() => {
                 this.websocket = null;
+                this.connectionOpen = false;
                 if (event.code !== 1000) {
                     // 1000 is a normal close, like the close on logout
                     if (!this.connectionErrorNotice) {
@@ -211,6 +221,13 @@ export class WebsocketService {
                 message.id += possible.charAt(Math.floor(Math.random() * possible.length));
             }
         }
-        this.websocket.send(JSON.stringify(message));
+
+        // Either send directly or add to queue, if not connected.
+        const jsonMessage = JSON.stringify(message);
+        if (this.connectionOpen) {
+            this.websocket.send(jsonMessage);
+        } else {
+            this.sendQueueWhileNotConnected.push(jsonMessage);
+        }
     }
 }

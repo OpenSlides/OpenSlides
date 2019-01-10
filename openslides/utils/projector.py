@@ -26,7 +26,7 @@ def register_projector_element(name: str, element: ProjectorElementCallable) -> 
     projector_elements[name] = element
 
 
-async def get_projectot_data(
+async def get_projector_data(
     projector_ids: List[int] = None
 ) -> Dict[int, List[Dict[str, Any]]]:
     """

@@ -1,0 +1,20 @@
+#projector {
+    width: 100%; /*1000px;*/
+}
+
+.column-left {
+    display: inline-block;
+    padding-top: 20px;
+    width: 70%;
+    padding-right: 25px;
+}
+
+.column-right {
+    padding-top: 20px;
+    min-width: calc(30% - 25px);
+    float: right;
+}
+
+.control-group {
+    text-align: center;
+}

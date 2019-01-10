@@ -66,7 +66,7 @@ export class AgendaRepositoryService extends BaseRepository<ViewItem, Item> {
             throw new Error(
                 `The content object (${agendaItem.content_object.collection}, ${
                     agendaItem.content_object.id
-                }) of item ${agendaItem.id} is not a BaseProjectableModel.`
+                }) of item ${agendaItem.id} is not a AgendaBaseModel.`
             );
         }
     }

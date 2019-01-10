@@ -1,10 +1,10 @@
-import { ProjectableBaseModel } from '../base/projectable-base-model';
+import { BaseModel } from '../base/base-model';
 
 /**
  * Representation of a countdown
  * @ignore
  */
-export class Countdown extends ProjectableBaseModel {
+export class Countdown extends BaseModel<Countdown> {
     public id: number;
     public description: string;
     public default_time: number;

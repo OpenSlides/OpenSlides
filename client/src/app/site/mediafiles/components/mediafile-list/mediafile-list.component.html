@@ -55,8 +55,8 @@
 <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
     <!-- Selector Column -->
     <ng-container matColumnDef="selector">
-        <mat-header-cell *matHeaderCellDef mat-sort-header class="checkbox-cell"></mat-header-cell>
-        <mat-cell *matCellDef="let item" class="checkbox-cell" (click)="selectItem(item, $event)">
+        <mat-header-cell *matHeaderCellDef mat-sort-header class="icon-cell"></mat-header-cell>
+        <mat-cell *matCellDef="let item" class="icon-cell" (click)="selectItem(item, $event)">
             <mat-icon>{{ isSelected(item) ? 'check_circle' : '' }}</mat-icon>
         </mat-cell>
     </ng-container>

@@ -26,7 +26,8 @@ import {
     MatBadgeModule,
     MatStepperModule,
     MatTabsModule,
-    MatBottomSheetModule
+    MatBottomSheetModule,
+    MatSliderModule
 } from '@angular/material';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material';
@@ -73,6 +74,9 @@ import { OsSortBottomSheetComponent } from './components/os-sort-filter-bar/os-s
 import { FilterMenuComponent } from './components/os-sort-filter-bar/filter-menu/filter-menu.component';
 import { LogoComponent } from './components/logo/logo.component';
 import { C4DialogComponent, CopyrightSignComponent } from './components/copyright-sign/copyright-sign.component';
+import { ProjectorButtonComponent } from './components/projector-button/projector-button.component';
+import { ProjectionDialogComponent } from './components/projection-dialog/projection-dialog.component';
+import { ResizedDirective } from './directives/resized.directive';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -121,6 +125,7 @@ import { C4DialogComponent, CopyrightSignComponent } from './components/copyrigh
         MatButtonToggleModule,
         MatStepperModule,
         MatTabsModule,
+        MatSliderModule,
         DragDropModule,
         TranslateModule.forChild(),
         RouterModule,
@@ -160,6 +165,7 @@ import { C4DialogComponent, CopyrightSignComponent } from './components/copyrigh
         MatRadioModule,
         MatButtonToggleModule,
         MatStepperModule,
+        MatSliderModule,
         DragDropModule,
         NgxMatSelectSearchModule,
         FileDropModule,
@@ -179,7 +185,10 @@ import { C4DialogComponent, CopyrightSignComponent } from './components/copyrigh
         OsSortFilterBarComponent,
         LogoComponent,
         CopyrightSignComponent,
-        C4DialogComponent
+        C4DialogComponent,
+        ProjectorButtonComponent,
+        ProjectionDialogComponent,
+        ResizedDirective
     ],
     declarations: [
         PermsDirective,
@@ -199,7 +208,10 @@ import { C4DialogComponent, CopyrightSignComponent } from './components/copyrigh
         FilterMenuComponent,
         LogoComponent,
         CopyrightSignComponent,
-        C4DialogComponent
+        C4DialogComponent,
+        ProjectorButtonComponent,
+        ProjectionDialogComponent,
+        ResizedDirective
     ],
     providers: [
         { provide: DateAdapter, useClass: OpenSlidesDateAdapter },

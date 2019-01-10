@@ -1,12 +1,14 @@
-import { ProjectableBaseModel } from '../base/projectable-base-model';
 import { Searchable } from '../base/searchable';
 import { SearchRepresentation } from '../../../core/services/search.service';
+import { BaseModel } from '../base/base-model';
 
 /**
  * Representation of a user in contrast to the operator.
  * @ignore
  */
-export class User extends ProjectableBaseModel implements Searchable {
+export class User extends BaseModel<User> implements Searchable {
+    public static COLLECTIONSTRING = 'users/user';
+
     public id: number;
     public username: string;
     public title: string;
@@ -25,7 +27,7 @@ export class User extends ProjectableBaseModel implements Searchable {
     public default_password: string;
 
     public constructor(input?: any) {
-        super('users/user', 'Participant', input);
+        super(User.COLLECTIONSTRING, 'Participant', input);
     }
 
     public get full_name(): string {

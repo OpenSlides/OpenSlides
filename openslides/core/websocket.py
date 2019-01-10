@@ -1,7 +1,7 @@
 from typing import Any
 
 from ..utils.constants import get_constants
-from ..utils.projector import get_projectot_data
+from ..utils.projector import get_projector_data
 from ..utils.websocket import (
     BaseWebsocketClientMessage,
     ProtocollAsyncJsonWebsocketConsumer,
@@ -167,7 +167,7 @@ class ListenToProjectors(BaseWebsocketClientMessage):
 
         # Send projector data
         if consumer.listen_projector_ids:
-            projector_data = await get_projectot_data(consumer.listen_projector_ids)
+            projector_data = await get_projector_data(consumer.listen_projector_ids)
             for projector_id, data in projector_data.items():
                 consumer.projector_hash[projector_id] = hash(str(data))
 

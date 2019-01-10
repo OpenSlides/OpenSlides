@@ -1,13 +1,13 @@
 import { AgendaInformation } from './agenda-information';
-import { ProjectableBaseModel } from './projectable-base-model';
 import { Searchable } from './searchable';
 import { SearchRepresentation } from '../../../core/services/search.service';
+import { BaseModel } from './base-model';
 
 /**
  * A base model for models, that can be content objects in the agenda. Provides title and navigation
  * information for the agenda.
  */
-export abstract class AgendaBaseModel extends ProjectableBaseModel implements AgendaInformation, Searchable {
+export abstract class AgendaBaseModel extends BaseModel<AgendaBaseModel> implements AgendaInformation, Searchable {
     /**
      * A model that can be a content object of an agenda item.
      * @param collectionString

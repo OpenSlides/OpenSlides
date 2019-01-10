@@ -14,6 +14,7 @@ import { MainMenuService } from './main-menu.service';
 import { HistoryAppConfig } from 'app/site/history/history.config';
 import { SearchService } from './search.service';
 import { isSearchable } from '../../shared/models/base/searchable';
+import { ProjectorAppConfig } from 'app/site/projector/projector.config';
 
 /**
  * A list of all app configurations of all delivered apps.
@@ -27,7 +28,8 @@ const appConfigs: AppConfig[] = [
     MediafileAppConfig,
     TagAppConfig,
     UsersAppConfig,
-    HistoryAppConfig
+    HistoryAppConfig,
+    ProjectorAppConfig
 ];
 
 /**
