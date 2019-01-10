@@ -79,7 +79,11 @@ export class AppLoadService {
             // between  (ModelConstructor<BaseModel>) and (new (...args: any[]) => (BaseModel & Searchable)), we would not have
             // to check if the result of the contructor (the model instance) is really a searchable.
             if (!isSearchable(new entry.model())) {
-                throw Error(`Wrong configuration for ${entry.collectionString}: you gave a searchOrder, but the model is not searchable.`);
+                throw Error(
+                    `Wrong configuration for ${
+                        entry.collectionString
+                    }: you gave a searchOrder, but the model is not searchable.`
+                );
             }
             return true;
         }

@@ -93,7 +93,7 @@ export class ViewUser extends BaseViewModel {
     }
 
     public get is_last_email_send(): boolean {
-        if (this.user && this.user.last_email_send){
+        if (this.user && this.user.last_email_send) {
             return true;
         }
         return false;
@@ -104,7 +104,6 @@ export class ViewUser extends BaseViewModel {
         this._user = user;
         this._groups = groups;
     }
-
 
     /**
      * required by BaseViewModel. Don't confuse with the users title.

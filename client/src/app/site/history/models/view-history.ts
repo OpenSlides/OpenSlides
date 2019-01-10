@@ -96,7 +96,7 @@ export class ViewHistory extends BaseViewModel {
      * @returns the CollectionString to the model
      */
     public getCollectionString(): string {
-        return this.element_id.split(":")[0]
+        return this.element_id.split(':')[0];
     }
 
     /**
@@ -104,7 +104,7 @@ export class ViewHistory extends BaseViewModel {
      * @returns a model id
      */
     public getModelID(): number {
-        return +this.element_id.split(":")[1]
+        return +this.element_id.split(':')[1];
     }
 
     /**

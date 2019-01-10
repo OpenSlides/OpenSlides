@@ -8,7 +8,7 @@ import { ViewMediafile } from '../models/view-mediafile';
  * The structure of an image config object
  */
 interface ImageConfigObject {
-    display_name: string
+    display_name: string;
     key: string;
     path: string;
 }
@@ -17,7 +17,7 @@ interface ImageConfigObject {
  * The structure of a font config
  */
 interface FontConfigObject {
-    display_name: string
+    display_name: string;
     default: string;
     path: string;
 }
@@ -26,10 +26,10 @@ interface FontConfigObject {
  * Holds the required structure of the manage payload
  */
 interface ManagementPayload {
-    id: number,
-    key?: string,
-    default?: string,
-    value: ImageConfigObject | FontConfigObject
+    id: number;
+    key?: string;
+    default?: string;
+    value: ImageConfigObject | FontConfigObject;
 }
 
 /**
@@ -38,7 +38,7 @@ interface ManagementPayload {
  * Declaring images as logos (web, projector, pdf, ...) is handles here.
  */
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class MediaManageService {
     /**
@@ -61,7 +61,7 @@ export class MediaManageService {
         const restPath = `rest/core/config/${action}`;
 
         const config = this.getMediaConfig(action);
-        const path = (config.path !== file.downloadUrl) ? file.downloadUrl : '';
+        const path = config.path !== file.downloadUrl ? file.downloadUrl : '';
 
         // Create the payload that the server requires to manage a mediafile
         const payload: ManagementPayload = {
@@ -74,7 +74,7 @@ export class MediaManageService {
                 default: (config as FontConfigObject).default,
                 path: path
             }
-        }
+        };
 
         return this.httpService.put<void>(restPath, payload);
     }

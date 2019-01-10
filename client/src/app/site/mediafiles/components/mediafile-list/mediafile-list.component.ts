@@ -16,16 +16,13 @@ import { MediafileFilterListService } from '../../services/mediafile-filter.serv
 import { MediafilesSortListService } from '../../services/mediafiles-sort-list.service';
 import { ViewportService } from 'app/core/services/viewport.service';
 
-
-
-
 /**
  * Lists all the uploaded files.
  */
 @Component({
     selector: 'os-mediafile-list',
     templateUrl: './mediafile-list.component.html',
-    styleUrls: ['./mediafile-list.component.scss'],
+    styleUrls: ['./mediafile-list.component.scss']
 })
 export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile> implements OnInit {
     /**
@@ -106,7 +103,7 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile>
 
         this.fileEditForm = new FormGroup({
             title: new FormControl('', Validators.required),
-            hidden: new FormControl(),
+            hidden: new FormControl()
         });
 
         this.filterService.filter().subscribe(filteredData => {
@@ -163,7 +160,7 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile>
         }
         const updateData = new Mediafile({
             title: this.fileEditForm.value.title,
-            hidden: this.fileEditForm.value.hidden,
+            hidden: this.fileEditForm.value.hidden
         });
 
         this.repo.update(updateData, this.fileToEdit).then(() => {
@@ -269,7 +266,7 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile>
      */
     public getColumnDefinition(): string[] {
         const columns = this.vp.isMobile ? this.displayedColumnsMobile : this.displayedColumnsDesktop;
-        if (this.isMultiSelect){
+        if (this.isMultiSelect) {
             return ['selector'].concat(columns);
         }
         return columns;

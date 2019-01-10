@@ -9,7 +9,7 @@ describe('OsSortFilterBarComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            imports: [E2EImportsModule],
+            imports: [E2EImportsModule]
         }).compileComponents();
     }));
 

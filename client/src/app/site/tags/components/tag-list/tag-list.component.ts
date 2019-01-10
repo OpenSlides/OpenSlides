@@ -141,7 +141,7 @@ export class TagListComponent extends ListViewBaseComponent<ViewTag> implements 
         if (event.key === 'Enter' && event.shiftKey) {
             this.submitNewTag();
         }
-        if (event.key === "Escape") {
+        if (event.key === 'Escape') {
             this.cancelEditing();
         }
     }

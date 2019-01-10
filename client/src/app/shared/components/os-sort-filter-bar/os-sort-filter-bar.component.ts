@@ -4,8 +4,8 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { BaseViewModel } from '../../../site/base/base-view-model';
 import { OsSortBottomSheetComponent } from './os-sort-bottom-sheet/os-sort-bottom-sheet.component';
-import { FilterMenuComponent} from './filter-menu/filter-menu.component';
-import { OsSortingItem } from '../../../core/services/sort-list.service'
+import { FilterMenuComponent } from './filter-menu/filter-menu.component';
+import { OsSortingItem } from '../../../core/services/sort-list.service';
 import { SortListService } from '../../../core/services/sort-list.service';
 import { ViewportService } from '../../../core/services/viewport.service';
 
@@ -29,7 +29,6 @@ import { ViewportService } from '../../../core/services/viewport.service';
     styleUrls: ['./os-sort-filter-bar.component.scss']
 })
 export class OsSortFilterBarComponent<V extends BaseViewModel> {
-
     /**
      * The currently active sorting service for the list view
      */
@@ -68,7 +67,11 @@ export class OsSortFilterBarComponent<V extends BaseViewModel> {
      * @param vp
      * @param bottomSheet
      */
-    public constructor(public translate: TranslateService, public vp: ViewportService, private bottomSheet: MatBottomSheet) {
+    public constructor(
+        public translate: TranslateService,
+        public vp: ViewportService,
+        private bottomSheet: MatBottomSheet
+    ) {
         this.filterMenu = new FilterMenuComponent();
     }
 
@@ -77,9 +80,7 @@ export class OsSortFilterBarComponent<V extends BaseViewModel> {
      */
     public openSortDropDown(): void {
         if (this.vp.isMobile) {
-            const bottomSheetRef = this.bottomSheet.open(OsSortBottomSheetComponent,
-                { data: this.sortService }
-            );
+            const bottomSheetRef = this.bottomSheet.open(OsSortBottomSheetComponent, { data: this.sortService });
             bottomSheetRef.afterDismissed().subscribe(result => {
                 if (result) {
                     this.sortService.sortProperty = result;
@@ -92,7 +93,7 @@ export class OsSortFilterBarComponent<V extends BaseViewModel> {
      * Listen to keypresses on the quick-search input
      */
     public applySearch(event: KeyboardEvent, value?: string): void {
-        if (event.key === 'Escape' ) {
+        if (event.key === 'Escape') {
             this.searchFieldChange.emit('');
             this.isSearchBar = false;
         } else {
@@ -104,16 +105,16 @@ export class OsSortFilterBarComponent<V extends BaseViewModel> {
      * Checks if there is an active SortService present
      */
     public get hasSorting(): boolean {
-        return (this.sortService && this.sortService.isActive);
+        return this.sortService && this.sortService.isActive;
     }
 
     /**
      * Checks if there is an active FilterService present
      */
     public get hasFilters(): boolean {
-        if (this.filterService && this.filterService.hasFilterOptions()){
+        if (this.filterService && this.filterService.hasFilterOptions()) {
             return true;
-        };
+        }
         return false;
     }
 
@@ -122,7 +123,7 @@ export class OsSortFilterBarComponent<V extends BaseViewModel> {
      * @param option
      */
     public getSortIcon(option: OsSortingItem<V>): string {
-        if (this.sortService.sortProperty !== option.property){
+        if (this.sortService.sortProperty !== option.property) {
             return '';
         }
         return this.sortService.ascending ? 'arrow_downward' : 'arrow_upward';
@@ -133,7 +134,7 @@ export class OsSortFilterBarComponent<V extends BaseViewModel> {
      * the property is used.
      * @param option
      */
-    public getSortLabel(option: OsSortingItem<V>) : string {
+    public getSortLabel(option: OsSortingItem<V>): string {
         if (option.label) {
             return option.label;
         }
@@ -146,7 +147,7 @@ export class OsSortFilterBarComponent<V extends BaseViewModel> {
      * that input applied
      */
     public toggleSearchBar(): void {
-        if (!this.isSearchBar){
+        if (!this.isSearchBar) {
             this.isSearchBar = true;
         } else {
             this.searchFieldChange.emit('');

@@ -44,14 +44,14 @@ export class ViewItem extends BaseViewModel {
         return '';
     }
 
-    public get verboseType() : string {
+    public get verboseType(): string {
         if (this.item && this.item.verboseType) {
             return this.item.verboseType;
         }
         return '';
     }
 
-    public get verboseCsvType() : string {
+    public get verboseCsvType(): string {
         if (this.item) {
             return this.item.verboseCsvType;
         }

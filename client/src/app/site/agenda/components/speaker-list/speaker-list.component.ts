@@ -73,7 +73,7 @@ export class SpeakerListComponent extends BaseViewComponent implements OnInit {
         private itemRepo: AgendaRepositoryService,
         private op: OperatorService
     ) {
-        super(title, translate, snackBar)
+        super(title, translate, snackBar);
         this.addSpeakerForm = new FormGroup({ user_id: new FormControl([]) });
         this.getAgendaItemByUrl();
     }

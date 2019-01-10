@@ -51,7 +51,7 @@ interface ChoiceDialogData {
  * it will be an array of numbers and optionally an action string for multichoice
  * dialogs
  */
-export type ChoiceAnswer = undefined | { action?: string; items: number | number[]};
+export type ChoiceAnswer = undefined | { action?: string; items: number | number[] };
 
 /**
  * A dialog with choice fields.

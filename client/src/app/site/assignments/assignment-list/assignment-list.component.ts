@@ -10,8 +10,6 @@ import { PromptService } from '../../../core/services/prompt.service';
 import { ViewAssignment } from '../models/view-assignment';
 import { AssignmentSortListService } from '../services/assignment-sort-list.service';
 
-
-
 /**
  * Listview for the assignments
  *
@@ -22,7 +20,6 @@ import { AssignmentSortListService } from '../services/assignment-sort-list.serv
     styleUrls: ['./assignment-list.component.scss']
 })
 export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignment> implements OnInit {
-
     /**
      * Constructor.
      * @param titleService

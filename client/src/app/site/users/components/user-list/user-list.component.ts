@@ -24,7 +24,6 @@ import { UserSortListService } from '../../services/user-sort-list.service';
     styleUrls: ['./user-list.component.scss']
 })
 export class UserListComponent extends ListViewBaseComponent<ViewUser> implements OnInit {
-
     /**
      * /**
      * The usual constructor for components
@@ -71,10 +70,9 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
         super.setTitle('Users');
         this.initTable();
 
-
         this.filterService.filter().subscribe(filteredData => {
-                this.sortService.data = filteredData;
-            });
+            this.sortService.data = filteredData;
+        });
         this.sortService.sort().subscribe(sortedData => {
             this.dataSource.data = sortedData;
             this.checkSelection();
@@ -148,8 +146,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
     public async setGroupSelected(): Promise<void> {
         const content = this.translate.instant('This will add or remove the following groups for all selected users:');
         const choices = ['Add group(s)', 'Remove group(s)'];
-        const selectedChoice = await this.choiceService.open(content,
-            this.groupRepo.getViewModelList(), true, choices);
+        const selectedChoice = await this.choiceService.open(content, this.groupRepo.getViewModelList(), true, choices);
         if (selectedChoice) {
             for (const user of this.selectedRows) {
                 const newGroups = [...user.groups_id];
@@ -187,7 +184,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
      * Uses selectedRows defined via multiSelect mode.
      */
     public async setPresentSelected(): Promise<void> {
-    const content = this.translate.instant('Set the presence status for the selected users');
+        const content = this.translate.instant('Set the presence status for the selected users');
         const options = ['Present', 'Not present'];
         const selectedChoice = await this.choiceService.open(content, null, false, options);
         if (selectedChoice) {
@@ -203,8 +200,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
      * Uses selectedRows defined via multiSelect mode.
      */
     public async setCommitteeSelected(): Promise<void> {
-        const content = this.translate.instant(
-            'Sets/unsets the committee status for the selected users');
+        const content = this.translate.instant('Sets/unsets the committee status for the selected users');
         const options = ['Is committee', 'Is not committee'];
         const selectedChoice = await this.choiceService.open(content, null, false, options);
         if (selectedChoice) {
@@ -254,7 +250,5 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
     public async setPresent(viewUser: ViewUser): Promise<void> {
         viewUser.user.is_present = !viewUser.user.is_present;
         await this.repo.update(viewUser.user, viewUser);
-
     }
-
 }

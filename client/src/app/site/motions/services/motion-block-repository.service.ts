@@ -32,7 +32,7 @@ export class MotionBlockRepositoryService extends BaseRepository<ViewMotionBlock
         DS: DataStoreService,
         mapperService: CollectionStringModelMapperService,
         private dataSend: DataSendService,
-        private motionRepo: MotionRepositoryService,
+        private motionRepo: MotionRepositoryService
     ) {
         super(DS, mapperService, MotionBlock);
     }

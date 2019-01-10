@@ -46,7 +46,6 @@ export abstract class AgendaBaseModel extends ProjectableBaseModel implements Ag
      */
     public abstract formatForSearch(): SearchRepresentation;
 
-
     /**
      * Should return the URL to the detail view. Used for the agenda, that the
      * user can navigate to the content object.

@@ -10,7 +10,12 @@ import { BehaviorSubject } from 'rxjs';
  * A test model for the sorting
  */
 class TestModel implements Identifiable, Displayable {
-    public constructor(public id: number, public name: string, public weight: number, public parent_id: number | null){}
+    public constructor(
+        public id: number,
+        public name: string,
+        public weight: number,
+        public parent_id: number | null
+    ) {}
 
     public getTitle(): string {
         return this.name;

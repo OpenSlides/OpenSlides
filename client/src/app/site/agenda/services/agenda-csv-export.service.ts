@@ -12,7 +12,6 @@ import { ViewItem } from '../models/view-item';
     providedIn: 'root'
 })
 export class AgendaCsvExportService {
-
     /**
      * Does nothing.
      *
@@ -27,10 +26,14 @@ export class AgendaCsvExportService {
      * @param Agendas Agendas to export
      */
     public exportItemList(items: ViewItem[]): void {
-        this.csvExport.export(items,
+        this.csvExport.export(
+            items,
             [
                 { label: 'Title', map: viewItem => viewItem.getTitle() },
-                { label: 'Text', map: viewItem => viewItem.contentObject ? viewItem.contentObject.getCSVExportText() : '' },
+                {
+                    label: 'Text',
+                    map: viewItem => (viewItem.contentObject ? viewItem.contentObject.getCSVExportText() : '')
+                },
                 { label: 'Duration', property: 'duration' },
                 { label: 'Comment', property: 'comment' },
                 { label: 'Item type', property: 'verboseCsvType' }

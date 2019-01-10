@@ -12,7 +12,6 @@ import { ViewMotion } from '../models/view-motion';
     providedIn: 'root'
 })
 export class MotionCsvExportService {
-
     /**
      * Does nothing.
      *
@@ -51,11 +50,15 @@ export class MotionCsvExportService {
         this.csvExport.export(
             motions,
             [
-                { label: 'Called', map: motion => motion.sort_parent_id ? '' : motion.identifierOrTitle },
-                { label: 'Called with', map: motion => !motion.sort_parent_id ? '' : motion.identifierOrTitle },
+                { label: 'Called', map: motion => (motion.sort_parent_id ? '' : motion.identifierOrTitle) },
+                { label: 'Called with', map: motion => (!motion.sort_parent_id ? '' : motion.identifierOrTitle) },
                 { label: 'submitters', map: motion => motion.submitters.map(s => s.short_name).join(',') },
                 { property: 'title' },
-                { label: 'recommendation', map: motion => motion.recommendation ? this.translate.instant(motion.recommendation.recommendation_label) : '' },
+                {
+                    label: 'recommendation',
+                    map: motion =>
+                        motion.recommendation ? this.translate.instant(motion.recommendation.recommendation_label) : ''
+                },
                 { property: 'motion_block', label: 'Motion block' }
             ],
             this.translate.instant('Call list') + '.csv'

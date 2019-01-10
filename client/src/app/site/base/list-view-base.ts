@@ -80,7 +80,7 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel> extends Bas
         this.sort.sort(newSort);
     }
 
-    public onFilterData(filteredDataSource: MatTableDataSource<V>) : void {
+    public onFilterData(filteredDataSource: MatTableDataSource<V>): void {
         this.dataSource = filteredDataSource;
         this.dataSource.paginator = this.paginator;
     }

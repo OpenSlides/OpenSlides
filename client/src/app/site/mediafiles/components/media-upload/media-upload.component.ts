@@ -27,7 +27,7 @@ interface FileData {
 @Component({
     selector: 'os-media-upload',
     templateUrl: './media-upload.component.html',
-    styleUrls: ['./media-upload.component.scss'],
+    styleUrls: ['./media-upload.component.scss']
 })
 export class MediaUploadComponent extends BaseViewComponent implements OnInit {
     /**
@@ -168,7 +168,7 @@ export class MediaUploadComponent extends BaseViewComponent implements OnInit {
             filename: file.name,
             title: file.name,
             uploader_id: this.op.user.id,
-            hidden: false,
+            hidden: false
         };
         this.uploadList.data.push(newFile);
 

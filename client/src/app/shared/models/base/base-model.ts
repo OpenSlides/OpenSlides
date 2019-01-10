@@ -98,7 +98,7 @@ export abstract class BaseModel<T = object> extends OpenSlidesComponent
             // topicS, motionS, (media)fileS, motion blockS, commentS, personal noteS, projectorS, messageS, countdownS, ...)
             // Just categorIES need to overwrite this...
         } else {
-            return this._verboseName
+            return this._verboseName;
         }
     }
 

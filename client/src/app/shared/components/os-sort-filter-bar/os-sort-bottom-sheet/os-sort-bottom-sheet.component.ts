@@ -19,21 +19,21 @@ import { SortListService } from '../../../../core/services/sort-list.service';
     styleUrls: ['./os-sort-bottom-sheet.component.scss']
 })
 export class OsSortBottomSheetComponent<V extends BaseViewModel> implements OnInit {
-
     /**
      * Constructor. Gets a reference to itself (for closing after interaction)
      * @param data
      * @param sheetRef
      */
     public constructor(
-        @Inject(MAT_BOTTOM_SHEET_DATA) public data: SortListService<V>, private sheetRef: MatBottomSheetRef ) {
-    }
+        @Inject(MAT_BOTTOM_SHEET_DATA) public data: SortListService<V>,
+        private sheetRef: MatBottomSheetRef
+    ) {}
 
     /**
      * init fucntion. Closes inmediately if no sorting is available.
      */
     public ngOnInit(): void {
-        if (!this.data || !this.data.sortOptions || !this.data.sortOptions.options.length){
+        if (!this.data || !this.data.sortOptions || !this.data.sortOptions.options.length) {
             throw new Error('No sorting available for a sorting list');
         }
     }

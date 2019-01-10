@@ -11,10 +11,7 @@ describe('MotionCsvExportService', () => {
         });
     });
 
-    it('should be created', inject(
-        [MotionCsvExportService],
-        (service: MotionCsvExportService) => {
-            expect(service).toBeTruthy();
-        }
-    ));
+    it('should be created', inject([MotionCsvExportService], (service: MotionCsvExportService) => {
+        expect(service).toBeTruthy();
+    }));
 });

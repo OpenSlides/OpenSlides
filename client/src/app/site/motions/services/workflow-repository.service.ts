@@ -79,12 +79,13 @@ export class WorkflowRepositoryService extends BaseRepository<ViewWorkflow, Work
      */
     public getWorkflowStatesForMotions(motions: ViewMotion[]): WorkflowState[] {
         let states: WorkflowState[] = [];
-        const workflowIds = motions.map(motion => motion.workflow_id).filter((value, index, self) => self.indexOf(value) === index);
+        const workflowIds = motions
+            .map(motion => motion.workflow_id)
+            .filter((value, index, self) => self.indexOf(value) === index);
         workflowIds.forEach(id => {
             const workflow = this.getViewModel(id);
             states = states.concat(workflow.states);
         });
         return states;
-
     }
 }

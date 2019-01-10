@@ -89,11 +89,10 @@ export class MotionMultiselectService {
      */
     public async setStateOfMultiple(motions: ViewMotion[]): Promise<void> {
         const title = this.translate.instant('This will set the state of all selected motions to:');
-        const choices = this.workflowRepo.getWorkflowStatesForMotions(motions)
-            .map(workflowState => ({
-                id: workflowState.id,
-                label: workflowState.name
-            }));
+        const choices = this.workflowRepo.getWorkflowStatesForMotions(motions).map(workflowState => ({
+            id: workflowState.id,
+            label: workflowState.name
+        }));
         const selectedChoice = await this.choiceService.open(title, choices);
         if (selectedChoice) {
             for (const motion of motions) {
@@ -117,12 +116,11 @@ export class MotionMultiselectService {
                 label: workflowState.recommendation_label
             }));
         const clearChoice = 'Delete recommendation';
-        const selectedChoice = await this.choiceService.open(title, choices, false,
-            null, clearChoice);
+        const selectedChoice = await this.choiceService.open(title, choices, false, null, clearChoice);
         if (selectedChoice) {
             const requestData = motions.map(motion => ({
                 id: motion.id,
-                recommendation: selectedChoice.action ? 0 : selectedChoice.items as number
+                recommendation: selectedChoice.action ? 0 : (selectedChoice.items as number)
             }));
             await this.httpService.post('/rest/motions/motion/manage_multiple_recommendation', {
                 motions: requestData
@@ -138,13 +136,19 @@ export class MotionMultiselectService {
     public async setCategory(motions: ViewMotion[]): Promise<void> {
         const title = this.translate.instant('This will set the category of all selected motions to:');
         const clearChoice = 'No category';
-        const selectedChoice = await this.choiceService.open(title, this.categoryRepo.getViewModelList(),
-            false, null, clearChoice);
+        const selectedChoice = await this.choiceService.open(
+            title,
+            this.categoryRepo.getViewModelList(),
+            false,
+            null,
+            clearChoice
+        );
         if (selectedChoice) {
             for (const motion of motions) {
                 await this.repo.update(
-                    {category_id: selectedChoice.action ? 0 : selectedChoice.items as number },
-                    motion);
+                    { category_id: selectedChoice.action ? 0 : (selectedChoice.items as number) },
+                    motion
+                );
             }
         }
     }
@@ -155,10 +159,11 @@ export class MotionMultiselectService {
      * @param motions The motions to add/remove the sumbitters to
      */
     public async changeSubmitters(motions: ViewMotion[]): Promise<void> {
-        const title = this.translate.instant('This will add or remove the following submitters for all selected motions:');
+        const title = this.translate.instant(
+            'This will add or remove the following submitters for all selected motions:'
+        );
         const choices = ['Add', 'Remove'];
-        const selectedChoice = await this.choiceService.open(title,
-            this.userRepo.getViewModelList(), true, choices);
+        const selectedChoice = await this.choiceService.open(title, this.userRepo.getViewModelList(), true, choices);
         if (selectedChoice && selectedChoice.action === choices[0]) {
             const requestData = motions.map(motion => {
                 let submitterIds = [...motion.submitters_id, ...(selectedChoice.items as number[])];
@@ -190,8 +195,7 @@ export class MotionMultiselectService {
     public async changeTags(motions: ViewMotion[]): Promise<void> {
         const title = this.translate.instant('This will add or remove the following tags for all selected motions:');
         const choices = ['Add', 'Remove', 'Clear tags'];
-        const selectedChoice = await this.choiceService.open(title, this.tagRepo.getViewModelList(), true,
-            choices);
+        const selectedChoice = await this.choiceService.open(title, this.tagRepo.getViewModelList(), true, choices);
         if (selectedChoice && selectedChoice.action === choices[0]) {
             const requestData = motions.map(motion => {
                 let tagIds = [...motion.tags_id, ...(selectedChoice.items as number[])];
@@ -223,7 +227,6 @@ export class MotionMultiselectService {
         }
     }
 
-
     /**
      * Opens a dialog and changes the motionBlock for all given motions.
      *
@@ -232,12 +235,17 @@ export class MotionMultiselectService {
     public async setMotionBlock(motions: ViewMotion[]): Promise<void> {
         const title = this.translate.instant('This will change the motion Block for all selected motions:');
         const clearChoice = 'Clear motion block';
-        const selectedChoice = await this.choiceService.open(title, this.motionBlockRepo.getViewModelList(),
-        false, null, clearChoice);
+        const selectedChoice = await this.choiceService.open(
+            title,
+            this.motionBlockRepo.getViewModelList(),
+            false,
+            null,
+            clearChoice
+        );
         if (selectedChoice) {
             for (const motion of motions) {
-                const blockId = selectedChoice.action ? null : selectedChoice.items as number;
-                await this.repo.update({motion_block_id: blockId}, motion);
+                const blockId = selectedChoice.action ? null : (selectedChoice.items as number);
+                await this.repo.update({ motion_block_id: blockId }, motion);
             }
         }
     }

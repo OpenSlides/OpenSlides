@@ -86,7 +86,7 @@ export class Motion extends AgendaBaseModel {
      * @override
      */
     public formatForSearch(): SearchRepresentation {
-        let searchValues = [this.title, this.text, this.reason]
+        let searchValues = [this.title, this.text, this.reason];
         if (this.amendment_paragraphs) {
             searchValues = searchValues.concat(this.amendment_paragraphs.filter(x => !!x));
         }

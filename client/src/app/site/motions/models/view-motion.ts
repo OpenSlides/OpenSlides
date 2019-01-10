@@ -226,7 +226,7 @@ export class ViewMotion extends BaseViewModel {
     }
 
     public get attachments_id(): number[] {
-        return this.motion ? this.motion.attachments_id : null
+        return this.motion ? this.motion.attachments_id : null;
     }
 
     public get attachments(): Mediafile[] {

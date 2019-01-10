@@ -6,7 +6,6 @@ import { ViewAssignment } from '../models/view-assignment';
     providedIn: 'root'
 })
 export class AssignmentSortListService extends SortListService<ViewAssignment> {
-
     public sortOptions: OsSortingDefinition<ViewAssignment> = {
         sortProperty: 'assignment',
         sortAscending: true,
@@ -18,5 +17,4 @@ export class AssignmentSortListService extends SortListService<ViewAssignment> {
         ]
     };
     protected name = 'Assignment';
-
 }

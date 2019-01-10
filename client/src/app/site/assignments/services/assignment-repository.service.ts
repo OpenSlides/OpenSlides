@@ -24,10 +24,7 @@ export class AssignmentRepositoryService extends BaseRepository<ViewAssignment, 
      * @param DS The DataStore
      * @param mapperService Maps collection strings to classes
      */
-    public constructor(
-        DS: DataStoreService,
-        mapperService: CollectionStringModelMapperService
-    ) {
+    public constructor(DS: DataStoreService, mapperService: CollectionStringModelMapperService) {
         super(DS, mapperService, Assignment, [User, Item, Tag]);
     }
 

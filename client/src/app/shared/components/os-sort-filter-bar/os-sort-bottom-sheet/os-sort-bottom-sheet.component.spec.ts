@@ -3,7 +3,6 @@ import { E2EImportsModule } from 'e2e-imports.module';
 
 import { OsSortBottomSheetComponent } from './os-sort-bottom-sheet.component';
 
-
 describe('OsSortBottomSheetComponent', () => {
     // let component: OsSortBottomSheetComponent<any>;
     let fixture: ComponentFixture<OsSortBottomSheetComponent<any>>;

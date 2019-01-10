@@ -5,11 +5,11 @@ import { MediaUploadComponent } from './components/media-upload/media-upload.com
 
 const routes: Routes = [
     { path: '', component: MediafileListComponent },
-    { path: 'upload', component: MediaUploadComponent },
+    { path: 'upload', component: MediaUploadComponent }
 ];
 
 @NgModule({
     imports: [RouterModule.forChild(routes)],
-    exports: [RouterModule],
+    exports: [RouterModule]
 })
 export class MediafilesRoutingModule {}

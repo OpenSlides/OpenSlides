@@ -37,7 +37,7 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
         protected DS: DataStoreService,
         protected collectionStringModelMapperService: CollectionStringModelMapperService,
         protected baseModelCtor: ModelConstructor<M>,
-        protected depsModelCtors?: ModelConstructor<BaseModel>[],
+        protected depsModelCtors?: ModelConstructor<BaseModel>[]
     ) {
         super();
         this.setup();

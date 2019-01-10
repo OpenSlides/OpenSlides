@@ -12,7 +12,7 @@ import { ItemInfoDialogComponent } from './components/item-info-dialog/item-info
  */
 @NgModule({
     imports: [CommonModule, AgendaRoutingModule, SharedModule],
-    entryComponents: [ ItemInfoDialogComponent ],
+    entryComponents: [ItemInfoDialogComponent],
     declarations: [AgendaListComponent, TopicDetailComponent, ItemInfoDialogComponent]
 })
 export class AgendaModule {}

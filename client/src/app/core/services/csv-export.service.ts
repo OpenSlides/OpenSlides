@@ -115,40 +115,44 @@ export class CsvExportService {
         csvContent.push(header);
 
         // create lines
-        csvContent = csvContent.concat(models.map(model => {
-            return columns.map(column => {
-                let value: string;
+        csvContent = csvContent.concat(
+            models.map(model => {
+                return columns.map(column => {
+                    let value: string;
 
-                if (isPropertyDefinition(column)) {
-                    const property: any = model[column.property];
-                    if (typeof property === 'number') {
-                        value = property.toString(10);
-                    } else if (!property) {
-                        value = '';
-                    } else if (property === true) {
-                        value = '1';
-                    } else if (property === false) {
-                        value = '0';
-                    } else {
-                        value = property.toString();
+                    if (isPropertyDefinition(column)) {
+                        const property: any = model[column.property];
+                        if (typeof property === 'number') {
+                            value = property.toString(10);
+                        } else if (!property) {
+                            value = '';
+                        } else if (property === true) {
+                            value = '1';
+                        } else if (property === false) {
+                            value = '0';
+                        } else {
+                            value = property.toString();
+                        }
+                    } else if (isMapDefinition(column)) {
+                        value = column.map(model);
                     }
-                } else if (isMapDefinition(column)) {
-                    value = column.map(model);
-                }
-                tsList = this.checkCsvTextSafety(value, tsList);
+                    tsList = this.checkCsvTextSafety(value, tsList);
 
-                return value;
-            });
-        }));
+                    return value;
+                });
+            })
+        );
 
         // assemble lines, putting text separator in place
         if (!tsList.length) {
             throw new Error('no usable text separator left for valid csv text');
         }
 
-        const csvContentAsString: string = csvContent.map(line => {
-            return line.map(entry => tsList[0] + entry + tsList[0]).join(columnSeparator);
-        }).join(lineSeparator);
+        const csvContentAsString: string = csvContent
+            .map(line => {
+                return line.map(entry => tsList[0] + entry + tsList[0]).join(columnSeparator);
+            })
+            .join(lineSeparator);
         this.exporter.saveFile(csvContentAsString, filename);
     }
 
