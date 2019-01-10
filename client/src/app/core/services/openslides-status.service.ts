@@ -8,7 +8,6 @@ import { Injectable } from '@angular/core';
     providedIn: 'root'
 })
 export class OpenSlidesStatusService {
-
     /**
      * Saves, if OpenSlides is in the history mode.
      */
@@ -37,6 +36,6 @@ export class OpenSlidesStatusService {
      * Leaves the histroy mode
      */
     public leaveHistroyMode(): void {
-       this.historyMode = false;
+        this.historyMode = false;
     }
 }

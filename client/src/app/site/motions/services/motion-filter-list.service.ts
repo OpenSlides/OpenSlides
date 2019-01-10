@@ -1,31 +1,27 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
-import { FilterListService, OsFilter } from "../../../core/services/filter-list.service";
-import { Motion } from "../../../shared/models/motions/motion";
-import { ViewMotion } from "../models/view-motion";
-import { CategoryRepositoryService } from "./category-repository.service";
-import { WorkflowRepositoryService } from "./workflow-repository.service";
-import { StorageService } from "../../../core/services/storage.service";
-import { MotionRepositoryService } from "./motion-repository.service";
-import { MotionBlockRepositoryService } from "./motion-block-repository.service";
+import { FilterListService, OsFilter } from '../../../core/services/filter-list.service';
+import { Motion } from '../../../shared/models/motions/motion';
+import { ViewMotion } from '../models/view-motion';
+import { CategoryRepositoryService } from './category-repository.service';
+import { WorkflowRepositoryService } from './workflow-repository.service';
+import { StorageService } from '../../../core/services/storage.service';
+import { MotionRepositoryService } from './motion-repository.service';
+import { MotionBlockRepositoryService } from './motion-block-repository.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class MotionFilterListService extends FilterListService<Motion, ViewMotion> {
-
     protected name = 'Motion';
     /**
      * getter for the filterOptions. Note that in this case, the options are
      * generated dynamically, as the options change with the datastore
      */
     public get filterOptions(): OsFilter[] {
-        return [
-            this.flowFilterOptions,
-            this.categoryFilterOptions,
-            this.motionBlockFilterOptions
-        ].concat(
-            this.staticFilterOptions);
+        return [this.flowFilterOptions, this.categoryFilterOptions, this.motionBlockFilterOptions].concat(
+            this.staticFilterOptions
+        );
     }
 
     /**
@@ -54,28 +50,26 @@ export class MotionFilterListService extends FilterListService<Motion, ViewMotio
         label: 'Motion block',
         isActive: false,
         options: []
-    }
+    };
     public commentFilterOptions = {
         property: 'comment',
         isActive: false,
         options: []
-    }
-
-
+    };
 
     public staticFilterOptions = [
         // TODO favorite (attached to user:whoamI!)
         // TODO personalNote (attached to user:whoamI!)
     ];
 
-    public constructor(store: StorageService,
+    public constructor(
+        store: StorageService,
         private workflowRepo: WorkflowRepositoryService,
         private categoryRepo: CategoryRepositoryService,
         private motionBlockRepo: MotionBlockRepositoryService,
         // private commentRepo: MotionCommentRepositoryService
-        motionRepo: MotionRepositoryService,
-
-        ){
+        motionRepo: MotionRepositoryService
+    ) {
         super(store, motionRepo);
         this.subscribeWorkflows();
         this.subscribeCategories();
@@ -125,11 +119,11 @@ export class MotionFilterListService extends FilterListService<Motion, ViewMotio
             workflows.forEach(workflow => {
                 workflowOptions.push(workflow.name);
                 workflow.states.forEach(state => {
-                        workflowOptions.push({
-                            condition: state.name,
-                            label: state.name,
-                            isActive: false
-                        });
+                    workflowOptions.push({
+                        condition: state.name,
+                        label: state.name,
+                        isActive: false
+                    });
                 });
             });
             workflowOptions.push('-');

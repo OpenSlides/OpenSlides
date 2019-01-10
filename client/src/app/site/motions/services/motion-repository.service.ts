@@ -28,7 +28,7 @@ import { ViewMotionAmendedParagraph } from '../models/view-motion-amended-paragr
 import { CreateMotion } from '../models/create-motion';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
-import { ConfigService } from "../../../core/services/config.service";
+import { ConfigService } from '../../../core/services/config.service';
 
 /**
  * Repository Services for motions (and potentially categories)
@@ -44,7 +44,6 @@ import { ConfigService } from "../../../core/services/config.service";
     providedIn: 'root'
 })
 export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> {
-
     // The line length; comes from the config variable motions_line_length
     private lineLength = 90;
 
@@ -81,9 +80,9 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         super(DS, mapperService, Motion, [Category, User, Workflow, Item, MotionBlock, Mediafile]);
 
         // load config variables
-        this.configService.get('motions_line_length').subscribe(lineLength => this.lineLength = lineLength);
-        this.configService.get('motions_default_line_numbering').subscribe(mode => this.defaultLineNumbering = mode);
-        this.configService.get('motions_recommendation_text_mode').subscribe(mode => this.defaultCrMode = mode);
+        this.configService.get('motions_line_length').subscribe(lineLength => (this.lineLength = lineLength));
+        this.configService.get('motions_default_line_numbering').subscribe(mode => (this.defaultLineNumbering = mode));
+        this.configService.get('motions_recommendation_text_mode').subscribe(mode => (this.defaultCrMode = mode));
     }
 
     /**
@@ -106,7 +105,20 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         if (workflow) {
             state = workflow.getStateById(motion.state_id);
         }
-        return new ViewMotion(motion, category, submitters, supporters, workflow, state, item, block, attachments, this.lineLength, this.defaultLineNumbering, this.defaultCrMode);
+        return new ViewMotion(
+            motion,
+            category,
+            submitters,
+            supporters,
+            workflow,
+            state,
+            item,
+            block,
+            attachments,
+            this.lineLength,
+            this.defaultLineNumbering,
+            this.defaultCrMode
+        );
     }
 
     /**
@@ -220,10 +232,12 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      */
     public async setSubmitters(viewMotion: ViewMotion, submitters: User[]): Promise<void> {
         const requestData = {
-            motions: [{
-                id: viewMotion.id,
-                submitters: submitters.map(s => s.id),
-            }]
+            motions: [
+                {
+                    id: viewMotion.id,
+                    submitters: submitters.map(s => s.id)
+                }
+            ]
         };
         this.httpService.post('/rest/motions/motion/manage_multiple_submitters/', requestData);
     }

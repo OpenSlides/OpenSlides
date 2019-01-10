@@ -187,7 +187,7 @@ export class AgendaRepositoryService extends BaseRepository<ViewItem, Item> {
      *       deleted (right now)
      */
     public delete(item: ViewItem): Promise<void> {
-        throw new Error("Method not implemented.");
+        throw new Error('Method not implemented.');
     }
 
     /**
@@ -196,7 +196,7 @@ export class AgendaRepositoryService extends BaseRepository<ViewItem, Item> {
      * Agenda items are created implicitly and do not have on create functions
      */
     public async create(item: Item): Promise<Identifiable> {
-        throw new Error("Method not implemented.");
+        throw new Error('Method not implemented.');
     }
 
     /**

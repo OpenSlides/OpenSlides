@@ -78,7 +78,7 @@ export class SortingListComponent implements OnInit, OnDestroy {
             if (newValues instanceof Observable) {
                 this.inputSubscription = newValues.subscribe(values => {
                     this.updateArray(values);
-                })
+                });
             } else {
                 this.inputSubscription = null;
                 this.updateArray(newValues);

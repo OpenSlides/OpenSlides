@@ -8,7 +8,8 @@ describe('GroupRepositoryService', () => {
         TestBed.configureTestingModule({
             imports: [E2EImportsModule],
             providers: [GroupRepositoryService]
-        }));
+        })
+    );
 
     it('should be created', inject([GroupRepositoryService], (service: GroupRepositoryService) => {
         expect(service).toBeTruthy();

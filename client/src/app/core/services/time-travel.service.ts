@@ -52,7 +52,7 @@ export class TimeTravelService {
         private DS: DataStoreService,
         private OSStatus: OpenSlidesStatusService,
         private OpenSlides: OpenSlidesService
-    ) { }
+    ) {}
 
     /**
      * Main entry point to set OpenSlides to another history point.
@@ -65,11 +65,11 @@ export class TimeTravelService {
         for (const historyObject of fullDataHistory) {
             let collectionString: string;
             let id: string;
-            [collectionString, id] = historyObject.element_id.split(':')
+            [collectionString, id] = historyObject.element_id.split(':');
 
             if (historyObject.full_data) {
                 const targetClass = this.modelMapperService.getModelConstructor(collectionString);
-                await this.DS.add([new targetClass(historyObject.full_data)])
+                await this.DS.add([new targetClass(historyObject.full_data)]);
             } else {
                 await this.DS.remove(collectionString, [+id]);
             }
@@ -94,7 +94,7 @@ export class TimeTravelService {
      * @returns the full history on the given date
      */
     private async getHistoryData(history: History): Promise<HistoryData[]> {
-        const historyUrl = '/core/history/'
+        const historyUrl = '/core/history/';
         const queryParams = { timestamp: Math.ceil(+history.unixtime) };
         return this.httpService.get<HistoryData[]>(environment.urlPrefix + historyUrl, null, queryParams);
     }

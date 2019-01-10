@@ -34,6 +34,6 @@ export class ViewMotionBlock extends BaseViewModel {
     }
 
     public getTitle(): string {
-        return this.title
+        return this.title;
     }
 }

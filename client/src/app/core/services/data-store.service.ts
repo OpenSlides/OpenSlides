@@ -97,7 +97,9 @@ export class DataStoreService {
     /**
      * Observable subject for changed or deleted models in the datastore.
      */
-    private readonly changedOrDeletedSubject: Subject<BaseModel | DeletedInformation> = new Subject<BaseModel | DeletedInformation>();
+    private readonly changedOrDeletedSubject: Subject<BaseModel | DeletedInformation> = new Subject<
+        BaseModel | DeletedInformation
+    >();
 
     /**
      * Observe the datastore for changes and deletions.
@@ -358,7 +360,7 @@ export class DataStoreService {
                     collection: collectionString,
                     id: +id // needs casting, because Objects.keys gives all keys as strings...
                 });
-            })
+            });
         });
         if (models && models.length) {
             await this.add(models, newMaxChangeId);

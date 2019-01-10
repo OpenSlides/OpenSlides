@@ -7,7 +7,8 @@ describe('TopicRepositoryService', () => {
     beforeEach(() =>
         TestBed.configureTestingModule({
             imports: [E2EImportsModule]
-        }));
+        })
+    );
 
     it('should be created', () => {
         const service: TopicRepositoryService = TestBed.get(TopicRepositoryService);

@@ -12,7 +12,7 @@ import { DataStoreService } from 'app/core/services/data-store.service';
 import { SearchService, SearchModel, SearchResult } from 'app/core/services/search.service';
 import { BaseViewComponent } from '../../../base/base-view';
 
-type SearchModelEnabled = SearchModel & { enabled: boolean; };
+type SearchModelEnabled = SearchModel & { enabled: boolean };
 
 /**
  * Component for the full search text.
@@ -78,16 +78,16 @@ export class SearchComponent extends BaseViewComponent implements OnInit {
         super(title, translate, matSnackBar);
         this.quickSearchform = new FormGroup({ query: new FormControl([]) });
 
-        this.registeredModels = this.searchService.getRegisteredModels().map(rm => ({...rm, enabled: true}));
+        this.registeredModels = this.searchService.getRegisteredModels().map(rm => ({ ...rm, enabled: true }));
 
         this.DS.changedOrDeletedObservable.pipe(auditTime(1)).subscribe(() => this.search());
         this.quickSearchSubject.pipe(debounceTime(250)).subscribe(query => this.search(query));
     }
 
-     /**
-      * Take the search query from the URL and does the initial search.
-      */
-     public ngOnInit(): void {
+    /**
+     * Take the search query from the URL and does the initial search.
+     */
+    public ngOnInit(): void {
         super.setTitle('Search');
         this.query = this.activatedRoute.snapshot.queryParams.query;
         this.quickSearchform.get('query').setValue(this.query);

@@ -1,4 +1,4 @@
-import { DetailNavigable } from "./detail-navigable";
+import { DetailNavigable } from './detail-navigable';
 
 /**
  * An Interface for all extra information needed for content objects of items.

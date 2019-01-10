@@ -9,13 +9,14 @@ import { MotionDetailOriginalChangeRecommendationsComponent } from '../motion-de
 
 @Component({
     template: `
-    <os-motion-detail-diff
-      [motion]="motion"
-      [changes]="changes"
-      (scrollToChange)="scrollToChange($event)"
-      (createChangeRecommendation)="createChangeRecommendation($event)"
-    >
-    </os-motion-detail-diff>`
+        <os-motion-detail-diff
+            [motion]="motion"
+            [changes]="changes"
+            (scrollToChange)="scrollToChange($event)"
+            (createChangeRecommendation)="createChangeRecommendation($event)"
+        >
+        </os-motion-detail-diff>
+    `
 })
 class TestHostComponent {
     public motion: ViewMotion;

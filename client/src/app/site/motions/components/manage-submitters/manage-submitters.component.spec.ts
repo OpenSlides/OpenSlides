@@ -6,7 +6,6 @@ import { ViewChild, Component } from '@angular/core';
 import { ViewMotion } from '../../models/view-motion';
 
 describe('ManageSubmittersComponent', () => {
-
     @Component({
         selector: 'os-host-component',
         template: '<os-manage-submitters></os-manage-submitters>'

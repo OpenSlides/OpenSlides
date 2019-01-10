@@ -1,7 +1,7 @@
 // import { _ } from '@biesbjerg/ngx-translate-extract';
 
 function _(key: string | string[]): string | string[] {
-	return key;
+    return key;
 }
 
 /**
@@ -19,10 +19,12 @@ function _(key: string | string[]): string | string[] {
 // Core config strings
 _('Presentation and assembly system');
 _('Event name');
-_('<a href="http://www.openslides.org">OpenSlides</a> is a free ' +
+_(
+    '<a href="http://www.openslides.org">OpenSlides</a> is a free ' +
         'web based presentation and assembly system for visualizing ' +
         'and controlling agenda, motions and elections of an ' +
-        'assembly.');
+        'assembly.'
+);
 _('General');
 _('Event');
 _('Short description of event');
@@ -94,7 +96,6 @@ _('Public item');
 _('Internal item');
 _('Hidden item');
 
-
 // Motions config strings
 // subgroup general
 _('General');
@@ -115,13 +116,17 @@ _('Hide recommendation on projector');
 _('Stop submitting new motions by non-staff users');
 _('Allow to disable versioning');
 _('Name of recommender');
-_('Will be displayed as label before selected recommendation. Use an empty value to disable the recommendation system.');
+_(
+    'Will be displayed as label before selected recommendation. Use an empty value to disable the recommendation system.'
+);
 _('Name of recommender for statute amendments');
-_('Will be displayed as label before selected recommendation for statute amendments. Use an empty value to disable the recommendation system.');
+_(
+    'Will be displayed as label before selected recommendation for statute amendments. Use an empty value to disable the recommendation system.'
+);
 _('Default text version for change recommendations');
 // subgroup Amendments
 _('Amendments');
-_('Activate statute amendments')
+_('Activate statute amendments');
 _('Activate amendments');
 _('Show amendments together with motions');
 _('Prefix for the identifier for amendments');
@@ -210,7 +215,6 @@ _('Called with');
 _('Recommendation');
 _('Motion block');
 
-
 // Assignment config strings
 _('Election method');
 _('Automatic assign of method');
@@ -220,10 +224,12 @@ _('Always Yes/No per candidate');
 _('Elections');
 _('Ballot and ballot papers');
 _('The 100-%-base of an election result consists of');
-_('For Yes/No/Abstain per candidate and Yes/No per candidate the 100-%-base ' +
+_(
+    'For Yes/No/Abstain per candidate and Yes/No per candidate the 100-%-base ' +
         'depends on the election method: If there is only one option per candidate, ' +
         'the sum of all votes of all candidates is 100 %. Otherwise for each ' +
-        'candidate the sum of all votes is 100 %.');
+        'candidate the sum of all votes is 100 %.'
+);
 _('Yes/No/Abstain per candidate');
 _('Yes/No per candidate');
 _('All valid ballots');
@@ -316,7 +322,9 @@ _('Email subject');
 _('Your login for {event_name}');
 _('You can use {event_name} as a placeholder.');
 _('Email body');
-_('Dear {name},\n\nthis is your OpenSlides login for the event {event_name}:\n\n    {url}\n    username: {username}\n    password: {password}\n\nThis email was generated automatically.');
+_(
+    'Dear {name},\n\nthis is your OpenSlides login for the event {event_name}:\n\n    {url}\n    username: {username}\n    password: {password}\n\nThis email was generated automatically.'
+);
 _('Use these placeholders: {name}, {event_name}, {url}, {username}, {password}. The url referrs to the system url.');
 
 // default groups

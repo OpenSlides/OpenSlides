@@ -120,7 +120,7 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
     public async resetPassword(user: ViewUser, password: string): Promise<void> {
         const path = `/rest/users/user/${user.id}/reset_password/`;
         await this.httpService.post(path, { password: password });
-        await this.update({default_password: password}, user);
+        await this.update({ default_password: password }, user);
     }
 
     /**
@@ -131,8 +131,8 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
      */
     public async setNewPassword(oldPassword: string, newPassword: string): Promise<void> {
         await this.httpService.post(`${environment.urlPrefix}/users/setpassword/`, {
-                old_password: oldPassword,
-                new_password: newPassword
+            old_password: oldPassword,
+            new_password: newPassword
         });
     }
 

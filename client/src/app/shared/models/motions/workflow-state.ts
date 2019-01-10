@@ -62,7 +62,7 @@ export class WorkflowState extends Deserializer {
      * Checks if a workflowstate has no 'next state' left, and is final
      */
     public get isFinalState(): boolean {
-        if (!this.next_states_id || !this.next_states_id.length ){
+        if (!this.next_states_id || !this.next_states_id.length) {
             return true;
         }
         if (this.next_states_id.length === 1 && this.next_states_id[0] === 0) {

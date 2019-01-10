@@ -261,5 +261,4 @@ export class PasswordComponent extends BaseViewComponent implements OnInit {
             this.hide_user_password = !this.hide_user_password;
         }
     }
-
 }

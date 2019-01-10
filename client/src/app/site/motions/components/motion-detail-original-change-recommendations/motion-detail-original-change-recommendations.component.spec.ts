@@ -6,13 +6,14 @@ import { Component } from '@angular/core';
 
 @Component({
     template: `
-    <os-motion-detail-original-change-recommendations
-      [html]="html"
-      [changeRecommendations]="changeRecommendations"
-      (createChangeRecommendation)="createChangeRecommendation($event)"
-      (gotoChangeRecommendation)="gotoChangeRecommendation($event)"
-    >
-    </os-motion-detail-original-change-recommendations>`
+        <os-motion-detail-original-change-recommendations
+            [html]="html"
+            [changeRecommendations]="changeRecommendations"
+            (createChangeRecommendation)="createChangeRecommendation($event)"
+            (gotoChangeRecommendation)="gotoChangeRecommendation($event)"
+        >
+        </os-motion-detail-original-change-recommendations>
+    `
 })
 class TestHostComponent {
     public html = '<p>Test123</p>';

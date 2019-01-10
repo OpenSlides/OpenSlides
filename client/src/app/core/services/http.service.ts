@@ -55,7 +55,13 @@ export class HttpService {
      * @param customHeader optional custom HTTP header of required
      * @returns a promise containing a generic
      */
-    private async send<T>(path: string, method: HTTPMethod, data?: any, queryParams?: QueryParams, customHeader?: HttpHeaders): Promise<T> {
+    private async send<T>(
+        path: string,
+        method: HTTPMethod,
+        data?: any,
+        queryParams?: QueryParams,
+        customHeader?: HttpHeaders
+    ): Promise<T> {
         // end early, if we are in history mode
         if (this.OSStatus.isInHistoryMode && method !== HTTPMethod.GET) {
             throw this.handleError('You cannot make changes while in history mode');

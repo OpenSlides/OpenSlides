@@ -9,7 +9,7 @@ export interface ModelEntry {
 
 export interface SearchableModelEntry {
     collectionString: string;
-    model: new (...args: any[]) => (BaseModel & Searchable);
+    model: new (...args: any[]) => BaseModel & Searchable;
     searchOrder: number;
 }
 

@@ -10,7 +10,7 @@ describe('MediaUploadComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [E2EImportsModule],
-            declarations: [MediaUploadComponent],
+            declarations: [MediaUploadComponent]
         }).compileComponents();
     }));
 

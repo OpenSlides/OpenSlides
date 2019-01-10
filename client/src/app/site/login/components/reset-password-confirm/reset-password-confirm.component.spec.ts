@@ -15,11 +15,9 @@ describe('ResetPasswordConfirmComponent', () => {
 
         TestBed.configureTestingModule({
             imports: [E2EImportsModule],
-            providers: [
-                {provide: MatSnackBar, useValue: spy}
-            ]
+            providers: [{ provide: MatSnackBar, useValue: spy }]
         }).compileComponents();
-        matSnackBarSpy = TestBed.get(MatSnackBar)
+        matSnackBarSpy = TestBed.get(MatSnackBar);
     }));
 
     beforeEach(() => {

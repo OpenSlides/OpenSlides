@@ -18,7 +18,6 @@ import { FilterListService, OsFilterOption } from '../../../../core/services/fil
     styleUrls: ['./filter-menu.component.scss']
 })
 export class FilterMenuComponent implements OnInit {
-
     /**
      * An event emitter to submit a desire to close this component
      * TODO: Might be an easier way to do this
@@ -37,8 +36,7 @@ export class FilterMenuComponent implements OnInit {
      * Constructor. Does nothing.
      * @param service
      */
-    public constructor() {
-    }
+    public constructor() {}
 
     /**
      * Directly closes again if no sorting is available
@@ -53,12 +51,12 @@ export class FilterMenuComponent implements OnInit {
      * Tests for escape key (to colose the sidebar)
      * @param event
      */
-    public checkKeyEvent(event: KeyboardEvent) : void {
-        if (event.key === 'Escape'){
-            this.dismissed.next(true)
+    public checkKeyEvent(event: KeyboardEvent): void {
+        if (event.key === 'Escape') {
+            this.dismissed.next(true);
         }
     }
-    public isFilter(option: OsFilterOption) : boolean{
-        return (typeof option === 'string') ? false : true;
+    public isFilter(option: OsFilterOption): boolean {
+        return typeof option === 'string' ? false : true;
     }
 }

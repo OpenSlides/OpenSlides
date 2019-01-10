@@ -11,10 +11,7 @@ describe('AgendaCsvExportService', () => {
         });
     });
 
-    it('should be created', inject(
-        [AgendaCsvExportService],
-        (service: AgendaCsvExportService) => {
-            expect(service).toBeTruthy();
-        }
-    ));
+    it('should be created', inject([AgendaCsvExportService], (service: AgendaCsvExportService) => {
+        expect(service).toBeTruthy();
+    }));
 });

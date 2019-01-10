@@ -71,11 +71,7 @@ export class WebsocketService {
      * @param zone
      * @param translate
      */
-    public constructor(
-        private matSnackBar: MatSnackBar,
-        private zone: NgZone,
-        public translate: TranslateService
-    ) {}
+    public constructor(private matSnackBar: MatSnackBar, private zone: NgZone, public translate: TranslateService) {}
 
     /**
      * Creates a new WebSocket connection and handles incomming events.

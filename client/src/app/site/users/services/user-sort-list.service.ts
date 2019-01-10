@@ -6,7 +6,6 @@ import { ViewUser } from '../models/view-user';
     providedIn: 'root'
 })
 export class UserSortListService extends SortListService<ViewUser> {
-
     public sortOptions: OsSortingDefinition<ViewUser> = {
         sortProperty: 'first_name',
         sortAscending: true,

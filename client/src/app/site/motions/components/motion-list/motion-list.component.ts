@@ -21,7 +21,6 @@ import { ViewCategory } from '../../models/view-category';
 import { ViewMotionBlock } from '../../models/view-motion-block';
 import { WorkflowRepositoryService } from '../../services/workflow-repository.service';
 
-
 /**
  * Component that displays all the motions in a Table using DataSource.
  */
@@ -31,7 +30,6 @@ import { WorkflowRepositoryService } from '../../services/workflow-repository.se
     styleUrls: ['./motion-list.component.scss']
 })
 export class MotionListComponent extends ListViewBaseComponent<ViewMotion> implements OnInit {
-
     /**
      * Use for minimal width. Please note the 'selector' row for multiSelect mode,
      * to be able to display an indicator for the state of selection
@@ -51,7 +49,6 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
      */
     public statutesEnabled: boolean;
     public recomendationEnabled: boolean;
-
 
     public tags: ViewTag[] = [];
     public workflows: ViewWorkflow[] = [];
@@ -112,11 +109,11 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
         this.initTable();
         this.configService.get('motions_statutes_enabled').subscribe(enabled => (this.statutesEnabled = enabled));
         this.configService.get('motions_recommendations_by').subscribe(id => (this.recomendationEnabled = !!id));
-        this.motionBlockRepo.getViewModelListObservable().subscribe(mBs => this.motionBlocks = mBs);
-        this.categoryRepo.getViewModelListObservable().subscribe(cats => this.categories = cats);
-        this.tagRepo.getViewModelListObservable().subscribe(tags => this.tags = tags);
-        this.workflowRepo.getViewModelListObservable().subscribe(wfs => this.workflows = wfs);
-        this.filterService.filter().subscribe(filteredData => this.sortService.data = filteredData);
+        this.motionBlockRepo.getViewModelListObservable().subscribe(mBs => (this.motionBlocks = mBs));
+        this.categoryRepo.getViewModelListObservable().subscribe(cats => (this.categories = cats));
+        this.tagRepo.getViewModelListObservable().subscribe(tags => (this.tags = tags));
+        this.workflowRepo.getViewModelListObservable().subscribe(wfs => (this.workflows = wfs));
+        this.filterService.filter().subscribe(filteredData => (this.sortService.data = filteredData));
         this.sortService.sort().subscribe(sortedData => {
             this.dataSource.data = sortedData;
             this.checkSelection();
@@ -211,6 +208,4 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
             this.raiseError(e);
         }
     }
-
-
 }

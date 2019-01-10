@@ -15,7 +15,7 @@ import { HttpHeaders } from '@angular/common/http';
  * Repository for MediaFiles
  */
 @Injectable({
-    providedIn: 'root',
+    providedIn: 'root'
 })
 export class MediafileRepositoryService extends BaseRepository<ViewMediafile, Mediafile> {
     /**
@@ -29,7 +29,7 @@ export class MediafileRepositoryService extends BaseRepository<ViewMediafile, Me
         DS: DataStoreService,
         mapperService: CollectionStringModelMapperService,
         private dataSend: DataSendService,
-        private httpService: HttpService,
+        private httpService: HttpService
     ) {
         super(DS, mapperService, Mediafile, [User]);
     }

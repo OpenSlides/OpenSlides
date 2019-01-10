@@ -198,7 +198,7 @@ export class GroupListComponent extends BaseViewComponent implements OnInit {
      * Clicking escape while in #newGroupForm should toggle newGroup.
      */
     public keyDownFunction(event: KeyboardEvent): void {
-        if (event.key === "Escape") {
+        if (event.key === 'Escape') {
             this.newGroup = false;
         }
     }

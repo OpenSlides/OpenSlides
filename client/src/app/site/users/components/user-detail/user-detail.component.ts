@@ -321,7 +321,9 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
      * click on the delete user button
      */
     public async deleteUserButton(): Promise<void> {
-        const content = this.translate.instant('Do you want to delete this participant?') + `<p><strong>${this.user.full_name}</strong>`;
+        const content =
+            this.translate.instant('Do you want to delete this participant?') +
+            `<p><strong>${this.user.full_name}</strong>`;
         if (await this.promptService.open(this.translate.instant('Are you sure?'), content)) {
             this.repo.delete(this.user).then(() => this.router.navigate(['./users/']), this.raiseError);
         }

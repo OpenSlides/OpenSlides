@@ -10,7 +10,6 @@ import { ListViewBaseComponent } from 'app/site/base/list-view-base';
 import { PromptService } from '../../../../core/services/prompt.service';
 import { ViewItem } from '../../models/view-item';
 
-
 import { AgendaCsvExportService } from '../../services/agenda-csv-export.service';
 import { ItemInfoDialogComponent } from '../item-info-dialog/item-info-dialog.component';
 import { ViewportService } from 'app/core/services/viewport.service';

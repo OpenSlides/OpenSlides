@@ -122,5 +122,4 @@ export class ViewMediafile extends BaseViewModel {
     public is_hidden(): boolean {
         return this._mediafile.hidden;
     }
-
 }
