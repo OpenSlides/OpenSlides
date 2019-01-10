@@ -8,3 +8,26 @@
 span.right-with-margin {
     margin-right: 25px;
 }
+
+.flex-spaced {
+    display: flex;
+    justify-content: space-between;
+}
+
+.filter-count {
+    text-align: right;
+    margin-right: 10px;
+    margin-left: 10px;
+    min-width: 50px;
+}
+
+.current-filters {
+    display: flex;
+    justify-content: flex-start;
+    margin: 5px;
+    button {
+        padding: 3px;
+        font-size: 80%;
+        margin: 5px;
+    }
+}

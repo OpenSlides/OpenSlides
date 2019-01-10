@@ -13,78 +13,80 @@
     </div>
 
 </os-head-bar>
-<os-sort-filter-bar [filterService] = "filterService" (searchFieldChange)="searchFilter($event)"></os-sort-filter-bar>
+<mat-drawer-container class="on-transition-fade">
+    <os-sort-filter-bar [filterService] = "filterService" (searchFieldChange)="searchFilter($event)"></os-sort-filter-bar>
 
-<mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
-    <!-- selector column -->
-    <ng-container matColumnDef="selector">
-        <mat-header-cell *matHeaderCellDef mat-sort-header class="checkbox-cell"></mat-header-cell>
-        <mat-cell (click)="selectItem(item, $event)" *matCellDef="let item" class="checkbox-cell">
-            <mat-icon>{{ isSelected(item) ? 'check_circle' : '' }}</mat-icon>
-        </mat-cell>
-    </ng-container>
+    <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
+        <!-- selector column -->
+        <ng-container matColumnDef="selector">
+            <mat-header-cell *matHeaderCellDef mat-sort-header class="checkbox-cell"></mat-header-cell>
+            <mat-cell (click)="selectItem(item, $event)" *matCellDef="let item" class="checkbox-cell">
+                <mat-icon>{{ isSelected(item) ? 'check_circle' : '' }}</mat-icon>
+            </mat-cell>
+        </ng-container>
 
-    <!-- title column -->
-    <ng-container matColumnDef="title">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Topic</mat-header-cell>
-        <!-- <mat-cell (click)="onTitleColumn(item)" *matCellDef="let item"> -->
-        <mat-cell (click)="selectItem(item, $event)" *matCellDef="let item">
-            <span *ngIf="item.closed"> <mat-icon class="done-check">check</mat-icon> </span>
-            <span> {{ item.getListTitle() }} </span>
-        </mat-cell>
-    </ng-container>
+        <!-- title column -->
+        <ng-container matColumnDef="title">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Topic</mat-header-cell>
+            <!-- <mat-cell (click)="onTitleColumn(item)" *matCellDef="let item"> -->
+            <mat-cell (click)="selectItem(item, $event)" *matCellDef="let item">
+                <span *ngIf="item.closed"> <mat-icon class="done-check">check</mat-icon> </span>
+                <span> {{ item.getListTitle() }} </span>
+            </mat-cell>
+        </ng-container>
 
-    <!-- Info column -->
-    <ng-container matColumnDef="info">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Info</mat-header-cell>
-        <mat-cell (click)="openEditInfo(item)" *matCellDef="let item">
-            <div class="info-col-items">
-                <div *ngIf="item.verboseType">
-                    <mat-icon>visibility</mat-icon>
-                    {{ item.verboseType | translate }}
+        <!-- Info column -->
+        <ng-container matColumnDef="info">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Info</mat-header-cell>
+            <mat-cell (click)="openEditInfo(item)" *matCellDef="let item">
+                <div class="info-col-items">
+                    <div *ngIf="item.verboseType">
+                        <mat-icon>visibility</mat-icon>
+                        {{ item.verboseType | translate }}
+                    </div>
+                    <div *ngIf="item.duration">
+                        <mat-icon>access_time</mat-icon>
+                        {{ durationService.durationToString(item.duration) }}
+                    </div>
+                    <div *ngIf="item.comment">
+                        <mat-icon>comment</mat-icon>
+                        {{ item.comment }}
+                    </div>
                 </div>
-                <div *ngIf="item.duration">
-                    <mat-icon>access_time</mat-icon>
-                    {{ durationService.durationToString(item.duration) }}
-                </div>
-                <div *ngIf="item.comment">
-                    <mat-icon>comment</mat-icon>
-                    {{ item.comment }}
-                </div>
-            </div>
-        </mat-cell>
-    </ng-container>
+            </mat-cell>
+        </ng-container>
 
-    <!-- Speakers column -->
-    <ng-container matColumnDef="speakers">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Speakers</mat-header-cell>
-        <mat-cell *matCellDef="let item">
-            <button mat-icon-button (click)="onSpeakerIcon(item)">
-                <mat-icon [matBadge]="item.speakerAmount > 0 ? item.speakerAmount : null" matBadgeColor="accent">
-                    mic
-                </mat-icon>
-            </button>
-        </mat-cell>
-    </ng-container>
+        <!-- Speakers column -->
+        <ng-container matColumnDef="speakers">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Speakers</mat-header-cell>
+            <mat-cell *matCellDef="let item">
+                <button mat-icon-button (click)="onSpeakerIcon(item)">
+                    <mat-icon [matBadge]="item.speakerAmount > 0 ? item.speakerAmount : null" matBadgeColor="accent">
+                        mic
+                    </mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
 
-    <!-- menu -->
-    <ng-container matColumnDef="menu">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Menu</mat-header-cell>
-        <mat-cell *matCellDef="let item">
-            <button mat-icon-button [matMenuTriggerFor]="singleItemMenu" [matMenuTriggerData]="{ item: item }">
-                <mat-icon>more_vert</mat-icon>
-            </button>
-        </mat-cell>
-    </ng-container>
+        <!-- menu -->
+        <ng-container matColumnDef="menu">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Menu</mat-header-cell>
+            <mat-cell *matCellDef="let item">
+                <button mat-icon-button [matMenuTriggerFor]="singleItemMenu" [matMenuTriggerData]="{ item: item }">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
 
-    <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
-    <mat-row
-        class="lg"
-        [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected' : ''"
-        *matRowDef="let row; columns: getColumnDefinition()"
-    ></mat-row>
-</mat-table>
-<mat-paginator class="on-transition-fade" [pageSizeOptions]="[25, 50, 75, 100, 125]"></mat-paginator>
+        <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
+        <mat-row
+            class="lg"
+            [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected' : ''"
+            *matRowDef="let row; columns: getColumnDefinition()"
+        ></mat-row>
+    </mat-table>
+    <mat-paginator class="on-transition-fade" [pageSizeOptions]="[25, 50, 75, 100, 125]"></mat-paginator>
+</mat-drawer-container>
 
 <mat-menu #agendaMenu="matMenu">
     <div *ngIf="!isMultiSelect">

@@ -33,6 +33,7 @@ export class AgendaFilterListService extends FilterListService<Item, ViewItem> {
                 options: [{ label: 'Open', condition: false }, { label: 'Closed', condition: true }]
             }
         ];
+        this.updateFilterDefinitions(this.filterOptions);
     }
 
     private createVisibilityFilterOptions(): OsFilterOption[] {

@@ -10,8 +10,7 @@ export class AssignmentSortListService extends SortListService<ViewAssignment> {
         sortProperty: 'assignment',
         sortAscending: true,
         options: [
-            { property: 'agendaItem', label: 'agenda Item' },
-            { property: 'assignment' },
+            { property: 'assignment', label: 'Name' },
             { property: 'phase' },
             { property: 'candidateAmount', label: 'Number of candidates' }
         ]

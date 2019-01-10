@@ -63,7 +63,7 @@ export class UserFilterListService extends FilterListService<User, ViewUser> {
     public subscribeGroups(): void {
         this.groupRepo.getViewModelListObservable().subscribe(groups => {
             const groupOptions = [];
-            groupOptions.forEach(group => {
+            groups.forEach(group => {
                 groupOptions.push({
                     condition: group.name,
                     label: group.name,
