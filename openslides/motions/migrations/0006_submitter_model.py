@@ -24,7 +24,7 @@ def move_submitters_to_own_model(apps, schema_editor):
                 continue  # Skip the anonymous
 
             submitter = Submitter(user=user, motion=motion, weight=weight)
-            submitter.save(force_insert=True)
+            submitter.save(force_insert=True, skip_autoupdate=True)
             weight += 1
 
 
