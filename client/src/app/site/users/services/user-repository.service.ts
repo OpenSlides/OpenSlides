@@ -242,4 +242,12 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
         const createdUser = await this.create(newUser);
         return { id: createdUser.id, name: user };
     }
+
+    /**
+     * Returns all duplicates of an user (currently: full name matches)
+     * @param user
+     */
+    public getUserDuplicates(user: ViewUser): ViewUser[] {
+        return this.getViewModelList().filter(existingUser => existingUser.full_name === user.full_name);
+    }
 }

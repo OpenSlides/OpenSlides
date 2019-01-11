@@ -1,9 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { UserListComponent } from './components/user-list/user-list.component';
-import { UserDetailComponent } from './components/user-detail/user-detail.component';
+
 import { GroupListComponent } from './components/group-list/group-list.component';
 import { PasswordComponent } from './components/password/password.component';
+import { UserDetailComponent } from './components/user-detail/user-detail.component';
+import { UserImportListComponent } from './components/user-import/user-import-list.component';
+import { UserListComponent } from './components/user-list/user-list.component';
 
 const routes: Routes = [
     {
@@ -21,6 +23,10 @@ const routes: Routes = [
     {
         path: 'new',
         component: UserDetailComponent
+    },
+    {
+        path: 'import',
+        component: UserImportListComponent
     },
     {
         path: 'groups',

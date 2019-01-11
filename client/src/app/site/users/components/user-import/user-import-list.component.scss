@@ -1,0 +1,53 @@
+.table-container {
+    width: 100%;
+    overflow-x: scroll;
+    margin-top: 5px;
+}
+
+table {
+    width: 100%;
+    overflow: scroll;
+}
+
+.mat-header-cell {
+    min-width: 100px;
+    padding-right: 8px;
+}
+.mat-cell {
+    min-width: 100px;
+    padding-top: 2px;
+    padding-right: 8px;
+}
+.selection {
+    min-width: 80px;
+}
+
+.import-done {
+    background-color: #cfc;
+}
+.import-error {
+    background-color: #fcc;
+}
+
+.code {
+    padding-left: 1em;
+    font-style: italic;
+}
+
+div.wrapper {
+    display: flex;
+    vertical-align: bottom;
+    padding: 10px;
+}
+
+div.summary {
+    display: flex;
+}
+
+.hidden-input {
+    display: none;
+}
+
+.newBadge {
+    margin-left: -3px;
+}

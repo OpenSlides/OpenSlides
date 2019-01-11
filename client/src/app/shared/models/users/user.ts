@@ -38,7 +38,7 @@ export class User extends ProjectableBaseModel implements Searchable {
             addition.push(structure_level);
         }
 
-        const number = this.number.trim();
+        const number = this.number ? this.number.trim() : null;
         if (number) {
             // TODO Translate
             addition.push('No.' + ' ' + number);
