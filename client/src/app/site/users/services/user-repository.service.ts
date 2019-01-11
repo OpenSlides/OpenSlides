@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+
 import { BaseRepository } from '../../base/base-repository';
 import { ViewUser } from '../models/view-user';
 import { User } from '../../../shared/models/users/user';
@@ -196,5 +197,49 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
         }
 
         return msg;
+    }
+
+    /**
+     * Searches and returns Users by full name
+     * @param name
+     */
+    public getUsersByName(name: string): ViewUser[] {
+        const results: ViewUser[] = [];
+        const users = this.DS.getAll(User).filter(user => {
+            if (user.full_name === name || user.short_name === name) {
+                return true;
+            }
+            if (user.number === name) {
+                return true;
+            }
+            return false;
+        });
+        users.forEach(user => {
+            results.push(this.createViewModel(user));
+        });
+        return results;
+    }
+
+    /**
+     * Creates a new User from a string
+     * @param user: String to create the user from
+     * TODO: return 'user' + new id
+     */
+    public async createFromString(user: string): Promise<{ id: number; name: string }> {
+        const splitUser = user.split(' ');
+        const newUser: Partial<User> = {};
+        switch (splitUser.length) {
+            case 1:
+                newUser.first_name = splitUser[0];
+                break;
+            case 2:
+                newUser.first_name = splitUser[0];
+                newUser.last_name = splitUser[1];
+                break;
+            default:
+                newUser.first_name = user;
+        }
+        const createdUser = await this.create(newUser);
+        return { id: createdUser.id, name: user };
     }
 }

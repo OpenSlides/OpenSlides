@@ -94,6 +94,14 @@ body {
     }
 }
 
+.accent-text {
+    color: mat-color($openslides-accent);
+}
+
+.green-text { // TODO better name/theming
+    color: #5A5;
+}
+
 .icon-text-distance {
     margin-left: 5px;
 }

@@ -147,12 +147,12 @@ export class CsvExportService {
         if (!tsList.length) {
             throw new Error('no usable text separator left for valid csv text');
         }
-
         const csvContentAsString: string = csvContent
             .map(line => {
                 return line.map(entry => tsList[0] + entry + tsList[0]).join(columnSeparator);
             })
             .join(lineSeparator);
+
         this.exporter.saveFile(csvContentAsString, filename);
     }
 
@@ -163,7 +163,7 @@ export class CsvExportService {
      *
      * @param input any input to be sent to CSV
      * @param tsList The list of special characters to check.
-     * @returns the cleand CSV String list
+     * @returns the cleaned CSV String list
      */
     public checkCsvTextSafety(input: string, tsList: string[]): string[] {
         if (input === null || input === undefined) {

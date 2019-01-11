@@ -18,6 +18,7 @@ import { CallListComponent } from './components/call-list/call-list.component';
 import { AmendmentCreateWizardComponent } from './components/amendment-create-wizard/amendment-create-wizard.component';
 import { MotionBlockListComponent } from './components/motion-block-list/motion-block-list.component';
 import { MotionBlockDetailComponent } from './components/motion-block-detail/motion-block-detail.component';
+import { MotionImportListComponent } from './components/motion-import-list/motion-import-list.component';
 import { ManageSubmittersComponent } from './components/manage-submitters/manage-submitters.component';
 
 @NgModule({
@@ -38,6 +39,7 @@ import { ManageSubmittersComponent } from './components/manage-submitters/manage
         AmendmentCreateWizardComponent,
         MotionBlockListComponent,
         MotionBlockDetailComponent,
+        MotionImportListComponent,
         ManageSubmittersComponent
     ],
     entryComponents: [

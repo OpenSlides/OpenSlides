@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { HttpClientModule, HttpClient, HttpClientXsrfModule } from '@angular/common/http';
+import { PapaParseModule } from 'ngx-papaparse';
 
 // Elementary App Components
 import { AppRoutingModule } from './app-routing.module';
@@ -53,7 +54,8 @@ export function AppLoaderFactory(appLoadService: AppLoadService): () => Promise<
         }),
         AppRoutingModule,
         CoreModule,
-        LoginModule
+        LoginModule,
+        PapaParseModule
     ],
     providers: [{ provide: APP_INITIALIZER, useFactory: AppLoaderFactory, deps: [AppLoadService], multi: true }],
     bootstrap: [AppComponent]

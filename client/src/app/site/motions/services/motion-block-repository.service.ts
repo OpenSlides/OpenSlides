@@ -112,4 +112,13 @@ export class MotionBlockRepositoryService extends BaseRepository<ViewMotionBlock
             .getViewModelListObservable()
             .pipe(map(viewMotions => viewMotions.filter(viewMotion => viewMotion.motion_block_id === block.id)));
     }
+
+    /**
+     * Retrieves motion block(s) by name
+     * TODO: check if a title is unique for a motionBlock
+     * @param title Strign to check for
+     */
+    public getMotionBlockByTitle(title: string): MotionBlock {
+        return this.DS.find(MotionBlock, block => block.title === title);
+    }
 }

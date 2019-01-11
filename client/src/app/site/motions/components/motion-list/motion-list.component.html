@@ -153,9 +153,14 @@
             <mat-icon>speaker_notes</mat-icon>
             <span translate>Comment fields</span>
         </button>
+
         <button mat-menu-item (click)="csvExportMotionList()">
             <mat-icon>archive</mat-icon>
             <span translate>Export as CSV</span>
+        </button>
+        <button mat-menu-item *osPerms="'motions.can_manage'" routerLink="import">
+            <mat-icon>save_alt</mat-icon>
+            <span translate>Import</span><span>&nbsp;...</span>
         </button>
     </div>
     <div *ngIf="isMultiSelect">
