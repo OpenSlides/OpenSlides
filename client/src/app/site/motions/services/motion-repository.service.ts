@@ -621,10 +621,9 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
     }
 
     /**
-     * Returns all Motion duplicates (sharing specific values given in input)
+     * Returns motion duplicates (sharing the identifier)
      * @param viewMotion the ViewMotion to compare against the list of Motions
      * in the data
-     * @param sharedValues properties that must be equal to consider it a duplicate
      */
     public getMotionDuplicates(motion: Motion): ViewMotion[] {
         const duplicates = this.DS.filter(Motion, item => motion.identifier === item.identifier);

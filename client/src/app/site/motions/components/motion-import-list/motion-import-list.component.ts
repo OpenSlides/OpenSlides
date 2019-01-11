@@ -5,7 +5,9 @@ import { ViewChild, Component, OnInit } from '@angular/core';
 
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { MotionCsvExportService } from '../../services/motion-csv-export.service';
-import { MotionImportService, NewMotionEntry, ValueLabelCombination } from '../../services/motion-import.service';
+import { MotionImportService } from '../../services/motion-import.service';
+import { NewEntry, ValueLabelCombination } from 'app/core/services/text-import.service';
+import { ViewMotion } from '../../models/view-motion';
 
 /**
  * Component for the motion import list view.
@@ -19,7 +21,7 @@ export class MotionImportListComponent extends BaseViewComponent implements OnIn
     /**
      * The data source for a table. Requires to be initialised with a BaseViewModel
      */
-    public dataSource: MatTableDataSource<NewMotionEntry>;
+    public dataSource: MatTableDataSource<NewEntry<ViewMotion>>;
 
     /**
      * Switch that turns true if a file has been selected in the input
@@ -41,7 +43,7 @@ export class MotionImportListComponent extends BaseViewComponent implements OnIn
      * The table itself
      */
     @ViewChild(MatTable)
-    protected table: MatTable<NewMotionEntry>;
+    protected table: MatTable<NewEntry<ViewMotion>>;
 
     /**
      * Returns the amount of total item successfully parsed
@@ -171,15 +173,15 @@ export class MotionImportListComponent extends BaseViewComponent implements OnIn
             };
         } else if (this.shown === 'noerror') {
             this.dataSource.filterPredicate = (data, filter) => {
-                if (data.newMotion.status === 'done') {
+                if (data.status === 'done') {
                     return true;
-                } else if (!(data.newMotion.status !== 'error') && !data.duplicates.length) {
+                } else if (!(data.status !== 'error') && !data.duplicates.length) {
                     return true;
                 }
             };
         } else if (this.shown === 'error') {
             this.dataSource.filterPredicate = (data, filter) => {
-                if (data.newMotion.errors.length || data.duplicates.length) {
+                if (data.errors.length || data.duplicates.length) {
                     return true;
                 }
                 return false;
@@ -193,8 +195,8 @@ export class MotionImportListComponent extends BaseViewComponent implements OnIn
      *
      * @param row
      */
-    public getStateClass(row: NewMotionEntry): string {
-        switch (row.newMotion.status) {
+    public getStateClass(row: NewEntry<ViewMotion>): string {
+        switch (row.status) {
             case 'done':
                 return 'import-done import-decided';
             case 'error':
@@ -237,8 +239,8 @@ export class MotionImportListComponent extends BaseViewComponent implements OnIn
      * Return the icon for the action of the item
      * @param entry
      */
-    public getActionIcon(entry: NewMotionEntry): string {
-        switch (entry.newMotion.status) {
+    public getActionIcon(entry: NewEntry<ViewMotion>): string {
+        switch (entry.status) {
             case 'error': // no import possible
                 return 'block';
             case 'new': // new item, will be imported
@@ -304,5 +306,14 @@ export class MotionImportListComponent extends BaseViewComponent implements OnIn
      */
     public getVerboseError(error: string): string {
         return this.importer.verbose(error);
+    }
+
+    /**
+     * Checks if an error is present in a new entry
+     * @param row
+     * @param error
+     */
+    public hasError(row: NewEntry<ViewMotion>, error: string): boolean {
+        return this.importer.hasError(row, error);
     }
 }
