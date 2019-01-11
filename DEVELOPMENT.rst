@@ -136,6 +136,7 @@ client tests::
 
 Fix the code format and lint it with::
 
+    npm run prettify-write
     npm run lint
 
 To extract translations run::
