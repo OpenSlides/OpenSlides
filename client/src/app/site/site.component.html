@@ -17,7 +17,7 @@
 
         <!-- User Menu -->
         <mat-expansion-panel class="user-menu mat-elevation-z0">
-            <mat-expansion-panel-header>
+            <mat-expansion-panel-header class="username">
                 <!-- Get the username from operator -->
                 {{ username }}
             </mat-expansion-panel-header>
@@ -34,7 +34,6 @@
                     <mat-icon>vpn_key</mat-icon>
                     <span translate>Change password</span>
                 </a>
-                <mat-divider></mat-divider>
                 <a *ngIf="isLoggedIn" (click)="logout()" mat-list-item>
                     <mat-icon>exit_to_app</mat-icon>
                     <span translate>Logout</span>
@@ -54,13 +53,6 @@
 
         <!-- navigation -->
         <mat-nav-list class="main-nav">
-            <form [formGroup]="searchform" (submit)="search()" *ngIf="showSearch">
-                <mat-form-field>
-                    <input matInput formControlName="query" placeholder="{{ 'Search' | translate }}" />
-                    <button mat-icon-button matSuffix><mat-icon>search</mat-icon></button>
-                </mat-form-field>
-            </form>
-
             <span *ngFor="let entry of mainMenuService.entries">
                 <a
                     [@navItemAnim]
@@ -75,7 +67,6 @@
                     <span>{{ entry.displayName | translate }}</span>
                 </a>
             </span>
-            <mat-divider></mat-divider>
             <a
                 [@navItemAnim]
                 *osPerms="'core.can_see_projector'"
@@ -87,16 +78,53 @@
                 <mat-icon>videocam</mat-icon>
                 <span translate>Projector</span>
             </a>
+            <mat-divider></mat-divider>
+            <a
+                [@navItemAnim]
+                mat-list-item
+                routerLink="/search"
+                routerLinkActive="active"
+                (click)="toggleSideNav()"
+            >
+                <mat-icon>search</mat-icon>
+                <span translate>Search</span>
+            </a>
+            <a
+                [@navItemAnim]
+                mat-list-item
+                routerLink="/legalnotice"
+                routerLinkActive="active"
+                (click)="toggleSideNav()"
+            >
+                <mat-icon>info</mat-icon>
+                <span translate>Legal notice</span>
+            </a>
+            <a
+                [@navItemAnim]
+                mat-list-item
+                routerLink="/privacypolicy"
+                routerLinkActive="active"
+                (click)="toggleSideNav()"
+            >
+                <mat-icon>security</mat-icon>
+                <span translate>Privacy policy</span>
+            </a>
+            <a
+                [@navItemAnim]
+                mat-list-item
+                href="https://openslides.org"
+                target="_blank"
+                (click)="toggleSideNav()"
+            >
+                <span><small>© Copyright by OpenSlides</small></span>
+            </a>
         </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content>
         <div (touchstart)="swipe($event, 'start')" (touchend)="swipe($event, 'end')" class="content">
-            <div class="relax">
-                <main [@pageTransition]="o.isActivated ? o.activatedRoute : ''">
-                    <router-outlet #o="outlet"></router-outlet>
-                </main>
-                <footer><os-footer></os-footer></footer>
-            </div>
+            <main [@pageTransition]="o.isActivated ? o.activatedRoute : ''">
+                <router-outlet #o="outlet"></router-outlet>
+            </main>
         </div>
     </mat-sidenav-content>
 </mat-sidenav-container>

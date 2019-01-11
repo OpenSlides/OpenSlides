@@ -2,10 +2,12 @@
     <!-- Title -->
     <div class="title-slot">
         <h2>
-            <span *ngIf="viewItem">{{ viewItem.getTitle() }}:</span> <span translate> List of speakers </span>
+            <span translate>List of speakers</span>
         </h2>
     </div>
 </os-head-bar>
+
+<h1 class="title-left on-transition-fade" *ngIf="viewItem">{{ viewItem.getTitle() }}</h1>
 
 <mat-card class="speaker-card">
     <!-- List of finished speakers -->

@@ -4,13 +4,22 @@ header {
     mat-toolbar {
         min-height: 200px !important;
     }
-    .login-logo-bar {
+    .login-logo-bar a {
+        margin-left: auto;
+        margin-right: auto;
+
         img {
-            margin-left: auto;
-            margin-right: auto;
             width: 90%;
             height: 90%;
             max-width: 400px;
         }
     }
+}
+
+.footer {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 80px;
+    font-size: 12px;
+    text-align: center;
 }

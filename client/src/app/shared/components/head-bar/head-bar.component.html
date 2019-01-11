@@ -47,14 +47,22 @@
 
         <!-- Main action button - desktop -->
         <button
-            mat-mini-fab
-            color="accent"
+            mat-icon-button
             class="on-transition-fade"
-            *ngIf="mainButton && !editMode && !vp.isMobile && !multiSelectMode"
+            *ngIf="mainButtonIcon == 'add' && mainButton && !editMode && !vp.isMobile && !multiSelectMode"
             (click)="sendMainEvent()"
         >
-            <mat-icon>{{ mainButtonIcon }}</mat-icon>
+            <mat-icon>add_circle</mat-icon>
         </button>
+        <button
+            mat-icon-button
+            class="on-transition-fade"
+            *ngIf="mainButtonIcon == 'edit' && mainButton && !editMode && !vp.isMobile && !multiSelectMode"
+            (click)="sendMainEvent()"
+        >
+            <mat-icon>edit</mat-icon>
+        </button>
+
 
         <!-- Save button -->
         <button mat-button *ngIf="editMode" (click)="save()"><strong translate class="upper">Save</strong></button>

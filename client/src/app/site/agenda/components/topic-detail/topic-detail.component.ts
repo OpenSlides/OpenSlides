@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Location } from '@angular/common';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
@@ -69,7 +68,6 @@ export class TopicDetailComponent extends BaseViewComponent {
      * @param translate Handles translations
      * @param route Angulars ActivatedRoute
      * @param router Angulars Router
-     * @param location Enables to navigate back
      * @param formBuilder Angulars FormBuilder
      * @param repo The topic repository
      * @param promptService Allows warning before deletion attempts
@@ -82,7 +80,6 @@ export class TopicDetailComponent extends BaseViewComponent {
         protected translate: TranslateService,
         private route: ActivatedRoute,
         private router: Router,
-        private location: Location,
         private formBuilder: FormBuilder,
         private repo: TopicRepositoryService,
         private promptService: PromptService,
@@ -128,11 +125,8 @@ export class TopicDetailComponent extends BaseViewComponent {
             if (!this.topicForm.value.agenda_parent_id) {
                 delete this.topicForm.value.agenda_parent_id;
             }
-
-            const response = await this.repo.create(this.topicForm.value);
-            this.router.navigate([`/agenda/topics/${response.id}`]);
-            // after creating a new topic, go "back" to agenda list view
-            this.location.replaceState('/agenda/');
+            await this.repo.create(this.topicForm.value);
+            this.router.navigate([`/agenda/`]);
         } else {
             this.setEditMode(false);
             await this.repo.update(this.topicForm.value, this.topic);

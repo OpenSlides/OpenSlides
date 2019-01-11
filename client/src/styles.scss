@@ -4,8 +4,8 @@
 /** Import brand theme and (new) component themes */
 @import './assets/styles/openslides-theme.scss';
 @import './app/site/site.component.scss-theme';
-@import '../node_modules/roboto-fontface/css/roboto/roboto-fontface.css';
-@import '../node_modules/roboto-fontface/css/roboto-condensed/roboto-condensed-fontface.css';
+@import '../node_modules/typeface-fira-sans/index.css';
+@import '../node_modules/typeface-fira-sans-condensed/index.css';
 @mixin openslides-components-theme($theme) {
     @include os-site-theme($theme);
     /** More components are added here */
@@ -16,40 +16,44 @@
 
 @import '~angular-tree-component/dist/angular-tree-component.css';
 
-// Shared scss definitions
-%os-table {
-    width: 100%;
-
-    /** size of the mat row  */
-    mat-row {
-        height: 60px;
-    }
-
-    mat-row:hover {
-        cursor: pointer;
-        background-color: rgba(0, 0, 0, 0.025);
-    }
-
-    mat-row.selected {
-        cursor: pointer;
-        background-color: rgba(0, 0, 0, 0.055);
-    }
-    mat-row.lg {
-        height: 90px;
-    }
-}
 
 * {
-    font-family: Roboto, Arial, Helvetica, sans-serif;
+    font-family: Fira Sans, Roboto, Arial, Helvetica, sans-serif;
 }
+.mat-toolbar h2 {
+    font-family: Fira Sans, Roboto, Arial, Helvetica, sans-serif !important;
+}
+
 mat-icon {
     font-family: MaterialIcons-Regular;
+}
+
+body {
+    // background: #e8eaed;
+    margin: 0 auto;
+    padding: 0;
+    line-height: 1.5;
+    font-size: 14px;
+    color: #222;
 }
 
 h1,
 h2,
 h3 {
-    font-family: Roboto-condensed, Arial, Helvetica, sans-serif;
+    font-family: Fira Sans Condensed, Roboto-condensed, Arial, Helvetica, sans-serif;
+}
+
+h1 {
+    padding-bottom: 10px;
+    line-height: 1.2;
+    color: $os-primary;
+    margin: 0;
+    font-weight: normal;
+    font-size: 36px;
+}
+h3 {
+    font-weight: 500;
+    margin-bottom: 0;
 }
 h4 {
     font-weight: 400;
@@ -58,14 +62,25 @@ h4 {
     margin-bottom: 5px;
 }
 
-body {
-    // background: #e8eaed;
-    margin: 0 auto;
-    padding: 0;
-}
-
 .small {
     font-size: 90%;
+}
+
+img {
+    border: none;
+}
+
+a {
+    text-decoration: none;
+    color: #039BE5;  /*TODO: move to theme*/
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+strong, b {
+    font-weight: 500;
 }
 
 .generic-mini-button {
@@ -110,12 +125,53 @@ body {
     text-align: center;
     color: gray;
 }
-
+mat-card {
+    box-shadow:  0 1px 4px 0 rgba(0,0,0,0.37) !important;
+}
 .os-card {
-    max-width: 90%;
-    margin-top: 10px;
-    margin-left: auto;
-    margin-right: auto;
+    max-width: 770px;
+    margin-top: 20px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    font-size: 16px;
+
+    .mat-select-arrow-wrapper {
+        visibility: hidden;
+    }
+}
+.os-form-card {
+    max-width: 770px;
+    margin-top: 20px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    font-size: 16px;
+
+    .mat-form-field {
+        width: 100%;
+        padding: 10px 0;
+    }
+}
+
+
+// Shared table definitions
+%os-table {
+    width: 100%;
+
+    /** size of the mat row  */
+    mat-row {
+        height: 60px;
+    }
+    mat-row.lg {
+        height: 90px;
+    }
+    mat-row:hover {
+        cursor: pointer;
+        background-color: rgba(0, 0, 0, 0.025);
+    }
+    mat-row.selected {
+        cursor: pointer;
+        background-color: rgba(0, 0, 0, 0.055);
+    }
 }
 
 @keyframes fadeIn {
@@ -172,6 +228,16 @@ body {
     @extend %os-table;
 }
 
+/* TODO: find a better way to get more vertical space in (empty/small) tables for maximize filter dialog */
+mat-paginator {
+    min-height: 800px;
+}
+
+/* hide scrollbars caused by hidden filter dialog outside of the viewport */
+.mat-drawer-content {
+    overflow-x: hidden !important;
+}
+
 .card-plus-distance {
     margin-top: 40px;
 }
@@ -195,14 +261,6 @@ body {
 /** helper classes for animation */
 .on-transition-fade {
     z-index: 100;
-}
-
-footer {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    z-index: 1;
 }
 
 mat-expansion-panel {
@@ -273,6 +331,63 @@ button.mat-menu-item.selected {
     font-weight: bold !important;
 }
 
+.meta-text-block .mat-icon-button {
+    margin-top: -12px !important;
+}
+.meta-text-block .mat-icon-button mat-icon {
+    font-size: 18px;
+}
+
+
+/** helper classes for margin/padding */
+.spacer-top-10 {
+    margin-top: 10px;
+}
+.spacer-top-20 {
+    margin-top: 20px;
+}
+.spacer-bottom-20 {
+    margin-bottom: 20px;
+}
+.button24 {
+    background-color: white;
+    color: $os-primary !important;
+    width: 24px !important;
+    height: 24px !important;
+}
+.icon24 {
+    font-size: 16px;
+    margin-top: -8px;
+}
+
+.mat-mini-fab.large {
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+
+    .mat-icon {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+      line-height: 24px;
+    }
+}
+.title-left {
+    padding-left: 65px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+.mat-radio-button {
+    padding-right: 20px;
+}
+
+
+/** more helper classes **/
+.center {
+    text-align: center;
+}
+
+
 /** Colors **/
 .lightblue {
     background-color: rgb(33, 150, 243) !important;
@@ -312,6 +427,28 @@ button.mat-menu-item.selected {
     color: rgba(0, 0, 0, 0.87) !important;
 }
 
-.os-listview-table {
-    min-height: 800px;
-}
+
+
+/* TODO: move to site.component.scss-theme.scss (does not work currently) */
+
+    /* make the .user-menu expansion panel look like the nav-toolbar above */
+    .user-menu {
+        min-height: 48px;
+
+        .mat-expansion-panel-header {
+            padding: 0 16px !important;
+        }
+
+        .mat-expansion-panel-body {
+            padding: 0 !important;
+        }
+    }
+
+    .mat-drawer-inner-container {
+        scrollbar-width: none; /* hide scrollbars in Firefox */
+        -ms-overflow-style: -ms-autohiding-scrollbar; /* hide scrollbars in Edge until the scrollable area is hovered */
+    }
+
+    .mat-drawer-inner-container::-webkit-scrollbar {
+        display: none !important; /* hide scrollbars in webkit browsers */
+    }

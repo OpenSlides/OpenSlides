@@ -10,10 +10,9 @@
     <!-- Title -->
     <div class="title-slot">
         <h2>
-            <span *ngIf="newTopic && !editTopic" translate>New</span>
-            <span *ngIf="editTopic && !newTopic" translate>Edit</span>
-            <!-- Whitespace between "New" and "Topic" -->
-            <span>&nbsp;</span> <span translate>Topic</span>
+            <span *ngIf="newTopic " translate>New topic</span>
+            <span *ngIf="editTopic && !newTopic" translate>Edit topic</span>
+            <span *ngIf="!newTopic && !editTopic" translate>Topic</span>
         </h2>
     </div>
 
@@ -25,13 +24,13 @@
     </div>
 </os-head-bar>
 
-<div *ngIf="topic" class="topic-container on-transition-fade">
-    <div class="topic-title">
-        <h2 *ngIf="!editTopic">{{ topic.title }}</h2>
-        <h2 *ngIf="editTopic">{{ topicForm.get('title').value }}</h2>
-    </div>
 
-    <mat-card *ngIf="topic.text || topic.hasAttachments() || editTopic" class="topic-text">
+    <mat-card *ngIf="topic || editTopic"
+            [ngClass]="editTopic ? 'os-form-card' : 'os-card'"
+            class="on-transition-fade">
+        <div *ngIf="!editTopic">
+            <h1>{{ topic.title }}</h1>
+        </div>
         <div>
             <span *ngIf="!editTopic">
                 <!-- Render topic text as HTML -->
@@ -65,8 +64,12 @@
                     <mat-error *ngIf="topicForm.invalid" translate>A name is required</mat-error>
                 </mat-form-field>
             </div>
+
             <!-- The editor -->
-            <editor formControlName="text" [init]="tinyMceSettings"></editor>
+            <div class="spacer-bottom-20">
+                <h4 translate>Text</h4>
+                <editor formControlName="text" [init]="tinyMceSettings"></editor>
+            </div>
 
             <!-- Attachments -->
             <os-search-value-selector
@@ -105,7 +108,6 @@
             </div>
         </form>
     </mat-card>
-</div>
 
 <mat-menu #topicExtraMenu="matMenu">
     <button mat-menu-item *ngIf="topic" [routerLink]="getSpeakerLink()">

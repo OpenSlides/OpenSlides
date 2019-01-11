@@ -9,7 +9,7 @@
             (<span translate>License</span>: {{ versionInfo.openslides_license }})
 
             <div *ngIf="versionInfo.plugins.length">
-                <div translate>Installed plugins</div>:
+                <p><span translate>Installed plugins</span>:</p>
                 <div *ngFor="let plugin of versionInfo.plugins">
                     <a [attr.href]="plugin.url" target="_blank">
                         {{ plugin.verbose_name }} {{ plugin.version }}

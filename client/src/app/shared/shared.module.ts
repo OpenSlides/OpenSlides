@@ -58,7 +58,6 @@ import { TreeModule } from 'angular-tree-component';
 
 // components
 import { HeadBarComponent } from './components/head-bar/head-bar.component';
-import { FooterComponent } from './components/footer/footer.component';
 import { LegalNoticeContentComponent } from './components/legal-notice-content/legal-notice-content.component';
 import { PrivacyPolicyContentComponent } from './components/privacy-policy-content/privacy-policy-content.component';
 import { SearchValueSelectorComponent } from './components/search-value-selector/search-value-selector.component';
@@ -163,7 +162,6 @@ import { FilterMenuComponent } from './components/os-sort-filter-bar/filter-menu
         PermsDirective,
         DomChangeDirective,
         AutofocusDirective,
-        FooterComponent,
         HeadBarComponent,
         SearchValueSelectorComponent,
         LegalNoticeContentComponent,
@@ -180,7 +178,6 @@ import { FilterMenuComponent } from './components/os-sort-filter-bar/filter-menu
         DomChangeDirective,
         AutofocusDirective,
         HeadBarComponent,
-        FooterComponent,
         LegalNoticeContentComponent,
         PrivacyPolicyContentComponent,
         SearchValueSelectorComponent,

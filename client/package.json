@@ -45,9 +45,10 @@
         "ngx-mat-select-search": "^1.4.2",
         "ngx-papaparse": "^3.0.2",
         "po2json": "^1.0.0-alpha",
-        "roboto-fontface": "^0.10.0",
         "rxjs": "^6.3.3",
         "tinymce": "^4.9.0",
+        "typeface-fira-sans": "^0.0.54",
+        "typeface-fira-sans-condensed": "^0.0.54",
         "uuid": "^3.3.2",
         "zone.js": "^0.8.26"
     },

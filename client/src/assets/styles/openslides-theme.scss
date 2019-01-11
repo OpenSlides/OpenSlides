@@ -68,6 +68,7 @@ $openslides-green: (
 // Generate paletes using: https://material.io/design/color/
 // default values fir mat-palette: $default: 500, $lighter: 100, $darker: 700.
 $openslides-primary: mat-palette($openslides-blue);
+
 $openslides-accent: mat-palette($mat-light-blue);
 // $openslides-primary: mat-palette($openslides-green);
 // $openslides-accent: mat-palette($mat-amber);
@@ -76,3 +77,11 @@ $openslides-warn: mat-palette($mat-red);
 
 // Create the theme object (a Sass map containing all of the palettes).
 $openslides-theme: mat-light-theme($openslides-primary, $openslides-accent, $openslides-warn);
+
+// Create Sass color vars (for using in scss files).
+$os-primary: mat-color($openslides-primary);
+$os-accent: mat-color($openslides-accent);
+$os-warn: mat-color($openslides-warn);
+
+$os-outline: mat-color($mat-grey, 300);
+$os-background: mat-color($mat-grey, 100);

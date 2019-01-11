@@ -614,7 +614,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * Trigger to delete the motion.
      */
     public async deleteMotionButton(): Promise<void> {
-        const content = this.translate.instant('Are you sure you want to delete this motion block?');
+        const content = this.translate.instant('Are you sure you want to delete this motion?');
         if (await this.promptService.open(this.motion.title, content)) {
             await this.repo.delete(this.motion);
             this.router.navigate(['./motions/']);

@@ -288,9 +288,9 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
     public async saveUser(): Promise<void> {
         try {
             if (this.newUser) {
-                const response = await this.repo.create(this.personalInfoForm.value);
                 this.newUser = false;
-                this.router.navigate([`./users/${response.id}`]);
+                await this.repo.create(this.personalInfoForm.value);
+                this.router.navigate([`./users/`]);
             } else {
                 // TODO (Issue #3962): We need a waiting-State, so if autoupdates come before the response,
                 // the user is also updated.
