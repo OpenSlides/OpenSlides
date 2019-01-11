@@ -1,0 +1,226 @@
+
+<os-head-bar [nav]="false">
+    <!-- Title -->
+    <div class="title-slot"><h2 translate>Import topics</h2></div>
+
+    <div class="menu-slot">
+        <button *ngIf="hasFile && newCount" mat-button (click)="doImport()">
+            <span class="upper" translate> Import</span>
+        </button>
+    </div>
+</os-head-bar>
+
+<mat-card class="os-form-card import-table">
+    <mat-tab-group (selectedTabChange)="onTabChange()">
+        <mat-tab label="{{ 'CSV import' | translate }}">
+            <span translate>Required comma or semicolon separated values with these column header names in the first row:</span>
+                <br />
+            <div class="code red-warning-text">
+    <span translate>Title</span>,&nbsp;
+    <span translate>Text</span>,&nbsp;
+    <span translate>Duration</span>,&nbsp;
+    <span translate>Comment</span>,&nbsp;
+    <span translate>Internal item</span>
+</div>
+<ul>
+    <li translate>Title is required. All other fields are optional and may be empty.
+    </li>
+    <li translate>Additional columns after the required ones may be present and won't affect the import.</li>
+</ul>
+    <button mat-button color="accent" (click)="downloadCsvExample()" translate>Download CSV example file</button>
+    <div class="wrapper">
+        <mat-form-field>
+            <mat-label translate>Encoding of the file</mat-label>
+            <mat-select
+                class="selection"
+                placeholder="translate.instant('Select encoding')"
+                (selectionChange)="selectEncoding($event)"
+                [value]="encodings[0].value"
+            >
+                <mat-option *ngFor="let option of encodings" [value]="option.value">
+                    {{ option.label | translate }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label translate> Column Separator</mat-label>
+            <mat-select class="selection" (selectionChange)="selectColSep($event)" value="">
+                <mat-option *ngFor="let option of columnSeparators" [value]="option.value">
+                    {{ option.label | translate }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label translate>Text separator</mat-label>
+            <mat-select class="selection" (selectionChange)="selectTextSep($event)" value="&quot;">
+                <mat-option *ngFor="let option of textSeparators" [value]="option.value">
+                    {{ option.label | translate }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div>
+        <div>
+            <input
+                id="agenda-import-file-input"
+                type="file"
+                class="hidden-input"
+                accept="text"
+                #fileInput
+                (change)="onSelectFile($event)"
+            />
+            <button mat-button onclick="document.getElementById('agenda-import-file-input').click()">
+                <span translate> Select file</span>
+            </button>
+        </div>
+    </div>
+        </mat-tab>
+        <!-- textAreaImport-->
+        <mat-tab label="{{ 'Text import' | translate }}">
+            <div [formGroup]="textAreaForm">
+                <div>
+                    <span translate>
+                        Paste/write your topics in this textbox.</span>
+                    <span translate>
+                        Keep each item in a single line.
+                    </span>
+                </div>
+                <mat-form-field>
+                    <textarea
+                        matInput
+                        formControlName="inputtext"
+                        placeholder="{{ 'Insert topics here' | translate }}"
+                        cdkTextareaAutosize
+                        cdkAutosizeMinRows="3"
+                        cdkAutosizeMaxRows="10"
+                    ></textarea>
+                </mat-form-field>
+            </div>
+            <div>
+                <button mat-button color="accent" (click)="parseTextArea()"><span translate>Preview</span></button>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</mat-card>
+
+<!-- preview table -->
+<mat-card *ngIf="hasFile" class="os-form-card import-table">
+        <h3 translate> Preview</h3>
+    <div class="summary">
+        <!-- new entries -->
+        <div *ngIf="newCount">
+            &nbsp;
+            <mat-icon inline>playlist_add</mat-icon>
+            <span>&nbsp;{{ newCount }}&nbsp;</span> <span translate>Topics(s) will be imported.</span>
+        </div>
+        <!-- errors/duplicates -->
+        <div *ngIf="nonImportableCount" class="red-warning-text">
+            &nbsp;
+            <mat-icon inline>warning</mat-icon>
+            <span>&nbsp;{{ nonImportableCount }}&nbsp;</span> <span translate>entries will be ommitted.</span>
+        </div>
+        <!-- have been imported -->
+        <div *ngIf="doneCount" class="green-text">
+            &nbsp;
+            <mat-icon inline>done</mat-icon>
+            <span>&nbsp;{{ doneCount }}&nbsp;</span> <span translate>Topics have been imported.</span>
+        </div>
+    </div>
+    <div *ngIf="newCount">
+        <span translate>Click on 'import' (right top corner) to import the new topics.
+        </span>
+    </div>
+    <div>
+        <mat-select *ngIf="nonImportableCount" class="filter-imports" [(value)]="shown" (selectionChange)="setFilter()">
+            <mat-option value="all" translate> Show all </mat-option>
+            <mat-option value="error" translate> Show errors only </mat-option>
+            <mat-option value="noerror" translate> Show correct entries </mat-option>
+        </mat-select>
+    </div>
+    <div class="table-container">
+        <table mat-table class="on-transition-fade" [dataSource]="dataSource" matSort>
+            <!-- Status column -->
+            <ng-container matColumnDef="status" class="first-column" sticky>
+                <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                <mat-cell *matCellDef="let entry" class="first-column">
+                    <div *ngIf="entry.status === 'error'">
+                        <mat-icon
+                            class="red-warning-text"
+                            matTooltip="{{ entry.errors.length }} {{ 'errors' | translate }}"
+                        >
+                            {{ getActionIcon(entry) }}
+                        </mat-icon>
+                    </div>
+                    <div *ngIf="entry.status === 'new'">
+                        <mat-icon matTooltip="{{ 'Topic will be imported' | translate }}">
+                            {{ getActionIcon(entry) }}
+                        </mat-icon>
+                    </div>
+                    <div *ngIf="entry.status === 'done'">
+                        <mat-icon matTooltip="{{ 'Topic has been imported' | translate }}">
+                            {{ getActionIcon(entry) }}
+                        </mat-icon>
+                    </div>
+                </mat-cell>
+            </ng-container>
+
+            <!-- title column -->
+            <ng-container matColumnDef="title">
+                <mat-header-cell *matHeaderCellDef translate>Title</mat-header-cell>
+                <mat-cell *matCellDef="let entry">
+                    <mat-icon
+                        color="warn"
+                        inline
+                        *ngIf="hasError(entry, 'Duplicates')"
+                        matTooltip="{{ getVerboseError('Duplicates') | translate }}"
+                    >
+                        warning
+                    </mat-icon>
+                    <mat-icon
+                        color="warn"
+                        inline
+                        *ngIf="hasError(entry, 'NoTitle')"
+                        matTooltip="{{ getVerboseError('NoTitle') | translate }}"
+                    >
+                        warning
+                    </mat-icon>
+                    {{ entry.newEntry.title }}
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="text">
+                <mat-header-cell *matHeaderCellDef translate>Item text</mat-header-cell>
+                <mat-cell *matCellDef="let entry" matTooltip="{{ getLongPreview(entry.newEntry.text) }}">
+                    {{ getShortPreview(entry.newEntry.text) }}
+                </mat-cell>
+            </ng-container>
+
+            <!-- duration column -->
+            <ng-container matColumnDef="duration">
+                    <mat-header-cell *matHeaderCellDef translate>Duration</mat-header-cell>
+                    <mat-cell *matCellDef="let entry">
+                        {{ getDuration(entry.newEntry.duration) }}
+                    </mat-cell>
+            </ng-container>
+
+            <!-- comment column-->
+            <ng-container matColumnDef="comment">
+                <mat-header-cell *matHeaderCellDef translate>Comment</mat-header-cell>
+                    <mat-cell *matCellDef="let entry">
+                        {{ entry.newEntry.comment }}
+                    </mat-cell>
+            </ng-container>
+
+            <!-- type column -->
+            <ng-container matColumnDef="type">
+                <mat-header-cell *matHeaderCellDef translate>Type</mat-header-cell>
+                    <mat-cell *matCellDef="let entry">
+                {{ getTypeString(entry.newEntry.type) | translate }}
+                </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
+            <mat-row [ngClass]="getStateClass(row)" *matRowDef="let row; columns: getColumnDefinition()"> </mat-row>
+        </table>
+    </div>
+</mat-card>

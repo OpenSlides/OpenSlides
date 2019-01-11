@@ -1,0 +1,17 @@
+import { Topic } from 'app/shared/models/topics/topic';
+
+/**
+ * Representation of Topic during creation.
+ */
+export class CreateTopic extends Topic {
+    public attachments_id: number[];
+    public agenda_type: number;
+    public agenda_parent_id: number;
+    public agenda_comment: string;
+    public agenda_duration: number;
+    public agenda_weight: number;
+
+    public constructor(input?: any) {
+        super(input);
+    }
+}

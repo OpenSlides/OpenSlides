@@ -33,12 +33,12 @@ export class User extends ProjectableBaseModel implements Searchable {
         const addition: string[] = [];
 
         // addition: add number and structure level
-        const structure_level = this.structure_level.trim();
+        const structure_level = this.structure_level ? this.structure_level.trim() : '';
         if (structure_level) {
             addition.push(structure_level);
         }
 
-        const number = this.number.trim();
+        const number = this.number ? this.number.trim() : null;
         if (number) {
             // TODO Translate
             addition.push('No.' + ' ' + number);
@@ -54,12 +54,17 @@ export class User extends ProjectableBaseModel implements Searchable {
         return this.groups_id.some(groupId => groupId === id);
     }
 
-    // TODO read config values  for "users_sort_by"
+    // TODO read config values for "users_sort_by"
+
+    /**
+     * Getter for the short name (Title, given name, surname)
+     *
+     * @returns a non-empty string
+     */
     public get short_name(): string {
-        const title = this.title.trim();
-        const firstName = this.first_name.trim();
-        const lastName = this.last_name.trim();
-        let shortName = '';
+        const title = this.title ? this.title.trim() : '';
+        const firstName = this.first_name ? this.first_name.trim() : '';
+        const lastName = this.last_name ? this.last_name.trim() : '';
 
         // TODO need DS adjustment first first
         // if (this.DS.getConfig('users_sort_by').value === 'last_name') {
@@ -70,9 +75,9 @@ export class User extends ProjectableBaseModel implements Searchable {
         //     }
         // }
 
-        shortName += `${firstName} ${lastName}`;
+        let shortName = `${firstName} ${lastName}`;
 
-        if (shortName.trim() === '') {
+        if (!shortName) {
             shortName = this.username;
         }
 
@@ -80,7 +85,7 @@ export class User extends ProjectableBaseModel implements Searchable {
             shortName = `${title} ${shortName}`;
         }
 
-        return shortName.trim();
+        return shortName;
     }
 
     public getTitle(): string {

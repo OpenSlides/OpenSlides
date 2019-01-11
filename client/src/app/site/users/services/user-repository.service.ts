@@ -14,6 +14,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../../../../environments/environment';
 
 /**
+ * type for determining the user name from a string during import.
+ * See {@link parseUserString} for implementations
+ */
+type StringNamingSchema = 'lastCommaFirst' | 'firstSpaceLast';
+
+/**
  * Repository service for users
  *
  * Documentation partially provided in {@link BaseRepository}
@@ -222,24 +228,63 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
 
     /**
      * Creates a new User from a string
+     *
      * @param user: String to create the user from
-     * TODO: return 'user' + new id
+     * @returns Promise with a created user id and the raw name used as input
      */
     public async createFromString(user: string): Promise<{ id: number; name: string }> {
-        const splitUser = user.split(' ');
-        const newUser: Partial<User> = {};
-        switch (splitUser.length) {
-            case 1:
-                newUser.first_name = splitUser[0];
-                break;
-            case 2:
-                newUser.first_name = splitUser[0];
-                newUser.last_name = splitUser[1];
-                break;
-            default:
-                newUser.first_name = user;
-        }
+        const newUser = this.parseUserString(user);
         const createdUser = await this.create(newUser);
         return { id: createdUser.id, name: user };
+    }
+
+    /**
+     * Tries to convert a user string into an user. If it is two words, expect
+     * a first and a last name, if one word only, expect a first name only.
+     * If more than two words, they will all be put as the first name
+     * TODO: More advanced logic to fit names
+     *
+     * @param inputUser A raw user string
+     * @param schema optional hint on how to handle the strings. TODO: Not fully implemented.
+     * @returns A User object (not uploaded to the server)
+     */
+    public parseUserString(inputUser: string, schema?: StringNamingSchema): User {
+        const newUser: Partial<User> = {};
+        if (schema === 'lastCommaFirst') {
+            const commaSeparated = inputUser.split(',');
+            switch (commaSeparated.length) {
+                case 1:
+                    newUser.first_name = commaSeparated[0];
+                    break;
+                case 2:
+                    newUser.last_name = commaSeparated[0];
+                    newUser.first_name = commaSeparated[1];
+                    break;
+                default:
+                    newUser.first_name = inputUser;
+            }
+        } else if (!schema || schema === 'firstSpaceLast') {
+            const splitUser = inputUser.split(' ');
+            switch (splitUser.length) {
+                case 1:
+                    newUser.first_name = splitUser[0];
+                    break;
+                case 2:
+                    newUser.first_name = splitUser[0];
+                    newUser.last_name = splitUser[1];
+                    break;
+                default:
+                    newUser.first_name = inputUser;
+            }
+        }
+        return new User(newUser);
+    }
+
+    /**
+     * Returns all duplicates of an user (currently: full name matches)
+     * @param user
+     */
+    public getUserDuplicates(user: ViewUser): ViewUser[] {
+        return this.getViewModelList().filter(existingUser => existingUser.full_name === user.full_name);
     }
 }

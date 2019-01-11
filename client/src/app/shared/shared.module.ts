@@ -25,6 +25,7 @@ import {
     MatButtonToggleModule,
     MatBadgeModule,
     MatStepperModule,
+    MatTabsModule,
     MatBottomSheetModule
 } from '@angular/material';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -118,6 +119,7 @@ import { LogoComponent } from './components/logo/logo.component';
         MatRadioModule,
         MatButtonToggleModule,
         MatStepperModule,
+        MatTabsModule,
         DragDropModule,
         TranslateModule.forChild(),
         RouterModule,
@@ -151,6 +153,7 @@ import { LogoComponent } from './components/logo/logo.component';
         MatSnackBarModule,
         MatChipsModule,
         MatTooltipModule,
+        MatTabsModule,
         MatBadgeModule,
         MatIconModule,
         MatRadioModule,

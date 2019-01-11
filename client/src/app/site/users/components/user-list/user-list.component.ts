@@ -80,15 +80,6 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
     }
 
     /**
-     * Navigate to import page or do it inline
-     *
-     * TODO: implement importing of users
-     */
-    public import(): void {
-        console.log('click on Import');
-    }
-
-    /**
      * Handles the click on a user row if not in multiSelect modus
      * @param row selected row
      */
