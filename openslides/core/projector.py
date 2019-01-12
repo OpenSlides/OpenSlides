@@ -27,7 +27,7 @@ def countdown(
     try:
         return all_data["core/countdown"][countdown_id]
     except KeyError:
-        return {"error": "Countdown {} does not exist".format(countdown_id)}
+        return {"error": f"Countdown {countdown_id} does not exist"}
 
 
 def message(
@@ -48,7 +48,7 @@ def message(
     try:
         return all_data["core/projector-message"][message_id]
     except KeyError:
-        return {"error": "Message {} does not exist".format(message_id)}
+        return {"error": f"Message {message_id} does not exist"}
 
 
 def register_projector_elements() -> None:

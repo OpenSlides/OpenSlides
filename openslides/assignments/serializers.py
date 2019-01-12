@@ -1,5 +1,4 @@
 from django.db import transaction
-from django.utils.translation import ugettext as _
 
 from openslides.poll.serializers import default_votes_validator
 from openslides.utils.rest_api import (
@@ -30,7 +29,7 @@ def posts_validator(data):
     """
     if data["open_posts"] and data["open_posts"] is not None and data["open_posts"] < 1:
         raise ValidationError(
-            {"detail": _("Value for {} must be greater than 0").format("open_posts")}
+            {"detail": "Value for 'open_posts' must be greater than 0"}
         )
     return data
 
@@ -163,22 +162,20 @@ class AssignmentAllPollSerializer(ModelSerializer):
             if len(votes) != len(options):
                 raise ValidationError(
                     {
-                        "detail": _("You have to submit data for %d candidates.")
-                        % len(options)
+                        "detail": f"You have to submit data for {len(options)} candidates."
                     }
                 )
             for index, option in enumerate(options):
                 if len(votes[index]) != len(instance.get_vote_values()):
                     raise ValidationError(
                         {
-                            "detail": _("You have to submit data for %d vote values.")
-                            % len(instance.get_vote_values())
+                            "detail": f"You have to submit data for {len(instance.get_vote_values())} vote values."
                         }
                     )
-                for vote_value, vote_weight in votes[index].items():
+                for vote_value, __ in votes[index].items():
                     if vote_value not in instance.get_vote_values():
                         raise ValidationError(
-                            {"detail": _("Vote value %s is invalid.") % vote_value}
+                            {"detail": f"Vote value {vote_value} is invalid."}
                         )
                 instance.set_vote_objects_with_values(
                     option, votes[index], skip_autoupdate=True

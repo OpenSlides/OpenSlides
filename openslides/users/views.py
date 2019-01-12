@@ -18,7 +18,6 @@ from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.utils.translation import ugettext as _
 
 from ..core.config import config
 from ..core.signals import permission_change
@@ -108,7 +107,7 @@ class UserViewSet(ModelViewSet):
             # The user has all permissions so he may update every user.
             if request.data.get("is_active") is False and user == request.user:
                 # But a user can not deactivate himself.
-                raise ValidationError({"detail": _("You can not deactivate yourself.")})
+                raise ValidationError({"detail": "You can not deactivate yourself."})
         else:
             # The user does not have all permissions so he may only update himself.
             if str(request.user.pk) != self.kwargs["pk"]:
@@ -134,7 +133,7 @@ class UserViewSet(ModelViewSet):
         """
         instance = self.get_object()
         if instance == self.request.user:
-            raise ValidationError({"detail": _("You can not delete yourself.")})
+            raise ValidationError({"detail": "You can not delete yourself."})
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -151,9 +150,9 @@ class UserViewSet(ModelViewSet):
                 raise ValidationError({"detail": " ".join(errors)})
             user.set_password(request.data.get("password"))
             user.save()
-            return Response({"detail": _("Password successfully reset.")})
-        else:
-            raise ValidationError({"detail": "Password has to be a string."})
+            return Response({"detail": "Password successfully reset."})
+
+        raise ValidationError({"detail": "Password has to be a string."})
 
     @list_route(methods=["post"])
     @transaction.atomic
@@ -193,9 +192,7 @@ class UserViewSet(ModelViewSet):
         inform_changed_data(created_users)
         return Response(
             {
-                "detail": _("{number} users successfully imported.").format(
-                    number=len(created_users)
-                ),
+                "detail": f"{len(created_users)} users successfully imported.",
                 "importedTrackIds": imported_track_ids,
             }
         )
@@ -230,13 +227,11 @@ class UserViewSet(ModelViewSet):
         except ConnectionRefusedError:
             raise ValidationError(
                 {
-                    "detail": "Cannot connect to SMTP server on {}:{}".format(
-                        settings.EMAIL_HOST, settings.EMAIL_PORT
-                    )
+                    "detail": f"Cannot connect to SMTP server on {settings.EMAIL_HOST}:{settings.EMAIL_PORT}"
                 }
             )
-        except smtplib.SMTPException as e:
-            raise ValidationError({"detail": "{}: {}".format(e.errno, e.strerror)})
+        except smtplib.SMTPException as err:
+            raise ValidationError({"detail": f"{err.errno}: {err.strerror}"})
 
         success_users = []
         user_pks_without_email = []
@@ -249,8 +244,8 @@ class UserViewSet(ModelViewSet):
                         success_users.append(user)
                 else:
                     user_pks_without_email.append(user.pk)
-        except DjangoValidationError as e:
-            raise ValidationError(e.message_dict)
+        except DjangoValidationError as err:
+            raise ValidationError(err.message_dict)
 
         connection.close()
         inform_changed_data(success_users)
@@ -358,13 +353,13 @@ class GroupViewSet(ModelViewSet):
             new_permissions = diff(given_permissions, old_permissions)
 
             # Some permissions are added.
-            if len(new_permissions) > 0:
+            if new_permissions:
                 elements: List[Element] = []
                 signal_results = permission_change.send(
                     None, permissions=new_permissions, action="added"
                 )
                 all_full_data = async_to_sync(element_cache.get_all_full_data)()
-                for receiver, signal_collections in signal_results:
+                for __, signal_collections in signal_results:
                     for cachable in signal_collections:
                         for full_data in all_full_data.get(
                             cachable.get_collection_string(), {}
@@ -476,11 +471,11 @@ class UserLoginView(APIView):
         # If the client tells that cookies are disabled, do not continue as guest (if enabled)
         if not self.request.data.get("cookies", True):
             raise ValidationError(
-                {"detail": _("Cookies have to be enabled to use OpenSlides.")}
+                {"detail": "Cookies have to be enabled to use OpenSlides."}
             )
         form = AuthenticationForm(self.request, data=self.request.data)
         if not form.is_valid():
-            raise ValidationError({"detail": _("Username or password is not correct.")})
+            raise ValidationError({"detail": "Username or password is not correct."})
         self.user = form.get_user()
         auth_login(self.request, self.user)
         return super().post(*args, **kwargs)
@@ -505,13 +500,10 @@ class UserLoginView(APIView):
                     context["info_text"] = ""
                 else:
                     if user.check_password("admin"):
-                        context["info_text"] = _(
-                            "Installation was successfully. Use {username} and "
-                            "{password} for first login. Important: Please change "
+                        context["info_text"] = (
+                            f"Installation was successfully. Use <strong>admin</strong> and "
+                            "<strong>admin</strong> for first login. Important: Please change "
                             "your password!"
-                        ).format(
-                            username="<strong>admin</strong>",
-                            password="<strong>admin</strong>",
                         )
                     else:
                         context["info_text"] = ""
@@ -537,7 +529,7 @@ class UserLogoutView(APIView):
 
     def post(self, *args, **kwargs):
         if not self.request.user.is_authenticated:
-            raise ValidationError({"detail": _("You are not authenticated.")})
+            raise ValidationError({"detail": "You are not authenticated."})
         auth_logout(self.request)
         return super().post(*args, **kwargs)
 
@@ -588,7 +580,7 @@ class SetPasswordView(APIView):
             user.save()
             update_session_auth_hash(request, user)
         else:
-            raise ValidationError({"detail": _("Old password does not match.")})
+            raise ValidationError({"detail": "Old password does not match."})
         return super().post(request, *args, **kwargs)
 
 
@@ -623,7 +615,7 @@ class PasswordResetView(APIView):
                 "username": user.get_username(),
             }
             # Send a django.core.mail.EmailMessage to `to_email`.
-            subject = _("Password reset for {}").format(site_name)
+            subject = f"Password reset for {site_name}"
             subject = "".join(subject.splitlines())
             body = self.get_email_body(**context)
             from_email = None  # TODO: Add nice from_email here.
@@ -680,13 +672,13 @@ class PasswordResetConfirmView(APIView):
         password = request.data.get("password")
         if not (uidb64 and token and password):
             raise ValidationError(
-                {"detail": _("You have to provide user_id, token and password.")}
+                {"detail": "You have to provide user_id, token and password."}
             )
         user = self.get_user(uidb64)
         if user is None:
-            raise ValidationError({"detail": _("User does not exist.")})
+            raise ValidationError({"detail": "User does not exist."})
         if not default_token_generator.check_token(user, token):
-            raise ValidationError({"detail": _("Invalid token.")})
+            raise ValidationError({"detail": "Invalid token."})
         try:
             validate_password(password, user=user)
         except DjangoValidationError as errors:

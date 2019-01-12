@@ -49,8 +49,8 @@ async def get_communicator():
     def get_communicator(query_string=""):
         nonlocal communicator  # use the outer communicator variable
         if query_string:
-            query_string = "?{}".format(query_string)
-        communicator = WebsocketCommunicator(application, "/ws/{}".format(query_string))
+            query_string = f"?{query_string}"
+        communicator = WebsocketCommunicator(application, f"/ws/{query_string}")
         return communicator
 
     yield get_communicator
@@ -211,7 +211,7 @@ async def test_with_user():
     session[BACKEND_SESSION_KEY] = "django.contrib.auth.backends.ModelBackend"
     session.save()
     scn = settings.SESSION_COOKIE_NAME
-    cookies = (b"cookie", "{}={}".format(scn, session.session_key).encode())
+    cookies = (b"cookie", f"{scn}={session.session_key}".encode())
     communicator = WebsocketCommunicator(application, "/ws/", headers=[cookies])
 
     connected, __ = await communicator.connect()

@@ -18,7 +18,7 @@ def test_topic_item_db_queries():
     * 1 request to get the agenda item
     """
     for index in range(10):
-        Topic.objects.create(title="topic-{}".format(index))
+        Topic.objects.create(title=f"topic-{index}")
 
     assert count_queries(Topic.get_elements) == 3
 

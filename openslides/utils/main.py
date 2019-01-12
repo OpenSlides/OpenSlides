@@ -80,7 +80,7 @@ def get_default_settings_dir(openslides_type: str = None) -> str:
     elif openslides_type == WINDOWS_PORTABLE_VERSION:
         parent_directory = get_win32_portable_dir()
     else:
-        raise TypeError("%s is not a valid OpenSlides type." % openslides_type)
+        raise TypeError(f"{openslides_type} is not a valid OpenSlides type.")
     return os.path.join(parent_directory, "openslides")
 
 
@@ -188,7 +188,7 @@ def get_default_user_data_dir(openslides_type: str) -> str:
     elif openslides_type == WINDOWS_PORTABLE_VERSION:
         default_user_data_dir = get_win32_portable_dir()
     else:
-        raise TypeError("%s is not a valid OpenSlides type." % openslides_type)
+        raise TypeError(f"{openslides_type} is not a valid OpenSlides type.")
     return default_user_data_dir
 
 
@@ -298,9 +298,9 @@ def open_browser(host: str, port: int) -> None:
     """
     if host == "0.0.0.0":
         # Windows does not support 0.0.0.0, so use 'localhost' instead
-        start_browser("http://localhost:%s" % port)
+        start_browser(f"http://localhost:{port}")
     else:
-        start_browser("http://%s:%s" % (host, port))
+        start_browser(f"http://{host}:{port}")
 
 
 def start_browser(browser_url: str) -> None:

@@ -51,16 +51,16 @@ def items(config: Dict[str, Any], all_data: AllData) -> Dict[str, Any]:
     show_tree = config.get("tree") or False
 
     if show_tree:
-        items = get_tree(all_data, root_item_id or 0)
+        agenda_items = get_tree(all_data, root_item_id or 0)
     else:
-        items = []
+        agenda_items = []
         for item in sorted(
             all_data["agenda/item"].values(), key=lambda item: item["weight"]
         ):
             if item["parent_id"] == root_item_id and item["type"] == 1:
-                items.append(item["title"])
+                agenda_items.append(item["title"])
 
-    return {"items": items}
+    return {"items": agenda_items}
 
 
 def list_of_speakers(config: Dict[str, Any], all_data: AllData) -> Dict[str, Any]:
@@ -76,7 +76,7 @@ def list_of_speakers(config: Dict[str, Any], all_data: AllData) -> Dict[str, Any
     try:
         item = all_data["agenda/item"][item_id]
     except KeyError:
-        return {"error": "Item {} does not exist".format(item_id)}
+        return {"error": f"Item {item_id} does not exist"}
 
     user_ids = []
     for speaker in item["speakers"]:

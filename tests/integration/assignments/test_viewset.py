@@ -26,7 +26,7 @@ def test_assignment_db_queries():
     TODO: The last request are a bug.
     """
     for index in range(10):
-        Assignment.objects.create(title="assignment{}".format(index), open_posts=1)
+        Assignment.objects.create(title=f"assignment{index}", open_posts=1)
 
     assert count_queries(Assignment.get_elements) == 15
 

@@ -32,12 +32,12 @@ def move_old_logo_settings(apps, schema_editor):
 
     for place in ("header", "footer"):
         try:
-            logo_pdf = ConfigStore.objects.get(key="logo_pdf_{}".format(place))
+            logo_pdf = ConfigStore.objects.get(key=f"logo_pdf_{place}")
         except ConfigStore.DoesNotExist:
             continue  # The old entry is not in the database, nothing to change here
 
         # The key of the new entry
-        new_value_key = "logo_pdf_{}_L".format(place)
+        new_value_key = f"logo_pdf_{place}_L"
         try:
             logo_pdf_L = ConfigStore.objects.get(key=new_value_key)
         except ConfigStore.DoesNotExist:

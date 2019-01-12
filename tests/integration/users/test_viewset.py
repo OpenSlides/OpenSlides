@@ -21,7 +21,7 @@ def test_user_db_queries():
     * 1 requests to get the list of all groups.
     """
     for index in range(10):
-        User.objects.create(username="user{}".format(index))
+        User.objects.create(username=f"user{index}")
 
     assert count_queries(User.get_elements) == 3
 
@@ -34,7 +34,7 @@ def test_group_db_queries():
     * 1 request to get the permissions
     """
     for index in range(10):
-        Group.objects.create(name="group{}".format(index))
+        Group.objects.create(name=f"group{index}")
 
     assert count_queries(Group.get_elements) == 2
 

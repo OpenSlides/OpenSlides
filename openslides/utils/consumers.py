@@ -123,7 +123,7 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
         projector_data: Dict[int, Dict[str, Any]] = {}
         for projector_id in self.listen_projector_ids:
             data = all_projector_data.get(
-                projector_id, {"error": "No data for projector {}".format(projector_id)}
+                projector_id, {"error": f"No data for projector {projector_id}"}
             )
             new_hash = hash(str(data))
             if new_hash != self.projector_hash[projector_id]:

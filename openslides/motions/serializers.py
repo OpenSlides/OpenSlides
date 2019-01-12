@@ -1,7 +1,6 @@
 from typing import Dict, Optional
 
 from django.db import transaction
-from django.utils.translation import ugettext as _
 
 from ..poll.serializers import default_votes_validator
 from ..utils.auth import get_group_model
@@ -39,9 +38,7 @@ def validate_workflow_field(value):
     Validator to ensure that the workflow with the given id exists.
     """
     if not Workflow.objects.filter(pk=value).exists():
-        raise ValidationError(
-            {"detail": _("Workflow %(pk)d does not exist.") % {"pk": value}}
-        )
+        raise ValidationError({"detail": f"Workflow {value} does not exist."})
 
 
 class StatuteParagraphSerializer(ModelSerializer):
@@ -163,10 +160,10 @@ class AmendmentParagraphsJSONSerializerField(Field):
         """
         Checks that data is a list of strings.
         """
-        if type(data) is not list:
+        if not isinstance(data, list):
             raise ValidationError({"detail": "Data must be a list."})
         for paragraph in data:
-            if type(paragraph) is not str and paragraph is not None:
+            if not isinstance(paragraph, str) and paragraph is not None:
                 raise ValidationError(
                     {"detail": "Paragraph must be either a string or null/None."}
                 )
@@ -226,7 +223,7 @@ class MotionPollSerializer(ModelSerializer):
     def __init__(self, *args, **kwargs):
         # The following dictionary is just a cache for several votes.
         self._votes_dicts: Dict[int, Dict[int, int]] = {}
-        return super().__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def get_yes(self, obj):
         try:
@@ -280,14 +277,13 @@ class MotionPollSerializer(ModelSerializer):
             if len(votes) != len(instance.get_vote_values()):
                 raise ValidationError(
                     {
-                        "detail": _("You have to submit data for %d vote values.")
-                        % len(instance.get_vote_values())
+                        "detail": f"You have to submit data for {len(instance.get_vote_values())} vote values."
                     }
                 )
-            for vote_value, vote_weight in votes.items():
+            for vote_value in votes.keys():
                 if vote_value not in instance.get_vote_values():
                     raise ValidationError(
-                        {"detail": _("Vote value %s is invalid.") % vote_value}
+                        {"detail": f"Vote value {vote_value} is invalid."}
                     )
             instance.set_vote_objects_with_values(
                 instance.get_options().get(), votes, skip_autoupdate=True
@@ -459,14 +455,16 @@ class MotionSerializer(ModelSerializer):
         if "amendment_paragraphs" in data:
             data["amendment_paragraphs"] = list(
                 map(
-                    lambda entry: validate_html(entry) if type(entry) is str else None,
+                    lambda entry: validate_html(entry)
+                    if isinstance(entry, str)
+                    else None,
                     data["amendment_paragraphs"],
                 )
             )
             data["text"] = ""
         else:
-            if "text" in data and len(data["text"]) == 0:
-                raise ValidationError({"detail": _("This field may not be blank.")})
+            if "text" in data and not data["text"]:
+                raise ValidationError({"detail": "This field may not be blank."})
 
         return data
 

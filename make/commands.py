@@ -26,7 +26,7 @@ def travis(args=None):
     with open(".travis.yml") as f:
         travis = yaml.load(f)
         for line in travis["script"]:
-            print("Run: {}".format(line))
+            print(f"Run: {line}")
             return_code = call(line)
             return_codes.append(return_code)
             if return_code:
@@ -62,7 +62,7 @@ def min_requirements(args=None):
                 if req.specifier:
                     for spec, version in req.specs:
                         if spec == ">=":
-                            yield "{}=={}".format(req.name, version)
+                            yield f"{req.name}=={version}"
 
     print(" ".join(get_lowest_versions(args.requirements)))
 

@@ -1,6 +1,5 @@
 from django.contrib.auth import get_user_model
 from django.db import transaction
-from django.utils.translation import ugettext as _
 
 from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.rest_api import (
@@ -75,7 +74,7 @@ class AssignmentViewSet(ModelViewSet):
         """
         assignment = self.get_object()
         if assignment.is_elected(request.user):
-            raise ValidationError({"detail": _("You are already elected.")})
+            raise ValidationError({"detail": "You are already elected."})
         if request.method == "POST":
             message = self.nominate_self(request, assignment)
         else:
@@ -87,9 +86,7 @@ class AssignmentViewSet(ModelViewSet):
         if assignment.phase == assignment.PHASE_FINISHED:
             raise ValidationError(
                 {
-                    "detail": _(
-                        "You can not candidate to this election because it is finished."
-                    )
+                    "detail": "You can not candidate to this election because it is finished."
                 }
             )
         if assignment.phase == assignment.PHASE_VOTING and not has_perm(
@@ -102,16 +99,14 @@ class AssignmentViewSet(ModelViewSet):
         # Send new candidate via autoupdate because users without permission
         # to see users may not have it but can get it now.
         inform_changed_data([request.user])
-        return _("You were nominated successfully.")
+        return "You were nominated successfully."
 
     def withdraw_self(self, request, assignment):
         # Withdraw candidature.
         if assignment.phase == assignment.PHASE_FINISHED:
             raise ValidationError(
                 {
-                    "detail": _(
-                        "You can not withdraw your candidature to this election because it is finished."
-                    )
+                    "detail": "You can not withdraw your candidature to this election because it is finished."
                 }
             )
         if assignment.phase == assignment.PHASE_VOTING and not has_perm(
@@ -121,10 +116,10 @@ class AssignmentViewSet(ModelViewSet):
             self.permission_denied(request)
         if not assignment.is_candidate(request.user):
             raise ValidationError(
-                {"detail": _("You are not a candidate of this election.")}
+                {"detail": "You are not a candidate of this election."}
             )
         assignment.delete_related_user(request.user)
-        return _("You have withdrawn your candidature successfully.")
+        return "You have withdrawn your candidature successfully."
 
     def get_user_from_request_data(self, request):
         """
@@ -133,22 +128,20 @@ class AssignmentViewSet(ModelViewSet):
         self.mark_elected can play with it.
         """
         if not isinstance(request.data, dict):
-            detail = _("Invalid data. Expected dictionary, got %s.") % type(
-                request.data
-            )
+            detail = f"Invalid data. Expected dictionary, got {type(request.data)}."
             raise ValidationError({"detail": detail})
         user_str = request.data.get("user", "")
         try:
             user_pk = int(user_str)
         except ValueError:
             raise ValidationError(
-                {"detail": _('Invalid data. Expected something like {"user": <id>}.')}
+                {"detail": 'Invalid data. Expected something like {"user": <id>}.'}
             )
         try:
             user = get_user_model().objects.get(pk=user_pk)
         except get_user_model().DoesNotExist:
             raise ValidationError(
-                {"detail": _("Invalid data. User %d does not exist.") % user_pk}
+                {"detail": f"Invalid data. User {user_pk} does not exist."}
             )
         return user
 
@@ -169,9 +162,9 @@ class AssignmentViewSet(ModelViewSet):
 
     def nominate_other(self, request, user, assignment):
         if assignment.is_elected(user):
-            raise ValidationError({"detail": _("User %s is already elected.") % user})
+            raise ValidationError({"detail": f"User {user} is already elected."})
         if assignment.phase == assignment.PHASE_FINISHED:
-            detail = _(
+            detail = (
                 "You can not nominate someone to this election because it is finished."
             )
             raise ValidationError({"detail": detail})
@@ -181,28 +174,26 @@ class AssignmentViewSet(ModelViewSet):
             # To nominate another user during voting you have to be a manager.
             self.permission_denied(request)
         if assignment.is_candidate(user):
-            raise ValidationError({"detail": _("User %s is already nominated.") % user})
+            raise ValidationError({"detail": f"User {user} is already nominated."})
         assignment.set_candidate(user)
         # Send new candidate via autoupdate because users without permission
         # to see users may not have it but can get it now.
         inform_changed_data(user)
-        return _("User %s was nominated successfully.") % user
+        return f"User {user} was nominated successfully."
 
     def delete_other(self, request, user, assignment):
         # To delete candidature status you have to be a manager.
         if not has_perm(request.user, "assignments.can_manage"):
             self.permission_denied(request)
         if assignment.phase == assignment.PHASE_FINISHED:
-            detail = _(
-                "You can not delete someone's candidature to this election because it is finished."
-            )
+            detail = "You can not delete someone's candidature to this election because it is finished."
             raise ValidationError({"detail": detail})
         if not assignment.is_candidate(user) and not assignment.is_elected(user):
             raise ValidationError(
-                {"detail": _("User %s has no status in this election.") % user}
+                {"detail": f"User {user} has no status in this election."}
             )
         assignment.delete_related_user(user)
-        return _("Candidate %s was withdrawn successfully.") % user
+        return f"Candidate {user} was withdrawn successfully."
 
     @detail_route(methods=["post", "delete"])
     def mark_elected(self, request, pk=None):
@@ -215,19 +206,17 @@ class AssignmentViewSet(ModelViewSet):
         if request.method == "POST":
             if not assignment.is_candidate(user):
                 raise ValidationError(
-                    {"detail": _("User %s is not a candidate of this election.") % user}
+                    {"detail": f"User {user} is not a candidate of this election."}
                 )
             assignment.set_elected(user)
-            message = _("User %s was successfully elected.") % user
+            message = f"User {user} was successfully elected."
         else:
             # request.method == 'DELETE'
             if not assignment.is_elected(user):
-                detail = (
-                    _("User %s is not an elected candidate of this election.") % user
-                )
+                detail = f"User {user} is not an elected candidate of this election."
                 raise ValidationError({"detail": detail})
             assignment.set_candidate(user)
-            message = _("User %s was successfully unelected.") % user
+            message = f"User {user} was successfully unelected."
         return Response({"detail": message})
 
     @detail_route(methods=["post"])
@@ -238,12 +227,12 @@ class AssignmentViewSet(ModelViewSet):
         assignment = self.get_object()
         if not assignment.candidates.exists():
             raise ValidationError(
-                {"detail": _("Can not create ballot because there are no candidates.")}
+                {"detail": "Can not create ballot because there are no candidates."}
             )
         with transaction.atomic():
             poll = assignment.create_poll()
         return Response(
-            {"detail": _("Ballot created successfully."), "createdPollId": poll.pk}
+            {"detail": "Ballot created successfully.", "createdPollId": poll.pk}
         )
 
     @detail_route(methods=["post"])
@@ -258,7 +247,7 @@ class AssignmentViewSet(ModelViewSet):
         # Check data
         related_user_ids = request.data.get("related_users")
         if not isinstance(related_user_ids, list):
-            raise ValidationError({"detail": _("users has to be a list of IDs.")})
+            raise ValidationError({"detail": "users has to be a list of IDs."})
 
         # Get all related users from AssignmentRelatedUser.
         related_users = {}
@@ -274,7 +263,7 @@ class AssignmentViewSet(ModelViewSet):
                 not isinstance(related_user_id, int)
                 or related_users.get(related_user_id) is None
             ):
-                raise ValidationError({"detail": _("Invalid data.")})
+                raise ValidationError({"detail": "Invalid data."})
             valid_related_users.append(related_users[related_user_id])
 
         # Sort the related users
@@ -289,7 +278,7 @@ class AssignmentViewSet(ModelViewSet):
         inform_changed_data(assignment)
 
         # Initiate response.
-        return Response({"detail": _("Assignment related users successfully sorted.")})
+        return Response({"detail": "Assignment related users successfully sorted."})
 
 
 class AssignmentPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet):

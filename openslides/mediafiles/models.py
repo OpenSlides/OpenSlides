@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.db import models
-from django.utils.translation import ugettext as _
 
 from ..core.config import config
 from ..utils.autoupdate import inform_changed_data
@@ -74,7 +73,7 @@ class Mediafile(RESTModelMixin, models.Model):
         try:
             size = self.mediafile.size
         except OSError:
-            size_string = _("unknown")
+            size_string = "unknown"
         else:
             if size < 1024:
                 size_string = "< 1 kB"

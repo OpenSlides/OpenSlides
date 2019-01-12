@@ -9,7 +9,7 @@ class OpenSlidesArguments:
         if not self.args:
             raise KeyError("Arguments are not set.")
         if not hasattr(self.args, key):
-            raise KeyError("Key '{}' is not in the OpenSlides arguments.".format(key))
+            raise KeyError(f"Key '{key}' is not in the OpenSlides arguments.")
         return getattr(self.args, key)
 
     def get(self, key: str, default: Any) -> Any:

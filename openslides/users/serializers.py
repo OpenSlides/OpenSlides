@@ -1,6 +1,5 @@
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import Permission
-from django.utils.translation import ugettext as _, ugettext_lazy
 
 from ..utils.autoupdate import inform_changed_data
 from ..utils.rest_api import (
@@ -47,7 +46,7 @@ class UserFullSerializer(ModelSerializer):
         many=True,
         required=False,
         queryset=Group.objects.exclude(pk=1),
-        help_text=ugettext_lazy(
+        help_text=(
             "The groups this user belongs to. A user will "
             "get all permissions granted to each of "
             "his/her groups."
@@ -79,11 +78,7 @@ class UserFullSerializer(ModelSerializer):
                 data.get("username") or data.get("first_name") or data.get("last_name")
             ):
                 raise ValidationError(
-                    {
-                        "detail": _(
-                            "Username, given name and surname can not all be empty."
-                        )
-                    }
+                    {"detail": "Username, given name and surname can not all be empty."}
                 )
 
         # Generate username. But only if it is not set and the serializer is not
@@ -122,12 +117,8 @@ class PermissionRelatedField(RelatedField):
     """
 
     default_error_messages = {
-        "incorrect_value": ugettext_lazy(
-            'Incorrect value "{value}". Expected app_label.codename string.'
-        ),
-        "does_not_exist": ugettext_lazy(
-            'Invalid permission "{value}". Object does not exist.'
-        ),
+        "incorrect_value": 'Incorrect value "{value}". Expected app_label.codename string.',
+        "does_not_exist": 'Invalid permission "{value}". Object does not exist.',
     }
 
     def to_representation(self, value):

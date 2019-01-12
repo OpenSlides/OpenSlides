@@ -6,7 +6,6 @@ from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.utils.translation import ugettext as _, ugettext_noop
 
 from openslides.agenda.models import Item, Speaker
 from openslides.core.config import config
@@ -57,7 +56,7 @@ class AssignmentRelatedUser(RESTModelMixin, models.Model):
         unique_together = ("assignment", "user")
 
     def __str__(self):
-        return "%s <-> %s" % (self.assignment, self.user)
+        return f"{self.assignment} <-> {self.user}"
 
     def get_root_rest_element(self):
         """
@@ -154,7 +153,7 @@ class Assignment(RESTModelMixin, models.Model):
             ("can_manage", "Can manage elections"),
         )
         ordering = ("title",)
-        verbose_name = ugettext_noop("Election")
+        verbose_name = "Election"
 
     def __str__(self):
         return self.title
@@ -198,15 +197,13 @@ class Assignment(RESTModelMixin, models.Model):
             or 0
         )
         defaults = {"elected": False, "weight": weight + 1}
-        related_user, __ = self.assignment_related_users.update_or_create(
-            user=user, defaults=defaults
-        )
+        self.assignment_related_users.update_or_create(user=user, defaults=defaults)
 
     def set_elected(self, user):
         """
         Makes user an elected user for this assignment.
         """
-        related_user, __ = self.assignment_related_users.update_or_create(
+        self.assignment_related_users.update_or_create(
             user=user, defaults={"elected": True}
         )
 
@@ -224,7 +221,7 @@ class Assignment(RESTModelMixin, models.Model):
         Raises a ValueError if the phase is not valide.
         """
         if phase not in dict(self.PHASES):
-            raise ValueError("Invalid phase %s" % phase)
+            raise ValueError(f"Invalid phase {phase}")
 
         self.phase = phase
 
@@ -331,7 +328,7 @@ class Assignment(RESTModelMixin, models.Model):
         Return a title for the agenda with the appended assignment verbose name.
         Note: It has to be the same return value like in JavaScript.
         """
-        return "%s (%s)" % (self.get_agenda_title(), _(self._meta.verbose_name))
+        return f"{self.get_agenda_title()} (self._meta.verbose_name)"
 
     @property
     def agenda_item(self):
@@ -426,10 +423,9 @@ class AssignmentPoll(  # type: ignore
     def get_vote_values(self):
         if self.pollmethod == "yna":
             return ["Yes", "No", "Abstain"]
-        elif self.pollmethod == "yn":
+        if self.pollmethod == "yn":
             return ["Yes", "No"]
-        else:
-            return ["Votes"]
+        return ["Votes"]
 
     def get_ballot(self):
         return self.assignment.polls.filter(id__lte=self.pk).count()

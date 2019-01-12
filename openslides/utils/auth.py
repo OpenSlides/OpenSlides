@@ -31,8 +31,7 @@ def get_group_model() -> Model:
         )
     except LookupError:
         raise ImproperlyConfigured(
-            "AUTH_GROUP_MODEL refers to model '%s' that has not been installed"
-            % settings.AUTH_GROUP_MODEL
+            f"AUTH_GROUP_MODEL refers to model '{settings.AUTH_GROUP_MODEL}' that has not been installed"
         )
 
 
@@ -69,7 +68,7 @@ async def async_has_perm(user_id: int, perm: str) -> bool:
             user_collection_string, user_id
         )
         if user_data is None:
-            raise RuntimeError("User with id {} does not exist.".format(user_id))
+            raise RuntimeError(f"User with id {user_id} does not exist.")
         if GROUP_ADMIN_PK in user_data["groups_id"]:
             # User in admin group (pk 2) grants all permissions.
             has_perm = True
@@ -83,7 +82,7 @@ async def async_has_perm(user_id: int, perm: str) -> bool:
                 )
                 if group is None:
                     raise RuntimeError(
-                        "User is in non existing group with id {}.".format(group_id)
+                        f"User is in non existing group with id {group_id}."
                     )
 
                 if perm in group["permissions"]:
@@ -134,7 +133,7 @@ async def async_in_some_groups(user_id: int, groups: List[int]) -> bool:
             user_collection_string, user_id
         )
         if user_data is None:
-            raise RuntimeError("User with id {} does not exist.".format(user_id))
+            raise RuntimeError(f"User with id {user_id} does not exist.")
         if GROUP_ADMIN_PK in user_data["groups_id"]:
             # User in admin group (pk 2) grants all permissions.
             in_some_groups = True
@@ -205,6 +204,6 @@ def user_to_user_id(user: AnyUser) -> int:
         user_id = user.pk
     else:
         raise TypeError(
-            "Unsupported type for user. User {} has type {}.".format(user, type(user))
+            f"Unsupported type for user. User {user} has type {type(user)}."
         )
     return user_id

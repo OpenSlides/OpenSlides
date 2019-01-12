@@ -9,7 +9,6 @@ from django.contrib.staticfiles.views import serve
 from django.db.models import F
 from django.http import Http404, HttpResponse
 from django.utils.timezone import now
-from django.utils.translation import ugettext as _
 from django.views import static
 from django.views.generic.base import View
 from mypy_extensions import TypedDict
@@ -204,10 +203,10 @@ class ProjectorViewSet(ModelViewSet):
         projector = self.get_object()
         elements = request.data
         if not isinstance(elements, list):
-            raise ValidationError({"detail": _("The data has to be a list.")})
+            raise ValidationError({"detail": "The data has to be a list."})
         for element in elements:
             if not isinstance(element, dict):
-                raise ValidationError({"detail": _("All elements have to be dicts.")})
+                raise ValidationError({"detail": "All elements have to be dicts."})
             if element.get("name") is None:
                 raise ValidationError(
                     {"detail": "Invalid projector element. Name is missing."}
@@ -361,41 +360,37 @@ class ProjectorViewSet(ModelViewSet):
         """
         # The data has to be a dict.
         if not isinstance(request.data, dict):
-            raise ValidationError({"detail": _("The data has to be a dict.")})
+            raise ValidationError({"detail": "The data has to be a dict."})
 
         # Get projector ids to clear
         clear_projector_ids = request.data.get("clear_ids", [])
         for id in clear_projector_ids:
             if not isinstance(id, int):
-                raise ValidationError(
-                    {"detail": _('The id "{}" has to be int.').format(id)}
-                )
+                raise ValidationError({"detail": f'The id "{id}" has to be int.'})
 
         # Get the projector id and validate element to prune. This is optional.
         prune = request.data.get("prune")
         if prune is not None:
             if not isinstance(prune, dict):
-                raise ValidationError({"detail": _("Prune has to be an object.")})
+                raise ValidationError({"detail": "Prune has to be an object."})
             prune_projector_id = prune.get("id")
             if not isinstance(prune_projector_id, int):
                 raise ValidationError(
-                    {"detail": _("The prune projector id has to be int.")}
+                    {"detail": "The prune projector id has to be int."}
                 )
 
             # Get the projector after all clear operations, but check, if it exist.
             if not Projector.objects.filter(pk=prune_projector_id).exists():
                 raise ValidationError(
                     {
-                        "detail": _('The projector with id "{}" does not exist').format(
-                            prune_projector_id
-                        )
+                        "detail": f'The projector with id "{prune_projector_id}" does not exist'
                     }
                 )
 
             prune_element = prune.get("element", {})
             if not isinstance(prune_element, dict):
                 raise ValidationError(
-                    {"detail": _("Prune element has to be a dict or not given.")}
+                    {"detail": "Prune element has to be a dict or not given."}
                 )
             if prune_element.get("name") is None:
                 raise ValidationError(
@@ -457,9 +452,7 @@ class ProjectorViewSet(ModelViewSet):
         projector_instance.height = request.data["height"]
         projector_instance.save()
 
-        message = "Changing resolution to {width}x{height} was successful.".format(
-            width=request.data["width"], height=request.data["height"]
-        )
+        message = f"Changing resolution to {request.data['width']}x{request.data['height']} was successful."
         return Response({"detail": message})
 
     @detail_route(methods=["post"])
@@ -514,10 +507,9 @@ class ProjectorViewSet(ModelViewSet):
         projector_instance.save(skip_autoupdate=True)
         projector_instance.refresh_from_db()
         inform_changed_data(projector_instance)
-        message = "{action} {direction} was successful.".format(
-            action=request.data["action"].capitalize(),
-            direction=request.data["direction"],
-        )
+        action = (request.data["action"].capitalize(),)
+        direction = (request.data["direction"],)
+        message = f"{action} {direction} was successful."
         return Response({"detail": message})
 
     @detail_route(methods=["post"])
@@ -535,9 +527,7 @@ class ProjectorViewSet(ModelViewSet):
         projector_instance.scroll = request.data
 
         projector_instance.save()
-        message = "Setting scroll to {scroll} was successful.".format(
-            scroll=request.data
-        )
+        message = f"Setting scroll to {request.data} was successful."
         return Response({"detail": message})
 
     @detail_route(methods=["post"])
@@ -554,9 +544,7 @@ class ProjectorViewSet(ModelViewSet):
         projector_instance = self.get_object()
         projector_instance.blank = request.data
         projector_instance.save()
-        message = "Setting 'blank' to {blank} was successful.".format(
-            blank=request.data
-        )
+        message = f"Setting 'blank' to {request.data} was successful."
         return Response({"detail": message})
 
     @detail_route(methods=["post"])
@@ -570,9 +558,7 @@ class ProjectorViewSet(ModelViewSet):
         """
         if config["projector_broadcast"] == 0:
             config["projector_broadcast"] = pk
-            message = "Setting projector {id} as broadcast projector was successful.".format(
-                id=pk
-            )
+            message = f"Setting projector {pk} as broadcast projector was successful."
         else:
             config["projector_broadcast"] = 0
             message = "Disabling broadcast was successful."
@@ -595,9 +581,7 @@ class ProjectorViewSet(ModelViewSet):
         except ProjectionDefault.DoesNotExist:
             raise ValidationError(
                 {
-                    "detail": "The projectiondefault with pk={pk} was not found.".format(
-                        pk=request.data
-                    )
+                    "detail": f"The projectiondefault with pk={request.data} was not found."
                 }
             )
         else:
@@ -606,9 +590,7 @@ class ProjectorViewSet(ModelViewSet):
             projectiondefault.save()
 
         return Response(
-            'Setting projectiondefault "{name}" to projector {projector_id} was successful.'.format(
-                name=projectiondefault.display_name, projector_id=projector_instance.pk
-            )
+            f'Setting projectiondefault "{projectiondefault.display_name}" to projector {projector_instance.pk} was successful.'
         )
 
 
@@ -751,9 +733,9 @@ class ChatMessageViewSet(ModelViewSet):
             args.append((chatmessage.get_collection_string(), chatmessage.pk))
         chatmessages.delete()
         # Trigger autoupdate and setup response.
-        if len(args) > 0:
+        if args:
             inform_deleted_data(args)
-        return Response({"detail": _("All chat messages deleted successfully.")})
+        return Response({"detail": "All chat messages deleted successfully."})
 
 
 class ProjectorMessageViewSet(ModelViewSet):
@@ -838,7 +820,7 @@ class HistoryViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         HistoryData.objects.all().delete()
 
         # Trigger autoupdate.
-        if len(args) > 0:
+        if args:
             inform_deleted_data(args)
 
         # Rebuild history.
@@ -846,7 +828,7 @@ class HistoryViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         inform_changed_data(history_instances)
 
         # Setup response.
-        return Response({"detail": _("History was deleted successfully.")})
+        return Response({"detail": "History was deleted successfully."})
 
 
 # Special API views
@@ -920,7 +902,7 @@ class HistoryView(utils_views.APIView):
             self.permission_denied(self.request)
         try:
             timestamp = int(self.request.query_params.get("timestamp", 0))
-        except (ValueError):
+        except ValueError:
             raise ValidationError(
                 {"detail": "Invalid input. Timestamp  should be an integer."}
             )

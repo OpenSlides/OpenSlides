@@ -15,7 +15,7 @@ def restrict_elements(elements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
             if key == "id":
                 restricted_element[key] = value
             else:
-                restricted_element[key] = "restricted_{}".format(value)
+                restricted_element[key] = f"restricted_{value}"
         out.append(restricted_element)
     return out
 
