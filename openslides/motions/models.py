@@ -12,7 +12,7 @@ from jsonfield import JSONField
 
 from openslides.agenda.models import Item
 from openslides.core.config import config
-from openslides.core.models import Projector, Tag
+from openslides.core.models import Tag
 from openslides.mediafiles.models import Mediafile
 from openslides.poll.models import (
     BaseOption,
@@ -309,18 +309,6 @@ class Motion(RESTModelMixin, models.Model):
 
         if not skip_autoupdate:
             inform_changed_data(self)
-
-    def delete(self, skip_autoupdate=False, *args, **kwargs):
-        """
-        Customized method to delete a motion. Ensures that a respective
-        motion projector element is disabled.
-        """
-        Projector.remove_any(
-            skip_autoupdate=skip_autoupdate, name="motions/motion", id=self.pk
-        )
-        return super().delete(  # type: ignore
-            skip_autoupdate=skip_autoupdate, *args, **kwargs
-        )
 
     def set_identifier(self):
         """
@@ -892,18 +880,6 @@ class MotionBlock(RESTModelMixin, models.Model):
 
     def __str__(self):
         return self.title
-
-    def delete(self, skip_autoupdate=False, *args, **kwargs):
-        """
-        Customized method to delete a motion block. Ensures that a respective
-        motion block projector element is disabled.
-        """
-        Projector.remove_any(
-            skip_autoupdate=skip_autoupdate, name="motions/motion-block", id=self.pk
-        )
-        return super().delete(  # type: ignore
-            skip_autoupdate=skip_autoupdate, *args, **kwargs
-        )
 
     """
     Container for runtime information for agenda app (on create or update of this instance).

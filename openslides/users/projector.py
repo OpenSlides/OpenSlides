@@ -1,21 +1,22 @@
-from typing import Generator, Type
+from typing import Any, Dict
 
-from ..core.exceptions import ProjectorException
-from ..utils.projector import ProjectorElement
-from .models import User
+from ..utils.projector import register_projector_element
 
 
-class UserSlide(ProjectorElement):
+# Important: All functions have to be prune. This means, that thay can only
+#            access the data, that they get as argument and do not have any
+#            side effects. They are called from an async context. So they have
+#            to be fast!
+
+
+def user(
+    config: Dict[str, Any], all_data: Dict[str, Dict[int, Dict[str, Any]]]
+) -> Dict[str, Any]:
     """
-    Slide definitions for User model.
+    User slide.
     """
-
-    name = "users/user"
-
-    def check_data(self):
-        if not User.objects.filter(pk=self.config_entry.get("id")).exists():
-            raise ProjectorException("User does not exist.")
+    return {"error": "TODO"}
 
 
-def get_projector_elements() -> Generator[Type[ProjectorElement], None, None]:
-    yield UserSlide
+def register_projector_elements() -> None:
+    register_projector_element("users/user", user)

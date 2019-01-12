@@ -2,21 +2,18 @@ from typing import Any, Dict, Set
 
 from django.apps import AppConfig
 
-from ..utils.projector import register_projector_elements
-
 
 class AgendaAppConfig(AppConfig):
     name = "openslides.agenda"
     verbose_name = "OpenSlides Agenda"
     angular_site_module = True
-    angular_projector_module = True
 
     def ready(self):
         # Import all required stuff.
         from django.db.models.signals import pre_delete, post_save
         from ..core.signals import permission_change
         from ..utils.rest_api import router
-        from .projector import get_projector_elements
+        from .projector import register_projector_elements
         from .signals import (
             get_permission_change_data,
             listen_to_related_object_post_delete,
@@ -27,7 +24,7 @@ class AgendaAppConfig(AppConfig):
         from ..utils.access_permissions import required_user
 
         # Define projector elements.
-        register_projector_elements(get_projector_elements())
+        register_projector_elements()
 
         # Connect signals.
         post_save.connect(

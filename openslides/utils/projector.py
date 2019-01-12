@@ -1,70 +1,69 @@
-from typing import Any, Dict, Generator, Optional, Type
+from typing import Any, Callable, Dict, List
+
+from .cache import element_cache
 
 
-class ProjectorElement:
+AllData = Dict[str, Dict[int, Dict[str, Any]]]
+ProjectorElementCallable = Callable[[Dict[str, Any], AllData], Dict[str, Any]]
+
+
+projector_elements: Dict[str, ProjectorElementCallable] = {}
+
+
+def register_projector_element(name: str, element: ProjectorElementCallable) -> None:
     """
-    Base class for an element on the projector.
-
-    Every app which wants to add projector elements has to create classes
-    subclassing from this base class with different names. The name attribute
-    has to be set.
-    """
-
-    name: Optional[str] = None
-
-    def check_and_update_data(self, projector_object: Any, config_entry: Any) -> Any:
-        """
-        Checks projector element data via self.check_data() and updates
-        them via self.update_data(). The projector object and the config
-        entry have to be given.
-        """
-        self.projector_object = projector_object
-        self.config_entry = config_entry
-        assert (
-            self.config_entry.get("name") == self.name
-        ), "To get data of a projector element, the correct config entry has to be given."
-        self.check_data()
-        return self.update_data() or {}
-
-    def check_data(self) -> None:
-        """
-        Method can be overridden to validate projector element data. This
-        may raise ProjectorException in case of an error.
-
-        Default: Does nothing.
-        """
-        pass
-
-    def update_data(self) -> Dict[Any, Any]:
-        """
-        Method can be overridden to update the projector element data
-        output. This should return a dictonary. Use this for server
-        calculated data which have to be forwared to the client.
-
-        Default: Does nothing.
-        """
-        pass
-
-
-projector_elements: Dict[str, ProjectorElement] = {}
-
-
-def register_projector_elements(
-    elements: Generator[Type[ProjectorElement], None, None]
-) -> None:
-    """
-    Registers projector elements for later use.
+    Registers a projector element.
 
     Has to be called in the app.ready method.
     """
-    for AppProjectorElement in elements:
-        element = AppProjectorElement()
-        projector_elements[element.name] = element  # type: ignore
+    projector_elements[name] = element
 
 
-def get_all_projector_elements() -> Dict[str, ProjectorElement]:
+async def get_projectot_data(
+    projector_ids: List[int] = None
+) -> Dict[int, Dict[str, Any]]:
     """
-    Returns all projector elements that where registered with
-    register_projector_elements()
+    Callculates and returns the data for one or all projectors.
     """
-    return projector_elements
+    if projector_ids is None:
+        projector_ids = []
+
+    all_data = await element_cache.get_all_full_data_ordered()
+    projector_data: Dict[int, Dict[str, Dict[str, Any]]] = {}
+
+    for projector_id, projector in all_data.get("core/projector", {}).items():
+        if projector_ids and projector_id not in projector_ids:
+            # only render the projector in question.
+            continue
+
+        projector_data[projector_id] = {}
+        if not projector["config"]:
+            projector_data[projector_id] = {
+                "error": {"error": "Projector has no config"}
+            }
+            continue
+
+        for uuid, projector_config in projector["config"].items():
+            projector_element = projector_elements.get(projector_config["name"])
+            if projector_element is None:
+                projector_data[projector_id][uuid] = {
+                    "error": "Projector element {} does not exist".format(
+                        projector_config["name"]
+                    )
+                }
+            else:
+                projector_data[projector_id][uuid] = projector_element(
+                    projector_config, all_data
+                )
+    return projector_data
+
+
+def get_config(all_data: AllData, key: str) -> Any:
+    """
+    Returns the config value from all_data.
+    """
+    from ..core.config import config
+
+    return all_data[config.get_collection_string()][config.get_key_to_id()[key]][
+        "value"
+    ]

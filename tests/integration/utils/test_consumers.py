@@ -18,7 +18,7 @@ from openslides.utils.autoupdate import (
 from openslides.utils.cache import element_cache
 
 from ...unit.utils.cache_provider import Collection1, Collection2, get_cachable_provider
-from ..helpers import TConfig, TUser
+from ..helpers import TConfig, TProjector, TUser
 
 
 @pytest.fixture(autouse=True)
@@ -31,7 +31,7 @@ async def prepare_element_cache(settings):
     await element_cache.cache_provider.clear_cache()
     orig_cachable_provider = element_cache.cachable_provider
     element_cache.cachable_provider = get_cachable_provider(
-        [Collection1(), Collection2(), TConfig(), TUser()]
+        [Collection1(), Collection2(), TConfig(), TUser(), TProjector()]
     )
     element_cache._cachables = None
     await sync_to_async(element_cache.ensure_cache)()
@@ -511,4 +511,69 @@ async def test_turn_off_autoupdate(get_communicator, set_config):
     await asyncio.sleep(0.01)
     # Change a config value
     await set_config("general_event_name", "Test Event")
+    assert await communicator.receive_nothing()
+
+
+@pytest.mark.asyncio
+async def test_listen_to_projector(communicator, set_config):
+    await set_config("general_system_enable_anonymous", True)
+    await communicator.connect()
+
+    await communicator.send_json_to(
+        {
+            "type": "listenToProjectors",
+            "content": {"projector_ids": [1]},
+            "id": "test_id",
+        }
+    )
+    response = await communicator.receive_json_from()
+
+    type = response.get("type")
+    content = response.get("content")
+    assert type == "projector"
+    assert content == {"1": {"uid1": {"name": "slide1", "event_name": "OpenSlides"}}}
+
+
+@pytest.mark.asyncio
+async def test_update_projector(communicator, set_config):
+    await set_config("general_system_enable_anonymous", True)
+    await communicator.connect()
+    await communicator.send_json_to(
+        {
+            "type": "listenToProjectors",
+            "content": {"projector_ids": [1]},
+            "id": "test_id",
+        }
+    )
+    await communicator.receive_json_from()
+
+    # Change a config value
+    await set_config("general_event_name", "Test Event")
+    response = await communicator.receive_json_from()
+
+    type = response.get("type")
+    content = response.get("content")
+    assert type == "projector"
+    assert content == {"1": {"uid1": {"event_name": "Test Event", "name": "slide1"}}}
+
+
+@pytest.mark.asyncio
+async def test_update_projector_to_current_value(communicator, set_config):
+    """
+    When a value does not change, the projector should not be updated.
+    """
+    await set_config("general_system_enable_anonymous", True)
+    await communicator.connect()
+    await communicator.send_json_to(
+        {
+            "type": "listenToProjectors",
+            "content": {"projector_ids": [1]},
+            "id": "test_id",
+        }
+    )
+    await communicator.receive_json_from()
+
+    # Change a config value to current_value
+    await set_config("general_event_name", "OpenSlides")
+
     assert await communicator.receive_nothing()

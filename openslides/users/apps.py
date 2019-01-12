@@ -2,26 +2,23 @@ from django.apps import AppConfig
 from django.conf import settings
 from django.contrib.auth.signals import user_logged_in
 
-from ..utils.projector import register_projector_elements
-
 
 class UsersAppConfig(AppConfig):
     name = "openslides.users"
     verbose_name = "OpenSlides Users"
     angular_site_module = True
-    angular_projector_module = True
 
     def ready(self):
         # Import all required stuff.
         from . import serializers  # noqa
         from ..core.signals import post_permission_creation, permission_change
         from ..utils.rest_api import router
-        from .projector import get_projector_elements
+        from .projector import register_projector_elements
         from .signals import create_builtin_groups_and_admin, get_permission_change_data
         from .views import GroupViewSet, PersonalNoteViewSet, UserViewSet
 
         # Define projector elements.
-        register_projector_elements(get_projector_elements())
+        register_projector_elements()
 
         # Connect signals.
         post_permission_creation.connect(

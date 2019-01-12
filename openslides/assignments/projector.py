@@ -1,45 +1,23 @@
-from typing import Generator, Type
+from typing import Any, Dict
 
-from ..core.exceptions import ProjectorException
-from ..utils.projector import ProjectorElement
-from .models import Assignment, AssignmentPoll
+from ..utils.projector import register_projector_element
 
 
-class AssignmentSlide(ProjectorElement):
+# Important: All functions have to be prune. This means, that thay can only
+#            access the data, that they get as argument and do not have any
+#            side effects. They are called from an async context. So they have
+#            to be fast!
+
+
+def assignment(
+    config: Dict[str, Any], all_data: Dict[str, Dict[int, Dict[str, Any]]]
+) -> Dict[str, Any]:
     """
-    Slide definitions for Assignment model.
-
-    You can send a poll id to get a poll slide.
+    Assignment slide.
     """
-
-    name = "assignments/assignment"
-
-    def check_data(self):
-        if not Assignment.objects.filter(pk=self.config_entry.get("id")).exists():
-            raise ProjectorException("Election does not exist.")
-        poll_id = self.config_entry.get("poll")
-        if poll_id:
-            # Poll slide.
-            try:
-                poll = AssignmentPoll.objects.get(pk=poll_id)
-            except AssignmentPoll.DoesNotExist:
-                raise ProjectorException("Poll does not exist.")
-            if poll.assignment_id != self.config_entry.get("id"):
-                raise ProjectorException(
-                    "Assignment id and poll do not belong together."
-                )
-
-    def update_data(self):
-        data = None
-        try:
-            assignment = Assignment.objects.get(pk=self.config_entry.get("id"))
-        except Assignment.DoesNotExist:
-            # Assignment does not exist, so just do nothing.
-            pass
-        else:
-            data = {"agenda_item_id": assignment.agenda_item_id}
-        return data
+    poll_id = config.get("tree")  # noqa
+    return {"error": "TODO"}
 
 
-def get_projector_elements() -> Generator[Type[ProjectorElement], None, None]:
-    yield AssignmentSlide
+def register_projector_elements() -> None:
+    register_projector_element("assignments/assignment", assignment)

@@ -7,21 +7,16 @@ from django.apps import AppConfig
 from django.conf import settings
 from django.db.models.signals import post_migrate
 
-from ..utils.projector import register_projector_elements
-
 
 class CoreAppConfig(AppConfig):
     name = "openslides.core"
     verbose_name = "OpenSlides Core"
     angular_site_module = True
-    angular_projector_module = True
 
     def ready(self):
         # Import all required stuff.
         from .config import config
-        from ..utils.rest_api import router
-        from ..utils.cache import element_cache
-        from .projector import get_projector_elements
+        from .projector import register_projector_elements
         from . import serializers  # noqa
         from .signals import (
             delete_django_app_permissions,
@@ -38,15 +33,18 @@ class CoreAppConfig(AppConfig):
             ProjectorViewSet,
             TagViewSet,
         )
-        from ..utils.constants import set_constants, get_constants_from_apps
         from .websocket import (
             NotifyWebsocketClientMessage,
             ConstantsWebsocketClientMessage,
             GetElementsWebsocketClientMessage,
             AutoupdateWebsocketClientMessage,
+            ListenToProjectors,
         )
-        from ..utils.websocket import register_client_message
         from ..utils.access_permissions import required_user
+        from ..utils.cache import element_cache
+        from ..utils.constants import set_constants, get_constants_from_apps
+        from ..utils.rest_api import router
+        from ..utils.websocket import register_client_message
 
         # Collect all config variables before getting the constants.
         config.collect_config_variables_from_apps()
@@ -64,7 +62,7 @@ class CoreAppConfig(AppConfig):
             set_constants(get_constants_from_apps())
 
         # Define projector elements.
-        register_projector_elements(get_projector_elements())
+        register_projector_elements()
 
         # Connect signals.
         post_permission_creation.connect(
@@ -114,6 +112,7 @@ class CoreAppConfig(AppConfig):
         register_client_message(ConstantsWebsocketClientMessage())
         register_client_message(GetElementsWebsocketClientMessage())
         register_client_message(AutoupdateWebsocketClientMessage())
+        register_client_message(ListenToProjectors())
 
         # register required_users
         required_user.add_collection_string(

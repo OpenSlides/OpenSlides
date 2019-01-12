@@ -1,57 +1,89 @@
-from typing import Generator, Type
+from collections import defaultdict
+from typing import Any, Dict, List, Tuple
 
-from ..core.exceptions import ProjectorException
-from ..utils.projector import ProjectorElement
-from .models import Item
+from ..utils.projector import AllData, register_projector_element
 
 
-class ItemListSlide(ProjectorElement):
+# Important: All functions have to be prune. This means, that thay can only
+#            access the data, that they get as argument and do not have any
+#            side effects. They are called from an async context. So they have
+#            to be fast!
+
+
+def get_tree(
+    all_data: AllData, parent_id: int = 0
+) -> List[Tuple[int, List[Tuple[int, List[Any]]]]]:
     """
-    Slide definitions for Item model.
+    Build the item tree from all_data.
 
-    This is only for item list slides.
+    Only build the tree from elements unterneath parent_id.
 
-    Set 'id' to None to get a list slide of all root items. Set 'id' to an
-    integer to get a list slide of the children of the metioned item.
-
-    Additionally set 'tree' to True to get also children of children.
-    """
-
-    name = "agenda/item-list"
-
-    def check_data(self):
-        pk = self.config_entry.get("id")
-        if pk is not None:
-            # Children slide.
-            if not Item.objects.filter(pk=pk).exists():
-                raise ProjectorException("Item does not exist.")
-
-
-class ListOfSpeakersSlide(ProjectorElement):
-    """
-    Slide definitions for Item model.
-    This is only for list of speakers slide. You have to set 'id'.
+    Returns a list of two element tuples where the first element is the item title
+    and the second a List with children as two element tuples.
     """
 
-    name = "agenda/list-of-speakers"
+    # Build a dict from an item_id to all its children
+    children: Dict[int, List[int]] = defaultdict(list)
+    for item in sorted(
+        all_data["agenda/item"].values(), key=lambda item: item["weight"]
+    ):
+        if item["type"] == 1:  # only normal items
+            children[item["parent_id"] or 0].append(item["id"])
 
-    def check_data(self):
-        if not Item.objects.filter(pk=self.config_entry.get("id")).exists():
-            raise ProjectorException("Item does not exist.")
+    def get_children(
+        item_ids: List[int]
+    ) -> List[Tuple[int, List[Tuple[int, List[Any]]]]]:
+        return [
+            (all_data["agenda/item"][item_id]["title"], get_children(children[item_id]))
+            for item_id in item_ids
+        ]
 
-    def update_data(self):
-        return {"agenda_item_id": self.config_entry.get("id")}
+    return get_children(children[parent_id])
 
 
-class CurrentListOfSpeakersSlide(ProjectorElement):
+def items(config: Dict[str, Any], all_data: AllData) -> Dict[str, Any]:
     """
-    Slide for the current list of speakers.
+    Item list slide.
+
+    Returns all root items or all children of an item.
     """
+    root_item_id = config.get("id") or None
+    show_tree = config.get("tree") or False
 
-    name = "agenda/current-list-of-speakers"
+    if show_tree:
+        items = get_tree(all_data, root_item_id or 0)
+    else:
+        items = []
+        for item in sorted(
+            all_data["agenda/item"].values(), key=lambda item: item["weight"]
+        ):
+            if item["parent_id"] == root_item_id and item["type"] == 1:
+                items.append(item["title"])
+
+    return {"items": items}
 
 
-def get_projector_elements() -> Generator[Type[ProjectorElement], None, None]:
-    yield ItemListSlide
-    yield ListOfSpeakersSlide
-    yield CurrentListOfSpeakersSlide
+def list_of_speakers(config: Dict[str, Any], all_data: AllData) -> Dict[str, Any]:
+    """
+    List of speakers slide.
+
+    Returns all usernames, that are on the list of speaker of a slide.
+    """
+    item_id = config.get("id") or 0  # item_id 0 means current_list_of_speakers
+
+    # TODO: handle item_id == 0
+
+    try:
+        item = all_data["agenda/item"][item_id]
+    except KeyError:
+        return {"error": "Item {} does not exist".format(item_id)}
+
+    user_ids = []
+    for speaker in item["speakers"]:
+        user_ids.append(speaker["user"])
+    return {"user_ids": user_ids}
+
+
+def register_projector_elements() -> None:
+    register_projector_element("agenda/item-list", items)
+    register_projector_element("agenda/list-of-speakers", list_of_speakers)

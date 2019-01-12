@@ -1,43 +1,57 @@
-from typing import Generator, Type
+from typing import Any, Dict
 
-from ..utils.projector import ProjectorElement
-from .exceptions import ProjectorException
-from .models import Countdown, ProjectorMessage
+from ..utils.projector import register_projector_element
 
 
-class Clock(ProjectorElement):
+# Important: All functions have to be prune. This means, that thay can only
+#            access the data, that they get as argument and do not have any
+#            side effects. They are called from an async context. So they have
+#            to be fast!
+
+
+def countdown(
+    config: Dict[str, Any], all_data: Dict[str, Dict[int, Dict[str, Any]]]
+) -> Dict[str, Any]:
     """
-    Clock on the projector.
+    Countdown slide.
+
+    Returns the full_data of the countdown element.
+
+    config = {
+        name: 'core/countdown',
+        id: 5,  # Countdown ID
+    }
     """
+    countdown_id = config.get("id") or 1
 
-    name = "core/clock"
+    try:
+        return all_data["core/countdown"][countdown_id]
+    except KeyError:
+        return {"error": "Countdown {} does not exist".format(countdown_id)}
 
 
-class CountdownElement(ProjectorElement):
+def message(
+    config: Dict[str, Any], all_data: Dict[str, Dict[int, Dict[str, Any]]]
+) -> Dict[str, Any]:
     """
-    Countdown slide for the projector.
+    Message slide.
+
+    Returns the full_data of the message element.
+
+    config = {
+        name: 'core/projector-message',
+        id: 5,  # ProjectorMessage ID
+    }
     """
+    message_id = config.get("id") or 1
 
-    name = "core/countdown"
-
-    def check_data(self):
-        if not Countdown.objects.filter(pk=self.config_entry.get("id")).exists():
-            raise ProjectorException("Countdown does not exists.")
-
-
-class ProjectorMessageElement(ProjectorElement):
-    """
-    Short message on the projector. Rendered as overlay.
-    """
-
-    name = "core/projector-message"
-
-    def check_data(self):
-        if not ProjectorMessage.objects.filter(pk=self.config_entry.get("id")).exists():
-            raise ProjectorException("Message does not exists.")
+    try:
+        return all_data["core/projector-message"][message_id]
+    except KeyError:
+        return {"error": "Message {} does not exist".format(message_id)}
 
 
-def get_projector_elements() -> Generator[Type[ProjectorElement], None, None]:
-    yield Clock
-    yield CountdownElement
-    yield ProjectorMessageElement
+def register_projector_elements() -> None:
+    register_projector_element("core/countdown", countdown)
+    register_projector_element("core/projector-message", message)
+    # TODO: Deside if we need a clock slide

@@ -1,6 +1,7 @@
 from typing import Any
 
 from ..utils.constants import get_constants
+from ..utils.projector import get_projectot_data
 from ..utils.websocket import (
     BaseWebsocketClientMessage,
     ProtocollAsyncJsonWebsocketConsumer,
@@ -110,4 +111,52 @@ class AutoupdateWebsocketClientMessage(BaseWebsocketClientMessage):
         else:
             await consumer.channel_layer.group_discard(
                 "autoupdate", consumer.channel_name
+            )
+
+
+class ListenToProjectors(BaseWebsocketClientMessage):
+    """
+    The client tells, to which projector it listens.
+
+    Therefor it sends a list of projector ids. If it sends an empty list, it does
+    not want to get any projector information.
+    """
+
+    identifier = "listenToProjectors"
+    schema = {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "titel": "Listen to projectors",
+        "description": "Listen to zero, one or more projectors..",
+        "type": "object",
+        "properties": {
+            "projector_ids": {
+                "type": "array",
+                "items": {"type": "integer"},
+                "uniqueItems": True,
+            }
+        },
+        "required": ["projector_ids"],
+    }
+
+    async def receive_content(
+        self, consumer: "ProtocollAsyncJsonWebsocketConsumer", content: Any, id: str
+    ) -> None:
+        consumer.listen_projector_ids = content["projector_ids"]
+        if consumer.listen_projector_ids:
+            # listen to projector group
+            await consumer.channel_layer.group_add("projector", consumer.channel_name)
+        else:
+            # do not listen to projector group
+            await consumer.channel_layer.group_discard(
+                "projector", consumer.channel_name
+            )
+
+        # Send projector data
+        if consumer.listen_projector_ids:
+            projector_data = await get_projectot_data(consumer.listen_projector_ids)
+            for projector_id, data in projector_data.items():
+                consumer.projector_hash[projector_id] = hash(str(data))
+
+            await consumer.send_json(
+                type="projector", content=projector_data, in_response=id
             )

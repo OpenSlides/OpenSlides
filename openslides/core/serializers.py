@@ -56,7 +56,7 @@ class ProjectorSerializer(ModelSerializer):
     Serializer for core.models.Projector objects.
     """
 
-    config = JSONSerializerField(write_only=True)
+    config = JSONSerializerField()
     projectiondefaults = ProjectionDefaultSerializer(many=True, read_only=True)
 
     class Meta:
@@ -64,7 +64,6 @@ class ProjectorSerializer(ModelSerializer):
         fields = (
             "id",
             "config",
-            "elements",
             "scale",
             "scroll",
             "name",

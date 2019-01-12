@@ -1,21 +1,22 @@
-from typing import Generator, Type
+from typing import Any, Dict
 
-from ..core.exceptions import ProjectorException
-from ..utils.projector import ProjectorElement
-from .models import Mediafile
+from ..utils.projector import register_projector_element
 
 
-class MediafileSlide(ProjectorElement):
+# Important: All functions have to be prune. This means, that thay can only
+#            access the data, that they get as argument and do not have any
+#            side effects. They are called from an async context. So they have
+#            to be fast!
+
+
+def mediafile(
+    config: Dict[str, Any], all_data: Dict[str, Dict[int, Dict[str, Any]]]
+) -> Dict[str, Any]:
     """
-    Slide definitions for Mediafile model.
+    Slide for Mediafile.
     """
-
-    name = "mediafiles/mediafile"
-
-    def check_data(self):
-        if not Mediafile.objects.filter(pk=self.config_entry.get("id")).exists():
-            raise ProjectorException("File does not exist.")
+    return {"error": "TODO"}
 
 
-def get_projector_elements() -> Generator[Type[ProjectorElement], None, None]:
-    yield MediafileSlide
+def register_projector_elements() -> None:
+    register_projector_element("mediafiles/mediafile", mediafile)

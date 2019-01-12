@@ -18,7 +18,6 @@ from django.utils import timezone
 from jsonfield import JSONField
 
 from ..core.config import config
-from ..core.models import Projector
 from ..utils.auth import GROUP_ADMIN_PK
 from ..utils.models import RESTModelMixin
 from .access_permissions import (
@@ -196,18 +195,6 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
         if kwargs.get("update_fields") == ["last_login"]:
             kwargs["skip_autoupdate"] = True
         return super().save(*args, **kwargs)
-
-    def delete(self, skip_autoupdate=False, *args, **kwargs):
-        """
-        Customized method to delete an user. Ensures that a respective
-        user projector element is disabled.
-        """
-        Projector.remove_any(
-            skip_autoupdate=skip_autoupdate, name="users/user", id=self.pk
-        )
-        return super().delete(  # type: ignore
-            skip_autoupdate=skip_autoupdate, *args, **kwargs
-        )
 
     def has_perm(self, perm):
         """
