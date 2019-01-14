@@ -3,7 +3,7 @@ coverage
 flake8
 isort
 mypy
-pytest<4.1  # See https://github.com/pytest-dev/pytest-asyncio/issues/104
+pytest
 pytest-django
 pytest-asyncio
 pytest-cov
