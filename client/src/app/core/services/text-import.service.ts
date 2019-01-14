@@ -155,11 +155,7 @@ export abstract class TextImportService<V extends BaseViewModel> {
     }
 
     /**
-     * Constructor. Creates a fileReader to subscribe to it for incoming parsed
-     * strings
-     * @param categoryRepo Repository to fetch pre-existing categories
-     * @param motionBlockRepo Repository to fetch pre-existing motionBlocks
-     * @param userRepo Repository to query/ create users
+     * Constructor. Creates a fileReader to subscribe to it for incoming parsed strings
      * @param translate Translation service
      * @param papa External csv parser (ngx-papaparser)
      * @param matSnackBar snackBar to display import errors
