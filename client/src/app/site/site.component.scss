@@ -32,19 +32,35 @@ mat-sidenav-container {
     }
 }
 
-/* Logo container */
-.os-logo-container {
-    width: 200px;
-    margin-left: 10px;
-    background-image: url(/assets/img/openslides-logo-h.svg);
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    cursor: pointer;
+.nav-toolbar {
+    display: flex;
+    margin: auto;
+    width: 250px;
+    height: 80px;
+    align-items: center;
 }
+/* The top logo container can contain any logo with any size.
+   It needs to always fit.*/
+.os-logo-container {
+    margin: auto;
+    width: 250px !important;
+    max-height: 80px;
+    display: flex;
+}
+
+/* The footer container only appears when custom logo is
+   specified. It can only contain the standard logo */
+.os-footer-logo-container {
+    width: 150px;
+    margin-left: 10px;
+}
+
 .os-logo-container:focus,
 .os-logo-container:active,
-.os-logo-container:hover {
+.os-logo-container:hover,
+.os-footer-logo-container:focus,
+.os-footer-logo-container:active,
+.os-footer-logo-container:hover {
     border: none;
     outline: none;
 }

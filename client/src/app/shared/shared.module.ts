@@ -70,6 +70,7 @@ import { ChoiceDialogComponent } from './components/choice-dialog/choice-dialog.
 import { OsSortFilterBarComponent } from './components/os-sort-filter-bar/os-sort-filter-bar.component';
 import { OsSortBottomSheetComponent } from './components/os-sort-filter-bar/os-sort-bottom-sheet/os-sort-bottom-sheet.component';
 import { FilterMenuComponent } from './components/os-sort-filter-bar/filter-menu/filter-menu.component';
+import { LogoComponent } from './components/logo/logo.component';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -171,7 +172,8 @@ import { FilterMenuComponent } from './components/os-sort-filter-bar/filter-menu
         EditorModule,
         SortingTreeComponent,
         TreeModule,
-        OsSortFilterBarComponent
+        OsSortFilterBarComponent,
+        LogoComponent
     ],
     declarations: [
         PermsDirective,
@@ -188,7 +190,8 @@ import { FilterMenuComponent } from './components/os-sort-filter-bar/filter-menu
         ChoiceDialogComponent,
         OsSortFilterBarComponent,
         OsSortBottomSheetComponent,
-        FilterMenuComponent
+        FilterMenuComponent,
+        LogoComponent
     ],
     providers: [
         { provide: DateAdapter, useClass: OpenSlidesDateAdapter },
