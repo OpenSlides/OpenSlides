@@ -48,7 +48,7 @@ export class ViewportService {
      */
     public checkForChange(): void {
         this.breakpointObserver
-            .observe([Breakpoints.Small, Breakpoints.HandsetPortrait])
+            .observe([Breakpoints.Handset, '(min-width: 600px) and (max-width: 899.99px)'])
             .subscribe((state: BreakpointState) => {
                 if (state.matches) {
                     this.isMobile = true;

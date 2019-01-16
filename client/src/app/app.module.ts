@@ -16,6 +16,10 @@ import { PruningTranslationLoader } from './core/pruning-loader';
 import { LoginModule } from './site/login/login.module';
 import { AppLoadService } from './core/services/app-load.service';
 
+// PWA
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
+
 /**
  * For the translation module. Loads a Custom 'translation loader' and provides it as loader.
  * @param http Just the HttpClient to load stuff
@@ -55,7 +59,8 @@ export function AppLoaderFactory(appLoadService: AppLoadService): () => Promise<
         AppRoutingModule,
         CoreModule,
         LoginModule,
-        PapaParseModule
+        PapaParseModule,
+        ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
     ],
     providers: [{ provide: APP_INITIALIZER, useFactory: AppLoaderFactory, deps: [AppLoadService], multi: true }],
     bootstrap: [AppComponent]
