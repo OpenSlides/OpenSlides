@@ -10,10 +10,14 @@
         disableClose="!vp.isMobile"
         class="side-panel"
     >
-        <mat-toolbar class="nav-toolbar">
+        <div class="nav-toolbar">
             <!-- logo -->
-            <mat-toolbar-row class="os-logo-container" routerLink="/" (click)="toggleSideNav()"></mat-toolbar-row>
-        </mat-toolbar>
+            <a routerLink="/" (click)="toggleSideNav()">
+                <os-logo class="os-logo-container"
+                    inputAction="logo_web_header"
+                    [footer]="false"></os-logo>
+            </a>
+        </div>
 
         <!-- User Menu -->
         <mat-expansion-panel class="user-menu mat-elevation-z0">
@@ -118,6 +122,11 @@
             >
                 <span><small>© Copyright by OpenSlides</small></span>
             </a>
+            <div class="os-footer-logo-container">
+                <os-logo inputAction="logo_web_header"
+                         footer="true">
+                </os-logo>
+            </div>
         </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content>

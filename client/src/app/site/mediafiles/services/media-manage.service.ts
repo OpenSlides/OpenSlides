@@ -80,6 +80,18 @@ export class MediaManageService {
     }
 
     /**
+     * Checks if an image is an imageConfig Object
+     *
+     * @param object instance of something to check
+     * @returns boolean if an object is a ImageConfigObject
+     */
+    public isImageConfigObject(object: any): object is ImageConfigObject {
+        if (object !== undefined) {
+            return (<ImageConfigObject>object).path !== undefined;
+        }
+    }
+
+    /**
      * Get all actions that can be executed on images
      *
      * @returns observable array of strings with the actions for images
