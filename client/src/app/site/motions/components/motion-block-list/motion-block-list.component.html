@@ -5,7 +5,7 @@
 
 <!-- Creating a new motion block -->
 <mat-card class="os-card" *ngIf="blockToCreate">
-    <mat-card-title translate>Create new motion block</mat-card-title>
+    <mat-card-title translate>New motion block</mat-card-title>
     <mat-card-content>
         <form [formGroup]="createBlockForm"
             (keydown)="onKeyDown($event)">
@@ -60,19 +60,39 @@
     <table class="os-headed-listview-table on-transition-fade" mat-table [dataSource]="dataSource" matSort>
         <!-- title column -->
         <ng-container matColumnDef="title">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> <span translate>Name</span> </mat-header-cell>
-            <mat-cell *matCellDef="let block"> {{ block.title }} </mat-cell>
+            <mat-header-cell *matHeaderCellDef mat-sort-header> <span translate>Title</span> </mat-header-cell>
+            <mat-cell *matCellDef="let block" (click)="openItem(block)"> {{ block.title }} </mat-cell>
         </ng-container>
 
         <!-- amount column -->
         <ng-container matColumnDef="amount">
             <mat-header-cell *matHeaderCellDef> <span translate>Motions</span> </mat-header-cell>
-            <mat-cell *matCellDef="let block">
+            <mat-cell *matCellDef="let block" (click)="openItem(block)">
                 <span class="os-amount-chip">{{ getMotionAmount(block.motionBlock) }}</span>
             </mat-cell>
         </ng-container>
 
+        <!-- menu -->
+        <ng-container matColumnDef="menu">
+            <mat-header-cell *matHeaderCellDef>Menu</mat-header-cell>
+            <mat-cell *matCellDef="let block">
+                <button mat-icon-button [matMenuTriggerFor]="singleItemMenu" [matMenuTriggerData]="{ item: block }">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+
         <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
-        <mat-row (click)="onSelectRow(row)" *matRowDef="let row; columns: getColumnDefinition()"> </mat-row>
+        <mat-row *matRowDef="let row; columns: getColumnDefinition()"> </mat-row>
     </table>
 </mat-card>
+
+<mat-menu #singleItemMenu="matMenu">
+    <ng-template matMenuContent let-item="item">
+        <!-- Delete Button -->
+        <button mat-menu-item class="red-warning-text" (click)="onDelete(item)">
+            <mat-icon>delete</mat-icon>
+            <span translate>Delete</span>
+        </button>
+    </ng-template>
+</mat-menu>

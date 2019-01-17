@@ -318,6 +318,13 @@ mat-panel-title mat-icon {
     margin: 8px 8px 8px 0;
 }
 
+.mat-chip-list.user .mat-chip {
+    border-radius: 16px !important;
+    padding: 15px !important;
+    border: solid 1px lightgray;
+    background: #fff;
+}
+
 // to display quantities. Use in span or div
 .os-amount-chip {
     border-radius: 50%;
@@ -338,6 +345,10 @@ button.mat-menu-item.selected {
     font-weight: bold !important;
 }
 
+.mat-menu-item .mat-icon {
+    margin-right: 8px !important;
+}
+
 .meta-text-block .mat-icon-button {
     margin-top: -12px !important;
 }
@@ -347,13 +358,16 @@ button.mat-menu-item.selected {
 
 /** helper classes for margin/padding */
 .spacer-top-10 {
-    margin-top: 10px;
+    margin-top: 10px !important;
 }
 .spacer-top-20 {
-    margin-top: 20px;
+    margin-top: 20px !important;
+}
+.spacer-bottom-10 {
+    margin-bottom: 10px !important;
 }
 .spacer-bottom-20 {
-    margin-bottom: 20px;
+    margin-bottom: 20px !important;
 }
 .button24 {
     background-color: white;
@@ -378,14 +392,39 @@ button.mat-menu-item.selected {
         line-height: 24px;
     }
 }
-.title-left {
-    padding-left: 65px;
+.title {
     padding-top: 20px;
     padding-bottom: 20px;
 }
 .mat-radio-button {
     padding-right: 20px;
 }
+
+.content-container {
+    margin: 0 65px;
+}
+
+/** media queries */
+
+/* medium */
+@media only screen and (min-width: 500px) and (max-width: 960px) {
+    .content-container {
+        margin: 0 25px;
+    }
+    .content-container h1 {
+        font-size: 30px
+    }
+}
+/* small */
+@media only screen and (max-width: 500px) {
+    .content-container {
+        margin: 0 15px;
+    }
+    .content-container h1 {
+        font-size: 30px
+    }
+}
+
 
 /** more helper classes **/
 .center {

@@ -51,8 +51,6 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
      * @param vp determine the viewport
      * @param durationService Converts numbers to readable duration strings
      * @param csvExport Handles the exporting into csv
-     * @param repo the agenda repository
-     * @param promptService
      * @param filterService: service for filtering data
      */
     public constructor(

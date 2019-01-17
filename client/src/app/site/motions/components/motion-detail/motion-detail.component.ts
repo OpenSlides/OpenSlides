@@ -923,7 +923,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * @param id Motion category id
      */
     public setCategory(id: number): void {
-        this.repo.setCatetory(this.motion, id);
+        if (id === this.motion.category_id) {
+            this.repo.setCatetory(this.motion, null);
+        } else {
+            this.repo.setCatetory(this.motion, id);
+        }
     }
 
     /**
@@ -932,7 +936,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * @param id Motion block id
      */
     public setBlock(id: number): void {
-        this.repo.setBlock(this.motion, id);
+        if (id === this.motion.motion_block_id) {
+            this.repo.setBlock(this.motion, null);
+        } else {
+            this.repo.setBlock(this.motion, id);
+        }
     }
 
     /**

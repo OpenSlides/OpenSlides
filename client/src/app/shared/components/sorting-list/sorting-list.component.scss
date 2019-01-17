@@ -1,9 +1,6 @@
 .list {
     width: 100%;
-    border: solid 1px #ccc;
     display: block;
-    background: white; // TODO theme
-    border-radius: 4px;
     overflow: hidden;
 }
 
@@ -11,7 +8,6 @@
     width: 100%;
     border-bottom: solid 1px #ccc;
     color: rgba(0, 0, 0, 0.87);
-    background: white; // TODO theme
     font-size: 14px;
 }
 
