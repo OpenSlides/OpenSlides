@@ -13,6 +13,7 @@ import {
 } from '../motion-change-recommendation/motion-change-recommendation.component';
 import { BaseViewComponent } from '../../../base/base-view';
 import { TranslateService } from '@ngx-translate/core';
+import { ConfigService } from '../../../../core/services/config.service';
 
 /**
  * This component displays the original motion text with the change blocks inside.
@@ -50,6 +51,16 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
     public createChangeRecommendation: EventEmitter<LineRange> = new EventEmitter<LineRange>();
 
     /**
+     * Indicates the LineNumberingMode Mode.
+     */
+    public lnMode: LineNumberingMode;
+
+    /**
+     * Indicates the maximum line length as defined in the configuration.
+     */
+    public lineLength: number;
+
+    /**
      * @param title
      * @param translate
      * @param matSnackBar
@@ -57,6 +68,7 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
      * @param motionRepo
      * @param recoRepo
      * @param dialogService
+     * @param configService
      * @param el
      */
     public constructor(
@@ -67,9 +79,13 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
         private motionRepo: MotionRepositoryService,
         private recoRepo: ChangeRecommendationRepositoryService,
         private dialogService: MatDialog,
+        private configService: ConfigService,
         private el: ElementRef
     ) {
         super(title, translate, matSnackBar);
+
+        this.configService.get('motions_default_line_numbering').subscribe(mode => (this.lnMode = mode));
+        this.configService.get('motions_line_length').subscribe(lineLength => (this.lineLength = lineLength));
     }
 
     /**
@@ -89,7 +105,7 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
             return '';
         }
 
-        return this.motionRepo.extractMotionLineRange(this.motion.id, lineRange, true);
+        return this.motionRepo.extractMotionLineRange(this.motion.id, lineRange, true, this.lineLength);
     }
 
     /**
@@ -118,7 +134,7 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
      * @param {ViewUnifiedChange} change
      */
     public getDiff(change: ViewUnifiedChange): SafeHtml {
-        const html = this.motionRepo.getChangeDiff(this.motion, change);
+        const html = this.motionRepo.getChangeDiff(this.motion, change, this.lineLength);
         return this.sanitizer.bypassSecurityTrustHtml(html);
     }
 
@@ -126,7 +142,10 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
      * Returns the remainder text of the motion after the last change
      */
     public getTextRemainderAfterLastChange(): string {
-        return this.motionRepo.getTextRemainderAfterLastChange(this.motion, this.changes);
+        if (!this.lineLength) {
+            return ''; // @TODO This happens in the test case when the lineLength-variable is not set
+        }
+        return this.motionRepo.getTextRemainderAfterLastChange(this.motion, this.changes, this.lineLength);
     }
 
     /**
@@ -144,7 +163,7 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
      * @returns whether there are line numbers at all
      */
     public isLineNumberingNone(): boolean {
-        return this.motion.lnMode === LineNumberingMode.None;
+        return this.lnMode === LineNumberingMode.None;
     }
 
     /**
@@ -153,7 +172,7 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
      * @returns whether the line numberings are inside
      */
     public isLineNumberingInline(): boolean {
-        return this.motion.lnMode === LineNumberingMode.Inside;
+        return this.lnMode === LineNumberingMode.Inside;
     }
 
     /**
@@ -162,7 +181,7 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
      * @returns whether the line numberings are outside
      */
     public isLineNumberingOutside(): boolean {
-        return this.motion.lnMode === LineNumberingMode.Outside;
+        return this.lnMode === LineNumberingMode.Outside;
     }
 
     /**

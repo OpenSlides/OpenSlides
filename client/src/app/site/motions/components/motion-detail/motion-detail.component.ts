@@ -240,6 +240,26 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     public LineNumberingMode = LineNumberingMode;
 
     /**
+     * Indicates the LineNumberingMode Mode.
+     */
+    public lnMode: LineNumberingMode;
+
+    /**
+     * Indicates the Change reco Mode.
+     */
+    public crMode: ChangeRecoMode;
+
+    /**
+     * Indicates the maximum line length as defined in the configuration.
+     */
+    public lineLength: number;
+
+    /**
+     * Indicates the currently highlighted line, if any.
+     */
+    public highlightedLine: number;
+
+    /**
      * Constuct the detail view.
      *
      * @param title
@@ -314,6 +334,9 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         this.configService.get('motions_min_supporters').subscribe(supporters => (this.minSupporters = supporters));
         this.configService.get('motions_preamble').subscribe(preamble => (this.preamble = preamble));
         this.configService.get('motions_amendments_enabled').subscribe(enabled => (this.amendmentsEnabled = enabled));
+        this.configService.get('motions_line_length').subscribe(lineLength => (this.lineLength = lineLength));
+        this.configService.get('motions_default_line_numbering').subscribe(mode => (this.lnMode = mode));
+        this.configService.get('motions_recommendation_text_mode').subscribe(mode => (this.crMode = mode));
     }
 
     /**
@@ -371,7 +394,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         if (this.amendments) {
             this.amendments.forEach(
                 (amendment: ViewMotion): void => {
-                    this.repo.getAmendmentAmendedParagraphs(amendment).forEach(
+                    this.repo.getAmendmentAmendedParagraphs(amendment, this.lineLength).forEach(
                         (change: ViewUnifiedChange): void => {
                             this.allChangingObjects.push(change);
                         }
@@ -558,13 +581,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     public getFormattedTextPlain(): string {
         // Prevent this.allChangingObjects to be reordered from within formatMotion
         const changes: ViewUnifiedChange[] = Object.assign([], this.allChangingObjects);
-        return this.repo.formatMotion(
-            this.motion.id,
-            this.motion.crMode,
-            changes,
-            this.motion.lineLength,
-            this.motion.highlightedLine
-        );
+        return this.repo.formatMotion(this.motion.id, this.crMode, changes, this.lineLength, this.highlightedLine);
     }
 
     /**
@@ -584,7 +601,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * @returns {DiffLinesInParagraph[]}
      */
     public getAmendedParagraphs(): DiffLinesInParagraph[] {
-        return this.repo.getAmendedParagraphs(this.motion);
+        return this.repo.getAmendedParagraphs(this.motion, this.lineLength);
     }
 
     /**
@@ -596,7 +613,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * @returns safe html strings
      */
     public getParentMotionRange(from: number, to: number): SafeHtml {
-        const str = this.repo.extractMotionLineRange(this.motion.parent_id, { from, to }, true);
+        const str = this.repo.extractMotionLineRange(this.motion.parent_id, { from, to }, true, this.lineLength);
         return this.sanitizer.bypassSecurityTrustHtml(str);
     }
 
@@ -606,7 +623,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * @returns safe html strings
      */
     public getFormattedStatuteAmendment(): SafeHtml {
-        const diffHtml = this.repo.formatStatuteAmendment(this.statuteParagraphs, this.motion, this.motion.lineLength);
+        const diffHtml = this.repo.formatStatuteAmendment(this.statuteParagraphs, this.motion, this.lineLength);
         return this.sanitizer.bypassSecurityTrustHtml(diffHtml);
     }
 
@@ -627,7 +644,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * @param mode Needs to got the enum defined in ViewMotion
      */
     public setLineNumberingMode(mode: LineNumberingMode): void {
-        this.motion.lnMode = mode;
+        this.lnMode = mode;
     }
 
     /**
@@ -636,7 +653,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * @returns whether there are line numbers at all
      */
     public isLineNumberingNone(): boolean {
-        return this.motion.lnMode === LineNumberingMode.None;
+        return this.lnMode === LineNumberingMode.None;
     }
 
     /**
@@ -645,7 +662,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * @returns whether the line numberings are inside
      */
     public isLineNumberingInline(): boolean {
-        return this.motion.lnMode === LineNumberingMode.Inside;
+        return this.lnMode === LineNumberingMode.Inside;
     }
 
     /**
@@ -654,7 +671,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * @returns whether the line numberings are outside
      */
     public isLineNumberingOutside(): boolean {
-        return this.motion.lnMode === LineNumberingMode.Outside;
+        return this.lnMode === LineNumberingMode.Outside;
     }
 
     /**
@@ -662,21 +679,21 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * @param mode Needs to fot to the enum defined in ViewMotion
      */
     public setChangeRecoMode(mode: ChangeRecoMode): void {
-        this.motion.crMode = mode;
+        this.crMode = mode;
     }
 
     /**
      * Returns true if the original version (including change recommendation annotation) is to be shown
      */
     public isRecoModeOriginal(): boolean {
-        return this.motion.crMode === ChangeRecoMode.Original || this.allChangingObjects.length === 0;
+        return this.crMode === ChangeRecoMode.Original || this.allChangingObjects.length === 0;
     }
 
     /**
      * Returns true if the diff version is to be shown
      */
     public isRecoModeDiff(): boolean {
-        return this.motion.crMode === ChangeRecoMode.Diff && this.allChangingObjects.length > 0;
+        return this.crMode === ChangeRecoMode.Diff && this.allChangingObjects.length > 0;
     }
 
     /**
@@ -689,8 +706,14 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
             editChangeRecommendation: false,
             newChangeRecommendation: true,
             lineRange: lineRange,
-            changeRecommendation: this.repo.createChangeRecommendationTemplate(this.motion.id, lineRange)
+            changeRecommendation: this.repo.createChangeRecommendationTemplate(
+                this.motion.id,
+                lineRange,
+                this.lineLength
+            )
         };
+        console.log(this.lineLength);
+        console.log(data);
         this.dialogService.open(MotionChangeRecommendationComponent, {
             height: '400px',
             width: '600px',

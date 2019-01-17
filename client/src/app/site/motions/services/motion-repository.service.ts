@@ -9,7 +9,7 @@ import { User } from '../../../shared/models/users/user';
 import { Category } from '../../../shared/models/motions/category';
 import { Workflow } from '../../../shared/models/motions/workflow';
 import { WorkflowState } from '../../../shared/models/motions/workflow-state';
-import { ChangeRecoMode, LineNumberingMode, ViewMotion } from '../models/view-motion';
+import { ChangeRecoMode, ViewMotion } from '../models/view-motion';
 import { BaseRepository } from '../../base/base-repository';
 import { DataStoreService } from '../../../core/services/data-store.service';
 import { LinenumberingService } from './linenumbering.service';
@@ -28,7 +28,6 @@ import { ViewMotionAmendedParagraph } from '../models/view-motion-amended-paragr
 import { CreateMotion } from '../models/create-motion';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
-import { ConfigService } from '../../../core/services/config.service';
 import { MotionPoll } from 'app/shared/models/motions/motion-poll';
 
 /**
@@ -45,15 +44,6 @@ import { MotionPoll } from 'app/shared/models/motions/motion-poll';
     providedIn: 'root'
 })
 export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> {
-    // The line length; comes from the config variable motions_line_length
-    private lineLength = 90;
-
-    // The default line numbering mode; comes from the config variable motions_default_line_numbering
-    private defaultLineNumbering = LineNumberingMode.Outside;
-
-    // The default line numbering mode; comes from the config variable motions_recommendation_text_mode
-    private defaultCrMode = ChangeRecoMode.Original;
-
     /**
      * Creates a MotionRepository
      *
@@ -66,7 +56,6 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      * @param httpService OpenSlides own Http service
      * @param lineNumbering Line numbering for motion text
      * @param diff Display changes in motion text as diff.
-     * @param configService The configuration provider
      */
     public constructor(
         DS: DataStoreService,
@@ -75,15 +64,9 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         private httpService: HttpService,
         private readonly lineNumbering: LinenumberingService,
         private readonly diff: DiffService,
-        private readonly configService: ConfigService,
         private treeService: TreeService
     ) {
         super(DS, mapperService, Motion, [Category, User, Workflow, Item, MotionBlock, Mediafile]);
-
-        // load config variables
-        this.configService.get('motions_line_length').subscribe(lineLength => (this.lineLength = lineLength));
-        this.configService.get('motions_default_line_numbering').subscribe(mode => (this.defaultLineNumbering = mode));
-        this.configService.get('motions_recommendation_text_mode').subscribe(mode => (this.defaultCrMode = mode));
     }
 
     /**
@@ -106,20 +89,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         if (workflow) {
             state = workflow.getStateById(motion.state_id);
         }
-        return new ViewMotion(
-            motion,
-            category,
-            submitters,
-            supporters,
-            workflow,
-            state,
-            item,
-            block,
-            attachments,
-            this.lineLength,
-            this.defaultLineNumbering,
-            this.defaultCrMode
-        );
+        return new ViewMotion(motion, category, submitters, supporters, workflow, state, item, block, attachments);
     }
 
     /**
@@ -329,7 +299,8 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
                                     from: 1,
                                     to: change.getLineFrom()
                                 },
-                                true
+                                true,
+                                lineLength
                             );
                         } else if (changes[idx - 1].getLineTo() < change.getLineFrom()) {
                             text += this.extractMotionLineRange(
@@ -338,12 +309,13 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
                                     from: changes[idx - 1].getLineTo(),
                                     to: change.getLineFrom()
                                 },
-                                true
+                                true,
+                                lineLength
                             );
                         }
-                        text += this.getChangeDiff(targetMotion, change, highlightLine);
+                        text += this.getChangeDiff(targetMotion, change, lineLength, highlightLine);
                     });
-                    text += this.getTextRemainderAfterLastChange(targetMotion, changes, highlightLine);
+                    text += this.getTextRemainderAfterLastChange(targetMotion, changes, lineLength, highlightLine);
                     return text;
                 case ChangeRecoMode.Final:
                     const appliedChanges: ViewUnifiedChange[] = changes.filter(change => change.isAccepted());
@@ -374,9 +346,10 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      * @param {number} id
      * @param {LineRange} lineRange
      * @param {boolean} lineNumbers - weather to add line numbers to the returned HTML string
+     * @param {number} lineLength
      */
-    public extractMotionLineRange(id: number, lineRange: LineRange, lineNumbers: boolean): string {
-        const origHtml = this.formatMotion(id, ChangeRecoMode.Original, [], this.lineLength);
+    public extractMotionLineRange(id: number, lineRange: LineRange, lineNumbers: boolean, lineLength: number): string {
+        const origHtml = this.formatMotion(id, ChangeRecoMode.Original, [], lineLength);
         const extracted = this.diff.extractRangeByLineNumbers(origHtml, lineRange.from, lineRange.to);
         let html =
             extracted.outerContextStart +
@@ -385,7 +358,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
             extracted.innerContextEnd +
             extracted.outerContextEnd;
         if (lineNumbers) {
-            html = this.lineNumbering.insertLineNumbers(html, 80, null, null, lineRange.from);
+            html = this.lineNumbering.insertLineNumbers(html, lineLength, null, null, lineRange.from);
         }
         return html;
     }
@@ -395,12 +368,14 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      *
      * @param {ViewMotion} motion
      * @param {ViewUnifiedChange[]} changes
+     * @param {number} lineLength
      * @param {number} highlight
      * @returns {string}
      */
     public getTextRemainderAfterLastChange(
         motion: ViewMotion,
         changes: ViewUnifiedChange[],
+        lineLength: number,
         highlight?: number
     ): string {
         let maxLine = 1;
@@ -410,7 +385,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
             }
         }, 0);
 
-        const numberedHtml = this.lineNumbering.insertLineNumbers(motion.text, motion.lineLength);
+        const numberedHtml = this.lineNumbering.insertLineNumbers(motion.text, lineLength);
         if (changes.length === 0) {
             return numberedHtml;
         }
@@ -437,7 +412,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
                 data.html +
                 data.innerContextEnd +
                 data.outerContextEnd;
-            html = this.lineNumbering.insertLineNumbers(html, motion.lineLength, highlight, null, maxLine);
+            html = this.lineNumbering.insertLineNumbers(html, lineLength, highlight, null, maxLine);
         } else {
             // Prevents empty lines at the end of the motion
             html = '';
@@ -451,13 +426,18 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      *
      * @param {number} motionId
      * @param {LineRange} lineRange
+     * @param {number} lineLength
      */
-    public createChangeRecommendationTemplate(motionId: number, lineRange: LineRange): ViewChangeReco {
+    public createChangeRecommendationTemplate(
+        motionId: number,
+        lineRange: LineRange,
+        lineLength: number
+    ): ViewChangeReco {
         const changeReco = new MotionChangeReco();
         changeReco.line_from = lineRange.from;
         changeReco.line_to = lineRange.to;
         changeReco.type = ModificationType.TYPE_REPLACEMENT;
-        changeReco.text = this.extractMotionLineRange(motionId, lineRange, false);
+        changeReco.text = this.extractMotionLineRange(motionId, lineRange, false, lineLength);
         changeReco.rejected = false;
         changeReco.motion_id = motionId;
 
@@ -470,12 +450,17 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      *
      * @param {ViewMotion} motion
      * @param {ViewUnifiedChange} change
+     * @param {number} lineLength
      * @param {number} highlight
      * @returns {string}
      */
-    public getChangeDiff(motion: ViewMotion, change: ViewUnifiedChange, highlight?: number): string {
-        const lineLength = motion.lineLength,
-            html = this.lineNumbering.insertLineNumbers(motion.text, lineLength);
+    public getChangeDiff(
+        motion: ViewMotion,
+        change: ViewUnifiedChange,
+        lineLength: number,
+        highlight?: number
+    ): string {
+        const html = this.lineNumbering.insertLineNumbers(motion.text, lineLength);
 
         let data, oldText;
 
@@ -534,15 +519,15 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      *
      * @param {ViewMotion} motion
      * @param {boolean} lineBreaks
+     * @param {number} lineLength
      * @returns {string[]}
      */
-    public getTextParagraphs(motion: ViewMotion, lineBreaks: boolean): string[] {
+    public getTextParagraphs(motion: ViewMotion, lineBreaks: boolean, lineLength: number): string[] {
         if (!motion) {
             return [];
         }
         let html = motion.text;
         if (lineBreaks) {
-            const lineLength = motion.lineLength;
             html = this.lineNumbering.insertLineNumbers(html, lineLength);
         }
         return this.lineNumbering.splitToParagraphs(html);
@@ -552,12 +537,12 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      * Returns all paragraphs that are affected by the given amendment in diff-format
      *
      * @param {ViewMotion} amendment
+     * @param {number} lineLength
      * @returns {DiffLinesInParagraph}
      */
-    public getAmendedParagraphs(amendment: ViewMotion): DiffLinesInParagraph[] {
+    public getAmendedParagraphs(amendment: ViewMotion, lineLength: number): DiffLinesInParagraph[] {
         const motion = this.getAmendmentBaseMotion(amendment);
-        const baseParagraphs = this.getTextParagraphs(motion, true);
-        const lineLength = amendment.lineLength;
+        const baseParagraphs = this.getTextParagraphs(motion, true, lineLength);
 
         return amendment.amendment_paragraphs
             .map(
@@ -581,12 +566,12 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      * Returns all paragraphs that are affected by the given amendment as unified change objects.
      *
      * @param {ViewMotion} amendment
+     * @param {number} lineLength
      * @returns {ViewMotionAmendedParagraph[]}
      */
-    public getAmendmentAmendedParagraphs(amendment: ViewMotion): ViewMotionAmendedParagraph[] {
+    public getAmendmentAmendedParagraphs(amendment: ViewMotion, lineLength: number): ViewMotionAmendedParagraph[] {
         const motion = this.getAmendmentBaseMotion(amendment);
-        const baseParagraphs = this.getTextParagraphs(motion, true);
-        const lineLength = amendment.lineLength;
+        const baseParagraphs = this.getTextParagraphs(motion, true, lineLength);
 
         return amendment.amendment_paragraphs
             .map(
