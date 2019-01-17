@@ -29,6 +29,7 @@ import { CreateMotion } from '../models/create-motion';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { ConfigService } from '../../../core/services/config.service';
+import { MotionPoll } from 'app/shared/models/motions/motion-poll';
 
 /**
  * Repository Services for motions (and potentially categories)
@@ -631,5 +632,45 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         const viewMotions: ViewMotion[] = [];
         duplicates.forEach(item => viewMotions.push(this.createViewModel(item)));
         return viewMotions;
+    }
+
+    /**
+     * Sends a request to the server, creating a new poll for the motion
+     */
+    public async createPoll(motion: ViewMotion): Promise<void> {
+        const url = '/rest/motions/motion/' + motion.id + '/create_poll/';
+        await this.httpService.post(url);
+    }
+
+    /**
+     * Sends an update request for a poll.
+     *
+     * @param poll
+     */
+    public async updatePoll(poll: MotionPoll): Promise<void> {
+        const url = '/rest/motions/motion-poll/' + poll.id + '/';
+        const data = {
+            motion_id: poll.motion_id,
+            id: poll.id,
+            votescast: poll.votescast,
+            votesvalid: poll.votesvalid,
+            votesinvalid: poll.votesinvalid,
+            votes: {
+                Yes: poll.yes,
+                No: poll.no,
+                Abstain: poll.abstain
+            }
+        };
+        await this.httpService.put(url, data);
+    }
+
+    /**
+     * Sends a haap request to delete the given poll
+     *
+     * @param poll
+     */
+    public async deletePoll(poll: MotionPoll): Promise<void> {
+        const url = '/rest/motions/motion-poll/' + poll.id + '/';
+        await this.httpService.delete(url);
     }
 }
