@@ -1,0 +1,12 @@
+<os-meta-text-block showActionRow="true" icon="speaker_notes">
+
+    <ng-container class="meta-text-block-title">
+        <span translate>Motion log</span>
+    </ng-container>
+    <ng-container class="meta-text-block-content">
+        <div *ngFor="let message of motion.motion.log_messages">
+            <span class="small-messages">{{message.message}}</span>
+        </div>
+    </ng-container>
+
+</os-meta-text-block>

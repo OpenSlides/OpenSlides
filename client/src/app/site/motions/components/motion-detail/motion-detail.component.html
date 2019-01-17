@@ -106,9 +106,17 @@
 </os-head-bar>
 
 <!-- Title -->
-<h1 class="title-left on-transition-fade" *ngIf="motion && !editMotion">
-    {{ motion.title }}
-</h1>
+<div class="title-left on-transition-fade" *ngIf="motion && !editMotion">
+    <div class="title-line">
+        <h1>
+            {{ motion.title }}
+        </h1>
+        <button mat-icon-button color="primary" (click)="toggleFavorite()">
+            <mat-icon>{{ motion.star ? 'star' : 'star_border' }}</mat-icon>
+        </button>
+    </div>
+    <span class="main-nav-color title-font"><span translate>Sequential number</span>&nbsp;{{ motion.id }}</span>
+</div>
 
 <ng-container *ngIf="vp.isMobile; then mobileView; else desktopView"></ng-container>
 
@@ -145,6 +153,10 @@
 
         <os-motion-comments *ngIf="!editMotion" [motion]="motion"></os-motion-comments>
         <os-personal-note *ngIf="!editMotion" [motion]="motion"></os-personal-note>
+        <button mat-button *ngIf="canShowLog" (click)="motionLogExpanded =!motionLogExpanded">
+            <span translate>Show motion log</span>
+        </button>
+        <os-motion-log *ngIf="motionLogExpanded" [motion]="motion"></os-motion-log>
     </mat-accordion>
 </ng-template>
 
@@ -158,6 +170,10 @@
 
             <os-motion-comments *ngIf="!editMotion" [motion]="motion"></os-motion-comments>
             <os-personal-note *ngIf="!editMotion" [motion]="motion"></os-personal-note>
+            <button mat-button *ngIf="canShowLog" (click)="motionLogExpanded =!motionLogExpanded">
+                    <span translate>Show motion log</span>
+                </button>
+                <os-motion-log *ngIf="motionLogExpanded" [motion]="motion"></os-motion-log>
         </div>
         <div class="desktop-right ">
             <!-- Content -->
@@ -264,6 +280,9 @@
                         : ('not set' | translate)
                 }}
             </mat-basic-chip>
+            <button mat-button *ngIf="canFollowRecommendation()" (click)="onFollowRecButton()">
+                <span translate>Follow recommendation</span>
+            </button>
         </div>
 
         <!-- Category -->
@@ -310,10 +329,12 @@
         <div *ngIf="!editMotion">
             <os-motion-poll *ngFor="let poll of motion.motion.polls; let i = index" [rawPoll]="poll" [pollIndex]="i">
             </os-motion-poll>
-            <button mat-button *ngIf="perms.isAllowed('createpoll', motion)" (click)="createPoll()">
-                <mat-icon class="main-nav-color">poll</mat-icon>
-                <span translate>Create poll</span>
-            </button>
+            <div class="create-poll-button" *ngIf="perms.isAllowed('createpoll', motion)">
+                <button mat-button (click)="createPoll()">
+                    <mat-icon class="main-nav-color">poll</mat-icon>
+                    <span translate>Create poll</span>
+                </button>
+            </div>
         </div>
     </div>
 </ng-template>
@@ -467,7 +488,7 @@
             <!-- Attachments -->
             <div *ngIf="motion.hasAttachments() || editMotion" class="content-field">
                 <div *ngIf="!editMotion">
-                    <h3>{{ "Attachments" | translate }}<mat-icon>attach_file</mat-icon></h3>
+                    <h3>{{ 'Attachments' | translate }}<mat-icon>attach_file</mat-icon></h3>
                     <mat-list dense>
                         <mat-list-item *ngFor="let file of motion.attachments">
                             <a [routerLink]="" (click)="onClickAttacment(file)">{{ file.title }}</a>

@@ -26,7 +26,7 @@ export class MotionFilterListService extends FilterListService<Motion, ViewMotio
             this.motionBlockFilterOptions,
             this.recommendationFilterOptions,
             this.motionCommentFilterOptions
-        ];
+        ].concat(this.staticFilterOptions);
     }
 
     /**
@@ -65,6 +65,39 @@ export class MotionFilterListService extends FilterListService<Motion, ViewMotio
         label: 'Recommendation',
         options: []
     };
+
+    public staticFilterOptions = [
+        {
+            property: 'star',
+            label: 'Favorites',
+            isActive: false,
+            options: [
+                {
+                    condition: true,
+                    label: 'Is favorite'
+                },
+                {
+                    condition: false,
+                    label: 'Is not favorite'
+                }
+            ]
+        },
+        {
+            property: 'hasNotes',
+            label: 'Personal notes',
+            isActive: false,
+            options: [
+                {
+                    condition: true,
+                    label: 'Has notes'
+                },
+                {
+                    condition: false,
+                    label: 'Does not have notes'
+                }
+            ]
+        }
+    ];
 
     /**
      * Constructor. Subscribes to a variety of Repository to dynamically update
