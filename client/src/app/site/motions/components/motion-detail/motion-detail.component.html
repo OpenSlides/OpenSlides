@@ -615,7 +615,7 @@
             mat-menu-item
             translate
             (click)="setLineNumberingMode(LineNumberingMode.None)"
-            [ngClass]="{ selected: motion.lnMode === LineNumberingMode.None }"
+            [ngClass]="{ selected: lnMode === LineNumberingMode.None }"
         >
             none
         </button>
@@ -623,7 +623,7 @@
             mat-menu-item
             translate
             (click)="setLineNumberingMode(LineNumberingMode.Inside)"
-            [ngClass]="{ selected: motion.lnMode === LineNumberingMode.Inside }"
+            [ngClass]="{ selected: lnMode === LineNumberingMode.Inside }"
         >
             inline
         </button>
@@ -631,7 +631,7 @@
             mat-menu-item
             translate
             (click)="setLineNumberingMode(LineNumberingMode.Outside)"
-            [ngClass]="{ selected: motion.lnMode === LineNumberingMode.Outside }"
+            [ngClass]="{ selected: lnMode === LineNumberingMode.Outside }"
         >
             outside
         </button>
@@ -644,7 +644,7 @@
         mat-menu-item
         translate
         (click)="setChangeRecoMode(ChangeRecoMode.Original)"
-        [ngClass]="{ selected: motion?.crMode === ChangeRecoMode.Original }"
+        [ngClass]="{ selected: crMode === ChangeRecoMode.Original }"
     >
         Original version
     </button>
@@ -652,7 +652,7 @@
         mat-menu-item
         translate
         (click)="setChangeRecoMode(ChangeRecoMode.Changed)"
-        [ngClass]="{ selected: motion?.crMode === ChangeRecoMode.Changed }"
+        [ngClass]="{ selected: crMode === ChangeRecoMode.Changed }"
     >
         Changed version
     </button>
@@ -660,7 +660,7 @@
         mat-menu-item
         translate
         (click)="setChangeRecoMode(ChangeRecoMode.Diff)"
-        [ngClass]="{ selected: motion?.crMode === ChangeRecoMode.Diff }"
+        [ngClass]="{ selected: crMode === ChangeRecoMode.Diff }"
     >
         Diff version
     </button>
@@ -668,7 +668,7 @@
         mat-menu-item
         translate
         (click)="setChangeRecoMode(ChangeRecoMode.Final)"
-        [ngClass]="{ selected: motion?.crMode === ChangeRecoMode.Final }"
+        [ngClass]="{ selected: crMode === ChangeRecoMode.Final }"
     >
         Final version
     </button>

@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
+import { ConfigService } from '../../../../core/services/config.service';
 
 import { MotionRepositoryService } from '../../services/motion-repository.service';
 import { ViewMotion } from '../../models/view-motion';
@@ -62,10 +63,16 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
     public metaInfoForm: FormGroup;
 
     /**
+     * Indicates the maximum line length as defined in the configuration.
+     */
+    public lineLength: number;
+
+    /**
      * Constructs this component.
      *
      * @param {Title} titleService set the browser title
      * @param {TranslateService} translate the translation service
+     * @param {ConfigService} configService The configuration provider
      * @param {FormBuilder} formBuilder Form builder
      * @param {MotionRepositoryService} repo Motion Repository
      * @param {ActivatedRoute} route The activated route
@@ -77,6 +84,7 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
     public constructor(
         titleService: Title,
         translate: TranslateService,
+        private configService: ConfigService,
         private formBuilder: FormBuilder,
         private repo: MotionRepositoryService,
         private route: ActivatedRoute,
@@ -86,8 +94,12 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
         matSnackBar: MatSnackBar
     ) {
         super(titleService, translate, matSnackBar);
-        this.getMotionByUrl();
         this.createForm();
+
+        this.configService.get('motions_line_length').subscribe(lineLength => {
+            this.lineLength = lineLength;
+            this.getMotionByUrl();
+        });
     }
 
     /**
@@ -100,7 +112,7 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
                 this.motion = newViewMotion;
 
                 this.paragraphs = this.repo
-                    .getTextParagraphs(this.motion, true)
+                    .getTextParagraphs(this.motion, true, this.lineLength)
                     .map((paragraph: string, index: number) => {
                         return {
                             paragraphNo: index,

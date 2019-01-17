@@ -50,30 +50,6 @@ export class ViewMotion extends BaseViewModel {
     protected _attachments: Mediafile[];
 
     /**
-     * Indicates the LineNumberingMode Mode.
-     * Needs to be accessed from outside
-     */
-    public lnMode: LineNumberingMode;
-
-    /**
-     * Indicates the Change reco Mode.
-     * Needs to be accessed from outside
-     */
-    public crMode: ChangeRecoMode;
-
-    /**
-     * Indicates the maximum line length as defined in the configuration.
-     * Needs to be accessed from outside
-     */
-    public lineLength: number;
-
-    /**
-     * Indicates the currently highlighted line, if any.
-     * Needs to be accessed from outside
-     */
-    public highlightedLine: number;
-
-    /**
      * Is set by the repository; this is the order of the flat call list given by
      * the properties weight and sort_parent_id
      */
@@ -242,10 +218,7 @@ export class ViewMotion extends BaseViewModel {
         state?: WorkflowState,
         item?: Item,
         block?: MotionBlock,
-        attachments?: Mediafile[],
-        lineLength: number = 80,
-        lineNumberingMode?: LineNumberingMode,
-        crMode?: ChangeRecoMode
+        attachments?: Mediafile[]
     ) {
         super();
         this._motion = motion;
@@ -257,12 +230,6 @@ export class ViewMotion extends BaseViewModel {
         this._item = item;
         this._block = block;
         this._attachments = attachments;
-
-        this.lnMode = lineNumberingMode;
-        this.crMode = crMode;
-        this.lineLength = lineLength;
-
-        this.highlightedLine = null;
     }
 
     public getTitle(): string {
@@ -421,10 +388,7 @@ export class ViewMotion extends BaseViewModel {
             this._state,
             this._item,
             this._block,
-            this._attachments,
-            this.lineLength,
-            this.lnMode,
-            this.crMode
+            this._attachments
         );
     }
 }
