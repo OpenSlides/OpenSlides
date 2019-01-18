@@ -95,9 +95,7 @@ export class MotionMultiselectService {
         }));
         const selectedChoice = await this.choiceService.open(title, choices);
         if (selectedChoice) {
-            for (const motion of motions) {
-                await this.repo.setState(motion, selectedChoice.items as number);
-            }
+            await this.repo.setMultiState(motions, selectedChoice.items as number);
         }
     }
 
