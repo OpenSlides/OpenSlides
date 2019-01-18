@@ -1,4 +1,4 @@
-<os-head-bar [mainButton]="true" (mainEvent)="onPlusButton()" [multiSelectMode]="isMultiSelect">
+<os-head-bar [mainButton]="perms.isAllowed('create')" (mainEvent)="onPlusButton()" [multiSelectMode]="isMultiSelect">
     <!-- Title -->
     <div class="title-slot"><h2 translate>Motions</h2></div>
 
@@ -17,154 +17,159 @@
 </os-head-bar>
 
 <mat-drawer-container class="on-transition-fade">
-<os-sort-filter-bar [filterService]="filterService" [sortService]="sortService"
-    (searchFieldChange)="searchFilter($event)">
-</os-sort-filter-bar>
+    <os-sort-filter-bar [filterService]="filterService" [sortService]="sortService"
+        (searchFieldChange)="searchFilter($event)">
+    </os-sort-filter-bar>
 
-<mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
-    <!-- Selector column -->
-    <ng-container matColumnDef="selector">
-        <mat-header-cell *matHeaderCellDef mat-sort-header class="checkbox-cell"></mat-header-cell>
-        <mat-cell *matCellDef="let motion" class="checkbox-cell">
-            <mat-icon>{{ isSelected(motion) ? 'check_circle' : '' }}</mat-icon>
-        </mat-cell>
-    </ng-container>
+    <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
+        <!-- Selector column -->
+        <ng-container matColumnDef="selector">
+            <mat-header-cell *matHeaderCellDef mat-sort-header class="checkbox-cell"></mat-header-cell>
+            <mat-cell *matCellDef="let motion" class="checkbox-cell">
+                <mat-icon>{{ isSelected(motion) ? 'check_circle' : '' }}</mat-icon>
+            </mat-cell>
+        </ng-container>
 
-    <!-- identifier column -->
-    <ng-container matColumnDef="identifier">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Identifier</mat-header-cell>
-        <mat-cell *matCellDef="let motion">
-            <div class="innerTable">{{ motion.identifier }}</div>
-        </mat-cell>
-    </ng-container>
+        <!-- identifier column -->
+        <ng-container matColumnDef="identifier">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Identifier</mat-header-cell>
+            <mat-cell *matCellDef="let motion">
+                <div class="innerTable">{{ motion.identifier }}</div>
+            </mat-cell>
+        </ng-container>
 
-    <!-- title column -->
-    <ng-container matColumnDef="title">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
-        <mat-cell *matCellDef="let motion">
-            <div class="innerTable">
-                <span class="motion-list-title">{{ motion.title }}
-                    <span>
-                        <mat-icon inline>{{ motion.star ? 'star' : 'star_border' }}</mat-icon>
+        <!-- title column -->
+        <ng-container matColumnDef="title">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
+            <mat-cell *matCellDef="let motion">
+                <div class="innerTable">
+                    <span class="motion-list-title">{{ motion.title }}
+                        <span>
+                            <mat-icon inline>{{ motion.star ? 'star' : 'star_border' }}</mat-icon>
+                        </span>
                     </span>
-                </span>
 
-                <!-- attachments -->
-                <span class="attached-files" *ngIf="motion.hasAttachments()">
-                    <!-- <mat-basic-chip class="bluegrey"> <mat-icon>attach_file</mat-icon> </mat-basic-chip> -->
-                    <mat-icon>attach_file</mat-icon>
-                </span>
+                    <!-- attachments -->
+                    <span class="attached-files" *ngIf="motion.hasAttachments()">
+                        <!-- <mat-basic-chip class="bluegrey"> <mat-icon>attach_file</mat-icon> </mat-basic-chip> -->
+                        <mat-icon>attach_file</mat-icon>
+                    </span>
 
-                <br />
-                <span class="motion-list-from" *ngIf="motion.submitters.length">
-                    <span translate>by</span> {{ motion.submitters }}
-                </span>
-                <br *ngIf="motion.submitters.length" />
-                <!-- state -->
-                <mat-basic-chip
-                    *ngIf="motion.state"
-                    [ngClass]="{
-                        green: motion.state.css_class === 'success',
-                        red: motion.state.css_class === 'danger',
-                        grey: motion.state.css_class === 'default',
-                        lightblue: motion.state.css_class === 'primary'
-                    }"
-                >
-                    {{ motion.state.name | translate }}
-                </mat-basic-chip>
+                    <br />
+                    <span class="motion-list-from" *ngIf="motion.submitters.length">
+                        <span translate>by</span> {{ motion.submitters }}
+                    </span>
+                    <br *ngIf="motion.submitters.length" />
+                    <!-- state -->
+                    <mat-basic-chip
+                        *ngIf="motion.state"
+                        [ngClass]="{
+                            green: motion.state.css_class === 'success',
+                            red: motion.state.css_class === 'danger',
+                            grey: motion.state.css_class === 'default',
+                            lightblue: motion.state.css_class === 'primary'
+                        }"
+                    >
+                        {{ motion.state.name | translate }}
+                    </mat-basic-chip>
 
-                <!-- recommendation -->
-                <span *ngIf="motion.recommendation">
-                    <mat-basic-chip class="bluegrey">{{
-                        motion.recommendation.recommendation_label | translate
-                    }}</mat-basic-chip>
-                </span>
-            </div>
-        </mat-cell>
-    </ng-container>
-
-    <!-- state column -->
-    <ng-container matColumnDef="state">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>State</mat-header-cell>
-        <mat-cell *matCellDef="let motion">
-            <div class="innerTable">
-                <div class="small" *ngIf="motion.category">
-                    <mat-icon>device_hub</mat-icon>
-                    {{ motion.category }}
+                    <!-- recommendation -->
+                    <span *ngIf="motion.recommendation">
+                        <mat-basic-chip class="bluegrey">{{
+                            motion.recommendation.recommendation_label | translate
+                        }}</mat-basic-chip>
+                    </span>
                 </div>
-                <div class="small" *ngIf="motion.motion_block">
-                    <mat-icon>widgets</mat-icon>
-                    {{ motion.motion_block.title }}
+            </mat-cell>
+        </ng-container>
+
+        <!-- state column -->
+        <ng-container matColumnDef="state">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>State</mat-header-cell>
+            <mat-cell *matCellDef="let motion">
+                <div class="innerTable">
+                    <div class="small" *ngIf="motion.category">
+                        <mat-icon>device_hub</mat-icon>
+                        {{ motion.category }}
+                    </div>
+                    <div class="small" *ngIf="motion.motion_block">
+                        <mat-icon>widgets</mat-icon>
+                        {{ motion.motion_block.title }}
+                    </div>
                 </div>
-            </div>
-        </mat-cell>
-    </ng-container>
+            </mat-cell>
+        </ng-container>
 
-    <!-- Speakers column -->
-    <ng-container matColumnDef="speakers">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Speakers</mat-header-cell>
-        <mat-cell *matCellDef="let motion">
-            <button mat-icon-button (click)="onSpeakerIcon(motion, $event)">
-                <mat-icon
-                    [matBadge]="motion.agendaSpeakerAmount > 0 ? motion.agendaSpeakerAmount : null"
-                    matBadgeColor="accent"
-                >
-                    mic
-                </mat-icon>
-            </button>
-        </mat-cell>
-    </ng-container>
+        <!-- Speakers column -->
+        <ng-container matColumnDef="speakers">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Speakers</mat-header-cell>
+            <mat-cell *matCellDef="let motion">
+                <button mat-icon-button (click)="onSpeakerIcon(motion, $event)">
+                    <mat-icon
+                        [matBadge]="motion.agendaSpeakerAmount > 0 ? motion.agendaSpeakerAmount : null"
+                        matBadgeColor="accent"
+                    >
+                        mic
+                    </mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
 
-    <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
-    <mat-row
-        [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected' : ''"
-        (click)="selectItem(row, $event)"
-        *matRowDef="let row; columns: getColumnDefinition()"
-        class="lg"
-    >
-    </mat-row>
-</mat-table>
+        <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
+        <mat-row
+            [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected' : ''"
+            (click)="selectItem(row, $event)"
+            *matRowDef="let row; columns: getColumnDefinition()"
+            class="lg"
+        >
+        </mat-row>
+    </mat-table>
 
-<mat-paginator class="on-transition-fade" [pageSizeOptions]="[25, 50, 75, 100, 125]"></mat-paginator>
+    <mat-paginator class="on-transition-fade" [pageSizeOptions]="[25, 50, 75, 100, 125]"></mat-paginator>
+</mat-drawer-container>
 
 <mat-menu #motionListMenu="matMenu">
     <div *ngIf="!isMultiSelect">
-        <button mat-menu-item *osPerms="'motions.can_manage'" (click)="toggleMultiSelect()">
-            <mat-icon>library_add</mat-icon>
-            <span translate>Multiselect</span>
-        </button>
-        <button mat-menu-item *osPerms="'motions.can_manage'" routerLink="call-list">
-            <mat-icon>sort</mat-icon>
-            <span translate>Call list</span>
-        </button>
-        <button mat-menu-item routerLink="category">
-            <mat-icon>device_hub</mat-icon>
-            <span translate>Categories</span>
-        </button>
-        <button mat-menu-item routerLink="blocks">
-            <mat-icon>widgets</mat-icon>
-            <span translate>Motion blocks</span>
-        </button>
-        <button mat-menu-item routerLink="statute-paragraphs" *ngIf="statutesEnabled">
-            <mat-icon>account_balance</mat-icon>
-            <span translate>Statute</span>
-        </button>
-        <button mat-menu-item routerLink="comment-section">
-            <mat-icon>speaker_notes</mat-icon>
-            <span translate>Comment fields</span>
-        </button>
-        <button mat-menu-item routerLink="/tags" *osPerms="'core.can_manage_tags'">
-            <mat-icon>local_offer</mat-icon>
-            <span translate>Tags</span>
-        </button>
-        <button mat-menu-item (click)="csvExportMotionList()">
-            <mat-icon>archive</mat-icon>
-            <span translate>Export as CSV</span>
-        </button>
-        <button mat-menu-item *osPerms="'motions.can_manage'" routerLink="import">
-            <mat-icon>save_alt</mat-icon>
-            <span translate>Import</span><span>&nbsp;...</span>
-        </button>
+        <div *ngIf="perms.isAllowed('change_metadata')">
+            <button mat-menu-item (click)="toggleMultiSelect()">
+                <mat-icon>library_add</mat-icon>
+                <span translate>Multiselect</span>
+            </button>
+        </div>
+        <div *ngIf="perms.isAllowed('manage')">
+            <button mat-menu-item routerLink="call-list">
+                <mat-icon>sort</mat-icon>
+                <span translate>Call list</span>
+            </button>
+            <button mat-menu-item routerLink="category">
+                <mat-icon>device_hub</mat-icon>
+                <span translate>Categories</span>
+            </button>
+            <button mat-menu-item routerLink="blocks">
+                <mat-icon>widgets</mat-icon>
+                <span translate>Motion blocks</span>
+            </button>
+            <button mat-menu-item routerLink="statute-paragraphs" *ngIf="statutesEnabled">
+                <mat-icon>account_balance</mat-icon>
+                <span translate>Statute</span>
+            </button>
+            <button mat-menu-item routerLink="comment-section">
+                <mat-icon>speaker_notes</mat-icon>
+                <span translate>Comment fields</span>
+            </button>
+            <button mat-menu-item routerLink="/tags" *osPerms="'core.can_manage_tags'">
+                <mat-icon>local_offer</mat-icon>
+                <span translate>Tags</span>
+            </button>
+            <button mat-menu-item (click)="csvExportMotionList()">
+                <mat-icon>archive</mat-icon>
+                <span translate>Export as CSV</span>
+            </button>
+            <button mat-menu-item routerLink="import">
+                <mat-icon>save_alt</mat-icon>
+                <span translate>Import</span><span>&nbsp;...</span>
+            </button>
+        </div>
     </div>
     <div *ngIf="isMultiSelect">
         <button mat-menu-item (click)="selectAll()">
@@ -175,7 +180,7 @@
             <mat-icon>clear</mat-icon>
             <span translate>Deselect all</span>
         </button>
-        <div *osPerms="'motions.can_manage'">
+        <div *ngIf="perms.isAllowed('change_metadata')">
             <mat-divider></mat-divider>
             <button mat-menu-item (click)="multiselectWrapper(multiselectService.setStateOfMultiple(selectedRows))">
                 <mat-icon>label</mat-icon>
@@ -217,15 +222,17 @@
                 <span translate>Move to agenda item</span>
             </button>
         </div>
-        <mat-divider></mat-divider>
-        <button
-            mat-menu-item
-            class="red-warning-text"
-            (click)="multiselectService.delete(selectedRows); toggleMultiSelect()"
-        >
-            <mat-icon>delete</mat-icon>
-            <span translate>Delete</span>
-        </button>
+        <div *ngIf="perms.isAllowed('manage')">
+            <mat-divider></mat-divider>
+            <button
+                mat-menu-item
+                class="red-warning-text"
+                (click)="multiselectService.delete(selectedRows); toggleMultiSelect()"
+            >
+                <mat-icon>delete</mat-icon>
+                <span translate>Delete</span>
+            </button>
+        </div>
     </div>
 </mat-menu>
-</mat-drawer-container>
+

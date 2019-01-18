@@ -1,17 +1,24 @@
 <h4 translate>
     <span translate>Submitters</span>
-    <button class="small-button" type="button" mat-icon-button disableRipple *ngIf="!isEditMode" (click)="onEdit()">
+    <button
+        class="small-button"
+        type="button"
+        mat-icon-button
+        disableRipple
+        *ngIf="!isEditMode && perms.isAllowed('change_metadata')"
+        (click)="onEdit()"
+    >
         <mat-icon>edit</mat-icon>
     </button>
 </h4>
 
-<div *ngIf="!isEditMode">
+<div *ngIf="!isEditMode || !perms.isAllowed('change_metadata')">
     <mat-chip-list *ngFor="let submitter of motion.submitters" class="user">
         <mat-chip>{{ submitter.full_name }}</mat-chip>
     </mat-chip-list>
 </div>
 
-<div *ngIf="isEditMode">
+<div *ngIf="isEditMode && perms.isAllowed('change_metadata')">
     <os-sorting-list
         [input]="editSubmitterObservable"
         [live]="true"

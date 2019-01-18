@@ -1,5 +1,5 @@
 <os-head-bar
-    [mainButton]="opCanEdit()"
+    [mainButton]="perms.isAllowed('update_motion', motion)"
     mainButtonIcon="edit"
     [nav]="false"
     [editMode]="editMotion"
@@ -61,13 +61,12 @@
     <mat-menu #motionExtraMenu="matMenu">
         <div *ngIf="motion">
             <!-- PDF -->
-            <button mat-menu-item
-                (click)="onDownloadPdf()">
+            <button mat-menu-item (click)="onDownloadPdf()">
                 <mat-icon>picture_as_pdf</mat-icon>
                 <span translate>PDF</span>
             </button>
             <!-- List of speakers -->
-            <button mat-menu-item [routerLink]="getSpeakerLink()">
+            <button mat-menu-item [routerLink]="getSpeakerLink()" *osPerms="'agenda.can_see'">
                 <mat-icon>mic</mat-icon>
                 <span translate>List of speakers</span>
             </button>
@@ -80,7 +79,7 @@
             <button
                 mat-menu-item
                 (click)="createAmendment()"
-                *ngIf="amendmentsEnabled && motion && !motion.isParagraphBasedAmendment()"
+                *ngIf="perms.isAllowed('can_create_amendments', motion)"
             >
                 <mat-icon>add</mat-icon>
                 <span translate>New amendment</span>
@@ -95,13 +94,14 @@
                 <span translate>Show entire motion text</span>
             </button>
 
-            <mat-divider></mat-divider>
-
-            <!-- Delete -->
-            <button mat-menu-item class="red-warning-text" (click)="deleteMotionButton()">
-                <mat-icon>delete</mat-icon>
-                <span translate>Delete</span>
-            </button>
+            <div *ngIf="perms.isAllowed('manage')">
+                <mat-divider></mat-divider>
+                <!-- Delete -->
+                <button mat-menu-item class="red-warning-text" (click)="deleteMotionButton()">
+                    <mat-icon>delete</mat-icon>
+                    <span translate>Delete</span>
+                </button>
+            </div>
         </div>
     </mat-menu>
 </os-head-bar>
@@ -110,9 +110,7 @@
     <!-- Title -->
     <div class="title on-transition-fade" *ngIf="motion && !editMotion">
         <div class="title-line">
-            <h1>
-                {{ motion.title }}
-            </h1>
+            <h1>{{ motion.title }}</h1>
             <button mat-icon-button color="primary" (click)="toggleFavorite()">
                 <mat-icon>{{ motion.star ? 'star' : 'star_border' }}</mat-icon>
             </button>
@@ -124,18 +122,13 @@
 </div>
 
 <ng-template #mobileView>
-
     <!-- Meta info -->
-    <div class="hspacing">
-        <ng-container *ngTemplateOutlet="metaInfoTemplate"></ng-container>
-    </div>
+    <div class="hspacing"><ng-container *ngTemplateOutlet="metaInfoTemplate"></ng-container></div>
 
     <mat-divider class="spacer-top-10 spacer-bottom-20"></mat-divider>
 
     <!-- Content -->
-    <div class="hspacing">
-        <ng-container *ngTemplateOutlet="contentTemplate"></ng-container>
-    </div>
+    <div class="hspacing"><ng-container *ngTemplateOutlet="contentTemplate"></ng-container></div>
 
     <mat-divider class="spacer-top-10 spacer-bottom-20"></mat-divider>
 
@@ -145,11 +138,14 @@
     <!-- Personal note -->
     <os-personal-note *ngIf="!editMotion" [motion]="motion"></os-personal-note>
 
-    <!-- Motoin log -->
-    <button mat-button *ngIf="canShowLog" (click)="motionLogExpanded =!motionLogExpanded">
+    <ng-container *ngTemplateOutlet="motionLogTemplate"></ng-container>
+</ng-template>
+
+<ng-template #motionLogTemplate>
+    <button mat-button *ngIf="canShowLog" (click)="motionLogExpanded = !motionLogExpanded">
         <span translate>Show motion log</span>
     </button>
-    <os-motion-log *ngIf="motionLogExpanded" [motion]="motion"></os-motion-log>
+        <os-motion-log *ngIf="canShowLog && motionLogExpanded" [motion]="motion"></os-motion-log>
 </ng-template>
 
 <ng-template #desktopView>
@@ -162,10 +158,7 @@
 
             <os-motion-comments *ngIf="!editMotion" [motion]="motion"></os-motion-comments>
             <os-personal-note *ngIf="!editMotion" [motion]="motion"></os-personal-note>
-            <button mat-button *ngIf="canShowLog" (click)="motionLogExpanded =!motionLogExpanded">
-                    <span translate>Show motion log</span>
-                </button>
-                <os-motion-log *ngIf="motionLogExpanded" [motion]="motion"></os-motion-log>
+            <ng-container *ngTemplateOutlet="motionLogTemplate"></ng-container>
         </div>
         <div class="desktop-right ">
             <!-- Content -->
@@ -229,24 +222,23 @@
                     {{ state.name | translate }}
                 </button>
                 <mat-divider></mat-divider>
-                <button mat-menu-item (click)="setState(null)">
+                <button mat-menu-item (click)="setState(null)" *ngIf="perms.isAllowed('change_metadata', motion)">
                     <mat-icon>replay</mat-icon> {{ 'Reset state' | translate }}
                 </button>
             </mat-menu>
             <mat-basic-chip
-                *ngIf="motion.state"
+                *ngIf="perms.isAllowed('change_metadata', motion)"
                 [matMenuTriggerFor]="stateMenu"
-                [ngClass]="{
-                    green: motion.state.css_class === 'success',
-                    red: motion.state.css_class === 'danger',
-                    grey: motion.state.css_class === 'default',
-                    lightblue: motion.state.css_class === 'primary'
-                }"
+                [ngClass]="getStateCssColor()"
             >
                 {{ motion.state.name | translate }}
             </mat-basic-chip>
-
-            <!--*osPerms="['motions.can_manage', 'motions.can_manage_metadata']; -->
+            <mat-basic-chip
+                *ngIf="!perms.isAllowed('change_metadata', motion)"
+                [ngClass]="getStateCssColor()"
+            >
+                {{ motion.state.name | translate }}
+            </mat-basic-chip>
         </div>
 
         <!-- Recommendation -->
@@ -261,17 +253,33 @@
                     {{ recommendation.recommendation_label | translate }}
                 </button>
                 <mat-divider></mat-divider>
-                <button mat-menu-item (click)="setRecommendation(null)">
+                <button mat-menu-item *ngIf="perms.isAllowed('change_metadata', motion)"
+                    (click)="setRecommendation(null)">
                     <mat-icon>replay</mat-icon> {{ 'Reset recommendation' | translate }}
                 </button>
             </mat-menu>
-            <mat-basic-chip [matMenuTriggerFor]="recommendationMenu" class="bluegrey">
+            <mat-basic-chip
+                *ngIf="perms.isAllowed('change_metadata', motion)"
+                [matMenuTriggerFor]="recommendationMenu"
+                class="bluegrey"
+            >
                 {{
                     motion.recommendation
                         ? (motion.recommendation.recommendation_label | translate)
                         : ('not set' | translate)
                 }}
             </mat-basic-chip>
+            <mat-basic-chip
+                *ngIf="!perms.isAllowed('change_metadata', motion)"
+                class="bluegrey"
+            >
+                {{
+                    motion.recommendation
+                        ? (motion.recommendation.recommendation_label | translate)
+                        : ('not set' | translate)
+                }}
+            </mat-basic-chip>
+
             <button mat-button *ngIf="canFollowRecommendation()" (click)="onFollowRecButton()">
                 <span translate>Follow recommendation</span>
             </button>
@@ -291,7 +299,10 @@
                     {{ category }}
                 </button>
             </mat-menu>
-            <mat-basic-chip [matMenuTriggerFor]="categoryMenu" class="grey">
+            <mat-basic-chip *ngIf="perms.isAllowed('change_metadata', motion)" [matMenuTriggerFor]="categoryMenu" class="grey">
+                {{ motion.category ? motion.category : '–' }}
+            </mat-basic-chip>
+            <mat-basic-chip *ngIf="!perms.isAllowed('change_metadata', motion)" class="grey">
                 {{ motion.category ? motion.category : '–' }}
             </mat-basic-chip>
         </div>
@@ -305,7 +316,10 @@
                     {{ block }}
                 </button>
             </mat-menu>
-            <mat-basic-chip [matMenuTriggerFor]="blockMenu" class="grey">
+            <mat-basic-chip *ngIf="perms.isAllowed('change_metadata', motion)" [matMenuTriggerFor]="blockMenu" class="grey">
+                {{ motion.motion_block ? motion.motion_block : '–' }}
+            </mat-basic-chip>
+            <mat-basic-chip *ngIf="!perms.isAllowed('change_metadata', motion)" class="grey">
                 {{ motion.motion_block ? motion.motion_block : '–' }}
             </mat-basic-chip>
         </div>
@@ -380,7 +394,7 @@
 
         <!-- Submitter -->
         <div *ngIf="newMotion" class="content-field">
-            <div *osPerms="['motions.can_manage', 'motions.can_manage_metadata']">
+            <div *ngIf="perms.isAllowed('change_metadata', motion)">
                 <os-search-value-selector
                     ngDefaultControl
                     [form]="contentForm"
@@ -537,7 +551,7 @@
 
             <!-- Supporter form -->
             <div class="content-field" *ngIf="editMotion && minSupporters">
-                <div *osPerms="['motions.can_manage', 'motions.can_manage_metadata']">
+                <div *ngIf="perms.isAllowed('change_metadata', motion)">
                     <os-search-value-selector
                         ngDefaultControl
                         [form]="contentForm"
@@ -551,7 +565,7 @@
 
             <!-- Workflow -->
             <div class="content-field" *ngIf="editMotion && workflowObserver.value.length > 1">
-                <div *osPerms="['motions.can_manage', 'motions.can_manage_metadata']">
+                <div *ngIf="perms.isAllowed('change_metadata', motion)">
                     <os-search-value-selector
                         ngDefaultControl
                         [form]="contentForm"
@@ -565,7 +579,7 @@
 
             <!-- Origin form -->
             <div class="content-field" *ngIf="editMotion">
-                <div *osPerms="['motions.can_manage', 'motions.can_manage_metadata']">
+                <div *ngIf="perms.isAllowed('change_metadata', motion)">
                     <mat-form-field>
                         <input
                             matInput

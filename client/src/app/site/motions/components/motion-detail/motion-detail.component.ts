@@ -1,45 +1,43 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject, Subscription, ReplaySubject, concat } from 'rxjs';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatExpansionPanel, MatSnackBar, MatCheckboxChange } from '@angular/material';
 import { take, takeWhile, multicast, skipWhile } from 'rxjs/operators';
-
-import { Category } from '../../../../shared/models/motions/category';
-import { ViewportService } from '../../../../core/services/viewport.service';
-import { MotionRepositoryService } from '../../services/motion-repository.service';
-import { ChangeRecoMode, LineNumberingMode, ViewMotion } from '../../models/view-motion';
-import { User } from '../../../../shared/models/users/user';
-import { DataStoreService } from '../../../../core/services/data-store.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Motion } from '../../../../shared/models/motions/motion';
-import { BehaviorSubject, Subscription, ReplaySubject, concat } from 'rxjs';
+
+import { AgendaRepositoryService } from 'app/site/agenda/services/agenda-repository.service';
+import { BaseViewComponent } from '../../../base/base-view';
+import { Category } from '../../../../shared/models/motions/category';
+import { ChangeRecommendationRepositoryService } from '../../services/change-recommendation-repository.service';
+import { ChangeRecoMode, LineNumberingMode, ViewMotion } from '../../models/view-motion';
+import { CreateMotion } from '../../models/create-motion';
+import { ConfigService } from '../../../../core/services/config.service';
+import { DataStoreService } from '../../../../core/services/data-store.service';
 import { DiffLinesInParagraph, LineRange } from '../../services/diff.service';
+import { itemVisibilityChoices, Item } from 'app/shared/models/agenda/item';
+import { LocalPermissionsService } from '../../services/local-permissions.service';
+import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
+import { Motion } from '../../../../shared/models/motions/motion';
+import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import {
     MotionChangeRecommendationComponent,
     MotionChangeRecommendationComponentData
 } from '../motion-change-recommendation/motion-change-recommendation.component';
-import { ChangeRecommendationRepositoryService } from '../../services/change-recommendation-repository.service';
-import { ViewChangeReco } from '../../models/view-change-reco';
-
-import { ViewUnifiedChange } from '../../models/view-unified-change';
-import { OperatorService } from '../../../../core/services/operator.service';
-import { BaseViewComponent } from '../../../base/base-view';
-import { ViewStatuteParagraph } from '../../models/view-statute-paragraph';
-import { StatuteParagraphRepositoryService } from '../../services/statute-paragraph-repository.service';
-import { ConfigService } from '../../../../core/services/config.service';
-import { Workflow } from 'app/shared/models/motions/workflow';
-import { LocalPermissionsService } from '../../services/local-permissions.service';
-import { ViewCreateMotion } from '../../models/view-create-motion';
-import { CreateMotion } from '../../models/create-motion';
-import { MotionBlock } from 'app/shared/models/motions/motion-block';
-import { itemVisibilityChoices, Item } from 'app/shared/models/agenda/item';
-import { PromptService } from 'app/core/services/prompt.service';
-import { AgendaRepositoryService } from 'app/site/agenda/services/agenda-repository.service';
-import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { MotionPdfExportService } from '../../services/motion-pdf-export.service';
-import { PersonalNoteService } from '../../services/personal-note.service';
+import { MotionRepositoryService } from '../../services/motion-repository.service';
 import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
+import { PersonalNoteService } from '../../services/personal-note.service';
+import { PromptService } from 'app/core/services/prompt.service';
+import { StatuteParagraphRepositoryService } from '../../services/statute-paragraph-repository.service';
+import { User } from '../../../../shared/models/users/user';
+import { ViewChangeReco } from '../../models/view-change-reco';
+import { ViewCreateMotion } from '../../models/view-create-motion';
+import { ViewportService } from '../../../../core/services/viewport.service';
+import { ViewUnifiedChange } from '../../models/view-unified-change';
+import { ViewStatuteParagraph } from '../../models/view-statute-paragraph';
+import { Workflow } from 'app/shared/models/motions/workflow';
 
 /**
  * Component for the motion detail view
@@ -107,6 +105,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         if (
             this.motion &&
             !this.editMotion &&
+            this.perms.isAllowed('manage') &&
             this.motion.motion.log_messages &&
             this.motion.motion.log_messages.length
         ) {
@@ -316,7 +315,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         matSnackBar: MatSnackBar,
         public vp: ViewportService,
         public perms: LocalPermissionsService,
-        private op: OperatorService,
         private router: Router,
         private route: ActivatedRoute,
         private formBuilder: FormBuilder,
@@ -984,15 +982,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     }
 
     /**
-     * Determine if the user has the correct requirements to alter the motion
-     * TODO: All views should probably have a "isAllowedTo" routine to simplify this process
-     *
-     * @returns whether or not the OP is allowed to edit the motion
+     * Handler for creating a poll
      */
-    public opCanEdit(): boolean {
-        return this.op.hasPerms('motions.can_manage', 'motions.can_manage_metadata');
-    }
-
     public async createPoll(): Promise<void> {
         await this.repo.createPoll(this.motion);
     }
@@ -1000,7 +991,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     /**
      * Check if a recommendation can be followed. Checks for permissions and additionally if a recommentadion is present
      */
-    public get canFollowRecommendation(): boolean {
+    public canFollowRecommendation(): boolean {
         if (
             this.perms.isAllowed('createPoll', this.motion) &&
             this.motion.recommendation &&
@@ -1023,5 +1014,25 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      */
     public async toggleFavorite(): Promise<void> {
         this.personalNoteService.setPersonalNoteStar(this.motion.motion, !this.motion.star);
+    }
+
+    /**
+     * Translate the state's css class into a color
+     *
+     * @returns a string representing a color
+     */
+    public getStateCssColor(): string {
+        switch (this.motion.state.css_class) {
+            case 'success':
+                return 'green';
+            case 'danger':
+                return 'red';
+            case 'default':
+                return 'grey';
+            case 'primary':
+                return 'lightblue';
+            default:
+                return '';
+        }
     }
 }

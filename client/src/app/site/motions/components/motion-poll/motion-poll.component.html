@@ -6,10 +6,13 @@
         <div *ngIf="poll.has_votes" class="on-transition-fade poll-result">
             <div *ngFor="let key of pollValues">
                 <div class="poll-progress on-transition-fade" *ngIf="poll[key] !== undefined">
-                    <mat-icon class="main-nav-color" matTooltip="{{ getLabel(key) | translate }}"> {{ getIcon(key) }} </mat-icon>
+                    <mat-icon class="main-nav-color" matTooltip="{{ getLabel(key) | translate }}">
+                        {{ getIcon(key) }}
+                    </mat-icon>
                     <div class="progress-container">
                         <div>
-                            <span translate>{{ getLabel(key) }}</span>:&nbsp;{{ getNumber(key) }}
+                            <span translate>{{ getLabel(key) }}</span
+                            >:&nbsp;{{ getNumber(key) }}
                             <span *ngIf="!isAbstractValue(key)">({{ getPercent(key) }}%)</span>
                         </div>
                         <div *ngIf="!isAbstractValue(key)" class="poll-progress-bar">
@@ -22,39 +25,53 @@
                         </div>
                     </div>
                 </div>
-                <hr *ngIf="key ==='abstain'" flex />
+                <hr *ngIf="key === 'abstain'" flex />
             </div>
             <!-- quorum -->
-            <div *ngIf="abstractPoll"><span translate>Quorum not calculable.</span></div>
-            <div class="poll-quorum-line" *ngIf="!abstractPoll">
-                <span>
-                    <span *ngIf="yesQuorum">
-                        <mat-icon color="warn" *ngIf="!quorumYesReached"> thumb_down </mat-icon>
-                        <mat-icon color="primary" *ngIf="quorumYesReached"> thumb_up </mat-icon>
+            <div *osPerms="'motions.can_manage'">
+                <div *ngIf="abstractPoll"><span translate>Quorum not calculable.</span></div>
+                <div class="poll-quorum-line" *ngIf="!abstractPoll">
+                    <span>
+                        <span *ngIf="yesQuorum">
+                            <mat-icon color="warn" *ngIf="!quorumYesReached"> thumb_down </mat-icon>
+                            <mat-icon color="primary" *ngIf="quorumYesReached"> thumb_up </mat-icon>
+                        </span>
+                        <button mat-button [matMenuTriggerFor]="majorityMenu">
+                            &nbsp;<span translate>{{ getQuorumLabel() }}</span> &nbsp;<span
+                                *ngIf="majorityChoice !== 'disabled'"
+                                >({{ yesQuorum }})</span
+                            >
+                        </button>
+                        <span *ngIf="majorityChoice !== 'disabled'">
+                            <span *ngIf="quorumYesReached" translate> reached.</span>
+                            <span *ngIf="!quorumYesReached" translate> not reached.</span>
+                        </span>
+                        <span *ngIf="majorityChoice === 'disabled'"
+                            >&nbsp;&mdash;&nbsp; <span translate>No quorum calculated</span>
+                        </span>
                     </span>
-                    <button mat-button [matMenuTriggerFor]="majorityMenu">
-                        &nbsp;<span translate>{{ getQuorumLabel() }}</span>
-                        &nbsp;<span *ngIf="majorityChoice !== 'disabled'">({{ yesQuorum }})</span>
-                    </button>
-                    <span *ngIf="majorityChoice !== 'disabled'">
-                        <span *ngIf="quorumYesReached" translate> reached.</span>
-                        <span *ngIf="!quorumYesReached" translate> not reached.</span>
-                    </span>
-                    <span *ngIf="majorityChoice === 'disabled'"
-                        >&nbsp;&mdash;&nbsp; <span translate>No quorum calculated</span>
-                    </span>
-                </span>
+                </div>
             </div>
         </div>
     </ng-container>
-    <ng-container class="meta-text-block-action-row" *osPerms="'motions.can_manage'">
+    <ng-container class="meta-text-block-action-row" *osPerms="'motions.can_manage_metadata'">
         <button mat-icon-button class="main-nav-color" matTooltip="{{ 'Edit poll' | translate }}" (click)="editPoll()">
             <mat-icon inline>edit</mat-icon>
         </button>
-        <button mat-icon-button class="main-nav-color" matTooltip="{{ 'Print ballots' | translate }}" (click)="printBallots()">
+        <button
+            mat-icon-button
+            class="main-nav-color"
+            matTooltip="{{ 'Print ballots' | translate }}"
+            (click)="printBallots()"
+        >
             <mat-icon inline>local_printshop</mat-icon>
         </button>
-        <button mat-icon-button class="main-nav-color" matTooltip="{{ 'Delete poll' | translate }}" (click)="deletePoll()">
+        <button
+            mat-icon-button
+            class="main-nav-color"
+            matTooltip="{{ 'Delete poll' | translate }}"
+            (click)="deletePoll()"
+        >
             <mat-icon inline>delete</mat-icon>
         </button>
     </ng-container>

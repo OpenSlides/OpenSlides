@@ -3,22 +3,23 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
-import { ConfigService } from '../../../../core/services/config.service';
-import { MotionCsvExportService } from '../../services/motion-csv-export.service';
-import { ListViewBaseComponent } from '../../../base/list-view-base';
-import { MatSnackBar } from '@angular/material';
-import { ViewMotion } from '../../models/view-motion';
-import { WorkflowState } from '../../../../shared/models/motions/workflow-state';
-import { MotionMultiselectService } from '../../services/motion-multiselect.service';
-import { TagRepositoryService } from 'app/site/tags/services/tag-repository.service';
 import { CategoryRepositoryService } from '../../services/category-repository.service';
+import { ConfigService } from '../../../../core/services/config.service';
+import { ListViewBaseComponent } from '../../../base/list-view-base';
+import { LocalPermissionsService } from '../../services/local-permissions.service';
+import { MatSnackBar } from '@angular/material';
 import { MotionBlockRepositoryService } from '../../services/motion-block-repository.service';
+import { MotionCsvExportService } from '../../services/motion-csv-export.service';
 import { MotionFilterListService } from '../../services/motion-filter-list.service';
+import { MotionMultiselectService } from '../../services/motion-multiselect.service';
 import { MotionSortListService } from '../../services/motion-sort-list.service';
+import { TagRepositoryService } from 'app/site/tags/services/tag-repository.service';
+import { ViewCategory } from '../../models/view-category';
+import { ViewMotion } from '../../models/view-motion';
+import { ViewMotionBlock } from '../../models/view-motion-block';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewWorkflow } from '../../models/view-workflow';
-import { ViewCategory } from '../../models/view-category';
-import { ViewMotionBlock } from '../../models/view-motion-block';
+import { WorkflowState } from '../../../../shared/models/motions/workflow-state';
 import { WorkflowRepositoryService } from '../../services/workflow-repository.service';
 
 /**
@@ -75,6 +76,7 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
      * @param userRepo
      * @param sortService
      * @param filterService
+     * @param perms LocalPermissionService
      */
     public constructor(
         titleService: Title,
@@ -90,7 +92,8 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
         private motionCsvExport: MotionCsvExportService,
         public multiselectService: MotionMultiselectService,
         public sortService: MotionSortListService,
-        public filterService: MotionFilterListService
+        public filterService: MotionFilterListService,
+        public perms: LocalPermissionsService
     ) {
         super(titleService, translate, matSnackBar);
 
