@@ -131,16 +131,6 @@ def get_config_variables():
     )
 
     yield ConfigVariable(
-        name="motions_stop_submitting",
-        default_value=False,
-        input_type="boolean",
-        label="Stop submitting new motions by non-staff users",
-        weight=331,
-        group="Motions",
-        subgroup="General",
-    )
-
-    yield ConfigVariable(
         name="motions_recommendations_by",
         default_value="",
         label="Name of recommender",

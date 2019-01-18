@@ -111,8 +111,3 @@ class ModelTest(TestCase):
         motion.set_identifier()
 
         self.assertEqual(motion.identifier, "Parent identifier - 2")
-
-
-class ConfigTest(TestCase):
-    def test_stop_submitting(self):
-        self.assertFalse(config["motions_stop_submitting"])

@@ -54,6 +54,7 @@ def create_builtin_groups_and_admin(**kwargs):
         "mediafiles.can_see_hidden",
         "mediafiles.can_upload",
         "motions.can_create",
+        "motions.can_create_amendments",
         "motions.can_manage",
         "motions.can_manage_metadata",
         "motions.can_see",
@@ -110,6 +111,7 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict["mediafiles.can_see"],
         permission_dict["motions.can_see"],
         permission_dict["motions.can_create"],
+        permission_dict["motions.can_create_amendments"],
         permission_dict["motions.can_support"],
         permission_dict["users.can_see_name"],
     )
@@ -138,6 +140,7 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict["mediafiles.can_upload"],
         permission_dict["motions.can_see"],
         permission_dict["motions.can_create"],
+        permission_dict["motions.can_create_amendments"],
         permission_dict["motions.can_manage"],
         permission_dict["motions.can_manage_metadata"],
         permission_dict["users.can_see_name"],
@@ -159,6 +162,7 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict["mediafiles.can_see"],
         permission_dict["motions.can_see"],
         permission_dict["motions.can_create"],
+        permission_dict["motions.can_create_amendments"],
         permission_dict["motions.can_support"],
         permission_dict["users.can_see_name"],
     )
