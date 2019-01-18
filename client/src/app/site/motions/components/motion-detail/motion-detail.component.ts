@@ -38,6 +38,8 @@ import { PromptService } from 'app/core/services/prompt.service';
 import { AgendaRepositoryService } from 'app/site/agenda/services/agenda-repository.service';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { MotionPdfExportService } from '../../services/motion-pdf-export.service';
+import { PersonalNoteService } from '../../services/personal-note.service';
+import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
 
 /**
  * Component for the motion detail view
@@ -78,6 +80,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     public newMotion = false;
 
     /**
+     * Toggle to expand/hide the motion log.
+     */
+    public motionLogExpanded = false;
+
+    /**
      * Sets the motions, e.g. via an autoupdate. Reload important things here:
      * - Reload the recommendation. Not changed with autoupdates, but if the motion is loaded this needs to run.
      */
@@ -91,6 +98,21 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      */
     public get motion(): ViewMotion {
         return this._motion;
+    }
+
+    /**
+     * @returns treu if the motion log is present and the user is allowed to see it
+     */
+    public get canShowLog(): boolean {
+        if (
+            this.motion &&
+            !this.editMotion &&
+            this.motion.motion.log_messages &&
+            this.motion.motion.log_messages.length
+        ) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -261,6 +283,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     public highlightedLine: number;
 
     /**
+     * The personal notes' content for this motion
+     */
+    public personalNoteContent: PersonalNoteContent;
+
+    /**
      * Constuct the detail view.
      *
      * @param title
@@ -281,6 +308,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * @param sanitizer For making HTML SafeHTML
      * @param promptService ensure safe deletion
      * @param pdfExport export the motion to pdf
+     * @param personalNoteService: personal comments and favorite marker
      */
     public constructor(
         title: Title,
@@ -301,7 +329,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         private configService: ConfigService,
         private sanitizer: DomSanitizer,
         private promptService: PromptService,
-        private pdfExport: MotionPdfExportService
+        private pdfExport: MotionPdfExportService,
+        private personalNoteService: PersonalNoteService
     ) {
         super(title, translate, matSnackBar);
 
@@ -433,6 +462,9 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
                 this.repo.getViewModelObservable(motionId).subscribe(newViewMotion => {
                     if (newViewMotion) {
                         this.motion = newViewMotion;
+                        this.personalNoteService.getPersonalNoteObserver(this.motion.motion).subscribe(pn => {
+                            this.personalNoteContent = pn;
+                        });
                         this.patchForm(this.motion);
                     }
                 });
@@ -955,5 +987,33 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
 
     public async createPoll(): Promise<void> {
         await this.repo.createPoll(this.motion);
+    }
+
+    /**
+     * Check if a recommendation can be followed. Checks for permissions and additionally if a recommentadion is present
+     */
+    public get canFollowRecommendation(): boolean {
+        if (
+            this.perms.isAllowed('createPoll', this.motion) &&
+            this.motion.recommendation &&
+            this.motion.recommendation.recommendation_label
+        ) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Handler for the 'follow recommendation' button
+     */
+    public onFollowRecButton(): void {
+        this.repo.followRecommendation(this.motion);
+    }
+
+    /**
+     * Toggles the favorite status
+     */
+    public async toggleFavorite(): Promise<void> {
+        this.personalNoteService.setPersonalNoteStar(this.motion.motion, !this.motion.star);
     }
 }

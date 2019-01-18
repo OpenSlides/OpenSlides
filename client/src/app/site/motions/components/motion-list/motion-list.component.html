@@ -43,7 +43,12 @@
         <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
         <mat-cell *matCellDef="let motion">
             <div class="innerTable">
-                <span class="motion-list-title">{{ motion.title }}</span>
+                <span class="motion-list-title">{{ motion.title }}
+                    <span>
+                        <mat-icon inline>{{ motion.star ? 'star' : 'star_border' }}</mat-icon>
+                    </span>
+                </span>
+
                 <!-- attachments -->
                 <span class="attached-files" *ngIf="motion.hasAttachments()">
                     <!-- <mat-basic-chip class="bluegrey"> <mat-icon>attach_file</mat-icon> </mat-basic-chip> -->

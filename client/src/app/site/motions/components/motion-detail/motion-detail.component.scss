@@ -263,3 +263,14 @@ span {
 .main-nav-color {
     color: rgba(0, 0, 0, 0.54);
 }
+
+.title-line {
+    display: flex;
+}
+
+.create-poll-button {
+    margin-top: 10px;
+    button {
+        padding: 0px;
+    }
+}

@@ -3,32 +3,33 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
 
-import { DataSendService } from '../../../core/services/data-send.service';
-import { Motion } from '../../../shared/models/motions/motion';
-import { User } from '../../../shared/models/users/user';
-import { Category } from '../../../shared/models/motions/category';
-import { Workflow } from '../../../shared/models/motions/workflow';
-import { WorkflowState } from '../../../shared/models/motions/workflow-state';
-import { ChangeRecoMode, ViewMotion } from '../models/view-motion';
 import { BaseRepository } from '../../base/base-repository';
+import { Category } from '../../../shared/models/motions/category';
+import { ChangeRecoMode, ViewMotion } from '../models/view-motion';
+import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
+import { CreateMotion } from '../models/create-motion';
+import { DataSendService } from '../../../core/services/data-send.service';
 import { DataStoreService } from '../../../core/services/data-store.service';
-import { LinenumberingService } from './linenumbering.service';
 import { DiffLinesInParagraph, DiffService, LineRange, ModificationType } from './diff.service';
-import { ViewChangeReco } from '../models/view-change-reco';
+import { HttpService } from 'app/core/services/http.service';
+import { Identifiable } from '../../../shared/models/base/identifiable';
+import { Item } from 'app/shared/models/agenda/item';
+import { LinenumberingService } from './linenumbering.service';
+import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
+import { Motion } from '../../../shared/models/motions/motion';
+import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { MotionChangeReco } from '../../../shared/models/motions/motion-change-reco';
+import { MotionPoll } from 'app/shared/models/motions/motion-poll';
+import { OSTreeSortEvent } from 'app/shared/components/sorting-tree/sorting-tree.component';
+import { PersonalNoteService } from './personal-note.service';
+import { TreeService } from 'app/core/services/tree.service';
+import { User } from '../../../shared/models/users/user';
+import { ViewChangeReco } from '../models/view-change-reco';
+import { ViewMotionAmendedParagraph } from '../models/view-motion-amended-paragraph';
 import { ViewUnifiedChange } from '../models/view-unified-change';
 import { ViewStatuteParagraph } from '../models/view-statute-paragraph';
-import { Identifiable } from '../../../shared/models/base/identifiable';
-import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
-import { HttpService } from 'app/core/services/http.service';
-import { Item } from 'app/shared/models/agenda/item';
-import { OSTreeSortEvent } from 'app/shared/components/sorting-tree/sorting-tree.component';
-import { TreeService } from 'app/core/services/tree.service';
-import { ViewMotionAmendedParagraph } from '../models/view-motion-amended-paragraph';
-import { CreateMotion } from '../models/create-motion';
-import { MotionBlock } from 'app/shared/models/motions/motion-block';
-import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
-import { MotionPoll } from 'app/shared/models/motions/motion-poll';
+import { Workflow } from '../../../shared/models/motions/workflow';
+import { WorkflowState } from '../../../shared/models/motions/workflow-state';
 
 /**
  * Repository Services for motions (and potentially categories)
@@ -56,6 +57,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      * @param httpService OpenSlides own Http service
      * @param lineNumbering Line numbering for motion text
      * @param diff Display changes in motion text as diff.
+     * @param personalNoteService service fo personal notes
      */
     public constructor(
         DS: DataStoreService,
@@ -64,7 +66,8 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         private httpService: HttpService,
         private readonly lineNumbering: LinenumberingService,
         private readonly diff: DiffService,
-        private treeService: TreeService
+        private treeService: TreeService,
+        private personalNoteService: PersonalNoteService
     ) {
         super(DS, mapperService, Motion, [Category, User, Workflow, Item, MotionBlock, Mediafile]);
     }
@@ -106,6 +109,10 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
                 let virtualWeightCounter = 0;
                 while (!(m = iterator.next()).done) {
                     m.value.callListWeight = virtualWeightCounter++;
+                    const motion = m.value;
+                    this.personalNoteService
+                        .getPersonalNoteObserver(motion.motion)
+                        .subscribe(note => (motion.personalNote = note));
                 }
             })
         );
@@ -651,12 +658,24 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
     }
 
     /**
-     * Sends a haap request to delete the given poll
+     * Sends a http request to delete the given poll
      *
      * @param poll
      */
     public async deletePoll(poll: MotionPoll): Promise<void> {
         const url = '/rest/motions/motion-poll/' + poll.id + '/';
         await this.httpService.delete(url);
+    }
+
+    /**
+     * Signals the acceptance of the current recommendation to the server
+     *
+     * @param motion A ViewMotion
+     */
+    public async followRecommendation(motion: ViewMotion): Promise<void> {
+        if (motion.recommendation_id) {
+            const restPath = `/rest/motions/motion/${motion.id}/follow_recommendation/`;
+            await this.httpService.post(restPath);
+        }
     }
 }

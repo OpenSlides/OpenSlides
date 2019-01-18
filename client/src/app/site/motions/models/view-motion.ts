@@ -1,15 +1,16 @@
-import { Motion } from '../../../shared/models/motions/motion';
-import { Category } from '../../../shared/models/motions/category';
-import { User } from '../../../shared/models/users/user';
-import { Workflow } from '../../../shared/models/motions/workflow';
-import { WorkflowState } from '../../../shared/models/motions/workflow-state';
 import { BaseModel } from '../../../shared/models/base/base-model';
 import { BaseViewModel } from '../../base/base-view-model';
-import { ViewMotionCommentSection } from './view-motion-comment-section';
-import { MotionComment } from '../../../shared/models/motions/motion-comment';
+import { Category } from '../../../shared/models/motions/category';
 import { Item } from 'app/shared/models/agenda/item';
-import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
+import { Motion } from '../../../shared/models/motions/motion';
+import { MotionBlock } from 'app/shared/models/motions/motion-block';
+import { MotionComment } from '../../../shared/models/motions/motion-comment';
+import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
+import { User } from '../../../shared/models/users/user';
+import { ViewMotionCommentSection } from './view-motion-comment-section';
+import { Workflow } from '../../../shared/models/motions/workflow';
+import { WorkflowState } from '../../../shared/models/motions/workflow-state';
 
 /**
  * The line numbering mode for the motion detail view.
@@ -48,6 +49,7 @@ export class ViewMotion extends BaseViewModel {
     protected _item: Item;
     protected _block: MotionBlock;
     protected _attachments: Mediafile[];
+    public personalNote: PersonalNoteContent;
 
     /**
      * Is set by the repository; this is the order of the flat call list given by
@@ -228,6 +230,24 @@ export class ViewMotion extends BaseViewModel {
             return [];
         }
         return this.motion.comments.map(comment => comment.section_id);
+    }
+
+    /**
+     * Getter to query the 'favorite'/'star' status of the motions
+     *
+     * @returns the current state
+     */
+    public get star(): boolean {
+        return this.personalNote && this.personalNote.star ? true : false;
+    }
+
+    /**
+     * Queries if any personal comments are rpesent
+     *
+     * @returns true if personalContent is present and has notes
+     */
+    public get hasNotes(): boolean {
+        return this.personalNote && this.personalNote.note ? true : false;
     }
 
     public constructor(

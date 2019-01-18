@@ -127,4 +127,19 @@ export class PersonalNoteService {
             await this.http.put(`rest/users/personal-note/${pnObject.id}/`, pnObject);
         }
     }
+
+    /**
+     * Changes the 'favorite' status of a personal note, without changing other information
+     *
+     * @param model
+     * @param star The new status to set
+     */
+    public async setPersonalNoteStar(model: BaseModel, star: boolean): Promise<void> {
+        let content: PersonalNoteContent = this.getPersonalNoteContent(model.collectionString, model.id);
+        if (!content) {
+            content = { note: null, star: star };
+        }
+        content.star = star;
+        return this.savePersonalNote(model, content);
+    }
 }
