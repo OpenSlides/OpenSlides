@@ -33,7 +33,8 @@ class UserAccessPermissions(BaseAccessPermissions):
         # * full data i. e. all fields (including session_auth_hash),
         # * all data i. e. all fields but not session_auth_hash,
         # * many data i. e. all fields but not the default password and session_auth_hash,
-        # * little data i. e. all fields but not the default password, session_auth_hash, comments and active status,
+        # * little data i. e. all fields but not the default password, session_auth_hash,
+        #   comments, gender, email, last_email_send and active status,
         # * no data.
 
         # Prepare field set for users with "all" data, "many" data and with "little" data.

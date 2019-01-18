@@ -134,6 +134,8 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
 
     last_name = models.CharField(max_length=255, blank=True)
 
+    gender = models.CharField(max_length=255, blank=True)
+
     email = models.EmailField(blank=True)
 
     last_email_send = models.DateTimeField(blank=True, null=True)
