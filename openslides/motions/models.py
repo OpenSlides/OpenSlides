@@ -253,6 +253,7 @@ class Motion(RESTModelMixin, models.Model):
         permissions = (
             ("can_see", "Can see motions"),
             ("can_create", "Can create motions"),
+            ("can_create_amendments", "Can create amendments"),
             ("can_support", "Can support motions"),
             ("can_manage_metadata", "Can manage motion metadata"),
             ("can_manage", "Can manage motions"),

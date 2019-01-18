@@ -76,14 +76,8 @@ class MotionViewSet(ModelViewSet):
             # For partial_update, update and destroy requests the rest of the check is
             # done in the update method. See below.
         elif self.action == "create":
-            result = (
-                has_perm(self.request.user, "motions.can_see")
-                and has_perm(self.request.user, "motions.can_create")
-                and (
-                    not config["motions_stop_submitting"]
-                    or has_perm(self.request.user, "motions.can_manage")
-                )
-            )
+            result = has_perm(self.request.user, "motions.can_see")
+            # For create the rest of the check is done in the create method. See below.
         elif self.action in (
             "set_state",
             "set_recommendation",
@@ -143,13 +137,19 @@ class MotionViewSet(ModelViewSet):
         if isinstance(request.data, QueryDict):
             request.data._mutable = True
 
-        # Check if parent motion exists.
+        # Check if amendment request and if parent motion exists. Check also permissions.
         if request.data.get("parent_id") is not None:
+            # Amendment
+            if not has_perm(self.request.user, "motions.can_create_amendments"):
+                self.permission_denied(request)
             try:
                 parent_motion = Motion.objects.get(pk=request.data["parent_id"])
             except Motion.DoesNotExist:
                 raise ValidationError({"detail": "The parent motion does not exist."})
         else:
+            # Common motion
+            if not has_perm(self.request.user, "motions.can_create"):
+                self.permission_denied(request)
             parent_motion = None
 
         # Check permission to send some data.
