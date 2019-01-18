@@ -80,6 +80,7 @@ class MotionViewSet(ModelViewSet):
             # For create the rest of the check is done in the create method. See below.
         elif self.action in (
             "set_state",
+            "manage_multiple_state",
             "set_recommendation",
             "manage_multiple_recommendation",
             "follow_recommendation",
@@ -570,6 +571,81 @@ class MotionViewSet(ModelViewSet):
         )
         inform_changed_data(motion, information=f"State set to {motion.state.name}.")
         return Response({"detail": message})
+
+    @list_route(methods=["post"])
+    @transaction.atomic
+    def manage_multiple_state(self, request):
+        """
+        Set or reset states of multiple motions.
+
+        Send POST {"motions": [... see schema ...]} to changed the states.
+        """
+        motions = request.data.get("motions")
+
+        schema = {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "title": "Motion manage multiple state schema",
+            "description": "An array of motion ids with the respective state ids that should be set as new state.",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": {"description": "The id of the motion.", "type": "integer"},
+                    "state": {
+                        "description": "The state id the should become the new state.",
+                        "type": "integer",
+                        "minimum": 1,
+                    },
+                },
+                "required": ["id", "state"],
+            },
+            "uniqueItems": True,
+        }
+
+        # Validate request data.
+        try:
+            jsonschema.validate(motions, schema)
+        except jsonschema.ValidationError as err:
+            raise ValidationError({"detail": str(err)})
+
+        motion_result = []
+        for item in motions:
+            # Get motion.
+            try:
+                motion = Motion.objects.get(pk=item["id"])
+            except Motion.DoesNotExist:
+                raise ValidationError({"detail": f"Motion {item['id']} does not exist"})
+
+            # Set or reset state.
+            state_id = item["state"]
+            valid_states = State.objects.filter(workflow=motion.workflow_id)
+            if state_id not in [item.id for item in valid_states]:
+                # States of different workflows are not allowed.
+                raise ValidationError(
+                    {"detail": f"You can not set the state to {state_id}."}
+                )
+            motion.set_state(state_id)
+
+            # Save motion.
+            motion.save(update_fields=["state"], skip_autoupdate=True)
+
+            # Write the log message.
+            motion.write_log(
+                message_list=["State set to", " ", motion.state.name],
+                person=request.user,
+                skip_autoupdate=True,
+            )
+
+            # Finish motion.
+            motion_result.append(motion)
+
+        # Now inform all clients.
+        inform_changed_data(motion_result)
+
+        # Send response.
+        return Response(
+            {"detail": f"{len(motion_result)} motions successfully updated."}
+        )
 
     @detail_route(methods=["put"])
     def set_recommendation(self, request, pk=None):
