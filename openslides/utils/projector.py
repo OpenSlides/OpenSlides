@@ -1,3 +1,10 @@
+"""
+General projector code.
+
+Functions  that handel the registration of projector elements and the rendering
+of the data to present it on the projector.
+"""
+
 from typing import Any, Callable, Dict, List
 
 from .cache import element_cache
@@ -21,9 +28,42 @@ def register_projector_element(name: str, element: ProjectorElementCallable) -> 
 
 async def get_projectot_data(
     projector_ids: List[int] = None
-) -> Dict[int, Dict[str, Any]]:
+) -> Dict[int, Dict[str, Dict[str, Any]]]:
     """
     Callculates and returns the data for one or all projectors.
+
+    The keys of the returned data are the projector ids as int. When converted
+    to json, the numbers will changed to strings like "1".
+
+    The data for each projector is a dict. The keys are the uuids of the
+    elements as strings. If there is a generell problem with the projector, the
+    key can be 'error'.
+
+    Each element is a dict where the keys are "config", "data". "config"
+    contains the projector config. It is the same as the projector config in the
+    database. "data" contains all necessary data to render the projector
+    element. The key can also be "error" if there is a generall error for the
+    slide. In this case the values "config" and "data" are optional.
+
+    The returned value looks like this:
+
+    projector_data = {
+        1: {
+            "UnIqUe-UUID": {
+                "config": {
+                    "name": "agenda/item-list",
+                },
+                "data": {
+                    "items": []
+                },
+            },
+        },
+        2: {
+            "error": {
+                "error": "Projector has no config",
+            },
+        },
+    }
     """
     if projector_ids is None:
         projector_ids = []
@@ -44,15 +84,14 @@ async def get_projectot_data(
             continue
 
         for uuid, projector_config in projector["config"].items():
+            projector_data[projector_id][uuid] = {"config": projector_config}
             projector_element = projector_elements.get(projector_config["name"])
             if projector_element is None:
-                projector_data[projector_id][uuid] = {
-                    "error": "Projector element {} does not exist".format(
-                        projector_config["name"]
-                    )
-                }
+                projector_data[projector_id][uuid][
+                    "error"
+                ] = f"Projector element {projector_config['name']} does not exist"
             else:
-                projector_data[projector_id][uuid] = projector_element(
+                projector_data[projector_id][uuid]["data"] = projector_element(
                     projector_config, all_data
                 )
     return projector_data
@@ -60,7 +99,7 @@ async def get_projectot_data(
 
 def get_config(all_data: AllData, key: str) -> Any:
     """
-    Returns the config value from all_data.
+    Returns a config value from all_data.
     """
     from ..core.config import config
 
