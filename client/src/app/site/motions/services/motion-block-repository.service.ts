@@ -2,16 +2,17 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { MotionBlock } from 'app/shared/models/motions/motion-block';
-import { ViewMotionBlock } from '../models/view-motion-block';
 import { BaseRepository } from 'app/site/base/base-repository';
-import { DataStoreService } from 'app/core/services/data-store.service';
 import { CollectionStringModelMapperService } from 'app/core/services/collectionStringModelMapper.service';
 import { DataSendService } from 'app/core/services/data-send.service';
+import { DataStoreService } from 'app/core/services/data-store.service';
+import { HttpService } from 'app/core/services/http.service';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { Motion } from 'app/shared/models/motions/motion';
-import { ViewMotion } from '../models/view-motion';
+import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { MotionRepositoryService } from './motion-repository.service';
+import { ViewMotion } from '../models/view-motion';
+import { ViewMotionBlock } from '../models/view-motion-block';
 
 /**
  * Repository service for motion blocks
@@ -27,12 +28,14 @@ export class MotionBlockRepositoryService extends BaseRepository<ViewMotionBlock
      * @param mapperService Mapping collection strings to classes
      * @param dataSend Send models to the server
      * @param motionRepo Accessing the motion repository
+     * @param httpService Sending a request directly
      */
     public constructor(
         DS: DataStoreService,
         mapperService: CollectionStringModelMapperService,
         private dataSend: DataSendService,
-        private motionRepo: MotionRepositoryService
+        private motionRepo: MotionRepositoryService,
+        private httpService: HttpService
     ) {
         super(DS, mapperService, MotionBlock);
     }
@@ -120,5 +123,15 @@ export class MotionBlockRepositoryService extends BaseRepository<ViewMotionBlock
      */
     public getMotionBlockByTitle(title: string): MotionBlock {
         return this.DS.find(MotionBlock, block => block.title === title);
+    }
+
+    /**
+     * Signals the acceptance of the current recommendation of this motionBlock
+     *
+     * @param motionBlock
+     */
+    public async followRecommendation(motionBlock: ViewMotionBlock): Promise<void> {
+        const restPath = `/rest/motions/motion-block/${motionBlock.id}/follow_recommendations/`;
+        await this.httpService.post(restPath);
     }
 }

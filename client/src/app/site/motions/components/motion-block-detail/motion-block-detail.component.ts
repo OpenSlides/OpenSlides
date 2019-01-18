@@ -8,7 +8,6 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { ListViewBaseComponent } from 'app/site/base/list-view-base';
 import { MotionBlockRepositoryService } from '../../services/motion-block-repository.service';
-import { MotionRepositoryService } from '../../services/motion-repository.service';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { ViewMotionBlock } from '../../models/view-motion-block';
 import { ViewMotion } from '../../models/view-motion';
@@ -53,7 +52,6 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
      * @param router navigating
      * @param route determine the blocks ID by the route
      * @param repo the motion blocks repository
-     * @param motionRepo the motion repository
      * @param promptService the displaying prompts before deleting
      */
     public constructor(
@@ -63,7 +61,6 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
         private router: Router,
         private route: ActivatedRoute,
         private repo: MotionBlockRepositoryService,
-        private motionRepo: MotionRepositoryService,
         private promptService: PromptService
     ) {
         super(titleService, translate, matSnackBar);
@@ -128,11 +125,7 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
             `Are you sure you want to override the state of all motions of this motion block?`
         );
         if (await this.promptService.open(this.block.title, content)) {
-            for (const motion of this.motions) {
-                if (!motion.isInFinalState()) {
-                    this.motionRepo.setState(motion, motion.recommendation_id);
-                }
-            }
+            this.repo.followRecommendation(this.block);
         }
     }
 
