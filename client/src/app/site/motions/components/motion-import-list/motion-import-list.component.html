@@ -9,11 +9,10 @@
     </div>
 </os-head-bar>
 
-<mat-card>
+<mat-card class="os-form-card import-table">
     <span translate>Requires comma or semicolon separated values with these column header names in the first row</span>:
     <br />
     <div class="code red-warning-text">
-        <!-- TODO: class : indent, warning color -->
         <span translate>Identifier</span>, <span translate>Title</span>, <span translate>Text</span>,
         <span translate>Reason</span>, <span translate>Submitter</span>, <span translate>Category</span>,
         <span translate>Origin</span>, <span translate>Motion block</span>
@@ -23,7 +22,6 @@
             Identifier, reason, submitter, category, origin and motion block are optional and may be empty.
         </li>
         <li translate>Additional columns after the required ones may be present and won't affect the import.</li>
-        <li translate>Only double quotes are accepted as text delimiter (no single quotes).</li>
     </ul>
     <button mat-button color="accent" (click)="downloadCsvExample()" translate>Download CSV example file</button>
     <div class="wrapper">
@@ -71,12 +69,12 @@
                 <span translate> Select file</span>
             </button>
         </div>
-        &nbsp; <span *ngIf="hasFile">{{ totalCount }}&nbsp;<span translate>entries found.</span></span>
     </div>
 </mat-card>
 
 <!-- preview table -->
-<mat-card *ngIf="hasFile">
+<mat-card *ngIf="hasFile" class="os-form-card import-table">
+    <h3 translate>Preview</h3>
     <div class="summary">
         <!-- new entries -->
         <div *ngIf="newCount">
@@ -97,35 +95,38 @@
             <span>&nbsp;{{ doneCount }}&nbsp;</span> <span translate>Motions have been imported.</span>
         </div>
     </div>
+    <div *ngIf="newCount">
+        <span translate>Click on 'import' (right top corner) to import the new motions.
+        </span>
+    </div>
     <div>
-        <mat-select [(value)]="shown" (selectionChange)="setFilter()">
-            <!-- TODO: reduce item width to sane value -->
+        <mat-select *ngIf="nonImportableCount" class="filter-imports" [(value)]="shown" (selectionChange)="setFilter()">
             <mat-option value="all" translate> Show all </mat-option>
-            <mat-option *ngIf="nonImportableCount" value="error" translate> Show errors only </mat-option>
-            <mat-option *ngIf="nonImportableCount" value="noerror" translate> Show correct entries </mat-option>
+            <mat-option value="error" translate> Show errors only </mat-option>
+            <mat-option value="noerror" translate> Show correct entries </mat-option>
         </mat-select>
-        <!-- TODO: Button to hide imported ones -->
     </div>
     <div class="table-container">
         <table mat-table class="on-transition-fade" [dataSource]="dataSource" matSort>
+
             <!-- Status column -->
             <ng-container matColumnDef="status" sticky>
-                <mat-header-cell *matHeaderCellDef></mat-header-cell>
-                <mat-cell *matCellDef="let entry">
-                    <div *ngIf="entry.newMotion.status === 'error'">
+                <mat-header-cell *matHeaderCellDef class="first-column"></mat-header-cell>
+                <mat-cell *matCellDef="let entry" class="first-column">
+                    <div *ngIf="entry.status === 'error'">
                         <mat-icon
                             class="red-warning-text"
-                            matTooltip="{{ entry.newMotion.errors.length }} + {{ 'errors' | translate }}"
+                            matTooltip="{{ entry.errors.length }} {{ 'errors' | translate }}"
                         >
                             {{ getActionIcon(entry) }}
                         </mat-icon>
                     </div>
-                    <div *ngIf="entry.newMotion.status === 'new'">
+                    <div *ngIf="entry.status === 'new'">
                         <mat-icon matTooltip="{{ 'Motion will be imported' | translate }}">
                             {{ getActionIcon(entry) }}
                         </mat-icon>
                     </div>
-                    <div *ngIf="entry.newMotion.status === 'done'">
+                    <div *ngIf="entry.status === 'done'">
                         <mat-icon matTooltip="{{ 'Motion has been imported' | translate }}">
                             {{ getActionIcon(entry) }}
                         </mat-icon>
@@ -140,12 +141,12 @@
                     <mat-icon
                         color="warn"
                         inline
-                        *ngIf="entry.newMotion.hasError('Duplicates')"
+                        *ngIf="hasError(entry, 'Duplicates')"
                         matTooltip="{{ getVerboseError('Duplicates') | translate }}"
                     >
                         warning
                     </mat-icon>
-                    &nbsp;{{ entry.newMotion.identifier }}
+                    {{ entry.newEntry.identifier }}
                 </mat-cell>
             </ng-container>
 
@@ -155,35 +156,35 @@
                 <mat-cell *matCellDef="let entry">
                     <mat-icon
                         color="warn"
-                        *ngIf="entry.newMotion.hasError('Title')"
+                        *ngIf="hasError(entry, 'Title')"
                         matTooltip="{{ getVerboseError('Title') | translate }}"
                     >
                         warning
                     </mat-icon>
-                    &nbsp;{{ entry.newMotion.title }}
+                    {{ entry.newEntry.title }}
                 </mat-cell>
             </ng-container>
 
-            <!-- tect column TODO: Bigger-->
+            <!-- text column -->
             <ng-container matColumnDef="text">
                 <mat-header-cell *matHeaderCellDef translate>Motion text</mat-header-cell>
-                <mat-cell *matCellDef="let entry" matTooltip="{{ getLongPreview(entry.newMotion.text) }}">
+                <mat-cell *matCellDef="let entry" matTooltip="{{ getLongPreview(entry.newEntry.text) }}">
                     <mat-icon
                         color="warn"
-                        *ngIf="entry.newMotion.hasError('Text')"
+                        *ngIf="hasError(entry, 'Text')"
                         matTooltip="{{ getVerboseError('Text') | translate }}"
                     >
                         warning
                     </mat-icon>
-                    &nbsp;{{ getShortPreview(entry.newMotion.text) }}
+                    {{ getShortPreview(entry.newEntry.text) }}
                 </mat-cell>
             </ng-container>
 
             <!-- reason column -->
             <ng-container matColumnDef="reason">
                 <mat-header-cell *matHeaderCellDef translate>Reason</mat-header-cell>
-                <mat-cell *matCellDef="let entry" matTooltip="{{ getLongPreview(entry.newMotion.reason) }}">
-                    {{ getShortPreview(entry.newMotion.reason) }}
+                <mat-cell *matCellDef="let entry" matTooltip="{{ getLongPreview(entry.newEntry.reason) }}">
+                    {{ getShortPreview(entry.newEntry.reason) }}
                 </mat-cell>
             </ng-container>
 
@@ -191,15 +192,15 @@
             <ng-container matColumnDef="submitters">
                 <mat-header-cell *matHeaderCellDef translate>Submitters</mat-header-cell>
                 <mat-cell *matCellDef="let entry">
-                    <div *ngIf="entry.newMotion.csvSubmitters.length">
+                    <div *ngIf="entry.newEntry.csvSubmitters.length">
                         <mat-icon
                             color="warn"
-                            *ngIf="entry.newMotion.hasError('Submitters')"
+                            *ngIf="hasError(entry, 'Submitters')"
                             matTooltip="{{ getVerboseError('Submitters') | translate }}"
                         >
                             warning
                         </mat-icon>
-                        <span *ngFor="let submitter of entry.newMotion.csvSubmitters">
+                        <span *ngFor="let submitter of entry.newEntry.csvSubmitters">
                             {{ submitter.name }}
                             <mat-icon class="newBadge" color="accent" inline *ngIf="!submitter.id">add</mat-icon>
                             &nbsp;
@@ -212,16 +213,16 @@
             <ng-container matColumnDef="category">
                 <mat-header-cell *matHeaderCellDef translate>Category</mat-header-cell>
                 <mat-cell *matCellDef="let entry">
-                    <div *ngIf="entry.newMotion.csvCategory">
+                    <div *ngIf="entry.newEntry.csvCategory">
                         <mat-icon
                             color="warn"
-                            *ngIf="entry.newMotion.hasError('Category')"
+                            *ngIf="hasError(entry, 'Category')"
                             matTooltip="{{ getVerboseError('Category') | translate }}"
                         >
                             warning
                         </mat-icon>
-                        {{ entry.newMotion.csvCategory.name }}
-                        <mat-icon class="newBadge" color="accent" inline *ngIf="!entry.newMotion.csvCategory.id"
+                        {{ entry.newEntry.csvCategory.name }}
+                        <mat-icon class="newBadge" color="accent" inline *ngIf="!entry.newEntry.csvCategory.id"
                             >add</mat-icon
                         >&nbsp;
                     </div>
@@ -231,23 +232,23 @@
             <!-- origin column -->
             <ng-container matColumnDef="origin">
                 <mat-header-cell *matHeaderCellDef translate>Origin</mat-header-cell>
-                <mat-cell *matCellDef="let entry">{{ entry.newMotion.origin }}</mat-cell>
+                <mat-cell *matCellDef="let entry">{{ entry.newEntry.origin }}</mat-cell>
             </ng-container>
 
             <!-- motion block column -->
-            <ng-container matColumnDef="motion block">
+            <ng-container matColumnDef="motion_block">
                 <mat-header-cell *matHeaderCellDef translate>Motion block</mat-header-cell>
                 <mat-cell *matCellDef="let entry">
-                    <div *ngIf="entry.newMotion.csvMotionblock">
+                    <div *ngIf="entry.newEntry.csvMotionblock">
                         <mat-icon
                             color="warn"
-                            *ngIf="entry.newMotion.hasError('MotionBlock')"
+                            *ngIf="hasError(entry, 'MotionBlock')"
                             matTooltip="{{ getVerboseError('MotionBlock') | translate }}"
                         >
                             warning
                         </mat-icon>
-                        {{ entry.newMotion.csvMotionblock.name }}
-                        <mat-icon class="newBadge" color="accent" inline *ngIf="!entry.newMotion.csvMotionblock.id">
+                        {{ entry.newEntry.csvMotionblock.name }}
+                        <mat-icon class="newBadge" color="accent" inline *ngIf="!entry.newEntry.csvMotionblock.id">
                             add
                         </mat-icon>
                         &nbsp;
@@ -256,7 +257,6 @@
             </ng-container>
 
             <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
-            <!-- TODO: class for invalid/undecided -->
             <mat-row [ngClass]="getStateClass(row)" *matRowDef="let row; columns: getColumnDefinition()"> </mat-row>
         </table>
     </div>

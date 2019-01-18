@@ -9,6 +9,7 @@ import { DataSendService } from 'app/core/services/data-send.service';
 import { ViewTopic } from '../models/view-topic';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringModelMapperService } from 'app/core/services/collectionStringModelMapper.service';
+import { CreateTopic } from '../models/create-topic';
 
 /**
  * Repository for topics
@@ -61,10 +62,8 @@ export class TopicRepositoryService extends BaseRepository<ViewTopic, Topic> {
      * @param topicData Partial topic data to be created
      * @returns an Identifiable (usually id) as promise
      */
-    public async create(topicData: Partial<Topic>): Promise<Identifiable> {
-        const newTopic = new Topic();
-        newTopic.patchValues(topicData);
-        return await this.dataSend.createModel(newTopic);
+    public async create(topic: CreateTopic): Promise<Identifiable> {
+        return await this.dataSend.createModel(topic);
     }
 
     /**
@@ -88,5 +87,17 @@ export class TopicRepositoryService extends BaseRepository<ViewTopic, Topic> {
      */
     public async delete(viewTopic: ViewTopic): Promise<void> {
         return await this.dataSend.deleteModel(viewTopic.topic);
+    }
+
+    /**
+     * Returns an array of all duplicates for a topic
+     *
+     * @param topic
+     */
+    public getTopicDuplicates(topic: ViewTopic): ViewTopic[] {
+        const duplicates = this.DS.filter(Topic, item => topic.title === item.title);
+        const viewTopics: ViewTopic[] = [];
+        duplicates.forEach(item => viewTopics.push(this.createViewModel(item)));
+        return viewTopics;
     }
 }

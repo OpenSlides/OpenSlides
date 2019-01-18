@@ -16,7 +16,6 @@
 
 @import '~angular-tree-component/dist/angular-tree-component.css';
 
-
 * {
     font-family: Fira Sans, Roboto, Arial, Helvetica, sans-serif;
 }
@@ -72,14 +71,15 @@ img {
 
 a {
     text-decoration: none;
-    color: #039BE5;  /*TODO: move to theme*/
+    color: #039be5; /*TODO: move to theme*/
 
     &:hover {
         text-decoration: underline;
     }
 }
 
-strong, b {
+strong,
+b {
     font-weight: 500;
 }
 
@@ -113,8 +113,9 @@ strong, b {
     color: mat-color($openslides-accent);
 }
 
-.green-text { // TODO better name/theming
-    color: #5A5;
+.green-text {
+    // TODO better name/theming
+    color: #5a5;
 }
 
 .icon-text-distance {
@@ -126,7 +127,7 @@ strong, b {
     color: gray;
 }
 mat-card {
-    box-shadow:  0 1px 4px 0 rgba(0,0,0,0.37) !important;
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.37) !important;
 }
 .os-card {
     max-width: 770px;
@@ -152,7 +153,6 @@ mat-card {
     }
 }
 
-
 // Shared table definitions
 %os-table {
     width: 100%;
@@ -175,8 +175,14 @@ mat-card {
 }
 
 @keyframes fadeIn {
-    0%   {width:0%; margin-left:0;}
-    100% {width:100%;margin-left:-100%;}
+    0% {
+        width: 0%;
+        margin-left: 0;
+    }
+    100% {
+        width: 100%;
+        margin-left: -100%;
+    }
 }
 
 //custom table header for search button, filtering and more. Used in ListViews
@@ -198,7 +204,7 @@ mat-card {
         position: relative;
         max-width: 400px;
         z-index: 2;
-        background-color: #EEE;
+        background-color: #eee;
         padding-right: 5px;
         margin-right: 0px;
     }
@@ -338,7 +344,6 @@ button.mat-menu-item.selected {
     font-size: 18px;
 }
 
-
 /** helper classes for margin/padding */
 .spacer-top-10 {
     margin-top: 10px;
@@ -366,10 +371,10 @@ button.mat-menu-item.selected {
     line-height: 24px;
 
     .mat-icon {
-      font-size: 24px;
-      width: 24px;
-      height: 24px;
-      line-height: 24px;
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+        line-height: 24px;
     }
 }
 .title-left {
@@ -381,12 +386,10 @@ button.mat-menu-item.selected {
     padding-right: 20px;
 }
 
-
 /** more helper classes **/
 .center {
     text-align: center;
 }
-
 
 /** Colors **/
 .lightblue {
@@ -427,28 +430,92 @@ button.mat-menu-item.selected {
     color: rgba(0, 0, 0, 0.87) !important;
 }
 
-
-
 /* TODO: move to site.component.scss-theme.scss (does not work currently) */
 
-    /* make the .user-menu expansion panel look like the nav-toolbar above */
-    .user-menu {
-        min-height: 48px;
+/* make the .user-menu expansion panel look like the nav-toolbar above */
+.user-menu {
+    min-height: 48px;
 
-        .mat-expansion-panel-header {
-            padding: 0 16px !important;
-        }
-
-        .mat-expansion-panel-body {
-            padding: 0 !important;
-        }
+    .mat-expansion-panel-header {
+        padding: 0 16px !important;
     }
 
-    .mat-drawer-inner-container {
-        scrollbar-width: none; /* hide scrollbars in Firefox */
-        -ms-overflow-style: -ms-autohiding-scrollbar; /* hide scrollbars in Edge until the scrollable area is hovered */
+    .mat-expansion-panel-body {
+        padding: 0 !important;
+    }
+}
+
+.mat-drawer-inner-container {
+    scrollbar-width: none; /* hide scrollbars in Firefox */
+    -ms-overflow-style: -ms-autohiding-scrollbar; /* hide scrollbars in Edge until the scrollable area is hovered */
+}
+
+.mat-drawer-inner-container::-webkit-scrollbar {
+    display: none !important; /* hide scrollbars in webkit browsers */
+}
+
+.import-table {
+    .table-container {
+        width: 100%;
+        overflow-x: scroll;
+        margin-top: 5px;
     }
 
-    .mat-drawer-inner-container::-webkit-scrollbar {
-        display: none !important; /* hide scrollbars in webkit browsers */
+    table {
+        width: 100%;
+        overflow: scroll;
     }
+
+    .mat-header-cell {
+        min-width: 100px;
+        flex: 2;
+        padding-right: 8px;
+    }
+    .mat-cell {
+        min-width: 100px;
+        flex: 2;
+        padding-top: 2px;
+        padding-right: 8px;
+    }
+    .selection {
+        min-width: 80px;
+    }
+
+    .import-done {
+        background-color: #cfc;
+    }
+    .import-error {
+        background-color: #fcc;
+    }
+
+    .code {
+        padding-left: 1em;
+        font-style: italic;
+    }
+
+    div.wrapper {
+        display: flex;
+        vertical-align: bottom;
+        padding: 10px;
+    }
+
+    div.summary {
+        display: flex;
+    }
+
+    .hidden-input {
+        display: none;
+    }
+
+    .newBadge {
+        margin-left: -3px;
+    }
+
+    .first-column {
+        flex: 1;
+        min-width: 0px;
+    }
+    .filter-imports {
+        max-width: 50%;
+    }
+}

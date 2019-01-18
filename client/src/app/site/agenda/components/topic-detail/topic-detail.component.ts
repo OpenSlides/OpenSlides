@@ -15,6 +15,7 @@ import { BehaviorSubject } from 'rxjs';
 import { DataStoreService } from 'app/core/services/data-store.service';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { Item, itemVisibilityChoices } from 'app/shared/models/agenda/item';
+import { CreateTopic } from '../../models/create-topic';
 
 /**
  * Detail page for topics.
@@ -125,7 +126,7 @@ export class TopicDetailComponent extends BaseViewComponent {
             if (!this.topicForm.value.agenda_parent_id) {
                 delete this.topicForm.value.agenda_parent_id;
             }
-            await this.repo.create(this.topicForm.value);
+            await this.repo.create(new CreateTopic(this.topicForm.value));
             this.router.navigate([`/agenda/`]);
         } else {
             this.setEditMode(false);

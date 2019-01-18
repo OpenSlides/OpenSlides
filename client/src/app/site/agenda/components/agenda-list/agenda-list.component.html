@@ -107,6 +107,10 @@
             <mat-icon>archive</mat-icon>
             <span translate>Export as CSV</span>
         </button>
+        <button mat-menu-item *osPerms="'agenda.can_manage'" routerLink="import">
+                <mat-icon>save_alt</mat-icon>
+                <span translate>Import</span><span>&nbsp;...</span>
+        </button>
     </div>
 
     <div *ngIf="isMultiSelect">

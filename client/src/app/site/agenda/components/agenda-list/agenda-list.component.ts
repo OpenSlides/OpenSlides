@@ -11,10 +11,10 @@ import { PromptService } from '../../../../core/services/prompt.service';
 import { ViewItem } from '../../models/view-item';
 
 import { AgendaCsvExportService } from '../../services/agenda-csv-export.service';
+import { ConfigService } from 'app/core/services/config.service';
+import { DurationService } from 'app/core/services/duration.service';
 import { ItemInfoDialogComponent } from '../item-info-dialog/item-info-dialog.component';
 import { ViewportService } from 'app/core/services/viewport.service';
-import { DurationService } from 'app/site/core/services/duration.service';
-import { ConfigService } from 'app/core/services/config.service';
 
 /**
  * List view for the agenda.

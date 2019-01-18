@@ -9,7 +9,7 @@ import { BaseModel } from 'app/shared/models/base/base-model';
  * @ignore
  */
 export class ViewTopic extends BaseViewModel {
-    private _topic: Topic;
+    protected _topic: Topic;
     private _attachments: Mediafile[];
     private _agenda_item: Item;
 
