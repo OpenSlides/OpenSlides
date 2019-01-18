@@ -46,6 +46,7 @@
         "ngx-file-drop": "^5.0.0",
         "ngx-mat-select-search": "^1.4.2",
         "ngx-papaparse": "^3.0.2",
+        "pdfmake": "^0.1.40",
         "po2json": "^1.0.0-alpha",
         "rxjs": "^6.3.3",
         "tinymce": "^4.9.0",
