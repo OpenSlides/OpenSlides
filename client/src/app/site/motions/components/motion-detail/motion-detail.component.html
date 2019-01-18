@@ -60,7 +60,8 @@
 
     <mat-menu #motionExtraMenu="matMenu">
         <div *ngIf="motion">
-            <button mat-menu-item>
+            <button mat-menu-item
+                (click)="onDownloadPdf()">
                 <mat-icon>picture_as_pdf</mat-icon>
                 <span translate>PDF</span>
             </button>

@@ -111,6 +111,16 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<ViewCh
     }
 
     /**
+     * Synchronously getting the change recommendations of the corresponding motion.
+     *
+     * @param motionId the id of the target motion
+     * @returns the array of change recommendations to the motions.
+     */
+    public getChangeRecoOfMotion(motion_id: number): ViewChangeReco[] {
+        return this.getViewModelList().filter(reco => reco.motion_id === motion_id);
+    }
+
+    /**
      * Sets a change recommendation to accepted.
      *
      * @param {ViewChangeReco} change

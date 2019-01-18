@@ -37,6 +37,7 @@ import { itemVisibilityChoices, Item } from 'app/shared/models/agenda/item';
 import { PromptService } from 'app/core/services/prompt.service';
 import { AgendaRepositoryService } from 'app/site/agenda/services/agenda-repository.service';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
+import { MotionPdfExportService } from '../../services/motion-pdf-export.service';
 
 /**
  * Component for the motion detail view
@@ -279,6 +280,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * @param configService The configuration provider
      * @param sanitizer For making HTML SafeHTML
      * @param promptService ensure safe deletion
+     * @param pdfExport export the motion to pdf
      */
     public constructor(
         title: Title,
@@ -298,7 +300,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         private DS: DataStoreService,
         private configService: ConfigService,
         private sanitizer: DomSanitizer,
-        private promptService: PromptService
+        private promptService: PromptService,
+        private pdfExport: MotionPdfExportService
     ) {
         super(title, translate, matSnackBar);
 
@@ -712,8 +715,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
                 this.lineLength
             )
         };
-        console.log(this.lineLength);
-        console.log(data);
         this.dialogService.open(MotionChangeRecommendationComponent, {
             height: '400px',
             width: '600px',
@@ -924,6 +925,13 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      */
     public getSpeakerLink(): string {
         return `/agenda/${this.motion.agenda_item_id}/speakers`;
+    }
+
+    /**
+     * Click handler for the pdf button
+     */
+    public onDownloadPdf(): void {
+        this.pdfExport.exportSingleMotion(this.motion, this.lnMode, this.crMode);
     }
 
     /**
