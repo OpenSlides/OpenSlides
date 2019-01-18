@@ -1,25 +1,54 @@
-<div class="custom-table-header on-transition-fade">
-    <button mat-button *ngIf="hasFilters" (click)="filterMenu.opened ? filterMenu.close() : filterMenu.open()">
-        <span *ngIf="filterService.hasActiveFilters > 0">{{ filterService.hasActiveFilters }}&nbsp;</span>
-        <span class="upper" translate>Filter</span>
-    </button>
-    <button mat-button *ngIf="vp.isMobile && hasSorting" (click)="openSortDropDown()">
-        <span class="upper" translate>Sort</span>
-    </button>
-    <button mat-button *ngIf="!vp.isMobile && hasSorting" [matMenuTriggerFor]="menu">
-        <span class="upper" translate>Sort</span>
-    </button>
-    <input
-        matInput
-        *ngIf="isSearchBar"
-        (keyup)="applySearch($event, $event.target.value)"
-        osAutofocus
-        placeholder="{{ translate.instant('Search') }}"
-        [ngClass]="vp.isMobile ? 'vp' : ''"
-    />
-    <button mat-button (click)="toggleSearchBar()">
-        <mat-icon>{{ isSearchBar ? 'keyboard_arrow_right' : 'search' }}</mat-icon>
-    </button>
+<div class="custom-table-header flex-spaced on-transition-fade">
+    <div class="filter-count" *ngIf="filterService">
+        <span>{{ filterService.filteredCount }}&nbsp;</span><span translate>of</span>
+        <span>&nbsp;{{ filterService.totalCount }}</span>
+    </div>
+    <div class="current-filters" *ngIf="filterService && filterService.activeFilterCount">
+            <div>
+                <span translate>Active filters</span>:&nbsp;
+            </div>
+            <div>
+                <button mat-button (click)="filterService.clearAllFilters()">
+                    <mat-icon inline>cancel</mat-icon>
+                    <span translate>Clear all</span>
+                </button>
+            </div>
+            <div *ngFor="let filter of filterService.filterDefinitions">
+                <button mat-button *ngIf="filter.count" (click)="filterService.clearFilter(filter)">
+                    <mat-icon inline>close</mat-icon>
+                    <span translate>{{ filterService.getFilterName(filter) }}</span>
+                </button>
+            </div>
+    </div>
+    <div>
+        <button mat-button *ngIf="hasFilters" (click)="filterMenu.opened ? filterMenu.close() : filterMenu.open()">
+            <span *ngIf="!filterService.activeFilterCount" class="upper" translate>
+                Filter
+            </span>
+            <span *ngIf="filterService.activeFilterCount">
+                {{ filterService.activeFilterCount }}&nbsp;
+                <span *ngIf="filterService.activeFilterCount === 1" class="upper" translate>Filter</span>
+                <span *ngIf="filterService.activeFilterCount > 1" class="upper" translate>Filters</span>
+            </span>
+        </button>
+        <button mat-button *ngIf="vp.isMobile && hasSorting" (click)="openSortDropDown()">
+            <span class="upper" translate>Sort</span>
+        </button>
+        <button mat-button *ngIf="!vp.isMobile && hasSorting" [matMenuTriggerFor]="menu">
+            <span class="upper" translate>Sort</span>
+        </button>
+        <input
+            matInput
+            *ngIf="isSearchBar"
+            (keyup)="applySearch($event, $event.target.value)"
+            osAutofocus
+            placeholder="{{ translate.instant('Search') }}"
+            [ngClass]="vp.isMobile ? 'vp' : ''"
+        />
+        <button mat-button (click)="toggleSearchBar()">
+            <mat-icon>{{ isSearchBar ? 'keyboard_arrow_right' : 'search' }}</mat-icon>
+        </button>
+    </div>
 </div>
 
 <!-- Header for the filter side bar -->

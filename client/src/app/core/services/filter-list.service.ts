@@ -22,11 +22,15 @@ export interface OsFilter {
 }
 
 /**
- * Describes a list of available options for a drop down menu of a filter
+ * Describes a list of available options for a drop down menu of a filter.
+ * A filter condition of null will be interpreted as a negative filter
+ * ('None of the other filter options').
+ * Filter condition numbers/number arrays will be checked against numerical
+ * values and as id(s) for objects.
  */
 export interface OsFilterOption {
     label: string;
-    condition: string | boolean | number;
+    condition: string | boolean | number | number[];
     isActive?: boolean;
 }
 
@@ -54,6 +58,47 @@ export abstract class FilterListService<M extends BaseModel, V extends BaseViewM
     protected filteredData: V[];
 
     protected name: string;
+
+    /**
+     * @returns the total count of items before the filter
+     */
+    public get totalCount(): number {
+        return this.currentRawData ? this.currentRawData.length : 0;
+    }
+
+    /**
+     * @returns the amount of items that pass the current filters
+     */
+    public get filteredCount(): number {
+        return this.filteredData ? this.filteredData.length : 0;
+    }
+
+    /**
+     * Get the amount of filters currently in use by this filter Service
+     *
+     * @returns a number of filters
+     */
+    public get activeFilterCount(): number {
+        if (!this.filterDefinitions || !this.filterDefinitions.length) {
+            return 0;
+        }
+        let filters = 0;
+        for (const filter of this.filterDefinitions) {
+            if (filter.count) {
+                filters += 1;
+            }
+        }
+        return filters;
+    }
+
+    /**
+     * Boolean indicationg if there are any filters described in this service
+     *
+     * @returns true if there are defined filters (regardless of current state)
+     */
+    public get hasFilterOptions(): boolean {
+        return this.filterDefinitions && this.filterDefinitions.length ? true : false;
+    }
 
     /**
      * Constructor.
@@ -102,6 +147,12 @@ export abstract class FilterListService<M extends BaseModel, V extends BaseViewM
         }
     }
 
+    /**
+     * Remove a filter option.
+     *
+     * @param filterName: The property name of this filter
+     * @param option: The option to disable
+     */
     public removeFilterOption(filterName: string, option: OsFilterOption): void {
         const filter = this.filterDefinitions.find(f => f.property === filterName);
         if (filter) {
@@ -213,59 +264,101 @@ export abstract class FilterListService<M extends BaseModel, V extends BaseViewM
     }
 
     /**
-     *  Helper to see if a model instance passes a filter
+     * Checks if a given ViewBaseModel passes the filter.
+     *
      * @param item
      * @param filter
+     * @returns true if the item is to be dispalyed according to the filter
      */
     private checkIncluded(item: V, filter: OsFilter): boolean {
+        const nullFilter = filter.options.find(
+            option => typeof option !== 'string' && option.isActive && option.condition === null
+        );
+        let passesNullFilter = true;
         for (const option of filter.options) {
+            // ignored options
             if (typeof option === 'string') {
                 continue;
-            }
-            if (option.isActive) {
-                if (option.condition === null) {
-                    return this.checkIncludedNegative(item, filter);
-                }
-                if (item[filter.property] === undefined) {
-                    return false;
-                }
-                if (item[filter.property] instanceof BaseModel) {
-                    if (item[filter.property].id === option.condition) {
-                        return true;
-                    }
-                } else if (item[filter.property] === option.condition) {
-                    return true;
-                } else if (item[filter.property].toString() === option.condition) {
+            } else if (nullFilter && option === nullFilter) {
+                continue;
+                // active option. The item is included if it passes this test
+            } else if (option.isActive) {
+                if (this.checkFilterIncluded(item, filter, option)) {
                     return true;
                 }
+                // if a null filter is set, the item needs to not pass all inactive filters
+            } else if (
+                nullFilter &&
+                (item[filter.property] !== null || item[filter.property] !== undefined) &&
+                this.checkFilterIncluded(item, filter, option)
+            ) {
+                passesNullFilter = false;
             }
+        }
+        if (nullFilter && passesNullFilter) {
+            return true;
         }
         return false;
     }
 
     /**
-     * Returns true if none of the defined non-null filters apply,
-     * aka 'items that match no filter'
-     * @param item: A viewModel
-     * @param filter
+     * Checks an item against a single filter option.
+     *
+     * @param item A BaseModel to be checked
+     * @param filter The parent filter
+     * @param option The option to be checked
+     * @returns true if the filter condition matches the item
      */
-    private checkIncludedNegative(item: V, filter: OsFilter): boolean {
-        if (item[filter.property] === undefined) {
+    private checkFilterIncluded(item: V, filter: OsFilter, option: OsFilterOption): boolean {
+        if (item[filter.property] === undefined || item[filter.property] === null) {
+            return false;
+        } else if (Array.isArray(item[filter.property])) {
+            const compareValueCondition = (value, condition): boolean => {
+                if (value === condition) {
+                    return true;
+                } else if (value.hasOwnProperty('id') && value.id === condition) {
+                    return true;
+                }
+                return false;
+            };
+            for (const value of item[filter.property]) {
+                if (Array.isArray(option.condition)) {
+                    for (const condition of option.condition) {
+                        if (compareValueCondition(value, condition)) {
+                            return true;
+                        }
+                    }
+                } else {
+                    if (compareValueCondition(value, option.condition)) {
+                        return true;
+                    }
+                }
+            }
+        } else if (Array.isArray(option.condition)) {
+            if (
+                option.condition.indexOf(item[filter.property]) > -1 ||
+                option.condition.indexOf(item[filter.property].id) > -1
+            ) {
+                return true;
+            }
+        } else if (typeof item[filter.property] === 'object' && item[filter.property].hasOwnProperty('id')) {
+            if (item[filter.property].id === option.condition) {
+                return true;
+            }
+        } else if (item[filter.property] === option.condition) {
+            return true;
+        } else if (item[filter.property].toString() === option.condition) {
             return true;
         }
-        for (const option of filter.options) {
-            if (typeof option === 'string' || option.condition === null) {
-                continue;
-            }
-            if (item[filter.property] === option.condition) {
-                return false;
-            } else if (item[filter.property].toString() === option.condition) {
-                return false;
-            }
-        }
-        return true;
+        return false;
     }
 
+    /**
+     * Retrieves a translatable label or filter property used for displaying the filter
+     *
+     * @param filter
+     * @returns a name, capitalized first character
+     */
     public getFilterName(filter: OsFilter): string {
         if (filter.label) {
             return filter.label;
@@ -275,20 +368,24 @@ export abstract class FilterListService<M extends BaseModel, V extends BaseViewM
         }
     }
 
-    public get hasActiveFilters(): number {
-        if (!this.filterDefinitions || !this.filterDefinitions.length) {
-            return 0;
-        }
-        let filters = 0;
-        for (const filter of this.filterDefinitions) {
-            if (filter.count) {
-                filters += 1;
+    /**
+     * Removes all active options of a given filter, clearing it
+     * @param filter
+     */
+    public clearFilter(filter: OsFilter): void {
+        filter.options.forEach(option => {
+            if (typeof option === 'object' && option.isActive) {
+                this.removeFilterOption(filter.property, option);
             }
-        }
-        return filters;
+        });
     }
 
-    public hasFilterOptions(): boolean {
-        return this.filterDefinitions && this.filterDefinitions.length ? true : false;
+    /**
+     * Removes all filters currently in use from this filterService
+     */
+    public clearAllFilters(): void {
+        this.filterDefinitions.forEach(filter => {
+            this.clearFilter(filter);
+        });
     }
 }

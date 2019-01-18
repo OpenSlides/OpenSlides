@@ -40,7 +40,7 @@ export class OsSortFilterBarComponent<V extends BaseViewModel> {
      * be a FilterListService extendingFilterListService.
      */
     @Input()
-    public filterService: any; // TODO a FilterListService extendingFilterListService
+    public filterService: any; // TODO a FilterListService extending FilterListService
 
     @Output()
     public searchFieldChange = new EventEmitter<string>();
@@ -112,7 +112,7 @@ export class OsSortFilterBarComponent<V extends BaseViewModel> {
      * Checks if there is an active FilterService present
      */
     public get hasFilters(): boolean {
-        if (this.filterService && this.filterService.hasFilterOptions()) {
+        if (this.filterService && this.filterService.hasFilterOptions) {
             return true;
         }
         return false;

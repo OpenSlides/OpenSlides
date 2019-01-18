@@ -134,6 +134,15 @@ export class ViewMotion extends BaseViewModel {
         return this._state;
     }
 
+    /**
+     * Checks if the current state of thw workflow is final
+     *
+     * @returns true if it is final
+     */
+    public get isFinalState(): boolean {
+        return this._state.isFinalState;
+    }
+
     public get state_id(): number {
         return this.motion && this.motion.state_id ? this.motion.state_id : null;
     }
@@ -207,6 +216,18 @@ export class ViewMotion extends BaseViewModel {
 
     public get attachments(): Mediafile[] {
         return this._attachments ? this._attachments : null;
+    }
+
+    /**
+     * Gets the comments' section ids of a motion. Used in filter by motionComment
+     *
+     * @returns an array of ids, or an empty array
+     */
+    public get commentSectionIds(): number[] {
+        if (!this.motion) {
+            return [];
+        }
+        return this.motion.comments.map(comment => comment.section_id);
     }
 
     public constructor(
