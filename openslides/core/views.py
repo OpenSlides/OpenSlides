@@ -1,6 +1,5 @@
 import datetime
 import os
-import uuid
 from typing import Any, Dict, List
 
 from django.conf import settings
@@ -127,17 +126,9 @@ class ProjectorViewSet(ModelViewSet):
             "update",
             "partial_update",
             "destroy",
-            "activate_elements",
-            "prune_elements",
-            "update_elements",
-            "deactivate_elements",
-            "clear_elements",
-            "project",
             "control_view",
             "set_resolution",
             "set_scroll",
-            "control_blank",
-            "broadcast",
             "set_projectiondefault",
         ):
             result = has_perm(self.request.user, "core.can_see_projector") and has_perm(
@@ -152,308 +143,14 @@ class ProjectorViewSet(ModelViewSet):
         REST API operation for DELETE requests.
 
         Assigns all ProjectionDefault objects from this projector to the
-        default projector (pk=1). Resets broadcast if set to this projector.
+        default projector (pk=1).
         """
         projector_instance = self.get_object()
         for projection_default in ProjectionDefault.objects.all():
             if projection_default.projector.id == projector_instance.id:
                 projection_default.projector_id = 1
                 projection_default.save()
-        if config["projector_broadcast"] == projector_instance.pk:
-            config["projector_broadcast"] = 0
         return super(ProjectorViewSet, self).destroy(*args, **kwargs)
-
-    @detail_route(methods=["post"])
-    def activate_elements(self, request, pk):
-        """
-        REST API operation to activate projector elements. It expects a POST
-        request to /rest/core/projector/<pk>/activate_elements/ with a list
-        of dictionaries to be appended to the projector config entry.
-        """
-        if not isinstance(request.data, list):
-            raise ValidationError({"detail": "Data must be a list."})
-
-        projector_instance = self.get_object()
-        projector_config = projector_instance.config
-        for element in request.data:
-            if element.get("name") is None:
-                raise ValidationError(
-                    {"detail": "Invalid projector element. Name is missing."}
-                )
-            projector_config[uuid.uuid4().hex] = element
-
-        serializer = self.get_serializer(
-            projector_instance, data={"config": projector_config}, partial=False
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
-
-    @detail_route(methods=["post"])
-    def prune_elements(self, request, pk):
-        """
-        REST API operation to activate projector elements. It expects a POST
-        request to /rest/core/projector/<pk>/prune_elements/ with a list of
-        dictionaries to write them to the projector config entry. All old
-        entries are deleted but not entries with stable == True.
-        """
-        if not isinstance(request.data, list):
-            raise ValidationError({"detail": "Data must be a list."})
-
-        projector = self.get_object()
-        elements = request.data
-        if not isinstance(elements, list):
-            raise ValidationError({"detail": "The data has to be a list."})
-        for element in elements:
-            if not isinstance(element, dict):
-                raise ValidationError({"detail": "All elements have to be dicts."})
-            if element.get("name") is None:
-                raise ValidationError(
-                    {"detail": "Invalid projector element. Name is missing."}
-                )
-        return Response(self.prune(projector, elements))
-
-    def prune(self, projector, elements):
-        """
-        Prunes all non stable elements from the projector and adds the given elements.
-        The elements have to a list of dicts, each gict containing at least a name. This
-        is not validated at this point! Should be done before.
-        Returns the new serialized data.
-        """
-        projector_config = {}
-        for key, value in projector.config.items():
-            if value.get("stable"):
-                projector_config[key] = value
-        for element in elements:
-            projector_config[uuid.uuid4().hex] = element
-
-        serializer = self.get_serializer(
-            projector, data={"config": projector_config}, partial=False
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        # reset scroll level
-        if projector.scroll != 0:
-            projector.scroll = 0
-            projector.save()
-        return serializer.data
-
-    @detail_route(methods=["post"])
-    def update_elements(self, request, pk):
-        """
-        REST API operation to update projector elements. It expects a POST
-        request to /rest/core/projector/<pk>/update_elements/ with a
-        dictonary to update the projector config. This must be a dictionary
-        with UUIDs as keys and projector element dictionaries as values.
-
-        Example:
-
-        {
-            "191c0878cdc04abfbd64f3177a21891a": {
-                "name": "core/countdown",
-                "stable": true,
-                "status": "running",
-                "countdown_time": 1374321600.0,
-                "visable": true,
-                "default": 42
-            }
-        }
-        """
-        if not isinstance(request.data, dict):
-            raise ValidationError({"detail": "Data must be a dictionary."})
-        error = {
-            "detail": "Data must be a dictionary with UUIDs as keys and dictionaries as values."
-        }
-        for key, value in request.data.items():
-            try:
-                uuid.UUID(hex=str(key))
-            except ValueError:
-                raise ValidationError(error)
-            if not isinstance(value, dict):
-                raise ValidationError(error)
-
-        projector_instance = self.get_object()
-        projector_config = projector_instance.config
-        for key, value in request.data.items():
-            if key not in projector_config:
-                raise ValidationError(
-                    {"detail": "Invalid projector element. Wrong UUID."}
-                )
-            projector_config[key].update(request.data[key])
-
-        serializer = self.get_serializer(
-            projector_instance, data={"config": projector_config}, partial=False
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
-
-    @detail_route(methods=["post"])
-    def deactivate_elements(self, request, pk):
-        """
-        REST API operation to deactivate projector elements. It expects a
-        POST request to /rest/core/projector/<pk>/deactivate_elements/ with
-        a list of hex UUIDs. These are the projector_elements in the config
-        that should be deleted.
-        """
-        if not isinstance(request.data, list):
-            raise ValidationError({"detail": "Data must be a list of hex UUIDs."})
-        for item in request.data:
-            try:
-                uuid.UUID(hex=str(item))
-            except ValueError:
-                raise ValidationError({"detail": "Data must be a list of hex UUIDs."})
-
-        projector_instance = self.get_object()
-        projector_config = projector_instance.config
-        for key in request.data:
-            try:
-                del projector_config[key]
-            except KeyError:
-                raise ValidationError({"detail": "Invalid UUID."})
-
-        serializer = self.get_serializer(
-            projector_instance, data={"config": projector_config}, partial=False
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
-
-    @detail_route(methods=["post"])
-    def clear_elements(self, request, pk):
-        """
-        REST API operation to deactivate all projector elements but not
-        entries with stable == True. It expects a POST request to
-        /rest/core/projector/<pk>/clear_elements/.
-        """
-        projector = self.get_object()
-        return Response(self.clear(projector))
-
-    def clear(self, projector):
-        projector_config = {}
-        for key, value in projector.config.items():
-            if value.get("stable"):
-                projector_config[key] = value
-
-        serializer = self.get_serializer(
-            projector, data={"config": projector_config}, partial=False
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return serializer.data
-
-    @list_route(methods=["post"])
-    def project(self, request, *args, **kwargs):
-        """
-        REST API operation. Does a combination of clear_elements and prune_elements:
-        In the most cases when projecting an element it first need to be removed from
-        all projectors where it is projected. In a second step the new element (which
-        may be not given if the element is just deprojected) needs to be projected on
-        a maybe different projector. The request data has to have this scheme:
-        {
-            clear_ids: [<projector id1>, ...],      # May be an empty list
-            prune: {                                # May not be given.
-                id: <projector id>,
-                element: <projector element to add>
-            }
-        }
-        """
-        # The data has to be a dict.
-        if not isinstance(request.data, dict):
-            raise ValidationError({"detail": "The data has to be a dict."})
-
-        # Get projector ids to clear
-        clear_projector_ids = request.data.get("clear_ids", [])
-        for id in clear_projector_ids:
-            if not isinstance(id, int):
-                raise ValidationError({"detail": f'The id "{id}" has to be int.'})
-
-        # Get the projector id and validate element to prune. This is optional.
-        prune = request.data.get("prune")
-        if prune is not None:
-            if not isinstance(prune, dict):
-                raise ValidationError({"detail": "Prune has to be an object."})
-            prune_projector_id = prune.get("id")
-            if not isinstance(prune_projector_id, int):
-                raise ValidationError(
-                    {"detail": "The prune projector id has to be int."}
-                )
-
-            # Get the projector after all clear operations, but check, if it exist.
-            if not Projector.objects.filter(pk=prune_projector_id).exists():
-                raise ValidationError(
-                    {
-                        "detail": f'The projector with id "{prune_projector_id}" does not exist'
-                    }
-                )
-
-            prune_element = prune.get("element", {})
-            if not isinstance(prune_element, dict):
-                raise ValidationError(
-                    {"detail": "Prune element has to be a dict or not given."}
-                )
-            if prune_element.get("name") is None:
-                raise ValidationError(
-                    {"detail": "Invalid projector element. Name is missing."}
-                )
-
-        # First step: Clear all given projectors
-        for projector in Projector.objects.filter(pk__in=clear_projector_ids):
-            self.clear(projector)
-
-        # Second step: optionally prune
-        if prune is not None:
-            # This get is save. We checked that the projector exists above.
-            prune_projector = Projector.objects.get(pk=prune_projector_id)
-            self.prune(prune_projector, [prune_element])
-
-        return Response()
-
-    @detail_route(methods=["post"])
-    def set_resolution(self, request, pk):
-        """
-        REST API operation to set the resolution.
-
-        It is actually unused, because the resolution is currently set in the config.
-        But with the multiprojector feature this will become importent to set the
-        resolution per projector individually.
-
-        It expects a POST request to
-        /rest/core/projector/<pk>/set_resolution/ with a dictionary with the width
-        and height and the values.
-
-        Example:
-
-        {
-            "width": "1024",
-            "height": "768"
-        }
-        """
-        if not isinstance(request.data, dict):
-            raise ValidationError({"detail": "Data must be a dictionary."})
-        if request.data.get("width") is None or request.data.get("height") is None:
-            raise ValidationError({"detail": "A width and a height have to be given."})
-        if not isinstance(request.data["width"], int) or not isinstance(
-            request.data["height"], int
-        ):
-            raise ValidationError({"detail": "Data has to be integers."})
-        if (
-            request.data["width"] < 800
-            or request.data["width"] > 3840
-            or request.data["height"] < 340
-            or request.data["height"] > 2880
-        ):
-            raise ValidationError(
-                {"detail": "The Resolution have to be between 800x340 and 3840x2880."}
-            )
-
-        projector_instance = self.get_object()
-        projector_instance.width = request.data["width"]
-        projector_instance.height = request.data["height"]
-        projector_instance.save()
-
-        message = f"Changing resolution to {request.data['width']}x{request.data['height']} was successful."
-        return Response({"detail": message})
 
     @detail_route(methods=["post"])
     def control_view(self, request, pk):
@@ -507,10 +204,7 @@ class ProjectorViewSet(ModelViewSet):
         projector_instance.save(skip_autoupdate=True)
         projector_instance.refresh_from_db()
         inform_changed_data(projector_instance)
-        action = (request.data["action"].capitalize(),)
-        direction = (request.data["direction"],)
-        message = f"{action} {direction} was successful."
-        return Response({"detail": message})
+        return Response()
 
     @detail_route(methods=["post"])
     def set_scroll(self, request, pk):
@@ -528,40 +222,6 @@ class ProjectorViewSet(ModelViewSet):
 
         projector_instance.save()
         message = f"Setting scroll to {request.data} was successful."
-        return Response({"detail": message})
-
-    @detail_route(methods=["post"])
-    def control_blank(self, request, pk):
-        """
-        REST API operation to blank the projector.
-
-        It expects a POST request to
-        /rest/core/projector/<pk>/control_blank/ with a value for blank.
-        """
-        if not isinstance(request.data, bool):
-            raise ValidationError({"detail": "Data must be a bool."})
-
-        projector_instance = self.get_object()
-        projector_instance.blank = request.data
-        projector_instance.save()
-        message = f"Setting 'blank' to {request.data} was successful."
-        return Response({"detail": message})
-
-    @detail_route(methods=["post"])
-    def broadcast(self, request, pk):
-        """
-        REST API operation to (un-)broadcast the given projector.
-        This method takes care, that all other projectors get the new requirements.
-
-        It expects a POST request to
-        /rest/core/projector/<pk>/broadcast/ without an argument
-        """
-        if config["projector_broadcast"] == 0:
-            config["projector_broadcast"] = pk
-            message = f"Setting projector {pk} as broadcast projector was successful."
-        else:
-            config["projector_broadcast"] = 0
-            message = "Disabling broadcast was successful."
         return Response({"detail": message})
 
     @detail_route(methods=["post"])
@@ -589,9 +249,7 @@ class ProjectorViewSet(ModelViewSet):
             projectiondefault.projector = projector_instance
             projectiondefault.save()
 
-        return Response(
-            f'Setting projectiondefault "{projectiondefault.display_name}" to projector {projector_instance.pk} was successful.'
-        )
+        return Response()
 
 
 class TagViewSet(ModelViewSet):
@@ -673,8 +331,8 @@ class ConfigViewSet(ModelViewSet):
             config[key] = value
         except ConfigNotFound:
             raise Http404
-        except ConfigError as e:
-            raise ValidationError({"detail": str(e)})
+        except ConfigError as err:
+            raise ValidationError({"detail": str(err)})
 
         # Return response.
         return Response({"key": key, "value": value})

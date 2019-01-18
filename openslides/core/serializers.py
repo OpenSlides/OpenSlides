@@ -1,6 +1,8 @@
-from openslides.utils.rest_api import Field, ModelSerializer, ValidationError
-from openslides.utils.validate import validate_html
+from typing import Any
 
+from ..utils.projector import projector_elements
+from ..utils.rest_api import Field, IntegerField, ModelSerializer, ValidationError
+from ..utils.validate import validate_html
 from .models import (
     ChatMessage,
     ConfigStore,
@@ -20,18 +22,8 @@ class JSONSerializerField(Field):
 
     def to_internal_value(self, data):
         """
-        Checks that data is a dictionary. The key is a hex UUID and the
-        value is a dictionary with must have a key 'name'.
+        Returns the value. It is encoded from the Django JSONField.
         """
-        if type(data) is not dict:
-            raise ValidationError({"detail": "Data must be a dictionary."})
-        for element in data.values():
-            if type(element) is not dict:
-                raise ValidationError({"detail": "Data must be a dictionary."})
-            elif element.get("name") is None:
-                raise ValidationError(
-                    {"detail": "Every dictionary must have a key 'name'."}
-                )
         return data
 
     def to_representation(self, value):
@@ -51,28 +43,69 @@ class ProjectionDefaultSerializer(ModelSerializer):
         fields = ("id", "name", "display_name", "projector")
 
 
+def elements_validator(value: Any) -> None:
+    """
+    Checks the format of the elements field.
+    """
+    if not isinstance(value, list):
+        raise ValidationError({"detail": "Data must be a list."})
+    for element in value:
+        if not isinstance(element, dict):
+            raise ValidationError({"detail": "Data must be a dictionary."})
+        if element.get("name") is None:
+            raise ValidationError(
+                {"detail": "Every dictionary must have a key 'name'."}
+            )
+        if element["name"] not in projector_elements:
+            raise ValidationError(
+                {"detail": f"Unknown projector element {element['name']},"}
+            )
+
+
+def elements_array_validator(value: Any) -> None:
+    """
+    Validates the value of the element field of the projector model.
+    """
+    if not isinstance(value, list):
+        raise ValidationError({"detail": "Data must be a list."})
+    for element in value:
+        elements_validator(element)
+
+
 class ProjectorSerializer(ModelSerializer):
     """
     Serializer for core.models.Projector objects.
     """
 
-    config = JSONSerializerField()
+    elements = JSONSerializerField(validators=[elements_validator])
+    elements_preview = JSONSerializerField(validators=[elements_array_validator])
+    elements_history = JSONSerializerField(validators=[elements_array_validator])
+
     projectiondefaults = ProjectionDefaultSerializer(many=True, read_only=True)
+    width = IntegerField(min_value=800, max_value=3840, required=False)
+    height = IntegerField(min_value=340, max_value=2880, required=False)
 
     class Meta:
         model = Projector
         fields = (
             "id",
-            "config",
+            "elements",
+            "elements_preview",
+            "elements_history",
             "scale",
             "scroll",
             "name",
-            "blank",
             "width",
             "height",
             "projectiondefaults",
         )
-        read_only_fields = ("scale", "scroll", "blank", "width", "height")
+        read_only_fields = ("scale", "scroll")
+
+    def validate_elements_history(self, value):
+        """
+        Validates the value of the element field of the projector model.
+        """
+        self.validate_elements_preview(value)
 
 
 class TagSerializer(ModelSerializer):

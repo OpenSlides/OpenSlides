@@ -80,8 +80,8 @@ class TProjector:
 
     def get_elements(self) -> List[Dict[str, Any]]:
         return [
-            {"id": 1, "config": {"uid1": {"name": "test/slide1", "id": 1}}},
-            {"id": 2, "config": {"uid2": {"name": "test/slide2", "id": 1}}},
+            {"id": 1, "elements": [{"name": "test/slide1", "id": 1}]},
+            {"id": 2, "elements": [{"name": "test/slide2", "id": 1}]},
         ]
 
     async def restrict_elements(

@@ -10,7 +10,7 @@ from ..utils.projector import register_projector_element
 
 
 def topic(
-    config: Dict[str, Any], all_data: Dict[str, Dict[int, Dict[str, Any]]]
+    element: Dict[str, Any], all_data: Dict[str, Dict[int, Dict[str, Any]]]
 ) -> Dict[str, Any]:
     """
     Topic slide.

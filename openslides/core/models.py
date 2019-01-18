@@ -32,35 +32,27 @@ class ProjectorManager(models.Manager):
 
 
 class Projector(RESTModelMixin, models.Model):
-    # TODO: Fix docstring
     """
     Model for all projectors.
 
-    The config field contains a dictionary which uses UUIDs as keys. Every
-    element must have at least the property "name". The property "stable"
-    is to set whether this element should disappear on prune or clear
-    requests.
+    The elements field contains a list. Every element must have at least the
+    property "name".
 
     Example:
-
-    {
-        "881d875cf01741718ca926279ac9c99c": {
+    [
+        {
             "name": "topics/topic",
-            "id": 1
+            "id": 1,
         },
-        "191c0878cdc04abfbd64f3177a21891a": {
+        {
             "name": "core/countdown",
-            "stable": true,
-            "status": "stop",
-            "countdown_time": 20,
-            "visable": true,
-            "default": 42
+            "id": 1,
         },
-        "db670aa8d3ed4aabb348e752c75aeaaf": {
+        {
             "name": "core/clock",
-            "stable": true
-        }
-    }
+            "id": 1,
+        },
+    ]
 
     If the config field is empty or invalid the projector shows a default
     slide.
@@ -76,19 +68,17 @@ class Projector(RESTModelMixin, models.Model):
 
     objects = ProjectorManager()
 
-    config = JSONField()
+    elements = JSONField()
+    elements_preview = JSONField()
+    elements_history = JSONField()
 
     scale = models.IntegerField(default=0)
-
     scroll = models.IntegerField(default=0)
 
     width = models.PositiveIntegerField(default=1024)
-
     height = models.PositiveIntegerField(default=768)
 
     name = models.CharField(max_length=255, unique=True, blank=True)
-
-    blank = models.BooleanField(blank=False, default=False)
 
     class Meta:
         """

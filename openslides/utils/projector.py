@@ -28,72 +28,58 @@ def register_projector_element(name: str, element: ProjectorElementCallable) -> 
 
 async def get_projectot_data(
     projector_ids: List[int] = None
-) -> Dict[int, Dict[str, Dict[str, Any]]]:
+) -> Dict[int, List[Dict[str, Any]]]:
     """
-    Callculates and returns the data for one or all projectors.
+    Calculates and returns the data for one or all projectors.
 
     The keys of the returned data are the projector ids as int. When converted
     to json, the numbers will changed to strings like "1".
 
-    The data for each projector is a dict. The keys are the uuids of the
-    elements as strings. If there is a generell problem with the projector, the
-    key can be 'error'.
+    The data for each projector is a list of elements.
 
-    Each element is a dict where the keys are "config", "data". "config"
-    contains the projector config. It is the same as the projector config in the
-    database. "data" contains all necessary data to render the projector
+    Each element is a dict where the keys are "elements", "data". "elements"
+    contains the projector elements. It is the same as the projector elements in
+    the database. "data" contains all necessary data to render the projector
     element. The key can also be "error" if there is a generall error for the
-    slide. In this case the values "config" and "data" are optional.
+    slide. In this case the values "elements" and "data" are optional.
 
     The returned value looks like this:
 
     projector_data = {
-        1: {
-            "UnIqUe-UUID": {
-                "config": {
+        1: [
+            {
+                "element": {
                     "name": "agenda/item-list",
                 },
                 "data": {
                     "items": []
                 },
             },
-        },
-        2: {
-            "error": {
-                "error": "Projector has no config",
-            },
-        },
+        ],
     }
     """
     if projector_ids is None:
         projector_ids = []
 
     all_data = await element_cache.get_all_full_data_ordered()
-    projector_data: Dict[int, Dict[str, Dict[str, Any]]] = {}
+    projector_data: Dict[int, List[Dict[str, Any]]] = {}
 
     for projector_id, projector in all_data.get("core/projector", {}).items():
         if projector_ids and projector_id not in projector_ids:
             # only render the projector in question.
             continue
 
-        projector_data[projector_id] = {}
-        if not projector["config"]:
-            projector_data[projector_id] = {
-                "error": {"error": "Projector has no config"}
-            }
+        if not projector["elements"]:
+            # Skip empty elements.
             continue
 
-        for uuid, projector_config in projector["config"].items():
-            projector_data[projector_id][uuid] = {"config": projector_config}
-            projector_element = projector_elements.get(projector_config["name"])
-            if projector_element is None:
-                projector_data[projector_id][uuid][
-                    "error"
-                ] = f"Projector element {projector_config['name']} does not exist"
-            else:
-                projector_data[projector_id][uuid]["data"] = projector_element(
-                    projector_config, all_data
-                )
+        projector_data[projector_id] = []
+        for element in projector["elements"]:
+            projector_element = projector_elements[element["name"]]
+            projector_data[projector_id].append(
+                {"data": projector_element(element, all_data), "element": element}
+            )
+
     return projector_data
 
 
