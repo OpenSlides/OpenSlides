@@ -10,8 +10,7 @@ import { DataStoreService } from '../../../../core/services/data-store.service';
 
 @Component({
     selector: 'os-start',
-    templateUrl: './start.component.html',
-    styleUrls: ['./start.component.css']
+    templateUrl: './start.component.html'
 })
 export class StartComponent extends BaseComponent implements OnInit {
     public welcomeTitle: string;

@@ -6,7 +6,11 @@ from openslides.utils.websocket import schema
 
 def test_notify_schema_validation():
     # This raises a validaten error if it fails
-    message = {"id": "test-message", "type": "notify", "content": [{"users": [5]}]}
+    message = {
+        "id": "test-message",
+        "type": "notify",
+        "content": {"name": "testname", "content": ["some content"]},
+    }
     jsonschema.validate(message, schema)
 
 

@@ -70,26 +70,21 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
         Send a notify message to the user.
         """
         user_id = self.scope["user"]["id"]
+        item = event["incomming"]
 
-        out = []
-        for item in event["incomming"]:
-            users = item.get("users")
-            reply_channels = item.get("replyChannels")
-            if (
-                (isinstance(users, list) and user_id in users)
-                or (
-                    isinstance(reply_channels, list)
-                    and self.channel_name in reply_channels
-                )
-                or users is None
-                and reply_channels is None
-            ):
-                item["senderReplyChannelName"] = event.get("senderReplyChannelName")
-                item["senderUserId"] = event.get("senderUserId")
-                out.append(item)
-
-        if out:
-            await self.send_json(type="notify", content=out)
+        users = item.get("users")
+        reply_channels = item.get("replyChannels")
+        if (
+            (isinstance(users, bool) and users)
+            or (isinstance(users, list) and user_id in users)
+            or (
+                isinstance(reply_channels, list) and self.channel_name in reply_channels
+            )
+            or (users is None and reply_channels is None)
+        ):
+            item["senderChannelName"] = event["senderChannelName"]
+            item["senderUserId"] = event["senderUserId"]
+            await self.send_json(type="notify", content=item)
 
     async def send_data(self, event: Dict[str, Any]) -> None:
         """

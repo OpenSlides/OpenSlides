@@ -248,18 +248,18 @@ async def test_send_notify(communicator, set_config):
     await communicator.send_json_to(
         {
             "type": "notify",
-            "content": [{"testmessage": "foobar, what else."}],
+            "content": {"content": "foobar, what else.", "name": "message_name"},
             "id": "test",
         }
     )
     response = await communicator.receive_json_from()
 
     content = response["content"]
-    assert isinstance(content, list)
-    assert len(content) == 1
-    assert content[0]["testmessage"] == "foobar, what else."
-    assert "senderReplyChannelName" in content[0]
-    assert content[0]["senderUserId"] == 0
+    assert isinstance(content, dict)
+    assert content["content"] == "foobar, what else."
+    assert content["name"] == "message_name"
+    assert "senderChannelName" in content
+    assert content["senderUserId"] == 0
 
 
 @pytest.mark.asyncio

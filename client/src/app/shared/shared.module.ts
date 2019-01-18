@@ -72,6 +72,7 @@ import { OsSortFilterBarComponent } from './components/os-sort-filter-bar/os-sor
 import { OsSortBottomSheetComponent } from './components/os-sort-filter-bar/os-sort-bottom-sheet/os-sort-bottom-sheet.component';
 import { FilterMenuComponent } from './components/os-sort-filter-bar/filter-menu/filter-menu.component';
 import { LogoComponent } from './components/logo/logo.component';
+import { C4DialogComponent, CopyrightSignComponent } from './components/copyright-sign/copyright-sign.component';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -176,7 +177,9 @@ import { LogoComponent } from './components/logo/logo.component';
         SortingTreeComponent,
         TreeModule,
         OsSortFilterBarComponent,
-        LogoComponent
+        LogoComponent,
+        CopyrightSignComponent,
+        C4DialogComponent
     ],
     declarations: [
         PermsDirective,
@@ -194,7 +197,9 @@ import { LogoComponent } from './components/logo/logo.component';
         OsSortFilterBarComponent,
         OsSortBottomSheetComponent,
         FilterMenuComponent,
-        LogoComponent
+        LogoComponent,
+        CopyrightSignComponent,
+        C4DialogComponent
     ],
     providers: [
         { provide: DateAdapter, useClass: OpenSlidesDateAdapter },
@@ -204,6 +209,6 @@ import { LogoComponent } from './components/logo/logo.component';
         OsSortFilterBarComponent,
         OsSortBottomSheetComponent
     ],
-    entryComponents: [OsSortBottomSheetComponent]
+    entryComponents: [OsSortBottomSheetComponent, C4DialogComponent]
 })
 export class SharedModule {}
