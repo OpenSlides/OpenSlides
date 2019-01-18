@@ -1,4 +1,9 @@
-<mat-toolbar color="primary" [ngClass]="multiSelectMode ? 'multi-select' : ''" *ngIf="!vp.isMobile"></mat-toolbar>
+<mat-toolbar color="primary" [ngClass]="multiSelectMode ? 'multi-select' : ''" *ngIf="!vp.isMobile">
+    <!-- Nav menu -->
+    <button mat-icon-button class="on-transition-fade" *ngIf="!multiSelectMode" (click)="clickHamburgerMenu()">
+        <mat-icon>menu</mat-icon>
+    </button>
+</mat-toolbar>
 <mat-toolbar color="primary" [ngClass]="multiSelectMode ? 'multi-select' : ''" class="sticky-toolbar">
     <div class="toolbar-left">
         <!-- Nav menu -->
@@ -62,7 +67,6 @@
         >
             <mat-icon>edit</mat-icon>
         </button>
-
 
         <!-- Save button -->
         <button mat-button *ngIf="editMode" (click)="save()"><strong translate class="upper">Save</strong></button>

@@ -114,12 +114,10 @@ export class SiteComponent extends BaseComponent implements OnInit {
     }
 
     /**
-     * Closes the sidenav in mobile view
+     * Closes the sidenav
      */
     public toggleSideNav(): void {
-        if (this.vp.isMobile) {
-            this.sideNav.toggle();
-        }
+        this.sideNav.toggle();
     }
 
     /**

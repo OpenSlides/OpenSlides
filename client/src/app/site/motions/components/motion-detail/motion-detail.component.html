@@ -60,23 +60,23 @@
 
     <mat-menu #motionExtraMenu="matMenu">
         <div *ngIf="motion">
+            <!-- PDF -->
             <button mat-menu-item
                 (click)="onDownloadPdf()">
                 <mat-icon>picture_as_pdf</mat-icon>
                 <span translate>PDF</span>
             </button>
-
+            <!-- List of speakers -->
             <button mat-menu-item [routerLink]="getSpeakerLink()">
                 <mat-icon>mic</mat-icon>
                 <span translate>List of speakers</span>
             </button>
-
+            <!-- Project -->
             <button mat-menu-item>
-                <!-- possible icons: screen_share, cast, videocam -->
                 <mat-icon>videocam</mat-icon>
                 <span translate>Project</span>
             </button>
-
+            <!-- New amendment -->
             <button
                 mat-menu-item
                 (click)="createAmendment()"
@@ -85,7 +85,7 @@
                 <mat-icon>add</mat-icon>
                 <span translate>New amendment</span>
             </button>
-
+            <!-- Show entire motion text -->
             <button
                 mat-menu-item
                 (click)="showAmendmentContext = !showAmendmentContext"
@@ -97,6 +97,7 @@
 
             <mat-divider></mat-divider>
 
+            <!-- Delete -->
             <button mat-menu-item class="red-warning-text" (click)="deleteMotionButton()">
                 <mat-icon>delete</mat-icon>
                 <span translate>Delete</span>
@@ -105,59 +106,50 @@
     </mat-menu>
 </os-head-bar>
 
-<!-- Title -->
-<div class="title-left on-transition-fade" *ngIf="motion && !editMotion">
-    <div class="title-line">
-        <h1>
-            {{ motion.title }}
-        </h1>
-        <button mat-icon-button color="primary" (click)="toggleFavorite()">
-            <mat-icon>{{ motion.star ? 'star' : 'star_border' }}</mat-icon>
-        </button>
+<div class="content-container">
+    <!-- Title -->
+    <div class="title on-transition-fade" *ngIf="motion && !editMotion">
+        <div class="title-line">
+            <h1>
+                {{ motion.title }}
+            </h1>
+            <button mat-icon-button color="primary" (click)="toggleFavorite()">
+                <mat-icon>{{ motion.star ? 'star' : 'star_border' }}</mat-icon>
+            </button>
+        </div>
+        <span class="main-nav-color title-font"><span translate>Sequential number</span>&nbsp;{{ motion.id }}</span>
     </div>
-    <span class="main-nav-color title-font"><span translate>Sequential number</span>&nbsp;{{ motion.id }}</span>
+
+    <ng-container *ngIf="vp.isMobile; then mobileView; else desktopView"></ng-container>
 </div>
 
-<ng-container *ngIf="vp.isMobile; then mobileView; else desktopView"></ng-container>
-
 <ng-template #mobileView>
-    <mat-accordion multi="true" class="on-transition-fade">
-        <!-- MetaInfo Panel-->
-        <mat-expansion-panel #metaInfoPanel [expanded]="true" class="meta-info-block meta-info-panel">
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    <mat-icon>info</mat-icon>
-                    <span translate>Meta information</span>
-                </mat-panel-title>
-            </mat-expansion-panel-header>
 
-            <!-- Meta info -->
-            <div class="expansion-panel-custom-body">
-                <ng-container *ngTemplateOutlet="metaInfoTemplate"></ng-container>
-            </div>
-        </mat-expansion-panel>
+    <!-- Meta info -->
+    <div class="hspacing">
+        <ng-container *ngTemplateOutlet="metaInfoTemplate"></ng-container>
+    </div>
 
-        <!-- Content -->
-        <mat-expansion-panel #contentPanel [expanded]="true">
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    <mat-icon>format_align_left</mat-icon>
-                    <span translate>Content</span>
-                </mat-panel-title>
-            </mat-expansion-panel-header>
+    <mat-divider class="spacer-top-10 spacer-bottom-20"></mat-divider>
 
-            <div class="expansion-panel-custom-body">
-                <ng-container *ngTemplateOutlet="contentTemplate"></ng-container>
-            </div>
-        </mat-expansion-panel>
+    <!-- Content -->
+    <div class="hspacing">
+        <ng-container *ngTemplateOutlet="contentTemplate"></ng-container>
+    </div>
 
-        <os-motion-comments *ngIf="!editMotion" [motion]="motion"></os-motion-comments>
-        <os-personal-note *ngIf="!editMotion" [motion]="motion"></os-personal-note>
-        <button mat-button *ngIf="canShowLog" (click)="motionLogExpanded =!motionLogExpanded">
-            <span translate>Show motion log</span>
-        </button>
-        <os-motion-log *ngIf="motionLogExpanded" [motion]="motion"></os-motion-log>
-    </mat-accordion>
+    <mat-divider class="spacer-top-10 spacer-bottom-20"></mat-divider>
+
+    <!-- Comments -->
+    <os-motion-comments *ngIf="!editMotion" [motion]="motion"></os-motion-comments>
+
+    <!-- Personal note -->
+    <os-personal-note *ngIf="!editMotion" [motion]="motion"></os-personal-note>
+
+    <!-- Motoin log -->
+    <button mat-button *ngIf="canShowLog" (click)="motionLogExpanded =!motionLogExpanded">
+        <span translate>Show motion log</span>
+    </button>
+    <os-motion-log *ngIf="motionLogExpanded" [motion]="motion"></os-motion-log>
 </ng-template>
 
 <ng-template #desktopView>
@@ -287,7 +279,7 @@
 
         <!-- Category -->
         <!-- Disabled during "new motion" since changing has no effect -->
-        <div *ngIf="!editMotion">
+        <div *ngIf="!editMotion && categoryObserver.value.length > 0">
             <h4 translate>Category</h4>
             <mat-menu #categoryMenu="matMenu">
                 <button
@@ -295,27 +287,26 @@
                     *ngFor="let category of categoryObserver.value"
                     (click)="setCategory(category.id)"
                 >
+                    <mat-icon *ngIf="motion.category_id === category.id">check</mat-icon>
                     {{ category }}
                 </button>
-                <button mat-menu-item (click)="setCategory(null)">---</button>
             </mat-menu>
             <mat-basic-chip [matMenuTriggerFor]="categoryMenu" class="grey">
-                {{ motion.category ? motion.category : ('not set' | translate) }}
+                {{ motion.category ? motion.category : '–' }}
             </mat-basic-chip>
         </div>
 
         <!-- Block -->
-        <div *ngIf="!editMotion">
+        <div *ngIf="!editMotion && blockObserver.value.length > 0">
             <h4 translate>Motion block</h4>
-
             <mat-menu #blockMenu="matMenu">
                 <button mat-menu-item *ngFor="let block of blockObserver.value" (click)="setBlock(block.id)">
+                    <mat-icon *ngIf="motion.motion_block_id === block.id">check</mat-icon>
                     {{ block }}
                 </button>
-                <button mat-menu-item (click)="setBlock(null)">---</button>
             </mat-menu>
             <mat-basic-chip [matMenuTriggerFor]="blockMenu" class="grey">
-                {{ motion.motion_block ? motion.motion_block : ('not set' | translate) }}
+                {{ motion.motion_block ? motion.motion_block : '–' }}
             </mat-basic-chip>
         </div>
 
@@ -326,7 +317,7 @@
         </div>
 
         <!-- motion polls -->
-        <div *ngIf="!editMotion">
+        <div *ngIf="!editMotion" class="spacer-top-20 spacer-bottom-20">
             <os-motion-poll *ngFor="let poll of motion.motion.polls; let i = index" [rawPoll]="poll" [pollIndex]="i">
             </os-motion-poll>
             <div class="create-poll-button" *ngIf="perms.isAllowed('createpoll', motion)">

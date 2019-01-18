@@ -1,14 +1,10 @@
-<os-head-bar
-    mainButtonIcon="edit"
-    [nav]="false"
-    [mainButton]="true"
-    [editMode]="editBlock"
-    (mainEvent)="toggleEditMode()"
-    (saveEvent)="saveBlock()"
->
+<os-head-bar>
+
+
+
     <!-- Title -->
     <div class="title-slot">
-        <h2 *ngIf="block && !editBlock">{{ 'Motion block' | translate }} {{ block.id }}</h2>
+        <h2 *ngIf="block && !editBlock">{{ block.title }}</h2>
 
         <form [formGroup]="blockEditForm" (ngSubmit)="saveBlock()" (keydown)="onKeyDown($event)" *ngIf="editBlock">
             <mat-form-field>
@@ -24,21 +20,23 @@
         </form>
     </div>
 
+
+
     <!-- Menu -->
     <div class="menu-slot">
         <button type="button" mat-icon-button [matMenuTriggerFor]="motionBlockMenu">
             <mat-icon>more_vert</mat-icon>
         </button>
     </div>
+    <!-- Save button -->
+    <div *ngIf="editBlock" class="extra-controls-slot on-transition-fade">
+        <button mat-button (click)="saveBlock()"><strong translate class="upper">Save</strong></button>
+    </div>
+
+
 </os-head-bar>
 
-<!-- Title -->
-<div *ngIf="block" class="block-title on-transition-fade">
-    <h2 *ngIf="!editBlock">{{ block.title }}</h2>
-    <h2 *ngIf="editBlock">{{ blockEditForm.get('title').value }}</h2>
-</div>
-
-<mat-card class="block-card">
+<mat-card>
     <button mat-raised-button color="primary" (click)="onFollowRecButton()" [disabled]="isFollowingProhibited()">
         <mat-icon>done_all</mat-icon>
         <span translate>Follow recommendations for all motions</span>
@@ -115,7 +113,13 @@
         <mat-icon>videocam</mat-icon>
         <span translate>Project</span>
     </button>
+
     <mat-divider></mat-divider>
+
+    <button mat-menu-item (click)="toggleEditMode()">
+        <mat-icon>edit</mat-icon>
+        <span translate>Edit title</span>
+    </button>
 
     <button mat-menu-item class="red-warning-text" (click)="onDeleteBlockButton()">
         <mat-icon>delete</mat-icon>

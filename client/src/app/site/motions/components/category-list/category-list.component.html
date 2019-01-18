@@ -42,7 +42,7 @@
     </mat-card-actions>
 </mat-card>
 
-<mat-accordion class="os-card">
+<mat-accordion class="os-form-card">
     <mat-expansion-panel *ngFor="let category of categories" (opened)="openId = category.id" (closed)="panelClosed(category)"
     [expanded]="openId === category.id" multiple="false">
 

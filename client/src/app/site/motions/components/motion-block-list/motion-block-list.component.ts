@@ -14,6 +14,7 @@ import { DataStoreService } from 'app/core/services/data-store.service';
 import { MotionBlockRepositoryService } from '../../services/motion-block-repository.service';
 import { ViewMotionBlock } from '../../models/view-motion-block';
 import { AgendaRepositoryService } from 'app/site/agenda/services/agenda-repository.service';
+import { PromptService } from '../../../../core/services/prompt.service';
 
 /**
  * Table for the motion blocks
@@ -53,7 +54,7 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
      * Constructor for the motion block list view
      *
      * @param titleService sets the title
-     * @param translate translations
+     * @param translate translpations
      * @param matSnackBar display errors in the snack bar
      * @param router routing to children
      * @param route determine the local route
@@ -61,6 +62,7 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
      * @param agendaRepo the agenda repository service
      * @param DS the dataStore
      * @param formBuilder creates forms
+     * @param promptService the delete prompt
      */
     public constructor(
         titleService: Title,
@@ -71,7 +73,8 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
         private repo: MotionBlockRepositoryService,
         private agendaRepo: AgendaRepositoryService,
         private DS: DataStoreService,
-        private formBuilder: FormBuilder
+        private formBuilder: FormBuilder,
+        private promptService: PromptService
     ) {
         super(titleService, translate, matSnackBar);
 
@@ -98,6 +101,7 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
         });
 
         this.repo.getViewModelListObservable().subscribe(newMotionblocks => {
+            newMotionblocks.sort((a, b) => (a > b ? 1 : -1));
             this.dataSource.data = newMotionblocks;
         });
 
@@ -110,7 +114,7 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
      * @returns an array of strings building the column definition
      */
     public getColumnDefinition(): string[] {
-        return ['title', 'amount'];
+        return ['title', 'amount', 'menu'];
     }
 
     /**
@@ -118,7 +122,7 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
      *
      * @param block the given motion block
      */
-    public onSelectRow(block: ViewMotionBlock): void {
+    public openItem(block: ViewMotionBlock): void {
         this.router.navigate([`${block.id}`], { relativeTo: this.route });
     }
 
@@ -130,6 +134,18 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
      */
     public getMotionAmount(motionBlock: MotionBlock): number {
         return this.repo.getMotionAmountByBlock(motionBlock);
+    }
+
+    /**
+     * Click handler to delete motion blocks
+     *
+     * @param motionBlock the block to delete
+     */
+    public async onDelete(motionBlock: ViewMotionBlock): Promise<void> {
+        const content = this.translate.instant('Are you sure you want to delete this motion block?');
+        if (await this.promptService.open(motionBlock.title, content)) {
+            await this.repo.delete(motionBlock);
+        }
     }
 
     /**
