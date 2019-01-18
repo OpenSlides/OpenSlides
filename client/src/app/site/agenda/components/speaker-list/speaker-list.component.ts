@@ -180,4 +180,14 @@ export class SpeakerListComponent extends BaseViewComponent implements OnInit {
     public isOpInList(): boolean {
         return this.speakers.some(speaker => speaker.user.id === this.op.user.id);
     }
+
+    /**
+     * Checks how often a speaker has already finished speaking
+     *
+     * @param speaker
+     * @returns 0 or the number of times a speaker occurs in finishedSpeakers
+     */
+    public hasSpokenCount(speaker: ViewSpeaker): number {
+        return this.finishedSpeakers.filter(finishedSpeaker => finishedSpeaker.user.id === speaker.user.id).length;
+    }
 }

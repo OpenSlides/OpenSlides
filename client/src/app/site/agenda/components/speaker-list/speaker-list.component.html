@@ -53,6 +53,9 @@
             <os-sorting-list [input]="speakers" [live]="true" [count]="true" (sortEvent)="onSortingChange($event)">
                 <!-- implicit item references into the component using ng-template slot -->
                 <ng-template let-item>
+                    <span *ngIf="hasSpokenCount(item)" class="red-warning-text speaker-warning">
+                        <span translate>Call</span><span>&nbsp;{{ hasSpokenCount(item) + 1 }}</span>
+                    </span>
                     <mat-button-toggle-group>
                         <mat-button-toggle matTooltip="{{ 'Begin speech' | translate }}"
                             (click)="onStartButton(item)">
