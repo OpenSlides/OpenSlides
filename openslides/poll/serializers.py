@@ -1,5 +1,3 @@
-from django.utils.translation import ugettext as _
-
 from ..utils.rest_api import ValidationError
 
 
@@ -16,6 +14,6 @@ def default_votes_validator(data):
             and data[key] < -2
         ):
             raise ValidationError(
-                {"detail": _("Value for {} must not be less than -2").format(key)}
+                {"detail": f"Value for {key} must not be less than -2"}
             )
     return data

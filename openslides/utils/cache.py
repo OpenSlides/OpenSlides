@@ -207,10 +207,8 @@ class ElementCache:
             # When change_id is lower then the lowest change_id in redis, we can
             # not inform the user about deleted elements.
             raise RuntimeError(
-                "change_id {} is lower then the lowest change_id in redis {}. "
-                "Catch this exception and rerun the method with change_id=0.".format(
-                    change_id, lowest_change_id
-                )
+                f"change_id {change_id} is lower then the lowest change_id in redis {lowest_change_id}. "
+                "Catch this exception and rerun the method with change_id=0."
             )
 
         raw_changed_elements, deleted_elements = await self.cache_provider.get_data_since(
@@ -270,7 +268,7 @@ class ElementCache:
         # Try to write a special key.
         # If this succeeds, there is noone else currently updating the cache.
         # TODO: Make a timeout. Else this could block forever
-        lock_name = "restricted_data_{}".format(user_id)
+        lock_name = f"restricted_data_{user_id}"
         if await self.cache_provider.set_lock(lock_name):
             future: asyncio.Future = asyncio.Future()
             self.restricted_data_cache_updater[user_id] = future
@@ -375,10 +373,8 @@ class ElementCache:
             # When change_id is lower then the lowest change_id in redis, we can
             # not inform the user about deleted elements.
             raise RuntimeError(
-                "change_id {} is lower then the lowest change_id in redis {}. "
-                "Catch this exception and rerun the method with change_id=0.".format(
-                    change_id, lowest_change_id
-                )
+                f"change_id {change_id} is lower then the lowest change_id in redis {lowest_change_id}. "
+                "Catch this exception and rerun the method with change_id=0."
             )
 
         # If another coroutine or another daphne server also updates the restricted

@@ -7,7 +7,6 @@ from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.db import IntegrityError, models, transaction
 from django.db.models import Max
 from django.utils import formats, timezone
-from django.utils.translation import ugettext as _, ugettext_noop
 from jsonfield import JSONField
 
 from openslides.agenda.models import Item
@@ -259,7 +258,7 @@ class Motion(RESTModelMixin, models.Model):
             ("can_manage", "Can manage motions"),
         )
         ordering = ("identifier",)
-        verbose_name = ugettext_noop("Motion")
+        verbose_name = "Motion"
 
     def __str__(self):
         """
@@ -330,22 +329,16 @@ class Motion(RESTModelMixin, models.Model):
         if self.is_amendment():
             parent_identifier = self.parent.identifier or ""
             if without_blank:
-                prefix = "%s%s" % (
-                    parent_identifier,
-                    config["motions_amendments_prefix"],
-                )
+                prefix = f"{parent_identifier} {config['motions_amendments_prefix']} "
             else:
-                prefix = "%s %s " % (
-                    parent_identifier,
-                    config["motions_amendments_prefix"],
-                )
+                prefix = f"{parent_identifier} {config['motions_amendments_prefix']} "
         elif self.category is None or not self.category.prefix:
             prefix = ""
         else:
             if without_blank:
-                prefix = "%s" % self.category.prefix
+                prefix = self.category.prefix
             else:
-                prefix = "%s " % self.category.prefix
+                prefix = f"{self.category.prefix} "
         self._identifier_prefix = prefix
 
         # Use the already assigned identifier_number, if the motion has one.
@@ -386,10 +379,10 @@ class Motion(RESTModelMixin, models.Model):
         """
         if initial_increment:
             number += 1
-        identifier = "%s%s" % (prefix, self.extend_identifier_number(number))
+        identifier = f"{prefix}{self.extend_identifier_number(number)}"
         while Motion.objects.filter(identifier=identifier).exists():
             number += 1
-            identifier = "%s%s" % (prefix, self.extend_identifier_number(number))
+            identifier = f"{prefix}{self.extend_identifier_number(number)}"
         return number, identifier
 
     def extend_identifier_number(self, number):
@@ -438,7 +431,7 @@ class Motion(RESTModelMixin, models.Model):
             return poll
         else:
             raise WorkflowError(
-                "You can not create a poll in state %s." % self.state.name
+                f"You can not create a poll in state {self.state.name}."
             )
 
     @property
@@ -454,7 +447,7 @@ class Motion(RESTModelMixin, models.Model):
 
         'state' can be the id of a state object or a state object.
         """
-        if type(state) is int:
+        if isinstance(state, int):
             state = State.objects.get(pk=state)
 
         if not state.dont_set_identifier:
@@ -472,7 +465,7 @@ class Motion(RESTModelMixin, models.Model):
         workflow from config.
         """
 
-        if type(workflow) is int:
+        if isinstance(workflow, int):
             workflow = Workflow.objects.get(pk=workflow)
 
         if workflow is not None:
@@ -492,7 +485,7 @@ class Motion(RESTModelMixin, models.Model):
 
         'recommendation' can be the id of a state object or a state object.
         """
-        if type(recommendation) is int:
+        if isinstance(recommendation, int):
             recommendation = State.objects.get(pk=recommendation)
         self.recommendation = recommendation
 
@@ -517,7 +510,7 @@ class Motion(RESTModelMixin, models.Model):
         Note: It has to be the same return value like in JavaScript.
         """
         if self.identifier:
-            title = "%s %s" % (_(self._meta.verbose_name), self.identifier)
+            title = f"{self._meta.verbose_name} {self.identifier}"
         else:
             title = self.title
         return title
@@ -530,9 +523,9 @@ class Motion(RESTModelMixin, models.Model):
         Note: It has to be the same return value like in JavaScript.
         """
         if self.identifier:
-            title = "%s %s" % (_(self._meta.verbose_name), self.identifier)
+            title = f"{self._meta.verbose_name} {self.identifier}"
         else:
-            title = "%s (%s)" % (self.title, _(self._meta.verbose_name))
+            title = f"{self.title} ({self._meta.verbose_name})"
         return title
 
     @property
@@ -555,8 +548,7 @@ class Motion(RESTModelMixin, models.Model):
         """
         Write a log message.
 
-        The message should be in English and translatable,
-        e. g. motion.write_log(message_list=[ugettext_noop('Message Text')])
+        The message should be in English.
         """
         if person and not person.is_authenticated:
             person = None
@@ -679,9 +671,9 @@ class SubmitterManager(models.Manager):
         for the initial sorting of the submitters.
         """
         if self.filter(user=user, motion=motion).exists():
-            raise OpenSlidesError(_("{user} is already a submitter.").format(user=user))
+            raise OpenSlidesError(f"{user} is already a submitter.")
         if isinstance(user, AnonymousUser):
-            raise OpenSlidesError(_("An anonymous user can not be a submitter."))
+            raise OpenSlidesError("An anonymous user can not be a submitter.")
         weight = (
             self.filter(motion=motion).aggregate(models.Max("weight"))["weight__max"]
             or 0
@@ -804,8 +796,7 @@ class MotionChangeRecommendation(RESTModelMixin, models.Model):
 
         if self.collides_with_other_recommendation(recommendations):
             raise ValidationError(
-                "The recommendation collides with an existing one (line %s - %s)."
-                % (self.line_from, self.line_to)
+                f"The recommendation collides with an existing one (line {self.line_from} - {self.line_to})."
             )
 
         return super().save(*args, **kwargs)
@@ -815,11 +806,7 @@ class MotionChangeRecommendation(RESTModelMixin, models.Model):
 
     def __str__(self):
         """Return a string, representing this object."""
-        return "Recommendation for Motion %s, line %s - %s" % (
-            self.motion_id,
-            self.line_from,
-            self.line_to,
-        )
+        return f"Recommendation for Motion {self.motion_id}, line {self.line_from} - {self.line_to}"
 
 
 class Category(RESTModelMixin, models.Model):
@@ -875,7 +862,7 @@ class MotionBlock(RESTModelMixin, models.Model):
     agenda_items = GenericRelation(Item, related_name="topics")
 
     class Meta:
-        verbose_name = ugettext_noop("Motion block")
+        verbose_name = "Motion block"
         default_permissions = ()
 
     def __str__(self):
@@ -906,7 +893,7 @@ class MotionBlock(RESTModelMixin, models.Model):
         return self.title
 
     def get_agenda_title_with_type(self):
-        return "%s (%s)" % (self.get_agenda_title(), _(self._meta.verbose_name))
+        return f"{self.get_agenda_title()} ({self._meta.verbose_name})"
 
 
 class MotionLog(RESTModelMixin, models.Model):
@@ -940,12 +927,10 @@ class MotionLog(RESTModelMixin, models.Model):
         """
         localtime = timezone.localtime(self.time)
         time = formats.date_format(localtime, "DATETIME_FORMAT")
-        time_and_messages = "%s " % time + "".join(map(_, self.message_list))
+        message_list = "".join(self.message_list)
+        time_and_messages = f"{time} {message_list}"
         if self.person is not None:
-            return _("%(time_and_messages)s by %(person)s") % {
-                "time_and_messages": time_and_messages,
-                "person": self.person,
-            }
+            return f"{time_and_messages} by {self.person}"
         return time_and_messages
 
     def get_root_rest_element(self):
@@ -1016,7 +1001,7 @@ class MotionPoll(RESTModelMixin, CollectDefaultVotesMixin, BasePoll):  # type: i
         """
         Representation method only for debugging purposes.
         """
-        return "MotionPoll for motion %s" % self.motion
+        return f"MotionPoll for motion {self.motion}"
 
     def set_options(self, skip_autoupdate=False):
         """Create the option class for this poll."""
@@ -1026,9 +1011,6 @@ class MotionPoll(RESTModelMixin, CollectDefaultVotesMixin, BasePoll):  # type: i
 
     def get_percent_base_choice(self):
         return config["motions_poll_100_percent_base"]
-
-    def get_slide_context(self, **context):
-        return super(MotionPoll, self).get_slide_context(poll=self)
 
     def get_root_rest_element(self):
         """
@@ -1145,8 +1127,8 @@ class State(RESTModelMixin, models.Model):
         self.check_next_states()
         if self.recommendation_label == "":
             raise WorkflowError(
-                "The field recommendation_label of {} must not "
-                "be an empty string.".format(self)
+                f"The field recommendation_label of {self} must not "
+                "be an empty string."
             )
         super(State, self).save(**kwargs)
 
@@ -1158,8 +1140,7 @@ class State(RESTModelMixin, models.Model):
         for state in self.next_states.all():
             if not state.workflow == self.workflow:
                 raise WorkflowError(
-                    "%s can not be next state of %s because it does not belong to the same workflow."
-                    % (state, self)
+                    f"{state} can not be next state of {self} because it does not belong to the same workflow."
                 )
 
     def get_root_rest_element(self):
@@ -1223,6 +1204,6 @@ class Workflow(RESTModelMixin, models.Model):
         """Checks whether the first_state itself belongs to the workflow."""
         if self.first_state and not self.first_state.workflow == self:
             raise WorkflowError(
-                "%s can not be first state of %s because it "
-                "does not belong to it." % (self.first_state, self)
+                f"{self.first_state} can not be first state of {self} because it "
+                "does not belong to it."
             )

@@ -100,7 +100,7 @@ class UserManager(BaseUserManager):
             counter = 0
             while True:
                 counter += 1
-                test_name = "%s %d" % (base_name, counter)
+                test_name = f"{base_name} {counter}"
                 if not self.filter(username=test_name).exists():
                     generated_username = test_name
                     break
@@ -247,7 +247,7 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
                 helptext = " Is the email sender correct?"
             connection.close()
             raise ValidationError(
-                {"detail": "Error {}. Cannot send email.{}".format(error, helptext)}
+                {"detail": f"Error {error}. Cannot send email.{helptext}"}
             )
         except smtplib.SMTPRecipientsRefused:
             pass  # Run into returning false later

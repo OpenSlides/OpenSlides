@@ -56,7 +56,7 @@ def test_motion_db_queries():
     section2 = MotionCommentSection.objects.create(name="test_section")
 
     for index in range(10):
-        motion = Motion.objects.create(title="motion{}".format(index))
+        motion = Motion.objects.create(title=f"motion{index}")
 
         MotionComment.objects.create(
             comment="test_comment", motion=motion, section=section1
@@ -66,7 +66,7 @@ def test_motion_db_queries():
         )
 
         get_user_model().objects.create_user(
-            username="user_{}".format(index), password="password"
+            username=f"user_{index}", password="password"
         )
     # TODO: Create some polls etc.
 
@@ -80,7 +80,7 @@ def test_category_db_queries():
     * 1 requests to get the list of all categories.
     """
     for index in range(10):
-        Category.objects.create(name="category{}".format(index))
+        Category.objects.create(name=f"category{index}")
 
     assert count_queries(Category.get_elements) == 1
 
@@ -93,7 +93,7 @@ def test_statute_paragraph_db_queries():
     """
     for index in range(10):
         StatuteParagraph.objects.create(
-            title="statute_paragraph{}".format(index), text="text{}".format(index)
+            title=f"statute_paragraph{index}", text=f"text{index}"
         )
 
     assert count_queries(StatuteParagraph.get_elements) == 1
@@ -475,7 +475,7 @@ class RetrieveMotion(TestCase):
         self.motion.create_poll()
         for index in range(10):
             get_user_model().objects.create_user(
-                username="user_{}".format(index), password="password"
+                username=f"user_{index}", password="password"
             )
 
     def test_guest_state_with_required_permission_to_see(self):
@@ -889,7 +889,7 @@ class ManageComments(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
-            response.data["detail"], "A comment section with id 42 does not exist"
+            response.data["detail"], "A comment section with id 42 does not exist."
         )
 
     def test_create_comment(self):
@@ -1700,7 +1700,7 @@ class CreateMotionPoll(TestCase):
         for key in ("yes", "no", "abstain"):
             self.assertTrue(
                 response.data["polls"][1][key] is None,
-                'Vote value "{}" should be None.'.format(key),
+                f"Vote value '{key}' should be None.",
             )
 
 

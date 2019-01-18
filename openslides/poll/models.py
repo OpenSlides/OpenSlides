@@ -5,7 +5,6 @@ from typing import Optional, Type
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.utils.translation import ugettext as _
 
 
 class BaseOption(models.Model):
@@ -29,7 +28,7 @@ class BaseOption(models.Model):
     def get_vote_class(self):
         if self.vote_class is None:
             raise NotImplementedError(
-                "The option class %s has to have an attribute vote_class." % self
+                f"The option class {self} has to have an attribute vote_class."
             )
         return self.vote_class
 
@@ -64,7 +63,7 @@ class BaseVote(models.Model):
         return self.print_weight()
 
     def get_value(self):
-        return _(self.value)
+        return self.value
 
     def print_weight(self, raw=False):
         if raw:
@@ -150,12 +149,15 @@ class BasePoll(models.Model):
             return True
         return False
 
-    def set_options(self, options_data=[], skip_autoupdate=False):
+    def set_options(self, options_data=None, skip_autoupdate=False):
         """
         Adds new option objects to the poll.
 
         option_data: A list of arguments for the option.
         """
+        if options_data is None:
+            options_data = []
+
         for option_data in options_data:
             option = self.get_option_class()(**option_data)
             option.poll = self
@@ -224,11 +226,11 @@ def print_value(value, percent_base=0):
     'undocumented' or the vote value with percent value if so.
     """
     if value == -1:
-        verbose_value = _("majority")
+        verbose_value = "majority"
     elif value == -2:
-        verbose_value = _("undocumented")
+        verbose_value = "undocumented"
     elif value is None:
-        verbose_value = _("undocumented")
+        verbose_value = "undocumented"
     else:
         if percent_base:
             locale.setlocale(locale.LC_ALL, "")
@@ -237,5 +239,5 @@ def print_value(value, percent_base=0):
                 locale.format("%.1f", value * percent_base),
             )
         else:
-            verbose_value = "%s" % value
+            verbose_value = value
     return verbose_value

@@ -7,7 +7,6 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models, transaction
 from django.utils import timezone
-from django.utils.translation import ugettext as _, ugettext_lazy
 
 from openslides.core.config import config
 from openslides.core.models import Countdown
@@ -135,15 +134,13 @@ class ItemManager(models.Manager):
         for item_id, parent_id, weight in walk_items(tree):
             # Check that the item is only once in the tree to prevent invalid trees
             if item_id in touched_items:
-                raise ValueError(
-                    "Item {} is more then once in the tree.".format(item_id)
-                )
+                raise ValueError(f"Item {item_id} is more then once in the tree.")
             touched_items.add(item_id)
 
             try:
                 db_item = db_items[item_id]
             except KeyError:
-                raise ValueError("Item {} is not in the database.".format(item_id))
+                raise ValueError(f"Item {item_id} is not in the database.")
 
             # Check if the item has changed and update it
             # Note: Do not use Item.objects.update, so that the items are sent
@@ -171,10 +168,7 @@ class ItemManager(models.Manager):
                         item_number = ".".join((number, item_number))
                 # Add prefix.
                 if config["agenda_number_prefix"]:
-                    item_number_tmp = "%s %s" % (
-                        config["agenda_number_prefix"],
-                        item_number,
-                    )
+                    item_number_tmp = f"{config['agenda_number_prefix']} {item_number}"
                 else:
                     item_number_tmp = item_number
                 # Save the new value and go down the tree.
@@ -205,9 +199,9 @@ class Item(RESTModelMixin, models.Model):
     HIDDEN_ITEM = 3
 
     ITEM_TYPE = (
-        (AGENDA_ITEM, ugettext_lazy("Agenda item")),
-        (INTERNAL_ITEM, ugettext_lazy("Internal item")),
-        (HIDDEN_ITEM, ugettext_lazy("Hidden item")),
+        (AGENDA_ITEM, "Agenda item"),
+        (INTERNAL_ITEM, "Internal item"),
+        (HIDDEN_ITEM, "Hidden item"),
     )
 
     item_number = models.CharField(blank=True, max_length=255)
@@ -362,13 +356,9 @@ class SpeakerManager(models.Manager):
         speakers). Cares also initial sorting of the coming speakers.
         """
         if self.filter(user=user, item=item, begin_time=None).exists():
-            raise OpenSlidesError(
-                _("{user} is already on the list of speakers.").format(user=user)
-            )
+            raise OpenSlidesError(f"{user} is already on the list of speakers.")
         if isinstance(user, AnonymousUser):
-            raise OpenSlidesError(
-                _("An anonymous user can not be on lists of speakers.")
-            )
+            raise OpenSlidesError("An anonymous user can not be on lists of speakers.")
         weight = (
             self.filter(item=item).aggregate(models.Max("weight"))["weight__max"] or 0
         )

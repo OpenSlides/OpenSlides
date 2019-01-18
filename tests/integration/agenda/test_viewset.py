@@ -2,7 +2,6 @@ import pytest
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.urls import reverse
-from django.utils.translation import ugettext
 from rest_framework import status
 from rest_framework.test import APIClient
 
@@ -117,7 +116,7 @@ def test_agenda_item_db_queries():
     TODO: The last three request are a bug.
     """
     for index in range(10):
-        Topic.objects.create(title="topic{}".format(index))
+        Topic.objects.create(title=f"topic{index}")
     parent = Topic.objects.create(title="parent").agenda_item
     child = Topic.objects.create(title="child").agenda_item
     child.parent = parent
@@ -236,20 +235,12 @@ class ManageSpeaker(TestCase):
             reverse("item-manage-speaker", args=[self.item.pk]), {"speaker": "1"}
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.data.get("detail"),
-            ugettext("No speakers have been removed from the list of speakers."),
-        )
 
     def test_remove_someone_else_invalid_data(self):
         response = self.client.delete(
             reverse("item-manage-speaker", args=[self.item.pk]), {"speaker": "invalid"}
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.data.get("detail"),
-            ugettext("No speakers have been removed from the list of speakers."),
-        )
 
     def test_remove_someone_else_non_admin(self):
         admin = get_user_model().objects.get(username="admin")

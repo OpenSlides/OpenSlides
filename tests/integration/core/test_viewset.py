@@ -18,7 +18,7 @@ def test_projector_db_queries():
     * 1 request to get the list of the projector defaults.
     """
     for index in range(10):
-        Projector.objects.create(name="Projector{}".format(index))
+        Projector.objects.create(name=f"Projector{index}")
 
     assert count_queries(Projector.get_elements) == 2
 
@@ -43,7 +43,7 @@ def test_tag_db_queries():
     * 1 requests to get the list of all tags.
     """
     for index in range(10):
-        Tag.objects.create(name="tag{}".format(index))
+        Tag.objects.create(name=f"tag{index}")
 
     assert count_queries(Tag.get_elements) == 1
 

@@ -108,7 +108,7 @@ class RedisCacheProvider:
             await redis.eval(
                 "return redis.call('del', 'fake_key', unpack(redis.call('keys', ARGV[1])))",
                 keys=[],
-                args=["{}*".format(self.prefix)],
+                args=[f"{self.prefix}*"],
             )
 
     async def reset_full_cache(self, data: Dict[str, str]) -> None:
@@ -123,7 +123,7 @@ class RedisCacheProvider:
             tr.eval(
                 "return redis.call('del', 'fake_key', unpack(redis.call('keys', ARGV[1])))",
                 keys=[],
-                args=["{}{}*".format(self.prefix, self.restricted_user_cache_key)],
+                args=[f"{self.prefix}{self.restricted_user_cache_key}*"],
             )
             tr.delete(self.get_change_id_cache_key())
             tr.delete(self.get_full_data_cache_key())
@@ -296,14 +296,14 @@ class RedisCacheProvider:
         """
         # TODO: Improve lock. See: https://redis.io/topics/distlock
         async with get_connection() as redis:
-            return await redis.setnx("{}lock_{}".format(self.prefix, lock_name), 1)
+            return await redis.setnx(f"{self.prefix}lock_{lock_name}", 1)
 
     async def get_lock(self, lock_name: str) -> bool:
         """
         Returns True, when the lock for the restricted_data of an user is set. Else False.
         """
         async with get_connection() as redis:
-            return await redis.get("{}lock_{}".format(self.prefix, lock_name))
+            return await redis.get(f"{self.prefix}lock_{lock_name}")
 
     async def del_lock(self, lock_name: str) -> None:
         """
@@ -311,7 +311,7 @@ class RedisCacheProvider:
         lock is not set.
         """
         async with get_connection() as redis:
-            await redis.delete("{}lock_{}".format(self.prefix, lock_name))
+            await redis.delete(f"{self.prefix}lock_{lock_name}")
 
     async def get_change_id_user(self, user_id: int) -> Optional[int]:
         """

@@ -1,7 +1,6 @@
 import jsonschema
 from django.contrib.auth import get_user_model
 from django.db import transaction
-from django.utils.translation import ugettext as _
 
 from openslides.core.config import config
 from openslides.utils.autoupdate import inform_changed_data
@@ -119,9 +118,7 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
                 if not has_perm(self.request.user, "agenda.can_be_speaker"):
                     self.permission_denied(request)
                 if item.speaker_list_closed:
-                    raise ValidationError(
-                        {"detail": _("The list of speakers is closed.")}
-                    )
+                    raise ValidationError({"detail": "The list of speakers is closed."})
                 user = self.request.user
             else:
                 # Add someone else.
@@ -132,7 +129,7 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
                 try:
                     user = get_user_model().objects.get(pk=int(user_id))
                 except (ValueError, get_user_model().DoesNotExist):
-                    raise ValidationError({"detail": _("User does not exist.")})
+                    raise ValidationError({"detail": "User does not exist."})
 
             # Try to add the user. This ensurse that a user is not twice in the
             # list of coming speakers.
@@ -140,9 +137,6 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
                 Speaker.objects.add(user, item)
             except OpenSlidesError as e:
                 raise ValidationError({"detail": str(e)})
-            message = (
-                _("User %s was successfully added to the list of speakers.") % user
-            )
 
             # Send new speaker via autoupdate because users without permission
             # to see users may not have it but can get it now.
@@ -159,11 +153,11 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
             try:
                 user = get_user_model().objects.get(pk=int(user_id))
             except (ValueError, get_user_model().DoesNotExist):
-                raise ValidationError({"detail": _("User does not exist.")})
+                raise ValidationError({"detail": "User does not exist."})
 
             marked = request.data.get("marked")
             if not isinstance(marked, bool):
-                raise ValidationError({"detail": _("Marked has to be a bool.")})
+                raise ValidationError({"detail": "Marked has to be a bool."})
 
             queryset = Speaker.objects.filter(item=item, user=user)
             try:
@@ -173,15 +167,11 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
                 speaker = queryset.get()
             except Speaker.DoesNotExist:
                 raise ValidationError(
-                    {"detail": _("The user is not in the list of speakers.")}
+                    {"detail": "The user is not in the list of speakers."}
                 )
             else:
                 speaker.marked = marked
                 speaker.save()
-                if speaker.marked:
-                    message = _("You are successfully marked the speaker.")
-                else:
-                    message = _("You are successfully unmarked the speaker.")
 
         else:
             # request.method == 'DELETE'
@@ -200,20 +190,17 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
                     speaker = queryset.get()
                 except Speaker.DoesNotExist:
                     raise ValidationError(
-                        {"detail": _("You are not on the list of speakers.")}
+                        {"detail": "You are not on the list of speakers."}
                     )
                 else:
                     speaker.delete()
-                    message = _(
-                        "You are successfully removed from the list of speakers."
-                    )
             else:
                 # Remove someone else.
                 if not has_perm(
                     self.request.user, "agenda.can_manage_list_of_speakers"
                 ):
                     self.permission_denied(request)
-                if type(speaker_ids) is int:
+                if isinstance(speaker_ids, int):
                     speaker_ids = [speaker_ids]
                 deleted_speaker_count = 0
                 for speaker_id in speaker_ids:
@@ -223,29 +210,12 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
                         pass
                     else:
                         speaker.delete(skip_autoupdate=True)
-                        deleted_speaker_name = speaker
                         deleted_speaker_count += 1
                 # send autoupdate if speakers are deleted
-                if deleted_speaker_count > 0:
+                if deleted_speaker_count:
                     inform_changed_data(item)
 
-                if deleted_speaker_count > 1:
-                    message = (
-                        str(deleted_speaker_count)
-                        + " "
-                        + _("speakers have been removed from the list of speakers.")
-                    )
-                elif deleted_speaker_count == 1:
-                    message = (
-                        _("User %s has been removed from the list of speakers.")
-                        % deleted_speaker_name
-                    )
-                else:
-                    message = _(
-                        "No speakers have been removed from the list of speakers."
-                    )
-        # Initiate response.
-        return Response({"detail": message})
+        return Response()
 
     @detail_route(methods=["PUT", "DELETE"])
     def speak(self, request, pk=None):
@@ -263,16 +233,14 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
             if speaker_id is None:
                 speaker = item.get_next_speaker()
                 if speaker is None:
-                    raise ValidationError(
-                        {"detail": _("The list of speakers is empty.")}
-                    )
+                    raise ValidationError({"detail": "The list of speakers is empty."})
             else:
                 try:
                     speaker = Speaker.objects.get(pk=int(speaker_id))
                 except (ValueError, Speaker.DoesNotExist):
-                    raise ValidationError({"detail": _("Speaker does not exist.")})
+                    raise ValidationError({"detail": "Speaker does not exist."})
             speaker.begin_speech()
-            message = _("User is now speaking.")
+            message = "User is now speaking."
 
         else:
             # request.method == 'DELETE'
@@ -288,14 +256,11 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
             except Speaker.DoesNotExist:
                 raise ValidationError(
                     {
-                        "detail": _(
-                            "There is no one speaking at the moment according to %(item)s."
-                        )
-                        % {"item": item}
+                        "detail": f"There is no one speaking at the moment according to {item}."
                     }
                 )
             current_speaker.end_speech()
-            message = _("The speech is finished now.")
+            message = "The speech is finished now."
 
         # Initiate response.
         return Response({"detail": message})
@@ -313,7 +278,7 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
         # Check data
         speaker_ids = request.data.get("speakers")
         if not isinstance(speaker_ids, list):
-            raise ValidationError({"detail": _("Invalid data.")})
+            raise ValidationError({"detail": "Invalid data."})
 
         # Get all speakers
         speakers = {}
@@ -324,7 +289,7 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
         valid_speakers = []
         for speaker_id in speaker_ids:
             if not isinstance(speaker_id, int) or speakers.get(speaker_id) is None:
-                raise ValidationError({"detail": _("Invalid data.")})
+                raise ValidationError({"detail": "Invalid data."})
             valid_speakers.append(speakers[speaker_id])
         weight = 0
         with transaction.atomic():
@@ -337,7 +302,7 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
         inform_changed_data(item)
 
         # Initiate response.
-        return Response({"detail": _("List of speakers successfully sorted.")})
+        return Response({"detail": "List of speakers successfully sorted."})
 
     @list_route(methods=["post"])
     def numbering(self, request):
@@ -347,11 +312,11 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
         """
         if not config["agenda_enable_numbering"]:
             raise ValidationError(
-                {"detail": _("Numbering of agenda items is deactivated.")}
+                {"detail": "Numbering of agenda items is deactivated."}
             )
 
         Item.objects.number_all(numeral_system=config["agenda_numeral_system"])
-        return Response({"detail": _("The agenda has been numbered.")})
+        return Response({"detail": "The agenda has been numbered."})
 
     @list_route(methods=["post"])
     def sort(self, request):
@@ -377,15 +342,13 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
                     if ancestor == item:
                         raise ValidationError(
                             {
-                                "detail": _(
-                                    "There must not be a hierarchical loop. Please reload the page."
-                                )
+                                "detail": "There must not be a hierarchical loop. Please reload the page."
                             }
                         )
                     ancestor = ancestor.parent
 
         inform_changed_data(items)
-        return Response({"detail": _("The agenda has been sorted.")})
+        return Response({"detail": "The agenda has been sorted."})
 
     @list_route(methods=["post"])
     @transaction.atomic
@@ -429,11 +392,7 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
             parent = Item.objects.get(pk=request.data["parent_id"])
         except Item.DoesNotExist:
             raise ValidationError(
-                {
-                    "detail": "Parent item {} does not exist".format(
-                        request.data["parent_id"]
-                    )
-                }
+                {"detail": f"Parent item {request.data['parent_id']} does not exist"}
             )
 
         # Collect ancestors
@@ -450,9 +409,7 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
             if item_id in ancestors:
                 raise ValidationError(
                     {
-                        "detail": "Assigning item {} to one of its children is not possible.".format(
-                            item_id
-                        )
+                        "detail": f"Assigning item {item_id} to one of its children is not possible."
                     }
                 )
 
@@ -460,9 +417,7 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
             try:
                 items.append(Item.objects.get(pk=item_id))
             except Item.DoesNotExist:
-                raise ValidationError(
-                    {"detail": "Item {} does not exist".format(item_id)}
-                )
+                raise ValidationError({"detail": f"Item {item_id} does not exist"})
 
         # OK, assign new parents.
         for item in items:
@@ -474,10 +429,4 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
         inform_changed_data(items)
 
         # Send response.
-        return Response(
-            {
-                "detail": _("{number} items successfully assigned.").format(
-                    number=len(items)
-                )
-            }
-        )
+        return Response({"detail": f"{len(items)} items successfully assigned."})

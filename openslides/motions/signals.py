@@ -1,5 +1,4 @@
 from django.apps import apps
-from django.utils.translation import ugettext_noop
 
 from .models import State, Workflow
 
@@ -17,7 +16,7 @@ def create_builtin_workflows(sender, **kwargs):
     workflow_1 = Workflow(name="Simple Workflow")
     workflow_1.save(skip_autoupdate=True)
     state_1_1 = State(
-        name=ugettext_noop("submitted"),
+        name="submitted",
         workflow=workflow_1,
         allow_create_poll=True,
         allow_support=True,
@@ -25,7 +24,7 @@ def create_builtin_workflows(sender, **kwargs):
     )
     state_1_1.save(skip_autoupdate=True)
     state_1_2 = State(
-        name=ugettext_noop("accepted"),
+        name="accepted",
         workflow=workflow_1,
         recommendation_label="Acceptance",
         css_class="success",
@@ -33,7 +32,7 @@ def create_builtin_workflows(sender, **kwargs):
     )
     state_1_2.save(skip_autoupdate=True)
     state_1_3 = State(
-        name=ugettext_noop("rejected"),
+        name="rejected",
         workflow=workflow_1,
         recommendation_label="Rejection",
         css_class="danger",
@@ -41,7 +40,7 @@ def create_builtin_workflows(sender, **kwargs):
     )
     state_1_3.save(skip_autoupdate=True)
     state_1_4 = State(
-        name=ugettext_noop("not decided"),
+        name="not decided",
         workflow=workflow_1,
         recommendation_label="No decision",
         css_class="default",
@@ -55,7 +54,7 @@ def create_builtin_workflows(sender, **kwargs):
     workflow_2 = Workflow(name="Complex Workflow")
     workflow_2.save(skip_autoupdate=True)
     state_2_1 = State(
-        name=ugettext_noop("published"),
+        name="published",
         workflow=workflow_2,
         allow_support=True,
         allow_submitter_edit=True,
@@ -63,7 +62,7 @@ def create_builtin_workflows(sender, **kwargs):
     )
     state_2_1.save(skip_autoupdate=True)
     state_2_2 = State(
-        name=ugettext_noop("permitted"),
+        name="permitted",
         workflow=workflow_2,
         recommendation_label="Permission",
         allow_create_poll=True,
@@ -71,7 +70,7 @@ def create_builtin_workflows(sender, **kwargs):
     )
     state_2_2.save(skip_autoupdate=True)
     state_2_3 = State(
-        name=ugettext_noop("accepted"),
+        name="accepted",
         workflow=workflow_2,
         recommendation_label="Acceptance",
         css_class="success",
@@ -79,7 +78,7 @@ def create_builtin_workflows(sender, **kwargs):
     )
     state_2_3.save(skip_autoupdate=True)
     state_2_4 = State(
-        name=ugettext_noop("rejected"),
+        name="rejected",
         workflow=workflow_2,
         recommendation_label="Rejection",
         css_class="danger",
@@ -87,14 +86,14 @@ def create_builtin_workflows(sender, **kwargs):
     )
     state_2_4.save(skip_autoupdate=True)
     state_2_5 = State(
-        name=ugettext_noop("withdrawed"),
+        name="withdrawed",
         workflow=workflow_2,
         css_class="default",
         merge_amendment_into_final=-1,
     )
     state_2_5.save(skip_autoupdate=True)
     state_2_6 = State(
-        name=ugettext_noop("adjourned"),
+        name="adjourned",
         workflow=workflow_2,
         recommendation_label="Adjournment",
         css_class="default",
@@ -102,7 +101,7 @@ def create_builtin_workflows(sender, **kwargs):
     )
     state_2_6.save(skip_autoupdate=True)
     state_2_7 = State(
-        name=ugettext_noop("not concerned"),
+        name="not concerned",
         workflow=workflow_2,
         recommendation_label="No concernment",
         css_class="default",
@@ -110,7 +109,7 @@ def create_builtin_workflows(sender, **kwargs):
     )
     state_2_7.save(skip_autoupdate=True)
     state_2_8 = State(
-        name=ugettext_noop("refered to committee"),
+        name="refered to committee",
         workflow=workflow_2,
         recommendation_label="Referral to committee",
         css_class="default",
@@ -118,14 +117,14 @@ def create_builtin_workflows(sender, **kwargs):
     )
     state_2_8.save(skip_autoupdate=True)
     state_2_9 = State(
-        name=ugettext_noop("needs review"),
+        name="needs review",
         workflow=workflow_2,
         css_class="default",
         merge_amendment_into_final=-1,
     )
     state_2_9.save(skip_autoupdate=True)
     state_2_10 = State(
-        name=ugettext_noop("rejected (not authorized)"),
+        name="rejected (not authorized)",
         workflow=workflow_2,
         recommendation_label="Rejection (not authorized)",
         css_class="default",

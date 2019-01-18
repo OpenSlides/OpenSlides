@@ -42,7 +42,8 @@ def main():
     else:
         # Check for unknown_args.
         if unknown_args:
-            parser.error("Unknown arguments {}".format(" ".join(unknown_args)))
+            joined_unknown_args = " ".join(unknown_args)
+            parser.error(f"Unknown arguments {joined_unknown_args}")
 
         # Save arguments, if one wants to access them later.
         arguments.set_arguments(known_args)
@@ -239,7 +240,7 @@ def start(args):
     # Use flag --insecure to serve static files even if DEBUG is False.
     call_command(
         "runserver",
-        "{}:{}".format(args.host, args.port),
+        f"{args.host}:{args.port}",
         noreload=False,  # Means True, see above.
         insecure=True,
     )
@@ -264,7 +265,7 @@ def createsettings(args):
         }
 
     settings_path = write_settings(settings_dir, args.settings_filename, **context)
-    print("Settings created at %s" % settings_path)
+    print(f"Settings created at {settings_path}")
 
 
 if __name__ == "__main__":

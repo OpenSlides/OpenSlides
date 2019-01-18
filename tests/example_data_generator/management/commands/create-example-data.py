@@ -92,32 +92,28 @@ class Command(BaseCommand):
             "-t",
             "--topics",
             type=int,
-            help="Number of topics to be created (default {}).".format(DEFAULT_NUMBER),
+            help=f"Number of topics to be created (default {DEFAULT_NUMBER}).",
         )
         parser.add_argument(
             "-m",
             "--motions",
             type=int,
-            help="Number of motions to be created (default {}).".format(DEFAULT_NUMBER),
+            help=f"Number of motions to be created (default {DEFAULT_NUMBER}).",
         )
         parser.add_argument(
             "-a",
             "--assignments",
             type=int,
-            help="Number of assignments to be created (default {}).".format(
-                DEFAULT_NUMBER
-            ),
+            help=f"Number of assignments to be created (default {DEFAULT_NUMBER}).",
         )
         parser.add_argument(
             "-u",
             "--users",
             nargs=2,
             type=int,
-            help="Number of users to be created. The first number of users is "
-            'added to the group "Staff" (default {}). The second number '
-            "of users is not added to any group (default {}).".format(
-                DEFAULT_NUMBER, DEFAULT_NUMBER
-            ),
+            help=f"Number of users to be created. The first number of users is "
+            'added to the group "Staff" (default {DEFAULT_NUMBER}). The second number '
+            "of users is not added to any group (default {DEFAULT_NUMBER}).",
         )
 
     def handle(self, *args, **options):
@@ -132,7 +128,7 @@ class Command(BaseCommand):
         if number_of_topics is None and not options["only"]:
             number_of_topics = DEFAULT_NUMBER
         if number_of_topics is not None and number_of_topics > 0:
-            self.stdout.write("Start creating {} topcis ...".format(number_of_topics))
+            self.stdout.write(f"Start creating {number_of_topics} topcis ...")
             current_topics = list(Topic.objects.values_list("id", flat=True))
             new_topics = []
             for i in range(number_of_topics):
@@ -143,9 +139,7 @@ class Command(BaseCommand):
                 items.append(Item(content_object=topic, type=Item.AGENDA_ITEM))
             Item.objects.bulk_create(items)
             self.stdout.write(
-                self.style.SUCCESS(
-                    "{} topcis successfully created.".format(number_of_topics)
-                )
+                self.style.SUCCESS(f"{number_of_topics} topcis successfully created.")
             )
         elif number_of_topics is not None and number_of_topics < 0:
             raise CommandError("Number for topics must not be negative.")
@@ -156,7 +150,7 @@ class Command(BaseCommand):
         if number_of_motions is None and not options["only"]:
             number_of_motions = DEFAULT_NUMBER
         if number_of_motions is not None and number_of_motions > 0:
-            self.stdout.write("Start creating {} motions ...".format(number_of_motions))
+            self.stdout.write(f"Start creating {number_of_motions} motions ...")
             text = ""
             for i in range(MOTION_NUMBER_OF_PARAGRAPHS):
                 text += dedent(LOREM_IPSUM[i % 3])
@@ -164,9 +158,7 @@ class Command(BaseCommand):
                 motion = Motion(title=get_random_string(20, self.chars), text=text)
                 motion.save(skip_autoupdate=True)
             self.stdout.write(
-                self.style.SUCCESS(
-                    "{} motions successfully created.".format(number_of_motions)
-                )
+                self.style.SUCCESS(f"{number_of_motions} motions successfully created.")
             )
         elif number_of_motions is not None and number_of_motions < 0:
             raise CommandError("Number for motions must not be negative.")
@@ -177,9 +169,7 @@ class Command(BaseCommand):
         if number_of_assignments is None and not options["only"]:
             number_of_assignments = DEFAULT_NUMBER
         if number_of_assignments is not None and number_of_assignments > 0:
-            self.stdout.write(
-                "Start creating {} assignments ...".format(number_of_assignments)
-            )
+            self.stdout.write(f"Start creating {number_of_assignments} assignments ...")
             current_assignments = list(Assignment.objects.values_list("id", flat=True))
             new_assignments = []
             for i in range(number_of_assignments):
@@ -193,7 +183,7 @@ class Command(BaseCommand):
             Item.objects.bulk_create(items)
             self.stdout.write(
                 self.style.SUCCESS(
-                    "{} assignments successfully created.".format(number_of_assignments)
+                    f"{number_of_assignments} assignments successfully created."
                 )
             )
         elif number_of_assignments is not None and number_of_assignments < 0:
@@ -212,7 +202,7 @@ class Command(BaseCommand):
         else:
             staff_users = options["users"][0]
         if staff_users is not None and staff_users > 0:
-            self.stdout.write("Start creating {} staff users ...".format(staff_users))
+            self.stdout.write(f"Start creating {staff_users} staff users ...")
             group_staff = Group.objects.get(name="Staff")
             hashed_password = make_password(PASSWORD)
             current_users = list(User.objects.values_list("id", flat=True))
@@ -236,7 +226,7 @@ class Command(BaseCommand):
                     user.groups.add(group_staff)
                 self.stdout.write(
                     self.style.SUCCESS(
-                        "{} staff users successfully created.".format(staff_users)
+                        f"{staff_users} staff users successfully created."
                     )
                 )
         elif staff_users is not None and staff_users < 0:
@@ -251,9 +241,7 @@ class Command(BaseCommand):
         else:
             default_users = options["users"][1]
         if default_users is not None and default_users > 0:
-            self.stdout.write(
-                "Start creating {} default users ...".format(default_users)
-            )
+            self.stdout.write(f"Start creating {default_users} default users ...")
             hashed_password = make_password(PASSWORD)
             new_users = []
             for i in range(default_users):
@@ -273,7 +261,7 @@ class Command(BaseCommand):
             else:
                 self.stdout.write(
                     self.style.SUCCESS(
-                        "{} default users successfully created.".format(default_users)
+                        f"{default_users} default users successfully created."
                     )
                 )
         elif default_users is not None and default_users < 0:

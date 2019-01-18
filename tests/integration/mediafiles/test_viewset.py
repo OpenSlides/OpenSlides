@@ -14,8 +14,8 @@ def test_mediafiles_db_queries():
     """
     for index in range(10):
         Mediafile.objects.create(
-            title="some_file{}".format(index),
-            mediafile=SimpleUploadedFile("some_file{}".format(index), b"some content."),
+            title=f"some_file{index}",
+            mediafile=SimpleUploadedFile(f"some_file{index}", b"some content."),
         )
 
     assert count_queries(Mediafile.get_elements) == 1

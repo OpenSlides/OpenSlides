@@ -8,7 +8,6 @@ from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import IntegrityError, transaction
 from django.db.models.deletion import ProtectedError
 from django.http.request import QueryDict
-from django.utils.translation import ugettext as _, ugettext_noop
 from rest_framework import status
 
 from ..core.config import config
@@ -149,9 +148,7 @@ class MotionViewSet(ModelViewSet):
             try:
                 parent_motion = Motion.objects.get(pk=request.data["parent_id"])
             except Motion.DoesNotExist:
-                raise ValidationError(
-                    {"detail": _("The parent motion does not exist.")}
-                )
+                raise ValidationError({"detail": "The parent motion does not exist."})
         else:
             parent_motion = None
 
@@ -193,7 +190,7 @@ class MotionViewSet(ModelViewSet):
                 submitters_id = []
         if not isinstance(submitters_id, list):
             raise ValidationError(
-                {"detail": _("If submitters_id is given, it has to be a list.")}
+                {"detail": "If submitters_id is given, it has to be a list."}
             )
 
         submitters_id_unique = set()
@@ -211,7 +208,7 @@ class MotionViewSet(ModelViewSet):
                 continue  # Do not add users that do not exist
 
         # Add the request user, if he is authenticated and no submitters were given:
-        if len(submitters) == 0 and request.user.is_authenticated:
+        if not submitters and request.user.is_authenticated:
             submitters.append(request.user)
 
         # create all submitters
@@ -219,7 +216,7 @@ class MotionViewSet(ModelViewSet):
             Submitter.objects.add(submitter, motion)
 
         # Write the log message and initiate response.
-        motion.write_log([ugettext_noop("Motion created")], request.user)
+        motion.write_log(["Motion created"], request.user)
 
         # Send new submitters and supporters via autoupdate because users
         # without permission to see users may not have them but can get it now.
@@ -289,16 +286,14 @@ class MotionViewSet(ModelViewSet):
 
         # Write the log message, check removal of supporters and initiate response.
         # TODO: Log if a motion was updated.
-        updated_motion.write_log([ugettext_noop("Motion updated")], request.user)
+        updated_motion.write_log(["Motion updated"], request.user)
         if (
             config["motions_remove_supporters"]
             and updated_motion.state.allow_support
             and not has_perm(request.user, "motions.can_manage")
         ):
             updated_motion.supporters.clear()
-            updated_motion.write_log(
-                [ugettext_noop("All supporters removed")], request.user
-            )
+            updated_motion.write_log(["All supporters removed"], request.user)
 
         # Send new supporters via autoupdate because users
         # without permission to see users may not have them but can get it now.
@@ -339,12 +334,12 @@ class MotionViewSet(ModelViewSet):
                 while ancestor is not None:
                     if ancestor == motion:
                         raise ValidationError(
-                            {"detail": _("There must not be a hierarchical loop.")}
+                            {"detail": "There must not be a hierarchical loop."}
                         )
                     ancestor = ancestor.sort_parent
 
         inform_changed_data(motions)
-        return Response({"detail": _("The motions has been sorted.")})
+        return Response({"detail": "The motions has been sorted."})
 
     @detail_route(methods=["POST", "DELETE"])
     def manage_comments(self, request, pk=None):
@@ -363,18 +358,14 @@ class MotionViewSet(ModelViewSet):
         section_id = request.data.get("section_id")
         if not section_id or not isinstance(section_id, int):
             raise ValidationError(
-                {"detail": _("You have to provide a section_id of type int.")}
+                {"detail": "You have to provide a section_id of type int."}
             )
 
         try:
             section = MotionCommentSection.objects.get(pk=section_id)
         except MotionCommentSection.DoesNotExist:
             raise ValidationError(
-                {
-                    "detail": _("A comment section with id {} does not exist").format(
-                        section_id
-                    )
-                }
+                {"detail": f"A comment section with id {section_id} does not exist."}
             )
 
         # the request user needs to see and write to the comment section
@@ -385,9 +376,7 @@ class MotionViewSet(ModelViewSet):
         ):
             raise ValidationError(
                 {
-                    "detail": _(
-                        "You are not allowed to see or write to the comment section."
-                    )
+                    "detail": "You are not allowed to see or write to the comment section."
                 }
             )
 
@@ -395,7 +384,7 @@ class MotionViewSet(ModelViewSet):
             # validate comment
             comment_value = request.data.get("comment", "")
             if not isinstance(comment_value, str):
-                raise ValidationError({"detail": _("The comment should be a string.")})
+                raise ValidationError({"detail": "The comment should be a string."})
 
             comment, created = MotionComment.objects.get_or_create(
                 motion=motion, section=section, defaults={"comment": comment_value}
@@ -405,10 +394,8 @@ class MotionViewSet(ModelViewSet):
                 comment.save()
 
             # write log
-            motion.write_log(
-                [ugettext_noop("Comment {} updated").format(section.name)], request.user
-            )
-            message = _("Comment {} updated").format(section.name)
+            motion.write_log([f"Comment {section.name} updated"], request.user)
+            message = f"Comment {section.name} updated"
         else:  # DELETE
             try:
                 comment = MotionComment.objects.get(motion=motion, section=section)
@@ -418,11 +405,8 @@ class MotionViewSet(ModelViewSet):
             else:
                 comment.delete()
 
-                motion.write_log(
-                    [ugettext_noop("Comment {} deleted").format(section.name)],
-                    request.user,
-                )
-            message = _("Comment {} deleted").format(section.name)
+                motion.write_log([f"Comment {section.name} deleted"], request.user)
+            message = f"Comment {section.name} deleted"
 
         return Response({"detail": message})
 
@@ -470,9 +454,7 @@ class MotionViewSet(ModelViewSet):
             try:
                 motion = Motion.objects.get(pk=item["id"])
             except Motion.DoesNotExist:
-                raise ValidationError(
-                    {"detail": "Motion {} does not exist".format(item["id"])}
-                )
+                raise ValidationError({"detail": f"Motion {item['id']} does not exist"})
 
             # Remove all submitters.
             Submitter.objects.filter(motion=motion).delete()
@@ -483,7 +465,7 @@ class MotionViewSet(ModelViewSet):
                     submitter = get_user_model().objects.get(pk=submitter_id)
                 except get_user_model().DoesNotExist:
                     raise ValidationError(
-                        {"detail": "Submitter {} does not exist".format(submitter_id)}
+                        {"detail": f"Submitter {submitter_id} does not exist"}
                     )
                 Submitter.objects.add(submitter, motion)
                 new_submitters.append(submitter)
@@ -501,11 +483,7 @@ class MotionViewSet(ModelViewSet):
 
         # Send response.
         return Response(
-            {
-                "detail": _("{number} motions successfully updated.").format(
-                    number=len(motion_result)
-                )
-            }
+            {"detail": f"{len(motion_result)} motions successfully updated."}
         )
 
     @detail_route(methods=["post", "delete"])
@@ -528,23 +506,21 @@ class MotionViewSet(ModelViewSet):
                 and not motion.is_submitter(request.user)
                 and not motion.is_supporter(request.user)
             ):
-                raise ValidationError({"detail": _("You can not support this motion.")})
+                raise ValidationError({"detail": "You can not support this motion."})
             motion.supporters.add(request.user)
-            motion.write_log([ugettext_noop("Motion supported")], request.user)
+            motion.write_log(["Motion supported"], request.user)
             # Send new supporter via autoupdate because users without permission
             # to see users may not have it but can get it now.
             inform_changed_data([request.user])
-            message = _("You have supported this motion successfully.")
+            message = "You have supported this motion successfully."
         else:
             # Unsupport motion.
             # request.method == 'DELETE'
             if not motion.state.allow_support or not motion.is_supporter(request.user):
-                raise ValidationError(
-                    {"detail": _("You can not unsupport this motion.")}
-                )
+                raise ValidationError({"detail": "You can not unsupport this motion."})
             motion.supporters.remove(request.user)
-            motion.write_log([ugettext_noop("Motion unsupported")], request.user)
-            message = _("You have unsupported this motion successfully.")
+            motion.write_log(["Motion unsupported"], request.user)
+            message = "You have unsupported this motion successfully."
 
         # Initiate response.
         return Response({"detail": message})
@@ -568,14 +544,11 @@ class MotionViewSet(ModelViewSet):
                 state_id = int(state)
             except ValueError:
                 raise ValidationError(
-                    {"detail": _("Invalid data. State must be an integer.")}
+                    {"detail": "Invalid data. State must be an integer."}
                 )
             if state_id not in [item.id for item in motion.state.next_states.all()]:
                 raise ValidationError(
-                    {
-                        "detail": _("You can not set the state to %(state_id)d.")
-                        % {"state_id": state_id}
-                    }
+                    {"detail": f"You can not set the state to {state_id}."}
                 )
             motion.set_state(state_id)
         else:
@@ -587,17 +560,15 @@ class MotionViewSet(ModelViewSet):
             update_fields=["state", "identifier", "identifier_number"],
             skip_autoupdate=True,
         )
-        message = _("The state of the motion was set to %s.") % motion.state.name
+        message = f"The state of the motion was set to {motion.state.name}."
 
         # Write the log message and initiate response.
         motion.write_log(
-            message_list=[ugettext_noop("State set to"), " ", motion.state.name],
+            message_list=[f"State set to {motion.state.name}"],
             person=request.user,
             skip_autoupdate=True,
         )
-        inform_changed_data(
-            motion, information="State set to {}.".format(motion.state.name)
-        )
+        inform_changed_data(motion, information=f"State set to {motion.state.name}.")
         return Response({"detail": message})
 
     @detail_route(methods=["put"])
@@ -619,7 +590,7 @@ class MotionViewSet(ModelViewSet):
                 recommendation_state_id = int(recommendation_state)
             except ValueError:
                 raise ValidationError(
-                    {"detail": _("Invalid data. Recommendation must be an integer.")}
+                    {"detail": "Invalid data. Recommendation must be an integer."}
                 )
             recommendable_states = State.objects.filter(
                 workflow=motion.workflow_id, recommendation_label__isnull=False
@@ -629,9 +600,7 @@ class MotionViewSet(ModelViewSet):
             ]:
                 raise ValidationError(
                     {
-                        "detail": _(
-                            "You can not set the recommendation to {recommendation_state_id}."
-                        ).format(recommendation_state_id=recommendation_state_id)
+                        "detail": f"You can not set the recommendation to {recommendation_state_id}."
                     }
                 )
             motion.set_recommendation(recommendation_state_id)
@@ -646,11 +615,11 @@ class MotionViewSet(ModelViewSet):
             if motion.recommendation
             else "None"
         )
-        message = _("The recommendation of the motion was set to %s.") % label
+        message = f"The recommendation of the motion was set to {label}."
 
         # Write the log message and initiate response.
         motion.write_log(
-            message_list=[ugettext_noop("Recommendation set to"), " ", label],
+            message_list=["Recommendation set to", " ", label],
             person=request.user,
             skip_autoupdate=True,
         )
@@ -698,9 +667,7 @@ class MotionViewSet(ModelViewSet):
             try:
                 motion = Motion.objects.get(pk=item["id"])
             except Motion.DoesNotExist:
-                raise ValidationError(
-                    {"detail": "Motion {} does not exist".format(item["id"])}
-                )
+                raise ValidationError({"detail": f"Motion {item['id']} does not exist"})
 
             # Set or reset recommendation.
             recommendation_state_id = item["recommendation"]
@@ -717,9 +684,7 @@ class MotionViewSet(ModelViewSet):
                 ]:
                     raise ValidationError(
                         {
-                            "detail": _(
-                                "You can not set the recommendation to {recommendation_state_id}."
-                            ).format(recommendation_state_id=recommendation_state_id)
+                            "detail": "You can not set the recommendation to {recommendation_state_id}."
                         }
                     )
                 motion.set_recommendation(recommendation_state_id)
@@ -734,7 +699,7 @@ class MotionViewSet(ModelViewSet):
 
             # Write the log message.
             motion.write_log(
-                message_list=[ugettext_noop("Recommendation set to"), " ", label],
+                message_list=["Recommendation set to", " ", label],
                 person=request.user,
                 skip_autoupdate=True,
             )
@@ -747,18 +712,14 @@ class MotionViewSet(ModelViewSet):
 
         # Send response.
         return Response(
-            {
-                "detail": _("{number} motions successfully updated.").format(
-                    number=len(motion_result)
-                )
-            }
+            {"detail": f"{len(motion_result)} motions successfully updated."}
         )
 
     @detail_route(methods=["post"])
     def follow_recommendation(self, request, pk=None):
         motion = self.get_object()
         if motion.recommendation is None:
-            raise ValidationError({"detail": _("Cannot set an empty recommendation.")})
+            raise ValidationError({"detail": "Cannot set an empty recommendation."})
 
         # Set state.
         motion.set_state(motion.recommendation)
@@ -779,7 +740,7 @@ class MotionViewSet(ModelViewSet):
             skip_autoupdate=True,
         )
         motion.write_log(
-            message_list=[ugettext_noop("State set to"), " ", motion.state.name],
+            message_list=["State set to", " ", motion.state.name],
             person=request.user,
             skip_autoupdate=True,
         )
@@ -801,15 +762,13 @@ class MotionViewSet(ModelViewSet):
         try:
             with transaction.atomic():
                 poll = motion.create_poll(skip_autoupdate=True)
-        except WorkflowError as e:
-            raise ValidationError({"detail": e})
-        motion.write_log(
-            [ugettext_noop("Vote created")], request.user, skip_autoupdate=True
-        )
+        except WorkflowError as err:
+            raise ValidationError({"detail": err})
+        motion.write_log(["Vote created"], request.user, skip_autoupdate=True)
 
         inform_changed_data(motion)
         return Response(
-            {"detail": _("Vote created successfully."), "createdPollId": poll.pk}
+            {"detail": "Vote created successfully.", "createdPollId": poll.pk}
         )
 
     @list_route(methods=["post"])
@@ -855,16 +814,12 @@ class MotionViewSet(ModelViewSet):
             try:
                 motion = Motion.objects.get(pk=item["id"])
             except Motion.DoesNotExist:
-                raise ValidationError(
-                    {"detail": "Motion {} does not exist".format(item["id"])}
-                )
+                raise ValidationError({"detail": f"Motion {item['id']} does not exist"})
 
             # Set new tags
             for tag_id in item["tags"]:
                 if not Tag.objects.filter(pk=tag_id).exists():
-                    raise ValidationError(
-                        {"detail": "Tag {} does not exist".format(tag_id)}
-                    )
+                    raise ValidationError({"detail": f"Tag {tag_id} does not exist"})
             motion.tags.set(item["tags"])
 
             # Finish motion.
@@ -875,11 +830,7 @@ class MotionViewSet(ModelViewSet):
 
         # Send response.
         return Response(
-            {
-                "detail": _("{number} motions successfully updated.").format(
-                    number=len(motion_result)
-                )
-            }
+            {"detail": f"{len(motion_result)} motions successfully updated."}
         )
 
 
@@ -907,7 +858,7 @@ class MotionPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet):
         """
         response = super().update(*args, **kwargs)
         poll = self.get_object()
-        poll.motion.write_log([ugettext_noop("Vote updated")], self.request.user)
+        poll.motion.write_log(["Vote updated"], self.request.user)
         return response
 
     def destroy(self, *args, **kwargs):
@@ -916,7 +867,7 @@ class MotionPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet):
         """
         poll = self.get_object()
         result = super().destroy(*args, **kwargs)
-        poll.motion.write_log([ugettext_noop("Vote deleted")], self.request.user)
+        poll.motion.write_log(["Vote deleted"], self.request.user)
         return result
 
 
@@ -986,26 +937,20 @@ class MotionCommentSectionViewSet(ModelViewSet):
         """
         try:
             result = super().destroy(*args, **kwargs)
-        except ProtectedError as e:
+        except ProtectedError as err:
             # The protected objects can just be motion comments.
-            motions = [
-                '"' + str(comment.motion) + '"' for comment in e.protected_objects.all()
-            ]
+            motions = [f'"{comment.motion}"' for comment in err.protected_objects.all()]
             count = len(motions)
             motions_verbose = ", ".join(motions[:3])
             if count > 3:
                 motions_verbose += ", ..."
 
             if count == 1:
-                msg = _("This section has still comments in motion {}.").format(
-                    motions_verbose
-                )
+                msg = f"This section has still comments in motion {motions_verbose}."
             else:
-                msg = _("This section has still comments in motions {}.").format(
-                    motions_verbose
-                )
+                msg = f"This section has still comments in motions {motions_verbose}."
 
-            msg += " " + _("Please remove all comments before deletion.")
+            msg += " " + "Please remove all comments before deletion."
             raise ValidationError({"detail": msg})
         return result
 
@@ -1098,9 +1043,9 @@ class CategoryViewSet(ModelViewSet):
         if not category.prefix:
             prefix = ""
         elif without_blank:
-            prefix = "%s" % category.prefix
+            prefix = category.prefix
         else:
-            prefix = "%s " % category.prefix
+            prefix = f"{category.prefix} "
         motions = category.motion_set.all()
         motion_list = request.data.get("motions")
         if motion_list:
@@ -1119,19 +1064,12 @@ class CategoryViewSet(ModelViewSet):
                     if motion.is_amendment():
                         parent_identifier = motion.parent.identifier or ""
                         if without_blank:
-                            prefix = "%s%s" % (
-                                parent_identifier,
-                                config["motions_amendments_prefix"],
-                            )
+                            prefix = f"{parent_identifier}{config['motions_amendments_prefix']}"
                         else:
-                            prefix = "%s %s " % (
-                                parent_identifier,
-                                config["motions_amendments_prefix"],
-                            )
+                            prefix = f"{parent_identifier} {config['motions_amendments_prefix']} "
                     number += 1
-                    new_identifier = "%s%s" % (
-                        prefix,
-                        motion.extend_identifier_number(number),
+                    new_identifier = (
+                        f"{prefix}{motion.extend_identifier_number(number)}"
                     )
                     motions_to_be_sorted.append(
                         {
@@ -1153,12 +1091,10 @@ class CategoryViewSet(ModelViewSet):
                 for obj in motions_to_be_sorted:
                     if Motion.objects.filter(identifier=obj["new_identifier"]).exists():
                         # Set the error message and let the code run into an IntegrityError
+                        new_identifier = obj["new_identifier"]
                         error_message = (
-                            _(
-                                'Numbering aborted because the motion identifier "%s" '
-                                "already exists outside of this category."
-                            )
-                            % obj["new_identifier"]
+                            f'Numbering aborted because the motion identifier "{new_identifier}" '
+                            "already exists outside of this category."
                         )
                     motion = obj["motion"]
                     motion.identifier = obj["new_identifier"]
@@ -1186,16 +1122,11 @@ class CategoryViewSet(ModelViewSet):
                             instances.append(child.agenda_item)
         except IntegrityError:
             if error_message is None:
-                error_message = _(
-                    "Error: At least one identifier of this category does "
-                    "already exist in another category."
-                )
+                error_message = "Error: At least one identifier of this category does already exist in another category."
             response = Response({"detail": error_message}, status=400)
         else:
             inform_changed_data(instances)
-            message = _(
-                "All motions in category {category} numbered " "successfully."
-            ).format(category=category)
+            message = f"All motions in category {category} numbered " "successfully."
             response = Response({"detail": message})
         return response
 
@@ -1248,17 +1179,13 @@ class MotionBlockViewSet(ModelViewSet):
                 motion.save(skip_autoupdate=True)
                 # Write the log message.
                 motion.write_log(
-                    message_list=[
-                        ugettext_noop("State set to"),
-                        " ",
-                        motion.state.name,
-                    ],
+                    message_list=["State set to", " ", motion.state.name],
                     person=request.user,
                     skip_autoupdate=True,
                 )
                 instances.append(motion)
         inform_changed_data(instances)
-        return Response({"detail": _("Followed recommendations successfully.")})
+        return Response({"detail": "Followed recommendations successfully."})
 
 
 class ProtectedErrorMessageMixin:
@@ -1271,10 +1198,10 @@ class ProtectedErrorMessageMixin:
             motions_verbose += ", ..."
 
         if count == 1:
-            msg = _("This {} is assigned to motion {}.").format(name, motions_verbose)
+            msg = f"This {name} is assigned to motion {motions_verbose}."
         else:
-            msg = _("This {} is assigned to motions {}.").format(name, motions_verbose)
-        return msg + " " + _("Please remove all assignments before deletion.")
+            msg = f"This {name} is assigned to motions {motions_verbose}."
+        return f"{msg} Please remove all assignments before deletion."
 
 
 class WorkflowViewSet(ModelViewSet, ProtectedErrorMessageMixin):
@@ -1310,8 +1237,8 @@ class WorkflowViewSet(ModelViewSet, ProtectedErrorMessageMixin):
         """
         try:
             result = super().destroy(*args, **kwargs)
-        except ProtectedError as e:
-            msg = self.getProtectedErrorMessage("workflow", e)
+        except ProtectedError as err:
+            msg = self.getProtectedErrorMessage("workflow", err)
             raise ValidationError({"detail": msg})
         return result
 
@@ -1349,11 +1276,11 @@ class StateViewSet(
             state.workflow.first_state.pk == state.pk
         ):  # is this the first state of the workflow?
             raise ValidationError(
-                {"detail": _("You cannot delete the first state of the workflow.")}
+                {"detail": "You cannot delete the first state of the workflow."}
             )
         try:
             result = super().destroy(*args, **kwargs)
-        except ProtectedError as e:
-            msg = self.getProtectedErrorMessage("workflow", e)
+        except ProtectedError as err:
+            msg = self.getProtectedErrorMessage("workflow", err)
             raise ValidationError({"detail": msg})
         return result

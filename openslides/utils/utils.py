@@ -39,7 +39,7 @@ def get_element_id(collection_string: str, id: int) -> str:
     """
     Returns a combined string from the collection_string and an id.
     """
-    return "{}:{}".format(collection_string, id)
+    return f"{collection_string}:{id}"
 
 
 def split_element_id(element_id: Union[str, bytes]) -> Tuple[str, int]:
@@ -92,8 +92,6 @@ def get_model_from_collection_string(collection_string: str) -> Type[Model]:
         model = _models_to_collection_string[collection_string]
     except KeyError:
         raise ValueError(
-            "Invalid message. A valid collection_string is missing. Got {}".format(
-                collection_string
-            )
+            f"Invalid message. A valid collection_string is missing. Got {collection_string}"
         )
     return model

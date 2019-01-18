@@ -3,7 +3,6 @@ from typing import Any, Callable, Dict, Iterable, Optional, TypeVar, Union, cast
 from asgiref.sync import async_to_sync
 from django.apps import apps
 from django.core.exceptions import ValidationError as DjangoValidationError
-from django.utils.translation import ugettext as _
 from mypy_extensions import TypedDict
 
 from ..utils.cache import element_cache
@@ -45,7 +44,7 @@ class ConfigHandler:
         Returns the value of the config variable.
         """
         if not self.exists(key):
-            raise ConfigNotFound(_("The config variable {} was not found.").format(key))
+            raise ConfigNotFound(f"The config variable {key} was not found.")
 
         return async_to_sync(element_cache.get_element_full_data)(
             self.get_collection_string(), self.get_key_to_id()[key]
@@ -95,7 +94,7 @@ class ConfigHandler:
         try:
             config_variable = self.config_variables[key]
         except KeyError:
-            raise ConfigNotFound(_("The config variable {} was not found.").format(key))
+            raise ConfigNotFound(f"The config variable {key} was not found.")
 
         # Validate datatype and run validators.
         expected_type = INPUT_TYPE_MAPPING[config_variable.input_type]
@@ -105,8 +104,7 @@ class ConfigHandler:
             value = expected_type(value)
         except ValueError:
             raise ConfigError(
-                _("Wrong datatype. Expected %(expected_type)s, got %(got_type)s.")
-                % {"expected_type": expected_type, "got_type": type(value)}
+                f"Wrong datatype. Expected {expected_type}, got {type(value)}."
             )
 
         if config_variable.input_type == "choice":
@@ -118,44 +116,38 @@ class ConfigHandler:
             if choices is None or value not in map(
                 lambda choice: choice["value"], choices
             ):
-                raise ConfigError(_("Invalid input. Choice does not match."))
+                raise ConfigError("Invalid input. Choice does not match.")
 
         for validator in config_variable.validators:
             try:
                 validator(value)
-            except DjangoValidationError as e:
-                raise ConfigError(e.messages[0])
+            except DjangoValidationError as err:
+                raise ConfigError(err.messages[0])
 
         if config_variable.input_type == "static":
             if not isinstance(value, dict):
-                raise ConfigError(_("This has to be a dict."))
+                raise ConfigError("This has to be a dict.")
             whitelist = ("path", "display_name")
             for required_entry in whitelist:
                 if required_entry not in value:
-                    raise ConfigError(_("{} has to be given.".format(required_entry)))
+                    raise ConfigError(f"{required_entry} has to be given.")
                 if not isinstance(value[required_entry], str):
-                    raise ConfigError(
-                        _("{} has to be a string.".format(required_entry))
-                    )
+                    raise ConfigError(f"{required_entry} has to be a string.")
 
         if config_variable.input_type == "translations":
             if not isinstance(value, list):
-                raise ConfigError(_("Translations has to be a list."))
+                raise ConfigError("Translations has to be a list.")
             for entry in value:
                 if not isinstance(entry, dict):
                     raise ConfigError(
-                        _("Every value has to be a dict, not {}.".format(type(entry)))
+                        f"Every value has to be a dict, not {type(entry)}."
                     )
                 whitelist = ("original", "translation")
                 for required_entry in whitelist:
                     if required_entry not in entry:
-                        raise ConfigError(
-                            _("{} has to be given.".format(required_entry))
-                        )
+                        raise ConfigError(f"{required_entry} has to be given.")
                     if not isinstance(entry[required_entry], str):
-                        raise ConfigError(
-                            _("{} has to be a string.".format(required_entry))
-                        )
+                        raise ConfigError(f"{required_entry} has to be a string.")
 
         # Save the new value to the database.
         db_value = ConfigStore.objects.get(key=key)
@@ -189,7 +181,7 @@ class ConfigHandler:
         intersection = set(item_index.keys()).intersection(self.config_variables.keys())
         if intersection:
             raise ConfigError(
-                _("Too many values for config variables {} found.").format(intersection)
+                f"Too many values for config variables {intersection} found."
             )
 
         self.config_variables.update(item_index)
@@ -286,20 +278,16 @@ class ConfigVariable:
         on_change: OnChangeType = None,
     ) -> None:
         if input_type not in INPUT_TYPE_MAPPING:
-            raise ValueError(_("Invalid value for config attribute input_type."))
+            raise ValueError("Invalid value for config attribute input_type.")
         if input_type == "choice" and choices is None:
             raise ConfigError(
-                _(
-                    "Either config attribute 'choices' must not be None or "
-                    "'input_type' must not be 'choice'."
-                )
+                "Either config attribute 'choices' must not be None or "
+                "'input_type' must not be 'choice'."
             )
         elif input_type != "choice" and choices is not None:
             raise ConfigError(
-                _(
-                    "Either config attribute 'choices' must be None or "
-                    "'input_type' must be 'choice'."
-                )
+                "Either config attribute 'choices' must be None or "
+                "'input_type' must be 'choice'."
             )
         self.name = name
         self.default_value = default_value
@@ -309,7 +297,7 @@ class ConfigVariable:
         self.choices = choices
         self.hidden = hidden
         self.weight = weight
-        self.group = group or _("General")
+        self.group = group or "General"
         self.subgroup = subgroup
         self.validators = validators or ()
         self.on_change = on_change

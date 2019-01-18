@@ -199,7 +199,7 @@ class ChatMessage(RESTModelMixin, models.Model):
         )
 
     def __str__(self):
-        return "Message {}".format(self.timestamp)
+        return f"Message {self.timestamp}"
 
 
 class ProjectorMessage(RESTModelMixin, models.Model):
@@ -236,7 +236,7 @@ class Countdown(RESTModelMixin, models.Model):
     def control(self, action, skip_autoupdate=False):
         if action not in ("start", "stop", "reset"):
             raise ValueError(
-                "Action must be 'start', 'stop' or 'reset', not {}.".format(action)
+                f"Action must be 'start', 'stop' or 'reset', not {action}."
             )
 
         if action == "start":

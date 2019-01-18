@@ -28,8 +28,6 @@ class Command(BaseCommand):
             raise CommandError(str(e))
         self.stdout.write(
             self.style.SUCCESS(
-                "Config {key} successfully changed to {value}.".format(
-                    key=options["key"], value=config[options["key"]]
-                )
+                f"Config {options['key']} successfully changed to {config[options['key']]}."
             )
         )

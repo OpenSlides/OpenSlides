@@ -114,14 +114,10 @@ def count_queries(func, *args, **kwargs) -> int:
     with context:
         func(*args, **kwargs)
 
-    print(
-        "%d queries executed\nCaptured queries were:\n%s"
-        % (
-            len(context),
-            "\n".join(
-                "%d. %s" % (i, query["sql"])
-                for i, query in enumerate(context.captured_queries, start=1)
-            ),
-        )
+    queries = "\n".join(
+        f"{i}. {query['sql']}"
+        for i, query in enumerate(context.captured_queries, start=1)
     )
+
+    print(f"{len(context)} queries executed\nCaptured queries were:\n{queries}")
     return len(context)

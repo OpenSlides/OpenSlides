@@ -9,7 +9,7 @@ class TestItemManager(TestCase):
         Test that get_root_and_children needs only one db query.
         """
         for i in range(10):
-            Topic.objects.create(title="item{}".format(i))
+            Topic.objects.create(title=f"item{i}")
 
         with self.assertNumQueries(1):
             Item.objects.get_root_and_children()
