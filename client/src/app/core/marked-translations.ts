@@ -333,3 +333,15 @@ _('Admin');
 _('Delegates');
 _('Staff');
 _('Committees');
+
+// history strings
+_('Motion deleted');
+_('Motion updated');
+_('Submitters changed');
+_('Supporters changed');
+_('State set to {arg1}');
+_('Recommendation set to {arg1}');
+_('Vote created');
+_('Vote updated');
+_('Vote deleted');
+_('Number set');

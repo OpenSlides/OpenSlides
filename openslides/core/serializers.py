@@ -167,6 +167,8 @@ class HistorySerializer(ModelSerializer):
     Does not contain full data of history object.
     """
 
+    information = JSONSerializerField()
+
     class Meta:
         model = History
         fields = ("id", "element_id", "now", "information", "restricted", "user")
