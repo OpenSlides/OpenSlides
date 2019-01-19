@@ -169,6 +169,20 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
     }
 
     /**
+     * Set the state of motions in bulk
+     *
+     * @param viewMotion target motion
+     * @param stateId the number that indicates the state
+     */
+    public async setMultiState(viewMotions: ViewMotion[], stateId: number): Promise<void> {
+        const restPath = `/rest/motions/motion/manage_multiple_state/`;
+        const motionsIdMap: { id: number; state: number }[] = viewMotions.map(motion => {
+            return { id: motion.id, state: stateId };
+        });
+        await this.httpService.post(restPath, { motions: motionsIdMap });
+    }
+
+    /**
      * Set the recommenders state of a motion
      *
      * @param viewMotion target motion
