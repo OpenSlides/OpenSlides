@@ -38,6 +38,7 @@ Motions:
 User:
  - Added new admin group which grants all permissions. Users of existing group
    'Admin' or 'Staff' are move to the new group during migration [#3859].
+ - Added gender field [#4124].
 
 
 Version 2.3 (2018-09-20)
