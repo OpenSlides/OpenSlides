@@ -1,71 +1,108 @@
 import json
 
+import pytest
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
 from openslides import __license__ as license, __url__ as url, __version__ as version
 from openslides.core.config import ConfigVariable, config
+from openslides.core.models import Projector
 from openslides.utils.rest_api import ValidationError
 from openslides.utils.test import TestCase
 
 
-class ProjectorAPI(TestCase):
-    def test_slide_on_default_projector(self):
-        self.client.login(username="admin", password="admin")
-        self.client.put(
-            reverse("projector-detail", args=["1"]),
-            {"elements": [{"name": "topics/topic", "id": 1}]},
-            content_type="application/json",
-        )
+@pytest.mark.django_db(transaction=False)
+def test_slide_on_default_projector(client):
+    client.login(username="admin", password="admin")
+    client.put(
+        reverse("projector-detail", args=["1"]),
+        {"elements": [{"name": "topics/topic", "id": 1}]},
+        content_type="application/json",
+    )
 
-        response = self.client.get(reverse("projector-detail", args=["1"]))
+    response = client.get(reverse("projector-detail", args=["1"]))
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+    assert response.status_code == 200
 
-    def test_invalid_element_non_existing_slide(self):
-        self.client.login(username="admin", password="admin")
 
-        response = self.client.put(
-            reverse("projector-detail", args=["1"]),
-            {"elements": [{"name": "invalid_slide_name", "id": 1}]},
-            content_type="application/json",
-        )
+@pytest.mark.django_db(transaction=False)
+def test_invalid_element_non_existing_slide(client):
+    client.login(username="admin", password="admin")
 
-        self.assertEqual(response.status_code, 400)
+    response = client.put(
+        reverse("projector-detail", args=["1"]),
+        {"elements": [{"name": "invalid_slide_name", "id": 1}]},
+        content_type="application/json",
+    )
 
-    def test_invalid_element_no_name_attribute(self):
-        self.client.login(username="admin", password="admin")
+    assert response.status_code == 400
 
-        response = self.client.put(
-            reverse("projector-detail", args=["1"]),
-            {"elements": [{"id": 1}]},
-            content_type="application/json",
-        )
 
-        self.assertEqual(response.status_code, 400)
+@pytest.mark.django_db(transaction=False)
+def test_invalid_element_no_name_attribute(client):
+    client.login(username="admin", password="admin")
 
-    def test_invalid_element_not_a_inner_dict(self):
-        self.client.login(username="admin", password="admin")
+    response = client.put(
+        reverse("projector-detail", args=["1"]),
+        {"elements": [{"id": 1}]},
+        content_type="application/json",
+    )
 
-        response = self.client.put(
-            reverse("projector-detail", args=["1"]),
-            {"elements": ["not a dict"]},
-            content_type="application/json",
-        )
+    assert response.status_code == 400
 
-        self.assertEqual(response.status_code, 400)
 
-    def test_invalid_element_a_list(self):
-        self.client.login(username="admin", password="admin")
+@pytest.mark.django_db(transaction=False)
+def test_invalid_element_not_a_inner_dict(client):
+    client.login(username="admin", password="admin")
 
-        response = self.client.put(
-            reverse("projector-detail", args=["1"]),
-            {"elements": {"name": "invalid_slide_name", "id": 1}},
-            content_type="application/json",
-        )
+    response = client.put(
+        reverse("projector-detail", args=["1"]),
+        {"elements": ["not a dict"]},
+        content_type="application/json",
+    )
 
-        self.assertEqual(response.status_code, 400)
+    assert response.status_code == 400
+
+
+@pytest.mark.django_db(transaction=False)
+def test_invalid_element_a_list(client):
+    client.login(username="admin", password="admin")
+
+    response = client.put(
+        reverse("projector-detail", args=["1"]),
+        {"elements": {"name": "invalid_slide_name", "id": 1}},
+        content_type="application/json",
+    )
+
+    assert response.status_code == 400
+
+
+@pytest.mark.django_db(transaction=False)
+def test_project_view(client):
+    client.login(username="admin", password="admin")
+    projector = Projector.objects.get(pk=1)
+    projector.elements_history = [[{"name": "topics/topic", "id": 3}]]
+    projector.save()
+
+    response = client.post(
+        reverse("projector-project", args=["1"]),
+        {
+            "append_to_history": [{"name": "topics/topic", "id": 1}],
+            "elements": [{"name": "topics/topic", "id": 2}],
+            "preview": [[{"name": "topics/topic", "id": 3}]],
+        },
+        content_type="application/json",
+    )
+
+    projector.refresh_from_db()
+    assert response.status_code == 200
+    assert projector.elements == [{"name": "topics/topic", "id": 2}]
+    assert projector.elements_history == [
+        [{"name": "topics/topic", "id": 3}],
+        [{"name": "topics/topic", "id": 1}],
+    ]
+    assert projector.elements_preview == [[{"name": "topics/topic", "id": 3}]]
 
 
 class VersionView(TestCase):
