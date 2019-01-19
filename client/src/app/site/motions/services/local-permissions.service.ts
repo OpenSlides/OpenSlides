@@ -82,9 +82,10 @@ export class LocalPermissionsService {
                     return false;
                 }
                 return (
-                    this.operator.hasPerms('motions.can_manage') &&
-                    motion.state.allow_submitter_edit &&
-                    motion.submitters.some(submitter => submitter.id === this.operator.user.id)
+                    this.operator.hasPerms('motions.can_manage') ||
+                    (motion.state.allow_submitter_edit &&
+                        motion.submitters &&
+                        motion.submitters.some(submitter => submitter.id === this.operator.user.id))
                 );
             case 'update_submitters':
                 return this.operator.hasPerms('motions.can_manage');
