@@ -41,6 +41,8 @@ export class Motion extends AgendaBaseModel {
     public log_messages: MotionLog[];
     public weight: number;
     public sort_parent_id: number;
+    public created: string;
+    public last_modified: string;
 
     public constructor(input?: any) {
         super('motions/motion', 'Motion', input);

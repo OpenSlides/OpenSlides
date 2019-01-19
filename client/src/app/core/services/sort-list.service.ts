@@ -241,7 +241,11 @@ export abstract class SortListService<V extends BaseViewModel> {
                         const b = secondProperty();
                         return a.localeCompare(b, lang);
                     case 'object':
-                        return firstProperty.toString().localeCompare(secondProperty.toString(), lang);
+                        if (firstProperty instanceof Date) {
+                            return firstProperty > secondProperty ? 1 : -1;
+                        } else {
+                            return firstProperty.toString().localeCompare(secondProperty.toString(), lang);
+                        }
                     case 'undefined':
                         return 1;
                     default:

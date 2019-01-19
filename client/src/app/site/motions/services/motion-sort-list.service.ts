@@ -17,10 +17,9 @@ export class MotionSortListService extends SortListService<ViewMotion> {
             { property: 'submitters' },
             { property: 'category' },
             { property: 'motion_block_id', label: 'Motion block' },
-            { property: 'state' }
-            // choices from 2.3:
-            // TODO creation date
-            // TODO last modified
+            { property: 'state' },
+            { property: 'creationDate', label: 'Creation date' },
+            { property: 'lastChangeDate', label: 'Last modified' }
         ]
     };
     protected name = 'Motion';

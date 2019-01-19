@@ -221,6 +221,26 @@ export class ViewMotion extends BaseViewModel {
     }
 
     /**
+     * @returns the creation date as Date object
+     */
+    public get creationDate(): Date {
+        if (!this.motion || !this.motion.created) {
+            return null;
+        }
+        return new Date(this.motion.created);
+    }
+
+    /**
+     * @returns the date of the last change as Date object, null if empty
+     */
+    public get lastChangeDate(): Date {
+        if (!this.motion || !this.motion.last_modified) {
+            return null;
+        }
+        return new Date(this.motion.last_modified);
+    }
+
+    /**
      * Gets the comments' section ids of a motion. Used in filter by motionComment
      *
      * @returns an array of ids, or an empty array
