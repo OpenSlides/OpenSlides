@@ -92,3 +92,15 @@ def get_config(all_data: AllData, key: str) -> Any:
     return all_data[config.get_collection_string()][config.get_key_to_id()[key]][
         "value"
     ]
+
+
+def get_user(all_data: AllData, user_id: int) -> Dict[str, Any]:
+    """
+    Returns the value of a user to show his name.
+    """
+    user = all_data["users/user"][user_id]
+    return {
+        "title": user["title"],
+        "first_name": user["first_name"],
+        "last_name": user["last_name"],
+    }
