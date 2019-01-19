@@ -134,6 +134,15 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
     }
 
     /**
+     * Triggers a reset to the default value (if a default value is present)
+     */
+    public onResetButton(): void {
+        if (this.configItem.hasDefault) {
+            this.onChange(this.configItem.defaultValue);
+        }
+    }
+
+    /**
      * Updates the config field.
      * @param value The new value to set.
      */

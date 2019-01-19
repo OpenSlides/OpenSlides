@@ -24,3 +24,17 @@ input[type='color'] {
 .error {
     color: #f44336;
 }
+
+.config-field-wrapper {
+    width: 100%;
+    display: flex;
+
+    .form-item {
+        flex: 2;
+    }
+    .reset-button {
+        max-width: 30px;
+        width: 30px;
+        flex: 1;
+    }
+}
