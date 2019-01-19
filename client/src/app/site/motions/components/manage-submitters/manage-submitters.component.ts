@@ -1,16 +1,17 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
+import { MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
-import { MatSnackBar } from '@angular/material';
 
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { ViewMotion } from '../../models/view-motion';
-import { User } from 'app/shared/models/users/user';
-import { DataStoreService } from 'app/core/services/data-store.service';
-import { MotionRepositoryService } from '../../services/motion-repository.service';
 import { BaseViewComponent } from 'app/site/base/base-view';
+import { DataStoreService } from 'app/core/services/data-store.service';
+import { LocalPermissionsService } from '../../services/local-permissions.service';
+import { MotionRepositoryService } from '../../services/motion-repository.service';
+import { User } from 'app/shared/models/users/user';
+import { ViewMotion } from '../../models/view-motion';
 
 /**
  * Component for the motion comments view
@@ -61,13 +62,15 @@ export class ManageSubmittersComponent extends BaseViewComponent {
      * @param matSnackBar
      * @param DS
      * @param repo
+     * @param perms permission checks for the motion
      */
     public constructor(
         title: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
         private DS: DataStoreService,
-        private repo: MotionRepositoryService
+        private repo: MotionRepositoryService,
+        public perms: LocalPermissionsService
     ) {
         super(title, translate, matSnackBar);
 

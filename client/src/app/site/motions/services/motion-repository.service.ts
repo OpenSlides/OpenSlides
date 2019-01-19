@@ -692,4 +692,13 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
             await this.httpService.post(restPath);
         }
     }
+    /**
+     * Check if a motion currently has any amendments
+     *
+     * @param motion A viewMotion
+     * @returns True if there is at eleast one amendment
+     */
+    public hasAmendments(motion: ViewMotion): boolean {
+        return this.getViewModelList().filter(allMotions => allMotions.parent_id === motion.id).length > 0;
+    }
 }
