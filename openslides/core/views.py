@@ -1,6 +1,6 @@
 import datetime
 import os
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 from django.conf import settings
 from django.contrib.staticfiles import finders
@@ -10,9 +10,9 @@ from django.http import Http404, HttpResponse
 from django.utils.timezone import now
 from django.views import static
 from django.views.generic.base import View
-from mypy_extensions import TypedDict
 
 from .. import __license__ as license, __url__ as url, __version__ as version
+from ..users.models import User
 from ..utils import views as utils_views
 from ..utils.arguments import arguments
 from ..utils.auth import GROUP_ADMIN_PK, anonymous_is_enabled, has_perm, in_some_groups
@@ -545,21 +545,13 @@ class VersionView(utils_views.APIView):
     http_method_names = ["get"]
 
     def get_context_data(self, **context):
-        Result = TypedDict(
-            "Result",
-            {
-                "openslides_version": str,
-                "openslides_license": str,
-                "openslides_url": str,
-                "plugins": List[Dict[str, str]],
-            },
-        )
-        result: Result = dict(
-            openslides_version=version,
-            openslides_license=license,
-            openslides_url=url,
-            plugins=[],
-        )
+        result: Dict[str, Any] = {
+            "openslides_version": version,
+            "openslides_license": license,
+            "openslides_url": url,
+            "plugins": [],
+            "no_name_yet_users": User.objects.filter(last_login__isnull=False).count(),
+        }
         # Versions of plugins.
         for plugin in settings.INSTALLED_PLUGINS:
             result["plugins"].append(
