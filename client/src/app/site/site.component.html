@@ -5,7 +5,7 @@
 <mat-sidenav-container #siteContainer class="main-container" (backdropClick)="toggleSideNav()">
     <mat-sidenav
         #sideNav
-        [mode]="vp.isMobile ? 'push' : 'side'"
+        [mode]="vp.isMobile ? 'over' : 'side'"
         [opened]="!vp.isMobile"
         disableClose="!vp.isMobile"
         class="side-panel"
@@ -62,7 +62,7 @@
                     [@navItemAnim]
                     *osPerms="entry.permission"
                     mat-list-item
-                    (click)="toggleSideNav()"
+                    (click)="mobileAutoCloseNav()"
                     [routerLink]="entry.route"
                     routerLinkActive="active"
                     [routerLinkActiveOptions]="{ exact: entry.route === '/' }"
@@ -77,7 +77,7 @@
                 mat-list-item
                 routerLink="/projector"
                 routerLinkActive="active"
-                (click)="toggleSideNav()"
+                (click)="mobileAutoCloseNav()"
             >
                 <mat-icon>videocam</mat-icon>
                 <span translate>Projector</span>
@@ -88,7 +88,7 @@
                 mat-list-item
                 routerLink="/search"
                 routerLinkActive="active"
-                (click)="toggleSideNav()"
+                (click)="mobileAutoCloseNav()"
             >
                 <mat-icon>search</mat-icon>
                 <span translate>Search</span>
@@ -98,7 +98,7 @@
                 mat-list-item
                 routerLink="/legalnotice"
                 routerLinkActive="active"
-                (click)="toggleSideNav()"
+                (click)="mobileAutoCloseNav()"
             >
                 <mat-icon>info</mat-icon>
                 <span translate>Legal notice</span>
@@ -108,7 +108,7 @@
                 mat-list-item
                 routerLink="/privacypolicy"
                 routerLinkActive="active"
-                (click)="toggleSideNav()"
+                (click)="mobileAutoCloseNav()"
             >
                 <mat-icon>security</mat-icon>
                 <span translate>Privacy policy</span>
@@ -118,7 +118,7 @@
                 mat-list-item
                 href="https://openslides.org"
                 target="_blank"
-                (click)="toggleSideNav()"
+                (click)="mobileAutoCloseNav()"
             >
                 <span><small><os-copyright-sign></os-copyright-sign>&nbsp;Copyright by OpenSlides</small></span>
             </a>
