@@ -23,6 +23,7 @@ from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import RESTModelMixin
 
+from ..utils.models import CASCADE_AND_AUTOUODATE, SET_NULL_AND_AUTOUPDATE
 from .access_permissions import (
     CategoryAccessPermissions,
     MotionAccessPermissions,
@@ -141,7 +142,7 @@ class Motion(RESTModelMixin, models.Model):
     """
 
     recommendation = models.ForeignKey(
-        "State", related_name="+", on_delete=models.SET_NULL, null=True
+        "State", related_name="+", on_delete=SET_NULL_AND_AUTOUPDATE, null=True
     )
     """
     The recommendation of a person or committee for this motion.
@@ -171,7 +172,7 @@ class Motion(RESTModelMixin, models.Model):
 
     sort_parent = models.ForeignKey(
         "self",
-        on_delete=models.SET_NULL,
+        on_delete=SET_NULL_AND_AUTOUPDATE,
         null=True,
         blank=True,
         related_name="children",
@@ -181,14 +182,14 @@ class Motion(RESTModelMixin, models.Model):
     """
 
     category = models.ForeignKey(
-        "Category", on_delete=models.SET_NULL, null=True, blank=True
+        "Category", on_delete=SET_NULL_AND_AUTOUPDATE, null=True, blank=True
     )
     """
     ForeignKey to one category of motions.
     """
 
     motion_block = models.ForeignKey(
-        "MotionBlock", on_delete=models.SET_NULL, null=True, blank=True
+        "MotionBlock", on_delete=SET_NULL_AND_AUTOUPDATE, null=True, blank=True
     )
     """
     ForeignKey to one block of motions.
@@ -207,7 +208,7 @@ class Motion(RESTModelMixin, models.Model):
 
     parent = models.ForeignKey(
         "self",
-        on_delete=models.SET_NULL,
+        on_delete=SET_NULL_AND_AUTOUPDATE,
         null=True,
         blank=True,
         related_name="amendments",
@@ -220,7 +221,7 @@ class Motion(RESTModelMixin, models.Model):
 
     statute_paragraph = models.ForeignKey(
         StatuteParagraph,
-        on_delete=models.SET_NULL,
+        on_delete=SET_NULL_AND_AUTOUPDATE,
         null=True,
         blank=True,
         related_name="motions",
@@ -704,7 +705,7 @@ class Submitter(RESTModelMixin, models.Model):
     Use custom Manager.
     """
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=CASCADE_AND_AUTOUODATE)
     """
     ForeignKey to the user who is the submitter.
     """
@@ -754,7 +755,7 @@ class MotionChangeRecommendation(RESTModelMixin, models.Model):
     objects = MotionChangeRecommendationManager()
 
     motion = models.ForeignKey(
-        Motion, on_delete=models.CASCADE, related_name="change_recommendations"
+        Motion, on_delete=CASCADE_AND_AUTOUODATE, related_name="change_recommendations"
     )
     """The motion to which the change recommendation belongs."""
 
@@ -780,7 +781,7 @@ class MotionChangeRecommendation(RESTModelMixin, models.Model):
     """The replacement for the section of the original text specified by motion, line_from and line_to"""
 
     author = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
+        settings.AUTH_USER_MODEL, on_delete=SET_NULL_AND_AUTOUPDATE, null=True
     )
     """A user object, who created this change recommendation. Optional."""
 
@@ -921,7 +922,7 @@ class MotionLog(RESTModelMixin, models.Model):
     """
 
     person = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
+        settings.AUTH_USER_MODEL, on_delete=SET_NULL_AND_AUTOUPDATE, null=True
     )
     """A user object, who created the log message. Optional."""
 
@@ -1192,7 +1193,7 @@ class Workflow(RESTModelMixin, models.Model):
     """A string representing the workflow."""
 
     first_state = models.OneToOneField(
-        State, on_delete=models.SET_NULL, related_name="+", null=True, blank=True
+        State, on_delete=models.CASCADE, related_name="+", null=True
     )
     """A one-to-one relation to a state, the starting point for the workflow."""
 

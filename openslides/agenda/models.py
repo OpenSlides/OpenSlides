@@ -15,6 +15,7 @@ from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import RESTModelMixin
 from openslides.utils.utils import to_roman
 
+from ..utils.models import CASCADE_AND_AUTOUODATE, SET_NULL_AND_AUTOUPDATE
 from .access_permissions import ItemAccessPermissions
 
 
@@ -233,7 +234,7 @@ class Item(RESTModelMixin, models.Model):
 
     parent = models.ForeignKey(
         "self",
-        on_delete=models.SET_NULL,
+        on_delete=SET_NULL_AND_AUTOUPDATE,
         null=True,
         blank=True,
         related_name="children",
@@ -374,7 +375,7 @@ class Speaker(RESTModelMixin, models.Model):
 
     objects = SpeakerManager()
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=CASCADE_AND_AUTOUODATE)
     """
     ForeinKey to the user who speaks.
     """

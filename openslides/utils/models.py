@@ -4,6 +4,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 
 from .access_permissions import BaseAccessPermissions
+from .autoupdate import Element, inform_changed_data, inform_changed_elements
 from .rest_api import model_serializer_classes
 from .utils import convert_camel_case_to_pseudo_snake_case
 
@@ -153,3 +154,44 @@ class RESTModelMixin:
             __import__(module_name)
             serializer_class = model_serializer_classes[type(self)]
         return serializer_class(self).data
+
+
+def SET_NULL_AND_AUTOUPDATE(
+    collector: Any, field: Any, sub_objs: Any, using: Any
+) -> None:
+    """
+    Like models.SET_NULL but also informs the autoupdate system about the
+    instance that was reference.
+    """
+    if len(sub_objs) != 1:
+        raise RuntimeError(
+            "SET_NULL_AND_AUTOUPDATE is used in an invalid usecase. Please report the bug!"
+        )
+    setattr(sub_objs[0], field.name, None)
+    inform_changed_data(sub_objs[0])
+    models.SET_NULL(collector, field, sub_objs, using)
+
+
+def CASCADE_AND_AUTOUODATE(
+    collector: Any, field: Any, sub_objs: Any, using: Any
+) -> None:
+    """
+    Like models.SET_NULL but also informs the autoupdate system about the
+    root rest element of the also deleted instance.
+    """
+    if len(sub_objs) != 1:
+        raise RuntimeError(
+            "CASCADE_AND_AUTOUPDATE is used in an invalid usecase. Please report the bug!"
+        )
+    root_rest_element = sub_objs[0].get_root_rest_element()
+    inform_changed_elements(
+        [
+            Element(
+                collection_string=root_rest_element.get_collection_string(),
+                id=root_rest_element.pk,
+                full_data=None,
+                reload=True,
+            )
+        ]
+    )
+    models.CASCADE(collector, field, sub_objs, using)

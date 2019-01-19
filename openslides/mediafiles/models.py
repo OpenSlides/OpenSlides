@@ -3,7 +3,7 @@ from django.db import models
 
 from ..core.config import config
 from ..utils.autoupdate import inform_changed_data
-from ..utils.models import RESTModelMixin
+from ..utils.models import SET_NULL_AND_AUTOUPDATE, RESTModelMixin
 from .access_permissions import MediafileAccessPermissions
 
 
@@ -25,7 +25,7 @@ class Mediafile(RESTModelMixin, models.Model):
     """A string representing the title of the file."""
 
     uploader = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True
+        settings.AUTH_USER_MODEL, on_delete=SET_NULL_AND_AUTOUPDATE, null=True
     )
     """A user – the uploader of a file."""
 

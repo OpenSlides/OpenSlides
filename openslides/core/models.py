@@ -6,7 +6,11 @@ from jsonfield import JSONField
 
 from ..utils.autoupdate import Element
 from ..utils.cache import element_cache, get_element_id
-from ..utils.models import RESTModelMixin
+from ..utils.models import (
+    CASCADE_AND_AUTOUODATE,
+    SET_NULL_AND_AUTOUPDATE,
+    RESTModelMixin,
+)
 from .access_permissions import (
     ChatMessageAccessPermissions,
     ConfigAccessPermissions,
@@ -108,7 +112,7 @@ class ProjectionDefault(RESTModelMixin, models.Model):
     display_name = models.CharField(max_length=256)
 
     projector = models.ForeignKey(
-        Projector, on_delete=models.CASCADE, related_name="projectiondefaults"
+        Projector, on_delete=models.PROTECT, related_name="projectiondefaults"
     )
 
     def get_root_rest_element(self):
@@ -179,7 +183,7 @@ class ChatMessage(RESTModelMixin, models.Model):
 
     timestamp = models.DateTimeField(auto_now_add=True)
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=CASCADE_AND_AUTOUODATE)
 
     class Meta:
         default_permissions = ()
@@ -269,7 +273,7 @@ class HistoryManager(models.Manager):
             history_time = now()
             for element in elements:
                 if (
-                    element["disable_history"]
+                    element.get("disable_history")
                     or element["collection_string"]
                     == self.model.get_collection_string()
                 ):
@@ -282,8 +286,8 @@ class HistoryManager(models.Manager):
                         element["collection_string"], element["id"]
                     ),
                     now=history_time,
-                    information=element["information"],
-                    user_id=element["user_id"],
+                    information=element.get("information", ""),
+                    user_id=element.get("user_id"),
                     full_data=data,
                 )
                 instance.save(
@@ -308,9 +312,6 @@ class HistoryManager(models.Manager):
                             id=full_data["id"],
                             collection_string=collection_string,
                             full_data=full_data,
-                            information="",
-                            user_id=None,
-                            disable_history=False,
                         )
                     )
             instances = self.add_elements(elements)
@@ -336,7 +337,7 @@ class History(RESTModelMixin, models.Model):
     information = models.CharField(max_length=255)
 
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL
+        settings.AUTH_USER_MODEL, null=True, on_delete=SET_NULL_AND_AUTOUPDATE
     )
 
     full_data = models.OneToOneField(HistoryData, on_delete=models.CASCADE)

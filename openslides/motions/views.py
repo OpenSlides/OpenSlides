@@ -569,7 +569,11 @@ class MotionViewSet(ModelViewSet):
             person=request.user,
             skip_autoupdate=True,
         )
-        inform_changed_data(motion, information=f"State set to {motion.state.name}.", user_id=request.user.pk)
+        inform_changed_data(
+            motion,
+            information=f"State set to {motion.state.name}.",
+            user_id=request.user.pk,
+        )
         return Response({"detail": message})
 
     @list_route(methods=["post"])
@@ -1348,9 +1352,8 @@ class StateViewSet(
         Customized view endpoint to delete a state.
         """
         state = self.get_object()
-        if (
-            state.workflow.first_state.pk == state.pk
-        ):  # is this the first state of the workflow?
+        if state.workflow.first_state.pk == state.pk:
+            # is this the first state of the workflow?
             raise ValidationError(
                 {"detail": "You cannot delete the first state of the workflow."}
             )
