@@ -33,7 +33,8 @@ Motions:
    follow recommendation, manage submitters and supporters, change motion
    category, motion block and origin and manage motion polls [#3913].
  - Added new permission to create amendments [#4128].
- - Added multi select action to manage submitters, tags and recommendations [#4037].
+ - Added multi select action to manage submitters, tags, states and
+   recommendations [#4037, #4132].
 
 User:
  - Added new admin group which grants all permissions. Users of existing group
