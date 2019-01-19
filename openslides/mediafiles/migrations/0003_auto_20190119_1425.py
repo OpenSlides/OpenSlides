@@ -8,7 +8,7 @@ import openslides.utils.models
 
 class Migration(migrations.Migration):
 
-    dependencies = [("mediafiles", "0002_mediafile_private")]
+    dependencies = [("mediafiles", "0001_initial")]
 
     operations = [
         migrations.AlterField(

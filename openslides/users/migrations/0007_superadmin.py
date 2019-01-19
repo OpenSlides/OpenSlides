@@ -69,6 +69,6 @@ def create_superadmin_group(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [("users", "0006_user_email")]
+    dependencies = [("users", "0001_initial")]
 
     operations = [migrations.RunPython(create_superadmin_group)]

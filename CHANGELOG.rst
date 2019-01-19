@@ -16,6 +16,7 @@ Core:
  - Changed URL schema [#3798].
  - Enabled docs for using OpenSlides with Gunicorn and Uvicorn in big
    mode [#3799, #3817].
+ - Squashed old migrations (migration is only supported from v2.3 on) [#4148].
  - Changed format for elements send via autoupdate [#3926].
  - Fixed autoupdate system for related objects [#4140].
  - Add a change-id system to get only new elements [#3938].

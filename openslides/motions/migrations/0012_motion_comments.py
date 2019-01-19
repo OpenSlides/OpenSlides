@@ -93,7 +93,7 @@ def create_comment_sections_from_config_and_move_comments_to_own_model(
 
 class Migration(migrations.Migration):
 
-    dependencies = [("users", "0006_user_email"), ("motions", "0011_motion_version_4")]
+    dependencies = [("users", "0001_initial"), ("motions", "0011_motion_version_4")]
 
     operations = [
         # Add extension fields for former "special comments". No hack anymore..

@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
     - Cleanup2: alter some other fields that must be in a seperate migration file (Idk why..) (4)
     """
 
-    dependencies = [("motions", "0010_auto_20180822_1042")]
+    dependencies = [("motions", "0001_initial")]
 
     operations = [
         # Create new fields. Title and Text have empty defaults, but the values

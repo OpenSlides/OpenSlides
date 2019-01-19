@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ("core", "0008_changed_logo_fields"),
+        ("core", "0001_initial"),
     ]
 
     operations = [

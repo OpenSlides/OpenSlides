@@ -8,7 +8,7 @@ import openslides.utils.models
 
 class Migration(migrations.Migration):
 
-    dependencies = [("assignments", "0005_auto_20180822_1042")]
+    dependencies = [("assignments", "0001_initial")]
 
     operations = [
         migrations.AlterField(
