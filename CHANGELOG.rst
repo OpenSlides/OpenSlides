@@ -17,11 +17,12 @@ Core:
  - Enabled docs for using OpenSlides with Gunicorn and Uvicorn in big
    mode [#3799, #3817].
  - Changed format for elements send via autoupdate [#3926].
+ - Fixed autoupdate system for related objects [#4140].
  - Add a change-id system to get only new elements [#3938].
  - Switch from Yarn back to npm [#3964].
  - Added password reset link (password reset via email) [#3914].
- - Added global history mode [#3977].
- - Projector Refactor [4119, #4130].
+ - Added global history mode [#3977, #4141].
+ - Projector refactoring [4119, #4130].
 
 Agenda:
  - Added viewpoint to assign multiple items to a new parent item [#4037].

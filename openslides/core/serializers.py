@@ -169,5 +169,5 @@ class HistorySerializer(ModelSerializer):
 
     class Meta:
         model = History
-        fields = ("id", "element_id", "now", "information", "user")
+        fields = ("id", "element_id", "now", "information", "restricted", "user")
         read_only_fields = ("now",)

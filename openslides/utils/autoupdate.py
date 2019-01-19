@@ -31,7 +31,8 @@ class Element(ElementBase, total=False):
     process.
     """
 
-    information: str
+    information: List[str]
+    restricted: bool
     user_id: Optional[int]
     disable_history: bool
     reload: bool
@@ -51,8 +52,9 @@ AutoupdateFormat = TypedDict(
 
 def inform_changed_data(
     instances: Union[Iterable[Model], Model],
-    information: str = "",
+    information: List[str] = None,
     user_id: Optional[int] = None,
+    restricted: bool = False,
 ) -> None:
     """
     Informs the autoupdate system and the caching system about the creation or
@@ -62,6 +64,8 @@ def inform_changed_data(
 
     History creation is enabled.
     """
+    if information is None:
+        information = []
     root_instances = set()
     if not isinstance(instances, Iterable):
         instances = (instances,)
@@ -81,6 +85,7 @@ def inform_changed_data(
             collection_string=root_instance.get_collection_string(),
             full_data=root_instance.get_full_data(),
             information=information,
+            restricted=restricted,
             user_id=user_id,
         )
 
@@ -95,8 +100,9 @@ def inform_changed_data(
 
 def inform_deleted_data(
     deleted_elements: Iterable[Tuple[str, int]],
-    information: str = "",
+    information: List[str] = None,
     user_id: Optional[int] = None,
+    restricted: bool = False,
 ) -> None:
     """
     Informs the autoupdate system and the caching system about the deletion of
@@ -104,6 +110,8 @@ def inform_deleted_data(
 
     History creation is enabled.
     """
+    if information is None:
+        information = []
     elements: Dict[str, Element] = {}
     for deleted_element in deleted_elements:
         key = deleted_element[0] + str(deleted_element[1])
@@ -112,6 +120,7 @@ def inform_deleted_data(
             collection_string=deleted_element[0],
             full_data=None,
             information=information,
+            restricted=restricted,
             user_id=user_id,
         )
 
