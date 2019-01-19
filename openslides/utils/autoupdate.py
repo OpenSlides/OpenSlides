@@ -9,19 +9,21 @@ from mypy_extensions import TypedDict
 
 from .cache import element_cache, get_element_id
 from .projector import get_projectot_data
+from .utils import get_model_from_collection_string
 
 
-Element = TypedDict(
-    "Element",
-    {
-        "id": int,
-        "collection_string": str,
-        "full_data": Optional[Dict[str, Any]],
-        "information": str,
-        "user_id": Optional[int],
-        "disable_history": bool,
-    },
-)
+class ElementBase(TypedDict):
+    id: int
+    collection_string: str
+    full_data: Optional[Dict[str, Any]]
+
+
+class Element(ElementBase, total=False):
+    information: str
+    user_id: Optional[int]
+    disable_history: bool
+    reload: bool
+
 
 AutoupdateFormat = TypedDict(
     "AutoupdateFormat",
@@ -68,7 +70,6 @@ def inform_changed_data(
             full_data=root_instance.get_full_data(),
             information=information,
             user_id=user_id,
-            disable_history=False,
         )
 
     bundle = autoupdate_bundle.get(threading.get_ident())
@@ -100,7 +101,6 @@ def inform_deleted_data(
             full_data=None,
             information=information,
             user_id=user_id,
-            disable_history=False,
         )
 
     bundle = autoupdate_bundle.get(threading.get_ident())
@@ -201,6 +201,12 @@ def handle_changed_elements(elements: Iterable[Element]) -> None:
         )
 
     if elements:
+        for element in elements:
+            if element.get("reload"):
+                model = get_model_from_collection_string(element["collection_string"])
+                instance = model.objects.get(pk=element["id"])
+                element["full_data"] = instance.get_full_data()
+
         # Save histroy here using sync code.
         history_instances = save_history(elements)
 
@@ -212,8 +218,6 @@ def handle_changed_elements(elements: Iterable[Element]) -> None:
                     id=history_instance.get_rest_pk(),
                     collection_string=history_instance.get_collection_string(),
                     full_data=history_instance.get_full_data(),
-                    information="",
-                    user_id=None,
                     disable_history=True,  # This does not matter because history elements can never be part of the history itself.
                 )
             )
@@ -227,9 +231,8 @@ def handle_changed_elements(elements: Iterable[Element]) -> None:
         )
 
 
-def save_history(
-    elements: Iterable[Element]
-) -> Iterable:  # TODO: Try to write Iterable[History] here
+def save_history(elements: Iterable[Element]) -> Iterable:
+    # TODO: Try to write Iterable[History] here
     """
     Thin wrapper around the call of history saving manager method.
 

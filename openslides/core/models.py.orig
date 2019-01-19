@@ -285,9 +285,14 @@ class HistoryManager(models.Manager):
                     element_id=get_element_id(
                         element["collection_string"], element["id"]
                     ),
+<<<<<<< HEAD
                     now=history_time,
+                    information=element["information"],
+                    user_id=element["user_id"],
+=======
                     information=element.get("information", ""),
                     user_id=element.get("user_id"),
+>>>>>>> Autoupdate on element deletion
                     full_data=data,
                 )
                 instance.save(

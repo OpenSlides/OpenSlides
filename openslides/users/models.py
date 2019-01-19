@@ -19,7 +19,7 @@ from jsonfield import JSONField
 
 from ..core.config import config
 from ..utils.auth import GROUP_ADMIN_PK
-from ..utils.models import RESTModelMixin
+from ..utils.models import CASCADE_AND_AUTOUODATE, RESTModelMixin
 from .access_permissions import (
     GroupAccessPermissions,
     PersonalNoteAccessPermissions,
@@ -330,7 +330,7 @@ class PersonalNote(RESTModelMixin, models.Model):
 
     objects = PersonalNoteManager()
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=CASCADE_AND_AUTOUODATE)
     notes = JSONField()
 
     class Meta:

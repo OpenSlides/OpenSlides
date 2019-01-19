@@ -80,8 +80,6 @@ async def set_config():
                         id=config_id,
                         collection_string=collection_string,
                         full_data=full_data,
-                        information="",
-                        user_id=None,
                         disable_history=True,
                     )
                 ]

@@ -369,8 +369,6 @@ class GroupViewSet(ModelViewSet):
                                     id=full_data["id"],
                                     collection_string=cachable.get_collection_string(),
                                     full_data=full_data,
-                                    information="",
-                                    user_id=None,
                                     disable_history=True,
                                 )
                             )

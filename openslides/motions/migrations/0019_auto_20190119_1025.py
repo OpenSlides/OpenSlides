@@ -6,20 +6,20 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('motions', '0018_auto_20190118_2101'),
-    ]
+    dependencies = [("motions", "0018_auto_20190118_2101")]
 
     operations = [
         migrations.AddField(
-            model_name='motion',
-            name='created',
-            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now),
+            model_name="motion",
+            name="created",
+            field=models.DateTimeField(
+                auto_now_add=True, default=django.utils.timezone.now
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='motion',
-            name='last_modified',
+            model_name="motion",
+            name="last_modified",
             field=models.DateTimeField(auto_now=True),
         ),
     ]
