@@ -266,6 +266,7 @@ class HistoryManager(models.Manager):
         """
         with transaction.atomic():
             instances = []
+            history_time = now()
             for element in elements:
                 if (
                     element["disable_history"]
@@ -280,6 +281,7 @@ class HistoryManager(models.Manager):
                     element_id=get_element_id(
                         element["collection_string"], element["id"]
                     ),
+                    now=history_time,
                     information=element["information"],
                     user_id=element["user_id"],
                     full_data=data,
@@ -329,7 +331,7 @@ class History(RESTModelMixin, models.Model):
 
     element_id = models.CharField(max_length=255)
 
-    now = models.DateTimeField(auto_now_add=True)
+    now = models.DateTimeField()
 
     information = models.CharField(max_length=255)
 

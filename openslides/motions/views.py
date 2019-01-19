@@ -569,7 +569,7 @@ class MotionViewSet(ModelViewSet):
             person=request.user,
             skip_autoupdate=True,
         )
-        inform_changed_data(motion, information=f"State set to {motion.state.name}.")
+        inform_changed_data(motion, information=f"State set to {motion.state.name}.", user_id=request.user.pk)
         return Response({"detail": message})
 
     @list_route(methods=["post"])
