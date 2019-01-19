@@ -114,6 +114,7 @@ if use_redis:
         'host': '127.0.0.1',
         'post': 6379,
         'db': 0,
+        "prefix": "session"
     }
 
 

@@ -1,5 +1,6 @@
 import json
 
+import pytest
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
@@ -68,31 +69,14 @@ class ProjectorAPI(TestCase):
         self.assertEqual(response.status_code, 400)
 
 
-class VersionView(TestCase):
-    """
-    Tests the version info view.
-    """
-
-    def test_get(self):
-        self.client.login(username="admin", password="admin")
-        response = self.client.get(reverse("core_version"))
-        self.assertEqual(
-            json.loads(response.content.decode()),
-            {
-                "openslides_version": version,
-                "openslides_license": license,
-                "openslides_url": url,
-                "plugins": [
-                    {
-                        "verbose_name": "OpenSlides Test Plugin",
-                        "description": "This is a test plugin for OpenSlides.",
-                        "version": "unknown",
-                        "license": "MIT",
-                        "url": "",
-                    }
-                ],
-            },
-        )
+@pytest.mark.django_db(transaction=False)
+def test_get(client):
+    client.login(username="admin", password="admin")
+    response = client.get(reverse("core_version"))
+    values = json.loads(response.content.decode())
+    assert values["openslides_version"] == version
+    assert values["openslides_license"] == license
+    assert values["openslides_url"] == url
 
 
 class ConfigViewSet(TestCase):
