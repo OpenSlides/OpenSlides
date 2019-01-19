@@ -161,11 +161,11 @@ def SET_NULL_AND_AUTOUPDATE(
 ) -> None:
     """
     Like models.SET_NULL but also informs the autoupdate system about the
-    instance that was reverenced.
+    instance that was reference.
     """
     if len(sub_objs) != 1:
         raise RuntimeError(
-            "SET_NULL_AND_AUTOUPDATE in an invalid usecase. Please open an issue!"
+            "SET_NULL_AND_AUTOUPDATE is used in an invalid usecase. Please report the bug!"
         )
     setattr(sub_objs[0], field.name, None)
     inform_changed_data(sub_objs[0])
@@ -175,11 +175,14 @@ def SET_NULL_AND_AUTOUPDATE(
 def CASCADE_AND_AUTOUODATE(
     collector: Any, field: Any, sub_objs: Any, using: Any
 ) -> None:
+    """
+    Like models.SET_NULL but also informs the autoupdate system about the
+    root rest element of the also deleted instance.
+    """
     if len(sub_objs) != 1:
         raise RuntimeError(
-            "CASCADE_AND_AUTOUPDATE in an invalid usecase. Please open an issue!"
+            "CASCADE_AND_AUTOUPDATE is used in an invalid usecase. Please report the bug!"
         )
-
     root_rest_element = sub_objs[0].get_root_rest_element()
     inform_changed_elements(
         [

@@ -19,6 +19,18 @@ class ElementBase(TypedDict):
 
 
 class Element(ElementBase, total=False):
+    """
+    Data container to handle one root rest element for the autoupdate, history
+    and caching process.
+
+    The fields `id`, `collection_string` and `full_data` are required, the other
+    fields are optional.
+
+    if full_data is None, it means, that the element was deleted. If reload is
+    True, full_data is ignored and reloaded from the database later in the
+    process.
+    """
+
     information: str
     user_id: Optional[int]
     disable_history: bool
