@@ -8,7 +8,7 @@
         "secure": false
     },
     "/rest/": {
-        "target": "http://localhost:8000/rest/",
+        "target": "http://localhost:8000",
         "secure": false
     },
     "/ws/": {
