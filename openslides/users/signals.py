@@ -59,6 +59,7 @@ def create_builtin_groups_and_admin(**kwargs):
         "motions.can_manage_metadata",
         "motions.can_see",
         "motions.can_support",
+        "users.can_change_password",
         "users.can_manage",
         "users.can_see_extra_data",
         "users.can_see_name",
@@ -89,6 +90,7 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict["mediafiles.can_see"],
         permission_dict["motions.can_see"],
         permission_dict["users.can_see_name"],
+        permission_dict["users.can_change_password"],
     )
     group_default = Group(pk=GROUP_DEFAULT_PK, name="Default")
     group_default.save(skip_autoupdate=True)
@@ -114,6 +116,7 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict["motions.can_create_amendments"],
         permission_dict["motions.can_support"],
         permission_dict["users.can_see_name"],
+        permission_dict["users.can_change_password"],
     )
     group_delegates = Group(pk=3, name="Delegates")
     group_delegates.save(skip_autoupdate=True)
@@ -138,6 +141,7 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict["mediafiles.can_see"],
         permission_dict["mediafiles.can_manage"],
         permission_dict["mediafiles.can_upload"],
+        permission_dict["mediafiles.can_see_hidden"],
         permission_dict["motions.can_see"],
         permission_dict["motions.can_create"],
         permission_dict["motions.can_create_amendments"],
@@ -146,7 +150,7 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict["users.can_see_name"],
         permission_dict["users.can_manage"],
         permission_dict["users.can_see_extra_data"],
-        permission_dict["mediafiles.can_see_hidden"],
+        permission_dict["users.can_change_password"],
     )
     group_staff = Group(pk=4, name="Staff")
     group_staff.save(skip_autoupdate=True)
@@ -165,6 +169,7 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict["motions.can_create_amendments"],
         permission_dict["motions.can_support"],
         permission_dict["users.can_see_name"],
+        permission_dict["users.can_change_password"],
     )
     group_committee = Group(pk=5, name="Committees")
     group_committee.save(skip_autoupdate=True)

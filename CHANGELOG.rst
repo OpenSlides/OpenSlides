@@ -40,6 +40,7 @@ Motions:
 User:
  - Added new admin group which grants all permissions. Users of existing group
    'Admin' or 'Staff' are move to the new group during migration [#3859].
+ - Added new permission to set its own password [#4131].
  - Added gender field [#4124].
 
 
