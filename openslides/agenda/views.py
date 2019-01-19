@@ -159,9 +159,10 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
             if not isinstance(marked, bool):
                 raise ValidationError({"detail": "Marked has to be a bool."})
 
-            queryset = Speaker.objects.filter(item=item, user=user)
+            queryset = Speaker.objects.filter(item=item, user=user, begin_time=None)
             try:
-                # We assume that there aren't multiple entries because this
+                # We assume that there aren't multiple entries for speakers that
+                # did not yet begin to speak, because this
                 # is forbidden by the Manager's add method. We assume that
                 # there is only one speaker instance or none.
                 speaker = queryset.get()

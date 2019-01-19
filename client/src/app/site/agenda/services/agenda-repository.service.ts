@@ -126,6 +126,26 @@ export class AgendaRepositoryService extends BaseRepository<ViewItem, Item> {
     }
 
     /**
+     * Stops the current speaker
+     *
+     * @param agenda the target agenda item
+     */
+    public async closeSpeakerList(agenda: Item): Promise<void> {
+        const restUrl = `rest/agenda/item/${agenda.id}/speak/`;
+        await this.httpService.delete(restUrl);
+    }
+
+    /**
+     * Stops the current speaker
+     *
+     * @param agenda the target agenda item
+     */
+    public async openSpeakerList(agenda: Item): Promise<void> {
+        const restUrl = `rest/agenda/item/${agenda.id}/speak/`;
+        await this.httpService.delete(restUrl);
+    }
+
+    /**
      * Marks the current speaker
      *
      * @param id {@link User} id of the new speaker
