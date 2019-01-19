@@ -186,15 +186,6 @@ def get_config_variables():
     )
 
     yield ConfigVariable(
-        name="projector_enable_clock",
-        default_value=True,
-        input_type="boolean",
-        label="Show the clock on projector",
-        weight=154,
-        group="Projector",
-    )
-
-    yield ConfigVariable(
         name="projector_enable_title",
         default_value=True,
         input_type="boolean",
@@ -249,22 +240,12 @@ def get_config_variables():
     )
 
     yield ConfigVariable(
-        name="projector_blank_color",
+        name="projector_background_color",
         default_value="#FFFFFF",
         input_type="colorpicker",
         label="Color for blanked projector",
         weight=190,
         group="Projector",
-    )
-
-    yield ConfigVariable(
-        name="projector_broadcast",
-        default_value=0,
-        input_type="integer",
-        label="Projector which is broadcasted",
-        weight=200,
-        group="Projector",
-        hidden=True,
     )
 
     yield ConfigVariable(

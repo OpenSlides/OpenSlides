@@ -41,14 +41,14 @@ def get_tree(
     return get_children(children[parent_id])
 
 
-def items(config: Dict[str, Any], all_data: AllData) -> Dict[str, Any]:
+def items(element: Dict[str, Any], all_data: AllData) -> Dict[str, Any]:
     """
     Item list slide.
 
     Returns all root items or all children of an item.
     """
-    root_item_id = config.get("id") or None
-    show_tree = config.get("tree") or False
+    root_item_id = element.get("id") or None
+    show_tree = element.get("tree") or False
 
     if show_tree:
         agenda_items = get_tree(all_data, root_item_id or 0)
@@ -63,13 +63,13 @@ def items(config: Dict[str, Any], all_data: AllData) -> Dict[str, Any]:
     return {"items": agenda_items}
 
 
-def list_of_speakers(config: Dict[str, Any], all_data: AllData) -> Dict[str, Any]:
+def list_of_speakers(element: Dict[str, Any], all_data: AllData) -> Dict[str, Any]:
     """
     List of speakers slide.
 
     Returns all usernames, that are on the list of speaker of a slide.
     """
-    item_id = config.get("id") or 0  # item_id 0 means current_list_of_speakers
+    item_id = element.get("id") or 0  # item_id 0 means current_list_of_speakers
 
     # TODO: handle item_id == 0
 

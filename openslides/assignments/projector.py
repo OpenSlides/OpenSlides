@@ -10,12 +10,12 @@ from ..utils.projector import register_projector_element
 
 
 def assignment(
-    config: Dict[str, Any], all_data: Dict[str, Dict[int, Dict[str, Any]]]
+    element: Dict[str, Any], all_data: Dict[str, Dict[int, Dict[str, Any]]]
 ) -> Dict[str, Any]:
     """
     Assignment slide.
     """
-    poll_id = config.get("tree")  # noqa
+    poll_id = element.get("tree")  # noqa
     return {"error": "TODO"}
 
 

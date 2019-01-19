@@ -6,59 +6,66 @@ from rest_framework.test import APIClient
 
 from openslides import __license__ as license, __url__ as url, __version__ as version
 from openslides.core.config import ConfigVariable, config
-from openslides.core.models import Projector
-from openslides.topics.models import Topic
 from openslides.utils.rest_api import ValidationError
 from openslides.utils.test import TestCase
 
 
 class ProjectorAPI(TestCase):
-    """
-    Tests requests from the anonymous user.
-    """
-
     def test_slide_on_default_projector(self):
         self.client.login(username="admin", password="admin")
-        topic = Topic.objects.create(
-            title="title_que1olaish5Wei7que6i", text="text_aishah8Eh7eQuie5ooji"
+        self.client.put(
+            reverse("projector-detail", args=["1"]),
+            {"elements": [{"name": "topics/topic", "id": 1}]},
+            content_type="application/json",
         )
-        default_projector = Projector.objects.get(pk=1)
-        default_projector.config = {
-            "aae4a07b26534cfb9af4232f361dce73": {"name": "topics/topic", "id": topic.id}
-        }
-        default_projector.save()
 
         response = self.client.get(reverse("projector-detail", args=["1"]))
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_invalid_slide_on_default_projector(self):
+    def test_invalid_element_non_existing_slide(self):
         self.client.login(username="admin", password="admin")
-        default_projector = Projector.objects.get(pk=1)
-        default_projector.config = {
-            "fc6ef43b624043068c8e6e7a86c5a1b0": {"name": "invalid_slide"}
-        }
-        default_projector.save()
 
-        response = self.client.get(reverse("projector-detail", args=["1"]))
-        content = json.loads(response.content.decode())
-        del content["projectiondefaults"]
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(
-            content,
-            {
-                "id": 1,
-                "config": {
-                    "fc6ef43b624043068c8e6e7a86c5a1b0": {"name": "invalid_slide"}
-                },
-                "scale": 0,
-                "scroll": 0,
-                "name": "Default projector",
-                "blank": False,
-                "width": 1220,
-                "height": 915,
-            },
+        response = self.client.put(
+            reverse("projector-detail", args=["1"]),
+            {"elements": [{"name": "invalid_slide_name", "id": 1}]},
+            content_type="application/json",
         )
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_invalid_element_no_name_attribute(self):
+        self.client.login(username="admin", password="admin")
+
+        response = self.client.put(
+            reverse("projector-detail", args=["1"]),
+            {"elements": [{"id": 1}]},
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_invalid_element_not_a_inner_dict(self):
+        self.client.login(username="admin", password="admin")
+
+        response = self.client.put(
+            reverse("projector-detail", args=["1"]),
+            {"elements": ["not a dict"]},
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_invalid_element_a_list(self):
+        self.client.login(username="admin", password="admin")
+
+        response = self.client.put(
+            reverse("projector-detail", args=["1"]),
+            {"elements": {"name": "invalid_slide_name", "id": 1}},
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
 
 
 class VersionView(TestCase):

@@ -10,7 +10,7 @@ from ..utils.projector import register_projector_element
 
 
 def motion(
-    config: Dict[str, Any], all_data: Dict[str, Dict[int, Dict[str, Any]]]
+    element: Dict[str, Any], all_data: Dict[str, Dict[int, Dict[str, Any]]]
 ) -> Dict[str, Any]:
     """
     Motion slide.
@@ -19,7 +19,7 @@ def motion(
 
 
 def motion_block(
-    config: Dict[str, Any], all_data: Dict[str, Dict[int, Dict[str, Any]]]
+    element: Dict[str, Any], all_data: Dict[str, Dict[int, Dict[str, Any]]]
 ) -> Dict[str, Any]:
     """
     Motion slide.

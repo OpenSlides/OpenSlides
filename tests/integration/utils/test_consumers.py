@@ -532,12 +532,12 @@ async def test_listen_to_projector(communicator, set_config):
     content = response.get("content")
     assert type == "projector"
     assert content == {
-        "1": {
-            "uid1": {
+        "1": [
+            {
                 "data": {"name": "slide1", "event_name": "OpenSlides"},
-                "config": {"id": 1, "name": "test/slide1"},
+                "element": {"id": 1, "name": "test/slide1"},
             }
-        }
+        ]
     }
 
 
@@ -562,12 +562,12 @@ async def test_update_projector(communicator, set_config):
     content = response.get("content")
     assert type == "projector"
     assert content == {
-        "1": {
-            "uid1": {
+        "1": [
+            {
                 "data": {"name": "slide1", "event_name": "Test Event"},
-                "config": {"id": 1, "name": "test/slide1"},
+                "element": {"id": 1, "name": "test/slide1"},
             }
-        }
+        ]
     }
 
 

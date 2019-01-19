@@ -121,7 +121,7 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
                 projector_id, {"error": f"No data for projector {projector_id}"}
             )
             new_hash = hash(str(data))
-            if new_hash != self.projector_hash[projector_id]:
+            if new_hash != self.projector_hash.get(projector_id):
                 projector_data[projector_id] = data
                 self.projector_hash[projector_id] = new_hash
 
