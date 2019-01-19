@@ -434,6 +434,8 @@ class MotionSerializer(ModelSerializer):
             "log_messages",
             "sort_parent",
             "weight",
+            "created",
+            "last_modified",
         )
         read_only_fields = (
             "state",
