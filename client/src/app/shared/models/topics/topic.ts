@@ -1,5 +1,5 @@
 import { AgendaBaseModel } from '../base/agenda-base-model';
-import { SearchRepresentation } from '../../../core/ui-services/search.service';
+import { SearchRepresentation } from 'app/core/ui-services/search.service';
 
 /**
  * Representation of a topic.

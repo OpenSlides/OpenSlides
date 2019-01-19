@@ -3,9 +3,9 @@ import { Injectable } from '@angular/core';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { BaseRepository } from '../base-repository';
-import { ViewStatuteParagraph } from '../../../site/motions/models/view-statute-paragraph';
-import { StatuteParagraph } from '../../../shared/models/motions/statute-paragraph';
-import { Identifiable } from '../../../shared/models/base/identifiable';
+import { ViewStatuteParagraph } from 'app/site/motions/models/view-statute-paragraph';
+import { StatuteParagraph } from 'app/shared/models/motions/statute-paragraph';
+import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
 
 /**

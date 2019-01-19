@@ -3,10 +3,10 @@ import { Injectable } from '@angular/core';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { BaseRepository } from '../base-repository';
-import { ViewMotionCommentSection } from '../../../site/motions/models/view-motion-comment-section';
-import { MotionCommentSection } from '../../../shared/models/motions/motion-comment-section';
-import { Group } from '../../../shared/models/users/group';
-import { Identifiable } from '../../../shared/models/base/identifiable';
+import { ViewMotionCommentSection } from 'app/site/motions/models/view-motion-comment-section';
+import { MotionCommentSection } from 'app/shared/models/motions/motion-comment-section';
+import { Group } from 'app/shared/models/users/group';
+import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
 import { HttpService } from 'app/core/core-services/http.service';
 

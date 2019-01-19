@@ -1,6 +1,6 @@
-import { User } from '../../../shared/models/users/user';
-import { Group } from '../../../shared/models/users/group';
-import { BaseModel } from '../../../shared/models/base/base-model';
+import { User } from 'app/shared/models/users/user';
+import { Group } from 'app/shared/models/users/group';
+import { BaseModel } from 'app/shared/models/base/base-model';
 import { BaseProjectableModel } from 'app/site/base/base-projectable-model';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 

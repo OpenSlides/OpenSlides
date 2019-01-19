@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { ViewAssignment } from '../../../site/assignments/models/view-assignment';
-import { Assignment } from '../../../shared/models/assignments/assignment';
-import { User } from '../../../shared/models/users/user';
-import { Tag } from '../../../shared/models/core/tag';
-import { Item } from '../../../shared/models/agenda/item';
+import { ViewAssignment } from 'app/site/assignments/models/view-assignment';
+import { Assignment } from 'app/shared/models/assignments/assignment';
+import { User } from 'app/shared/models/users/user';
+import { Tag } from 'app/shared/models/core/tag';
+import { Item } from 'app/shared/models/agenda/item';
 import { BaseRepository } from '../base-repository';
 import { DataStoreService } from '../../core-services/data-store.service';
-import { Identifiable } from '../../../shared/models/base/identifiable';
+import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
 
 /**

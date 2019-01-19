@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 
-import { MediaManageService } from '../../../core/ui-services/media-manage.service';
+import { MediaManageService } from 'app/core/ui-services/media-manage.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 
 /**

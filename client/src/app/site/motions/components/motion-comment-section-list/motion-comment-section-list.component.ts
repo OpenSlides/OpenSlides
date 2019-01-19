@@ -6,11 +6,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
 
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { MotionCommentSection } from '../../../../shared/models/motions/motion-comment-section';
+import { MotionCommentSection } from 'app/shared/models/motions/motion-comment-section';
 import { ViewMotionCommentSection } from '../../models/view-motion-comment-section';
 import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
-import { Group } from '../../../../shared/models/users/group';
+import { Group } from 'app/shared/models/users/group';
 import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { BaseViewComponent } from '../../../base/base-view';
 

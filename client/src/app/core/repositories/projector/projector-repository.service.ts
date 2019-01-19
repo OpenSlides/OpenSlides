@@ -4,9 +4,9 @@ import { BaseRepository } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
-import { Identifiable } from '../../../shared/models/base/identifiable';
-import { ViewProjector } from '../../../site/projector/models/view-projector';
-import { Projector } from '../../../shared/models/core/projector';
+import { Identifiable } from 'app/shared/models/base/identifiable';
+import { ViewProjector } from 'app/site/projector/models/view-projector';
+import { Projector } from 'app/shared/models/core/projector';
 import { HttpService } from 'app/core/core-services/http.service';
 
 /**

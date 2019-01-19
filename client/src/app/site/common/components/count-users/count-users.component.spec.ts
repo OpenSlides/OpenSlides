@@ -1,22 +1,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LegalNoticeComponent } from './legal-notice.component';
+import { CountUsersComponent } from './count-users.component';
 import { E2EImportsModule } from '../../../../../e2e-imports.module';
-import { CountUsersComponent } from '../count-users/count-users.component';
 
-describe('LegalNoticeComponent', () => {
-    let component: LegalNoticeComponent;
-    let fixture: ComponentFixture<LegalNoticeComponent>;
+describe('CountUsersComponent', () => {
+    let component: CountUsersComponent;
+    let fixture: ComponentFixture<CountUsersComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [E2EImportsModule],
-            declarations: [LegalNoticeComponent, CountUsersComponent]
+            declarations: [CountUsersComponent]
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(LegalNoticeComponent);
+        fixture = TestBed.createComponent(CountUsersComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

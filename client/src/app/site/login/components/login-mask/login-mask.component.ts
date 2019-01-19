@@ -9,7 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { environment } from 'environments/environment';
 import { OpenSlidesService } from 'app/core/core-services/openslides.service';
 import { LoginDataService } from 'app/core/ui-services/login-data.service';
-import { ParentErrorStateMatcher } from '../../../../shared/parent-error-state-matcher';
+import { ParentErrorStateMatcher } from 'app/shared/parent-error-state-matcher';
 import { HttpService } from 'app/core/core-services/http.service';
 
 /**

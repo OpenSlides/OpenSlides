@@ -74,7 +74,6 @@ export class OpenSlidesService extends OpenSlidesComponent {
     public async afterLoginBootup(userId: number): Promise<void> {
         // Else, check, which user was logged in last time
         const lastUserId = await this.storageService.get<number>('lastUserLoggedIn');
-        console.log('user transition:', lastUserId, '->', userId);
         // if the user changed, reset the cache and save the new user.
         if (userId !== lastUserId) {
             await this.DS.clear();
@@ -88,7 +87,6 @@ export class OpenSlidesService extends OpenSlidesComponent {
      */
     private async setupDataStoreAndWebSocket(): Promise<void> {
         let changeId = await this.DS.initFromStorage();
-        console.log('change ID on DS setup', changeId);
         if (changeId > 0) {
             changeId += 1;
         }

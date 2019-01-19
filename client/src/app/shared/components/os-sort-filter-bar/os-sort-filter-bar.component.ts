@@ -3,12 +3,12 @@ import { MatBottomSheet } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseViewModel } from '../../../site/base/base-view-model';
+import { BaseViewModel } from 'app/site/base/base-view-model';
 import { OsSortBottomSheetComponent } from './os-sort-bottom-sheet/os-sort-bottom-sheet.component';
 import { FilterMenuComponent } from './filter-menu/filter-menu.component';
-import { OsSortingItem } from '../../../core/ui-services/base-sort-list.service';
-import { BaseSortListService } from '../../../core/ui-services/base-sort-list.service';
-import { ViewportService } from '../../../core/ui-services/viewport.service';
+import { OsSortingItem } from 'app/core/ui-services/base-sort-list.service';
+import { BaseSortListService } from 'app/core/ui-services/base-sort-list.service';
+import { ViewportService } from 'app/core/ui-services/viewport.service';
 
 /**
  * Reusable bar for list views, offering sorting and filter options.

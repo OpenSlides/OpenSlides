@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 
-import { AssignmentRepositoryService } from '../../../core/repositories/assignments/assignment-repository.service';
-import { Assignment, assignmentPhase } from '../../../shared/models/assignments/assignment';
-import { BaseFilterListService, OsFilter, OsFilterOption } from '../../../core/ui-services/base-filter-list.service';
+import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
+import { Assignment, assignmentPhase } from 'app/shared/models/assignments/assignment';
+import { BaseFilterListService, OsFilter, OsFilterOption } from 'app/core/ui-services/base-filter-list.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { ViewAssignment } from '../models/view-assignment';
 

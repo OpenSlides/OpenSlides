@@ -1,7 +1,7 @@
-import { Category } from '../../../shared/models/motions/category';
-import { User } from '../../../shared/models/users/user';
-import { Workflow } from '../../../shared/models/motions/workflow';
-import { WorkflowState } from '../../../shared/models/motions/workflow-state';
+import { Category } from 'app/shared/models/motions/category';
+import { User } from 'app/shared/models/users/user';
+import { Workflow } from 'app/shared/models/motions/workflow';
+import { WorkflowState } from 'app/shared/models/motions/workflow-state';
 import { Item } from 'app/shared/models/agenda/item';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { ViewMotion } from './view-motion';

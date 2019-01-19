@@ -1,4 +1,4 @@
-import { Countdown } from '../../../shared/models/core/countdown';
+import { Countdown } from 'app/shared/models/core/countdown';
 import { BaseProjectableModel } from 'app/site/base/base-projectable-model';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 

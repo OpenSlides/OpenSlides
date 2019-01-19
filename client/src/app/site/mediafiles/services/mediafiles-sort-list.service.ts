@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BaseSortListService, OsSortingDefinition } from '../../../core/ui-services/base-sort-list.service';
+
+import { BaseSortListService, OsSortingDefinition } from 'app/core/ui-services/base-sort-list.service';
 import { ViewMediafile } from '../models/view-mediafile';
 
 @Injectable({

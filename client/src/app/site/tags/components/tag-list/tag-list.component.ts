@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Title } from '@angular/platform-browser';
-import { Tag } from '../../../../shared/models/core/tag';
+import { Tag } from 'app/shared/models/core/tag';
 import { ListViewBaseComponent } from '../../../base/list-view-base';
 import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
 import { ViewTag } from '../../models/view-tag';

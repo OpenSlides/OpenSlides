@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+
 import { OperatorService } from './core/core-services/operator.service';
 import { LoginDataService } from './core/ui-services/login-data.service';
 import { ConfigService } from './core/ui-services/config.service';
 import { ConstantsService } from './core/ui-services/constants.service';
 import { ServertimeService } from './core/core-services/servertime.service';
 import { ThemeService } from './core/ui-services/theme.service';
+import { CountUsersService } from './core/ui-services/count-users.service';
 
 /**
  * Angular's global App Component
@@ -35,7 +37,8 @@ export class AppComponent {
         loginDataService: LoginDataService,
         constantsService: ConstantsService, // Needs to be started, so it can register itself to the WebsocketService
         servertimeService: ServertimeService,
-        themeService: ThemeService
+        themeService: ThemeService,
+        countUsersService: CountUsersService // Needed to register itself.
     ) {
         // manually add the supported languages
         translate.addLangs(['en', 'de', 'cs']);

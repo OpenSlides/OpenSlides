@@ -4,10 +4,10 @@ import { Papa } from 'ngx-papaparse';
 
 import { BaseImportService, NewEntry } from 'app/core/ui-services/base-import.service';
 import { Group } from 'app/shared/models/users/group';
-import { GroupRepositoryService } from '../../../core/repositories/users/group-repository.service';
+import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { TranslateService } from '@ngx-translate/core';
 import { User } from 'app/shared/models/users/user';
-import { UserRepositoryService } from '../../../core/repositories/users/user-repository.service';
+import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ViewCsvCreateUser, CsvMapping } from '../models/view-csv-create-user';
 import { ViewUser } from '../models/view-user';
 

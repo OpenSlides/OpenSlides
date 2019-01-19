@@ -5,12 +5,12 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseViewComponent } from '../../../../site/base/base-view';
 import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
 import { ViewMotionCommentSection } from '../../models/view-motion-comment-section';
 import { OperatorService } from 'app/core/core-services/operator.service';
-import { MotionComment } from '../../../../shared/models/motions/motion-comment';
+import { MotionComment } from 'app/shared/models/motions/motion-comment';
 import { ViewMotion } from '../../models/view-motion';
+import { BaseViewComponent } from 'app/site/base/base-view';
 
 /**
  * Component for the motion comments view

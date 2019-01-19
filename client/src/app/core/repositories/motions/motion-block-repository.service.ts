@@ -12,8 +12,8 @@ import { Identifiable } from 'app/shared/models/base/identifiable';
 import { Motion } from 'app/shared/models/motions/motion';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { MotionRepositoryService } from './motion-repository.service';
-import { ViewMotion } from '../../../site/motions/models/view-motion';
-import { ViewMotionBlock } from '../../../site/motions/models/view-motion-block';
+import { ViewMotion } from 'app/site/motions/models/view-motion';
+import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
 
 /**
  * Repository service for motion blocks

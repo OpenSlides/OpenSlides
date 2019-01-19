@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { MotionPoll } from 'app/shared/models/motions/motion-poll';
-import { MotionRepositoryService } from '../../../core/repositories/motions/motion-repository.service';
+import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 

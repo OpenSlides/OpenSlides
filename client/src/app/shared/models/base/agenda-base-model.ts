@@ -1,6 +1,6 @@
 import { AgendaInformation } from './agenda-information';
 import { Searchable } from './searchable';
-import { SearchRepresentation } from '../../../core/ui-services/search.service';
+import { SearchRepresentation } from 'app/core/ui-services/search.service';
 import { BaseModel } from './base-model';
 
 /**

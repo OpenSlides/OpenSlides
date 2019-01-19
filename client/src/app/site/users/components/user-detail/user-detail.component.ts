@@ -9,7 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { BaseViewComponent } from '../../../base/base-view';
 import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { genders } from 'app/shared/models/users/user';
-import { Group } from '../../../../shared/models/users/group';
+import { Group } from 'app/shared/models/users/group';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { UserPdfExportService } from '../../services/user-pdf-export.service';

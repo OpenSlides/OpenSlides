@@ -5,7 +5,7 @@ import { BaseComponent } from 'app/base.component';
 import { TranslateService } from '@ngx-translate/core'; // showcase
 
 // for testing the DS and BaseModel
-import { Config } from '../../../../shared/models/core/config';
+import { Config } from 'app/shared/models/core/config';
 import { DataStoreService } from 'app/core/core-services/data-store.service';
 
 @Component({

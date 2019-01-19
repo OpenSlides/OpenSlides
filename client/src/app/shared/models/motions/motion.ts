@@ -1,7 +1,7 @@
 import { MotionSubmitter } from './motion-submitter';
 import { MotionComment } from './motion-comment';
 import { AgendaBaseModel } from '../base/agenda-base-model';
-import { SearchRepresentation } from '../../../core/ui-services/search.service';
+import { SearchRepresentation } from 'app/core/ui-services/search.service';
 import { MotionPoll } from './motion-poll';
 
 /**

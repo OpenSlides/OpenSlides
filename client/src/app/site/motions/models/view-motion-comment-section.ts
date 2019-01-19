@@ -1,7 +1,7 @@
 import { BaseViewModel } from '../../base/base-view-model';
-import { MotionCommentSection } from '../../../shared/models/motions/motion-comment-section';
-import { Group } from '../../../shared/models/users/group';
-import { BaseModel } from '../../../shared/models/base/base-model';
+import { MotionCommentSection } from 'app/shared/models/motions/motion-comment-section';
+import { Group } from 'app/shared/models/users/group';
+import { BaseModel } from 'app/shared/models/base/base-model';
 
 /**
  * Motion comment section class for the View

@@ -1,6 +1,6 @@
 import { BaseViewModel } from '../../base/base-view-model';
-import { Group } from '../../../shared/models/users/group';
-import { BaseModel } from '../../../shared/models/base/base-model';
+import { Group } from 'app/shared/models/users/group';
+import { BaseModel } from 'app/shared/models/base/base-model';
 
 export class ViewGroup extends BaseViewModel {
     private _group: Group;

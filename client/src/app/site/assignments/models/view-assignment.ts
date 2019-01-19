@@ -1,8 +1,8 @@
 import { BaseViewModel } from '../../base/base-view-model';
-import { Assignment } from '../../../shared/models/assignments/assignment';
-import { Tag } from '../../../shared/models/core/tag';
-import { User } from '../../../shared/models/users/user';
-import { Item } from '../../../shared/models/agenda/item';
+import { Assignment } from 'app/shared/models/assignments/assignment';
+import { Tag } from 'app/shared/models/core/tag';
+import { User } from 'app/shared/models/users/user';
+import { Item } from 'app/shared/models/agenda/item';
 
 export class ViewAssignment extends BaseViewModel {
     private _assignment: Assignment;

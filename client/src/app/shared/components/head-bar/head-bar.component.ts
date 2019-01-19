@@ -2,8 +2,8 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { ViewportService } from '../../../core/ui-services/viewport.service';
-import { MainMenuService } from '../../../core/core-services/main-menu.service';
+import { ViewportService } from 'app/core/ui-services/viewport.service';
+import { MainMenuService } from 'app/core/core-services/main-menu.service';
 
 /**
  * Reusable head bar component for Apps.

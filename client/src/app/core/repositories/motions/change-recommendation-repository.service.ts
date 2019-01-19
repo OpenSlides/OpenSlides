@@ -4,14 +4,14 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { DataSendService } from '../../core-services/data-send.service';
-import { User } from '../../../shared/models/users/user';
-import { Category } from '../../../shared/models/motions/category';
-import { Workflow } from '../../../shared/models/motions/workflow';
+import { User } from 'app/shared/models/users/user';
+import { Category } from 'app/shared/models/motions/category';
+import { Workflow } from 'app/shared/models/motions/workflow';
 import { BaseRepository } from '../base-repository';
 import { DataStoreService } from '../../core-services/data-store.service';
-import { MotionChangeReco } from '../../../shared/models/motions/motion-change-reco';
-import { ViewChangeReco } from '../../../site/motions/models/view-change-reco';
-import { Identifiable } from '../../../shared/models/base/identifiable';
+import { MotionChangeReco } from 'app/shared/models/motions/motion-change-reco';
+import { ViewChangeReco } from 'app/site/motions/models/view-change-reco';
+import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
 
 /**

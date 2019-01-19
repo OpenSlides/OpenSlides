@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { LoginDataService } from '../../../core/ui-services/login-data.service';
+import { LoginDataService } from 'app/core/ui-services/login-data.service';
 
 /**
  * Shared component to hold the content of the Privacy Policy.

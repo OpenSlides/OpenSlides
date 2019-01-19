@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 import { BaseComponent } from '../../../../base.component';
 import { ViewMotion } from '../../models/view-motion';
 import { PersonalNoteService } from 'app/core/ui-services/personal-note.service';
-import { PersonalNoteContent } from '../../../../shared/models/users/personal-note';
+import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
 
 /**
  * Component for the motion comments view

@@ -10,7 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { AgendaRepositoryService } from 'app/core/repositories/agenda/agenda-repository.service';
 import { BaseViewComponent } from '../../../base/base-view';
-import { Category } from '../../../../shared/models/motions/category';
+import { Category } from 'app/shared/models/motions/category';
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
 import { ChangeRecoMode, LineNumberingMode, ViewMotion } from '../../models/view-motion';
 import { CreateMotion } from '../../models/create-motion';
@@ -20,7 +20,7 @@ import { DiffLinesInParagraph, LineRange } from 'app/core/ui-services/diff.servi
 import { itemVisibilityChoices, Item } from 'app/shared/models/agenda/item';
 import { LocalPermissionsService } from '../../services/local-permissions.service';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
-import { Motion } from '../../../../shared/models/motions/motion';
+import { Motion } from 'app/shared/models/motions/motion';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import {
     MotionChangeRecommendationComponent,
@@ -32,7 +32,7 @@ import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
 import { PersonalNoteService } from 'app/core/ui-services/personal-note.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions/statute-paragraph-repository.service';
-import { User } from '../../../../shared/models/users/user';
+import { User } from 'app/shared/models/users/user';
 import { ViewChangeReco } from '../../models/view-change-reco';
 import { ViewCreateMotion } from '../../models/view-create-motion';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
