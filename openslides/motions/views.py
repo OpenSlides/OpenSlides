@@ -827,13 +827,7 @@ class MotionViewSet(ModelViewSet):
         if motion.recommendation is None:
             raise ValidationError({"detail": "Cannot set an empty recommendation."})
 
-        # Set state.
-        motion.set_state(motion.recommendation)
-
-        # Set the special state comment.
-        extension = request.data.get("state_extension")
-        if extension is not None:
-            motion.state_extension = extension
+        motion.follow_recommendation()
 
         # Save and write log.
         motion.save(
