@@ -1,65 +1,73 @@
-<form class="config-form-group" [formGroup]="form">
-    <mat-form-field *ngIf="!isExcludedType(configItem.inputType)">
+<div class="config-field-wrapper">
+    <div class="form-item">
+        <form class="config-form-group" [formGroup]="form">
+            <mat-form-field *ngIf="!isExcludedType(configItem.inputType)">
+                <!-- Decides which input-type to take (i.e) date, select, input) -->
+                <ng-container [ngSwitch]="configItem.inputType">
+                    <ng-container *ngSwitchCase="'datetimepicker'">
+                        <ng-container *ngTemplateOutlet="date"></ng-container>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="'choice'">
+                        <ng-container *ngTemplateOutlet="select"></ng-container>
+                    </ng-container>
+                    <ng-container *ngSwitchDefault>
+                        <ng-container *ngTemplateOutlet="input"></ng-container>
+                    </ng-container>
+                </ng-container>
 
-        <!-- Decides which input-type to take (i.e) date, select, input) -->
-        <ng-container [ngSwitch]="configItem.inputType">
-            <ng-container *ngSwitchCase="'datetimepicker'">
-                <ng-container *ngTemplateOutlet="date"></ng-container>
-            </ng-container>
-            <ng-container *ngSwitchCase="'choice'">
-                <ng-container *ngTemplateOutlet="select"></ng-container>
-            </ng-container>
-            <ng-container *ngSwitchDefault>
-                <ng-container *ngTemplateOutlet="input"></ng-container>
-            </ng-container>
-        </ng-container>
+                <!-- required for all kinds of input -->
+                <mat-label>{{ configItem.label | translate }}</mat-label>
+                <mat-hint *ngIf="configItem.helpText">{{ configItem.helpText | translate }}</mat-hint>
+                <span matSuffix>
+                    <mat-icon pull="right" class="text-success" *ngIf="updateSuccessIcon">check_circle</mat-icon>
+                </span>
+                <mat-error *ngIf="error"> {{ error }} </mat-error>
 
-        <!-- required for all kinds of input -->
-        <mat-label>{{ configItem.label | translate }}</mat-label>
-        <mat-hint *ngIf="configItem.helpText">{{ configItem.helpText | translate }}</mat-hint>
-        <span matSuffix>
-            <mat-icon pull="right" class="text-success" *ngIf="updateSuccessIcon">check_circle</mat-icon>
-        </span>
-        <mat-error *ngIf="error">
-            {{ error }}
-        </mat-error>
+                <!-- templates for exchangeable inputs. Add more here if necessary -->
+                <ng-template #date ngProjectAs="[matInput]">
+                    <input matInput formControlName="value" [matDatepicker]="picker" [errorStateMatcher]="matcher" />
+                    <mat-datepicker-toggle matPrefix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </ng-template>
 
-        <!-- templates for exchangeable inputs. Add more here if necessary -->
-        <ng-template #date ngProjectAs="[matInput]">
-            <input matInput formControlName="value" [matDatepicker]="picker" [errorStateMatcher]="matcher" />
-            <mat-datepicker-toggle matPrefix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-        </ng-template>
+                <ng-template #select ngProjectAs="mat-select">
+                    <mat-select formControlName="value" [errorStateMatcher]="matcher">
+                        <mat-option *ngFor="let choice of configItem.choices" [value]="choice.value">
+                            {{ choice.display_name | translate }}
+                        </mat-option>
+                    </mat-select>
+                </ng-template>
 
-        <ng-template #select ngProjectAs="mat-select">
-            <mat-select formControlName="value" [errorStateMatcher]="matcher">
-                <mat-option *ngFor="let choice of configItem.choices" [value]="choice.value">
-                    {{ choice.display_name | translate }}
-                </mat-option>
-            </mat-select>
-        </ng-template>
+                <ng-template #input ngProjectAs="[matInput]">
+                    <input
+                        matInput
+                        formControlName="value"
+                        [value]="translatedValue"
+                        [errorStateMatcher]="matcher"
+                        [type]="formType(configItem.inputType)"
+                    />
+                </ng-template>
+            </mat-form-field>
 
-        <ng-template #input ngProjectAs="[matInput]">
-            <input matInput formControlName="value" [value]="translatedValue" [errorStateMatcher]="matcher"
-            [type]="formType(configItem.inputType)">
-        </ng-template>
-    </mat-form-field>
+            <div class="config-form-group" *ngIf="isExcludedType(configItem.inputType)">
+                <div *ngIf="configItem.inputType === 'boolean'">
+                    <mat-checkbox formControlName="value"> {{ configItem.label | translate }} </mat-checkbox>
+                    <div class="hint" *ngIf="configItem.helpText && !error">{{ configItem.helpText | translate }}</div>
+                    <div class="error" *ngIf="error">{{ error }}</div>
+                </div>
 
-    <div class="config-form-group" *ngIf="isExcludedType(configItem.inputType)">
-
-        <div *ngIf="configItem.inputType === 'boolean'">
-            <mat-checkbox formControlName="value">
-                {{ configItem.label | translate }}
-            </mat-checkbox>
-            <div class="hint" *ngIf="configItem.helpText && !error">{{ configItem.helpText | translate }}</div>
-            <div class="error" *ngIf="error">{{ error }}</div>
-        </div>
-
-        <!-- The editor -->
-        <div *ngIf="configItem.inputType === 'markupText'">
-            <h4>{{ configItem.label | translate }}</h4>
-            <editor formControlName="value" [init]="tinyMceSettings"></editor>
-        </div>
-
+                <!-- The editor -->
+                <div *ngIf="configItem.inputType === 'markupText'">
+                    <h4>{{ configItem.label | translate }}</h4>
+                    <editor formControlName="value" [init]="tinyMceSettings"></editor>
+                </div>
+            </div>
+        </form>
     </div>
-</form>
+    <div class="reset-button">
+        <button mat-icon-button *ngIf="configItem.hasDefault" matTooltip="{{ 'Reset' | translate }}"
+            (click)="onResetButton()">
+            <mat-icon>replay</mat-icon>
+        </button>
+    </div>
+</div>

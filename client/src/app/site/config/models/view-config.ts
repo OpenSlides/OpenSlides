@@ -46,6 +46,7 @@ export class ViewConfig extends BaseViewModel {
     private _inputType: ConfigInputType;
     private _label: string;
     private _choices: ConfigChoice[];
+    private _defaultValue: any;
 
     /**
      * Saves, if this config already got constants information.
@@ -88,6 +89,18 @@ export class ViewConfig extends BaseViewModel {
         return this._choices;
     }
 
+    /**
+     * @returns true if a default value exists
+     */
+    public get hasDefault(): boolean {
+        return this._defaultValue !== undefined;
+    }
+
+    public get defaultValue(): any {
+        // TODO type is ugly
+        return this._defaultValue;
+    }
+
     public constructor(config: Config) {
         super();
         this._config = config;
@@ -123,6 +136,9 @@ export class ViewConfig extends BaseViewModel {
         this._helpText = constant.help_text;
         this._inputType = constant.input_type;
         this._choices = constant.choices;
+        if (constant.default_value !== undefined) {
+            this._defaultValue = constant.default_value;
+        }
         this._hasConstantsInfo = true;
     }
 
