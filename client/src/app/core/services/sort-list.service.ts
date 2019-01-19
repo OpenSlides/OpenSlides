@@ -209,13 +209,19 @@ export abstract class SortListService<V extends BaseViewModel> {
             if (typeof firstProperty !== typeof secondProperty) {
                 // undefined/null items should always land at the end
                 if (!firstProperty) {
-                    return ascending ? 1 : -1;
+                    return 1;
                 } else if (!secondProperty) {
-                    return ascending ? -1 : 1;
+                    return -1;
                 } else {
                     throw new TypeError('sorting of items failed because of mismatched types');
                 }
             } else {
+                if (
+                    (firstProperty === null || firstProperty === undefined) &&
+                    (secondProperty === null || secondProperty === undefined)
+                ) {
+                    return 1;
+                }
                 switch (typeof firstProperty) {
                     case 'boolean':
                         if (firstProperty === false && secondProperty === true) {
