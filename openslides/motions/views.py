@@ -576,7 +576,7 @@ class MotionViewSet(ModelViewSet):
 
         # Save motion.
         motion.save(
-            update_fields=["state", "identifier", "identifier_number"],
+            update_fields=["state", "identifier", "identifier_number", "last_modified"],
             skip_autoupdate=True,
         )
         message = f"The state of the motion was set to {motion.state.name}."
@@ -648,7 +648,7 @@ class MotionViewSet(ModelViewSet):
             motion.set_state(state_id)
 
             # Save motion.
-            motion.save(update_fields=["state"], skip_autoupdate=True)
+            motion.save(update_fields=["state", "last_modified"], skip_autoupdate=True)
 
             # Write the log message.
             motion.write_log(
@@ -708,7 +708,7 @@ class MotionViewSet(ModelViewSet):
             motion.recommendation = None
 
         # Save motion.
-        motion.save(update_fields=["recommendation"], skip_autoupdate=True)
+        motion.save(update_fields=["recommendation", "last_modified"], skip_autoupdate=True)
         label = (
             motion.recommendation.recommendation_label
             if motion.recommendation
@@ -794,7 +794,7 @@ class MotionViewSet(ModelViewSet):
                 motion.set_recommendation(recommendation_state_id)
 
             # Save motion.
-            motion.save(update_fields=["recommendation"], skip_autoupdate=True)
+            motion.save(update_fields=["recommendation", "last_modified"], skip_autoupdate=True)
             label = (
                 motion.recommendation.recommendation_label
                 if motion.recommendation
@@ -842,6 +842,7 @@ class MotionViewSet(ModelViewSet):
                 "identifier",
                 "identifier_number",
                 "state_extension",
+                "last_modified",
             ],
             skip_autoupdate=True,
         )
