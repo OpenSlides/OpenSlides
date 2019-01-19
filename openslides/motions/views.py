@@ -124,7 +124,7 @@ class MotionViewSet(ModelViewSet):
         # Fire autoupdate again to save information to OpenSlides history.
         inform_deleted_data(
             [(motion.get_collection_string(), motion.pk)],
-            information="Motion deleted",
+            information=["Motion deleted"],
             user_id=request.user.pk,
         )
 
@@ -221,9 +221,15 @@ class MotionViewSet(ModelViewSet):
 
         # Send new submitters and supporters via autoupdate because users
         # without permission to see users may not have them but can get it now.
+        # TODO: Skip history.
         new_users = list(motion.submitters.all())
         new_users.extend(motion.supporters.all())
         inform_changed_data(new_users)
+
+        # Fire autoupdate again to save information to OpenSlides history.
+        inform_changed_data(
+            motion, information=["Motion created"], user_id=request.user.pk,
+        )
 
         headers = self.get_success_headers(serializer.data)
         # Strip out response data so nobody gets unrestricted data.
@@ -298,12 +304,13 @@ class MotionViewSet(ModelViewSet):
 
         # Send new supporters via autoupdate because users
         # without permission to see users may not have them but can get it now.
+        # TODO: Skip history.
         new_users = list(updated_motion.supporters.all())
         inform_changed_data(new_users)
 
         # Fire autoupdate again to save information to OpenSlides history.
         inform_changed_data(
-            updated_motion, information="Motion updated", user_id=request.user.pk
+            updated_motion, information=["Motion updated"], user_id=request.user.pk
         )
 
         # We do not add serializer.data to response so nobody gets unrestricted data here.
@@ -396,7 +403,7 @@ class MotionViewSet(ModelViewSet):
 
             # write log
             motion.write_log([f"Comment {section.name} updated"], request.user)
-            message = f"Comment {section.name} updated"
+            message = ["Comment {arg1} updated", section.name]
         else:  # DELETE
             try:
                 comment = MotionComment.objects.get(motion=motion, section=section)
@@ -407,7 +414,12 @@ class MotionViewSet(ModelViewSet):
                 comment.delete()
 
                 motion.write_log([f"Comment {section.name} deleted"], request.user)
-            message = f"Comment {section.name} deleted"
+            message = ["Comment {arg1} deleted", section.name]
+
+        # Fire autoupdate again to save information to OpenSlides history.
+        inform_changed_data(
+            motion, information=message, user_id=request.user.pk, restricted=True,
+        )
 
         return Response({"detail": message})
 
@@ -475,7 +487,7 @@ class MotionViewSet(ModelViewSet):
             motion_result.append(motion)
 
         # Now inform all clients.
-        inform_changed_data(motion_result)
+        inform_changed_data(motion_result, information=["Submitters changed"], user_id=request.user.pk)
 
         # Also send all new submitters via autoupdate because users without
         # permission to see users may not have them but can get it now.
@@ -512,6 +524,7 @@ class MotionViewSet(ModelViewSet):
             motion.write_log(["Motion supported"], request.user)
             # Send new supporter via autoupdate because users without permission
             # to see users may not have it but can get it now.
+            # TODO: Skip history.
             inform_changed_data([request.user])
             message = "You have supported this motion successfully."
         else:
@@ -522,6 +535,11 @@ class MotionViewSet(ModelViewSet):
             motion.supporters.remove(request.user)
             motion.write_log(["Motion unsupported"], request.user)
             message = "You have unsupported this motion successfully."
+
+        # Fire autoupdate again to save information to OpenSlides history.
+        inform_changed_data(
+            motion, information=["Supporters changed"], user_id=request.user.pk
+        )
 
         # Initiate response.
         return Response({"detail": message})
@@ -569,11 +587,10 @@ class MotionViewSet(ModelViewSet):
             person=request.user,
             skip_autoupdate=True,
         )
-        inform_changed_data(
-            motion,
-            information=f"State set to {motion.state.name}.",
-            user_id=request.user.pk,
-        )
+
+        # Fire autoupdate again to save information to OpenSlides history.
+        inform_changed_data(motion, information=["State set to {arg1}", motion.state.name], user_id=request.user.pk)
+
         return Response({"detail": message})
 
     @list_route(methods=["post"])
@@ -640,15 +657,17 @@ class MotionViewSet(ModelViewSet):
                 skip_autoupdate=True,
             )
 
+            # Fire autoupdate again to save information to OpenSlides history.
+            inform_changed_data(
+                motion, information=["State set to {arg1}", motion.state.name], user_id=request.user.pk,
+            )
+
             # Finish motion.
             motion_result.append(motion)
 
-        # Now inform all clients.
-        inform_changed_data(motion_result)
-
         # Send response.
         return Response(
-            {"detail": f"{len(motion_result)} motions successfully updated."}
+            {"detail": f"State of {len(motion_result)} motions successfully set."}
         )
 
     @detail_route(methods=["put"])
@@ -703,7 +722,12 @@ class MotionViewSet(ModelViewSet):
             person=request.user,
             skip_autoupdate=True,
         )
-        inform_changed_data(motion)
+
+        # Fire autoupdate again to save information to OpenSlides history.
+        inform_changed_data(
+            motion, information=["Recommendation set to {arg1}", label], user_id=request.user.pk,
+        )
+
         return Response({"detail": message})
 
     @list_route(methods=["post"])
@@ -784,11 +808,13 @@ class MotionViewSet(ModelViewSet):
                 skip_autoupdate=True,
             )
 
+            # Fire autoupdate and save information to OpenSlides history.
+            inform_changed_data(
+                motion, information=["Recommendation set to {arg1}", label], user_id=request.user.pk,
+            )
+
             # Finish motion.
             motion_result.append(motion)
-
-        # Now inform all clients.
-        inform_changed_data(motion_result)
 
         # Send response.
         return Response(
@@ -826,7 +852,8 @@ class MotionViewSet(ModelViewSet):
         )
 
         # Now send all changes to the clients.
-        inform_changed_data(motion)
+        inform_changed_data(motion, information=["State set to {arg1}", motion.state.name], user_id=request.user.pk)
+
         return Response({"detail": "Recommendation followed successfully."})
 
     @detail_route(methods=["post"])
@@ -846,7 +873,11 @@ class MotionViewSet(ModelViewSet):
             raise ValidationError({"detail": err})
         motion.write_log(["Vote created"], request.user, skip_autoupdate=True)
 
-        inform_changed_data(motion)
+        # Fire autoupdate again to save information to OpenSlides history.
+        inform_changed_data(
+            motion, information=["Vote created"], user_id=request.user.pk,
+        )
+
         return Response(
             {"detail": "Vote created successfully.", "createdPollId": poll.pk}
         )
@@ -939,6 +970,12 @@ class MotionPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet):
         response = super().update(*args, **kwargs)
         poll = self.get_object()
         poll.motion.write_log(["Vote updated"], self.request.user)
+
+        # Fire autoupdate again to save information to OpenSlides history.
+        inform_changed_data(
+            poll.motion, information=["Poll updated"], user_id=self.request.user.pk
+        )
+
         return response
 
     def destroy(self, *args, **kwargs):
@@ -948,6 +985,12 @@ class MotionPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet):
         poll = self.get_object()
         result = super().destroy(*args, **kwargs)
         poll.motion.write_log(["Vote deleted"], self.request.user)
+
+        # Fire autoupdate again to save information to OpenSlides history.
+        inform_changed_data(
+            poll.motion, information=["Poll deleted"], user_id=self.request.user.pk
+        )
+
         return result
 
 
@@ -1205,7 +1248,7 @@ class CategoryViewSet(ModelViewSet):
                 error_message = "Error: At least one identifier of this category does already exist in another category."
             response = Response({"detail": error_message}, status=400)
         else:
-            inform_changed_data(instances)
+            inform_changed_data(instances, information=["Number set"], user_id=request.user.pk)
             message = f"All motions in category {category} numbered " "successfully."
             response = Response({"detail": message})
         return response
@@ -1251,7 +1294,6 @@ class MotionBlockViewSet(ModelViewSet):
         its recommendation. It is a POST request without any data.
         """
         motion_block = self.get_object()
-        instances = []
         with transaction.atomic():
             for motion in motion_block.motion_set.all():
                 # Follow recommendation.
@@ -1263,8 +1305,10 @@ class MotionBlockViewSet(ModelViewSet):
                     person=request.user,
                     skip_autoupdate=True,
                 )
-                instances.append(motion)
-        inform_changed_data(instances)
+                # Fire autoupdate and save information to OpenSlides history.
+                inform_changed_data(
+                    motion, information=["State set to {arg1}", motion.state.name], user_id=request.user.pk
+                )
         return Response({"detail": "Followed recommendations successfully."})
 
 

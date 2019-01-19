@@ -286,7 +286,8 @@ class HistoryManager(models.Manager):
                         element["collection_string"], element["id"]
                     ),
                     now=history_time,
-                    information=element.get("information", ""),
+                    information=element.get("information", []),
+                    restricted=element.get("restricted", False),
                     user_id=element.get("user_id"),
                     full_data=data,
                 )
@@ -334,7 +335,9 @@ class History(RESTModelMixin, models.Model):
 
     now = models.DateTimeField()
 
-    information = models.CharField(max_length=255)
+    information = JSONField()
+
+    restricted = models.BooleanField(default=False)
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, null=True, on_delete=SET_NULL_AND_AUTOUPDATE
