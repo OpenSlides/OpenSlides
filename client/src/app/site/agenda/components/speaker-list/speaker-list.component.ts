@@ -14,6 +14,7 @@ import { BaseViewComponent } from 'app/site/base/base-view';
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { MatSnackBar } from '@angular/material';
+import { PromptService } from 'app/core/services/prompt.service';
 
 /**
  * The list of speakers for agenda items.
@@ -55,6 +56,22 @@ export class SpeakerListComponent extends BaseViewComponent implements OnInit {
     public addSpeakerForm: FormGroup;
 
     /**
+     * @returns true if the items' speaker list is currently not open
+     */
+    public get closedList(): boolean {
+        return this.viewItem && this.viewItem.item.speaker_list_closed;
+    }
+
+    public get emptyList(): boolean {
+        if (this.speakers && this.speakers.length) {
+            return false;
+        } else if (this.finishedSpeakers && this.finishedSpeakers.length) {
+            return false;
+        }
+        return this.activeSpeaker ? false : true;
+    }
+
+    /**
      * Constructor for speaker list component
      * @param title
      * @param translate
@@ -71,7 +88,8 @@ export class SpeakerListComponent extends BaseViewComponent implements OnInit {
         private route: ActivatedRoute,
         private DS: DataStoreService,
         private itemRepo: AgendaRepositoryService,
-        private op: OperatorService
+        private op: OperatorService,
+        private promptService: PromptService
     ) {
         super(title, translate, snackBar);
         this.addSpeakerForm = new FormGroup({ user_id: new FormControl([]) });
@@ -117,7 +135,8 @@ export class SpeakerListComponent extends BaseViewComponent implements OnInit {
 
                 this.speakers = allSpeakers.filter(speaker => speaker.state === SpeakerState.WAITING);
                 this.finishedSpeakers = allSpeakers.filter(speaker => speaker.state === SpeakerState.FINISHED);
-                this.activeSpeaker = allSpeakers.find(speaker => speaker.state === SpeakerState.CURRENT);
+                const currentSpeaker = allSpeakers.find(speaker => speaker.state === SpeakerState.CURRENT);
+                this.activeSpeaker = currentSpeaker ? currentSpeaker : null;
             }
         });
     }
@@ -189,5 +208,42 @@ export class SpeakerListComponent extends BaseViewComponent implements OnInit {
      */
     public hasSpokenCount(speaker: ViewSpeaker): number {
         return this.finishedSpeakers.filter(finishedSpeaker => finishedSpeaker.user.id === speaker.user.id).length;
+    }
+
+    /**
+     * Closes the current speaker list
+     */
+    public closeSpeakerList(): Promise<void> {
+        if (!this.viewItem.item.speaker_list_closed) {
+            return this.itemRepo.update({ speaker_list_closed: true }, this.viewItem);
+        }
+    }
+
+    /**
+     * Opens the speaker list for the current item
+     */
+    public openSpeakerList(): Promise<void> {
+        if (this.viewItem.item.speaker_list_closed) {
+            return this.itemRepo.update({ speaker_list_closed: false }, this.viewItem);
+        }
+    }
+
+    /**
+     * Clears the speaker list by removing all current, past and future speakers
+     * after a confirmation dialog
+     */
+    public async clearSpeakerList(): Promise<void> {
+        const content = this.translate.instant('This will clear all speakers from the list.');
+        if (await this.promptService.open('Are you sure?', content)) {
+            this.speakers.forEach(speaker => {
+                this.itemRepo.deleteSpeaker(this.viewItem.item, speaker.id);
+            });
+            this.finishedSpeakers.forEach(speaker => {
+                this.itemRepo.deleteSpeaker(this.viewItem.item, speaker.id);
+            });
+            if (this.activeSpeaker) {
+                this.itemRepo.deleteSpeaker(this.viewItem.item, this.activeSpeaker.id);
+            }
+        }
     }
 }

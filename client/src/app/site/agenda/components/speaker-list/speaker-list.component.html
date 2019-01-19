@@ -1,9 +1,12 @@
 <os-head-bar [nav]="false" [goBack]="true">
     <!-- Title -->
     <div class="title-slot">
-        <h2>
-            <span translate>List of speakers</span>
-        </h2>
+        <h2><span translate>List of speakers</span></h2>
+    </div>
+    <div class="menu-slot" *osPerms="'agenda.can_manage_list_of_speakers'">
+        <button type="button" mat-icon-button [matMenuTriggerFor]="speakerMenu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
     </div>
 </os-head-bar>
 
@@ -27,8 +30,12 @@
                     <!-- <span translate>minutes</span> -->
                     <span>&nbsp;(</span> <span translate>Start time</span> <span>:&nbsp;{{ speaker.begin_time }})</span>
                 </div>
-                <button mat-stroked-button matTooltip="{{ 'Remove' | translate }}"
-                    *osPerms="'agenda.can_manage_list_of_speakers'" (click)="onDeleteButton(speaker)">
+                <button
+                    mat-stroked-button
+                    matTooltip="{{ 'Remove' | translate }}"
+                    *osPerms="'agenda.can_manage_list_of_speakers'"
+                    (click)="onDeleteButton(speaker)"
+                >
                     <mat-icon>close</mat-icon>
                 </button>
             </mat-list-item>
@@ -40,30 +47,34 @@
         <mat-icon class="speaking-icon">play_arrow</mat-icon>
         <span class="speaking-name">{{ activeSpeaker }}</span>
 
-        <button mat-stroked-button matTooltip="{{ 'End speech' | translate }}"
-            *osPerms="'agenda.can_manage_list_of_speakers'" (click)="onStopButton()">
+        <button
+            mat-stroked-button
+            matTooltip="{{ 'End speech' | translate }}"
+            *osPerms="'agenda.can_manage_list_of_speakers'"
+            (click)="onStopButton()"
+        >
             <mat-icon>mic_off</mat-icon>
             <span translate>Stop</span>
         </button>
     </div>
 
     <!-- Waiting speakers -->
-    <div *osPerms="'agenda.can_manage_list_of_speakers'">
+    <div>
         <div class="waiting-list" *ngIf="speakers && speakers.length > 0">
             <os-sorting-list [input]="speakers" [live]="true" [count]="true" (sortEvent)="onSortingChange($event)">
                 <!-- implicit item references into the component using ng-template slot -->
                 <ng-template let-item>
-                    <span *ngIf="hasSpokenCount(item)" class="red-warning-text speaker-warning">
-                        <span translate>Call</span><span>&nbsp;{{ hasSpokenCount(item) + 1 }}</span>
+                    <span *osPerms="'agenda.can_manage_list_of_speakers'">
+                        <span *ngIf="hasSpokenCount(item)" class="red-warning-text speaker-warning">
+                            <span translate>Call</span><span>&nbsp;{{ hasSpokenCount(item) + 1 }}</span>
+                        </span>
                     </span>
-                    <mat-button-toggle-group>
-                        <mat-button-toggle matTooltip="{{ 'Begin speech' | translate }}"
-                            (click)="onStartButton(item)">
+                    <mat-button-toggle-group *osPerms="'agenda.can_manage_list_of_speakers'">
+                        <mat-button-toggle matTooltip="{{ 'Begin speech' | translate }}" (click)="onStartButton(item)">
                             <mat-icon>mic</mat-icon>
                             <span translate>Start</span>
                         </mat-button-toggle>
-                        <mat-button-toggle matTooltip="{{ 'Mark speaker' | translate }}"
-                            (click)="onMarkButton(item)">
+                        <mat-button-toggle matTooltip="{{ 'Mark speaker' | translate }}" (click)="onMarkButton(item)">
                             <mat-icon>{{ item.marked ? 'star' : 'star_border' }}</mat-icon>
                         </mat-button-toggle>
                         <mat-button-toggle matTooltip="{{ 'Remove' | translate }}" (click)="onDeleteButton(item)">
@@ -92,12 +103,11 @@
 
     <!-- Add me and remove me if OP has correct permission -->
     <div *osPerms="'agenda.can_be_speaker'" class="add-self-buttons">
-        <div *ngIf="speakers">
+        <div *ngIf="speakers && !closedList">
             <button mat-raised-button (click)="addNewSpeaker()" *ngIf="!isOpInList()">
                 <mat-icon>add</mat-icon>
                 <span translate>Add me</span>
             </button>
-
             <button mat-raised-button (click)="onDeleteButton()" *ngIf="isOpInList()">
                 <mat-icon>remove</mat-icon>
                 <span translate>Remove me</span>
@@ -105,3 +115,23 @@
         </div>
     </div>
 </mat-card>
+
+<mat-menu #speakerMenu="matMenu">
+
+    <button mat-menu-item *ngIf="closedList" (click)="openSpeakerList()">
+        <mat-icon>mic</mat-icon>
+        <span translate>Open list of speakers</span>
+    </button>
+
+    <button mat-menu-item *ngIf="!closedList" (click)="closeSpeakerList()">
+        <mat-icon>mic_off</mat-icon>
+        <span translate>Close list of speakers</span>
+    </button>
+
+    <mat-divider *ngIf="!emptyList"></mat-divider>
+
+    <button mat-menu-item (click)="clearSpeakerList()" *ngIf="!emptyList" class="red-warning-text">
+        <mat-icon>delete</mat-icon>
+        <span trabslate>Remove all speakers</span>
+    </button>
+</mat-menu>
