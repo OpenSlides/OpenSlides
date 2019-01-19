@@ -127,9 +127,9 @@ class ProjectorViewSet(ModelViewSet):
             "partial_update",
             "destroy",
             "control_view",
-            "set_resolution",
             "set_scroll",
             "set_projectiondefault",
+            "project",
         ):
             result = has_perm(self.request.user, "core.can_see_projector") and has_perm(
                 self.request.user, "core.can_manage_projector"
@@ -151,6 +151,39 @@ class ProjectorViewSet(ModelViewSet):
                 projection_default.projector_id = 1
                 projection_default.save()
         return super(ProjectorViewSet, self).destroy(*args, **kwargs)
+
+    @detail_route(methods=["post"])
+    def project(self, request, pk):
+        """
+        Sets the `elements` and `elements_preview` and adds one item to the
+        `elements_history`.
+
+        `request.data` can have three arguments: `append_to_history`, `elements`
+        and `preview`. Non of them is required.
+
+        `append_to_history` adds one element to the end of the history_elements.
+        `elements` and `preview` preplaces the coresponding fields in the
+        database.
+        """
+        projector = self.get_object()
+        elements = request.data.get("elements")
+        preview = request.data.get("preview")
+        history_element = request.data.get("append_to_history")
+
+        changed_data = {}
+        if elements is not None:
+            changed_data["elements"] = elements
+        if preview is not None:
+            changed_data["elements_preview"] = preview
+        if history_element is not None:
+            history = projector.elements_history + [history_element]
+            changed_data["elements_history"] = history
+
+        serializer = self.get_serializer(projector, data=changed_data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        return Response()
 
     @detail_route(methods=["post"])
     def control_view(self, request, pk):

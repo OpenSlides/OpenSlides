@@ -101,12 +101,6 @@ class ProjectorSerializer(ModelSerializer):
         )
         read_only_fields = ("scale", "scroll")
 
-    def validate_elements_history(self, value):
-        """
-        Validates the value of the element field of the projector model.
-        """
-        self.validate_elements_preview(value)
-
 
 class TagSerializer(ModelSerializer):
     """
