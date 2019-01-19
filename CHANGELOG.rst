@@ -35,6 +35,7 @@ Motions:
  - Added new permission to create amendments [#4128].
  - Added multi select action to manage submitters, tags, states and
    recommendations [#4037, #4132].
+ - Added timestampes for motions [#4134].
 
 User:
  - Added new admin group which grants all permissions. Users of existing group

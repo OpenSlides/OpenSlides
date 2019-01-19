@@ -244,6 +244,16 @@ class Motion(RESTModelMixin, models.Model):
     Users who support this motion.
     """
 
+    created = models.DateTimeField(auto_now_add=True)
+    """
+    Timestamp when motion is created.
+    """
+
+    last_modified = models.DateTimeField(auto_now=True)
+    """
+    Timestamp when motion is modified.
+    """
+
     # In theory there could be one then more agenda_item. But we support only
     # one. See the property agenda_item.
     agenda_items = GenericRelation(Item, related_name="motions")
