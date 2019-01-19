@@ -571,6 +571,8 @@ class SetPasswordView(APIView):
 
     def post(self, request, *args, **kwargs):
         user = request.user
+        if not (has_perm(user, "users.can_change_password") or has_perm(user, "users.can_manage")):
+            self.permission_denied(request)
         if user.check_password(request.data["old_password"]):
             try:
                 validate_password(request.data.get("new_password"), user=user)
@@ -600,6 +602,8 @@ class PasswordResetView(APIView):
         """
         Loop over all users and send emails.
         """
+        if not (has_perm(request.user, "users.can_change_password") or has_perm(request.user, "users.can_manage")):
+            self.permission_denied(request)
         to_email = request.data.get("email")
         for user in self.get_users(to_email):
             current_site = get_current_site(request)
@@ -667,6 +671,8 @@ class PasswordResetConfirmView(APIView):
     http_method_names = ["post"]
 
     def post(self, request, *args, **kwargs):
+        if not (has_perm(request.user, "users.can_change_password") or has_perm(request.user, "users.can_manage")):
+            self.permission_denied(request)
         uidb64 = request.data.get("user_id")
         token = request.data.get("token")
         password = request.data.get("password")
