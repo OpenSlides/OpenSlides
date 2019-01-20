@@ -315,7 +315,7 @@ def start_browser(browser_url: str) -> None:
     else:
 
         def function() -> None:
-            # TODO: Use a nonblocking sleep event here. Tornado has such features.
+            # TODO: Use a nonblocking sleep event here.
             time.sleep(1)
             browser.open(browser_url)
 

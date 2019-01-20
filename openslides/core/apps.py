@@ -1,3 +1,4 @@
+import os
 import sys
 from collections import OrderedDict
 from operator import attrgetter
@@ -41,25 +42,11 @@ class CoreAppConfig(AppConfig):
             ListenToProjectors,
         )
         from ..utils.access_permissions import required_user
-        from ..utils.cache import element_cache
-        from ..utils.constants import set_constants, get_constants_from_apps
         from ..utils.rest_api import router
         from ..utils.websocket import register_client_message
 
         # Collect all config variables before getting the constants.
         config.collect_config_variables_from_apps()
-
-        # Skip all database related accesses during migrations.
-        is_normal_server_start = False
-        for sys_part in sys.argv:
-            for entry in ("runserver", "gunicorn", "daphne", "create-example-data"):
-                if sys_part.endswith(entry):
-                    is_normal_server_start = True
-                    break
-
-        # Set constants
-        if is_normal_server_start:
-            set_constants(get_constants_from_apps())
 
         # Define projector elements.
         register_projector_elements()
@@ -102,10 +89,8 @@ class CoreAppConfig(AppConfig):
             self.get_model("History").get_collection_string(), HistoryViewSet
         )
 
-        # Sets the cache and builds the startup history
-        if is_normal_server_start:
-            element_cache.ensure_cache()
-            self.get_model("History").objects.build_history()
+        if "runserver" in sys.argv:
+            startup()
 
         # Register client messages
         register_client_message(NotifyWebsocketClientMessage())
@@ -201,3 +186,21 @@ def required_users(element: Dict[str, Any]) -> Set[int]:
     Returns all user ids that are displayed as chatters.
     """
     return set(element["user_id"])
+
+
+def startup():
+    """
+    Runs commands that are needed at startup.
+
+    Sets the cache, constants and startup history
+    """
+    if os.environ.get("NO_STARTUP"):
+        return
+
+    from openslides.utils.constants import set_constants, get_constants_from_apps
+    from openslides.utils.cache import element_cache
+    from openslides.core.models import History
+
+    set_constants(get_constants_from_apps())
+    element_cache.ensure_cache()
+    History.objects.build_history()

@@ -17,20 +17,24 @@ def clear_history(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0012_auto_20190119_1425'),
-    ]
+    dependencies = [("core", "0012_auto_20190119_1425")]
 
     operations = [
         migrations.AddField(
-            model_name='history',
-            name='restricted',
+            model_name="history",
+            name="restricted",
             field=models.BooleanField(default=False),
         ),
         migrations.RunPython(clear_history),
         migrations.AlterField(
-            model_name='history',
-            name='information',
-            field=jsonfield.fields.JSONField(dump_kwargs={'cls': jsonfield.encoder.JSONEncoder, 'separators': (',', ':')}, load_kwargs={}),
+            model_name="history",
+            name="information",
+            field=jsonfield.fields.JSONField(
+                dump_kwargs={
+                    "cls": jsonfield.encoder.JSONEncoder,
+                    "separators": (",", ":"),
+                },
+                load_kwargs={},
+            ),
         ),
     ]

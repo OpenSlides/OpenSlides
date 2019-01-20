@@ -1,3 +1,5 @@
+import os
+
 import pytest
 from asgiref.sync import async_to_sync
 from django.test import TestCase, TransactionTestCase
@@ -5,6 +7,10 @@ from pytest_django.django_compat import is_django_unittest
 from pytest_django.plugin import validate_django_db
 
 from openslides.utils.cache import element_cache
+
+
+# Set an environment variable to stop the startup command
+os.environ["NO_STARTUP"] = "1"
 
 
 def pytest_collection_modifyitems(items):
