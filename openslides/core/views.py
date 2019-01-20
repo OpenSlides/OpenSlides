@@ -89,7 +89,7 @@ class IndexView(View):
         requested, the index.html is delivered.
         """
         try:
-            response = serve(request, path, **kwargs)
+            response = serve(request, path, insecure=True, **kwargs)
         except Http404:
             response = static.serve(
                 request,
