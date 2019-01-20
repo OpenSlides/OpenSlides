@@ -87,11 +87,11 @@ export class User extends BaseModel<User> implements Searchable {
             shortName = `${title} ${shortName}`;
         }
 
-        return shortName;
+        return shortName || this.username;
     }
 
     public getTitle(): string {
-        return this.full_name;
+        return this.full_name || this.username;
     }
 
     public getListViewTitle(): string {
