@@ -6,6 +6,7 @@ defined in the ASGI_APPLICATION setting.
 import django
 from channels.routing import get_default_application
 
+from .core.apps import startup
 from .utils.main import setup_django_settings_module
 
 
@@ -13,4 +14,5 @@ from .utils.main import setup_django_settings_module
 # environment variable DJANGO_SETTINGS_MODULE
 setup_django_settings_module()
 django.setup()
+startup()
 application = get_default_application()

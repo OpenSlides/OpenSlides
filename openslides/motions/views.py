@@ -228,7 +228,7 @@ class MotionViewSet(ModelViewSet):
 
         # Fire autoupdate again to save information to OpenSlides history.
         inform_changed_data(
-            motion, information=["Motion created"], user_id=request.user.pk,
+            motion, information=["Motion created"], user_id=request.user.pk
         )
 
         headers = self.get_success_headers(serializer.data)
@@ -418,7 +418,7 @@ class MotionViewSet(ModelViewSet):
 
         # Fire autoupdate again to save information to OpenSlides history.
         inform_changed_data(
-            motion, information=message, user_id=request.user.pk, restricted=True,
+            motion, information=message, user_id=request.user.pk, restricted=True
         )
 
         return Response({"detail": message})
@@ -487,7 +487,9 @@ class MotionViewSet(ModelViewSet):
             motion_result.append(motion)
 
         # Now inform all clients.
-        inform_changed_data(motion_result, information=["Submitters changed"], user_id=request.user.pk)
+        inform_changed_data(
+            motion_result, information=["Submitters changed"], user_id=request.user.pk
+        )
 
         # Also send all new submitters via autoupdate because users without
         # permission to see users may not have them but can get it now.
@@ -589,7 +591,11 @@ class MotionViewSet(ModelViewSet):
         )
 
         # Fire autoupdate again to save information to OpenSlides history.
-        inform_changed_data(motion, information=["State set to {arg1}", motion.state.name], user_id=request.user.pk)
+        inform_changed_data(
+            motion,
+            information=["State set to {arg1}", motion.state.name],
+            user_id=request.user.pk,
+        )
 
         return Response({"detail": message})
 
@@ -659,7 +665,9 @@ class MotionViewSet(ModelViewSet):
 
             # Fire autoupdate again to save information to OpenSlides history.
             inform_changed_data(
-                motion, information=["State set to {arg1}", motion.state.name], user_id=request.user.pk,
+                motion,
+                information=["State set to {arg1}", motion.state.name],
+                user_id=request.user.pk,
             )
 
             # Finish motion.
@@ -708,7 +716,9 @@ class MotionViewSet(ModelViewSet):
             motion.recommendation = None
 
         # Save motion.
-        motion.save(update_fields=["recommendation", "last_modified"], skip_autoupdate=True)
+        motion.save(
+            update_fields=["recommendation", "last_modified"], skip_autoupdate=True
+        )
         label = (
             motion.recommendation.recommendation_label
             if motion.recommendation
@@ -725,7 +735,9 @@ class MotionViewSet(ModelViewSet):
 
         # Fire autoupdate again to save information to OpenSlides history.
         inform_changed_data(
-            motion, information=["Recommendation set to {arg1}", label], user_id=request.user.pk,
+            motion,
+            information=["Recommendation set to {arg1}", label],
+            user_id=request.user.pk,
         )
 
         return Response({"detail": message})
@@ -794,7 +806,9 @@ class MotionViewSet(ModelViewSet):
                 motion.set_recommendation(recommendation_state_id)
 
             # Save motion.
-            motion.save(update_fields=["recommendation", "last_modified"], skip_autoupdate=True)
+            motion.save(
+                update_fields=["recommendation", "last_modified"], skip_autoupdate=True
+            )
             label = (
                 motion.recommendation.recommendation_label
                 if motion.recommendation
@@ -810,7 +824,9 @@ class MotionViewSet(ModelViewSet):
 
             # Fire autoupdate and save information to OpenSlides history.
             inform_changed_data(
-                motion, information=["Recommendation set to {arg1}", label], user_id=request.user.pk,
+                motion,
+                information=["Recommendation set to {arg1}", label],
+                user_id=request.user.pk,
             )
 
             # Finish motion.
@@ -853,7 +869,11 @@ class MotionViewSet(ModelViewSet):
         )
 
         # Now send all changes to the clients.
-        inform_changed_data(motion, information=["State set to {arg1}", motion.state.name], user_id=request.user.pk)
+        inform_changed_data(
+            motion,
+            information=["State set to {arg1}", motion.state.name],
+            user_id=request.user.pk,
+        )
 
         return Response({"detail": "Recommendation followed successfully."})
 
@@ -876,7 +896,7 @@ class MotionViewSet(ModelViewSet):
 
         # Fire autoupdate again to save information to OpenSlides history.
         inform_changed_data(
-            motion, information=["Vote created"], user_id=request.user.pk,
+            motion, information=["Vote created"], user_id=request.user.pk
         )
 
         return Response(
@@ -1249,7 +1269,9 @@ class CategoryViewSet(ModelViewSet):
                 error_message = "Error: At least one identifier of this category does already exist in another category."
             response = Response({"detail": error_message}, status=400)
         else:
-            inform_changed_data(instances, information=["Number set"], user_id=request.user.pk)
+            inform_changed_data(
+                instances, information=["Number set"], user_id=request.user.pk
+            )
             message = f"All motions in category {category} numbered " "successfully."
             response = Response({"detail": message})
         return response
@@ -1308,7 +1330,9 @@ class MotionBlockViewSet(ModelViewSet):
                 )
                 # Fire autoupdate and save information to OpenSlides history.
                 inform_changed_data(
-                    motion, information=["State set to {arg1}", motion.state.name], user_id=request.user.pk
+                    motion,
+                    information=["State set to {arg1}", motion.state.name],
+                    user_id=request.user.pk,
                 )
         return Response({"detail": "Followed recommendations successfully."})
 

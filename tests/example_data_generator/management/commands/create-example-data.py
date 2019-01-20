@@ -9,6 +9,7 @@ from django.utils.crypto import get_random_string
 
 from openslides.agenda.models import Item
 from openslides.assignments.models import Assignment
+from openslides.core.apps import startup
 from openslides.motions.models import Motion
 from openslides.topics.models import Topic
 from openslides.users.models import Group, User
@@ -117,6 +118,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        startup()
         self.create_topics(options)
         self.create_motions(options)
         self.create_assignments(options)

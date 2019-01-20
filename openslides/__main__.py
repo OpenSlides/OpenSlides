@@ -8,8 +8,8 @@ import django
 from django.core.management import call_command, execute_from_command_line
 
 import openslides
+from openslides.core.apps import startup
 from openslides.utils.arguments import arguments
-from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.main import (
     ExceptionArgumentParser,
     UnknownCommand,
@@ -180,7 +180,7 @@ def get_parser():
         ("backupdb", "Backups the SQLite3 database."),
         ("createsuperuser", "Creates or resets the admin user."),
         ("migrate", "Updates database schema."),
-        ("runserver", "Starts the Tornado webserver."),
+        ("runserver", "Starts the built-in webserver."),
     )
     for django_subcommand, help_text in django_subcommands:
         subparsers._choices_actions.append(  # type: ignore
@@ -196,10 +196,6 @@ def start(args):
     """
     Starts OpenSlides: Runs migrations and runs runserver.
     """
-    raise OpenSlidesError(
-        "The start command does not work anymore. "
-        + "Please use `createsettings`, `migrate` and `runserver`."
-    )
     settings_dir = args.settings_dir
     settings_filename = args.settings_filename
     local_installation = is_local_installation()
@@ -231,7 +227,9 @@ def start(args):
     if not args.no_browser:
         open_browser(args.host, args.port)
 
-    # Start Daphne
+    startup()
+
+    # Start the built-in webserver
     #
     # Use flag --noreload to tell Django not to reload the server.
     # Therefor we have to set the keyword noreload to False because Django
