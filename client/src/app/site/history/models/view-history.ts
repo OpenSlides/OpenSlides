@@ -43,7 +43,7 @@ export class ViewHistory extends BaseViewModel {
     }
 
     /**
-     * Get the elementIs of the history object
+     * Get the elementIDs of the history object
      *
      * @returns the element ID as String
      */

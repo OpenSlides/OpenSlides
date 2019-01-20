@@ -60,7 +60,7 @@ export class HistoryListComponent extends ListViewBaseComponent<ViewHistory> imp
      * @param unsortedHistoryList
      */
     private sortAndPublish(unsortedHistoryList: ViewHistory[]): void {
-        const sortedList = unsortedHistoryList.map(history => history);
+        const sortedList = unsortedHistoryList.map(history => history).filter(item => item.information.length > 0);
         sortedList.sort((a, b) => b.history.unixtime - a.history.unixtime);
         this.dataSource.data = sortedList;
     }
@@ -108,5 +108,21 @@ export class HistoryListComponent extends ListViewBaseComponent<ViewHistory> imp
      */
     public onDeleteAllButton(): void {
         this.repo.delete();
+    }
+
+    /**
+     * Returns a translated history information string which contains optional (translated) arguments.
+     *
+     * @param information history information string
+     */
+    public parseInformation(information: string): void {
+        if (information.length) {
+            const base_string = this.translate.instant(information[0]);
+            let argument_string;
+            if (information.length > 1) {
+                argument_string = this.translate.instant(information[1]);
+            }
+            return base_string.replace(/{arg1}/g, argument_string);
+        }
     }
 }

@@ -8,24 +8,16 @@
     </div>
 </os-head-bar>
 
-<mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
+<mat-table class="os-header-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
     <!-- Timestamp -->
     <ng-container matColumnDef="time">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Time</mat-header-cell>
-        <mat-cell *matCellDef="let history"> {{ history.getLocaleString('DE-de') }} </mat-cell>
-    </ng-container>
-
-    <!-- Info -->
-    <ng-container matColumnDef="info">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Info</mat-header-cell>
-        <mat-cell *matCellDef="let history"> {{ history.information }} </mat-cell>
+        <mat-header-cell *matHeaderCellDef translate>Timestamp</mat-header-cell>
+        <mat-cell *matCellDef="let history">{{ history.getLocaleString('DE-de') }}</mat-cell>
     </ng-container>
 
     <!-- Element -->
     <ng-container matColumnDef="element">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Element</mat-header-cell>
-
-        <!-- <mat-cell *matCellDef="let history"> {{ history.element_id }} </mat-cell> -->
+        <mat-header-cell *matHeaderCellDef translate>Element</mat-header-cell>
         <mat-cell *matCellDef="let history">
             <div *ngIf="getElementInfo(history)">{{ getElementInfo(history) | translate }}</div>
             <div
@@ -38,10 +30,16 @@
         </mat-cell>
     </ng-container>
 
+    <!-- Info -->
+    <ng-container matColumnDef="info">
+        <mat-header-cell *matHeaderCellDef translate>Comment</mat-header-cell>
+        <mat-cell *matCellDef="let history">{{ parseInformation(history.information) }}</mat-cell>
+    </ng-container>
+
     <!-- User -->
     <ng-container matColumnDef="user">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>User</mat-header-cell>
-        <mat-cell *matCellDef="let history"> {{ history.user }} </mat-cell>
+        <mat-header-cell *matHeaderCellDef translate>Changed by</mat-header-cell>
+        <mat-cell *matCellDef="let history">{{ history.user }}</mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="getRowDef()"></mat-header-row>
