@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Set
 
 from django.apps import AppConfig
 from django.conf import settings
-from django.db.models.signals import post_migrate
+from django.db.models.signals import post_migrate, pre_delete
 
 
 class CoreAppConfig(AppConfig):
@@ -20,6 +20,7 @@ class CoreAppConfig(AppConfig):
         from .projector import register_projector_slides
         from . import serializers  # noqa
         from .signals import (
+            autoupdate_for_many_to_many_relations,
             delete_django_app_permissions,
             get_permission_change_data,
             permission_change,
@@ -63,6 +64,10 @@ class CoreAppConfig(AppConfig):
             call_save_default_values,
             sender=self,
             dispatch_uid="core_save_config_default_values",
+        )
+        pre_delete.connect(
+            autoupdate_for_many_to_many_relations,
+            dispatch_uid="core_autoupdate_for_many_to_many_relations",
         )
 
         # Register viewsets.
