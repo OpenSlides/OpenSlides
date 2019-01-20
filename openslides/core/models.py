@@ -72,9 +72,9 @@ class Projector(RESTModelMixin, models.Model):
 
     objects = ProjectorManager()
 
-    elements = JSONField()
-    elements_preview = JSONField()
-    elements_history = JSONField()
+    elements = JSONField(default=list)
+    elements_preview = JSONField(default=list)
+    elements_history = JSONField(default=list)
 
     scale = models.IntegerField(default=0)
     scroll = models.IntegerField(default=0)

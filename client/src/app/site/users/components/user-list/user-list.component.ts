@@ -226,7 +226,8 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
      * @returns column definition
      */
     public getColumnDefinition(): string[] {
-        const columns = ['name', 'group', 'presence'];
+        // TODO: no projector in mobile view.
+        const columns = ['projector', 'name', 'group', 'presence'];
         if (this.isMultiSelect) {
             return ['selector'].concat(columns);
         }

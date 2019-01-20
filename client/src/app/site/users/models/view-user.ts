@@ -1,9 +1,9 @@
-import { BaseViewModel } from '../../base/base-view-model';
 import { User } from '../../../shared/models/users/user';
 import { Group } from '../../../shared/models/users/group';
 import { BaseModel } from '../../../shared/models/base/base-model';
+import { BaseProjectableModel } from 'app/site/base/base-projectable-model';
 
-export class ViewUser extends BaseViewModel {
+export class ViewUser extends BaseProjectableModel {
     private _user: User;
     private _groups: Group[];
 
@@ -103,6 +103,18 @@ export class ViewUser extends BaseViewModel {
         super();
         this._user = user;
         this._groups = groups;
+    }
+
+    public getProjectionDefaultName(): string {
+        return 'users';
+    }
+
+    public getNameForSlide(): string {
+        return User.COLLECTIONSTRING;
+    }
+
+    public isStableSlide(): boolean {
+        return true;
     }
 
     /**

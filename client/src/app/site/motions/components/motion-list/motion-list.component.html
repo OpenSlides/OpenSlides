@@ -30,6 +30,14 @@
             </mat-cell>
         </ng-container>
 
+         <!-- Projector column -->
+        <ng-container matColumnDef="projector">
+            <mat-header-cell *matHeaderCellDef mat-sort-header class="icon-cell">Projector</mat-header-cell>
+            <mat-cell *matCellDef="let motion" class="icon-cell">
+                <os-projector-button [object]="motion"></os-projector-button>
+            </mat-cell>
+        </ng-container>
+
         <!-- identifier column -->
         <ng-container matColumnDef="identifier">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Identifier</mat-header-cell>

@@ -13,6 +13,8 @@ import { MotionPoll } from './motion-poll';
  * @ignore
  */
 export class Motion extends AgendaBaseModel {
+    public static COLLECTIONSTRING = 'motions/motion';
+
     public id: number;
     public identifier: string;
     public title: string;
@@ -45,7 +47,7 @@ export class Motion extends AgendaBaseModel {
     public last_modified: string;
 
     public constructor(input?: any) {
-        super('motions/motion', 'Motion', input);
+        super(Motion.COLLECTIONSTRING, 'Motion', input);
     }
 
     /**

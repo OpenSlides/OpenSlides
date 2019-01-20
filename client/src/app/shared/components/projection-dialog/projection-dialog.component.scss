@@ -1,0 +1,19 @@
+mat-dialog-content {
+    overflow: inherit;
+
+    div.projectors {
+        padding: 15px;
+
+        &.projected {
+            background-color: lightblue;
+        }
+
+        .right {
+            float: right;
+        }
+    }
+
+    mat-card {
+        margin-bottom: 10px;
+    }
+}

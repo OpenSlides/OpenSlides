@@ -22,9 +22,17 @@
 <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
     <!-- Selector column -->
     <ng-container matColumnDef="selector">
-        <mat-header-cell *matHeaderCellDef mat-sort-header class="checkbox-cell"></mat-header-cell>
-        <mat-cell *matCellDef="let user" (click)="selectItem(user, $event)" class="checkbox-cell">
+        <mat-header-cell *matHeaderCellDef mat-sort-header class="icon-cell"></mat-header-cell>
+        <mat-cell *matCellDef="let user" (click)="selectItem(user, $event)" class="icon-cell">
             <mat-icon>{{ isSelected(user) ? 'check_circle' : '' }}</mat-icon>
+        </mat-cell>
+    </ng-container>
+
+     <!-- Projector column -->
+     <ng-container matColumnDef="projector">
+        <mat-header-cell *matHeaderCellDef mat-sort-header class="icon-cell">Projector</mat-header-cell>
+        <mat-cell *matCellDef="let user" class="icon-cell">
+            <os-projector-button [object]="user"></os-projector-button>
         </mat-cell>
     </ng-container>
 

@@ -1,10 +1,10 @@
-import { ProjectableBaseModel } from '../base/projectable-base-model';
+import { BaseModel } from '../base/base-model';
 
 /**
  * Representation of a projector message.
  * @ignore
  */
-export class ProjectorMessage extends ProjectableBaseModel {
+export class ProjectorMessage extends BaseModel<ProjectorMessage> {
     public id: number;
     public message: string;
 

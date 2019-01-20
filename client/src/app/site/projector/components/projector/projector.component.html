@@ -1,0 +1,17 @@
+<div id="container" [osResized]="resizeSubject" [ngStyle]="containerStyle" #container>
+    <div id="projector" [ngStyle]="projectorStyle">
+        <div class="header" [ngStyle]="headerFooterStyle" *ngIf="enableHeaderAndFooter">
+            <div *ngIf="enableTitle">
+                Header Title
+            </div>
+        </div>
+
+        <div *ngFor="let slide of slides" class="content">
+            <os-slide-container [slideData]="slide" [scroll]="scroll" [scale]="scale"></os-slide-container>
+        </div>
+
+        <div class="footer" [ngStyle]="headerFooterStyle" *ngIf="enableHeaderAndFooter">
+            Footer
+        </div>
+    </div>
+</div>

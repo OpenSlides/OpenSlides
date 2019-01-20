@@ -50,6 +50,10 @@ const routes: Routes = [
             {
                 path: 'history',
                 loadChildren: './history/history.module#HistoryModule'
+            },
+            {
+                path: 'projector-site',
+                loadChildren: './projector/projector.module#ProjectorModule'
             }
         ],
         canActivateChild: [AuthGuard]

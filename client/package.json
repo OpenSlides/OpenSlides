@@ -41,6 +41,7 @@
         "@tinymce/tinymce-angular": "^2.3.1",
         "angular-tree-component": "^8.0.1",
         "core-js": "^2.5.4",
+        "css-element-queries": "^1.1.1",
         "file-saver": "^2.0.0",
         "material-design-icons": "^3.0.1",
         "ngx-file-drop": "^5.0.0",

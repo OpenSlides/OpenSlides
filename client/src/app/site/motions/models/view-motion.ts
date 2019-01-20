@@ -1,16 +1,17 @@
 import { BaseModel } from '../../../shared/models/base/base-model';
-import { BaseViewModel } from '../../base/base-view-model';
+import { BaseProjectableModel } from 'app/site/base/base-projectable-model';
 import { Category } from '../../../shared/models/motions/category';
+import { MotionComment } from '../../../shared/models/motions/motion-comment';
 import { Item } from 'app/shared/models/agenda/item';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { Motion } from '../../../shared/models/motions/motion';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
-import { MotionComment } from '../../../shared/models/motions/motion-comment';
 import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
 import { User } from '../../../shared/models/users/user';
 import { ViewMotionCommentSection } from './view-motion-comment-section';
 import { Workflow } from '../../../shared/models/motions/workflow';
 import { WorkflowState } from '../../../shared/models/motions/workflow-state';
+import { ProjectorOptions } from 'app/site/base/projector-options';
 
 /**
  * The line numbering mode for the motion detail view.
@@ -39,7 +40,7 @@ export enum ChangeRecoMode {
  * Provides "safe" access to variables and functions in {@link Motion}
  * @ignore
  */
-export class ViewMotion extends BaseViewModel {
+export class ViewMotion extends BaseProjectableModel {
     protected _motion: Motion;
     protected _category: Category;
     protected _submitters: User[];
@@ -434,6 +435,30 @@ export class ViewMotion extends BaseViewModel {
      */
     public isParagraphBasedAmendment(): boolean {
         return this.amendment_paragraphs.length > 0;
+    }
+
+    public getProjectorOptions(): ProjectorOptions {
+        return [
+            {
+                key: 'mode',
+                displayName: 'Mode',
+                default: 'original',
+                choices: [
+                    { value: 'original', displayName: 'Original' },
+                    { value: 'changed', displayName: 'Changed' },
+                    { value: 'diff', displayName: 'Diff' },
+                    { value: 'agreed', displayName: 'Agreed' }
+                ]
+            }
+        ];
+    }
+
+    public getProjectionDefaultName(): string {
+        return 'motions';
+    }
+
+    public getNameForSlide(): string {
+        return Motion.COLLECTIONSTRING;
     }
 
     /**

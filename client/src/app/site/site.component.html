@@ -71,17 +71,6 @@
                     <span>{{ entry.displayName | translate }}</span>
                 </a>
             </span>
-            <a
-                [@navItemAnim]
-                *osPerms="'core.can_see_projector'"
-                mat-list-item
-                routerLink="/projector"
-                routerLinkActive="active"
-                (click)="mobileAutoCloseNav()"
-            >
-                <mat-icon>videocam</mat-icon>
-                <span translate>Projector</span>
-            </a>
             <mat-divider></mat-divider>
             <a
                 [@navItemAnim]

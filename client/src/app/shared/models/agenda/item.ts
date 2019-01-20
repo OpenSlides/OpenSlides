@@ -1,5 +1,5 @@
-import { ProjectableBaseModel } from '../base/projectable-base-model';
 import { Speaker, SpeakerState } from './speaker';
+import { BaseModel } from '../base/base-model';
 
 /**
  * The representation of the content object for agenda items. The unique combination
@@ -24,7 +24,7 @@ export const itemVisibilityChoices = [
  * Representations of agenda Item
  * @ignore
  */
-export class Item extends ProjectableBaseModel {
+export class Item extends BaseModel<Item> {
     public id: number;
     public item_number: string;
     public title: string;

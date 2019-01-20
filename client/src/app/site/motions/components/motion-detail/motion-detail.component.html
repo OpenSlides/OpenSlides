@@ -160,7 +160,7 @@
             <os-personal-note *ngIf="!editMotion" [motion]="motion"></os-personal-note>
             <ng-container *ngTemplateOutlet="motionLogTemplate"></ng-container>
         </div>
-        <div class="desktop-right ">
+        <div class="desktop-right">
             <!-- Content -->
             <mat-card [ngClass]="editMotion ? 'os-form-card' : 'os-card'">
                 <ng-container *ngTemplateOutlet="contentTemplate"></ng-container>

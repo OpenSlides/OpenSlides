@@ -15,7 +15,7 @@ def motion(
     """
     Motion slide.
     """
-    return {"error": "TODO"}
+    return {"error": "TODO", "some_key": "another_value"}
 
 
 def motion_block(
@@ -28,5 +28,5 @@ def motion_block(
 
 
 def register_projector_elements() -> None:
-    register_projector_element("motion/motion", motion)
-    register_projector_element("motion/motion-block", motion_block)
+    register_projector_element("motions/motion", motion)
+    register_projector_element("motions/motion-block", motion_block)

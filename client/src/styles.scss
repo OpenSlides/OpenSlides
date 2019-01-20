@@ -284,9 +284,8 @@ mat-panel-title mat-icon {
     display: none;
 }
 
-.checkbox-cell {
-    flex: 1;
-    max-width: 30px;
+.icon-cell {
+    flex: 0 0 40px;
 }
 
 // ngx-file-drop requires the custom style in the global css file

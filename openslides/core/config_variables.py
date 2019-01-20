@@ -243,7 +243,7 @@ def get_config_variables():
         name="projector_background_color",
         default_value="#FFFFFF",
         input_type="colorpicker",
-        label="Color for blanked projector",
+        label="Backgroundolor of the projector",
         weight=190,
         group="Projector",
     )

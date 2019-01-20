@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.conf.urls import include, url
+from django.views.generic import RedirectView
 
 from openslides.mediafiles.views import protected_serve
 from openslides.utils.rest_api import router
@@ -14,7 +15,8 @@ urlpatterns = [
         protected_serve,
         {"document_root": settings.MEDIA_ROOT},
     ),
-    # URLs for the rest system
+    # URLs for the rest system, redirect /rest to /rest/
+    url(r"^rest$", RedirectView.as_view(url="/rest/", permanent=True)),
     url(r"^rest/", include(router.urls)),
     # Other urls defined by modules and plugins
     url(r"^apps/", include("openslides.urls_apps")),

@@ -1,0 +1,41 @@
+<os-head-bar [nav]="false" [goBack]="true">
+    <!-- Title -->
+    <div class="title-slot">
+        <h2 translate>{{ projector?.name | translate }}</h2>
+    </div>
+</os-head-bar>
+
+<div class="content-container">
+    <div class="column-left">
+        <div id="projector">
+            <os-projector [projector]="projector"></os-projector>
+        </div>
+    </div>
+    <div class="column-right">
+        <div class="control-group">
+            {{ projector?.scroll }}
+            <button type="button" mat-icon-button (click)="scroll(scrollScaleDirection.Up)">
+                <mat-icon>arrow_upward</mat-icon>
+            </button>
+            <button type="button" mat-icon-button (click)="scroll(scrollScaleDirection.Down)">
+                <mat-icon>arrow_downward</mat-icon>
+            </button>
+            <button type="button" mat-icon-button (click)="scroll(scrollScaleDirection.Reset)">
+                <mat-icon>refresh</mat-icon>
+            </button>
+        </div>
+        <hr>
+        <div class="control-group">
+            {{ projector?.scale }}
+            <button type="button" mat-icon-button (click)="scale(scrollScaleDirection.Up)">
+                <mat-icon>zoom_in</mat-icon>
+            </button>
+            <button type="button" mat-icon-button (click)="scale(scrollScaleDirection.Down)">
+                <mat-icon>zoom_out</mat-icon>
+            </button>
+            <button type="button" mat-icon-button (click)="scale(scrollScaleDirection.Reset)">
+                <mat-icon>refresh</mat-icon>
+            </button>
+        </div>
+    </div>
+</div>

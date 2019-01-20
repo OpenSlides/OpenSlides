@@ -22,8 +22,8 @@
 <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
     <!-- slector column -->
     <ng-container matColumnDef="selector">
-        <mat-header-cell *matHeaderCellDef mat-sort-header class="checkbox-cell"></mat-header-cell>
-        <mat-cell *matCellDef="let assignment" class="checkbox-cell">
+        <mat-header-cell *matHeaderCellDef mat-sort-header class="icon-cell"></mat-header-cell>
+        <mat-cell *matCellDef="let assignment" class="icon-cell">
             <mat-icon>{{ isSelected(assignment) ? 'check_circle' : '' }}</mat-icon>
         </mat-cell>
     </ng-container>
