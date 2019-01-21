@@ -1,17 +1,18 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Title } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material';
+import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
 import { ListViewBaseComponent } from 'app/site/base/list-view-base';
-import { MotionBlockRepositoryService } from '../../services/motion-block-repository.service';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
+import { MotionBlockRepositoryService } from '../../services/motion-block-repository.service';
+import { MotionRepositoryService } from '../../services/motion-repository.service';
 import { ViewMotionBlock } from '../../models/view-motion-block';
-import { ViewMotion } from '../../models/view-motion';
 import { PromptService } from 'app/core/services/prompt.service';
+import { ViewMotion } from '../../models/view-motion';
 
 /**
  * Detail component to display one motion block
@@ -52,6 +53,7 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
      * @param router navigating
      * @param route determine the blocks ID by the route
      * @param repo the motion blocks repository
+     * @param motionRepo the motion repository
      * @param promptService the displaying prompts before deleting
      */
     public constructor(
@@ -61,6 +63,7 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
         private router: Router,
         private route: ActivatedRoute,
         private repo: MotionBlockRepositoryService,
+        private motionRepo: MotionRepositoryService,
         private promptService: PromptService
     ) {
         super(titleService, translate, matSnackBar);
@@ -198,5 +201,25 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
      */
     public toggleEditMode(): void {
         this.editBlock = !this.editBlock;
+    }
+
+    /**
+     * Fetch a motion's current recommendation label
+     *
+     * @param motion
+     * @returns the current recommendation label (with extension)
+     */
+    public getRecommendationLabel(motion: ViewMotion): string {
+        return this.motionRepo.getExtendedRecommendationLabel(motion);
+    }
+
+    /**
+     * Fetch a motion's current state label
+     *
+     * @param motion
+     * @returns the current state label (with extension)
+     */
+    public getStateLabel(motion: ViewMotion): string {
+        return this.motionRepo.getExtendedStateLabel(motion);
     }
 }

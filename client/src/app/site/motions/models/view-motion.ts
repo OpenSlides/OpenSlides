@@ -242,6 +242,28 @@ export class ViewMotion extends BaseProjectableModel {
     }
 
     /**
+     * @returns the current state extension if the workwlof allows for extenstion fields
+     */
+    public get stateExtension(): string {
+        if (this.state && this.state.show_state_extension_field) {
+            return this.motion.state_extension;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @returns the current recommendation extension if the workwlof allows for extenstion fields
+     */
+    public get recommendationExtension(): string {
+        if (this.recommendation && this.recommendation.show_recommendation_extension_field) {
+            return this.motion.recommendation_extension;
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Gets the comments' section ids of a motion. Used in filter by motionComment
      *
      * @returns an array of ids, or an empty array

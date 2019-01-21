@@ -17,8 +17,11 @@
 </os-head-bar>
 
 <mat-drawer-container class="on-transition-fade">
-    <os-sort-filter-bar [filterService]="filterService" [sortService]="sortService"
-        (searchFieldChange)="searchFilter($event)">
+    <os-sort-filter-bar
+        [filterService]="filterService"
+        [sortService]="sortService"
+        (searchFieldChange)="searchFilter($event)"
+    >
     </os-sort-filter-bar>
 
     <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
@@ -30,7 +33,7 @@
             </mat-cell>
         </ng-container>
 
-         <!-- Projector column -->
+        <!-- Projector column -->
         <ng-container matColumnDef="projector">
             <mat-header-cell *matHeaderCellDef mat-sort-header class="icon-cell">Projector</mat-header-cell>
             <mat-cell *matCellDef="let motion" class="icon-cell">
@@ -82,14 +85,12 @@
                             lightblue: motion.state.css_class === 'primary'
                         }"
                     >
-                        {{ motion.state.name | translate }}
+                        {{ getStateLabel(motion) }}
                     </mat-basic-chip>
 
                     <!-- recommendation -->
                     <span *ngIf="motion.recommendation">
-                        <mat-basic-chip class="bluegrey">{{
-                            motion.recommendation.recommendation_label | translate
-                        }}</mat-basic-chip>
+                        <mat-basic-chip class="bluegrey"> {{ getRecommendationLabel(motion) }} </mat-basic-chip>
                     </span>
                 </div>
             </mat-cell>
@@ -198,20 +199,29 @@
                 <mat-icon>label</mat-icon>
                 <span translate>Set status</span>
             </button>
-            <button *ngIf="recomendationEnabled" mat-menu-item
-                (click)="multiselectWrapper(multiselectService.setRecommendation(selectedRows))">
+            <button
+                *ngIf="recomendationEnabled"
+                mat-menu-item
+                (click)="multiselectWrapper(multiselectService.setRecommendation(selectedRows))"
+            >
                 <mat-icon>report</mat-icon>
                 <!-- TODO: better icon -->
                 <span translate>Set recommendation</span>
             </button>
-            <button mat-menu-item *ngIf="categories.length"
-                (click)="multiselectWrapper(multiselectService.setCategory(selectedRows))">
+            <button
+                mat-menu-item
+                *ngIf="categories.length"
+                (click)="multiselectWrapper(multiselectService.setCategory(selectedRows))"
+            >
                 <mat-icon>device_hub</mat-icon>
                 <!-- TODO: icon -->
                 <span translate>Set category</span>
             </button>
-            <button mat-menu-item *ngIf="motionBlocks.length"
-                (click)="multiselectWrapper(multiselectService.setMotionBlock(selectedRows))">
+            <button
+                mat-menu-item
+                *ngIf="motionBlocks.length"
+                (click)="multiselectWrapper(multiselectService.setMotionBlock(selectedRows))"
+            >
                 <mat-icon>widgets</mat-icon>
                 <!-- TODO: icon -->
                 <span translate>Set motion block</span>
@@ -222,8 +232,11 @@
                 <!-- TODO: icon -->
                 <span translate>Add/remove submitters</span>
             </button>
-            <button mat-menu-item *ngIf="tags.length"
-                (click)="multiselectWrapper(multiselectService.changeTags(selectedRows))">
+            <button
+                mat-menu-item
+                *ngIf="tags.length"
+                (click)="multiselectWrapper(multiselectService.changeTags(selectedRows))"
+            >
                 <mat-icon>bookmarks</mat-icon>
                 <!-- TODO: icon -->
                 <span translate>Add/remove tags</span>
@@ -247,4 +260,3 @@
         </div>
     </div>
 </mat-menu>
-

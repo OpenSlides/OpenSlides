@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
 import { Observable } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
@@ -67,7 +68,8 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         private readonly lineNumbering: LinenumberingService,
         private readonly diff: DiffService,
         private treeService: TreeService,
-        private personalNoteService: PersonalNoteService
+        private personalNoteService: PersonalNoteService,
+        private translate: TranslateService
     ) {
         super(DS, mapperService, Motion, [Category, User, Workflow, Item, MotionBlock, Mediafile]);
     }
@@ -700,5 +702,85 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      */
     public hasAmendments(motion: ViewMotion): boolean {
         return this.getViewModelList().filter(allMotions => allMotions.parent_id === motion.id).length > 0;
+    }
+
+    /**
+     * updates the state Extension with the string given, if the current workflow allows for it
+     *
+     * @param viewMotion
+     * @param value
+     */
+    public async setStateExtension(viewMotion: ViewMotion, value: string): Promise<void> {
+        if (viewMotion.state.show_state_extension_field) {
+            return this.update({ state_extension: value }, viewMotion);
+        }
+    }
+
+    /**
+     * updates the recommendation extension with the string given, if the current workflow allows for it
+     *
+     * @param viewMotion
+     * @param value
+     */
+    public async setRecommendationExtension(viewMotion: ViewMotion, value: string): Promise<void> {
+        if (viewMotion.recommendation.show_recommendation_extension_field) {
+            return this.update({ recommendation_extension: value }, viewMotion);
+        }
+    }
+
+    /**
+     * Get the label for the motion's current state with the extension
+     * attached (if present). For cross-referencing other motions, `[motion:id]`
+     * will replaced by the referenced motion's identifier (see {@link solveExtensionPlaceHolder})
+     *
+     * @param motion
+     * @returns the translated state with the extension attached
+     */
+    public getExtendedStateLabel(motion: ViewMotion): string {
+        let rec = this.translate.instant(motion.state.name);
+        if (motion.stateExtension && motion.state.show_state_extension_field) {
+            rec += ' ' + this.solveExtensionPlaceHolder(motion.stateExtension);
+        }
+        return rec;
+    }
+
+    /**
+     * Get the label for the motion's current recommendation with the extension
+     * attached (if present)
+     *
+     * @param motion
+     * @returns the translated extension with the extension attached, 'not set'
+     * if no recommendation si set
+     */
+    public getExtendedRecommendationLabel(motion: ViewMotion): string {
+        if (!motion.recommendation) {
+            return this.translate.instant('not set');
+        }
+        let rec = this.translate.instant(motion.recommendation.recommendation_label);
+        if (motion.recommendationExtension && motion.recommendation.show_recommendation_extension_field) {
+            rec += ' ' + this.solveExtensionPlaceHolder(motion.recommendationExtension);
+        }
+        return rec;
+    }
+
+    /**
+     * Replaces any motion placeholder (`[motion:id]`) with the motion's title(s)
+     *
+     * @param value
+     * @returns the string with the motion titles replacing the placeholders, '??' strings for errors
+     */
+    public solveExtensionPlaceHolder(value: string): string {
+        const beg = value.indexOf('[motion:');
+        const end = value.indexOf(']');
+        if (beg > -1 && (end > -1 && end > beg)) {
+            const id = Number(value.substring(beg + 8, end));
+            const referedMotion = Number.isNaN(id) ? null : this.getViewModel(id);
+            const title = referedMotion ? referedMotion.identifier : '??';
+            value = value.substring(0, beg) + title + value.substring(end + 1);
+            // recursively check for additional occurrences
+            return this.solveExtensionPlaceHolder(value);
+        } else {
+            return value;
+        }
     }
 }
