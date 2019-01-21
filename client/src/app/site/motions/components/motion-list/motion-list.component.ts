@@ -212,4 +212,22 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
             this.raiseError(e);
         }
     }
+
+    /**
+     * Shortens a motion title according to the current size of the 'title' column
+     * (TODO: Still not functioning with zoomed page)
+     *
+     * @param row
+     * @returns a shortened title if the title is too long
+     */
+    public shortenTitle(row: ViewMotion): string {
+        const pixelsPerChar = 10; // TODO: make this depend on current font size
+        const defi: HTMLElement[] = this.table._getRenderedRows(this.table._rowOutlet);
+        const element: HTMLCollectionOf<Element> = defi[1].getElementsByClassName('cdk-column-title');
+        const maxChars = Math.floor(element[0].clientWidth / pixelsPerChar);
+        if (row.title.length < maxChars) {
+            return row.title;
+        }
+        return row.title.substr(0, maxChars - 2) + '..';
+    }
 }

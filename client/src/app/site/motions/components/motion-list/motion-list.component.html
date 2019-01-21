@@ -51,9 +51,10 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
             <mat-cell *matCellDef="let motion">
                 <div class="innerTable">
-                    <span class="motion-list-title">{{ motion.title }}
+                    <span class="motion-list-title" matTooltip="{{ motion.title }}">
+                        {{ shortenTitle(motion) }}
                         <span>
-                            <mat-icon inline>{{ motion.star ? 'star' : 'star_border' }}</mat-icon>
+                            <mat-icon inline>{{ motion.star ? 'star' : '' }}</mat-icon>
                         </span>
                     </span>
 
