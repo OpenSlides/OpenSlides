@@ -1,6 +1,6 @@
 <os-head-bar [nav]="false">
     <!-- Title -->
-    <div class="title-slot"><h2 translate>Import users</h2></div>
+    <div class="title-slot"><h2 translate>Import participants</h2></div>
 
     <div class="menu-slot">
         <button *ngIf="hasFile && newCount" mat-button (click)="doImport()">
@@ -12,7 +12,7 @@
     <mat-tab-group (selectedTabChange)="onTabChange()">
         <mat-tab label="{{ 'CSV import' | translate }}">
             <span translate
-                >Requires comma or semicolon separated values with these column header names in the first row</span
+                >Required comma or semicolon separated values with these column header names in the first row:</span
             >: <br />
             <div class="code red-warning-text">
                 <span translate>Title</span>, <span translate>Given name</span>, <span translate>Surname</span> ,
@@ -47,7 +47,7 @@
                     </mat-select>
                 </mat-form-field>
                 <mat-form-field>
-                    <mat-label translate> Column Separator</mat-label>
+                    <mat-label translate>Column separator</mat-label>
                     <mat-select class="selection" (selectionChange)="selectColSep($event)" value="">
                         <mat-option *ngFor="let option of columnSeparators" [value]="option.value">
                             {{ option.label | translate }}
@@ -73,49 +73,50 @@
                         #fileInput
                         (change)="onSelectFile($event)"
                     />
-                    <button mat-button color="accent" onclick="document.getElementById('user-import-file-input').click()">
+                    <button
+                        mat-button
+                        color="accent"
+                        onclick="document.getElementById('user-import-file-input').click()"
+                    >
                         <span translate> Select file</span>
                     </button>
                 </div>
             </div>
         </mat-tab>
         <mat-tab label="{{ 'Text import' | translate }}">
-                <div [formGroup]="textAreaForm">
-                    <div>
-                        <span translate>
-                            Copy and paste your participant names in this textbox.</span>
-                        <span translate>
-                            Keep each person in a single line.
-                        </span><br />
-                        <span translate> Comma separated names will be read as 'Surname(s), given name(s)'. </span>
-                    </div>
-                    <mat-form-field>
-                        <textarea
-                            matInput
-                            formControlName="inputtext"
-                            placeholder="{{ 'Insert users here' | translate }}"
-                            cdkTextareaAutosize
-                            cdkAutosizeMinRows="3"
-                            cdkAutosizeMaxRows="10"
-                        ></textarea>
-                    </mat-form-field>
-                </div>
+            <div [formGroup]="textAreaForm">
                 <div>
-                    <button mat-button color="accent" (click)="parseTextArea()"><span translate>Preview</span></button>
+                    <span translate> Copy and paste your participant names in this textbox.</span>
+                    <span translate> Keep each person in a single line. </span><br />
+                    <span translate> Comma separated names will be read as 'Surname, given name(s)'. </span>
                 </div>
-            </mat-tab>
+                <mat-form-field>
+                    <textarea
+                        matInput
+                        formControlName="inputtext"
+                        placeholder="{{ 'Insert participants here' | translate }}"
+                        cdkTextareaAutosize
+                        cdkAutosizeMinRows="3"
+                        cdkAutosizeMaxRows="10"
+                    ></textarea>
+                </mat-form-field>
+            </div>
+            <div>
+                <button mat-button color="accent" (click)="parseTextArea()"><span translate>Preview</span></button>
+            </div>
+        </mat-tab>
     </mat-tab-group>
 </mat-card>
 
 <!-- preview table -->
 <mat-card *ngIf="hasFile" class="os-form-card import-table">
-    <h3 translate> Preview</h3>
+    <h3 translate>Preview</h3>
     <div class="summary">
         <!-- new entries -->
         <div *ngIf="newCount">
             &nbsp;
             <mat-icon inline>playlist_add</mat-icon>
-            <span>&nbsp;{{ newCount }}&nbsp;</span> <span translate>User(s) will be imported.</span>
+            <span>&nbsp;{{ newCount }}&nbsp;</span> <span translate>Participant(s) will be imported.</span>
         </div>
         <!-- errors/duplicates -->
         <div *ngIf="nonImportableCount" class="red-warning-text">
@@ -127,25 +128,23 @@
         <div *ngIf="doneCount" class="green-text">
             &nbsp;
             <mat-icon inline>done</mat-icon>
-            <span>&nbsp;{{ doneCount }}&nbsp;</span> <span translate>Users have been imported.</span>
+            <span>&nbsp;{{ doneCount }}&nbsp;</span> <span translate>Participants have been imported.</span>
         </div>
     </div>
     <div *ngIf="newCount">
-        <span translate>Click on 'import' (right top corner) to import the new users.
-        </span>
+        <span translate>After verifiy the preview click on 'import' please (see top right).</span>
     </div>
     <mat-select *ngIf="nonImportableCount" class="filter-imports" [(value)]="shown" (selectionChange)="setFilter()">
-        <mat-option value="all" translate> Show all </mat-option>
-        <mat-option value="error" translate> Show errors only </mat-option>
-        <mat-option value="noerror" translate> Show correct entries </mat-option>
+        <mat-option value="all" translate>Show all</mat-option>
+        <mat-option value="error" translate>Show errors only</mat-option>
+        <mat-option value="noerror" translate>Show correct entries only</mat-option>
     </mat-select>
     <div class="table-container">
         <table mat-table class="on-transition-fade" [dataSource]="dataSource" matSort>
             <!-- Status column -->
             <ng-container matColumnDef="status" sticky>
-
                 <mat-header-cell *matHeaderCellDef class="first-column"></mat-header-cell>
-                <mat-cell *matCellDef="let entry"  class="first-column">
+                <mat-cell *matCellDef="let entry" class="first-column">
                     <div *ngIf="entry.status === 'error'">
                         <mat-icon
                             class="red-warning-text"
@@ -154,20 +153,20 @@
                             {{ getActionIcon(entry) }}
                         </mat-icon>
                         <mat-icon
-                        color="warn"
-                        *ngIf="hasError(entry, 'ParsingErrors')"
-                        matTooltip="{{ getVerboseError('ParsingErrors') | translate }}"
-                    >
-                        warning
-                    </mat-icon>
+                            color="warn"
+                            *ngIf="hasError(entry, 'ParsingErrors')"
+                            matTooltip="{{ getVerboseError('ParsingErrors') | translate }}"
+                        >
+                            warning
+                        </mat-icon>
                     </div>
                     <div *ngIf="entry.status === 'new'">
-                        <mat-icon matTooltip="{{ 'User will be imported' | translate }}">
+                        <mat-icon matTooltip="{{ 'Participant will be imported' | translate }}">
                             {{ getActionIcon(entry) }}
                         </mat-icon>
                     </div>
                     <div *ngIf="entry.status === 'done'">
-                        <mat-icon matTooltip="{{ 'User has been imported' | translate }}">
+                        <mat-icon matTooltip="{{ 'Participant has been imported' | translate }}">
                             {{ getActionIcon(entry) }}
                         </mat-icon>
                     </div>
@@ -180,10 +179,10 @@
                 <mat-cell *matCellDef="let entry">
                     <span *ngIf="nameErrors(entry)">
                         <mat-icon color="warn" inline matTooltip="{{ nameErrors(entry) | translate }}">
-                        warning
-                    </mat-icon>
-                    &nbsp;
-                </span>
+                            warning
+                        </mat-icon>
+                        &nbsp;
+                    </span>
                     {{ entry.newEntry.title }}
                 </mat-cell>
             </ng-container>
@@ -231,10 +230,10 @@
                 <mat-cell *matCellDef="let entry">
                     <div *ngIf="entry.newEntry.csvGroups.length">
                         <span *ngIf="hasError(entry, 'Groups')">
-                            <mat-icon color="warn"matTooltip="{{ getVerboseError('Groups') | translate }}">
+                            <mat-icon color="warn" matTooltip="{{ getVerboseError('Groups') | translate }}">
                                 warning
                             </mat-icon>
-                            </span>
+                        </span>
                         <span *ngFor="let group of entry.newEntry.csvGroups">
                             {{ group.name }}
                             <mat-icon class="newBadge" color="accent" inline *ngIf="!group.id">add</mat-icon>
@@ -250,19 +249,19 @@
             </ng-container>
 
             <ng-container matColumnDef="is_active">
-                <mat-header-cell *matHeaderCellDef translate>Is Active</mat-header-cell>
+                <mat-header-cell *matHeaderCellDef translate>Is active</mat-header-cell>
                 <mat-cell *matCellDef="let entry">
                     <mat-checkbox disabled [checked]="entry.newEntry.is_active"> </mat-checkbox>
                 </mat-cell>
             </ng-container>
             <ng-container matColumnDef="is_present">
-                <mat-header-cell *matHeaderCellDef translate>Is Present</mat-header-cell>
+                <mat-header-cell *matHeaderCellDef translate>Is present</mat-header-cell>
                 <mat-cell *matCellDef="let entry">
                     <mat-checkbox disabled [checked]="entry.newEntry.is_present"> </mat-checkbox>
                 </mat-cell>
             </ng-container>
             <ng-container matColumnDef="is_committee">
-                <mat-header-cell *matHeaderCellDef translate>Is Committee</mat-header-cell>
+                <mat-header-cell *matHeaderCellDef translate>Is committee</mat-header-cell>
                 <mat-cell *matCellDef="let entry">
                     <mat-checkbox disabled [checked]="entry.newEntry.is_committee"> </mat-checkbox>
                 </mat-cell>

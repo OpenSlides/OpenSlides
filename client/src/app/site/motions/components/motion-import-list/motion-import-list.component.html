@@ -10,7 +10,7 @@
 </os-head-bar>
 
 <mat-card class="os-form-card import-table">
-    <span translate>Requires comma or semicolon separated values with these column header names in the first row</span>:
+    <span translate>Required comma or semicolon separated values with these column header names in the first row:</span>
     <br />
     <div class="code red-warning-text">
         <span translate>Identifier</span>, <span translate>Title</span>, <span translate>Text</span>,
@@ -39,7 +39,7 @@
             </mat-select>
         </mat-form-field>
         <mat-form-field>
-            <mat-label translate> Column Separator</mat-label>
+            <mat-label translate>Column separator</mat-label>
             <mat-select class="selection" (selectionChange)="selectColSep($event)" value="">
                 <mat-option *ngFor="let option of columnSeparators" [value]="option.value">
                     {{ option.label | translate }}
@@ -96,8 +96,7 @@
         </div>
     </div>
     <div *ngIf="newCount">
-        <span translate>Click on 'import' (right top corner) to import the new motions.
-        </span>
+        <span translate>After verifiy the preview click on 'import' please (see top right).</span>
     </div>
     <div>
         <mat-select *ngIf="nonImportableCount" class="filter-imports" [(value)]="shown" (selectionChange)="setFilter()">

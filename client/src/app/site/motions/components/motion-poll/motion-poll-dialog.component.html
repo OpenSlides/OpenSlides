@@ -1,4 +1,4 @@
-<h2><span translate>Vote form</span></h2>
+<h2><span translate>Voting result</span></h2>
 <div class="meta-text">
     <span translate>Special values</span>:<br />
     <mat-chip>-1</mat-chip>&nbsp;=&nbsp;
@@ -8,7 +8,7 @@
 </div>
 <div *ngFor="let key of pollKeys">
     <mat-form-field>
-        <mat-label translate>{{ getLabel(key) | translate }}</mat-label>
+        <mat-label>{{ getLabel(key) | translate }}</mat-label>
         <input type="number" matInput [(ngModel)]="data[key]" />
         <!-- TODO mark required fields -->
     </mat-form-field>

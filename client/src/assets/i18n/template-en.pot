@@ -34,16 +34,24 @@ msgstr ""
 msgid "Activate statute amendments"
 msgstr ""
 
-msgid "Add groups"
+msgid "Active filters"
 msgstr ""
 
 msgid "Add me"
 msgstr ""
 
-msgid "Add submitters"
+msgid "Add/remove groups ..."
 msgstr ""
 
-msgid "Add tags"
+msgid "Add/remove submitters"
+msgstr ""
+
+msgid "Add/remove tags"
+msgstr ""
+
+msgid ""
+"Additional columns after the required ones may be present and won't affect "
+"the import."
 msgstr ""
 
 msgid "Adjourn"
@@ -53,6 +61,9 @@ msgid "Adjournment"
 msgstr ""
 
 msgid "Admin"
+msgstr ""
+
+msgid "After verifiy the preview click on 'import' please (see top right)."
 msgstr ""
 
 msgid "Agenda"
@@ -109,6 +120,14 @@ msgstr ""
 msgid "Arabic"
 msgstr ""
 
+msgid "Are you sure you want to delete this vote?"
+msgstr ""
+
+msgid ""
+"At least given name or surname have to be filled in. All other fields are "
+"optional and may be empty."
+msgstr ""
+
 msgid "Attachments"
 msgstr ""
 
@@ -131,6 +150,9 @@ msgid "Begin of event"
 msgstr ""
 
 msgid "Begin speech"
+msgstr ""
+
+msgid "CSV import"
 msgstr ""
 
 msgid "Call list"
@@ -250,10 +272,16 @@ msgstr ""
 msgid "Change password"
 msgstr ""
 
+msgid "Change password for"
+msgstr ""
+
 msgid "Change recommendation"
 msgstr ""
 
 msgid "Change recommendations"
+msgstr ""
+
+msgid "Changed by"
 msgstr ""
 
 msgid "Changed version"
@@ -262,16 +290,28 @@ msgstr ""
 msgid "Choose 0 to disable the supporting system."
 msgstr ""
 
+msgid "Clear all"
+msgstr ""
+
 msgid "Clear list"
 msgstr ""
 
 msgid "Close"
 msgstr ""
 
+msgid "Close list of speakers"
+msgstr ""
+
 msgid "Collapse all"
 msgstr ""
 
 msgid "Color for blanked projector"
+msgstr ""
+
+msgid "Column separator"
+msgstr ""
+
+msgid "Comma separated names will be read as 'Surname, given name(s)'."
 msgstr ""
 
 msgid "Comment"
@@ -286,7 +326,13 @@ msgstr ""
 msgid "Complex Workflow"
 msgstr ""
 
-msgid "Content"
+msgid "Confirm new password"
+msgstr ""
+
+msgid "Copy and paste your participant names in this textbox."
+msgstr ""
+
+msgid "Countdowns"
 msgstr ""
 
 msgid "Couple countdown with the list of speakers"
@@ -354,6 +400,12 @@ msgstr ""
 msgid "Delete whole history"
 msgstr ""
 
+msgid "Deletion"
+msgstr ""
+
+msgid "Deselect all"
+msgstr ""
+
 msgid "Designates whether this user is in the room."
 msgstr ""
 
@@ -386,16 +438,31 @@ msgstr ""
 msgid "Do you want to delete this file?"
 msgstr ""
 
+msgid "Done"
+msgstr ""
+
+msgid "Download CSV example file"
+msgstr ""
+
 msgid "Drop files into this area OR select files"
+msgstr ""
+
+msgid "Duration"
 msgstr ""
 
 msgid "Edit"
 msgstr ""
 
-msgid "Edit category:"
+msgid "Edit category"
 msgstr ""
 
 msgid "Edit comment field:"
+msgstr ""
+
+msgid "Edit details"
+msgstr ""
+
+msgid "Edit details for"
 msgstr ""
 
 msgid "Edit profile"
@@ -407,10 +474,19 @@ msgstr ""
 msgid "Edit the whole motion text"
 msgstr ""
 
+msgid "Edit title"
+msgstr ""
+
+msgid "Edit topic"
+msgstr ""
+
 msgid "Election method"
 msgstr ""
 
 msgid "Elections"
+msgstr ""
+
+msgid "Element"
 msgstr ""
 
 msgid "Email"
@@ -432,6 +508,12 @@ msgid "Enable numbering for agenda items"
 msgstr ""
 
 msgid "Enable participant presence view"
+msgstr ""
+
+msgid "Enable/disable account ..."
+msgstr ""
+
+msgid "Encoding of the file"
 msgstr ""
 
 msgid "End speech"
@@ -467,9 +549,6 @@ msgstr ""
 msgid "Exit"
 msgstr ""
 
-msgid "Exit multiselect"
-msgstr ""
-
 msgid "Expand all"
 msgstr ""
 
@@ -482,9 +561,6 @@ msgstr ""
 msgid "Export as CSV"
 msgstr ""
 
-msgid "FILTER"
-msgstr ""
-
 msgid "File information"
 msgstr ""
 
@@ -494,10 +570,25 @@ msgstr ""
 msgid "Files"
 msgstr ""
 
+msgid "Filter"
+msgstr ""
+
+msgid "Filter options"
+msgstr ""
+
+msgid "Filters"
+msgstr ""
+
 msgid "Final version"
 msgstr ""
 
 msgid "Finished"
+msgstr ""
+
+msgid "Follow recommendation"
+msgstr ""
+
+msgid "Follow recommendations for all motions"
 msgstr ""
 
 msgid "Font color of projector header and footer"
@@ -566,7 +657,21 @@ msgstr ""
 msgid "Identifier"
 msgstr ""
 
-msgid "Import ..."
+msgid ""
+"Identifier, reason, submitter, category, origin and motion block are "
+"optional and may be empty."
+msgstr ""
+
+msgid "Import"
+msgstr ""
+
+msgid "Import motions"
+msgstr ""
+
+msgid "Import participants"
+msgstr ""
+
+msgid "Import topics"
 msgstr ""
 
 msgid "Include the sequential number in PDF and DOCX"
@@ -576,6 +681,15 @@ msgid "Initial password"
 msgstr ""
 
 msgid "Input format: DD.MM.YYYY HH:MM"
+msgstr ""
+
+msgid "Insert participants here"
+msgstr ""
+
+msgid "Insert topics here"
+msgstr ""
+
+msgid "Insertion"
 msgstr ""
 
 msgid "Installed plugins"
@@ -596,16 +710,16 @@ msgstr ""
 msgid "Is committee"
 msgstr ""
 
-msgid "Is inactive"
-msgstr ""
-
-msgid "Is no committee"
-msgstr ""
-
-msgid "Is not present"
-msgstr ""
-
 msgid "Is present"
+msgstr ""
+
+msgid "Item number"
+msgstr ""
+
+msgid "Keep each item in a single line."
+msgstr ""
+
+msgid "Keep each person in a single line."
 msgstr ""
 
 msgid "Last speakers"
@@ -647,19 +761,43 @@ msgstr ""
 msgid "Mark speaker"
 msgstr ""
 
-msgid "Meta information"
-msgstr ""
-
 msgid "Motion"
 msgstr ""
 
 msgid "Motion block"
 msgstr ""
 
+msgid "Motion blocks"
+msgstr ""
+
+msgid "Motion deleted"
+msgstr ""
+
+msgid "Motion has been imported"
+msgstr ""
+
+msgid "Motion log"
+msgstr ""
+
 msgid "Motion preamble"
 msgstr ""
 
+msgid "Motion text"
+msgstr ""
+
+msgid "Motion updated"
+msgstr ""
+
+msgid "Motion will be imported"
+msgstr ""
+
+msgid "Motion(s) will be imported."
+msgstr ""
+
 msgid "Motions"
+msgstr ""
+
+msgid "Motions have been imported."
 msgstr ""
 
 msgid "Move to agenda item"
@@ -680,7 +818,7 @@ msgstr ""
 msgid "Needs review"
 msgstr ""
 
-msgid "New"
+msgid "New Projector"
 msgstr ""
 
 msgid "New amendment"
@@ -698,6 +836,12 @@ msgstr ""
 msgid "New motion"
 msgstr ""
 
+msgid "New motion block"
+msgstr ""
+
+msgid "New participant"
+msgstr ""
+
 msgid "New password"
 msgstr ""
 
@@ -707,6 +851,12 @@ msgstr ""
 msgid "New tag name"
 msgstr ""
 
+msgid "New topic"
+msgstr ""
+
+msgid "New vote"
+msgstr ""
+
 msgid "Next"
 msgstr ""
 
@@ -714,9 +864,6 @@ msgid "No change recommendations yet"
 msgstr ""
 
 msgid "No changes at the text."
-msgstr ""
-
-msgid "No choices available"
 msgstr ""
 
 msgid "No comment"
@@ -741,6 +888,9 @@ msgid "No information available"
 msgstr ""
 
 msgid "No personal note"
+msgstr ""
+
+msgid "No search result found for"
 msgstr ""
 
 msgid "No statute paragraphs"
@@ -769,7 +919,13 @@ msgstr ""
 msgid "Number of last speakers to be shown on the projector"
 msgstr ""
 
+msgid "Number set"
+msgstr ""
+
 msgid "Numbered per category"
+msgstr ""
+
+msgid "Numbering"
 msgstr ""
 
 msgid "Numbering prefix for agenda items"
@@ -784,7 +940,7 @@ msgstr ""
 msgid "Offline mode: You can use OpenSlides but changes are not saved."
 msgstr ""
 
-msgid "Ok"
+msgid "Old password"
 msgstr ""
 
 msgid "One email was send sucessfully."
@@ -794,6 +950,9 @@ msgid "Only for internal notes."
 msgstr ""
 
 msgid "Open"
+msgstr ""
+
+msgid "Open list of speakers"
 msgstr ""
 
 msgid "Origin"
@@ -829,10 +988,28 @@ msgstr ""
 msgid "Parallel upload"
 msgstr ""
 
+msgid "Parent item"
+msgstr ""
+
+msgid "Participant has been imported"
+msgstr ""
+
 msgid "Participant number"
 msgstr ""
 
+msgid "Participant will be imported"
+msgstr ""
+
+msgid "Participant(s) will be imported."
+msgstr ""
+
 msgid "Participants"
+msgstr ""
+
+msgid "Participants have been imported."
+msgstr ""
+
+msgid "Paste/write your topics in this textbox."
 msgstr ""
 
 msgid "Permission"
@@ -851,6 +1028,9 @@ msgid "Please enter a valid email address"
 msgstr ""
 
 msgid "Please enter your new password"
+msgstr ""
+
+msgid "Please fill in all required values"
 msgstr ""
 
 msgid "Preamble text for PDF and DOCX documents (all motions)"
@@ -874,6 +1054,12 @@ msgstr ""
 msgid "Presentation and assembly system"
 msgstr ""
 
+msgid "Preview"
+msgstr ""
+
+msgid "Print ballot papers"
+msgstr ""
+
 msgid "Privacy Policy"
 msgstr ""
 
@@ -895,6 +1081,12 @@ msgstr ""
 msgid "Projector logo"
 msgstr ""
 
+msgid "Projector messages"
+msgstr ""
+
+msgid "Projectors"
+msgstr ""
+
 msgid "Public"
 msgstr ""
 
@@ -908,6 +1100,9 @@ msgid "Reason"
 msgstr ""
 
 msgid "Recommendation"
+msgstr ""
+
+msgid "Recommendation set to {arg1}"
 msgstr ""
 
 msgid "Refer to committee"
@@ -939,19 +1134,27 @@ msgid ""
 "state"
 msgstr ""
 
-msgid "Remove groups"
+msgid "Remove from motion block"
 msgstr ""
 
 msgid "Remove me"
 msgstr ""
 
-msgid "Remove tags"
+msgid "Replacement"
 msgstr ""
 
 msgid "Required"
 msgstr ""
 
+msgid ""
+"Required comma or semicolon separated values with these column header names "
+"in the first row:"
+msgstr ""
+
 msgid "Required majority"
+msgstr ""
+
+msgid "Reset"
 msgstr ""
 
 msgid "Reset password"
@@ -969,16 +1172,31 @@ msgstr ""
 msgid "Roman"
 msgstr ""
 
-msgid "SORT"
+msgid "Save"
 msgstr ""
 
-msgid "Save"
+msgid "Search"
+msgstr ""
+
+msgid "Search player"
+msgstr ""
+
+msgid "Search results"
 msgstr ""
 
 msgid "Searching for candidates"
 msgstr ""
 
+msgid "Select all"
+msgstr ""
+
+msgid "Select file"
+msgstr ""
+
 msgid "Select or search new speaker ..."
+msgstr ""
+
+msgid "Select or search new submitter ..."
 msgstr ""
 
 msgid "Select paragraph"
@@ -993,16 +1211,34 @@ msgstr ""
 msgid "Separator used for all csv exports and examples"
 msgstr ""
 
+msgid "Sequential number"
+msgstr ""
+
 msgid "Serially numbered"
 msgstr ""
 
 msgid "Set category"
 msgstr ""
 
-msgid "Set invisible"
+msgid "Set committee ..."
+msgstr ""
+
+msgid "Set hidden"
+msgstr ""
+
+msgid "Set internal"
 msgstr ""
 
 msgid "Set it manually"
+msgstr ""
+
+msgid "Set motion block"
+msgstr ""
+
+msgid "Set presence ..."
+msgstr ""
+
+msgid "Set public"
 msgstr ""
 
 msgid "Set recommendation"
@@ -1011,25 +1247,40 @@ msgstr ""
 msgid "Set status"
 msgstr ""
 
-msgid "Set visible"
-msgstr ""
-
 msgid "Settings"
 msgstr ""
 
 msgid "Short description of event"
 msgstr ""
 
+msgid "Show all"
+msgstr ""
+
 msgid "Show amendments together with motions"
+msgstr ""
+
+msgid "Show correct entries"
+msgstr ""
+
+msgid "Show correct entries only"
 msgstr ""
 
 msgid "Show entire motion text"
 msgstr ""
 
+msgid "Show errors only"
+msgstr ""
+
 msgid "Show logo on projector"
 msgstr ""
 
+msgid "Show motion log"
+msgstr ""
+
 msgid "Show orange countdown in the last x seconds of speaking time"
+msgstr ""
+
+msgid "Show password"
 msgstr ""
 
 msgid "Show the clock on projector"
@@ -1047,6 +1298,12 @@ msgstr ""
 msgid "Simple majority"
 msgstr ""
 
+msgid "Slide options"
+msgstr ""
+
+msgid "Sort"
+msgstr ""
+
 msgid "Sort ..."
 msgstr ""
 
@@ -1054,6 +1311,9 @@ msgid "Sort categories by"
 msgstr ""
 
 msgid "Sort name of participants by"
+msgstr ""
+
+msgid "Special values"
 msgstr ""
 
 msgid "Staff"
@@ -1069,6 +1329,9 @@ msgid "Start time"
 msgstr ""
 
 msgid "State"
+msgstr ""
+
+msgid "State set to {arg1}"
 msgstr ""
 
 msgid "Statute"
@@ -1092,7 +1355,13 @@ msgstr ""
 msgid "Structure level"
 msgstr ""
 
+msgid "Submitter"
+msgstr ""
+
 msgid "Submitters"
+msgstr ""
+
+msgid "Submitters changed"
 msgstr ""
 
 msgid "Summary of changes"
@@ -1102,6 +1371,9 @@ msgid "Support"
 msgstr ""
 
 msgid "Supporters"
+msgstr ""
+
+msgid "Supporters changed"
 msgstr ""
 
 msgid "Surname"
@@ -1116,6 +1388,15 @@ msgstr ""
 msgid "Tags"
 msgstr ""
 
+msgid "Text"
+msgstr ""
+
+msgid "Text import"
+msgstr ""
+
+msgid "Text separator"
+msgstr ""
+
 msgid "The 100 % base of a voting result consists of"
 msgstr ""
 
@@ -1126,6 +1407,15 @@ msgid "The assembly may decide:"
 msgstr ""
 
 msgid "The event manager hasn't set up a privacy policy yet."
+msgstr ""
+
+msgid "The file has too few columns to be parsed properly."
+msgstr ""
+
+msgid "The file seems to have additional columns. They will be ignored."
+msgstr ""
+
+msgid "The file seems to have some ommitted columns. They will be considered empty."
 msgstr ""
 
 msgid "The link is broken. Please contact your system administrator."
@@ -1160,10 +1450,10 @@ msgstr ""
 msgid "This prefix will be set if you run the automatic agenda numbering."
 msgstr ""
 
-msgid "This will add the following submitters of all selected motions:"
+msgid "This will add or remove the following submitters for all selected motions:"
 msgstr ""
 
-msgid "This will add the following tags to all selected motions:"
+msgid "This will add or remove the following tags for all selected motions:"
 msgstr ""
 
 msgid "This will delete all selected motions."
@@ -1172,22 +1462,22 @@ msgstr ""
 msgid "This will move all selected motions as childs to:"
 msgstr ""
 
-msgid "This will remove the following submitters from all selected motions:"
+msgid "This will set the following category for all selected motions:"
 msgstr ""
 
-msgid "This will remove the following tags from all selected motions:"
+msgid "This will set the following motion block for all selected motions:"
 msgstr ""
 
-msgid "This will set the category of all selected motions to:"
+msgid "This will set the following recommendation for all selected motions:"
 msgstr ""
 
-msgid "This will set the recommendation for all selected motions to:"
-msgstr ""
-
-msgid "This will set the state of all selected motions to:"
+msgid "This will set the following state for all selected motions:"
 msgstr ""
 
 msgid "Three-quarters majority"
+msgstr ""
+
+msgid "Timestamp"
 msgstr ""
 
 msgid "Title"
@@ -1202,10 +1492,28 @@ msgstr ""
 msgid "Title for access data and welcome PDF"
 msgstr ""
 
+msgid "Title is required. All other fields are optional and may be empty."
+msgstr ""
+
 msgid "Topic"
 msgstr ""
 
+msgid "Topic has been imported"
+msgstr ""
+
+msgid "Topic will be imported"
+msgstr ""
+
+msgid "Topics have been imported."
+msgstr ""
+
+msgid "Topics(s) will be imported."
+msgstr ""
+
 msgid "Two-thirds majority"
+msgstr ""
+
+msgid "Type"
 msgstr ""
 
 msgid "Unsupport"
@@ -1240,10 +1548,22 @@ msgstr ""
 msgid "Visible"
 msgstr ""
 
+msgid "Vote created"
+msgstr ""
+
+msgid "Vote deleted"
+msgstr ""
+
+msgid "Vote updated"
+msgstr ""
+
 msgid "Voting"
 msgstr ""
 
 msgid "Voting and ballot papers"
+msgstr ""
+
+msgid "Voting result"
 msgstr ""
 
 msgid "WEP"
@@ -1289,6 +1609,9 @@ msgstr ""
 msgid "Workflow of new statute amendments"
 msgstr ""
 
+msgid "Wrong file type detected. Import failed."
+msgstr ""
+
 msgid "Yes"
 msgstr ""
 
@@ -1304,6 +1627,9 @@ msgstr ""
 msgid "Yes/No/Abstain per candidate"
 msgstr ""
 
+msgid "You are not supposed to be here..."
+msgstr ""
+
 msgid "You are using the history mode of OpenSlides. Changes will not be saved."
 msgstr ""
 
@@ -1313,6 +1639,9 @@ msgid ""
 msgstr ""
 
 msgid "You can use {event_name} as a placeholder."
+msgstr ""
+
+msgid "You override the personally set password!"
 msgstr ""
 
 msgid "Your login for {event_name}"
@@ -1342,10 +1671,25 @@ msgstr ""
 msgid "by"
 msgstr ""
 
+msgid "contribution"
+msgstr ""
+
 msgid "disabled"
 msgstr ""
 
+msgid "entries will be ommitted."
+msgstr ""
+
+msgid "errors"
+msgstr ""
+
 msgid "inline"
+msgstr ""
+
+msgid "majority"
+msgstr ""
+
+msgid "motions-example"
 msgstr ""
 
 msgid "needed"
@@ -1363,16 +1707,28 @@ msgstr ""
 msgid "not decided"
 msgstr ""
 
+msgid "not reached."
+msgstr ""
+
 msgid "not set"
 msgstr ""
 
+msgid "of"
+msgstr ""
+
 msgid "outside"
+msgstr ""
+
+msgid "participants-example"
 msgstr ""
 
 msgid "permitted"
 msgstr ""
 
 msgid "published"
+msgstr ""
+
+msgid "reached."
 msgstr ""
 
 msgid "refered to committee"
@@ -1384,7 +1740,10 @@ msgstr ""
 msgid "rejected (not authorized)"
 msgstr ""
 
-msgid "remove submitters"
+msgid "result"
+msgstr ""
+
+msgid "results"
 msgstr ""
 
 msgid "selected"
@@ -1394,6 +1753,9 @@ msgid "submitted"
 msgstr ""
 
 msgid "supporters"
+msgstr ""
+
+msgid "undocumented"
 msgstr ""
 
 msgid "withdrawed"

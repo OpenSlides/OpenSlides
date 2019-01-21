@@ -20,7 +20,7 @@
 <mat-menu #menu="matMenu">
     <button mat-menu-item *ngFor="let registeredModel of registeredModels" (click)="toggleModel(registeredModel)">
         <mat-checkbox [checked]="registeredModel.enabled" (click)="$event.preventDefault()">
-            <span translate>{{ registeredModel.verboseNamePlural }}</span>
+            <span>{{ registeredModel.verboseNamePlural | translate }}</span>
         </mat-checkbox>
     </button>
 </mat-menu>
@@ -31,7 +31,7 @@
 
 <ng-container *ngIf="searchResultCount > 0">
     <h3>
-        <span translate>Found</span> {{ searchResultCount }}
+        {{ searchResultCount }}
         <span *ngIf="searchResultCount === 1" translate>result</span>
         <span *ngIf="searchResultCount > 1" translate>results</span>
     </h3>

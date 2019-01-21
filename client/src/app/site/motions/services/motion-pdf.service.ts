@@ -240,7 +240,7 @@ export class MotionPdfService {
 
             metaTableBody.push([
                 {
-                    text: this.translate.instant('Summary of change recommendations'),
+                    text: this.translate.instant('Summary of changes'),
                     style: 'boldText'
                 },
                 {

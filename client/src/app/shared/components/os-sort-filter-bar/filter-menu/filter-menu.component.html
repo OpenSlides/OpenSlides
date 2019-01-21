@@ -5,7 +5,7 @@
                 <mat-icon>
                     {{ filter.count ? 'checked' : ''}}
                 </mat-icon>
-                <span translate>{{ service.getFilterName(filter) }}</span>
+                <span>{{ service.getFilterName(filter) | translate }}</span>
             </mat-panel-title>
         </mat-expansion-panel-header>
         <div class="indent" *ngIf="filter.options && filter.options.length">
@@ -18,7 +18,7 @@
                     </div>
                     <div class="filter-subtitle" *ngIf="!isFilter(option)">
                         <mat-divider *ngIf="option === '-'"></mat-divider>
-                        <span *ngIf="option !== '-'" translate> {{option}}</span>
+                        <span *ngIf="option !== '-'"> {{ option | translate }}</span>
                     </div>
                 </div>
             </mat-action-list>

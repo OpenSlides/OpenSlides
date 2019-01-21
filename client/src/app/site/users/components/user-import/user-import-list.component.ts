@@ -69,7 +69,7 @@ export class UserImportListComponent extends BaseImportListComponent<ViewUser> {
             ',Fred,Bloggs,London,,,,,,,,',
             ',,Executive Board,,,,,,,1,,'
         ];
-        this.exporter.saveFile(rows.join('\n'), this.translate.instant('User example') + '.csv');
+        this.exporter.saveFile(rows.join('\n'), this.translate.instant('participants-example') + '.csv');
     }
 
     /**

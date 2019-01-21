@@ -43,7 +43,7 @@
             </mat-select>
         </mat-form-field>
         <mat-form-field>
-            <mat-label translate> Column Separator</mat-label>
+            <mat-label translate>Column separator</mat-label>
             <mat-select class="selection" (selectionChange)="selectColSep($event)" value="">
                 <mat-option *ngFor="let option of columnSeparators" [value]="option.value">
                     {{ option.label | translate }}
@@ -70,7 +70,7 @@
                 (change)="onSelectFile($event)"
             />
             <button mat-button onclick="document.getElementById('agenda-import-file-input').click()">
-                <span translate> Select file</span>
+                <span translate>Select file</span>
             </button>
         </div>
     </div>
@@ -127,14 +127,13 @@
         </div>
     </div>
     <div *ngIf="newCount">
-        <span translate>Click on 'import' (right top corner) to import the new topics.
-        </span>
+        <span translate>After verifiy the preview click on 'import' please (see top right).</span>
     </div>
     <div>
         <mat-select *ngIf="nonImportableCount" class="filter-imports" [(value)]="shown" (selectionChange)="setFilter()">
-            <mat-option value="all" translate> Show all </mat-option>
-            <mat-option value="error" translate> Show errors only </mat-option>
-            <mat-option value="noerror" translate> Show correct entries </mat-option>
+            <mat-option value="all" translate>Show all</mat-option>
+            <mat-option value="error" translate>Show errors only</mat-option>
+            <mat-option value="noerror" translate>Show correct entries only</mat-option>
         </mat-select>
     </div>
     <div class="table-container">
@@ -189,7 +188,7 @@
             </ng-container>
 
             <ng-container matColumnDef="text">
-                <mat-header-cell *matHeaderCellDef translate>Item text</mat-header-cell>
+                <mat-header-cell *matHeaderCellDef translate>Text</mat-header-cell>
                 <mat-cell *matCellDef="let entry" matTooltip="{{ getLongPreview(entry.newEntry.text) }}">
                     {{ getShortPreview(entry.newEntry.text) }}
                 </mat-cell>

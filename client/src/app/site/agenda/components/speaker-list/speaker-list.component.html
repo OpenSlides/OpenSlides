@@ -66,7 +66,7 @@
                 <ng-template let-item>
                     <span *osPerms="'agenda.can_manage_list_of_speakers'">
                         <span *ngIf="hasSpokenCount(item)" class="red-warning-text speaker-warning">
-                            <span translate>Call</span><span>&nbsp;{{ hasSpokenCount(item) + 1 }}</span>
+                            {{ hasSpokenCount(item) + 1 }}. <span translate>contribution</span>
                         </span>
                     </span>
                     <mat-button-toggle-group *osPerms="'agenda.can_manage_list_of_speakers'">
