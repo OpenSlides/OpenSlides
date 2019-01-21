@@ -19,11 +19,27 @@
     .mat-column-title {
         width: 100%;
         flex: 1 0 200px;
+        display: block;
         padding-left: 10px;
 
-        .motion-list-title {
-            font-weight: 500;
-            font-size: 16px;
+        .motion-list {
+            display: flex;
+            padding-right: 20px;
+
+            .motion-list-title,
+            .motion-list-from {
+                flex: 2;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .motion-list-title {
+                font-weight: 500;
+                font-size: 16px;
+            }
+            .favorite-star {
+                width: 26px;
+            }
         }
 
         .motion-list-from {
@@ -57,4 +73,8 @@
         flex: 0 0 100px;
         justify-content: flex-end !important;
     }
+}
+
+.max-width {
+    width: 100%;
 }
