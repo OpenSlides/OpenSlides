@@ -36,11 +36,11 @@ export class ViewUser extends BaseProjectableModel {
     }
 
     public get full_name(): string {
-        return this.user ? this.user.full_name : null;
+        return this.user ? this.user.full_name || this.username : null;
     }
 
     public get short_name(): string {
-        return this.user ? this.user.short_name : null;
+        return this.user ? this.user.short_name || this.username : null;
     }
 
     public get email(): string {
