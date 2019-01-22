@@ -4,8 +4,10 @@
 /** Import brand theme and (new) component themes */
 @import './assets/styles/openslides-theme.scss';
 @import './app/site/site.component.scss-theme';
-@import '../node_modules/typeface-fira-sans/index.css';
-@import '../node_modules/typeface-fira-sans-condensed/index.css';
+
+/** fonts */
+@import './assets/styles/fonts.scss';
+
 @mixin openslides-components-theme($theme) {
     @include os-site-theme($theme);
     /** More components are added here */
@@ -17,10 +19,10 @@
 @import '~angular-tree-component/dist/angular-tree-component.css';
 
 * {
-    font-family: Fira Sans, Roboto, Arial, Helvetica, sans-serif;
+    font-family: OSFont, Fira Sans, Roboto, Arial, Helvetica, sans-serif;
 }
 .mat-toolbar h2 {
-    font-family: Fira Sans, Roboto, Arial, Helvetica, sans-serif !important;
+    font-family: OSFont, Fira Sans, Roboto, Arial, Helvetica, sans-serif !important;
 }
 
 mat-icon {
@@ -40,7 +42,7 @@ h1,
 h2,
 h3,
 .title-font {
-    font-family: Fira Sans Condensed, Roboto-condensed, Arial, Helvetica, sans-serif;
+    font-family: OSFont Condensed, Fira Sans Condensed, Roboto-condensed, Arial, Helvetica, sans-serif;
 }
 
 h1 {

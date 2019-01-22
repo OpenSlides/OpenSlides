@@ -362,7 +362,7 @@ def get_config_variables():
         name="font_regular",
         default_value={
             "display_name": "Font regular",
-            "default": "static/fonts/Roboto-Regular.woff",
+            "default": "assets/fonts/fira-sans-latin-400.woff",
             "path": "",
         },
         input_type="static",
@@ -375,7 +375,7 @@ def get_config_variables():
         name="font_italic",
         default_value={
             "display_name": "Font italic",
-            "default": "static/fonts/Roboto-Medium.woff",
+            "default": "assets/fonts/fira-sans-latin-400italic.woff",
             "path": "",
         },
         input_type="static",
@@ -388,7 +388,7 @@ def get_config_variables():
         name="font_bold",
         default_value={
             "display_name": "Font bold",
-            "default": "static/fonts/Roboto-Condensed-Regular.woff",
+            "default": "assets/fonts/fira-sans-latin-500.woff",
             "path": "",
         },
         input_type="static",
@@ -401,7 +401,7 @@ def get_config_variables():
         name="font_bold_italic",
         default_value={
             "display_name": "Font bold italic",
-            "default": "static/fonts/Roboto-Condensed-Light.woff",
+            "default": "assets/fonts/fira-sans-latin-500italic.woff",
             "path": "",
         },
         input_type="static",

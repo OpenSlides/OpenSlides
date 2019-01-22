@@ -1,0 +1,46 @@
+@import './font-variables.scss';
+
+/** Regular */
+@font-face {
+    font-family: $font;
+    font-style: normal;
+    font-display: swap;
+    font-weight: $font-weight-regular;
+    src: $font-regular;
+}
+
+/** Italic */
+@font-face {
+    font-family: $font;
+    font-style: italic;
+    font-display: swap;
+    font-weight: $font-weight-italic;
+    src: $font-italic;
+}
+
+/** Medium */
+@font-face {
+    font-family: $font;
+    font-style: normal;
+    font-display: swap;
+    font-weight: $font-weight-medium;
+    src: $font-medium;
+}
+
+/** Medium Italic */
+@font-face {
+    font-family: $font;
+    font-style: italic;
+    font-display: swap;
+    font-weight: $font-weight-medium-italic;
+    src: $font-medium-italic;
+}
+
+/** Condensed Regular */
+@font-face {
+    font-family: $font-condensed;
+    font-style: normal;
+    font-display: swap;
+    font-weight: $font-weight-condensed-regular;
+    src: $font-condensed-regular;
+}
