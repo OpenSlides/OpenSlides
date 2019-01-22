@@ -50,24 +50,28 @@
         <ng-container matColumnDef="title">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
             <mat-cell *matCellDef="let motion">
-                <div class="innerTable">
-                    <span class="motion-list-title">{{ motion.title }}
-                        <span>
-                            <mat-icon inline>{{ motion.star ? 'star' : 'star_border' }}</mat-icon>
+                <div class="innerTable max-width">
+                    <!-- title line -->
+                    <div class="motion-list">
+                        <!-- attachment icon -->
+                        <span class="attached-files" *ngIf="motion.hasAttachments()">
+                            <mat-icon>attach_file</mat-icon>
                         </span>
-                    </span>
-
-                    <!-- attachments -->
-                    <span class="attached-files" *ngIf="motion.hasAttachments()">
-                        <!-- <mat-basic-chip class="bluegrey"> <mat-icon>attach_file</mat-icon> </mat-basic-chip> -->
-                        <mat-icon>attach_file</mat-icon>
-                    </span>
-
-                    <br />
-                    <span class="motion-list-from" *ngIf="motion.submitters.length">
-                        <span translate>by</span> {{ motion.submitters }}
-                    </span>
-                    <br *ngIf="motion.submitters.length" />
+                        <!-- title -->
+                        <span class="motion-list-title" matTooltip="{{ motion.title }}">
+                            {{ motion.title }}
+                        </span>
+                        <!-- favorite icon -->
+                        <span *ngIf="motion.star" class="favorite-star">
+                            <mat-icon inline>star</mat-icon>
+                        </span>
+                    </div>
+                    <!-- submitters line -->
+                    <div class="motion-list">
+                        <span class="motion-list-from" *ngIf="motion.submitters.length">
+                            <span translate>by</span> {{ motion.submitters }}
+                        </span>
+                    </div>
                     <!-- state -->
                     <mat-basic-chip
                         *ngIf="motion.state"
