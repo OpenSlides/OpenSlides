@@ -13,9 +13,7 @@
         <div class="nav-toolbar">
             <!-- logo -->
             <a routerLink="/" (click)="toggleSideNav()">
-                <os-logo class="os-logo-container"
-                    inputAction="logo_web_header"
-                    [footer]="false"></os-logo>
+                <os-logo class="os-logo-container" inputAction="logo_web_header" [footer]="false"></os-logo>
             </a>
         </div>
 
@@ -30,22 +28,26 @@
                     <mat-icon>language</mat-icon>
                     <span> {{ getLangName(this.translate.currentLang) }} </span>
                 </a>
-                <a *ngIf="isLoggedIn" (click)="editProfile()" mat-list-item>
-                    <mat-icon>person</mat-icon>
-                    <span translate>Edit profile</span>
-                </a>
-                <a *ngIf="isLoggedIn" (click)="changePassword()" mat-list-item>
-                    <mat-icon>vpn_key</mat-icon>
-                    <span translate>Change password</span>
-                </a>
-                <a *ngIf="isLoggedIn" (click)="logout()" mat-list-item>
-                    <mat-icon>exit_to_app</mat-icon>
-                    <span translate>Logout</span>
-                </a>
-                <a *ngIf="!isLoggedIn" routerLink="/login" mat-list-item>
-                    <mat-icon>exit_to_app</mat-icon>
-                    <span translate>Login</span>
-                </a>
+                <div *ngIf="isLoggedIn">
+                    <a (click)="editProfile()" mat-list-item>
+                        <mat-icon>person</mat-icon>
+                        <span translate>Edit profile</span>
+                    </a>
+                    <a *osPerms="'users.can_change_password'" (click)="changePassword()" mat-list-item>
+                        <mat-icon>vpn_key</mat-icon>
+                        <span translate>Change password</span>
+                    </a>
+                    <a *ngIf="isLoggedIn" (click)="logout()" mat-list-item>
+                        <mat-icon>exit_to_app</mat-icon>
+                        <span translate>Logout</span>
+                    </a>
+                </div>
+                <div *ngIf="!isLoggedIn">
+                    <a routerLink="/login" mat-list-item>
+                        <mat-icon>exit_to_app</mat-icon>
+                        <span translate>Login</span>
+                    </a>
+                </div>
             </mat-nav-list>
         </mat-expansion-panel>
         <!-- TODO: Could use translate.getLangs() to fetch available languages -->
@@ -109,13 +111,11 @@
                 target="_blank"
                 (click)="mobileAutoCloseNav()"
             >
-                <span><small><os-copyright-sign></os-copyright-sign>&nbsp;Copyright by OpenSlides</small></span>
+                <span>
+                    <small><os-copyright-sign></os-copyright-sign>&nbsp;Copyright by OpenSlides</small>
+                </span>
             </a>
-            <div class="os-footer-logo-container">
-                <os-logo inputAction="logo_web_header"
-                         footer="true">
-                </os-logo>
-            </div>
+            <div class="os-footer-logo-container"><os-logo inputAction="logo_web_header" footer="true"> </os-logo></div>
         </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content>

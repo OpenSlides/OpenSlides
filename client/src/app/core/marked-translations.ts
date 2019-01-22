@@ -288,10 +288,13 @@ _('Can support motions');
 _('Can manage motions');
 _('Can see comments');
 _('Can manage comments');
+_('Can manage motion metadata');
+_('Can create amendments');
 // users
 _('Can see names of users');
 _('Can see extra data of users (e.g. present and comment)');
 _('Can manage users');
+_('Can change its own password');
 
 // users config strings
 _('General');
