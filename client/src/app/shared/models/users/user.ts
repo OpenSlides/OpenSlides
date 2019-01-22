@@ -3,6 +3,11 @@ import { SearchRepresentation } from '../../../core/services/search.service';
 import { BaseModel } from '../base/base-model';
 
 /**
+ * Iterable pre selection of genders (sexes)
+ */
+export const genders = ['Female', 'Male', 'Diverse'];
+
+/**
  * Representation of a user in contrast to the operator.
  * @ignore
  */
@@ -14,6 +19,7 @@ export class User extends BaseModel<User> implements Searchable {
     public title: string;
     public first_name: string;
     public last_name: string;
+    public gender: string;
     public structure_level: string;
     public number: string;
     public about_me: string;

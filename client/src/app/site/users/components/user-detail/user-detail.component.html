@@ -9,8 +9,7 @@
     <!-- Title -->
     <div class="title-slot">
         <h2>
-            <span *ngIf="newUser" translate>New participant</span>
-            <span *ngIf="!newUser">{{ user.full_name }}</span>
+            <span *ngIf="newUser" translate>New participant</span> <span *ngIf="!newUser">{{ user.full_name }}</span>
         </h2>
     </div>
 
@@ -39,60 +38,73 @@
         [formGroup]="personalInfoForm"
         (ngSubmit)="saveUser()"
         *ngIf="user"
-        (keydown)="onKeyDown($event)">
+        (keydown)="onKeyDown($event)"
+    >
         <!-- <h3 translate>Personal Data</h3> -->
         <div *ngIf="isAllowed('seeName')">
             <!-- Title -->
             <mat-form-field
                 class="form16 distance force-min-with"
-                *ngIf="user.title || (editUser && isAllowed('manage'))">
+                *ngIf="user.title || (editUser && isAllowed('manage'))"
+            >
                 <input
                     type="text"
                     matInput
                     osAutofocus
                     placeholder="{{ 'Title' | translate }}"
                     formControlName="title"
-                    [value]="user.title"/>
+                    [value]="user.title"
+                />
             </mat-form-field>
 
             <!-- First name -->
             <mat-form-field
                 class="form37 distance force-min-with"
-                *ngIf="user.first_name || (editUser && isAllowed('manage'))">
+                *ngIf="user.first_name || (editUser && isAllowed('manage'))"
+            >
                 <input
                     type="text"
                     matInput
                     placeholder="{{ 'Given name' | translate }}"
                     formControlName="first_name"
-                    [value]="user.first_name"/>
+                    [value]="user.first_name"
+                />
             </mat-form-field>
 
             <!-- Last name -->
-            <mat-form-field
-                class="form37 force-min-with"
-                *ngIf="user.last_name || (editUser && isAllowed('manage'))">
+            <mat-form-field class="form37 force-min-with" *ngIf="user.last_name || (editUser && isAllowed('manage'))">
                 <input
                     type="text"
                     matInput
                     placeholder="{{ 'Surname' | translate }}"
                     formControlName="last_name"
-                    [value]="user.last_name"/>
+                    [value]="user.last_name"
+                />
             </mat-form-field>
         </div>
 
         <div *ngIf="isAllowed('seePersonal')">
             <!-- E-Mail -->
-            <mat-form-field *ngIf="user.email || editUser">
+            <mat-form-field class="form70 distance" *ngIf="user.email || editUser">
                 <input
                     type="email"
                     matInput
                     placeholder="{{ 'Email' | translate }}"
                     name="email"
                     formControlName="email"
-                    [value]="user.email"/>
+                    [value]="user.email"
+                />
                 <mat-error *ngIf="personalInfoForm.get('email').hasError('email')" translate>
                     Please enter a valid email address
                 </mat-error>
+            </mat-form-field>
+
+            <!-- Gender -->
+            <mat-form-field class="form25 force-min-with" *ngIf="user.gender || editUser">
+                <mat-select placeholder="{{ 'Gender' | translate }}" formControlName="gender">
+                    <mat-option>-</mat-option>
+                    <mat-option *ngFor="let gender of genderList" [value]="gender">{{ gender | translate }}</mat-option>
+                </mat-select>
             </mat-form-field>
         </div>
 
@@ -104,19 +116,22 @@
                     matInput
                     placeholder="{{ 'Structure level' | translate }}"
                     formControlName="structure_level"
-                    [value]="user.structure_level"/>
+                    [value]="user.structure_level"
+                />
             </mat-form-field>
 
             <!-- Participant Number -->
             <mat-form-field
                 class="form25 force-min-with"
-                *ngIf="user.participant_number || (editUser && isAllowed('manage'))">
+                *ngIf="user.participant_number || (editUser && isAllowed('manage'))"
+            >
                 <input
                     type="text"
                     matInput
                     placeholder="{{ 'Participant number' | translate }}"
                     formControlName="number"
-                    [value]="user.participant_number"/>
+                    [value]="user.participant_number"
+                />
             </mat-form-field>
         </div>
 
@@ -136,7 +151,8 @@
                     matInput
                     placeholder="{{ 'Initial password' | translate }}"
                     formControlName="default_password"
-                    [value]="user.default_password"/>
+                    [value]="user.default_password"
+                />
                 <mat-hint align="end">Generate</mat-hint>
                 <button
                     type="button"
@@ -144,7 +160,8 @@
                     matSuffix
                     mat-icon-button
                     [disabled]="!newUser"
-                    (click)="generatePassword()">
+                    (click)="generatePassword()"
+                >
                     <mat-icon>sync_problem</mat-icon>
                 </button>
             </mat-form-field>
@@ -166,7 +183,8 @@
                     matInput
                     placeholder="{{ 'Username' | translate }}"
                     formControlName="username"
-                    [value]="user.username"/>
+                    [value]="user.username"
+                />
             </mat-form-field>
         </div>
 
@@ -177,7 +195,8 @@
                     matInput
                     placeholder="{{ 'Comment' | translate }}"
                     formControlName="comment"
-                    [value]="user.comment"/>
+                    [value]="user.comment"
+                />
                 <mat-hint translate>Only for internal notes.</mat-hint>
             </mat-form-field>
         </div>
@@ -187,7 +206,8 @@
             <mat-checkbox
                 formControlName="is_present"
                 matTooltip="{{ 'Designates whether this user is in the room.' | translate }}"
-                [value]="user.is_present">
+                [value]="user.is_present"
+            >
                 <span translate>Is present</span>
             </mat-checkbox>
 
@@ -199,7 +219,8 @@
                 matTooltip="{{
                     'Designates whether this user should be treated as active. Unselect this instead of deleting the account.'
                         | translate
-                }}">
+                }}"
+            >
                 <span translate>Is active</span>
             </mat-checkbox>
 
@@ -207,7 +228,8 @@
             <mat-checkbox
                 formControlName="is_committee"
                 [value]="user.is_committee"
-                matTooltip="{{ 'Designates whether this user should be treated as a committee.' | translate }}">
+                matTooltip="{{ 'Designates whether this user should be treated as a committee.' | translate }}"
+            >
                 <span translate>Is a committee</span>
             </mat-checkbox>
         </div>

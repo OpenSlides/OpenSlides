@@ -46,6 +46,10 @@ export class ViewSpeaker extends BaseViewModel implements Selectable {
         return this.user.full_name || this.user.username;
     }
 
+    public get gender(): string {
+        return this.user.gender || '';
+    }
+
     public constructor(speaker?: Speaker, user?: User) {
         super();
         this._speaker = speaker;
