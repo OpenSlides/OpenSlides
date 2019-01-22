@@ -51,12 +51,12 @@ export class ConfigService extends OpenSlidesComponent {
      *
      * @param key The config value to get from.
      */
-    public instant(key: string): any {
+    public instant<T>(key: string): T {
         const values = this.DS.filter<Config>('core/config', value => value.key === key);
         if (values.length > 1) {
             throw new Error('More keys found then expected');
         } else if (values.length === 1) {
-            return values[0].value;
+            return values[0].value as T;
         } else {
             return;
         }

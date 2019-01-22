@@ -1,0 +1,22 @@
+/** Define font variables */
+
+/** Default Font */
+$font: 'OSFont';
+
+$font-regular: url('assets/fonts/fira-sans-latin-400.woff') format('woff');
+$font-weight-regular: 400;
+
+$font-italic: url('assets/fonts/fira-sans-latin-400italic.woff') format('woff');
+$font-weight-italic: 400;
+
+$font-medium: url('assets/fonts/fira-sans-latin-500.woff') format('woff');
+$font-weight-medium: 500;
+
+$font-medium-italic: url('assets/fonts/fira-sans-latin-500italic.woff') format('woff');
+$font-weight-medium-italic: 500;
+
+/** Condensed Font */
+$font-condensed: 'OSFont Condensed';
+
+$font-condensed-regular: url('assets/fonts/fira-sans-condensed-latin-400.woff') format('woff');
+$font-weight-condensed-regular: 400;

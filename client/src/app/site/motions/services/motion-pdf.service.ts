@@ -322,7 +322,7 @@ export class MotionPdfService {
             changes.sort((a, b) => a.getLineFrom() - b.getLineFrom());
 
             // get the line length from the config
-            const lineLength = this.configService.instant('motions_line_length');
+            const lineLength = this.configService.instant<number>('motions_line_length');
 
             motionText = this.motionRepo.formatMotion(motion.id, crMode, changes, lineLength);
         }

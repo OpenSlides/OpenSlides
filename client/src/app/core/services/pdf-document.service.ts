@@ -1,11 +1,12 @@
+import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { saveAs } from 'file-saver';
 
-import * as pdfMake from 'pdfmake/build/pdfmake';
-import * as pdfFonts from 'pdfmake/build/vfs_fonts';
+import pdfMake from 'pdfmake/build/pdfmake';
 import { TranslateService } from '@ngx-translate/core';
 
 import { ConfigService } from './config.service';
+import { HttpService } from './http.service';
 
 /**
  * TODO: Images and fonts
@@ -31,10 +32,84 @@ export class PdfDocumentService {
      *
      * @param translate translations
      * @param configService read config values
+     * @param mediaManageService to read out font files as media data
      */
-    public constructor(private translate: TranslateService, private configService: ConfigService) {
-        // It should be possible to add own fonts here
-        pdfMake.vfs = pdfFonts.pdfMake.vfs;
+    public constructor(
+        private translate: TranslateService,
+        private configService: ConfigService,
+        private httpService: HttpService
+    ) {}
+
+    /**
+     * Define the pdfmake virtual file system for fonts
+     *
+     * @returns the vfs-object
+     */
+    private async getVfs(): Promise<object> {
+        const fontPathList: string[] = Array.from(
+            // create a list without redundancies
+            new Set(
+                this.configService
+                    .instant<string[]>('fonts_available')
+                    .map(available => this.configService.instant<any>(available))
+                    .map(font => font.path || `/${font.default}`)
+            )
+        );
+
+        const promises = fontPathList.map(fontPath => {
+            return this.convertUrlToBase64(fontPath).then(base64 => {
+                return {
+                    [fontPath.split('/').pop()]: base64.split(',')[1]
+                };
+            });
+        });
+
+        const fontDataUrls = await Promise.all(promises);
+
+        let vfs = {};
+        fontDataUrls.map(entry => {
+            vfs = {
+                ...vfs,
+                ...entry
+            };
+        });
+
+        return vfs;
+    }
+
+    /**
+     * Converts a given blob to base64
+     *
+     * @param file File as blob
+     * @returns a promise to the base64 as string
+     */
+    private async convertUrlToBase64(url: string): Promise<string> {
+        const headers = new HttpHeaders();
+        const file = await this.httpService.get<ArrayBuffer>(url, {}, {}, headers, 'arraybuffer');
+
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(new Blob([file]));
+            reader.onload = () => {
+                const resultStr: string = reader.result as string;
+                resolve(resultStr);
+            };
+            reader.onerror = error => {
+                reject(error);
+            };
+        }) as Promise<string>;
+    }
+
+    /**
+     * Returns the name of a font from the value of the given
+     * config variable.
+     *
+     * @param fontType the config variable of the font (font_regular, font_italic)
+     * @returns the name of the selected font
+     */
+    private getFontName(fontType: string): string {
+        const font = this.configService.instant<any>(fontType);
+        return (font.path || `/${font.default}`).split('/').pop();
     }
 
     /**
@@ -43,16 +118,25 @@ export class PdfDocumentService {
      * @param documentContent the content of the pdf as object
      * @returns the pdf document definition ready to export
      */
-    private getStandardPaper(documentContent: object, metadata?: object): object {
-        const standardFontSize = this.configService.instant('general_export_pdf_fontsize');
+    private async getStandardPaper(documentContent: object, metadata?: object): Promise<object> {
+        // define the fonts
+        pdfMake.fonts = {
+            PdfFont: {
+                normal: this.getFontName('font_regular'),
+                bold: this.getFontName('font_bold'),
+                italics: this.getFontName('font_italic'),
+                bolditalics: this.getFontName('font_bold_italic')
+            }
+        };
+
+        pdfMake.vfs = await this.getVfs();
 
         return {
             pageSize: 'A4',
             pageMargins: [75, 90, 75, 75],
             defaultStyle: {
-                // TODO add fonts to vfs
-                // font: 'PdfFont',
-                fontSize: standardFontSize
+                font: 'PdfFont',
+                fontSize: this.configService.instant('general_export_pdf_fontsize')
             },
             header: this.getHeader(),
             // TODO: option for no footer, wherever this can be defined
@@ -73,8 +157,8 @@ export class PdfDocumentService {
      */
     private getHeader(): object {
         // check for the required logos
-        let logoHeaderLeftUrl = this.configService.instant('logo_pdf_header_L').path;
-        let logoHeaderRightUrl = this.configService.instant('logo_pdf_header_R').path;
+        let logoHeaderLeftUrl = this.configService.instant<any>('logo_pdf_header_L').path;
+        let logoHeaderRightUrl = this.configService.instant<any>('logo_pdf_header_R').path;
         let text;
         const columns = [];
 
@@ -151,8 +235,8 @@ export class PdfDocumentService {
         let logoContainerWidth: string;
         let pageNumberPosition: string;
         let logoConteinerSize: Array<number>;
-        let logoFooterLeftUrl = this.configService.instant('logo_pdf_footer_L').path;
-        let logoFooterRightUrl = this.configService.instant('logo_pdf_footer_R').path;
+        let logoFooterLeftUrl = this.configService.instant<any>('logo_pdf_footer_L').path;
+        let logoFooterRightUrl = this.configService.instant<any>('logo_pdf_footer_R').path;
 
         // if there is a single logo, give it a lot of space
         if (logoFooterLeftUrl && logoFooterRightUrl) {
@@ -229,9 +313,9 @@ export class PdfDocumentService {
      * @param docDefinition the structure of the PDF document
      */
     public download(docDefinition: object, filename: string, metadata?: object): void {
-        pdfMake
-            .createPdf(this.getStandardPaper(docDefinition, metadata))
-            .getBlob(blob => saveAs(blob, `${filename}.pdf`, { autoBOM: true }));
+        this.getStandardPaper(docDefinition, metadata).then(doc => {
+            pdfMake.createPdf(doc).getBlob(blob => saveAs(blob, `${filename}.pdf`, { autoBOM: true }));
+        });
     }
 
     /**

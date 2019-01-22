@@ -53,6 +53,7 @@ export class HttpService {
      * @param data optional, if sending a data body is required
      * @param queryParams optional queryparams to append to the path
      * @param customHeader optional custom HTTP header of required
+     * @param responseType optional response type, default set to json (i.e 'arraybuffer')
      * @returns a promise containing a generic
      */
     private async send<T>(
@@ -60,21 +61,26 @@ export class HttpService {
         method: HTTPMethod,
         data?: any,
         queryParams?: QueryParams,
-        customHeader?: HttpHeaders
+        customHeader?: HttpHeaders,
+        responseType?: string
     ): Promise<T> {
         // end early, if we are in history mode
         if (this.OSStatus.isInHistoryMode && method !== HTTPMethod.GET) {
             throw this.handleError('You cannot make changes while in history mode');
         }
 
-        if (!path.endsWith('/')) {
-            path += '/';
+        // there is a current bug with the responseType.
+        // https://github.com/angular/angular/issues/18586
+        // castting it to 'json' allows the usage of the current array
+        if (!responseType) {
+            responseType = 'json';
         }
 
         const url = path + formatQueryParams(queryParams);
         const options = {
             body: data,
-            headers: customHeader ? customHeader : this.defaultHeaders
+            headers: customHeader ? customHeader : this.defaultHeaders,
+            responseType: responseType as 'json'
         };
 
         try {
@@ -149,10 +155,17 @@ export class HttpService {
      * @param data An optional payload for the request.
      * @param queryParams Optional params appended to the path as the query part of the url.
      * @param header optional HTTP header if required
+     * @param responseType option expected response type by the request (i.e 'arraybuffer')
      * @returns A promise holding a generic
      */
-    public async get<T>(path: string, data?: any, queryParams?: QueryParams, header?: HttpHeaders): Promise<T> {
-        return await this.send<T>(path, HTTPMethod.GET, data, queryParams, header);
+    public async get<T>(
+        path: string,
+        data?: any,
+        queryParams?: QueryParams,
+        header?: HttpHeaders,
+        responseType?: string
+    ): Promise<T> {
+        return await this.send<T>(path, HTTPMethod.GET, data, queryParams, header, responseType);
     }
 
     /**
