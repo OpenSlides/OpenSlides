@@ -337,7 +337,7 @@
             <div class="create-poll-button" *ngIf="perms.isAllowed('createpoll', motion)">
                 <button mat-button (click)="createPoll()">
                     <mat-icon class="main-nav-color">poll</mat-icon>
-                    <span translate>Create poll</span>
+                    <span translate>New vote</span>
                 </button>
             </div>
         </div>
@@ -533,7 +533,7 @@
                     [formControl]="contentForm.get('agenda_parent_id')"
                     [multiple]="false"
                     [includeNone]="true"
-                    listname="{{ 'Parent Item' | translate }}"
+                    listname="{{ 'Parent item' | translate }}"
                     [InputListValues]="agendaItemObserver"
                 ></os-search-value-selector>
             </div>

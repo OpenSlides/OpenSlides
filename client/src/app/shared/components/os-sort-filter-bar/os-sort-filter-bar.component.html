@@ -16,7 +16,7 @@
             <div *ngFor="let filter of filterService.filterDefinitions">
                 <button mat-button *ngIf="filter.count" (click)="filterService.clearFilter(filter)">
                     <mat-icon inline>close</mat-icon>
-                    <span translate>{{ filterService.getFilterName(filter) }}</span>
+                    <span>{{ filterService.getFilterName(filter) | translate }}</span>
                 </button>
             </div>
     </div>
@@ -55,7 +55,7 @@
 <mat-drawer #filterMenu mode="push" position="end">
     <div class="custom-table-header filter-menu" (click)="this.filterMenu.toggle()">
         <span><mat-icon>keyboard_arrow_right</mat-icon></span>
-        <span class="right-with-margin" translate>Filter options:</span>
+        <span class="right-with-margin" translate>Filter options</span>
     </div>
     <os-filter-menu *ngIf="filterService" (dismissed)="this.filterMenu.close()" [service]="filterService">
     </os-filter-menu>
@@ -70,7 +70,7 @@
         >
             <button mat-menu-item>
                 <mat-icon>{{ sortService.getSortIcon(option) }}</mat-icon>
-                <span translate> {{ sortService.getSortLabel(option) }}</span>
+                <span>{{ sortService.getSortLabel(option) | translate }}</span>
             </button>
         </mat-list-item>
     </div>

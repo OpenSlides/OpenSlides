@@ -80,6 +80,6 @@ export class MotionCsvExportService {
             'B1,Title 2,Text 2,Reason 2,Submitter B, Category B,, Block A',
             ',Title 3, Text 3,,,,,'
         ];
-        this.fileExport.saveFile(rows.join('\n'), this.translate.instant('Motion example') + '.csv');
+        this.fileExport.saveFile(rows.join('\n'), this.translate.instant('motions-example') + '.csv');
     }
 }

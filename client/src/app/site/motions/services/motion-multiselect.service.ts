@@ -88,7 +88,7 @@ export class MotionMultiselectService {
      * @param motions The motions to change
      */
     public async setStateOfMultiple(motions: ViewMotion[]): Promise<void> {
-        const title = this.translate.instant('This will set the state of all selected motions to:');
+        const title = this.translate.instant('This will set the following state for all selected motions:');
         const choices = this.workflowRepo.getWorkflowStatesForMotions(motions).map(workflowState => ({
             id: workflowState.id,
             label: workflowState.name
@@ -105,7 +105,7 @@ export class MotionMultiselectService {
      * @param motions The motions to change
      */
     public async setRecommendation(motions: ViewMotion[]): Promise<void> {
-        const title = this.translate.instant('This will set the recommendation for all selected motions to:');
+        const title = this.translate.instant('This will set the following recommendation for all selected motions:');
         const choices = this.workflowRepo
             .getWorkflowStatesForMotions(motions)
             .filter(workflowState => !!workflowState.recommendation_label)
@@ -132,7 +132,7 @@ export class MotionMultiselectService {
      * @param motions The motions to change
      */
     public async setCategory(motions: ViewMotion[]): Promise<void> {
-        const title = this.translate.instant('This will set the category of all selected motions to:');
+        const title = this.translate.instant('This will set the following category for all selected motions:');
         const clearChoice = 'No category';
         const selectedChoice = await this.choiceService.open(
             title,
@@ -231,7 +231,7 @@ export class MotionMultiselectService {
      * @param motions The motions for which to change the motionBlock
      */
     public async setMotionBlock(motions: ViewMotion[]): Promise<void> {
-        const title = this.translate.instant('This will change the motion Block for all selected motions:');
+        const title = this.translate.instant('This will set the following motion block for all selected motions:');
         const clearChoice = 'Clear motion block';
         const selectedChoice = await this.choiceService.open(
             title,

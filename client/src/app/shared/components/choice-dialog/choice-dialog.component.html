@@ -31,12 +31,12 @@
     <mat-dialog-actions>
         <div *ngIf="data.actionButtons">
             <button *ngFor="let button of data.actionButtons" mat-button (click)="closeDialog(true, button)">
-                <span translate>{{ button }}</span>
+                <span>{{ button | translate }}</span>
             </button>
         </div>
         <div *ngIf="!data.actionButtons">
             <button *ngIf="!data.multiSelect || data.choices.length" mat-button (click)="closeDialog(true)">
-                <span translate>Ok</span>
+                <span>OK</span>
             </button>
         </div>
         <button mat-button (click)="closeDialog(false)"><span translate>Cancel</span></button>

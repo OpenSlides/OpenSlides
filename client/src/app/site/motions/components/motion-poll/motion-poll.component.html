@@ -1,6 +1,6 @@
 <os-meta-text-block showActionRow="true">
     <ng-container class="meta-text-block-title">
-        <span translate>Poll</span> <span *ngIf="pollIndex">&nbsp;{{ pollIndex + 1 }}</span>
+        <span translate>Voting result</span> <span *ngIf="pollIndex">&nbsp;({{ pollIndex + 1 }})</span>
     </ng-container>
     <ng-container class="meta-text-block-content">
         <div *ngIf="poll.has_votes" class="on-transition-fade poll-result">
@@ -11,7 +11,7 @@
                     </mat-icon>
                     <div class="progress-container">
                         <div>
-                            <span translate>{{ getLabel(key) }}</span
+                            <span>{{ getLabel(key) | translate }}</span
                             >:&nbsp;{{ getNumber(key) }}
                             <span *ngIf="!isAbstractValue(key)">({{ getPercent(key) }}%)</span>
                         </div>
@@ -29,7 +29,6 @@
             </div>
             <!-- quorum -->
             <div *osPerms="'motions.can_manage'">
-                <div *ngIf="abstractPoll"><span translate>Quorum not calculable.</span></div>
                 <div class="poll-quorum-line" *ngIf="!abstractPoll">
                     <span>
                         <span *ngIf="yesQuorum">
@@ -37,7 +36,7 @@
                             <mat-icon color="primary" *ngIf="quorumYesReached"> thumb_up </mat-icon>
                         </span>
                         <button mat-button [matMenuTriggerFor]="majorityMenu">
-                            &nbsp;<span translate>{{ getQuorumLabel() }}</span> &nbsp;<span
+                            &nbsp;<span>{{ getQuorumLabel() | translate }}</span> &nbsp;<span
                                 *ngIf="majorityChoice !== 'disabled'"
                                 >({{ yesQuorum }})</span
                             >
@@ -46,22 +45,19 @@
                             <span *ngIf="quorumYesReached" translate> reached.</span>
                             <span *ngIf="!quorumYesReached" translate> not reached.</span>
                         </span>
-                        <span *ngIf="majorityChoice === 'disabled'"
-                            >&nbsp;&mdash;&nbsp; <span translate>No quorum calculated</span>
-                        </span>
                     </span>
                 </div>
             </div>
         </div>
     </ng-container>
     <ng-container class="meta-text-block-action-row" *osPerms="'motions.can_manage_metadata'">
-        <button mat-icon-button class="main-nav-color" matTooltip="{{ 'Edit poll' | translate }}" (click)="editPoll()">
+        <button mat-icon-button class="main-nav-color" matTooltip="{{ 'Edit' | translate }}" (click)="editPoll()">
             <mat-icon inline>edit</mat-icon>
         </button>
         <button
             mat-icon-button
             class="main-nav-color"
-            matTooltip="{{ 'Print ballots' | translate }}"
+            matTooltip="{{ 'Print ballot papers' | translate }}"
             (click)="printBallots()"
         >
             <mat-icon inline>local_printshop</mat-icon>
@@ -69,7 +65,7 @@
         <button
             mat-icon-button
             class="main-nav-color"
-            matTooltip="{{ 'Delete poll' | translate }}"
+            matTooltip="{{ 'Delete' | translate }}"
             (click)="deletePoll()"
         >
             <mat-icon inline>delete</mat-icon>
@@ -79,6 +75,6 @@
 
 <mat-menu #majorityMenu="matMenu">
     <button mat-menu-item *ngFor="let option of majorityChoices" (click)="majorityChoice = option.value">
-        <span translate>{{ option.display_name }}</span>
+        <span>{{ option.display_name | translate }}</span>
     </button>
 </mat-menu>

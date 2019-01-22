@@ -988,7 +988,7 @@ class MotionPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet):
 
         # Fire autoupdate again to save information to OpenSlides history.
         inform_changed_data(
-            poll.motion, information=["Poll updated"], user_id=self.request.user.pk
+            poll.motion, information=["Vote updated"], user_id=self.request.user.pk
         )
 
         return response
@@ -1003,7 +1003,7 @@ class MotionPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet):
 
         # Fire autoupdate again to save information to OpenSlides history.
         inform_changed_data(
-            poll.motion, information=["Poll deleted"], user_id=self.request.user.pk
+            poll.motion, information=["Vote deleted"], user_id=self.request.user.pk
         )
 
         return result

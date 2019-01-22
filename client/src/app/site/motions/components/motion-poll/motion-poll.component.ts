@@ -113,8 +113,8 @@ export class MotionPollComponent implements OnInit {
      * Sends a delete request for this poll after a confirmation dialog has been accepted.
      */
     public async deletePoll(): Promise<void> {
-        const content = this.translate.instant('The current poll will be deleted!');
-        if (await this.promptService.open('Are you sure?', content)) {
+        const content = this.translate.instant('Are you sure you want to delete this vote?');
+        if (await this.promptService.open('Delete vote?', content)) {
             this.motionRepo.deletePoll(this.poll);
         }
     }
