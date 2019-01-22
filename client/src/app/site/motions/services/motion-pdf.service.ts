@@ -146,7 +146,7 @@ export class MotionPdfService {
                 style: 'boldText'
             },
             {
-                text: this.translate.instant(motion.state.name)
+                text: this.motionRepo.getExtendedStateLabel(motion)
             }
         ]);
 
@@ -158,7 +158,7 @@ export class MotionPdfService {
                     style: 'boldText'
                 },
                 {
-                    text: this.translate.instant(motion.recommendation.recommendation_label)
+                    text: this.motionRepo.getExtendedRecommendationLabel(motion)
                 }
             ]);
         }

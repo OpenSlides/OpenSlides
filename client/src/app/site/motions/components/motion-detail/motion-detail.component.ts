@@ -115,6 +115,20 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     }
 
     /**
+     * @returns the current recommendation label (with extension)
+     */
+    public get recommendationLabel(): string {
+        return this.repo.getExtendedRecommendationLabel(this.motion);
+    }
+
+    /**
+     * @returns the current state label (with extension)
+     */
+    public get stateLabel(): string {
+        return this.repo.getExtendedStateLabel(this.motion);
+    }
+
+    /**
      * Saves the target motion. Accessed via the getter and setter.
      */
     private _motion: ViewMotion;
@@ -285,6 +299,16 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * The personal notes' content for this motion
      */
     public personalNoteContent: PersonalNoteContent;
+
+    /**
+     * new state extension label to be submitted, if state extensions can be set
+     */
+    public newStateExtension = '';
+
+    /**
+     * new recommendation extension label to be submitted, if recommendation extensions can be set
+     */
+    public newRecommendationExtension = '';
 
     /**
      * Constuct the detail view.
@@ -460,6 +484,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
                 this.repo.getViewModelObservable(motionId).subscribe(newViewMotion => {
                     if (newViewMotion) {
                         this.motion = newViewMotion;
+                        this.newStateExtension = this.motion.stateExtension;
+                        this.newRecommendationExtension = this.motion.recommendationExtension;
                         this.personalNoteService.getPersonalNoteObserver(this.motion.motion).subscribe(pn => {
                             this.personalNoteContent = pn;
                         });
@@ -907,12 +933,28 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     }
 
     /**
+     * triggers the update this motion's state extension according to the current string
+     * in {@link newStateExtension}
+     */
+    public setStateExtension(): void {
+        this.repo.setStateExtension(this.motion, this.newStateExtension);
+    }
+
+    /**
      * Sets the recommendation
      *
      * @param id Motion recommendation id
      */
     public setRecommendation(id: number): void {
         this.repo.setRecommendation(this.motion, id);
+    }
+
+    /**
+     * triggers the update this motion's recommendation extension according to the current string
+     * in {@link newRecommendationExtension}
+     */
+    public setRecommendationExtension(): void {
+        this.repo.setRecommendationExtension(this.motion, this.newRecommendationExtension);
     }
 
     /**

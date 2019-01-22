@@ -12,6 +12,7 @@ import { MotionBlockRepositoryService } from '../../services/motion-block-reposi
 import { MotionCsvExportService } from '../../services/motion-csv-export.service';
 import { MotionFilterListService } from '../../services/motion-filter-list.service';
 import { MotionMultiselectService } from '../../services/motion-multiselect.service';
+import { MotionRepositoryService } from '../../services/motion-repository.service';
 import { MotionSortListService } from '../../services/motion-sort-list.service';
 import { TagRepositoryService } from 'app/site/tags/services/tag-repository.service';
 import { ViewCategory } from '../../models/view-category';
@@ -90,6 +91,7 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
         private motionBlockRepo: MotionBlockRepositoryService,
         private categoryRepo: CategoryRepositoryService,
         private workflowRepo: WorkflowRepositoryService,
+        private motionRepo: MotionRepositoryService,
         private motionCsvExport: MotionCsvExportService,
         public multiselectService: MotionMultiselectService,
         public sortService: MotionSortListService,
@@ -211,5 +213,25 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
         } catch (e) {
             this.raiseError(e);
         }
+    }
+
+    /**
+     * Fetch a motion's current recommendation label
+     *
+     * @param motion
+     * @returns the current recommendation label (with extension)
+     */
+    public getRecommendationLabel(motion: ViewMotion): string {
+        return this.motionRepo.getExtendedRecommendationLabel(motion);
+    }
+
+    /**
+     * Fetch a motion's current state label
+     *
+     * @param motion
+     * @returns the current state label (with extension)
+     */
+    public getStateLabel(motion: ViewMotion): string {
+        return this.motionRepo.getExtendedStateLabel(motion);
     }
 }

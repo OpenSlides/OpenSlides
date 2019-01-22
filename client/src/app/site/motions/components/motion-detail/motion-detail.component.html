@@ -220,25 +220,32 @@
             <mat-menu #stateMenu="matMenu">
                 <button *ngFor="let state of motion.nextStates" mat-menu-item (click)="setState(state.id)">
                     {{ state.name | translate }}
+                    <span *ngIf="state.show_state_extension_field">&nbsp;...</span>
                 </button>
                 <mat-divider></mat-divider>
                 <button mat-menu-item (click)="setState(null)" *ngIf="perms.isAllowed('change_metadata', motion)">
                     <mat-icon>replay</mat-icon> {{ 'Reset state' | translate }}
                 </button>
             </mat-menu>
-            <mat-basic-chip
-                *ngIf="perms.isAllowed('change_metadata', motion)"
-                [matMenuTriggerFor]="stateMenu"
-                [ngClass]="getStateCssColor()"
-            >
-                {{ motion.state.name | translate }}
-            </mat-basic-chip>
-            <mat-basic-chip
-                *ngIf="!perms.isAllowed('change_metadata', motion)"
-                [ngClass]="getStateCssColor()"
-            >
-                {{ motion.state.name | translate }}
-            </mat-basic-chip>
+            <div *ngIf="perms.isAllowed('change_metadata', motion)">
+                <mat-basic-chip [matMenuTriggerFor]="stateMenu" [ngClass]="getStateCssColor()">
+                    {{ stateLabel }}
+                </mat-basic-chip>
+                <div *ngIf="motion.state.show_state_extension_field" class="spacer-top-10">
+                    <mat-form-field>
+                        <input matInput placeholder="{{ 'Extension' | translate }}"
+                        [(ngModel)]="newStateExtension"/>
+                    </mat-form-field>
+                    <button mat-icon-button (click)="setStateExtension()">
+                        <mat-icon>check</mat-icon>
+                    </button>
+                </div>
+            </div>
+            <div *ngIf="!perms.isAllowed('change_metadata', motion)">
+                <mat-basic-chip [ngClass]="getStateCssColor()" >
+                    {{ stateLabel }}
+                </mat-basic-chip>
+            </div>
         </div>
 
         <!-- Recommendation -->
@@ -251,6 +258,7 @@
                     (click)="setRecommendation(recommendation.id)"
                 >
                     {{ recommendation.recommendation_label | translate }}
+                    <span *ngIf="recommendation.show_recommendation_extension_field">&nbsp;...</span>
                 </button>
                 <mat-divider></mat-divider>
                 <button mat-menu-item *ngIf="perms.isAllowed('change_metadata', motion)"
@@ -258,28 +266,26 @@
                     <mat-icon>replay</mat-icon> {{ 'Reset recommendation' | translate }}
                 </button>
             </mat-menu>
-            <mat-basic-chip
-                *ngIf="perms.isAllowed('change_metadata', motion)"
-                [matMenuTriggerFor]="recommendationMenu"
-                class="bluegrey"
-            >
-                {{
-                    motion.recommendation
-                        ? (motion.recommendation.recommendation_label | translate)
-                        : ('not set' | translate)
-                }}
-            </mat-basic-chip>
-            <mat-basic-chip
-                *ngIf="!perms.isAllowed('change_metadata', motion)"
-                class="bluegrey"
-            >
-                {{
-                    motion.recommendation
-                        ? (motion.recommendation.recommendation_label | translate)
-                        : ('not set' | translate)
-                }}
-            </mat-basic-chip>
-
+            <div *ngIf="perms.isAllowed('change_metadata', motion)">
+                <mat-basic-chip [matMenuTriggerFor]="recommendationMenu" class="bluegrey">
+                    {{ recommendationLabel }}
+                </mat-basic-chip>
+                <div *ngIf="motion.recommendation && motion.recommendation.show_recommendation_extension_field"
+                    class="spacer-top-10">
+                    <mat-form-field>
+                        <input matInput placeholder="{{ 'Extension' | translate }}"
+                            [(ngModel)]="newRecommendationExtension"/>
+                    </mat-form-field>
+                    <button mat-icon-button (click)="setRecommendationExtension()">
+                        <mat-icon>check</mat-icon>
+                    </button>
+                </div>
+            </div>
+            <div *ngIf="!perms.isAllowed('change_metadata', motion)">
+                <mat-basic-chip class="bluegrey">
+                    {{ recommendationLabel }}
+                </mat-basic-chip>
+            </div>
             <button mat-button *ngIf="canFollowRecommendation()" (click)="onFollowRecButton()">
                 <span translate>Follow recommendation</span>
             </button>

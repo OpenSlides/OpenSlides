@@ -62,7 +62,7 @@
                         lightblue: motion.state.css_class === 'primary'
                     }"
                 >
-                    {{ motion.state.name | translate }}
+                    {{ getStateLabel(motion) }}
                 </mat-basic-chip>
             </mat-cell>
         </ng-container>
@@ -72,11 +72,7 @@
             <mat-header-cell *matHeaderCellDef> <span translate>Recommendation</span> </mat-header-cell>
             <mat-cell class="chip-container" *matCellDef="let motion">
                 <mat-basic-chip disableRipple class="bluegrey">
-                    {{
-                        motion.recommendation
-                            ? (motion.recommendation.recommendation_label | translate)
-                            : ('not set' | translate)
-                    }}
+                    {{ getRecommendationLabel(motion) }}
                 </mat-basic-chip>
             </mat-cell>
         </ng-container>
