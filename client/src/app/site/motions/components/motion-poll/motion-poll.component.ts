@@ -10,6 +10,7 @@ import { MotionPollService } from '../../services/motion-poll.service';
 import { MotionPollDialogComponent } from './motion-poll-dialog.component';
 import { MotionRepositoryService } from '../../services/motion-repository.service';
 import { PromptService } from 'app/core/services/prompt.service';
+import { MotionPollPdfService } from '../../services/motion-poll-pdf.service';
 
 /**
  * A component used to display and edit polls of a motion.
@@ -89,7 +90,8 @@ export class MotionPollComponent implements OnInit {
         private constants: ConstantsService,
         private translate: TranslateService,
         private promptService: PromptService,
-        public perms: LocalPermissionsService
+        public perms: LocalPermissionsService,
+        private pdfService: MotionPollPdfService
     ) {
         this.pollValues = this.pollService.pollValues;
         this.majorityChoice = this.pollService.defaultMajorityMethod;
@@ -190,7 +192,7 @@ export class MotionPollComponent implements OnInit {
      * TODO: not implemented. Print the buttons
      */
     public printBallots(): void {
-        this.pollService.printBallots();
+        this.pdfService.printBallots(this.poll);
     }
 
     /**
