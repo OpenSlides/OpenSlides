@@ -64,6 +64,12 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
             updateUser.username = viewUser.username;
         }
 
+        // if the update user does not have a gender-field, send gender as empty string.
+        // This allow to delete a previously selected gender
+        if (!updateUser.gender) {
+            updateUser.gender = '';
+        }
+
         return await this.dataSend.updateModel(updateUser);
     }
 

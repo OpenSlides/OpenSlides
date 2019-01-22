@@ -4,9 +4,7 @@
         <h2><span translate>List of speakers</span></h2>
     </div>
     <div class="menu-slot" *osPerms="'agenda.can_manage_list_of_speakers'">
-        <button type="button" mat-icon-button [matMenuTriggerFor]="speakerMenu">
-            <mat-icon>more_vert</mat-icon>
-        </button>
+        <button type="button" mat-icon-button [matMenuTriggerFor]="speakerMenu"><mat-icon>more_vert</mat-icon></button>
     </div>
 </os-head-bar>
 
@@ -68,6 +66,7 @@
                         <span *ngIf="hasSpokenCount(item)" class="red-warning-text speaker-warning">
                             {{ hasSpokenCount(item) + 1 }}. <span translate>contribution</span>
                         </span>
+                        <span *ngIf="item.gender">({{ item.gender | translate }})</span>
                     </span>
                     <mat-button-toggle-group *osPerms="'agenda.can_manage_list_of_speakers'">
                         <mat-button-toggle matTooltip="{{ 'Begin speech' | translate }}" (click)="onStartButton(item)">
@@ -117,7 +116,6 @@
 </mat-card>
 
 <mat-menu #speakerMenu="matMenu">
-
     <button mat-menu-item *ngIf="closedList" (click)="openSpeakerList()">
         <mat-icon>mic</mat-icon>
         <span translate>Open list of speakers</span>

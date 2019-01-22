@@ -1,16 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material';
+import { Title } from '@angular/platform-browser';
 
+import { TranslateService } from '@ngx-translate/core';
+
+import { genders } from 'app/shared/models/users/user';
 import { ViewUser } from '../../models/view-user';
 import { UserRepositoryService } from '../../services/user-repository.service';
 import { Group } from '../../../../shared/models/users/group';
 import { DataStoreService } from '../../../../core/services/data-store.service';
 import { OperatorService } from '../../../../core/services/operator.service';
 import { BaseViewComponent } from '../../../base/base-view';
-import { TranslateService } from '@ngx-translate/core';
-import { MatSnackBar } from '@angular/material';
-import { Title } from '@angular/platform-browser';
 import { PromptService } from '../../../../core/services/prompt.service';
 
 /**
@@ -61,6 +63,11 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
      * Should contain all Groups, loaded or observed from DataStore
      */
     public groups: Group[];
+
+    /**
+     * Hold the list of genders (sexes) publicly to dynamically iterate in the view
+     */
+    public genderList = genders;
 
     /**
      * Constructor for user
@@ -114,6 +121,7 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
 
     /**
      * Checks, if the given user id matches with the operator ones.
+     *
      * @param userId The id to check, if it's the operator
      * @returns If the user is the operator
      */
@@ -178,6 +186,7 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
             title: [''],
             first_name: [''],
             last_name: [''],
+            gender: [''],
             structure_level: [''],
             number: [''],
             about_me: [''],
@@ -226,6 +235,7 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
                     this.personalInfoForm.get('first_name'),
                     this.personalInfoForm.get('last_name'),
                     this.personalInfoForm.get('email'),
+                    this.personalInfoForm.get('gender'),
                     this.personalInfoForm.get('structure_level'),
                     this.personalInfoForm.get('number'),
                     this.personalInfoForm.get('groups_id'),
@@ -241,6 +251,7 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
                 allowedFormFields.push(
                     this.personalInfoForm.get('username'),
                     this.personalInfoForm.get('email'),
+                    this.personalInfoForm.get('gender'),
                     this.personalInfoForm.get('about_me')
                 );
             }

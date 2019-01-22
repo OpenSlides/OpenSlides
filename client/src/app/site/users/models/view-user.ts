@@ -47,6 +47,10 @@ export class ViewUser extends BaseProjectableModel {
         return this.user ? this.user.email : null;
     }
 
+    public get gender(): string {
+        return this.user ? this.user.gender : null;
+    }
+
     public get structure_level(): string {
         return this.user ? this.user.structure_level : null;
     }
