@@ -205,16 +205,8 @@ mat-card {
         position: relative;
         max-width: 400px;
         z-index: 2;
-        background-color: #eee;
         padding-right: 5px;
         margin-right: 0px;
-    }
-
-    input.vp {
-        margin-left: -100%;
-        max-width: 100%;
-        animation-name: fadeIn;
-        animation-duration: 0.3s;
     }
 
     mat-icon {
@@ -411,7 +403,7 @@ button.mat-menu-item.selected {
         margin: 0 25px;
     }
     .content-container h1 {
-        font-size: 30px
+        font-size: 30px;
     }
 }
 /* small */
@@ -420,10 +412,9 @@ button.mat-menu-item.selected {
         margin: 0 15px;
     }
     .content-container h1 {
-        font-size: 30px
+        font-size: 30px;
     }
 }
-
 
 /** more helper classes **/
 .center {

@@ -8,6 +8,12 @@
     </div>
 </os-head-bar>
 
+<div class="custom-table-header">
+    <mat-form-field>
+        <input matInput (keyup)="applySearch($event.target.value)" placeholder="{{ 'Search' | translate }}" />
+        <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+</div>
 <mat-table class="os-header-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
     <!-- Timestamp -->
     <ng-container matColumnDef="time">

@@ -48,6 +48,7 @@ export class HistoryListComponent extends ListViewBaseComponent<ViewHistory> imp
     public ngOnInit(): void {
         super.setTitle('History');
         this.initTable();
+        this.setFilters();
 
         this.repo.getViewModelListObservable().subscribe(history => {
             this.sortAndPublish(history);
@@ -115,7 +116,7 @@ export class HistoryListComponent extends ListViewBaseComponent<ViewHistory> imp
      *
      * @param information history information string
      */
-    public parseInformation(information: string): void {
+    public parseInformation(information: string): string {
         if (information.length) {
             const base_string = this.translate.instant(information[0]);
             let argument_string;
@@ -124,5 +125,39 @@ export class HistoryListComponent extends ListViewBaseComponent<ViewHistory> imp
             }
             return base_string.replace(/\\{arg1\\}/g, argument_string);
         }
+    }
+
+    /**
+     * Handles the search fields' inputs
+     *
+     * @param value: a filter string. Matching is case-insensitive
+     */
+    public applySearch(value: string): void {
+        this.dataSource.filter = value;
+    }
+
+    /**
+     * Overwrites the dataSource's string filter with a more advanced option
+     * using the display methods of this class.
+     */
+    private setFilters(): void {
+        this.dataSource.filterPredicate = (data, filter) => {
+            filter = filter.toLowerCase();
+            if (
+                this.getElementInfo(data)
+                    .toLowerCase()
+                    .indexOf(filter) >= 0
+            ) {
+                return true;
+            }
+            if (data.user.full_name.toLowerCase().indexOf(filter) >= 0) {
+                return true;
+            }
+            return (
+                this.parseInformation(data.information)
+                    .toLowerCase()
+                    .indexOf(filter) >= 0
+            );
+        };
     }
 }
