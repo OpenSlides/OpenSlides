@@ -35,6 +35,7 @@
         </button>
         <mat-form-field *ngIf="isSearchBar">
             <input
+                osAutofocus
                 matInput
                 (keyup)="applySearch($event, $event.target.value)"
                 placeholder="{{ translate.instant('Search') }}"

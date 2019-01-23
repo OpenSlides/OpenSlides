@@ -11,7 +11,7 @@
 <div class="search-field">
     <form [formGroup]="quickSearchform">
         <mat-form-field>
-            <input matInput formControlName="query" (keyup)="quickSearch()" />
+            <input matInput osAutofocus formControlName="query" (keyup)="quickSearch()" />
             <mat-icon matSuffix>search</mat-icon>
         </mat-form-field>
     </form>
