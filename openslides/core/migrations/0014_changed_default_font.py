@@ -40,6 +40,4 @@ class Migration(migrations.Migration):
 
     dependencies = [("core", "0013_auto_20190119_1641")]
 
-    operations = [
-        migrations.RunPython(change_font_default_path),
-    ]
+    operations = [migrations.RunPython(change_font_default_path)]

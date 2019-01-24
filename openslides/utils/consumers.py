@@ -31,6 +31,7 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
         # anonymous user is it the dict {'id': 0}
         change_id = None
         if not await async_anonymous_is_enabled() and not self.scope["user"]["id"]:
+            await self.accept()  # workaround for #4009
             await self.close()
             return
 
@@ -39,6 +40,7 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
             try:
                 change_id = int(query_string[b"change_id"][0])
             except ValueError:
+                await self.accept()  # workaround for #4009
                 await self.close()  # TODO: Find a way to send an error code
                 return
 
