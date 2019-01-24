@@ -52,7 +52,7 @@ const routes: Routes = [
                 loadChildren: './history/history.module#HistoryModule'
             },
             {
-                path: 'projector-site',
+                path: 'projectors',
                 loadChildren: './projector/projector.module#ProjectorModule'
             }
         ],

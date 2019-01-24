@@ -1,3 +1,3 @@
 export interface MotionsMotionSlideData {
-    test: string;
+    title: string;
 }

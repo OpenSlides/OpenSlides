@@ -1,6 +1,7 @@
 <os-meta-text-block showActionRow="true">
     <ng-container class="meta-text-block-title">
-        <span translate>Voting result</span> <span *ngIf="pollIndex">&nbsp;({{ pollIndex + 1 }})</span>
+        <span translate>Voting result</span>
+        <span *ngIf="pollIndex">&nbsp;({{ pollIndex + 1 }})</span>
     </ng-container>
     <ng-container class="meta-text-block-content">
         <div *ngIf="poll.has_votes" class="on-transition-fade poll-result">
@@ -51,12 +52,11 @@
         </div>
     </ng-container>
     <ng-container class="meta-text-block-action-row" *osPerms="'motions.can_manage_metadata'">
-        <button mat-icon-button class="main-nav-color" matTooltip="{{ 'Edit' | translate }}" (click)="editPoll()">
+        <button mat-icon-button matTooltip="{{ 'Edit' | translate }}" (click)="editPoll()">
             <mat-icon inline>edit</mat-icon>
         </button>
         <button
             mat-icon-button
-            class="main-nav-color"
             matTooltip="{{ 'Print ballot papers' | translate }}"
             (click)="printBallots()"
         >
@@ -64,7 +64,6 @@
         </button>
         <button
             mat-icon-button
-            class="main-nav-color"
             matTooltip="{{ 'Delete' | translate }}"
             (click)="deletePoll()"
         >

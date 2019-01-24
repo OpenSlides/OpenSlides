@@ -8,8 +8,12 @@ import { ProjectorListComponent } from './components/projector-list/projector-li
 import { ProjectorDetailComponent } from './components/projector-detail/projector-detail.component';
 import { SlideContainerComponent } from './components/slide-container/slide-container.component';
 import { FullscreenProjectorComponent } from './components/fullscreen-projector/fullscreen-projector.component';
+import { ClockSlideService } from './services/clock-slide.service';
+import { ProjectorRepositoryService } from './services/projector-repository.service';
+import { ProjectorDataService } from './services/projector-data.service';
 
 @NgModule({
+    providers: [ClockSlideService, ProjectorDataService, ProjectorRepositoryService],
     imports: [CommonModule, ProjectorRoutingModule, SharedModule],
     declarations: [
         ProjectorComponent,

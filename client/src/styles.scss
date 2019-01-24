@@ -65,6 +65,10 @@ h4 {
     font-size: 12px;
     color: rgba(0, 0, 0, 0.54);
     margin-bottom: 5px;
+
+    .mat-icon-button mat-icon {
+        font-size: 16px;
+    }
 }
 
 .small {
@@ -277,9 +281,10 @@ mat-expansion-panel {
     border-radius: 0 !important;
 }
 
-mat-panel-title mat-icon {
+/* This destroys the projector button in list views using extension panels. */
+/*mat-panel-title mat-icon {
     padding-right: 30px;
-}
+}*/
 
 .hidden-cell {
     flex: 0;
@@ -469,6 +474,10 @@ button.mat-menu-item.selected {
 .grey {
     background-color: #e0e0e0 !important;
     color: rgba(0, 0, 0, 0.87) !important;
+}
+
+.projected {
+    background-color: lightblue;
 }
 
 /* TODO: move to site.component.scss-theme.scss (does not work currently) */

@@ -4,6 +4,7 @@ import { OperatorService } from './core/services/operator.service';
 import { LoginDataService } from './core/services/login-data.service';
 import { ConfigService } from './core/services/config.service';
 import { ConstantsService } from './core/services/constants.service';
+import { ServertimeService } from './core/services/servertime.service';
 
 /**
  * Angular's global App Component
@@ -30,7 +31,8 @@ export class AppComponent {
         operator: OperatorService,
         configService: ConfigService,
         loginDataService: LoginDataService,
-        constantsService: ConstantsService // Needs to be started, so it can register itself to the WebsocketService
+        constantsService: ConstantsService, // Needs to be started, so it can register itself to the WebsocketService
+        servertimeService: ServertimeService
     ) {
         // manually add the supported languages
         translate.addLangs(['en', 'de', 'cs']);
@@ -42,6 +44,8 @@ export class AppComponent {
         translate.use(translate.getLangs().includes(browserLang) ? browserLang : 'en');
         // change default JS functions
         this.overloadArrayToString();
+
+        servertimeService.startScheduler();
     }
 
     /**

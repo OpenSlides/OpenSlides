@@ -11,7 +11,7 @@ import { User } from '../../../shared/models/users/user';
 import { ViewMotionCommentSection } from './view-motion-comment-section';
 import { Workflow } from '../../../shared/models/motions/workflow';
 import { WorkflowState } from '../../../shared/models/motions/workflow-state';
-import { ProjectorOptions } from 'app/site/base/projector-options';
+import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 
 /**
  * The line numbering mode for the motion detail view.
@@ -459,28 +459,29 @@ export class ViewMotion extends BaseProjectableModel {
         return this.amendment_paragraphs.length > 0;
     }
 
-    public getProjectorOptions(): ProjectorOptions {
-        return [
-            {
-                key: 'mode',
-                displayName: 'Mode',
-                default: 'original',
-                choices: [
-                    { value: 'original', displayName: 'Original' },
-                    { value: 'changed', displayName: 'Changed' },
-                    { value: 'diff', displayName: 'Diff' },
-                    { value: 'agreed', displayName: 'Agreed' }
-                ]
-            }
-        ];
-    }
-
-    public getProjectionDefaultName(): string {
-        return 'motions';
-    }
-
-    public getNameForSlide(): string {
-        return Motion.COLLECTIONSTRING;
+    public getSlide(): ProjectorElementBuildDeskriptor {
+        return {
+            getBasicProjectorElement: () => ({
+                name: Motion.COLLECTIONSTRING,
+                id: this.id,
+                getIdentifiers: () => ['name', 'id']
+            }),
+            slideOptions: [
+                {
+                    key: 'mode',
+                    displayName: 'Mode',
+                    default: 'original',
+                    choices: [
+                        { value: 'original', displayName: 'Original' },
+                        { value: 'changed', displayName: 'Changed' },
+                        { value: 'diff', displayName: 'Diff' },
+                        { value: 'agreed', displayName: 'Agreed' }
+                    ]
+                }
+            ],
+            projectionDefaultName: 'motions',
+            getTitle: () => this.getTitle()
+        };
     }
 
     /**

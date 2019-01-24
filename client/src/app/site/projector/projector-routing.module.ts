@@ -5,7 +5,7 @@ import { ProjectorDetailComponent } from './components/projector-detail/projecto
 
 const routes: Routes = [
     {
-        path: 'list',
+        path: '',
         component: ProjectorListComponent
     },
     {

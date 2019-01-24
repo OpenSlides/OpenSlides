@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { BaseComponent } from 'app/base.component';
 import { SlideData } from '../../services/projector-data.service';
-import { DynamicSlideLoader } from 'app/slides/services/dynamic-slide-loader.service';
+import { SlideManager } from 'app/slides/services/slide-manager.service';
 import { BaseSlideComponent } from 'app/slides/base-slide-component';
 import { SlideOptions } from 'app/slides/slide-manifest';
 import { ConfigService } from 'app/core/services/config.service';
@@ -106,7 +106,7 @@ export class SlideContainerComponent extends BaseComponent {
     public constructor(
         titleService: Title,
         translate: TranslateService,
-        private dynamicSlideLoader: DynamicSlideLoader,
+        private slideManager: SlideManager,
         private configService: ConfigService
     ) {
         super(titleService, translate);
@@ -133,13 +133,13 @@ export class SlideContainerComponent extends BaseComponent {
     }
 
     /**
-     * Loads the slides via the dynamicSlideLoader. Creates the slide components and provide the slide data to it.
+     * Loads the slides via the SlideManager. Creates the slide components and provide the slide data to it.
      *
      * @param slideName The slide to load.
      */
     private slideChanged(slideName: string): void {
-        this.slideOptions = this.dynamicSlideLoader.getSlideOptions(slideName);
-        this.dynamicSlideLoader.getSlideFactory(slideName).then(slideFactory => {
+        this.slideOptions = this.slideManager.getSlideOptions(slideName);
+        this.slideManager.getSlideFactory(slideName).then(slideFactory => {
             this.slide.clear();
             this.slideRef = this.slide.createComponent(slideFactory);
             this.setDataForComponent();

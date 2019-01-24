@@ -1,4 +1,5 @@
 import { InjectionToken } from '@angular/core';
+import { IdentifiableProjectorElement } from 'app/shared/models/core/projector';
 
 /**
  * Slides can have these options.
@@ -20,9 +21,12 @@ export interface SlideOptions {
  * path in sync.
  */
 export interface SlideManifest extends SlideOptions {
-    slideName: string;
+    slide: string;
     path: string;
     loadChildren: string;
+    verboseName: string;
+    elementIdentifiers: (keyof IdentifiableProjectorElement)[];
+    canBeMappedToModel: boolean;
 }
 
 export const SLIDE_MANIFESTS = new InjectionToken<SlideManifest[]>('SLIDE_MANIFEST');

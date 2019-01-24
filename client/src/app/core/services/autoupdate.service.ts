@@ -76,8 +76,6 @@ export class AutoupdateService extends OpenSlidesComponent {
      * Handles the change ids of all autoupdates.
      */
     private async storeResponse(autoupdate: AutoupdateFormat): Promise<void> {
-        console.log('got autoupdate', autoupdate);
-
         if (autoupdate.all_data) {
             await this.storeAllData(autoupdate);
         } else {

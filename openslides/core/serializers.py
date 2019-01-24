@@ -78,7 +78,7 @@ class ProjectorSerializer(ModelSerializer):
     """
 
     elements = JSONSerializerField(validators=[elements_validator])
-    elements_preview = JSONSerializerField(validators=[elements_array_validator])
+    elements_preview = JSONSerializerField(validators=[elements_validator])
     elements_history = JSONSerializerField(validators=[elements_array_validator])
 
     projectiondefaults = ProjectionDefaultSerializer(many=True, read_only=True)

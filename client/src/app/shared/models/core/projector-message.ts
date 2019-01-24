@@ -5,11 +5,13 @@ import { BaseModel } from '../base/base-model';
  * @ignore
  */
 export class ProjectorMessage extends BaseModel<ProjectorMessage> {
+    public static COLLECTIONSTRING = 'core/projector-message';
+
     public id: number;
     public message: string;
 
     public constructor(input?: any) {
-        super('core/projector-message', 'Message', input);
+        super(ProjectorMessage.COLLECTIONSTRING, 'Message', input);
     }
 
     public getTitle(): string {

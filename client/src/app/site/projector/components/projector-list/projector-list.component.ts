@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
+import { MatSnackBar } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
 
@@ -8,8 +9,8 @@ import { ProjectorRepositoryService } from '../../services/projector-repository.
 import { ViewProjector } from '../../models/view-projector';
 import { Projector } from 'app/shared/models/core/projector';
 import { BaseViewComponent } from 'app/site/base/base-view';
-import { MatSnackBar } from '@angular/material';
 import { PromptService } from 'app/core/services/prompt.service';
+import { ClockSlideService } from '../../services/clock-slide.service';
 
 /**
  * All supported aspect rations for projectors.
@@ -76,7 +77,8 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
         matSnackBar: MatSnackBar,
         private repo: ProjectorRepositoryService,
         private formBuilder: FormBuilder,
-        private promptService: PromptService
+        private promptService: PromptService,
+        private clockSlideService: ClockSlideService
     ) {
         super(titleService, translate, matSnackBar);
 
@@ -88,7 +90,8 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
         this.updateForm = this.formBuilder.group({
             name: ['', Validators.required],
             aspectRatio: ['', Validators.required],
-            width: [0, Validators.required]
+            width: [0, Validators.required],
+            clock: [true]
         });
     }
 
@@ -116,6 +119,12 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
     public create(): void {
         if (this.createForm.valid && this.projectorToCreate) {
             this.projectorToCreate.patchValues(this.createForm.value as Projector);
+            // TODO: the server shouldn't want to have this data..
+            this.projectorToCreate.patchValues({
+                elements: [{ name: 'core/clock', stable: true }],
+                elements_preview: [],
+                elements_history: []
+            });
             this.repo.create(this.projectorToCreate).then(() => (this.projectorToCreate = null), this.raiseError);
         }
     }
@@ -178,7 +187,8 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
         this.updateForm.patchValue({
             name: projector.name,
             aspectRatio: this.getAspectRatioKey(projector),
-            width: projector.width
+            width: projector.width,
+            clock: this.clockSlideService.isProjectedOn(projector)
         });
     }
 
@@ -198,7 +208,7 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
      *
      * @param projector The projector to save.
      */
-    public onSaveButton(projector: ViewProjector): void {
+    public async onSaveButton(projector: ViewProjector): Promise<void> {
         if (projector.id !== this.editId || !this.updateForm.valid) {
             return;
         }
@@ -207,8 +217,13 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
             width: this.updateForm.value.width,
             height: Math.round(this.updateForm.value.width / aspectRatios[this.updateForm.value.aspectRatio])
         };
-        this.repo.update(updateProjector, projector);
-        this.editId = null;
+        try {
+            await this.clockSlideService.setProjectedOn(projector, this.updateForm.value.clock);
+            await this.repo.update(updateProjector, projector);
+            this.editId = null;
+        } catch (e) {
+            this.raiseError(e);
+        }
     }
 
     /**

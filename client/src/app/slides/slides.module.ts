@@ -2,7 +2,7 @@ import { NgModule, NgModuleFactoryLoader, SystemJsNgModuleLoader } from '@angula
 import { ModuleWithProviders } from '@angular/compiler/src/core';
 import { ROUTES } from '@angular/router';
 
-import { DynamicSlideLoader } from './services/dynamic-slide-loader.service';
+import { SlideManager } from './services/slide-manager.service';
 import { SLIDE_MANIFESTS } from './slide-manifest';
 import { allSlides } from './all-slides';
 
@@ -15,7 +15,7 @@ import { allSlides } from './all-slides';
  * found and put in sepearte chunks.
  */
 @NgModule({
-    providers: [DynamicSlideLoader, { provide: NgModuleFactoryLoader, useClass: SystemJsNgModuleLoader }]
+    providers: [SlideManager, { provide: NgModuleFactoryLoader, useClass: SystemJsNgModuleLoader }]
 })
 export class SlidesModule {
     public static forRoot(): ModuleWithProviders {

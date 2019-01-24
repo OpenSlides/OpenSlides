@@ -4,6 +4,8 @@ import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-poli
 import { StartComponent } from './components/start/start.component';
 import { LegalNoticeComponent } from './components/legal-notice/legal-notice.component';
 import { SearchComponent } from './components/search/search.component';
+import { CountdownListComponent } from './components/countdown-list/countdown-list.component';
+import { ProjectorMessageListComponent } from './components/projectormessage-list/projectormessage-list.component';
 
 const routes: Routes = [
     {
@@ -21,6 +23,14 @@ const routes: Routes = [
     {
         path: 'search',
         component: SearchComponent
+    },
+    {
+        path: 'countdowns',
+        component: CountdownListComponent
+    },
+    {
+        path: 'messages',
+        component: ProjectorMessageListComponent
     }
 ];
 

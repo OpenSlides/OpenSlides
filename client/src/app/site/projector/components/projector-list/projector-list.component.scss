@@ -1,13 +1,28 @@
 #card-wrapper {
     margin-top: 10px;
+    margin-left: 10px;
 
     .projector-card {
-        margin: 20px;
-        width: 300px;
-        display: inline-block;
-    }
+        width: 350px;
+        margin: 10px;
+        float: left;
 
-    .card-actions {
-        float: right;
+        .projector {
+            width: 320px;
+        }
+
+        form {
+            margin-top: 10px;
+        }
+
+        ::ng-deep mat-card {
+            margin: 0;
+        }
+
+        .no-markup {
+            /* Do not let the a tag ruin the projector */
+            color: inherit;
+            text-decoration: inherit;
+        }
     }
 }

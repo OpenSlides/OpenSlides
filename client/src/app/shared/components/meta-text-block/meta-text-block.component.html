@@ -6,7 +6,7 @@
                     <div>
                         <ng-container *ngTemplateOutlet="title"></ng-container>
                     </div>
-                    <div>
+                    <div *ngIf="showActionRow">
                         <ng-container *ngTemplateOutlet="actionRow"></ng-container>
                     </div>
                 </div>

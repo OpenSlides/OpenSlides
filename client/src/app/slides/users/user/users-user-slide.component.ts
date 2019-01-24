@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BaseSlideComponent } from 'app/slides/base-slide-component';
-import { UsersUserSlideData } from './users-user-slide-model';
+import { UsersUserSlideData } from './users-user-slide-data';
 
 @Component({
     selector: 'os-users-user-slide',

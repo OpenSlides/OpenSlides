@@ -82,7 +82,7 @@ export class ProjectorRepositoryService extends BaseRepository<ViewProjector, Pr
      * @param direction The direction.
      */
     public async scroll(projector: ViewProjector, direction: ScrollScaleDirection): Promise<void> {
-        this.controlView(projector, direction, 'scroll');
+        await this.controlView(projector, direction, 'scroll');
     }
 
     /**
@@ -92,7 +92,7 @@ export class ProjectorRepositoryService extends BaseRepository<ViewProjector, Pr
      * @param direction The direction.
      */
     public async scale(projector: ViewProjector, direction: ScrollScaleDirection): Promise<void> {
-        this.controlView(projector, direction, 'scale');
+        await this.controlView(projector, direction, 'scale');
     }
 
     /**
@@ -107,7 +107,7 @@ export class ProjectorRepositoryService extends BaseRepository<ViewProjector, Pr
         direction: ScrollScaleDirection,
         action: 'scale' | 'scroll'
     ): Promise<void> {
-        this.http.post(`/rest/core/projector/${projector.id}/control_view`, {
+        await this.http.post<void>(`/rest/core/projector/${projector.id}/control_view/`, {
             action: action,
             direction: direction
         });

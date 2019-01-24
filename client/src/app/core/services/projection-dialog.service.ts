@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { OpenSlidesComponent } from 'app/openslides.component';
-import { Projectable } from 'app/site/base/projectable';
+import { Projectable, ProjectorElementBuildDeskriptor, isProjectable } from 'app/site/base/projectable';
 import { MatDialog } from '@angular/material';
 import {
     ProjectionDialogComponent,
@@ -32,19 +32,27 @@ export class ProjectionDialogService extends OpenSlidesComponent {
      *
      * @param obj The projectable.
      */
-    public async openProjectDialogFor(obj: Projectable): Promise<void> {
-        const dialogRef = this.dialog.open<ProjectionDialogComponent, Projectable, ProjectionDialogReturnType>(
+    public async openProjectDialogFor(obj: Projectable | ProjectorElementBuildDeskriptor): Promise<void> {
+        let descriptor: ProjectorElementBuildDeskriptor;
+        if (isProjectable(obj)) {
+            descriptor = obj.getSlide();
+        } else {
+            descriptor = obj;
+        }
+
+        const dialogRef = this.dialog.open<
             ProjectionDialogComponent,
-            {
-                minWidth: '500px',
-                maxHeight: '90vh',
-                data: obj
-            }
-        );
+            ProjectorElementBuildDeskriptor,
+            ProjectionDialogReturnType
+        >(ProjectionDialogComponent, {
+            minWidth: '500px',
+            maxHeight: '90vh',
+            data: descriptor
+        });
         const response = await dialogRef.afterClosed().toPromise();
         if (response) {
             const [projectors, projectorElement]: ProjectionDialogReturnType = response;
-            this.projectorService.projectOn(projectors, projectorElement);
+            this.projectorService.projectOnMultiple(projectors, projectorElement);
         }
     }
 }

@@ -12,7 +12,6 @@ import { MotionChangeRecommendationComponent } from './components/motion-change-
 import { MotionDetailOriginalChangeRecommendationsComponent } from './components/motion-detail-original-change-recommendations/motion-detail-original-change-recommendations.component';
 import { MotionDetailDiffComponent } from './components/motion-detail-diff/motion-detail-diff.component';
 import { MotionCommentsComponent } from './components/motion-comments/motion-comments.component';
-import { MetaTextBlockComponent } from './components/meta-text-block/meta-text-block.component';
 import { PersonalNoteComponent } from './components/personal-note/personal-note.component';
 import { CallListComponent } from './components/call-list/call-list.component';
 import { AmendmentCreateWizardComponent } from './components/amendment-create-wizard/amendment-create-wizard.component';
@@ -36,7 +35,6 @@ import { MotionExportDialogComponent } from './components/motion-export-dialog/m
         MotionDetailOriginalChangeRecommendationsComponent,
         MotionDetailDiffComponent,
         MotionCommentsComponent,
-        MetaTextBlockComponent,
         PersonalNoteComponent,
         CallListComponent,
         AmendmentCreateWizardComponent,
@@ -53,7 +51,6 @@ import { MotionExportDialogComponent } from './components/motion-export-dialog/m
         StatuteParagraphListComponent,
         MotionCommentsComponent,
         MotionCommentSectionListComponent,
-        MetaTextBlockComponent,
         PersonalNoteComponent,
         ManageSubmittersComponent,
         MotionPollDialogComponent,

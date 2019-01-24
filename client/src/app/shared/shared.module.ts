@@ -77,6 +77,7 @@ import { C4DialogComponent, CopyrightSignComponent } from './components/copyrigh
 import { ProjectorButtonComponent } from './components/projector-button/projector-button.component';
 import { ProjectionDialogComponent } from './components/projection-dialog/projection-dialog.component';
 import { ResizedDirective } from './directives/resized.directive';
+import { MetaTextBlockComponent } from './components/meta-text-block/meta-text-block.component';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -188,7 +189,8 @@ import { ResizedDirective } from './directives/resized.directive';
         C4DialogComponent,
         ProjectorButtonComponent,
         ProjectionDialogComponent,
-        ResizedDirective
+        ResizedDirective,
+        MetaTextBlockComponent
     ],
     declarations: [
         PermsDirective,
@@ -211,7 +213,8 @@ import { ResizedDirective } from './directives/resized.directive';
         C4DialogComponent,
         ProjectorButtonComponent,
         ProjectionDialogComponent,
-        ResizedDirective
+        ResizedDirective,
+        MetaTextBlockComponent
     ],
     providers: [
         { provide: DateAdapter, useClass: OpenSlidesDateAdapter },

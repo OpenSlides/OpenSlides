@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 
-import { BaseComponent } from '../../../../base.component';
-import { ViewportService } from '../../../../core/services/viewport.service';
+import { BaseComponent } from '../../../base.component';
+import { ViewportService } from '../../../core/services/viewport.service';
 
 /**
  * Component for the motion comments view
@@ -14,9 +14,6 @@ import { ViewportService } from '../../../../core/services/viewport.service';
 export class MetaTextBlockComponent extends BaseComponent {
     @Input()
     public showActionRow: boolean;
-
-    @Input()
-    public icon: string;
 
     public constructor(public vp: ViewportService) {
         super();

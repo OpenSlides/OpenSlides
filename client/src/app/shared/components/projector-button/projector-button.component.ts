@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Projectable } from 'app/site/base/projectable';
+import { Projectable, ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { ProjectionDialogService } from 'app/core/services/projection-dialog.service';
 
 /**
@@ -11,7 +11,7 @@ import { ProjectionDialogService } from 'app/core/services/projection-dialog.ser
 })
 export class ProjectorButtonComponent implements OnInit {
     @Input()
-    public object: Projectable;
+    public object: Projectable | ProjectorElementBuildDeskriptor;
 
     /**
      * The consotructor
