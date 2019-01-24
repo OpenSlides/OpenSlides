@@ -99,22 +99,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     }
 
     /**
-     * @returns treu if the motion log is present and the user is allowed to see it
-     */
-    public get canShowLog(): boolean {
-        if (
-            this.motion &&
-            !this.editMotion &&
-            this.perms.isAllowed('manage') &&
-            this.motion.motion.log_messages &&
-            this.motion.motion.log_messages.length
-        ) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * @returns the current recommendation label (with extension)
      */
     public get recommendationLabel(): string {

@@ -103,7 +103,7 @@ export class PersonalNoteService {
             );
             this.subjects[model.collectionString][model.id] = subject;
         }
-        return this.subjects[model.collectionString][model.id];
+        return this.subjects[model.collectionString][model.id].asObservable();
     }
 
     /**

@@ -198,7 +198,7 @@ export class ViewMotion extends BaseProjectableModel {
     }
 
     public get agendaSpeakerAmount(): number {
-        return this.item ? this.item.speakerAmount : null;
+        return this.item ? this.item.waitingSpeakerAmount : null;
     }
 
     public get parent_id(): number {

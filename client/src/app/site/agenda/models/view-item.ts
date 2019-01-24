@@ -1,6 +1,7 @@
 import { BaseViewModel } from '../../base/base-view-model';
 import { Item } from '../../../shared/models/agenda/item';
 import { AgendaBaseModel } from '../../../shared/models/base/agenda-base-model';
+import { Speaker } from 'app/shared/models/agenda/speaker';
 
 export class ViewItem extends BaseViewModel {
     private _item: Item;
@@ -26,8 +27,8 @@ export class ViewItem extends BaseViewModel {
         return this.item ? this.item.duration : null;
     }
 
-    public get speakerAmount(): number {
-        return this.item ? this.item.speakerAmount : null;
+    public get waitingSpeakerAmount(): number {
+        return this.item ? this.item.waitingSpeakerAmount : null;
     }
 
     public get type(): number {
@@ -37,6 +38,7 @@ export class ViewItem extends BaseViewModel {
     public get closed(): boolean {
         return this.item ? this.item.closed : null;
     }
+
     public get comment(): string {
         if (this.item && this.item.comment) {
             return this.item.comment;
@@ -56,6 +58,13 @@ export class ViewItem extends BaseViewModel {
             return this.item.verboseCsvType;
         }
         return '';
+    }
+
+    /**
+     * TODO: make the repository set the ViewSpeakers here.
+     */
+    public get speakers(): Speaker[] {
+        return this.item ? this.item.speakers : [];
     }
 
     public constructor(item: Item, contentObject: AgendaBaseModel) {

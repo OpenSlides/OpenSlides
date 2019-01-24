@@ -137,15 +137,6 @@
 
     <!-- Personal note -->
     <os-personal-note *ngIf="!editMotion" [motion]="motion"></os-personal-note>
-
-    <ng-container *ngTemplateOutlet="motionLogTemplate"></ng-container>
-</ng-template>
-
-<ng-template #motionLogTemplate>
-    <button mat-button *ngIf="canShowLog" (click)="motionLogExpanded = !motionLogExpanded">
-        <span translate>Show motion log</span>
-    </button>
-        <os-motion-log *ngIf="canShowLog && motionLogExpanded" [motion]="motion"></os-motion-log>
 </ng-template>
 
 <ng-template #desktopView>
@@ -158,7 +149,6 @@
 
             <os-motion-comments *ngIf="!editMotion" [motion]="motion"></os-motion-comments>
             <os-personal-note *ngIf="!editMotion" [motion]="motion"></os-personal-note>
-            <ng-container *ngTemplateOutlet="motionLogTemplate"></ng-container>
         </div>
         <div class="desktop-right">
             <!-- Content -->

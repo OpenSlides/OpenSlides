@@ -38,22 +38,22 @@ export class User extends BaseModel<User> implements Searchable {
 
     public get full_name(): string {
         let name = this.short_name;
-        const addition: string[] = [];
+        const additions: string[] = [];
 
         // addition: add number and structure level
         const structure_level = this.structure_level ? this.structure_level.trim() : '';
         if (structure_level) {
-            addition.push(structure_level);
+            additions.push(structure_level);
         }
 
         const number = this.number ? this.number.trim() : null;
         if (number) {
             // TODO Translate
-            addition.push('No.' + ' ' + number);
+            additions.push('No. ' + number);
         }
 
-        if (addition.length > 0) {
-            name += ' (' + addition.join(' · ') + ')';
+        if (additions.length > 0) {
+            name += ' (' + additions.join(' · ') + ')';
         }
         return name.trim();
     }
@@ -85,7 +85,9 @@ export class User extends BaseModel<User> implements Searchable {
 
         let shortName = `${firstName} ${lastName}`;
 
-        if (!shortName) {
+        if (shortName.length <= 1) {
+            // We have at least one space from the concatination of
+            // first- and lastname.
             shortName = this.username;
         }
 
@@ -93,11 +95,11 @@ export class User extends BaseModel<User> implements Searchable {
             shortName = `${title} ${shortName}`;
         }
 
-        return shortName || this.username;
+        return shortName;
     }
 
     public getTitle(): string {
-        return this.full_name || this.username;
+        return this.full_name;
     }
 
     public getListViewTitle(): string {

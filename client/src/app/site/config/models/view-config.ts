@@ -89,15 +89,7 @@ export class ViewConfig extends BaseViewModel {
         return this._choices;
     }
 
-    /**
-     * @returns true if a default value exists
-     */
-    public get hasDefault(): boolean {
-        return this._defaultValue !== undefined;
-    }
-
     public get defaultValue(): any {
-        // TODO type is ugly
         return this._defaultValue;
     }
 

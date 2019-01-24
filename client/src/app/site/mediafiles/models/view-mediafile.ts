@@ -116,6 +116,8 @@ export class ViewMediafile extends BaseViewModel {
     public updateValues(update: Mediafile): void {
         if (update instanceof Mediafile && this.mediafile.id === update.id) {
             this._mediafile = update;
+        } else if (update instanceof User && this.uploader.id === update.id) {
+            this._uploader = update;
         }
     }
 
