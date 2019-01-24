@@ -308,13 +308,18 @@ export class PdfDocumentService {
     }
 
     /**
-     * Downloads a pdf. Does not seem to work.
+     * Downloads a pdf.
      *
      * @param docDefinition the structure of the PDF document
      */
-    public download(docDefinition: object, filename: string, metadata?: object): void {
-        this.getStandardPaper(docDefinition, metadata).then(doc => {
-            pdfMake.createPdf(doc).getBlob(blob => saveAs(blob, `${filename}.pdf`, { autoBOM: true }));
+    public async download(docDefinition: object, filename: string, metadata?: object): Promise<void> {
+        const doc = await this.getStandardPaper(docDefinition, metadata);
+        await new Promise<boolean>(resolve => {
+            const pdf = pdfMake.createPdf(doc);
+            pdf.getBlob(blob => {
+                saveAs(blob, `${filename}.pdf`, { autoBOM: true });
+                resolve(true);
+            });
         });
     }
 
@@ -347,6 +352,9 @@ export class PdfDocumentService {
                 margin: [0, -20, 0, 20],
                 color: 'grey'
             },
+            preamble: {
+                margin: [0, 0, 0, 10]
+            },
             headerText: {
                 fontSize: 10,
                 margin: [0, 10, 0, 0]
@@ -362,10 +370,33 @@ export class PdfDocumentService {
             smallText: {
                 fontSize: 8
             },
+            heading2: {
+                fontSize: 14,
+                margin: [0, 0, 0, 10],
+                bold: true
+            },
             heading3: {
                 fontSize: 12,
                 margin: [0, 10, 0, 0],
                 bold: true
+            },
+            tocEntry: {
+                fontSize: 12,
+                margin: [0, 0, 0, 0],
+                bold: false
+            },
+            tocCategoryEntry: {
+                fontSize: 12,
+                margin: [10, 0, 0, 0],
+                bold: false
+            },
+            tocCategoryTitle: {
+                fontSize: 12,
+                margin: [0, 0, 0, 4],
+                bold: true
+            },
+            tocCategorySection: {
+                margin: [0, 0, 0, 10]
             }
         };
     }

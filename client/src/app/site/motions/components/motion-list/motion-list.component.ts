@@ -22,6 +22,7 @@ import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewWorkflow } from '../../models/view-workflow';
 import { WorkflowState } from '../../../../shared/models/motions/workflow-state';
 import { WorkflowRepositoryService } from '../../services/workflow-repository.service';
+import { MotionPdfExportService } from '../../services/motion-pdf-export.service';
 
 /**
  * Component that displays all the motions in a Table using DataSource.
@@ -74,6 +75,7 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
      * @param categoryRepo: Repo for categories. Used to define filters
      * @param workflowRepo: Repo for Workflows. Used to define filters
      * @param motionCsvExport
+     * @param pdfExport To export motions as PDF
      * @param multiselectService Service for the multiSelect actions
      * @param userRepo
      * @param sortService
@@ -93,6 +95,7 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
         private workflowRepo: WorkflowRepositoryService,
         private motionRepo: MotionRepositoryService,
         private motionCsvExport: MotionCsvExportService,
+        private pdfExport: MotionPdfExportService,
         public multiselectService: MotionMultiselectService,
         public sortService: MotionSortListService,
         public filterService: MotionFilterListService,
@@ -190,6 +193,13 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
      */
     public csvExportMotionList(): void {
         this.motionCsvExport.exportMotionList(this.dataSource.data);
+    }
+
+    /**
+     * Exports motions as PDF.
+     */
+    public onExportAsPdf(): void {
+        this.pdfExport.exportMotionCatalog(this.dataSource.data);
     }
 
     /**
