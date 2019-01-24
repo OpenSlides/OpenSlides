@@ -70,6 +70,25 @@ When debugging something email related change the email backend to console::
 
     $ python manage.py start --debug-email
 
+
+d.a Debugging the Server
+''''''''''''''''''''''''
+
+If you wish to have even further debugging, enable `django-extensions
+<https://django-extensions.readthedocs.io/>`_,
+in the ``settings.py``  by adding ``django_extensions`` to the list of
+``INSTALLED_PLLUGINS``. Make sure, you add the following lines to your
+``requirements/development.txt``::
+
+    Werkzeug
+    pyparsing
+    pydot
+    django-extensions
+
+and install them via pip. You can start the enhanced debugging-server via::
+
+    $ python manage.py runserver_plus
+
 e. Setup and start the client
 '''''''''''''''''''''''''''''
 
@@ -124,6 +143,10 @@ a. Running server tests
 
 To run some server tests see `.travis.yml
 <https://github.com/OpenSlides/OpenSlides/blob/master/.travis.yml>`_.
+
+You can generate an class-structure image, when having `django_extensions` enabled (see above)
+
+    $ python manage.py graph_models -a -g -o my_project_visualized.png
 
 
 b. Client tests and commands
