@@ -38,6 +38,25 @@ matrix:
         - python -m mypy openslides/ tests/
         - python -W ignore -m pytest --cov --cov-fail-under=70
 
+    - language: python
+      name: "Server: Tests Startup Routine Python 3.7"
+      cache:
+        pip: true
+      python:
+        - "3.7"
+      install:
+        - python --version
+        - pip install --upgrade setuptools pip
+        - pip install --upgrade --requirement requirements/development.txt
+        - pip install --upgrade .[big_mode]
+        - pip freeze
+      script:
+        - set -e
+        - python manage.py createsettings
+        - python manage.py migrate
+        - python manage.py runserver --noreload & (sleep 15 && kill $(ps aux | grep 'manage.py runserver' | head -n -1 | awk '{print $2}'))
+        - set +e
+
     - language: node_js
       name: "Client: Linting"
       node_js:
