@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { GroupListComponent } from './components/group-list/group-list.component';
 import { PasswordComponent } from './components/password/password.component';
+import { PresenceDetailComponent } from './presence-detail/presence-detail.component';
 import { SharedModule } from '../../shared/shared.module';
 import { UserDetailComponent } from './components/user-detail/user-detail.component';
 import { UserImportListComponent } from './components/user-import/user-import-list.component';
@@ -16,7 +17,8 @@ import { UsersRoutingModule } from './users-routing.module';
         UserDetailComponent,
         GroupListComponent,
         PasswordComponent,
-        UserImportListComponent
+        UserImportListComponent,
+        PresenceDetailComponent
     ]
 })
 export class UsersModule {}

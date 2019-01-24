@@ -15,142 +15,151 @@
 </os-head-bar>
 
 <mat-drawer-container class="on-transition-fade">
-<os-sort-filter-bar [sortService]="sortService" [filterService]="filterService"
-    (searchFieldChange)="searchFilter($event)">
-</os-sort-filter-bar>
-
-<mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
-    <!-- Selector column -->
-    <ng-container matColumnDef="selector">
-        <mat-header-cell *matHeaderCellDef mat-sort-header class="icon-cell"></mat-header-cell>
-        <mat-cell *matCellDef="let user" (click)="selectItem(user, $event)" class="icon-cell">
-            <mat-icon>{{ isSelected(user) ? 'check_circle' : '' }}</mat-icon>
-        </mat-cell>
-    </ng-container>
-
-     <!-- Projector column -->
-     <ng-container matColumnDef="projector">
-        <mat-header-cell *matHeaderCellDef mat-sort-header class="icon-cell">Projector</mat-header-cell>
-        <mat-cell *matCellDef="let user" class="icon-cell">
-            <os-projector-button [object]="user"></os-projector-button>
-        </mat-cell>
-    </ng-container>
-
-    <!-- name column -->
-    <ng-container matColumnDef="name">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
-        <mat-cell *matCellDef="let user" (click)="selectItem(user, $event)">{{ user.full_name }}</mat-cell>
-    </ng-container>
-
-    <!-- prefix column -->
-    <ng-container matColumnDef="group">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Group</mat-header-cell>
-        <mat-cell *matCellDef="let user">
-            <div class='groupsCell'>
-                <span *ngIf="user.groups && user.groups.length">
-                    <mat-icon>people</mat-icon>
-                    {{ user.groups }}
-                </span>
-                <br *ngIf="user.groups && user.structureLevel" />
-                <span *ngIf="user.structureLevel">
-                    <mat-icon>flag</mat-icon>
-                    {{ user.structure_level }}
-                </span>
-            </div>
-        </mat-cell>
-    </ng-container>
-
-    <!-- Presence column -->
-    <ng-container matColumnDef="presence">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Presence</mat-header-cell>
-        <mat-cell *matCellDef="let user" class="presentCell">
-            <div *ngIf="user.is_active">
-                <mat-checkbox class="checkboxPresent" (click)="setPresent(user)" [checked]="user.is_present">
-                    <span translate>Present</span>
-                </mat-checkbox>
-            </div>
-        </mat-cell>
-    </ng-container>
-
-    <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
-    <mat-row
-        [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected' : ''"
-        *matRowDef="let row; columns: getColumnDefinition()"
+    <os-sort-filter-bar
+        [sortService]="sortService"
+        [filterService]="filterService"
+        (searchFieldChange)="searchFilter($event)"
     >
-    </mat-row>
-</mat-table>
+    </os-sort-filter-bar>
 
-<mat-paginator class="on-transition-fade" [pageSizeOptions]="[25, 50, 75, 100, 125]"></mat-paginator>
+    <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
+        <!-- Selector column -->
+        <ng-container matColumnDef="selector">
+            <mat-header-cell *matHeaderCellDef mat-sort-header class="icon-cell"></mat-header-cell>
+            <mat-cell *matCellDef="let user" (click)="selectItem(user, $event)" class="icon-cell">
+                <mat-icon>{{ isSelected(user) ? 'check_circle' : '' }}</mat-icon>
+            </mat-cell>
+        </ng-container>
 
-<mat-menu #userMenu="matMenu">
-    <div *ngIf="!isMultiSelect">
-        <button mat-menu-item *osPerms="'users.can_manage'" (click)="toggleMultiSelect()">
-            <mat-icon>library_add</mat-icon>
-            <span translate>Multiselect</span>
-        </button>
+        <!-- Projector column -->
+        <ng-container matColumnDef="projector">
+            <mat-header-cell *matHeaderCellDef mat-sort-header class="icon-cell">Projector</mat-header-cell>
+            <mat-cell *matCellDef="let user" class="icon-cell">
+                <os-projector-button [object]="user"></os-projector-button>
+            </mat-cell>
+        </ng-container>
 
-        <button mat-menu-item *osPerms="'users.can_manage'" routerLink="groups">
-            <mat-icon>people</mat-icon>
-            <span translate>Groups</span>
-        </button>
+        <!-- name column -->
+        <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
+            <mat-cell *matCellDef="let user" (click)="selectItem(user, $event)">{{ user.full_name }}</mat-cell>
+        </ng-container>
 
-        <button mat-menu-item (click)="csvExportUserList()">
-            <mat-icon>archive</mat-icon>
-            <span translate>Export as CSV</span>
-        </button>
+        <!-- prefix column -->
+        <ng-container matColumnDef="group">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Group</mat-header-cell>
+            <mat-cell *matCellDef="let user">
+                <div class="groupsCell">
+                    <span *ngIf="user.groups && user.groups.length">
+                        <mat-icon>people</mat-icon>
+                        {{ user.groups }}
+                    </span>
+                    <br *ngIf="user.groups && user.structureLevel" />
+                    <span *ngIf="user.structureLevel">
+                        <mat-icon>flag</mat-icon>
+                        {{ user.structure_level }}
+                    </span>
+                </div>
+            </mat-cell>
+        </ng-container>
 
-        <button mat-menu-item *osPerms="'users.can_manage'" routerLink="import">
-            <mat-icon>save_alt</mat-icon>
-            <span translate>Import</span><span>&nbsp;...</span>
-        </button>
+        <!-- Presence column -->
+        <ng-container matColumnDef="presence">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Presence</mat-header-cell>
+            <mat-cell *matCellDef="let user" class="presentCell">
+                <div *ngIf="user.is_active">
+                    <mat-checkbox class="checkboxPresent" (click)="setPresent(user)" [checked]="user.is_present">
+                        <span translate>Present</span>
+                    </mat-checkbox>
+                </div>
+            </mat-cell>
+        </ng-container>
 
-    </div>
-    <div *ngIf="isMultiSelect">
-        <button mat-menu-item (click)="selectAll()">
-            <mat-icon>done_all</mat-icon>
-            <span translate>Select all</span>
-        </button>
-        <button mat-menu-item (click)="deselectAll()">
-            <mat-icon>clear</mat-icon>
-            <span translate>Deselect all</span>
-        </button>
-        <div *osPerms="'users.can_manage'">
-            <mat-divider></mat-divider>
-            <button mat-menu-item (click)="setGroupSelected()">
+        <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
+        <mat-row
+            [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected' : ''"
+            *matRowDef="let row; columns: getColumnDefinition()"
+        >
+        </mat-row>
+    </mat-table>
+
+    <mat-paginator class="on-transition-fade" [pageSizeOptions]="[25, 50, 75, 100, 125]"></mat-paginator>
+
+    <mat-menu #userMenu="matMenu">
+        <div *ngIf="!isMultiSelect">
+            <button mat-menu-item *osPerms="'users.can_manage'" (click)="toggleMultiSelect()">
+                <mat-icon>library_add</mat-icon>
+                <span translate>Multiselect</span>
+            </button>
+
+            <button mat-menu-item *osPerms="'users.can_manage'" routerLink="groups">
                 <mat-icon>people</mat-icon>
-                <span translate>Add/remove groups ...</span>
+                <span translate>Groups</span>
             </button>
 
-            <button mat-menu-item (click)="setActiveSelected()">
-                <mat-icon>block</mat-icon>
-                <span translate>Enable/disable account ...</span>
+            <div *ngIf="presenceViewConfigured">
+                <button mat-menu-item *osPerms="'users.can_manage'" routerLink="presence">
+                    <mat-icon>transfer_within_a_station</mat-icon>
+                    <span translate>Presence</span>
+                </button>
+            </div>
+
+            <button mat-menu-item (click)="csvExportUserList()">
+                <mat-icon>archive</mat-icon>
+                <span translate>Export as CSV</span>
             </button>
 
-            <button mat-menu-item (click)="setPresentSelected()">
-                <mat-icon>check_box</mat-icon>
-                <span translate>Set presence ...</span>
-            </button>
-            <button mat-menu-item (click)="setCommitteeSelected()">
-                <mat-icon>account_balance</mat-icon>
-                <span translate>Set committee ...</span>
-            </button>
-
-            <mat-divider></mat-divider>
-
-            <button mat-menu-item (click)="sendInvitationEmailSelected()">
-                <mat-icon>mail</mat-icon>
-                <span translate>Send invitation email</span>
-            </button>
-            <button mat-menu-item (click)="resetPasswordsSelected()">
-                <mat-icon>vpn_key</mat-icon>
-                <span translate>Generate new passwords</span>
-            </button>
-            <mat-divider></mat-divider>
-            <button mat-menu-item class="red-warning-text" (click)="deleteSelected()">
-                <mat-icon>delete</mat-icon>
-                <span translate>Delete</span>
+            <button mat-menu-item *osPerms="'users.can_manage'" routerLink="import">
+                <mat-icon>save_alt</mat-icon>
+                <span translate>Import</span><span>&nbsp;...</span>
             </button>
         </div>
-    </div>
-</mat-menu>
+        <div *ngIf="isMultiSelect">
+            <button mat-menu-item (click)="selectAll()">
+                <mat-icon>done_all</mat-icon>
+                <span translate>Select all</span>
+            </button>
+            <button mat-menu-item (click)="deselectAll()">
+                <mat-icon>clear</mat-icon>
+                <span translate>Deselect all</span>
+            </button>
+            <div *osPerms="'users.can_manage'">
+                <mat-divider></mat-divider>
+                <button mat-menu-item (click)="setGroupSelected()">
+                    <mat-icon>people</mat-icon>
+                    <span translate>Add/remove groups ...</span>
+                </button>
+
+                <button mat-menu-item (click)="setActiveSelected()">
+                    <mat-icon>block</mat-icon>
+                    <span translate>Enable/disable account ...</span>
+                </button>
+
+                <button mat-menu-item (click)="setPresentSelected()">
+                    <mat-icon>check_box</mat-icon>
+                    <span translate>Set presence ...</span>
+                </button>
+                <button mat-menu-item (click)="setCommitteeSelected()">
+                    <mat-icon>account_balance</mat-icon>
+                    <span translate>Set committee ...</span>
+                </button>
+
+                <mat-divider></mat-divider>
+
+                <button mat-menu-item (click)="sendInvitationEmailSelected()">
+                    <mat-icon>mail</mat-icon>
+                    <span translate>Send invitation email</span>
+                </button>
+                <button mat-menu-item (click)="resetPasswordsSelected()">
+                    <mat-icon>vpn_key</mat-icon>
+                    <span translate>Generate new passwords</span>
+                </button>
+                <mat-divider></mat-divider>
+                <button mat-menu-item class="red-warning-text" (click)="deleteSelected()">
+                    <mat-icon>delete</mat-icon>
+                    <span translate>Delete</span>
+                </button>
+            </div>
+        </div>
+    </mat-menu>
 </mat-drawer-container>

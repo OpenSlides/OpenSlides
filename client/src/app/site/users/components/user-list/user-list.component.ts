@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { CsvExportService } from '../../../../core/services/csv-export.service';
 import { ChoiceService } from '../../../../core/services/choice.service';
+import { ConfigService } from 'app/core/services/config.service';
 import { ListViewBaseComponent } from '../../../base/list-view-base';
 import { GroupRepositoryService } from '../../services/group-repository.service';
 import { PromptService } from '../../../../core/services/prompt.service';
@@ -25,6 +26,19 @@ import { UserSortListService } from '../../services/user-sort-list.service';
 })
 export class UserListComponent extends ListViewBaseComponent<ViewUser> implements OnInit {
     /**
+     * Stores the observed configuration if the presence view is available to administrators
+     */
+    private _presenceViewConfigured = false;
+
+    /**
+     * TODO: Does not check for user manage rights itself
+     * @returns true if the presence view is available to administrators
+     */
+    public get presenceViewConfigured(): boolean {
+        return this._presenceViewConfigured;
+    }
+
+    /**
      * /**
      * The usual constructor for components
      * @param titleService Serivce for setting the title
@@ -39,6 +53,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
      * @param groupRepo
      * @param filterService
      * @param sortService
+     * @param config ConfigService
      */
     public constructor(
         titleService: Title,
@@ -52,12 +67,14 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
         protected csvExport: CsvExportService,
         private promptService: PromptService,
         public filterService: UserFilterListService,
-        public sortService: UserSortListService
+        public sortService: UserSortListService,
+        config: ConfigService
     ) {
         super(titleService, translate, matSnackBar);
 
         // enable multiSelect for this listView
         this.canMultiSelect = true;
+        config.get('users_enable_presence_view').subscribe(state => (this._presenceViewConfigured = state));
     }
 
     /**
