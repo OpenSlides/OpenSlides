@@ -507,9 +507,11 @@ class Motion(RESTModelMixin, models.Model):
         """
         if self.recommendation is not None:
             self.set_state(self.recommendation)
-            if (self.recommendation_extension is not None
-                    and self.state.show_state_extension_field
-                    and self.recommendation.show_recommendation_extension_field):
+            if (
+                self.recommendation_extension is not None
+                and self.state.show_state_extension_field
+                and self.recommendation.show_recommendation_extension_field
+            ):
                 self.state_extension = self.recommendation_extension
 
     """
