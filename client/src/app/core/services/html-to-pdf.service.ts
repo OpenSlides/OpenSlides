@@ -93,7 +93,7 @@ export class HtmlToPdfService {
         const parser = new DOMParser();
         const parsedHtml = parser.parseFromString(htmlText, 'text/html');
         // Since the spread operator did not work for HTMLCollection, use Array.from
-        const htmlArray = Array.from(parsedHtml.body.children);
+        const htmlArray = Array.from(parsedHtml.body.childNodes);
 
         // Parse the children of the current HTML element
         for (const child of htmlArray) {
@@ -219,6 +219,7 @@ export class HtmlToPdfService {
                     }
                 } else {
                     const children = this.parseChildren(element, styles);
+
                     newParagraph = {
                         ...this.create('text'),
                         ...this.computeStyle(styles)

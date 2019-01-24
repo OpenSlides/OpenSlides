@@ -57,7 +57,7 @@ export class MotionPdfService {
 
         // determine the default crMode if not explicitly given
         if (!crMode) {
-            lnMode = this.configService.instant('motions_recommendation_text_mode');
+            crMode = this.configService.instant('motions_recommendation_text_mode');
         }
 
         const title = this.createTitle(motion);

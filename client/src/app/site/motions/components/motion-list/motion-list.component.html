@@ -178,6 +178,10 @@
                 <mat-icon>archive</mat-icon>
                 <span translate>Export as CSV</span>
             </button>
+            <button mat-menu-item (click)="onExportAsPdf()">
+                <mat-icon>picture_as_pdf</mat-icon>
+                <span translate>Export all as PDF</span>
+            </button>
             <button mat-menu-item routerLink="import">
                 <mat-icon>save_alt</mat-icon>
                 <span translate>Import</span><span>&nbsp;...</span>
