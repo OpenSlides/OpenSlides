@@ -10,6 +10,31 @@
 </os-head-bar>
 <mat-card class="os-form-card import-table">
     <mat-tab-group (selectedTabChange)="onTabChange()">
+        <!-- textarea import tab -->
+        <mat-tab label="{{ 'Text import' | translate }}">
+            <div [formGroup]="textAreaForm">
+                <div>
+                    <span translate> Copy and paste your participant names in this textbox.</span>
+                    <span translate> Keep each person in a single line. </span><br />
+                    <span translate> Comma separated names will be read as 'Surname, given name(s)'. </span>
+                </div>
+                <mat-form-field>
+                    <textarea
+                        matInput
+                        osAutofocus
+                        formControlName="inputtext"
+                        placeholder="{{ 'Insert participants here' | translate }}"
+                        cdkTextareaAutosize
+                        cdkAutosizeMinRows="3"
+                        cdkAutosizeMaxRows="10"
+                    ></textarea>
+                </mat-form-field>
+            </div>
+            <div>
+                <button mat-button color="accent" (click)="parseTextArea()"><span translate>Preview</span></button>
+            </div>
+        </mat-tab>
+        <!-- CSV import tab -->
         <mat-tab label="{{ 'CSV import' | translate }}">
             <span translate
                 >Required comma or semicolon separated values with these column header names in the first row:</span
@@ -81,28 +106,6 @@
                         <span translate> Select file</span>
                     </button>
                 </div>
-            </div>
-        </mat-tab>
-        <mat-tab label="{{ 'Text import' | translate }}">
-            <div [formGroup]="textAreaForm">
-                <div>
-                    <span translate> Copy and paste your participant names in this textbox.</span>
-                    <span translate> Keep each person in a single line. </span><br />
-                    <span translate> Comma separated names will be read as 'Surname, given name(s)'. </span>
-                </div>
-                <mat-form-field>
-                    <textarea
-                        matInput
-                        formControlName="inputtext"
-                        placeholder="{{ 'Insert participants here' | translate }}"
-                        cdkTextareaAutosize
-                        cdkAutosizeMinRows="3"
-                        cdkAutosizeMaxRows="10"
-                    ></textarea>
-                </mat-form-field>
-            </div>
-            <div>
-                <button mat-button color="accent" (click)="parseTextArea()"><span translate>Preview</span></button>
             </div>
         </mat-tab>
     </mat-tab-group>
