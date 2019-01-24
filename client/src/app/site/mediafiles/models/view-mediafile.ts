@@ -46,6 +46,22 @@ export class ViewMediafile extends BaseViewModel {
         return this.mediafile ? this.mediafile.getDownloadUrl() : null;
     }
 
+    /**
+     * @returns the file type of the associated media file.
+     */
+    public get fileType(): string {
+        return this.mediafile ? this.mediafile.mediafile.type : null;
+    }
+
+    /**
+     * Determines if the file has the 'hidden' attribute
+     * @returns the hidden attribute, also 'hidden' if there is no file
+     * TODO Which is the expected behavior for 'no file'?
+     */
+    public get is_hidden(): boolean {
+        return this.mediafile ? this.mediafile.hidden : true;
+    }
+
     public constructor(mediafile?: Mediafile, uploader?: User) {
         super();
         this._mediafile = mediafile;
@@ -117,9 +133,5 @@ export class ViewMediafile extends BaseViewModel {
         if (update instanceof Mediafile && this.mediafile.id === update.id) {
             this._mediafile = update;
         }
-    }
-
-    public is_hidden(): boolean {
-        return this._mediafile.hidden;
     }
 }

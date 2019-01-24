@@ -9,13 +9,7 @@ export class MediafilesSortListService extends SortListService<ViewMediafile> {
     public sortOptions: OsSortingDefinition<ViewMediafile> = {
         sortProperty: 'title',
         sortAscending: true,
-        options: [
-            { property: 'title' },
-            { property: 'type' },
-            { property: 'size' },
-            // { property: 'upload_date' }
-            { property: 'uploader' }
-        ]
+        options: [{ property: 'title' }, { property: 'type' }, { property: 'size' }]
     };
     protected name = 'Mediafile';
 }
