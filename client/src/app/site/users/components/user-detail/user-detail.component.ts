@@ -6,14 +6,15 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { genders } from 'app/shared/models/users/user';
-import { ViewUser } from '../../models/view-user';
-import { UserRepositoryService } from '../../services/user-repository.service';
-import { Group } from '../../../../shared/models/users/group';
-import { DataStoreService } from '../../../../core/services/data-store.service';
-import { OperatorService } from '../../../../core/services/operator.service';
 import { BaseViewComponent } from '../../../base/base-view';
+import { DataStoreService } from '../../../../core/services/data-store.service';
+import { genders } from 'app/shared/models/users/user';
+import { Group } from '../../../../shared/models/users/group';
+import { OperatorService } from '../../../../core/services/operator.service';
 import { PromptService } from '../../../../core/services/prompt.service';
+import { UserPdfExportService } from '../../services/user-pdf-export.service';
+import { UserRepositoryService } from '../../services/user-repository.service';
+import { ViewUser } from '../../models/view-user';
 
 /**
  * Users detail component for both new and existing users
@@ -82,6 +83,7 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
      * @param DS DataStoreService
      * @param operator OperatorService
      * @param promptService PromptService
+     * @param pdfService UserPdfExportService used for export to pdf
      */
     public constructor(
         title: Title,
@@ -93,7 +95,8 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
         private repo: UserRepositoryService,
         private DS: DataStoreService,
         private operator: OperatorService,
-        private promptService: PromptService
+        private promptService: PromptService,
+        private pdfService: UserPdfExportService
     ) {
         super(title, translate, matSnackBar);
 
@@ -358,5 +361,12 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
                 this.groups.push(model as Group);
             }
         });
+    }
+
+    /**
+     * Triggers the pdf download for this user
+     */
+    public onDownloadPdf(): void {
+        this.pdfService.exportSingleUserAccessPDF(this.user);
     }
 }

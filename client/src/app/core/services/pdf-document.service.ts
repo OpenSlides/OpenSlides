@@ -429,6 +429,19 @@ export class PdfDocumentService {
                 margin: [0, 10, 0, 0],
                 bold: true
             },
+            userDataHeading: {
+                fontSize: 14,
+                margin: [0, 10],
+                bold: true
+            },
+            userDataTopic: {
+                fontSize: 12,
+                margin: [0, 5]
+            },
+            userDataValue: {
+                fontSize: 12,
+                margin: [15, 5]
+            },
             tocEntry: {
                 fontSize: 12,
                 margin: [0, 0, 0, 0],
@@ -446,6 +459,15 @@ export class PdfDocumentService {
             },
             tocCategorySection: {
                 margin: [0, 0, 0, 10]
+            },
+            userDataTitle: {
+                fontSize: 26,
+                margin: [0, 0, 0, 0],
+                bold: true
+            },
+            tableHeader: {
+                bold: true,
+                fillColor: 'white'
             }
         };
     }
