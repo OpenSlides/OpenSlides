@@ -11,9 +11,11 @@ import { PromptService } from '../../../../core/services/prompt.service';
 import { ViewItem } from '../../models/view-item';
 
 import { AgendaCsvExportService } from '../../services/agenda-csv-export.service';
+import { AgendaPdfService } from '../../services/agenda-pdf.service';
 import { ConfigService } from 'app/core/services/config.service';
 import { DurationService } from 'app/core/services/duration.service';
 import { ItemInfoDialogComponent } from '../item-info-dialog/item-info-dialog.component';
+import { PdfDocumentService } from 'app/core/services/pdf-document.service';
 import { ViewportService } from 'app/core/services/viewport.service';
 
 /**
@@ -52,6 +54,8 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
      * @param durationService Converts numbers to readable duration strings
      * @param csvExport Handles the exporting into csv
      * @param filterService: service for filtering data
+     * @param agendaPdfService: service for preparing a pdf of the agenda
+     * @param pdfService: Service for exporting a pdf
      */
     public constructor(
         titleService: Title,
@@ -66,7 +70,9 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
         public vp: ViewportService,
         public durationService: DurationService,
         private csvExport: AgendaCsvExportService,
-        public filterService: AgendaFilterListService
+        public filterService: AgendaFilterListService,
+        private agendaPdfService: AgendaPdfService,
+        private pdfService: PdfDocumentService
     ) {
         super(titleService, translate, matSnackBar);
 
@@ -226,5 +232,14 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
      */
     public csvExportItemList(): void {
         this.csvExport.exportItemList(this.dataSource.filteredData);
+    }
+
+    /**
+     * Triggers the export of the agenda. Currently filtered items and 'hidden'
+     * items will not be exported
+     */
+    public onDownloadPdf(): void {
+        const filename = this.translate.instant('Agenda');
+        this.pdfService.download(this.agendaPdfService.agendaListToDocDef(this.dataSource.filteredData), filename);
     }
 }
