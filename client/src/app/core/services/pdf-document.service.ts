@@ -9,8 +9,15 @@ import { ConfigService } from './config.service';
 import { HttpService } from './http.service';
 
 /**
- * TODO: Images and fonts
- *
+ * An interface for the mapping of image placeholder name to the url of the
+ * image
+ */
+export interface ImagePlaceHolder {
+    placeholder: string;
+    url: string;
+}
+
+/**
  * Provides the general document structure for PDF documents, such as page margins, header, footer and styles.
  * Also provides general purpose open and download functions.
  *
@@ -43,9 +50,11 @@ export class PdfDocumentService {
     /**
      * Define the pdfmake virtual file system for fonts
      *
+     * @param images an optional mapping of images urls to be fetched and inserted
+     *   into placeholders
      * @returns the vfs-object
      */
-    private async getVfs(): Promise<object> {
+    private async initVfs(images?: ImagePlaceHolder[]): Promise<object> {
         const fontPathList: string[] = Array.from(
             // create a list without redundancies
             new Set(
@@ -59,45 +68,52 @@ export class PdfDocumentService {
         const promises = fontPathList.map(fontPath => {
             return this.convertUrlToBase64(fontPath).then(base64 => {
                 return {
-                    [fontPath.split('/').pop()]: base64.split(',')[1]
+                    [fontPath.split('/').pop()]: base64
                 };
             });
         });
-
-        const fontDataUrls = await Promise.all(promises);
-
+        let imagePromises = [];
+        if (images && images.length) {
+            imagePromises = images.map(image => {
+                return this.convertUrlToBase64(image.url).then(base64 => {
+                    return {
+                        [image.placeholder]: base64
+                    };
+                });
+            });
+        }
+        const binaryDataUrls = await Promise.all(promises.concat(imagePromises));
         let vfs = {};
-        fontDataUrls.map(entry => {
+        binaryDataUrls.map(entry => {
             vfs = {
                 ...vfs,
                 ...entry
             };
         });
-
         return vfs;
     }
 
     /**
-     * Converts a given blob to base64
+     * Retrieves a binary file from the url and returns a base64 value
      *
-     * @param file File as blob
-     * @returns a promise to the base64 as string
+     * @param url file url
+     * @returns a promise with a base64 string
      */
-    private async convertUrlToBase64(url: string): Promise<string> {
-        const headers = new HttpHeaders();
-        const file = await this.httpService.get<ArrayBuffer>(url, {}, {}, headers, 'arraybuffer');
-
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(new Blob([file]));
-            reader.onload = () => {
-                const resultStr: string = reader.result as string;
-                resolve(resultStr);
-            };
-            reader.onerror = error => {
-                reject(error);
-            };
-        }) as Promise<string>;
+    public async convertUrlToBase64(url: string): Promise<string> {
+        return new Promise<string>((resolve, reject) => {
+            const headers = new HttpHeaders();
+            this.httpService.get<Blob>(url, {}, {}, headers, 'blob').then(file => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => {
+                    const resultStr: string = reader.result as string;
+                    resolve(resultStr.split(',')[1]);
+                };
+                reader.onerror = error => {
+                    reject(error);
+                };
+            });
+        });
     }
 
     /**
@@ -116,21 +132,17 @@ export class PdfDocumentService {
      * Overall document definition and styles for the most PDF documents
      *
      * @param documentContent the content of the pdf as object
+     * @param metadata
+     * @param images Array of optional images (url, placeholder) to be inserted
      * @returns the pdf document definition ready to export
      */
-    private async getStandardPaper(documentContent: object, metadata?: object): Promise<object> {
-        // define the fonts
-        pdfMake.fonts = {
-            PdfFont: {
-                normal: this.getFontName('font_regular'),
-                bold: this.getFontName('font_bold'),
-                italics: this.getFontName('font_italic'),
-                bolditalics: this.getFontName('font_bold_italic')
-            }
-        };
-
-        pdfMake.vfs = await this.getVfs();
-
+    private async getStandardPaper(
+        documentContent: object,
+        metadata?: object,
+        images?: ImagePlaceHolder[]
+    ): Promise<object> {
+        this.initFonts();
+        pdfMake.vfs = await this.initVfs(images);
         return {
             pageSize: 'A4',
             pageMargins: [75, 90, 75, 75],
@@ -147,6 +159,44 @@ export class PdfDocumentService {
             content: documentContent,
             styles: this.getStandardPaperStyles(),
             images: this.getImageUrls()
+        };
+    }
+
+    /**
+     * Overall document definition and styles for blank PDF documents
+     * (e.g. ballots)
+     *
+     * @param documentContent the content of the pdf as object
+     * @param image an optional image to insert into the ballot
+     * @returns the pdf document definition ready to export
+     */
+    private async getBallotPaper(documentContentObject: object, image?: ImagePlaceHolder): Promise<object> {
+        const images = image ? [image] : null;
+        this.initFonts();
+        pdfMake.vfs = await this.initVfs(images);
+        return {
+            pageSize: 'A4',
+            pageMargins: [0, 0, 0, 0],
+            defaultStyle: {
+                font: 'PdfFont',
+                fontSize: 10
+            },
+            content: documentContentObject,
+            styles: this.getBlankPaperStyles()
+        };
+    }
+
+    /**
+     * Define fonts
+     */
+    private initFonts(): void {
+        pdfMake.fonts = {
+            PdfFont: {
+                normal: this.getFontName('font_regular'),
+                bold: this.getFontName('font_bold'),
+                italics: this.getFontName('font_italic'),
+                bolditalics: this.getFontName('font_bold_italic')
+            }
         };
     }
 
@@ -308,18 +358,41 @@ export class PdfDocumentService {
     }
 
     /**
-     * Downloads a pdf.
+     * Downloads a pdf with the standard page definitions.
      *
      * @param docDefinition the structure of the PDF document
+     * @param filename the name of the file to use
+     * @param metadata
      */
-    public async download(docDefinition: object, filename: string, metadata?: object): Promise<void> {
-        const doc = await this.getStandardPaper(docDefinition, metadata);
-        await new Promise<void>(resolve => {
-            const pdf = pdfMake.createPdf(doc);
-            pdf.getBlob(blob => {
-                saveAs(blob, `${filename}.pdf`, { autoBOM: true });
-                resolve();
-            });
+    public download(docDefinition: object, filename: string, metadata?: object): void {
+        this.getStandardPaper(docDefinition, metadata).then(doc => {
+            this.createPdf(doc, filename);
+        });
+    }
+
+    /**
+     * Downloads a pdf with the ballot papet page definitions.
+     *
+     * @param docDefinition the structure of the PDF document
+     * @param filename the name of the file to use
+     * @param logo (optional) url of a logo to be placed as ballot logo
+     */
+    public downloadWithBallotPaper(docDefinition: object, filename: string, logo?: string): void {
+        const images: ImagePlaceHolder = logo ? { placeholder: 'ballot-logo', url: logo } : null;
+        this.getBallotPaper(docDefinition, images).then(doc => {
+            this.createPdf(doc, filename);
+        });
+    }
+
+    /**
+     * Triggers the actual page creation and saving.
+     *
+     * @param doc the finished layout
+     * @param filename the filename (without extension) to save as
+     */
+    private createPdf(doc: object, filename: string): void {
+        pdfMake.createPdf(doc).getBlob(blob => {
+            saveAs(blob, `${filename}.pdf`, { autoBOM: true });
         });
     }
 
@@ -397,6 +470,26 @@ export class PdfDocumentService {
             },
             tocCategorySection: {
                 margin: [0, 0, 0, 10]
+            }
+        };
+    }
+
+    /**
+     * Definition of styles for ballot papers
+     *
+     * @returns an object that contains a limited set of pdf styles
+     *  used for ballots
+     */
+    private getBlankPaperStyles(): object {
+        return {
+            title: {
+                fontSize: 14,
+                bold: true,
+                margin: [30, 30, 0, 0]
+            },
+            description: {
+                fontSize: 11,
+                margin: [30, 0, 0, 0]
             }
         };
     }
