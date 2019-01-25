@@ -9,7 +9,7 @@ import { ConfigService } from './config.service';
  * Defines a csv column with a property of the model and an optional label. If this is not given, the
  * translated and capitalized property name is used.
  */
-interface CsvColumnDefinitionProperty<T> {
+export interface CsvColumnDefinitionProperty<T> {
     label?: string;
     property: keyof T;
 }

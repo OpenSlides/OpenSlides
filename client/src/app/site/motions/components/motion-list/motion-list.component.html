@@ -174,13 +174,9 @@
                 <mat-icon>local_offer</mat-icon>
                 <span translate>Tags</span>
             </button>
-            <button mat-menu-item (click)="csvExportMotionList()">
+            <button mat-menu-item (click)="openExportDialog()">
                 <mat-icon>archive</mat-icon>
-                <span translate>Export as CSV</span>
-            </button>
-            <button mat-menu-item (click)="onExportAsPdf()">
-                <mat-icon>picture_as_pdf</mat-icon>
-                <span translate>Export all as PDF</span>
+                <span translate>Export</span><span>&nbsp;...</span>
             </button>
             <button mat-menu-item routerLink="import">
                 <mat-icon>save_alt</mat-icon>

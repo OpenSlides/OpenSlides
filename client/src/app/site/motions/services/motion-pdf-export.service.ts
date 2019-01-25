@@ -50,10 +50,20 @@ export class MotionPdfExportService {
     /**
      * Exports multiple motions to a collection of PDFs
      *
-     * @param motions
+     * @param motions the motions to export
+     * @param lnMode lineNumbering Mode
+     * @param crMode Change Recommendation Mode
+     * @param contentToExport Determine to determine with text and/or reason
+     * @param infoToExport Determine the meta info to export
      */
-    public exportMotionCatalog(motions: ViewMotion[]): void {
-        const doc = this.pdfCatalogService.motionListToDocDef(motions);
+    public exportMotionCatalog(
+        motions: ViewMotion[],
+        lnMode?: LineNumberingMode,
+        crMode?: ChangeRecoMode,
+        contentToExport?: string[],
+        infoToExport?: string[]
+    ): void {
+        const doc = this.pdfCatalogService.motionListToDocDef(motions, lnMode, crMode, contentToExport, infoToExport);
         const filename = this.translate.instant(this.configService.instant<string>('motions_export_title'));
         const metadata = {
             title: filename

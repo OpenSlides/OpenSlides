@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
+import { MatSnackBar, MatDialog } from '@angular/material';
+
 import { TranslateService } from '@ngx-translate/core';
 
 import { CategoryRepositoryService } from '../../services/category-repository.service';
 import { ConfigService } from '../../../../core/services/config.service';
 import { ListViewBaseComponent } from '../../../base/list-view-base';
 import { LocalPermissionsService } from '../../services/local-permissions.service';
-import { MatSnackBar } from '@angular/material';
 import { MotionBlockRepositoryService } from '../../services/motion-block-repository.service';
 import { MotionCsvExportService } from '../../services/motion-csv-export.service';
 import { MotionFilterListService } from '../../services/motion-filter-list.service';
@@ -23,6 +24,7 @@ import { ViewWorkflow } from '../../models/view-workflow';
 import { WorkflowState } from '../../../../shared/models/motions/workflow-state';
 import { WorkflowRepositoryService } from '../../services/workflow-repository.service';
 import { MotionPdfExportService } from '../../services/motion-pdf-export.service';
+import { MotionExportDialogComponent } from '../motion-export-dialog/motion-export-dialog.component';
 
 /**
  * Component that displays all the motions in a Table using DataSource.
@@ -96,6 +98,7 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
         private motionRepo: MotionRepositoryService,
         private motionCsvExport: MotionCsvExportService,
         private pdfExport: MotionPdfExportService,
+        private dialog: MatDialog,
         public multiselectService: MotionMultiselectService,
         public sortService: MotionSortListService,
         public filterService: MotionFilterListService,
@@ -189,17 +192,29 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
     }
 
     /**
-     * Export all motions as CSV
+     * Opens the export dialog
      */
-    public csvExportMotionList(): void {
-        this.motionCsvExport.exportMotionList(this.dataSource.data);
-    }
+    public openExportDialog(): void {
+        const exportDialogRef = this.dialog.open(MotionExportDialogComponent, {
+            width: '750px',
+            data: this.dataSource
+        });
 
-    /**
-     * Exports motions as PDF.
-     */
-    public onExportAsPdf(): void {
-        this.pdfExport.exportMotionCatalog(this.dataSource.data);
+        exportDialogRef.afterClosed().subscribe((result: any) => {
+            if (result && result.format) {
+                if (result.format === 'pdf') {
+                    this.pdfExport.exportMotionCatalog(
+                        this.dataSource.data,
+                        result.lnMode,
+                        result.crMode,
+                        result.content,
+                        result.metaInfo
+                    );
+                } else if (result.format === 'csv') {
+                    this.motionCsvExport.exportMotionList(this.dataSource.data, result.content, result.metaInfo);
+                }
+            }
+        });
     }
 
     /**

@@ -47,9 +47,19 @@ export class MotionPdfService {
      * @param motion the motion to convert to pdf
      * @param lnMode determine the used line mode
      * @param crMode determine the used change Recommendation mode
+     * @param contentToExport determine which content is to export. If left out, everything will be exported
+     * @param infoToExport determine which metaInfo to export. If left out, everything will be exported.
      * @returns doc def for the motion
      */
-    public motionToDocDef(motion: ViewMotion, lnMode?: LineNumberingMode, crMode?: ChangeRecoMode): object {
+    public motionToDocDef(
+        motion: ViewMotion,
+        lnMode?: LineNumberingMode,
+        crMode?: ChangeRecoMode,
+        contentToExport?: string[],
+        infoToExport?: string[]
+    ): object {
+        let motionPdfContent = [];
+
         // determine the default lnMode if not explicitly given
         if (!lnMode) {
             lnMode = this.configService.instant('motions_default_line_numbering');
@@ -62,12 +72,26 @@ export class MotionPdfService {
 
         const title = this.createTitle(motion);
         const subtitle = this.createSubtitle(motion);
-        const metaInfo = this.createMetaInfoTable(motion, crMode);
-        const preamble = this.createPreamble(motion);
-        const text = this.createText(motion, lnMode, crMode);
-        const reason = this.createReason(motion, lnMode);
 
-        const motionPdfContent = [title, subtitle, metaInfo, preamble, text, reason];
+        motionPdfContent = [title, subtitle];
+
+        if ((infoToExport && infoToExport.length > 0) || !infoToExport) {
+            const metaInfo = this.createMetaInfoTable(motion, crMode, infoToExport);
+            motionPdfContent.push(metaInfo);
+        }
+
+        if (!contentToExport || contentToExport.includes('text')) {
+            const preamble = this.createPreamble(motion);
+            motionPdfContent.push(preamble);
+            const text = this.createText(motion, lnMode, crMode);
+            motionPdfContent.push(text);
+        }
+
+        if (!contentToExport || contentToExport.includes('reason')) {
+            const reason = this.createReason(motion, lnMode);
+            motionPdfContent.push(reason);
+        }
+
         return motionPdfContent;
     }
 
@@ -119,39 +143,43 @@ export class MotionPdfService {
      * @param motion the target motion
      * @returns doc def for the meta infos
      */
-    private createMetaInfoTable(motion: ViewMotion, crMode: ChangeRecoMode): object {
+    private createMetaInfoTable(motion: ViewMotion, crMode: ChangeRecoMode, infoToExport?: string[]): object {
         const metaTableBody = [];
 
         // submitters
-        const submitters = motion.submitters
-            .map(submitter => {
-                return submitter.full_name;
-            })
-            .join(', ');
+        if (!infoToExport || infoToExport.includes('submitters')) {
+            const submitters = motion.submitters
+                .map(submitter => {
+                    return submitter.full_name;
+                })
+                .join(', ');
 
-        metaTableBody.push([
-            {
-                text: `${this.translate.instant('Submitters')}:`,
-                style: 'boldText'
-            },
-            {
-                text: submitters
-            }
-        ]);
+            metaTableBody.push([
+                {
+                    text: `${this.translate.instant('Submitters')}:`,
+                    style: 'boldText'
+                },
+                {
+                    text: submitters
+                }
+            ]);
+        }
 
         // state
-        metaTableBody.push([
-            {
-                text: `${this.translate.instant('State')}:`,
-                style: 'boldText'
-            },
-            {
-                text: this.motionRepo.getExtendedStateLabel(motion)
-            }
-        ]);
+        if (!infoToExport || infoToExport.includes('state')) {
+            metaTableBody.push([
+                {
+                    text: `${this.translate.instant('State')}:`,
+                    style: 'boldText'
+                },
+                {
+                    text: this.motionRepo.getExtendedStateLabel(motion)
+                }
+            ]);
+        }
 
         // recommendation
-        if (motion.recommendation) {
+        if (motion.recommendation && (!infoToExport || infoToExport.includes('recommendation'))) {
             metaTableBody.push([
                 {
                     text: `${this.translate.instant('Recommendation')}:`,
@@ -164,7 +192,7 @@ export class MotionPdfService {
         }
 
         // category
-        if (motion.category) {
+        if (motion.category && (!infoToExport || infoToExport.includes('category'))) {
             metaTableBody.push([
                 {
                     text: `${this.translate.instant('Category')}:`,
@@ -177,7 +205,7 @@ export class MotionPdfService {
         }
 
         // motion block
-        if (motion.origin) {
+        if (motion.motion_block && (!infoToExport || infoToExport.includes('block'))) {
             metaTableBody.push([
                 {
                     text: `${this.translate.instant('Motion block')}:`,
@@ -190,11 +218,11 @@ export class MotionPdfService {
         }
 
         // origin
-        if (motion.origin) {
+        if (motion.origin && (!infoToExport || infoToExport.includes('origin'))) {
             metaTableBody.push([
                 {
                     text: `${this.translate.instant('Origin')}:`,
-                    style: ['boldText', 'greyBackground']
+                    style: 'boldText'
                 },
                 {
                     text: motion.origin
@@ -259,28 +287,30 @@ export class MotionPdfService {
             ]);
         }
 
-        return {
-            table: {
-                widths: ['35%', '65%'],
-                body: metaTableBody
-            },
-            margin: [0, 0, 0, 20],
-            // That did not work too well in the past. Perhaps substitution by a pdfWorker the worker will be necessary
-            layout: {
-                fillColor: () => {
-                    return '#dddddd';
+        if (metaTableBody.length > 0) {
+            return {
+                table: {
+                    widths: ['35%', '65%'],
+                    body: metaTableBody
                 },
-                hLineWidth: (i, node) => {
-                    return i === 0 || i === node.table.body.length ? 0 : 0.5;
-                },
-                vLineWidth: () => {
-                    return 0;
-                },
-                hLineColor: () => {
-                    return 'white';
+                margin: [0, 0, 0, 20],
+                // That did not work too well in the past. Perhaps substitution by a pdfWorker the worker will be necessary
+                layout: {
+                    fillColor: () => {
+                        return '#dddddd';
+                    },
+                    hLineWidth: (i, node) => {
+                        return i === 0 || i === node.table.body.length ? 0 : 0.5;
+                    },
+                    vLineWidth: () => {
+                        return 0;
+                    },
+                    hLineColor: () => {
+                        return 'white';
+                    }
                 }
-            }
-        };
+            };
+        }
     }
 
     /**
