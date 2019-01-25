@@ -1,21 +1,23 @@
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs/operators';
+import { tap, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 import { BaseRepository } from '../../base/base-repository';
-import { DataStoreService } from '../../../core/services/data-store.service';
-import { Item } from '../../../shared/models/agenda/item';
-import { ViewItem } from '../models/view-item';
 import { AgendaBaseModel } from '../../../shared/models/base/agenda-base-model';
 import { BaseModel } from '../../../shared/models/base/base-model';
-import { Identifiable } from '../../../shared/models/base/identifiable';
 import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
-import { ViewSpeaker } from '../models/view-speaker';
-import { Speaker } from 'app/shared/models/agenda/speaker';
-import { User } from 'app/shared/models/users/user';
-import { HttpService } from 'app/core/services/http.service';
 import { ConfigService } from 'app/core/services/config.service';
 import { DataSendService } from 'app/core/services/data-send.service';
+import { DataStoreService } from '../../../core/services/data-store.service';
+import { HttpService } from 'app/core/services/http.service';
+import { Identifiable } from '../../../shared/models/base/identifiable';
+import { Item } from '../../../shared/models/agenda/item';
+import { OSTreeSortEvent } from 'app/shared/components/sorting-tree/sorting-tree.component';
+import { Speaker } from 'app/shared/models/agenda/speaker';
+import { User } from 'app/shared/models/users/user';
+import { ViewItem } from '../models/view-item';
+import { ViewSpeaker } from '../models/view-speaker';
+import { TreeService } from 'app/core/services/tree.service';
 
 /**
  * Repository service for users
@@ -34,13 +36,15 @@ export class AgendaRepositoryService extends BaseRepository<ViewItem, Item> {
      * @param mapperService OpenSlides mapping service for collection strings
      * @param config Read config variables
      * @param dataSend send models to the server
+     * @param treeService sort the data according to weight and parents
      */
     public constructor(
         protected DS: DataStoreService,
         private httpService: HttpService,
         mapperService: CollectionStringModelMapperService,
         private config: ConfigService,
-        private dataSend: DataSendService
+        private dataSend: DataSendService,
+        private treeService: TreeService
     ) {
         super(DS, mapperService, Item);
     }
@@ -228,5 +232,38 @@ export class AgendaRepositoryService extends BaseRepository<ViewItem, Item> {
      */
     public getDefaultAgendaVisibility(): Observable<number> {
         return this.config.get('agenda_new_items_default_visibility').pipe(map(key => +key));
+    }
+
+    /**
+     * Sends the changed nodes to the server.
+     *
+     * @param data The reordered data from the sorting
+     */
+    public async sortItems(data: OSTreeSortEvent<ViewItem>): Promise<void> {
+        const url = '/rest/agenda/item/sort/';
+        await this.httpService.post(url, data);
+    }
+
+    /**
+     * Add custom hook into the observables. The ViewItems get a virtual agendaListWeight (a sequential number)
+     * for the agenda topic order, and a virtual level for the hierarchy in the agenda list tree. Both values can be used
+     * for sorting and ordering instead of dealing with the sort parent id and weight.
+     *
+     * @override
+     */
+    public getViewModelListObservable(): Observable<ViewItem[]> {
+        return super.getViewModelListObservable().pipe(
+            tap(items => {
+                const iterator = this.treeService.traverseItems(items, 'weight', 'parent_id');
+                let m: IteratorResult<ViewItem>;
+                let virtualWeightCounter = 0;
+                while (!(m = iterator.next()).done) {
+                    m.value.agendaListWeight = virtualWeightCounter++;
+                    m.value.agendaListLevel = m.value.parent_id
+                        ? this.getViewModel(m.value.parent_id).agendaListLevel + 1
+                        : 0;
+                }
+            })
+        );
     }
 }

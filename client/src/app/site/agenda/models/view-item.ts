@@ -7,6 +7,19 @@ export class ViewItem extends BaseViewModel {
     private _item: Item;
     private _contentObject: AgendaBaseModel;
 
+    /**
+     * virtual weight defined by the order in the agenda tree, representing a shortcut to sorting by
+     * weight, parent_id and the parents' weight(s)
+     * TODO will be accurate if the viewMotion is observed via {@link getViewModelListObservable}, else, it will be undefined
+     */
+    public agendaListWeight: number;
+
+    /**
+     * The amount of parents in the agenda list tree.
+     * TODO will be accurate if the viewMotion is observed via {@link getViewModelListObservable}, else, it will be undefined
+     */
+    public agendaListLevel: number;
+
     public get item(): Item {
         return this._item;
     }
@@ -65,6 +78,21 @@ export class ViewItem extends BaseViewModel {
      */
     public get speakers(): Speaker[] {
         return this.item ? this.item.speakers : [];
+    }
+
+    /**
+     * @returns the weight the server assigns to that item. Mostly useful for sorting within
+     * it's own hierarchy level (items sharing a parent)
+     */
+    public get weight(): number {
+        return this.item ? this.item.weight : null;
+    }
+
+    /**
+     * @returns the parent's id of that item (0 if no parent is set).
+     */
+    public get parent_id(): number {
+        return this.item ? this.item.parent_id : null;
     }
 
     public constructor(item: Item, contentObject: AgendaBaseModel) {

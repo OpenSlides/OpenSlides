@@ -1,0 +1,23 @@
+<os-head-bar [nav]="false">
+    <!-- Title -->
+    <div class="title-slot"><h2 translate>Sort agenda</h2></div>
+</os-head-bar>
+
+<mat-card>
+    <div>
+        <span translate>
+            Drag and drop items to change the order of the agenda. Your modification will be saved immediately.
+        </span>
+    </div>
+    <button mat-button (click)="expandCollapseAll(true)">{{ 'Expand all' | translate }}</button>
+    <button mat-button (click)="expandCollapseAll(false)">{{ 'Collapse all' | translate }}</button>
+    <os-sorting-tree
+        #sorter
+        (sort)="sort($event)"
+        parentIdKey="parent_id"
+        weightKey="weight"
+        [modelsObservable]="itemsObservable"
+        [expandCollapseAll]="expandCollapse"
+    >
+    </os-sorting-tree>
+</mat-card>

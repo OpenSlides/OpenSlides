@@ -11,10 +11,9 @@
         <button mat-icon-button (click)="toggleMultiSelect()"><mat-icon>arrow_back</mat-icon></button>
         <span>{{ selectedRows.length }}&nbsp;</span><span translate>selected</span>
     </div>
-
 </os-head-bar>
 <mat-drawer-container class="on-transition-fade">
-    <os-sort-filter-bar [filterService] = "filterService" (searchFieldChange)="searchFilter($event)"></os-sort-filter-bar>
+    <os-sort-filter-bar [filterService]="filterService" (searchFieldChange)="searchFilter($event)"></os-sort-filter-bar>
 
     <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
         <!-- selector column -->
@@ -30,8 +29,10 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header>Topic</mat-header-cell>
             <!-- <mat-cell (click)="onTitleColumn(item)" *matCellDef="let item"> -->
             <mat-cell (click)="selectItem(item, $event)" *matCellDef="let item">
-                <span *ngIf="item.closed"> <mat-icon class="done-check">check</mat-icon> </span>
-                <span> {{ item.getListTitle() }} </span>
+                <div [ngStyle]="{'margin-left': item.agendaListLevel * 25 + 'px' }">
+                    <span *ngIf="item.closed"> <mat-icon class="done-check">check</mat-icon> </span>
+                    <span class="table-view-list-title">{{ item.getListTitle() }}</span>
+                </div>
             </mat-cell>
         </ng-container>
 
@@ -61,7 +62,10 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header>Speakers</mat-header-cell>
             <mat-cell *matCellDef="let item">
                 <button mat-icon-button (click)="onSpeakerIcon(item)">
-                    <mat-icon [matBadge]="item.waitingSpeakerAmount > 0 ? item.waitingSpeakerAmount : null" matBadgeColor="accent">
+                    <mat-icon
+                        [matBadge]="item.waitingSpeakerAmount > 0 ? item.waitingSpeakerAmount : null"
+                        matBadgeColor="accent"
+                    >
                         mic
                     </mat-icon>
                 </button>
@@ -102,14 +106,18 @@
                 <mat-icon>format_list_numbered</mat-icon>
                 <span translate>Numbering</span>
             </button>
+            <button mat-menu-item routerLink="sort-agenda">
+                <mat-icon>sort</mat-icon>
+                <span translate>Sort</span>
+            </button>
         </div>
-        <button mat-menu-item (click)="csvExportItemList();">
+        <button mat-menu-item (click)="csvExportItemList()">
             <mat-icon>archive</mat-icon>
             <span translate>Export as CSV</span>
         </button>
         <button mat-menu-item *osPerms="'agenda.can_manage'" routerLink="import">
-                <mat-icon>save_alt</mat-icon>
-                <span translate>Import</span><span>&nbsp;...</span>
+            <mat-icon>save_alt</mat-icon>
+            <span translate>Import</span><span>&nbsp;...</span>
         </button>
     </div>
 
@@ -179,7 +187,10 @@
 
         <!-- List of speakers for mobile -->
         <button mat-menu-item (click)="onSpeakerIcon(item)" *ngIf="vp.isMobile">
-            <mat-icon [matBadge]="item.waitingSpeakerAmount > 0 ? item.waitingSpeakerAmount : null" matBadgeColor="accent">
+            <mat-icon
+                [matBadge]="item.waitingSpeakerAmount > 0 ? item.waitingSpeakerAmount : null"
+                matBadgeColor="accent"
+            >
                 mic
             </mat-icon>
             <span translate>List of speakers</span>

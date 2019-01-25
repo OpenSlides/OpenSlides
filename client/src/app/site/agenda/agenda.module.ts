@@ -7,6 +7,7 @@ import { ItemInfoDialogComponent } from './components/item-info-dialog/item-info
 import { AgendaRoutingModule } from './agenda-routing.module';
 import { SharedModule } from '../../shared/shared.module';
 import { TopicDetailComponent } from './components/topic-detail/topic-detail.component';
+import { AgendaSortComponent } from './components/agenda-sort/agenda-sort.component';
 
 /**
  * AppModule for the agenda and it's children.
@@ -14,6 +15,12 @@ import { TopicDetailComponent } from './components/topic-detail/topic-detail.com
 @NgModule({
     imports: [CommonModule, AgendaRoutingModule, SharedModule],
     entryComponents: [ItemInfoDialogComponent],
-    declarations: [AgendaListComponent, TopicDetailComponent, ItemInfoDialogComponent, AgendaImportListComponent]
+    declarations: [
+        AgendaListComponent,
+        TopicDetailComponent,
+        ItemInfoDialogComponent,
+        AgendaImportListComponent,
+        AgendaSortComponent
+    ]
 })
 export class AgendaModule {}
