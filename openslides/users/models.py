@@ -232,10 +232,20 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
                 "password": self.default_password,
             }
         )
-        message = message.format(**message_format)
+        try:
+            message = message.format(**message_format)
+        except KeyError as err:
+            raise ValidationError(
+                {"detail": f"Invalid property {err}."}
+            )
 
         subject_format = format_dict({"event_name": config["general_event_name"]})
-        subject = subject.format(**subject_format)
+        try:
+            subject = subject.format(**subject_format)
+        except KeyError as err:
+            raise ValidationError(
+                {"detail": f"Invalid property {err}."}
+            )
 
         # Create an email and send it.
         email = mail.EmailMessage(
