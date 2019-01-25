@@ -131,7 +131,6 @@ export class SortingListComponent implements OnInit, OnDestroy {
         if (this.array.length !== newValues.length || this.live) {
             this.array = [];
             this.array = newValues.map(val => val);
-            console.log(newValues);
         } else if (this.array.length === 0) {
             this.array.push(new EmptySelectable(this.translate));
         }

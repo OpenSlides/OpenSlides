@@ -61,7 +61,7 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header>Speakers</mat-header-cell>
             <mat-cell *matCellDef="let item">
                 <button mat-icon-button (click)="onSpeakerIcon(item)">
-                    <mat-icon [matBadge]="item.speakerAmount > 0 ? item.speakerAmount : null" matBadgeColor="accent">
+                    <mat-icon [matBadge]="item.waitingSpeakerAmount > 0 ? item.waitingSpeakerAmount : null" matBadgeColor="accent">
                         mic
                     </mat-icon>
                 </button>
@@ -179,7 +179,7 @@
 
         <!-- List of speakers for mobile -->
         <button mat-menu-item (click)="onSpeakerIcon(item)" *ngIf="vp.isMobile">
-            <mat-icon [matBadge]="item.speakerAmount > 0 ? item.speakerAmount : null" matBadgeColor="accent">
+            <mat-icon [matBadge]="item.waitingSpeakerAmount > 0 ? item.waitingSpeakerAmount : null" matBadgeColor="accent">
                 mic
             </mat-icon>
             <span translate>List of speakers</span>

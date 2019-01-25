@@ -57,7 +57,7 @@ export class Item extends BaseModel<Item> {
     /**
      * Gets the amount of waiting speakers
      */
-    public get speakerAmount(): number {
+    public get waitingSpeakerAmount(): number {
         return this.speakers.filter(speaker => speaker.state === SpeakerState.WAITING).length;
     }
 

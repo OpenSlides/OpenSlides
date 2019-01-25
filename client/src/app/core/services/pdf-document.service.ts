@@ -314,11 +314,11 @@ export class PdfDocumentService {
      */
     public async download(docDefinition: object, filename: string, metadata?: object): Promise<void> {
         const doc = await this.getStandardPaper(docDefinition, metadata);
-        await new Promise<boolean>(resolve => {
+        await new Promise<void>(resolve => {
             const pdf = pdfMake.createPdf(doc);
             pdf.getBlob(blob => {
                 saveAs(blob, `${filename}.pdf`, { autoBOM: true });
-                resolve(true);
+                resolve();
             });
         });
     }

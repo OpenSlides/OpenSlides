@@ -96,87 +96,78 @@ export class AgendaRepositoryService extends BaseRepository<ViewItem, Item> {
      * Sends the users ID to the server
      * Might need another repo
      *
-     * @param id {@link User} id of the new speaker
-     * @param agenda the target agenda item
+     * @param speakerId {@link User} id of the new speaker
+     * @param item the target agenda item
      */
-    public async addSpeaker(id: number, agenda: Item): Promise<void> {
-        const restUrl = `rest/agenda/item/${agenda.id}/manage_speaker/`;
-        await this.httpService.post<Identifiable>(restUrl, { user: id });
+    public async addSpeaker(speakerId: number, item: ViewItem): Promise<void> {
+        const restUrl = `rest/agenda/item/${item.id}/manage_speaker/`;
+        await this.httpService.post<Identifiable>(restUrl, { user: speakerId });
     }
 
     /**
      * Sets the given speaker ID to Speak
      *
-     * @param id the speakers id
-     * @param agenda the target agenda item
+     * @param speakerId the speakers id
+     * @param item the target agenda item
      */
-    public async startSpeaker(id: number, agenda: Item): Promise<void> {
-        const restUrl = `rest/agenda/item/${agenda.id}/speak/`;
-        await this.httpService.put(restUrl, { speaker: id });
+    public async startSpeaker(speakerId: number, item: ViewItem): Promise<void> {
+        const restUrl = `rest/agenda/item/${item.id}/speak/`;
+        await this.httpService.put(restUrl, { speaker: speakerId });
     }
 
     /**
      * Stops the current speaker
      *
-     * @param agenda the target agenda item
+     * @param item the target agenda item
      */
-    public async stopSpeaker(agenda: Item): Promise<void> {
-        const restUrl = `rest/agenda/item/${agenda.id}/speak/`;
-        await this.httpService.delete(restUrl);
-    }
-
-    /**
-     * Stops the current speaker
-     *
-     * @param agenda the target agenda item
-     */
-    public async closeSpeakerList(agenda: Item): Promise<void> {
-        const restUrl = `rest/agenda/item/${agenda.id}/speak/`;
-        await this.httpService.delete(restUrl);
-    }
-
-    /**
-     * Stops the current speaker
-     *
-     * @param agenda the target agenda item
-     */
-    public async openSpeakerList(agenda: Item): Promise<void> {
-        const restUrl = `rest/agenda/item/${agenda.id}/speak/`;
+    public async stopCurrentSpeaker(item: ViewItem): Promise<void> {
+        const restUrl = `rest/agenda/item/${item.id}/speak/`;
         await this.httpService.delete(restUrl);
     }
 
     /**
      * Marks the current speaker
      *
-     * @param id {@link User} id of the new speaker
+     * @param speakerId {@link User} id of the new speaker
      * @param mark determine if the user was marked or not
-     * @param agenda the target agenda item
+     * @param item the target agenda item
      */
-    public async markSpeaker(id: number, mark: boolean, agenda: Item): Promise<void> {
-        const restUrl = `rest/agenda/item/${agenda.id}/manage_speaker/`;
-        await this.httpService.patch(restUrl, { user: id, marked: mark });
+    public async markSpeaker(speakerId: number, mark: boolean, item: ViewItem): Promise<void> {
+        const restUrl = `rest/agenda/item/${item.id}/manage_speaker/`;
+        await this.httpService.patch(restUrl, { user: speakerId, marked: mark });
     }
 
     /**
-     * Deletes the given speaker for the agenda
+     * Deletes the given speaker for the agenda item
      *
-     * @param id the speakers id
-     * @param agenda the target agenda item
+     * @param item the target agenda item
+     * @param speakerId (otional) the speakers id. If no id is given, the current operator
+     * is removed.
      */
-    public async deleteSpeaker(agenda: Item, id?: number): Promise<void> {
-        const restUrl = `rest/agenda/item/${agenda.id}/manage_speaker/`;
-        await this.httpService.delete(restUrl, { speaker: id });
+    public async deleteSpeaker(item: ViewItem, speakerId?: number): Promise<void> {
+        const restUrl = `rest/agenda/item/${item.id}/manage_speaker/`;
+        await this.httpService.delete(restUrl, speakerId ? { speaker: speakerId } : null);
+    }
+
+    /**
+     * Deletes all speakers of the given agenda item.
+     *
+     * @param item the target agenda item
+     */
+    public async deleteAllSpeakers(item: ViewItem): Promise<void> {
+        const restUrl = `rest/agenda/item/${item.id}/manage_speaker/`;
+        await this.httpService.delete(restUrl, { speaker: item.speakers.map(speaker => speaker.id) });
     }
 
     /**
      * Posts an (manually) sorted speaker list to the server
      *
-     * @param ids array of speaker id numbers
+     * @param speakerIds array of speaker id numbers
      * @param Item the target agenda item
      */
-    public async sortSpeakers(ids: number[], agenda: Item): Promise<void> {
-        const restUrl = `rest/agenda/item/${agenda.id}/sort_speakers/`;
-        await this.httpService.post(restUrl, { speakers: ids });
+    public async sortSpeakers(speakerIds: number[], item: Item): Promise<void> {
+        const restUrl = `rest/agenda/item/${item.id}/sort_speakers/`;
+        await this.httpService.post(restUrl, { speakers: speakerIds });
     }
 
     /**

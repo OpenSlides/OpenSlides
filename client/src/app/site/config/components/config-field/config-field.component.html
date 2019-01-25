@@ -65,7 +65,7 @@
         </form>
     </div>
     <div class="reset-button">
-        <button mat-icon-button *ngIf="configItem.hasDefault" matTooltip="{{ 'Reset' | translate }}"
+        <button mat-icon-button *ngIf="configItem.defaultValue !== undefined" matTooltip="{{ 'Reset' | translate }}"
             (click)="onResetButton()">
             <mat-icon>replay</mat-icon>
         </button>

@@ -1,5 +1,4 @@
 import { MotionSubmitter } from './motion-submitter';
-import { MotionLog } from './motion-log';
 import { MotionComment } from './motion-comment';
 import { AgendaBaseModel } from '../base/agenda-base-model';
 import { SearchRepresentation } from '../../../core/services/search.service';
@@ -40,7 +39,6 @@ export class Motion extends AgendaBaseModel {
     public attachments_id: number[];
     public polls: MotionPoll[];
     public agenda_item_id: number;
-    public log_messages: MotionLog[];
     public weight: number;
     public sort_parent_id: number;
     public created: string;
@@ -106,13 +104,6 @@ export class Motion extends AgendaBaseModel {
 
     public deserialize(input: any): void {
         Object.assign(this, input);
-
-        this.log_messages = [];
-        if (input.log_messages instanceof Array) {
-            input.log_messages.forEach(logData => {
-                this.log_messages.push(new MotionLog(logData));
-            });
-        }
 
         this.comments = [];
         if (input.comments instanceof Array) {

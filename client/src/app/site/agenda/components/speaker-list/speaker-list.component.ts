@@ -135,8 +135,7 @@ export class SpeakerListComponent extends BaseViewComponent implements OnInit {
 
                 this.speakers = allSpeakers.filter(speaker => speaker.state === SpeakerState.WAITING);
                 this.finishedSpeakers = allSpeakers.filter(speaker => speaker.state === SpeakerState.FINISHED);
-                const currentSpeaker = allSpeakers.find(speaker => speaker.state === SpeakerState.CURRENT);
-                this.activeSpeaker = currentSpeaker ? currentSpeaker : null;
+                this.activeSpeaker = allSpeakers.find(speaker => speaker.state === SpeakerState.CURRENT);
             }
         });
     }
@@ -146,7 +145,7 @@ export class SpeakerListComponent extends BaseViewComponent implements OnInit {
      * @param userId the user id to add to the list. No parameter adds the operators user as speaker.
      */
     public addNewSpeaker(userId?: number): void {
-        this.itemRepo.addSpeaker(userId, this.viewItem.item).then(() => this.addSpeakerForm.reset(), this.raiseError);
+        this.itemRepo.addSpeaker(userId, this.viewItem).then(() => this.addSpeakerForm.reset(), this.raiseError);
     }
 
     /**
@@ -162,33 +161,36 @@ export class SpeakerListComponent extends BaseViewComponent implements OnInit {
 
     /**
      * Click on the mic button to mark a speaker as speaking
+     *
      * @param item the speaker marked in the list
      */
     public onStartButton(item: ViewSpeaker): void {
-        this.itemRepo.startSpeaker(item.id, this.viewItem.item).then(null, this.raiseError);
+        this.itemRepo.startSpeaker(item.id, this.viewItem).then(null, this.raiseError);
     }
 
     /**
      * Click on the mic-cross button
      */
     public onStopButton(): void {
-        this.itemRepo.stopSpeaker(this.viewItem.item).then(null, this.raiseError);
+        this.itemRepo.stopCurrentSpeaker(this.viewItem).then(null, this.raiseError);
     }
 
     /**
      * Click on the star button
+     *
      * @param item
      */
     public onMarkButton(item: ViewSpeaker): void {
-        this.itemRepo.markSpeaker(item.user.id, !item.marked, this.viewItem.item).then(null, this.raiseError);
+        this.itemRepo.markSpeaker(item.user.id, !item.marked, this.viewItem).then(null, this.raiseError);
     }
 
     /**
      * Click on the X button
-     * @param item
+     *
+     * @param speaker
      */
-    public onDeleteButton(item?: ViewSpeaker): void {
-        this.itemRepo.deleteSpeaker(this.viewItem.item, item ? item.id : null).then(null, this.raiseError);
+    public onDeleteButton(speaker?: ViewSpeaker): void {
+        this.itemRepo.deleteSpeaker(this.viewItem, speaker ? speaker.id : null).then(null, this.raiseError);
     }
 
     /**
@@ -235,15 +237,7 @@ export class SpeakerListComponent extends BaseViewComponent implements OnInit {
     public async clearSpeakerList(): Promise<void> {
         const content = this.translate.instant('This will clear all speakers from the list.');
         if (await this.promptService.open('Are you sure?', content)) {
-            this.speakers.forEach(speaker => {
-                this.itemRepo.deleteSpeaker(this.viewItem.item, speaker.id);
-            });
-            this.finishedSpeakers.forEach(speaker => {
-                this.itemRepo.deleteSpeaker(this.viewItem.item, speaker.id);
-            });
-            if (this.activeSpeaker) {
-                this.itemRepo.deleteSpeaker(this.viewItem.item, this.activeSpeaker.id);
-            }
+            this.itemRepo.deleteAllSpeakers(this.viewItem);
         }
     }
 }
