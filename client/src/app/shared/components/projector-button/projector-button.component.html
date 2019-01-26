@@ -1,3 +1,4 @@
-<button type="button" mat-icon-button (click)="onClick($event)">
+<button type="button" mat-mini-fab (click)="onClick($event)"
+    [ngClass]="isProjected() ? 'projectorbutton-active' : 'projectorbutton-inactive'">
     <mat-icon>videocam</mat-icon>
 </button>

@@ -318,7 +318,7 @@ export class ViewMotion extends BaseProjectableModel {
 
     public getTitle(): string {
         if (this.identifier) {
-            return this.identifier + ' - ' + this.title;
+            return 'Motion ' + this.identifier;
         }
         return this.title;
     }
@@ -480,7 +480,7 @@ export class ViewMotion extends BaseProjectableModel {
                 }
             ],
             projectionDefaultName: 'motions',
-            getTitle: () => this.getTitle()
+            getTitle: () => this.identifier
         };
     }
 

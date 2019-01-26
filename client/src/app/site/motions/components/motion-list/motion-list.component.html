@@ -27,16 +27,16 @@
     <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
         <!-- Selector column -->
         <ng-container matColumnDef="selector">
-            <mat-header-cell *matHeaderCellDef mat-sort-header class="checkbox-cell"></mat-header-cell>
-            <mat-cell *matCellDef="let motion" class="checkbox-cell">
+            <mat-header-cell *matHeaderCellDef mat-sort-header></mat-header-cell>
+            <mat-cell *matCellDef="let motion">
                 <mat-icon>{{ isSelected(motion) ? 'check_circle' : '' }}</mat-icon>
             </mat-cell>
         </ng-container>
 
         <!-- Projector column -->
         <ng-container matColumnDef="projector">
-            <mat-header-cell *matHeaderCellDef mat-sort-header class="icon-cell">Projector</mat-header-cell>
-            <mat-cell *matCellDef="let motion" class="icon-cell">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Projector</mat-header-cell>
+            <mat-cell *matCellDef="let motion">
                 <os-projector-button [object]="motion"></os-projector-button>
             </mat-cell>
         </ng-container>
@@ -84,13 +84,14 @@
                             grey: motion.state.css_class === 'default',
                             lightblue: motion.state.css_class === 'primary'
                         }"
+                        [disabled]="true"
                     >
                         {{ getStateLabel(motion) }}
                     </mat-basic-chip>
 
                     <!-- recommendation -->
-                    <span *ngIf="motion.recommendation">
-                        <mat-basic-chip class="bluegrey"> {{ getRecommendationLabel(motion) }} </mat-basic-chip>
+                    <span *ngIf="motion.recommendation && motion.state.next_states_id.length > 0">
+                        <mat-basic-chip class="bluegrey" [disabled]="true">{{ getRecommendationLabel(motion) }} </mat-basic-chip>
                     </span>
                 </div>
             </mat-cell>

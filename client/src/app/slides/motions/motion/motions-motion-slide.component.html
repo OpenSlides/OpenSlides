@@ -1,4 +1,35 @@
 <div *ngIf="data">
-    Motion Slide
-    <h1>{{ data.data.title }}</h1>
+    <div id="sidebox" *ngIf="data.data.show_meta_box">
+        <!-- Submitters -->
+        <h3 translate>Submitters</h3>
+        <span *ngFor="let submitter of data.data.submitter; let last = last">
+            {{ submitter }}<span *ngIf="!last">, </span>
+        </span>
+
+        <!-- Recommendation -->
+        <div *ngIf="data.data.recommendation && data.data.recommender">
+            <h3>{{ data.data.recommender }}</h3>
+            {{ data.data.recommendation | translate }} {{ data.data.recommendation_extension }}
+        </div>
+    </div>
+
+    <div [ngStyle]="{'width': data.data.show_meta_box ? 'calc(100% - 250px)' : '100%'}">
+        <!-- Title -->
+        <div class="slidetitle">
+            <h1>{{ data.data.title }}</h1>
+            <h2><span translate>Motion</span> {{ data.data.identifier }}</h2>
+        </div>
+
+        <!-- Text (original) -->
+        <div *ngIf="!data.data.is_child" [innerHTML]="data.data.text"></div>
+
+        <!-- Amendment text -->
+        <div *ngIf="data.data.is_child" [innerHTML]="data.data.amendment_paragraphs[0]"></div>
+
+        <!-- Reason -->
+        <div *ngIf="data.data.reason">
+            <h3 translate>Reason</h3>
+            <div [innerHTML]="data.data.reason"></div>
+        </div>
+    </div>
 </div>

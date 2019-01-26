@@ -95,7 +95,7 @@ export class SlideContainerComponent extends BaseComponent {
      */
     public slideStyle: { 'font-size': string; 'margin-top': string } = {
         'font-size': '100%',
-        'margin-top': '50px'
+        'margin-top': '100px'
     };
 
     /**
@@ -124,7 +124,7 @@ export class SlideContainerComponent extends BaseComponent {
             let value = this._scroll;
             value *= -50;
             if (this.headerEnabled) {
-                value += 50; // Default offset for the header
+                value += 100; // Default offset for the header
             }
             this.slideStyle['margin-top'] = `${value}px`;
         } else {

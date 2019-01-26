@@ -107,5 +107,9 @@ def current_list_of_speakers_slide(
 def register_projector_slides() -> None:
     register_projector_slide("agenda/item-list", items_slide)
     register_projector_slide("agenda/list-of-speakers", list_of_speakers_slide)
-    register_projector_slide("agenda/current-list-of-speakers", current_list_of_speakers_slide)
-    register_projector_element("agenda/current-list-of-speakers-overlay", current_list_of_speakers_slide)
+    register_projector_slide(
+        "agenda/current-list-of-speakers", current_list_of_speakers_slide
+    )
+    register_projector_slide(
+        "agenda/current-list-of-speakers-overlay", current_list_of_speakers_slide
+    )

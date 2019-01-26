@@ -173,7 +173,9 @@ class ProjectorViewSet(ModelViewSet):
         elements = request.data.get("elements")
         preview = request.data.get("preview")
         history_element = request.data.get("append_to_history")
-        delete_last_history_element = request.data.get("delete_last_history_element", False)
+        delete_last_history_element = request.data.get(
+            "delete_last_history_element", False
+        )
 
         changed_data = {}
         if elements is not None:

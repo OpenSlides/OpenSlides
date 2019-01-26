@@ -45,7 +45,6 @@ export class ProjectionDialogService extends OpenSlidesComponent {
             ProjectorElementBuildDeskriptor,
             ProjectionDialogReturnType
         >(ProjectionDialogComponent, {
-            minWidth: '500px',
             maxHeight: '90vh',
             data: descriptor
         });

@@ -166,7 +166,5 @@ def test_motion_slide(all_data):
         "is_child": False,
         "show_meta_box": True,
         "reason": "",
-        "state": "submitted",
         "submitter": ["Administrator"],
-        "poll": {"yes": "10.000000", "no": "-1.000000", "abstain": "20.000000"},
     }

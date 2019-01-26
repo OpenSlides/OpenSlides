@@ -14,6 +14,8 @@ import { UserRepositoryService } from '../../services/user-repository.service';
 import { ViewUser } from '../../models/view-user';
 import { UserFilterListService } from '../../services/user-filter-list.service';
 import { UserSortListService } from '../../services/user-sort-list.service';
+import { ViewportService } from '../../../../core/services/viewport.service';
+import { OperatorService } from '../../../../core/services/operator.service';
 
 /**
  * Component for the user list view.
@@ -25,6 +27,16 @@ import { UserSortListService } from '../../services/user-sort-list.service';
     styleUrls: ['./user-list.component.scss']
 })
 export class UserListComponent extends ListViewBaseComponent<ViewUser> implements OnInit {
+    /**
+     * Columns to display in table when desktop view is available
+     */
+    public displayedColumnsDesktop: string[] = ['name', 'group'];
+
+    /**
+     * Columns to display in table when mobile view is available
+     */
+    public displayedColumnsMobile = ['name'];
+
     /**
      * Stores the observed configuration if the presence view is available to administrators
      */
@@ -48,6 +60,8 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
      * @param groupRepo: The user group repository
      * @param router the router service
      * @param route the local route
+     * @param operator
+     * @param vp
      * @param csvExport CSV export Service,
      * @param promptService
      * @param groupRepo
@@ -64,6 +78,8 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
         private choiceService: ChoiceService,
         private router: Router,
         private route: ActivatedRoute,
+        private operator: OperatorService,
+        private vp: ViewportService,
         protected csvExport: CsvExportService,
         private promptService: PromptService,
         public filterService: UserFilterListService,
@@ -243,10 +259,15 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
      * @returns column definition
      */
     public getColumnDefinition(): string[] {
-        // TODO: no projector in mobile view.
-        const columns = ['projector', 'name', 'group', 'presence'];
+        let columns = this.vp.isMobile ? this.displayedColumnsMobile : this.displayedColumnsDesktop;
+        if (this.operator.hasPerms('core.can_manage_projector')) {
+            columns = ['projector'].concat(columns);
+        }
+        if (this.operator.hasPerms('users.can_manage')) {
+            columns = columns.concat(['presence']);
+        }
         if (this.isMultiSelect) {
-            return ['selector'].concat(columns);
+            columns = ['selector'].concat(columns);
         }
         return columns;
     }

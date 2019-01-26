@@ -25,6 +25,8 @@ import { WorkflowState } from '../../../../shared/models/motions/workflow-state'
 import { WorkflowRepositoryService } from '../../services/workflow-repository.service';
 import { MotionPdfExportService } from '../../services/motion-pdf-export.service';
 import { MotionExportDialogComponent } from '../motion-export-dialog/motion-export-dialog.component';
+import { OperatorService } from '../../../../core/services/operator.service';
+import { ViewportService } from '../../../../core/services/viewport.service';
 
 /**
  * Component that displays all the motions in a Table using DataSource.
@@ -36,18 +38,14 @@ import { MotionExportDialogComponent } from '../motion-export-dialog/motion-expo
 })
 export class MotionListComponent extends ListViewBaseComponent<ViewMotion> implements OnInit {
     /**
-     * Use for minimal width. Please note the 'selector' row for multiSelect mode,
-     * to be able to display an indicator for the state of selection
-     * TODO: Remove projector, if columnsToDisplayFullWidth is used..
+     * Columns to display in table when desktop view is available
      */
-    public columnsToDisplayMinWidth = ['projector', 'identifier', 'title', 'state', 'speakers'];
+    public displayedColumnsDesktop: string[] = ['identifier', 'title', 'state', 'speakers'];
 
     /**
-     * Use for maximal width. Please note the 'selector' row for multiSelect mode,
-     * to be able to display an indicator for the state of selection
-     * TODO: Needs vp.desktop check
+     * Columns to display in table when mobile view is available
      */
-    public columnsToDisplayFullWidth = ['projector', 'identifier', 'title', 'state', 'speakers'];
+    public displayedColumnsMobile = ['identifier', 'title'];
 
     /**
      * Value of the configuration variable `motions_statutes_enabled` - are statutes enabled?
@@ -82,6 +80,7 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
      * @param userRepo
      * @param sortService
      * @param filterService
+     * @param vp
      * @param perms LocalPermissionService
      */
     public constructor(
@@ -97,8 +96,10 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
         private workflowRepo: WorkflowRepositoryService,
         private motionRepo: MotionRepositoryService,
         private motionCsvExport: MotionCsvExportService,
+        private operator: OperatorService,
         private pdfExport: MotionPdfExportService,
         private dialog: MatDialog,
+        private vp: ViewportService,
         public multiselectService: MotionMultiselectService,
         public sortService: MotionSortListService,
         public filterService: MotionFilterListService,
@@ -221,10 +222,14 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
      * Returns current definitions for the listView table
      */
     public getColumnDefinition(): string[] {
-        if (this.isMultiSelect) {
-            return ['selector'].concat(this.columnsToDisplayMinWidth);
+        let columns = this.vp.isMobile ? this.displayedColumnsMobile : this.displayedColumnsDesktop;
+        if (this.operator.hasPerms('core.can_manage_projector')) {
+            columns = ['projector'].concat(columns);
         }
-        return this.columnsToDisplayMinWidth;
+        if (this.isMultiSelect) {
+            columns = ['selector'].concat(columns);
+        }
+        return columns;
     }
 
     /**

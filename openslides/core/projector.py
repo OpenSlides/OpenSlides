@@ -54,4 +54,4 @@ def clock_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
 def register_projector_slides() -> None:
     register_projector_slide("core/countdown", countdown_slide)
     register_projector_slide("core/projector-message", message_slide)
-    register_projector_element("core/clock", clock_slide)
+    register_projector_slide("core/clock", clock_slide)

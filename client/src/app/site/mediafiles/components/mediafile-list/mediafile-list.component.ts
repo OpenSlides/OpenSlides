@@ -36,12 +36,12 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile>
     public fontActions: string[];
 
     /**
-     * Columns to display in Mediafile table when fill width is available
+     * Columns to display in Mediafile table when desktop view is available
      */
     public displayedColumnsDesktop: string[] = ['title', 'info', 'indicator', 'menu'];
 
     /**
-     * Columns to display in Mediafile table when fill width is available
+     * Columns to display in Mediafile table when mobile view is available
      */
     public displayedColumnsMobile: string[] = ['title', 'menu'];
 

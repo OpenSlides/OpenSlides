@@ -1,3 +1,6 @@
+#slide {
+    width: calc(100% - 100px);
+}
 ::ng-deep #slide {
     z-index: 5;
     height: 100%;

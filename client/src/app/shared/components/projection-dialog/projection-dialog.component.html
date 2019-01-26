@@ -1,23 +1,19 @@
-<h2 mat-dialog-title>{{ projectorElementBuildDescriptor.getTitle() }}</h2>
+<h2 mat-dialog-title translate>Project
+    <span *ngIf="projectorElementBuildDescriptor.projectionDefaultName === 'motions'" translate>Motion</span>
+    {{ projectorElementBuildDescriptor.getTitle() }}?</h2>
 <mat-dialog-content>
-    <mat-card>
-        <mat-card-title> <span translate>Projectors</span> </mat-card-title>
-        <mat-card-content>
-            <div class="projectors" *ngFor="let projector of projectors" [ngClass]="isProjectedOn(projector) ? 'projected' : ''">
-                <mat-checkbox [checked]="isProjectorSelected(projector)" (change)="toggleProjector(projector)">
-                    {{ projector.name | translate }}
-                </mat-checkbox>
-                <span *ngIf="isProjectedOn(projector)" class="right">
-                    <mat-icon>videocam</mat-icon>
-                </span>
-            </div>
-        </mat-card-content>
-    </mat-card>
-    <mat-card *ngIf="options.length > 0">
-        <mat-card-title>
-            <span translate>Slide options</span>
-        </mat-card-title>
-        <mat-card-content>
+    <div class="projectors" *ngFor="let projector of projectors" [ngClass]="isProjectedOn(projector) ? 'projected' : ''">
+        <mat-checkbox [checked]="isProjectorSelected(projector)" (change)="toggleProjector(projector)">
+            {{ projector.name | translate }}
+        </mat-checkbox>
+        <span *ngIf="isProjectedOn(projector)" class="right">
+            <mat-icon>videocam</mat-icon>
+        </span>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div *ngIf="options.length > 0">
             <div *ngFor="let option of options">
                 <div *ngIf="isDecisionOption(option)">
                     <mat-checkbox [checked]="projectorElement[option.key]" (change)="projectorElement[option.key] = !projectorElement[option.key]">
@@ -33,8 +29,7 @@
                     </mat-radio-group>
                 </div>
             </div>
-        </mat-card-content>
-    </mat-card>
+    </div>
 </mat-dialog-content>
 <mat-dialog-actions>
     <button mat-button (click)="onOk()" color="primary" translate>OK</button>
