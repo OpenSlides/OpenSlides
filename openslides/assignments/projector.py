@@ -1,6 +1,6 @@
 from typing import Any, Dict
 
-from ..utils.projector import register_projector_element
+from ..utils.projector import AllData, register_projector_slide
 
 
 # Important: All functions have to be prune. This means, that thay can only
@@ -9,9 +9,7 @@ from ..utils.projector import register_projector_element
 #            to be fast!
 
 
-def assignment(
-    element: Dict[str, Any], all_data: Dict[str, Dict[int, Dict[str, Any]]]
-) -> Dict[str, Any]:
+def assignment_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
     """
     Assignment slide.
     """
@@ -19,5 +17,5 @@ def assignment(
     return {"error": "TODO"}
 
 
-def register_projector_elements() -> None:
-    register_projector_element("assignments/assignment", assignment)
+def register_projector_slides() -> None:
+    register_projector_slide("assignments/assignment", assignment_slide)

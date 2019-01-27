@@ -1,7 +1,11 @@
 from collections import defaultdict
 from typing import Any, Dict, List, Tuple
 
-from ..utils.projector import AllData, register_projector_element
+from ..utils.projector import (
+    AllData,
+    ProjectorElementException,
+    register_projector_slide,
+)
 
 
 # Important: All functions have to be prune. This means, that thay can only
@@ -41,7 +45,7 @@ def get_tree(
     return get_children(children[parent_id])
 
 
-def items(element: Dict[str, Any], all_data: AllData) -> Dict[str, Any]:
+def items_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
     """
     Item list slide.
 
@@ -63,7 +67,9 @@ def items(element: Dict[str, Any], all_data: AllData) -> Dict[str, Any]:
     return {"items": agenda_items}
 
 
-def list_of_speakers(element: Dict[str, Any], all_data: AllData) -> Dict[str, Any]:
+def list_of_speakers_slide(
+    all_data: AllData, element: Dict[str, Any]
+) -> Dict[str, Any]:
     """
     List of speakers slide.
 
@@ -76,7 +82,7 @@ def list_of_speakers(element: Dict[str, Any], all_data: AllData) -> Dict[str, An
     try:
         item = all_data["agenda/item"][item_id]
     except KeyError:
-        return {"error": f"Item {item_id} does not exist"}
+        raise ProjectorElementException(f"Item {item_id} does not exist")
 
     user_ids = []
     for speaker in item["speakers"]:
@@ -84,6 +90,6 @@ def list_of_speakers(element: Dict[str, Any], all_data: AllData) -> Dict[str, An
     return {"user_ids": user_ids}
 
 
-def register_projector_elements() -> None:
-    register_projector_element("agenda/item-list", items)
-    register_projector_element("agenda/list-of-speakers", list_of_speakers)
+def register_projector_slides() -> None:
+    register_projector_slide("agenda/item-list", items_slide)
+    register_projector_slide("agenda/list-of-speakers", list_of_speakers_slide)

@@ -1,6 +1,12 @@
 from typing import Any, Dict
 
-from ..utils.projector import AllData, get_config, get_user, register_projector_element
+from ..users.projector import get_user_name
+from ..utils.projector import (
+    AllData,
+    ProjectorElementException,
+    get_config,
+    register_projector_slide,
+)
 
 
 # Important: All functions have to be prune. This means, that thay can only
@@ -21,10 +27,12 @@ def get_state(
     for state in states:
         if state["id"] == state_id:
             return state
-    return {"error": f"motion {motion['id']} can not have to id {state_id}"}
+    raise ProjectorElementException(
+        f"motion {motion['id']} can not be on the state with id {state_id}"
+    )
 
 
-def motion_slide(element: Dict[str, Any], all_data: AllData) -> Dict[str, Any]:
+def motion_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
     """
     Motion slide.
 
@@ -53,7 +61,7 @@ def motion_slide(element: Dict[str, Any], all_data: AllData) -> Dict[str, Any]:
     try:
         motion = all_data["motions/motion"][motion_id]
     except KeyError:
-        return {"error": f"motion with id {motion_id} does not exist"}
+        raise ProjectorElementException(f"motion with id {motion_id} does not exist")
 
     show_meta_box = not get_config(all_data, "motions_disable_sidebox_on_projector")
 
@@ -68,31 +76,38 @@ def motion_slide(element: Dict[str, Any], all_data: AllData) -> Dict[str, Any]:
 
     if not get_config(all_data, "motions_disable_reason_on_projector"):
         return_value["reason"] = motion["reason"]
+
     if mode == "final":
         return_value["modified_final_version"] = motion["modified_final_version"]
 
     if show_meta_box:
         state = get_state(all_data, motion, motion["state_id"])
-        if state.get("error"):
-            return state
-
         return_value["state"] = state["name"]
-        return_value["state_extension"] = motion["state_extension"]
+        if state["show_state_extension_field"]:
+            return_value["state_extension"] = motion["state_extension"]
 
         if (
             not get_config(all_data, "motions_disable_recommendation_on_projector")
             and motion["recommendation_id"]
         ):
-            return_value["recommendation"] = all_data[
-                "motions/motion-change-recommendation"
-            ][motion["recommendation_id"]]["text"]
-            return_value["recommendation_extension"] = motion[
-                "recommendation_extension"
+            recommendation_state = get_state(
+                all_data, motion, motion["recommendation_id"]
+            )
+            return_value["recommendation"] = recommendation_state[
+                "recommendation_label"
             ]
+            if recommendation_state["show_recommendation_extension_field"]:
+                return_value["recommendation_extension"] = motion[
+                    "recommendation_extension"
+                ]
+
+            return_value["change_recommendations"] = motion["change_recommendations"]
 
         return_value["submitter"] = [
-            get_user(all_data, submitter["user_id"])
-            for submitter in motion["submitters"]
+            get_user_name(all_data, submitter["user_id"])
+            for submitter in sorted(
+                motion["submitters"], key=lambda submitter: submitter["weight"]
+            )
         ]
 
         for poll in motion["polls"][::-1]:
@@ -107,13 +122,13 @@ def motion_slide(element: Dict[str, Any], all_data: AllData) -> Dict[str, Any]:
     return return_value
 
 
-def motion_block(element: Dict[str, Any], all_data: AllData) -> Dict[str, Any]:
+def motion_block_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
     """
     Motion slide.
     """
     return {"error": "TODO"}
 
 
-def register_projector_elements() -> None:
-    register_projector_element("motions/motion", motion_slide)
-    register_projector_element("motions/motion-block", motion_block)
+def register_projector_slides() -> None:
+    register_projector_slide("motions/motion", motion_slide)
+    register_projector_slide("motions/motion-block", motion_block_slide)

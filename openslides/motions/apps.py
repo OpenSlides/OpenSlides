@@ -13,7 +13,7 @@ class MotionsAppConfig(AppConfig):
         # Import all required stuff.
         from openslides.core.signals import permission_change
         from openslides.utils.rest_api import router
-        from .projector import register_projector_elements
+        from .projector import register_projector_slides
         from .signals import create_builtin_workflows, get_permission_change_data
         from . import serializers  # noqa
         from .views import (
@@ -30,7 +30,7 @@ class MotionsAppConfig(AppConfig):
         from ..utils.access_permissions import required_user
 
         # Define projector elements.
-        register_projector_elements()
+        register_projector_slides()
 
         # Connect signals.
         post_migrate.connect(

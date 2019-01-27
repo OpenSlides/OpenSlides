@@ -87,6 +87,7 @@ class MotionManager(models.Manager):
                 "tags",
                 "submitters",
                 "supporters",
+                "change_recommendations",
             )
         )
 
