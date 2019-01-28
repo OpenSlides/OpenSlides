@@ -607,7 +607,9 @@ class PasswordResetView(APIView):
         for user in self.get_users(to_email):
             current_site = get_current_site(request)
             site_name = current_site.name
-            if has_perm(user, "users.can_change_password") or has_perm(user, "users.can_manage"):
+            if has_perm(user, "users.can_change_password") or has_perm(
+                user, "users.can_manage"
+            ):
                 context = {
                     "email": to_email,
                     "site_name": site_name,
@@ -690,8 +692,10 @@ class PasswordResetConfirmView(APIView):
         user = self.get_user(uidb64)
         if user is None:
             raise ValidationError({"detail": "User does not exist."})
-        if not (has_perm(user, "users.can_change_password")
-                or has_perm(user, "users.can_manage")):
+        if not (
+            has_perm(user, "users.can_change_password")
+            or has_perm(user, "users.can_manage")
+        ):
             self.permission_denied(request)
         if not default_token_generator.check_token(user, token):
             raise ValidationError({"detail": "Invalid token."})
