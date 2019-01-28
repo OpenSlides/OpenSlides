@@ -102,7 +102,11 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
         });
 
         this.translatedValue = this.configItem.value;
-        if (this.configItem.inputType === 'string' || this.configItem.inputType === 'markupText') {
+        if (
+            this.configItem.inputType === 'string' ||
+            this.configItem.inputType === 'markupText' ||
+            this.configItem.inputType === 'text'
+        ) {
             if (typeof this.configItem.value === 'string' && this.configItem.value !== '') {
                 this.translatedValue = this.translate.instant(this.configItem.value);
             }
@@ -207,7 +211,7 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
      * @returns wheather it should be excluded or not
      */
     public isExcludedType(type: string): boolean {
-        const excluded = ['boolean', 'markupText'];
+        const excluded = ['boolean', 'markupText', 'text'];
         return excluded.includes(type);
     }
 }
