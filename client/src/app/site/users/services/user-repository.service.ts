@@ -213,7 +213,9 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
 
     /**
      * Searches and returns Users by full name
+     *
      * @param name
+     * @returns all users matching that name
      */
     public getUsersByName(name: string): ViewUser[] {
         const results: ViewUser[] = [];
@@ -230,6 +232,16 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
             results.push(this.createViewModel(user));
         });
         return results;
+    }
+
+    /**
+     * Searches and returns Users by participant number
+     *
+     * @param number: A participant number
+     * @returns all users matching that number
+     */
+    public getUsersByNumber(number: string): ViewUser[] {
+        return this.getViewModelList().filter(user => user.participant_number === number);
     }
 
     /**
