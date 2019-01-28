@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { ViewMotion } from '../models/view-motion';
+import { ViewMotion, LineNumberingMode, ChangeRecoMode } from '../models/view-motion';
 import { MotionPdfService } from './motion-pdf.service';
 import { ConfigService } from 'app/core/services/config.service';
 import { Category } from 'app/shared/models/motions/category';
@@ -47,12 +47,24 @@ export class MotionPdfCatalogService {
      * @param motions the list of view motions to convert
      * @returns pdfmake doc definition as object
      */
-    public motionListToDocDef(motions: ViewMotion[]): object {
+    public motionListToDocDef(
+        motions: ViewMotion[],
+        lnMode?: LineNumberingMode,
+        crMode?: ChangeRecoMode,
+        contentToExport?: string[],
+        infoToExport?: string[]
+    ): object {
         let doc = [];
         const motionDocList = [];
 
         for (let motionIndex = 0; motionIndex < motions.length; ++motionIndex) {
-            const motionDocDef: any = this.motionPdfService.motionToDocDef(motions[motionIndex]);
+            const motionDocDef: any = this.motionPdfService.motionToDocDef(
+                motions[motionIndex],
+                lnMode,
+                crMode,
+                contentToExport,
+                infoToExport
+            );
 
             // add id field to the first page of a motion to make it findable over TOC
             motionDocDef[0].id = `${motions[motionIndex].id}`;

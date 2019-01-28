@@ -22,6 +22,7 @@ import { MotionImportListComponent } from './components/motion-import-list/motio
 import { ManageSubmittersComponent } from './components/manage-submitters/manage-submitters.component';
 import { MotionPollComponent } from './components/motion-poll/motion-poll.component';
 import { MotionPollDialogComponent } from './components/motion-poll/motion-poll-dialog.component';
+import { MotionExportDialogComponent } from './components/motion-export-dialog/motion-export-dialog.component';
 
 @NgModule({
     imports: [CommonModule, MotionsRoutingModule, SharedModule],
@@ -44,7 +45,8 @@ import { MotionPollDialogComponent } from './components/motion-poll/motion-poll-
         MotionImportListComponent,
         ManageSubmittersComponent,
         MotionPollComponent,
-        MotionPollDialogComponent
+        MotionPollDialogComponent,
+        MotionExportDialogComponent
     ],
     entryComponents: [
         MotionChangeRecommendationComponent,
@@ -54,7 +56,8 @@ import { MotionPollDialogComponent } from './components/motion-poll/motion-poll-
         MetaTextBlockComponent,
         PersonalNoteComponent,
         ManageSubmittersComponent,
-        MotionPollDialogComponent
+        MotionPollDialogComponent,
+        MotionExportDialogComponent
     ]
 })
 export class MotionsModule {}
