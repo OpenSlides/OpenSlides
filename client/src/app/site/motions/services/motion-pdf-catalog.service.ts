@@ -150,7 +150,7 @@ export class MotionPdfCatalogService {
                         body: [
                             [
                                 {
-                                    text: category.prefix + ' - ' + category.name,
+                                    text: category.prefix ? category.prefix + ' - ' + category.name : category.name,
                                     style: 'tocCategoryTitle'
                                 }
                             ]

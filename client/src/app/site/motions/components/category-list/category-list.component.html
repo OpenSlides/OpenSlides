@@ -14,10 +14,7 @@
             <p>
                 <!-- Prefix field -->
                 <mat-form-field>
-                    <input formControlName="prefix" matInput placeholder="{{'Prefix' | translate}}" required>
-                    <mat-hint *ngIf="!createForm.controls.prefix.valid">
-                        <span translate>Required</span>
-                    </mat-hint>
+                    <input formControlName="prefix" matInput placeholder="{{'Prefix' | translate}}">
                 </mat-form-field>
 
                 <!-- Name field -->
@@ -78,10 +75,7 @@
             <span translate>Edit category</span>:<br>
 
             <mat-form-field>
-                <input formControlName="prefix" matInput placeholder="{{'Prefix' | translate}}" required>
-                <mat-hint *ngIf="!updateForm.controls.prefix.valid">
-                    <span translate>Required</span>
-                </mat-hint>
+                <input formControlName="prefix" matInput placeholder="{{'Prefix' | translate}}">
             </mat-form-field>
             <mat-form-field>
                 <input formControlName="name" matInput placeholder="{{'Name' | translate}}" required>

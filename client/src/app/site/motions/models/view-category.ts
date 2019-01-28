@@ -24,7 +24,7 @@ export class ViewCategory extends BaseViewModel {
     }
 
     public get prefix(): string {
-        return this.category ? this.category.prefix : null;
+        return this.category && this.category.prefix ? this.category.prefix : null;
     }
 
     public set prefix(pref: string) {

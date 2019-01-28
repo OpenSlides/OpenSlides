@@ -78,12 +78,12 @@ export class CategoryListComponent extends BaseViewComponent implements OnInit {
         super(titleService, translate, matSnackBar);
 
         this.createForm = this.formBuilder.group({
-            prefix: ['', Validators.required],
+            prefix: [''],
             name: ['', Validators.required]
         });
 
         this.updateForm = this.formBuilder.group({
-            prefix: ['', Validators.required],
+            prefix: [''],
             name: ['', Validators.required]
         });
     }
@@ -131,7 +131,12 @@ export class CategoryListComponent extends BaseViewComponent implements OnInit {
      */
     public onCreateButton(): void {
         if (this.createForm.valid) {
-            this.categoryToCreate.patchValues(this.createForm.value as Category);
+            const cat: Partial<Category> = { name: this.createForm.get('name').value };
+            if (this.createForm.get('prefix').value) {
+                cat.prefix = this.createForm.get('prefix').value;
+            }
+            this.categoryToCreate.patchValues(cat);
+
             this.repo.create(this.categoryToCreate).then(() => (this.categoryToCreate = null), this.raiseError);
         }
     }
@@ -144,7 +149,7 @@ export class CategoryListComponent extends BaseViewComponent implements OnInit {
         this.editId = viewCategory.id;
         this.updateForm.reset();
         this.updateForm.patchValue({
-            prefix: viewCategory.prefix,
+            prefix: viewCategory.category.prefix,
             name: viewCategory.name
         });
     }
@@ -167,8 +172,12 @@ export class CategoryListComponent extends BaseViewComponent implements OnInit {
         }
 
         if (this.updateForm.valid) {
+            const cat: Partial<Category> = { name: this.updateForm.get('name').value };
+            if (this.updateForm.get('prefix').value) {
+                cat.prefix = this.updateForm.get('prefix').value;
+            }
             // wait for the category to update; then the (maybe) changed prefix can be applied to the motions
-            await this.repo.update(this.updateForm.value as Partial<Category>, viewCategory);
+            await this.repo.update(cat, viewCategory);
             this.onCancelButton();
 
             if (this.sortSelector) {
