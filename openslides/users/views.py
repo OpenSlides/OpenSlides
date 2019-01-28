@@ -603,29 +603,36 @@ class PasswordResetView(APIView):
         """
         Loop over all users and send emails.
         """
-        if not (
-            has_perm(request.user, "users.can_change_password")
-            or has_perm(request.user, "users.can_manage")
-        ):
-            self.permission_denied(request)
         to_email = request.data.get("email")
         for user in self.get_users(to_email):
             current_site = get_current_site(request)
             site_name = current_site.name
-            context = {
-                "email": to_email,
-                "site_name": site_name,
-                "protocol": "https" if self.use_https else "http",
-                "domain": current_site.domain,
-                "path": "/login/reset-password-confirm/",
-                "user_id": urlsafe_base64_encode(force_bytes(user.pk)).decode(),
-                "token": default_token_generator.make_token(user),
-                "username": user.get_username(),
-            }
+            if has_perm(user, "users.can_change_password") or has_perm(
+                user, "users.can_manage"
+            ):
+                context = {
+                    "email": to_email,
+                    "site_name": site_name,
+                    "protocol": "https" if self.use_https else "http",
+                    "domain": current_site.domain,
+                    "path": "/login/reset-password-confirm/",
+                    "user_id": urlsafe_base64_encode(force_bytes(user.pk)).decode(),
+                    "token": default_token_generator.make_token(user),
+                    "username": user.get_username(),
+                }
+                body = self.get_email_body(**context)
+            else:
+                # User is not allowed to reset his permission. Send only short message.
+                body = f"""
+                    You do not have permission to reset your password at {site_name}.
+
+                    Please contact your local administrator.
+
+                    Your username, in case you've forgotten: {user.get_username()}
+                    """
             # Send a django.core.mail.EmailMessage to `to_email`.
             subject = f"Password reset for {site_name}"
             subject = "".join(subject.splitlines())
-            body = self.get_email_body(**context)
             from_email = None  # TODO: Add nice from_email here.
             email_message = mail.EmailMessage(subject, body, from_email, [to_email])
             email_message.send()
@@ -675,11 +682,6 @@ class PasswordResetConfirmView(APIView):
     http_method_names = ["post"]
 
     def post(self, request, *args, **kwargs):
-        if not (
-            has_perm(request.user, "users.can_change_password")
-            or has_perm(request.user, "users.can_manage")
-        ):
-            self.permission_denied(request)
         uidb64 = request.data.get("user_id")
         token = request.data.get("token")
         password = request.data.get("password")
@@ -690,6 +692,11 @@ class PasswordResetConfirmView(APIView):
         user = self.get_user(uidb64)
         if user is None:
             raise ValidationError({"detail": "User does not exist."})
+        if not (
+            has_perm(user, "users.can_change_password")
+            or has_perm(user, "users.can_manage")
+        ):
+            self.permission_denied(request)
         if not default_token_generator.check_token(user, token):
             raise ValidationError({"detail": "Invalid token."})
         try:

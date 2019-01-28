@@ -20,7 +20,7 @@ Core:
  - Fixed autoupdate system for related objects [#4140].
  - Add a change-id system to get only new elements [#3938].
  - Switch from Yarn back to npm [#3964].
- - Added password reset link (password reset via email) [#3914].
+ - Added password reset link (password reset via email) [#3914, #4199].
  - Added global history mode [#3977, #4141].
  - Projector refactoring [4119, #4130].
 
