@@ -9,15 +9,6 @@ import { ConfigService } from './config.service';
 import { HttpService } from './http.service';
 
 /**
- * An interface for the mapping of image placeholder name to the url of the
- * image
- */
-export interface ImagePlaceHolder {
-    placeholder: string;
-    url: string;
-}
-
-/**
  * Provides the general document structure for PDF documents, such as page margins, header, footer and styles.
  * Also provides general purpose open and download functions.
  *
@@ -35,6 +26,12 @@ export interface ImagePlaceHolder {
 })
 export class PdfDocumentService {
     /**
+     * A list of all images to add to the virtual file system.
+     * May still be filling at header and footer creation
+     */
+    private imageUrls: string[] = [];
+
+    /**
      * Constructor
      *
      * @param translate translations
@@ -48,13 +45,11 @@ export class PdfDocumentService {
     ) {}
 
     /**
-     * Define the pdfmake virtual file system for fonts
+     * Define the pdfmake virtual file system, adding the fonts
      *
-     * @param images an optional mapping of images urls to be fetched and inserted
-     *   into placeholders
      * @returns the vfs-object
      */
-    private async initVfs(images?: ImagePlaceHolder[]): Promise<object> {
+    private async initVfs(): Promise<object> {
         const fontPathList: string[] = Array.from(
             // create a list without redundancies
             new Set(
@@ -72,17 +67,7 @@ export class PdfDocumentService {
                 };
             });
         });
-        let imagePromises = [];
-        if (images && images.length) {
-            imagePromises = images.map(image => {
-                return this.convertUrlToBase64(image.url).then(base64 => {
-                    return {
-                        [image.placeholder]: base64
-                    };
-                });
-            });
-        }
-        const binaryDataUrls = await Promise.all(promises.concat(imagePromises));
+        const binaryDataUrls = await Promise.all(promises);
         let vfs = {};
         binaryDataUrls.map(entry => {
             vfs = {
@@ -99,7 +84,7 @@ export class PdfDocumentService {
      * @param url file url
      * @returns a promise with a base64 string
      */
-    public async convertUrlToBase64(url: string): Promise<string> {
+    private async convertUrlToBase64(url: string): Promise<string> {
         return new Promise<string>((resolve, reject) => {
             const headers = new HttpHeaders();
             this.httpService.get<Blob>(url, {}, {}, headers, 'blob').then(file => {
@@ -133,17 +118,14 @@ export class PdfDocumentService {
      *
      * @param documentContent the content of the pdf as object
      * @param metadata
-     * @param images Array of optional images (url, placeholder) to be inserted
+     * @param imageUrls Array of optional images (url, placeholder) to be inserted
      * @returns the pdf document definition ready to export
      */
-    private async getStandardPaper(
-        documentContent: object,
-        metadata?: object,
-        images?: ImagePlaceHolder[]
-    ): Promise<object> {
+    private async getStandardPaper(documentContent: object, metadata?: object, imageUrls?: string[]): Promise<object> {
         this.initFonts();
-        pdfMake.vfs = await this.initVfs(images);
-        return {
+        this.imageUrls = imageUrls ? imageUrls : [];
+        pdfMake.vfs = await this.initVfs();
+        const result = {
             pageSize: 'A4',
             pageMargins: [75, 90, 75, 75],
             defaultStyle: {
@@ -157,9 +139,10 @@ export class PdfDocumentService {
             },
             info: metadata,
             content: documentContent,
-            styles: this.getStandardPaperStyles(),
-            images: this.getImageUrls()
+            styles: this.getStandardPaperStyles()
         };
+        await this.loadAllImages();
+        return result;
     }
 
     /**
@@ -167,27 +150,29 @@ export class PdfDocumentService {
      * (e.g. ballots)
      *
      * @param documentContent the content of the pdf as object
-     * @param image an optional image to insert into the ballot
+     * @param imageUrl an optional image to insert into the ballot
      * @returns the pdf document definition ready to export
      */
-    private async getBallotPaper(documentContentObject: object, image?: ImagePlaceHolder): Promise<object> {
-        const images = image ? [image] : null;
+    private async getBallotPaper(documentContent: object, imageUrl?: string): Promise<object> {
         this.initFonts();
-        pdfMake.vfs = await this.initVfs(images);
-        return {
+        this.imageUrls = imageUrl ? [imageUrl] : [];
+        pdfMake.vfs = await this.initVfs();
+        const result = {
             pageSize: 'A4',
             pageMargins: [0, 0, 0, 0],
             defaultStyle: {
                 font: 'PdfFont',
                 fontSize: 10
             },
-            content: documentContentObject,
+            content: documentContent,
             styles: this.getBlankPaperStyles()
         };
+        await this.loadAllImages();
+        return result;
     }
 
     /**
-     * Define fonts
+     * Define the fonts
      */
     private initFonts(): void {
         pdfMake.fonts = {
@@ -222,6 +207,7 @@ export class PdfDocumentService {
                 fit: [180, 40],
                 width: '20%'
             });
+            this.imageUrls.push(logoHeaderLeftUrl);
         }
 
         // add the header text if no logo on the right was specified
@@ -259,6 +245,7 @@ export class PdfDocumentService {
                 alignment: 'right',
                 width: '20%'
             });
+            this.imageUrls.push(logoHeaderRightUrl);
         }
 
         return {
@@ -284,17 +271,17 @@ export class PdfDocumentService {
         const columns = [];
         let logoContainerWidth: string;
         let pageNumberPosition: string;
-        let logoConteinerSize: Array<number>;
+        let logoContainerSize: Array<number>;
         let logoFooterLeftUrl = this.configService.instant<any>('logo_pdf_footer_L').path;
         let logoFooterRightUrl = this.configService.instant<any>('logo_pdf_footer_R').path;
 
         // if there is a single logo, give it a lot of space
         if (logoFooterLeftUrl && logoFooterRightUrl) {
             logoContainerWidth = '20%';
-            logoConteinerSize = [180, 40];
+            logoContainerSize = [180, 40];
         } else {
             logoContainerWidth = '80%';
-            logoConteinerSize = [400, 50];
+            logoContainerSize = [400, 50];
         }
 
         // the position of the page number depends on the logos
@@ -315,10 +302,11 @@ export class PdfDocumentService {
             }
             columns.push({
                 image: logoFooterLeftUrl,
-                fit: logoConteinerSize,
+                fit: logoContainerSize,
                 width: logoContainerWidth,
                 alignment: 'left'
             });
+            this.imageUrls.push(logoFooterLeftUrl);
         }
 
         // add the page number
@@ -335,10 +323,11 @@ export class PdfDocumentService {
             }
             columns.push({
                 image: logoFooterRightUrl,
-                fit: logoConteinerSize,
+                fit: logoContainerSize,
                 width: logoContainerWidth,
                 alignment: 'right'
             });
+            this.imageUrls.push(logoFooterRightUrl);
         }
 
         return {
@@ -378,8 +367,7 @@ export class PdfDocumentService {
      * @param logo (optional) url of a logo to be placed as ballot logo
      */
     public downloadWithBallotPaper(docDefinition: object, filename: string, logo?: string): void {
-        const images: ImagePlaceHolder = logo ? { placeholder: 'ballot-logo', url: logo } : null;
-        this.getBallotPaper(docDefinition, images).then(doc => {
+        this.getBallotPaper(docDefinition, logo).then(doc => {
             this.createPdf(doc, filename);
         });
     }
@@ -394,18 +382,6 @@ export class PdfDocumentService {
         pdfMake.createPdf(doc).getBlob(blob => {
             saveAs(blob, `${filename}.pdf`, { autoBOM: true });
         });
-    }
-
-    /**
-     * TODO
-     *
-     * Should create an images section in the document definition holding the base64 strings
-     * for the urls
-     *
-     * @returns an object containing the image names and the corresponding base64 strings
-     */
-    private getImageUrls(): object {
-        return {};
     }
 
     /**
@@ -492,5 +468,28 @@ export class PdfDocumentService {
                 margin: [30, 0, 0, 0]
             }
         };
+    }
+
+    /**
+     * Triggers the addition of all images found during creation(including header and footer)
+     * to the vfs.
+     */
+    private async loadAllImages(): Promise<void> {
+        const promises = this.imageUrls.map(image => {
+            return this.addImageToVfS(image);
+        });
+        await Promise.all(promises);
+    }
+
+    /**
+     * Creates an image in the pdfMake virtual file system, if it doesn't yet exist there
+     *
+     * @param url
+     */
+    private async addImageToVfS(url: string): Promise<void> {
+        if (!pdfMake.vfs[url]) {
+            const base64 = await this.convertUrlToBase64(url);
+            pdfMake.vfs[url] = base64;
+        }
     }
 }

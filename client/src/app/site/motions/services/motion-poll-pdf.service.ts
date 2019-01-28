@@ -71,6 +71,9 @@ export class MotionPollPdfService {
         this.configService.get('general_event_name').subscribe(name => (this.eventName = name));
         this.configService.get('logo_pdf_ballot_paper').subscribe(url => {
             if (url && url.path) {
+                if (url.path.indexOf('/') === 0) {
+                    url.path = url.path.substr(1); // remove prepending slash
+                }
                 this.logo = url.path;
             }
         });
@@ -218,7 +221,7 @@ export class MotionPollPdfService {
 
         if (this.logo) {
             columns.push({
-                image: 'ballot-logo', // fixed dummy name not used outside ballot creation
+                image: this.logo,
                 fit: [90, 25],
                 alignment: 'right',
                 width: '40%'
