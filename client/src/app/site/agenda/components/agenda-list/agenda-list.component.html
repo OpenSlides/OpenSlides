@@ -13,7 +13,12 @@
     </div>
 </os-head-bar>
 <mat-drawer-container class="on-transition-fade">
-    <os-sort-filter-bar [filterCount]="filteredCount" [filterService]="filterService" (searchFieldChange)="searchFilter($event)"></os-sort-filter-bar>
+    <os-sort-filter-bar
+        [filterCount]="filteredCount"
+        [extraItemInfo]="getDurationEndString()"
+        [filterService]="filterService"
+        (searchFieldChange)="searchFilter($event)"
+    ></os-sort-filter-bar>
     <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
         <!-- selector column -->
         <ng-container matColumnDef="selector">
@@ -28,7 +33,7 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header>Topic</mat-header-cell>
             <!-- <mat-cell (click)="onTitleColumn(item)" *matCellDef="let item"> -->
             <mat-cell (click)="selectItem(item, $event)" *matCellDef="let item">
-                <div [ngStyle]="{'margin-left': item.agendaListLevel * 25 + 'px' }">
+                <div [ngStyle]="{ 'margin-left': item.agendaListLevel * 25 + 'px' }">
                     <span *ngIf="item.closed"> <mat-icon class="done-check">check</mat-icon> </span>
                     <span class="table-view-list-title">{{ item.getListTitle() }}</span>
                 </div>

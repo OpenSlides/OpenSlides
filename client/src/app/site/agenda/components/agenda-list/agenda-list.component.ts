@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { MatSnackBar, MatDialog } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { MatSnackBar, MatDialog } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 
 import { AgendaFilterListService } from '../../services/agenda-filter-list.service';
@@ -125,6 +125,8 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
             if (result) {
                 if (result.durationText) {
                     result.duration = this.durationService.stringToDuration(result.durationText);
+                } else {
+                    result.duration = 0;
                 }
                 this.repo.update(result, item);
             }
@@ -241,5 +243,23 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
     public onDownloadPdf(): void {
         const filename = this.translate.instant('Agenda');
         this.pdfService.download(this.agendaPdfService.agendaListToDocDef(this.dataSource.filteredData), filename);
+    }
+
+    /**
+     * Get the calculated end date and time
+     *
+     * @returns a readable string with end date and time in the current languages' convention
+     */
+    public getDurationEndString(): string {
+        const duration = this.repo.calculateDuration();
+        if (!duration) {
+            return '';
+        }
+        const durationString = this.durationService.durationToString(duration);
+        const endTimeString = this.repo
+            .calculateEndTime()
+            .toLocaleTimeString(this.translate.currentLang, { hour: 'numeric', minute: 'numeric' });
+        return `${this.translate.instant('Duration')}: ${durationString} (${this.translate.instant('Estimated end')}:
+            ${endTimeString} h)`;
     }
 }

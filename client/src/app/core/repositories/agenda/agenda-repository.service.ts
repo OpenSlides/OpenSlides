@@ -266,4 +266,31 @@ export class AgendaRepositoryService extends BaseRepository<ViewItem, Item> {
             })
         );
     }
+
+    /**
+     * Calculates the estimated end time based on the configured start and the
+     * sum of durations of all agenda items
+     *
+     * @returns a Date object
+     */
+    public calculateEndTime(): Date {
+        const startTime = this.config.instant<number>('agenda_start_event_date_time'); // a timestamp
+        const durationTime = this.calculateDuration() * 60 * 1000; // minutes to miliseconds
+        return new Date(startTime + durationTime);
+    }
+
+    /**
+     * get the sum of durations of all agenda items
+     *
+     * @returns a numerical value representing item durations (currently minutes)
+     */
+    public calculateDuration(): number {
+        let duration = 0;
+        this.getViewModelList().forEach(item => {
+            if (item.duration) {
+                duration += item.duration;
+            }
+        });
+        return duration;
+    }
 }
