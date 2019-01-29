@@ -77,6 +77,7 @@ import { C4DialogComponent, CopyrightSignComponent } from './components/copyrigh
 import { ProjectorButtonComponent } from './components/projector-button/projector-button.component';
 import { ProjectionDialogComponent } from './components/projection-dialog/projection-dialog.component';
 import { ResizedDirective } from './directives/resized.directive';
+import { WebWorkerService } from 'angular7-web-worker';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -219,7 +220,8 @@ import { ResizedDirective } from './directives/resized.directive';
         SortingListComponent,
         SortingTreeComponent,
         OsSortFilterBarComponent,
-        OsSortBottomSheetComponent
+        OsSortBottomSheetComponent,
+        WebWorkerService
     ],
     entryComponents: [OsSortBottomSheetComponent, C4DialogComponent]
 })

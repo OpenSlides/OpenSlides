@@ -4,6 +4,10 @@ import { saveAs } from 'file-saver';
 
 import pdfMake from 'pdfmake/build/pdfmake';
 import { TranslateService } from '@ngx-translate/core';
+// import { WebWorkerService } from 'angular2-web-worker/web-worker.service';
+// import { WebWorkerService } from 'angular7-web-worker/web-worker.service';
+import { WebWorkerService } from 'angular7-web-worker';
+// import { WebWorkerService } from 'ngx-web-worker';
 
 import { ConfigService } from './config.service';
 import { HttpService } from './http.service';
@@ -43,6 +47,7 @@ export class PdfDocumentService {
      */
     public constructor(
         private translate: TranslateService,
+        private webWorkerService: WebWorkerService,
         private configService: ConfigService,
         private httpService: HttpService
     ) {}
@@ -152,9 +157,10 @@ export class PdfDocumentService {
             },
             header: this.getHeader(),
             // TODO: option for no footer, wherever this can be defined
-            footer: (currentPage, pageCount) => {
-                return this.getFooter(currentPage, pageCount);
-            },
+            footer: this.getFooter(),
+            // footer: (currentPage, pageCount) => {
+            //     return this.getFooter(currentPage, pageCount);
+            // },
             info: metadata,
             content: documentContent,
             styles: this.getStandardPaperStyles(),
@@ -280,10 +286,11 @@ export class PdfDocumentService {
      * @param pageCount holds the page count
      * @returns the footer doc definition
      */
-    private getFooter(currentPage: number, pageCount: number): object {
+    // private getFooter(currentPage: number, pageCount: number): object {
+    private getFooter(): object {
         const columns = [];
         let logoContainerWidth: string;
-        let pageNumberPosition: string;
+        // let pageNumberPosition: string;
         let logoConteinerSize: Array<number>;
         let logoFooterLeftUrl = this.configService.instant<any>('logo_pdf_footer_L').path;
         let logoFooterRightUrl = this.configService.instant<any>('logo_pdf_footer_R').path;
@@ -298,15 +305,15 @@ export class PdfDocumentService {
         }
 
         // the position of the page number depends on the logos
-        if (logoFooterLeftUrl && logoFooterRightUrl) {
-            pageNumberPosition = 'center';
-        } else if (logoFooterLeftUrl && !logoFooterRightUrl) {
-            pageNumberPosition = 'right';
-        } else if (logoFooterRightUrl && !logoFooterLeftUrl) {
-            pageNumberPosition = 'left';
-        } else {
-            pageNumberPosition = this.configService.instant('general_export_pdf_pagenumber_alignment');
-        }
+        // if (logoFooterLeftUrl && logoFooterRightUrl) {
+        //     pageNumberPosition = 'center';
+        // } else if (logoFooterLeftUrl && !logoFooterRightUrl) {
+        //     pageNumberPosition = 'right';
+        // } else if (logoFooterRightUrl && !logoFooterLeftUrl) {
+        //     pageNumberPosition = 'left';
+        // } else {
+        //     pageNumberPosition = this.configService.instant('general_export_pdf_pagenumber_alignment');
+        // }
 
         // add the left footer logo, if any
         if (logoFooterLeftUrl) {
@@ -322,11 +329,11 @@ export class PdfDocumentService {
         }
 
         // add the page number
-        columns.push({
-            text: `${currentPage} / ${pageCount}`,
-            style: 'footerPageNumber',
-            alignment: pageNumberPosition
-        });
+        // columns.push({
+        //     text: `${currentPage} / ${pageCount}`,
+        //     style: 'footerPageNumber',
+        //     alignment: pageNumberPosition
+        // });
 
         // add the right footer logo, if any
         if (logoFooterRightUrl) {
@@ -391,9 +398,30 @@ export class PdfDocumentService {
      * @param filename the filename (without extension) to save as
      */
     private createPdf(doc: object, filename: string): void {
-        pdfMake.createPdf(doc).getBlob(blob => {
-            saveAs(blob, `${filename}.pdf`, { autoBOM: true });
-        });
+
+        const workerPromise = this.webWorkerService.run(this.test, doc)
+
+        workerPromise.then(result => {
+
+
+            console.log("result ", result);
+        })
+
+        // pdfMake.createPdf(doc).getBlob(blob => {
+        //     saveAs(blob, `${filename}.pdf`, { autoBOM: true });
+        // });
+    }
+
+    private test(doc: object): any {
+        console.log("in ww thrad: ", doc);
+
+        const a = pdfMake.createPdf(doc);
+        console.log("a = ", a);
+
+
+        // return ;
+
+
     }
 
     /**

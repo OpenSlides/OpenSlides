@@ -295,20 +295,20 @@ export class MotionPdfService {
                 },
                 margin: [0, 0, 0, 20],
                 // That did not work too well in the past. Perhaps substitution by a pdfWorker the worker will be necessary
-                layout: {
-                    fillColor: () => {
-                        return '#dddddd';
-                    },
-                    hLineWidth: (i, node) => {
-                        return i === 0 || i === node.table.body.length ? 0 : 0.5;
-                    },
-                    vLineWidth: () => {
-                        return 0;
-                    },
-                    hLineColor: () => {
-                        return 'white';
-                    }
-                }
+                // layout: {
+                //     fillColor: () => {
+                //         return '#dddddd';
+                //     },
+                //     hLineWidth: (i, node) => {
+                //         return i === 0 || i === node.table.body.length ? 0 : 0.5;
+                //     },
+                //     vLineWidth: () => {
+                //         return 0;
+                //     },
+                //     hLineColor: () => {
+                //         return 'white';
+                //     }
+                // }
             };
         }
     }
