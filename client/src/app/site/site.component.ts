@@ -150,20 +150,6 @@ export class SiteComponent extends BaseComponent implements OnInit {
         }
     }
 
-    // TODO: Implement this
-    public editProfile(): void {
-        if (this.operator.user) {
-            this.router.navigate([`./users/${this.operator.user.id}`]);
-        }
-    }
-
-    /**
-     * Redirects to the change password component
-     */
-    public changePassword(): void {
-        this.router.navigate([`./users/password`]);
-    }
-
     /**
      * Function to log out the current user
      */

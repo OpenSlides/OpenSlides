@@ -29,11 +29,20 @@
                     <span> {{ getLangName(this.translate.currentLang) }} </span>
                 </a>
                 <div *ngIf="isLoggedIn">
-                    <a (click)="editProfile()" mat-list-item>
+                    <a
+                        [routerLink]="['/users/', operator.user.id]"
+                        (click)="mobileAutoCloseNav()"
+                        mat-list-item
+                    >
                         <mat-icon>person</mat-icon>
                         <span translate>Edit profile</span>
                     </a>
-                    <a *osPerms="'users.can_change_password'" (click)="changePassword()" mat-list-item>
+                    <a
+                        *osPerms="'users.can_change_password'"
+                        routerLink="/users/password"
+                        (click)="mobileAutoCloseNav()"
+                        mat-list-item
+                    >
                         <mat-icon>vpn_key</mat-icon>
                         <span translate>Change password</span>
                     </a>
