@@ -125,12 +125,12 @@
     <!-- Meta info -->
     <div class="hspacing"><ng-container *ngTemplateOutlet="metaInfoTemplate"></ng-container></div>
 
-    <mat-divider class="spacer-top-10 spacer-bottom-20"></mat-divider>
+    <mat-divider *ngIf="!editMotion" class="spacer-top-10 spacer-bottom-20"></mat-divider>
 
     <!-- Content -->
-    <div class="hspacing"><ng-container *ngTemplateOutlet="contentTemplate"></ng-container></div>
+    <div class="hspacing" [ngClass]="editMotion ? 'os-form-card-mobile' : 'os-card-mobile'"><ng-container *ngTemplateOutlet="contentTemplate"></ng-container></div>
 
-    <mat-divider class="spacer-top-10 spacer-bottom-20"></mat-divider>
+    <mat-divider *ngIf="!editMotion" class="spacer-top-10 spacer-bottom-20"></mat-divider>
 
     <!-- Comments -->
     <os-motion-comments *ngIf="!editMotion" [motion]="motion"></os-motion-comments>

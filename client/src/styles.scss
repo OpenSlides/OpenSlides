@@ -57,6 +57,9 @@ h3 {
     font-weight: 500;
     margin-bottom: 0;
 }
+h3.accent {
+    color: $os-accent;
+}
 h4 {
     font-weight: 400;
     font-size: 12px;
@@ -153,6 +156,12 @@ mat-card {
     .mat-form-field {
         width: 100%;
         padding: 10px 0;
+    }
+}
+
+.os-form-card-mobile {
+    .mat-form-field, .mat-select {
+        width: 100%;
     }
 }
 

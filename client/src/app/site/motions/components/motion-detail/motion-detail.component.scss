@@ -120,7 +120,8 @@ span {
             margin: 0px 40px 10px 10px;
         }
         .os-card {
-            width: 900px;
+            max-width: 900px;
+            min-width: 400px;
             margin-left: 0 !important;
             margin-top: 0 !important;
         }
