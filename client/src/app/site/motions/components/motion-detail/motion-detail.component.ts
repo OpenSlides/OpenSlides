@@ -758,7 +758,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         this.dialogService.open(MotionChangeRecommendationComponent, {
             height: '400px',
             width: '600px',
-            data: data
+            data: data,
+            disableClose: true
         });
     }
 
