@@ -76,11 +76,7 @@
                 <span translate>Project</span>
             </button>
             <!-- New amendment -->
-            <button
-                mat-menu-item
-                (click)="createAmendment()"
-                *ngIf="perms.isAllowed('can_create_amendments', motion)"
-            >
+            <button mat-menu-item (click)="createAmendment()" *ngIf="perms.isAllowed('can_create_amendments', motion)">
                 <mat-icon>add</mat-icon>
                 <span translate>New amendment</span>
             </button>
@@ -128,7 +124,9 @@
     <mat-divider *ngIf="!editMotion" class="spacer-top-10 spacer-bottom-20"></mat-divider>
 
     <!-- Content -->
-    <div class="hspacing" [ngClass]="editMotion ? 'os-form-card-mobile' : 'os-card-mobile'"><ng-container *ngTemplateOutlet="contentTemplate"></ng-container></div>
+    <div class="hspacing" [ngClass]="editMotion ? 'os-form-card-mobile' : 'os-card-mobile'">
+        <ng-container *ngTemplateOutlet="contentTemplate"></ng-container>
+    </div>
 
     <mat-divider *ngIf="!editMotion" class="spacer-top-10 spacer-bottom-20"></mat-divider>
 
@@ -209,8 +207,7 @@
             <h4 translate>State</h4>
             <mat-menu #stateMenu="matMenu">
                 <button *ngFor="let state of motion.nextStates" mat-menu-item (click)="setState(state.id)">
-                    {{ state.name | translate }}
-                    <span *ngIf="state.show_state_extension_field">&nbsp;...</span>
+                    {{ state.name | translate }} <span *ngIf="state.show_state_extension_field">&nbsp;...</span>
                 </button>
                 <mat-divider></mat-divider>
                 <button mat-menu-item (click)="setState(null)" *ngIf="perms.isAllowed('change_metadata', motion)">
@@ -223,18 +220,13 @@
                 </mat-basic-chip>
                 <div *ngIf="motion.state.show_state_extension_field" class="spacer-top-10">
                     <mat-form-field>
-                        <input matInput placeholder="{{ 'Extension' | translate }}"
-                        [(ngModel)]="newStateExtension"/>
+                        <input matInput placeholder="{{ 'Extension' | translate }}" [(ngModel)]="newStateExtension" />
                     </mat-form-field>
-                    <button mat-icon-button (click)="setStateExtension()">
-                        <mat-icon>check</mat-icon>
-                    </button>
+                    <button mat-icon-button (click)="setStateExtension()"><mat-icon>check</mat-icon></button>
                 </div>
             </div>
             <div *ngIf="!perms.isAllowed('change_metadata', motion)">
-                <mat-basic-chip [ngClass]="getStateCssColor()" >
-                    {{ stateLabel }}
-                </mat-basic-chip>
+                <mat-basic-chip [ngClass]="getStateCssColor()"> {{ stateLabel }} </mat-basic-chip>
             </div>
         </div>
 
@@ -251,8 +243,11 @@
                     <span *ngIf="recommendation.show_recommendation_extension_field">&nbsp;...</span>
                 </button>
                 <mat-divider></mat-divider>
-                <button mat-menu-item *ngIf="perms.isAllowed('change_metadata', motion)"
-                    (click)="setRecommendation(null)">
+                <button
+                    mat-menu-item
+                    *ngIf="perms.isAllowed('change_metadata', motion)"
+                    (click)="setRecommendation(null)"
+                >
                     <mat-icon>replay</mat-icon> {{ 'Reset recommendation' | translate }}
                 </button>
             </mat-menu>
@@ -260,21 +255,22 @@
                 <mat-basic-chip [matMenuTriggerFor]="recommendationMenu" class="bluegrey">
                     {{ recommendationLabel }}
                 </mat-basic-chip>
-                <div *ngIf="motion.recommendation && motion.recommendation.show_recommendation_extension_field"
-                    class="spacer-top-10">
+                <div
+                    *ngIf="motion.recommendation && motion.recommendation.show_recommendation_extension_field"
+                    class="spacer-top-10"
+                >
                     <mat-form-field>
-                        <input matInput placeholder="{{ 'Extension' | translate }}"
-                            [(ngModel)]="newRecommendationExtension"/>
+                        <input
+                            matInput
+                            placeholder="{{ 'Extension' | translate }}"
+                            [(ngModel)]="newRecommendationExtension"
+                        />
                     </mat-form-field>
-                    <button mat-icon-button (click)="setRecommendationExtension()">
-                        <mat-icon>check</mat-icon>
-                    </button>
+                    <button mat-icon-button (click)="setRecommendationExtension()"><mat-icon>check</mat-icon></button>
                 </div>
             </div>
             <div *ngIf="!perms.isAllowed('change_metadata', motion)">
-                <mat-basic-chip class="bluegrey">
-                    {{ recommendationLabel }}
-                </mat-basic-chip>
+                <mat-basic-chip class="bluegrey"> {{ recommendationLabel }} </mat-basic-chip>
             </div>
             <button mat-button *ngIf="canFollowRecommendation()" (click)="onFollowRecButton()">
                 <span translate>Follow recommendation</span>
@@ -295,7 +291,11 @@
                     {{ category }}
                 </button>
             </mat-menu>
-            <mat-basic-chip *ngIf="perms.isAllowed('change_metadata', motion)" [matMenuTriggerFor]="categoryMenu" class="grey">
+            <mat-basic-chip
+                *ngIf="perms.isAllowed('change_metadata', motion)"
+                [matMenuTriggerFor]="categoryMenu"
+                class="grey"
+            >
                 {{ motion.category ? motion.category : '–' }}
             </mat-basic-chip>
             <mat-basic-chip *ngIf="!perms.isAllowed('change_metadata', motion)" class="grey">
@@ -312,7 +312,11 @@
                     {{ block }}
                 </button>
             </mat-menu>
-            <mat-basic-chip *ngIf="perms.isAllowed('change_metadata', motion)" [matMenuTriggerFor]="blockMenu" class="grey">
+            <mat-basic-chip
+                *ngIf="perms.isAllowed('change_metadata', motion)"
+                [matMenuTriggerFor]="blockMenu"
+                class="grey"
+            >
                 {{ motion.motion_block ? motion.motion_block : '–' }}
             </mat-basic-chip>
             <mat-basic-chip *ngIf="!perms.isAllowed('change_metadata', motion)" class="grey">
@@ -366,6 +370,26 @@
                 *ngIf="motion && !motion.isParagraphBasedAmendment() && allChangingObjects.length > 0"
             >
                 <mat-icon>rate_review</mat-icon>
+            </button>
+
+            <button
+                type="button"
+                mat-icon-button
+                matTooltip="{{ 'Create final print template' | translate }}"
+                *ngIf="isRecoMode(ChangeRecoMode.Final)"
+                (click)="createModifiedFinalVersion()"
+            >
+                <mat-icon>description</mat-icon>
+            </button>
+            <button
+                type="button"
+                class="red-warning-text"
+                mat-button
+                matTooltip="{{ 'Delete final print template' | translate }}"
+                *ngIf="isRecoMode(ChangeRecoMode.ModifiedFinal)"
+                (click)="deleteModifiedFinalVersion()"
+            >
+                <mat-icon>description</mat-icon>
             </button>
         </div>
 
@@ -436,26 +460,26 @@
         <!-- Regular motions or traditional amendments -->
         <ng-container *ngIf="!editMotion && !motion.isStatuteAmendment() && !motion.isParagraphBasedAmendment()">
             <div
-                *ngIf="!isRecoModeDiff()"
+                *ngIf="!isRecoMode(ChangeRecoMode.Diff)"
                 class="motion-text"
                 [class.line-numbers-none]="isLineNumberingNone()"
                 [class.line-numbers-inline]="isLineNumberingInline()"
                 [class.line-numbers-outside]="isLineNumberingOutside()"
             >
                 <os-motion-detail-original-change-recommendations
-                    *ngIf="isLineNumberingOutside() && isRecoModeOriginal()"
+                    *ngIf="isLineNumberingOutside() && isRecoMode(ChangeRecoMode.Original)"
                     [html]="getFormattedTextPlain()"
                     [changeRecommendations]="changeRecommendations"
                     (createChangeRecommendation)="createChangeRecommendation($event)"
                     (gotoChangeRecommendation)="gotoChangeRecommendation($event)"
                 ></os-motion-detail-original-change-recommendations>
                 <div
-                    *ngIf="!isLineNumberingOutside() || !isRecoModeOriginal()"
+                    *ngIf="!isLineNumberingOutside() || !isRecoMode(ChangeRecoMode.Original)"
                     [innerHTML]="sanitizedText(getFormattedTextPlain())"
                 ></div>
             </div>
             <os-motion-detail-diff
-                *ngIf="isRecoModeDiff()"
+                *ngIf="isRecoMode(ChangeRecoMode.Diff)"
                 [motion]="motion"
                 [changes]="allChangingObjects"
                 [scrollToChange]="scrollToChange"
@@ -694,5 +718,14 @@
         [ngClass]="{ selected: crMode === ChangeRecoMode.Final }"
     >
         Final version
+    </button>
+    <button
+        mat-menu-item
+        translate
+        *ngIf="motion?.modified_final_version"
+        (click)="setChangeRecoMode(ChangeRecoMode.ModifiedFinal)"
+        [ngClass]="{ selected: motion?.crMode === ChangeRecoMode.ModifiedFinal }"
+    >
+        Final print template
     </button>
 </mat-menu>

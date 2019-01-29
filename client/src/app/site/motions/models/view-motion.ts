@@ -30,7 +30,8 @@ export enum ChangeRecoMode {
     Original = 'original',
     Changed = 'changed',
     Diff = 'diff',
-    Final = 'agreed'
+    Final = 'agreed',
+    ModifiedFinal = 'modified_final_version'
 }
 
 /**
@@ -87,6 +88,16 @@ export class ViewMotion extends BaseProjectableModel {
 
     public get reason(): string {
         return this.motion ? this.motion.reason : null;
+    }
+
+    public get modified_final_version(): string {
+        return this.motion ? this.motion.modified_final_version : null;
+    }
+
+    public set modified_final_version(value: string) {
+        if (this.motion) {
+            this.motion.modified_final_version = value;
+        }
     }
 
     public get weight(): number {

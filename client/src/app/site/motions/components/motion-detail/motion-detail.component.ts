@@ -38,6 +38,7 @@ import { ViewportService } from '../../../../core/services/viewport.service';
 import { ViewUnifiedChange } from '../../models/view-unified-change';
 import { ViewStatuteParagraph } from '../../models/view-statute-paragraph';
 import { Workflow } from 'app/shared/models/motions/workflow';
+import { LinenumberingService } from '../../services/linenumbering.service';
 
 /**
  * Component for the motion detail view
@@ -336,7 +337,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         private sanitizer: DomSanitizer,
         private promptService: PromptService,
         private pdfExport: MotionPdfExportService,
-        private personalNoteService: PersonalNoteService
+        private personalNoteService: PersonalNoteService,
+        private linenumberingService: LinenumberingService
     ) {
         super(title, translate, matSnackBar);
 
@@ -599,10 +601,14 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     /**
      * Save a motion. Calls the "patchValues" function in the MotionObject
      */
-    public async updateMotion(): Promise<void> {
+    private updateMotionFromForm(): void {
         const newMotionValues = { ...this.contentForm.value };
-        const motion = this.prepareMotionForSave(newMotionValues, Motion);
-        this.repo.update(motion, this.motionCopy).then(() => (this.editMotion = false), this.raiseError);
+        this.updateMotion(newMotionValues, this.motionCopy).then(() => (this.editMotion = false), this.raiseError);
+    }
+
+    private async updateMotion(newMotionValues: Partial<Motion>, motion: ViewMotion): Promise<void> {
+        const updateMotion = this.prepareMotionForSave(newMotionValues, Motion);
+        await this.repo.update(updateMotion, motion);
     }
 
     /**
@@ -612,7 +618,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         if (this.newMotion) {
             this.createMotion();
         } else {
-            this.updateMotion();
+            this.updateMotionFromForm();
         }
     }
 
@@ -719,24 +725,20 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
 
     /**
      * Sets the motions change reco mode
-     * @param mode Needs to fot to the enum defined in ViewMotion
+     * @param mode The mode
      */
     public setChangeRecoMode(mode: ChangeRecoMode): void {
         this.crMode = mode;
     }
 
     /**
-     * Returns true if the original version (including change recommendation annotation) is to be shown
+     * Returns true if the given version is to be shown
+     *
+     * @param mode The mode to check
+     * @returns true, if the mode is shown
      */
-    public isRecoModeOriginal(): boolean {
-        return this.crMode === ChangeRecoMode.Original || this.allChangingObjects.length === 0;
-    }
-
-    /**
-     * Returns true if the diff version is to be shown
-     */
-    public isRecoModeDiff(): boolean {
-        return this.crMode === ChangeRecoMode.Diff && this.allChangingObjects.length > 0;
+    public isRecoMode(mode: ChangeRecoMode): boolean {
+        return this.crMode === mode;
     }
 
     /**
@@ -777,6 +779,51 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      */
     public createAmendment(): void {
         this.router.navigate(['./create-amendment'], { relativeTo: this.route });
+    }
+
+    /**
+     * Sets the modified final version to the final version.
+     */
+    public async createModifiedFinalVersion(): Promise<void> {
+        // Get the final version and remove line numbers
+        const changes: ViewUnifiedChange[] = Object.assign([], this.allChangingObjects);
+        let finalVersion = this.repo.formatMotion(
+            this.motion.id,
+            ChangeRecoMode.Final,
+            changes,
+            this.lineLength,
+            this.highlightedLine
+        );
+        finalVersion = this.linenumberingService.stripLineNumbers(finalVersion);
+
+        // Update the motion
+        try {
+            // Just confirm this, if there is one modified final version the user would override.
+            if (this.motion.modified_final_version) {
+                const content = this.translate.instant('Are you sure to copy the final version to the print template?');
+                if (await this.promptService.open(this.motion.title, content)) {
+                    await this.updateMotion({ modified_final_version: finalVersion }, this.motion);
+                }
+            } else {
+                await this.updateMotion({ modified_final_version: finalVersion }, this.motion);
+            }
+        } catch (e) {
+            this.raiseError(e);
+        }
+        this.setChangeRecoMode(ChangeRecoMode.ModifiedFinal);
+    }
+
+    /**
+     * Deletes the modified final version
+     */
+    public async deleteModifiedFinalVersion(): Promise<void> {
+        const content = this.translate.instant('Are you sure to delete the print template?');
+        if (await this.promptService.open(this.motion.title, content)) {
+            this.updateMotion({ modified_final_version: '' }, this.motion).then(
+                () => this.setChangeRecoMode(ChangeRecoMode.Final),
+                this.raiseError
+            );
+        }
     }
 
     /**
