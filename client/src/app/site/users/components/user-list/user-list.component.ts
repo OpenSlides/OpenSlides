@@ -132,7 +132,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
      */
     public csvExportUserList(): void {
         this.csvExport.export(
-            this.dataSource.data,
+            this.dataSource.filteredData,
             [
                 { property: 'title' },
                 { property: 'first_name', label: 'Given name' },

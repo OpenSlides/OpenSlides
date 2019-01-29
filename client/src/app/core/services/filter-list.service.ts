@@ -67,7 +67,7 @@ export abstract class FilterListService<M extends BaseModel, V extends BaseViewM
     }
 
     /**
-     * @returns the amount of items that pass the current filters
+     * @returns the amount of items that pass the filter service's filters
      */
     public get filteredCount(): number {
         return this.filteredData ? this.filteredData.length : 0;

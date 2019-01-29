@@ -18,6 +18,7 @@
 
 <mat-drawer-container class="on-transition-fade">
     <os-sort-filter-bar
+        [filterCount]="filteredCount"
         [filterService]="filterService"
         [sortService]="sortService"
         (searchFieldChange)="searchFilter($event)"
