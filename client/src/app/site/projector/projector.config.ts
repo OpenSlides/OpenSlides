@@ -12,7 +12,7 @@ export const ProjectorAppConfig: AppConfig = {
     ],
     mainMenuEntries: [
         {
-            route: '/projector-site/list',
+            route: '/projectors',
             displayName: 'Projector',
             icon: 'videocam',
             weight: 700,

@@ -5,16 +5,91 @@
 .column-left {
     display: inline-block;
     padding-top: 20px;
-    width: 70%;
+    width: 60%;
+    min-width: 200px;
     padding-right: 25px;
+
+    /* Do not let the a tag ruin the projector */
+    a {
+        color: inherit;
+        text-decoration: inherit;
+    }
 }
 
 .column-right {
     padding-top: 20px;
-    min-width: calc(30% - 25px);
+    width: calc(40% - 30px);
     float: right;
 }
 
 .control-group {
     text-align: center;
+    color: rgba(0, 0, 0, 0.54);
+
+    .button-size {
+        width: 40px;
+        display: inline-block;
+    }
+}
+
+h4 {
+    margin-top: 5px;
+
+    button {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+h5 {
+    margin-bottom: 0;
+}
+
+.queue {
+    margin-top: 15px;
+
+    .drop-list {
+        width: 100%;
+        display: block;
+        overflow: hidden;
+
+        .list-entry {
+            display: table;
+            min-height: 50px;
+            width: 100%;
+            border-bottom: solid 1px #ccc;
+            color: rgba(0, 0, 0, 0.87);
+
+            .drag-handle {
+                display: table-cell;
+                padding: 0 10px;
+                line-height: 0px;
+                vertical-align: middle;
+                width: 25px;
+                color: slategrey;
+                cursor: move;
+            }
+
+            .name {
+                display: table-cell;
+                vertical-align: middle;
+            }
+
+            .button-right {
+                display: table-cell;
+                padding-right: 10px;
+                vertical-align: middle;
+                width: auto;
+                white-space: nowrap;
+
+                div {
+                    float: right;
+                }
+            }
+        }
+
+        .list-entry:last-child {
+            border: none;
+        }
+    }
 }

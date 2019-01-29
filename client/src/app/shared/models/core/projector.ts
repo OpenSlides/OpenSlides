@@ -23,6 +23,10 @@ export interface ProjectorElement {
     [key: string]: any;
 }
 
+export interface IdentifiableProjectorElement extends ProjectorElement {
+    getIdentifiers(): (keyof IdentifiableProjectorElement)[];
+}
+
 /**
  * Multiple elements.
  */
@@ -45,6 +49,8 @@ export interface ProjectionDefault {
 export class Projector extends BaseModel<Projector> {
     public id: number;
     public elements: ProjectorElements;
+    public elements_preview: ProjectorElements;
+    public elements_history: ProjectorElements[];
     public scale: number;
     public scroll: number;
     public name: string;
@@ -57,22 +63,30 @@ export class Projector extends BaseModel<Projector> {
     }
 
     /**
-     * Returns true, if there is an element with the given name (and optionally
-     * an id). If the id is given, the element to search MUST have this id.
+     * Must match all given identifiers. If a projectorelement does not have all keys
+     * to identify, it will be removed, if all existing keys match
      *
-     * @param name The name of the element
-     * @param id The optional id to check.
-     * @returns true, if there is at least one element with the given name (and id).
+     * @returns true, TODO
      */
-    public isElementShown(name: string, id?: number): boolean {
-        return this.elements.some(element => element.name === name && (!id || element.id === id));
+    public isElementShown(element: IdentifiableProjectorElement): boolean {
+        return this.elements.some(elementOnProjector => {
+            return element.getIdentifiers().every(identifier => {
+                return !elementOnProjector[identifier] || elementOnProjector[identifier] === element[identifier];
+            });
+        });
     }
 
     /**
      * Removes all elements, that do not have `stable=true`.
+     *
+     * TODO: use this.partitionArray
+     *
+     * @returns all removed unstable elements
      */
-    public removeAllNonStableElements(): void {
+    public removeAllNonStableElements(): ProjectorElements {
+        const unstableElements = this.elements.filter(element => !element.stable);
         this.elements = this.elements.filter(element => element.stable);
+        return unstableElements;
     }
 
     /**
@@ -85,17 +99,28 @@ export class Projector extends BaseModel<Projector> {
     }
 
     /**
-     * Removes elements given by the name and optional id. If no id is given
-     * all elements with a matching name are removed.
-     *
-     * If an id is given, ut the element dies not specify an id, it will be removed.
-     *
-     * @param name The name to search
-     * @param id The optional id to search.
+     * Must match everything. If a projectorelement does not have all keys
+     * to identify, it will be removed, if all existing keys match
      */
-    public removeElementByNameAndId(name: string, id?: number): void {
-        this.elements = this.elements.filter(
-            element => element.name !== name || (!id && !element.id && element.id !== id)
+    public removeElements(element: IdentifiableProjectorElement): ProjectorElements {
+        let removedElements: ProjectorElements;
+        let nonRemovedElements: ProjectorElements;
+        [removedElements, nonRemovedElements] = this.partitionArray(this.elements, elementOnProjector => {
+            return element.getIdentifiers().every(identifier => {
+                return !elementOnProjector[identifier] || elementOnProjector[identifier] === element[identifier];
+            });
+        });
+        this.elements = nonRemovedElements;
+        return removedElements;
+    }
+
+    private partitionArray<T>(array: T[], callback: (element: T) => boolean): [T[], T[]] {
+        return array.reduce(
+            (result, element) => {
+                result[callback(element) ? 0 : 1].push(element);
+                return result;
+            },
+            [[], []] as [T[], T[]]
         );
     }
 

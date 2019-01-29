@@ -1,21 +1,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MetaTextBlockComponent } from './meta-text-block.component';
+import { CountdownListComponent } from './countdown-list.component';
 import { E2EImportsModule } from 'e2e-imports.module';
 
-describe('MetaTextBlockComponent', () => {
-    let component: MetaTextBlockComponent;
-    let fixture: ComponentFixture<MetaTextBlockComponent>;
+describe('CountdownListComponent', () => {
+    let component: CountdownListComponent;
+    let fixture: ComponentFixture<CountdownListComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [E2EImportsModule],
-            declarations: [MetaTextBlockComponent]
+            declarations: [CountdownListComponent]
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(MetaTextBlockComponent);
+        fixture = TestBed.createComponent(CountdownListComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

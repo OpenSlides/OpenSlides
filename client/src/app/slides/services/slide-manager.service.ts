@@ -4,34 +4,36 @@ import { SlideManifest, SlideOptions } from '../slide-manifest';
 import { SLIDE } from '../slide-token';
 import { SLIDE_MANIFESTS } from '../slide-manifest';
 import { BaseSlideComponent } from '../base-slide-component';
+import { ProjectorElement, IdentifiableProjectorElement } from 'app/shared/models/core/projector';
 
 /**
  * Cares about loading slides dynamically.
  */
 @Injectable()
-export class DynamicSlideLoader {
+export class SlideManager {
+    private loadedSlides: { [name: string]: SlideManifest } = {};
+
     public constructor(
         @Inject(SLIDE_MANIFESTS) private manifests: SlideManifest[],
         private loader: NgModuleFactoryLoader,
         private injector: Injector
-    ) {}
+    ) {
+        this.manifests.forEach(slideManifest => {
+            this.loadedSlides[slideManifest.slide] = slideManifest;
+        });
+    }
 
     /**
      * Searches the manifest for the given slide name.
-     *
-     * TODO: Improve by loading all manifests in an object with the
-     * slide name as keys in the constructor. It's just a lookup here, then.
      *
      * @param slideName The slide to look up.
      * @returns the slide's manifest.
      */
     private getManifest(slideName: string): SlideManifest {
-        const manifest = this.manifests.find(m => m.slideName === slideName);
-
-        if (!manifest) {
+        if (!this.loadedSlides[slideName]) {
             throw new Error(`Could not find slide for "${slideName}"`);
         }
-        return manifest;
+        return this.loadedSlides[slideName];
     }
 
     /**
@@ -42,6 +44,29 @@ export class DynamicSlideLoader {
      */
     public getSlideOptions(slideName: string): SlideOptions {
         return this.getManifest(slideName);
+    }
+
+    /**
+     */
+    public getIdentifialbeProjectorElement(element: ProjectorElement): IdentifiableProjectorElement {
+        const identifiableElement: IdentifiableProjectorElement = element as IdentifiableProjectorElement;
+        const identifiers = this.getManifest(element.name).elementIdentifiers.map(x => x); // map to copy.
+        identifiableElement.getIdentifiers = () => identifiers;
+        return identifiableElement;
+    }
+
+    /**
+     * Get slide verbose name for a given slide.
+     *
+     * @param slideName The slide
+     * @returns the verbose slide name for the requested slide.
+     */
+    public getSlideVerboseName(slideName: string): string {
+        return this.getManifest(slideName).verboseName;
+    }
+
+    public canSlideBeMappedToModel(slideName: string): boolean {
+        return this.getManifest(slideName).canBeMappedToModel;
     }
 
     /**

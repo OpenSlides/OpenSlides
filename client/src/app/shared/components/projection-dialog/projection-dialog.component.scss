@@ -1,19 +1,12 @@
 mat-dialog-content {
     overflow: inherit;
+    min-width: auto;
 
     div.projectors {
-        padding: 15px;
-
-        &.projected {
-            background-color: lightblue;
-        }
+        padding: 15px 0;
 
         .right {
             float: right;
         }
-    }
-
-    mat-card {
-        margin-bottom: 10px;
     }
 }

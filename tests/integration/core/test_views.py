@@ -90,7 +90,7 @@ def test_project_view(client):
         {
             "append_to_history": [{"name": "topics/topic", "id": 1}],
             "elements": [{"name": "topics/topic", "id": 2}],
-            "preview": [[{"name": "topics/topic", "id": 3}]],
+            "preview": [{"name": "topics/topic", "id": 3}],
         },
         content_type="application/json",
     )
@@ -102,7 +102,7 @@ def test_project_view(client):
         [{"name": "topics/topic", "id": 3}],
         [{"name": "topics/topic", "id": 1}],
     ]
-    assert projector.elements_preview == [[{"name": "topics/topic", "id": 3}]]
+    assert projector.elements_preview == [{"name": "topics/topic", "id": 3}]
 
 
 @pytest.mark.django_db(transaction=False)

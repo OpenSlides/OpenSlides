@@ -47,7 +47,11 @@ def message_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
         return {"error": f"Message {message_id} does not exist"}
 
 
+def clock_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
+    return {}
+
+
 def register_projector_slides() -> None:
     register_projector_slide("core/countdown", countdown_slide)
     register_projector_slide("core/projector-message", message_slide)
-    # TODO: Add clock slide
+    register_projector_slide("core/clock", clock_slide)

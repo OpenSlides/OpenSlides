@@ -2,6 +2,7 @@ import { User } from '../../../shared/models/users/user';
 import { Group } from '../../../shared/models/users/group';
 import { BaseModel } from '../../../shared/models/base/base-model';
 import { BaseProjectableModel } from 'app/site/base/base-projectable-model';
+import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 
 export class ViewUser extends BaseProjectableModel {
     private _user: User;
@@ -109,16 +110,17 @@ export class ViewUser extends BaseProjectableModel {
         this._groups = groups;
     }
 
-    public getProjectionDefaultName(): string {
-        return 'users';
-    }
-
-    public getNameForSlide(): string {
-        return User.COLLECTIONSTRING;
-    }
-
-    public isStableSlide(): boolean {
-        return true;
+    public getSlide(): ProjectorElementBuildDeskriptor {
+        return {
+            getBasicProjectorElement: () => ({
+                name: User.COLLECTIONSTRING,
+                id: this.id,
+                getIdentifiers: () => ['name', 'id']
+            }),
+            slideOptions: [],
+            projectionDefaultName: 'users',
+            getTitle: () => this.getTitle()
+        };
     }
 
     /**

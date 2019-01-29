@@ -7,9 +7,20 @@ import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-poli
 import { StartComponent } from './components/start/start.component';
 import { LegalNoticeComponent } from './components/legal-notice/legal-notice.component';
 import { SearchComponent } from './components/search/search.component';
+import { CountdownRepositoryService } from './services/countdown-repository.service';
+import { CountdownListComponent } from './components/countdown-list/countdown-list.component';
+import { ProjectorMessageListComponent } from './components/projectormessage-list/projectormessage-list.component';
 
 @NgModule({
+    providers: [CountdownRepositoryService],
     imports: [AngularCommonModule, CommonRoutingModule, SharedModule],
-    declarations: [PrivacyPolicyComponent, StartComponent, LegalNoticeComponent, SearchComponent]
+    declarations: [
+        PrivacyPolicyComponent,
+        StartComponent,
+        LegalNoticeComponent,
+        SearchComponent,
+        CountdownListComponent,
+        ProjectorMessageListComponent
+    ]
 })
 export class CommonModule {}

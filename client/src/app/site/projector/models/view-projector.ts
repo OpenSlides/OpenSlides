@@ -20,6 +20,18 @@ export class ViewProjector extends BaseViewModel {
         return this.projector ? this.projector.elements : null;
     }
 
+    public get non_stable_elements(): ProjectorElements {
+        return this.projector ? this.projector.elements.filter(element => !element.stable) : null;
+    }
+
+    public get elements_preview(): ProjectorElements {
+        return this.projector ? this.projector.elements_preview : null;
+    }
+
+    public get elements_history(): ProjectorElements[] {
+        return this.projector ? this.projector.elements_history : null;
+    }
+
     public get height(): number {
         return this.projector ? this.projector.height : null;
     }

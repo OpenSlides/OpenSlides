@@ -90,6 +90,26 @@ def list_of_speakers_slide(
     return {"user_ids": user_ids}
 
 
+def current_list_of_speakers_slide(
+    all_data: AllData, element: Dict[str, Any]
+) -> Dict[str, Any]:
+    """
+    TODO
+
+    Note: This data is for all projectors showing this slide, so we cannot give projector-
+    specific data. The work-around is to make a dict with projector-ids as keys and the
+    data-per-projector as values. This is not a security concern, because if a person can
+    see one projector, he is able to see all others, too. Maybe a bit more data..
+    """
+    return {"error": "TODO"}
+
+
 def register_projector_slides() -> None:
     register_projector_slide("agenda/item-list", items_slide)
     register_projector_slide("agenda/list-of-speakers", list_of_speakers_slide)
+    register_projector_slide(
+        "agenda/current-list-of-speakers", current_list_of_speakers_slide
+    )
+    register_projector_slide(
+        "agenda/current-list-of-speakers-overlay", current_list_of_speakers_slide
+    )

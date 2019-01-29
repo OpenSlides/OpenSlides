@@ -1,6 +1,10 @@
 from typing import Any, Dict, List
 
-from ..utils.projector import AllData, register_projector_slide
+from ..utils.projector import (
+    AllData,
+    ProjectorElementException,
+    register_projector_slide,
+)
 
 
 # Important: All functions have to be prune. This means, that thay can only
@@ -12,8 +16,22 @@ from ..utils.projector import AllData, register_projector_slide
 def user_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
     """
     User slide.
+
+    The returned dict can contain the following fields:
+    * user
     """
-    return {"error": "TODO"}
+    user_id = element.get("id")
+
+    if user_id is None:
+        return {"error": "id is required for user slide"}
+
+    try:
+        user = all_data["users/user"][user_id]
+    except KeyError:
+        raise ProjectorElementException(f"user with id {user_id} does not exist")
+
+    return_value = {"user": get_user_name(all_data, user["id"])}
+    return return_value
 
 
 def get_user_name(all_data: AllData, user_id: int) -> str:

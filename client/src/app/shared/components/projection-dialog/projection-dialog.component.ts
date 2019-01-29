@@ -1,19 +1,19 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { Projectable } from 'app/site/base/projectable';
+import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { DataStoreService } from 'app/core/services/data-store.service';
-import { Projector, ProjectorElement } from 'app/shared/models/core/projector';
+import { Projector, IdentifiableProjectorElement } from 'app/shared/models/core/projector';
 import { ProjectorService } from 'app/core/services/projector.service';
 import {
-    ProjectorOption,
-    isProjectorDecisionOption,
-    isProjectorChoiceOption,
-    ProjectorDecisionOption,
-    ProjectorChoiceOption,
-    ProjectorOptions
-} from 'app/site/base/projector-options';
+    SlideOption,
+    isSlideDecisionOption,
+    isSlideChoiceOption,
+    SlideDecisionOption,
+    SlideChoiceOption,
+    SlideOptions
+} from 'app/site/base/slide-options';
 
-export type ProjectionDialogReturnType = [Projector[], ProjectorElement];
+export type ProjectionDialogReturnType = [Projector[], IdentifiableProjectorElement];
 
 /**
  */
@@ -25,40 +25,40 @@ export type ProjectionDialogReturnType = [Projector[], ProjectorElement];
 export class ProjectionDialogComponent {
     public projectors: Projector[];
     private selectedProjectors: Projector[] = [];
-    public projectorElement: ProjectorElement;
-    public options: ProjectorOptions;
+    public projectorElement: IdentifiableProjectorElement;
+    public options: SlideOptions;
 
     public constructor(
         public dialogRef: MatDialogRef<ProjectionDialogComponent, ProjectionDialogReturnType>,
-        @Inject(MAT_DIALOG_DATA) public projectable: Projectable,
+        @Inject(MAT_DIALOG_DATA) public projectorElementBuildDescriptor: ProjectorElementBuildDeskriptor,
         private DS: DataStoreService,
         private projectorService: ProjectorService
     ) {
         this.projectors = this.DS.getAll<Projector>('core/projector');
         // TODO: Maybe watch. But this may not be necessary for the short living time of this dialog.
 
-        this.selectedProjectors = this.projectorService.getProjectorsWhichAreProjecting(this.projectable);
+        this.selectedProjectors = this.projectorService.getProjectorsWhichAreProjecting(
+            this.projectorElementBuildDescriptor
+        );
 
         // Add default projector, if the projectable is not projected on it.
-        const defaultProjector: Projector = this.projectorService.getProjectorForDefault(
-            this.projectable.getProjectionDefaultName()
-        );
-        if (!this.selectedProjectors.includes(defaultProjector)) {
-            this.selectedProjectors.push(defaultProjector);
+        if (this.projectorElementBuildDescriptor.projectionDefaultName) {
+            const defaultProjector: Projector = this.projectorService.getProjectorForDefault(
+                this.projectorElementBuildDescriptor.projectionDefaultName
+            );
+            if (!this.selectedProjectors.includes(defaultProjector)) {
+                this.selectedProjectors.push(defaultProjector);
+            }
         }
 
-        this.projectorElement = {
-            id: this.projectable.getIdForSlide(),
-            name: this.projectable.getNameForSlide(),
-            stable: this.projectable.isStableSlide()
-        };
+        this.projectorElement = this.projectorElementBuildDescriptor.getBasicProjectorElement();
 
         // Set option defaults
-        this.projectable.getProjectorOptions().forEach(option => {
+        this.projectorElementBuildDescriptor.slideOptions.forEach(option => {
             this.projectorElement[option.key] = option.default;
         });
 
-        this.options = this.projectable.getProjectorOptions();
+        this.options = this.projectorElementBuildDescriptor.slideOptions;
     }
 
     public toggleProjector(projector: Projector): void {
@@ -75,15 +75,15 @@ export class ProjectionDialogComponent {
     }
 
     public isProjectedOn(projector: Projector): boolean {
-        return this.projectorService.isProjectedOn(this.projectable, projector);
+        return this.projectorService.isProjectedOn(this.projectorElementBuildDescriptor, projector);
     }
 
-    public isDecisionOption(option: ProjectorOption): option is ProjectorDecisionOption {
-        return isProjectorDecisionOption(option);
+    public isDecisionOption(option: SlideOption): option is SlideDecisionOption {
+        return isSlideDecisionOption(option);
     }
 
-    public isChoiceOption(option: ProjectorOption): option is ProjectorChoiceOption {
-        return isProjectorChoiceOption(option);
+    public isChoiceOption(option: SlideOption): option is SlideChoiceOption {
+        return isSlideChoiceOption(option);
     }
 
     public onOk(): void {

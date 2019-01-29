@@ -132,6 +132,10 @@ export class ProjectorComponent extends BaseComponent implements OnDestroy {
     public enableHeaderAndFooter = true;
     public enableTitle = true;
     public enableLogo = true;
+    public eventName;
+    public eventDescription;
+    public eventDate;
+    public eventLocation;
 
     /**
      * Listen to all related config variables. Register the resizeSubject.
@@ -166,6 +170,10 @@ export class ProjectorComponent extends BaseComponent implements OnDestroy {
         this.configService
             .get<string>('projector_background_color')
             .subscribe(val => (this.projectorStyle['background-color'] = val));
+        this.configService.get<string>('general_event_name').subscribe(val => (this.eventName = val));
+        this.configService.get<string>('general_event_description').subscribe(val => (this.eventDescription = val));
+        this.configService.get<string>('general_event_date').subscribe(val => (this.eventDate = val));
+        this.configService.get<string>('general_event_location').subscribe(val => (this.eventLocation = val));
 
         // Watches for resizing of the container.
         this.resizeSubject.subscribe(() => {
@@ -216,8 +224,10 @@ export class ProjectorComponent extends BaseComponent implements OnDestroy {
                 .getProjectorObservable(to)
                 .subscribe(data => (this.slides = data || []));
             this.projectorSubscription = this.projectorRepository.getViewModelObservable(to).subscribe(projector => {
-                this.scroll = projector.scroll;
-                this.scale = projector.scale;
+                if (projector) {
+                    this.scroll = projector.scroll || 0;
+                    this.scale = projector.scale || 0;
+                }
             });
         } else if (!to && from > 0) {
             // no new projector

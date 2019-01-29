@@ -2,7 +2,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PersonalNoteComponent } from './personal-note.component';
 import { E2EImportsModule } from 'e2e-imports.module';
-import { MetaTextBlockComponent } from '../meta-text-block/meta-text-block.component';
 
 describe('PersonalNoteComponent', () => {
     let component: PersonalNoteComponent;
@@ -11,7 +10,7 @@ describe('PersonalNoteComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [E2EImportsModule],
-            declarations: [MetaTextBlockComponent, PersonalNoteComponent]
+            declarations: [PersonalNoteComponent]
         }).compileComponents();
     }));
 

@@ -1,0 +1,21 @@
+#clock {
+    position: absolute;
+    right: 0;
+    top: 0;
+    color: white;
+    height: 30px;
+    margin: 12px;
+    z-index: 2;
+    padding-right: 50px;
+    padding-top: 5px;
+
+    mat-icon {
+        padding-top: 5px;
+    }
+
+    span {
+        padding-left: 5px;
+        font-size: 24px;
+        float: right;
+    }
+}

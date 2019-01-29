@@ -407,7 +407,6 @@ export class DataStoreService {
      * @param changeId The changeId from the update. If it's the highest change id seen, it will be set into the cache.
      */
     public async flushToStorage(changeId: number): Promise<void> {
-        console.log('flush to storage');
         this._maxChangeId = changeId;
         await this.storageService.set(DataStoreService.cachePrefix + 'DS', this.jsonStore);
         await this.storageService.set(DataStoreService.cachePrefix + 'maxChangeId', changeId);

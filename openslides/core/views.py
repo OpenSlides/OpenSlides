@@ -164,19 +164,29 @@ class ProjectorViewSet(ModelViewSet):
         `append_to_history` adds one element to the end of the history_elements.
         `elements` and `preview` preplaces the coresponding fields in the
         database.
+
+        If `delete_last_history_element` is True, the last element is deleted.
+        Note: You cannot give `append_to_history` and `delete_last_history_element`
+        at the same time.
         """
         projector = self.get_object()
         elements = request.data.get("elements")
         preview = request.data.get("preview")
         history_element = request.data.get("append_to_history")
+        delete_last_history_element = request.data.get(
+            "delete_last_history_element", False
+        )
 
         changed_data = {}
         if elements is not None:
             changed_data["elements"] = elements
         if preview is not None:
             changed_data["elements_preview"] = preview
-        if history_element is not None:
+        if history_element is not None and delete_last_history_element is False:
             history = projector.elements_history + [history_element]
+            changed_data["elements_history"] = history
+        if history_element is None and delete_last_history_element is True:
+            history = projector.elements_history[:-1]
             changed_data["elements_history"] = history
 
         serializer = self.get_serializer(projector, data=changed_data, partial=True)

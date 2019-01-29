@@ -39,13 +39,12 @@
 </mat-card>
 
 <div id="card-wrapper">
-    <mat-card class="projector-card" *ngFor="let projector of projectors">
-        <mat-card-title>
-            <a [routerLink]="['/projector-site/detail', projector.id]">
-                {{ projector.name }}
-            </a>
-
-            <div class="card-actions">
+    <div class="projector-card" *ngFor="let projector of projectors">
+        <os-meta-text-block showActionRow="false">
+            <ng-container class="meta-text-block-title">
+                {{ projector.name | translate }}
+            </ng-container>
+            <ng-container class="meta-text-block-action-row">
                 <button mat-icon-button *ngIf="editId !== projector.id" (click)=onEditButton(projector)>
                     <mat-icon>edit</mat-icon>
                 </button>
@@ -55,47 +54,53 @@
                 <button mat-icon-button *ngIf="editId === projector.id" (click)=onSaveButton(projector)>
                     <mat-icon>save</mat-icon>
                 </button>
-                <button mat-icon-button mat-button (click)=onDeleteButton(projector)>
+                <button mat-icon-button color="warn" (click)=onDeleteButton(projector)>
                     <mat-icon>delete</mat-icon>
                 </button>
-            </div>
-        </mat-card-title>
-        <mat-card-content>
-            <p>TODO: projector</p>
-            <ng-container *ngIf="editId === projector.id">
-                <form [formGroup]="updateForm" (keydown)="keyDownFunction($event, projector)">
-                    <p>
+            </ng-container>
+            <ng-container class="meta-text-block-content">
+                <a class="no-markup" [routerLink]="['/projectors/detail', projector.id]">
+                    <div class="projector">
+                        <os-projector [projector]="projector"></os-projector>
+                    </div>
+                </a>
+                <ng-container *ngIf="editId === projector.id">
+                    <form [formGroup]="updateForm" (keydown)="keyDownFunction($event, projector)">
                         <!-- Name field -->
                         <mat-form-field>
                             <input formControlName="name" matInput placeholder="{{'Name' | translate}}" required>
-                            <mat-hint *ngIf="!createForm.controls.name.valid">
+                            <mat-hint *ngIf="!updateForm.controls.name.valid">
                                 <span translate>Required</span>
                             </mat-hint>
                         </mat-form-field>
-                    </p><p>
+                        <h3 translate>Resolution and size</h3>
                         <!-- Aspect ratio field -->
                         <mat-radio-group formControlName="aspectRatio" [name]="projector.id">
                             <mat-radio-button *ngFor="let ratio of aspectRatiosKeys" [value]="ratio">
                                 {{ ratio }}
                             </mat-radio-button>
                         </mat-radio-group>
-                    </p><p>
                         <mat-slider [thumbLabel]="true" formControlName="width" min="800" max="3840" step="10"></mat-slider>
                         {{ updateForm.value.width }}
-                    </p>
-                </form>
+                        <div>
+                            <mat-checkbox formControlName="clock">
+                                <span translate>Show clock</span>
+                            </mat-checkbox>
+                        </div>
+                    </form>
+                </ng-container>
             </ng-container>
-        </mat-card-content>
-    </mat-card>
+        </os-meta-text-block>
+    </div>
 </div>
 
 <mat-menu #ellipsisMenu="matMenu">
+    <button mat-menu-item routerLink="/countdowns">
+        <mat-icon>alarm</mat-icon>
+        <span translate>Countdowns</span>
+    </button>
     <button mat-menu-item>
         <mat-icon>note</mat-icon>
         <span translate>Projector messages</span>
-    </button>
-    <button mat-menu-item>
-        <mat-icon>alarm</mat-icon>
-        <span translate>Countdowns</span>
     </button>
 </mat-menu>

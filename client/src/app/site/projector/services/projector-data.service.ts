@@ -12,7 +12,7 @@ export interface SlideData<T = object> {
 export type ProjectorData = SlideData[];
 
 interface AllProjectorData {
-    [id: number]: ProjectorData;
+    [id: number]: ProjectorData | { error: string };
 }
 
 /**
@@ -45,8 +45,12 @@ export class ProjectorDataService {
         this.websocketService.getOberservable('projector').subscribe((update: AllProjectorData) => {
             Object.keys(update).forEach(_id => {
                 const id = parseInt(_id, 10);
-                if (this.currentProjectorData[id]) {
-                    this.currentProjectorData[id].next(update[id]);
+                if ((<{ error: string }>update[id]).error !== undefined) {
+                    console.log('TODO: Why does the server sends errors on autpupdates?');
+                } else {
+                    if (this.currentProjectorData[id]) {
+                        this.currentProjectorData[id].next(update[id] as ProjectorData);
+                    }
                 }
             });
         });

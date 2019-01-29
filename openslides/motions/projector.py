@@ -45,12 +45,11 @@ def motion_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
     * show_meta_box
     * reason
     * modified_final_version
-    * state
-    * state_extension
     * recommendation
     * recommendation_extension
+    * recommender
+    * change_recommendations
     * submitter
-    * poll
     """
     mode = element.get("mode")
     motion_id = element.get("id")
@@ -81,11 +80,6 @@ def motion_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
         return_value["modified_final_version"] = motion["modified_final_version"]
 
     if show_meta_box:
-        state = get_state(all_data, motion, motion["state_id"])
-        return_value["state"] = state["name"]
-        if state["show_state_extension_field"]:
-            return_value["state_extension"] = motion["state_extension"]
-
         if (
             not get_config(all_data, "motions_disable_recommendation_on_projector")
             and motion["recommendation_id"]
@@ -101,6 +95,9 @@ def motion_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
                     "recommendation_extension"
                 ]
 
+            return_value["recommender"] = get_config(
+                all_data, "motions_recommendations_by"
+            )
             return_value["change_recommendations"] = motion["change_recommendations"]
 
         return_value["submitter"] = [
@@ -109,15 +106,6 @@ def motion_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
                 motion["submitters"], key=lambda submitter: submitter["weight"]
             )
         ]
-
-        for poll in motion["polls"][::-1]:
-            if poll["has_votes"]:
-                return_value["poll"] = {
-                    "yes": poll["yes"],
-                    "no": poll["no"],
-                    "abstain": poll["abstain"],
-                }
-                break
 
     return return_value
 

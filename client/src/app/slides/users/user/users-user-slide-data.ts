@@ -1,3 +1,3 @@
 export interface UsersUserSlideData {
-    test: string;
+    user: string;
 }

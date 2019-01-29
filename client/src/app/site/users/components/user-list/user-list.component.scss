@@ -9,6 +9,10 @@
 }
 
 .os-listview-table {
+    .mat-column-projector {
+        padding-right: 15px;
+    }
+
     .mat-column-name {
         flex: 1 0 200px;
     }
