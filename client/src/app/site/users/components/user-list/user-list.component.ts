@@ -4,18 +4,19 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
-import { CsvExportService } from '../../../../core/services/csv-export.service';
 import { ChoiceService } from '../../../../core/services/choice.service';
 import { ConfigService } from 'app/core/services/config.service';
-import { ListViewBaseComponent } from '../../../base/list-view-base';
+import { CsvExportService } from '../../../../core/services/csv-export.service';
 import { GroupRepositoryService } from '../../services/group-repository.service';
+import { ListViewBaseComponent } from '../../../base/list-view-base';
 import { PromptService } from '../../../../core/services/prompt.service';
-import { UserRepositoryService } from '../../services/user-repository.service';
-import { ViewUser } from '../../models/view-user';
 import { UserFilterListService } from '../../services/user-filter-list.service';
+import { UserRepositoryService } from '../../services/user-repository.service';
+import { UserPdfExportService } from '../../services/user-pdf-export.service';
 import { UserSortListService } from '../../services/user-sort-list.service';
 import { ViewportService } from '../../../../core/services/viewport.service';
 import { OperatorService } from '../../../../core/services/operator.service';
+import { ViewUser } from '../../models/view-user';
 
 /**
  * Component for the user list view.
@@ -51,7 +52,6 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
     }
 
     /**
-     * /**
      * The usual constructor for components
      * @param titleService Serivce for setting the title
      * @param translate Service for translation handling
@@ -68,6 +68,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
      * @param filterService
      * @param sortService
      * @param config ConfigService
+     * @param userPdf Service for downloading pdf
      */
     public constructor(
         titleService: Title,
@@ -84,7 +85,8 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
         private promptService: PromptService,
         public filterService: UserFilterListService,
         public sortService: UserSortListService,
-        config: ConfigService
+        config: ConfigService,
+        private userPdf: UserPdfExportService
     ) {
         super(titleService, translate, matSnackBar);
 
@@ -128,7 +130,8 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
     }
 
     /**
-     * Export all users as CSV
+     * Export all users currently matching the filter
+     * as CSV (including personal information such as initial passwords)
      */
     public csvExportUserList(): void {
         this.csvExport.export(
@@ -149,6 +152,22 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
             ],
             this.translate.instant('Participants') + '.csv'
         );
+    }
+
+    /**
+     * Export all users currently matching the filter as PDF
+     * (access information, including personal information such as initial passwords)
+     */
+    public onDownloadAccessPdf(): void {
+        this.userPdf.exportMultipleUserAccessPDF(this.dataSource.data);
+    }
+
+    /**
+     * triggers the download of a simple participant list (no details on user name and passwords)
+     * with all users currently matching the filter
+     */
+    public pdfExportUserList(): void {
+        this.userPdf.exportUserList(this.dataSource.data);
     }
 
     /**

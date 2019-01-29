@@ -29,6 +29,11 @@
             <mat-icon>security</mat-icon>
             <span translate>Change password</span>
         </button>
+        <!-- PDF -->
+        <button  mat-menu-item *ngIf="isAllowed('seePersonal')" (click)="onDownloadPdf()">
+            <mat-icon>picture_as_pdf</mat-icon>
+            <span translate>PDF</span>
+        </button>
     </mat-menu>
 </os-head-bar>
 
