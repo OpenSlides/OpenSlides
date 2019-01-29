@@ -47,6 +47,13 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel> extends Bas
     protected sort: MatSort;
 
     /**
+     * @returns the amount of currently dispalyed items (only showing items that pass all filters)
+     */
+    public get filteredCount(): number {
+        return this.dataSource.filteredData.length;
+    }
+
+    /**
      * Constructor for list view bases
      * @param titleService the title serivce
      * @param translate the translate service
@@ -132,7 +139,7 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel> extends Bas
      * Select all files in the current data source
      */
     public selectAll(): void {
-        this.selectedRows = this.dataSource.data;
+        this.selectedRows = this.dataSource.filteredData;
     }
 
     public deselectAll(): void {
@@ -175,7 +182,7 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel> extends Bas
     protected checkSelection(): void {
         const newSelection = [];
         this.selectedRows.forEach(selectedrow => {
-            const newrow = this.dataSource.data.find(item => item.id === selectedrow.id);
+            const newrow = this.dataSource.filteredData.find(item => item.id === selectedrow.id);
             if (newrow) {
                 newSelection.push(newrow);
             }

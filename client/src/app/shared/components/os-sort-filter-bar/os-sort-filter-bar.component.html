@@ -1,6 +1,6 @@
 <div class="custom-table-header flex-spaced on-transition-fade">
     <div class="filter-count" *ngIf="filterService">
-        <span>{{ filterService.filteredCount }}&nbsp;</span><span translate>of</span>
+        <span>{{ displayedCount }}&nbsp;</span><span translate>of</span>
         <span>&nbsp;{{ filterService.totalCount }}</span>
     </div>
     <div class="current-filters" *ngIf="filterService && filterService.activeFilterCount">

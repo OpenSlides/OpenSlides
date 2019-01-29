@@ -15,7 +15,7 @@ export class UserFilterListService extends FilterListService<User, ViewUser> {
 
     private userGroupFilterOptions = {
         isActive: false,
-        property: 'group',
+        property: 'groups_id',
         label: 'User Group',
         options: []
     };
@@ -60,12 +60,16 @@ export class UserFilterListService extends FilterListService<User, ViewUser> {
         this.subscribeGroups();
     }
 
+    /**
+     * Updates the filter according to existing groups.
+     * TODO: Users with only the 'standard' group set appear in the model as items without groups_id. 'Standard'  filter is broken
+     */
     public subscribeGroups(): void {
         this.groupRepo.getViewModelListObservable().subscribe(groups => {
             const groupOptions = [];
             groups.forEach(group => {
                 groupOptions.push({
-                    condition: group.name,
+                    condition: group.id,
                     label: group.name,
                     isActive: false
                 });

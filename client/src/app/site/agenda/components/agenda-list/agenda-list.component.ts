@@ -225,6 +225,6 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
      * Export all items as CSV
      */
     public csvExportItemList(): void {
-        this.csvExport.exportItemList(this.dataSource.data);
+        this.csvExport.exportItemList(this.dataSource.filteredData);
     }
 }

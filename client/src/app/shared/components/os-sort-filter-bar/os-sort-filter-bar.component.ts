@@ -19,7 +19,7 @@ import { ViewportService } from '../../../core/services/viewport.service';
  *
  * ```html
  * <os-sort-filter-bar [sortService]="sortService" [filterService]="filterService"
- * (searchFieldChange)="searchFilter($event)">
+ * (searchFieldChange)="searchFilter($event)" [filterCount]="filteredCount">
  * </os-sort-filter-bar>
  * ```
  */
@@ -34,6 +34,12 @@ export class OsSortFilterBarComponent<V extends BaseViewModel> {
      */
     @Input()
     public sortService: SortListService<V>;
+
+    /** Optional number to overwrite the display of the filtered data count, if any additional filters
+     * (e.g. the angular search bar) are applied on top of these filters
+     */
+    @Input()
+    public filterCount: number;
 
     /**
      * The currently active filter service for the list view. It is supposed to
@@ -60,6 +66,18 @@ export class OsSortFilterBarComponent<V extends BaseViewModel> {
      * The 'opened/active' state of the fulltext filter input field
      */
     public isSearchBar = false;
+
+    /**
+     * Return the amount of data passing filters. Priorizes the override in {@link filterCount} over
+     * the information from the filterService
+     */
+    public get displayedCount(): number {
+        if (this.filterCount === undefined || this.filterCount === null) {
+            return this.filterService.filterCount;
+        } else {
+            return this.filterCount;
+        }
+    }
 
     /**
      * Constructor. Also creates a filtermenu component and a bottomSheet
