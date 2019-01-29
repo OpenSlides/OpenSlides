@@ -81,8 +81,9 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
     public ngOnInit(): void {
         super.setTitle('Agenda');
         this.initTable();
-        this.filterService.filter().subscribe(newAgendaItem => {
-            this.dataSource.data = newAgendaItem;
+        this.filterService.filter().subscribe(newAgendaItems => {
+            newAgendaItems.sort((a, b) => a.agendaListWeight - b.agendaListWeight);
+            this.dataSource.data = newAgendaItems;
             this.checkSelection();
         });
         this.config
