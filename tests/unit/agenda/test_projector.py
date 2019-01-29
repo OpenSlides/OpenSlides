@@ -86,32 +86,32 @@ def all_data():
 
 
 def test_items(all_data):
-    config: Dict[str, Any] = {}
+    element: Dict[str, Any] = {}
 
-    data = projector.items(config, all_data)
+    data = projector.items_slide(all_data, element)
 
     assert data == {"items": ["Item1", "item2"]}
 
 
 def test_items_parent(all_data):
-    config: Dict[str, Any] = {"id": 1}
+    element: Dict[str, Any] = {"id": 1}
 
-    data = projector.items(config, all_data)
+    data = projector.items_slide(all_data, element)
 
     assert data == {"items": ["item4"]}
 
 
 def test_items_tree(all_data):
-    config: Dict[str, Any] = {"tree": True}
+    element: Dict[str, Any] = {"tree": True}
 
-    data = projector.items(config, all_data)
+    data = projector.items_slide(all_data, element)
 
     assert data == {"items": [("Item1", [("item4", [])]), ("item2", [])]}
 
 
 def test_items_tree_parent(all_data):
-    config: Dict[str, Any] = {"tree": True, "id": 1}
+    element: Dict[str, Any] = {"tree": True, "id": 1}
 
-    data = projector.items(config, all_data)
+    data = projector.items_slide(all_data, element)
 
     assert data == {"items": [("item4", [])]}

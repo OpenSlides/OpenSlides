@@ -400,6 +400,9 @@ class MotionSerializer(ModelSerializer):
     )
     agenda_parent_id = IntegerField(write_only=True, required=False, min_value=1)
     submitters = SubmitterSerializer(many=True, read_only=True)
+    change_recommendations = MotionChangeRecommendationSerializer(
+        many=True, read_only=True
+    )
 
     class Meta:
         model = Motion
@@ -436,6 +439,7 @@ class MotionSerializer(ModelSerializer):
             "weight",
             "created",
             "last_modified",
+            "change_recommendations",
         )
         read_only_fields = (
             "state",

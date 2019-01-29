@@ -15,12 +15,12 @@ class AssignmentsAppConfig(AppConfig):
         from ..utils.access_permissions import required_user
         from ..utils.rest_api import router
         from . import serializers  # noqa
-        from .projector import register_projector_elements
+        from .projector import register_projector_slides
         from .signals import get_permission_change_data
         from .views import AssignmentViewSet, AssignmentPollViewSet
 
         # Define projector elements.
-        register_projector_elements()
+        register_projector_slides()
 
         # Connect signals.
         permission_change.connect(

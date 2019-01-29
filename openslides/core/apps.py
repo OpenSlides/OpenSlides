@@ -17,7 +17,7 @@ class CoreAppConfig(AppConfig):
     def ready(self):
         # Import all required stuff.
         from .config import config
-        from .projector import register_projector_elements
+        from .projector import register_projector_slides
         from . import serializers  # noqa
         from .signals import (
             delete_django_app_permissions,
@@ -49,7 +49,7 @@ class CoreAppConfig(AppConfig):
         config.collect_config_variables_from_apps()
 
         # Define projector elements.
-        register_projector_elements()
+        register_projector_slides()
 
         # Connect signals.
         post_permission_creation.connect(

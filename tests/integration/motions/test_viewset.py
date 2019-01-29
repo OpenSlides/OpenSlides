@@ -48,7 +48,8 @@ def test_motion_db_queries():
     * 1 request to get the polls,
     * 1 request to get the attachments,
     * 1 request to get the tags,
-    * 2 requests to get the submitters and supporters.
+    * 2 requests to get the submitters and supporters,
+    * 1 request for change_recommendations.
 
     Two comment sections are created and for each motions two comments.
     """
@@ -70,7 +71,7 @@ def test_motion_db_queries():
         )
     # TODO: Create some polls etc.
 
-    assert count_queries(Motion.get_elements) == 12
+    assert count_queries(Motion.get_elements) == 13
 
 
 @pytest.mark.django_db(transaction=False)

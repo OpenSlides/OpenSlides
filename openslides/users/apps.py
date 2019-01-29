@@ -13,12 +13,12 @@ class UsersAppConfig(AppConfig):
         from . import serializers  # noqa
         from ..core.signals import post_permission_creation, permission_change
         from ..utils.rest_api import router
-        from .projector import register_projector_elements
+        from .projector import register_projector_slides
         from .signals import create_builtin_groups_and_admin, get_permission_change_data
         from .views import GroupViewSet, PersonalNoteViewSet, UserViewSet
 
         # Define projector elements.
-        register_projector_elements()
+        register_projector_slides()
 
         # Connect signals.
         post_permission_creation.connect(

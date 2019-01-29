@@ -1,6 +1,6 @@
 from typing import Any, Dict
 
-from ..utils.projector import register_projector_element
+from ..utils.projector import AllData, register_projector_slide
 
 
 # Important: All functions have to be prune. This means, that thay can only
@@ -9,9 +9,7 @@ from ..utils.projector import register_projector_element
 #            to be fast!
 
 
-def countdown(
-    element: Dict[str, Any], all_data: Dict[str, Dict[int, Dict[str, Any]]]
-) -> Dict[str, Any]:
+def countdown_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
     """
     Countdown slide.
 
@@ -30,9 +28,7 @@ def countdown(
         return {"error": f"Countdown {countdown_id} does not exist"}
 
 
-def message(
-    element: Dict[str, Any], all_data: Dict[str, Dict[int, Dict[str, Any]]]
-) -> Dict[str, Any]:
+def message_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
     """
     Message slide.
 
@@ -51,7 +47,7 @@ def message(
         return {"error": f"Message {message_id} does not exist"}
 
 
-def register_projector_elements() -> None:
-    register_projector_element("core/countdown", countdown)
-    register_projector_element("core/projector-message", message)
+def register_projector_slides() -> None:
+    register_projector_slide("core/countdown", countdown_slide)
+    register_projector_slide("core/projector-message", message_slide)
     # TODO: Add clock slide

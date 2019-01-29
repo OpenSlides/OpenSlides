@@ -13,7 +13,7 @@ class AgendaAppConfig(AppConfig):
         from django.db.models.signals import pre_delete, post_save
         from ..core.signals import permission_change
         from ..utils.rest_api import router
-        from .projector import register_projector_elements
+        from .projector import register_projector_slides
         from .signals import (
             get_permission_change_data,
             listen_to_related_object_post_delete,
@@ -24,7 +24,7 @@ class AgendaAppConfig(AppConfig):
         from ..utils.access_permissions import required_user
 
         # Define projector elements.
-        register_projector_elements()
+        register_projector_slides()
 
         # Connect signals.
         post_save.connect(

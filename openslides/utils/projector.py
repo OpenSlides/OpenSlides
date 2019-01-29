@@ -11,19 +11,25 @@ from .cache import element_cache
 
 
 AllData = Dict[str, Dict[int, Dict[str, Any]]]
-ProjectorElementCallable = Callable[[Dict[str, Any], AllData], Dict[str, Any]]
+ProjectorSlide = Callable[[AllData, Dict[str, Any]], Dict[str, Any]]
 
 
-projector_elements: Dict[str, ProjectorElementCallable] = {}
+projector_slides: Dict[str, ProjectorSlide] = {}
 
 
-def register_projector_element(name: str, element: ProjectorElementCallable) -> None:
+class ProjectorElementException(Exception):
     """
-    Registers a projector element.
+    Exception for errors in one element on the projector.
+    """
+
+
+def register_projector_slide(name: str, slide: ProjectorSlide) -> None:
+    """
+    Registers a projector slide.
 
     Has to be called in the app.ready method.
     """
-    projector_elements[name] = element
+    projector_slides[name] = slide
 
 
 async def get_projector_data(
@@ -75,10 +81,12 @@ async def get_projector_data(
 
         projector_data[projector_id] = []
         for element in projector["elements"]:
-            projector_element = projector_elements[element["name"]]
-            projector_data[projector_id].append(
-                {"data": projector_element(element, all_data), "element": element}
-            )
+            projector_slide = projector_slides[element["name"]]
+            try:
+                data = projector_slide(all_data, element)
+            except ProjectorElementException as err:
+                data = {"error": err}
+            projector_data[projector_id].append({"data": data, "element": element})
 
     return projector_data
 
@@ -92,15 +100,3 @@ def get_config(all_data: AllData, key: str) -> Any:
     return all_data[config.get_collection_string()][config.get_key_to_id()[key]][
         "value"
     ]
-
-
-def get_user(all_data: AllData, user_id: int) -> Dict[str, Any]:
-    """
-    Returns the value of a user to show his name.
-    """
-    user = all_data["users/user"][user_id]
-    return {
-        "title": user["title"],
-        "first_name": user["first_name"],
-        "last_name": user["last_name"],
-    }

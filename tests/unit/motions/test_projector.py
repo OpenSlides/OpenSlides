@@ -156,7 +156,7 @@ def all_data():
 def test_motion_slide(all_data):
     element: Dict[str, Any] = {"id": 1}
 
-    data = projector.motion_slide(element, all_data)
+    data = projector.motion_slide(all_data, element)
 
     assert data == {
         "identifier": "4",
@@ -167,7 +167,6 @@ def test_motion_slide(all_data):
         "show_meta_box": True,
         "reason": "",
         "state": "submitted",
-        "state_extension": None,
-        "submitter": [{"first_name": "", "last_name": "Administrator", "title": ""}],
+        "submitter": ["Administrator"],
         "poll": {"yes": "10.000000", "no": "-1.000000", "abstain": "20.000000"},
     }

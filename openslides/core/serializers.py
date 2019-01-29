@@ -1,6 +1,6 @@
 from typing import Any
 
-from ..utils.projector import projector_elements
+from ..utils.projector import projector_slides
 from ..utils.rest_api import Field, IntegerField, ModelSerializer, ValidationError
 from ..utils.validate import validate_html
 from .models import (
@@ -56,7 +56,7 @@ def elements_validator(value: Any) -> None:
             raise ValidationError(
                 {"detail": "Every dictionary must have a key 'name'."}
             )
-        if element["name"] not in projector_elements:
+        if element["name"] not in projector_slides:
             raise ValidationError(
                 {"detail": f"Unknown projector element {element['name']},"}
             )

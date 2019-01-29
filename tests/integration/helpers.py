@@ -6,7 +6,7 @@ from django.test.utils import CaptureQueriesContext
 from openslides.core.config import config
 from openslides.core.models import Projector
 from openslides.users.models import User
-from openslides.utils.projector import AllData, get_config, register_projector_element
+from openslides.utils.projector import AllData, get_config, register_projector_slide
 
 
 class TConfig:
@@ -90,19 +90,19 @@ class TProjector:
         return elements
 
 
-def slide1(element: Dict[str, Any], all_data: AllData) -> Dict[str, Any]:
+def slide1(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
     """
     Slide that shows the general_event_name.
     """
     return {"name": "slide1", "event_name": get_config(all_data, "general_event_name")}
 
 
-def slide2(element: Dict[str, Any], all_data: AllData) -> Dict[str, Any]:
+def slide2(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
     return {"name": "slide2"}
 
 
-register_projector_element("test/slide1", slide1)
-register_projector_element("test/slide2", slide2)
+register_projector_slide("test/slide1", slide1)
+register_projector_slide("test/slide2", slide2)
 
 
 def count_queries(func, *args, **kwargs) -> int:
