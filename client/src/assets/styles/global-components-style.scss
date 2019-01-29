@@ -1,0 +1,34 @@
+// Material theming import
+@import '~@angular/material/theming';
+
+/**
+ *  Mixin-style to style global classes and tags with theme-related colors.
+ */
+@mixin os-components-style($theme) {
+    $primary: map-get($theme, primary);
+    $accent: map-get($theme, accent);
+    $warn: map-get($theme, warn);
+    $foreground: map-get($theme, foreground);
+    $background: map-get($theme, background);
+
+    h1, h3.accent {
+        color: mat-color($primary);
+    }
+
+    a {
+        color: mat-color($primary);
+    }
+
+    .accent-text {
+        color: mat-color($accent);
+    }
+
+    .button24 {
+        color: mat-color($primary);
+    }
+
+    //custom table header for search button, filtering and more. Used in ListViews
+    .custom-table-header {
+        background: mat-color($background, background);
+    }
+}

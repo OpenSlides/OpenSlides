@@ -1,0 +1,9 @@
+$openslides-primary: mat-palette($mat-light-blue, 500, 100, 700);
+$openslides-accent: mat-palette($mat-orange, 700, 300, 900);
+$openslides-warn: mat-palette($mat-red, 600, 500, 700);
+
+$openslides-dark-theme: mat-dark-theme(
+    $openslides-primary,
+    $openslides-accent,
+    $openslides-warn
+);

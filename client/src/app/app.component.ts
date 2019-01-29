@@ -5,6 +5,7 @@ import { LoginDataService } from './core/services/login-data.service';
 import { ConfigService } from './core/services/config.service';
 import { ConstantsService } from './core/services/constants.service';
 import { ServertimeService } from './core/services/servertime.service';
+import { ThemeService } from './core/services/theme.service';
 
 /**
  * Angular's global App Component
@@ -25,6 +26,7 @@ export class AppComponent {
      * @param autoupdateService
      * @param notifyService
      * @param translate
+     * @param themeService used to listen to theme-changes
      */
     public constructor(
         translate: TranslateService,
@@ -32,7 +34,8 @@ export class AppComponent {
         configService: ConfigService,
         loginDataService: LoginDataService,
         constantsService: ConstantsService, // Needs to be started, so it can register itself to the WebsocketService
-        servertimeService: ServertimeService
+        servertimeService: ServertimeService,
+        themeService: ThemeService
     ) {
         // manually add the supported languages
         translate.addLangs(['en', 'de', 'cs']);

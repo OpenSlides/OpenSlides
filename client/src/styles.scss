@@ -1,23 +1,45 @@
+/** Imports the material-design-theming */
 @import '~@angular/material/theming';
 @include mat-core();
 
-/** Import brand theme and (new) component themes */
+/** Import brand theme */
 @import './assets/styles/openslides-theme.scss';
-@import './app/site/site.component.scss-theme';
+@import './assets/styles/openslides-dark-theme.scss';
+@import './assets/styles/openslides-green-theme.scss';
+
+/** Import the component-related stylesheets here */
+@import './app/site/site.component.scss-theme.scss';
+@import './assets/styles/global-components-style.scss';
 
 /** fonts */
 @import './assets/styles/fonts.scss';
 
+/** Mix the component-related style-rules */
 @mixin openslides-components-theme($theme) {
     @include os-site-theme($theme);
+    @include os-components-style($theme);
     /** More components are added here */
 }
 
-@include angular-material-theme($openslides-theme);
-@include openslides-components-theme($openslides-theme);
-
 @import '~angular-tree-component/dist/angular-tree-component.css';
 
+/** Define the classes to switch between themes */
+.openslides-theme {
+    @include angular-material-theme($openslides-theme);
+    @include openslides-components-theme($openslides-theme);
+}
+
+.openslides-dark-theme {
+    @include angular-material-theme($openslides-dark-theme);
+    @include openslides-components-theme($openslides-dark-theme);
+}
+
+.openslides-green-theme {
+    @include angular-material-theme($openslides-green-theme);
+    @include openslides-components-theme($openslides-green-theme);
+}
+
+/** Define the general style-rules */
 * {
     font-family: OSFont, Fira Sans, Roboto, Arial, Helvetica, sans-serif;
 }
@@ -30,12 +52,10 @@ mat-icon {
 }
 
 body {
-    // background: #e8eaed;
     margin: 0 auto;
     padding: 0;
     line-height: 1.5;
     font-size: 14px;
-    color: #222;
 }
 
 h1,
@@ -50,7 +70,6 @@ h3,
 h1 {
     padding-bottom: 10px;
     line-height: 1.2;
-    color: $os-primary;
     margin: 0;
     font-weight: normal;
     font-size: 36px;
@@ -59,13 +78,10 @@ h3 {
     font-weight: 500;
     margin-bottom: 0;
 }
-h3.accent {
-    color: $os-accent;
-}
+
 h4 {
     font-weight: 400;
     font-size: 12px;
-    color: rgba(0, 0, 0, 0.54);
     margin-bottom: 5px;
 
     .mat-icon-button mat-icon {
@@ -83,7 +99,6 @@ img {
 
 a {
     text-decoration: none;
-    color: #039be5; /*TODO: move to theme*/
 
     &:hover {
         text-decoration: underline;
@@ -121,9 +136,6 @@ b {
     }
 }
 
-.accent-text {
-    color: mat-color($openslides-accent);
-}
 
 .green-text {
     // TODO better name/theming
@@ -209,7 +221,6 @@ mat-card {
     height: 60px;
     line-height: 60px;
     text-align: right;
-    background: white;
     border-bottom: 1px solid rgba(0, 0, 0, 0.12);
     display: flex;
     justify-content: flex-end;
@@ -228,6 +239,7 @@ mat-card {
 
     mat-icon {
         vertical-align: text-bottom;
+        margin-right: 2px;
     }
 }
 
@@ -386,7 +398,6 @@ button.mat-menu-item.selected {
 }
 .button24 {
     background-color: white;
-    color: $os-primary !important;
     width: 24px !important;
     height: 24px !important;
 }

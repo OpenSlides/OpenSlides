@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MediaManageService } from '../../../site/mediafiles/services/media-manage.service';
+import { ConfigService } from 'app/core/services/config.service';
 
 /**
  * Reusable Logo component for Apps.
@@ -37,9 +38,14 @@ import { MediaManageService } from '../../../site/mediafiles/services/media-mana
 })
 export class LogoComponent implements OnInit {
     /**
-     * Constant path of the dark logo
+     * Constant path of the logo with dark colors for bright themes
      */
     public static STANDARD_LOGO = '/assets/img/openslides-logo-h.svg';
+
+    /**
+     * Constant path of the logo with white colors for dark themes
+     */
+    public static STANDARD_LOGO_DARK_THEME = '/assets/img/openslides-logo-h-dark-transparent.svg';
 
     /**
      * Holds the actions for logos. Updated via an observable
@@ -65,11 +71,12 @@ export class LogoComponent implements OnInit {
     @Input()
     public alignment = 'center';
     /**
-     * The consotructor
+     * The constructor
      *
      * @param mmservice The Media Manage Service
+     * @param configService The ConfigService to subscribe to theme-changes
      */
-    public constructor(private mmservice: MediaManageService) {}
+    public constructor(private mmservice: MediaManageService, private configService: ConfigService) {}
 
     /**
      * Initialization function
@@ -97,6 +104,21 @@ export class LogoComponent implements OnInit {
     }
 
     /**
+     * Check if the user uses a dark theme or a 'bright' theme.
+     * In relation to the theme this will return the corresponding imagepath.
+     *
+     * @returns path of the image corresponding to the chosen theme.
+     */
+    protected getImagePathRelatedToTheme(): string {
+        const theme = this.configService.instant<string>('openslides_theme');
+        if (theme) {
+            return theme.includes('dark') ? LogoComponent.STANDARD_LOGO_DARK_THEME : LogoComponent.STANDARD_LOGO;
+        } else {
+            return LogoComponent.STANDARD_LOGO;
+        }
+    }
+
+    /**
      * gets the header image based on logo action
      *
      * @param logoAction the logo action to be used
@@ -119,7 +141,7 @@ export class LogoComponent implements OnInit {
             }
         }
         if (path === '') {
-            path = LogoComponent.STANDARD_LOGO;
+            path = this.getImagePathRelatedToTheme();
         }
         return path;
     }
@@ -146,10 +168,14 @@ export class LogoComponent implements OnInit {
      *  logo was set
      */
     protected getFooterImage(logoAction: string): string {
-        if (this.getHeaderImage(logoAction) === LogoComponent.STANDARD_LOGO || this.getHeaderImage(logoAction) === '') {
+        if (
+            this.getHeaderImage(logoAction) === LogoComponent.STANDARD_LOGO ||
+            this.getHeaderImage(logoAction) === LogoComponent.STANDARD_LOGO_DARK_THEME ||
+            this.getHeaderImage(logoAction) === ''
+        ) {
             return '';
         } else {
-            return LogoComponent.STANDARD_LOGO;
+            return this.getImagePathRelatedToTheme();
         }
     }
 }
