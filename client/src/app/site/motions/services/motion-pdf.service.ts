@@ -199,7 +199,9 @@ export class MotionPdfService {
                     style: 'boldText'
                 },
                 {
-                    text: `${motion.category.prefix} - ${motion.category.name}`
+                    text: motion.category.prefix
+                        ? `${motion.category.prefix} - ${motion.category.name}`
+                        : `${motion.category.name}`
                 }
             ]);
         }

@@ -16,7 +16,7 @@ export class Category extends BaseModel<Category> implements Searchable {
     }
 
     public getTitle(): string {
-        return this.prefix + ' - ' + this.name;
+        return this.prefix ? this.prefix + ' - ' + this.name : this.name;
     }
 
     /**
