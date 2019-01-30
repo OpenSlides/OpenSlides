@@ -1,17 +1,8 @@
 <!-- A summary of all changes -->
-<section class="change-recommendation-overview">
+<section class="change-recommendation-overview" *ngIf="changes.length > 0">
     <strong> {{ 'Summary of changes' | translate }}: </strong>
 
-    <!--
-        <button os-perms="motions.can_manage" class="btn btn-sm btn-default pull-right"
-            uib-tooltip="{{ 'Note: You have to reject all change recommendations if the plenum does not follow the recommendation. This does not affect amendments.' | translate }}"
-            ng-click="viewChangeRecommendations.rejectAllChangeRecommendations(motion)">
-          <i class="fa fa-thumbs-down"></i>
-          <translate>Reject all change recommendations</translate>
-        </button>
-    -->
-
-    <ul *ngIf="changes.length > 0">
+    <ul>
         <li *ngFor="let change of changes">
             <a
                 href=""
@@ -28,7 +19,7 @@
                 <span *ngIf="isChangeRecommendation(change)"> ({{ 'Change recommendation' | translate }})</span>
                 <span *ngIf="isAmendment(change)"> ({{ 'Amendment' | translate }} {{ change.getIdentifier() }})</span>
                 <span class="operation" *ngIf="isChangeRecommendation(change)"
-                    >– {{ getRecommendationTypeName(change) }}
+                    > – {{ getRecommendationTypeName(change) | translate }}
                     <!--
                         @TODO
                         <span ng-if="change.original.getType(motion.getVersion(version).text) == 3">

@@ -6,6 +6,7 @@ import { ConfigService } from 'app/core/services/config.service';
 import { OperatorService } from 'app/core/services/operator.service';
 import { UserRepositoryService } from '../services/user-repository.service';
 import { ViewUser } from '../models/view-user';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * This component offers an input field for user numbers, and sets/unsets the
@@ -58,12 +59,14 @@ export class PresenceDetailComponent implements OnInit {
      * @param userRepo: UserRepositoryService for querying the users
      * @param formBuilder FormBuilder input form
      * @param operator OperatorService fetch the current user for a permission check
+     * @param translate Translation service
      * @param config ConfigService checking if the feature is enabled
      */
     public constructor(
         private userRepo: UserRepositoryService,
         private formBuilder: FormBuilder,
         private operator: OperatorService,
+        private translate: TranslateService,
         config: ConfigService
     ) {
         config.get('users_enable_presence_view').subscribe(conf => (this._enabledInConfig = conf));
@@ -91,10 +94,10 @@ export class PresenceDetailComponent implements OnInit {
             this.subscribeUser(users[0].id);
         } else if (!users.length) {
             this.clearSubscription();
-            this.errorMsg = 'Participant cannot be found';
+            this.errorMsg = this.translate.instant('Participant cannot be found');
         } else if (users.length > 1) {
             this.clearSubscription();
-            this.errorMsg = 'Participant number is not unique';
+            this.errorMsg = this.translate.instant('Participant number is not unique');
         }
     }
 

@@ -123,7 +123,7 @@ export class HistoryListComponent extends ListViewBaseComponent<ViewHistory> imp
             if (information.length > 1) {
                 argument_string = this.translate.instant(information[1]);
             }
-            return base_string.replace(/\\{arg1\\}/g, argument_string);
+            return base_string.replace(/{arg1}/g, argument_string);
         }
     }
 

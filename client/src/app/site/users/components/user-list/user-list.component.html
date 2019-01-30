@@ -98,6 +98,13 @@
                 <span translate>Groups</span>
             </button>
 
+            <div *ngIf="presenceViewConfigured">
+                <button mat-menu-item *osPerms="'users.can_manage'" routerLink="presence">
+                    <mat-icon>transfer_within_a_station</mat-icon>
+                    <span translate>Presence</span>
+                </button>
+            </div>
+
             <button mat-menu-item (click)="pdfExportUserList()">
                 <mat-icon>picture_as_pdf</mat-icon>
                 <span translate>List of participants (PDF)</span>

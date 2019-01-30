@@ -144,7 +144,7 @@
             <!-- Groups -->
             <mat-form-field *ngIf="(user.groups && user.groups.length > 0) || editUser">
                 <mat-select placeholder="{{ 'Groups' | translate }}" formControlName="groups_id" multiple>
-                    <mat-option *ngFor="let group of groups" [value]="group.id">{{ group }}</mat-option>
+                    <mat-option *ngFor="let group of groups" [value]="group.id">{{ group.getTitle() | translate }}</mat-option>
                 </mat-select>
             </mat-form-field>
         </div>

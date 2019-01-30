@@ -338,6 +338,7 @@ _('Staff');
 _('Committees');
 
 // history strings
+_('Motion created');
 _('Motion deleted');
 _('Motion updated');
 _('Submitters changed');
