@@ -21,7 +21,7 @@ def add_permission_to_groups_based_on_existing_permission(
             codename=codename, content_type__in=content_type
         )
 
-        if len(base_perm) is 1 and len(content_type) is 1:
+        if len(base_perm) == 1 and len(content_type) == 1:
             # get the actual content type and base permission
             base_perm = base_perm.get()
             content_type = content_type.get()
