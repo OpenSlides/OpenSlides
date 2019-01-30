@@ -67,10 +67,7 @@ export class ViewItem extends BaseViewModel {
     }
 
     public get verboseCsvType(): string {
-        if (this.item) {
-            return this.item.verboseCsvType;
-        }
-        return '';
+        return this.item ? this.item.verboseCsvType : '';
     }
 
     /**

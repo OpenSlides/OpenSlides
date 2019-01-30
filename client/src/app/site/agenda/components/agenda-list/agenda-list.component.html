@@ -110,10 +110,17 @@
                 <span translate>Sort</span>
             </button>
         </div>
+        <!-- csv export -->
         <button mat-menu-item (click)="csvExportItemList()">
             <mat-icon>archive</mat-icon>
             <span translate>Export as CSV</span>
         </button>
+        <!-- PDF export -->
+        <button mat-menu-item (click)="onDownloadPdf()">
+            <mat-icon>picture_as_pdf</mat-icon>
+            <span translate>Export as PDF</span>
+        </button>
+        <!-- Import -->
         <button mat-menu-item *osPerms="'agenda.can_manage'" routerLink="import">
             <mat-icon>save_alt</mat-icon>
             <span translate>Import</span><span>&nbsp;...</span>

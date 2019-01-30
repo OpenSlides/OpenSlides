@@ -468,6 +468,14 @@ export class PdfDocumentService {
             tableHeader: {
                 bold: true,
                 fillColor: 'white'
+            },
+            listParent: {
+                fontSize: 14,
+                margin: [0, 5]
+            },
+            listChild: {
+                fontSize: 12,
+                margin: [0, 5]
             }
         };
     }
