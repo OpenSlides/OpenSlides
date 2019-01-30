@@ -71,13 +71,6 @@ export class StartComponent extends BaseComponent implements OnInit {
     }
 
     /**
-     * function to print datastore
-     */
-    public giveDataStore(): void {
-        this.DS.printWhole();
-    }
-
-    /**
      * test translations in component
      */
     public TranslateTest(): void {

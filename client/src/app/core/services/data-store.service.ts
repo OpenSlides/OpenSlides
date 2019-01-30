@@ -411,13 +411,4 @@ export class DataStoreService {
         await this.storageService.set(DataStoreService.cachePrefix + 'DS', this.jsonStore);
         await this.storageService.set(DataStoreService.cachePrefix + 'maxChangeId', changeId);
     }
-
-    /**
-     * Prints the whole dataStore
-     * @deprecated Shouldn't be used, will be removed later
-     */
-    public printWhole(): void {
-        console.log('Everything in DataStore: ', this.modelStore);
-        console.log('changeId', this.maxChangeId);
-    }
 }
