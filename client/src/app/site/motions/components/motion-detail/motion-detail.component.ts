@@ -869,7 +869,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
             )
             .subscribe(id => {
                 this.contentForm.patchValue({
-                    workflow_id: parseInt(id, 10)
+                    workflow_id: parseInt(id as string, 10)
                 });
             });
     }
