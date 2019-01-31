@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { APP_BASE_HREF, CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { HttpClientModule } from '@angular/common/http';
 import { SharedModule } from 'app/shared/shared.module';
-import { AppModule, HttpLoaderFactory } from 'app/app.module';
+import { AppModule } from 'app/app.module';
 import { AppRoutingModule } from 'app/app-routing.module';
 import { LoginModule } from 'app/site/login/login.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { OpenSlidesTranslateModule } from 'app/core/translate/openslides-translate-module';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -24,18 +24,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         CommonModule,
         SharedModule,
         HttpClientModule,
-        TranslateModule.forRoot({
-            loader: {
-                provide: TranslateLoader,
-                useFactory: HttpLoaderFactory,
-                deps: [HttpClient]
-            }
-        }),
+        OpenSlidesTranslateModule.forRoot(),
         LoginModule,
         BrowserAnimationsModule,
         AppRoutingModule
     ],
-    exports: [CommonModule, SharedModule, HttpClientModule, TranslateModule, AppRoutingModule],
+    exports: [CommonModule, SharedModule, HttpClientModule, OpenSlidesTranslateModule, AppRoutingModule],
     providers: [{ provide: APP_BASE_HREF, useValue: '/' }]
 })
 export class E2EImportsModule {}
