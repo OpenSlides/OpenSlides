@@ -180,9 +180,17 @@ export class MotionPdfService {
 
         // recommendation
         if (motion.recommendation && (!infoToExport || infoToExport.includes('recommendation'))) {
+            let recommendationByText: string;
+
+            if (motion.isStatuteAmendment()) {
+                recommendationByText = this.configService.instant('motions_statute_recommendations_by');
+            } else {
+                recommendationByText = this.configService.instant('motions_recommendations_by');
+            }
+
             metaTableBody.push([
                 {
-                    text: `${this.translate.instant('Recommendation')}:`,
+                    text: `${recommendationByText}:`,
                     style: 'boldText'
                 },
                 {
