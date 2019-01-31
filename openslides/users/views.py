@@ -597,7 +597,7 @@ class PasswordResetView(APIView):
     """
 
     http_method_names = ["post"]
-    use_https = False  # TODO: Do we use https?
+    use_https = True  # TODO: get used protocol from server, see issue #4233
 
     def post(self, request, *args, **kwargs):
         """
