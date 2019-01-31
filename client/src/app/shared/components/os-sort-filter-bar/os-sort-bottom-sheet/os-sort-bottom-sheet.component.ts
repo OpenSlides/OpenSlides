@@ -1,7 +1,7 @@
 import { Inject, Component, OnInit } from '@angular/core';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material';
 import { BaseViewModel } from '../../../../site/base/base-view-model';
-import { BaseSortListService } from '../../../../core/ui-services/base-sort-list.service';
+import { BaseSortListService } from 'app/core/ui-services/base-sort-list.service';
 
 /**
  * A bottom sheet used for setting a list's sorting, used by {@link SortFilterBarComponent}

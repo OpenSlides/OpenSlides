@@ -8,6 +8,8 @@ import { MotionRepositoryService } from '../../../core/repositories/motions/moti
 import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 
+type BallotCountChoices = 'NUMBER_OF_DELEGATES' | 'NUMBER_OF_ALL_PARTICIPANTS' | 'CUSTOM_NUMBER';
+
 /**
  * Creates a pdf for a motion poll. Takes as input any motionPoll
  * Provides the public method `printBallots(motionPoll)` which should be convenient to use.
@@ -30,7 +32,7 @@ export class MotionPollPdfService {
      * - NUMBER_OF_ALL_PARTICIPANTS The amount of all registered users
      * - CUSTOM_NUMBER a given number of ballots (see {@link ballotCustomCount})
      */
-    private ballotCountSelection: 'NUMBER_OF_DELEGATES' | 'NUMBER_OF_ALL_PARTICIPANTS' | 'CUSTOM_NUMBER';
+    private ballotCountSelection: BallotCountChoices;
 
     /**
      * An arbitrary number of ballots to print, if {@link ballotCountSection} is set
@@ -64,12 +66,14 @@ export class MotionPollPdfService {
         private userRepo: UserRepositoryService,
         private pdfService: PdfDocumentService
     ) {
-        this.configService.get('motions_pdf_ballot_papers_number').subscribe(count => (this.ballotCustomCount = count));
         this.configService
-            .get('motions_pdf_ballot_papers_selection')
+            .get<number>('motions_pdf_ballot_papers_number')
+            .subscribe(count => (this.ballotCustomCount = count));
+        this.configService
+            .get<BallotCountChoices>('motions_pdf_ballot_papers_selection')
             .subscribe(selection => (this.ballotCountSelection = selection));
-        this.configService.get('general_event_name').subscribe(name => (this.eventName = name));
-        this.configService.get('logo_pdf_ballot_paper').subscribe(url => {
+        this.configService.get<string>('general_event_name').subscribe(name => (this.eventName = name));
+        this.configService.get<{ path?: string }>('logo_pdf_ballot_paper').subscribe(url => {
             if (url && url.path) {
                 if (url.path.indexOf('/') === 0) {
                     url.path = url.path.substr(1); // remove prepending slash

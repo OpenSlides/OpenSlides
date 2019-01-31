@@ -3,18 +3,18 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material';
-import { BehaviorSubject } from 'rxjs';
 
+import { BehaviorSubject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
 import { ListViewBaseComponent } from 'app/site/base/list-view-base';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { Item, itemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { DataStoreService } from 'app/core/core-services/data-store.service';
-import { MotionBlockRepositoryService } from '../../../../core/repositories/motions/motion-block-repository.service';
+import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
 import { ViewMotionBlock } from '../../models/view-motion-block';
 import { AgendaRepositoryService } from 'app/core/repositories/agenda/agenda-repository.service';
-import { PromptService } from '../../../../core/ui-services/prompt.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 
 /**
  * Table for the motion blocks

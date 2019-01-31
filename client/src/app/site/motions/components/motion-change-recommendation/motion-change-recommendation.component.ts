@@ -1,12 +1,14 @@
 import { Component, Inject } from '@angular/core';
-import { LineRange, ModificationType } from '../../../../core/ui-services/diff.service';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ChangeRecommendationRepositoryService } from '../../../../core/repositories/motions/change-recommendation-repository.service';
+import { Title } from '@angular/platform-browser';
+
+import { TranslateService } from '@ngx-translate/core';
+
+import { LineRange, ModificationType } from 'app/core/ui-services/diff.service';
+import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
 import { ViewChangeReco } from '../../models/view-change-reco';
 import { BaseViewComponent } from '../../../base/base-view';
-import { Title } from '@angular/platform-browser';
-import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Data that needs to be provided to the MotionChangeRecommendationComponent dialog

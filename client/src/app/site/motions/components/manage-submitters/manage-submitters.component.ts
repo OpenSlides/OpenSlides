@@ -2,14 +2,14 @@ import { Component, Input } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
-import { TranslateService } from '@ngx-translate/core';
 
+import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { LocalPermissionsService } from '../../services/local-permissions.service';
-import { MotionRepositoryService } from '../../../../core/repositories/motions/motion-repository.service';
+import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { User } from 'app/shared/models/users/user';
 import { ViewMotion } from '../../models/view-motion';
 

@@ -5,15 +5,15 @@ import { MatSnackBar, MatDialog } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { CategoryRepositoryService } from '../../../../core/repositories/motions/category-repository.service';
-import { ConfigService } from '../../../../core/ui-services/config.service';
+import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
 import { ListViewBaseComponent } from '../../../base/list-view-base';
 import { LocalPermissionsService } from '../../services/local-permissions.service';
-import { MotionBlockRepositoryService } from '../../../../core/repositories/motions/motion-block-repository.service';
+import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
 import { MotionCsvExportService } from '../../services/motion-csv-export.service';
 import { MotionFilterListService } from '../../services/motion-filter-list.service';
 import { MotionMultiselectService } from '../../services/motion-multiselect.service';
-import { MotionRepositoryService } from '../../../../core/repositories/motions/motion-repository.service';
+import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { MotionSortListService } from '../../services/motion-sort-list.service';
 import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
 import { ViewCategory } from '../../models/view-category';
@@ -22,11 +22,11 @@ import { ViewMotionBlock } from '../../models/view-motion-block';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewWorkflow } from '../../models/view-workflow';
 import { WorkflowState } from '../../../../shared/models/motions/workflow-state';
-import { WorkflowRepositoryService } from '../../../../core/repositories/motions/workflow-repository.service';
+import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
 import { MotionPdfExportService } from '../../services/motion-pdf-export.service';
 import { MotionExportDialogComponent } from '../motion-export-dialog/motion-export-dialog.component';
-import { OperatorService } from '../../../../core/core-services/operator.service';
-import { ViewportService } from '../../../../core/ui-services/viewport.service';
+import { OperatorService } from 'app/core/core-services/operator.service';
+import { ViewportService } from 'app/core/ui-services/viewport.service';
 
 /**
  * Component that displays all the motions in a Table using DataSource.
@@ -120,8 +120,12 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
     public ngOnInit(): void {
         super.setTitle('Motions');
         this.initTable();
-        this.configService.get('motions_statutes_enabled').subscribe(enabled => (this.statutesEnabled = enabled));
-        this.configService.get('motions_recommendations_by').subscribe(id => (this.recomendationEnabled = !!id));
+        this.configService
+            .get<boolean>('motions_statutes_enabled')
+            .subscribe(enabled => (this.statutesEnabled = enabled));
+        this.configService
+            .get<string>('motions_recommendations_by')
+            .subscribe(recommender => (this.recomendationEnabled = !!recommender));
         this.motionBlockRepo.getViewModelListObservable().subscribe(mBs => (this.motionBlocks = mBs));
         this.categoryRepo.getViewModelListObservable().subscribe(cats => (this.categories = cats));
         this.tagRepo.getViewModelListObservable().subscribe(tags => (this.tags = tags));

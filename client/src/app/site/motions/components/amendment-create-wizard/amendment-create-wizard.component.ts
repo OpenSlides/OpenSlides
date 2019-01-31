@@ -5,11 +5,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
-import { ConfigService } from '../../../../core/ui-services/config.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
 
-import { MotionRepositoryService } from '../../../../core/repositories/motions/motion-repository.service';
+import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { ViewMotion } from '../../models/view-motion';
-import { LinenumberingService } from '../../../../core/ui-services/linenumbering.service';
+import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
 import { BaseViewComponent } from '../../../base/base-view';
 import { CreateMotion } from '../../models/create-motion';
 
@@ -96,7 +96,7 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
         super(titleService, translate, matSnackBar);
         this.createForm();
 
-        this.configService.get('motions_line_length').subscribe(lineLength => {
+        this.configService.get<number>('motions_line_length').subscribe(lineLength => {
             this.lineLength = lineLength;
             this.getMotionByUrl();
         });

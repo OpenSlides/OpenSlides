@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
+
 import { TranslateService } from '@ngx-translate/core';
 
 import { BaseImportListComponent } from 'app/site/base/base-import-list';

@@ -1,10 +1,11 @@
 import { Component, Input, OnDestroy } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+
+import { Subscription } from 'rxjs';
 
 import { BaseComponent } from '../../../../base.component';
 import { ViewMotion } from '../../models/view-motion';
-import { PersonalNoteService } from '../../../../core/ui-services/personal-note.service';
-import { Subscription } from 'rxjs';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { PersonalNoteService } from 'app/core/ui-services/personal-note.service';
 import { PersonalNoteContent } from '../../../../shared/models/users/personal-note';
 
 /**

@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MatDialog } from '@angular/material';
+
 import { TranslateService } from '@ngx-translate/core';
 
 import { CalculablePollKey } from 'app/core/ui-services/poll.service';
@@ -8,7 +9,7 @@ import { LocalPermissionsService } from '../../services/local-permissions.servic
 import { MotionPoll } from 'app/shared/models/motions/motion-poll';
 import { MotionPollService } from '../../services/motion-poll.service';
 import { MotionPollDialogComponent } from './motion-poll-dialog.component';
-import { MotionRepositoryService } from '../../../../core/repositories/motions/motion-repository.service';
+import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { MotionPollPdfService } from '../../services/motion-poll-pdf.service';
 
@@ -225,7 +226,7 @@ export class MotionPollComponent implements OnInit {
      * Subscribe to the available majority choices as given in the server-side constants
      */
     private subscribeMajorityChoices(): void {
-        this.constants.get('OpenSlidesConfigVariables').subscribe(constants => {
+        this.constants.get<any>('OpenSlidesConfigVariables').subscribe(constants => {
             const motionconst = constants.find(c => c.name === 'Motions');
             if (motionconst) {
                 const ballotConst = motionconst.subgroups.find(s => s.name === 'Voting and ballot papers');

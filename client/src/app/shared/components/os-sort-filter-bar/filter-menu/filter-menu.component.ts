@@ -1,5 +1,5 @@
 import { Output, Component, OnInit, EventEmitter, Input } from '@angular/core';
-import { BaseFilterListService, OsFilterOption } from '../../../../core/ui-services/base-filter-list.service';
+import { BaseFilterListService, OsFilterOption } from 'app/core/ui-services/base-filter-list.service';
 
 /**
  * Component for selecting the filters in a filter menu.

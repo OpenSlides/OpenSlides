@@ -8,7 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 import {
     ProjectorRepositoryService,
     ScrollScaleDirection
-} from '../../../../core/repositories/projector/projector-repository.service';
+} from 'app/core/repositories/projector/projector-repository.service';
 import { ViewProjector } from '../../models/view-projector';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ProjectorService } from 'app/core/core-services/projector.service';

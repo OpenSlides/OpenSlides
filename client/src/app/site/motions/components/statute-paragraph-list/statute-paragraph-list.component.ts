@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { PromptService } from '../../../../core/ui-services/prompt.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 import { StatuteParagraph } from '../../../../shared/models/motions/statute-paragraph';
 import { ViewStatuteParagraph } from '../../models/view-statute-paragraph';
-import { StatuteParagraphRepositoryService } from '../../../../core/repositories/motions/statute-paragraph-repository.service';
+import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions/statute-paragraph-repository.service';
 import { BaseViewComponent } from '../../../base/base-view';
-import { MatSnackBar } from '@angular/material';
 import { StatuteCsvExportService } from '../../services/statute-csv-export.service';
 
 /**

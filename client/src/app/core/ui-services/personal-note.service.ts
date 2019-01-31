@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
+
 import { Observable, BehaviorSubject } from 'rxjs';
+
 import { DataStoreService } from '../core-services/data-store.service';
 import { OperatorService } from '../core-services/operator.service';
 import { PersonalNote, PersonalNoteObject, PersonalNoteContent } from '../../shared/models/users/personal-note';

@@ -70,7 +70,7 @@ export class PresenceDetailComponent implements OnInit {
         private translate: TranslateService,
         config: ConfigService
     ) {
-        config.get('users_enable_presence_view').subscribe(conf => (this._enabledInConfig = conf));
+        config.get<boolean>('users_enable_presence_view').subscribe(conf => (this._enabledInConfig = conf));
     }
 
     /**

@@ -8,7 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { OperatorService } from 'app/core/core-services/operator.service';
-import { MediafileRepositoryService } from '../../../../core/repositories/mediafiles/mediafile-repository.service';
+import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
 
 /**
  * To hold the structure of files to upload

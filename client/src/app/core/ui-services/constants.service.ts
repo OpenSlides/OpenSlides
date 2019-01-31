@@ -76,7 +76,7 @@ export class ConstantsService extends OpenSlidesComponent {
      * Get the constant named by key.
      * @param key The constant to get.
      */
-    public get(key: string): Observable<any> {
+    public get<T>(key: string): Observable<T> {
         if (this.constants) {
             return of(this.constants[key]);
         } else {
@@ -91,7 +91,7 @@ export class ConstantsService extends OpenSlidesComponent {
             if (!this.pendingSubject[key]) {
                 this.pendingSubject[key] = new Subject<any>();
             }
-            return this.pendingSubject[key].asObservable();
+            return this.pendingSubject[key].asObservable() as Observable<T>;
         }
     }
 }
