@@ -27,6 +27,9 @@ msgstr ""
 msgid "About me"
 msgstr "Über mich"
 
+msgid "Abstain"
+msgstr "Enthaltung"
+
 msgid "Accept"
 msgstr "Annehmen"
 
@@ -35,6 +38,12 @@ msgstr "Annahme"
 
 msgid "Accepted"
 msgstr "Angenommen"
+
+msgid "Access data (PDF)"
+msgstr "Zugangsdaten (PDF)"
+
+msgid "Access-data"
+msgstr "Zugangsdaten"
 
 msgid "Activate amendments"
 msgstr "Änderungsanträge aktivieren"
@@ -179,6 +188,12 @@ msgstr "Aufgerufen wird"
 msgid "Called with"
 msgstr "Mit aufgerufen werden"
 
+msgid "Can change its own password"
+msgstr "Darf eigenes Passwort ändern"
+
+msgid "Can create amendments"
+msgstr "Darf Änderungsanträge stellen"
+
 msgid "Can create motions"
 msgstr "Darf Anträge erstellen"
 
@@ -202,6 +217,9 @@ msgstr "Darf Redelisten verwalten"
 
 msgid "Can manage logos and fonts"
 msgstr "Darf Logos und Schriften verwalten"
+
+msgid "Can manage motion metadata"
+msgstr "Darf Antragsmetadaten verwalten"
 
 msgid "Can manage motions"
 msgstr "Darf Anträge verwalten"
@@ -292,6 +310,9 @@ msgstr "Passwort ändern"
 msgid "Change password for"
 msgstr "Passwort ändern für"
 
+msgid "Change presence"
+msgstr "Anwesenheit ändern"
+
 msgid "Change recommendation"
 msgstr "Änderungsempfehlung"
 
@@ -303,6 +324,10 @@ msgstr "Bearbeitet von"
 
 msgid "Changed version"
 msgstr "Geänderte Fassung"
+
+msgid "Check in or check out participants based on their participant numbers:"
+msgstr ""
+"An- oder Abmeldung von Teilnehmenden basierend auf ihren Teilnehmernummern:"
 
 msgid "Choose 0 to disable the supporting system."
 msgstr "Zum Deaktivieren des Unterstützersystems '0' eingeben."
@@ -347,6 +372,9 @@ msgstr "Komplexer Arbeitsablauf"
 msgid "Confirm new password"
 msgstr "Neues Passwort bestätigen"
 
+msgid "Content"
+msgstr "Inhalt"
+
 msgid "Copy and paste your participant names in this textbox."
 msgstr "Kopieren Sie die Name Ihrer Teilnehmer/innen in diese Textbox."
 
@@ -359,11 +387,23 @@ msgstr "Countdown mit der Redeliste verkoppeln"
 msgid "Create"
 msgstr "Erstellen"
 
+msgid "Create final print template"
+msgstr "Beschluss-Druckvorlage erstellen"
+
 msgid "Create new category"
 msgstr "Neues Sachgebiet erstellen"
 
+msgid "Current"
+msgstr "Aktuell"
+
 msgid "Current browser language"
 msgstr "Aktuelle Browsersprache"
+
+msgid "Current list of speakers overlay"
+msgstr "Aktuelle Redeliste (Einblendung)"
+
+msgid "Current list of speakers slide"
+msgstr "Aktuelle Redeliste (Folie)"
 
 msgid "Custom number of ballot papers"
 msgstr "Benutzerdefinierte Anzahl von Stimmzetteln"
@@ -430,11 +470,17 @@ msgstr "Delegierte"
 msgid "Delete"
 msgstr "Löschen"
 
+msgid "Delete final print template"
+msgstr "Beschluss-Druckvorlage löschen"
+
 msgid "Delete whole history"
 msgstr "Chronik löschen"
 
 msgid "Deletion"
 msgstr "Streichung"
+
+msgid "Description"
+msgstr "Beschreibung"
 
 msgid "Deselect all"
 msgstr "Alle abwählen"
@@ -473,11 +519,21 @@ msgstr "Nicht entscheiden"
 msgid "Do you want to delete this file?"
 msgstr "Soll diese Datei wirklich gelöscht werden?"
 
+msgid "Does not have notes"
+msgstr "Hat keine Notizen"
+
 msgid "Done"
 msgstr "Erledigt"
 
 msgid "Download CSV example file"
 msgstr "CSV-Beispiel-Datei herunterladen"
+
+msgid ""
+"Drag and drop items to change the order of the agenda. Your modification "
+"will be saved immediately."
+msgstr ""
+"Verschieben Sie Einträge, um die Reihenfolge der Tagesordnung zu ändern. "
+"Ihre Änderungen werden sofort gespeichert."
 
 msgid "Drop files into this area OR select files"
 msgstr "Dateien auf diesen Bereich ziehen ODER Dateien auswählen"
@@ -493,6 +549,9 @@ msgstr "Sachgebiet bearbeiten"
 
 msgid "Edit comment field:"
 msgstr "Kommentarfeld bearbeiten:"
+
+msgid "Edit countdown"
+msgstr "Countdown bearbeiten"
 
 msgid "Edit details"
 msgstr "Details bearbeiten"
@@ -562,6 +621,9 @@ msgstr ""
 "Geben Sie die Dauer in Sekunden an. Zum Deaktivieren der Warn-Farbe 0 "
 "auswählen."
 
+msgid "Enter participant number"
+msgstr "Teilnehmernummer eingeben"
+
 msgid "Enter your email to send the password reset link"
 msgstr ""
 "Geben Sie Ihre E-Mail-Adresse ein um eine Link zum Zurücksetzen des "
@@ -600,6 +662,18 @@ msgstr "Exportieren ..."
 msgid "Export as CSV"
 msgstr "Exportieren als CSV"
 
+msgid "Export as PDF"
+msgstr "Als PDF exportieren"
+
+msgid "Export motions"
+msgstr "Anträge exportieren"
+
+msgid "Extension"
+msgstr "Erweiterung"
+
+msgid "Favorites"
+msgstr "Favoriten"
+
 msgid "File information"
 msgstr "Dateiinformationen"
 
@@ -617,6 +691,9 @@ msgstr "Filtermöglichkeiten"
 
 msgid "Filters"
 msgstr "Filter"
+
+msgid "Final print template"
+msgstr "Beschluss-Druckvorlage"
 
 msgid "Final version"
 msgstr "Beschlussfassung"
@@ -636,11 +713,17 @@ msgstr "Schriftfarbe des Projektor-Kopf- und Fußbereichs"
 msgid "Font color of projector headline"
 msgstr "Schriftfarbe der Projektor-Überschrift"
 
+msgid "Format"
+msgstr "Format"
+
 msgid "Front page text"
 msgstr "Text der Startseite"
 
 msgid "Front page title"
 msgstr "Titel der Startseite"
+
+msgid "Gender"
+msgstr "Geschlecht"
 
 msgid "General"
 msgstr "Allgemein"
@@ -662,6 +745,9 @@ msgstr "Gruppen mit Leseberechtigungen"
 
 msgid "Groups with write permissions"
 msgstr "Gruppen mit Schreibberechtigungen"
+
+msgid "Has notes"
+msgstr "Hat Notizen"
 
 msgid "Help text for access data and welcome PDF"
 msgstr "Hilfetext für das Zugangsdaten- und Willkommens-PDF"
@@ -721,6 +807,9 @@ msgstr "Laufende Nummer im PDF und DOCX anzeigen"
 msgid "Initial password"
 msgstr "Initiales Passwort"
 
+msgid "Inline"
+msgstr "innerhalb"
+
 msgid "Input format: DD.MM.YYYY HH:MM"
 msgstr "Eingabeformat: TT.MM.JJJJ HH:MM"
 
@@ -750,6 +839,12 @@ msgstr "Ist aktiv"
 
 msgid "Is committee"
 msgstr "Ist Gremium"
+
+msgid "Is favorite"
+msgstr "Ist Favorit"
+
+msgid "Is not favorite"
+msgstr "Ist kein Favorit"
 
 msgid "Is present"
 msgstr "Ist anwesend"
@@ -784,6 +879,12 @@ msgstr "Zeilenlänge"
 msgid "Line numbering"
 msgstr "Zeilennummerierung"
 
+msgid "List of participants"
+msgstr "Teilnehmendenliste"
+
+msgid "List of participants (PDF)"
+msgstr "Teilnehmendenliste (PDF)"
+
 msgid "List of speakers"
 msgstr "Redeliste"
 
@@ -802,6 +903,15 @@ msgstr "Abmelden"
 msgid "Mark speaker"
 msgstr "Redner/in markieren"
 
+msgid "Message"
+msgstr "Mitteilung"
+
+msgid "Messages"
+msgstr "Mitteilungen"
+
+msgid "Meta information"
+msgstr "Metainformationen"
+
 msgid "Motion"
 msgstr "Antrag"
 
@@ -811,14 +921,14 @@ msgstr "Antragsblock"
 msgid "Motion blocks"
 msgstr "Antragsblöcke"
 
+msgid "Motion created"
+msgstr "Antrag erstellt"
+
 msgid "Motion deleted"
 msgstr "Antrag gelöscht"
 
 msgid "Motion has been imported"
 msgstr "Antrag wurde importiert"
-
-msgid "Motion log"
-msgstr "Antragsverlauf"
 
 msgid "Motion preamble"
 msgstr "Antragseinleitung"
@@ -868,6 +978,9 @@ msgstr "Neuer Änderungsantrag"
 msgid "New comment field"
 msgstr "Neues Kommentarfeld"
 
+msgid "New countdown"
+msgstr "Neuer Countdown"
+
 msgid "New file name"
 msgstr "Neuer Dateiname"
 
@@ -901,6 +1014,9 @@ msgstr "Neue Abstimmung"
 msgid "Next"
 msgstr "Weiter"
 
+msgid "No"
+msgstr "Nein"
+
 msgid "No change recommendations yet"
 msgstr "Bisher keine Änderungsempfehlungen"
 
@@ -912,6 +1028,9 @@ msgstr "Kein Kommentar"
 
 msgid "No concernment"
 msgstr "Nichtbefassung"
+
+msgid "No countdowns"
+msgstr "Keine Countdowns"
 
 msgid "No decision"
 msgstr "Keine Entscheidung"
@@ -1000,11 +1119,17 @@ msgstr "Öffnen"
 msgid "Open list of speakers"
 msgstr "Redeliste öffnen"
 
+msgid "OpenSlides access data"
+msgstr "OpenSlides-Zugangsdaten"
+
 msgid "Origin"
 msgstr "Herkunft"
 
 msgid "Original version"
 msgstr "Originalfassung"
+
+msgid "Outside"
+msgstr "außerhalb"
 
 msgid "PDF"
 msgstr "PDF"
@@ -1036,11 +1161,17 @@ msgstr "Parallel hochladen"
 msgid "Parent item"
 msgstr "Elternelement"
 
+msgid "Participant cannot be found"
+msgstr "Teilnehmende wurde nicht gefunden"
+
 msgid "Participant has been imported"
 msgstr "Teilnehmer/in wurde importiert"
 
 msgid "Participant number"
 msgstr "Teilnehmernummer"
+
+msgid "Participant number is not unique"
+msgstr "Teilnehmernummer ist nicht eindeutig"
 
 msgid "Participant will be imported"
 msgstr "Teilnehmer/in wird importiert"
@@ -1070,6 +1201,9 @@ msgstr "Zulassen"
 msgid "Personal note"
 msgstr "Persönliche Notiz"
 
+msgid "Personal notes"
+msgstr "Persönliche Notizen"
+
 msgid "Please enter a valid email address"
 msgstr "Bitte geben Sie einen neuen Namen ein für"
 
@@ -1094,6 +1228,9 @@ msgstr "Präfix"
 msgid "Prefix for the identifier for amendments"
 msgstr "Präfix für den Bezeichner von Änderungsanträgen"
 
+msgid "Presence"
+msgstr "Anwesenheit"
+
 msgid "Present"
 msgstr "Anwesend"
 
@@ -1102,6 +1239,9 @@ msgstr "Präsentations- und Versammlungssystem"
 
 msgid "Preview"
 msgstr "Vorschau"
+
+msgid "Previous"
+msgstr "Zurück"
 
 msgid "Print ballot papers"
 msgstr "Stimmzettel drucken"
@@ -1114,6 +1254,15 @@ msgstr "Datenschutzerklärung"
 
 msgid "Project"
 msgstr "Projizieren"
+
+msgid "Project motion {{ projectorElementBuildDescriptor.getTitle() }}?"
+msgstr "Antrag {{ projectorElementBuildDescriptor.getTitle() }} projizieren?"
+
+msgid "Project now"
+msgstr "Jetzt projizieren"
+
+msgid "Project {{ projectorElementBuildDescriptor.getTitle() }}?"
+msgstr "{{ projectorElementBuildDescriptor.getTitle() }} projizieren?"
 
 msgid "Projector"
 msgstr "Projektor"
@@ -1141,6 +1290,9 @@ msgstr "Öffentlicher Eintrag"
 
 msgid "Put all candidates on the list of speakers"
 msgstr "Alle Kandidaten auf die Redeliste setzen"
+
+msgid "Queue"
+msgstr "Warteliste"
 
 msgid "Reason"
 msgstr "Begründung"
@@ -1216,6 +1368,9 @@ msgstr "Empfehlung zurücksetzen"
 msgid "Reset state"
 msgstr "Status zurücksetzen"
 
+msgid "Resolution and size"
+msgstr "Auflösung und Größe"
+
 msgid "Right"
 msgstr "Rechts"
 
@@ -1224,6 +1379,12 @@ msgstr "Römisch"
 
 msgid "Save"
 msgstr "Speichern"
+
+msgid "Scan this QR code to connect to WLAN."
+msgstr "QR-Code scannen um sich mit dem WLAN zu verbinden."
+
+msgid "Scan this QR code to open URL."
+msgstr "QR-Code scannen um die URL zu öffnen."
 
 msgid "Search"
 msgstr "Suche"
@@ -1309,6 +1470,9 @@ msgstr "Alle anzeigen"
 msgid "Show amendments together with motions"
 msgstr "Änderungsanträge zusätzlich in der Hauptantragsübersicht anzeigen"
 
+msgid "Show clock"
+msgstr "Uhr anzeigen"
+
 msgid "Show correct entries"
 msgstr "Korrekte Einträge anzeigen"
 
@@ -1323,9 +1487,6 @@ msgstr "Nur fehlerhafte Einträge anzeigen"
 
 msgid "Show logo on projector"
 msgstr "Logo auf dem Projektor anzeigen"
-
-msgid "Show motion log"
-msgstr "Antragsverlauf anzeigen"
 
 msgid "Show orange countdown in the last x seconds of speaking time"
 msgstr "Countdown in den letzten x Sekunden der Redezeit orange darstellen"
@@ -1349,14 +1510,17 @@ msgstr "Einfacher Arbeitsablauf"
 msgid "Simple majority"
 msgstr "Einfache Mehrheit"
 
-msgid "Slide options"
-msgstr "Folienoptionen"
+msgid "Slides"
+msgstr "Folien"
 
 msgid "Sort"
 msgstr "Sortieren"
 
 msgid "Sort ..."
 msgstr "Sortieren ..."
+
+msgid "Sort agenda"
+msgstr "Tagesordnung sortieren"
 
 msgid "Sort categories by"
 msgstr "Sachgebiete sortieren nach"
@@ -1436,6 +1600,9 @@ msgstr "System"
 
 msgid "System URL"
 msgstr "System-URL"
+
+msgid "Table of contents"
+msgstr "Inhaltsverzeichnis"
 
 msgid "Tags"
 msgstr "Schlagwörter"
@@ -1626,6 +1793,9 @@ msgstr "Sichtbarkeit"
 msgid "Visible"
 msgstr "Sichtbar"
 
+msgid "Vote"
+msgstr "Abstimmung"
+
 msgid "Vote created"
 msgstr "Abstimmung erstellt"
 
@@ -1646,6 +1816,9 @@ msgstr "Abstimmungsergebnis"
 
 msgid "WEP"
 msgstr "WEP"
+
+msgid "WLAN access data"
+msgstr "WLAN-Zugangsdaten"
 
 msgid "WLAN encryption"
 msgstr "WLAN-Verschlüsselung"
@@ -1755,6 +1928,9 @@ msgstr "vertagt"
 msgid "and"
 msgstr "und"
 
+msgid "ballot-paper"
+msgstr "stimmzettel"
+
 msgid "by"
 msgstr "von"
 
@@ -1772,6 +1948,9 @@ msgstr "Fehler"
 
 msgid "inline"
 msgstr "innerhalb"
+
+msgid "is now"
+msgstr "ist jetzt"
 
 msgid "majority"
 msgstr "Mehrheit"
@@ -1793,6 +1972,9 @@ msgstr "nicht befasst"
 
 msgid "not decided"
 msgstr "nicht entschieden"
+
+msgid "not present"
+msgstr "abwesend"
 
 msgid "not reached."
 msgstr "nicht erreicht."

@@ -33,7 +33,7 @@ export class UserPdfExportService {
      */
     public exportSingleUserAccessPDF(user: ViewUser): void {
         const doc = this.userPdfService.userAccessToDocDef(user);
-        const filename = `${this.translate.instant('User')} ${user.short_name}`;
+        const filename = `${this.translate.instant('Access-data')} ${user.short_name}`;
         const metadata = {
             title: filename
         };
@@ -51,7 +51,7 @@ export class UserPdfExportService {
             doc.push(this.userPdfService.userAccessToDocDef(user));
             doc.push({ text: '', pageBreak: 'after' });
         });
-        const filename = this.translate.instant('User');
+        const filename = this.translate.instant('Access-data');
         const metadata = {
             title: filename
         };

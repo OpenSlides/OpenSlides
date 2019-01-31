@@ -4,9 +4,8 @@
 </os-head-bar>
 
 <mat-card *ngIf="permission">
-    <span translate> Check in or check out participants based on their participant numbers </span>
+    <p translate>Check in or check out participants based on their participant numbers:</p>
 
-    <br />
     <mat-form-field [formGroup]="userForm">
         <input osAutofocus
             matInput
@@ -15,9 +14,9 @@
             (keyup)="onKeyUp($event)"
         />
     </mat-form-field>
-    <button mat-button (click)="changePresence()">Change presence</button>
+    <button mat-button (click)="changePresence()" translate>Change presence</button>
     <mat-card *ngIf="lastChangedUser" [ngClass]="lastChangedUser.is_present ? 'success' : 'warning'">
-        <span>{{ lastChangedUser.full_name }}&nbsp;</span> <span translate> is now</span>
+        <span>{{ lastChangedUser.full_name }}&nbsp;</span> <span translate>is now</span>
         <span>&nbsp;{{ lastChangedUser.is_present ? 'present' : ('not present' | translate) }}</span>
     </mat-card>
     <mat-card *ngIf="errorMsg" class="error"> {{ errorMsg | translate }} </mat-card>

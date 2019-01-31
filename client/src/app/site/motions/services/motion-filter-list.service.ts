@@ -9,12 +9,14 @@ import { StorageService } from '../../../core/services/storage.service';
 import { MotionRepositoryService } from './motion-repository.service';
 import { MotionBlockRepositoryService } from './motion-block-repository.service';
 import { MotionCommentSectionRepositoryService } from './motion-comment-section-repository.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
     providedIn: 'root'
 })
 export class MotionFilterListService extends FilterListService<Motion, ViewMotion> {
     protected name = 'Motion';
+
     /**
      * getter for the filterOptions. Note that in this case, the options are
      * generated dynamically, as the options change with the datastore
@@ -69,31 +71,31 @@ export class MotionFilterListService extends FilterListService<Motion, ViewMotio
     public staticFilterOptions = [
         {
             property: 'star',
-            label: 'Favorites',
+            label: this.translate.instant('Favorites'),
             isActive: false,
             options: [
                 {
                     condition: true,
-                    label: 'Is favorite'
+                    label: this.translate.instant('Is favorite')
                 },
                 {
                     condition: false,
-                    label: 'Is not favorite'
+                    label: this.translate.instant('Is not favorite')
                 }
             ]
         },
         {
             property: 'hasNotes',
-            label: 'Personal notes',
+            label: this.translate.instant('Personal notes'),
             isActive: false,
             options: [
                 {
                     condition: true,
-                    label: 'Has notes'
+                    label: this.translate.instant('Has notes')
                 },
                 {
                     condition: false,
-                    label: 'Does not have notes'
+                    label: this.translate.instant('Does not have notes')
                 }
             ]
         }
@@ -108,6 +110,7 @@ export class MotionFilterListService extends FilterListService<Motion, ViewMotio
      * @param categoryRepo Subscribing to filters by Categories
      * @param motionBlockRepo Subscribing to filters by MotionBlock
      * @param commentRepo subycribing filter by presense of comment
+     * @param translate Translation service
      * @param motionRepo the motion's own repository, required by the parent
      */
     public constructor(
@@ -116,6 +119,7 @@ export class MotionFilterListService extends FilterListService<Motion, ViewMotio
         private categoryRepo: CategoryRepositoryService,
         private motionBlockRepo: MotionBlockRepositoryService,
         private commentRepo: MotionCommentSectionRepositoryService,
+        private translate: TranslateService,
         motionRepo: MotionRepositoryService
     ) {
         super(store, motionRepo);

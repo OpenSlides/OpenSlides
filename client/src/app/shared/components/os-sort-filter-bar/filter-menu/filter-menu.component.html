@@ -13,7 +13,7 @@
                 <div *ngFor="let option of filter.options">
                     <div *ngIf="isFilter(option)">
                         <mat-checkbox [checked]="option.isActive" (change)="service.toggleFilterOption(filter.property, option)">
-                            {{ option.label |translate }}
+                            {{ option.label | translate }}
                         </mat-checkbox>
                     </div>
                     <div class="filter-subtitle" *ngIf="!isFilter(option)">

@@ -1,34 +1,40 @@
-<h2 mat-dialog-title translate>Project
-    <span *ngIf="projectorElementBuildDescriptor.projectionDefaultName === 'motions'" translate>Motion</span>
-    {{ projectorElementBuildDescriptor.getTitle() }}?</h2>
+<h2 mat-dialog-title>
+    <span *ngIf="projectorElementBuildDescriptor.projectionDefaultName !== 'motions'" translate>Project {{ projectorElementBuildDescriptor.getTitle() }}?</span>
+    <span *ngIf="projectorElementBuildDescriptor.projectionDefaultName === 'motions'" translate>Project motion {{ projectorElementBuildDescriptor.getTitle() }}?</span>
+</h2>
 <mat-dialog-content>
-    <div class="projectors" *ngFor="let projector of projectors" [ngClass]="isProjectedOn(projector) ? 'projected' : ''">
+    <div
+        class="projectors"
+        *ngFor="let projector of projectors"
+        [ngClass]="isProjectedOn(projector) ? 'projected' : ''"
+    >
         <mat-checkbox [checked]="isProjectorSelected(projector)" (change)="toggleProjector(projector)">
             {{ projector.name | translate }}
         </mat-checkbox>
-        <span *ngIf="isProjectedOn(projector)" class="right">
-            <mat-icon>videocam</mat-icon>
-        </span>
+        <span *ngIf="isProjectedOn(projector)" class="right"> <mat-icon>videocam</mat-icon> </span>
     </div>
 
     <mat-divider></mat-divider>
 
     <div *ngIf="options.length > 0">
-            <div *ngFor="let option of options">
-                <div *ngIf="isDecisionOption(option)">
-                    <mat-checkbox [checked]="projectorElement[option.key]" (change)="projectorElement[option.key] = !projectorElement[option.key]">
-                        {{ option.displayName | translate }}
-                    </mat-checkbox>
-                </div>
-                <div *ngIf="isChoiceOption(option)">
-                    <h3>{{ option.displayName | translate }}</h3>
-                    <mat-radio-group [name]="option.key" [(ngModel)]="projectorElement[option.key]">
-                        <mat-radio-button *ngFor="let choice of option.choices" [value]="choice.value">
-                           {{ choice.displayName | translate }}
-                        </mat-radio-button>
-                    </mat-radio-group>
-                </div>
+        <div *ngFor="let option of options">
+            <div *ngIf="isDecisionOption(option)">
+                <mat-checkbox
+                    [checked]="projectorElement[option.key]"
+                    (change)="projectorElement[option.key] = !projectorElement[option.key]"
+                >
+                    {{ option.displayName | translate }}
+                </mat-checkbox>
             </div>
+            <div *ngIf="isChoiceOption(option)">
+                <h3>{{ option.displayName | translate }}</h3>
+                <mat-radio-group [name]="option.key" [(ngModel)]="projectorElement[option.key]">
+                    <mat-radio-button *ngFor="let choice of option.choices" [value]="choice.value">
+                        {{ choice.displayName | translate }}
+                    </mat-radio-button>
+                </mat-radio-group>
+            </div>
+        </div>
     </div>
 </mat-dialog-content>
 <mat-dialog-actions>

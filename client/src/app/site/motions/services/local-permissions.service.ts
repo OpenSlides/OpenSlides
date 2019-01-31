@@ -78,7 +78,9 @@ export class LocalPermissionsService {
                     motion.state.allow_create_poll
                 );
             case 'update':
-                if (!motion) {
+                // check also for empty ViewMotion object (e.g. if motion.id is null)
+                // important for creating new motion as normal user
+                if (!motion || !motion.id) {
                     return false;
                 }
                 return (
