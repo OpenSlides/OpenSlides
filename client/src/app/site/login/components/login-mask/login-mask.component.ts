@@ -1,10 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { BaseComponent } from 'app/base.component';
 import { AuthService } from 'app/core/services/auth.service';
 import { OperatorService } from 'app/core/services/operator.service';
-import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from 'environments/environment';
@@ -23,7 +22,7 @@ import { HttpService } from '../../../../core/services/http.service';
     templateUrl: './login-mask.component.html',
     styleUrls: ['./login-mask.component.scss']
 })
-export class LoginMaskComponent extends BaseComponent implements OnInit, OnDestroy {
+export class LoginMaskComponent extends BaseComponent implements OnInit {
     /**
      * Show or hide password and change the indicator accordingly
      */
@@ -32,7 +31,7 @@ export class LoginMaskComponent extends BaseComponent implements OnInit, OnDestr
     /**
      * Reference to the SnackBarEntry for the installation notice send by the server.
      */
-    private installationNotice: MatSnackBarRef<SimpleSnackBar>;
+    public installationNotice: string;
 
     /**
      * Login Error Message if any
@@ -61,8 +60,7 @@ export class LoginMaskComponent extends BaseComponent implements OnInit, OnDestr
      * @param operator The representation of the current user
      * @param router forward to start page
      * @param formBuilder To build the form and validate
-     * @param http used to get information before the login
-     * @param matSnackBar Display information
+     * @param httpService used to get information before the login
      * @param OpenSlides The Service for OpenSlides
      * @param loginDataService provide information about the legal notice and privacy policy
      */
@@ -73,8 +71,7 @@ export class LoginMaskComponent extends BaseComponent implements OnInit, OnDestr
         private router: Router,
         private route: ActivatedRoute,
         private formBuilder: FormBuilder,
-        private http: HttpService,
-        private matSnackBar: MatSnackBar,
+        private httpService: HttpService,
         private OpenSlides: OpenSlidesService,
         private loginDataService: LoginDataService
     ) {
@@ -92,24 +89,16 @@ export class LoginMaskComponent extends BaseComponent implements OnInit, OnDestr
         // Get the login data. Save information to the login data service. If there is an
         // error, ignore it.
         // TODO: This has to be caught by the offline service
-        this.http.get<any>(environment.urlPrefix + '/users/login/').then(
+        this.httpService.get<any>(environment.urlPrefix + '/users/login/').then(
             response => {
                 if (response.info_text) {
-                    this.installationNotice = this.matSnackBar.open(response.info_text, this.translate.instant('OK'), {
-                        duration: 5000
-                    });
+                    this.installationNotice = response.info_text;
                 }
                 this.loginDataService.setPrivacyPolicy(response.privacy_policy);
                 this.loginDataService.setLegalNotice(response.legal_notice);
             },
             () => {}
         );
-    }
-
-    public ngOnDestroy(): void {
-        if (this.installationNotice) {
-            this.installationNotice.dismiss();
-        }
     }
 
     /**
