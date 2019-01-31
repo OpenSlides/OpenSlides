@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { OpenSlidesComponent } from 'app/openslides.component';
 import { HttpService } from './http.service';
 import { environment } from 'environments/environment.prod';
-import { isNumber } from 'util';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
@@ -46,7 +45,8 @@ export class ServertimeService extends OpenSlidesComponent {
     private async refreshServertime(): Promise<void> {
         // servertime is the time in seconds.
         const servertime = await this.http.get<number>(environment.urlPrefix + '/core/servertime/');
-        if (!isNumber(servertime)) {
+        // isNumber is deprecated: since node v4.0.0
+        if (typeof servertime !== 'number') {
             throw new Error('The returned servertime is not a number');
         }
         this.serverOffsetSubject.next(Math.floor(Date.now() - servertime * 1000));
