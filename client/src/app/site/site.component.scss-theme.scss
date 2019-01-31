@@ -11,7 +11,7 @@
     os-site {
         /* main background color */
         .main-container {
-            background-color: $os-background;
+            background-color: mat-color($background, background);
         }
         .nav-toolbar {
             background-color: mat-color($background, card); //TODO
@@ -37,10 +37,10 @@
         /** style the active link */
         .active {
             mat-icon {
-                color: $os-primary;
+                color: mat-color($primary);
             }
             span {
-                color: $os-primary;
+                color: mat-color($primary);
             }
         }
     }

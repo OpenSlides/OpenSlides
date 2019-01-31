@@ -79,9 +79,22 @@ $openslides-warn: mat-palette($mat-red);
 $openslides-theme: mat-light-theme($openslides-primary, $openslides-accent, $openslides-warn);
 
 // Create Sass color vars (for using in scss files).
-$os-primary: mat-color($openslides-primary);
-$os-accent: mat-color($openslides-accent);
-$os-warn: mat-color($openslides-warn);
+// This will be set dynamically with the selecting theme
+// $os-primary: mat-color($openslides-primary);
+// $os-accent: mat-color($openslides-accent);
+// $os-warn: mat-color($openslides-warn);
 
 $os-outline: mat-color($mat-grey, 300);
 $os-background: mat-color($mat-grey, 100);
+
+/** This is the workaround to set a custom background-color
+ *  In the first step the color must be merged, in order to have to a map.
+ *  The components will get a value from this map.
+ */
+$background: map-get($openslides-theme, background);
+$background: map_merge($background, (background: $os-background));
+
+/**
+ *  Merge the theme with the custom-background.
+ */
+$openslides-theme: map_merge($openslides-theme, (background: $background));

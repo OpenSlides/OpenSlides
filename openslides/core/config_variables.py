@@ -112,6 +112,21 @@ def get_config_variables():
         subgroup="System",
     )
 
+    yield ConfigVariable(
+        name="openslides_theme",
+        default_value="openslides-theme",
+        input_type="choice",
+        label="OpenSlides Theme",
+        choices=(
+            {"value": "openslides-theme", "display_name": "OpenSlides Default"},
+            {"value": "openslides-dark-theme", "display_name": "OpenSlides Dark"},
+            {"value": "openslides-green-theme", "display_name": "OpenSlides Green"},
+        ),
+        weight=141,
+        group="General",
+        subgroup="System",
+    )
+
     # General export settings
 
     yield ConfigVariable(
