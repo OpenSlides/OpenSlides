@@ -56,6 +56,7 @@ export class Projector extends BaseModel<Projector> {
     public name: string;
     public width: number;
     public height: number;
+    public reference_projector_id: number;
     public projectiondefaults: ProjectionDefault[];
 
     public constructor(input?: any) {

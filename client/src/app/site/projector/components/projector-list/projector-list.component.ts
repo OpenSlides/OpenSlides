@@ -91,7 +91,8 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
             name: ['', Validators.required],
             aspectRatio: ['', Validators.required],
             width: [0, Validators.required],
-            clock: [true]
+            clock: [true],
+            reference_projector_id: []
         });
     }
 
@@ -184,11 +185,16 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
         }
         this.editId = projector.id;
         this.updateForm.reset();
+
+        const reference_projector_id = projector.reference_projector_id
+            ? projector.reference_projector_id
+            : projector.id;
         this.updateForm.patchValue({
             name: projector.name,
             aspectRatio: this.getAspectRatioKey(projector),
             width: projector.width,
-            clock: this.clockSlideService.isProjectedOn(projector)
+            clock: this.clockSlideService.isProjectedOn(projector),
+            reference_projector_id: reference_projector_id
         });
     }
 
@@ -215,7 +221,8 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
         const updateProjector: Partial<Projector> = {
             name: this.updateForm.value.name,
             width: this.updateForm.value.width,
-            height: Math.round(this.updateForm.value.width / aspectRatios[this.updateForm.value.aspectRatio])
+            height: Math.round(this.updateForm.value.width / aspectRatios[this.updateForm.value.aspectRatio]),
+            reference_projector_id: this.updateForm.value.reference_projector_id
         };
         try {
             await this.clockSlideService.setProjectedOn(projector, this.updateForm.value.clock);
@@ -236,5 +243,15 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
         if (await this.promptService.open('Are you sure?', content)) {
             this.repo.delete(projector).then(null, this.raiseError);
         }
+    }
+
+    /**
+     * Get all available reference projectors for the given projector. These
+     * projectors are all existing projectors exluding the given projector
+     *
+     * @returns all available reference projectors
+     */
+    public getReferenceProjectorsFor(projector: ViewProjector): ViewProjector[] {
+        return this.repo.getViewModelList().filter(p => p.id !== projector.id);
     }
 }

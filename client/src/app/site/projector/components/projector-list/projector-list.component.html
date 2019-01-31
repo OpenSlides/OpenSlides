@@ -73,6 +73,20 @@
                                 <span translate>Required</span>
                             </mat-hint>
                         </mat-form-field>
+
+                        <!-- Reference projector for the current list of speakers -->
+                        <h3 translate>Current list fo speakers reference</h3>
+                        <mat-form-field>
+                            <mat-select formControlName="reference_projector_id" placeholder="{{ 'Reference projector' | translate }}">
+                                <mat-option [value]="projector.id">
+                                    <span translate>self</span>
+                                </mat-option>
+                                <mat-option *ngFor="let refProjector of getReferenceProjectorsFor(projector)" [value]="refProjector.id">
+                                    <span>{{ refProjector.getTitle() | translate }}</span>
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
                         <h3 translate>Resolution and size</h3>
                         <!-- Aspect ratio field -->
                         <mat-radio-group formControlName="aspectRatio" [name]="projector.id">
@@ -82,6 +96,8 @@
                         </mat-radio-group>
                         <mat-slider [thumbLabel]="true" formControlName="width" min="800" max="3840" step="10"></mat-slider>
                         {{ updateForm.value.width }}
+
+                        <!-- Clock -->
                         <div>
                             <mat-checkbox formControlName="clock">
                                 <span translate>Show clock</span>

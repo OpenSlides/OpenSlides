@@ -97,6 +97,7 @@ class ProjectorSerializer(ModelSerializer):
             "name",
             "width",
             "height",
+            "reference_projector",
             "projectiondefaults",
         )
         read_only_fields = ("scale", "scroll")
