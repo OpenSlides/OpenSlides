@@ -7,7 +7,7 @@ import { BaseViewComponent } from '../../../base/base-view';
 import { MatSnackBar } from '@angular/material';
 
 /**
- * List view for the statute paragraphs.
+ * List view for the projector messages.
  */
 @Component({
     selector: 'os-projectormessage-list',
@@ -22,7 +22,7 @@ export class ProjectorMessageListComponent extends BaseViewComponent implements 
     /**
      * Init function.
      *
-     * Sets the title and gets/observes countdowns from DataStore
+     * Sets the title and gets/observes messages from DataStore
      */
     public ngOnInit(): void {
         super.setTitle('Messages');

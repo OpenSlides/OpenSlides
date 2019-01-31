@@ -1,10 +1,19 @@
 import { Component, OnInit, Input } from '@angular/core';
 
-import { Projectable, ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
+import {
+    Projectable,
+    ProjectorElementBuildDeskriptor,
+    isProjectable,
+    isProjectorElementBuildDeskriptor
+} from 'app/site/base/projectable';
 import { ProjectionDialogService } from 'app/core/services/projection-dialog.service';
 import { ProjectorService } from '../../../core/services/projector.service';
 
 /**
+ * The projector button to project something on the projector.
+ *
+ * Use the input [object] to specify the object to project. It can either be
+ * a Projectable or a ProjectorElementBuildDeskriptor
  */
 @Component({
     selector: 'os-projector-button',
@@ -12,11 +21,29 @@ import { ProjectorService } from '../../../core/services/projector.service';
     styleUrls: ['./projector-button.component.scss']
 })
 export class ProjectorButtonComponent implements OnInit {
+    /**
+     * The object to project.
+     */
+    private _object: Projectable | ProjectorElementBuildDeskriptor;
+
+    public get object(): Projectable | ProjectorElementBuildDeskriptor {
+        return this._object;
+    }
+
     @Input()
-    public object: Projectable | ProjectorElementBuildDeskriptor;
+    public set object(obj: Projectable | ProjectorElementBuildDeskriptor) {
+        if (isProjectable(obj) || isProjectorElementBuildDeskriptor(obj)) {
+            this._object = obj;
+        } else {
+            console.error(
+                'Your model for the projectorbutton is not projectable and not' + 'a projectorElementBuildDescriptor!',
+                obj
+            );
+        }
+    }
 
     /**
-     * The consotructor
+     * The constructor
      */
     public constructor(
         private projectionDialogService: ProjectionDialogService,
@@ -28,6 +55,11 @@ export class ProjectorButtonComponent implements OnInit {
      */
     public ngOnInit(): void {}
 
+    /**
+     * Click on the projector button
+     *
+     * @param event  the click event
+     */
     public onClick(event: Event): void {
         event.stopPropagation();
         this.projectionDialogService.openProjectDialogFor(this.object);
@@ -39,10 +71,9 @@ export class ProjectorButtonComponent implements OnInit {
      * @returns true, if the object is projected on one projector.
      */
     public isProjected(): boolean {
-        if (this.object) {
-            return this.projectorService.isProjected(this.object);
-        } else {
+        if (!this.object) {
             return false;
         }
+        return this.projectorService.isProjected(this.object);
     }
 }

@@ -15,7 +15,7 @@ export class CurrentListOfSpeakersSlideService {
         return {
             name: overlay ? 'agenda/current-list-of-speakers-overlay' : 'agenda/current-list-of-speakers',
             stable: overlay,
-            getIdentifiers: () => ['name', 'stable']
+            getIdentifiers: () => ['name']
         };
     }
 

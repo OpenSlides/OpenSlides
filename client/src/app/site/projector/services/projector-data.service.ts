@@ -46,7 +46,7 @@ export class ProjectorDataService {
             Object.keys(update).forEach(_id => {
                 const id = parseInt(_id, 10);
                 if ((<{ error: string }>update[id]).error !== undefined) {
-                    console.log('TODO: Why does the server sends errors on autpupdates?');
+                    console.log('TODO: Why does the server sends errors on autoupdates?');
                 } else {
                     if (this.currentProjectorData[id]) {
                         this.currentProjectorData[id].next(update[id] as ProjectorData);
