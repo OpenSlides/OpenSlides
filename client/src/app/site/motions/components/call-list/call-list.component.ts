@@ -7,9 +7,11 @@ import { Observable } from 'rxjs';
 
 import { BaseViewComponent } from '../../../base/base-view';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
+import { MotionCsvExportService } from '../../services/motion-csv-export.service';
+import { MotionPdfExportService } from '../../services/motion-pdf-export.service';
+
 import { ViewMotion } from '../../models/view-motion';
 import { OSTreeSortEvent } from 'app/shared/components/sorting-tree/sorting-tree.component';
-import { MotionCsvExportService } from '../../services/motion-csv-export.service';
 
 /**
  * Sort view for the call list.
@@ -46,7 +48,8 @@ export class CallListComponent extends BaseViewComponent {
         translate: TranslateService,
         matSnackBar: MatSnackBar,
         private motionRepo: MotionRepositoryService,
-        private motionCsvExport: MotionCsvExportService
+        private motionCsvExport: MotionCsvExportService,
+        private motionPdfExport: MotionPdfExportService
     ) {
         super(title, translate, matSnackBar);
 
@@ -82,5 +85,12 @@ export class CallListComponent extends BaseViewComponent {
      */
     public csvExportCallList(): void {
         this.motionCsvExport.exportCallList(this.motions);
+    }
+
+    /**
+     * Triggers a pdf export of the call list
+     */
+    public pdfExportCallList(): void {
+        this.motionPdfExport.exportPdfCallList(this.motions);
     }
 }
