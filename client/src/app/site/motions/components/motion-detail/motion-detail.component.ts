@@ -125,6 +125,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     public statutesEnabled: boolean;
 
     /**
+     * Value of the config variable `motions_reason_required`
+     */
+    public reasonRequired: boolean;
+
+    /**
      * Value of the config variable `motions_min_supporters`
      */
     public minSupporters: number;
@@ -371,6 +376,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
 
         // load config variables
         this.configService.get('motions_statutes_enabled').subscribe(enabled => (this.statutesEnabled = enabled));
+        this.configService.get('motions_reason_required').subscribe(required => (this.reasonRequired = required));
         this.configService.get('motions_min_supporters').subscribe(supporters => (this.minSupporters = supporters));
         this.configService.get('motions_preamble').subscribe(preamble => (this.preamble = preamble));
         this.configService.get('motions_amendments_enabled').subscribe(enabled => (this.amendmentsEnabled = enabled));
@@ -520,11 +526,15 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * TODO: Build a custom form validator
      */
     public createForm(): void {
+        const reason: any[] = [''];
+        if (this.reasonRequired) {
+            reason.push(Validators.required);
+        }
         this.contentForm = this.formBuilder.group({
             identifier: [''],
             title: ['', Validators.required],
             text: ['', Validators.required],
-            reason: [''],
+            reason: reason,
             category_id: [''],
             attachments_id: [[]],
             agenda_parent_id: [],

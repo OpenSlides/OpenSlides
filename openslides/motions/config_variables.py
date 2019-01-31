@@ -101,6 +101,16 @@ def get_config_variables():
     )
 
     yield ConfigVariable(
+        name="motions_reason_required",
+        default_value=False,
+        input_type="boolean",
+        label="Reason required for creating new motion",
+        weight=324,
+        group="Motions",
+        subgroup="General",
+    )
+
+    yield ConfigVariable(
         name="motions_disable_reason_on_projector",
         default_value=False,
         input_type="boolean",

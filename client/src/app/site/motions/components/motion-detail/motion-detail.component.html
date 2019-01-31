@@ -493,7 +493,11 @@
         ></div>
 
         <!-- The HTML Editor -->
-        <editor formControlName="text" [init]="tinyMceSettings" *ngIf="motion && editMotion"></editor>
+        <editor formControlName="text" [init]="tinyMceSettings" *ngIf="motion && editMotion" required></editor>
+        <div *ngIf="contentForm.get('text').invalid && (contentForm.get('text').dirty || contentForm.get('text').touched)"
+            class="red-warning-text" translate>
+            This field is required.
+        </div>
 
         <!-- Paragraph-based amendments -->
         <ng-container *ngIf="!editMotion && motion.isParagraphBasedAmendment()">
@@ -502,11 +506,17 @@
 
         <!-- Reason -->
         <div *ngIf="motion.reason || editMotion">
-            <h3 translate>Reason</h3>
+            <h3 [ngClass]="(reasonRequired && contentForm.get('reason').invalid && (contentForm.get('reason').dirty || contentForm.get('reason').touched)) ? 'red-warning-text' : ''">
+                <span translate>Reason</span>&nbsp;<span *ngIf="reasonRequired && editMotion">*</span>
+            </h3>
             <div class="motion-text" *ngIf="!editMotion"><div [innerHtml]="motion.reason"></div></div>
 
             <!-- The HTML Editor -->
-            <editor formControlName="reason" [init]="tinyMceSettings" *ngIf="editMotion"></editor>
+            <editor formControlName="reason" [init]="tinyMceSettings" *ngIf="editMotion" required></editor>
+            <div *ngIf="reasonRequired && contentForm.get('reason').invalid && (contentForm.get('reason').dirty || contentForm.get('reason').touched)"
+                class="red-warning-text" translate>
+                This field is required.
+            </div>
         </div>
 
         <!-- Category form -->

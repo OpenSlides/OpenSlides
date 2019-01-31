@@ -110,6 +110,7 @@ _('Default line numbering');
 _('disabled');
 _('Line length');
 _('The maximum number of characters per line. Relevant when line numbering is enabled. Min: 40');
+_('Reason required for creating new motion');
 _('Hide reason on projector');
 _('Hide meta information box on projector');
 _('Hide recommendation on projector');
