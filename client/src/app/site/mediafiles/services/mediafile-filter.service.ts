@@ -27,7 +27,7 @@ export class MediafileFilterListService extends FilterListService<Mediafile, Vie
             options: [
                 {
                     condition: 'application/pdf',
-                    label: 'is PDF file'
+                    label: 'Is PDF file'
                 },
                 {
                     condition: null,
