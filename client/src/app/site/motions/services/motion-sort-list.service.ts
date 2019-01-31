@@ -10,7 +10,7 @@ export class MotionSortListService extends SortListService<ViewMotion> {
         sortProperty: 'callListWeight',
         sortAscending: true,
         options: [
-            { property: 'callListWeight', label: 'Call List' },
+            { property: 'callListWeight', label: 'Call list' },
             { property: 'supporters' },
             { property: 'identifier' },
             { property: 'title' },
