@@ -69,7 +69,7 @@ export class CountdownListComponent extends BaseViewComponent implements OnInit 
     }
 
     /**
-     * Add a new Section.
+     * Add a new countdown.
      */
     public onPlusButton(): void {
         if (!this.countdownToCreate) {

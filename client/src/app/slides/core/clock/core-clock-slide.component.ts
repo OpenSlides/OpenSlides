@@ -32,7 +32,7 @@ export class CoreClockSlideComponent extends BaseSlideComponent<{}> implements O
         const hours = '0' + time.getHours();
         const minutes = '0' + time.getMinutes();
 
-        // Will display time in 10:30:23 format
+        // Will display time in hh:mm format
         this.time = hours.slice(-2) + ':' + minutes.slice(-2);
     }
 

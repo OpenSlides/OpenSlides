@@ -23,15 +23,14 @@ def user_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
     user_id = element.get("id")
 
     if user_id is None:
-        return {"error": "id is required for user slide"}
+        raise ProjectorElementException("id is required for user slide")
 
     try:
         user = all_data["users/user"][user_id]
     except KeyError:
         raise ProjectorElementException(f"user with id {user_id} does not exist")
 
-    return_value = {"user": get_user_name(all_data, user["id"])}
-    return return_value
+    return {"user": get_user_name(all_data, user["id"])}
 
 
 def get_user_name(all_data: AllData, user_id: int) -> str:

@@ -84,8 +84,12 @@ export class Projector extends BaseModel<Projector> {
      * @returns all removed unstable elements
      */
     public removeAllNonStableElements(): ProjectorElements {
-        const unstableElements = this.elements.filter(element => !element.stable);
-        this.elements = this.elements.filter(element => element.stable);
+        let unstableElements: ProjectorElements;
+        let stableElements: ProjectorElements;
+
+        [unstableElements, stableElements] = this.partitionArray(this.elements, element => !element.stable);
+
+        this.elements = stableElements;
         return unstableElements;
     }
 
@@ -99,8 +103,11 @@ export class Projector extends BaseModel<Projector> {
     }
 
     /**
-     * Must match everything. If a projectorelement does not have all keys
-     * to identify, it will be removed, if all existing keys match
+     * Removes and returns all projector elements, witch can be identified with the
+     * given element.
+     *
+     * @param element The element to remove
+     * @returns all removed projector elements
      */
     public removeElements(element: IdentifiableProjectorElement): ProjectorElements {
         let removedElements: ProjectorElements;
@@ -114,6 +121,14 @@ export class Projector extends BaseModel<Projector> {
         return removedElements;
     }
 
+    /**
+     * Splits up the array into two arrays. All elements with a true return value from the callback
+     * will be in the fist array, all others in the second one.
+     *
+     * @param array The array to split
+     * @param callback To evaluate every entry
+     * @returns the splitted array
+     */
     private partitionArray<T>(array: T[], callback: (element: T) => boolean): [T[], T[]] {
         return array.reduce(
             (result, element) => {

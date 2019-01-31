@@ -24,7 +24,8 @@
         <div *ngIf="!data.data.is_child" [innerHTML]="data.data.text"></div>
 
         <!-- Amendment text -->
-        <div *ngIf="data.data.is_child" [innerHTML]="data.data.amendment_paragraphs[0]"></div>
+        <div *ngIf="data.data.is_child && data.data.amendment_paragraphs"
+            [innerHTML]="data.data.amendment_paragraphs[0]"></div>
 
         <!-- Reason -->
         <div *ngIf="data.data.reason">
