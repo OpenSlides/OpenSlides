@@ -1,6 +1,7 @@
 import asyncio
 import json
 from typing import Any, Dict, List
+from unittest.mock import patch
 
 import pytest
 
@@ -302,6 +303,30 @@ async def test_update_restricted_data(element_cache):
             "app/collection2:2": '{"id": 2, "key": "restricted_value2"}',
             "_config:change_id": "0",
         }
+    )
+    # Make sure the lock is deleted
+    assert not await element_cache.cache_provider.get_lock("restricted_data_0")
+    # And the future is done
+    assert element_cache.restricted_data_cache_updater[0].done()
+
+
+@pytest.mark.asyncio
+async def test_update_restricted_data_full_restricted_elements(element_cache):
+    """
+    Tests that elements in the restricted_data cache, that are later hidden from
+    a user, gets deleted for this user.
+    """
+    element_cache.use_restricted_data_cache = True
+    await element_cache.update_restricted_data(0)
+    element_cache.cache_provider.change_id_data = {
+        1: {"app/collection1:1", "app/collection1:3"}
+    }
+
+    with patch("tests.unit.utils.cache_provider.restrict_elements", lambda x: []):
+        await element_cache.update_restricted_data(0)
+
+    assert decode_dict(element_cache.cache_provider.restricted_data[0]) == decode_dict(
+        {"_config:change_id": "1"}
     )
     # Make sure the lock is deleted
     assert not await element_cache.cache_provider.get_lock("restricted_data_0")
