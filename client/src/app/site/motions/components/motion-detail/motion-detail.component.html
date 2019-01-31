@@ -394,7 +394,7 @@
         </div>
 
         <!-- Selecting statute paragraphs for amendment -->
-        <div class="statute-amendment-selector" *ngIf="editMotion && statuteParagraphs.length > 0 && statutesEnabled">
+        <div class="statute-amendment-selector" *ngIf="newMotion && statuteParagraphs.length > 0 && statutesEnabled">
             <mat-checkbox formControlName="statute_amendment" (change)="onStatuteAmendmentChange($event)">
                 {{ 'Statute amendment' | translate }}
             </mat-checkbox>
@@ -509,7 +509,20 @@
             <editor formControlName="reason" [init]="tinyMceSettings" *ngIf="editMotion"></editor>
         </div>
 
-        <div class="extra-data">
+        <!-- Category form -->
+        <div class="content-field" *ngIf="newMotion && categoryObserver.value.length > 0">
+            <os-search-value-selector
+                ngDefaultControl
+                [form]="contentForm"
+                [formControl]="contentForm.get('category_id')"
+                [multiple]="false"
+                [includeNone]="true"
+                listname="{{ 'Category' | translate }}"
+                [InputListValues]="categoryObserver"
+            ></os-search-value-selector>
+        </div>
+
+        <div class="extra-data" *osPerms="'motion.can_manage'">
             <!-- Attachments -->
             <div *ngIf="motion.hasAttachments() || editMotion" class="content-field">
                 <div *ngIf="!editMotion">
@@ -530,19 +543,6 @@
                         [InputListValues]="mediafilesObserver"
                     ></os-search-value-selector>
                 </div>
-            </div>
-
-            <!-- Category form -->
-            <div class="content-field" *ngIf="newMotion && categoryObserver.value.length > 0">
-                <os-search-value-selector
-                    ngDefaultControl
-                    [form]="contentForm"
-                    [formControl]="contentForm.get('category_id')"
-                    [multiple]="false"
-                    [includeNone]="true"
-                    listname="{{ 'Category' | translate }}"
-                    [InputListValues]="categoryObserver"
-                ></os-search-value-selector>
             </div>
 
             <!-- Parent item -->
