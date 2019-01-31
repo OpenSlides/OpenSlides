@@ -7,15 +7,15 @@ import { MatDialog, MatExpansionPanel, MatSnackBar, MatCheckboxChange } from '@a
 import { take, takeWhile, multicast, skipWhile } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 
-import { AgendaRepositoryService } from 'app/site/agenda/services/agenda-repository.service';
+import { AgendaRepositoryService } from 'app/core/repositories/agenda/agenda-repository.service';
 import { BaseViewComponent } from '../../../base/base-view';
 import { Category } from '../../../../shared/models/motions/category';
-import { ChangeRecommendationRepositoryService } from '../../services/change-recommendation-repository.service';
+import { ChangeRecommendationRepositoryService } from '../../../../core/repositories/motions/change-recommendation-repository.service';
 import { ChangeRecoMode, LineNumberingMode, ViewMotion } from '../../models/view-motion';
 import { CreateMotion } from '../../models/create-motion';
-import { ConfigService } from '../../../../core/services/config.service';
-import { DataStoreService } from '../../../../core/services/data-store.service';
-import { DiffLinesInParagraph, LineRange } from '../../services/diff.service';
+import { ConfigService } from '../../../../core/ui-services/config.service';
+import { DataStoreService } from '../../../../core/core-services/data-store.service';
+import { DiffLinesInParagraph, LineRange } from '../../../../core/ui-services/diff.service';
 import { itemVisibilityChoices, Item } from 'app/shared/models/agenda/item';
 import { LocalPermissionsService } from '../../services/local-permissions.service';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
@@ -26,19 +26,19 @@ import {
     MotionChangeRecommendationComponentData
 } from '../motion-change-recommendation/motion-change-recommendation.component';
 import { MotionPdfExportService } from '../../services/motion-pdf-export.service';
-import { MotionRepositoryService } from '../../services/motion-repository.service';
+import { MotionRepositoryService } from '../../../../core/repositories/motions/motion-repository.service';
 import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
-import { PersonalNoteService } from '../../services/personal-note.service';
-import { PromptService } from 'app/core/services/prompt.service';
-import { StatuteParagraphRepositoryService } from '../../services/statute-paragraph-repository.service';
+import { PersonalNoteService } from '../../../../core/ui-services/personal-note.service';
+import { PromptService } from '../../../../core/ui-services/prompt.service';
+import { StatuteParagraphRepositoryService } from '../../../../core/repositories/motions/statute-paragraph-repository.service';
 import { User } from '../../../../shared/models/users/user';
 import { ViewChangeReco } from '../../models/view-change-reco';
 import { ViewCreateMotion } from '../../models/view-create-motion';
-import { ViewportService } from '../../../../core/services/viewport.service';
+import { ViewportService } from '../../../../core/ui-services/viewport.service';
 import { ViewUnifiedChange } from '../../models/view-unified-change';
 import { ViewStatuteParagraph } from '../../models/view-statute-paragraph';
 import { Workflow } from 'app/shared/models/motions/workflow';
-import { LinenumberingService } from '../../services/linenumbering.service';
+import { LinenumberingService } from '../../../../core/ui-services/linenumbering.service';
 
 /**
  * Component for the motion detail view

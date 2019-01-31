@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 
 import { BaseComponent } from '../../../base.component';
-import { ViewportService } from '../../../core/services/viewport.service';
+import { ViewportService } from '../../../core/ui-services/viewport.service';
 
 /**
  * Component for the motion comments view

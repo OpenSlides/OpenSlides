@@ -3,11 +3,11 @@ import { MatSnackBar } from '@angular/material';
 import { Papa } from 'ngx-papaparse';
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseImportService, NewEntry } from 'app/core/services/base-import.service';
+import { BaseImportService, NewEntry } from 'app/core/ui-services/base-import.service';
 import { CreateTopic } from './models/create-topic';
-import { DurationService } from 'app/core/services/duration.service';
+import { DurationService } from 'app/core/ui-services/duration.service';
 import { itemVisibilityChoices } from 'app/shared/models/agenda/item';
-import { TopicRepositoryService } from './services/topic-repository.service';
+import { TopicRepositoryService } from '../../core/repositories/agenda/topic-repository.service';
 import { ViewCreateTopic } from './models/view-create-topic';
 
 @Injectable({

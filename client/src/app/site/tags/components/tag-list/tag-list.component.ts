@@ -3,10 +3,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { Title } from '@angular/platform-browser';
 import { Tag } from '../../../../shared/models/core/tag';
 import { ListViewBaseComponent } from '../../../base/list-view-base';
-import { TagRepositoryService } from '../../services/tag-repository.service';
+import { TagRepositoryService } from '../../../../core/repositories/tags/tag-repository.service';
 import { ViewTag } from '../../models/view-tag';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { PromptService } from '../../../../core/services/prompt.service';
+import { PromptService } from '../../../../core/ui-services/prompt.service';
 import { MatSnackBar } from '@angular/material';
 
 /**

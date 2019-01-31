@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { ViewMotion, LineNumberingMode, ChangeRecoMode } from '../models/view-motion';
 import { MotionPdfService } from './motion-pdf.service';
-import { ConfigService } from 'app/core/services/config.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
 import { Category } from 'app/shared/models/motions/category';
 
 /**

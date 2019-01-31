@@ -1,22 +1,22 @@
 import { Injectable } from '@angular/core';
 
-import { FilterListService, OsFilter, OsFilterOption } from '../../../core/services/filter-list.service';
+import { BaseFilterListService, OsFilter, OsFilterOption } from '../../../core/ui-services/base-filter-list.service';
 import { Motion } from '../../../shared/models/motions/motion';
 import { ViewMotion } from '../models/view-motion';
-import { CategoryRepositoryService } from './category-repository.service';
-import { WorkflowRepositoryService } from './workflow-repository.service';
-import { StorageService } from '../../../core/services/storage.service';
-import { MotionRepositoryService } from './motion-repository.service';
-import { MotionBlockRepositoryService } from './motion-block-repository.service';
-import { MotionCommentSectionRepositoryService } from './motion-comment-section-repository.service';
+import { CategoryRepositoryService } from '../../../core/repositories/motions/category-repository.service';
+import { WorkflowRepositoryService } from '../../../core/repositories/motions/workflow-repository.service';
+import { StorageService } from '../../../core/core-services/storage.service';
+import { MotionRepositoryService } from '../../../core/repositories/motions/motion-repository.service';
+import { MotionBlockRepositoryService } from '../../../core/repositories/motions/motion-block-repository.service';
+import { MotionCommentSectionRepositoryService } from '../../../core/repositories/motions/motion-comment-section-repository.service';
 import { TranslateService } from '@ngx-translate/core';
-import { ConfigService } from 'app/core/services/config.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
 import { ViewWorkflow } from '../models/view-workflow';
 
 @Injectable({
     providedIn: 'root'
 })
-export class MotionFilterListService extends FilterListService<Motion, ViewMotion> {
+export class MotionFilterListService extends BaseFilterListService<Motion, ViewMotion> {
     protected name = 'Motion';
 
     /**

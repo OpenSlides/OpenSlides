@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { PdfDocumentService } from 'app/core/services/pdf-document.service';
+import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
 import { UserPdfService } from './user-pdf.service';
 import { ViewUser } from '../models/view-user';
 

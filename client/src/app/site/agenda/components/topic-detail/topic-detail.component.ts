@@ -7,12 +7,12 @@ import { MatSnackBar } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 
 import { BaseViewComponent } from 'app/site/base/base-view';
-import { PromptService } from 'app/core/services/prompt.service';
-import { TopicRepositoryService } from '../../services/topic-repository.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
+import { TopicRepositoryService } from '../../../../core/repositories/agenda/topic-repository.service';
 import { ViewTopic } from '../../models/view-topic';
-import { OperatorService } from 'app/core/services/operator.service';
+import { OperatorService } from 'app/core/core-services/operator.service';
 import { BehaviorSubject } from 'rxjs';
-import { DataStoreService } from 'app/core/services/data-store.service';
+import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { Item, itemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { CreateTopic } from '../../models/create-topic';

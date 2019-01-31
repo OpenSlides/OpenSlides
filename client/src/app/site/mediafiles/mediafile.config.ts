@@ -1,9 +1,17 @@
-import { AppConfig } from '../base/app-config';
+import { AppConfig } from '../../core/app-config';
 import { Mediafile } from '../../shared/models/mediafiles/mediafile';
+import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
 
 export const MediafileAppConfig: AppConfig = {
     name: 'mediafiles',
-    models: [{ collectionString: 'mediafiles/mediafile', model: Mediafile, searchOrder: 5 }],
+    models: [
+        {
+            collectionString: 'mediafiles/mediafile',
+            model: Mediafile,
+            searchOrder: 5,
+            repository: MediafileRepositoryService
+        }
+    ],
     mainMenuEntries: [
         {
             route: '/mediafiles',

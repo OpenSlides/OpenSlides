@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { OperatorService } from './core/services/operator.service';
-import { LoginDataService } from './core/services/login-data.service';
-import { ConfigService } from './core/services/config.service';
-import { ConstantsService } from './core/services/constants.service';
-import { ServertimeService } from './core/services/servertime.service';
-import { ThemeService } from './core/services/theme.service';
+import { OperatorService } from './core/core-services/operator.service';
+import { LoginDataService } from './core/ui-services/login-data.service';
+import { ConfigService } from './core/ui-services/config.service';
+import { ConstantsService } from './core/ui-services/constants.service';
+import { ServertimeService } from './core/core-services/servertime.service';
+import { ThemeService } from './core/ui-services/theme.service';
 
 /**
  * Angular's global App Component

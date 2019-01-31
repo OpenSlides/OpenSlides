@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { WebsocketService } from 'app/core/services/websocket.service';
+import { WebsocketService } from 'app/core/core-services/websocket.service';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { ProjectorElement } from 'app/shared/models/core/projector';
 

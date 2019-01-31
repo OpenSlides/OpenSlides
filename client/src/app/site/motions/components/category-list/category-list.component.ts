@@ -4,12 +4,12 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
 import { Category } from '../../../../shared/models/motions/category';
-import { CategoryRepositoryService } from '../../services/category-repository.service';
+import { CategoryRepositoryService } from '../../../../core/repositories/motions/category-repository.service';
 import { ViewCategory } from '../../models/view-category';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Motion } from '../../../../shared/models/motions/motion';
 import { SortingListComponent } from '../../../../shared/components/sorting-list/sorting-list.component';
-import { PromptService } from 'app/core/services/prompt.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 import { BaseViewComponent } from '../../../base/base-view';
 import { MatSnackBar } from '@angular/material';
 

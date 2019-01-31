@@ -1,14 +1,21 @@
-import { AppConfig } from '../base/app-config';
+import { AppConfig } from '../../core/app-config';
 import { Projector } from 'app/shared/models/core/projector';
 import { Countdown } from 'app/shared/models/core/countdown';
 import { ProjectorMessage } from 'app/shared/models/core/projector-message';
+import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
+import { CountdownRepositoryService } from 'app/core/repositories/projector/countdown-repository.service';
+import { ProjectorMessageRepositoryService } from 'app/core/repositories/projector/projectormessage-repository.service';
 
 export const ProjectorAppConfig: AppConfig = {
     name: 'projector',
     models: [
-        { collectionString: 'core/projector', model: Projector },
-        { collectionString: 'core/countdown', model: Countdown },
-        { collectionString: 'core/projector-message', model: ProjectorMessage }
+        { collectionString: 'core/projector', model: Projector, repository: ProjectorRepositoryService },
+        { collectionString: 'core/countdown', model: Countdown, repository: CountdownRepositoryService },
+        {
+            collectionString: 'core/projector-message',
+            model: ProjectorMessage,
+            repository: ProjectorMessageRepositoryService
+        }
     ],
     mainMenuEntries: [
         {

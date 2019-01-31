@@ -6,9 +6,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { BaseViewModel } from '../../../site/base/base-view-model';
 import { OsSortBottomSheetComponent } from './os-sort-bottom-sheet/os-sort-bottom-sheet.component';
 import { FilterMenuComponent } from './filter-menu/filter-menu.component';
-import { OsSortingItem } from '../../../core/services/sort-list.service';
-import { SortListService } from '../../../core/services/sort-list.service';
-import { ViewportService } from '../../../core/services/viewport.service';
+import { OsSortingItem } from '../../../core/ui-services/base-sort-list.service';
+import { BaseSortListService } from '../../../core/ui-services/base-sort-list.service';
+import { ViewportService } from '../../../core/ui-services/viewport.service';
 
 /**
  * Reusable bar for list views, offering sorting and filter options.
@@ -34,7 +34,7 @@ export class OsSortFilterBarComponent<V extends BaseViewModel> {
      * The currently active sorting service for the list view
      */
     @Input()
-    public sortService: SortListService<V>;
+    public sortService: BaseSortListService<V>;
 
     /** Optional number to overwrite the display of the filtered data count, if any additional filters
      * (e.g. the angular search bar) are applied on top of these filters

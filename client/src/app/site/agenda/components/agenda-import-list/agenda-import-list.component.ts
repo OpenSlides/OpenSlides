@@ -6,8 +6,8 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { AgendaImportService } from '../../agenda-import.service';
 import { BaseImportListComponent } from 'app/site/base/base-import-list';
-import { DurationService } from 'app/core/services/duration.service';
-import { FileExportService } from 'app/core/services/file-export.service';
+import { DurationService } from 'app/core/ui-services/duration.service';
+import { FileExportService } from 'app/core/ui-services/file-export.service';
 import { itemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { ViewCreateTopic } from '../../models/view-create-topic';
 

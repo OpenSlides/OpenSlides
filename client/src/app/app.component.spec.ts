@@ -1,7 +1,7 @@
 import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { E2EImportsModule } from './../e2e-imports.module';
-import { ServertimeService } from './core/services/servertime.service';
+import { ServertimeService } from './core/core-services/servertime.service';
 
 describe('AppComponent', () => {
     let servertimeService;

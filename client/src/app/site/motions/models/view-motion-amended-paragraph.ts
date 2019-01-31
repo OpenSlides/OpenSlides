@@ -1,6 +1,6 @@
 import { ViewUnifiedChange, ViewUnifiedChangeType } from './view-unified-change';
 import { ViewMotion } from './view-motion';
-import { LineRange } from '../services/diff.service';
+import { LineRange } from '../../../core/ui-services/diff.service';
 import { MergeAmendment } from '../../../shared/models/motions/workflow-state';
 
 /**

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { ProjectorService } from 'app/core/services/projector.service';
+import { ProjectorService } from 'app/core/core-services/projector.service';
 import { ViewProjector } from '../models/view-projector';
 import { IdentifiableProjectorElement } from 'app/shared/models/core/projector';
 

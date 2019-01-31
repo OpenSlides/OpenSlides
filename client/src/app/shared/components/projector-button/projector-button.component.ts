@@ -6,8 +6,8 @@ import {
     isProjectable,
     isProjectorElementBuildDeskriptor
 } from 'app/site/base/projectable';
-import { ProjectionDialogService } from 'app/core/services/projection-dialog.service';
-import { ProjectorService } from '../../../core/services/projector.service';
+import { ProjectorService } from 'app/core/core-services/projector.service';
+import { ProjectionDialogService } from 'app/core/ui-services/projection-dialog.service';
 
 /**
  * The projector button to project something on the projector.

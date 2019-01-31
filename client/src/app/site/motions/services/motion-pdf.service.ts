@@ -3,11 +3,11 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 import { ViewMotion, LineNumberingMode, ChangeRecoMode } from '../models/view-motion';
-import { MotionRepositoryService } from './motion-repository.service';
-import { ConfigService } from 'app/core/services/config.service';
-import { ChangeRecommendationRepositoryService } from './change-recommendation-repository.service';
+import { MotionRepositoryService } from '../../../core/repositories/motions/motion-repository.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
+import { ChangeRecommendationRepositoryService } from '../../../core/repositories/motions/change-recommendation-repository.service';
 import { ViewUnifiedChange } from '../models/view-unified-change';
-import { HtmlToPdfService } from 'app/core/services/html-to-pdf.service';
+import { HtmlToPdfService } from 'app/core/ui-services/html-to-pdf.service';
 
 /**
  * Converts a motion to pdf. Can be used from the motion detail view or executed on a list of motions

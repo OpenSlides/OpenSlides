@@ -6,8 +6,8 @@ import { MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 
 import { ViewUser } from '../../models/view-user';
-import { UserRepositoryService } from '../../services/user-repository.service';
-import { OperatorService } from '../../../../core/services/operator.service';
+import { UserRepositoryService } from '../../../../core/repositories/users/user-repository.service';
+import { OperatorService } from '../../../../core/core-services/operator.service';
 import { BaseViewComponent } from '../../../../site/base/base-view';
 
 /**

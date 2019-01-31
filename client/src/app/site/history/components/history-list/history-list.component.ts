@@ -6,7 +6,7 @@ import { Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
 import { ListViewBaseComponent } from 'app/site/base/list-view-base';
-import { HistoryRepositoryService } from '../../services/history-repository.service';
+import { HistoryRepositoryService } from '../../../../core/repositories/history/history-repository.service';
 import { ViewHistory } from '../../models/view-history';
 
 /**

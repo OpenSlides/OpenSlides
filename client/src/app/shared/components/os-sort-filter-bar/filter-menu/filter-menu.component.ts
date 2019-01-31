@@ -1,5 +1,5 @@
 import { Output, Component, OnInit, EventEmitter, Input } from '@angular/core';
-import { FilterListService, OsFilterOption } from '../../../../core/services/filter-list.service';
+import { BaseFilterListService, OsFilterOption } from '../../../../core/ui-services/base-filter-list.service';
 
 /**
  * Component for selecting the filters in a filter menu.
@@ -30,7 +30,7 @@ export class FilterMenuComponent implements OnInit {
      * the FilterListService; unsure about how to get them in any other way.
      */
     @Input()
-    public service: FilterListService<any, any>; // TODO (M, V)
+    public service: BaseFilterListService<any, any>; // TODO (M, V)
 
     /**
      * Constructor. Does nothing.

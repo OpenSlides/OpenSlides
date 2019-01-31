@@ -5,18 +5,18 @@ import { MatSnackBar, MatDialog } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 
 import { AgendaFilterListService } from '../../services/agenda-filter-list.service';
-import { AgendaRepositoryService } from '../../services/agenda-repository.service';
+import { AgendaRepositoryService } from '../../../../core/repositories/agenda/agenda-repository.service';
 import { ListViewBaseComponent } from 'app/site/base/list-view-base';
-import { PromptService } from '../../../../core/services/prompt.service';
+import { PromptService } from '../../../../core/ui-services/prompt.service';
 import { ViewItem } from '../../models/view-item';
 
 import { AgendaCsvExportService } from '../../services/agenda-csv-export.service';
 import { AgendaPdfService } from '../../services/agenda-pdf.service';
-import { ConfigService } from 'app/core/services/config.service';
-import { DurationService } from 'app/core/services/duration.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
+import { DurationService } from 'app/core/ui-services/duration.service';
 import { ItemInfoDialogComponent } from '../item-info-dialog/item-info-dialog.component';
-import { PdfDocumentService } from 'app/core/services/pdf-document.service';
-import { ViewportService } from 'app/core/services/viewport.service';
+import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
+import { ViewportService } from 'app/core/ui-services/viewport.service';
 
 /**
  * List view for the agenda.

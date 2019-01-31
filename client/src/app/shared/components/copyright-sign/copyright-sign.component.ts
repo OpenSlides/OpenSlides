@@ -4,8 +4,8 @@
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialogRef, MatDialog } from '@angular/material';
-import { OperatorService } from '../../../core/services/operator.service';
-import { NotifyService, NotifyResponse } from '../../../core/services/notify.service';
+import { OperatorService } from '../../../core/core-services/operator.service';
+import { NotifyService, NotifyResponse } from '../../../core/core-services/notify.service';
 import { Subscription } from 'rxjs';
 
 /**

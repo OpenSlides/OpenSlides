@@ -5,11 +5,11 @@ import { MatSnackBar } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { ProjectorRepositoryService } from '../../services/projector-repository.service';
+import { ProjectorRepositoryService } from '../../../../core/repositories/projector/projector-repository.service';
 import { ViewProjector } from '../../models/view-projector';
 import { Projector } from 'app/shared/models/core/projector';
 import { BaseViewComponent } from 'app/site/base/base-view';
-import { PromptService } from 'app/core/services/prompt.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ClockSlideService } from '../../services/clock-slide.service';
 
 /**

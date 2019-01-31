@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { SortListService, OsSortingDefinition } from '../../../core/services/sort-list.service';
+import { BaseSortListService, OsSortingDefinition } from '../../../core/ui-services/base-sort-list.service';
 import { ViewUser } from '../models/view-user';
 
 @Injectable({
     providedIn: 'root'
 })
-export class UserSortListService extends SortListService<ViewUser> {
+export class UserSortListService extends BaseSortListService<ViewUser> {
     public sortOptions: OsSortingDefinition<ViewUser> = {
         sortProperty: 'first_name',
         sortAscending: true,

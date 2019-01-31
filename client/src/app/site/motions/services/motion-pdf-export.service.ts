@@ -3,9 +3,9 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 import { MotionPdfService } from './motion-pdf.service';
-import { PdfDocumentService } from 'app/core/services/pdf-document.service';
+import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
 import { ViewMotion, LineNumberingMode, ChangeRecoMode } from '../models/view-motion';
-import { ConfigService } from 'app/core/services/config.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
 import { MotionPdfCatalogService } from './motion-pdf-catalog.service';
 
 /**

@@ -2,7 +2,7 @@ import { Directive, Input, TemplateRef, ViewContainerRef, OnDestroy, OnInit } fr
 
 import { Subscription } from 'rxjs';
 
-import { OperatorService, Permission } from 'app/core/services/operator.service';
+import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { OpenSlidesComponent } from 'app/openslides.component';
 
 /**

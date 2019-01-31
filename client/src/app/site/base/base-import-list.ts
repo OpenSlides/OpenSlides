@@ -3,7 +3,7 @@ import { ViewChild, OnInit } from '@angular/core';
 
 import { BaseViewComponent } from './base-view';
 import { BaseViewModel } from './base-view-model';
-import { NewEntry, ValueLabelCombination, BaseImportService } from 'app/core/services/base-import.service';
+import { NewEntry, ValueLabelCombination, BaseImportService } from 'app/core/ui-services/base-import.service';
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 

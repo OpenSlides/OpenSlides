@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
 
-import { FilterListService, OsFilter } from '../../../core/services/filter-list.service';
-import { StorageService } from '../../../core/services/storage.service';
+import { BaseFilterListService, OsFilter } from '../../../core/ui-services/base-filter-list.service';
+import { StorageService } from '../../../core/core-services/storage.service';
 import { User } from '../../../shared/models/users/user';
 import { ViewUser } from '../models/view-user';
-import { GroupRepositoryService } from './group-repository.service';
-import { UserRepositoryService } from './user-repository.service';
+import { GroupRepositoryService } from '../../../core/repositories/users/group-repository.service';
+import { UserRepositoryService } from '../../../core/repositories/users/user-repository.service';
 
 @Injectable({
     providedIn: 'root'
 })
-export class UserFilterListService extends FilterListService<User, ViewUser> {
+export class UserFilterListService extends BaseFilterListService<User, ViewUser> {
     protected name = 'User';
 
     private userGroupFilterOptions = {

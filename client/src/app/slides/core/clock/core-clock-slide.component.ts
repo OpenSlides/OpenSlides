@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { BaseSlideComponent } from 'app/slides/base-slide-component';
-import { ServertimeService } from 'app/core/services/servertime.service';
+import { ServertimeService } from 'app/core/core-services/servertime.service';
 import { Subscription } from 'rxjs';
 
 @Component({

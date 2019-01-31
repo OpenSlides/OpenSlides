@@ -4,9 +4,9 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
 import { BaseImportListComponent } from 'app/site/base/base-import-list';
-import { FileExportService } from 'app/core/services/file-export.service';
+import { FileExportService } from 'app/core/ui-services/file-export.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { NewEntry } from 'app/core/services/base-import.service';
+import { NewEntry } from 'app/core/ui-services/base-import.service';
 import { UserImportService } from '../../services/user-import.service';
 import { ViewUser } from '../../models/view-user';
 

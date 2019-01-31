@@ -1,5 +1,5 @@
 import { TranslateDefaultParser, TranslateStore } from '@ngx-translate/core';
-import { ConfigService } from '../services/config.service';
+import { ConfigService } from '../ui-services/config.service';
 import { Injectable } from '@angular/core';
 
 export interface CustomTranslation {

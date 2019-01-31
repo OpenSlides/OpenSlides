@@ -7,7 +7,6 @@ import { LoginLegalNoticeComponent } from './site/login/components/login-legal-n
 import { LoginPrivacyPolicyComponent } from './site/login/components/login-privacy-policy/login-privacy-policy.component';
 import { ResetPasswordComponent } from './site/login/components/reset-password/reset-password.component';
 import { ResetPasswordConfirmComponent } from './site/login/components/reset-password-confirm/reset-password-confirm.component';
-import { FullscreenProjectorComponent } from './site/projector/components/fullscreen-projector/fullscreen-projector.component';
 
 /**
  * Global app routing
@@ -24,8 +23,7 @@ const routes: Routes = [
             { path: 'privacypolicy', component: LoginPrivacyPolicyComponent }
         ]
     },
-    { path: 'projector', component: FullscreenProjectorComponent },
-    { path: 'projector/:id', component: FullscreenProjectorComponent },
+    { path: 'projector', loadChildren: './fullscreen-projector/fullscreen-projector.module#FullscreenProjectorModule' },
     { path: '', loadChildren: './site/site.module#SiteModule' },
     { path: '**', redirectTo: '' }
 ];
