@@ -1,9 +1,11 @@
 import { Component, OnInit, Input, Output, EventEmitter, ContentChild, TemplateRef, OnDestroy } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+
+import { TranslateService } from '@ngx-translate/core';
+import { Observable, Subscription } from 'rxjs';
+
 import { Selectable } from '../selectable';
 import { EmptySelectable } from '../empty-selectable';
-import { Observable, Subscription } from 'rxjs';
 
 /**
  * Reusable Sorting List

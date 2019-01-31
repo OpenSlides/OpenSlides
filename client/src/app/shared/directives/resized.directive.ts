@@ -1,4 +1,5 @@
 import { OnInit, ElementRef, Directive, Input } from '@angular/core';
+
 import { ResizeSensor } from 'css-element-queries';
 import { Subject } from 'rxjs';
 
