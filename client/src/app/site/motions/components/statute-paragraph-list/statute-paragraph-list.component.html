@@ -40,7 +40,7 @@
         <button mat-button (click)="create()">
             <span translate>Save</span>
         </button>
-        <button mat-button (click)="onCancel()">
+        <button mat-button (click)="onCancelCreate()">
             <span translate>Cancel</span>
         </button>
     </mat-card-actions>
@@ -110,8 +110,12 @@
 </mat-card>
 
 <mat-menu #commentMenu="matMenu">
-    <button mat-menu-item (click)="sortStatuteParagraphs()">
-        <mat-icon>sort</mat-icon>
-        <span translate>Sort ...</span>
+    <button mat-menu-item (click)="onCsvExport()">
+        <mat-icon>archive</mat-icon>
+        <span translate>Export as CSV</span>
+    </button>
+    <button mat-menu-item *osPerms="'motions.can_manage'" routerLink="import">
+        <mat-icon>save_alt</mat-icon>
+        <span translate>Import</span><span>&nbsp;...</span>
     </button>
 </mat-menu>

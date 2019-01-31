@@ -10,6 +10,7 @@ import { ViewStatuteParagraph } from '../../models/view-statute-paragraph';
 import { StatuteParagraphRepositoryService } from '../../services/statute-paragraph-repository.service';
 import { BaseViewComponent } from '../../../base/base-view';
 import { MatSnackBar } from '@angular/material';
+import { StatuteCsvExportService } from '../../services/statute-csv-export.service';
 
 /**
  * List view for the statute paragraphs.
@@ -38,13 +39,15 @@ export class StatuteParagraphListComponent extends BaseViewComponent implements 
     public editId: number | null;
 
     /**
-     * The usual component constructor
+     * The usual component constructor. Initializes the forms
+     *
      * @param titleService
      * @param translate
      * @param matSnackBar
      * @param repo
      * @param formBuilder
      * @param promptService
+     * @param csvExportService
      */
     public constructor(
         titleService: Title,
@@ -52,7 +55,8 @@ export class StatuteParagraphListComponent extends BaseViewComponent implements 
         matSnackBar: MatSnackBar,
         private repo: StatuteParagraphRepositoryService,
         private formBuilder: FormBuilder,
-        private promptService: PromptService
+        private promptService: PromptService,
+        private csvExportService: StatuteCsvExportService
     ) {
         super(titleService, translate, matSnackBar);
 
@@ -199,5 +203,12 @@ export class StatuteParagraphListComponent extends BaseViewComponent implements 
      */
     public onCancelUpdate(): void {
         this.editId = null;
+    }
+
+    /**
+     * Triggers a csv export of the statute paragraphs
+     */
+    public onCsvExport(): void {
+        this.csvExportService.exportStatutes(this.statuteParagraphs);
     }
 }

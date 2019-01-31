@@ -11,6 +11,7 @@ import { MotionDetailComponent } from './components/motion-detail/motion-detail.
 import { MotionImportListComponent } from './components/motion-import-list/motion-import-list.component';
 import { MotionListComponent } from './components/motion-list/motion-list.component';
 import { SpeakerListComponent } from '../agenda/components/speaker-list/speaker-list.component';
+import { StatuteImportListComponent } from './components/statute-paragraph-list/statute-import-list/statute-import-list.component';
 import { StatuteParagraphListComponent } from './components/statute-paragraph-list/statute-paragraph-list.component';
 
 const routes: Routes = [
@@ -18,6 +19,7 @@ const routes: Routes = [
     { path: 'category', component: CategoryListComponent },
     { path: 'comment-section', component: MotionCommentSectionListComponent },
     { path: 'statute-paragraphs', component: StatuteParagraphListComponent },
+    { path: 'statute-paragraphs/import', component: StatuteImportListComponent },
     { path: 'call-list', component: CallListComponent },
     { path: 'blocks', component: MotionBlockListComponent },
     { path: 'blocks/:id', component: MotionBlockDetailComponent },

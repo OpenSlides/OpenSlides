@@ -22,6 +22,7 @@ import { ManageSubmittersComponent } from './components/manage-submitters/manage
 import { MotionPollComponent } from './components/motion-poll/motion-poll.component';
 import { MotionPollDialogComponent } from './components/motion-poll/motion-poll-dialog.component';
 import { MotionExportDialogComponent } from './components/motion-export-dialog/motion-export-dialog.component';
+import { StatuteImportListComponent } from './components/statute-paragraph-list/statute-import-list/statute-import-list.component';
 
 @NgModule({
     imports: [CommonModule, MotionsRoutingModule, SharedModule],
@@ -44,7 +45,8 @@ import { MotionExportDialogComponent } from './components/motion-export-dialog/m
         ManageSubmittersComponent,
         MotionPollComponent,
         MotionPollDialogComponent,
-        MotionExportDialogComponent
+        MotionExportDialogComponent,
+        StatuteImportListComponent
     ],
     entryComponents: [
         MotionChangeRecommendationComponent,
