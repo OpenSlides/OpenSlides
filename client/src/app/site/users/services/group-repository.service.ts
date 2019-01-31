@@ -10,11 +10,19 @@ import { Identifiable } from '../../../shared/models/base/identifiable';
 import { ViewGroup } from '../models/view-group';
 
 /**
+ * Shape of a permission
+ */
+interface Permission {
+    display_name: string;
+    value: string;
+}
+
+/**
  * Set rules to define the shape of an app permission
  */
 interface AppPermission {
     name: string;
-    permissions: string[];
+    permissions: Permission[];
 }
 
 /**
@@ -55,7 +63,7 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group> {
      * @param perm certain permission as string
      * @param appName Indicates the header in the Permission Matrix
      */
-    private addAppPerm(appId: number, perm: string, appName: string): void {
+    private addAppPerm(appId: number, perm: Permission, appName: string): void {
         if (!this.appPermissions[appId]) {
             this.appPermissions[appId] = {
                 name: appName,
@@ -70,7 +78,7 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group> {
      */
     private sortPermsPerApp(): void {
         this.constants.get('permissions').subscribe(perms => {
-            perms.forEach(perm => {
+            for (const perm of perms) {
                 // extract the apps name
                 const permApp = perm.value.split('.')[0];
                 switch (permApp) {
@@ -88,7 +96,7 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group> {
                         this.addAppPerm(2, perm, 'Motions');
                         break;
                     case 'assignments':
-                        this.addAppPerm(3, perm, 'Assignments');
+                        this.addAppPerm(3, perm, 'Elections');
                         break;
                     case 'mediafiles':
                         this.addAppPerm(4, perm, 'Mediafiles');
@@ -107,7 +115,36 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group> {
                         this.addAppPerm(pluginId, perm, displayName);
                         break;
                 }
-            });
+            }
+            this.sortPermsByPower();
+        });
+    }
+
+    /**
+     * sort each app: first all permission with 'see', then 'manage', then the rest
+     * save the permissions in different lists an concat them in the right order together
+     * Special Users: the two "see"-permissions are normally swapped. To create the right
+     * order, we could simply reverse the whole permissions.
+     */
+    private sortPermsByPower(): void {
+        this.appPermissions.forEach((app: AppPermission, index: number) => {
+            if (index === 5) {
+                app.permissions.reverse();
+            } else {
+                const see = [];
+                const manage = [];
+                const others = [];
+                for (const perm of app.permissions) {
+                    if (perm.value.indexOf('see') > -1) {
+                        see.push(perm);
+                    } else if (perm.value.indexOf('manage') > -1) {
+                        manage.push(perm);
+                    } else {
+                        others.push(perm);
+                    }
+                }
+                app.permissions = see.concat(manage.concat(others));
+            }
         });
     }
 
