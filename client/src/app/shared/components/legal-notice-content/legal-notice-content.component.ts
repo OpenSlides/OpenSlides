@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+
 import { TranslateService } from '@ngx-translate/core';
+
 import { LoginDataService } from '../../../core/services/login-data.service';
 import { environment } from 'environments/environment';
 import { HttpService } from '../../../core/services/http.service';

@@ -1,5 +1,6 @@
 import { Input, Output, Component, ViewChild, EventEmitter } from '@angular/core';
 import { MatBottomSheet } from '@angular/material';
+
 import { TranslateService } from '@ngx-translate/core';
 
 import { BaseViewModel } from '../../../site/base/base-view-model';

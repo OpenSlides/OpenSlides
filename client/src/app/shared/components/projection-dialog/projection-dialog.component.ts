@@ -1,5 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { DataStoreService } from 'app/core/services/data-store.service';
 import { Projector, IdentifiableProjectorElement } from 'app/shared/models/core/projector';

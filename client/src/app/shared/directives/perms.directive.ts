@@ -1,4 +1,6 @@
-import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Directive, Input, TemplateRef, ViewContainerRef, OnDestroy, OnInit } from '@angular/core';
+
+import { Subscription } from 'rxjs';
 
 import { OperatorService, Permission } from 'app/core/services/operator.service';
 import { OpenSlidesComponent } from 'app/openslides.component';
@@ -13,7 +15,7 @@ import { OpenSlidesComponent } from 'app/openslides.component';
 @Directive({
     selector: '[osPerms]'
 })
-export class PermsDirective extends OpenSlidesComponent {
+export class PermsDirective extends OpenSlidesComponent implements OnInit, OnDestroy {
     /**
      * Holds the required permissions the access a feature
      */
@@ -46,6 +48,8 @@ export class PermsDirective extends OpenSlidesComponent {
      */
     private complement: boolean;
 
+    private operatorSubscription: Subscription | null;
+
     /**
      * Constructs the directive once. Observes the operator for it's groups so the
      * directive can perform changes dynamically
@@ -60,11 +64,19 @@ export class PermsDirective extends OpenSlidesComponent {
         private operator: OperatorService
     ) {
         super();
+    }
 
+    public ngOnInit(): void {
         // observe groups of operator, so the directive can actively react to changes
-        this.operator.getObservable().subscribe(content => {
+        this.operatorSubscription = this.operator.getObservable().subscribe(() => {
             this.updateView();
         });
+    }
+
+    public ngOnDestroy(): void {
+        if (this.operatorSubscription) {
+            this.operatorSubscription.unsubscribe();
+        }
     }
 
     /**

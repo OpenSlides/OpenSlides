@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+
 import { Projectable, ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { ProjectionDialogService } from 'app/core/services/projection-dialog.service';
 import { ProjectorService } from '../../../core/services/projector.service';
