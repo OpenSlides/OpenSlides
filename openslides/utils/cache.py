@@ -286,19 +286,26 @@ class ElementCache:
                     # The user_change_id is lower then the lowest change_id in the cache.
                     # The whole restricted_data for that user has to be recreated.
                     full_data_elements = await self.get_all_full_data()
+                    deleted_elements = []
                     await self.cache_provider.del_restricted_data(user_id)
-                else:
-                    # Remove deleted elements
-                    if deleted_elements:
-                        await self.cache_provider.del_elements(
-                            deleted_elements, user_id
-                        )
 
                 mapping = {}
                 for collection_string, full_data in full_data_elements.items():
                     restricter = self.cachables[collection_string].restrict_elements
-                    elements = await restricter(user_id, full_data)
-                    for element in elements:
+                    restricted_elements = await restricter(user_id, full_data)
+
+                    # find all elements the user can not see at all
+                    full_data_ids = set(element["id"] for element in full_data)
+                    restricted_data_ids = set(
+                        element["id"] for element in restricted_elements
+                    )
+                    for item_id in full_data_ids - restricted_data_ids:
+                        deleted_elements.append(
+                            get_element_id(collection_string, item_id)
+                        )
+
+                    for element in restricted_elements:
+                        # The user can see the element
                         mapping.update(
                             {
                                 get_element_id(
@@ -308,6 +315,9 @@ class ElementCache:
                         )
                 mapping["_config:change_id"] = str(change_id)
                 await self.cache_provider.update_restricted_data(user_id, mapping)
+                # Remove deleted elements
+                if deleted_elements:
+                    await self.cache_provider.del_elements(deleted_elements, user_id)
             # Unset the lock
             await self.cache_provider.del_lock(lock_name)
             future.set_result(1)
