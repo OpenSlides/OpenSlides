@@ -52,7 +52,8 @@ export class StatuteCsvExportService {
         ];
         this.fileExport.saveFile(
             rows.join('\n'),
-            `${this.translate.instant('Statutes')} - ${this.translate.instant('example')}.csv`
+            `${this.translate.instant('Statutes')} - ${this.translate.instant('example')}.csv`,
+            'text/csv'
         );
     }
 }
