@@ -111,7 +111,20 @@
                 <mat-icon>{{ motion.star ? 'star' : 'star_border' }}</mat-icon>
             </button>
         </div>
-        <span class="main-nav-color title-font"><span translate>Sequential number</span>&nbsp;{{ motion.id }}</span>
+
+        <!-- Sequential number -->
+        <span class="main-nav-color title-font">
+            <span translate>Sequential number</span>&nbsp;{{ motion.id }}
+            <span *ngIf="motion.parent_id">
+                &#xb7;
+                <span>
+                    <span translate>Amendment to</span>&nbsp;<a
+                    [routerLink]="motion.parent.getDetailStateURL()">{{
+                        motion.parent.identifier || motion.parent.title
+                    }}</a>
+                </span>
+            </span>
+        </span>
     </div>
 
     <ng-container *ngIf="vp.isMobile; then mobileView; else desktopView"></ng-container>
@@ -369,6 +382,14 @@
         <div *ngIf="!editMotion && motion.origin">
             <h4 translate>Origin</h4>
             {{ motion.origin }}
+        </div>
+
+        <!-- Ammendments -->
+        <div *ngIf="!editMotion && amendments && amendments.length > 0">
+            <h4 translate>Amendments</h4>
+            <div *ngFor="let amendment of amendments">
+                <a [routerLink]="amendment.motion.getDetailStateURL()">{{ amendment.identifierOrTitle }}</a>
+            </div>
         </div>
 
         <!-- motion polls -->

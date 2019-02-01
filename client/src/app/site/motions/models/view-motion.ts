@@ -53,6 +53,7 @@ export class ViewMotion extends BaseProjectableModel {
     protected _block: MotionBlock;
     protected _attachments: Mediafile[];
     protected _tags: Tag[];
+    protected _parent: Motion;
     public personalNote: PersonalNoteContent;
 
     /**
@@ -238,6 +239,10 @@ export class ViewMotion extends BaseProjectableModel {
         return this._tags ? this._tags : null;
     }
 
+    public get parent(): Motion {
+        return this._parent;
+    }
+
     /**
      * @returns the creation date as Date object
      */
@@ -320,7 +325,8 @@ export class ViewMotion extends BaseProjectableModel {
         item?: Item,
         block?: MotionBlock,
         attachments?: Mediafile[],
-        tags?: Tag[]
+        tags?: Tag[],
+        parent?: Motion
     ) {
         super();
         this._motion = motion;
@@ -333,6 +339,7 @@ export class ViewMotion extends BaseProjectableModel {
         this._block = block;
         this._attachments = attachments;
         this._tags = tags;
+        this._parent = parent;
     }
 
     public getTitle(): string {
@@ -374,6 +381,8 @@ export class ViewMotion extends BaseProjectableModel {
             this.updateAttachments(update as Mediafile);
         } else if (update instanceof Tag) {
             this.updateTags(update as Tag);
+        } else if (update instanceof Motion && update.id !== this.id) {
+            this.updateParent(update as Motion);
         }
     }
 
@@ -462,6 +471,14 @@ export class ViewMotion extends BaseProjectableModel {
         }
     }
 
+    public updateParent(update: Motion): void {
+        if (this.motion) {
+            if (this.parent_id && this.parent_id === update.id) {
+                this._parent = update as Motion;
+            }
+        }
+    }
+
     public hasSupporters(): boolean {
         return !!(this.supporters && this.supporters.length > 0);
     }
@@ -532,7 +549,8 @@ export class ViewMotion extends BaseProjectableModel {
             this._item,
             this._block,
             this._attachments,
-            this._tags
+            this._tags,
+            this._parent
         );
     }
 }
