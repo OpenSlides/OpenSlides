@@ -1,16 +1,33 @@
 <os-head-bar [nav]="false" [goBack]="true">
     <!-- Title -->
     <div class="title-slot">
-        <h2><span translate>List of speakers</span></h2>
+        <h2>
+            <span *ngIf="!currentListOfSpeakers">List of speakers</span>
+            <span *ngIf="currentListOfSpeakers">Current list of speakers</span>
+        </h2>
     </div>
     <div class="menu-slot" *osPerms="'agenda.can_manage_list_of_speakers'">
         <button type="button" mat-icon-button [matMenuTriggerFor]="speakerMenu"><mat-icon>more_vert</mat-icon></button>
     </div>
 </os-head-bar>
 
+<!-- Select projector -->
+<mat-card *ngIf="currentListOfSpeakers">
+    <h3 translate>
+        Manage the list of speakers for...
+    </h3>
+    <mat-form-field *ngIf="projectors && projectors.length > 0">
+        <mat-select [value]="projectors[0]" (selectionChange)="onSelectProjector($event)">
+            <mat-option *ngFor="let projector of projectors" [value]="projector">
+                {{ projector.name }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</mat-card>
+
 <h1 class="title-left on-transition-fade" *ngIf="viewItem">{{ viewItem.getTitle() }}</h1>
 
-<mat-card class="speaker-card">
+<mat-card class="speaker-card" *ngIf="viewItem">
     <!-- List of finished speakers -->
     <mat-expansion-panel *ngIf="finishedSpeakers && finishedSpeakers.length > 0" class="finished-list">
         <mat-expansion-panel-header>
