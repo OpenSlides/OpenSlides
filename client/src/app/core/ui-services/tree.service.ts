@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { OpenSlidesComponent } from 'app/openslides.component';
-import { Displayable } from 'app/shared/models/base/displayable';
+import { Displayable } from 'app/site/base/displayable';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 
 /**

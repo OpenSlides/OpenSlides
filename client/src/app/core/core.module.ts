@@ -1,4 +1,4 @@
-import { NgModule, Optional, SkipSelf } from '@angular/core';
+import { NgModule, Optional, SkipSelf, Type } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Title } from '@angular/platform-browser';
 
@@ -6,6 +6,10 @@ import { Title } from '@angular/platform-browser';
 import { PromptDialogComponent } from '../shared/components/prompt-dialog/prompt-dialog.component';
 import { ChoiceDialogComponent } from '../shared/components/choice-dialog/choice-dialog.component';
 import { ProjectionDialogComponent } from 'app/shared/components/projection-dialog/projection-dialog.component';
+import { OperatorService } from './core-services/operator.service';
+import { OnAfterAppsLoaded } from './onAfterAppsLoaded';
+
+export const ServicesToLoadOnAppsLoaded: Type<OnAfterAppsLoaded>[] = [OperatorService];
 
 /**
  * Global Core Module.

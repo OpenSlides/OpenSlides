@@ -78,7 +78,7 @@ export class MotionCommentsComponent extends BaseViewComponent {
         super(titleService, translate, matSnackBar);
 
         this.commentRepo.getViewModelListObservable().subscribe(sections => this.setSections(sections));
-        this.operator.getObservable().subscribe(() => this.setSections(this.commentRepo.getViewModelList()));
+        this.operator.getUserObservable().subscribe(() => this.setSections(this.commentRepo.getViewModelList()));
     }
 
     /**

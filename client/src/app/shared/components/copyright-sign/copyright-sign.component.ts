@@ -373,7 +373,7 @@ export class C4DialogComponent implements OnInit, OnDestroy {
      * Returns the operators name.
      */
     public getPlayerName(): string {
-        return this.op.user.short_name;
+        return this.op.viewUser.short_name;
     }
 
     /**

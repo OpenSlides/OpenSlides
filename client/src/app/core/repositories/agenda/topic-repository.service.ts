@@ -10,6 +10,9 @@ import { ViewTopic } from 'app/site/agenda/models/view-topic';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from 'app/core/core-services/collectionStringMapper.service';
 import { CreateTopic } from 'app/site/agenda/models/create-topic';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
+import { ViewItem } from 'app/site/agenda/models/view-item';
 
 /**
  * Repository for topics
@@ -28,9 +31,10 @@ export class TopicRepositoryService extends BaseRepository<ViewTopic, Topic> {
     public constructor(
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
+        viewModelStoreService: ViewModelStoreService,
         private dataSend: DataSendService
     ) {
-        super(DS, mapperService, Topic, [Mediafile, Item]);
+        super(DS, mapperService, viewModelStoreService, Topic, [Mediafile, Item]);
     }
 
     /**
@@ -40,20 +44,9 @@ export class TopicRepositoryService extends BaseRepository<ViewTopic, Topic> {
      * @returns a new view topic
      */
     public createViewModel(topic: Topic): ViewTopic {
-        const attachments = this.DS.getMany(Mediafile, topic.attachments_id);
-        const item = this.getAgendaItem(topic);
+        const attachments = this.viewModelStoreService.getMany(ViewMediafile, topic.attachments_id);
+        const item = this.viewModelStoreService.get(ViewItem, topic.agenda_item_id);
         return new ViewTopic(topic, attachments, item);
-    }
-
-    /**
-     * Gets the corresponding agendaItem to the topic.
-     * Used to deal with race conditions
-     *
-     * @param topic the topic for the agenda item
-     * @returns an agenda item that fits for the topic
-     */
-    public getAgendaItem(topic: Topic): Item {
-        return this.DS.get(Item, topic.agenda_item_id);
     }
 
     /**

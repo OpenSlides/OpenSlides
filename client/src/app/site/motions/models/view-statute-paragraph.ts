@@ -1,7 +1,7 @@
 import { BaseViewModel } from '../../base/base-view-model';
-import { Group } from 'app/shared/models/users/group';
-import { BaseModel } from 'app/shared/models/base/base-model';
 import { StatuteParagraph } from 'app/shared/models/motions/statute-paragraph';
+import { Searchable } from 'app/site/base/searchable';
+import { SearchRepresentation } from 'app/core/ui-services/search.service';
 
 /**
  * State paragrpah class for the View
@@ -10,7 +10,7 @@ import { StatuteParagraph } from 'app/shared/models/motions/statute-paragraph';
  * Provides "safe" access to variables and functions in {@link StatuteParagraph}
  * @ignore
  */
-export class ViewStatuteParagraph extends BaseViewModel {
+export class ViewStatuteParagraph extends BaseViewModel implements Searchable {
     private _paragraph: StatuteParagraph;
 
     public get statuteParagraph(): StatuteParagraph {
@@ -18,23 +18,23 @@ export class ViewStatuteParagraph extends BaseViewModel {
     }
 
     public get id(): number {
-        return this.statuteParagraph ? this.statuteParagraph.id : null;
+        return this.statuteParagraph.id;
     }
 
     public get title(): string {
-        return this.statuteParagraph ? this.statuteParagraph.title : null;
+        return this.statuteParagraph.title;
     }
 
     public get text(): string {
-        return this.statuteParagraph ? this.statuteParagraph.text : null;
+        return this.statuteParagraph.text;
     }
 
     public get weight(): number {
-        return this.statuteParagraph ? this.statuteParagraph.weight : null;
+        return this.statuteParagraph.weight;
     }
 
     public constructor(paragraph: StatuteParagraph) {
-        super();
+        super('Statute paragraph');
         this._paragraph = paragraph;
     }
 
@@ -42,20 +42,19 @@ export class ViewStatuteParagraph extends BaseViewModel {
         return this.title;
     }
 
+    public formatForSearch(): SearchRepresentation {
+        throw new Error('TODO');
+    }
+
+    public getDetailStateURL(): string {
+        throw new Error('TODO');
+    }
+
     /**
      * Updates the local objects if required
      * @param section
      */
-    public updateValues(paragraph: BaseModel): void {
-        if (paragraph instanceof StatuteParagraph) {
-            this._paragraph = paragraph as StatuteParagraph;
-        }
-    }
-
-    // TODO: Implement updating of groups
-    public updateGroup(group: Group): void {
-        console.log(this._paragraph, group);
-    }
+    public updateDependencies(update: BaseViewModel): void {}
 
     /**
      * Duplicate this motion into a copy of itself

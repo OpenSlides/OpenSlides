@@ -5,13 +5,18 @@ import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
 import { ChatMessage } from 'app/shared/models/core/chat-message';
 import { ViewChatMessage } from 'app/site/common/models/view-chatmessage';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ChatMessageRepositoryService extends BaseRepository<ViewChatMessage, ChatMessage> {
-    public constructor(DS: DataStoreService, mapperService: CollectionStringMapperService) {
-        super(DS, mapperService, ChatMessage);
+    public constructor(
+        DS: DataStoreService,
+        mapperService: CollectionStringMapperService,
+        viewModelStoreService: ViewModelStoreService
+    ) {
+        super(DS, mapperService, viewModelStoreService, ChatMessage);
     }
 
     protected createViewModel(message: ChatMessage): ViewChatMessage {

@@ -11,8 +11,8 @@ import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflo
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
 import { HttpService } from 'app/core/core-services/http.service';
-import { AgendaRepositoryService } from 'app/core/repositories/agenda/agenda-repository.service';
-import { Displayable } from 'app/shared/models/base/displayable';
+import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
+import { Displayable } from 'app/site/base/displayable';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
 
@@ -47,7 +47,7 @@ export class MotionMultiselectService {
         private workflowRepo: WorkflowRepositoryService,
         private categoryRepo: CategoryRepositoryService,
         private tagRepo: TagRepositoryService,
-        private agendaRepo: AgendaRepositoryService,
+        private agendaRepo: ItemRepositoryService,
         private motionBlockRepo: MotionBlockRepositoryService,
         private httpService: HttpService
     ) {}

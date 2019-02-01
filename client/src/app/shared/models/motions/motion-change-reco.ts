@@ -4,7 +4,9 @@ import { BaseModel } from '../base/base-model';
  * Representation of a motion change recommendation.
  * @ignore
  */
-export class MotionChangeReco extends BaseModel<MotionChangeReco> {
+export class MotionChangeRecommendation extends BaseModel<MotionChangeRecommendation> {
+    public static COLLECTIONSTRING = 'motions/motion-change-recommendation';
+
     public id: number;
     public motion_id: number;
     public rejected: boolean;
@@ -17,10 +19,6 @@ export class MotionChangeReco extends BaseModel<MotionChangeReco> {
     public creation_time: string;
 
     public constructor(input?: any) {
-        super('motions/motion-change-recommendation', 'Change recommendation', input);
-    }
-
-    public getTitle(): string {
-        return 'Changerecommendation';
+        super(MotionChangeRecommendation.COLLECTIONSTRING, input);
     }
 }

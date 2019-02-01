@@ -14,9 +14,11 @@ import { TagAppConfig } from '../../site/tags/tag.config';
 import { MainMenuService } from './main-menu.service';
 import { HistoryAppConfig } from 'app/site/history/history.config';
 import { SearchService } from '../ui-services/search.service';
-import { isSearchable } from '../../shared/models/base/searchable';
+import { isSearchable } from '../../site/base/searchable';
 import { ProjectorAppConfig } from 'app/site/projector/projector.config';
 import { BaseRepository } from 'app/core/repositories/base-repository';
+import { OnAfterAppsLoaded } from '../onAfterAppsLoaded';
+import { ServicesToLoadOnAppsLoaded } from '../core.module';
 
 /**
  * A list of all app configurations of all delivered apps.
@@ -63,22 +65,37 @@ export class AppLoadService {
             const plugin = await import('../../../../../plugins/' + pluginName + '/' + pluginName);
             plugin.main();
         }*/
+        const repositories: OnAfterAppsLoaded[] = [];
         appConfigs.forEach((config: AppConfig) => {
             if (config.models) {
                 config.models.forEach(entry => {
                     let repository: BaseRepository<any, any> = null;
-                    if (entry.repository) {
-                        repository = this.injector.get(entry.repository);
-                    }
-                    this.modelMapper.registerCollectionElement(entry.collectionString, entry.model, repository);
+                    repository = this.injector.get(entry.repository);
+                    repositories.push(repository);
+                    this.modelMapper.registerCollectionElement(
+                        entry.collectionString,
+                        entry.model,
+                        entry.viewModel,
+                        repository
+                    );
                     if (this.isSearchableModelEntry(entry)) {
-                        this.searchService.registerModel(entry.collectionString, entry.model, entry.searchOrder);
+                        this.searchService.registerModel(entry.collectionString, entry.viewModel, entry.searchOrder);
                     }
                 });
             }
             if (config.mainMenuEntries) {
                 this.mainMenuService.registerEntries(config.mainMenuEntries);
             }
+        });
+
+        // Collect all services to notify for the OnAfterAppsLoadedHook
+        const onAfterAppsLoadedItems = ServicesToLoadOnAppsLoaded.map(service => {
+            return this.injector.get(service);
+        }).concat(repositories);
+
+        // Notify them.
+        onAfterAppsLoadedItems.forEach(repo => {
+            repo.onAfterAppsLoaded();
         });
     }
 
@@ -87,7 +104,7 @@ export class AppLoadService {
             // We need to double check, because Typescipt cannot check contructors. If typescript could differentiate
             // between  (ModelConstructor<BaseModel>) and (new (...args: any[]) => (BaseModel & Searchable)), we would not have
             // to check if the result of the contructor (the model instance) is really a searchable.
-            if (!isSearchable(new entry.model())) {
+            if (!isSearchable(new entry.viewModel())) {
                 throw Error(
                     `Wrong configuration for ${
                         entry.collectionString

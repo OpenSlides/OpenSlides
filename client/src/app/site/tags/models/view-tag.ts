@@ -1,5 +1,7 @@
 import { Tag } from 'app/shared/models/core/tag';
 import { BaseViewModel } from '../../base/base-view-model';
+import { SearchRepresentation } from 'app/core/ui-services/search.service';
+import { Searchable } from 'app/site/base/searchable';
 
 /**
  * Tag view class
@@ -8,35 +10,41 @@ import { BaseViewModel } from '../../base/base-view-model';
  * Provides "safe" access to variables and functions in {@link Tag}
  * @ignore
  */
-export class ViewTag extends BaseViewModel {
+export class ViewTag extends BaseViewModel implements Searchable {
     private _tag: Tag;
-
-    public constructor(tag: Tag) {
-        super();
-        this._tag = tag;
-    }
 
     public get tag(): Tag {
         return this._tag;
     }
 
     public get id(): number {
-        return this.tag ? this.tag.id : null;
+        return this.tag.id;
     }
 
     public get name(): string {
-        return this.tag ? this.tag.name : null;
+        return this.tag.name;
+    }
+
+    public constructor(tag: Tag) {
+        super('Tag');
+        this._tag = tag;
     }
 
     public getTitle(): string {
         return this.name;
     }
 
+    public formatForSearch(): SearchRepresentation {
+        return [this.name];
+    }
+
+    public getDetailStateURL(): string {
+        throw new Error('TODO');
+    }
+
     /**
      * Updates the local objects if required
      * @param update
      */
-    public updateValues(update: Tag): void {
-        this._tag = update;
-    }
+    public updateDependencies(update: BaseViewModel): void {}
 }

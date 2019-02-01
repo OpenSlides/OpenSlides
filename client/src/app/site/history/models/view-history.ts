@@ -1,7 +1,6 @@
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { History } from 'app/shared/models/core/history';
-import { User } from 'app/shared/models/users/user';
-import { BaseModel } from 'app/shared/models/base/base-model';
+import { ViewUser } from 'app/site/users/models/view-user';
 
 /**
  * View model for history objects
@@ -16,19 +15,19 @@ export class ViewHistory extends BaseViewModel {
      * Real representation of the user who altered the history.
      * Determined from `History.user_id`
      */
-    private _user: User;
+    private _user: ViewUser | null;
 
     /**
      * Read the history property
      */
     public get history(): History {
-        return this._history ? this._history : null;
+        return this._history;
     }
 
     /**
      * Read the user property
      */
-    public get user(): User {
+    public get user(): ViewUser {
         return this._user ? this._user : null;
     }
 
@@ -39,7 +38,7 @@ export class ViewHistory extends BaseViewModel {
      * @returns the ID as number
      */
     public get id(): number {
-        return this.history ? this.history.id : null;
+        return this.history.id;
     }
 
     /**
@@ -48,7 +47,7 @@ export class ViewHistory extends BaseViewModel {
      * @returns the element ID as String
      */
     public get element_id(): string {
-        return this.history ? this.history.element_id : null;
+        return this.history.element_id;
     }
 
     /**
@@ -57,7 +56,7 @@ export class ViewHistory extends BaseViewModel {
      * @returns a string with the information to the history object
      */
     public get information(): string {
-        return this.history ? this.history.information : null;
+        return this.history.information;
     }
 
     /**
@@ -66,7 +65,7 @@ export class ViewHistory extends BaseViewModel {
      * @returns the unix timestamp as number
      */
     public get now(): string {
-        return this.history ? this.history.now : null;
+        return this.history.now;
     }
 
     /**
@@ -75,8 +74,8 @@ export class ViewHistory extends BaseViewModel {
      * @param history the real history BaseModel
      * @param user the real user BaseModel
      */
-    public constructor(history?: History, user?: User) {
-        super();
+    public constructor(history: History, user?: ViewUser) {
+        super('History');
         this._history = history;
         this._user = user;
     }
@@ -88,7 +87,7 @@ export class ViewHistory extends BaseViewModel {
      * @returns a human readable kind of time and date representation
      */
     public getLocaleString(locale: string): string {
-        return this.history.date ? this.history.date.toLocaleString(locale) : null;
+        return this.history.date.toLocaleString(locale);
     }
 
     /**
@@ -103,7 +102,7 @@ export class ViewHistory extends BaseViewModel {
      * Extract the models ID from the elementID
      * @returns a model id
      */
-    public getModelID(): number {
+    public getModelId(): number {
         return +this.element_id.split(':')[1];
     }
 
@@ -114,7 +113,7 @@ export class ViewHistory extends BaseViewModel {
      * @returns history.getTitle which returns the element_id
      */
     public getTitle(): string {
-        return this.history.getTitle();
+        return this.element_id;
     }
 
     /**
@@ -122,10 +121,8 @@ export class ViewHistory extends BaseViewModel {
      *
      * @param update potentially the new values for history or it's components.
      */
-    public updateValues(update: BaseModel): void {
-        if (update instanceof History && this.history.id === update.id) {
-            this._history = update;
-        } else if (this.history && update instanceof User && this.history.user_id === update.id) {
+    public updateDependencies(update: BaseViewModel): void {
+        if (update instanceof ViewUser && this.history.user_id === update.id) {
             this._user = update;
         }
     }

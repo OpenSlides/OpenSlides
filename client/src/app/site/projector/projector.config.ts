@@ -5,15 +5,29 @@ import { ProjectorMessage } from 'app/shared/models/core/projector-message';
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
 import { CountdownRepositoryService } from 'app/core/repositories/projector/countdown-repository.service';
 import { ProjectorMessageRepositoryService } from 'app/core/repositories/projector/projectormessage-repository.service';
+import { ViewProjector } from './models/view-projector';
+import { ViewCountdown } from './models/view-countdown';
+import { ViewProjectorMessage } from './models/view-projectormessage';
 
 export const ProjectorAppConfig: AppConfig = {
     name: 'projector',
     models: [
-        { collectionString: 'core/projector', model: Projector, repository: ProjectorRepositoryService },
-        { collectionString: 'core/countdown', model: Countdown, repository: CountdownRepositoryService },
+        {
+            collectionString: 'core/projector',
+            model: Projector,
+            viewModel: ViewProjector,
+            repository: ProjectorRepositoryService
+        },
+        {
+            collectionString: 'core/countdown',
+            model: Countdown,
+            viewModel: ViewCountdown,
+            repository: CountdownRepositoryService
+        },
         {
             collectionString: 'core/projector-message',
             model: ProjectorMessage,
+            viewModel: ViewProjectorMessage,
             repository: ProjectorMessageRepositoryService
         }
     ],

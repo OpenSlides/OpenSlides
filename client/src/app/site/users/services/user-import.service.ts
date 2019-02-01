@@ -24,7 +24,7 @@ export class UserImportService extends BaseImportService<ViewUser> {
         'first_name',
         'last_name',
         'structure_level',
-        'participant_number',
+        'number',
         'groups_id',
         'comment',
         'is_active',
@@ -111,7 +111,7 @@ export class UserImportService extends BaseImportService<ViewUser> {
                         }
                     }
                     break;
-                case 'participant_number':
+                case 'number':
                     newViewUser.user.number = line[idx];
                     break;
                 default:

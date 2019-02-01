@@ -8,7 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { BaseViewComponent } from '../../../base/base-view';
 import { DataStoreService } from 'app/core/core-services/data-store.service';
-import { genders } from 'app/shared/models/users/user';
+import { genders, User } from 'app/shared/models/users/user';
 import { Group } from 'app/shared/models/users/group';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
@@ -99,8 +99,25 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
         private pdfService: UserPdfExportService
     ) {
         super(title, translate, matSnackBar);
-
-        this.user = new ViewUser();
+        // prevent 'undefined' to appear in the ui
+        const defaultUser: any = {};
+        // tslint:disable-next-line
+        [
+            'username',
+            'title',
+            'first_name',
+            'last_name',
+            'gender',
+            'structure_level',
+            'number',
+            'about_me',
+            'email',
+            'comment',
+            'default_password'
+        ].forEach(property => {
+            defaultUser[property] = '';
+        });
+        this.user = new ViewUser(new User(defaultUser));
         if (route.snapshot.url[0] && route.snapshot.url[0].path === 'new') {
             this.newUser = true;
             this.setEditMode(true);
@@ -112,7 +129,7 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
                 this.ownPage = this.opOwnsPage(Number(params.id));
 
                 // observe operator to find out if we see our own page or not
-                this.operator.getObservable().subscribe(newOp => {
+                this.operator.getUserObservable().subscribe(newOp => {
                     if (newOp) {
                         this.ownPage = this.opOwnsPage(Number(params.id));
                     }

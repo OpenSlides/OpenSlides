@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 
 import { LineRange, ModificationType } from 'app/core/ui-services/diff.service';
-import { ViewChangeReco } from '../../models/view-change-reco';
+import { ViewMotionChangeRecommendation } from '../../models/view-change-recommendation';
 import { OperatorService } from 'app/core/core-services/operator.service';
 
 /**
@@ -48,13 +48,15 @@ export class MotionDetailOriginalChangeRecommendationsComponent implements OnIni
     public createChangeRecommendation: EventEmitter<LineRange> = new EventEmitter<LineRange>();
 
     @Output()
-    public gotoChangeRecommendation: EventEmitter<ViewChangeReco> = new EventEmitter<ViewChangeReco>();
+    public gotoChangeRecommendation: EventEmitter<ViewMotionChangeRecommendation> = new EventEmitter<
+        ViewMotionChangeRecommendation
+    >();
 
     @Input()
     public html: string;
 
     @Input()
-    public changeRecommendations: ViewChangeReco[];
+    public changeRecommendations: ViewMotionChangeRecommendation[];
 
     public showChangeRecommendations = false;
 
@@ -66,7 +68,7 @@ export class MotionDetailOriginalChangeRecommendationsComponent implements OnIni
      * @param {OperatorService} operator
      */
     public constructor(private renderer: Renderer2, private el: ElementRef, private operator: OperatorService) {
-        this.operator.getObservable().subscribe(this.onPermissionsChanged.bind(this));
+        this.operator.getUserObservable().subscribe(this.onPermissionsChanged.bind(this));
     }
 
     /**
@@ -109,7 +111,7 @@ export class MotionDetailOriginalChangeRecommendationsComponent implements OnIni
      */
     private getAffectedLineNumbers(): number[] {
         const affectedLines = [];
-        this.changeRecommendations.forEach((change: ViewChangeReco) => {
+        this.changeRecommendations.forEach((change: ViewMotionChangeRecommendation) => {
             for (let j = change.line_from; j < change.line_to; j++) {
                 affectedLines.push(j);
             }
@@ -188,7 +190,7 @@ export class MotionDetailOriginalChangeRecommendationsComponent implements OnIni
      * Style for the change recommendation list
      * @param reco
      */
-    public calcRecoTop(reco: ViewChangeReco): string {
+    public calcRecoTop(reco: ViewMotionChangeRecommendation): string {
         const from = <HTMLElement>(
             this.element.querySelector('.os-line-number.line-number-' + reco.line_from.toString(10))
         );
@@ -199,7 +201,7 @@ export class MotionDetailOriginalChangeRecommendationsComponent implements OnIni
      * Style for the change recommendation list
      * @param reco
      */
-    public calcRecoHeight(reco: ViewChangeReco): string {
+    public calcRecoHeight(reco: ViewMotionChangeRecommendation): string {
         const from = <HTMLElement>(
             this.element.querySelector('.os-line-number.line-number-' + reco.line_from.toString(10))
         );
@@ -216,7 +218,7 @@ export class MotionDetailOriginalChangeRecommendationsComponent implements OnIni
      * CSS-Class for the change recommendation list
      * @param reco
      */
-    public recoIsInsertion(reco: ViewChangeReco): boolean {
+    public recoIsInsertion(reco: ViewMotionChangeRecommendation): boolean {
         return reco.type === ModificationType.TYPE_INSERTION;
     }
 
@@ -224,7 +226,7 @@ export class MotionDetailOriginalChangeRecommendationsComponent implements OnIni
      * CSS-Class for the change recommendation list
      * @param reco
      */
-    public recoIsDeletion(reco: ViewChangeReco): boolean {
+    public recoIsDeletion(reco: ViewMotionChangeRecommendation): boolean {
         return reco.type === ModificationType.TYPE_DELETION;
     }
 
@@ -232,7 +234,7 @@ export class MotionDetailOriginalChangeRecommendationsComponent implements OnIni
      * CSS-Class for the change recommendation list
      * @param reco
      */
-    public recoIsReplacement(reco: ViewChangeReco): boolean {
+    public recoIsReplacement(reco: ViewMotionChangeRecommendation): boolean {
         return reco.type === ModificationType.TYPE_REPLACEMENT;
     }
 
@@ -240,7 +242,7 @@ export class MotionDetailOriginalChangeRecommendationsComponent implements OnIni
      * Trigger the `gotoChangeRecommendation`-event
      * @param reco
      */
-    public gotoReco(reco: ViewChangeReco): void {
+    public gotoReco(reco: ViewMotionChangeRecommendation): void {
         this.gotoChangeRecommendation.emit(reco);
     }
 

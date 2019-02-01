@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { E2EImportsModule } from '../../../../e2e-imports.module';
 import { SortingTreeComponent } from './sorting-tree.component';
 import { Component, ViewChild } from '@angular/core';
-import { Displayable } from 'app/shared/models/base/displayable';
+import { Displayable } from 'app/site/base/displayable';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { BehaviorSubject } from 'rxjs';
 

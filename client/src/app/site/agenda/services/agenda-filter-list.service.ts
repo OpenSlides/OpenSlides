@@ -4,7 +4,7 @@ import { BaseFilterListService, OsFilter, OsFilterOption } from 'app/core/ui-ser
 import { Item, itemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { ViewItem } from '../models/view-item';
 import { StorageService } from 'app/core/core-services/storage.service';
-import { AgendaRepositoryService } from 'app/core/repositories/agenda/agenda-repository.service';
+import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 
 @Injectable({
     providedIn: 'root'
@@ -19,7 +19,7 @@ export class AgendaFilterListService extends BaseFilterListService<Item, ViewIte
      * @param store
      * @param repo
      */
-    public constructor(store: StorageService, repo: AgendaRepositoryService) {
+    public constructor(store: StorageService, repo: ItemRepositoryService) {
         super(store, repo);
         this.filterOptions = [
             {

@@ -7,7 +7,7 @@ import { MatDialog, MatExpansionPanel, MatSnackBar, MatCheckboxChange, ErrorStat
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
-import { AgendaRepositoryService } from 'app/core/repositories/agenda/agenda-repository.service';
+import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { BaseViewComponent } from '../../../base/base-view';
 import { Category } from 'app/shared/models/motions/category';
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
@@ -32,7 +32,7 @@ import { PersonalNoteService } from 'app/core/ui-services/personal-note.service'
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions/statute-paragraph-repository.service';
 import { User } from 'app/shared/models/users/user';
-import { ViewChangeReco } from '../../models/view-change-reco';
+import { ViewMotionChangeRecommendation } from '../../models/view-change-recommendation';
 import { ViewCreateMotion } from '../../models/view-create-motion';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { ViewUnifiedChange } from '../../models/view-unified-change';
@@ -40,6 +40,14 @@ import { ViewStatuteParagraph } from '../../models/view-statute-paragraph';
 import { Workflow } from 'app/shared/models/motions/workflow';
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
 import { Tag } from 'app/shared/models/core/tag';
+import { ViewMotionBlock } from '../../models/view-motion-block';
+import { ViewWorkflow } from '../../models/view-workflow';
+import { ViewUser } from 'app/site/users/models/view-user';
+import { ViewCategory } from '../../models/view-category';
+import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
+import { ViewItem } from 'app/site/agenda/models/view-item';
+import { ViewTag } from 'app/site/tags/models/view-tag';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 
 /**
  * Component for the motion detail view
@@ -154,7 +162,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     /**
      * All change recommendations to this motion
      */
-    public changeRecommendations: ViewChangeReco[];
+    public changeRecommendations: ViewMotionChangeRecommendation[];
 
     /**
      * All amendments to this motions
@@ -189,42 +197,42 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     /**
      * Subject for the Categories
      */
-    public categoryObserver: BehaviorSubject<Category[]>;
+    public categoryObserver: BehaviorSubject<ViewCategory[]>;
 
     /**
      * Subject for the Categories
      */
-    public workflowObserver: BehaviorSubject<Workflow[]>;
+    public workflowObserver: BehaviorSubject<ViewWorkflow[]>;
 
     /**
      * Subject for the Submitters
      */
-    public submitterObserver: BehaviorSubject<User[]>;
+    public submitterObserver: BehaviorSubject<ViewUser[]>;
 
     /**
      * Subject for the Supporters
      */
-    public supporterObserver: BehaviorSubject<User[]>;
+    public supporterObserver: BehaviorSubject<ViewUser[]>;
 
     /**
      * Subject for the motion blocks
      */
-    public blockObserver: BehaviorSubject<MotionBlock[]>;
+    public blockObserver: BehaviorSubject<ViewMotionBlock[]>;
 
     /**
      * Subject for mediafiles
      */
-    public mediafilesObserver: BehaviorSubject<Mediafile[]>;
+    public mediafilesObserver: BehaviorSubject<ViewMediafile[]>;
 
     /**
      * Subject for agenda items
      */
-    public agendaItemObserver: BehaviorSubject<Item[]>;
+    public agendaItemObserver: BehaviorSubject<ViewItem[]>;
 
     /**
      * Subject for tags
      */
-    public tagObserver: BehaviorSubject<Tag[]>;
+    public tagObserver: BehaviorSubject<ViewTag[]>;
 
     /**
      * Determine if the name of supporters are visible
@@ -357,7 +365,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         private dialogService: MatDialog,
         private el: ElementRef,
         public repo: MotionRepositoryService,
-        private agendaRepo: AgendaRepositoryService,
+        private agendaRepo: ItemRepositoryService,
         private changeRecoRepo: ChangeRecommendationRepositoryService,
         private statuteRepo: StatuteParagraphRepositoryService,
         private DS: DataStoreService,
@@ -366,37 +374,38 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         private promptService: PromptService,
         private pdfExport: MotionPdfExportService,
         private personalNoteService: PersonalNoteService,
-        private linenumberingService: LinenumberingService
+        private linenumberingService: LinenumberingService,
+        private viewModelStore: ViewModelStoreService
     ) {
         super(title, translate, matSnackBar);
 
         // Initial Filling of the Subjects
-        this.submitterObserver = new BehaviorSubject(DS.getAll(User));
-        this.supporterObserver = new BehaviorSubject(DS.getAll(User));
-        this.categoryObserver = new BehaviorSubject(DS.getAll(Category));
-        this.workflowObserver = new BehaviorSubject(DS.getAll(Workflow));
-        this.blockObserver = new BehaviorSubject(DS.getAll(MotionBlock));
-        this.mediafilesObserver = new BehaviorSubject(DS.getAll(Mediafile));
-        this.agendaItemObserver = new BehaviorSubject(DS.getAll(Item));
-        this.tagObserver = new BehaviorSubject(DS.getAll(Tag));
+        this.submitterObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewUser));
+        this.supporterObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewUser));
+        this.categoryObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewCategory));
+        this.workflowObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewWorkflow));
+        this.blockObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewMotionBlock));
+        this.mediafilesObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewMediafile));
+        this.agendaItemObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewItem));
+        this.tagObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewTag));
 
         // Make sure the subjects are updated, when a new Model for the type arrives
         this.DS.changeObservable.subscribe(newModel => {
             if (newModel instanceof User) {
-                this.submitterObserver.next(DS.getAll(User));
-                this.supporterObserver.next(DS.getAll(User));
+                this.submitterObserver.next(this.viewModelStore.getAll(ViewUser));
+                this.supporterObserver.next(this.viewModelStore.getAll(ViewUser));
             } else if (newModel instanceof Category) {
-                this.categoryObserver.next(DS.getAll(Category));
+                this.categoryObserver.next(this.viewModelStore.getAll(ViewCategory));
             } else if (newModel instanceof Workflow) {
-                this.workflowObserver.next(DS.getAll(Workflow));
+                this.workflowObserver.next(this.viewModelStore.getAll(ViewWorkflow));
             } else if (newModel instanceof MotionBlock) {
-                this.blockObserver.next(DS.getAll(MotionBlock));
+                this.blockObserver.next(this.viewModelStore.getAll(ViewMotionBlock));
             } else if (newModel instanceof Mediafile) {
-                this.mediafilesObserver.next(DS.getAll(Mediafile));
+                this.mediafilesObserver.next(this.viewModelStore.getAll(ViewMediafile));
             } else if (newModel instanceof Item) {
-                this.agendaItemObserver.next(DS.getAll(Item));
+                this.agendaItemObserver.next(this.viewModelStore.getAll(ViewItem));
             } else if (newModel instanceof Tag) {
-                this.tagObserver.next(DS.getAll(Tag));
+                this.tagObserver.next(this.viewModelStore.getAll(ViewTag));
             }
         });
 
@@ -505,8 +514,13 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
             // creates a new motion
             this.newMotion = true;
             this.editMotion = true;
-            this.motion = new ViewCreateMotion();
-            this.motionCopy = new ViewCreateMotion();
+            // prevent 'undefined' to appear in the ui
+            const defaultMotion = {
+                title: '',
+                origin: ''
+            };
+            this.motion = new ViewCreateMotion(new CreateMotion(defaultMotion));
+            this.motionCopy = new ViewCreateMotion(new CreateMotion(defaultMotion));
         } else {
             // load existing motion
             this.route.params.subscribe(params => {
@@ -528,10 +542,12 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
                         this.recalcUnifiedChanges();
                     }
                 );
-                this.changeRecoRepo.getChangeRecosOfMotionObservable(motionId).subscribe((recos: ViewChangeReco[]) => {
-                    this.changeRecommendations = recos;
-                    this.recalcUnifiedChanges();
-                });
+                this.changeRecoRepo
+                    .getChangeRecosOfMotionObservable(motionId)
+                    .subscribe((recos: ViewMotionChangeRecommendation[]) => {
+                        this.changeRecommendations = recos;
+                        this.recalcUnifiedChanges();
+                    });
             });
         }
     }
@@ -851,7 +867,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * In the original version, a change-recommendation-annotation has been clicked
      * -> Go to the diff view and scroll to the change recommendation
      */
-    public gotoChangeRecommendation(changeRecommendation: ViewChangeReco): void {
+    public gotoChangeRecommendation(changeRecommendation: ViewMotionChangeRecommendation): void {
         this.scrollToChange = changeRecommendation;
         this.setChangeRecoMode(ChangeRecoMode.Diff);
     }
@@ -1139,7 +1155,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * @param attachment the selected file
      */
     public onClickAttacment(attachment: Mediafile): void {
-        window.open(attachment.getDownloadUrl());
+        window.open(attachment.downloadUrl);
     }
 
     /**
@@ -1196,6 +1212,10 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * @returns a string representing a color
      */
     public getStateCssColor(): string {
+        if (!this.motion.state) {
+            return '';
+        }
+
         switch (this.motion.state.css_class) {
             case 'success':
                 return 'green';

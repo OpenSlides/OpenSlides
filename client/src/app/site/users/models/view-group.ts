@@ -1,20 +1,19 @@
 import { BaseViewModel } from '../../base/base-view-model';
 import { Group } from 'app/shared/models/users/group';
-import { BaseModel } from 'app/shared/models/base/base-model';
 
 export class ViewGroup extends BaseViewModel {
     private _group: Group;
 
     public get group(): Group {
-        return this._group ? this._group : null;
+        return this._group;
     }
 
     public get id(): number {
-        return this.group ? this.group.id : null;
+        return this.group.id;
     }
 
     public get name(): string {
-        return this.group ? this.group.name : null;
+        return this.group.name;
     }
 
     /**
@@ -27,11 +26,11 @@ export class ViewGroup extends BaseViewModel {
     }
 
     public get permissions(): string[] {
-        return this.group ? this.group.permissions : null;
+        return this.group.permissions;
     }
 
     public constructor(group?: Group) {
-        super();
+        super('Group');
         this._group = group;
     }
 
@@ -70,7 +69,7 @@ export class ViewGroup extends BaseViewModel {
         return this.name;
     }
 
-    public updateValues(update: BaseModel): void {
+    public updateDependencies(update: BaseViewModel): void {
         console.log('ViewGroups wants to update Values with : ', update);
     }
 }

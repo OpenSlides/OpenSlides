@@ -221,9 +221,9 @@ export class ProjectorComponent extends BaseComponent implements OnDestroy {
                 this.projectorDataService.projectorClosed(from);
             }
 
-            this.dataSubscription = this.projectorDataService
-                .getProjectorObservable(to)
-                .subscribe(data => (this.slides = data || []));
+            this.dataSubscription = this.projectorDataService.getProjectorObservable(to).subscribe(data => {
+                this.slides = data || [];
+            });
             this.projectorSubscription = this.projectorRepository.getViewModelObservable(to).subscribe(projector => {
                 if (projector) {
                     this.scroll = projector.scroll || 0;

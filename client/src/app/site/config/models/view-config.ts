@@ -94,7 +94,7 @@ export class ViewConfig extends BaseViewModel {
     }
 
     public constructor(config: Config) {
-        super();
+        super('Config');
         this._config = config;
     }
 
@@ -102,9 +102,7 @@ export class ViewConfig extends BaseViewModel {
         return this.label;
     }
 
-    public updateValues(update: Config): void {
-        this._config = update;
-    }
+    public updateDependencies(update: BaseViewModel): void {}
 
     /**
      * Returns the time this config field needs to debounce before sending a request to the server.

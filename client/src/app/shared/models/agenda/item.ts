@@ -41,7 +41,7 @@ export class Item extends BaseModel<Item> {
     public parent_id: number;
 
     public constructor(input?: any) {
-        super('agenda/item', 'Item', input);
+        super('agenda/item', input);
     }
 
     public deserialize(input: any): void {
@@ -83,17 +83,5 @@ export class Item extends BaseModel<Item> {
         }
         const type = itemVisibilityChoices.find(choice => choice.key === this.type);
         return type ? type.csvName : '';
-    }
-
-    public getTitle(): string {
-        return this.title;
-    }
-
-    public getListTitle(): string {
-        return this.title_with_type;
-    }
-
-    public getProjectorTitle(): string {
-        return this.getListTitle();
     }
 }

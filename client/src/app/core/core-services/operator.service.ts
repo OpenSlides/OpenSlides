@@ -9,6 +9,10 @@ import { User } from '../../shared/models/users/user';
 import { environment } from 'environments/environment';
 import { DataStoreService } from './data-store.service';
 import { OfflineService } from './offline.service';
+import { ViewUser } from 'app/site/users/models/view-user';
+import { CollectionStringMapperService } from './collectionStringMapper.service';
+import { OnAfterAppsLoaded } from '../onAfterAppsLoaded';
+import { UserRepositoryService } from '../repositories/users/user-repository.service';
 
 /**
  * Permissions on the client are just strings. This makes clear, that
@@ -36,11 +40,18 @@ export interface WhoAmIResponse {
 @Injectable({
     providedIn: 'root'
 })
-export class OperatorService extends OpenSlidesComponent {
+export class OperatorService extends OpenSlidesComponent implements OnAfterAppsLoaded {
     /**
      * The operator.
      */
     private _user: User;
+
+    /**
+     * The operator as a view user. We need a separation here, because
+     * we need to acces the operators permissions, before we get data
+     * from the server to build the view user.
+     */
+    private _viewUser: ViewUser;
 
     /**
      * Get the user that corresponds to operator.
@@ -50,13 +61,19 @@ export class OperatorService extends OpenSlidesComponent {
     }
 
     /**
+     * Get the user that corresponds to operator.
+     */
+    public get viewUser(): ViewUser {
+        return this._viewUser;
+    }
+
+    /**
      * Sets the current operator.
      *
      * The permissions are updated and the new user published.
      */
     public set user(user: User) {
-        this._user = user;
-        this.updatePermissions();
+        this.updateUser(user);
     }
 
     public get isAnonymous(): boolean {
@@ -79,6 +96,16 @@ export class OperatorService extends OpenSlidesComponent {
     private operatorSubject: BehaviorSubject<User> = new BehaviorSubject<User>(null);
 
     /**
+     * Subject for the operator as a view user.
+     */
+    private viewOperatorSubject: BehaviorSubject<ViewUser> = new BehaviorSubject<ViewUser>(null);
+
+    /**
+     * The user repository. Will be filled by the `onAfterAppsLoaded`.
+     */
+    private userRepository: UserRepositoryService;
+
+    /**
      * Sets up an observer for watching changes in the DS. If the operator user or groups are changed,
      * the operator's permissions are updated.
      *
@@ -86,7 +113,12 @@ export class OperatorService extends OpenSlidesComponent {
      * @param DS
      * @param offlineService
      */
-    public constructor(private http: HttpClient, private DS: DataStoreService, private offlineService: OfflineService) {
+    public constructor(
+        private http: HttpClient,
+        private DS: DataStoreService,
+        private offlineService: OfflineService,
+        private collectionStringMapperService: CollectionStringMapperService
+    ) {
         super();
 
         this.DS.changeObservable.subscribe(newModel => {
@@ -96,14 +128,40 @@ export class OperatorService extends OpenSlidesComponent {
                 }
 
                 if (newModel instanceof User && this._user.id === newModel.id) {
-                    this._user = newModel;
-                    this.updatePermissions();
+                    this.updateUser(newModel);
                 }
             } else if (newModel instanceof Group && newModel.id === 1) {
                 // Group 1 (default) for anonymous changed
                 this.updatePermissions();
             }
         });
+    }
+
+    /**
+     * Load the repo to get a view user.
+     */
+    public onAfterAppsLoaded(): void {
+        this.userRepository = this.collectionStringMapperService.getRepositoryFromModelConstructor(
+            User
+        ) as UserRepositoryService;
+        if (this.user) {
+            this._viewUser = this.userRepository.getViewModel(this.user.id);
+        }
+    }
+
+    /**
+     * Updates the user and update the permissions.
+     *
+     * @param user The user to set.
+     */
+    private updateUser(user: User | null): void {
+        this._user = user;
+        if (user && this.userRepository) {
+            this._viewUser = this.userRepository.getViewModel(user.id);
+        } else {
+            this._viewUser = null;
+        }
+        this.updatePermissions();
     }
 
     /**
@@ -131,8 +189,12 @@ export class OperatorService extends OpenSlidesComponent {
      * Services an components can use it to get informed when something changes in
      * the operator
      */
-    public getObservable(): Observable<User> {
+    public getUserObservable(): Observable<User> {
         return this.operatorSubject.asObservable();
+    }
+
+    public getViewUserObservable(): Observable<ViewUser> {
+        return this.viewOperatorSubject.asObservable();
     }
 
     /**
@@ -193,5 +255,6 @@ export class OperatorService extends OpenSlidesComponent {
         }
         // publish changes in the operator.
         this.operatorSubject.next(this.user);
+        this.viewOperatorSubject.next(this.viewUser);
     }
 }

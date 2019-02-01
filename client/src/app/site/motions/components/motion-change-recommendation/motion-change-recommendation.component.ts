@@ -7,7 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { LineRange, ModificationType } from 'app/core/ui-services/diff.service';
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
-import { ViewChangeReco } from '../../models/view-change-reco';
+import { ViewMotionChangeRecommendation } from '../../models/view-change-recommendation';
 import { BaseViewComponent } from '../../../base/base-view';
 
 /**
@@ -17,7 +17,7 @@ export interface MotionChangeRecommendationComponentData {
     editChangeRecommendation: boolean;
     newChangeRecommendation: boolean;
     lineRange: LineRange;
-    changeRecommendation: ViewChangeReco;
+    changeRecommendation: ViewMotionChangeRecommendation;
 }
 
 /**
@@ -58,7 +58,7 @@ export class MotionChangeRecommendationComponent extends BaseViewComponent {
     /**
      * The change recommendation
      */
-    public changeReco: ViewChangeReco;
+    public changeReco: ViewMotionChangeRecommendation;
 
     /**
      * The line range affected by this change recommendation

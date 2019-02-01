@@ -8,6 +8,7 @@ import { Identifiable } from 'app/shared/models/base/identifiable';
 import { ViewProjector } from 'app/site/projector/models/view-projector';
 import { Projector } from 'app/shared/models/core/projector';
 import { HttpService } from 'app/core/core-services/http.service';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 
 /**
  * Directions for scale and scroll requests.
@@ -36,10 +37,11 @@ export class ProjectorRepositoryService extends BaseRepository<ViewProjector, Pr
     public constructor(
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
+        viewModelStoreService: ViewModelStoreService,
         private dataSend: DataSendService,
         private http: HttpService
     ) {
-        super(DS, mapperService, Projector);
+        super(DS, mapperService, viewModelStoreService, Projector);
     }
 
     /**

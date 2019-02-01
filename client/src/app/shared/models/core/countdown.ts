@@ -14,10 +14,6 @@ export class Countdown extends BaseModel<Countdown> {
     public running: boolean;
 
     public constructor(input?: any) {
-        super(Countdown.COLLECTIONSTRING, 'Countdown', input);
-    }
-
-    public getTitle(): string {
-        return this.description;
+        super(Countdown.COLLECTIONSTRING, input);
     }
 }

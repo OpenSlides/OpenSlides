@@ -7,6 +7,7 @@ import { DataStoreService } from '../../core-services/data-store.service';
 import { BaseRepository } from '../base-repository';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 
 /**
  * Repository Services for Tags
@@ -34,9 +35,10 @@ export class TagRepositoryService extends BaseRepository<ViewTag, Tag> {
     public constructor(
         protected DS: DataStoreService,
         mapperService: CollectionStringMapperService,
+        viewModelStoreService: ViewModelStoreService,
         private dataSend: DataSendService
     ) {
-        super(DS, mapperService, Tag);
+        super(DS, mapperService, viewModelStoreService, Tag);
     }
 
     protected createViewModel(tag: Tag): ViewTag {

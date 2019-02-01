@@ -88,9 +88,9 @@ export class PasswordComponent extends BaseViewComponent implements OnInit {
             }
         });
         if (this.userId === undefined) {
-            this.operator.getObservable().subscribe(users => {
-                if (users) {
-                    this.userId = users.id;
+            this.operator.getUserObservable().subscribe(user => {
+                if (user) {
+                    this.userId = user.id;
                     this.router.navigate([`./users/password/${this.userId}`]);
                 }
             });
@@ -146,9 +146,9 @@ export class PasswordComponent extends BaseViewComponent implements OnInit {
      * @param userId user id from the route
      */
     private setOpOwnsPage(userId: number): void {
-        this.operator.getObservable().subscribe(users => {
-            if (users) {
-                this.ownPage = +userId === +users.id;
+        this.operator.getUserObservable().subscribe(user => {
+            if (user) {
+                this.ownPage = +userId === +user.id;
                 this.canManage = this.operator.hasPerms('users.can_manage');
             }
         });

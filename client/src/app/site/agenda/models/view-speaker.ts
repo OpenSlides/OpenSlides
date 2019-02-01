@@ -1,63 +1,62 @@
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { Speaker, SpeakerState } from 'app/shared/models/agenda/speaker';
-import { User } from 'app/shared/models/users/user';
-import { Selectable } from 'app/shared/components/selectable';
+import { ViewUser } from 'app/site/users/models/view-user';
 
 /**
  * Provides "safe" access to a speaker with all it's components
  */
-export class ViewSpeaker extends BaseViewModel implements Selectable {
+export class ViewSpeaker extends BaseViewModel {
     private _speaker: Speaker;
-    private _user: User;
+    private _user: ViewUser | null;
 
     public get speaker(): Speaker {
         return this._speaker;
     }
 
-    public get user(): User {
+    public get user(): ViewUser {
         return this._user;
     }
 
     public get id(): number {
-        return this.speaker ? this.speaker.id : null;
+        return this.speaker.id;
     }
 
     public get weight(): number {
-        return this.speaker ? this.speaker.weight : null;
+        return this.speaker.weight;
     }
 
     public get marked(): boolean {
-        return this.speaker ? this.speaker.marked : null;
+        return this.speaker.marked;
     }
 
     /**
      * @returns an ISO datetime string or null
      */
     public get begin_time(): string {
-        return this.speaker ? this.speaker.begin_time : null;
+        return this.speaker.begin_time;
     }
 
     /**
      * @returns an ISO datetime string or null
      */
     public get end_time(): string {
-        return this.speaker ? this.speaker.end_time : null;
+        return this.speaker.end_time;
     }
 
     public get state(): SpeakerState {
-        return this.speaker ? this.speaker.state : null;
+        return this.speaker.state;
     }
 
     public get name(): string {
-        return this.user.full_name;
+        return this.user ? this.user.full_name : '';
     }
 
     public get gender(): string {
-        return this.user.gender || '';
+        return this.user ? this.user.gender : '';
     }
 
-    public constructor(speaker?: Speaker, user?: User) {
-        super();
+    public constructor(speaker: Speaker, user?: ViewUser) {
+        super('Speaker');
         this._speaker = speaker;
         this._user = user;
     }
@@ -70,9 +69,5 @@ export class ViewSpeaker extends BaseViewModel implements Selectable {
      * Speaker is not a base model,
      * @param update the incoming update
      */
-    public updateValues(update: Speaker): void {
-        if (this.id === update.id) {
-            this._speaker = update;
-        }
-    }
+    public updateDependencies(update: BaseViewModel): void {}
 }

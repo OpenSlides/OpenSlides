@@ -1,6 +1,7 @@
 import { AppConfig } from '../../core/app-config';
 import { Assignment } from '../../shared/models/assignments/assignment';
 import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
+import { ViewAssignment } from './models/view-assignment';
 
 export const AssignmentsAppConfig: AppConfig = {
     name: 'assignments',
@@ -8,6 +9,7 @@ export const AssignmentsAppConfig: AppConfig = {
         {
             collectionString: 'assignments/assignment',
             model: Assignment,
+            viewModel: ViewAssignment,
             searchOrder: 3,
             repository: AssignmentRepositoryService
         }

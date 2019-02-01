@@ -128,14 +128,14 @@
             <!-- Participant Number -->
             <mat-form-field
                 class="form25 force-min-with"
-                *ngIf="user.participant_number || (editUser && isAllowed('manage'))"
+                *ngIf="user.number || (editUser && isAllowed('manage'))"
             >
                 <input
                     type="text"
                     matInput
                     placeholder="{{ 'Participant number' | translate }}"
                     formControlName="number"
-                    [value]="user.participant_number"
+                    [value]="user.number"
                 />
             </mat-form-field>
         </div>

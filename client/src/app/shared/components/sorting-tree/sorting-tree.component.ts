@@ -6,7 +6,7 @@ import { auditTime } from 'rxjs/operators';
 import { Subscription, Observable } from 'rxjs';
 
 import { Identifiable } from 'app/shared/models/base/identifiable';
-import { Displayable } from 'app/shared/models/base/displayable';
+import { Displayable } from 'app/site/base/displayable';
 import { OSTreeNode, TreeService } from 'app/core/ui-services/tree.service';
 
 /**

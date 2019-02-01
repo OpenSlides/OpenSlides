@@ -8,6 +8,7 @@ import { DataStoreService } from '../../core-services/data-store.service';
 import { Group } from 'app/shared/models/users/group';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { ViewGroup } from 'app/site/users/models/view-group';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 
 /**
  * Shape of a permission
@@ -49,10 +50,11 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group> {
     public constructor(
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
+        viewModelStoreService: ViewModelStoreService,
         private dataSend: DataSendService,
         private constants: ConstantsService
     ) {
-        super(DS, mapperService, Group);
+        super(DS, mapperService, viewModelStoreService, Group);
         this.sortPermsPerApp();
     }
 

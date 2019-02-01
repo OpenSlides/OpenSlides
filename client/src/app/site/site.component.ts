@@ -78,7 +78,7 @@ export class SiteComponent extends BaseComponent implements OnInit {
     ) {
         super();
 
-        this.operator.getObservable().subscribe(user => {
+        this.operator.getViewUserObservable().subscribe(user => {
             if (user) {
                 this.username = user.short_name;
             } else {

@@ -5,7 +5,7 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
 import { AgendaFilterListService } from '../../services/agenda-filter-list.service';
-import { AgendaRepositoryService } from 'app/core/repositories/agenda/agenda-repository.service';
+import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { ListViewBaseComponent } from 'app/site/base/list-view-base';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewItem } from '../../models/view-item';
@@ -63,7 +63,7 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
         matSnackBar: MatSnackBar,
         private route: ActivatedRoute,
         private router: Router,
-        private repo: AgendaRepositoryService,
+        private repo: ItemRepositoryService,
         private promptService: PromptService,
         private dialog: MatDialog,
         private config: ConfigService,

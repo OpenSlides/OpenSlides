@@ -2,64 +2,134 @@ import { Injectable } from '@angular/core';
 
 import { ModelConstructor, BaseModel } from '../../shared/models/base/base-model';
 import { BaseRepository } from 'app/core/repositories/base-repository';
+import { ViewModelConstructor, BaseViewModel } from 'app/site/base/base-view-model';
 
 /**
- * Registeres the mapping of collection strings <--> actual types. Every Model should register itself here.
+ * Holds a mapping entry with the matching collection string,
+ * model constructor, view model constructor and the repository
+ */
+type MappingEntry = [
+    string,
+    ModelConstructor<BaseModel>,
+    ViewModelConstructor<BaseViewModel>,
+    BaseRepository<BaseViewModel, BaseModel>
+];
+
+/**
+ * Registeres the mapping between collection strings, models constructors, view
+ * model constructors and repositories.
+ * All models ned to be registered!
  */
 @Injectable({
     providedIn: 'root'
 })
 export class CollectionStringMapperService {
     /**
-     * Mapps collection strings to model constructors. Accessed by {@method registerCollectionElement} and
-     * {@method getCollectionStringType}.
+     * Maps collection strings to mapping entries
      */
-    private collectionStringsTypeMapping: {
-        [collectionString: string]: [ModelConstructor<BaseModel>, BaseRepository<any, any>];
+    private collectionStringMapping: {
+        [collectionString: string]: MappingEntry;
     } = {};
 
     /**
-     * Constructor to create the NotifyService. Registers itself to the WebsocketService.
-     * @param websocketService
+     * Maps models to mapping entries
      */
+    private modelMapping: {
+        [modelName: string]: MappingEntry;
+    } = {};
+
+    /**
+     * Maps view models to mapping entries
+     */
+    private viewModelMapping: {
+        [viewModelname: string]: MappingEntry;
+    } = {};
+
+    /**
+     * Maps repositories to mapping entries
+     */
+    private repositoryMapping: {
+        [repositoryName: string]: MappingEntry;
+    } = {};
+
     public constructor() {}
 
     /**
-     * Registers the type to the collection string
+     * Registers the combination of a collection string, model, view model and repository
      * @param collectionString
      * @param model
      */
-    public registerCollectionElement(
+    public registerCollectionElement<V extends BaseViewModel, M extends BaseModel>(
         collectionString: string,
-        model: ModelConstructor<BaseModel>,
-        repository: BaseRepository<any, any>
+        model: ModelConstructor<M>,
+        viewModel: ViewModelConstructor<V>,
+        repository: BaseRepository<V, M>
     ): void {
-        this.collectionStringsTypeMapping[collectionString] = [model, repository];
+        const entry: MappingEntry = [collectionString, model, viewModel, repository];
+        this.collectionStringMapping[collectionString] = entry;
+        this.modelMapping[model.name] = entry;
+        this.viewModelMapping[viewModel.name] = entry;
+        this.repositoryMapping[repository.name] = entry;
     }
 
-    /**
-     * Returns the constructor of the requested collection or undefined, if it is not registered.
-     * @param collectionString the requested collection
-     */
-    public getModelConstructor(collectionString: string): ModelConstructor<BaseModel> {
-        return this.collectionStringsTypeMapping[collectionString][0];
+    // The following accessors are for giving one of EntryType by given a different object
+    // of EntryType.
+
+    public getCollectionStringFromModelConstructor<M extends BaseModel>(ctor: ModelConstructor<M>): string {
+        return this.modelMapping[ctor.name][0];
+    }
+    public getCollectionStringFromViewModelConstructor<V extends BaseViewModel>(ctor: ViewModelConstructor<V>): string {
+        return this.viewModelMapping[ctor.name][0];
+    }
+    public getCollectionStringFromRepository<M extends BaseModel, V extends BaseViewModel>(
+        repository: BaseRepository<V, M>
+    ): string {
+        return this.repositoryMapping[repository.name][0];
     }
 
-    /**
-     * Returns the repository of the requested collection or undefined, if it is not registered.
-     * @param collectionString the requested collection
-     */
-    public getRepository(collectionString: string): BaseRepository<any, any> {
-        return this.collectionStringsTypeMapping[collectionString][1];
+    public getModelConstructorFromCollectionString<M extends BaseModel>(collectionString: string): ModelConstructor<M> {
+        return this.collectionStringMapping[collectionString][1] as ModelConstructor<M>;
+    }
+    public getModelConstructorFromViewModelConstructor<V extends BaseViewModel, M extends BaseModel>(
+        ctor: ViewModelConstructor<V>
+    ): ModelConstructor<M> {
+        return this.viewModelMapping[ctor.name][1] as ModelConstructor<M>;
+    }
+    public getModelConstructorFromRepository<V extends BaseViewModel, M extends BaseModel>(
+        repository: BaseRepository<V, M>
+    ): ModelConstructor<M> {
+        return this.repositoryMapping[repository.name][1] as ModelConstructor<M>;
     }
 
-    /**
-     * Returns the collection string of a given ModelConstructor or undefined, if it is not registered.
-     * @param ctor
-     */
-    public getCollectionString(ctor: ModelConstructor<BaseModel>): string {
-        return Object.keys(this.collectionStringsTypeMapping).find((collectionString: string) => {
-            return ctor === this.collectionStringsTypeMapping[collectionString][0];
-        });
+    public getViewModelConstructorFromCollectionString<M extends BaseViewModel>(
+        collectionString: string
+    ): ViewModelConstructor<M> {
+        return this.collectionStringMapping[collectionString][2] as ViewModelConstructor<M>;
+    }
+    public getViewModelConstructorFromModelConstructor<V extends BaseViewModel, M extends BaseModel>(
+        ctor: ModelConstructor<M>
+    ): ViewModelConstructor<V> {
+        return this.modelMapping[ctor.name][2] as ViewModelConstructor<V>;
+    }
+    public getViewModelConstructorFromRepository<V extends BaseViewModel, M extends BaseModel>(
+        repository: BaseRepository<V, M>
+    ): ViewModelConstructor<V> {
+        return this.repositoryMapping[repository.name][2] as ViewModelConstructor<V>;
+    }
+
+    public getRepositoryFromCollectionString<V extends BaseViewModel, M extends BaseModel>(
+        collectionString: string
+    ): BaseRepository<V, M> {
+        return this.collectionStringMapping[collectionString][3] as BaseRepository<V, M>;
+    }
+    public getRepositoryFromModelConstructor<V extends BaseViewModel, M extends BaseModel>(
+        ctor: ModelConstructor<M>
+    ): BaseRepository<V, M> {
+        return this.modelMapping[ctor.name][3] as BaseRepository<V, M>;
+    }
+    public getRepositoryFromViewModelConstructor<V extends BaseViewModel, M extends BaseModel>(
+        ctor: ViewModelConstructor<V>
+    ): BaseRepository<V, M> {
+        return this.viewModelMapping[ctor.name][3] as BaseRepository<V, M>;
     }
 }

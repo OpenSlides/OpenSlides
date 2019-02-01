@@ -1,7 +1,6 @@
 import { AssignmentUser } from './assignment-user';
 import { Poll } from './poll';
-import { AgendaBaseModel } from '../base/agenda-base-model';
-import { SearchRepresentation } from 'app/core/ui-services/search.service';
+import { BaseModel } from '../base/base-model';
 
 export const assignmentPhase = [
     { key: 0, name: 'Searching for candidates' },
@@ -13,7 +12,7 @@ export const assignmentPhase = [
  * Representation of an assignment.
  * @ignore
  */
-export class Assignment extends AgendaBaseModel {
+export class Assignment extends BaseModel<Assignment> {
     public id: number;
     public title: string;
     public description: string;
@@ -26,7 +25,7 @@ export class Assignment extends AgendaBaseModel {
     public tags_id: number[];
 
     public constructor(input?: any) {
-        super('assignments/assignment', 'Election', input);
+        super('assignments/assignment', input);
     }
 
     public get candidateIds(): number[] {
@@ -53,17 +52,5 @@ export class Assignment extends AgendaBaseModel {
                 this.polls.push(new Poll(pollData));
             });
         }
-    }
-
-    public getTitle(): string {
-        return this.title;
-    }
-
-    public formatForSearch(): SearchRepresentation {
-        return [this.title, this.description];
-    }
-
-    public getDetailStateURL(): string {
-        return 'TODO';
     }
 }

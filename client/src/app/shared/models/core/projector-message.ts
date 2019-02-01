@@ -11,10 +11,6 @@ export class ProjectorMessage extends BaseModel<ProjectorMessage> {
     public message: string;
 
     public constructor(input?: any) {
-        super(ProjectorMessage.COLLECTIONSTRING, 'Message', input);
-    }
-
-    public getTitle(): string {
-        return 'Projectormessage';
+        super(ProjectorMessage.COLLECTIONSTRING, input);
     }
 }

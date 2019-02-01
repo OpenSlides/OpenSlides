@@ -12,10 +12,13 @@ import { TopicRepositoryService } from 'app/core/repositories/agenda/topic-repos
 import { ViewTopic } from '../../models/view-topic';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { BehaviorSubject } from 'rxjs';
-import { DataStoreService } from 'app/core/core-services/data-store.service';
-import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
-import { Item, itemVisibilityChoices } from 'app/shared/models/agenda/item';
+import { itemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { CreateTopic } from '../../models/create-topic';
+import { Topic } from 'app/shared/models/topics/topic';
+import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
+import { ViewItem } from '../../models/view-item';
+import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
+import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 
 /**
  * Detail page for topics.
@@ -49,12 +52,12 @@ export class TopicDetailComponent extends BaseViewComponent {
     /**
      * Subject for mediafiles
      */
-    public mediafilesObserver: BehaviorSubject<Mediafile[]>;
+    public mediafilesObserver: BehaviorSubject<ViewMediafile[]>;
 
     /**
      * Subject for agenda items
      */
-    public agendaItemObserver: BehaviorSubject<Item[]>;
+    public itemObserver: BehaviorSubject<ViewItem[]>;
 
     /**
      * Determine visibility states for the agenda that will be created implicitly
@@ -85,22 +88,20 @@ export class TopicDetailComponent extends BaseViewComponent {
         private repo: TopicRepositoryService,
         private promptService: PromptService,
         private operator: OperatorService,
-        private DS: DataStoreService
+        private mediafileRepo: MediafileRepositoryService,
+        private itemRepo: ItemRepositoryService
     ) {
         super(title, translate, matSnackBar);
         this.getTopicByUrl();
         this.createForm();
 
-        this.mediafilesObserver = new BehaviorSubject(this.DS.getAll(Mediafile));
-        this.agendaItemObserver = new BehaviorSubject(this.DS.getAll(Item));
+        this.mediafilesObserver = new BehaviorSubject(this.mediafileRepo.getViewModelList());
+        this.itemObserver = new BehaviorSubject(this.itemRepo.getViewModelList());
 
-        this.DS.changeObservable.subscribe(newModel => {
-            if (newModel instanceof Item) {
-                this.agendaItemObserver.next(DS.getAll(Item));
-            } else if (newModel instanceof Mediafile) {
-                this.mediafilesObserver.next(DS.getAll(Mediafile));
-            }
-        });
+        this.mediafileRepo
+            .getViewModelListObservable()
+            .subscribe(mediafiles => this.mediafilesObserver.next(mediafiles));
+        this.itemRepo.getViewModelListObservable().subscribe(items => this.itemObserver.next(items));
     }
 
     /**
@@ -170,7 +171,7 @@ export class TopicDetailComponent extends BaseViewComponent {
             // creates a new topic
             this.newTopic = true;
             this.editTopic = true;
-            this.topic = new ViewTopic();
+            this.topic = new ViewTopic(new Topic());
         } else {
             // load existing topic
             this.route.params.subscribe(params => {
@@ -205,7 +206,7 @@ export class TopicDetailComponent extends BaseViewComponent {
      */
     public getSpeakerLink(): string {
         if (!this.newTopic && this.topic) {
-            const item = this.repo.getAgendaItem(this.topic.topic);
+            const item = this.topic.getAgendaItem();
             if (item) {
                 return `/agenda/${item.id}/speakers`;
             }

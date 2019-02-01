@@ -1,24 +1,25 @@
 import { Countdown } from 'app/shared/models/core/countdown';
-import { BaseProjectableModel } from 'app/site/base/base-projectable-model';
+import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
+import { BaseViewModel } from 'app/site/base/base-view-model';
 
-export class ViewCountdown extends BaseProjectableModel {
+export class ViewCountdown extends BaseProjectableViewModel {
     private _countdown: Countdown;
 
     public get countdown(): Countdown {
-        return this._countdown ? this._countdown : null;
+        return this._countdown;
     }
 
     public get id(): number {
-        return this.countdown ? this.countdown.id : null;
+        return this.countdown.id;
     }
 
     public get description(): string {
-        return this.countdown ? this.countdown.description : null;
+        return this.countdown.description;
     }
 
-    public constructor(countdown?: Countdown) {
-        super();
+    public constructor(countdown: Countdown) {
+        super('Countdown');
         this._countdown = countdown;
     }
 
@@ -26,9 +27,7 @@ export class ViewCountdown extends BaseProjectableModel {
         return this.description;
     }
 
-    public updateValues(countdown: Countdown): void {
-        console.log('Update countdown TODO with vals:', countdown);
-    }
+    public updateDependencies(update: BaseViewModel): void {}
 
     public getSlide(): ProjectorElementBuildDeskriptor {
         return {

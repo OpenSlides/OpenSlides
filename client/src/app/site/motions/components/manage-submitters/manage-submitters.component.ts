@@ -7,11 +7,13 @@ import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { BaseViewComponent } from 'app/site/base/base-view';
-import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { LocalPermissionsService } from '../../services/local-permissions.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { User } from 'app/shared/models/users/user';
 import { ViewMotion } from '../../models/view-motion';
+import { ViewUser } from 'app/site/users/models/view-user';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 
 /**
  * Component for the motion comments view
@@ -31,7 +33,7 @@ export class ManageSubmittersComponent extends BaseViewComponent {
     /**
      * Keep all users to display them.
      */
-    public users: BehaviorSubject<User[]>;
+    public users: BehaviorSubject<ViewUser[]>;
 
     /**
      * The form to add new submitters
@@ -41,13 +43,13 @@ export class ManageSubmittersComponent extends BaseViewComponent {
     /**
      * The current list of submitters.
      */
-    public readonly editSubmitterSubject: BehaviorSubject<User[]> = new BehaviorSubject([]);
+    public readonly editSubmitterSubject: BehaviorSubject<ViewUser[]> = new BehaviorSubject([]);
 
     /**
      * The observable from editSubmitterSubject. Fixing this value is a performance boost, because
      * it is just set one time at loading instead of calling .asObservable() every time.
      */
-    public editSubmitterObservable: Observable<User[]>;
+    public editSubmitterObservable: Observable<ViewUser[]>;
 
     /**
      * Saves, if the users edits the note.
@@ -61,15 +63,16 @@ export class ManageSubmittersComponent extends BaseViewComponent {
      * @param translate
      * @param matSnackBar
      * @param DS
-     * @param repo
+     * @param motionRepository
      * @param perms permission checks for the motion
      */
     public constructor(
         title: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
-        private DS: DataStoreService,
-        private repo: MotionRepositoryService,
+        private viewModelStore: ViewModelStoreService,
+        private motionRepository: MotionRepositoryService,
+        private userRepository: UserRepositoryService,
         public perms: LocalPermissionsService
     ) {
         super(title, translate, matSnackBar);
@@ -78,12 +81,8 @@ export class ManageSubmittersComponent extends BaseViewComponent {
         this.editSubmitterObservable = this.editSubmitterSubject.asObservable();
 
         // get all users for the submitter add form
-        this.users = new BehaviorSubject(this.DS.getAll(User));
-        this.DS.changeObservable.subscribe(model => {
-            if (model instanceof User) {
-                this.users.next(this.DS.getAll(User));
-            }
-        });
+        this.users = new BehaviorSubject<ViewUser[]>(this.userRepository.getViewModelList());
+        this.userRepository.getViewModelListObservable().subscribe(users => this.users.next(users));
 
         // detect changes in the form
         this.addSubmitterForm.valueChanges.subscribe(formResult => {
@@ -106,7 +105,7 @@ export class ManageSubmittersComponent extends BaseViewComponent {
      * Save the submitters
      */
     public onSave(): void {
-        this.repo
+        this.motionRepository
             .setSubmitters(this.motion, this.editSubmitterSubject.getValue())
             .then(() => (this.isEditMode = false), this.raiseError);
     }
@@ -126,7 +125,7 @@ export class ManageSubmittersComponent extends BaseViewComponent {
     public addNewSubmitter(userId: number): void {
         const submitters = this.editSubmitterSubject.getValue();
         if (!submitters.map(u => u.id).includes(userId)) {
-            submitters.push(this.DS.get(User, userId));
+            submitters.push(this.viewModelStore.get(ViewUser, userId));
             this.editSubmitterSubject.next(submitters);
         }
         this.addSubmitterForm.reset();
@@ -137,7 +136,7 @@ export class ManageSubmittersComponent extends BaseViewComponent {
      *
      * @param users The new, sorted users.
      */
-    public onSortingChange(users: User[]): void {
+    public onSortingChange(users: ViewUser[]): void {
         this.editSubmitterSubject.next(users);
     }
 

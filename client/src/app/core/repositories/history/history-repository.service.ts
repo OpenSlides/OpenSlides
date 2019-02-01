@@ -9,7 +9,8 @@ import { Identifiable } from 'app/shared/models/base/identifiable';
 import { HttpService } from 'app/core/core-services/http.service';
 import { ViewHistory } from 'app/site/history/models/view-history';
 import { TimeTravelService } from 'app/core/core-services/time-travel.service';
-import { BaseModel } from 'app/shared/models/base/base-model';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { ViewUser } from 'app/site/users/models/view-user';
 
 /**
  * Repository for the history.
@@ -31,10 +32,11 @@ export class HistoryRepositoryService extends BaseRepository<ViewHistory, Histor
     public constructor(
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
+        viewModelStoreService: ViewModelStoreService,
         private httpService: HttpService,
         private timeTravel: TimeTravelService
     ) {
-        super(DS, mapperService, History, [User]);
+        super(DS, mapperService, viewModelStoreService, History, [User]);
     }
 
     /**
@@ -70,12 +72,11 @@ export class HistoryRepositoryService extends BaseRepository<ViewHistory, Histor
      * @returns the ListTitle or null if the model was deleted already
      */
     public getOldModelInfo(collectionString: string, id: number): string {
-        const oldModel: BaseModel = this.DS.get(collectionString, id);
-        if (oldModel) {
-            return oldModel.getListTitle();
-        } else {
-            return null;
+        const model = this.viewModelStoreService.get(collectionString, id);
+        if (model) {
+            return model.getListTitle();
         }
+        return null;
     }
 
     /**
@@ -85,7 +86,7 @@ export class HistoryRepositoryService extends BaseRepository<ViewHistory, Histor
      * @return a new ViewHistory object
      */
     public createViewModel(history: History): ViewHistory {
-        const user = this.DS.get(User, history.user_id);
+        const user = this.viewModelStoreService.get(ViewUser, history.user_id);
         return new ViewHistory(history, user);
     }
 

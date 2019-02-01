@@ -44,9 +44,14 @@ export interface ProjectionDefault {
 
 /**
  * Representation of a projector. Has the nested property "projectiondefaults"
+ *
+ * TODO: Move all function to the viewprojector.
+ *
  * @ignore
  */
 export class Projector extends BaseModel<Projector> {
+    public static COLLECTIONSTRING = 'core/projector';
+
     public id: number;
     public elements: ProjectorElements;
     public elements_preview: ProjectorElements;
@@ -60,7 +65,7 @@ export class Projector extends BaseModel<Projector> {
     public projectiondefaults: ProjectionDefault[];
 
     public constructor(input?: any) {
-        super('core/projector', 'Projector', input);
+        super(Projector.COLLECTIONSTRING, input);
     }
 
     /**
@@ -138,9 +143,5 @@ export class Projector extends BaseModel<Projector> {
             },
             [[], []] as [T[], T[]]
         );
-    }
-
-    public getTitle(): string {
-        return this.name;
     }
 }

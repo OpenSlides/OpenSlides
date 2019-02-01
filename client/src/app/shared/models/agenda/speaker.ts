@@ -59,12 +59,4 @@ export class Speaker extends Deserializer {
             return SpeakerState.FINISHED;
         }
     }
-
-    /**
-     * Getting the title of a speaker does not make much sense.
-     * Usually it would refer to the title of a user.
-     */
-    public getTitle(): string {
-        return '';
-    }
 }

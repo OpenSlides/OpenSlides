@@ -1,11 +1,11 @@
-import { Category } from 'app/shared/models/motions/category';
-import { User } from 'app/shared/models/users/user';
-import { Workflow } from 'app/shared/models/motions/workflow';
 import { WorkflowState } from 'app/shared/models/motions/workflow-state';
-import { Item } from 'app/shared/models/agenda/item';
-import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { ViewMotion } from './view-motion';
 import { CreateMotion } from './create-motion';
+import { ViewUser } from 'app/site/users/models/view-user';
+import { ViewMotionBlock } from './view-motion-block';
+import { ViewItem } from 'app/site/agenda/models/view-item';
+import { ViewCategory } from './view-category';
+import { ViewWorkflow } from './view-workflow';
 
 /**
  * Create motion class for the View. Its different to ViewMotion in fact that the submitter handling is different
@@ -20,7 +20,7 @@ export class ViewCreateMotion extends ViewMotion {
         return this._motion;
     }
 
-    public get submitters(): User[] {
+    public get submitters(): ViewUser[] {
         return this._submitters;
     }
 
@@ -28,20 +28,20 @@ export class ViewCreateMotion extends ViewMotion {
         return this.motion ? this.motion.submitters_id : null;
     }
 
-    public set submitters(users: User[]) {
+    public set submitters(users: ViewUser[]) {
         this._submitters = users;
         this._motion.submitters_id = users.map(user => user.id);
     }
 
     public constructor(
         motion?: CreateMotion,
-        category?: Category,
-        submitters?: User[],
-        supporters?: User[],
-        workflow?: Workflow,
+        category?: ViewCategory,
+        submitters?: ViewUser[],
+        supporters?: ViewUser[],
+        workflow?: ViewWorkflow,
         state?: WorkflowState,
-        item?: Item,
-        block?: MotionBlock
+        item?: ViewItem,
+        block?: ViewMotionBlock
     ) {
         super(motion, category, submitters, supporters, workflow, state, item, block, null);
     }

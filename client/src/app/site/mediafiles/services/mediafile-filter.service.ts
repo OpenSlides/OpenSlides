@@ -22,7 +22,7 @@ export class MediafileFilterListService extends BaseFilterListService<Mediafile,
             ]
         },
         {
-            property: 'fileType',
+            property: 'type',
             label: 'Is PDF',
             options: [
                 {

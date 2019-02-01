@@ -24,90 +24,89 @@
     </div>
 </os-head-bar>
 
+<mat-card *ngIf="topic || editTopic"
+        [ngClass]="editTopic ? 'os-form-card' : 'os-card'"
+        class="on-transition-fade">
+    <div *ngIf="!editTopic">
+        <h1>{{ topic.title }}</h1>
+    </div>
+    <div>
+        <span *ngIf="!editTopic">
+            <!-- Render topic text as HTML -->
+            <div [innerHTML]="topic.text"></div>
+        </span>
+    </div>
 
-    <mat-card *ngIf="topic || editTopic"
-            [ngClass]="editTopic ? 'os-form-card' : 'os-card'"
-            class="on-transition-fade">
-        <div *ngIf="!editTopic">
-            <h1>{{ topic.title }}</h1>
-        </div>
+    <div *ngIf="topic.hasAttachments() && !editTopic">
+        <h3>
+            <span translate>Attachments</span>:
+            <mat-list dense>
+                <mat-list-item *ngFor="let file of topic.attachments">
+                    <a [routerLink]="file.downloadUrl" target="_blank">{{ file.title }}</a>
+                </mat-list-item>
+            </mat-list>
+            <!-- TODO: Mediafiles and attachments are not fully implemented -->
+        </h3>
+    </div>
+
+    <form *ngIf="editTopic" [formGroup]="topicForm" (keydown)="onKeyDown($event)" (ngSubmit)="saveTopic()">
         <div>
-            <span *ngIf="!editTopic">
-                <!-- Render topic text as HTML -->
-                <div [innerHTML]="topic.text"></div>
-            </span>
+            <mat-form-field>
+                <input
+                    type="text"
+                    matInput
+                    osAutofocus
+                    required
+                    formControlName="title"
+                    placeholder="{{ 'Title' | translate }}"
+                />
+                <mat-error *ngIf="topicForm.invalid" translate>A name is required</mat-error>
+            </mat-form-field>
         </div>
 
-        <div *ngIf="topic.hasAttachments() && !editTopic">
-            <h3>
-                <span translate>Attachments</span>:
-                <mat-list dense>
-                    <mat-list-item *ngFor="let file of topic.attachments">
-                        <a [routerLink]="file.getDownloadUrl()" target="_blank">{{ file.title }}</a>
-                    </mat-list-item>
-                </mat-list>
-                <!-- TODO: Mediafiles and attachments are not fully implemented -->
-            </h3>
+        <!-- The editor -->
+        <div class="spacer-bottom-20">
+            <h4 translate>Text</h4>
+            <editor formControlName="text" [init]="tinyMceSettings"></editor>
         </div>
 
-        <form *ngIf="editTopic" [formGroup]="topicForm" (keydown)="onKeyDown($event)" (ngSubmit)="saveTopic()">
+        <!-- Attachments -->
+        <os-search-value-selector
+            ngDefaultControl
+            [form]="topicForm"
+            [formControl]="topicForm.get('attachments_id')"
+            [multiple]="true"
+            listname="{{ 'Attachments' | translate }}"
+            [InputListValues]="mediafilesObserver"
+        ></os-search-value-selector>
+
+        <div *ngIf="newTopic">
+            <!-- Visibility -->
             <div>
                 <mat-form-field>
-                    <input
-                        type="text"
-                        matInput
-                        osAutofocus
-                        required
-                        formControlName="title"
-                        placeholder="{{ 'Title' | translate }}"
-                    />
-                    <mat-error *ngIf="topicForm.invalid" translate>A name is required</mat-error>
+                    <mat-select formControlName="agenda_type" placeholder="{{ 'Agenda visibility' | translate }}">
+                        <mat-option *ngFor="let type of itemVisibility" [value]="type.key">
+                            <span>{{ type.name | translate }}</span>
+                        </mat-option>
+                    </mat-select>
                 </mat-form-field>
             </div>
 
-            <!-- The editor -->
-            <div class="spacer-bottom-20">
-                <h4 translate>Text</h4>
-                <editor formControlName="text" [init]="tinyMceSettings"></editor>
+            <!-- Parent item -->
+            <div>
+                <os-search-value-selector
+                    ngDefaultControl
+                    [form]="topicForm"
+                    [formControl]="topicForm.get('agenda_parent_id')"
+                    [multiple]="false"
+                    [includeNone]="true"
+                    listname="{{ 'Parent item' | translate }}"
+                    [InputListValues]="itemObserver"
+                ></os-search-value-selector>
             </div>
-
-            <!-- Attachments -->
-            <os-search-value-selector
-                ngDefaultControl
-                [form]="topicForm"
-                [formControl]="topicForm.get('attachments_id')"
-                [multiple]="true"
-                listname="{{ 'Attachments' | translate }}"
-                [InputListValues]="mediafilesObserver"
-            ></os-search-value-selector>
-
-            <div *ngIf="newTopic">
-                <!-- Visibility -->
-                <div>
-                    <mat-form-field>
-                        <mat-select formControlName="agenda_type" placeholder="{{ 'Agenda visibility' | translate }}">
-                            <mat-option *ngFor="let type of itemVisibility" [value]="type.key">
-                                <span>{{ type.name | translate }}</span>
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-
-                <!-- Parent item -->
-                <div>
-                    <os-search-value-selector
-                        ngDefaultControl
-                        [form]="topicForm"
-                        [formControl]="topicForm.get('agenda_parent_id')"
-                        [multiple]="false"
-                        [includeNone]="true"
-                        listname="{{ 'Parent item' | translate }}"
-                        [InputListValues]="agendaItemObserver"
-                    ></os-search-value-selector>
-                </div>
-            </div>
-        </form>
-    </mat-card>
+        </div>
+    </form>
+</mat-card>
 
 <mat-menu #topicExtraMenu="matMenu">
     <button mat-menu-item *ngIf="topic" [routerLink]="getSpeakerLink()">

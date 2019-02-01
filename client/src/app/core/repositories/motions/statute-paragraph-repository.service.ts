@@ -7,6 +7,7 @@ import { ViewStatuteParagraph } from 'app/site/motions/models/view-statute-parag
 import { StatuteParagraph } from 'app/shared/models/motions/statute-paragraph';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 
 /**
  * Repository Services for statute paragraphs
@@ -31,9 +32,10 @@ export class StatuteParagraphRepositoryService extends BaseRepository<ViewStatut
     public constructor(
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
+        viewModelStoreService: ViewModelStoreService,
         private dataSend: DataSendService
     ) {
-        super(DS, mapperService, StatuteParagraph);
+        super(DS, mapperService, viewModelStoreService, StatuteParagraph);
     }
 
     protected createViewModel(statuteParagraph: StatuteParagraph): ViewStatuteParagraph {

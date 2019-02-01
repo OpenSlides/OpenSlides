@@ -1,7 +1,6 @@
 import { BaseViewModel } from '../../base/base-view-model';
-import { MotionChangeReco } from 'app/shared/models/motions/motion-change-reco';
-import { BaseModel } from 'app/shared/models/base/base-model';
 import { ModificationType } from 'app/core/ui-services/diff.service';
+import { MotionChangeRecommendation } from 'app/shared/models/motions/motion-change-reco';
 import { ViewUnifiedChange, ViewUnifiedChangeType } from './view-unified-change';
 
 /**
@@ -11,68 +10,65 @@ import { ViewUnifiedChange, ViewUnifiedChangeType } from './view-unified-change'
  * Provides "safe" access to variables and functions in {@link MotionChangeReco}
  * @ignore
  */
-export class ViewChangeReco extends BaseViewModel implements ViewUnifiedChange {
-    private _changeReco: MotionChangeReco;
+export class ViewMotionChangeRecommendation extends BaseViewModel implements ViewUnifiedChange {
+    private _changeRecommendation: MotionChangeRecommendation;
 
     public get id(): number {
-        return this._changeReco ? this._changeReco.id : null;
+        return this._changeRecommendation.id;
     }
 
-    public get changeRecommendation(): MotionChangeReco {
-        return this._changeReco;
+    public get changeRecommendation(): MotionChangeRecommendation {
+        return this._changeRecommendation;
     }
 
-    public constructor(changeReco?: MotionChangeReco) {
-        super();
-
-        this._changeReco = changeReco;
+    public constructor(changeReco: MotionChangeRecommendation) {
+        super('Change recommendation');
+        this._changeRecommendation = changeReco;
     }
 
     public getTitle(): string {
-        return this._changeReco.getTitle();
+        return 'Changerecommendation';
     }
 
-    public updateValues(update: BaseModel): void {
-        // @TODO Is there any need for this function?
-    }
+    public updateDependencies(update: BaseViewModel): void {}
 
     public updateChangeReco(type: number, text: string, internal: boolean): void {
         // @TODO HTML sanitazion
-        this._changeReco.type = type;
-        this._changeReco.text = text;
-        this._changeReco.internal = internal;
+        this._changeRecommendation.type = type;
+        this._changeRecommendation.text = text;
+        this._changeRecommendation.internal = internal;
     }
 
     public get rejected(): boolean {
-        return this._changeReco ? this._changeReco.rejected : null;
+        return this._changeRecommendation.rejected;
     }
 
     public get internal(): boolean {
-        return this._changeReco ? this._changeReco.internal : null;
+        return this._changeRecommendation.internal;
     }
 
     public get type(): number {
-        return this._changeReco ? this._changeReco.type : ModificationType.TYPE_REPLACEMENT;
+        return this._changeRecommendation.type || ModificationType.TYPE_REPLACEMENT;
     }
 
     public get other_description(): string {
-        return this._changeReco ? this._changeReco.other_description : null;
+        return this._changeRecommendation.other_description;
     }
 
     public get line_from(): number {
-        return this._changeReco ? this._changeReco.line_from : null;
+        return this._changeRecommendation.line_from;
     }
 
     public get line_to(): number {
-        return this._changeReco ? this._changeReco.line_to : null;
+        return this._changeRecommendation.line_to;
     }
 
     public get text(): string {
-        return this._changeReco ? this._changeReco.text : null;
+        return this._changeRecommendation.text;
     }
 
     public get motion_id(): number {
-        return this._changeReco ? this._changeReco.motion_id : null;
+        return this._changeRecommendation.motion_id;
     }
 
     public getChangeId(): string {

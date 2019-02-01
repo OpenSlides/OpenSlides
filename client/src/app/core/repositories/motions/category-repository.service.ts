@@ -9,6 +9,7 @@ import { Motion } from 'app/shared/models/motions/motion';
 import { HttpService } from '../../core-services/http.service';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 
 /**
  * Repository Services for Categories
@@ -37,10 +38,11 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
     public constructor(
         protected DS: DataStoreService,
         mapperService: CollectionStringMapperService,
+        viewModelStoreService: ViewModelStoreService,
         private dataSend: DataSendService,
         private httpService: HttpService
     ) {
-        super(DS, mapperService, Category);
+        super(DS, mapperService, viewModelStoreService, Category);
     }
 
     protected createViewModel(category: Category): ViewCategory {

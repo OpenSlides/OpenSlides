@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BaseModel } from '../../shared/models/base/base-model';
-import { DataStoreService } from '../core-services/data-store.service';
-import { Searchable } from '../../shared/models/base/searchable';
+import { Searchable } from '../../site/base/searchable';
+import { BaseViewModel } from 'app/site/base/base-view-model';
 
 /**
  * The representation every searchable model should use to represent their data.
@@ -46,7 +45,7 @@ export interface SearchResult {
     /**
      * All matched models.
      */
-    models: (BaseModel & Searchable)[];
+    models: (BaseViewModel & Searchable)[];
 }
 
 /**
@@ -61,7 +60,6 @@ export class SearchService {
      */
     private searchModels: {
         collectionString: string;
-        ctor: new (...args: any[]) => Searchable & BaseModel;
         verboseNameSingular: string;
         verboseNamePlural: string;
         displayOrder: number;
@@ -70,7 +68,7 @@ export class SearchService {
     /**
      * @param DS The DataStore to search in.
      */
-    public constructor(private DS: DataStoreService) {}
+    public constructor() {}
 
     /**
      * Registers a model by the given attributes.
@@ -81,13 +79,12 @@ export class SearchService {
      */
     public registerModel(
         collectionString: string,
-        ctor: new (...args: any[]) => Searchable & BaseModel,
+        ctor: new (...args: any[]) => Searchable & BaseViewModel,
         displayOrder: number
     ): void {
         const instance = new ctor();
         this.searchModels.push({
             collectionString: collectionString,
-            ctor: ctor,
             verboseNameSingular: instance.getVerboseName(),
             verboseNamePlural: instance.getVerboseName(true),
             displayOrder: displayOrder
@@ -115,10 +112,10 @@ export class SearchService {
      */
     public search(query: string, inCollectionStrings: string[]): SearchResult[] {
         query = query.toLowerCase();
-        return this.searchModels
+        /*return this.searchModels
             .filter(s => inCollectionStrings.includes(s.collectionString))
             .map(searchModel => {
-                const results = this.DS.filter(searchModel.ctor, model =>
+                const results = this.viewModelStore.filter(searchModel.collectionString, model =>
                     model.formatForSearch().some(text => text.toLowerCase().includes(query))
                 );
                 return {
@@ -126,6 +123,8 @@ export class SearchService {
                     verboseName: results.length === 1 ? searchModel.verboseNameSingular : searchModel.verboseNamePlural,
                     models: results
                 };
-            });
+            });*/
+        throw new Error('Todo');
+        return [];
     }
 }
