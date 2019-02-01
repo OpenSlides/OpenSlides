@@ -37,13 +37,17 @@ class MotionAccessPermissions(BaseAccessPermissions):
                     is_submitter = False
 
                 # Check see permission for this motion.
-                required_permission_to_see = full["state_required_permission_to_see"]
-                permission = (
-                    not required_permission_to_see
-                    or await async_has_perm(user_id, required_permission_to_see)
-                    or await async_has_perm(user_id, "motions.can_manage")
-                    or is_submitter
-                )
+                from .models import State
+
+                if await async_has_perm(user_id, "motions.can_manage"):
+                    level = State.MANAGERS_ONLY
+                elif await async_has_perm(user_id, "motions.can_manage_metadata"):
+                    level = State.EXTENDED_MANAGERS
+                elif is_submitter:
+                    level = State.EXTENDED_MANAGERS_AND_SUBMITTER
+                else:
+                    level = State.ALL
+                permission = level >= full["state_access_level"]
 
                 # Parse single motion.
                 if permission:
@@ -57,7 +61,6 @@ class MotionAccessPermissions(BaseAccessPermissions):
                     data.append(full_copy)
         else:
             data = []
-
         return data
 
 

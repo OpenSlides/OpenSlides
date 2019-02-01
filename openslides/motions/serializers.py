@@ -102,7 +102,7 @@ class StateSerializer(ModelSerializer):
             "name",
             "recommendation_label",
             "css_class",
-            "required_permission_to_see",
+            "access_level",
             "allow_support",
             "allow_create_poll",
             "allow_submitter_edit",
@@ -389,7 +389,7 @@ class MotionSerializer(ModelSerializer):
     polls = MotionPollSerializer(many=True, read_only=True)
     modified_final_version = CharField(allow_blank=True, required=False)
     reason = CharField(allow_blank=True, required=False)
-    state_required_permission_to_see = SerializerMethodField()
+    state_access_level = SerializerMethodField()
     text = CharField(allow_blank=True)
     title = CharField(max_length=255)
     amendment_paragraphs = AmendmentParagraphsJSONSerializerField(required=False)
@@ -424,7 +424,7 @@ class MotionSerializer(ModelSerializer):
             "supporters",
             "state",
             "state_extension",
-            "state_required_permission_to_see",
+            "state_access_level",
             "statute_paragraph",
             "workflow_id",
             "recommendation",
@@ -531,12 +531,9 @@ class MotionSerializer(ModelSerializer):
 
         return result
 
-    def get_state_required_permission_to_see(self, motion):
+    def get_state_access_level(self, motion):
         """
-        Returns the permission (as string) that is required for non
-        managers that are not submitters to see this motion in this state.
-
-        Hint: Most states have and empty string here so this restriction is
-        disabled.
+        Returns the access level of this state. The default is 0 so everybody
+        with permission to see motions can see this motion.
         """
-        return motion.state.required_permission_to_see
+        return motion.state.access_level

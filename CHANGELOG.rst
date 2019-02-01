@@ -38,6 +38,7 @@ Motions:
    recommendations [#4037, #4132].
  - Added timestampes for motions [#4134].
  - New config option to set reason as required field [#4232]
+ - Added new flag to motion state to control access for different users [#4235].
 
 User:
  - Added new admin group which grants all permissions. Users of existing group

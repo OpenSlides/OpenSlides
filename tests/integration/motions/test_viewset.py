@@ -479,13 +479,11 @@ class RetrieveMotion(TestCase):
                 username=f"user_{index}", password="password"
             )
 
-    def test_guest_state_with_required_permission_to_see(self):
+    def test_guest_state_with_access_level(self):
         config["general_system_enable_anonymous"] = True
         guest_client = APIClient()
         state = self.motion.state
-        state.required_permission_to_see = (
-            "permission_that_the_user_does_not_have_leeceiz9hi7iuta4ahY2"
-        )
+        state.access_level = State.MANAGERS_ONLY
         state.save()
         # The cache has to be cleared, see:
         # https://github.com/OpenSlides/OpenSlides/issues/3396
@@ -494,20 +492,17 @@ class RetrieveMotion(TestCase):
         response = guest_client.get(reverse("motion-detail", args=[self.motion.pk]))
         self.assertEqual(response.status_code, 404)
 
-    def test_admin_state_with_required_permission_to_see(self):
+    def test_admin_state_with_access_level(self):
         state = self.motion.state
-        state.required_permission_to_see = (
-            "permission_that_the_user_does_not_have_coo1Iewu8Eing2xahfoo"
-        )
+        state.access_level = State.MANAGERS_ONLY
+
         state.save()
         response = self.client.get(reverse("motion-detail", args=[self.motion.pk]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_submitter_state_with_required_permission_to_see(self):
+    def test_submitter_state_with_access_level(self):
         state = self.motion.state
-        state.required_permission_to_see = (
-            "permission_that_the_user_does_not_have_eiW8af9caizoh1thaece"
-        )
+        state.access_level = State.EXTENDED_MANAGERS_AND_SUBMITTER
         state.save()
         user = get_user_model().objects.create_user(
             username="username_ohS2opheikaSa5theijo",
