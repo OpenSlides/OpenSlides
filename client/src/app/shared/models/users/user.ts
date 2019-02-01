@@ -1,6 +1,7 @@
 import { Searchable } from '../base/searchable';
 import { SearchRepresentation } from '../../../core/ui-services/search.service';
 import { BaseModel } from '../base/base-model';
+import { DetailNavigable } from '../base/detail-navigable';
 
 /**
  * Iterable pre selection of genders (sexes)
@@ -11,7 +12,7 @@ export const genders = ['Female', 'Male', 'Diverse'];
  * Representation of a user in contrast to the operator.
  * @ignore
  */
-export class User extends BaseModel<User> implements Searchable {
+export class User extends BaseModel<User> implements Searchable, DetailNavigable {
     public static COLLECTIONSTRING = 'users/user';
 
     public id: number;
