@@ -31,6 +31,7 @@ import { ViewUnifiedChange } from '../../../site/motions/models/view-unified-cha
 import { ViewStatuteParagraph } from '../../../site/motions/models/view-statute-paragraph';
 import { Workflow } from '../../../shared/models/motions/workflow';
 import { WorkflowState } from '../../../shared/models/motions/workflow-state';
+import { Tag } from 'app/shared/models/core/tag';
 
 /**
  * Repository Services for motions (and potentially categories)
@@ -71,7 +72,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         private personalNoteService: PersonalNoteService,
         private translate: TranslateService
     ) {
-        super(DS, mapperService, Motion, [Category, User, Workflow, Item, MotionBlock, Mediafile]);
+        super(DS, mapperService, Motion, [Category, User, Workflow, Item, MotionBlock, Mediafile, Tag]);
     }
 
     /**
@@ -90,11 +91,23 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         const item = this.DS.get(Item, motion.agenda_item_id);
         const block = this.DS.get(MotionBlock, motion.motion_block_id);
         const attachments = this.DS.getMany(Mediafile, motion.attachments_id);
+        const tags = this.DS.getMany(Tag, motion.tags_id);
         let state: WorkflowState = null;
         if (workflow) {
             state = workflow.getStateById(motion.state_id);
         }
-        return new ViewMotion(motion, category, submitters, supporters, workflow, state, item, block, attachments);
+        return new ViewMotion(
+            motion,
+            category,
+            submitters,
+            supporters,
+            workflow,
+            state,
+            item,
+            block,
+            attachments,
+            tags
+        );
     }
 
     /**
@@ -216,6 +229,26 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
     public async setBlock(viewMotion: ViewMotion, blockId: number): Promise<void> {
         const motion = viewMotion.motion;
         motion.motion_block_id = blockId;
+        await this.update(motion, viewMotion);
+    }
+
+    /**
+     * Adds new or removes existing tags from motions
+     *
+     * @param viewMotion the motion to tag
+     * @param tagId the tags id to add or remove
+     */
+    public async setTag(viewMotion: ViewMotion, tagId: number): Promise<void> {
+        const motion = viewMotion.motion;
+        const tagIndex = motion.tags_id.findIndex(tag => tag === tagId);
+
+        if (tagIndex === -1) {
+            // add tag to motion
+            motion.tags_id.push(tagId);
+        } else {
+            // remove tag from motion
+            motion.tags_id.splice(tagIndex, 1);
+        }
         await this.update(motion, viewMotion);
     }
 

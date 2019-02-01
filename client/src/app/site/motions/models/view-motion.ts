@@ -12,6 +12,7 @@ import { ViewMotionCommentSection } from './view-motion-comment-section';
 import { Workflow } from '../../../shared/models/motions/workflow';
 import { WorkflowState } from '../../../shared/models/motions/workflow-state';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
+import { Tag } from 'app/shared/models/core/tag';
 
 /**
  * The line numbering mode for the motion detail view.
@@ -51,6 +52,7 @@ export class ViewMotion extends BaseProjectableModel {
     protected _item: Item;
     protected _block: MotionBlock;
     protected _attachments: Mediafile[];
+    protected _tags: Tag[];
     public personalNote: PersonalNoteContent;
 
     /**
@@ -232,6 +234,10 @@ export class ViewMotion extends BaseProjectableModel {
         return this._attachments ? this._attachments : null;
     }
 
+    public get tags(): Tag[] {
+        return this._tags ? this._tags : null;
+    }
+
     /**
      * @returns the creation date as Date object
      */
@@ -313,7 +319,8 @@ export class ViewMotion extends BaseProjectableModel {
         state?: WorkflowState,
         item?: Item,
         block?: MotionBlock,
-        attachments?: Mediafile[]
+        attachments?: Mediafile[],
+        tags?: Tag[]
     ) {
         super();
         this._motion = motion;
@@ -325,6 +332,7 @@ export class ViewMotion extends BaseProjectableModel {
         this._item = item;
         this._block = block;
         this._attachments = attachments;
+        this._tags = tags;
     }
 
     public getTitle(): string {
@@ -364,6 +372,8 @@ export class ViewMotion extends BaseProjectableModel {
             this.updateUser(update as User);
         } else if (update instanceof Mediafile) {
             this.updateAttachments(update as Mediafile);
+        } else if (update instanceof Tag) {
+            this.updateTags(update as Tag);
         }
     }
 
@@ -381,7 +391,7 @@ export class ViewMotion extends BaseProjectableModel {
     /**
      * Update routine for the workflow
      *
-     * @param workflow potentially the changed workflow (state). Needs manual verification
+     * @param workflow potentially the (changed workflow (state). Needs manual verification
      */
     public updateWorkflow(workflow: Workflow): void {
         if (this.motion && workflow.id === this.motion.workflow_id) {
@@ -443,12 +453,25 @@ export class ViewMotion extends BaseProjectableModel {
         }
     }
 
+    public updateTags(update: Tag): void {
+        if (this.motion) {
+            if (this.tags_id && this.tags_id.includes(update.id)) {
+                const tagIndex = this.tags.findIndex(tag => tag.id === update.id);
+                this.tags[tagIndex] = update as Tag;
+            }
+        }
+    }
+
     public hasSupporters(): boolean {
         return !!(this.supporters && this.supporters.length > 0);
     }
 
     public hasAttachments(): boolean {
         return !!(this.attachments && this.attachments.length > 0);
+    }
+
+    public hasTags(): boolean {
+        return !!(this.tags && this.tags.length > 0);
     }
 
     public isStatuteAmendment(): boolean {
@@ -508,7 +531,8 @@ export class ViewMotion extends BaseProjectableModel {
             this._state,
             this._item,
             this._block,
-            this._attachments
+            this._attachments,
+            this._tags
         );
     }
 }

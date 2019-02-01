@@ -303,6 +303,47 @@
             </mat-basic-chip>
         </div>
 
+        <!-- Tags -->
+        <!-- Disabled during "new motion" since changing has no effect -->
+        <div *ngIf="!editMotion && tagObserver.value.length > 0">
+            <h4 *ngIf="perms.isAllowed('change_metadata', motion) || motion.hasTags()">Tags</h4>
+
+            <!-- For privileged users -->
+            <div *ngIf="perms.isAllowed('change_metadata', motion)">
+                <!-- Selection menu -->
+                <mat-menu #tagMenu="matMenu">
+                    <button mat-menu-item *ngFor="let tag of tagObserver.value" (click)="setTag($event, tag.id)">
+                        <mat-icon *ngIf="motion.tags.includes(tag)">check</mat-icon>
+                        {{ tag }}
+                    </button>
+                </mat-menu>
+
+                <!-- Make the whole container a trigger to prevent unexpected menu behavior -->
+                <div [matMenuTriggerFor]="tagMenu">
+                    <!-- No selected tags -->
+                    <mat-basic-chip *ngIf="!motion.hasTags()" class="grey" disabled>
+                        {{ '–' }}
+                    </mat-basic-chip>
+
+                    <!-- Display a chip list of tags -->
+                    <mat-chip-list class="mat-chip-list-stacked">
+                        <mat-basic-chip *ngFor="let tag of motion.tags" class="grey" disabled>
+                            {{ tag }}
+                        </mat-basic-chip>
+                    </mat-chip-list>
+                </div>
+            </div>
+
+            <!-- For non privileged users -->
+            <div *ngIf="!perms.isAllowed('change_metadata', motion)">
+                <mat-chip-list class="mat-chip-list-stacked">
+                    <mat-basic-chip *ngFor="let tag of motion.tags" class="grey">
+                        {{ tag }}
+                    </mat-basic-chip>
+                </mat-chip-list>
+            </div>
+        </div>
+
         <!-- Block -->
         <div *ngIf="!editMotion && blockObserver.value.length > 0">
             <h4 translate>Motion block</h4>
@@ -494,8 +535,13 @@
 
         <!-- The HTML Editor -->
         <editor formControlName="text" [init]="tinyMceSettings" *ngIf="motion && editMotion" required></editor>
-        <div *ngIf="contentForm.get('text').invalid && (contentForm.get('text').dirty || contentForm.get('text').touched)"
-            class="red-warning-text" translate>
+        <div
+            *ngIf="
+                contentForm.get('text').invalid && (contentForm.get('text').dirty || contentForm.get('text').touched)
+            "
+            class="red-warning-text"
+            translate
+        >
             This field is required.
         </div>
 
@@ -506,15 +552,30 @@
 
         <!-- Reason -->
         <div *ngIf="motion.reason || editMotion">
-            <h3 [ngClass]="(reasonRequired && contentForm.get('reason').invalid && (contentForm.get('reason').dirty || contentForm.get('reason').touched)) ? 'red-warning-text' : ''">
+            <h3
+                [ngClass]="
+                    reasonRequired &&
+                    contentForm.get('reason').invalid &&
+                    (contentForm.get('reason').dirty || contentForm.get('reason').touched)
+                        ? 'red-warning-text'
+                        : ''
+                "
+            >
                 <span translate>Reason</span>&nbsp;<span *ngIf="reasonRequired && editMotion">*</span>
             </h3>
             <div class="motion-text" *ngIf="!editMotion"><div [innerHtml]="motion.reason"></div></div>
 
             <!-- The HTML Editor -->
             <editor formControlName="reason" [init]="tinyMceSettings" *ngIf="editMotion" required></editor>
-            <div *ngIf="reasonRequired && contentForm.get('reason').invalid && (contentForm.get('reason').dirty || contentForm.get('reason').touched)"
-                class="red-warning-text" translate>
+            <div
+                *ngIf="
+                    reasonRequired &&
+                    contentForm.get('reason').invalid &&
+                    (contentForm.get('reason').dirty || contentForm.get('reason').touched)
+                "
+                class="red-warning-text"
+                translate
+            >
                 This field is required.
             </div>
         </div>
