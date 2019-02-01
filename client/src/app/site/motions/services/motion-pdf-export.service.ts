@@ -70,4 +70,18 @@ export class MotionPdfExportService {
         };
         this.pdfDocumentService.download(doc, filename, metadata);
     }
+
+    /**
+     * Exports a table of the motions in order of their call list
+     *
+     * @param motions the motions to export
+     */
+    public exportPdfCallList(motions: ViewMotion[]): void {
+        const doc = this.motionPdfService.callListToDoc(motions);
+        const filename = this.translate.instant('Call list');
+        const metadata = {
+            title: filename
+        };
+        this.pdfDocumentService.downloadLandscape(doc, filename, metadata);
+    }
 }

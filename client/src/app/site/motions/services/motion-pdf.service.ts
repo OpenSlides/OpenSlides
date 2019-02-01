@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { ViewMotion, LineNumberingMode, ChangeRecoMode } from '../models/view-motion';
-import { MotionRepositoryService } from '../../../core/repositories/motions/motion-repository.service';
-import { ConfigService } from 'app/core/ui-services/config.service';
 import { ChangeRecommendationRepositoryService } from '../../../core/repositories/motions/change-recommendation-repository.service';
-import { ViewUnifiedChange } from '../models/view-unified-change';
+import { ConfigService } from 'app/core/ui-services/config.service';
+import { MotionRepositoryService } from '../../../core/repositories/motions/motion-repository.service';
 import { HtmlToPdfService } from 'app/core/ui-services/html-to-pdf.service';
+import { ViewMotion, LineNumberingMode, ChangeRecoMode } from '../models/view-motion';
+import { ViewUnifiedChange } from '../models/view-unified-change';
 
 /**
  * Converts a motion to pdf. Can be used from the motion detail view or executed on a list of motions
@@ -412,5 +412,89 @@ export class MotionPdfService {
         } else {
             return {};
         }
+    }
+
+    /**
+     * Creates pdfMake definitions for the call list of given motions
+     *
+     * @param motions A list of motions
+     * @returns definitions ready to be opened or exported via {@link PdfDocumentService}
+     */
+    public callListToDoc(motions: ViewMotion[]): object {
+        motions.sort((a, b) => a.callListWeight - b.callListWeight);
+        const title = {
+            text: this.translate.instant('Call list'),
+            style: 'title'
+        };
+        const callListTableBody: object[] = [
+            [
+                {
+                    text: this.translate.instant('Called'),
+                    style: 'tableHeader'
+                },
+                {
+                    text: this.translate.instant('Called with'),
+                    style: 'tableHeader'
+                },
+                {
+                    text: this.translate.instant('Submitters'),
+                    style: 'tableHeader'
+                },
+                {
+                    text: this.translate.instant('Title'),
+                    style: 'tableHeader'
+                },
+                {
+                    text: this.translate.instant('Recommendation'),
+                    style: 'tableHeader'
+                },
+                {
+                    text: this.translate.instant('Motion block'),
+                    style: 'tableHeader'
+                }
+            ]
+        ];
+
+        const callListRows = motions.map(motion => this.createCallListRow(motion));
+        const table: object = {
+            table: {
+                widths: ['auto', 'auto', 'auto', '*', 'auto', 'auto'],
+                headerRows: 1,
+                body: callListTableBody.concat(callListRows)
+            },
+            layout: {
+                hLineWidth: rowIndex => {
+                    return rowIndex === 1;
+                },
+                vLineWidth: () => {
+                    return 0;
+                },
+                fillColor: rowIndex => {
+                    return rowIndex % 2 === 0 ? '#EEEEEE' : null;
+                }
+            }
+        };
+        return [title, table];
+    }
+
+    /**
+     * Creates the pdfMake definitions for a row of the call List table
+     *
+     * @param motion
+     * @returns pdfmakre definitions
+     */
+    private createCallListRow(motion: ViewMotion): object {
+        return [
+            {
+                text: motion.sort_parent_id ? '' : motion.identifierOrTitle
+            },
+            { text: motion.sort_parent_id ? motion.identifierOrTitle : '' },
+            { text: motion.submitters.length ? motion.submitters.map(s => s.short_name).join(', ') : '' },
+            { text: motion.title },
+            {
+                text: motion.recommendation ? this.translate.instant(motion.recommendation.recommendation_label) : ''
+            },
+            { text: motion.motion_block ? motion.motion_block.title : '' }
+        ];
     }
 }

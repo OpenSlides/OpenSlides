@@ -119,23 +119,36 @@ export class PdfDocumentService {
      * @param documentContent the content of the pdf as object
      * @param metadata
      * @param imageUrls Array of optional images (url, placeholder) to be inserted
+     * @param customMargins optionally overrides the margins
+     * @param landscape optional landscape page orientation instead of default portrait
      * @returns the pdf document definition ready to export
      */
-    private async getStandardPaper(documentContent: object, metadata?: object, imageUrls?: string[]): Promise<object> {
+    private async getStandardPaper(
+        documentContent: object,
+        metadata?: object,
+        imageUrls?: string[],
+        customMargins?: [number, number, number, number],
+        landscape?: boolean
+    ): Promise<object> {
         this.initFonts();
         this.imageUrls = imageUrls ? imageUrls : [];
         pdfMake.vfs = await this.initVfs();
         const result = {
             pageSize: 'A4',
-            pageMargins: [75, 90, 75, 75],
+            pageOrientation: landscape ? landscape : 'portrait',
+            pageMargins: customMargins || [75, 90, 75, 75],
             defaultStyle: {
                 font: 'PdfFont',
                 fontSize: this.configService.instant('general_export_pdf_fontsize')
             },
-            header: this.getHeader(),
+            header: this.getHeader(customMargins ? [customMargins[0], customMargins[2]] : null),
             // TODO: option for no footer, wherever this can be defined
             footer: (currentPage, pageCount) => {
-                return this.getFooter(currentPage, pageCount);
+                return this.getFooter(
+                    currentPage,
+                    pageCount,
+                    customMargins ? [customMargins[0], customMargins[2]] : null
+                );
             },
             info: metadata,
             content: documentContent,
@@ -188,9 +201,10 @@ export class PdfDocumentService {
     /**
      * Creates the header doc definition for normal PDF documents
      *
+     * @param lrMargin optional margin overrides
      * @returns an object that contains the necessary header definition
      */
-    private getHeader(): object {
+    private getHeader(lrMargin?: [number, number]): object {
         // check for the required logos
         let logoHeaderLeftUrl = this.configService.instant<any>('logo_pdf_header_L').path;
         let logoHeaderRightUrl = this.configService.instant<any>('logo_pdf_header_R').path;
@@ -247,11 +261,13 @@ export class PdfDocumentService {
             });
             this.imageUrls.push(logoHeaderRightUrl);
         }
+        const margin = [lrMargin ? lrMargin[0] : 75, 30, lrMargin ? lrMargin[0] : 75, 10];
+        // pdfmake order: [left, top, right, bottom]
 
         return {
             color: '#555',
             fontSize: 9,
-            margin: [75, 30, 75, 10], // [left, top, right, bottom]
+            margin: margin,
             columns: columns,
             columnGap: 10
         };
@@ -265,9 +281,10 @@ export class PdfDocumentService {
      *
      * @param currentPage holds the number of the current page
      * @param pageCount holds the page count
+     * @param lrMargin optionally overriding the margins
      * @returns the footer doc definition
      */
-    private getFooter(currentPage: number, pageCount: number): object {
+    private getFooter(currentPage: number, pageCount: number, lrMargin?: [number, number]): object {
         const columns = [];
         let logoContainerWidth: string;
         let pageNumberPosition: string;
@@ -330,8 +347,9 @@ export class PdfDocumentService {
             this.imageUrls.push(logoFooterRightUrl);
         }
 
+        const margin = [lrMargin ? lrMargin[0] : 75, 0, lrMargin ? lrMargin[0] : 75, 10];
         return {
-            margin: [75, 0, 75, 10],
+            margin: margin,
             columns: columns,
             columnGap: 10
         };
@@ -359,6 +377,18 @@ export class PdfDocumentService {
         });
     }
 
+    /**
+     * Downloads a pdf in landscape orientation
+     *
+     * @param docDefinition the structure of the PDF document
+     * @param filename the name of the file to use
+     * @param metadata
+     */
+    public downloadLandscape(docDefinition: object, filename: string, metadata?: object): void {
+        this.getStandardPaper(docDefinition, metadata, null, [50, 80, 50, 75], true).then(doc => {
+            this.createPdf(doc, filename);
+        });
+    }
     /**
      * Downloads a pdf with the ballot papet page definitions.
      *
