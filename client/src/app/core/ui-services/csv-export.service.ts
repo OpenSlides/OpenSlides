@@ -154,7 +154,7 @@ export class CsvExportService {
             })
             .join(lineSeparator);
 
-        this.exporter.saveFile(csvContentAsString, filename);
+        this.exporter.saveFile(csvContentAsString, filename, 'text/csv');
     }
 
     /**

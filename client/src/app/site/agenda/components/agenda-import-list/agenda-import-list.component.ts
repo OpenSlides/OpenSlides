@@ -112,7 +112,7 @@ export class AgendaImportListComponent extends BaseImportListComponent<ViewCreat
             'Break,,0:10,,internal',
             'Demo 2,Demo text 2,1:30,,hidden'
         ];
-        this.exporter.saveFile(rows.join('\n'), this.translate.instant('Topic example') + '.csv');
+        this.exporter.saveFile(rows.join('\n'), this.translate.instant('Topic example') + '.csv', 'text/csv');
     }
 
     /**

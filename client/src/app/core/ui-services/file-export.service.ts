@@ -14,9 +14,14 @@ export class FileExportService {
      * Saves a file
      * @param file
      * @param filename
+     * @param mimeType an optional mime type
      */
-    public saveFile(file: BlobPart, filename: string): void {
-        const blob = new Blob([file]);
+    public saveFile(file: BlobPart, filename: string, mimeType?: string): void {
+        const options: BlobPropertyBag = {};
+        if (mimeType) {
+            options.type = mimeType;
+        }
+        const blob = new Blob([file], options);
         saveAs(blob, filename, { autoBOM: true });
         // autoBOM = automatic byte-order-mark
     }
