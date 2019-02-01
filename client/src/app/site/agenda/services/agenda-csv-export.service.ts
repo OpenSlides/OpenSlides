@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { CsvExportService } from 'app/core/services/csv-export.service';
+import { CsvExportService } from 'app/core/ui-services/csv-export.service';
 import { ViewItem } from '../models/view-item';
 
 /**

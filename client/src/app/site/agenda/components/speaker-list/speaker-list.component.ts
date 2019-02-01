@@ -6,15 +6,15 @@ import { BehaviorSubject } from 'rxjs';
 import { SpeakerState } from 'app/shared/models/agenda/speaker';
 import { User } from 'app/shared/models/users/user';
 import { ViewSpeaker } from '../../models/view-speaker';
-import { DataStoreService } from 'app/core/services/data-store.service';
-import { AgendaRepositoryService } from '../../services/agenda-repository.service';
+import { DataStoreService } from 'app/core/core-services/data-store.service';
+import { AgendaRepositoryService } from '../../../../core/repositories/agenda/agenda-repository.service';
 import { ViewItem } from '../../models/view-item';
-import { OperatorService } from 'app/core/services/operator.service';
+import { OperatorService } from 'app/core/core-services/operator.service';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { MatSnackBar } from '@angular/material';
-import { PromptService } from 'app/core/services/prompt.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 
 /**
  * The list of speakers for agenda items.

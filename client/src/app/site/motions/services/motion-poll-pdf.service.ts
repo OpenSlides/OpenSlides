@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { ConfigService } from 'app/core/services/config.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
 import { MotionPoll } from 'app/shared/models/motions/motion-poll';
-import { MotionRepositoryService } from './motion-repository.service';
-import { PdfDocumentService } from 'app/core/services/pdf-document.service';
-import { UserRepositoryService } from 'app/site/users/services/user-repository.service';
+import { MotionRepositoryService } from '../../../core/repositories/motions/motion-repository.service';
+import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
+import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 
 /**
  * Creates a pdf for a motion poll. Takes as input any motionPoll

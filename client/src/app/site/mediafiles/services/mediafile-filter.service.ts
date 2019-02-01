@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 
-import { FilterListService, OsFilter } from '../../../core/services/filter-list.service';
+import { BaseFilterListService, OsFilter } from '../../../core/ui-services/base-filter-list.service';
 import { Mediafile } from '../../../shared/models/mediafiles/mediafile';
 import { ViewMediafile } from '../models/view-mediafile';
-import { StorageService } from 'app/core/services/storage.service';
-import { MediafileRepositoryService } from './mediafile-repository.service';
+import { StorageService } from 'app/core/core-services/storage.service';
+import { MediafileRepositoryService } from '../../../core/repositories/mediafiles/mediafile-repository.service';
 
 @Injectable({
     providedIn: 'root'
 })
-export class MediafileFilterListService extends FilterListService<Mediafile, ViewMediafile> {
+export class MediafileFilterListService extends BaseFilterListService<Mediafile, ViewMediafile> {
     protected name = 'Mediafile';
 
     public filterOptions: OsFilter[] = [

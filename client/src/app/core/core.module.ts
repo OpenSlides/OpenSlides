@@ -2,37 +2,17 @@ import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Title } from '@angular/platform-browser';
 
-// Core Services, Directives
-import { AuthGuard } from './services/auth-guard.service';
-import { AuthService } from './services/auth.service';
-import { AutoupdateService } from './services/autoupdate.service';
-import { DataStoreService } from './services/data-store.service';
-import { OperatorService } from './services/operator.service';
-import { WebsocketService } from './services/websocket.service';
-import { DataSendService } from './services/data-send.service';
-import { ViewportService } from './services/viewport.service';
+// Shared Components
 import { PromptDialogComponent } from '../shared/components/prompt-dialog/prompt-dialog.component';
-import { HttpService } from './services/http.service';
 import { ChoiceDialogComponent } from '../shared/components/choice-dialog/choice-dialog.component';
 import { ProjectionDialogComponent } from 'app/shared/components/projection-dialog/projection-dialog.component';
 
-/** Global Core Module. Contains all global (singleton) services
- *
+/**
+ * Global Core Module.
  */
 @NgModule({
     imports: [CommonModule],
-    providers: [
-        Title,
-        AuthGuard,
-        AuthService,
-        AutoupdateService,
-        DataStoreService,
-        DataSendService,
-        HttpService,
-        OperatorService,
-        ViewportService,
-        WebsocketService
-    ],
+    providers: [Title],
     entryComponents: [PromptDialogComponent, ChoiceDialogComponent, ProjectionDialogComponent]
 })
 export class CoreModule {

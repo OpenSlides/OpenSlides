@@ -4,7 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 
 import { ViewItem } from '../../models/view-item';
 import { itemVisibilityChoices } from 'app/shared/models/agenda/item';
-import { DurationService } from 'app/core/services/duration.service';
+import { DurationService } from 'app/core/ui-services/duration.service';
 
 /**
  * Dialog component to change agenda item details

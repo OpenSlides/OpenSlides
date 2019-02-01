@@ -3,10 +3,10 @@ import { MatSnackBar } from '@angular/material';
 import { Papa } from 'ngx-papaparse';
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseImportService, NewEntry } from 'app/core/services/base-import.service';
+import { BaseImportService, NewEntry } from 'app/core/ui-services/base-import.service';
 import { StatuteParagraph } from 'app/shared/models/motions/statute-paragraph';
-import { StatuteParagraphRepositoryService } from './statute-paragraph-repository.service';
 import { ViewStatuteParagraph } from '../models/view-statute-paragraph';
+import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions/statute-paragraph-repository.service';
 
 /**
  * Service for motion imports

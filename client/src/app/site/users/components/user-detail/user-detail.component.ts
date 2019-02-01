@@ -7,13 +7,13 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
 import { BaseViewComponent } from '../../../base/base-view';
-import { DataStoreService } from '../../../../core/services/data-store.service';
+import { DataStoreService } from '../../../../core/core-services/data-store.service';
 import { genders } from 'app/shared/models/users/user';
 import { Group } from '../../../../shared/models/users/group';
-import { OperatorService } from '../../../../core/services/operator.service';
-import { PromptService } from '../../../../core/services/prompt.service';
+import { OperatorService } from '../../../../core/core-services/operator.service';
+import { PromptService } from '../../../../core/ui-services/prompt.service';
 import { UserPdfExportService } from '../../services/user-pdf-export.service';
-import { UserRepositoryService } from '../../services/user-repository.service';
+import { UserRepositoryService } from '../../../../core/repositories/users/user-repository.service';
 import { ViewUser } from '../../models/view-user';
 
 /**

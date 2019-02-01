@@ -7,7 +7,7 @@ import { Subscription, Observable } from 'rxjs';
 
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { Displayable } from 'app/shared/models/base/displayable';
-import { OSTreeNode, TreeService } from 'app/core/services/tree.service';
+import { OSTreeNode, TreeService } from 'app/core/ui-services/tree.service';
 
 /**
  * The data representation for the sort event.

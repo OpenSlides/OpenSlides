@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 
-import { FilterListService, OsFilter, OsFilterOption } from '../../../core/services/filter-list.service';
+import { BaseFilterListService, OsFilter, OsFilterOption } from '../../../core/ui-services/base-filter-list.service';
 import { Item, itemVisibilityChoices } from '../../../shared/models/agenda/item';
 import { ViewItem } from '../models/view-item';
-import { StorageService } from 'app/core/services/storage.service';
-import { AgendaRepositoryService } from './agenda-repository.service';
+import { StorageService } from 'app/core/core-services/storage.service';
+import { AgendaRepositoryService } from '../../../core/repositories/agenda/agenda-repository.service';
 
 @Injectable({
     providedIn: 'root'
 })
-export class AgendaFilterListService extends FilterListService<Item, ViewItem> {
+export class AgendaFilterListService extends BaseFilterListService<Item, ViewItem> {
     protected name = 'Agenda';
 
     public filterOptions: OsFilter[] = [];

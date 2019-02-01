@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { SortListService, OsSortingDefinition } from '../../../core/services/sort-list.service';
+import { BaseSortListService, OsSortingDefinition } from '../../../core/ui-services/base-sort-list.service';
 import { ViewMediafile } from '../models/view-mediafile';
 
 @Injectable({
     providedIn: 'root'
 })
-export class MediafilesSortListService extends SortListService<ViewMediafile> {
+export class MediafilesSortListService extends BaseSortListService<ViewMediafile> {
     public sortOptions: OsSortingDefinition<ViewMediafile> = {
         sortProperty: 'title',
         sortAscending: true,

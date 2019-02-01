@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { MatDialogRef, MatButtonToggle } from '@angular/material';
 
-import { ConfigService } from 'app/core/services/config.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
 import { LineNumberingMode, ChangeRecoMode } from '../../models/view-motion';
 
 /**

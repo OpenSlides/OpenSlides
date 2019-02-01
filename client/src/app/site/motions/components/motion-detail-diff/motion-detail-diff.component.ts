@@ -2,18 +2,18 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output } fro
 import { LineNumberingMode, ViewMotion } from '../../models/view-motion';
 import { ViewUnifiedChange, ViewUnifiedChangeType } from '../../models/view-unified-change';
 import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
-import { MotionRepositoryService } from '../../services/motion-repository.service';
-import { LineRange, ModificationType } from '../../services/diff.service';
+import { MotionRepositoryService } from '../../../../core/repositories/motions/motion-repository.service';
+import { LineRange, ModificationType } from '../../../../core/ui-services/diff.service';
 import { ViewChangeReco } from '../../models/view-change-reco';
 import { MatDialog, MatSnackBar } from '@angular/material';
-import { ChangeRecommendationRepositoryService } from '../../services/change-recommendation-repository.service';
+import { ChangeRecommendationRepositoryService } from '../../../../core/repositories/motions/change-recommendation-repository.service';
 import {
     MotionChangeRecommendationComponent,
     MotionChangeRecommendationComponentData
 } from '../motion-change-recommendation/motion-change-recommendation.component';
 import { BaseViewComponent } from '../../../base/base-view';
 import { TranslateService } from '@ngx-translate/core';
-import { ConfigService } from '../../../../core/services/config.service';
+import { ConfigService } from '../../../../core/ui-services/config.service';
 
 /**
  * This component displays the original motion text with the change blocks inside.

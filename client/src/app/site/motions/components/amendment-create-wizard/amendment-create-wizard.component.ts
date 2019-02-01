@@ -5,11 +5,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
-import { ConfigService } from '../../../../core/services/config.service';
+import { ConfigService } from '../../../../core/ui-services/config.service';
 
-import { MotionRepositoryService } from '../../services/motion-repository.service';
+import { MotionRepositoryService } from '../../../../core/repositories/motions/motion-repository.service';
 import { ViewMotion } from '../../models/view-motion';
-import { LinenumberingService } from '../../services/linenumbering.service';
+import { LinenumberingService } from '../../../../core/ui-services/linenumbering.service';
 import { BaseViewComponent } from '../../../base/base-view';
 import { CreateMotion } from '../../models/create-motion';
 

@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { SortListService, OsSortingDefinition } from '../../../core/services/sort-list.service';
+import { BaseSortListService, OsSortingDefinition } from '../../../core/ui-services/base-sort-list.service';
 import { ViewAssignment } from '../models/view-assignment';
 
 @Injectable({
     providedIn: 'root'
 })
-export class AssignmentSortListService extends SortListService<ViewAssignment> {
+export class AssignmentSortListService extends BaseSortListService<ViewAssignment> {
     public sortOptions: OsSortingDefinition<ViewAssignment> = {
         sortProperty: 'assignment',
         sortAscending: true,

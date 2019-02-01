@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core'; // showcase
 
 // for testing the DS and BaseModel
 import { Config } from '../../../../shared/models/core/config';
-import { DataStoreService } from '../../../../core/services/data-store.service';
+import { DataStoreService } from '../../../../core/core-services/data-store.service';
 
 @Component({
     selector: 'os-start',

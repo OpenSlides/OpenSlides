@@ -7,8 +7,8 @@ import { UploadEvent, FileSystemFileEntry } from 'ngx-file-drop';
 import { TranslateService } from '@ngx-translate/core';
 
 import { BaseViewComponent } from 'app/site/base/base-view';
-import { OperatorService } from 'app/core/services/operator.service';
-import { MediafileRepositoryService } from '../../services/mediafile-repository.service';
+import { OperatorService } from 'app/core/core-services/operator.service';
+import { MediafileRepositoryService } from '../../../../core/repositories/mediafiles/mediafile-repository.service';
 
 /**
  * To hold the structure of files to upload

@@ -5,7 +5,7 @@ import { MatSnackBar } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 
-import { AgendaRepositoryService } from '../../services/agenda-repository.service';
+import { AgendaRepositoryService } from '../../../../core/repositories/agenda/agenda-repository.service';
 import { BaseViewComponent } from '../../../base/base-view';
 import { OSTreeSortEvent } from 'app/shared/components/sorting-tree/sorting-tree.component';
 import { ViewItem } from '../../models/view-item';

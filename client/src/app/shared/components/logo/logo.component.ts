@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 
-import { MediaManageService } from '../../../site/mediafiles/services/media-manage.service';
-import { ConfigService } from 'app/core/services/config.service';
+import { MediaManageService } from '../../../core/ui-services/media-manage.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
 
 /**
  * Reusable Logo component for Apps.

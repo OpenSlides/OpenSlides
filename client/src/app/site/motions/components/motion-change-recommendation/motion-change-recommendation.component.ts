@@ -1,8 +1,8 @@
 import { Component, Inject } from '@angular/core';
-import { LineRange, ModificationType } from '../../services/diff.service';
+import { LineRange, ModificationType } from '../../../../core/ui-services/diff.service';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ChangeRecommendationRepositoryService } from '../../services/change-recommendation-repository.service';
+import { ChangeRecommendationRepositoryService } from '../../../../core/repositories/motions/change-recommendation-repository.service';
 import { ViewChangeReco } from '../../models/view-change-reco';
 import { BaseViewComponent } from '../../../base/base-view';
 import { Title } from '@angular/platform-browser';

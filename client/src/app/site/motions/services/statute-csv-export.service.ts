@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { CsvExportService, CsvColumnDefinitionProperty } from 'app/core/services/csv-export.service';
+import { CsvExportService, CsvColumnDefinitionProperty } from 'app/core/ui-services/csv-export.service';
 import { ViewStatuteParagraph } from '../models/view-statute-paragraph';
-import { FileExportService } from 'app/core/services/file-export.service';
+import { FileExportService } from 'app/core/ui-services/file-export.service';
 
 /**
  * Exports CSVs for statute paragraphs.

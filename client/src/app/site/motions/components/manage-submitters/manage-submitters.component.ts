@@ -7,9 +7,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { BaseViewComponent } from 'app/site/base/base-view';
-import { DataStoreService } from 'app/core/services/data-store.service';
+import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { LocalPermissionsService } from '../../services/local-permissions.service';
-import { MotionRepositoryService } from '../../services/motion-repository.service';
+import { MotionRepositoryService } from '../../../../core/repositories/motions/motion-repository.service';
 import { User } from 'app/shared/models/users/user';
 import { ViewMotion } from '../../models/view-motion';
 

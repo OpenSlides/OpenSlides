@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { SiteComponent } from './site.component';
 
-import { AuthGuard } from '../core/services/auth-guard.service';
+import { AuthGuard } from '../core/core-services/auth-guard.service';
 
 /**
  * Routung to all OpenSlides apps

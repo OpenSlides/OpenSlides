@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { LoginDataService } from '../../../core/services/login-data.service';
+import { LoginDataService } from '../../../core/ui-services/login-data.service';
 import { environment } from 'environments/environment';
-import { HttpService } from '../../../core/services/http.service';
+import { HttpService } from '../../../core/core-services/http.service';
 
 /**
  * Characterize a plugin. This data is retrieved from the server

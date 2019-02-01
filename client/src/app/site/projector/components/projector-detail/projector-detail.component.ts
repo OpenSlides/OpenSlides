@@ -5,17 +5,20 @@ import { ActivatedRoute } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { ProjectorRepositoryService, ScrollScaleDirection } from '../../services/projector-repository.service';
+import {
+    ProjectorRepositoryService,
+    ScrollScaleDirection
+} from '../../../../core/repositories/projector/projector-repository.service';
 import { ViewProjector } from '../../models/view-projector';
 import { BaseViewComponent } from 'app/site/base/base-view';
-import { ProjectorService } from 'app/core/services/projector.service';
+import { ProjectorService } from 'app/core/core-services/projector.service';
 import { moveItemInArray, CdkDragDrop } from '@angular/cdk/drag-drop';
 import { ProjectorElement } from 'app/shared/models/core/projector';
 import { SlideManager } from 'app/slides/services/slide-manager.service';
-import { CountdownRepositoryService } from 'app/site/common/services/countdown-repository.service';
-import { ProjectorMessageRepositoryService } from 'app/site/common/services/projectormessage-repository.service';
-import { ViewProjectorMessage } from 'app/site/common/models/view-projectormessage';
-import { ViewCountdown } from 'app/site/common/models/view-countdown';
+import { CountdownRepositoryService } from 'app/core/repositories/projector/countdown-repository.service';
+import { ProjectorMessageRepositoryService } from 'app/core/repositories/projector/projectormessage-repository.service';
+import { ViewProjectorMessage } from 'app/site/projector/models/view-projectormessage';
+import { ViewCountdown } from 'app/site/projector/models/view-countdown';
 import { Projectable } from 'app/site/base/projectable';
 import { CurrentListOfSpeakersSlideService } from '../../services/current-list-of-of-speakers-slide.service';
 

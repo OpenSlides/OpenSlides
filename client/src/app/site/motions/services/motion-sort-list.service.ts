@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { SortListService, OsSortingDefinition } from '../../../core/services/sort-list.service';
+import { BaseSortListService, OsSortingDefinition } from '../../../core/ui-services/base-sort-list.service';
 import { ViewMotion } from '../models/view-motion';
 
 @Injectable({
     providedIn: 'root'
 })
-export class MotionSortListService extends SortListService<ViewMotion> {
+export class MotionSortListService extends BaseSortListService<ViewMotion> {
     public sortOptions: OsSortingDefinition<ViewMotion> = {
         sortProperty: 'callListWeight',
         sortAscending: true,

@@ -2,15 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { BaseComponent } from 'app/base.component';
-import { AuthService } from 'app/core/services/auth.service';
-import { OperatorService } from 'app/core/services/operator.service';
+import { AuthService } from 'app/core/core-services/auth.service';
+import { OperatorService } from 'app/core/core-services/operator.service';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from 'environments/environment';
-import { OpenSlidesService } from '../../../../core/services/openslides.service';
-import { LoginDataService } from '../../../../core/services/login-data.service';
+import { OpenSlidesService } from '../../../../core/core-services/openslides.service';
+import { LoginDataService } from '../../../../core/ui-services/login-data.service';
 import { ParentErrorStateMatcher } from '../../../../shared/parent-error-state-matcher';
-import { HttpService } from '../../../../core/services/http.service';
+import { HttpService } from '../../../../core/core-services/http.service';
 
 /**
  * Login mask component.

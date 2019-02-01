@@ -2,14 +2,14 @@ import { Component, OnInit, Input } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 
-import { CalculablePollKey } from 'app/core/poll.service';
-import { ConstantsService } from 'app/core/services/constants.service';
+import { CalculablePollKey } from 'app/core/ui-services/poll.service';
+import { ConstantsService } from 'app/core/ui-services/constants.service';
 import { LocalPermissionsService } from '../../services/local-permissions.service';
 import { MotionPoll } from 'app/shared/models/motions/motion-poll';
 import { MotionPollService } from '../../services/motion-poll.service';
 import { MotionPollDialogComponent } from './motion-poll-dialog.component';
-import { MotionRepositoryService } from '../../services/motion-repository.service';
-import { PromptService } from 'app/core/services/prompt.service';
+import { MotionRepositoryService } from '../../../../core/repositories/motions/motion-repository.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 import { MotionPollPdfService } from '../../services/motion-poll-pdf.service';
 
 /**

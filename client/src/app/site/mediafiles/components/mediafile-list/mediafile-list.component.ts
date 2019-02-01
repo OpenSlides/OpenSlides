@@ -8,13 +8,13 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { ListViewBaseComponent } from '../../../base/list-view-base';
 import { ViewMediafile } from '../../models/view-mediafile';
-import { MediafileRepositoryService } from '../../services/mediafile-repository.service';
-import { MediaManageService } from '../../services/media-manage.service';
-import { PromptService } from 'app/core/services/prompt.service';
+import { MediafileRepositoryService } from '../../../../core/repositories/mediafiles/mediafile-repository.service';
+import { MediaManageService } from '../../../../core/ui-services/media-manage.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { MediafileFilterListService } from '../../services/mediafile-filter.service';
 import { MediafilesSortListService } from '../../services/mediafiles-sort-list.service';
-import { ViewportService } from 'app/core/services/viewport.service';
+import { ViewportService } from 'app/core/ui-services/viewport.service';
 
 /**
  * Lists all the uploaded files.

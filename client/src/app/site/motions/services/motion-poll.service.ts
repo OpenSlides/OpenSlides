@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 
-import { ConfigService } from 'app/core/services/config.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
 import { MotionPoll } from 'app/shared/models/motions/motion-poll';
-import { PollService } from 'app/core/poll.service';
+import { PollService } from 'app/core/ui-services/poll.service';
 
 export type CalculablePollKey = 'votesvalid' | 'votesinvalid' | 'votescast' | 'yes' | 'no' | 'abstain';
 

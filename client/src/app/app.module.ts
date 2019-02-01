@@ -9,11 +9,8 @@ import { PapaParseModule } from 'ngx-papaparse';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
-
-// translation module.
 import { LoginModule } from './site/login/login.module';
-import { AppLoadService } from './core/services/app-load.service';
-import { ProjectorModule } from './site/projector/projector.module';
+import { AppLoadService } from './core/core-services/app-load.service';
 import { SlidesModule } from './slides/slides.module';
 import { OpenSlidesTranslateModule } from './core/translate/openslides-translate-module';
 
@@ -48,7 +45,6 @@ export function AppLoaderFactory(appLoadService: AppLoadService): () => Promise<
         LoginModule,
         PapaParseModule,
         ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
-        ProjectorModule,
         SlidesModule.forRoot()
     ],
     providers: [{ provide: APP_INITIALIZER, useFactory: AppLoaderFactory, deps: [AppLoadService], multi: true }],

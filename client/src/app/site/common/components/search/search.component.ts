@@ -8,8 +8,8 @@ import { Subject } from 'rxjs';
 import { auditTime, debounceTime } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 
-import { DataStoreService } from 'app/core/services/data-store.service';
-import { SearchService, SearchModel, SearchResult } from 'app/core/services/search.service';
+import { DataStoreService } from 'app/core/core-services/data-store.service';
+import { SearchService, SearchModel, SearchResult } from 'app/core/ui-services/search.service';
 import { BaseViewComponent } from '../../../base/base-view';
 
 type SearchModelEnabled = SearchModel & { enabled: boolean };

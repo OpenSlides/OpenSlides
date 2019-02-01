@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 
-import { BaseRepository } from '../../base/base-repository';
+import { BaseRepository } from '../../../core/repositories/base-repository';
 import { ViewConfig } from '../models/view-config';
 import { Config } from '../../../shared/models/core/config';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { DataStoreService } from '../../../core/services/data-store.service';
-import { ConstantsService } from '../../../core/services/constants.service';
-import { HttpService } from '../../../core/services/http.service';
+import { DataStoreService } from '../../../core/core-services/data-store.service';
+import { ConstantsService } from '../../../core/ui-services/constants.service';
+import { HttpService } from '../../../core/core-services/http.service';
 import { Identifiable } from '../../../shared/models/base/identifiable';
-import { CollectionStringModelMapperService } from '../../../core/services/collectionStringModelMapper.service';
+import { CollectionStringMapperService } from '../../../core/core-services/collectionStringMapper.service';
 
 /**
  * Holds a single config item.
@@ -94,7 +94,7 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
      */
     public constructor(
         DS: DataStoreService,
-        mapperService: CollectionStringModelMapperService,
+        mapperService: CollectionStringMapperService,
         private constantsService: ConstantsService,
         private http: HttpService
     ) {

@@ -5,14 +5,14 @@ import { MatDialog, MatSidenav } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { AuthService } from '../core/services/auth.service';
-import { OperatorService } from '../core/services/operator.service';
+import { AuthService } from '../core/core-services/auth.service';
+import { OperatorService } from '../core/core-services/operator.service';
 import { BaseComponent } from '../base.component';
 import { pageTransition, navItemAnim } from '../shared/animations';
-import { ViewportService } from '../core/services/viewport.service';
-import { MainMenuService } from '../core/services/main-menu.service';
-import { OpenSlidesStatusService } from '../core/services/openslides-status.service';
-import { TimeTravelService } from '../core/services/time-travel.service';
+import { ViewportService } from '../core/ui-services/viewport.service';
+import { MainMenuService } from '../core/core-services/main-menu.service';
+import { OpenSlidesStatusService } from '../core/core-services/openslides-status.service';
+import { TimeTravelService } from '../core/core-services/time-travel.service';
 
 @Component({
     selector: 'os-site',

@@ -79,6 +79,8 @@ import { ProjectionDialogComponent } from './components/projection-dialog/projec
 import { ResizedDirective } from './directives/resized.directive';
 import { MetaTextBlockComponent } from './components/meta-text-block/meta-text-block.component';
 import { OpenSlidesTranslateModule } from '../core/translate/openslides-translate-module';
+import { ProjectorComponent } from './components/projector/projector.component';
+import { SlideContainerComponent } from './components/slide-container/slide-container.component';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -192,7 +194,9 @@ import { OpenSlidesTranslateModule } from '../core/translate/openslides-translat
         ProjectorButtonComponent,
         ProjectionDialogComponent,
         ResizedDirective,
-        MetaTextBlockComponent
+        MetaTextBlockComponent,
+        ProjectorComponent,
+        SlideContainerComponent
     ],
     declarations: [
         PermsDirective,
@@ -216,7 +220,9 @@ import { OpenSlidesTranslateModule } from '../core/translate/openslides-translat
         ProjectorButtonComponent,
         ProjectionDialogComponent,
         ResizedDirective,
-        MetaTextBlockComponent
+        MetaTextBlockComponent,
+        ProjectorComponent,
+        SlideContainerComponent
     ],
     providers: [
         { provide: DateAdapter, useClass: OpenSlidesDateAdapter },

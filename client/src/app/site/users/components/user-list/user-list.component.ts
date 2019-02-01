@@ -4,18 +4,18 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
-import { ChoiceService } from '../../../../core/services/choice.service';
-import { ConfigService } from 'app/core/services/config.service';
-import { CsvExportService } from '../../../../core/services/csv-export.service';
-import { GroupRepositoryService } from '../../services/group-repository.service';
+import { ChoiceService } from '../../../../core/ui-services/choice.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
+import { CsvExportService } from '../../../../core/ui-services/csv-export.service';
+import { GroupRepositoryService } from '../../../../core/repositories/users/group-repository.service';
 import { ListViewBaseComponent } from '../../../base/list-view-base';
-import { PromptService } from '../../../../core/services/prompt.service';
+import { PromptService } from '../../../../core/ui-services/prompt.service';
 import { UserFilterListService } from '../../services/user-filter-list.service';
-import { UserRepositoryService } from '../../services/user-repository.service';
+import { UserRepositoryService } from '../../../../core/repositories/users/user-repository.service';
 import { UserPdfExportService } from '../../services/user-pdf-export.service';
 import { UserSortListService } from '../../services/user-sort-list.service';
-import { ViewportService } from '../../../../core/services/viewport.service';
-import { OperatorService } from '../../../../core/services/operator.service';
+import { ViewportService } from '../../../../core/ui-services/viewport.service';
+import { OperatorService } from '../../../../core/core-services/operator.service';
 import { ViewUser } from '../../models/view-user';
 
 /**
