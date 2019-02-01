@@ -14,7 +14,5 @@ export class AgendaCurrentListOfSpeakersSlideComponent extends BaseSlideComponen
         super();
     }
 
-    public ngOnInit(): void {
-        console.log('Hello from current list of speakers slide');
-    }
+    public ngOnInit(): void {}
 }

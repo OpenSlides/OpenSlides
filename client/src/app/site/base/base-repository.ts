@@ -1,4 +1,4 @@
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 import { OpenSlidesComponent } from '../../openslides.component';
 import { BaseViewModel } from './base-view-model';
@@ -23,6 +23,11 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
      * Observable subject for the whole list
      */
     protected readonly viewModelListSubject: BehaviorSubject<V[]> = new BehaviorSubject<V[]>([]);
+
+    /**
+     * Observable subject for any changes of view models.
+     */
+    protected readonly generalViewModelSubject: Subject<V> = new Subject<V>();
 
     /**
      * Construction routine for the base repository
@@ -150,12 +155,20 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
     }
 
     /**
+     * This observable fires every time an object is changed in the repository.
+     */
+    public getGeneralViewModelObservable(): Observable<V> {
+        return this.generalViewModelSubject.asObservable();
+    }
+
+    /**
      * Updates the ViewModel observable using a ViewModel corresponding to the id
      */
     protected updateViewModelObservable(id: number): void {
         if (this.viewModelSubjects[id]) {
             this.viewModelSubjects[id].next(this.viewModelStore[id]);
         }
+        this.generalViewModelSubject.next(this.viewModelStore[id]);
     }
 
     /**

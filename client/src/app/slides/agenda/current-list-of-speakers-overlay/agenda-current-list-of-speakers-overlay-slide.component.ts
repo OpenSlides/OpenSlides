@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { BaseSlideComponent } from 'app/slides/base-slide-component';
-import { HttpService } from 'app/core/services/http.service';
 import { AgendaCurrentListOfSpeakersSlideData } from '../base/agenda-current-list-of-speakers-slide-data';
 
 @Component({
@@ -9,15 +8,10 @@ import { AgendaCurrentListOfSpeakersSlideData } from '../base/agenda-current-lis
     templateUrl: './agenda-current-list-of-speakers-overlay-slide.component.html',
     styleUrls: ['./agenda-current-list-of-speakers-overlay-slide.component.scss']
 })
-export class AgendaCurrentListOfSpeakersOverlaySlideComponent
-    extends BaseSlideComponent<AgendaCurrentListOfSpeakersSlideData>
-    implements OnInit {
-    public constructor(private http: HttpService) {
+export class AgendaCurrentListOfSpeakersOverlaySlideComponent extends BaseSlideComponent<
+    AgendaCurrentListOfSpeakersSlideData
+> {
+    public constructor() {
         super();
-        console.log(this.http);
-    }
-
-    public ngOnInit(): void {
-        console.log('Hello from current list of speakers overlay');
     }
 }

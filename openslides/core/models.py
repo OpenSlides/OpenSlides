@@ -84,6 +84,14 @@ class Projector(RESTModelMixin, models.Model):
 
     name = models.CharField(max_length=255, unique=True, blank=True)
 
+    reference_projector = models.ForeignKey(
+        "self",
+        on_delete=SET_NULL_AND_AUTOUPDATE,
+        null=True,
+        blank=True,
+        related_name="references",
+    )
+
     class Meta:
         """
         Contains general permissions that can not be placed in a specific app.

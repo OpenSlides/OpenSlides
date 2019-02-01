@@ -48,6 +48,10 @@ export class ViewProjector extends BaseViewModel {
         return this.projector ? this.projector.scroll : null;
     }
 
+    public get reference_projector_id(): number {
+        return this.projector ? this.projector.reference_projector_id : null;
+    }
+
     public constructor(projector?: Projector) {
         super();
         this._projector = projector;
