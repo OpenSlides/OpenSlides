@@ -1054,6 +1054,24 @@ class State(RESTModelMixin, models.Model):
     state.
     """
 
+    ALL = 0
+    EXTENDED_MANAGERS_AND_SUBMITTER = 1
+    EXTENDED_MANAGERS = 2
+    MANAGERS_ONLY = 3
+
+    ACCESS_LEVELS = (
+        (ALL, "All users with permission to see motions"),
+        (
+            EXTENDED_MANAGERS_AND_SUBMITTER,
+            "Submitters, managers and users with permission to manage metadata",
+        ),
+        (
+            EXTENDED_MANAGERS,
+            "Only managers and users with permission to manage metadata",
+        ),
+        (MANAGERS_ONLY, "Only managers"),
+    )
+
     name = models.CharField(max_length=255)
     """A string representing the state."""
 
@@ -1075,14 +1093,10 @@ class State(RESTModelMixin, models.Model):
     Default value is 'primary' (blue).
     """
 
-    required_permission_to_see = models.CharField(max_length=255, blank=True)
+    access_level = models.IntegerField(choices=ACCESS_LEVELS, default=0)
     """
-    A permission string. If not empty, the user has to have this permission to
-    see a motion in this state.
-
-    To use this feature change the database entry of a state object and add
-    your favourite permission string. You can do this e. g. by editing the
-    definitions in create_builtin_workflows() in openslides/motions/signals.py.
+    Defines which users may see motions in this state e. g. only managers,
+    users with permission to manage metadata and submitters.
     """
 
     allow_support = models.BooleanField(default=False)
