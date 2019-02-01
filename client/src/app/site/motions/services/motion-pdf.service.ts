@@ -119,16 +119,19 @@ export class MotionPdfService {
      */
     private createSubtitle(motion: ViewMotion): object {
         const subtitleLines = [];
+        const exportSequentialNumber = this.configService.instant('motions_export_sequential_number');
 
-        // TODO: documents for motion amendments (having parents)
-        //
-        // if (motion.parent_id) {
-        //     const parentMotion = this.motionRepo.getViewModel(motion.parent_id);
-        //     subtitleLines.push(`${this.translate.instant('Amendment to motion')}: ${motion.identifierOrTitle}`);
-        // }
-
-        if (this.configService.instant('motions_export_sequential_number')) {
+        if (exportSequentialNumber) {
             subtitleLines.push(`${this.translate.instant('Sequential number')}: ${motion.id}`);
+        }
+
+        if (motion.parent_id) {
+            if (exportSequentialNumber) {
+                subtitleLines.push(' • ');
+            }
+            subtitleLines.push(
+                `${this.translate.instant('Amendment to')} ${motion.parent.identifier || motion.parent.title}`
+            );
         }
 
         return {

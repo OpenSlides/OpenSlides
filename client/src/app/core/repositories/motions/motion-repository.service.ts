@@ -92,6 +92,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         const block = this.DS.get(MotionBlock, motion.motion_block_id);
         const attachments = this.DS.getMany(Mediafile, motion.attachments_id);
         const tags = this.DS.getMany(Tag, motion.tags_id);
+        const parent = this.DS.get(Motion, motion.parent_id);
         let state: WorkflowState = null;
         if (workflow) {
             state = workflow.getStateById(motion.state_id);
@@ -106,7 +107,8 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
             item,
             block,
             attachments,
-            tags
+            tags,
+            parent
         );
     }
 
