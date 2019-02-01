@@ -108,6 +108,20 @@ export class LocalPermissionsService {
                     motion.state.allow_submitter_edit &&
                     motion.submitters.some(submitter => submitter.id === this.operator.user.id)
                 );
+            case 'change_state':
+                // check also for empty ViewMotion object (e.g. if motion.id is null)
+                // important for creating new motion as normal user
+                if (!motion || !motion.id) {
+                    return false;
+                }
+                return (
+                    this.operator.hasPerms('motions.can_manage') ||
+                    this.operator.hasPerms('motions.can_manage_metadata') ||
+                    (motion.state &&
+                        motion.state.allow_submitter_edit &&
+                        motion.submitters &&
+                        motion.submitters.some(submitter => submitter.id === this.operator.user.id))
+                );
             case 'change_metadata':
                 return (
                     this.operator.hasPerms('motions.can_manage') ||
