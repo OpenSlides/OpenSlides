@@ -1,0 +1,18 @@
+<!-- Add new translation button -->
+<div *ngFor="let translation of translations; let i = index">
+    <form>
+        <mat-form-field>
+            <input matInput [value]="translation.original" (input)="onChangeOriginal($event.target.value, i)" />
+        </mat-form-field>
+        <mat-icon>arrow_forward</mat-icon>
+        <mat-form-field>
+            <input matInput [value]="translation.translation" (input)="onChangeTranslation($event.target.value, i)" />
+        </mat-form-field>
+        <button mat-icon-button>
+            <mat-icon (click)="onRemoveTranslation(i)">close</mat-icon>
+        </button>
+    </form>
+</div>
+
+<!-- Add new translation button -->
+<button mat-button (click)="onAddNewTranslation()">{{ 'Add new custom translation' | translate }}</button>

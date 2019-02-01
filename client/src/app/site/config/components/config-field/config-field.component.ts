@@ -54,7 +54,7 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
      */
     @Input()
     public set item(value: ViewConfig) {
-        if (value.hasConstantsInfo) {
+        if (value && value.hasConstantsInfo) {
             this.configItem = value;
 
             if (this.form) {
@@ -155,10 +155,7 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
         if (this.configItem.inputType === 'datetimepicker') {
             value = Date.parse(value);
         }
-        // TODO: Solve this via a custom input form.
-        if (this.configItem.inputType === 'translations') {
-            value = JSON.parse(value);
-        }
+
         this.debounceTimeout = null;
         this.repo.update({ value: value }, this.configItem).then(() => {
             this.error = null;
@@ -215,7 +212,7 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
      * @returns wheather it should be excluded or not
      */
     public isExcludedType(type: string): boolean {
-        const excluded = ['boolean', 'markupText', 'text'];
+        const excluded = ['boolean', 'markupText', 'text', 'translations'];
         return excluded.includes(type);
     }
 }

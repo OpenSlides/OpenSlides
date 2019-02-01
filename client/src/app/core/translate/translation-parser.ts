@@ -2,12 +2,12 @@ import { TranslateDefaultParser, TranslateStore } from '@ngx-translate/core';
 import { ConfigService } from '../services/config.service';
 import { Injectable } from '@angular/core';
 
-interface CustomTranslation {
+export interface CustomTranslation {
     original: string;
     translation: string;
 }
 
-type CustomTranslations = CustomTranslation[];
+export type CustomTranslations = CustomTranslation[];
 
 /**
  * Custom translate parser. Intercepts and use custom translations from the configservice.
