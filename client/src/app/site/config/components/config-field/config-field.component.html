@@ -69,6 +69,11 @@
                     <h4>{{ configItem.label | translate }}</h4>
                     <editor formControlName="value" [init]="tinyMceSettings"></editor>
                 </div>
+
+                <!-- Custom Translations -->
+                <div *ngIf="configItem.inputType === 'translations'">
+                    <os-custom-translation formControlName="value"></os-custom-translation>
+                </div>
             </div>
         </form>
     </div>

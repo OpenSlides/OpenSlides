@@ -112,7 +112,9 @@ export class ViewConfig extends BaseViewModel {
      * like the type="color" input...
      */
     public getDebouncingTimeout(): number {
-        if (this.inputType === 'string' || this.inputType === 'text' || this.inputType === 'markupText') {
+        if (this.inputType === 'markupText' || this.inputType === 'translations') {
+            return 2500;
+        } else if (this.inputType === 'string' || this.inputType === 'text') {
             return 1000;
         } else {
             return 100;
