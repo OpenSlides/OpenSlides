@@ -12,6 +12,7 @@ const routes: Routes = [
     { path: 'import', component: AgendaImportListComponent },
     { path: 'topics/new', component: TopicDetailComponent },
     { path: 'sort-agenda', component: AgendaSortComponent },
+    { path: 'speakers', component: SpeakerListComponent },
     { path: 'topics/:id', component: TopicDetailComponent },
     { path: ':id/speakers', component: SpeakerListComponent }
 ];

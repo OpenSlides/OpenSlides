@@ -110,7 +110,12 @@
                 <span translate>Sort</span>
             </button>
         </div>
-        <!-- csv export -->
+        <!-- Current list of speakers -->
+        <button mat-menu-item routerLink="speakers">
+            <mat-icon>mic</mat-icon>
+            <span translate>Current list of speakers</span>
+        </button>
+        <!-- CSV export -->
         <button mat-menu-item (click)="csvExportItemList()">
             <mat-icon>archive</mat-icon>
             <span translate>Export as CSV</span>
