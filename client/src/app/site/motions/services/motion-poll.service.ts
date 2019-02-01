@@ -24,8 +24,10 @@ export class MotionPollService extends PollService {
      */
     public constructor(config: ConfigService) {
         super();
-        config.get('motions_poll_100_percent_base').subscribe(base => (this.percentBase = base));
-        config.get('motions_poll_default_majority_method').subscribe(method => (this.defaultMajorityMethod = method));
+        config.get<string>('motions_poll_100_percent_base').subscribe(base => (this.percentBase = base));
+        config
+            .get<string>('motions_poll_default_majority_method')
+            .subscribe(method => (this.defaultMajorityMethod = method));
     }
 
     /**

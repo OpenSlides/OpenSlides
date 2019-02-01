@@ -1,18 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
+import { MatSnackBar } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
+import { BehaviorSubject } from 'rxjs';
 
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MotionCommentSection } from '../../../../shared/models/motions/motion-comment-section';
 import { ViewMotionCommentSection } from '../../models/view-motion-comment-section';
-import { MotionCommentSectionRepositoryService } from '../../../../core/repositories/motions/motion-comment-section-repository.service';
-import { PromptService } from '../../../../core/ui-services/prompt.service';
-import { BehaviorSubject } from 'rxjs';
+import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 import { Group } from '../../../../shared/models/users/group';
-import { DataStoreService } from '../../../../core/core-services/data-store.service';
+import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { BaseViewComponent } from '../../../base/base-view';
-import { MatSnackBar } from '@angular/material';
 
 /**
  * List view for the categories.

@@ -4,18 +4,18 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
-import { ChoiceService } from '../../../../core/ui-services/choice.service';
+import { ChoiceService } from 'app/core/ui-services/choice.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { CsvExportService } from '../../../../core/ui-services/csv-export.service';
-import { GroupRepositoryService } from '../../../../core/repositories/users/group-repository.service';
+import { CsvExportService } from 'app/core/ui-services/csv-export.service';
+import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { ListViewBaseComponent } from '../../../base/list-view-base';
-import { PromptService } from '../../../../core/ui-services/prompt.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 import { UserFilterListService } from '../../services/user-filter-list.service';
-import { UserRepositoryService } from '../../../../core/repositories/users/user-repository.service';
+import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { UserPdfExportService } from '../../services/user-pdf-export.service';
 import { UserSortListService } from '../../services/user-sort-list.service';
-import { ViewportService } from '../../../../core/ui-services/viewport.service';
-import { OperatorService } from '../../../../core/core-services/operator.service';
+import { ViewportService } from 'app/core/ui-services/viewport.service';
+import { OperatorService } from 'app/core/core-services/operator.service';
 import { ViewUser } from '../../models/view-user';
 
 /**
@@ -92,7 +92,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
 
         // enable multiSelect for this listView
         this.canMultiSelect = true;
-        config.get('users_enable_presence_view').subscribe(state => (this._presenceViewConfigured = state));
+        config.get<boolean>('users_enable_presence_view').subscribe(state => (this._presenceViewConfigured = state));
     }
 
     /**

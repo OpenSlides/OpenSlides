@@ -66,7 +66,6 @@ export class ServertimeService extends OpenSlidesComponent {
     private async refreshServertime(): Promise<void> {
         // servertime is the time in seconds.
         const servertime = await this.http.get<number>(environment.urlPrefix + '/core/servertime/');
-        // isNumber is deprecated: since node v4.0.0
         if (typeof servertime !== 'number') {
             throw new Error('The returned servertime is not a number');
         }

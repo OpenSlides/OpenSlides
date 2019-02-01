@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+
 import { LinenumberingService } from './linenumbering.service';
 import { ViewMotion } from '../../site/motions/models/view-motion';
 import { ViewUnifiedChange } from '../../site/motions/models/view-unified-change';

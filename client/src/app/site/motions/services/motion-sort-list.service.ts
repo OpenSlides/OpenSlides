@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+
 import { BaseSortListService, OsSortingDefinition } from '../../../core/ui-services/base-sort-list.service';
 import { ViewMotion } from '../models/view-motion';
 

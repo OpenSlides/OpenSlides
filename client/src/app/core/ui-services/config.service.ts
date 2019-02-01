@@ -67,7 +67,7 @@ export class ConfigService extends OpenSlidesComponent {
      *
      * @param key The config value to get from.
      */
-    public get<T = any>(key: string): Observable<T> {
+    public get<T>(key: string): Observable<T> {
         if (!this.configSubjects[key]) {
             this.configSubjects[key] = new BehaviorSubject<any>(this.instant(key));
         }

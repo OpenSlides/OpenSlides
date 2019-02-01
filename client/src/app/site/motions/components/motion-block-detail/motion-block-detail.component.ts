@@ -8,8 +8,8 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { ListViewBaseComponent } from 'app/site/base/list-view-base';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
-import { MotionBlockRepositoryService } from '../../../../core/repositories/motions/motion-block-repository.service';
-import { MotionRepositoryService } from '../../../../core/repositories/motions/motion-repository.service';
+import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
+import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { ViewMotionBlock } from '../../models/view-motion-block';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewMotion } from '../../models/view-motion';

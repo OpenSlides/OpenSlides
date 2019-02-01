@@ -9,9 +9,10 @@ import {
     OnChanges,
     SimpleChanges
 } from '@angular/core';
-import { LineRange, ModificationType } from '../../../../core/ui-services/diff.service';
+
+import { LineRange, ModificationType } from 'app/core/ui-services/diff.service';
 import { ViewChangeReco } from '../../models/view-change-reco';
-import { OperatorService } from '../../../../core/core-services/operator.service';
+import { OperatorService } from 'app/core/core-services/operator.service';
 
 /**
  * This component displays the original motion text with annotated change commendations

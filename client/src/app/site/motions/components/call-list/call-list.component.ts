@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 
 import { BaseViewComponent } from '../../../base/base-view';
-import { MotionRepositoryService } from '../../../../core/repositories/motions/motion-repository.service';
+import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { ViewMotion } from '../../models/view-motion';
 import { OSTreeSortEvent } from 'app/shared/components/sorting-tree/sorting-tree.component';
 import { MotionCsvExportService } from '../../services/motion-csv-export.service';

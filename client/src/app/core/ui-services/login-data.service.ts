@@ -45,10 +45,10 @@ export class LoginDataService extends OpenSlidesComponent {
     public constructor(private configService: ConfigService) {
         super();
 
-        this.configService.get('general_event_privacy_policy').subscribe(value => {
+        this.configService.get<string>('general_event_privacy_policy').subscribe(value => {
             this.setPrivacyPolicy(value);
         });
-        this.configService.get('general_event_legal_notice').subscribe(value => {
+        this.configService.get<string>('general_event_legal_notice').subscribe(value => {
             this.setLegalNotice(value);
         });
     }

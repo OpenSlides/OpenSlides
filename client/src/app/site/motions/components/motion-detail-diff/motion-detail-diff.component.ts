@@ -1,19 +1,21 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output } from '@angular/core';
+import { MatDialog, MatSnackBar } from '@angular/material';
+import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
+
+import { TranslateService } from '@ngx-translate/core';
+
 import { LineNumberingMode, ViewMotion } from '../../models/view-motion';
 import { ViewUnifiedChange, ViewUnifiedChangeType } from '../../models/view-unified-change';
-import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
-import { MotionRepositoryService } from '../../../../core/repositories/motions/motion-repository.service';
-import { LineRange, ModificationType } from '../../../../core/ui-services/diff.service';
+import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
+import { LineRange, ModificationType } from 'app/core/ui-services/diff.service';
 import { ViewChangeReco } from '../../models/view-change-reco';
-import { MatDialog, MatSnackBar } from '@angular/material';
-import { ChangeRecommendationRepositoryService } from '../../../../core/repositories/motions/change-recommendation-repository.service';
+import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
 import {
     MotionChangeRecommendationComponent,
     MotionChangeRecommendationComponentData
 } from '../motion-change-recommendation/motion-change-recommendation.component';
 import { BaseViewComponent } from '../../../base/base-view';
-import { TranslateService } from '@ngx-translate/core';
-import { ConfigService } from '../../../../core/ui-services/config.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
 
 /**
  * This component displays the original motion text with the change blocks inside.
@@ -84,8 +86,10 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
     ) {
         super(title, translate, matSnackBar);
 
-        this.configService.get('motions_default_line_numbering').subscribe(mode => (this.lnMode = mode));
-        this.configService.get('motions_line_length').subscribe(lineLength => (this.lineLength = lineLength));
+        this.configService
+            .get<LineNumberingMode>('motions_default_line_numbering')
+            .subscribe(mode => (this.lnMode = mode));
+        this.configService.get<number>('motions_line_length').subscribe(lineLength => (this.lineLength = lineLength));
     }
 
     /**

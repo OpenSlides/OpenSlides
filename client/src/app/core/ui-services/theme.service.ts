@@ -16,7 +16,7 @@ export class ThemeService {
      * @param configService must be injected to get the data from server.
      */
     public constructor(configService: ConfigService) {
-        configService.get('openslides_theme').subscribe(newTheme => {
+        configService.get<string>('openslides_theme').subscribe(newTheme => {
             // Listen to the related event.
             const classList = document.getElementsByTagName('body')[0].classList; // Get the classlist of the body.
             if (newTheme) {

@@ -4,11 +4,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { MatTableDataSource, MatSnackBar } from '@angular/material';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
-import { GroupRepositoryService } from '../../../../core/repositories/users/group-repository.service';
+import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { ViewGroup } from '../../models/view-group';
 import { Group } from '../../../../shared/models/users/group';
 import { BaseViewComponent } from '../../../base/base-view';
-import { PromptService } from '../../../../core/ui-services/prompt.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 
 /**
  * Component for the Group-List and permission matrix

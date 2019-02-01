@@ -7,7 +7,7 @@ import { SpeakerState } from 'app/shared/models/agenda/speaker';
 import { User } from 'app/shared/models/users/user';
 import { ViewSpeaker } from '../../models/view-speaker';
 import { DataStoreService } from 'app/core/core-services/data-store.service';
-import { AgendaRepositoryService } from '../../../../core/repositories/agenda/agenda-repository.service';
+import { AgendaRepositoryService } from 'app/core/repositories/agenda/agenda-repository.service';
 import { ViewItem } from '../../models/view-item';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { BaseViewComponent } from 'app/site/base/base-view';

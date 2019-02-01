@@ -4,7 +4,7 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
 import { Category } from '../../../../shared/models/motions/category';
-import { CategoryRepositoryService } from '../../../../core/repositories/motions/category-repository.service';
+import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 import { ViewCategory } from '../../models/view-category';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Motion } from '../../../../shared/models/motions/motion';

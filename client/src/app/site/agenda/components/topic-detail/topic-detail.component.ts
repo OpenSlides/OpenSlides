@@ -8,7 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { PromptService } from 'app/core/ui-services/prompt.service';
-import { TopicRepositoryService } from '../../../../core/repositories/agenda/topic-repository.service';
+import { TopicRepositoryService } from 'app/core/repositories/agenda/topic-repository.service';
 import { ViewTopic } from '../../models/view-topic';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { BehaviorSubject } from 'rxjs';

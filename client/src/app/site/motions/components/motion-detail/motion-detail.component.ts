@@ -1,21 +1,22 @@
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, Subscription, ReplaySubject, concat } from 'rxjs';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatExpansionPanel, MatSnackBar, MatCheckboxChange } from '@angular/material';
-import { take, takeWhile, multicast, skipWhile } from 'rxjs/operators';
+
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { takeWhile } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 
 import { AgendaRepositoryService } from 'app/core/repositories/agenda/agenda-repository.service';
 import { BaseViewComponent } from '../../../base/base-view';
 import { Category } from '../../../../shared/models/motions/category';
-import { ChangeRecommendationRepositoryService } from '../../../../core/repositories/motions/change-recommendation-repository.service';
+import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
 import { ChangeRecoMode, LineNumberingMode, ViewMotion } from '../../models/view-motion';
 import { CreateMotion } from '../../models/create-motion';
-import { ConfigService } from '../../../../core/ui-services/config.service';
-import { DataStoreService } from '../../../../core/core-services/data-store.service';
-import { DiffLinesInParagraph, LineRange } from '../../../../core/ui-services/diff.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
+import { DataStoreService } from 'app/core/core-services/data-store.service';
+import { DiffLinesInParagraph, LineRange } from 'app/core/ui-services/diff.service';
 import { itemVisibilityChoices, Item } from 'app/shared/models/agenda/item';
 import { LocalPermissionsService } from '../../services/local-permissions.service';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
@@ -26,19 +27,19 @@ import {
     MotionChangeRecommendationComponentData
 } from '../motion-change-recommendation/motion-change-recommendation.component';
 import { MotionPdfExportService } from '../../services/motion-pdf-export.service';
-import { MotionRepositoryService } from '../../../../core/repositories/motions/motion-repository.service';
+import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
-import { PersonalNoteService } from '../../../../core/ui-services/personal-note.service';
-import { PromptService } from '../../../../core/ui-services/prompt.service';
-import { StatuteParagraphRepositoryService } from '../../../../core/repositories/motions/statute-paragraph-repository.service';
+import { PersonalNoteService } from 'app/core/ui-services/personal-note.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
+import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions/statute-paragraph-repository.service';
 import { User } from '../../../../shared/models/users/user';
 import { ViewChangeReco } from '../../models/view-change-reco';
 import { ViewCreateMotion } from '../../models/view-create-motion';
-import { ViewportService } from '../../../../core/ui-services/viewport.service';
+import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { ViewUnifiedChange } from '../../models/view-unified-change';
 import { ViewStatuteParagraph } from '../../models/view-statute-paragraph';
 import { Workflow } from 'app/shared/models/motions/workflow';
-import { LinenumberingService } from '../../../../core/ui-services/linenumbering.service';
+import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
 
 /**
  * Component for the motion detail view
@@ -375,14 +376,26 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         });
 
         // load config variables
-        this.configService.get('motions_statutes_enabled').subscribe(enabled => (this.statutesEnabled = enabled));
-        this.configService.get('motions_reason_required').subscribe(required => (this.reasonRequired = required));
-        this.configService.get('motions_min_supporters').subscribe(supporters => (this.minSupporters = supporters));
-        this.configService.get('motions_preamble').subscribe(preamble => (this.preamble = preamble));
-        this.configService.get('motions_amendments_enabled').subscribe(enabled => (this.amendmentsEnabled = enabled));
-        this.configService.get('motions_line_length').subscribe(lineLength => (this.lineLength = lineLength));
-        this.configService.get('motions_default_line_numbering').subscribe(mode => (this.lnMode = mode));
-        this.configService.get('motions_recommendation_text_mode').subscribe(mode => (this.crMode = mode));
+        this.configService
+            .get<boolean>('motions_statutes_enabled')
+            .subscribe(enabled => (this.statutesEnabled = enabled));
+        this.configService
+            .get<boolean>('motions_reason_required')
+            .subscribe(required => (this.reasonRequired = required));
+        this.configService
+            .get<number>('motions_min_supporters')
+            .subscribe(supporters => (this.minSupporters = supporters));
+        this.configService.get<string>('motions_preamble').subscribe(preamble => (this.preamble = preamble));
+        this.configService
+            .get<boolean>('motions_amendments_enabled')
+            .subscribe(enabled => (this.amendmentsEnabled = enabled));
+        this.configService.get<number>('motions_line_length').subscribe(lineLength => (this.lineLength = lineLength));
+        this.configService
+            .get<LineNumberingMode>('motions_default_line_numbering')
+            .subscribe(mode => (this.lnMode = mode));
+        this.configService
+            .get<ChangeRecoMode>('motions_recommendation_text_mode')
+            .subscribe(mode => (this.crMode = mode));
     }
 
     /**
@@ -862,21 +875,9 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     public updateWorkflowIdForCreateForm(): void {
         const isStatuteAmendment = !!this.contentForm.get('statute_amendment').value;
         const configKey = isStatuteAmendment ? 'motions_statute_amendments_workflow' : 'motions_workflow';
-        // TODO: This should just be a takeWhile(id => !id), but should include the last one where the id is OK.
-        // takeWhile will get a inclusive parameter, see https://github.com/ReactiveX/rxjs/pull/4115
         this.configService
             .get<string>(configKey)
-            .pipe(
-                multicast(
-                    () => new ReplaySubject(1),
-                    ids =>
-                        ids.pipe(
-                            takeWhile(id => !id),
-                            o => concat(o, ids.pipe(take(1)))
-                        )
-                ),
-                skipWhile(id => !id)
-            )
+            .pipe(takeWhile(id => !id, true)) // Wait for the id to be present.
             .subscribe(id => {
                 this.contentForm.patchValue({
                     workflow_id: parseInt(id as string, 10)
@@ -1035,7 +1036,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         if (this.recommenderSubscription) {
             this.recommenderSubscription.unsubscribe();
         }
-        this.recommenderSubscription = this.configService.get(configKey).subscribe(recommender => {
+        this.recommenderSubscription = this.configService.get<string>(configKey).subscribe(recommender => {
             this.recommender = recommender;
         });
     }

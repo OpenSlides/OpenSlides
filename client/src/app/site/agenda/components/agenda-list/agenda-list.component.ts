@@ -5,9 +5,9 @@ import { MatSnackBar, MatDialog } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 
 import { AgendaFilterListService } from '../../services/agenda-filter-list.service';
-import { AgendaRepositoryService } from '../../../../core/repositories/agenda/agenda-repository.service';
+import { AgendaRepositoryService } from 'app/core/repositories/agenda/agenda-repository.service';
 import { ListViewBaseComponent } from 'app/site/base/list-view-base';
-import { PromptService } from '../../../../core/ui-services/prompt.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewItem } from '../../models/view-item';
 
 import { AgendaCsvExportService } from '../../services/agenda-csv-export.service';
@@ -93,7 +93,7 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
             this.checkSelection();
         });
         this.config
-            .get('agenda_enable_numbering')
+            .get<boolean>('agenda_enable_numbering')
             .subscribe(autoNumbering => (this.isNumberingAllowed = autoNumbering));
     }
 

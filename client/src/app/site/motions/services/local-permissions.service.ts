@@ -1,8 +1,13 @@
 import { Injectable } from '@angular/core';
+
 import { OperatorService } from '../../../core/core-services/operator.service';
 import { ViewMotion } from '../models/view-motion';
 import { ConfigService } from '../../../core/ui-services/config.service';
 import { ConstantsService } from 'app/core/ui-services/constants.service';
+
+interface OpenSlidesSettings {
+    MOTIONS_ALLOW_AMENDMENTS_OF_AMENDMENTS: boolean;
+}
 
 @Injectable({
     providedIn: 'root'
@@ -19,11 +24,13 @@ export class LocalPermissionsService {
     ) {
         // load config variables
         this.configService
-            .get('motions_min_supporters')
+            .get<number>('motions_min_supporters')
             .subscribe(supporters => (this.configMinSupporters = supporters));
-        this.configService.get('motions_amendments_enabled').subscribe(enabled => (this.amendmentEnabled = enabled));
+        this.configService
+            .get<boolean>('motions_amendments_enabled')
+            .subscribe(enabled => (this.amendmentEnabled = enabled));
         this.constants
-            .get('OpenSlidesSettings')
+            .get<OpenSlidesSettings>('OpenSlidesSettings')
             .subscribe(settings => (this.amendmentOfAmendment = settings.MOTIONS_ALLOW_AMENDMENTS_OF_AMENDMENTS));
     }
 
@@ -85,7 +92,8 @@ export class LocalPermissionsService {
                 }
                 return (
                     this.operator.hasPerms('motions.can_manage') ||
-                    (motion.state.allow_submitter_edit &&
+                    (motion.state &&
+                        motion.state.allow_submitter_edit &&
                         motion.submitters &&
                         motion.submitters.some(submitter => submitter.id === this.operator.user.id))
                 );

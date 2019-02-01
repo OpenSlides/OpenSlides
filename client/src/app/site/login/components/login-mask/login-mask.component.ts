@@ -7,10 +7,10 @@ import { OperatorService } from 'app/core/core-services/operator.service';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from 'environments/environment';
-import { OpenSlidesService } from '../../../../core/core-services/openslides.service';
-import { LoginDataService } from '../../../../core/ui-services/login-data.service';
+import { OpenSlidesService } from 'app/core/core-services/openslides.service';
+import { LoginDataService } from 'app/core/ui-services/login-data.service';
 import { ParentErrorStateMatcher } from '../../../../shared/parent-error-state-matcher';
-import { HttpService } from '../../../../core/core-services/http.service';
+import { HttpService } from 'app/core/core-services/http.service';
 
 /**
  * Login mask component.

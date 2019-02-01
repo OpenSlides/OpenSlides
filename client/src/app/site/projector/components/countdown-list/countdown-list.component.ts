@@ -4,11 +4,11 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { PromptService } from '../../../../core/ui-services/prompt.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 import { BaseViewComponent } from '../../../base/base-view';
 import { MatSnackBar } from '@angular/material';
 import { ViewCountdown } from '../../models/view-countdown';
-import { CountdownRepositoryService } from '../../../../core/repositories/projector/countdown-repository.service';
+import { CountdownRepositoryService } from 'app/core/repositories/projector/countdown-repository.service';
 import { Countdown } from 'app/shared/models/core/countdown';
 
 /**

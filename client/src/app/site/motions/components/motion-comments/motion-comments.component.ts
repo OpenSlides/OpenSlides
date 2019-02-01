@@ -2,12 +2,13 @@ import { Component, Input } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 import { FormGroup, FormBuilder } from '@angular/forms';
+
 import { TranslateService } from '@ngx-translate/core';
 
 import { BaseViewComponent } from '../../../../site/base/base-view';
-import { MotionCommentSectionRepositoryService } from '../../../../core/repositories/motions/motion-comment-section-repository.service';
+import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
 import { ViewMotionCommentSection } from '../../models/view-motion-comment-section';
-import { OperatorService } from '../../../../core/core-services/operator.service';
+import { OperatorService } from 'app/core/core-services/operator.service';
 import { MotionComment } from '../../../../shared/models/motions/motion-comment';
 import { ViewMotion } from '../../models/view-motion';
 
