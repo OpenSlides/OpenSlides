@@ -222,12 +222,14 @@
                 <button *ngFor="let state of motion.nextStates" mat-menu-item (click)="setState(state.id)">
                     {{ state.name | translate }} <span *ngIf="state.show_state_extension_field">&nbsp;...</span>
                 </button>
-                <mat-divider></mat-divider>
-                <button mat-menu-item (click)="setState(null)" *ngIf="perms.isAllowed('change_metadata', motion)">
-                    <mat-icon>replay</mat-icon> {{ 'Reset state' | translate }}
-                </button>
+                <div *ngIf="perms.isAllowed('change_metadata', motion)">
+                    <mat-divider *ngIf="motion.nextStates.length > 0"></mat-divider>
+                    <button mat-menu-item (click)="setState(null)">
+                        <mat-icon>replay</mat-icon> {{ 'Reset state' | translate }}
+                    </button>
+                </div>
             </mat-menu>
-            <div *ngIf="perms.isAllowed('change_metadata', motion)">
+            <div *ngIf="perms.isAllowed('change_state', motion)">
                 <mat-basic-chip [matMenuTriggerFor]="stateMenu" [ngClass]="getStateCssColor()">
                     {{ stateLabel }}
                 </mat-basic-chip>
@@ -238,7 +240,7 @@
                     <button mat-icon-button (click)="setStateExtension()"><mat-icon>check</mat-icon></button>
                 </div>
             </div>
-            <div *ngIf="!perms.isAllowed('change_metadata', motion)">
+            <div *ngIf="!perms.isAllowed('change_state', motion)">
                 <mat-basic-chip [ngClass]="getStateCssColor()"> {{ stateLabel }} </mat-basic-chip>
             </div>
         </div>

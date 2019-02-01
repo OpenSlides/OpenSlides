@@ -75,11 +75,10 @@ class MotionViewSet(ModelViewSet):
             result = has_perm(self.request.user, "motions.can_see")
             # For partial_update, update and destroy requests the rest of the check is
             # done in the update method. See below.
-        elif self.action == "create":
+        elif self.action in ("create", "set_state"):
             result = has_perm(self.request.user, "motions.can_see")
-            # For create the rest of the check is done in the create method. See below.
+            # For create the rest of the check is done in the respective method. See below.
         elif self.action in (
-            "set_state",
             "manage_multiple_state",
             "set_recommendation",
             "manage_multiple_recommendation",
@@ -561,6 +560,10 @@ class MotionViewSet(ModelViewSet):
         # Set or reset state.
         if state is not None:
             # Check data and set state.
+            if not has_perm(request.user, "motions.can_manage_metadata") and not (
+                motion.is_submitter(request.user) and motion.state.allow_submitter_edit
+            ):
+                self.permission_denied(request)
             try:
                 state_id = int(state)
             except ValueError:
@@ -574,6 +577,8 @@ class MotionViewSet(ModelViewSet):
             motion.set_state(state_id)
         else:
             # Reset state.
+            if not has_perm(self.request.user, "motions.can_manage_metadata"):
+                self.permission_denied(request)
             motion.reset_state()
 
         # Save motion.

@@ -34,6 +34,8 @@ Motions:
    follow recommendation, manage submitters and supporters, change motion
    category, motion block and origin and manage motion polls [#3913].
  - Added new permission to create amendments [#4128].
+ - Allowed submitters to set state of new motions in complex and customized
+   workflow [#4236].
  - Added multi select action to manage submitters, tags, states and
    recommendations [#4037, #4132].
  - Added timestampes for motions [#4134].
