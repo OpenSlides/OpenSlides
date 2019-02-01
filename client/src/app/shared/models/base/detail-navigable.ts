@@ -7,3 +7,13 @@ export interface DetailNavigable {
      */
     getDetailStateURL(): string;
 }
+
+/**
+ * check if a given object implements implements this interface
+ *
+ * @param obj
+ * @returns true if the interface is implemented
+ */
+export function isDetailNavigable(obj: object): obj is DetailNavigable {
+    return (<DetailNavigable>obj).getDetailStateURL !== undefined;
+}

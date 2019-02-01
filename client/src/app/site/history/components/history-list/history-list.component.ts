@@ -1,12 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material';
+import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 
 import { TranslateService } from '@ngx-translate/core';
 
 import { ListViewBaseComponent } from 'app/site/base/list-view-base';
 import { HistoryRepositoryService } from 'app/core/repositories/history/history-repository.service';
+import { DataStoreService } from 'app/core/core-services/data-store.service';
+import { isDetailNavigable } from 'app/shared/models/base/detail-navigable';
+
 import { ViewHistory } from '../../models/view-history';
 
 /**
@@ -37,7 +41,9 @@ export class HistoryListComponent extends ListViewBaseComponent<ViewHistory> imp
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
-        private repo: HistoryRepositoryService
+        private repo: HistoryRepositoryService,
+        private DS: DataStoreService,
+        private router: Router
     ) {
         super(titleService, translate, matSnackBar);
     }
@@ -100,7 +106,19 @@ export class HistoryListComponent extends ListViewBaseComponent<ViewHistory> imp
      */
     public onClickRow(history: ViewHistory): void {
         this.repo.browseHistory(history).then(() => {
-            this.raiseError(`Temporarily reset OpenSlides to the state from ${history.getLocaleString('DE-de')}`);
+            const element = this.DS.get(history.getCollectionString(), history.getModelID());
+            let message = this.translate.instant('Temporarily reset OpenSlides to the state from ');
+            message += history.getLocaleString('DE-de') + '. ';
+
+            if (isDetailNavigable(element)) {
+                message += this.translate.instant(
+                    'You will be redirected to the detail state of the last changed item.'
+                );
+                this.raiseError(message);
+                this.router.navigate([element.getDetailStateURL()]);
+            } else {
+                this.raiseError(message);
+            }
         });
     }
 
