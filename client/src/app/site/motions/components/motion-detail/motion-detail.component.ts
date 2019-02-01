@@ -40,6 +40,7 @@ import { ViewUnifiedChange } from '../../models/view-unified-change';
 import { ViewStatuteParagraph } from '../../models/view-statute-paragraph';
 import { Workflow } from 'app/shared/models/motions/workflow';
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
+import { Tag } from 'app/shared/models/core/tag';
 
 /**
  * Component for the motion detail view
@@ -222,6 +223,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     public agendaItemObserver: BehaviorSubject<Item[]>;
 
     /**
+     * Subject for tags
+     */
+    public tagObserver: BehaviorSubject<Tag[]>;
+
+    /**
      * Determine if the name of supporters are visible
      */
     public showSupporters = false;
@@ -356,6 +362,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         this.blockObserver = new BehaviorSubject(DS.getAll(MotionBlock));
         this.mediafilesObserver = new BehaviorSubject(DS.getAll(Mediafile));
         this.agendaItemObserver = new BehaviorSubject(DS.getAll(Item));
+        this.tagObserver = new BehaviorSubject(DS.getAll(Tag));
 
         // Make sure the subjects are updated, when a new Model for the type arrives
         this.DS.changeObservable.subscribe(newModel => {
@@ -372,6 +379,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
                 this.mediafilesObserver.next(DS.getAll(Mediafile));
             } else if (newModel instanceof Item) {
                 this.agendaItemObserver.next(DS.getAll(Item));
+            } else if (newModel instanceof Tag) {
+                this.tagObserver.next(DS.getAll(Tag));
             }
         });
 
@@ -1011,6 +1020,17 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         } else {
             this.repo.setCatetory(this.motion, id);
         }
+    }
+
+    /**
+     * Adds or removes a tag to the current motion
+     *
+     * @param id Motion tag id
+     */
+    public setTag(event: MouseEvent, id: number): void {
+        console.log('event: ', event);
+        event.stopPropagation();
+        this.repo.setTag(this.motion, id);
     }
 
     /**
