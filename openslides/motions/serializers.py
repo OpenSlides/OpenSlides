@@ -2,6 +2,7 @@ from typing import Dict, Optional
 
 from django.db import transaction
 
+from ..core.config import config
 from ..poll.serializers import default_votes_validator
 from ..utils.auth import get_group_model
 from ..utils.autoupdate import inform_changed_data
@@ -470,7 +471,13 @@ class MotionSerializer(ModelSerializer):
             data["text"] = ""
         else:
             if "text" in data and not data["text"]:
-                raise ValidationError({"detail": "This field may not be blank."})
+                raise ValidationError({"detail": "The text field may not be blank."})
+            if (
+                "reason" in data
+                and not data["reason"]
+                and config["motions_reason_required"]
+            ):
+                raise ValidationError({"detail": "The reason field may not be blank."})
 
         return data
 
