@@ -215,6 +215,7 @@ _('Called');
 _('Called with');
 _('Recommendation');
 _('Motion block');
+_('Are you sure you want to delete this motion?');
 
 // Assignment config strings
 _('Election method');
@@ -330,6 +331,9 @@ _(
     'Dear {name},\n\nthis is your OpenSlides login for the event {event_name}:\n\n    {url}\n    username: {username}\n    password: {password}\n\nThis email was generated automatically.'
 );
 _('Use these placeholders: {name}, {event_name}, {url}, {username}, {password}. The url referrs to the system url.');
+_(
+    'Use <strong>admin</strong> and <strong>admin</strong> for your first login.<br>Please change your password to hide this message!'
+);
 
 // default groups
 _('Default');

@@ -36,7 +36,7 @@ export class StatuteCsvExportService {
             { property: 'title' },
             { property: 'text' }
         ];
-        this.csvExport.export(statutes, exportProperties, this.translate.instant('Statutes') + '.csv');
+        this.csvExport.export(statutes, exportProperties, this.translate.instant('Statute') + '.csv');
     }
 
     /**
@@ -52,7 +52,7 @@ export class StatuteCsvExportService {
         ];
         this.fileExport.saveFile(
             rows.join('\n'),
-            `${this.translate.instant('Statutes')} - ${this.translate.instant('example')}.csv`,
+            `${this.translate.instant('Statute')}-${this.translate.instant('example')}.csv`,
             'text/csv'
         );
     }

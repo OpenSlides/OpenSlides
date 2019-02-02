@@ -4,7 +4,7 @@
 
     <!-- Install notice -->
     <div class="login-container" *ngIf="installationNotice">
-        <mat-card [innerHTML]="installationNotice"></mat-card>
+        <mat-card [innerHTML]="(installationNotice) | translate"></mat-card>
     </div>
 
     <!-- login form -->
@@ -14,7 +14,7 @@
                 matInput
                 osAutofocus
                 required
-                placeholder="User name"
+                placeholder="{{ 'Username' | translate }}"
                 formControlName="username"
                 [errorStateMatcher]="parentErrorStateMatcher"
             />
@@ -24,36 +24,34 @@
             <input
                 matInput
                 required
-                placeholder="Password"
+                placeholder="{{ 'Password' | translate }}"
                 formControlName="password"
                 [type]="!hide ? 'password' : 'text'"
                 [errorStateMatcher]="parentErrorStateMatcher"
             />
             <mat-icon matSuffix (click)="hide = !hide">{{ hide ? 'visibility_off' : 'visibility_on' }}</mat-icon>
 
-            <mat-error>{{ loginErrorMsg }}</mat-error>
+            <mat-error>{{ loginErrorMsg | translate }}</mat-error>
         </mat-form-field>
 
         <!-- forgot password button -->
         <br />
         <button type="button" class="forgot-password-button" (click)="resetPassword()" mat-button>
-            Forgot Password?
+            {{ 'Forgot Password?' | translate }}
         </button>
 
         <!-- login button -->
         <br />
         <!-- TODO: Next to each other...-->
-        <button mat-raised-button color="primary" class="login-button" type="submit" translate>Login</button>
+        <button mat-raised-button color="primary" class="login-button" type="submit">{{ 'Login' | translate }}</button>
         <button
-            mat-raised-button
+            mat-stroked-button
             *ngIf="areGuestsEnabled()"
-            color="primary"
             class="login-button"
             type="button"
             (click)="guestLogin()"
-            translate
         >
-            Login as Guest
+            {{ 'Login as guest' | translate }}
         </button>
     </form>
 </div>

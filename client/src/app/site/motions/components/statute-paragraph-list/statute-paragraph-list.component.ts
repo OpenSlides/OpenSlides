@@ -74,7 +74,7 @@ export class StatuteParagraphListComponent extends BaseViewComponent implements 
      * Sets the title and gets/observes statute paragraphs from DataStore
      */
     public ngOnInit(): void {
-        super.setTitle('Statute paragraphs');
+        super.setTitle('Statute');
         this.repo.getViewModelListObservable().subscribe(newViewStatuteParagraphs => {
             this.statuteParagraphs = newViewStatuteParagraphs;
         });
