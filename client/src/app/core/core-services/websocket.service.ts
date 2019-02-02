@@ -112,7 +112,6 @@ export class WebsocketService {
         socketPath += window.location.hostname + ':' + window.location.port + '/ws/';
         socketPath += formatQueryParams(queryParams);
 
-        console.log('connect to', socketPath);
         this.websocket = new WebSocket(socketPath);
 
         // connection established. If this connect attept was a retry,

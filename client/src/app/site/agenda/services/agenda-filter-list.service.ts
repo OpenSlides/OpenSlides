@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 
-import { BaseFilterListService, OsFilter, OsFilterOption } from '../../../core/ui-services/base-filter-list.service';
-import { Item, itemVisibilityChoices } from '../../../shared/models/agenda/item';
+import { BaseFilterListService, OsFilter, OsFilterOption } from 'app/core/ui-services/base-filter-list.service';
+import { Item, itemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { ViewItem } from '../models/view-item';
 import { StorageService } from 'app/core/core-services/storage.service';
-import { AgendaRepositoryService } from '../../../core/repositories/agenda/agenda-repository.service';
+import { AgendaRepositoryService } from 'app/core/repositories/agenda/agenda-repository.service';
 
 @Injectable({
     providedIn: 'root'

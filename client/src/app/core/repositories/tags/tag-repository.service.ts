@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 
-import { Tag } from '../../../shared/models/core/tag';
-import { ViewTag } from '../../../site/tags/models/view-tag';
+import { Tag } from 'app/shared/models/core/tag';
+import { ViewTag } from 'app/site/tags/models/view-tag';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { BaseRepository } from '../base-repository';
-import { Identifiable } from '../../../shared/models/base/identifiable';
+import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
 
 /**

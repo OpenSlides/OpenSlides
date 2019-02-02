@@ -8,7 +8,7 @@ import { Title } from '@angular/platform-browser';
 import { ViewUser } from '../../models/view-user';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
-import { BaseViewComponent } from '../../../../site/base/base-view';
+import { BaseViewComponent } from 'app/site/base/base-view';
 
 /**
  * Component for the Password-Reset Handling

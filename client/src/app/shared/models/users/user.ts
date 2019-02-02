@@ -1,5 +1,5 @@
 import { Searchable } from '../base/searchable';
-import { SearchRepresentation } from '../../../core/ui-services/search.service';
+import { SearchRepresentation } from 'app/core/ui-services/search.service';
 import { BaseModel } from '../base/base-model';
 import { DetailNavigable } from '../base/detail-navigable';
 

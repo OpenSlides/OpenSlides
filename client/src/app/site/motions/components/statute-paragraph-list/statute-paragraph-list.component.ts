@@ -6,7 +6,7 @@ import { MatSnackBar } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 
 import { PromptService } from 'app/core/ui-services/prompt.service';
-import { StatuteParagraph } from '../../../../shared/models/motions/statute-paragraph';
+import { StatuteParagraph } from 'app/shared/models/motions/statute-paragraph';
 import { ViewStatuteParagraph } from '../../models/view-statute-paragraph';
 import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions/statute-paragraph-repository.service';
 import { BaseViewComponent } from '../../../base/base-view';

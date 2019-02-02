@@ -8,7 +8,7 @@ import { ViewConfig } from '../../models/view-config';
 import { BaseComponent } from '../../../../base.component';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ConfigRepositoryService } from '../../services/config-repository.service';
-import { ParentErrorStateMatcher } from '../../../../shared/parent-error-state-matcher';
+import { ParentErrorStateMatcher } from 'app/shared/parent-error-state-matcher';
 
 /**
  * List view for the categories.

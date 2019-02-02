@@ -5,16 +5,16 @@ import { TranslateService } from '@ngx-translate/core';
 import { ViewMotion } from '../models/view-motion';
 import { ChoiceService } from 'app/core/ui-services/choice.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
-import { MotionRepositoryService } from '../../../core/repositories/motions/motion-repository.service';
+import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
-import { WorkflowRepositoryService } from '../../../core/repositories/motions/workflow-repository.service';
-import { CategoryRepositoryService } from '../../../core/repositories/motions/category-repository.service';
+import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
+import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
 import { HttpService } from 'app/core/core-services/http.service';
 import { AgendaRepositoryService } from 'app/core/repositories/agenda/agenda-repository.service';
 import { Displayable } from 'app/shared/models/base/displayable';
 import { Identifiable } from 'app/shared/models/base/identifiable';
-import { MotionBlockRepositoryService } from '../../../core/repositories/motions/motion-block-repository.service';
+import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
 
 /**
  * Contains all multiselect actions for the motion list view.

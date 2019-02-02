@@ -120,8 +120,11 @@ export class NotifyService extends OpenSlidesComponent {
      * @param content The payload to send.
      * @param channels Multiple channels to send this message to.
      */
-    public sendToChannels<T>(name: string, content: T, ...channles: string[]): void {
-        this.send(name, content, null, channles);
+    public sendToChannels<T>(name: string, content: T, ...channels: string[]): void {
+        if (channels.length < 1) {
+            throw new Error('You have to provide at least one channel');
+        }
+        this.send(name, content, null, channels);
     }
 
     /**

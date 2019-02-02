@@ -1,6 +1,6 @@
 import { BaseViewModel } from '../../base/base-view-model';
-import { Mediafile } from '../../../shared/models/mediafiles/mediafile';
-import { User } from '../../../shared/models/users/user';
+import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
+import { User } from 'app/shared/models/users/user';
 
 export class ViewMediafile extends BaseViewModel {
     private _mediafile: Mediafile;

@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 
-import { BaseRepository } from '../../../core/repositories/base-repository';
+import { BaseRepository } from 'app/core/repositories/base-repository';
 import { ViewConfig } from '../models/view-config';
-import { Config } from '../../../shared/models/core/config';
+import { Config } from 'app/shared/models/core/config';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { DataStoreService } from '../../../core/core-services/data-store.service';
-import { ConstantsService } from '../../../core/ui-services/constants.service';
-import { HttpService } from '../../../core/core-services/http.service';
-import { Identifiable } from '../../../shared/models/base/identifiable';
-import { CollectionStringMapperService } from '../../../core/core-services/collectionStringMapper.service';
+import { DataStoreService } from 'app/core/core-services/data-store.service';
+import { ConstantsService } from 'app/core/ui-services/constants.service';
+import { HttpService } from 'app/core/core-services/http.service';
+import { Identifiable } from 'app/shared/models/base/identifiable';
+import { CollectionStringMapperService } from 'app/core/core-services/collectionStringMapper.service';
 
 /**
  * Holds a single config item.

@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 
-import { BaseFilterListService, OsFilter } from '../../../core/ui-services/base-filter-list.service';
-import { StorageService } from '../../../core/core-services/storage.service';
-import { User } from '../../../shared/models/users/user';
+import { BaseFilterListService, OsFilter } from 'app/core/ui-services/base-filter-list.service';
+import { StorageService } from 'app/core/core-services/storage.service';
+import { User } from 'app/shared/models/users/user';
 import { ViewUser } from '../models/view-user';
-import { GroupRepositoryService } from '../../../core/repositories/users/group-repository.service';
-import { UserRepositoryService } from '../../../core/repositories/users/user-repository.service';
+import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
+import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 
 @Injectable({
     providedIn: 'root'

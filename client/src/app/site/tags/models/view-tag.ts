@@ -1,4 +1,4 @@
-import { Tag } from '../../../shared/models/core/tag';
+import { Tag } from 'app/shared/models/core/tag';
 import { BaseViewModel } from '../../base/base-view-model';
 
 /**

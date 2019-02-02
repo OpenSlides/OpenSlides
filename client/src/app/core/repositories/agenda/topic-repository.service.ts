@@ -6,10 +6,10 @@ import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { Item } from 'app/shared/models/agenda/item';
 import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { DataSendService } from 'app/core/core-services/data-send.service';
-import { ViewTopic } from '../../../site/agenda/models/view-topic';
+import { ViewTopic } from 'app/site/agenda/models/view-topic';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from 'app/core/core-services/collectionStringMapper.service';
-import { CreateTopic } from '../../../site/agenda/models/create-topic';
+import { CreateTopic } from 'app/site/agenda/models/create-topic';
 
 /**
  * Repository for topics

@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { BaseRepository } from '../base-repository';
-import { Identifiable } from '../../../shared/models/base/identifiable';
+import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
-import { ViewCountdown } from '../../../site/projector/models/view-countdown';
-import { Countdown } from '../../../shared/models/core/countdown';
+import { ViewCountdown } from 'app/site/projector/models/view-countdown';
+import { Countdown } from 'app/shared/models/core/countdown';
 
 @Injectable({
     providedIn: 'root'

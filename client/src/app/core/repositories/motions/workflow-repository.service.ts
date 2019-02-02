@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 
-import { Workflow } from '../../../shared/models/motions/workflow';
-import { ViewWorkflow } from '../../../site/motions/models/view-workflow';
+import { Workflow } from 'app/shared/models/motions/workflow';
+import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { BaseRepository } from '../base-repository';
-import { Identifiable } from '../../../shared/models/base/identifiable';
+import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
 import { WorkflowState } from 'app/shared/models/motions/workflow-state';
-import { ViewMotion } from '../../../site/motions/models/view-motion';
+import { ViewMotion } from 'app/site/motions/models/view-motion';
 
 /**
  * Repository Services for Categories

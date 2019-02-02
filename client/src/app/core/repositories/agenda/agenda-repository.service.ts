@@ -3,20 +3,20 @@ import { tap, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 import { BaseRepository } from '../base-repository';
-import { AgendaBaseModel } from '../../../shared/models/base/agenda-base-model';
-import { BaseModel } from '../../../shared/models/base/base-model';
+import { AgendaBaseModel } from 'app/shared/models/base/agenda-base-model';
+import { BaseModel } from 'app/shared/models/base/base-model';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { DataSendService } from 'app/core/core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { HttpService } from 'app/core/core-services/http.service';
-import { Identifiable } from '../../../shared/models/base/identifiable';
-import { Item } from '../../../shared/models/agenda/item';
+import { Identifiable } from 'app/shared/models/base/identifiable';
+import { Item } from 'app/shared/models/agenda/item';
 import { OSTreeSortEvent } from 'app/shared/components/sorting-tree/sorting-tree.component';
 import { Speaker } from 'app/shared/models/agenda/speaker';
 import { User } from 'app/shared/models/users/user';
-import { ViewItem } from '../../../site/agenda/models/view-item';
-import { ViewSpeaker } from '../../../site/agenda/models/view-speaker';
+import { ViewItem } from 'app/site/agenda/models/view-item';
+import { ViewSpeaker } from 'app/site/agenda/models/view-speaker';
 import { TreeService } from 'app/core/ui-services/tree.service';
 
 /**

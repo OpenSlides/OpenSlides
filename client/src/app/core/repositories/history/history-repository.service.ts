@@ -7,7 +7,7 @@ import { History } from 'app/shared/models/core/history';
 import { User } from 'app/shared/models/users/user';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { HttpService } from 'app/core/core-services/http.service';
-import { ViewHistory } from '../../../site/history/models/view-history';
+import { ViewHistory } from 'app/site/history/models/view-history';
 import { TimeTravelService } from 'app/core/core-services/time-travel.service';
 import { BaseModel } from 'app/shared/models/base/base-model';
 

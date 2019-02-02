@@ -1,6 +1,6 @@
 import { BaseViewModel } from '../../base/base-view-model';
-import { Item } from '../../../shared/models/agenda/item';
-import { AgendaBaseModel } from '../../../shared/models/base/agenda-base-model';
+import { Item } from 'app/shared/models/agenda/item';
+import { AgendaBaseModel } from 'app/shared/models/base/agenda-base-model';
 import { Speaker } from 'app/shared/models/agenda/speaker';
 
 export class ViewItem extends BaseViewModel {

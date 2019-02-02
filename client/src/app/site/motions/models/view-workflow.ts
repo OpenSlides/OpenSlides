@@ -1,5 +1,5 @@
-import { Workflow } from '../../../shared/models/motions/workflow';
-import { WorkflowState } from '../../../shared/models/motions/workflow-state';
+import { Workflow } from 'app/shared/models/motions/workflow';
+import { WorkflowState } from 'app/shared/models/motions/workflow-state';
 import { BaseViewModel } from '../../base/base-view-model';
 
 /**

@@ -1,16 +1,16 @@
-import { BaseModel } from '../../../shared/models/base/base-model';
+import { BaseModel } from 'app/shared/models/base/base-model';
 import { BaseProjectableModel } from 'app/site/base/base-projectable-model';
-import { Category } from '../../../shared/models/motions/category';
-import { MotionComment } from '../../../shared/models/motions/motion-comment';
+import { Category } from 'app/shared/models/motions/category';
+import { MotionComment } from 'app/shared/models/motions/motion-comment';
 import { Item } from 'app/shared/models/agenda/item';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
-import { Motion } from '../../../shared/models/motions/motion';
+import { Motion } from 'app/shared/models/motions/motion';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
-import { User } from '../../../shared/models/users/user';
+import { User } from 'app/shared/models/users/user';
 import { ViewMotionCommentSection } from './view-motion-comment-section';
-import { Workflow } from '../../../shared/models/motions/workflow';
-import { WorkflowState } from '../../../shared/models/motions/workflow-state';
+import { Workflow } from 'app/shared/models/motions/workflow';
+import { WorkflowState } from 'app/shared/models/motions/workflow-state';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { Tag } from 'app/shared/models/core/tag';
 

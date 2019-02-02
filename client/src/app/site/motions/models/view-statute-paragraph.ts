@@ -1,7 +1,7 @@
 import { BaseViewModel } from '../../base/base-view-model';
-import { Group } from '../../../shared/models/users/group';
-import { BaseModel } from '../../../shared/models/base/base-model';
-import { StatuteParagraph } from '../../../shared/models/motions/statute-paragraph';
+import { Group } from 'app/shared/models/users/group';
+import { BaseModel } from 'app/shared/models/base/base-model';
+import { StatuteParagraph } from 'app/shared/models/motions/statute-paragraph';
 
 /**
  * State paragrpah class for the View

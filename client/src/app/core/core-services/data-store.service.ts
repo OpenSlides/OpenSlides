@@ -137,7 +137,6 @@ export class DataStoreService {
         // This promise will be resolved with the maximal change id of the cache.
         const store = await this.storageService.get<JsonStorage>(DataStoreService.cachePrefix + 'DS');
         if (store) {
-            console.log('init from storage:', store);
             // There is a store. Deserialize it
             this.jsonStore = store;
             this.modelStore = this.deserializeJsonStore(this.jsonStore);
@@ -186,7 +185,6 @@ export class DataStoreService {
      * Clears the complete DataStore and Cache.
      */
     public async clear(): Promise<void> {
-        console.log('DS clear');
         this.modelStore = {};
         this.jsonStore = {};
         this._maxChangeId = 0;

@@ -1,4 +1,4 @@
-import { Category } from '../../../shared/models/motions/category';
+import { Category } from 'app/shared/models/motions/category';
 import { BaseViewModel } from '../../base/base-view-model';
 
 /**

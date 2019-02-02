@@ -1,7 +1,7 @@
 import { BaseViewModel } from '../../base/base-view-model';
-import { MotionChangeReco } from '../../../shared/models/motions/motion-change-reco';
-import { BaseModel } from '../../../shared/models/base/base-model';
-import { ModificationType } from '../../../core/ui-services/diff.service';
+import { MotionChangeReco } from 'app/shared/models/motions/motion-change-reco';
+import { BaseModel } from 'app/shared/models/base/base-model';
+import { ModificationType } from 'app/core/ui-services/diff.service';
 import { ViewUnifiedChange, ViewUnifiedChangeType } from './view-unified-change';
 
 /**

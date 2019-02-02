@@ -1,12 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
     selector: 'os-legal-notice',
-    templateUrl: './legal-notice.component.html',
-    styleUrls: ['./legal-notice.component.scss']
+    templateUrl: './legal-notice.component.html'
 })
-export class LegalNoticeComponent implements OnInit {
+export class LegalNoticeComponent {
     public constructor() {}
-
-    public ngOnInit(): void {}
 }

@@ -5,12 +5,12 @@ import { Papa } from 'ngx-papaparse';
 import { TranslateService } from '@ngx-translate/core';
 
 import { Category } from 'app/shared/models/motions/category';
-import { CategoryRepositoryService } from '../../../core/repositories/motions/category-repository.service';
+import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 import { CreateMotion } from '../models/create-motion';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
-import { MotionBlockRepositoryService } from '../../../core/repositories/motions/motion-block-repository.service';
-import { MotionRepositoryService } from '../../../core/repositories/motions/motion-repository.service';
-import { UserRepositoryService } from '../../../core/repositories/users/user-repository.service';
+import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
+import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
+import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ViewCsvCreateMotion, CsvMapping } from '../models/view-csv-create-motion';
 import { BaseImportService, NewEntry } from 'app/core/ui-services/base-import.service';
 import { ViewMotion } from '../models/view-motion';

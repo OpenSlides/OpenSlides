@@ -1,7 +1,7 @@
 import { AssignmentUser } from './assignment-user';
 import { Poll } from './poll';
 import { AgendaBaseModel } from '../base/agenda-base-model';
-import { SearchRepresentation } from '../../../core/ui-services/search.service';
+import { SearchRepresentation } from 'app/core/ui-services/search.service';
 
 export const assignmentPhase = [
     { key: 0, name: 'Searching for candidates' },

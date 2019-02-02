@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 
-import { Category } from '../../../shared/models/motions/category';
-import { ViewCategory } from '../../../site/motions/models/view-category';
+import { Category } from 'app/shared/models/motions/category';
+import { ViewCategory } from 'app/site/motions/models/view-category';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { BaseRepository } from '../base-repository';
-import { Motion } from '../../../shared/models/motions/motion';
+import { Motion } from 'app/shared/models/motions/motion';
 import { HttpService } from '../../core-services/http.service';
-import { Identifiable } from '../../../shared/models/base/identifiable';
+import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
 
 /**

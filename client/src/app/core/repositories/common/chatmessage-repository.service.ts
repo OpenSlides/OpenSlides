@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { BaseRepository } from '../base-repository';
-import { Identifiable } from '../../../shared/models/base/identifiable';
+import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
 import { ChatMessage } from 'app/shared/models/core/chat-message';
 import { ViewChatMessage } from 'app/site/common/models/view-chatmessage';

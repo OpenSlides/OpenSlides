@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 
 import { BaseRepository } from '../base-repository';
-import { ViewUser } from '../../../site/users/models/view-user';
-import { User } from '../../../shared/models/users/user';
-import { Group } from '../../../shared/models/users/group';
+import { ViewUser } from 'app/site/users/models/view-user';
+import { User } from 'app/shared/models/users/user';
+import { Group } from 'app/shared/models/users/group';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { DataSendService } from '../../core-services/data-send.service';
-import { Identifiable } from '../../../shared/models/base/identifiable';
+import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { HttpService } from 'app/core/core-services/http.service';

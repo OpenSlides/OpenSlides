@@ -4,9 +4,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { Title } from '@angular/platform-browser';
 
 import { AssignmentFilterListService } from '../services/assignment-filter.service';
-import { AssignmentRepositoryService } from '../../../core/repositories/assignments/assignment-repository.service';
+import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
 import { ListViewBaseComponent } from '../../base/list-view-base';
-import { PromptService } from '../../../core/ui-services/prompt.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewAssignment } from '../models/view-assignment';
 import { AssignmentSortListService } from '../services/assignment-sort-list.service';
 

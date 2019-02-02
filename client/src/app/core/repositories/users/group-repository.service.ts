@@ -5,9 +5,9 @@ import { CollectionStringMapperService } from '../../core-services/collectionStr
 import { ConstantsService } from '../../ui-services/constants.service';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
-import { Group } from '../../../shared/models/users/group';
-import { Identifiable } from '../../../shared/models/base/identifiable';
-import { ViewGroup } from '../../../site/users/models/view-group';
+import { Group } from 'app/shared/models/users/group';
+import { Identifiable } from 'app/shared/models/base/identifiable';
+import { ViewGroup } from 'app/site/users/models/view-group';
 
 /**
  * Shape of a permission

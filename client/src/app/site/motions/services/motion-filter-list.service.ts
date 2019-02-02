@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 
-import { BaseFilterListService, OsFilter, OsFilterOption } from '../../../core/ui-services/base-filter-list.service';
-import { Motion } from '../../../shared/models/motions/motion';
+import { BaseFilterListService, OsFilter, OsFilterOption } from 'app/core/ui-services/base-filter-list.service';
+import { Motion } from 'app/shared/models/motions/motion';
 import { ViewMotion } from '../models/view-motion';
-import { CategoryRepositoryService } from '../../../core/repositories/motions/category-repository.service';
-import { WorkflowRepositoryService } from '../../../core/repositories/motions/workflow-repository.service';
-import { StorageService } from '../../../core/core-services/storage.service';
-import { MotionRepositoryService } from '../../../core/repositories/motions/motion-repository.service';
-import { MotionBlockRepositoryService } from '../../../core/repositories/motions/motion-block-repository.service';
-import { MotionCommentSectionRepositoryService } from '../../../core/repositories/motions/motion-comment-section-repository.service';
+import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
+import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
+import { StorageService } from 'app/core/core-services/storage.service';
+import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
+import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
+import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { ViewWorkflow } from '../models/view-workflow';

@@ -21,7 +21,7 @@ import { ViewMotion } from '../../models/view-motion';
 import { ViewMotionBlock } from '../../models/view-motion-block';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewWorkflow } from '../../models/view-workflow';
-import { WorkflowState } from '../../../../shared/models/motions/workflow-state';
+import { WorkflowState } from 'app/shared/models/motions/workflow-state';
 import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
 import { MotionPdfExportService } from '../../services/motion-pdf-export.service';
 import { MotionExportDialogComponent } from '../motion-export-dialog/motion-export-dialog.component';

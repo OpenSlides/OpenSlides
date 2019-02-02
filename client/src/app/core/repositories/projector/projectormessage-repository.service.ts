@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { BaseRepository } from '../base-repository';
-import { Identifiable } from '../../../shared/models/base/identifiable';
+import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
 import { ProjectorMessage } from 'app/shared/models/core/projector-message';
-import { ViewProjectorMessage } from '../../../site/projector/models/view-projectormessage';
+import { ViewProjectorMessage } from 'app/site/projector/models/view-projectormessage';
 
 @Injectable({
     providedIn: 'root'

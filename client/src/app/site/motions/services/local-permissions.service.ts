@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 
-import { OperatorService } from '../../../core/core-services/operator.service';
+import { OperatorService } from 'app/core/core-services/operator.service';
 import { ViewMotion } from '../models/view-motion';
-import { ConfigService } from '../../../core/ui-services/config.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
 import { ConstantsService } from 'app/core/ui-services/constants.service';
 
 interface OpenSlidesSettings {
