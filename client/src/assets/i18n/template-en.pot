@@ -49,6 +49,9 @@ msgstr ""
 msgid "Add me"
 msgstr ""
 
+msgid "Add new custom translation"
+msgstr ""
+
 msgid "Add/remove groups ..."
 msgstr ""
 
@@ -127,6 +130,9 @@ msgid "An unknown error occurred."
 msgstr ""
 
 msgid "Arabic"
+msgstr ""
+
+msgid "Are you sure you want to delete this motion?"
 msgstr ""
 
 msgid "Are you sure you want to delete this vote?"
@@ -359,6 +365,9 @@ msgstr ""
 msgid "Copy and paste your participant names in this textbox."
 msgstr ""
 
+msgid "Count active users"
+msgstr ""
+
 msgid "Countdowns"
 msgstr ""
 
@@ -380,7 +389,13 @@ msgstr ""
 msgid "Current browser language"
 msgstr ""
 
+msgid "Current list of speakers"
+msgstr ""
+
 msgid "Current list of speakers overlay"
+msgstr ""
+
+msgid "Current list of speakers reference"
 msgstr ""
 
 msgid "Current list of speakers slide"
@@ -519,9 +534,6 @@ msgid "Edit details"
 msgstr ""
 
 msgid "Edit details for"
-msgstr ""
-
-msgid "Edit profile"
 msgstr ""
 
 msgid "Edit statute paragraph:"
@@ -671,6 +683,9 @@ msgstr ""
 msgid "Font color of projector headline"
 msgstr ""
 
+msgid "Forgot Password?"
+msgstr ""
+
 msgid "Format"
 msgstr ""
 
@@ -752,6 +767,9 @@ msgid "Import motions"
 msgstr ""
 
 msgid "Import participants"
+msgstr ""
+
+msgid "Import statute"
 msgstr ""
 
 msgid "Import topics"
@@ -850,10 +868,13 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
-msgid "Login as Guest"
+msgid "Login as guest"
 msgstr ""
 
 msgid "Logout"
+msgstr ""
+
+msgid "Manage the list of speakers for..."
 msgstr ""
 
 msgid "Mark speaker"
@@ -1015,11 +1036,6 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-msgid ""
-"Note: You have to reject all change recommendations if the plenum does not "
-"follow the recommendation. This does not affect amendments."
-msgstr ""
-
 msgid "Number of (minimum) required supporters for a motion"
 msgstr ""
 
@@ -1137,6 +1153,9 @@ msgstr ""
 msgid "Participants have been imported."
 msgstr ""
 
+msgid "Password"
+msgstr ""
+
 msgid "Paste/write your topics in this textbox."
 msgstr ""
 
@@ -1156,6 +1175,9 @@ msgid "Personal notes"
 msgstr ""
 
 msgid "Please enter a valid email address"
+msgstr ""
+
+msgid "Please enter a valid email address!"
 msgstr ""
 
 msgid "Please enter your new password"
@@ -1248,6 +1270,9 @@ msgstr ""
 msgid "Reason"
 msgstr ""
 
+msgid "Reason required for creating new motion"
+msgstr ""
+
 msgid "Recommendation"
 msgstr ""
 
@@ -1255,6 +1280,9 @@ msgid "Recommendation set to {arg1}"
 msgstr ""
 
 msgid "Refer to committee"
+msgstr ""
+
+msgid "Reference projector"
 msgstr ""
 
 msgid "Referral to committee"
@@ -1441,6 +1469,9 @@ msgstr ""
 msgid "Show password"
 msgstr ""
 
+msgid "Show profile"
+msgstr ""
+
 msgid "Show the clock on projector"
 msgstr ""
 
@@ -1460,9 +1491,6 @@ msgid "Slides"
 msgstr ""
 
 msgid "Sort"
-msgstr ""
-
-msgid "Sort ..."
 msgstr ""
 
 msgid "Sort agenda"
@@ -1507,7 +1535,16 @@ msgstr ""
 msgid "Statute paragraph"
 msgstr ""
 
+msgid "Statute paragraph has been imported"
+msgstr ""
+
+msgid "Statute paragraph will be imported"
+msgstr ""
+
 msgid "Stop"
+msgstr ""
+
+msgid "Stop counting"
 msgstr ""
 
 msgid "Stop submitting new motions by non-staff users"
@@ -1611,6 +1648,9 @@ msgstr ""
 msgid "This element does not exist at this time."
 msgstr ""
 
+msgid "This field is required."
+msgstr ""
+
 msgid "This prefix will be set if you run the automatic agenda numbering."
 msgstr ""
 
@@ -1687,6 +1727,11 @@ msgid "Upload"
 msgstr ""
 
 msgid "Upload files"
+msgstr ""
+
+msgid ""
+"Use <strong>admin</strong> and <strong>admin</strong> for your first "
+"login.<br>Please change your password to hide this message!"
 msgstr ""
 
 msgid "Use the following custom number"
@@ -1832,6 +1877,9 @@ msgstr ""
 msgid "accepted"
 msgstr ""
 
+msgid "active users"
+msgstr ""
+
 msgid "adjourned"
 msgstr ""
 
@@ -1844,6 +1892,9 @@ msgstr ""
 msgid "by"
 msgstr ""
 
+msgid "connections"
+msgstr ""
+
 msgid "contribution"
 msgstr ""
 
@@ -1854,6 +1905,9 @@ msgid "entries will be ommitted."
 msgstr ""
 
 msgid "errors"
+msgstr ""
+
+msgid "example"
 msgstr ""
 
 msgid "inline"
@@ -1926,6 +1980,15 @@ msgid "results"
 msgstr ""
 
 msgid "selected"
+msgstr ""
+
+msgid "self"
+msgstr ""
+
+msgid "statute paragraphs have been imported."
+msgstr ""
+
+msgid "statute paragraphs(s) will be imported."
 msgstr ""
 
 msgid "submitted"

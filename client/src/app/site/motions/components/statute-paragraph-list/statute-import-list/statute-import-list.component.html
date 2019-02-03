@@ -1,10 +1,10 @@
 <os-head-bar [nav]="false">
     <!-- Title -->
-    <div class="title-slot"><h2 translate>Import Statutes</h2></div>
+    <div class="title-slot"><h2 translate>Import statute</h2></div>
 
     <div class="menu-slot">
         <button *ngIf="hasFile && newCount" mat-button (click)="doImport()">
-            <span class="upper" translate> Import</span>
+            <span class="upper" translate>Import</span>
         </button>
     </div>
 </os-head-bar>
@@ -71,7 +71,7 @@
         <div *ngIf="newCount">
             &nbsp;
             <mat-icon inline>playlist_add</mat-icon>
-            <span>&nbsp;{{ newCount }}&nbsp;</span> <span translate>Statute paragraphs(s) will be imported.</span>
+            <span>&nbsp;{{ newCount }}&nbsp;</span> <span translate>statute paragraphs(s) will be imported.</span>
         </div>
         <!-- errors/duplicates -->
         <div *ngIf="nonImportableCount" class="red-warning-text">
@@ -83,7 +83,7 @@
         <div *ngIf="doneCount" class="green-text">
             &nbsp;
             <mat-icon inline>done</mat-icon>
-            <span>&nbsp;{{ doneCount }}&nbsp;</span> <span translate>Statute paragraphs have been imported.</span>
+            <span>&nbsp;{{ doneCount }}&nbsp;</span> <span translate>statute paragraphs have been imported.</span>
         </div>
     </div>
     <div *ngIf="newCount">

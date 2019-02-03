@@ -4,18 +4,18 @@ import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Provides functionalities that will be used by most components
- * currently able to set the title with the suffix ' - OpenSlides 3'
+ * currently able to set the title with the suffix ' - OpenSlides'
  *
  * A BaseComponent is an OpenSlides Component.
  * Components in the 'Side'- or 'projector' Folder are BaseComponents
  */
 export abstract class BaseComponent extends OpenSlidesComponent {
     /**
-     * To manipulate the browser title bar, adds the Suffix "OpenSlides 3"
+     * To manipulate the browser title bar, adds the Suffix "OpenSlides"
      *
      * Might be a config variable later at some point
      */
-    private titleSuffix = ' - OpenSlides 3';
+    private titleSuffix = ' - OpenSlides';
 
     /**
      * Settings for the TinyMCE editor selector

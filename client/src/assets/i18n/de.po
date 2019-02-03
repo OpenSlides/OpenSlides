@@ -57,6 +57,9 @@ msgstr "Aktive Filter"
 msgid "Add me"
 msgstr "Füge mich hinzu"
 
+msgid "Add new custom translation"
+msgstr "Neue benutzerdefinierte Übersetzung hinzufügen"
+
 msgid "Add/remove groups ..."
 msgstr "Gruppen hinzufügen/entfernen ..."
 
@@ -84,8 +87,7 @@ msgstr "Admin"
 
 msgid "After verifiy the preview click on 'import' please (see top right)."
 msgstr ""
-"Nach Prüfung der Vorschau klicken Sie bitte auf 'Importieren' (siehe oben "
-"rechts)."
+"Nach Prüfung der Vorschau klicken Sie bitte auf 'Importieren' (oben rechts)."
 
 msgid "Agenda"
 msgstr "Tagesordnung"
@@ -141,6 +143,9 @@ msgstr "Ein unbekannter Fehler ist aufgetreten."
 
 msgid "Arabic"
 msgstr "Arabisch"
+
+msgid "Are you sure you want to delete this motion?"
+msgstr "Soll dieser Antrag wirklich gelöscht werden?"
 
 msgid "Are you sure you want to delete this vote?"
 msgstr "Soll diese Abstimmung wirklich gelöscht werden?"
@@ -378,6 +383,9 @@ msgstr "Inhalt"
 msgid "Copy and paste your participant names in this textbox."
 msgstr "Kopieren Sie die Name Ihrer Teilnehmer/innen in diese Textbox."
 
+msgid "Count active users"
+msgstr "Aktive Nutzer zählen"
+
 msgid "Countdowns"
 msgstr "Countdowns"
 
@@ -399,8 +407,14 @@ msgstr "Aktuell"
 msgid "Current browser language"
 msgstr "Aktuelle Browsersprache"
 
+msgid "Current list of speakers"
+msgstr "Aktuelle Redeliste"
+
 msgid "Current list of speakers overlay"
 msgstr "Aktuelle Redeliste (Einblendung)"
+
+msgid "Current list of speakers reference"
+msgstr "Referenz zur aktuellen Redeliste"
 
 msgid "Current list of speakers slide"
 msgstr "Aktuelle Redeliste (Folie)"
@@ -559,9 +573,6 @@ msgstr "Details bearbeiten"
 msgid "Edit details for"
 msgstr "Details bearbeiten für"
 
-msgid "Edit profile"
-msgstr "Profil bearbeiten"
-
 msgid "Edit statute paragraph:"
 msgstr "Satzungsabschnitt bearbeiten:"
 
@@ -654,7 +665,7 @@ msgid "Expand all"
 msgstr "Alle ausklappen"
 
 msgid "Export"
-msgstr "Export"
+msgstr "Exportieren"
 
 msgid "Export ..."
 msgstr "Exportieren ..."
@@ -712,6 +723,9 @@ msgstr "Schriftfarbe des Projektor-Kopf- und Fußbereichs"
 
 msgid "Font color of projector headline"
 msgstr "Schriftfarbe der Projektor-Überschrift"
+
+msgid "Forgot Password?"
+msgstr "Passwort vergessen?"
 
 msgid "Format"
 msgstr "Format"
@@ -797,6 +811,9 @@ msgstr "Anträge importieren"
 
 msgid "Import participants"
 msgstr "Teilnehmende importieren"
+
+msgid "Import statute"
+msgstr "Satzung importieren"
 
 msgid "Import topics"
 msgstr "Themen importieren"
@@ -894,11 +911,14 @@ msgstr "Redelisten-Einblendung"
 msgid "Login"
 msgstr "Anmelden"
 
-msgid "Login as Guest"
+msgid "Login as guest"
 msgstr "Als Gast anmelden"
 
 msgid "Logout"
 msgstr "Abmelden"
+
+msgid "Manage the list of speakers for..."
+msgstr "Redeliste verwalten für..."
 
 msgid "Mark speaker"
 msgstr "Redner/in markieren"
@@ -1059,13 +1079,6 @@ msgstr "Keine Satzungsabschnitte vorhanden"
 msgid "None"
 msgstr "aus"
 
-msgid ""
-"Note: You have to reject all change recommendations if the plenum does not "
-"follow the recommendation. This does not affect amendments."
-msgstr ""
-"Wichtig: Sie müssen alle Änderungsempfehlungen ablehnen, wenn das Plenum der"
-" Empfehlung nicht folgt. Dies betrifft jedoch nicht die Änderungsanträge."
-
 msgid "Number of (minimum) required supporters for a motion"
 msgstr "Mindestanzahl erforderlicher Unterstützer/innen für einen Antrag"
 
@@ -1185,6 +1198,9 @@ msgstr "Teilnehmende"
 msgid "Participants have been imported."
 msgstr "Teilnehmende wurden importiert."
 
+msgid "Password"
+msgstr "Passwort"
+
 msgid "Paste/write your topics in this textbox."
 msgstr ""
 "Kopieren oder schreiben Sie die Titel Ihrer Themenpunkte in diese Textbox."
@@ -1206,6 +1222,9 @@ msgstr "Persönliche Notizen"
 
 msgid "Please enter a valid email address"
 msgstr "Bitte geben Sie einen neuen Namen ein für"
+
+msgid "Please enter a valid email address!"
+msgstr "Bitte geben Sie eine gültige E-Mail-Adresse ein!"
 
 msgid "Please enter your new password"
 msgstr "Bitte geben Sie Ihr neues Passwort ein"
@@ -1297,6 +1316,9 @@ msgstr "Warteliste"
 msgid "Reason"
 msgstr "Begründung"
 
+msgid "Reason required for creating new motion"
+msgstr "Begründung erforderlich zur Erstellung neuer Anträge"
+
 msgid "Recommendation"
 msgstr "Empfehlung"
 
@@ -1305,6 +1327,9 @@ msgstr "Empfehlung gesetzt auf {arg1}"
 
 msgid "Refer to committee"
 msgstr "In Ausschuss verweisen"
+
+msgid "Reference projector"
+msgstr "Referenzprojektor"
 
 msgid "Referral to committee"
 msgstr "Verweisung in Ausschuss"
@@ -1494,6 +1519,9 @@ msgstr "Countdown in den letzten x Sekunden der Redezeit orange darstellen"
 msgid "Show password"
 msgstr "Passwort anzeigen"
 
+msgid "Show profile"
+msgstr "Profil anzeigen"
+
 msgid "Show the clock on projector"
 msgstr "Uhr auf dem Projektor anzeigen"
 
@@ -1515,9 +1543,6 @@ msgstr "Folien"
 
 msgid "Sort"
 msgstr "Sortieren"
-
-msgid "Sort ..."
-msgstr "Sortieren ..."
 
 msgid "Sort agenda"
 msgstr "Tagesordnung sortieren"
@@ -1561,8 +1586,17 @@ msgstr "Satzungsänderungsantrag zu"
 msgid "Statute paragraph"
 msgstr "Satzungsabschnitt"
 
+msgid "Statute paragraph has been imported"
+msgstr "Satzungsabschnitt wurde importiert"
+
+msgid "Statute paragraph will be imported"
+msgstr "Satzungsabschnitt wird importiert"
+
 msgid "Stop"
 msgstr "Stopp"
+
+msgid "Stop counting"
+msgstr "Zählen stoppen"
 
 msgid "Stop submitting new motions by non-staff users"
 msgstr ""
@@ -1679,6 +1713,9 @@ msgstr "Diese Änderung kollidiert mit einer anderen."
 msgid "This element does not exist at this time."
 msgstr "Dieses Element existiert nicht zu diesem Zeitpunkt."
 
+msgid "This field is required."
+msgstr "Dieses Feld ist erforderlich."
+
 msgid "This prefix will be set if you run the automatic agenda numbering."
 msgstr ""
 "Dieses Präfix wird gesetzt, wenn die automatische Nummerierung der "
@@ -1767,6 +1804,14 @@ msgstr "Hochladen"
 
 msgid "Upload files"
 msgstr "Dateien hochladen"
+
+msgid ""
+"Use <strong>admin</strong> and <strong>admin</strong> for your first "
+"login.<br>Please change your password to hide this message!"
+msgstr ""
+"Verwenden Sie <strong>admin</strong> und <strong>admin</strong> für die "
+"erste Anmeldung.<br>Bitte ändern Sie Ihr Passwort, um diese Nachricht "
+"auszublenden!"
 
 msgid "Use the following custom number"
 msgstr "Verwende die folgende benutzerdefinierte Anzahl"
@@ -1922,6 +1967,9 @@ msgstr "[Platz für Ihren Begrüßungstext.]"
 msgid "accepted"
 msgstr "angenommen"
 
+msgid "active users"
+msgstr "aktive Nutzer"
+
 msgid "adjourned"
 msgstr "vertagt"
 
@@ -1934,6 +1982,9 @@ msgstr "stimmzettel"
 msgid "by"
 msgstr "von"
 
+msgid "connections"
+msgstr "Verbindungen"
+
 msgid "contribution"
 msgstr "Wortmeldung"
 
@@ -1945,6 +1996,9 @@ msgstr "Einträge werden ausgelassen. "
 
 msgid "errors"
 msgstr "Fehler"
+
+msgid "example"
+msgstr "Beispiel"
 
 msgid "inline"
 msgstr "innerhalb"
@@ -2017,6 +2071,15 @@ msgstr "Ergebnisse"
 
 msgid "selected"
 msgstr "ausgewählt"
+
+msgid "self"
+msgstr "sich selbst"
+
+msgid "statute paragraphs have been imported."
+msgstr "Satzungsabschnitte wurden importiert."
+
+msgid "statute paragraphs(s) will be imported."
+msgstr "Satzungsabschnitte werden importiert."
 
 msgid "submitted"
 msgstr "eingereicht"

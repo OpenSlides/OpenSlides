@@ -499,9 +499,8 @@ class UserLoginView(APIView):
                 else:
                     if user.check_password("admin"):
                         context["info_text"] = (
-                            f"Installation was successfully. Use <strong>admin</strong> and "
-                            "<strong>admin</strong> for first login. Important: Please change "
-                            "your password!"
+                            f"Use <strong>admin</strong> and <strong>admin</strong> for your first login.<br>"
+                            "Please change your password to hide this message!"
                         )
                     else:
                         context["info_text"] = ""

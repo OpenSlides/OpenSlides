@@ -7,7 +7,6 @@
 <mat-card class="os-card">
     <div class="app-content" translate>
         <h1>{{ welcomeTitle | translate }}</h1>
-        <!-- TOODO: translate welcomeText-->
-        <div [innerHTML]="welcomeText"></div>
+        <div [innerHTML]="(welcomeText) | translate"></div>
     </div>
 </mat-card>
