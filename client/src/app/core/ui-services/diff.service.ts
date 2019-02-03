@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { LinenumberingService } from './linenumbering.service';
-import { ViewMotion } from '../../site/motions/models/view-motion';
-import { ViewUnifiedChange } from '../../site/motions/models/view-unified-change';
+import { ViewUnifiedChange } from '../../shared/models/motions/view-unified-change';
 
 const ELEMENT_NODE = 1;
 const TEXT_NODE = 3;
@@ -2036,18 +2035,18 @@ export class DiffService {
     /**
      * Applies all given changes to the motion and returns the (line-numbered) text
      *
-     * @param {ViewMotion} motion
+     * @param {string} motionHtml
      * @param {ViewUnifiedChange[]} changes
      * @param {number} lineLength
      * @param {number} highlightLine
      */
     public getTextWithChanges(
-        motion: ViewMotion,
+        motionHtml: string,
         changes: ViewUnifiedChange[],
         lineLength: number,
         highlightLine: number
     ): string {
-        let html = motion.text;
+        let html = motionHtml;
 
         // Changes need to be applied from the bottom up, to prevent conflicts with changing line numbers.
         changes.sort((change1: ViewUnifiedChange, change2: ViewUnifiedChange) => {
@@ -2126,5 +2125,121 @@ export class DiffService {
             text: text,
             textPost: textPost
         } as DiffLinesInParagraph;
+    }
+
+    /**
+     * Returns the HTML with the changes, optionally with a highlighted line.
+     * The original motion needs to be provided.
+     *
+     * @param {string} motionHtml
+     * @param {ViewUnifiedChange} change
+     * @param {number} lineLength
+     * @param {number} highlight
+     * @returns {string}
+     */
+    public getChangeDiff(
+        motionHtml: string,
+        change: ViewUnifiedChange,
+        lineLength: number,
+        highlight?: number
+    ): string {
+        const html = this.lineNumberingService.insertLineNumbers(motionHtml, lineLength);
+
+        let data, oldText;
+
+        try {
+            data = this.extractRangeByLineNumbers(html, change.getLineFrom(), change.getLineTo());
+            oldText =
+                data.outerContextStart +
+                data.innerContextStart +
+                data.html +
+                data.innerContextEnd +
+                data.outerContextEnd;
+        } catch (e) {
+            // This only happens (as far as we know) when the motion text has been altered (shortened)
+            // without modifying the change recommendations accordingly.
+            // That's a pretty serious inconsistency that should not happen at all,
+            // we're just doing some basic damage control here.
+            const msg =
+                'Inconsistent data. A change recommendation is probably referring to a non-existant line number.';
+            return '<em style="color: red; font-weight: bold;">' + msg + '</em>';
+        }
+
+        oldText = this.lineNumberingService.insertLineNumbers(oldText, lineLength, null, null, change.getLineFrom());
+        let diff = this.diff(oldText, change.getChangeNewText());
+
+        // If an insertion makes the line longer than the line length limit, we need two line breaking runs:
+        // - First, for the official line numbers, ignoring insertions (that's been done some lines before)
+        // - Second, another one to prevent the displayed including insertions to exceed the page width
+        diff = this.lineNumberingService.insertLineBreaksWithoutNumbers(diff, lineLength, true);
+
+        if (highlight > 0) {
+            diff = this.lineNumberingService.highlightLine(diff, highlight);
+        }
+
+        const origBeginning = data.outerContextStart + data.innerContextStart;
+        if (diff.toLowerCase().indexOf(origBeginning.toLowerCase()) === 0) {
+            // Add "merge-before"-css-class if the first line begins in the middle of a paragraph. Used for PDF.
+            diff = this.addCSSClassToFirstTag(origBeginning, 'merge-before') + diff.substring(origBeginning.length);
+        }
+
+        return diff;
+    }
+
+    /**
+     * Returns the remainder text of the motion after the last change
+     *
+     * @param {string} motionHtml
+     * @param {ViewUnifiedChange[]} changes
+     * @param {number} lineLength
+     * @param {number} highlight
+     * @returns {string}
+     */
+    public getTextRemainderAfterLastChange(
+        motionHtml: string,
+        changes: ViewUnifiedChange[],
+        lineLength: number,
+        highlight?: number
+    ): string {
+        let maxLine = 1;
+        changes.forEach((change: ViewUnifiedChange) => {
+            if (change.getLineTo() > maxLine) {
+                maxLine = change.getLineTo();
+            }
+        }, 0);
+
+        const numberedHtml = this.lineNumberingService.insertLineNumbers(motionHtml, lineLength);
+        if (changes.length === 0) {
+            return numberedHtml;
+        }
+
+        let data;
+
+        try {
+            data = this.extractRangeByLineNumbers(numberedHtml, maxLine, null);
+        } catch (e) {
+            // This only happens (as far as we know) when the motion text has been altered (shortened)
+            // without modifying the change recommendations accordingly.
+            // That's a pretty serious inconsistency that should not happen at all,
+            // we're just doing some basic damage control here.
+            const msg =
+                'Inconsistent data. A change recommendation is probably referring to a non-existant line number.';
+            return '<em style="color: red; font-weight: bold;">' + msg + '</em>';
+        }
+
+        let html;
+        if (data.html !== '') {
+            // Add "merge-before"-css-class if the first line begins in the middle of a paragraph. Used for PDF.
+            html =
+                this.addCSSClassToFirstTag(data.outerContextStart + data.innerContextStart, 'merge-before') +
+                data.html +
+                data.innerContextEnd +
+                data.outerContextEnd;
+            html = this.lineNumberingService.insertLineNumbers(html, lineLength, highlight, null, maxLine);
+        } else {
+            // Prevents empty lines at the end of the motion
+            html = '';
+        }
+        return html;
     }
 }

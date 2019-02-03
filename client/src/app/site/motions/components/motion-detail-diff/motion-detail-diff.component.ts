@@ -5,9 +5,9 @@ import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
 import { LineNumberingMode, ViewMotion } from '../../models/view-motion';
-import { ViewUnifiedChange, ViewUnifiedChangeType } from '../../models/view-unified-change';
+import { ViewUnifiedChange, ViewUnifiedChangeType } from '../../../../shared/models/motions/view-unified-change';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
-import { LineRange, ModificationType } from 'app/core/ui-services/diff.service';
+import { DiffService, LineRange, ModificationType } from 'app/core/ui-services/diff.service';
 import { ViewMotionChangeRecommendation } from '../../models/view-change-recommendation';
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
 import {
@@ -69,6 +69,7 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
      * @param matSnackBar
      * @param sanitizer
      * @param motionRepo
+     * @param diff
      * @param recoRepo
      * @param dialogService
      * @param configService
@@ -80,6 +81,7 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
         matSnackBar: MatSnackBar,
         private sanitizer: DomSanitizer,
         private motionRepo: MotionRepositoryService,
+        private diff: DiffService,
         private recoRepo: ChangeRecommendationRepositoryService,
         private dialogService: MatDialog,
         private configService: ConfigService,
@@ -142,7 +144,7 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
      * @param {ViewUnifiedChange} change
      */
     public getDiff(change: ViewUnifiedChange): SafeHtml {
-        const html = this.motionRepo.getChangeDiff(this.motion, change, this.lineLength, this.highlightedLine);
+        const html = this.diff.getChangeDiff(this.motion.text, change, this.lineLength, this.highlightedLine);
         return this.sanitizer.bypassSecurityTrustHtml(html);
     }
 
@@ -153,8 +155,8 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
         if (!this.lineLength) {
             return ''; // @TODO This happens in the test case when the lineLength-variable is not set
         }
-        return this.motionRepo.getTextRemainderAfterLastChange(
-            this.motion,
+        return this.diff.getTextRemainderAfterLastChange(
+            this.motion.text,
             this.changes,
             this.lineLength,
             this.highlightedLine

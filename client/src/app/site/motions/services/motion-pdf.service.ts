@@ -4,6 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { ViewUnifiedChange } from '../../../shared/models/motions/view-unified-change';
 import { HtmlToPdfService } from 'app/core/ui-services/html-to-pdf.service';
 import { MotionPollService, CalculablePollKey } from './motion-poll.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';

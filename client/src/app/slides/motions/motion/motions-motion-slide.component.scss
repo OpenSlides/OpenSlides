@@ -1,3 +1,9 @@
+@import '../../../../assets/styles/motion-styles-common';
+
+::ng-deep .paragraph-context {
+    opacity: 0.5;
+}
+
 #sidebox {
     width: 260px;
     right: 0;

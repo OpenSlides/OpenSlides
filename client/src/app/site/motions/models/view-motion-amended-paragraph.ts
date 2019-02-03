@@ -1,4 +1,4 @@
-import { ViewUnifiedChange, ViewUnifiedChangeType } from './view-unified-change';
+import { ViewUnifiedChange, ViewUnifiedChangeType } from '../../../shared/models/motions/view-unified-change';
 import { ViewMotion } from './view-motion';
 import { LineRange } from 'app/core/ui-services/diff.service';
 import { MergeAmendment } from 'app/shared/models/motions/workflow-state';
@@ -40,6 +40,8 @@ export class ViewMotionAmendedParagraph implements ViewUnifiedChange {
     /**
      * The state and recommendation of this amendment is considered.
      * The state takes precedence.
+     *
+     * HINT: This implementation should be consistent with get_amendment_merge_into_motion() in projector.py
      *
      * @returns {boolean}
      */
