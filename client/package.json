@@ -83,6 +83,7 @@
         "tslint": "~5.12.1",
         "tsutils": "^3.7.0",
         "typescript": "^3.2",
-        "webpack-bundle-analyzer": "^3.0.3"
+        "webpack-bundle-analyzer": "^3.0.3",
+        "terser": "3.14.1"
     }
 }
