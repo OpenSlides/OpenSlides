@@ -58,8 +58,17 @@ export class OpenSlidesService extends OpenSlidesComponent {
         this.operator.guestsEnabled = response.guest_enabled;
         if (!response.user && !response.guest_enabled) {
             this.redirectUrl = location.pathname;
-            // Goto login, if the user isn't login and guests are not allowed
-            this.router.navigate(['/login']);
+
+            // let the use navigate and reload on every login-page
+            if (this.redirectUrl.includes('/login/')) {
+                // Allow free navigation in the children of the login page
+                // required for resetting password and direct navigation to legal notice
+                // and privacy policy.
+                this.router.navigate([this.redirectUrl]);
+            } else {
+                // Goto login, if the user isn't login and guests are not allowed
+                this.router.navigate(['/login']);
+            }
         } else {
             await this.afterLoginBootup(response.user_id);
         }
