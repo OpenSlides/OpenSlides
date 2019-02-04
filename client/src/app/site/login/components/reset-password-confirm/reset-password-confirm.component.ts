@@ -58,21 +58,23 @@ export class ResetPasswordConfirmComponent extends BaseComponent implements OnIn
     public ngOnInit(): void {
         super.setTitle('Reset password');
         this.activatedRoute.queryParams.subscribe(params => {
-            if (!params.user_id || !params.token) {
-                setTimeout(() => {
-                    this.matSnackBar.open('');
-                    this.matSnackBar.open(
-                        this.translate.instant('The link is broken. Please contact your system administrator.'),
-                        this.translate.instant('OK'),
-                        {
-                            duration: 0
-                        }
-                    );
-                    this.router.navigate(['/']);
-                });
-            } else {
-                this.user_id = params.user_id;
-                this.token = params.token;
+            if (!this.user_id && !this.token) {
+                if (!params.user_id || !params.token) {
+                    setTimeout(() => {
+                        this.matSnackBar.open('');
+                        this.matSnackBar.open(
+                            this.translate.instant('The link is broken. Please contact your system administrator.'),
+                            this.translate.instant('OK'),
+                            {
+                                duration: 0
+                            }
+                        );
+                        this.router.navigate(['/login']);
+                    });
+                } else {
+                    this.user_id = params.user_id;
+                    this.token = params.token;
+                }
             }
         });
     }
