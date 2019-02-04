@@ -118,8 +118,7 @@
             <span *ngIf="motion.parent_id">
                 &#xb7;
                 <span>
-                    <span translate>Amendment to</span>&nbsp;<a
-                    [routerLink]="motion.parent.getDetailStateURL()">{{
+                    <span translate>Amendment to</span>&nbsp;<a [routerLink]="motion.parent.getDetailStateURL()">{{
                         motion.parent.identifier || motion.parent.title
                     }}</a>
                 </span>
@@ -336,9 +335,7 @@
                 <!-- Make the whole container a trigger to prevent unexpected menu behavior -->
                 <div [matMenuTriggerFor]="tagMenu">
                     <!-- No selected tags -->
-                    <mat-basic-chip *ngIf="!motion.hasTags()" class="grey" disabled>
-                        {{ '–' }}
-                    </mat-basic-chip>
+                    <mat-basic-chip *ngIf="!motion.hasTags()" class="grey" disabled> {{ '–' }} </mat-basic-chip>
 
                     <!-- Display a chip list of tags -->
                     <mat-chip-list class="mat-chip-list-stacked">
@@ -352,9 +349,7 @@
             <!-- For non privileged users -->
             <div *ngIf="!perms.isAllowed('change_metadata', motion)">
                 <mat-chip-list class="mat-chip-list-stacked">
-                    <mat-basic-chip *ngFor="let tag of motion.tags" class="grey">
-                        {{ tag }}
-                    </mat-basic-chip>
+                    <mat-basic-chip *ngFor="let tag of motion.tags" class="grey"> {{ tag }} </mat-basic-chip>
                 </mat-chip-list>
             </div>
         </div>
@@ -418,6 +413,42 @@
     >
         <!-- Line Number and Diff buttons -->
         <div *ngIf="!editMotion && !motion.isStatuteAmendment()" class="motion-text-controls">
+            <mat-form-field class="motion-goto-line" *ngIf="highlightedLineOpened">
+                <input
+                    type="number"
+                    min="1"
+                    matInput
+                    placeholder="{{ 'Go to line' | translate }}"
+                    osAutofocus
+                    [(ngModel)]="highlightedLineTyping"
+                    [ngModelOptions]="{ standalone: true }"
+                    [errorStateMatcher]="highlightedLineMatcher"
+                />
+                <mat-error *ngIf="highlightedLineTyping > 10" translate>Invalid line number</mat-error>
+                <button
+                    type="submit"
+                    mat-button
+                    matSuffix
+                    mat-icon-button
+                    aria-label="Go to line"
+                    *ngIf="highlightedLineTyping"
+                    (click)="gotoHighlightedLine(highlightedLineTyping); highlightedLineTyping = ''"
+                >
+                    <mat-icon>redo</mat-icon>
+                </button>
+            </mat-form-field>
+            <button
+                mat-icon-button
+                matTooltip="{{ 'Go to line' | translate }}"
+                *ngIf="!highlightedLineOpened"
+                (click)="highlightedLineOpened = true"
+            >
+                <mat-icon>redo</mat-icon>
+            </button>
+            <button mat-icon-button (click)="highlightedLineOpened = false" *ngIf="highlightedLineOpened">
+                <mat-icon>cancel</mat-icon>
+            </button>
+
             <button
                 type="button"
                 mat-icon-button
@@ -547,6 +578,7 @@
                 [motion]="motion"
                 [changes]="allChangingObjects"
                 [scrollToChange]="scrollToChange"
+                [highlightedLine]="highlightedLine"
                 (createChangeRecommendation)="createChangeRecommendation($event)"
             ></os-motion-detail-diff>
         </ng-container>

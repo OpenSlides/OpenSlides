@@ -23,8 +23,28 @@ span {
 
 .motion-text-controls {
     float: right;
+    margin-left: 5px;
+    margin-top: -15px;
+    height: 65px;
+
     button {
         font-size: 115%;
+    }
+
+    > button {
+        // Prevent moving the buttons when the "go to line"-input is shown
+        margin-top: 7px;
+    }
+    .motion-goto-line {
+        width: 150px;
+    }
+    input[type='number']::-webkit-inner-spin-button,
+    input[type='number']::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    input[type='number'] {
+        -moz-appearance: textfield;
     }
 }
 
@@ -71,6 +91,7 @@ span {
     }
 
     .motion-text {
+        clear: both;
         margin-left: 0px;
     }
 
