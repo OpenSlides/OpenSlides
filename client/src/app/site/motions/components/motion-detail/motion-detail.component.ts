@@ -1,8 +1,8 @@
 import { ActivatedRoute, Router } from '@angular/router';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog, MatExpansionPanel, MatSnackBar, MatCheckboxChange } from '@angular/material';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { MatDialog, MatExpansionPanel, MatSnackBar, MatCheckboxChange, ErrorStateMatcher } from '@angular/material';
 
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
@@ -293,6 +293,21 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     public highlightedLine: number;
 
     /**
+     * Validator for checking the go to line number input field
+     */
+    public highlightedLineMatcher: ErrorStateMatcher;
+
+    /**
+     * Indicates if the highlight line form was opened
+     */
+    public highlightedLineOpened: boolean;
+
+    /**
+     * Holds the model for the typed line number
+     */
+    public highlightedLineTyping: number;
+
+    /**
      * The personal notes' content for this motion
      */
     public personalNoteContent: PersonalNoteContent;
@@ -319,6 +334,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * @param route determine if this is a new or an existing motion
      * @param formBuilder For reactive forms. Form Group and Form Control
      * @param dialogService For opening dialogs
+     * @param el The native element
      * @param repo Motion Repository
      * @param agendaRepo Read out agenda variables
      * @param changeRecoRepo Change Recommendation Repository
@@ -340,7 +356,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         private route: ActivatedRoute,
         private formBuilder: FormBuilder,
         private dialogService: MatDialog,
-        private repo: MotionRepositoryService,
+        private el: ElementRef,
+        public repo: MotionRepositoryService,
         private agendaRepo: AgendaRepositoryService,
         private changeRecoRepo: ChangeRecommendationRepositoryService,
         private statuteRepo: StatuteParagraphRepositoryService,
@@ -569,6 +586,15 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
             statute_paragraph_id: ['']
         });
         this.updateWorkflowIdForCreateForm();
+
+        const component = this;
+        this.highlightedLineMatcher = new class implements ErrorStateMatcher {
+            public isErrorState(control: FormControl): boolean {
+                const value: string = control && control.value ? control.value + '' : '';
+                const maxLineNumber = component.repo.getLastLineNumber(component.motion, component.lineLength);
+                return value.match(/[^\d]/) !== null || parseInt(value, 10) >= maxLineNumber;
+            }
+        }();
     }
 
     /**
@@ -694,7 +720,13 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * @returns safe html strings
      */
     public getParentMotionRange(from: number, to: number): SafeHtml {
-        const str = this.repo.extractMotionLineRange(this.motion.parent_id, { from, to }, true, this.lineLength);
+        const str = this.repo.extractMotionLineRange(
+            this.motion.parent_id,
+            { from, to },
+            true,
+            this.lineLength,
+            this.highlightedLine
+        );
         return this.sanitizer.bypassSecurityTrustHtml(str);
     }
 
@@ -771,6 +803,25 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      */
     public isRecoMode(mode: ChangeRecoMode): boolean {
         return this.crMode === mode;
+    }
+
+    /**
+     * Highlights the line and scrolls to it
+     * @param {number} line
+     */
+    public gotoHighlightedLine(line: number): void {
+        const maxLineNumber = this.repo.getLastLineNumber(this.motion, this.lineLength);
+        if (line >= maxLineNumber) {
+            return;
+        }
+
+        this.highlightedLine = line;
+        // setTimeout necessary for DOM-operations to work
+        window.setTimeout(() => {
+            const element = <HTMLElement>this.el.nativeElement;
+            const target = element.querySelector('.os-line-number.line-number-' + line.toString(10));
+            target.scrollIntoView({ behavior: 'smooth' });
+        }, 1);
     }
 
     /**
@@ -886,7 +937,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         const configKey = isStatuteAmendment ? 'motions_statute_amendments_workflow' : 'motions_workflow';
         this.configService
             .get<string>(configKey)
-            .pipe(takeWhile(id => !id, true)) // Wait for the id to be present.
+            .pipe(takeWhile(id => !id)) // Wait for the id to be present.
             .subscribe(id => {
                 this.contentForm.patchValue({
                     workflow_id: parseInt(id as string, 10)

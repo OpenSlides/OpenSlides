@@ -358,7 +358,8 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
                                     to: change.getLineFrom()
                                 },
                                 true,
-                                lineLength
+                                lineLength,
+                                highlightLine
                             );
                         } else if (changes[idx - 1].getLineTo() < change.getLineFrom()) {
                             text += this.extractMotionLineRange(
@@ -368,7 +369,8 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
                                     to: change.getLineFrom()
                                 },
                                 true,
-                                lineLength
+                                lineLength,
+                                highlightLine
                             );
                         }
                         text += this.getChangeDiff(targetMotion, change, lineLength, highlightLine);
@@ -418,8 +420,15 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      * @param {LineRange} lineRange
      * @param {boolean} lineNumbers - weather to add line numbers to the returned HTML string
      * @param {number} lineLength
+     * @param {number|null} highlightedLine
      */
-    public extractMotionLineRange(id: number, lineRange: LineRange, lineNumbers: boolean, lineLength: number): string {
+    public extractMotionLineRange(
+        id: number,
+        lineRange: LineRange,
+        lineNumbers: boolean,
+        lineLength: number,
+        highlightedLine: number
+    ): string {
         const origHtml = this.formatMotion(id, ChangeRecoMode.Original, [], lineLength);
         const extracted = this.diff.extractRangeByLineNumbers(origHtml, lineRange.from, lineRange.to);
         let html =
@@ -429,7 +438,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
             extracted.innerContextEnd +
             extracted.outerContextEnd;
         if (lineNumbers) {
-            html = this.lineNumbering.insertLineNumbers(html, lineLength, null, null, lineRange.from);
+            html = this.lineNumbering.insertLineNumbers(html, lineLength, highlightedLine, null, lineRange.from);
         }
         return html;
     }
@@ -492,6 +501,19 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
     }
 
     /**
+     * Returns the last line number of a motion
+     *
+     * @param {ViewMotion} motion
+     * @param {number} lineLength
+     * @return {number}
+     */
+    public getLastLineNumber(motion: ViewMotion, lineLength: number): number {
+        const numberedHtml = this.lineNumbering.insertLineNumbers(motion.text, lineLength);
+        const range = this.lineNumbering.getLineNumberRange(numberedHtml);
+        return range.to;
+    }
+
+    /**
      * Creates a {@link ViewChangeReco} object based on the motion ID and the given lange range.
      * This object is not saved yet and does not yet have any changed HTML. It's meant to populate the UI form.
      *
@@ -508,7 +530,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         changeReco.line_from = lineRange.from;
         changeReco.line_to = lineRange.to;
         changeReco.type = ModificationType.TYPE_REPLACEMENT;
-        changeReco.text = this.extractMotionLineRange(motionId, lineRange, false, lineLength);
+        changeReco.text = this.extractMotionLineRange(motionId, lineRange, false, lineLength, null);
         changeReco.rejected = false;
         changeReco.motion_id = motionId;
 

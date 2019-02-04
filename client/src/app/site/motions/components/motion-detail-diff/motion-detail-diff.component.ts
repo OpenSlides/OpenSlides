@@ -32,6 +32,7 @@ import { ConfigService } from 'app/core/ui-services/config.service';
  *       [motion]="motion"
  *       [changes]="changes"
  *       [scrollToChange]="change"
+ *       [highlightedLine]="highlightedLine"
  *       (createChangeRecommendation)="createChangeRecommendation($event)"
  * ></os-motion-detail-diff>
  * ```
@@ -48,6 +49,8 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
     public changes: ViewUnifiedChange[];
     @Input()
     public scrollToChange: ViewUnifiedChange;
+    @Input()
+    public highlightedLine: number;
 
     @Output()
     public createChangeRecommendation: EventEmitter<LineRange> = new EventEmitter<LineRange>();
@@ -109,7 +112,13 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
             return '';
         }
 
-        return this.motionRepo.extractMotionLineRange(this.motion.id, lineRange, true, this.lineLength);
+        return this.motionRepo.extractMotionLineRange(
+            this.motion.id,
+            lineRange,
+            true,
+            this.lineLength,
+            this.highlightedLine
+        );
     }
 
     /**
@@ -138,7 +147,7 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
      * @param {ViewUnifiedChange} change
      */
     public getDiff(change: ViewUnifiedChange): SafeHtml {
-        const html = this.motionRepo.getChangeDiff(this.motion, change, this.lineLength);
+        const html = this.motionRepo.getChangeDiff(this.motion, change, this.lineLength, this.highlightedLine);
         return this.sanitizer.bypassSecurityTrustHtml(html);
     }
 
@@ -149,7 +158,12 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
         if (!this.lineLength) {
             return ''; // @TODO This happens in the test case when the lineLength-variable is not set
         }
-        return this.motionRepo.getTextRemainderAfterLastChange(this.motion, this.changes, this.lineLength);
+        return this.motionRepo.getTextRemainderAfterLastChange(
+            this.motion,
+            this.changes,
+            this.lineLength,
+            this.highlightedLine
+        );
     }
 
     /**

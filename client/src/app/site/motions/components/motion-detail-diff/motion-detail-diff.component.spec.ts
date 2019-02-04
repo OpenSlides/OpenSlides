@@ -6,13 +6,15 @@ import { ViewMotion } from '../../models/view-motion';
 import { ViewChangeReco } from '../../models/view-change-reco';
 import { MotionDetailDiffComponent } from './motion-detail-diff.component';
 import { MotionDetailOriginalChangeRecommendationsComponent } from '../motion-detail-original-change-recommendations/motion-detail-original-change-recommendations.component';
+import { ViewUnifiedChange } from '../../models/view-unified-change';
 
 @Component({
     template: `
         <os-motion-detail-diff
             [motion]="motion"
             [changes]="changes"
-            (scrollToChange)="scrollToChange($event)"
+            [highlightedLine]="highlightedLine"
+            [scrollToChange]="scrollToChange"
             (createChangeRecommendation)="createChangeRecommendation($event)"
         >
         </os-motion-detail-diff>
@@ -21,13 +23,12 @@ import { MotionDetailOriginalChangeRecommendationsComponent } from '../motion-de
 class TestHostComponent {
     public motion: ViewMotion;
     public changes: ViewChangeReco[];
+    public scrollToChange: ViewUnifiedChange = null;
 
     public constructor() {
         this.motion = new ViewMotion();
         this.changes = [];
     }
-
-    public scrollToChange($event: Event): void {}
 
     public createChangeRecommendation($event: Event): void {}
 }
