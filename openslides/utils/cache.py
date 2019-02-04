@@ -133,6 +133,11 @@ class ElementCache:
 
         Returns the new generated change_id.
         """
+        if not self.ensured:
+            raise RuntimeError(
+                "Call element_cache.ensure_cache before changing elements."
+            )
+
         deleted_elements = []
         changed_elements = []
         for element_id, data in elements.items():
@@ -264,6 +269,11 @@ class ElementCache:
         if not self.use_restricted_data_cache:
             # If the restricted_data_cache is not used, there is nothing to do
             return
+
+        if not self.ensured:
+            raise RuntimeError(
+                "Call element_cache.ensure_cache before updating restricted data."
+            )
 
         # Try to write a special key.
         # If this succeeds, there is noone else currently updating the cache.
