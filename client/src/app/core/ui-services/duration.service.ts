@@ -69,4 +69,16 @@ export class DurationService {
             return '';
         }
     }
+
+    /**
+     * Converts a duration number (given in seconds)o a string in `MMM:SS` format
+     *
+     * @param time value in seconds
+     * @returns a more human readable time representation
+     */
+    public secondDurationToString(time: number): string {
+        const minutes = Math.floor(time / 60);
+        const seconds = Math.floor(time % 60);
+        return `${minutes}:${`0${seconds}`.slice(-2)}`;
+    }
 }

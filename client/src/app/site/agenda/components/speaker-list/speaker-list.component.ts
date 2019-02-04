@@ -10,6 +10,7 @@ import { AgendaRepositoryService } from 'app/core/repositories/agenda/agenda-rep
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { CurrentListOfSpeakersSlideService } from 'app/site/projector/services/current-list-of-of-speakers-slide.service';
 import { DataStoreService } from 'app/core/core-services/data-store.service';
+import { DurationService } from 'app/core/ui-services/duration.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
@@ -91,7 +92,9 @@ export class SpeakerListComponent extends BaseViewComponent implements OnInit {
     }
 
     /**
-     * Constructor for speaker list component
+     * Constructor for speaker list component. Generates the forms and subscribes
+     * to the {@link currentListOfSpeakers}
+     *
      * @param title
      * @param translate
      * @param snackBar
@@ -100,6 +103,9 @@ export class SpeakerListComponent extends BaseViewComponent implements OnInit {
      * @param DS the DataStore
      * @param itemRepo Repository fpr agenda items
      * @param op the current operator
+     * @param promptService
+     * @param currentListOfSpeakersService
+     * @param durationService helper for speech duration display
      */
     public constructor(
         title: Title,
@@ -111,7 +117,8 @@ export class SpeakerListComponent extends BaseViewComponent implements OnInit {
         private itemRepo: AgendaRepositoryService,
         private op: OperatorService,
         private promptService: PromptService,
-        private currentListOfSpeakersService: CurrentListOfSpeakersSlideService
+        private currentListOfSpeakersService: CurrentListOfSpeakersSlideService,
+        private durationService: DurationService
     ) {
         super(title, translate, snackBar);
         this.isCurrentListOfSpeakers();
@@ -317,5 +324,28 @@ export class SpeakerListComponent extends BaseViewComponent implements OnInit {
         if (await this.promptService.open('Are you sure?', content)) {
             this.itemRepo.deleteAllSpeakers(this.viewItem);
         }
+    }
+
+    /**
+     * returns a locale-specific version of the starting time for the given speaker item
+     *
+     * @param speaker
+     * @returns a time string using the current language setting of the client
+     */
+    public startTimeToString(speaker: ViewSpeaker): string {
+        return new Date(speaker.begin_time).toLocaleString(this.translate.currentLang);
+    }
+
+    /**
+     * get the duration of a speech
+     *
+     * @param speaker
+     * @returns string representation of the duration in `[MM]M:SS minutes` format
+     */
+    public durationString(speaker: ViewSpeaker): string {
+        const duration = Math.floor(
+            (new Date(speaker.end_time).valueOf() - new Date(speaker.begin_time).valueOf()) / 1000
+        );
+        return `${this.durationService.secondDurationToString(duration)} ${this.translate.instant('minutes')}`;
     }
 }

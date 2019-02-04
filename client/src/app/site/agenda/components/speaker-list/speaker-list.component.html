@@ -37,13 +37,11 @@
             <!-- {Number}. {full_name} {time} minutes (Start time: {begin_time}) [close button] -->
             <mat-list-item *ngFor="let speaker of finishedSpeakers; let number = index">
                 <div class="finished-prefix">
-                    <span>{{ number + 1 }}</span> <span>.&nbsp;{{ speaker }}</span>
+                    <span>{{ number + 1 }}. {{ speaker }}</span>
                 </div>
                 <div class="finished-suffix">
-                    <!-- TODO: No Date or time class yet -->
-                    <!-- <span> calc time here &nbsp;</span> -->
-                    <!-- <span translate>minutes</span> -->
-                    <span>&nbsp;(</span> <span translate>Start time</span> <span>:&nbsp;{{ speaker.begin_time }})</span>
+                    &nbsp;&nbsp; {{ durationString(speaker) }}
+                    ({{ 'Start time' | translate }}: {{ startTimeToString(speaker) }})
                 </div>
                 <button
                     mat-stroked-button
