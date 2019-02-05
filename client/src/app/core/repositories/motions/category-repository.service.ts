@@ -11,7 +11,6 @@ import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { HttpService } from '../../core-services/http.service';
 import { Identifiable } from 'app/shared/models/base/identifiable';
-import { Motion } from 'app/shared/models/motions/motion';
 import { ViewCategory } from 'app/site/motions/models/view-category';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 
@@ -79,22 +78,6 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
     public async delete(viewCategory: ViewCategory): Promise<void> {
         const category = viewCategory.category;
         await this.dataSend.deleteModel(category);
-    }
-
-    /**
-     * Returns all motions belonging to a category
-     * @param category category
-     */
-    public getMotionsOfCategory(category: Category): Motion[] {
-        const motList = this.DS.getAll(Motion);
-        const retList: Array<Motion> = [];
-        motList.forEach(motion => {
-            if (motion.category_id && motion.category_id === category.id) {
-                retList.push(motion);
-            }
-        });
-        // TODO: Sorting the return List?!
-        return retList;
     }
 
     /**

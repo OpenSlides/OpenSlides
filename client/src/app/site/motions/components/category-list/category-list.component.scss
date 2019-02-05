@@ -1,33 +1,50 @@
 .header-container {
     display: grid;
     grid-template-rows: auto;
-    grid-template-columns: 33.333% 33.333% 33.333%;
+    grid-template-columns: 75% 25%;
     width: 100%;
 
     > div {
         grid-row-start: 1;
         grid-row-end: span 1;
-        grid-column-end: span 3;
-    }
-
-    .header-prefix {
-        grid-column-start: 1;
+        grid-column-end: span 2;
     }
 
     .header-name {
-        grid-column-start: 2;
+        grid-column-start: 1;
         color: lightslategray;
     }
 
     .header-size {
-        grid-column-start: 3;
+        grid-column-start: 2;
     }
 }
 
-#updateForm {
-    margin-bottom: 20px;
+mat-expansion-panel {
+    max-width: 770px;
+    margin: auto;
 }
 
-.half-width {
-    width: 50%;
+.flex-spaced {
+    display: flex;
+    justify-content: space-between;
+}
+
+.full-width-form {
+    display: flex;
+    width: 100%;
+    align-content: space-between;
+    flex: 2;
+}
+
+.short-input {
+    width: 20%;
+}
+.long-input {
+    width: 75%;
+}
+.inline-form-submit {
+    justify-content: end;
+    display: block;
+    flex: 1;
 }

@@ -4,6 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AmendmentCreateWizardComponent } from './components/amendment-create-wizard/amendment-create-wizard.component';
 import { CallListComponent } from './components/call-list/call-list.component';
 import { CategoryListComponent } from './components/category-list/category-list.component';
+import { CategorySortComponent } from './components/category-sort/category-sort.component';
 import { MotionBlockListComponent } from './components/motion-block-list/motion-block-list.component';
 import { MotionBlockDetailComponent } from './components/motion-block-detail/motion-block-detail.component';
 import { MotionCommentSectionListComponent } from './components/motion-comment-section-list/motion-comment-section-list.component';
@@ -19,6 +20,7 @@ import { WorkflowDetailComponent } from './components/workflow-detail/workflow-d
 const routes: Routes = [
     { path: '', component: MotionListComponent },
     { path: 'category', component: CategoryListComponent },
+    { path: 'category/:id', component: CategorySortComponent },
     { path: 'comment-section', component: MotionCommentSectionListComponent },
     { path: 'statute-paragraphs', component: StatuteParagraphListComponent },
     { path: 'statute-paragraphs/import', component: StatuteImportListComponent },

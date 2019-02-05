@@ -25,6 +25,7 @@ import { MotionExportDialogComponent } from './components/motion-export-dialog/m
 import { StatuteImportListComponent } from './components/statute-paragraph-list/statute-import-list/statute-import-list.component';
 import { WorkflowListComponent } from './components/workflow-list/workflow-list.component';
 import { WorkflowDetailComponent } from './components/workflow-detail/workflow-detail.component';
+import { CategorySortComponent } from './components/category-sort/category-sort.component';
 
 @NgModule({
     imports: [CommonModule, MotionsRoutingModule, SharedModule],
@@ -50,7 +51,8 @@ import { WorkflowDetailComponent } from './components/workflow-detail/workflow-d
         MotionExportDialogComponent,
         StatuteImportListComponent,
         WorkflowListComponent,
-        WorkflowDetailComponent
+        WorkflowDetailComponent,
+        CategorySortComponent
     ],
     entryComponents: [
         MotionChangeRecommendationComponent,

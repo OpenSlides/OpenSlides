@@ -5,7 +5,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable, Subscription } from 'rxjs';
 
 import { Selectable } from '../selectable';
-import { EmptySelectable } from '../empty-selectable';
 
 /**
  * Reusable Sorting List
@@ -133,8 +132,8 @@ export class SortingListComponent implements OnInit, OnDestroy {
         if (this.array.length !== newValues.length || this.live) {
             this.array = [];
             this.array = newValues.map(val => val);
-        } else if (this.array.length === 0) {
-            this.array.push(new EmptySelectable(this.translate));
+        } else {
+            this.array = this.array.map(arrayValue => newValues.find(val => val.id === arrayValue.id));
         }
     }
 
