@@ -249,14 +249,14 @@ export class HtmlToPdfService {
                     ...this.computeStyle(styles)
                 };
 
-                const children = this.parseChildren(element, newParagraph);
-                newParagraph = children;
+                const children = this.parseChildren(element, styles);
+                newParagraph.text = children;
                 break;
             }
             case 'ul':
             case 'ol': {
                 newParagraph = this.create(nodeName);
-                const children = this.parseChildren(element, newParagraph);
+                const children = this.parseChildren(element, styles);
                 newParagraph[nodeName] = children;
                 break;
             }
