@@ -976,9 +976,21 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     }
 
     /**
-     * Sets the previous and next motion
+     * Sets the previous and next motion. Sorts ascending by identifier, and
+     * then appending motion without identifiers sorted by title
      */
     public setSurroundingMotions(): void {
+        this.allMotions.sort((a, b) => {
+            if (a.identifier && b.identifier) {
+                return a.identifier.localeCompare(b.identifier, this.translate.currentLang);
+            } else if (a.identifier) {
+                return 1;
+            } else if (b.identifier) {
+                return -1;
+            } else {
+                return a.title.localeCompare(b.title, this.translate.currentLang);
+            }
+        });
         const indexOfCurrent = this.allMotions.findIndex(motion => {
             return motion === this.motion;
         });
