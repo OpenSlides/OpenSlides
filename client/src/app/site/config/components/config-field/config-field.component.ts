@@ -1,14 +1,15 @@
 import { Component, OnInit, Input, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { distinctUntilChanged } from 'rxjs/operators';
 
+import { DateTimeAdapter } from 'ng-pick-datetime';
 import { TranslateService } from '@ngx-translate/core';
 
-import { ViewConfig } from '../../models/view-config';
 import { BaseComponent } from '../../../../base.component';
-import { FormGroup, FormBuilder } from '@angular/forms';
 import { ConfigRepositoryService } from '../../services/config-repository.service';
 import { ParentErrorStateMatcher } from 'app/shared/parent-error-state-matcher';
+import { ViewConfig } from '../../models/view-config';
 
 /**
  * List view for the categories.
@@ -23,6 +24,11 @@ import { ParentErrorStateMatcher } from 'app/shared/parent-error-state-matcher';
 })
 export class ConfigFieldComponent extends BaseComponent implements OnInit {
     public configItem: ViewConfig;
+
+    /**
+     * Date representation od the config value, used by the datetimepicker
+     */
+    public dateValue: Date;
 
     /**
      * Option to show a green check-icon.
@@ -48,6 +54,8 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
      * Translated config value for template
      */
     public translatedValue: object;
+
+    public rawDate: Date;
 
     /**
      * The config item for this component. Just accept components with already populated constants-info.
@@ -79,18 +87,26 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
     public matcher = new ParentErrorStateMatcher();
 
     /**
-     * The usual component constructor
-     * @param titleService
-     * @param translate
+     * The usual component constructor. datetime pickers will set their locale
+     * to the current language chosen
+     *
+     * @param titleService Title
+     * @param translate TranslateService
+     * @param formBuilder FormBuilder
+     * @param cdRef ChangeDetectorRef
+     * @param repo ConfigRepositoryService
+     * @param dateTimeAdapter DateTimeAdapter
      */
     public constructor(
         protected titleService: Title,
         protected translate: TranslateService,
         private formBuilder: FormBuilder,
         private cdRef: ChangeDetectorRef,
-        public repo: ConfigRepositoryService
+        public repo: ConfigRepositoryService,
+        dateTimeAdapter: DateTimeAdapter<any>
     ) {
         super(titleService, translate);
+        dateTimeAdapter.setLocale(this.translate.currentLang);
     }
 
     /**
@@ -100,7 +116,6 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
         this.form = this.formBuilder.group({
             value: ['']
         });
-
         this.translatedValue = this.configItem.value;
         if (
             this.configItem.inputType === 'string' ||
@@ -111,7 +126,9 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
                 this.translatedValue = this.translate.instant(this.configItem.value);
             }
         }
-
+        if (this.configItem.inputType === 'datetimepicker') {
+            this.dateValue = new Date(this.configItem.value as number);
+        }
         this.form.patchValue({
             value: this.translatedValue
         });
@@ -128,6 +145,9 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
      * Trigger an update of the data
      */
     private onChange(value: any): void {
+        if (this.configItem.inputType === 'datetimepicker') {
+            this.dateValue = new Date(value as number);
+        }
         if (this.debounceTimeout !== null) {
             clearTimeout(<any>this.debounceTimeout);
         }
@@ -147,15 +167,10 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
     }
 
     /**
-     * Updates the config field.
+     * Sends an update request for the config item to the server.
      * @param value The new value to set.
      */
     private update(value: any): void {
-        // TODO: Fix the Datetimepicker parser and formatter.
-        if (this.configItem.inputType === 'datetimepicker') {
-            value = Date.parse(value);
-        }
-
         this.debounceTimeout = null;
         this.repo.update({ value: value }, this.configItem).then(() => {
             this.error = null;
@@ -212,7 +227,28 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
      * @returns wheather it should be excluded or not
      */
     public isExcludedType(type: string): boolean {
-        const excluded = ['boolean', 'markupText', 'text', 'translations'];
+        const excluded = ['boolean', 'markupText', 'text', 'translations', 'datetimepicker'];
         return excluded.includes(type);
+    }
+
+    /**
+     * custom handler for datetime picker updates. Sets the form's value
+     * to the timestamp of the Date being the event's value
+     *
+     * @param event an event-like object with a Date as value property
+     */
+    public updateTime(event: { value: Date }): void {
+        this.dateValue = event.value;
+        this.onChange(event.value.valueOf());
+    }
+
+    /**
+     * Determines if a reset buton should be offered.
+     * TODO: is 'null' a valid default in some cases?
+     *
+     * @returns true if any default exists
+     */
+    public hasDefault(): boolean {
+        return this.configItem.defaultValue !== undefined && this.configItem.defaultValue !== null;
     }
 }

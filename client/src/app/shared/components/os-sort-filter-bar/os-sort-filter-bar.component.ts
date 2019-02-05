@@ -49,6 +49,12 @@ export class OsSortFilterBarComponent<V extends BaseViewModel> {
     @Input()
     public filterService: any; // TODO a FilterListService extending FilterListService
 
+    /**
+     * optional additional string to show after the item count. This string will not be translated here
+     */
+    @Input()
+    public extraItemInfo: string;
+
     @Output()
     public searchFieldChange = new EventEmitter<string>();
     /**

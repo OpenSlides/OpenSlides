@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 
 // MaterialUI modules
 import {
@@ -130,6 +131,8 @@ import { SlideContainerComponent } from './components/slide-container/slide-cont
         MatStepperModule,
         MatTabsModule,
         MatSliderModule,
+        OwlDateTimeModule,
+        OwlNativeDateTimeModule,
         DragDropModule,
         OpenSlidesTranslateModule.forChild(),
         RouterModule,
@@ -196,7 +199,9 @@ import { SlideContainerComponent } from './components/slide-container/slide-cont
         ResizedDirective,
         MetaTextBlockComponent,
         ProjectorComponent,
-        SlideContainerComponent
+        SlideContainerComponent,
+        OwlDateTimeModule,
+        OwlNativeDateTimeModule
     ],
     declarations: [
         PermsDirective,

@@ -23,6 +23,9 @@
 
 @import '~angular-tree-component/dist/angular-tree-component.css';
 
+/** date-time-picker */
+@import "~ng-pick-datetime/assets/style/picker.min.css";
+
 /** Define the classes to switch between themes */
 .openslides-theme {
     @include angular-material-theme($openslides-theme);

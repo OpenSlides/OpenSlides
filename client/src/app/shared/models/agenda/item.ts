@@ -33,7 +33,7 @@ export class Item extends BaseModel<Item> {
     public closed: boolean;
     public type: number;
     public is_hidden: boolean;
-    public duration: number;
+    public duration: number; // minutes
     public speakers: Speaker[];
     public speaker_list_closed: boolean;
     public content_object: ContentObject;

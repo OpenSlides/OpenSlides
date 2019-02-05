@@ -2,6 +2,7 @@
     <div class="filter-count" *ngIf="filterService">
         <span>{{ displayedCount }}&nbsp;</span><span translate>of</span>
         <span>&nbsp;{{ filterService.totalCount }}</span>
+        <span *ngIf="extraItemInfo">&nbsp;·&nbsp;{{ extraItemInfo }}</span>
     </div>
     <div class="current-filters" *ngIf="filterService && filterService.activeFilterCount">
         <div><span translate>Active filters</span>:&nbsp;</div>

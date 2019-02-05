@@ -15,10 +15,13 @@ span.right-with-margin {
 }
 
 .filter-count {
-    text-align: right;
+    font-style: italic;
     margin-right: 10px;
     margin-left: 10px;
     min-width: 50px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .current-filters {
