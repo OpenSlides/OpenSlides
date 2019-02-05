@@ -1,5 +1,5 @@
 import { ActivatedRoute, Router } from '@angular/router';
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { MatDialog, MatExpansionPanel, MatSnackBar, MatCheckboxChange, ErrorStateMatcher } from '@angular/material';
@@ -1170,6 +1170,19 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      */
     public async toggleFavorite(): Promise<void> {
         this.personalNoteService.setPersonalNoteStar(this.motion.motion, !this.motion.star);
+    }
+
+    /**
+     * Function to prevent automatically closing the window/tab,
+     * if the user is editing a motion.
+     *
+     * @param $event The event object from 'onUnbeforeUnload'.
+     */
+    @HostListener('window:beforeunload', ['$event'])
+    public stopClosing($event: Event): void {
+        if (this.editMotion) {
+            $event.returnValue = null;
+        }
     }
 
     /**
