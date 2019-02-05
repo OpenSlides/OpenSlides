@@ -51,4 +51,4 @@ def required_users(element: Dict[str, Any]) -> Set[int]:
     if request_user can see mediafiles. This function may return an empty
     set.
     """
-    return set(element["uploader_id"])
+    return set((element["uploader_id"],))

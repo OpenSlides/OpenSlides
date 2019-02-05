@@ -185,7 +185,7 @@ def required_users(element: Dict[str, Any]) -> Set[int]:
     """
     Returns all user ids that are displayed as chatters.
     """
-    return set(element["user_id"])
+    return set((element["user_id"],))
 
 
 def startup():
