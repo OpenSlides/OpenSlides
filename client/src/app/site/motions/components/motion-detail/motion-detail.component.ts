@@ -5,7 +5,6 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 import { MatDialog, MatExpansionPanel, MatSnackBar, MatCheckboxChange, ErrorStateMatcher } from '@angular/material';
 
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { takeWhile } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 
 import { AgendaRepositoryService } from 'app/core/repositories/agenda/agenda-repository.service';
@@ -935,14 +934,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     public updateWorkflowIdForCreateForm(): void {
         const isStatuteAmendment = !!this.contentForm.get('statute_amendment').value;
         const configKey = isStatuteAmendment ? 'motions_statute_amendments_workflow' : 'motions_workflow';
-        this.configService
-            .get<string>(configKey)
-            .pipe(takeWhile(id => !id)) // Wait for the id to be present.
-            .subscribe(id => {
-                this.contentForm.patchValue({
-                    workflow_id: parseInt(id as string, 10)
-                });
-            });
+        const workflowID = this.configService.instant<string>(configKey);
+        this.contentForm.patchValue({ workflow_id: +workflowID });
     }
 
     /**
