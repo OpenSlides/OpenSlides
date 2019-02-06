@@ -190,7 +190,7 @@ export class MotionPollComponent implements OnInit {
     }
 
     /**
-     * TODO: not implemented. Print the buttons
+     * Triggers the printing of the ballots
      */
     public printBallots(): void {
         this.pdfService.printBallots(this.poll);
