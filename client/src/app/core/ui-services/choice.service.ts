@@ -46,6 +46,7 @@ export class ChoiceService extends OpenSlidesComponent {
         const dialogRef = this.dialog.open(ChoiceDialogComponent, {
             minWidth: '250px',
             maxHeight: '90vh',
+            disableClose: true,
             data: {
                 title: title,
                 choices: choices,

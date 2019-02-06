@@ -118,7 +118,8 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
     public openEditInfo(item: ViewItem): void {
         const dialogRef = this.dialog.open(ItemInfoDialogComponent, {
             width: '400px',
-            data: item
+            data: item,
+            disableClose: true
         });
 
         dialogRef.afterClosed().subscribe(result => {

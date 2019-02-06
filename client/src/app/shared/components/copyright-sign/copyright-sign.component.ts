@@ -600,7 +600,10 @@ export class CopyrightSignComponent {
 
         if (this.clickCounter === 5) {
             this.clickCounter = 0;
-            this.dialog.open(C4DialogComponent, { width: '550px' });
+            this.dialog.open(C4DialogComponent, {
+                width: '550px',
+                disableClose: true
+            });
         } else {
             this.clickTimeout = <any>setTimeout(() => {
                 this.clickCounter = 0;

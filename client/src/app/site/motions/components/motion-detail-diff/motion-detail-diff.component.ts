@@ -319,7 +319,8 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
         this.dialogService.open(MotionChangeRecommendationComponent, {
             height: '400px',
             width: '600px',
-            data: data
+            data: data,
+            disableClose: true
         });
     }
 
