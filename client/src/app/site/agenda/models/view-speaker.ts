@@ -30,10 +30,16 @@ export class ViewSpeaker extends BaseViewModel implements Selectable {
         return this.speaker ? this.speaker.marked : null;
     }
 
+    /**
+     * @returns an ISO datetime string or null
+     */
     public get begin_time(): string {
         return this.speaker ? this.speaker.begin_time : null;
     }
 
+    /**
+     * @returns an ISO datetime string or null
+     */
     public get end_time(): string {
         return this.speaker ? this.speaker.end_time : null;
     }
