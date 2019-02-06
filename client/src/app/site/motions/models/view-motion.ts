@@ -405,6 +405,7 @@ export class ViewMotion extends BaseProjectableModel {
     public updateWorkflow(workflow: Workflow): void {
         if (this.motion && workflow.id === this.motion.workflow_id) {
             this._workflow = workflow;
+            this._state = workflow.getStateById(this.state_id);
         }
     }
 
