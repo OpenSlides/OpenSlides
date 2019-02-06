@@ -21,13 +21,16 @@
     </ng-container>
 
     <ng-container class="meta-text-block-action-row">
-        <button mat-icon-button *ngIf="!isCommentEdited(section)" (click)="editComment(section)">
+        <button mat-icon-button *ngIf="!isCommentEdited(section)" (click)="editComment(section)"
+        matTooltip="{{ 'Edit' | translate }}">
             <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button *ngIf="isCommentEdited(section)" (click)="saveComment(section)">
+        <button mat-icon-button *ngIf="isCommentEdited(section)" (click)="saveComment(section)"
+        matTooltip="{{ 'Save' | translate }}">
             <mat-icon>save</mat-icon>
         </button>
-        <button mat-icon-button *ngIf="isCommentEdited(section)" (click)="cancelEditing(section)">
+        <button mat-icon-button *ngIf="isCommentEdited(section)" (click)="cancelEditing(section)"
+        matTooltip="{{ 'Cancel edit' | translate }}">
             <mat-icon>close</mat-icon>
         </button>
     </ng-container>

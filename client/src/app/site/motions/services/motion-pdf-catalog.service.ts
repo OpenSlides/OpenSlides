@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 import { ViewMotion, LineNumberingMode, ChangeRecoMode } from '../models/view-motion';
-import { MotionPdfService } from './motion-pdf.service';
+import { MotionPdfService, InfoToExport } from './motion-pdf.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { Category } from 'app/shared/models/motions/category';
 
@@ -52,7 +52,7 @@ export class MotionPdfCatalogService {
         lnMode?: LineNumberingMode,
         crMode?: ChangeRecoMode,
         contentToExport?: string[],
-        infoToExport?: string[]
+        infoToExport?: InfoToExport[]
     ): object {
         let doc = [];
         const motionDocList = [];
