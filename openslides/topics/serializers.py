@@ -1,3 +1,4 @@
+from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.rest_api import CharField, IntegerField, ModelSerializer
 from openslides.utils.validate import validate_html
 
@@ -54,6 +55,7 @@ class TopicSerializer(ModelSerializer):
         topic.agenda_item_update_information["comment"] = agenda_comment
         topic.agenda_item_update_information["duration"] = agenda_duration
         topic.agenda_item_update_information["weight"] = agenda_weight
-        topic.save()
+        topic.save(skip_autoupdate=True)
         topic.attachments.add(*attachments)
+        inform_changed_data(topic)
         return topic
