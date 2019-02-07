@@ -3,8 +3,9 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 import { CsvExportService, CsvColumnDefinitionProperty } from 'app/core/ui-services/csv-export.service';
-import { ViewMotion } from '../models/view-motion';
 import { FileExportService } from 'app/core/ui-services/file-export.service';
+import { InfoToExport } from './motion-pdf.service';
+import { ViewMotion } from '../models/view-motion';
 
 /**
  * Exports CSVs for motions. Collect all CSV types here to have them in one place.
@@ -32,7 +33,7 @@ export class MotionCsvExportService {
      * @param contentToExport content properties to export
      * @param infoToExport meta info to export
      */
-    public exportMotionList(motions: ViewMotion[], contentToExport: string[], infoToExport: string[]): void {
+    public exportMotionList(motions: ViewMotion[], contentToExport: string[], infoToExport: InfoToExport[]): void {
         const propertyList = ['identifier', 'title'].concat(contentToExport, infoToExport);
         const exportProperties: CsvColumnDefinitionProperty<ViewMotion>[] = propertyList.map(option => {
             return { property: option } as CsvColumnDefinitionProperty<ViewMotion>;

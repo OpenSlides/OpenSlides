@@ -4,9 +4,10 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 import { BaseComponent } from '../../../../base.component';
-import { ViewMotion } from '../../models/view-motion';
-import { PersonalNoteService } from 'app/core/ui-services/personal-note.service';
+import { MotionPdfExportService } from '../../services/motion-pdf-export.service';
 import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
+import { PersonalNoteService } from 'app/core/ui-services/personal-note.service';
+import { ViewMotion } from '../../models/view-motion';
 
 /**
  * Component for the motion comments view
@@ -65,7 +66,18 @@ export class PersonalNoteComponent extends BaseComponent implements OnDestroy {
      */
     private personalNoteSubscription: Subscription;
 
-    public constructor(private personalNoteService: PersonalNoteService, formBuilder: FormBuilder) {
+    /**
+     * Constructor. Creates form
+     *
+     * @param personalNoteService
+     * @param formBuilder
+     * @param pdfService
+     */
+    public constructor(
+        private personalNoteService: PersonalNoteService,
+        formBuilder: FormBuilder,
+        private pdfService: MotionPdfExportService
+    ) {
         super();
         this.personalNoteForm = formBuilder.group({
             note: ['']
@@ -112,5 +124,12 @@ export class PersonalNoteComponent extends BaseComponent implements OnDestroy {
         if (this.personalNoteSubscription) {
             this.personalNoteSubscription.unsubscribe();
         }
+    }
+
+    /**
+     * Triggers a pdf export of the personal note
+     */
+    public printPersonalNote(): void {
+        this.pdfService.exportPersonalNote(this.personalNote, this.motion);
     }
 }

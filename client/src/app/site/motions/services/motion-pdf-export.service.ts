@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { MotionPdfService } from './motion-pdf.service';
+import { MotionPdfService, InfoToExport } from './motion-pdf.service';
 import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
 import { ViewMotion, LineNumberingMode, ChangeRecoMode } from '../models/view-motion';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { MotionPdfCatalogService } from './motion-pdf-catalog.service';
+import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
 
 /**
  * Export service to handle various kind of exporting necessities.
@@ -61,7 +62,7 @@ export class MotionPdfExportService {
         lnMode?: LineNumberingMode,
         crMode?: ChangeRecoMode,
         contentToExport?: string[],
-        infoToExport?: string[]
+        infoToExport?: InfoToExport[]
     ): void {
         const doc = this.pdfCatalogService.motionListToDocDef(motions, lnMode, crMode, contentToExport, infoToExport);
         const filename = this.translate.instant(this.configService.instant<string>('motions_export_title'));
@@ -83,5 +84,21 @@ export class MotionPdfExportService {
             title: filename
         };
         this.pdfDocumentService.downloadLandscape(doc, filename, metadata);
+    }
+
+    /**
+     * Exports the given personalNote with some short information about the
+     * motion the note refers to
+     *
+     * @param note
+     * @param motion
+     */
+    public exportPersonalNote(note: PersonalNoteContent, motion: ViewMotion): void {
+        const doc = this.motionPdfService.textToDocDef(note.note, motion, 'Personal note');
+        const filename = `${motion.identifierOrTitle} - ${this.translate.instant('Personal note')}`;
+        const metadata = {
+            title: filename
+        };
+        this.pdfDocumentService.download(doc, filename, metadata);
     }
 }

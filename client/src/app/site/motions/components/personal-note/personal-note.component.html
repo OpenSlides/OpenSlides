@@ -21,13 +21,20 @@
     </ng-container>
 
     <ng-container class="meta-text-block-action-row">
-        <button mat-icon-button *ngIf="!isEditMode" (click)="editPersonalNote()">
+        <button mat-icon-button *ngIf="!isEditMode" (click)="editPersonalNote()"
+        matTooltip="{{ 'Edit' | translate }}">
             <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button *ngIf="isEditMode" (click)="savePersonalNote()">
+        <button mat-icon-button *ngIf="!isEditMode && personalNote" (click)="printPersonalNote()"
+        matTooltip="{{ 'Export personal note only' | translate }}">
+            <mat-icon>picture_as_pdf</mat-icon>
+        </button>
+        <button mat-icon-button *ngIf="isEditMode" (click)="savePersonalNote()"
+        matTooltip="{{ 'Save' | translate }}">
             <mat-icon>save</mat-icon>
         </button>
-        <button mat-icon-button *ngIf="isEditMode" (click)="isEditMode = false">
+        <button mat-icon-button *ngIf="isEditMode" (click)="isEditMode = false"
+        matTooltip="{{ 'Cancel edit' | translate }}">
             <mat-icon>close</mat-icon>
         </button>
     </ng-container>

@@ -8,6 +8,12 @@ import { ConfigService } from 'app/core/ui-services/config.service';
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
 import { ViewUnifiedChange } from '../models/view-unified-change';
 import { HtmlToPdfService } from 'app/core/ui-services/html-to-pdf.service';
+
+/**
+ * Type declaring which strings are valid options for metainfos to be exported into a pdf
+ */
+export type InfoToExport = 'submitters' | 'state' | 'recommendation' | 'category' | 'block' | 'origin' | 'polls';
+
 /**
  * Converts a motion to pdf. Can be used from the motion detail view or executed on a list of motions
  * Provides the public method `motionToDocDef(motion: Motion)` which should be convenient to use.
@@ -55,7 +61,7 @@ export class MotionPdfService {
         lnMode?: LineNumberingMode,
         crMode?: ChangeRecoMode,
         contentToExport?: string[],
-        infoToExport?: string[]
+        infoToExport?: InfoToExport[]
     ): object {
         let motionPdfContent = [];
 
@@ -145,7 +151,7 @@ export class MotionPdfService {
      * @param motion the target motion
      * @returns doc def for the meta infos
      */
-    private createMetaInfoTable(motion: ViewMotion, crMode: ChangeRecoMode, infoToExport?: string[]): object {
+    private createMetaInfoTable(motion: ViewMotion, crMode: ChangeRecoMode, infoToExport?: InfoToExport[]): object {
         const metaTableBody = [];
 
         // submitters
@@ -495,5 +501,31 @@ export class MotionPdfService {
             },
             { text: motion.motion_block ? motion.motion_block.title : '' }
         ];
+    }
+
+    /**
+     * Creates pdfmake definitions for basic information about the motion and
+     * comments or notes
+     *
+     * @param note string optionally containing html layout
+     * @param motion the ViewMotion this note refers to
+     * @param noteTitle additional heading to be used (will be translated)
+     * @returns pdfMake definitions
+     */
+    public textToDocDef(note: string, motion: ViewMotion, noteTitle: string): object {
+        const title = this.createTitle(motion);
+        const subtitle = this.createSubtitle(motion);
+        const metaInfo = this.createMetaInfoTable(
+            motion,
+            this.configService.instant('motions_recommendation_text_mode'),
+            ['submitters', 'state', 'category']
+        );
+        const noteContent = this.htmlToPdfService.convertHtml(note);
+
+        const subHeading = {
+            text: this.translate.instant(noteTitle),
+            style: 'heading2'
+        };
+        return [title, subtitle, metaInfo, subHeading, noteContent];
     }
 }
