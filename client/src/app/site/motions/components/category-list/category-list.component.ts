@@ -110,9 +110,8 @@ export class CategoryListComponent extends BaseViewComponent implements OnInit {
      */
     public ngOnInit(): void {
         super.setTitle('Category');
-        this.repo.getViewModelListObservable().subscribe(newViewCategories => {
+        this.repo.getSortedViewModelListObservable().subscribe(newViewCategories => {
             this.categories = newViewCategories;
-            this.sortDataSource();
         });
     }
 
@@ -184,13 +183,6 @@ export class CategoryListComponent extends BaseViewComponent implements OnInit {
                 this.repo.numberMotionsInCategory(viewCategory.category, sortedMotionIds);
             }
         }
-    }
-
-    /**
-     * sorts the categories by prefix
-     */
-    private sortDataSource(): void {
-        this.categories.sort((viewCategory1, viewCategory2) => (viewCategory1 > viewCategory2 ? 1 : -1));
     }
 
     /**

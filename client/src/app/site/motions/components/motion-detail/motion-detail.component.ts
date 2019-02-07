@@ -10,6 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { BaseViewComponent } from '../../../base/base-view';
 import { Category } from 'app/shared/models/motions/category';
+import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
 import { ChangeRecoMode, LineNumberingMode, ViewMotion } from '../../models/view-motion';
 import { CreateMotion } from '../../models/create-motion';
@@ -338,6 +339,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * @param promptService ensure safe deletion
      * @param pdfExport export the motion to pdf
      * @param personalNoteService: personal comments and favorite marker
+     * @param categoryRepo
      */
     public constructor(
         title: Title,
@@ -361,14 +363,17 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         private pdfExport: MotionPdfExportService,
         private personalNoteService: PersonalNoteService,
         private linenumberingService: LinenumberingService,
-        private viewModelStore: ViewModelStoreService
+        private viewModelStore: ViewModelStoreService,
+        private categoryRepo: CategoryRepositoryService
     ) {
         super(title, translate, matSnackBar);
 
         // Initial Filling of the Subjects
         this.submitterObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewUser));
         this.supporterObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewUser));
-        this.categoryObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewCategory));
+        this.categoryObserver = new BehaviorSubject(
+            this.categoryRepo.sortViewCategoriesByConfig(this.viewModelStore.getAll(ViewCategory))
+        );
         this.workflowObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewWorkflow));
         this.blockObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewMotionBlock));
         this.mediafilesObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewMediafile));
@@ -381,7 +386,9 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
                 this.submitterObserver.next(this.viewModelStore.getAll(ViewUser));
                 this.supporterObserver.next(this.viewModelStore.getAll(ViewUser));
             } else if (newModel instanceof Category) {
-                this.categoryObserver.next(this.viewModelStore.getAll(ViewCategory));
+                this.categoryObserver.next(
+                    this.categoryRepo.sortViewCategoriesByConfig(this.viewModelStore.getAll(ViewCategory))
+                );
             } else if (newModel instanceof Workflow) {
                 this.workflowObserver.next(this.viewModelStore.getAll(ViewWorkflow));
             } else if (newModel instanceof MotionBlock) {

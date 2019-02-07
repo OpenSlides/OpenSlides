@@ -3,7 +3,6 @@ import { BehaviorSubject } from 'rxjs';
 import { BaseViewModel } from '../../site/base/base-view-model';
 import { TranslateService } from '@ngx-translate/core';
 import { StorageService } from '../core-services/storage.service';
-
 /**
  * Describes the sorting columns of an associated ListView, and their state.
  */

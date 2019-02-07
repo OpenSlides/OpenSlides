@@ -177,6 +177,34 @@ def get_config_variables():
         subgroup="General",
     )
 
+    yield ConfigVariable(
+        name="motions_category_sorting",
+        default_value="prefix",
+        input_type="choice",
+        label="Sort categories by",
+        choices=(
+            {"value": "prefix", "display_name": "Prefix"},
+            {"value": "name", "display_name": "Name"},
+        ),
+        weight=335,
+        group="Motions",
+        subgroup="General",
+    )
+
+    yield ConfigVariable(
+        name="motions_motions_sorting",
+        default_value="identifier",
+        input_type="choice",
+        label="Sort motions by",
+        choices=(
+            {"value": "callListWeight", "display_name": "Call list"},
+            {"value": "identifier", "display_name": "Identifier"},
+        ),
+        weight=335,
+        group="Motions",
+        subgroup="General",
+    )
+
     # Amendments
 
     yield ConfigVariable(
@@ -184,7 +212,7 @@ def get_config_variables():
         default_value=False,
         input_type="boolean",
         label="Activate statute amendments",
-        weight=335,
+        weight=338,
         group="Motions",
         subgroup="Amendments",
     )
@@ -194,7 +222,7 @@ def get_config_variables():
         default_value=False,
         input_type="boolean",
         label="Activate amendments",
-        weight=336,
+        weight=339,
         group="Motions",
         subgroup="Amendments",
     )
@@ -204,7 +232,7 @@ def get_config_variables():
         default_value=False,
         input_type="boolean",
         label="Show amendments together with motions",
-        weight=337,
+        weight=340,
         group="Motions",
         subgroup="Amendments",
     )
@@ -213,7 +241,7 @@ def get_config_variables():
         name="motions_amendments_prefix",
         default_value="-",
         label="Prefix for the identifier for amendments",
-        weight=340,
+        weight=341,
         group="Motions",
         subgroup="Amendments",
     )
@@ -342,25 +370,11 @@ def get_config_variables():
     )
 
     yield ConfigVariable(
-        name="motions_export_category_sorting",
-        default_value="prefix",
-        input_type="choice",
-        label="Sort categories by",
-        choices=(
-            {"value": "prefix", "display_name": "Prefix"},
-            {"value": "name", "display_name": "Name"},
-        ),
-        weight=380,
-        group="Motions",
-        subgroup="Export",
-    )
-
-    yield ConfigVariable(
         name="motions_export_sequential_number",
         default_value=True,
         input_type="boolean",
         label="Include the sequential number in PDF and DOCX",
-        weight=385,
+        weight=380,
         group="Motions",
         subgroup="Export",
     )

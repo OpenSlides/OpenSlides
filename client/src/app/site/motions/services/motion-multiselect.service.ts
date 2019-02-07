@@ -136,7 +136,7 @@ export class MotionMultiselectService {
         const clearChoice = 'No category';
         const selectedChoice = await this.choiceService.open(
             title,
-            this.categoryRepo.getViewModelList(),
+            this.categoryRepo.sortViewCategoriesByConfig(this.categoryRepo.getViewModelList()),
             false,
             null,
             clearChoice

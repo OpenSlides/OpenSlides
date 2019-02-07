@@ -1,14 +1,17 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
+import { BaseRepository } from '../base-repository';
 import { Category } from 'app/shared/models/motions/category';
-import { ViewCategory } from 'app/site/motions/models/view-category';
+import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
-import { BaseRepository } from '../base-repository';
-import { Motion } from 'app/shared/models/motions/motion';
 import { HttpService } from '../../core-services/http.service';
 import { Identifiable } from 'app/shared/models/base/identifiable';
-import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
+import { Motion } from 'app/shared/models/motions/motion';
+import { ViewCategory } from 'app/site/motions/models/view-category';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 
 /**
@@ -34,13 +37,17 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
      * @param mapperService Maps collection strings to classes
      * @param dataSend sending changed objects
      * @param httpService OpenSlides own HTTP service
+     * @param configService to get the default sorting
+     * @param translate translationService to get the currently selected locale
      */
     public constructor(
         protected DS: DataStoreService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
         private dataSend: DataSendService,
-        private httpService: HttpService
+        private httpService: HttpService,
+        private configService: ConfigService,
+        private translate: TranslateService
     ) {
         super(DS, mapperService, viewModelStoreService, Category);
     }
@@ -102,5 +109,39 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
     public async numberMotionsInCategory(category: Category, motionIds: number[]): Promise<void> {
         const collectionString = 'rest/motions/category/' + category.id + '/numbering/';
         await this.httpService.post(collectionString, { motions: motionIds });
+    }
+
+    /**
+     * @ returns the observable for categories sorted according to configuration
+     */
+    public getSortedViewModelListObservable(): Observable<ViewCategory[]> {
+        const subject = new BehaviorSubject<ViewCategory[]>([]);
+        this.getViewModelListObservable().subscribe(categories => {
+            subject.next(this.sortViewCategoriesByConfig(categories));
+        });
+        return subject.asObservable();
+    }
+
+    /**
+     * Sort viewCategories by the configured settings
+     *
+     * @param categories
+     * @returns the categories sorted by prefix or name, according to the config setting
+     */
+    public sortViewCategoriesByConfig(categories: ViewCategory[]): ViewCategory[] {
+        const sort = this.configService.instant<'prefix' | 'name'>('motions_category_sorting') || 'prefix';
+        return categories.sort((a, b) => {
+            if (a[sort] && b[sort]) {
+                return a[sort].localeCompare(b[sort], this.translate.currentLang);
+            } else if (sort === 'prefix') {
+                if (a.prefix) {
+                    return 1;
+                } else if (b.prefix) {
+                    return -1;
+                } else {
+                    return a.name.localeCompare(b.name);
+                }
+            }
+        });
     }
 }
