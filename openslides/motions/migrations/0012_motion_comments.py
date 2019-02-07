@@ -93,25 +93,9 @@ def create_comment_sections_from_config_and_move_comments_to_own_model(
 
 class Migration(migrations.Migration):
 
-    dependencies = [("users", "0006_user_email"), ("motions", "0011_motion_version")]
+    dependencies = [("users", "0006_user_email"), ("motions", "0011_motion_version_4")]
 
     operations = [
-        # Cleanup from last migration. Somehow cannot be done there.
-        migrations.AlterField(  # remove default=''
-            model_name="motion", name="text", field=models.TextField()
-        ),
-        migrations.AlterField(  # remove default=''
-            model_name="motion", name="title", field=models.CharField(max_length=255)
-        ),
-        migrations.AlterField(  # remove null=True
-            model_name="motionchangerecommendation",
-            name="motion",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE,
-                related_name="change_recommendations",
-                to="motions.Motion",
-            ),
-        ),
         # Add extension fields for former "special comments". No hack anymore..
         migrations.AddField(
             model_name="motion",
