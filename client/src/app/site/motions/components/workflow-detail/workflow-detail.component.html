@@ -1,0 +1,189 @@
+<os-head-bar [nav]="false" [mainButton]="true" (mainEvent)="onNewStateButton()">
+    <!-- Title -->
+    <div class="title-slot">
+        <h2 *ngIf="workflow">
+            {{ workflow }}
+        </h2>
+    </div>
+
+    <!-- Edit button -->
+    <div class="extra-controls-slot on-transition-fade">
+        <button mat-icon-button (click)="onEditWorkflowButton()">
+            <mat-icon>edit</mat-icon>
+        </button>
+    </div>
+</os-head-bar>
+
+<!-- Detail -->
+<div *ngIf="workflow">
+    <div class="title-line">
+        <strong>
+            <span translate>First state</span>:
+            <span>{{ workflow.firstState }}</span>
+        </strong>
+    </div>
+
+    <div class="scrollable-matrix">
+        <table mat-table class="on-transition-fade" [dataSource]="getTableDataSource()">
+            <ng-container matColumnDef="perm" sticky>
+                <mat-header-cell class="group-head-table-cell" *matHeaderCellDef translate>Permissions</mat-header-cell>
+                <mat-cell *matCellDef="let perm">
+                    <div class="permission-name">
+                        {{ perm.name | translate }}
+                    </div>
+                </mat-cell>
+            </ng-container>
+
+            <div *ngFor="let state of workflow.states; trackBy: trackElement">
+                <ng-container [matColumnDef]="getColumnDef(state)">
+                    <mat-header-cell *matHeaderCellDef (click)="onClickStateName(state)">
+                        <div class="clickable-cell">
+                            <div class="inner-table">
+                                {{ state.name | translate }}
+                            </div>
+                        </div>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let perm">
+                        <div class="inner-table" *ngIf="perm.type === 'check'">
+                            <mat-checkbox
+                                [checked]="state[perm.selector]"
+                                (change)="onToggleStatePerm(state, perm.selector, $event)"
+                            ></mat-checkbox>
+                        </div>
+                        <div
+                            class="clickable-cell"
+                            *ngIf="perm.type === 'input'"
+                            (click)="onClickInputPerm(perm, state)"
+                        >
+                            <div class="inner-table">
+                                {{ state[perm.selector] || '-' | translate }}
+                            </div>
+                        </div>
+                        <div class="inner-table" *ngIf="perm.type === 'color'">
+                            <mat-basic-chip
+                                [matMenuTriggerFor]="colorMenu"
+                                [matMenuTriggerData]="{ state: state }"
+                                [disableRipple]="true"
+                                [ngClass]="getStateCssColor(state[perm.selector])"
+                            >
+                                {{ state[perm.selector] }}
+                            </mat-basic-chip>
+                        </div>
+                        <div
+                            class="clickable-cell"
+                            *ngIf="perm.type === 'state'"
+                            [matMenuTriggerFor]="nextStatesMenu"
+                            [matMenuTriggerData]="{ state: state }"
+                        >
+                            <div class="inner-table">
+                                {{ state.next_states_id.length > 0 ? state.getNextStates(workflow.workflow) : '-' }}
+                            </div>
+                        </div>
+                        <div
+                            class="clickable-cell"
+                            *ngIf="perm.type === 'amendment'"
+                            [matMenuTriggerFor]="mergeAmendmentMenu"
+                            [matMenuTriggerData]="{ state: state }"
+                        >
+                            <div class="inner-table">
+                                {{ getMergeAmendmentLabel(state.merge_amendment_into_final) | translate }}
+                            </div>
+                        </div>
+                        <div
+                            class="clickable-cell"
+                            *ngIf="perm.type === 'accessLevel'"
+                            [matMenuTriggerFor]="accessLevelMenu"
+                            [matMenuTriggerData]="{ state: state }"
+                        >
+                            <div class="inner-table">
+                                {{ accessLevels[state.access_level].label }}
+                            </div>
+                        </div>
+                    </mat-cell>
+                </ng-container>
+            </div>
+
+            <mat-header-row *matHeaderRowDef="headerRowDef"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: headerRowDef"></mat-row>
+        </table>
+    </div>
+</div>
+
+<!-- New state dialog -->
+<ng-template #workflowDialog>
+    <h1 mat-dialog-title>
+        <span translate>{{ dialogData.title }}</span>
+    </h1>
+    <div class="os-form-card-mobile" mat-dialog-content>
+        <p translate>{{ dialogData.description }}</p>
+        <mat-form-field>
+            <input matInput osAutofocus [(ngModel)]="dialogData.value" />
+        </mat-form-field>
+    </div>
+    <div mat-dialog-actions>
+        <button
+            type="submit"
+            mat-button
+            color="primary"
+            [mat-dialog-close]="{ action: 'update', value: dialogData.value }"
+        >
+            <span translate>Save</span>
+        </button>
+        <button type="button" mat-button [mat-dialog-close]="null">
+            <span translate>Cancel</span>
+        </button>
+        <button
+            type="button"
+            mat-button
+            color="warn"
+            *ngIf="dialogData.deletable"
+            [mat-dialog-close]="{ action: 'delete' }"
+        >
+            <span translate>Delete</span>
+        </button>
+    </div>
+</ng-template>
+
+<!-- select color menu -->
+<mat-menu matMenuContent #colorMenu="matMenu">
+    <ng-template let-state="state" matMenuContent>
+        <button mat-menu-item *ngFor="let color of labelColors" (click)="onSelectColor(state, color)">
+            <mat-icon *ngIf="color === state.css_class">check</mat-icon>
+            <span>{{ color | translate }}</span>
+        </button>
+    </ng-template>
+</mat-menu>
+
+<!-- select next states menu -->
+<mat-menu matMenuContent #nextStatesMenu="matMenu">
+    <ng-template let-state="state" matMenuContent>
+        <div *ngFor="let nextState of workflow.states">
+            <button mat-menu-item *ngIf="nextState.name !== state.name" (click)="onSetNextState(nextState, state)">
+                <mat-icon *ngIf="state.next_states_id.includes(nextState.id)">check</mat-icon>
+                <span>{{ nextState.name | translate }}</span>
+            </button>
+        </div>
+    </ng-template>
+</mat-menu>
+
+<!-- Select access level menu -->
+<mat-menu matMenuContent #accessLevelMenu="matMenu">
+    <ng-template let-state="state" matMenuContent>
+        <button mat-menu-item *ngFor="let level of accessLevels" (click)="onSetAccesLevel(level.level, state)">
+            <mat-icon *ngIf="state.access_level === level.level">check</mat-icon>
+            <span translate> {{ level.label }}</span>
+        </button>
+    </ng-template>
+</mat-menu>
+
+<!-- Select merge amendment menu -->
+<mat-menu matMenuContent #mergeAmendmentMenu="matMenu">
+    <ng-template let-state="state" matMenuContent>
+        <div *ngFor="let amendment of amendmentIntoFinal">
+            <button mat-menu-item (click)="setMergeAmendment(amendment.merge, state)">
+                <mat-icon *ngIf="amendment.merge === state.merge_amendment_into_final">check</mat-icon>
+                <span translate> {{ amendment.label }}</span>
+            </button>
+        </div>
+    </ng-template>
+</mat-menu>

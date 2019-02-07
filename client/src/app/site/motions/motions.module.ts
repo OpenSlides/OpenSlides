@@ -23,6 +23,8 @@ import { MotionPollComponent } from './components/motion-poll/motion-poll.compon
 import { MotionPollDialogComponent } from './components/motion-poll/motion-poll-dialog.component';
 import { MotionExportDialogComponent } from './components/motion-export-dialog/motion-export-dialog.component';
 import { StatuteImportListComponent } from './components/statute-paragraph-list/statute-import-list/statute-import-list.component';
+import { WorkflowListComponent } from './components/workflow-list/workflow-list.component';
+import { WorkflowDetailComponent } from './components/workflow-detail/workflow-detail.component';
 
 @NgModule({
     imports: [CommonModule, MotionsRoutingModule, SharedModule],
@@ -46,7 +48,9 @@ import { StatuteImportListComponent } from './components/statute-paragraph-list/
         MotionPollComponent,
         MotionPollDialogComponent,
         MotionExportDialogComponent,
-        StatuteImportListComponent
+        StatuteImportListComponent,
+        WorkflowListComponent,
+        WorkflowDetailComponent
     ],
     entryComponents: [
         MotionChangeRecommendationComponent,

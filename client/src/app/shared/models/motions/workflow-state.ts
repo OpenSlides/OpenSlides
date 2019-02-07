@@ -21,7 +21,7 @@ export class WorkflowState extends Deserializer {
     public name: string;
     public recommendation_label: string;
     public css_class: string;
-    public required_permission_to_see: string;
+    public access_level: number;
     public allow_support: boolean;
     public allow_create_poll: boolean;
     public allow_submitter_edit: boolean;

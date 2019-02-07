@@ -1,6 +1,7 @@
 import { Workflow } from 'app/shared/models/motions/workflow';
 import { WorkflowState } from 'app/shared/models/motions/workflow-state';
 import { BaseViewModel } from '../../base/base-view-model';
+import { Deserializable } from 'app/shared/models/base/deserializable';
 
 /**
  * class for the ViewWorkflow. Currently only a basic stub
@@ -33,8 +34,16 @@ export class ViewWorkflow extends BaseViewModel {
         return this.workflow ? this.workflow.states : null;
     }
 
-    public get first_state(): number {
-        return this.workflow ? this.workflow.first_state : null;
+    public get first_state_id(): number {
+        return this.workflow ? this.workflow.first_state_id : null;
+    }
+
+    public get firstState(): WorkflowState {
+        return this.workflow ? this.workflow.firstState : null;
+    }
+
+    public getStateById(id: number): WorkflowState {
+        return this.workflow ? this.workflow.getStateById(id) : null;
     }
 
     public getTitle(): string {
@@ -50,9 +59,12 @@ export class ViewWorkflow extends BaseViewModel {
 
     /**
      * Updates the local objects if required
+     *
      * @param update
      */
-    public updateValues(update: Workflow): void {
-        this._workflow = update;
+    public updateValues(update: Deserializable): void {
+        if (update instanceof Workflow) {
+            this._workflow = update;
+        }
     }
 }
