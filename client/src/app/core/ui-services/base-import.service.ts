@@ -288,7 +288,7 @@ export abstract class BaseImportService<V extends BaseViewModel> {
     public onSelectFile(event: any): void {
         // TODO type
         if (event.target.files && event.target.files.length === 1) {
-            if (event.target.files[0].type === 'text/csv') {
+            if (event.target.files[0].type.startsWith('text/csv')) {
                 this._rawFile = event.target.files[0];
                 this.readFile(event.target.files[0]);
             } else {

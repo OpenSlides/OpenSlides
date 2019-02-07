@@ -139,6 +139,20 @@ def get_config_variables():
     )
 
     yield ConfigVariable(
+        name="general_csv_encoding",
+        default_value="utf-8",
+        input_type="choice",
+        label="Default encoding for all csv exports",
+        choices=(
+            {"value": "utf-8", "display_name": "UTF-8"},
+            {"value": "iso-8859-15", "display_name": "ISO-8859-15"},
+        ),
+        weight=143,
+        group="General",
+        subgroup="Export",
+    )
+
+    yield ConfigVariable(
         name="general_export_pdf_pagenumber_alignment",
         default_value="center",
         input_type="choice",

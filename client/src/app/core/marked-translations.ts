@@ -40,6 +40,7 @@ _('Allow access for anonymous guest users');
 _('Show this text on the login page');
 _('Export');
 _('Separator used for all csv exports and examples');
+_('Default encoding for all csv exports');
 _('Page number alignment in PDF');
 _('Left');
 _('Center');

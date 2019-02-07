@@ -35,4 +35,18 @@ export class FileExportService {
         const pattern = new RegExp(/^[^\\\/\?%\*:\|\"\<\>]*[^\.]+$/i);
         return pattern.test(filename);
     }
+
+    /**
+     * get an iso-8859-15 - compatible blob part
+     *
+     * @param data
+     * @returns a Blob part
+     */
+    public convertTo8859_15(data: string): BlobPart {
+        const array = new Uint8Array(new ArrayBuffer(data.length));
+        for (let i = 0; i < data.length; i++) {
+            array[i] = data.charCodeAt(i);
+        }
+        return array;
+    }
 }
