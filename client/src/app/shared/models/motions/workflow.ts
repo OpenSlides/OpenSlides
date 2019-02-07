@@ -9,7 +9,11 @@ export class Workflow extends BaseModel<Workflow> {
     public id: number;
     public name: string;
     public states: WorkflowState[];
-    public first_state: number;
+    public first_state_id: number;
+
+    public get firstState(): WorkflowState {
+        return this.getStateById(this.first_state_id);
+    }
 
     public constructor(input?: any) {
         super('motions/workflow', 'Workflow', input);
@@ -35,13 +39,7 @@ export class Workflow extends BaseModel<Workflow> {
     }
 
     public getStateById(id: number): WorkflowState {
-        let targetState;
-        this.states.forEach(state => {
-            if (id === state.id) {
-                targetState = state;
-            }
-        });
-        return targetState as WorkflowState;
+        return this.states.find(state => state.id === id);
     }
 
     public deserialize(input: any): void {
