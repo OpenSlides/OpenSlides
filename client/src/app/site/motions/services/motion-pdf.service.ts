@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { ViewMotion, LineNumberingMode, ChangeRecoMode } from '../models/view-motion';
-import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
-import { ConfigService } from 'app/core/ui-services/config.service';
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
-import { ViewUnifiedChange } from '../models/view-unified-change';
+import { ConfigService } from 'app/core/ui-services/config.service';
 import { HtmlToPdfService } from 'app/core/ui-services/html-to-pdf.service';
+import { MotionPollService, CalculablePollKey } from './motion-poll.service';
+import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
+import { ViewMotion, LineNumberingMode, ChangeRecoMode } from '../models/view-motion';
+import { ViewUnifiedChange } from '../models/view-unified-change';
 
 /**
  * Type declaring which strings are valid options for metainfos to be exported into a pdf
@@ -37,13 +38,15 @@ export class MotionPdfService {
      * @param changeRecoRepo to get the change recommendations
      * @param configService Read config variables
      * @param htmlToPdfService To convert HTML text into pdfmake doc def
+     * @param pollService MotionPollService for rendering the polls
      */
     public constructor(
         private translate: TranslateService,
         private motionRepo: MotionRepositoryService,
         private changeRecoRepo: ChangeRecommendationRepositoryService,
         private configService: ConfigService,
-        private htmlToPdfService: HtmlToPdfService
+        private htmlToPdfService: HtmlToPdfService,
+        private pollService: MotionPollService
     ) {}
 
     /**
@@ -248,7 +251,62 @@ export class MotionPdfService {
             ]);
         }
 
-        // TODO: Voting result, depends on polls
+        if (motion.motion.polls.length && (!infoToExport || infoToExport.includes('polls'))) {
+            const column1 = [];
+            const column2 = [];
+            const column3 = [];
+            motion.motion.polls.map((poll, index) => {
+                if (poll.has_votes) {
+                    if (motion.motion.polls.length > 1) {
+                        column1.push(index + 1 + '. ' + this.translate.instant('Vote'));
+                        column2.push('');
+                        column3.push('');
+                    }
+                    const values: CalculablePollKey[] = ['yes', 'no', 'abstain'];
+                    if (poll.votesvalid) {
+                        values.push('votesvalid');
+                    }
+                    if (poll.votesinvalid) {
+                        values.push('votesinvalid');
+                    }
+                    if (poll.votescast) {
+                        values.push('votescast');
+                    }
+                    values.map(value => {
+                        column1.push(`${this.translate.instant(this.pollService.getLabel(value))}:`);
+                        column2.push(`${this.translate.instant(this.pollService.getSpecialLabel(poll[value]))}`);
+                        this.pollService.isAbstractValue(poll, value)
+                            ? column3.push('')
+                            : column3.push(`(${this.pollService.calculatePercentage(poll, value)} %)`);
+                    });
+                }
+            });
+            metaTableBody.push([
+                {
+                    text: `${this.translate.instant('Voting result')}:`,
+                    style: 'boldText'
+                },
+                {
+                    columns: [
+                        {
+                            text: column1.join('\n'),
+                            width: 'auto'
+                        },
+                        {
+                            text: column2.join('\n'),
+                            width: 'auto',
+                            alignment: 'right'
+                        },
+                        {
+                            text: column3.join('\n'),
+                            width: 'auto',
+                            alignment: 'right'
+                        }
+                    ],
+                    columnGap: 7
+                }
+            ]);
+        }
 
         // summary of change recommendations (for motion diff version only)
         const changeRecos = this.changeRecoRepo.getChangeRecoOfMotion(motion.id);

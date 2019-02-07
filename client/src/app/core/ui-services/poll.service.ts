@@ -31,7 +31,7 @@ export class PollService {
      * An array of value - label pairs for special value signifiers.
      * TODO: Should be given by the server, and editable. For now: hard coded
      */
-    private _specialPollVotes: [number, string][] = [[-1, 'Majority'], [-2, 'Undocumented']];
+    private _specialPollVotes: [number, string][] = [[-1, 'majority'], [-2, 'undocumented']];
 
     /**
      * getter for the special votes
@@ -47,14 +47,6 @@ export class PollService {
      * empty constructor
      */
     public constructor() {}
-
-    /**
-     * TODO not implemented yet. Should print the ballots for a motion poll,
-     * depending on the motion and on the configuration
-     */
-    public printBallots(): void {
-        console.log('TODO: Ballot printing Not yet implemented');
-    }
 
     /**
      * Gets an icon for a Poll Key
