@@ -1130,7 +1130,9 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * Click handler for the pdf button
      */
     public onDownloadPdf(): void {
-        this.pdfExport.exportSingleMotion(this.motion, this.lnMode, this.crMode);
+        const exportCr = this.motion.isStatuteAmendment() ? ChangeRecoMode.Diff : this.crMode;
+        // TODO: apparently statue amendments never have line numbers and are always in crMode
+        this.pdfExport.exportSingleMotion(this.motion, LineNumberingMode.None, exportCr);
     }
 
     /**

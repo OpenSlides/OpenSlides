@@ -7,6 +7,7 @@ import { ConfigService } from 'app/core/ui-services/config.service';
 import { HtmlToPdfService } from 'app/core/ui-services/html-to-pdf.service';
 import { MotionPollService, CalculablePollKey } from './motion-poll.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
+import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions/statute-paragraph-repository.service';
 import { ViewMotion, LineNumberingMode, ChangeRecoMode } from '../models/view-motion';
 import { ViewUnifiedChange } from '../models/view-unified-change';
 
@@ -35,6 +36,7 @@ export class MotionPdfService {
      *
      * @param translate handle translations
      * @param motionRepo get parent motions
+     * @param statureRepo To get formated stature paragraphs
      * @param changeRecoRepo to get the change recommendations
      * @param configService Read config variables
      * @param htmlToPdfService To convert HTML text into pdfmake doc def
@@ -43,6 +45,7 @@ export class MotionPdfService {
     public constructor(
         private translate: TranslateService,
         private motionRepo: MotionRepositoryService,
+        private statureRepo: StatuteParagraphRepositoryService,
         private changeRecoRepo: ChangeRecommendationRepositoryService,
         private configService: ConfigService,
         private htmlToPdfService: HtmlToPdfService,
@@ -412,8 +415,15 @@ export class MotionPdfService {
      */
     private createText(motion: ViewMotion, lnMode: LineNumberingMode, crMode: ChangeRecoMode): object {
         let motionText: string;
+        // get the line length from the config
+        const lineLength = this.configService.instant<number>('motions_line_length');
+
         if (motion.isParagraphBasedAmendment()) {
             // TODO: special docs for special amendment
+        } else if (motion.isStatuteAmendment()) {
+            // statute amendments
+            const statutes = this.statureRepo.getViewModelList();
+            motionText = this.motionRepo.formatStatuteAmendment(statutes, motion, lineLength);
         } else {
             // lead motion or normal amendments
             // TODO: Consider tile change recommendation
@@ -421,15 +431,10 @@ export class MotionPdfService {
                 [],
                 this.changeRecoRepo.getChangeRecoOfMotion(motion.id)
             );
-
             // changes need to be sorted, by "line from".
             // otherwise, formatMotion will make unexpected results by messing up the
             // order of changes applied to the motion
             changes.sort((a, b) => a.getLineFrom() - b.getLineFrom());
-
-            // get the line length from the config
-            const lineLength = this.configService.instant<number>('motions_line_length');
-
             motionText = this.motionRepo.formatMotion(motion.id, crMode, changes, lineLength);
         }
 

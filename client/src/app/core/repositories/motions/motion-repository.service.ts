@@ -408,9 +408,11 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         lineLength: number
     ): string {
         const origParagraph = paragraphs.find(paragraph => paragraph.id === amendment.statute_paragraph_id);
-        let diffHtml = this.diff.diff(origParagraph.text, amendment.text);
-        diffHtml = this.lineNumbering.insertLineBreaksWithoutNumbers(diffHtml, lineLength, true);
-        return diffHtml;
+        if (origParagraph) {
+            let diffHtml = this.diff.diff(origParagraph.text, amendment.text);
+            diffHtml = this.lineNumbering.insertLineBreaksWithoutNumbers(diffHtml, lineLength, true);
+            return diffHtml;
+        }
     }
 
     /**
