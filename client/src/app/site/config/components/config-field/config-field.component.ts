@@ -1,15 +1,15 @@
 import { Component, OnInit, Input, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
-import { distinctUntilChanged } from 'rxjs/operators';
 
+import { distinctUntilChanged } from 'rxjs/operators';
 import { DateTimeAdapter } from 'ng-pick-datetime';
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseComponent } from '../../../../base.component';
-import { ConfigRepositoryService } from '../../services/config-repository.service';
+import { BaseComponent } from 'app/base.component';
 import { ParentErrorStateMatcher } from 'app/shared/parent-error-state-matcher';
 import { ViewConfig } from '../../models/view-config';
+import { ConfigRepositoryService } from 'app/core/repositories/config/config-repository.service';
 
 /**
  * List view for the categories.

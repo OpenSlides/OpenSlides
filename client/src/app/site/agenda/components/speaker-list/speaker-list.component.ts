@@ -1,25 +1,25 @@
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, Subscription } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { MatSnackBar, MatSelectChange } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
+import { BehaviorSubject, Subscription } from 'rxjs';
 
-import { AgendaRepositoryService } from 'app/core/repositories/agenda/agenda-repository.service';
+import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { CurrentListOfSpeakersSlideService } from 'app/site/projector/services/current-list-of-of-speakers-slide.service';
-import { DataStoreService } from 'app/core/core-services/data-store.service';
-import { DurationService } from 'app/core/ui-services/duration.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { SpeakerState } from 'app/shared/models/agenda/speaker';
 import { Title } from '@angular/platform-browser';
-import { User } from 'app/shared/models/users/user';
 import { ViewItem } from '../../models/view-item';
 import { ViewSpeaker } from '../../models/view-speaker';
 import { ViewProjector } from 'app/site/projector/models/view-projector';
+import { ViewUser } from 'app/site/users/models/view-user';
+import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
+import { DurationService } from 'app/core/ui-services/duration.service';
 
 /**
  * The list of speakers for agenda items.
@@ -68,7 +68,7 @@ export class SpeakerListComponent extends BaseViewComponent implements OnInit {
     /**
      * Hold the users
      */
-    public users: BehaviorSubject<User[]>;
+    public users: BehaviorSubject<ViewUser[]>;
 
     /**
      * Required for the user search selector
@@ -113,12 +113,12 @@ export class SpeakerListComponent extends BaseViewComponent implements OnInit {
         snackBar: MatSnackBar,
         projectorRepo: ProjectorRepositoryService,
         private route: ActivatedRoute,
-        private DS: DataStoreService,
-        private itemRepo: AgendaRepositoryService,
+        private itemRepo: ItemRepositoryService,
         private op: OperatorService,
         private promptService: PromptService,
         private currentListOfSpeakersService: CurrentListOfSpeakersSlideService,
-        private durationService: DurationService
+        private durationService: DurationService,
+        private userRepository: UserRepositoryService
     ) {
         super(title, translate, snackBar);
         this.isCurrentListOfSpeakers();
@@ -143,12 +143,8 @@ export class SpeakerListComponent extends BaseViewComponent implements OnInit {
      */
     public ngOnInit(): void {
         // load and observe users
-        this.users = new BehaviorSubject(this.DS.getAll(User));
-        this.DS.changeObservable.subscribe(model => {
-            if (model instanceof User) {
-                this.users.next(this.DS.getAll(User));
-            }
-        });
+        this.users = new BehaviorSubject(this.userRepository.getViewModelList());
+        this.userRepository.getViewModelListObservable().subscribe(users => this.users.next(users));
 
         // detect changes in the form
         this.addSpeakerForm.valueChanges.subscribe(formResult => {
@@ -190,10 +186,10 @@ export class SpeakerListComponent extends BaseViewComponent implements OnInit {
         }
 
         this.projectorSubscription = this.currentListOfSpeakersService
-            .getAgendaItemIdObservable(projector)
-            .subscribe(agendaId => {
-                if (agendaId) {
-                    this.setSpeakerList(agendaId);
+            .getAgendaItemObservable(projector)
+            .subscribe(item => {
+                if (item) {
+                    this.setSpeakerList(item.id);
                 }
             });
     }

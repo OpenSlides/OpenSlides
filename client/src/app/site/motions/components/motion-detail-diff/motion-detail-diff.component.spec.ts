@@ -3,10 +3,11 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { E2EImportsModule } from '../../../../../e2e-imports.module';
 import { Component } from '@angular/core';
 import { ViewMotion } from '../../models/view-motion';
-import { ViewChangeReco } from '../../models/view-change-reco';
 import { MotionDetailDiffComponent } from './motion-detail-diff.component';
 import { MotionDetailOriginalChangeRecommendationsComponent } from '../motion-detail-original-change-recommendations/motion-detail-original-change-recommendations.component';
 import { ViewUnifiedChange } from '../../models/view-unified-change';
+import { Motion } from 'app/shared/models/motions/motion';
+import { ViewMotionChangeRecommendation } from '../../models/view-change-recommendation';
 
 @Component({
     template: `
@@ -22,11 +23,11 @@ import { ViewUnifiedChange } from '../../models/view-unified-change';
 })
 class TestHostComponent {
     public motion: ViewMotion;
-    public changes: ViewChangeReco[];
+    public changes: ViewMotionChangeRecommendation[];
     public scrollToChange: ViewUnifiedChange = null;
 
     public constructor() {
-        this.motion = new ViewMotion();
+        this.motion = new ViewMotion(new Motion());
         this.changes = [];
     }
 

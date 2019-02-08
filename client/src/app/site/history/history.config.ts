@@ -1,6 +1,7 @@
 import { AppConfig } from '../../core/app-config';
 import { History } from 'app/shared/models/core/history';
 import { HistoryRepositoryService } from 'app/core/repositories/history/history-repository.service';
+import { ViewHistory } from './models/view-history';
 
 /**
  * Config object for history.
@@ -8,7 +9,14 @@ import { HistoryRepositoryService } from 'app/core/repositories/history/history-
  */
 export const HistoryAppConfig: AppConfig = {
     name: 'history',
-    models: [{ collectionString: 'core/history', model: History, repository: HistoryRepositoryService }],
+    models: [
+        {
+            collectionString: 'core/history',
+            model: History,
+            viewModel: ViewHistory,
+            repository: HistoryRepositoryService
+        }
+    ],
     mainMenuEntries: [
         {
             route: '/history',

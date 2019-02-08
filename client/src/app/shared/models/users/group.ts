@@ -5,12 +5,13 @@ import { BaseModel } from '../base/base-model';
  * @ignore
  */
 export class Group extends BaseModel<Group> {
+    public static COLLECTIONSTRING = 'users/group';
     public id: number;
     public name: string;
     public permissions: string[];
 
     public constructor(input?: any) {
-        super('users/group', 'Group', input);
+        super(Group.COLLECTIONSTRING, input);
         if (!input) {
             // permissions are required for new groups
             this.permissions = [];

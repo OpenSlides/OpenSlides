@@ -7,13 +7,13 @@ import {
 import { E2EImportsModule } from '../../../../../e2e-imports.module';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { ModificationType } from 'app/core/ui-services/diff.service';
-import { ViewChangeReco } from '../../models/view-change-reco';
+import { ViewMotionChangeRecommendation } from '../../models/view-change-recommendation';
 
 describe('MotionChangeRecommendationComponent', () => {
     let component: MotionChangeRecommendationComponent;
     let fixture: ComponentFixture<MotionChangeRecommendationComponent>;
 
-    const changeReco = <ViewChangeReco>{
+    const changeReco = <ViewMotionChangeRecommendation>{
         line_from: 1,
         line_to: 2,
         type: ModificationType.TYPE_REPLACEMENT,

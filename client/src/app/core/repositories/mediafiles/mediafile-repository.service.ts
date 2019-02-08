@@ -10,6 +10,8 @@ import { CollectionStringMapperService } from '../../core-services/collectionStr
 import { DataSendService } from 'app/core/core-services/data-send.service';
 import { HttpService } from 'app/core/core-services/http.service';
 import { HttpHeaders } from '@angular/common/http';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { ViewUser } from 'app/site/users/models/view-user';
 
 /**
  * Repository for MediaFiles
@@ -28,10 +30,11 @@ export class MediafileRepositoryService extends BaseRepository<ViewMediafile, Me
     public constructor(
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
+        viewModelStoreService: ViewModelStoreService,
         private dataSend: DataSendService,
         private httpService: HttpService
     ) {
-        super(DS, mapperService, Mediafile, [User]);
+        super(DS, mapperService, viewModelStoreService, Mediafile, [User]);
     }
 
     /**
@@ -88,7 +91,7 @@ export class MediafileRepositoryService extends BaseRepository<ViewMediafile, Me
      * @returns a new mediafile ViewModel
      */
     public createViewModel(file: Mediafile): ViewMediafile {
-        const uploader = this.DS.get(User, file.uploader_id);
+        const uploader = this.viewModelStoreService.get(ViewUser, file.uploader_id);
         return new ViewMediafile(file, uploader);
     }
 }

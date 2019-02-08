@@ -68,7 +68,7 @@ export class TimeTravelService {
             [collectionString, id] = historyObject.element_id.split(':');
 
             if (historyObject.full_data) {
-                const targetClass = this.modelMapperService.getModelConstructor(collectionString);
+                const targetClass = this.modelMapperService.getModelConstructorFromCollectionString(collectionString);
                 await this.DS.add([new targetClass(historyObject.full_data)]);
             } else {
                 await this.DS.remove(collectionString, [+id]);

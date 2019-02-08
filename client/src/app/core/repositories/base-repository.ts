@@ -7,8 +7,11 @@ import { CollectionStringMapperService } from '../core-services/collectionString
 import { DataStoreService } from '../core-services/data-store.service';
 import { Identifiable } from '../../shared/models/base/identifiable';
 import { auditTime } from 'rxjs/operators';
+import { ViewModelStoreService } from '../core-services/view-model-store.service';
+import { OnAfterAppsLoaded } from '../onAfterAppsLoaded';
 
-export abstract class BaseRepository<V extends BaseViewModel, M extends BaseModel> extends OpenSlidesComponent {
+export abstract class BaseRepository<V extends BaseViewModel, M extends BaseModel> extends OpenSlidesComponent
+    implements OnAfterAppsLoaded {
     /**
      * Stores all the viewModel in an object
      */
@@ -29,26 +32,33 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
      */
     protected readonly generalViewModelSubject: Subject<V> = new Subject<V>();
 
+    private _name: string;
+
+    public get name(): string {
+        return this._name;
+    }
+
     /**
      * Construction routine for the base repository
      *
      * @param DS: The DataStore
-     * @param collectionStringModelMapperService Mapping strings to their corresponding classes
+     * @param collectionStringMapperService Mapping strings to their corresponding classes
      * @param baseModelCtor The model constructor of which this repository is about.
      * @param depsModelCtors A list of constructors that are used in the view model.
      * If one of those changes, the view models will be updated.
      */
     public constructor(
         protected DS: DataStoreService,
-        protected collectionStringModelMapperService: CollectionStringMapperService,
+        protected collectionStringMapperService: CollectionStringMapperService,
+        protected viewModelStoreService: ViewModelStoreService,
         protected baseModelCtor: ModelConstructor<M>,
         protected depsModelCtors?: ModelConstructor<BaseModel>[]
     ) {
         super();
-        this.setup();
+        this._name = baseModelCtor.name;
     }
 
-    protected setup(): void {
+    public onAfterAppsLoaded(): void {
         // Populate the local viewModelStore with ViewModel Objects.
         this.DS.getAll(this.baseModelCtor).forEach((model: M) => {
             this.viewModelStore[model.id] = this.createViewModel(model);
@@ -60,28 +70,40 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
         });
 
         // Could be raise in error if the root injector is not known
-        this.DS.changeObservable.subscribe(model => {
+        this.DS.primaryModelChangeSubject.subscribe(model => {
             if (model instanceof this.baseModelCtor) {
                 // Add new and updated motions to the viewModelStore
                 this.viewModelStore[model.id] = this.createViewModel(model as M);
                 this.updateAllObservables(model.id);
-            } else if (this.depsModelCtors) {
+            }
+        });
+
+        if (this.depsModelCtors) {
+            this.DS.secondaryModelChangeSubject.subscribe(model => {
                 const dependencyChanged: boolean = this.depsModelCtors.some(ctor => {
                     return model instanceof ctor;
                 });
                 if (dependencyChanged) {
+                    const viewModel = this.viewModelStoreService.get(model.collectionString, model.id);
+
                     // if an domain object we need was added or changed, update viewModelStore
-                    this.getViewModelList().forEach(viewModel => {
-                        viewModel.updateValues(model);
+                    this.getViewModelList().forEach(ownViewModel => {
+                        ownViewModel.updateDependencies(viewModel);
                     });
                     this.updateAllObservables(model.id);
                 }
-            }
-        });
+            });
+        }
 
         // Watch the Observables for deleting
+        // TODO: What happens, if some related object was deleted?
+        // My quess: This must trigger an autoupdate also for this model, because some IDs changed, so the
+        // affected models will be newly created by the primaryModelChangeSubject.
         this.DS.deletedObservable.subscribe(model => {
-            if (model.collection === this.collectionStringModelMapperService.getCollectionString(this.baseModelCtor)) {
+            if (
+                model.collection ===
+                this.collectionStringMapperService.getCollectionStringFromModelConstructor(this.baseModelCtor)
+            ) {
                 delete this.viewModelStore[model.id];
                 this.updateAllObservables(model.id);
             }
@@ -167,8 +189,8 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
     protected updateViewModelObservable(id: number): void {
         if (this.viewModelSubjects[id]) {
             this.viewModelSubjects[id].next(this.viewModelStore[id]);
+            this.generalViewModelSubject.next(this.viewModelStore[id]);
         }
-        this.generalViewModelSubject.next(this.viewModelStore[id]);
     }
 
     /**

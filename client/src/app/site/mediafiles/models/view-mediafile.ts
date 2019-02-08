@@ -1,56 +1,55 @@
 import { BaseViewModel } from '../../base/base-view-model';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
-import { User } from 'app/shared/models/users/user';
+import { Searchable } from 'app/site/base/searchable';
+import { SearchRepresentation } from 'app/core/ui-services/search.service';
+import { ViewUser } from 'app/site/users/models/view-user';
 
-export class ViewMediafile extends BaseViewModel {
+export class ViewMediafile extends BaseViewModel implements Searchable {
     private _mediafile: Mediafile;
-    private _uploader: User;
-
-    public get id(): number {
-        return this._mediafile ? this._mediafile.id : null;
-    }
+    private _uploader: ViewUser;
 
     public get mediafile(): Mediafile {
         return this._mediafile;
     }
 
-    public get uploader(): User {
+    public get uploader(): ViewUser {
         return this._uploader;
     }
 
+    public get id(): number {
+        return this.mediafile.id;
+    }
+
+    public get uploader_id(): number {
+        return this.mediafile.uploader_id;
+    }
+
     public get title(): string {
-        return this.mediafile ? this.mediafile.title : null;
+        return this.mediafile.title;
     }
 
     public get size(): string {
-        return this.mediafile ? this.mediafile.filesize : null;
+        return this.mediafile.filesize;
     }
 
     public get type(): string {
-        return this.mediafile && this.mediafile.mediafile ? this.mediafile.mediafile.type : null;
+        return this.mediafile.mediafile.type;
     }
 
     public get prefix(): string {
-        return this.mediafile ? this.mediafile.media_url_prefix : null;
+        return this.mediafile.media_url_prefix;
     }
 
     public get hidden(): boolean {
-        return this.mediafile ? this.mediafile.hidden : null;
+        return this.mediafile.hidden;
     }
 
     public get fileName(): string {
-        return this.mediafile && this.mediafile.mediafile ? this.mediafile.mediafile.name : null;
+        return this.mediafile.mediafile.name;
     }
 
     public get downloadUrl(): string {
-        return this.mediafile ? this.mediafile.getDownloadUrl() : null;
-    }
-
-    /**
-     * @returns the file type of the associated media file.
-     */
-    public get fileType(): string {
-        return this.mediafile ? this.mediafile.mediafile.type : null;
+        return this.mediafile.downloadUrl;
     }
 
     /**
@@ -59,17 +58,25 @@ export class ViewMediafile extends BaseViewModel {
      * TODO Which is the expected behavior for 'no file'?
      */
     public get is_hidden(): boolean {
-        return this.mediafile ? this.mediafile.hidden : true;
+        return this.mediafile.hidden;
     }
 
-    public constructor(mediafile?: Mediafile, uploader?: User) {
-        super();
+    public constructor(mediafile: Mediafile, uploader?: ViewUser) {
+        super('Mediafile');
         this._mediafile = mediafile;
         this._uploader = uploader;
     }
 
     public getTitle(): string {
         return this.title;
+    }
+
+    public formatForSearch(): SearchRepresentation {
+        return [this.title];
+    }
+
+    public getDetailStateURL(): string {
+        throw new Error('TODO');
     }
 
     /**
@@ -129,10 +136,8 @@ export class ViewMediafile extends BaseViewModel {
         return this.isPdf() || this.isImage() || this.isVideo();
     }
 
-    public updateValues(update: Mediafile): void {
-        if (update instanceof Mediafile && this.mediafile.id === update.id) {
-            this._mediafile = update;
-        } else if (update instanceof User && this.uploader.id === update.id) {
+    public updateDependencies(update: BaseViewModel): void {
+        if (update instanceof ViewUser && this.uploader_id === update.id) {
             this._uploader = update;
         }
     }

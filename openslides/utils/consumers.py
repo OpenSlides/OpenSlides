@@ -119,9 +119,7 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
         all_projector_data = event["data"]
         projector_data: Dict[int, Dict[str, Any]] = {}
         for projector_id in self.listen_projector_ids:
-            data = all_projector_data.get(
-                projector_id, {"error": f"No data for projector {projector_id}"}
-            )
+            data = all_projector_data.get(projector_id, [])
             new_hash = hash(str(data))
             if new_hash != self.projector_hash.get(projector_id):
                 projector_data[projector_id] = data

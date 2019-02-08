@@ -8,7 +8,7 @@ import { LineNumberingMode, ViewMotion } from '../../models/view-motion';
 import { ViewUnifiedChange, ViewUnifiedChangeType } from '../../models/view-unified-change';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { LineRange, ModificationType } from 'app/core/ui-services/diff.service';
-import { ViewChangeReco } from '../../models/view-change-reco';
+import { ViewMotionChangeRecommendation } from '../../models/view-change-recommendation';
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
 import {
     MotionChangeRecommendationComponent,
@@ -240,7 +240,7 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
      *
      * @param change
      */
-    public getRecommendationTypeName(change: ViewChangeReco): string {
+    public getRecommendationTypeName(change: ViewMotionChangeRecommendation): string {
         switch (change.type) {
             case ModificationType.TYPE_REPLACEMENT:
                 return 'Replacement';
@@ -257,10 +257,10 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
      * Sets a change recommendation to accepted or rejected.
      * The template has to make sure only to pass change recommendations to this method.
      *
-     * @param {ViewChangeReco} change
+     * @param {ViewMotionChangeRecommendation} change
      * @param {string} value
      */
-    public async setAcceptanceValue(change: ViewChangeReco, value: string): Promise<void> {
+    public async setAcceptanceValue(change: ViewMotionChangeRecommendation, value: string): Promise<void> {
         try {
             if (value === 'accepted') {
                 await this.recoRepo.setAccepted(change);
@@ -276,10 +276,10 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
     /**
      * Sets if a change recommendation is internal or not
      *
-     * @param {ViewChangeReco} change
+     * @param {ViewMotionChangeRecommendation} change
      * @param {boolean} internal
      */
-    public setInternal(change: ViewChangeReco, internal: boolean): void {
+    public setInternal(change: ViewMotionChangeRecommendation, internal: boolean): void {
         this.recoRepo.setInternal(change, internal).then(null, this.raiseError);
     }
 
@@ -287,10 +287,10 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
      * Deletes a change recommendation.
      * The template has to make sure only to pass change recommendations to this method.
      *
-     * @param {ViewChangeReco} reco
+     * @param {ViewMotionChangeRecommendation} reco
      * @param {MouseEvent} $event
      */
-    public deleteChangeRecommendation(reco: ViewChangeReco, $event: MouseEvent): void {
+    public deleteChangeRecommendation(reco: ViewMotionChangeRecommendation, $event: MouseEvent): void {
         $event.stopPropagation();
         $event.preventDefault();
         this.recoRepo.delete(reco).then(null, this.raiseError);
@@ -300,10 +300,10 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
      * Edits a change recommendation.
      * The template has to make sure only to pass change recommendations to this method.
      *
-     * @param {ViewChangeReco} reco
+     * @param {ViewMotionChangeRecommendation} reco
      * @param {MouseEvent} $event
      */
-    public editChangeRecommendation(reco: ViewChangeReco, $event: MouseEvent): void {
+    public editChangeRecommendation(reco: ViewMotionChangeRecommendation, $event: MouseEvent): void {
         $event.stopPropagation();
         $event.preventDefault();
 

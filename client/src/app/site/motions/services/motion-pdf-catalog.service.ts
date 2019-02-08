@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ViewMotion, LineNumberingMode, ChangeRecoMode } from '../models/view-motion';
 import { MotionPdfService, InfoToExport } from './motion-pdf.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { Category } from 'app/shared/models/motions/category';
+import { ViewCategory } from '../models/view-category';
 
 /**
  * Service to export a list of motions.
@@ -127,7 +127,7 @@ export class MotionPdfCatalogService {
      */
     private createToc(motions: ViewMotion[], sorting?: string): object {
         const toc = [];
-        const categories: Category[] = this.getUniqueCategories(motions);
+        const categories: ViewCategory[] = this.getUniqueCategories(motions);
 
         // Create the toc title
         const tocTitle = {
@@ -234,10 +234,10 @@ export class MotionPdfCatalogService {
      * @param motions the list of motions
      * @returns Unique list of categories
      */
-    private getUniqueCategories(motions: ViewMotion[]): Category[] {
-        const categories: Category[] = motions
+    private getUniqueCategories(motions: ViewMotion[]): ViewCategory[] {
+        const categories: ViewCategory[] = motions
             // remove motions without category
-            .filter(motion => (motion.category ? motion : null))
+            .filter(motion => !!motion.category)
             // map motions their categories
             .map(motion => motion.category)
             // remove redundancies

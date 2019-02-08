@@ -1,5 +1,7 @@
 import { Category } from 'app/shared/models/motions/category';
 import { BaseViewModel } from '../../base/base-view-model';
+import { SearchRepresentation } from 'app/core/ui-services/search.service';
+import { Searchable } from 'app/site/base/searchable';
 
 /**
  * Category class for the View
@@ -8,7 +10,7 @@ import { BaseViewModel } from '../../base/base-view-model';
  * Provides "safe" access to variables and functions in {@link Category}
  * @ignore
  */
-export class ViewCategory extends BaseViewModel {
+export class ViewCategory extends BaseViewModel implements Searchable {
     private _category: Category;
 
     public get category(): Category {
@@ -16,51 +18,66 @@ export class ViewCategory extends BaseViewModel {
     }
 
     public get id(): number {
-        return this.category ? this.category.id : null;
+        return this.category.id;
     }
 
     public get name(): string {
-        return this.category ? this.category.name : null;
+        return this.category.name;
     }
 
     public get prefix(): string {
-        return this.category && this.category.prefix ? this.category.prefix : null;
+        return this.category.prefix;
     }
 
-    public set prefix(pref: string) {
-        this._category.prefix = pref;
+    public set prefix(prefix: string) {
+        this._category.prefix = prefix;
     }
 
-    public set name(nam: string) {
-        this._category.name = nam;
-    }
-
-    public constructor(category?: Category, id?: number, prefix?: string, name?: string) {
-        super();
-        if (!category) {
-            category = new Category();
-            category.id = id;
-            category.name = name;
-            category.prefix = prefix;
-        }
-        this._category = category;
-    }
-
-    public getTitle(): string {
-        return this.name;
+    public set name(name: string) {
+        this._category.name = name;
     }
 
     public get prefixedName(): string {
-        return this.category.getTitle();
+        return this.prefix ? this.prefix + ' - ' + this.name : this.name;
+    }
+
+    public constructor(category: Category) {
+        super('Category');
+        this._category = category;
+    }
+
+    /**
+     * Returns the verbose name of this model.
+     *
+     * @override
+     * @param plural If the name should be plural
+     * @param The verbose name
+     */
+    public getVerboseName(plural: boolean = false): string {
+        if (plural) {
+            return 'Categories';
+        } else {
+            return this._verboseName;
+        }
+    }
+
+    public getTitle(): string {
+        return this.prefixedName;
+    }
+
+    public formatForSearch(): SearchRepresentation {
+        return [this.name, this.prefix];
+    }
+
+    public getDetailStateURL(): string {
+        return '/motions/category';
     }
 
     /**
      * Updates the local objects if required
      * @param update
      */
-    public updateValues(update: Category): void {
-        this._category = update;
-    }
+    public updateDependencies(update: BaseViewModel): void {}
 
     /**
      * Duplicate this motion into a copy of itself

@@ -8,6 +8,10 @@ import { BaseRepository } from '../base-repository';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { ViewItem } from 'app/site/agenda/models/view-item';
+import { ViewUser } from 'app/site/users/models/view-user';
+import { ViewTag } from 'app/site/tags/models/view-tag';
 
 /**
  * Repository Service for Assignments.
@@ -24,8 +28,12 @@ export class AssignmentRepositoryService extends BaseRepository<ViewAssignment, 
      * @param DS The DataStore
      * @param mapperService Maps collection strings to classes
      */
-    public constructor(DS: DataStoreService, mapperService: CollectionStringMapperService) {
-        super(DS, mapperService, Assignment, [User, Item, Tag]);
+    public constructor(
+        DS: DataStoreService,
+        mapperService: CollectionStringMapperService,
+        viewModelStoreService: ViewModelStoreService
+    ) {
+        super(DS, mapperService, viewModelStoreService, Assignment, [User, Item, Tag]);
     }
 
     public async update(assignment: Partial<Assignment>, viewAssignment: ViewAssignment): Promise<void> {
@@ -41,9 +49,9 @@ export class AssignmentRepositoryService extends BaseRepository<ViewAssignment, 
     }
 
     public createViewModel(assignment: Assignment): ViewAssignment {
-        const relatedUser = this.DS.getMany(User, assignment.candidateIds);
-        const agendaItem = this.DS.get(Item, assignment.agenda_item_id);
-        const tags = this.DS.getMany(Tag, assignment.tags_id);
+        const relatedUser = this.viewModelStoreService.getMany(ViewUser, assignment.candidateIds);
+        const agendaItem = this.viewModelStoreService.get(ViewItem, assignment.agenda_item_id);
+        const tags = this.viewModelStoreService.getMany(ViewTag, assignment.tags_id);
 
         return new ViewAssignment(assignment, relatedUser, agendaItem, tags);
     }

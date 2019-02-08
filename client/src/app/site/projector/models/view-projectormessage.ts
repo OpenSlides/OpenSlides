@@ -1,24 +1,25 @@
-import { BaseProjectableModel } from 'app/site/base/base-projectable-model';
+import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { ProjectorMessage } from 'app/shared/models/core/projector-message';
+import { BaseViewModel } from 'app/site/base/base-view-model';
 
-export class ViewProjectorMessage extends BaseProjectableModel {
+export class ViewProjectorMessage extends BaseProjectableViewModel {
     private _message: ProjectorMessage;
 
     public get projctormessage(): ProjectorMessage {
-        return this._message ? this._message : null;
+        return this._message;
     }
 
     public get id(): number {
-        return this.projctormessage ? this.projctormessage.id : null;
+        return this.projctormessage.id;
     }
 
     public get message(): string {
-        return this.projctormessage ? this.projctormessage.message : null;
+        return this.projctormessage.message;
     }
 
-    public constructor(message?: ProjectorMessage) {
-        super();
+    public constructor(message: ProjectorMessage) {
+        super('Message');
         this._message = message;
     }
 
@@ -26,9 +27,7 @@ export class ViewProjectorMessage extends BaseProjectableModel {
         return 'Message';
     }
 
-    public updateValues(message: ProjectorMessage): void {
-        console.log('Update message TODO with vals:', message);
-    }
+    public updateDependencies(update: BaseViewModel): void {}
 
     public getSlide(): ProjectorElementBuildDeskriptor {
         return {

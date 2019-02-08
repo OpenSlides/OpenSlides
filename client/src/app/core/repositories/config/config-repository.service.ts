@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
 
-import { BaseRepository } from 'app/core/repositories/base-repository';
-import { ViewConfig } from '../models/view-config';
-import { Config } from 'app/shared/models/core/config';
 import { Observable, BehaviorSubject } from 'rxjs';
+
+import { BaseRepository } from 'app/core/repositories/base-repository';
+import { Config } from 'app/shared/models/core/config';
 import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { ConstantsService } from 'app/core/ui-services/constants.service';
 import { HttpService } from 'app/core/core-services/http.service';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from 'app/core/core-services/collectionStringMapper.service';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { ViewConfig } from 'app/site/config/models/view-config';
 
 /**
  * Holds a single config item.
@@ -95,10 +97,11 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
     public constructor(
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
+        viewModelStoreService: ViewModelStoreService,
         private constantsService: ConstantsService,
         private http: HttpService
     ) {
-        super(DS, mapperService, Config);
+        super(DS, mapperService, viewModelStoreService, Config);
 
         this.constantsService.get('OpenSlidesConfigVariables').subscribe(constant => {
             this.createConfigStructure(constant);
@@ -111,7 +114,7 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
      * Overwritten setup. Does only care about the custom list observable and inserts changed configs into the
      * config group structure.
      */
-    protected setup(): void {
+    public onAfterAppsLoaded(): void {
         if (!this.configListSubject) {
             this.configListSubject = new BehaviorSubject<ConfigGroup[]>(null);
         }

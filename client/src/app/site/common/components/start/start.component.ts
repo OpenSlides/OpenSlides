@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { BaseComponent } from 'app/base.component';
 
 import { TranslateService } from '@ngx-translate/core'; // showcase
+
+import { BaseComponent } from 'app/base.component';
 
 // for testing the DS and BaseModel
 import { Config } from 'app/shared/models/core/config';

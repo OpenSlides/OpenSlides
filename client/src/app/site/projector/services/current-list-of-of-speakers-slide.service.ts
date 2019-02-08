@@ -5,7 +5,8 @@ import { IdentifiableProjectorElement } from 'app/shared/models/core/projector';
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SlideManager } from 'app/slides/services/slide-manager.service';
-import { AgendaBaseModel } from 'app/shared/models/base/agenda-base-model';
+import { BaseAgendaViewModel } from 'app/site/base/base-agenda-view-model';
+import { ViewItem } from 'app/site/agenda/models/view-item';
 
 /**
  */
@@ -13,7 +14,7 @@ import { AgendaBaseModel } from 'app/shared/models/base/agenda-base-model';
     providedIn: 'root'
 })
 export class CurrentListOfSpeakersSlideService {
-    private currentItemIds: { [projectorId: number]: BehaviorSubject<number | null> } = {};
+    private currentItemIds: { [projectorId: number]: BehaviorSubject<ViewItem | null> } = {};
 
     public constructor(
         private projectorService: ProjectorService,
@@ -21,9 +22,11 @@ export class CurrentListOfSpeakersSlideService {
         private slideManager: SlideManager
     ) {
         this.projectorRepo.getGeneralViewModelObservable().subscribe(projector => {
-            const itemId = this.getCurrentAgendaItemIdForProjector(projector);
-            if (this.currentItemIds[projector.id]) {
-                this.currentItemIds[projector.id].next(itemId);
+            if (projector) {
+                const item = this.getCurrentAgendaItemIdForProjector(projector);
+                if (this.currentItemIds[projector.id]) {
+                    this.currentItemIds[projector.id].next(item);
+                }
             }
         });
     }
@@ -50,10 +53,10 @@ export class CurrentListOfSpeakersSlideService {
      * @param projector The projector to observe.
      * @returns An observalbe for the agenda item id. Null, if no element with an agenda item is shown.
      */
-    public getAgendaItemIdObservable(projector: ViewProjector): Observable<number | null> {
+    public getAgendaItemObservable(projector: ViewProjector): Observable<ViewItem | null> {
         if (!this.currentItemIds[projector.id]) {
-            const itemId = this.getCurrentAgendaItemIdForProjector(projector);
-            this.currentItemIds[projector.id] = new BehaviorSubject<number | null>(itemId);
+            const item = this.getCurrentAgendaItemIdForProjector(projector);
+            this.currentItemIds[projector.id] = new BehaviorSubject<ViewItem | null>(item);
         }
         return this.currentItemIds[projector.id].asObservable();
     }
@@ -64,15 +67,14 @@ export class CurrentListOfSpeakersSlideService {
      * @param projector The projector
      * @returns The agenda item id or null, if there is no such projector element.
      */
-    private getCurrentAgendaItemIdForProjector(projector: ViewProjector): number | null {
+    private getCurrentAgendaItemIdForProjector(projector: ViewProjector): ViewItem | null {
         const nonStableElements = projector.elements.filter(element => !element.stable);
         if (nonStableElements.length > 0) {
             const nonStableElement = this.slideManager.getIdentifialbeProjectorElement(nonStableElements[0]); // The normal case is just one non stable slide
             try {
-                const model = this.projectorService.getModelFromProjectorElement(nonStableElement);
-                if (model instanceof AgendaBaseModel) {
-                    // TODO: Use repositories associated to models
-                    return (<any>model).agenda_item_id;
+                const viewModel = this.projectorService.getViewModelFromProjectorElement(nonStableElement);
+                if (viewModel instanceof BaseAgendaViewModel) {
+                    return viewModel.getAgendaItem();
                 }
             } catch (e) {
                 // make TypeScript silent.

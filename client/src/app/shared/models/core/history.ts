@@ -6,6 +6,7 @@ import { BaseModel } from '../base/base-model';
  * @ignore
  */
 export class History extends BaseModel {
+    public static COLLECTIONSTRING = 'core/history';
     public id: number;
     public element_id: string;
     public now: string;
@@ -29,10 +30,6 @@ export class History extends BaseModel {
     }
 
     public constructor(input?: any) {
-        super('core/history', 'History', input);
-    }
-
-    public getTitle(): string {
-        return this.element_id;
+        super(History.COLLECTIONSTRING, input);
     }
 }

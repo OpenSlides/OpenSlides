@@ -1,20 +1,23 @@
+import { Type } from '@angular/core';
+
 import { ModelConstructor, BaseModel } from '../shared/models/base/base-model';
 import { MainMenuEntry } from './core-services/main-menu.service';
-import { Searchable } from '../shared/models/base/searchable';
-import { Type } from '@angular/core';
+import { Searchable } from '../site/base/searchable';
 import { BaseRepository } from './repositories/base-repository';
+import { BaseViewModel, ViewModelConstructor } from 'app/site/base/base-view-model';
 
 interface BaseModelEntry {
     collectionString: string;
     repository: Type<BaseRepository<any, any>>;
-}
-
-export interface ModelEntry extends BaseModelEntry {
     model: ModelConstructor<BaseModel>;
 }
 
+export interface ModelEntry extends BaseModelEntry {
+    viewModel: ViewModelConstructor<BaseViewModel>;
+}
+
 export interface SearchableModelEntry extends BaseModelEntry {
-    model: new (...args: any[]) => BaseModel & Searchable;
+    viewModel: new (...args: any[]) => BaseViewModel & Searchable;
     searchOrder: number;
 }
 

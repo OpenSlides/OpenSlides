@@ -2,16 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
 
+import { Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
 import { ListViewBaseComponent } from 'app/site/base/list-view-base';
 import { HistoryRepositoryService } from 'app/core/repositories/history/history-repository.service';
-import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { isDetailNavigable } from 'app/shared/models/base/detail-navigable';
-
 import { ViewHistory } from '../../models/view-history';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 
 /**
  * A list view for the history.
@@ -42,7 +41,7 @@ export class HistoryListComponent extends ListViewBaseComponent<ViewHistory> imp
         translate: TranslateService,
         matSnackBar: MatSnackBar,
         private repo: HistoryRepositoryService,
-        private DS: DataStoreService,
+        private viewModelStore: ViewModelStoreService,
         private router: Router
     ) {
         super(titleService, translate, matSnackBar);
@@ -89,7 +88,7 @@ export class HistoryListComponent extends ListViewBaseComponent<ViewHistory> imp
      * @returns the title of an old element or null if it could not be found
      */
     public getElementInfo(history: ViewHistory): string {
-        const oldElementTitle = this.repo.getOldModelInfo(history.getCollectionString(), history.getModelID());
+        const oldElementTitle = this.repo.getOldModelInfo(history.getCollectionString(), history.getModelId());
 
         if (oldElementTitle) {
             return oldElementTitle;
@@ -104,22 +103,19 @@ export class HistoryListComponent extends ListViewBaseComponent<ViewHistory> imp
      *
      * @param history Represents the selected element
      */
-    public onClickRow(history: ViewHistory): void {
-        this.repo.browseHistory(history).then(() => {
-            const element = this.DS.get(history.getCollectionString(), history.getModelID());
-            let message = this.translate.instant('Temporarily reset OpenSlides to the state from ');
-            message += history.getLocaleString('DE-de') + '. ';
+    public async onClickRow(history: ViewHistory): Promise<void> {
+        await this.repo.browseHistory(history);
+        const element = this.viewModelStore.get(history.getCollectionString(), history.getModelId());
+        let message = this.translate.instant('Temporarily reset OpenSlides to the state from ');
+        message += history.getLocaleString('DE-de') + '. ';
 
-            if (isDetailNavigable(element)) {
-                message += this.translate.instant(
-                    'You will be redirected to the detail state of the last changed item.'
-                );
-                this.raiseError(message);
-                this.router.navigate([element.getDetailStateURL()]);
-            } else {
-                this.raiseError(message);
-            }
-        });
+        if (isDetailNavigable(element)) {
+            message += this.translate.instant('You will be redirected to the detail state of the last changed item.');
+            this.raiseError(message);
+            this.router.navigate([element.getDetailStateURL()]);
+        } else {
+            this.raiseError(message);
+        }
     }
 
     /**

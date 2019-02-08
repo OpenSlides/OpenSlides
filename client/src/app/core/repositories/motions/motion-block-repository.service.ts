@@ -14,6 +14,9 @@ import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { MotionRepositoryService } from './motion-repository.service';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { Item } from 'app/shared/models/agenda/item';
+import { ViewItem } from 'app/site/agenda/models/view-item';
 
 /**
  * Repository service for motion blocks
@@ -34,11 +37,12 @@ export class MotionBlockRepositoryService extends BaseRepository<ViewMotionBlock
     public constructor(
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
+        viewModelStoreService: ViewModelStoreService,
         private dataSend: DataSendService,
         private motionRepo: MotionRepositoryService,
         private httpService: HttpService
     ) {
-        super(DS, mapperService, MotionBlock);
+        super(DS, mapperService, viewModelStoreService, MotionBlock, [Item]);
     }
 
     /**
@@ -80,7 +84,8 @@ export class MotionBlockRepositoryService extends BaseRepository<ViewMotionBlock
      * @returns a new ViewMotionBlock
      */
     protected createViewModel(block: MotionBlock): ViewMotionBlock {
-        return new ViewMotionBlock(block);
+        const item = this.viewModelStoreService.get(ViewItem, block.agenda_item_id);
+        return new ViewMotionBlock(block, item);
     }
 
     /**

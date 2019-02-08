@@ -10,6 +10,7 @@ import { CollectionStringMapperService } from '../../core-services/collectionStr
 import { WorkflowState } from 'app/shared/models/motions/workflow-state';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { HttpService } from 'app/core/core-services/http.service';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 
 /**
  * Repository Services for Categories
@@ -40,12 +41,13 @@ export class WorkflowRepositoryService extends BaseRepository<ViewWorkflow, Work
      * @param httpService HttpService
      */
     public constructor(
-        protected DS: DataStoreService,
+        DS: DataStoreService,
         mapperService: CollectionStringMapperService,
-        private dataSend: DataSendService,
-        private httpService: HttpService
+        private httpService: HttpService,
+        viewModelStoreService: ViewModelStoreService,
+        private dataSend: DataSendService
     ) {
-        super(DS, mapperService, Workflow);
+        super(DS, mapperService, viewModelStoreService, Workflow);
     }
 
     /**

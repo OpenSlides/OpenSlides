@@ -12,6 +12,8 @@ import { ConfigService } from 'app/core/ui-services/config.service';
 import { HttpService } from 'app/core/core-services/http.service';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../../../../environments/environment';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { ViewGroup } from 'app/site/users/models/view-group';
 
 /**
  * type for determining the user name from a string during import.
@@ -38,12 +40,13 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
     public constructor(
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
+        viewModelStoreService: ViewModelStoreService,
         private dataSend: DataSendService,
         private translate: TranslateService,
         private httpService: HttpService,
         private configService: ConfigService
     ) {
-        super(DS, mapperService, User, [Group]);
+        super(DS, mapperService, viewModelStoreService, User, [Group]);
     }
 
     /**
@@ -104,7 +107,7 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
     }
 
     public createViewModel(user: User): ViewUser {
-        const groups = this.DS.getMany(Group, user.groups_id);
+        const groups = this.viewModelStoreService.getMany(ViewGroup, user.groups_id);
         return new ViewUser(user, groups);
     }
 
@@ -218,20 +221,9 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
      * @returns all users matching that name
      */
     public getUsersByName(name: string): ViewUser[] {
-        const results: ViewUser[] = [];
-        const users = this.DS.getAll(User).filter(user => {
-            if (user.full_name === name || user.short_name === name) {
-                return true;
-            }
-            if (user.number === name) {
-                return true;
-            }
-            return false;
+        return this.getViewModelList().filter(user => {
+            return user.full_name === name || user.short_name === name || user.number === name;
         });
-        users.forEach(user => {
-            results.push(this.createViewModel(user));
-        });
-        return results;
     }
 
     /**
@@ -241,7 +233,7 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
      * @returns all users matching that number
      */
     public getUsersByNumber(number: string): ViewUser[] {
-        return this.getViewModelList().filter(user => user.participant_number === number);
+        return this.getViewModelList().filter(user => user.number === number);
     }
 
     /**

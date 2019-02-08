@@ -1,67 +1,61 @@
 import { User } from 'app/shared/models/users/user';
-import { Group } from 'app/shared/models/users/group';
-import { BaseModel } from 'app/shared/models/base/base-model';
-import { BaseProjectableModel } from 'app/site/base/base-projectable-model';
+import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
+import { Searchable } from 'app/site/base/searchable';
+import { SearchRepresentation } from 'app/core/ui-services/search.service';
+import { ViewGroup } from './view-group';
+import { BaseViewModel } from 'app/site/base/base-view-model';
 
-export class ViewUser extends BaseProjectableModel {
+export class ViewUser extends BaseProjectableViewModel implements Searchable {
     private _user: User;
-    private _groups: Group[];
+    private _groups: ViewGroup[];
 
     public get user(): User {
-        return this._user ? this._user : null;
+        return this._user;
     }
 
-    public get groups(): Group[] {
+    public get groups(): ViewGroup[] {
         return this._groups;
     }
 
     public get id(): number {
-        return this.user ? this.user.id : null;
+        return this.user.id;
     }
 
     public get username(): string {
-        return this.user ? this.user.username : null;
+        return this.user.username;
     }
 
     public get title(): string {
-        return this.user ? this.user.title : null;
+        return this.user.title;
     }
 
     public get first_name(): string {
-        return this.user ? this.user.first_name : null;
+        return this.user.first_name;
     }
 
     public get last_name(): string {
-        return this.user ? this.user.last_name : null;
-    }
-
-    public get full_name(): string {
-        return this.user ? this.user.full_name : null;
-    }
-
-    public get short_name(): string {
-        return this.user ? this.user.short_name : null;
+        return this.user.last_name;
     }
 
     public get email(): string {
-        return this.user ? this.user.email : null;
+        return this.user.email;
     }
 
     public get gender(): string {
-        return this.user ? this.user.gender : null;
+        return this.user.gender;
     }
 
     public get structure_level(): string {
-        return this.user ? this.user.structure_level : null;
+        return this.user.structure_level;
     }
 
-    public get participant_number(): string {
-        return this.user ? this.user.number : null;
+    public get number(): string {
+        return this.user.number;
     }
 
     public get groups_id(): number[] {
-        return this.user ? this.user.groups_id : null;
+        return this.user.groups_id;
     }
 
     /**
@@ -74,40 +68,115 @@ export class ViewUser extends BaseProjectableModel {
     }
 
     public get default_password(): string {
-        return this.user ? this.user.default_password : null;
+        return this.user.default_password;
     }
 
     public get comment(): string {
-        return this.user ? this.user.comment : null;
+        return this.user.comment;
     }
 
     public get is_present(): boolean {
-        return this.user ? this.user.is_present : null;
+        return this.user.is_present;
     }
 
     public get is_active(): boolean {
-        return this.user ? this.user.is_active : null;
+        return this.user.is_active;
     }
 
     public get is_committee(): boolean {
-        return this.user ? this.user.is_committee : null;
+        return this.user.is_committee;
     }
 
     public get about_me(): string {
-        return this.user ? this.user.about_me : null;
+        return this.user.about_me;
     }
 
     public get is_last_email_send(): boolean {
-        if (this.user && this.user.last_email_send) {
-            return true;
-        }
-        return false;
+        return this.user && !!this.user.last_email_send;
     }
 
-    public constructor(user?: User, groups?: Group[]) {
-        super();
+    // TODO read config values for "users_sort_by"
+    /**
+     * Getter for the short name (Title, given name, surname)
+     *
+     * @returns a non-empty string
+     */
+    public get short_name(): string {
+        if (!this.user) {
+            return '';
+        }
+
+        const title = this.title ? this.title.trim() : '';
+        const firstName = this.first_name ? this.first_name.trim() : '';
+        const lastName = this.last_name ? this.last_name.trim() : '';
+
+        // TODO need DS adjustment first first
+        // if (this.DS.getConfig('users_sort_by').value === 'last_name') {
+        //     if (lastName && firstName) {
+        //         shortName += `${lastName}, ${firstName}`;
+        //     } else {
+        //         shortName += lastName || firstName;
+        //     }
+        // }
+
+        let shortName = `${firstName} ${lastName}`;
+
+        if (shortName.length <= 1) {
+            // We have at least one space from the concatination of
+            // first- and lastname.
+            shortName = this.username;
+        }
+
+        if (title) {
+            shortName = `${title} ${shortName}`;
+        }
+
+        return shortName;
+    }
+
+    public get full_name(): string {
+        if (!this.user) {
+            return '';
+        }
+
+        let name = this.short_name;
+        const additions: string[] = [];
+
+        // addition: add number and structure level
+        const structure_level = this.structure_level ? this.structure_level.trim() : '';
+        if (structure_level) {
+            additions.push(structure_level);
+        }
+
+        const number = this.number ? this.number.trim() : '';
+        if (number) {
+            // TODO Translate
+            additions.push('No. ' + number);
+        }
+
+        if (additions.length > 0) {
+            name += ' (' + additions.join(' · ') + ')';
+        }
+        return name.trim();
+    }
+
+    public constructor(user: User, groups?: ViewGroup[]) {
+        super('Participant');
         this._user = user;
         this._groups = groups;
+    }
+
+    /**
+     * Formats the category for search
+     *
+     * @override
+     */
+    public formatForSearch(): SearchRepresentation {
+        return [this.title, this.first_name, this.last_name, this.structure_level, this.number];
+    }
+
+    public getDetailStateURL(): string {
+        throw new Error('TODO');
     }
 
     public getSlide(): ProjectorElementBuildDeskriptor {
@@ -127,38 +196,25 @@ export class ViewUser extends BaseProjectableModel {
      * required by BaseViewModel. Don't confuse with the users title.
      */
     public getTitle(): string {
-        return this.user ? this.user.toString() : null;
+        return this.full_name;
     }
 
     /**
      * TODO: Implement
      */
-    public replaceGroup(newGroup: Group): void {}
+    public replaceGroup(newGroup: ViewGroup): void {}
 
-    public updateValues(update: BaseModel): void {
-        if (update instanceof Group) {
-            this.updateGroup(update as Group);
-        }
-        if (update instanceof User) {
-            this.updateUser(update as User);
+    public updateDependencies(update: BaseViewModel): void {
+        if (update instanceof ViewGroup) {
+            this.updateGroup(update);
         }
     }
 
-    public updateGroup(update: Group): void {
+    public updateGroup(group: ViewGroup): void {
         if (this.user && this.user.groups_id) {
-            if (this.user.containsGroupId(update.id)) {
-                this.replaceGroup(update);
+            if (this.user.containsGroupId(group.id)) {
+                this.replaceGroup(group);
             }
-        }
-    }
-    /**
-     * Updates values. Triggered through observables.
-     *
-     * @param update a new User or Group
-     */
-    public updateUser(update: User): void {
-        if (this.user.id === update.id) {
-            this._user = update;
         }
     }
 }

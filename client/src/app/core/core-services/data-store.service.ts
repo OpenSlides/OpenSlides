@@ -73,6 +73,18 @@ export class DataStoreService {
     private readonly changedSubject: Subject<BaseModel> = new Subject<BaseModel>();
 
     /**
+     * This is subject notify all subscribers _before_ the `secondaryModelChangeSubject`.
+     * It's the same subject as the changedSubject.
+     */
+    public readonly primaryModelChangeSubject = new Subject<BaseModel>();
+
+    /**
+     * This is subject notify all subscribers _after_ the `primaryModelChangeSubject`.
+     * It's the same subject as the changedSubject.
+     */
+    public readonly secondaryModelChangeSubject = new Subject<BaseModel>();
+
+    /**
      * Observe the datastore for changes.
      *
      * @return an observable for changed models
@@ -127,7 +139,12 @@ export class DataStoreService {
      * @param storageService use StorageService to preserve the DataStore.
      * @param modelMapper
      */
-    public constructor(private storageService: StorageService, private modelMapper: CollectionStringMapperService) {}
+    public constructor(private storageService: StorageService, private modelMapper: CollectionStringMapperService) {
+        this.changeObservable.subscribe(model => {
+            this.primaryModelChangeSubject.next(model);
+            this.secondaryModelChangeSubject.next(model);
+        });
+    }
 
     /**
      * Gets the DataStore from cache and instantiate all models out of the serialized version.
@@ -170,7 +187,7 @@ export class DataStoreService {
         const storage: ModelStorage = {};
         Object.keys(serializedStore).forEach(collectionString => {
             storage[collectionString] = {} as ModelCollection;
-            const target = this.modelMapper.getModelConstructor(collectionString);
+            const target = this.modelMapper.getModelConstructorFromCollectionString(collectionString);
             if (target) {
                 Object.keys(serializedStore[collectionString]).forEach(id => {
                     const data = JSON.parse(serializedStore[collectionString][id]);
@@ -201,7 +218,7 @@ export class DataStoreService {
         if (typeof collectionType === 'string') {
             return collectionType;
         } else {
-            return this.modelMapper.getCollectionString(collectionType);
+            return this.modelMapper.getCollectionStringFromModelConstructor(collectionType);
         }
     }
 

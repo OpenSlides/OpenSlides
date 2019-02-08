@@ -5,55 +5,55 @@ export class ViewProjector extends BaseViewModel {
     private _projector: Projector;
 
     public get projector(): Projector {
-        return this._projector ? this._projector : null;
+        return this._projector;
     }
 
     public get id(): number {
-        return this.projector ? this.projector.id : null;
+        return this.projector.id;
     }
 
     public get name(): string {
-        return this.projector ? this.projector.name : null;
+        return this.projector.name;
     }
 
     public get elements(): ProjectorElements {
-        return this.projector ? this.projector.elements : null;
+        return this.projector.elements;
     }
 
     public get non_stable_elements(): ProjectorElements {
-        return this.projector ? this.projector.elements.filter(element => !element.stable) : null;
+        return this.projector.elements.filter(element => !element.stable);
     }
 
     public get elements_preview(): ProjectorElements {
-        return this.projector ? this.projector.elements_preview : null;
+        return this.projector.elements_preview;
     }
 
     public get elements_history(): ProjectorElements[] {
-        return this.projector ? this.projector.elements_history : null;
+        return this.projector.elements_history;
     }
 
     public get height(): number {
-        return this.projector ? this.projector.height : null;
+        return this.projector.height;
     }
 
     public get width(): number {
-        return this.projector ? this.projector.width : null;
+        return this.projector.width;
     }
 
     public get scale(): number {
-        return this.projector ? this.projector.scale : null;
+        return this.projector.scale;
     }
 
     public get scroll(): number {
-        return this.projector ? this.projector.scroll : null;
+        return this.projector.scroll;
     }
 
     public get reference_projector_id(): number {
-        return this.projector ? this.projector.reference_projector_id : null;
+        return this.projector.reference_projector_id;
     }
 
     public constructor(projector?: Projector) {
-        super();
+        super('Projector');
         this._projector = projector;
     }
 
@@ -61,7 +61,5 @@ export class ViewProjector extends BaseViewModel {
         return this.name;
     }
 
-    public updateValues(projector: Projector): void {
-        console.log('Update projector TODO with vals:', projector);
-    }
+    public updateDependencies(update: BaseViewModel): void {}
 }

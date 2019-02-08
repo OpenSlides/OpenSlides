@@ -1,10 +1,13 @@
 import { AppConfig } from '../../core/app-config';
 import { Config } from '../../shared/models/core/config';
-import { ConfigRepositoryService } from './services/config-repository.service';
+import { ConfigRepositoryService } from '../../core/repositories/config/config-repository.service';
+import { ViewConfig } from './models/view-config';
 
 export const ConfigAppConfig: AppConfig = {
     name: 'settings',
-    models: [{ collectionString: 'core/config', model: Config, repository: ConfigRepositoryService }],
+    models: [
+        { collectionString: 'core/config', model: Config, viewModel: ViewConfig, repository: ConfigRepositoryService }
+    ],
     mainMenuEntries: [
         {
             route: '/settings',

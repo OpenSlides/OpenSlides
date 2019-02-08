@@ -1,8 +1,7 @@
 import { MotionSubmitter } from './motion-submitter';
 import { MotionComment } from './motion-comment';
-import { AgendaBaseModel } from '../base/agenda-base-model';
-import { SearchRepresentation } from 'app/core/ui-services/search.service';
 import { MotionPoll } from './motion-poll';
+import { BaseModel } from '../base/base-model';
 
 /**
  * Representation of Motion.
@@ -11,7 +10,7 @@ import { MotionPoll } from './motion-poll';
  *
  * @ignore
  */
-export class Motion extends AgendaBaseModel {
+export class Motion extends BaseModel {
     public static COLLECTIONSTRING = 'motions/motion';
 
     public id: number;
@@ -45,7 +44,7 @@ export class Motion extends AgendaBaseModel {
     public last_modified: string;
 
     public constructor(input?: any) {
-        super(Motion.COLLECTIONSTRING, 'Motion', input);
+        super(Motion.COLLECTIONSTRING, input);
     }
 
     /**
@@ -57,49 +56,6 @@ export class Motion extends AgendaBaseModel {
                 return a.weight - b.weight;
             })
             .map((submitter: MotionSubmitter) => submitter.user_id);
-    }
-
-    public getTitle(): string {
-        if (this.identifier) {
-            return this.identifier + ': ' + this.title;
-        } else {
-            return this.title;
-        }
-    }
-
-    public getAgendaTitle(): string {
-        // if the identifier is set, the title will be 'Motion <identifier>'.
-        if (this.identifier) {
-            return 'Motion ' + this.identifier;
-        } else {
-            return this.getTitle();
-        }
-    }
-
-    public getAgendaTitleWithType(): string {
-        // Append the verbose name only, if not the special format 'Motion <identifier>' is used.
-        if (this.identifier) {
-            return 'Motion ' + this.identifier;
-        } else {
-            return this.getTitle() + ' (' + this.getVerboseName() + ')';
-        }
-    }
-
-    /**
-     * Formats the category for search
-     *
-     * @override
-     */
-    public formatForSearch(): SearchRepresentation {
-        let searchValues = [this.title, this.text, this.reason];
-        if (this.amendment_paragraphs) {
-            searchValues = searchValues.concat(this.amendment_paragraphs.filter(x => !!x));
-        }
-        return searchValues;
-    }
-
-    public getDetailStateURL(): string {
-        return `/motions/${this.id}`;
     }
 
     public deserialize(input: any): void {

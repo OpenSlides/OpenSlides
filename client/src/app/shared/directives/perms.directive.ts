@@ -68,7 +68,7 @@ export class PermsDirective extends OpenSlidesComponent implements OnInit, OnDes
 
     public ngOnInit(): void {
         // observe groups of operator, so the directive can actively react to changes
-        this.operatorSubscription = this.operator.getObservable().subscribe(() => {
+        this.operatorSubscription = this.operator.getUserObservable().subscribe(() => {
             this.updateView();
         });
     }

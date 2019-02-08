@@ -120,7 +120,6 @@ export class AutoupdateService extends OpenSlidesComponent {
                 await this.DS.add(this.mapObjectsToBaseModels(collection, autoupdate.changed[collection]));
             }
 
-            console.log('new max change id', autoupdate.to_change_id);
             await this.DS.flushToStorage(autoupdate.to_change_id);
         } else {
             // autoupdate fully in the future. we are missing something!
@@ -135,7 +134,7 @@ export class AutoupdateService extends OpenSlidesComponent {
      * @returns A list of basemodels constructed from the given models.
      */
     private mapObjectsToBaseModels(collection: string, models: object[]): BaseModel[] {
-        const targetClass = this.modelMapper.getModelConstructor(collection);
+        const targetClass = this.modelMapper.getModelConstructorFromCollectionString(collection);
         if (!targetClass) {
             throw new Error(`Unregistered resource ${collection}`);
         }

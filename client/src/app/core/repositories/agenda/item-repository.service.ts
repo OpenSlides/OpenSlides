@@ -3,8 +3,6 @@ import { tap, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 import { BaseRepository } from '../base-repository';
-import { AgendaBaseModel } from 'app/shared/models/base/agenda-base-model';
-import { BaseModel } from 'app/shared/models/base/base-model';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { DataSendService } from 'app/core/core-services/data-send.service';
@@ -14,10 +12,13 @@ import { Identifiable } from 'app/shared/models/base/identifiable';
 import { Item } from 'app/shared/models/agenda/item';
 import { OSTreeSortEvent } from 'app/shared/components/sorting-tree/sorting-tree.component';
 import { Speaker } from 'app/shared/models/agenda/speaker';
-import { User } from 'app/shared/models/users/user';
 import { ViewItem } from 'app/site/agenda/models/view-item';
 import { ViewSpeaker } from 'app/site/agenda/models/view-speaker';
 import { TreeService } from 'app/core/ui-services/tree.service';
+import { BaseAgendaViewModel } from 'app/site/base/base-agenda-view-model';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { BaseViewModel } from 'app/site/base/base-view-model';
+import { ViewUser } from 'app/site/users/models/view-user';
 
 /**
  * Repository service for users
@@ -27,7 +28,7 @@ import { TreeService } from 'app/core/ui-services/tree.service';
 @Injectable({
     providedIn: 'root'
 })
-export class AgendaRepositoryService extends BaseRepository<ViewItem, Item> {
+export class ItemRepositoryService extends BaseRepository<ViewItem, Item> {
     /**
      * Contructor for agenda repository.
      *
@@ -39,38 +40,39 @@ export class AgendaRepositoryService extends BaseRepository<ViewItem, Item> {
      * @param treeService sort the data according to weight and parents
      */
     public constructor(
-        protected DS: DataStoreService,
-        private httpService: HttpService,
+        DS: DataStoreService,
         mapperService: CollectionStringMapperService,
+        viewModelStoreService: ViewModelStoreService,
+        private httpService: HttpService,
         private config: ConfigService,
         private dataSend: DataSendService,
         private treeService: TreeService
     ) {
-        super(DS, mapperService, Item);
+        super(DS, mapperService, viewModelStoreService, Item);
     }
 
     /**
-     * Returns the corresponding content object to a given {@link Item} as an {@link AgendaBaseModel}
+     * Returns the corresponding content object to a given {@link Item} as an {@link AgendaBaseViewModel}
      * Used dynamically because of heavy race conditions
      *
      * @param agendaItem the target agenda Item
      * @returns the content object of the given item. Might be null if it was not found.
      */
-    public getContentObject(agendaItem: Item): AgendaBaseModel {
-        const contentObject = this.DS.get<BaseModel>(
+    public getContentObject(agendaItem: Item): BaseAgendaViewModel {
+        const contentObject = this.viewModelStoreService.get<BaseViewModel>(
             agendaItem.content_object.collection,
             agendaItem.content_object.id
         );
         if (!contentObject) {
             return null;
         }
-        if (contentObject instanceof AgendaBaseModel) {
-            return contentObject as AgendaBaseModel;
+        if (contentObject instanceof BaseAgendaViewModel) {
+            return contentObject as BaseAgendaViewModel;
         } else {
             throw new Error(
                 `The content object (${agendaItem.content_object.collection}, ${
                     agendaItem.content_object.id
-                }) of item ${agendaItem.id} is not a AgendaBaseModel.`
+                }) of item ${agendaItem.id} is not a AgendaBaseViewModel.`
             );
         }
     }
@@ -86,7 +88,7 @@ export class AgendaRepositoryService extends BaseRepository<ViewItem, Item> {
         const speakers = item.speakers;
         if (speakers && speakers.length > 0) {
             speakers.forEach((speaker: Speaker) => {
-                const user = this.DS.get(User, speaker.user_id);
+                const user = this.viewModelStoreService.get(ViewUser, speaker.user_id);
                 viewSpeakers.push(new ViewSpeaker(speaker, user));
             });
         }

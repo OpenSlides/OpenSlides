@@ -61,7 +61,7 @@ export class CountUsersService extends OpenSlidesComponent {
         });
 
         // Look for the current user.
-        operator.getObservable().subscribe(user => (this.currentUserId = user ? user.id : null));
+        operator.getUserObservable().subscribe(user => (this.currentUserId = user ? user.id : null));
     }
 
     /**

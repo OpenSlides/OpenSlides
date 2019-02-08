@@ -1,5 +1,5 @@
-import { DetailNavigable } from './detail-navigable';
 import { SearchRepresentation } from 'app/core/ui-services/search.service';
+import { DetailNavigable } from 'app/shared/models/base/detail-navigable';
 
 /**
  * Asserts, if the given object is searchable.

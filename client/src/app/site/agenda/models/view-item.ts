@@ -1,11 +1,11 @@
 import { BaseViewModel } from '../../base/base-view-model';
 import { Item } from 'app/shared/models/agenda/item';
-import { AgendaBaseModel } from 'app/shared/models/base/agenda-base-model';
 import { Speaker } from 'app/shared/models/agenda/speaker';
+import { BaseAgendaViewModel } from 'app/site/base/base-agenda-view-model';
 
 export class ViewItem extends BaseViewModel {
     private _item: Item;
-    private _contentObject: AgendaBaseModel;
+    private _contentObject: BaseAgendaViewModel;
 
     /**
      * virtual weight defined by the order in the agenda tree, representing a shortcut to sorting by
@@ -24,7 +24,7 @@ export class ViewItem extends BaseViewModel {
         return this._item;
     }
 
-    public get contentObject(): AgendaBaseModel {
+    public get contentObject(): BaseAgendaViewModel {
         return this._contentObject;
     }
 
@@ -92,8 +92,8 @@ export class ViewItem extends BaseViewModel {
         return this.item ? this.item.parent_id : null;
     }
 
-    public constructor(item: Item, contentObject: AgendaBaseModel) {
-        super();
+    public constructor(item: Item, contentObject: BaseAgendaViewModel) {
+        super('Item');
         this._item = item;
         this._contentObject = contentObject;
     }
@@ -113,7 +113,7 @@ export class ViewItem extends BaseViewModel {
      * @returns the agenda list title as string
      */
     public getListTitle(): string {
-        const contentObject: AgendaBaseModel = this.contentObject;
+        const contentObject: BaseAgendaViewModel = this.contentObject;
         const numberPrefix = this.itemNumber ? `${this.itemNumber} · ` : '';
 
         if (contentObject) {
@@ -123,9 +123,5 @@ export class ViewItem extends BaseViewModel {
         }
     }
 
-    public updateValues(update: Item): void {
-        if (this.id === update.id) {
-            this._item = update;
-        }
-    }
+    public updateDependencies(update: BaseViewModel): void {}
 }

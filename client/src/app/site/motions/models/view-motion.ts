@@ -1,18 +1,20 @@
-import { BaseModel } from 'app/shared/models/base/base-model';
-import { BaseProjectableModel } from 'app/site/base/base-projectable-model';
-import { Category } from 'app/shared/models/motions/category';
 import { MotionComment } from 'app/shared/models/motions/motion-comment';
-import { Item } from 'app/shared/models/agenda/item';
-import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { Motion } from 'app/shared/models/motions/motion';
-import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
-import { User } from 'app/shared/models/users/user';
 import { ViewMotionCommentSection } from './view-motion-comment-section';
-import { Workflow } from 'app/shared/models/motions/workflow';
 import { WorkflowState } from 'app/shared/models/motions/workflow-state';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
-import { Tag } from 'app/shared/models/core/tag';
+import { SearchRepresentation } from 'app/core/ui-services/search.service';
+import { BaseAgendaViewModel } from 'app/site/base/base-agenda-view-model';
+import { Searchable } from 'app/site/base/searchable';
+import { ViewUser } from 'app/site/users/models/view-user';
+import { ViewTag } from 'app/site/tags/models/view-tag';
+import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
+import { ViewItem } from 'app/site/agenda/models/view-item';
+import { ViewWorkflow } from './view-workflow';
+import { ViewCategory } from './view-category';
+import { ViewMotionBlock } from './view-motion-block';
+import { BaseViewModel } from 'app/site/base/base-view-model';
 
 /**
  * The line numbering mode for the motion detail view.
@@ -42,18 +44,18 @@ export enum ChangeRecoMode {
  * Provides "safe" access to variables and functions in {@link Motion}
  * @ignore
  */
-export class ViewMotion extends BaseProjectableModel {
+export class ViewMotion extends BaseAgendaViewModel implements Searchable {
     protected _motion: Motion;
-    protected _category: Category;
-    protected _submitters: User[];
-    protected _supporters: User[];
-    protected _workflow: Workflow;
+    protected _category: ViewCategory;
+    protected _submitters: ViewUser[];
+    protected _supporters: ViewUser[];
+    protected _workflow: ViewWorkflow;
     protected _state: WorkflowState;
-    protected _item: Item;
-    protected _block: MotionBlock;
-    protected _attachments: Mediafile[];
-    protected _tags: Tag[];
-    protected _parent: Motion;
+    protected _item: ViewItem;
+    protected _block: ViewMotionBlock;
+    protected _attachments: ViewMediafile[];
+    protected _tags: ViewTag[];
+    protected _parent: ViewMotion;
     public personalNote: PersonalNoteContent;
 
     /**
@@ -67,34 +69,31 @@ export class ViewMotion extends BaseProjectableModel {
     }
 
     public get id(): number {
-        return this.motion ? this.motion.id : null;
+        return this.motion.id;
     }
 
     public get identifier(): string {
-        return this.motion && this.motion.identifier ? this.motion.identifier : null;
+        return this.motion.identifier;
     }
 
     public get title(): string {
-        return this.motion ? this.motion.title : null;
+        return this.motion.title;
     }
 
     public get identifierOrTitle(): string {
-        if (!this.motion) {
-            return null;
-        }
         return this.identifier ? this.identifier : this.title;
     }
 
     public get text(): string {
-        return this.motion ? this.motion.text : null;
+        return this.motion.text;
     }
 
     public get reason(): string {
-        return this.motion ? this.motion.reason : null;
+        return this.motion.reason;
     }
 
     public get modified_final_version(): string {
-        return this.motion ? this.motion.modified_final_version : null;
+        return this.motion.modified_final_version;
     }
 
     public set modified_final_version(value: string) {
@@ -104,47 +103,52 @@ export class ViewMotion extends BaseProjectableModel {
     }
 
     public get weight(): number {
-        return this.motion ? this.motion.weight : null;
+        return this.motion.weight;
     }
 
     public get sort_parent_id(): number {
-        return this.motion ? this.motion.sort_parent_id : null;
-    }
-
-    public get category(): Category {
-        return this._category;
+        return this.motion.sort_parent_id;
     }
 
     public get agenda_item_id(): number {
-        return this.motion ? this.motion.agenda_item_id : null;
+        return this.motion.agenda_item_id;
     }
 
     public get category_id(): number {
-        return this.motion && this.category ? this.motion.category_id : null;
+        return this.motion.category_id;
     }
 
-    public get submitters(): User[] {
+    public get category(): ViewCategory {
+        return this._category;
+    }
+
+    public get submitters(): ViewUser[] {
         return this._submitters;
     }
 
     public get submitters_id(): number[] {
-        return this.motion ? this.motion.submitterIds : null;
+        return this.motion.submitterIds;
     }
 
-    public get supporters(): User[] {
+    public get supporters(): ViewUser[] {
         return this._supporters;
     }
 
     public get supporters_id(): number[] {
-        return this.motion ? this.motion.supporters_id : null;
+        return this.motion.supporters_id;
     }
 
-    public get workflow(): Workflow {
+    public set supporters(users: ViewUser[]) {
+        this._supporters = users;
+        this._motion.supporters_id = users.map(user => user.id);
+    }
+
+    public get workflow(): ViewWorkflow {
         return this._workflow;
     }
 
     public get workflow_id(): number {
-        return this.motion ? this.motion.workflow_id : null;
+        return this.motion.workflow_id;
     }
 
     public get state(): WorkflowState {
@@ -161,19 +165,19 @@ export class ViewMotion extends BaseProjectableModel {
     }
 
     public get state_id(): number {
-        return this.motion && this.motion.state_id ? this.motion.state_id : null;
+        return this.motion.state_id;
     }
 
     public get recommendation_id(): number {
-        return this.motion && this.motion.recommendation_id ? this.motion.recommendation_id : null;
+        return this.motion.recommendation_id;
     }
 
     public get statute_paragraph_id(): number {
-        return this.motion && this.motion.statute_paragraph_id ? this.motion.statute_paragraph_id : null;
+        return this.motion.statute_paragraph_id;
     }
 
     public get recommendation(): WorkflowState {
-        return this.recommendation_id && this.workflow ? this.workflow.getStateById(this.recommendation_id) : null;
+        return this.workflow ? this.workflow.getStateById(this.recommendation_id) : null;
     }
 
     public get possibleRecommendations(): WorkflowState[] {
@@ -183,19 +187,14 @@ export class ViewMotion extends BaseProjectableModel {
     }
 
     public get origin(): string {
-        return this.motion ? this.motion.origin : null;
+        return this.motion.origin;
     }
 
     public get nextStates(): WorkflowState[] {
-        return this.state && this.workflow ? this.state.getNextStates(this.workflow) : null;
+        return this.state && this.workflow ? this.state.getNextStates(this.workflow.workflow) : [];
     }
 
-    public set supporters(users: User[]) {
-        this._supporters = users;
-        this._motion.supporters_id = users.map(user => user.id);
-    }
-
-    public get item(): Item {
+    public get item(): ViewItem {
         return this._item;
     }
 
@@ -204,10 +203,10 @@ export class ViewMotion extends BaseProjectableModel {
     }
 
     public get motion_block_id(): number {
-        return this.motion ? this.motion.motion_block_id : null;
+        return this.motion.motion_block_id;
     }
 
-    public get motion_block(): MotionBlock {
+    public get motion_block(): ViewMotionBlock {
         return this._block;
     }
 
@@ -216,30 +215,30 @@ export class ViewMotion extends BaseProjectableModel {
     }
 
     public get parent_id(): number {
-        return this.motion && this.motion.parent_id ? this.motion.parent_id : null;
+        return this.motion.parent_id;
     }
 
     public get amendment_paragraphs(): string[] {
-        return this.motion && this.motion.amendment_paragraphs ? this.motion.amendment_paragraphs : [];
+        return this.motion.amendment_paragraphs ? this.motion.amendment_paragraphs : [];
     }
 
     public get tags_id(): number[] {
-        return this.motion ? this.motion.tags_id : null;
+        return this.motion.tags_id;
     }
 
     public get attachments_id(): number[] {
-        return this.motion ? this.motion.attachments_id : null;
+        return this.motion.attachments_id;
     }
 
-    public get attachments(): Mediafile[] {
-        return this._attachments ? this._attachments : null;
+    public get attachments(): ViewMediafile[] {
+        return this._attachments;
     }
 
-    public get tags(): Tag[] {
-        return this._tags ? this._tags : null;
+    public get tags(): ViewTag[] {
+        return this._tags;
     }
 
-    public get parent(): Motion {
+    public get parent(): ViewMotion {
         return this._parent;
     }
 
@@ -247,7 +246,7 @@ export class ViewMotion extends BaseProjectableModel {
      * @returns the creation date as Date object
      */
     public get creationDate(): Date {
-        if (!this.motion || !this.motion.created) {
+        if (!this.motion.created) {
             return null;
         }
         return new Date(this.motion.created);
@@ -257,7 +256,7 @@ export class ViewMotion extends BaseProjectableModel {
      * @returns the date of the last change as Date object, null if empty
      */
     public get lastChangeDate(): Date {
-        if (!this.motion || !this.motion.last_modified) {
+        if (!this.motion.last_modified) {
             return null;
         }
         return new Date(this.motion.last_modified);
@@ -316,19 +315,19 @@ export class ViewMotion extends BaseProjectableModel {
     }
 
     public constructor(
-        motion?: Motion,
-        category?: Category,
-        submitters?: User[],
-        supporters?: User[],
-        workflow?: Workflow,
+        motion: Motion,
+        category?: ViewCategory,
+        submitters?: ViewUser[],
+        supporters?: ViewUser[],
+        workflow?: ViewWorkflow,
         state?: WorkflowState,
-        item?: Item,
-        block?: MotionBlock,
-        attachments?: Mediafile[],
-        tags?: Tag[],
-        parent?: Motion
+        item?: ViewItem,
+        block?: ViewMotionBlock,
+        attachments?: ViewMediafile[],
+        tags?: ViewTag[],
+        parent?: ViewMotion
     ) {
-        super();
+        super('Motion');
         this._motion = motion;
         this._category = category;
         this._submitters = submitters;
@@ -344,9 +343,51 @@ export class ViewMotion extends BaseProjectableModel {
 
     public getTitle(): string {
         if (this.identifier) {
-            return 'Motion ' + this.identifier;
+            return this.identifier + ': ' + this.title;
+        } else {
+            return this.title;
         }
-        return this.title;
+    }
+
+    public getAgendaItem(): ViewItem {
+        return this.item;
+    }
+
+    public getAgendaTitle(): string {
+        // if the identifier is set, the title will be 'Motion <identifier>'.
+        if (this.identifier) {
+            return 'Motion ' + this.identifier;
+        } else {
+            return this.getTitle();
+        }
+    }
+
+    public getAgendaTitleWithType(): string {
+        // Append the verbose name only, if not the special format 'Motion <identifier>' is used.
+        if (this.identifier) {
+            return 'Motion ' + this.identifier;
+        } else {
+            return this.getTitle() + ' (' + this.getVerboseName() + ')';
+        }
+    }
+
+    /**
+     * Formats the category for search
+     *
+     * TODO!!!!
+     *
+     * @override
+     */
+    public formatForSearch(): SearchRepresentation {
+        let searchValues = [this.title, this.text, this.reason];
+        if (this.amendment_paragraphs) {
+            searchValues = searchValues.concat(this.amendment_paragraphs.filter(x => !!x));
+        }
+        return searchValues;
+    }
+
+    public getDetailStateURL(): string {
+        return `/motions/${this.id}`;
     }
 
     /**
@@ -366,34 +407,23 @@ export class ViewMotion extends BaseProjectableModel {
      *
      * @param update
      */
-    public updateValues(update: BaseModel): void {
-        if (update instanceof Workflow) {
-            this.updateWorkflow(update as Workflow);
-        } else if (update instanceof Category) {
-            this.updateCategory(update as Category);
-        } else if (update instanceof Item) {
-            this.updateItem(update as Item);
-        } else if (update instanceof MotionBlock) {
+    public updateDependencies(update: BaseViewModel): void {
+        if (update instanceof ViewWorkflow) {
+            this.updateWorkflow(update);
+        } else if (update instanceof ViewCategory) {
+            this.updateCategory(update);
+        } else if (update instanceof ViewItem) {
+            this.updateItem(update);
+        } else if (update instanceof ViewMotionBlock) {
             this.updateMotionBlock(update);
-        } else if (update instanceof User) {
-            this.updateUser(update as User);
-        } else if (update instanceof Mediafile) {
-            this.updateAttachments(update as Mediafile);
-        } else if (update instanceof Tag) {
-            this.updateTags(update as Tag);
-        } else if (update instanceof Motion && update.id !== this.id) {
-            this.updateParent(update as Motion);
-        }
-    }
-
-    /**
-     * Update routine for the category
-     *
-     * @param category potentially the changed category. Needs manual verification
-     */
-    public updateCategory(category: Category): void {
-        if (this.motion && category.id === this.motion.category_id) {
-            this._category = category;
+        } else if (update instanceof ViewUser) {
+            this.updateUser(update);
+        } else if (update instanceof ViewMediafile) {
+            this.updateAttachments(update);
+        } else if (update instanceof ViewTag) {
+            this.updateTags(update);
+        } else if (update instanceof ViewMotion && update.id !== this.id) {
+            this.updateParent(update);
         }
     }
 
@@ -402,10 +432,21 @@ export class ViewMotion extends BaseProjectableModel {
      *
      * @param workflow potentially the (changed workflow (state). Needs manual verification
      */
-    public updateWorkflow(workflow: Workflow): void {
-        if (this.motion && workflow.id === this.motion.workflow_id) {
+    public updateWorkflow(workflow: ViewWorkflow): void {
+        if (workflow.id === this.motion.workflow_id) {
             this._workflow = workflow;
             this._state = workflow.getStateById(this.state_id);
+        }
+    }
+
+    /**
+     * Update routine for the category
+     *
+     * @param category potentially the changed category. Needs manual verification
+     */
+    public updateCategory(category: ViewCategory): void {
+        if (this.category_id && category.id === this.motion.category_id) {
+            this._category = category;
         }
     }
 
@@ -414,8 +455,8 @@ export class ViewMotion extends BaseProjectableModel {
      *
      * @param item potentially the changed agenda Item. Needs manual verification
      */
-    public updateItem(item: Item): void {
-        if (this.motion && item.id === this.motion.agenda_item_id) {
+    public updateItem(item: ViewItem): void {
+        if (item.id === this.motion.agenda_item_id) {
             this._item = item;
         }
     }
@@ -425,8 +466,8 @@ export class ViewMotion extends BaseProjectableModel {
      *
      * @param block potentially the changed motion block. Needs manual verification
      */
-    public updateMotionBlock(block: MotionBlock): void {
-        if (this.motion && block.id === this.motion.motion_block_id) {
+    public updateMotionBlock(block: ViewMotionBlock): void {
+        if (this.motion_block_id && block.id === this.motion.motion_block_id) {
             this._block = block;
         }
     }
@@ -436,47 +477,39 @@ export class ViewMotion extends BaseProjectableModel {
      *
      * @param update potentially the changed agenda Item. Needs manual verification
      */
-    public updateUser(update: User): void {
-        if (this.motion) {
-            if (this.motion.submitters && this.motion.submitters.findIndex(user => user.user_id === update.id)) {
-                const userIndex = this.submitters.findIndex(user => user.id === update.id);
-                this.submitters[userIndex] = update as User;
-            }
-            if (this.motion.supporters_id && this.motion.supporters_id.includes(update.id)) {
-                const userIndex = this.supporters.findIndex(user => user.id === update.id);
-                this.supporters[userIndex] = update as User;
-            }
+    public updateUser(update: ViewUser): void {
+        if (this.motion.submitters && this.motion.submitters.findIndex(user => user.user_id === update.id)) {
+            const userIndex = this.submitters.findIndex(user => user.id === update.id);
+            this.submitters[userIndex] = update;
+        }
+        if (this.motion.supporters_id && this.motion.supporters_id.includes(update.id)) {
+            const userIndex = this.supporters.findIndex(user => user.id === update.id);
+            this.supporters[userIndex] = update;
         }
     }
 
     /**
      * Update routine for attachments
      *
-     * @param update
+     * @param mediafile
      */
-    public updateAttachments(update: Mediafile): void {
-        if (this.motion) {
-            if (this.attachments_id && this.attachments_id.includes(update.id)) {
-                const attachmentIndex = this.attachments.findIndex(mediafile => mediafile.id === update.id);
-                this.attachments[attachmentIndex] = update as Mediafile;
-            }
+    public updateAttachments(mediafile: ViewMediafile): void {
+        if (this.attachments_id && this.attachments_id.includes(mediafile.id)) {
+            const attachmentIndex = this.attachments.findIndex(_mediafile => _mediafile.id === mediafile.id);
+            this.attachments[attachmentIndex] = mediafile;
         }
     }
 
-    public updateTags(update: Tag): void {
-        if (this.motion) {
-            if (this.tags_id && this.tags_id.includes(update.id)) {
-                const tagIndex = this.tags.findIndex(tag => tag.id === update.id);
-                this.tags[tagIndex] = update as Tag;
-            }
+    public updateTags(tag: ViewTag): void {
+        if (this.tags_id && this.tags_id.includes(tag.id)) {
+            const tagIndex = this.tags.findIndex(_tag => _tag.id === tag.id);
+            this.tags[tagIndex] = tag;
         }
     }
 
-    public updateParent(update: Motion): void {
-        if (this.motion) {
-            if (this.parent_id && this.parent_id === update.id) {
-                this._parent = update as Motion;
-            }
+    public updateParent(parent: ViewMotion): void {
+        if (this.parent_id && this.parent_id === parent.id) {
+            this._parent = parent;
         }
     }
 

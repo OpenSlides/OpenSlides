@@ -117,13 +117,15 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
     }
 
     public getElementDescription(element: ProjectorElement): string {
-        if (!this.slideManager.canSlideBeMappedToModel(element.name)) {
-            return this.slideManager.getSlideVerboseName(element.name);
-        } else {
+        if (this.slideManager.canSlideBeMappedToModel(element.name)) {
             const idElement = this.slideManager.getIdentifialbeProjectorElement(element);
-            const model = this.projectorService.getModelFromProjectorElement(idElement);
-            return model.getTitle();
+            const viewModel = this.projectorService.getViewModelFromProjectorElement(idElement);
+            if (viewModel) {
+                return viewModel.getTitle();
+            }
         }
+
+        return this.slideManager.getSlideVerboseName(element.name);
     }
 
     public isProjected(obj: Projectable): boolean {

@@ -1,14 +1,22 @@
 import { AppConfig } from '../../core/app-config';
 import { Item } from '../../shared/models/agenda/item';
 import { Topic } from '../../shared/models/topics/topic';
-import { AgendaRepositoryService } from 'app/core/repositories/agenda/agenda-repository.service';
+import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { TopicRepositoryService } from 'app/core/repositories/agenda/topic-repository.service';
+import { ViewTopic } from './models/view-topic';
+import { ViewItem } from './models/view-item';
 
 export const AgendaAppConfig: AppConfig = {
     name: 'agenda',
     models: [
-        { collectionString: 'agenda/item', model: Item, repository: AgendaRepositoryService },
-        { collectionString: 'topics/topic', model: Topic, searchOrder: 1, repository: TopicRepositoryService }
+        { collectionString: 'agenda/item', model: Item, viewModel: ViewItem, repository: ItemRepositoryService },
+        {
+            collectionString: 'topics/topic',
+            model: Topic,
+            viewModel: ViewTopic,
+            searchOrder: 1,
+            repository: TopicRepositoryService
+        }
     ],
     mainMenuEntries: [
         {

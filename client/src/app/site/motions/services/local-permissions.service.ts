@@ -67,14 +67,14 @@ export class LocalPermissionsService {
                     this.operator.hasPerms('motions.can_support') &&
                     this.configMinSupporters > 0 &&
                     motion.state.allow_support &&
-                    motion.submitters.indexOf(this.operator.user) === -1 &&
-                    motion.supporters.indexOf(this.operator.user) === -1
+                    motion.submitters.indexOf(this.operator.viewUser) === -1 &&
+                    motion.supporters.indexOf(this.operator.viewUser) === -1
                 );
             case 'unsupport':
                 if (!motion) {
                     return false;
                 }
-                return motion.state.allow_support && motion.supporters.indexOf(this.operator.user) !== -1;
+                return motion.state.allow_support && motion.supporters.indexOf(this.operator.viewUser) !== -1;
             case 'createpoll':
                 if (!motion) {
                     return false;

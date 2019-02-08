@@ -385,7 +385,7 @@
         <div *ngIf="!editMotion && amendments && amendments.length > 0">
             <h4 translate>Amendments</h4>
             <div *ngFor="let amendment of amendments">
-                <a [routerLink]="amendment.motion.getDetailStateURL()">{{ amendment.identifierOrTitle }}</a>
+                <a [routerLink]="amendment.getDetailStateURL()">{{ amendment.identifierOrTitle }}</a>
             </div>
         </div>
 

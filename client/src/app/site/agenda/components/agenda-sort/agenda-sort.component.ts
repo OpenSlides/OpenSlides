@@ -5,7 +5,7 @@ import { MatSnackBar } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 
-import { AgendaRepositoryService } from 'app/core/repositories/agenda/agenda-repository.service';
+import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { BaseViewComponent } from '../../../base/base-view';
 import { OSTreeSortEvent } from 'app/shared/components/sorting-tree/sorting-tree.component';
 import { ViewItem } from '../../models/view-item';
@@ -39,7 +39,7 @@ export class AgendaSortComponent extends BaseViewComponent {
         title: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
-        private agendaRepo: AgendaRepositoryService
+        private agendaRepo: ItemRepositoryService
     ) {
         super(title, translate, matSnackBar);
         this.itemsObservable = this.agendaRepo.getViewModelListObservable();

@@ -9,6 +9,8 @@ import { Group } from 'app/shared/models/users/group';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
 import { HttpService } from 'app/core/core-services/http.service';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { ViewGroup } from 'app/site/users/models/view-group';
 
 /**
  * Repository Services for Categories
@@ -38,12 +40,13 @@ export class MotionCommentSectionRepositoryService extends BaseRepository<
      * @param http Service to handle direct http-communication
      */
     public constructor(
+        DS: DataStoreService,
         mapperService: CollectionStringMapperService,
-        protected DS: DataStoreService,
+        viewModelStoreService: ViewModelStoreService,
         private dataSend: DataSendService,
         private http: HttpService
     ) {
-        super(DS, mapperService, MotionCommentSection, [Group]);
+        super(DS, mapperService, viewModelStoreService, MotionCommentSection, [Group]);
     }
 
     /**
@@ -53,9 +56,9 @@ export class MotionCommentSectionRepositoryService extends BaseRepository<
      * @returns the View Model representation of the MotionCommentSection
      */
     protected createViewModel(section: MotionCommentSection): ViewMotionCommentSection {
-        const read_groups = this.DS.getMany(Group, section.read_groups_id);
-        const write_groups = this.DS.getMany(Group, section.write_groups_id);
-        return new ViewMotionCommentSection(section, read_groups, write_groups);
+        const readGroups = this.viewModelStoreService.getMany(ViewGroup, section.read_groups_id);
+        const writeGroups = this.viewModelStoreService.getMany(ViewGroup, section.write_groups_id);
+        return new ViewMotionCommentSection(section, readGroups, writeGroups);
     }
 
     /**

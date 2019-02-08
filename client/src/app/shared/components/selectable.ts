@@ -1,4 +1,4 @@
-import { Displayable } from '../models/base/displayable';
+import { Displayable } from '../../site/base/displayable';
 import { Identifiable } from '../models/base/identifiable';
 
 /**

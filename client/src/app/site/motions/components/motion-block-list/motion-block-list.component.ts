@@ -9,12 +9,12 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { ListViewBaseComponent } from 'app/site/base/list-view-base';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
-import { Item, itemVisibilityChoices } from 'app/shared/models/agenda/item';
-import { DataStoreService } from 'app/core/core-services/data-store.service';
+import { itemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
 import { ViewMotionBlock } from '../../models/view-motion-block';
-import { AgendaRepositoryService } from 'app/core/repositories/agenda/agenda-repository.service';
+import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
+import { ViewItem } from 'app/site/agenda/models/view-item';
 
 /**
  * Table for the motion blocks
@@ -38,7 +38,7 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
     /**
      * Holds the agenda items to select the parent item
      */
-    public items: BehaviorSubject<Item[]>;
+    public items: BehaviorSubject<ViewItem[]>;
 
     /**
      * Determine the default agenda visibility
@@ -71,10 +71,10 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
         private router: Router,
         private route: ActivatedRoute,
         private repo: MotionBlockRepositoryService,
-        private agendaRepo: AgendaRepositoryService,
-        private DS: DataStoreService,
+        private agendaRepo: ItemRepositoryService,
         private formBuilder: FormBuilder,
-        private promptService: PromptService
+        private promptService: PromptService,
+        private itemRepo: ItemRepositoryService
     ) {
         super(titleService, translate, matSnackBar);
 
@@ -92,13 +92,8 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
         super.setTitle('Motion Blocks');
         this.initTable();
 
-        this.items = new BehaviorSubject(this.DS.getAll(Item));
-
-        this.DS.changeObservable.subscribe(model => {
-            if (model instanceof Item) {
-                this.items.next(this.DS.getAll(Item));
-            }
-        });
+        this.items = new BehaviorSubject(this.itemRepo.getViewModelList());
+        this.itemRepo.getViewModelListObservable().subscribe(items => this.items.next(items));
 
         this.repo.getViewModelListObservable().subscribe(newMotionblocks => {
             newMotionblocks.sort((a, b) => (a > b ? 1 : -1));

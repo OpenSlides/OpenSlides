@@ -1,71 +1,112 @@
-import { BaseViewModel } from '../../base/base-view-model';
 import { Topic } from 'app/shared/models/topics/topic';
-import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
-import { Item } from 'app/shared/models/agenda/item';
-import { BaseModel } from 'app/shared/models/base/base-model';
+import { BaseAgendaViewModel } from 'app/site/base/base-agenda-view-model';
+import { SearchRepresentation } from 'app/core/ui-services/search.service';
+import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
+import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
+import { ViewItem } from './view-item';
+import { BaseViewModel } from 'app/site/base/base-view-model';
 
 /**
  * Provides "safe" access to topic with all it's components
  * @ignore
  */
-export class ViewTopic extends BaseViewModel {
+export class ViewTopic extends BaseAgendaViewModel {
     protected _topic: Topic;
-    private _attachments: Mediafile[];
-    private _agenda_item: Item;
+    private _attachments: ViewMediafile[];
+    private _agendaItem: ViewItem;
 
     public get topic(): Topic {
         return this._topic;
     }
 
-    public get attachments(): Mediafile[] {
+    public get attachments(): ViewMediafile[] {
         return this._attachments;
     }
 
-    public get agenda_item(): Item {
-        return this._agenda_item;
+    public get agendaItem(): ViewItem {
+        return this._agendaItem;
     }
 
     public get id(): number {
-        return this.topic ? this.topic.id : null;
+        return this.topic.id;
     }
 
     public get agenda_item_id(): number {
-        return this.topic ? this.topic.agenda_item_id : null;
+        return this.topic.agenda_item_id;
     }
 
     public get attachments_id(): number[] {
-        return this.topic ? this.topic.attachments_id : null;
+        return this.topic.attachments_id;
     }
 
     public get title(): string {
-        return this.topic ? this.topic.title : null;
+        return this.topic.title;
     }
 
     public get text(): string {
-        return this.topic ? this.topic.text : null;
+        return this.topic.text;
     }
 
-    public constructor(topic?: Topic, attachments?: Mediafile[], item?: Item) {
-        super();
+    public constructor(topic: Topic, attachments?: ViewMediafile[], item?: ViewItem) {
+        super('Topic');
         this._topic = topic;
         this._attachments = attachments;
-        this._agenda_item = item;
+        this._agendaItem = item;
     }
 
     public getTitle(): string {
         return this.title;
     }
 
+    public getAgendaItem(): ViewItem {
+        return this.agendaItem;
+    }
+
+    public getAgendaTitleWithType(): string {
+        // Do not append ' (Topic)' to the title.
+        return this.getAgendaTitle();
+    }
+
+    /**
+     * Formats the category for search
+     *
+     * @override
+     */
+    public formatForSearch(): SearchRepresentation {
+        return [this.title, this.text];
+    }
+
+    public getDetailStateURL(): string {
+        return `/agenda/topics/${this.id}`;
+    }
+
+    /**
+     * Returns the text to be inserted in csv exports
+     * @override
+     */
+    public getCSVExportText(): string {
+        return this.text;
+    }
+
+    public getSlide(): ProjectorElementBuildDeskriptor {
+        throw new Error('TODO');
+    }
+
     public hasAttachments(): boolean {
         return this.attachments && this.attachments.length > 0;
     }
 
-    public updateValues(update: BaseModel): void {
-        if (update instanceof Mediafile) {
-            if (this.topic && this.attachments_id && this.attachments_id.includes(update.id)) {
-                const attachmentIndex = this.attachments.findIndex(mediafile => mediafile.id === update.id);
-                this.attachments[attachmentIndex] = update as Mediafile;
+    public updateDependencies(update: BaseViewModel): void {
+        if (update instanceof ViewMediafile && this.attachments_id.includes(update.id)) {
+            const attachmentIndex = this.attachments.findIndex(mediafile => mediafile.id === update.id);
+            if (attachmentIndex < 0) {
+                this.attachments.push(update);
+            } else {
+                this.attachments[attachmentIndex] = update;
             }
+        }
+        if (update instanceof ViewItem && this.agenda_item_id === update.id) {
+            this._agendaItem = update;
         }
     }
 }

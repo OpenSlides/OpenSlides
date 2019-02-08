@@ -4,6 +4,7 @@ import { ManageSubmittersComponent } from './manage-submitters.component';
 import { E2EImportsModule } from 'e2e-imports.module';
 import { ViewChild, Component } from '@angular/core';
 import { ViewMotion } from '../../models/view-motion';
+import { Motion } from 'app/shared/models/motions/motion';
 
 describe('ManageSubmittersComponent', () => {
     @Component({
@@ -31,7 +32,7 @@ describe('ManageSubmittersComponent', () => {
     });
 
     it('should create', () => {
-        const motion = new ViewMotion();
+        const motion = new ViewMotion(new Motion());
         hostComponent.manageSubmitterComponent.motion = motion;
 
         hostFixture.detectChanges();

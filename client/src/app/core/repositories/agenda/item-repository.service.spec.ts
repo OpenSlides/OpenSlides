@@ -1,17 +1,17 @@
 import { TestBed, inject } from '@angular/core/testing';
 
-import { AgendaRepositoryService } from './agenda-repository.service';
+import { ItemRepositoryService } from './item-repository.service';
 import { E2EImportsModule } from 'e2e-imports.module';
 
-describe('AgendaRepositoryService', () => {
+describe('ItemRepositoryService', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [E2EImportsModule],
-            providers: [AgendaRepositoryService]
+            providers: [ItemRepositoryService]
         });
     });
 
-    it('should be created', inject([AgendaRepositoryService], (service: AgendaRepositoryService) => {
+    it('should be created', inject([ItemRepositoryService], (service: ItemRepositoryService) => {
         expect(service).toBeTruthy();
     }));
 });

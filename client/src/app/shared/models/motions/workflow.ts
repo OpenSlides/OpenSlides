@@ -6,17 +6,15 @@ import { WorkflowState } from './workflow-state';
  * @ignore
  */
 export class Workflow extends BaseModel<Workflow> {
+    public static COLLECTIONSTRING = 'motions/workflow';
+
     public id: number;
     public name: string;
     public states: WorkflowState[];
     public first_state_id: number;
 
-    public get firstState(): WorkflowState {
-        return this.getStateById(this.first_state_id);
-    }
-
     public constructor(input?: any) {
-        super('motions/workflow', 'Workflow', input);
+        super(Workflow.COLLECTIONSTRING, input);
     }
 
     /**
@@ -38,10 +36,6 @@ export class Workflow extends BaseModel<Workflow> {
         });
     }
 
-    public getStateById(id: number): WorkflowState {
-        return this.states.find(state => state.id === id);
-    }
-
     public deserialize(input: any): void {
         Object.assign(this, input);
         if (input.states instanceof Array) {
@@ -50,9 +44,5 @@ export class Workflow extends BaseModel<Workflow> {
                 this.states.push(new WorkflowState(workflowStateData));
             });
         }
-    }
-
-    public getTitle(): string {
-        return this.name;
     }
 }

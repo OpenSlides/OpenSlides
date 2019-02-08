@@ -6,6 +6,7 @@ import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
 import { ViewCountdown } from 'app/site/projector/models/view-countdown';
 import { Countdown } from 'app/shared/models/core/countdown';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 
 @Injectable({
     providedIn: 'root'
@@ -14,9 +15,10 @@ export class CountdownRepositoryService extends BaseRepository<ViewCountdown, Co
     public constructor(
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
+        viewModelStoreService: ViewModelStoreService,
         private dataSend: DataSendService
     ) {
-        super(DS, mapperService, Countdown);
+        super(DS, mapperService, viewModelStoreService, Countdown);
     }
 
     protected createViewModel(countdown: Countdown): ViewCountdown {

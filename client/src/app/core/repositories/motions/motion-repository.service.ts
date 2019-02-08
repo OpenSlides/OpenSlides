@@ -19,19 +19,27 @@ import { LinenumberingService } from '../../ui-services/linenumbering.service';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { Motion } from 'app/shared/models/motions/motion';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
-import { MotionChangeReco } from 'app/shared/models/motions/motion-change-reco';
+import { MotionChangeRecommendation } from 'app/shared/models/motions/motion-change-reco';
 import { MotionPoll } from 'app/shared/models/motions/motion-poll';
 import { OSTreeSortEvent } from 'app/shared/components/sorting-tree/sorting-tree.component';
 import { PersonalNoteService } from '../../ui-services/personal-note.service';
 import { TreeService } from 'app/core/ui-services/tree.service';
-import { User } from '../../../shared/models/users/user';
-import { ViewChangeReco } from '../../../site/motions/models/view-change-reco';
-import { ViewMotionAmendedParagraph } from '../../../site/motions/models/view-motion-amended-paragraph';
-import { ViewUnifiedChange } from '../../../site/motions/models/view-unified-change';
-import { ViewStatuteParagraph } from '../../../site/motions/models/view-statute-paragraph';
-import { Workflow } from '../../../shared/models/motions/workflow';
-import { WorkflowState } from '../../../shared/models/motions/workflow-state';
+import { User } from 'app/shared/models/users/user';
+import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-change-recommendation';
+import { ViewMotionAmendedParagraph } from 'app/site/motions/models/view-motion-amended-paragraph';
+import { ViewUnifiedChange } from 'app/site/motions/models/view-unified-change';
+import { ViewStatuteParagraph } from 'app/site/motions/models/view-statute-paragraph';
+import { Workflow } from 'app/shared/models/motions/workflow';
+import { WorkflowState } from 'app/shared/models/motions/workflow-state';
 import { Tag } from 'app/shared/models/core/tag';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { ViewCategory } from 'app/site/motions/models/view-category';
+import { ViewUser } from 'app/site/users/models/view-user';
+import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
+import { ViewItem } from 'app/site/agenda/models/view-item';
+import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
+import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
+import { ViewTag } from 'app/site/tags/models/view-tag';
 
 /**
  * Repository Services for motions (and potentially categories)
@@ -64,6 +72,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
     public constructor(
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
+        viewModelStoreService: ViewModelStoreService,
         private dataSend: DataSendService,
         private httpService: HttpService,
         private readonly lineNumbering: LinenumberingService,
@@ -72,7 +81,15 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         private personalNoteService: PersonalNoteService,
         private translate: TranslateService
     ) {
-        super(DS, mapperService, Motion, [Category, User, Workflow, Item, MotionBlock, Mediafile, Tag]);
+        super(DS, mapperService, viewModelStoreService, Motion, [
+            Category,
+            User,
+            Workflow,
+            Item,
+            MotionBlock,
+            Mediafile,
+            Tag
+        ]);
     }
 
     /**
@@ -84,15 +101,15 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      * @param motion blank motion domain object
      */
     protected createViewModel(motion: Motion): ViewMotion {
-        const category = this.DS.get(Category, motion.category_id);
-        const submitters = this.DS.getMany(User, motion.submitterIds);
-        const supporters = this.DS.getMany(User, motion.supporters_id);
-        const workflow = this.DS.get(Workflow, motion.workflow_id);
-        const item = this.DS.get(Item, motion.agenda_item_id);
-        const block = this.DS.get(MotionBlock, motion.motion_block_id);
-        const attachments = this.DS.getMany(Mediafile, motion.attachments_id);
-        const tags = this.DS.getMany(Tag, motion.tags_id);
-        const parent = this.DS.get(Motion, motion.parent_id);
+        const category = this.viewModelStoreService.get(ViewCategory, motion.category_id);
+        const submitters = this.viewModelStoreService.getMany(ViewUser, motion.submitterIds);
+        const supporters = this.viewModelStoreService.getMany(ViewUser, motion.supporters_id);
+        const workflow = this.viewModelStoreService.get(ViewWorkflow, motion.workflow_id);
+        const item = this.viewModelStoreService.get(ViewItem, motion.agenda_item_id);
+        const block = this.viewModelStoreService.get(ViewMotionBlock, motion.motion_block_id);
+        const attachments = this.viewModelStoreService.getMany(ViewMediafile, motion.attachments_id);
+        const tags = this.viewModelStoreService.getMany(ViewTag, motion.tags_id);
+        const parent = this.viewModelStoreService.get(ViewMotion, motion.parent_id);
         let state: WorkflowState = null;
         if (workflow) {
             state = workflow.getStateById(motion.state_id);
@@ -260,7 +277,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      * @param viewMotion The motion to change the submitters from
      * @param submitters The submitters to set
      */
-    public async setSubmitters(viewMotion: ViewMotion, submitters: User[]): Promise<void> {
+    public async setSubmitters(viewMotion: ViewMotion, submitters: ViewUser[]): Promise<void> {
         const requestData = {
             motions: [
                 {
@@ -527,8 +544,8 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         motionId: number,
         lineRange: LineRange,
         lineLength: number
-    ): ViewChangeReco {
-        const changeReco = new MotionChangeReco();
+    ): ViewMotionChangeRecommendation {
+        const changeReco = new MotionChangeRecommendation();
         changeReco.line_from = lineRange.from;
         changeReco.line_to = lineRange.to;
         changeReco.type = ModificationType.TYPE_REPLACEMENT;
@@ -536,7 +553,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         changeReco.rejected = false;
         changeReco.motion_id = motionId;
 
-        return new ViewChangeReco(changeReco);
+        return new ViewMotionChangeRecommendation(changeReco);
     }
 
     /**

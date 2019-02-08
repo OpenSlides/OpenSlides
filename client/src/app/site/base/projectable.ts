@@ -1,4 +1,4 @@
-import { Displayable } from 'app/shared/models/base/displayable';
+import { Displayable } from 'app/site/base/displayable';
 import { IdentifiableProjectorElement } from 'app/shared/models/core/projector';
 import { SlideOptions } from './slide-options';
 

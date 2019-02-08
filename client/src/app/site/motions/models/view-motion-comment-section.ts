@@ -1,7 +1,6 @@
 import { BaseViewModel } from '../../base/base-view-model';
 import { MotionCommentSection } from 'app/shared/models/motions/motion-comment-section';
-import { Group } from 'app/shared/models/users/group';
-import { BaseModel } from 'app/shared/models/base/base-model';
+import { ViewGroup } from 'app/site/users/models/view-group';
 
 /**
  * Motion comment section class for the View
@@ -13,46 +12,46 @@ import { BaseModel } from 'app/shared/models/base/base-model';
 export class ViewMotionCommentSection extends BaseViewModel {
     private _section: MotionCommentSection;
 
-    private _read_groups: Group[];
-    private _write_groups: Group[];
+    private _readGroups: ViewGroup[];
+    private _writeGroups: ViewGroup[];
 
     public get section(): MotionCommentSection {
         return this._section;
     }
 
     public get id(): number {
-        return this.section ? this.section.id : null;
+        return this.section.id;
     }
 
     public get name(): string {
-        return this.section ? this.section.name : null;
+        return this.section.name;
     }
 
     public get read_groups_id(): number[] {
-        return this.section ? this.section.read_groups_id : [];
+        return this.section.read_groups_id;
     }
 
     public get write_groups_id(): number[] {
-        return this.section ? this.section.write_groups_id : [];
+        return this.section.write_groups_id;
     }
 
-    public get read_groups(): Group[] {
-        return this._read_groups;
+    public get read_groups(): ViewGroup[] {
+        return this._readGroups;
     }
 
-    public get write_groups(): Group[] {
-        return this._write_groups;
+    public get write_groups(): ViewGroup[] {
+        return this._writeGroups;
     }
 
     public set name(name: string) {
         this._section.name = name;
     }
 
-    public constructor(section: MotionCommentSection, read_groups: Group[], write_groups: Group[]) {
-        super();
+    public constructor(section: MotionCommentSection, readGroups: ViewGroup[], writeGroups: ViewGroup[]) {
+        super('Comment section');
         this._section = section;
-        this._read_groups = read_groups;
-        this._write_groups = write_groups;
+        this._readGroups = readGroups;
+        this._writeGroups = writeGroups;
     }
 
     public getTitle(): string {
@@ -63,22 +62,21 @@ export class ViewMotionCommentSection extends BaseViewModel {
      * Updates the local objects if required
      * @param section
      */
-    public updateValues(update: BaseModel): void {
-        if (update instanceof MotionCommentSection) {
-            this._section = update as MotionCommentSection;
-        }
-        if (update instanceof Group) {
-            this.updateGroup(update as Group);
+    public updateDependencies(update: BaseViewModel): void {
+        if (update instanceof ViewGroup) {
+            this.updateGroup(update);
         }
     }
 
     // TODO: Implement updating of groups
-    public updateGroup(group: Group): void {}
+    public updateGroup(group: ViewGroup): void {
+        console.log('implement update group of motion comment section');
+    }
 
     /**
      * Duplicate this motion into a copy of itself
      */
     public copy(): ViewMotionCommentSection {
-        return new ViewMotionCommentSection(this._section, this._read_groups, this._write_groups);
+        return new ViewMotionCommentSection(this._section, this._readGroups, this._writeGroups);
     }
 }

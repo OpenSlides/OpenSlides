@@ -17,6 +17,8 @@ import {
 import { HttpService } from './http.service';
 import { SlideManager } from 'app/slides/services/slide-manager.service';
 import { BaseModel } from 'app/shared/models/base/base-model';
+import { BaseViewModel } from 'app/site/base/base-view-model';
+import { ViewModelStoreService } from './view-model-store.service';
 
 /**
  * This service cares about Projectables being projected and manage all projection-related
@@ -34,7 +36,12 @@ export class ProjectorService extends OpenSlidesComponent {
      * @param DS
      * @param dataSend
      */
-    public constructor(private DS: DataStoreService, private http: HttpService, private slideManager: SlideManager) {
+    public constructor(
+        private DS: DataStoreService,
+        private http: HttpService,
+        private slideManager: SlideManager,
+        private viewModelStore: ViewModelStoreService
+    ) {
         super();
     }
 
@@ -222,13 +229,12 @@ export class ProjectorService extends OpenSlidesComponent {
     }
 
     /**
-     * Returns a model associated with the identifiable projector element. Throws an error,
-     * if the element is not mappable.
+     * Asserts, that the given element is mappable to a model or view model.
+     * Throws an error, if this assertion fails.
      *
-     * @param element The projector element
-     * @returns the model from the projector element
+     * @param element The element to check
      */
-    public getModelFromProjectorElement<T extends BaseModel>(element: IdentifiableProjectorElement): T {
+    private assertElementIsMappable(element: IdentifiableProjectorElement): void {
         if (!this.slideManager.canSlideBeMappedToModel(element.name)) {
             throw new Error('This projector element cannot be mapped to a model');
         }
@@ -236,7 +242,30 @@ export class ProjectorService extends OpenSlidesComponent {
         if (!identifiers.includes('name') || !identifiers.includes('id')) {
             throw new Error('To map this element to a model, a name and id is needed.');
         }
+    }
+
+    /**
+     * Returns a model associated with the identifiable projector element. Throws an error,
+     * if the element is not mappable.
+     *
+     * @param element The projector element
+     * @returns the model from the projector element
+     */
+    public getModelFromProjectorElement<T extends BaseModel>(element: IdentifiableProjectorElement): T {
+        this.assertElementIsMappable(element);
         return this.DS.get<T>(element.name, element.id);
+    }
+
+    /**
+     * Returns a view model associated with the identifiable projector element. Throws an error,
+     * if the element is not mappable.
+     *
+     * @param element The projector element
+     * @returns the view model from the projector element
+     */
+    public getViewModelFromProjectorElement<T extends BaseViewModel>(element: IdentifiableProjectorElement): T {
+        this.assertElementIsMappable(element);
+        return this.viewModelStore.get<T>(element.name, element.id);
     }
 
     /**

@@ -49,12 +49,14 @@ export interface PersonalNoteObject {
  * @ignore
  */
 export class PersonalNote extends BaseModel<PersonalNote> implements PersonalNoteObject {
+    public static COLLECTIONSTRING = 'users/personal-note';
+
     public id: number;
     public user_id: number;
     public notes: PersonalNotesFormat;
 
     public constructor(input: any) {
-        super('users/personal-note', 'Personal note', input);
+        super(PersonalNote.COLLECTIONSTRING, input);
     }
 
     public getTitle(): string {

@@ -105,9 +105,11 @@ export class MotionPollComponent implements OnInit {
     public ngOnInit(): void {
         this.poll = new MotionPoll(this.rawPoll);
         this.motionRepo.getViewModelObservable(this.poll.motion_id).subscribe(viewmotion => {
-            const updatePoll = viewmotion.motion.polls.find(poll => poll.id === this.poll.id);
-            if (updatePoll) {
-                this.poll = new MotionPoll(updatePoll);
+            if (viewmotion) {
+                const updatePoll = viewmotion.motion.polls.find(poll => poll.id === this.poll.id);
+                if (updatePoll) {
+                    this.poll = new MotionPoll(updatePoll);
+                }
             }
         });
     }
