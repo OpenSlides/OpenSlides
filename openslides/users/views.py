@@ -141,18 +141,29 @@ class UserViewSet(ModelViewSet):
     def reset_password(self, request, pk=None):
         """
         View to reset the password using the requested password.
+        If update_defualt_password=True is given, the new password will also be set
+        as the default_password.
         """
         user = self.get_object()
-        if isinstance(request.data.get("password"), str):
-            try:
-                validate_password(request.data.get("password"), user=request.user)
-            except DjangoValidationError as errors:
-                raise ValidationError({"detail": " ".join(errors)})
-            user.set_password(request.data.get("password"))
-            user.save()
-            return Response({"detail": "Password successfully reset."})
+        password = request.data.get("password")
+        if not isinstance(password, str):
+            raise ValidationError({"detail": "Password has to be a string."})
 
-        raise ValidationError({"detail": "Password has to be a string."})
+        update_default_password = request.data.get("update_default_password", False)
+        if not isinstance(update_default_password, bool):
+            raise ValidationError(
+                {"detail": "update_default_password has to be a boolean."}
+            )
+
+        try:
+            validate_password(password, user=request.user)
+        except DjangoValidationError as errors:
+            raise ValidationError({"detail": " ".join(errors)})
+        user.set_password(password)
+        if update_default_password:
+            user.default_password = password
+        user.save()
+        return Response({"detail": "Password successfully reset."})
 
     @list_route(methods=["post"])
     @transaction.atomic
