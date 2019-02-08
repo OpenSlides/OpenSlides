@@ -1035,7 +1035,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * @param id Motion state id
      */
     public setState(id: number): void {
-        this.repo.setState(this.motion, id);
+        this.repo.setState(this.motion, id).then(null, this.raiseError);
     }
 
     /**

@@ -552,6 +552,8 @@ class MotionViewSet(ModelViewSet):
 
         Send PUT {'state': <state_id>} to set and just PUT {} to reset the
         state. Only managers can use this view.
+
+        If a state is given, it must be a next or previous state.
         """
         # Retrieve motion and state.
         motion = self.get_object()
@@ -570,7 +572,7 @@ class MotionViewSet(ModelViewSet):
                 raise ValidationError(
                     {"detail": "Invalid data. State must be an integer."}
                 )
-            if state_id not in [item.id for item in motion.state.next_states.all()]:
+            if not motion.state.is_next_or_previous_state_id(state_id):
                 raise ValidationError(
                     {"detail": f"You can not set the state to {state_id}."}
                 )

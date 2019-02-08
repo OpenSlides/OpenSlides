@@ -1176,6 +1176,14 @@ class State(RESTModelMixin, models.Model):
                     f"{state} can not be next state of {self} because it does not belong to the same workflow."
                 )
 
+    def is_next_or_previous_state_id(self, state_id):
+        """ Returns true, if the given state id is a valid next or previous state """
+        next_state_ids = [item.id for item in self.next_states.all()]
+        previous_state_ids = [
+            item.id for item in State.objects.filter(next_states__in=[self.id])
+        ]
+        return state_id in next_state_ids or state_id in previous_state_ids
+
     def get_root_rest_element(self):
         """
         Returns the workflow to this instance which is the root REST element.
