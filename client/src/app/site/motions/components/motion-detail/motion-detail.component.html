@@ -223,6 +223,9 @@
                 </button>
                 <div *ngIf="perms.isAllowed('change_metadata', motion)">
                     <mat-divider *ngIf="motion.nextStates.length > 0"></mat-divider>
+                    <button *ngFor="let state of motion.previousStates" mat-menu-item (click)="setState(state.id)">
+                        <mat-icon>arrow_back</mat-icon> {{ state.name | translate }} <span *ngIf="state.show_state_extension_field">&nbsp;...</span>
+                    </button>
                     <button mat-menu-item (click)="setState(null)">
                         <mat-icon>replay</mat-icon> {{ 'Reset state' | translate }}
                     </button>

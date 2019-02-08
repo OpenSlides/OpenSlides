@@ -45,13 +45,15 @@ export class WorkflowState extends Deserializer {
      * Also adds the current state.
      */
     public getNextStates(workflow: Workflow): WorkflowState[] {
-        const nextStates = [];
-        workflow.states.forEach(state => {
-            if (this.next_states_id.includes(state.id)) {
-                nextStates.push(state as WorkflowState);
-            }
+        return workflow.states.filter(state => {
+            return this.next_states_id.includes(state.id);
         });
-        return nextStates;
+    }
+
+    public getPreviousStates(workflow: Workflow): WorkflowState[] {
+        return workflow.states.filter(state => {
+            return state.next_states_id.includes(this.id);
+        });
     }
 
     public toString = (): string => {

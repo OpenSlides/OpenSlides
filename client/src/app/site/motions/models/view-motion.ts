@@ -194,6 +194,10 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
         return this.state && this.workflow ? this.state.getNextStates(this.workflow.workflow) : [];
     }
 
+    public get previousStates(): WorkflowState[] {
+        return this.state && this.workflow ? this.state.getPreviousStates(this.workflow.workflow) : [];
+    }
+
     public get item(): ViewItem {
         return this._item;
     }
