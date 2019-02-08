@@ -6,6 +6,7 @@ import { CollectionStringMapperService } from '../../core-services/collectionStr
 import { ProjectorMessage } from 'app/shared/models/core/projector-message';
 import { ViewProjectorMessage } from 'app/site/projector/models/view-projectormessage';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
     providedIn: 'root'
@@ -14,13 +15,18 @@ export class ProjectorMessageRepositoryService extends BaseRepository<ViewProjec
     public constructor(
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
-        viewModelStoreService: ViewModelStoreService
+        viewModelStoreService: ViewModelStoreService,
+        private translate: TranslateService
     ) {
         super(DS, mapperService, viewModelStoreService, ProjectorMessage);
     }
 
     protected createViewModel(message: ProjectorMessage): ViewProjectorMessage {
-        return new ViewProjectorMessage(message);
+        const viewProjectorMessage = new ViewProjectorMessage(message);
+        viewProjectorMessage.getVerboseName = (plural: boolean = false) => {
+            return this.translate.instant(plural ? 'Messages' : 'Message');
+        };
+        return viewProjectorMessage;
     }
 
     public async create(message: ProjectorMessage): Promise<Identifiable> {

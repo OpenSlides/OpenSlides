@@ -44,8 +44,13 @@ export class ViewAssignment extends BaseAgendaViewModel {
         return this.candidates ? this.candidates.length : 0;
     }
 
+    /**
+     * This is set by the repository
+     */
+    public getVerboseName;
+
     public constructor(assignment: Assignment, relatedUser?: ViewUser[], agendaItem?: ViewItem, tags?: ViewTag[]) {
-        super('Election');
+        super(Assignment.COLLECTIONSTRING);
         this._assignment = assignment;
         this._relatedUser = relatedUser;
         this._agendaItem = agendaItem;
@@ -60,9 +65,9 @@ export class ViewAssignment extends BaseAgendaViewModel {
         return this.agendaItem;
     }
 
-    public getTitle(): string {
+    public getTitle = () => {
         return this.assignment.title;
-    }
+    };
 
     public formatForSearch(): SearchRepresentation {
         throw new Error('TODO');

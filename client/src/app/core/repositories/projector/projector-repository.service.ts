@@ -9,6 +9,7 @@ import { ViewProjector } from 'app/site/projector/models/view-projector';
 import { Projector } from 'app/shared/models/core/projector';
 import { HttpService } from 'app/core/core-services/http.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Directions for scale and scroll requests.
@@ -39,9 +40,18 @@ export class ProjectorRepositoryService extends BaseRepository<ViewProjector, Pr
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
         private dataSend: DataSendService,
-        private http: HttpService
+        private http: HttpService,
+        private translate: TranslateService
     ) {
         super(DS, mapperService, viewModelStoreService, Projector);
+    }
+
+    public createViewModel(projector: Projector): ViewProjector {
+        const viewProjector = new ViewProjector(projector);
+        viewProjector.getVerboseName = (plural: boolean = false) => {
+            return this.translate.instant(plural ? 'Projectors' : 'Projector');
+        };
+        return viewProjector;
     }
 
     /**
@@ -71,10 +81,6 @@ export class ProjectorRepositoryService extends BaseRepository<ViewProjector, Pr
      */
     public async delete(projector: ViewProjector): Promise<void> {
         await this.dataSend.deleteModel(projector.projector);
-    }
-
-    public createViewModel(projector: Projector): ViewProjector {
-        return new ViewProjector(projector);
     }
 
     /**

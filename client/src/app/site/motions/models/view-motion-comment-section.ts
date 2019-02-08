@@ -47,16 +47,21 @@ export class ViewMotionCommentSection extends BaseViewModel {
         this._section.name = name;
     }
 
+    /**
+     * This is set by the repository
+     */
+    public getVerboseName;
+
     public constructor(section: MotionCommentSection, readGroups: ViewGroup[], writeGroups: ViewGroup[]) {
-        super('Comment section');
+        super(MotionCommentSection.COLLECTIONSTRING);
         this._section = section;
         this._readGroups = readGroups;
         this._writeGroups = writeGroups;
     }
 
-    public getTitle(): string {
+    public getTitle = () => {
         return this.name;
-    }
+    };
 
     /**
      * Updates the local objects if required

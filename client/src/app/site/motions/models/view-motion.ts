@@ -318,6 +318,21 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
         return this.personalNote && this.personalNote.note ? true : false;
     }
 
+    /**
+     * This is set by the repository
+     */
+    public getAgendaTitle;
+
+    /**
+     * This is set by the repository
+     */
+    public getAgendaTitleWithType;
+
+    /**
+     * This is set by the repository
+     */
+    public getVerboseName;
+
     public constructor(
         motion: Motion,
         category?: ViewCategory,
@@ -331,7 +346,7 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
         tags?: ViewTag[],
         parent?: ViewMotion
     ) {
-        super('Motion');
+        super(Motion.COLLECTIONSTRING);
         this._motion = motion;
         this._category = category;
         this._submitters = submitters;
@@ -345,34 +360,16 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
         this._parent = parent;
     }
 
-    public getTitle(): string {
+    public getTitle = () => {
         if (this.identifier) {
             return this.identifier + ': ' + this.title;
         } else {
             return this.title;
         }
-    }
+    };
 
     public getAgendaItem(): ViewItem {
         return this.item;
-    }
-
-    public getAgendaTitle(): string {
-        // if the identifier is set, the title will be 'Motion <identifier>'.
-        if (this.identifier) {
-            return 'Motion ' + this.identifier;
-        } else {
-            return this.getTitle();
-        }
-    }
-
-    public getAgendaTitleWithType(): string {
-        // Append the verbose name only, if not the special format 'Motion <identifier>' is used.
-        if (this.identifier) {
-            return 'Motion ' + this.identifier;
-        } else {
-            return this.getTitle() + ' (' + this.getVerboseName() + ')';
-        }
     }
 
     /**

@@ -1,5 +1,6 @@
-import { Selectable } from './selectable';
 import { TranslateService } from '@ngx-translate/core';
+
+import { Selectable } from './selectable';
 
 /**
  * Class to display an "empty" Selectable
@@ -19,20 +20,10 @@ export class EmptySelectable implements Selectable {
     /**
      * gets the title
      */
-    public getTitle(): string {
-        if (this.translate) {
-            return this.translate.instant('None');
-        }
-        return 'None';
-    }
+    public getTitle = () => (this.translate ? this.translate.instant('None') : 'None');
 
     /**
      * gets the list title
      */
-    public getListTitle(): string {
-        if (this.translate) {
-            return this.translate.instant('None');
-        }
-        return 'None';
-    }
+    public getListTitle = () => this.getTitle();
 }

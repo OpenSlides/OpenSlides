@@ -19,6 +19,7 @@ import { BaseAgendaViewModel } from 'app/site/base/base-agenda-view-model';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ViewUser } from 'app/site/users/models/view-user';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Repository service for users
@@ -46,9 +47,37 @@ export class ItemRepositoryService extends BaseRepository<ViewItem, Item> {
         private httpService: HttpService,
         private config: ConfigService,
         private dataSend: DataSendService,
-        private treeService: TreeService
+        private treeService: TreeService,
+        private translate: TranslateService
     ) {
         super(DS, mapperService, viewModelStoreService, Item);
+    }
+
+    protected setupDependencyObservation(): void {
+        this.DS.secondaryModelChangeSubject.subscribe(model => {
+            const viewModel = this.viewModelStoreService.get(model.collectionString, model.id);
+            const somethingChanged = this.getViewModelList().some(ownViewModel => {
+                return ownViewModel.updateDependencies(viewModel);
+            });
+            if (somethingChanged) {
+                this.updateAllObservables(model.id);
+            }
+        });
+    }
+
+    /**
+     * Creates the viewItem out of a given item
+     *
+     * @param item the item that should be converted to view item
+     * @returns a new view item
+     */
+    public createViewModel(item: Item): ViewItem {
+        const contentObject = this.getContentObject(item);
+        const viewItem = new ViewItem(item, contentObject);
+        viewItem.getVerboseName = (plural: boolean = false) => {
+            return this.translate.instant(plural ? 'Items' : 'Item');
+        };
+        return viewItem;
     }
 
     /**
@@ -214,17 +243,6 @@ export class ItemRepositoryService extends BaseRepository<ViewItem, Item> {
      */
     public async create(item: Item): Promise<Identifiable> {
         throw new Error('Method not implemented.');
-    }
-
-    /**
-     * Creates the viewItem out of a given item
-     *
-     * @param item the item that should be converted to view item
-     * @returns a new view item
-     */
-    public createViewModel(item: Item): ViewItem {
-        const contentObject = this.getContentObject(item);
-        return new ViewItem(item, contentObject);
     }
 
     /**

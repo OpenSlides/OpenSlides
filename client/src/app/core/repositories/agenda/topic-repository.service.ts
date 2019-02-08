@@ -13,6 +13,7 @@ import { CreateTopic } from 'app/site/agenda/models/create-topic';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewItem } from 'app/site/agenda/models/view-item';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Repository for topics
@@ -32,7 +33,8 @@ export class TopicRepositoryService extends BaseRepository<ViewTopic, Topic> {
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        private dataSend: DataSendService
+        private dataSend: DataSendService,
+        private translate: TranslateService
     ) {
         super(DS, mapperService, viewModelStoreService, Topic, [Mediafile, Item]);
     }
@@ -46,7 +48,11 @@ export class TopicRepositoryService extends BaseRepository<ViewTopic, Topic> {
     public createViewModel(topic: Topic): ViewTopic {
         const attachments = this.viewModelStoreService.getMany(ViewMediafile, topic.attachments_id);
         const item = this.viewModelStoreService.get(ViewItem, topic.agenda_item_id);
-        return new ViewTopic(topic, attachments, item);
+        const viewTopic = new ViewTopic(topic, attachments, item);
+        viewTopic.getVerboseName = (plural: boolean = false) => {
+            return this.translate.instant(plural ? 'Topics' : 'Topic');
+        };
+        return viewTopic;
     }
 
     /**

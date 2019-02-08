@@ -69,13 +69,18 @@ export class ViewHistory extends BaseViewModel {
     }
 
     /**
+     * This is set by the repository
+     */
+    public getVerboseName;
+
+    /**
      * Construction of a ViewHistory
      *
      * @param history the real history BaseModel
      * @param user the real user BaseModel
      */
     public constructor(history: History, user?: ViewUser) {
-        super('History');
+        super(History.COLLECTIONSTRING);
         this._history = history;
         this._user = user;
     }
@@ -112,9 +117,9 @@ export class ViewHistory extends BaseViewModel {
      *
      * @returns history.getTitle which returns the element_id
      */
-    public getTitle(): string {
+    public getTitle = () => {
         return this.element_id;
-    }
+    };
 
     /**
      * Updates the history object with new values

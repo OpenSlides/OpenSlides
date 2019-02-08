@@ -25,6 +25,8 @@ export const itemVisibilityChoices = [
  * @ignore
  */
 export class Item extends BaseModel<Item> {
+    public static COLLECTIONSTRING = 'agenda/item';
+
     public id: number;
     public item_number: string;
     public title: string;
@@ -41,7 +43,7 @@ export class Item extends BaseModel<Item> {
     public parent_id: number;
 
     public constructor(input?: any) {
-        super('agenda/item', input);
+        super(Item.COLLECTIONSTRING, input);
     }
 
     public deserialize(input: any): void {

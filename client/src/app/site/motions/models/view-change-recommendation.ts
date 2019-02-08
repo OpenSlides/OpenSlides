@@ -21,14 +21,19 @@ export class ViewMotionChangeRecommendation extends BaseViewModel implements Vie
         return this._changeRecommendation;
     }
 
+    /**
+     * This is set by the repository
+     */
+    public getVerboseName;
+
     public constructor(changeReco: MotionChangeRecommendation) {
-        super('Change recommendation');
+        super(MotionChangeRecommendation.COLLECTIONSTRING);
         this._changeRecommendation = changeReco;
     }
 
-    public getTitle(): string {
+    public getTitle = () => {
         return 'Changerecommendation';
-    }
+    };
 
     public updateDependencies(update: BaseViewModel): void {}
 

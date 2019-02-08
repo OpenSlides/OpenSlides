@@ -25,14 +25,19 @@ export class ViewTag extends BaseViewModel implements Searchable {
         return this.tag.name;
     }
 
+    /**
+     * This is set by the repository
+     */
+    public getVerboseName;
+
     public constructor(tag: Tag) {
-        super('Tag');
+        super(Tag.COLLECTIONSTRING);
         this._tag = tag;
     }
 
-    public getTitle(): string {
+    public getTitle = () => {
         return this.name;
-    }
+    };
 
     public formatForSearch(): SearchRepresentation {
         return [this.name];

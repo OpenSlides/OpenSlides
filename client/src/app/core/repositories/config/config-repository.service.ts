@@ -11,6 +11,7 @@ import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from 'app/core/core-services/collectionStringMapper.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { ViewConfig } from 'app/site/config/models/view-config';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Holds a single config item.
@@ -99,7 +100,8 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
         private constantsService: ConstantsService,
-        private http: HttpService
+        private http: HttpService,
+        private translate: TranslateService
     ) {
         super(DS, mapperService, viewModelStoreService, Config);
 
@@ -108,6 +110,18 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
             this.updateConfigStructure(...Object.values(this.viewModelStore));
             this.updateConfigListObservable();
         });
+    }
+
+    /**
+     * Creates a new ViewConfig of a given Config object
+     * @param config
+     */
+    public createViewModel(config: Config): ViewConfig {
+        const viewConfig = new ViewConfig(config);
+        viewConfig.getVerboseName = (plural: boolean = false) => {
+            return this.translate.instant(plural ? 'Configs' : 'Config');
+        };
+        return viewConfig;
     }
 
     /**
@@ -221,14 +235,6 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
      */
     public async create(config: Config): Promise<Identifiable> {
         throw new Error('Config variables cannot be created');
-    }
-
-    /**
-     * Creates a new ViewConfig of a given Config object
-     * @param config
-     */
-    public createViewModel(config: Config): ViewConfig {
-        return new ViewConfig(config);
     }
 
     /**

@@ -33,14 +33,19 @@ export class ViewWorkflow extends BaseViewModel {
         return this.getStateById(this.first_state_id);
     }
 
+    /**
+     * This is set by the repository
+     */
+    public getVerboseName;
+
     public constructor(workflow: Workflow) {
-        super('Workflow');
+        super(Workflow.COLLECTIONSTRING);
         this._workflow = workflow;
     }
 
-    public getTitle(): string {
+    public getTitle = () => {
         return this.name;
-    }
+    };
 
     /**
      * Duplicate this motion into a copy of itself

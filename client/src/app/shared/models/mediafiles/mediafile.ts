@@ -6,6 +6,7 @@ import { BaseModel } from '../base/base-model';
  * @ignore
  */
 export class Mediafile extends BaseModel<Mediafile> {
+    public static COLLECTIONSTRING = 'mediafiles/mediafile';
     public id: number;
     public title: string;
     public mediafile: File;
@@ -16,7 +17,7 @@ export class Mediafile extends BaseModel<Mediafile> {
     public timestamp: string;
 
     public constructor(input?: any) {
-        super('mediafiles/mediafile', input);
+        super(Mediafile.COLLECTIONSTRING, input);
     }
 
     public deserialize(input: any): void {

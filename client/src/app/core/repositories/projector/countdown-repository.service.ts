@@ -7,6 +7,7 @@ import { CollectionStringMapperService } from '../../core-services/collectionStr
 import { ViewCountdown } from 'app/site/projector/models/view-countdown';
 import { Countdown } from 'app/shared/models/core/countdown';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
     providedIn: 'root'
@@ -16,13 +17,18 @@ export class CountdownRepositoryService extends BaseRepository<ViewCountdown, Co
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        private dataSend: DataSendService
+        private dataSend: DataSendService,
+        private translate: TranslateService
     ) {
         super(DS, mapperService, viewModelStoreService, Countdown);
     }
 
     protected createViewModel(countdown: Countdown): ViewCountdown {
-        return new ViewCountdown(countdown);
+        const viewCountdown = new ViewCountdown(countdown);
+        viewCountdown.getVerboseName = (plural: boolean = false) => {
+            return this.translate.instant(plural ? 'Countdowns' : 'Countdown');
+        };
+        return viewCountdown;
     }
 
     public async create(countdown: Countdown): Promise<Identifiable> {

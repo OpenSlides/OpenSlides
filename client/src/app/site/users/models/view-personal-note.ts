@@ -12,14 +12,19 @@ export class ViewPersonalNote extends BaseViewModel {
         return this.personalNote ? this.personalNote.id : null;
     }
 
+    /**
+     * This is set by the repository
+     */
+    public getVerboseName;
+
     public constructor(personalNote?: PersonalNote) {
-        super('Personal note');
+        super(PersonalNote.COLLECTIONSTRING);
         this._personalNote = personalNote;
     }
 
-    public getTitle(): string {
+    public getTitle = () => {
         return this.personalNote ? this.personalNote.toString() : null;
-    }
+    };
 
     public updateDependencies(update: BaseViewModel): void {
         throw new Error('Todo');

@@ -107,4 +107,8 @@ export class ViewCreateTopic extends ViewTopic {
     public constructor(topic: CreateTopic) {
         super(topic);
     }
+
+    public getVerboseName = () => {
+        throw new Error('This should not be used');
+    };
 }

@@ -6,6 +6,7 @@ import { CollectionStringMapperService } from '../../core-services/collectionStr
 import { ChatMessage } from 'app/shared/models/core/chat-message';
 import { ViewChatMessage } from 'app/site/common/models/view-chatmessage';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
     providedIn: 'root'
@@ -14,13 +15,18 @@ export class ChatMessageRepositoryService extends BaseRepository<ViewChatMessage
     public constructor(
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
-        viewModelStoreService: ViewModelStoreService
+        viewModelStoreService: ViewModelStoreService,
+        private translate: TranslateService
     ) {
         super(DS, mapperService, viewModelStoreService, ChatMessage);
     }
 
     protected createViewModel(message: ChatMessage): ViewChatMessage {
-        return new ViewChatMessage(message);
+        const viewChatMessage = new ViewChatMessage(message);
+        viewChatMessage.getVerboseName = (plural: boolean = false) => {
+            return this.translate.instant(plural ? 'Chatmessages' : 'Chatmessage');
+        };
+        return viewChatMessage;
     }
 
     public async create(message: ChatMessage): Promise<Identifiable> {

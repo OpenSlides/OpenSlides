@@ -34,8 +34,13 @@ export class ViewMotionBlock extends BaseAgendaViewModel implements Searchable {
         return this.motionBlock.agenda_item_id;
     }
 
+    /**
+     * This is set by the repository
+     */
+    public getVerboseName;
+
     public constructor(motionBlock: MotionBlock, agendaItem?: ViewItem) {
-        super('Motion block');
+        super(MotionBlock.COLLECTIONSTRING);
         this._motionBlock = motionBlock;
         this._agendaItem = agendaItem;
     }
@@ -68,9 +73,9 @@ export class ViewMotionBlock extends BaseAgendaViewModel implements Searchable {
         }
     }
 
-    public getTitle(): string {
+    public getTitle = () => {
         return this.title;
-    }
+    };
 
     public getSlide(): ProjectorElementBuildDeskriptor {
         throw new Error('todo');

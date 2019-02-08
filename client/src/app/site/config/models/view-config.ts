@@ -93,14 +93,19 @@ export class ViewConfig extends BaseViewModel {
         return this._defaultValue;
     }
 
+    /**
+     * This is set by the repository
+     */
+    public getVerboseName;
+
     public constructor(config: Config) {
-        super('Config');
+        super(Config.COLLECTIONSTRING);
         this._config = config;
     }
 
-    public getTitle(): string {
+    public getTitle = () => {
         return this.label;
-    }
+    };
 
     public updateDependencies(update: BaseViewModel): void {}
 

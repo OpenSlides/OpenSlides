@@ -18,14 +18,19 @@ export class ViewCountdown extends BaseProjectableViewModel {
         return this.countdown.description;
     }
 
+    /**
+     * This is set by the repository
+     */
+    public getVerboseName;
+
     public constructor(countdown: Countdown) {
-        super('Countdown');
+        super(Countdown.COLLECTIONSTRING);
         this._countdown = countdown;
     }
 
-    public getTitle(): string {
+    public getTitle = () => {
         return this.description;
-    }
+    };
 
     public updateDependencies(update: BaseViewModel): void {}
 

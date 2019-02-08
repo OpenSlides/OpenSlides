@@ -11,6 +11,7 @@ import { ViewHistory } from 'app/site/history/models/view-history';
 import { TimeTravelService } from 'app/core/core-services/time-travel.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { ViewUser } from 'app/site/users/models/view-user';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Repository for the history.
@@ -34,9 +35,25 @@ export class HistoryRepositoryService extends BaseRepository<ViewHistory, Histor
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
         private httpService: HttpService,
-        private timeTravel: TimeTravelService
+        private timeTravel: TimeTravelService,
+        private translate: TranslateService
     ) {
         super(DS, mapperService, viewModelStoreService, History, [User]);
+    }
+
+    /**
+     * Creates a new ViewHistory objects out of a historyObject
+     *
+     * @param history the source history object
+     * @return a new ViewHistory object
+     */
+    public createViewModel(history: History): ViewHistory {
+        const user = this.viewModelStoreService.get(ViewUser, history.user_id);
+        const viewHistory = new ViewHistory(history, user);
+        viewHistory.getVerboseName = (plural: boolean = false) => {
+            return this.translate.instant(plural ? 'Histories' : 'History'); // Whats about the plural case??
+        };
+        return viewHistory;
     }
 
     /**
@@ -77,17 +94,6 @@ export class HistoryRepositoryService extends BaseRepository<ViewHistory, Histor
             return model.getListTitle();
         }
         return null;
-    }
-
-    /**
-     * Creates a new ViewHistory objects out of a historyObject
-     *
-     * @param history the source history object
-     * @return a new ViewHistory object
-     */
-    public createViewModel(history: History): ViewHistory {
-        const user = this.viewModelStoreService.get(ViewUser, history.user_id);
-        return new ViewHistory(history, user);
     }
 
     /**

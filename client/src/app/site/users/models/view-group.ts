@@ -29,8 +29,13 @@ export class ViewGroup extends BaseViewModel {
         return this.group.permissions;
     }
 
+    /**
+     * This is set by the repository
+     */
+    public getVerboseName;
+
     public constructor(group?: Group) {
-        super('Group');
+        super(Group.COLLECTIONSTRING);
         this._group = group;
     }
 
@@ -65,9 +70,9 @@ export class ViewGroup extends BaseViewModel {
         return this.permissions.includes(perm);
     }
 
-    public getTitle(): string {
+    public getTitle = () => {
         return this.name;
-    }
+    };
 
     public updateDependencies(update: BaseViewModel): void {
         console.log('ViewGroups wants to update Values with : ', update);

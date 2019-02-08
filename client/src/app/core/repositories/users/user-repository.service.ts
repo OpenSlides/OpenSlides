@@ -49,6 +49,15 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
         super(DS, mapperService, viewModelStoreService, User, [Group]);
     }
 
+    public createViewModel(user: User): ViewUser {
+        const groups = this.viewModelStoreService.getMany(ViewGroup, user.groups_id);
+        const viewUser = new ViewUser(user, groups);
+        viewUser.getVerboseName = (plural: boolean = false) => {
+            return this.translate.instant(plural ? 'Users' : 'User');
+        };
+        return viewUser;
+    }
+
     /**
      * Updates a the selected user with the form values.
      *
@@ -104,11 +113,6 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
         });
 
         return await this.dataSend.createModel(newUser);
-    }
-
-    public createViewModel(user: User): ViewUser {
-        const groups = this.viewModelStoreService.getMany(ViewGroup, user.groups_id);
-        return new ViewUser(user, groups);
     }
 
     /**

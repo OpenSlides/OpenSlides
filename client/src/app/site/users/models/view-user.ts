@@ -160,8 +160,13 @@ export class ViewUser extends BaseProjectableViewModel implements Searchable {
         return name.trim();
     }
 
+    /**
+     * This is set by the repository
+     */
+    public getVerboseName;
+
     public constructor(user: User, groups?: ViewGroup[]) {
-        super('Participant');
+        super(User.COLLECTIONSTRING);
         this._user = user;
         this._groups = groups;
     }
@@ -195,9 +200,9 @@ export class ViewUser extends BaseProjectableViewModel implements Searchable {
     /**
      * required by BaseViewModel. Don't confuse with the users title.
      */
-    public getTitle(): string {
+    public getTitle = () => {
         return this.full_name;
-    }
+    };
 
     /**
      * TODO: Implement

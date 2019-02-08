@@ -12,6 +12,7 @@ import { ViewModelStoreService } from 'app/core/core-services/view-model-store.s
 import { ViewItem } from 'app/site/agenda/models/view-item';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { ViewTag } from 'app/site/tags/models/view-tag';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Repository Service for Assignments.
@@ -31,9 +32,22 @@ export class AssignmentRepositoryService extends BaseRepository<ViewAssignment, 
     public constructor(
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
-        viewModelStoreService: ViewModelStoreService
+        viewModelStoreService: ViewModelStoreService,
+        private translate: TranslateService
     ) {
         super(DS, mapperService, viewModelStoreService, Assignment, [User, Item, Tag]);
+    }
+
+    public createViewModel(assignment: Assignment): ViewAssignment {
+        const relatedUser = this.viewModelStoreService.getMany(ViewUser, assignment.candidateIds);
+        const agendaItem = this.viewModelStoreService.get(ViewItem, assignment.agenda_item_id);
+        const tags = this.viewModelStoreService.getMany(ViewTag, assignment.tags_id);
+
+        const viewAssignment = new ViewAssignment(assignment, relatedUser, agendaItem, tags);
+        viewAssignment.getVerboseName = (plural: boolean = false) => {
+            return this.translate.instant(plural ? 'Elections' : 'Election');
+        };
+        return viewAssignment;
     }
 
     public async update(assignment: Partial<Assignment>, viewAssignment: ViewAssignment): Promise<void> {
@@ -46,13 +60,5 @@ export class AssignmentRepositoryService extends BaseRepository<ViewAssignment, 
 
     public async create(assignment: Assignment): Promise<Identifiable> {
         return null;
-    }
-
-    public createViewModel(assignment: Assignment): ViewAssignment {
-        const relatedUser = this.viewModelStoreService.getMany(ViewUser, assignment.candidateIds);
-        const agendaItem = this.viewModelStoreService.get(ViewItem, assignment.agenda_item_id);
-        const tags = this.viewModelStoreService.getMany(ViewTag, assignment.tags_id);
-
-        return new ViewAssignment(assignment, relatedUser, agendaItem, tags);
     }
 }

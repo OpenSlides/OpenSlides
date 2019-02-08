@@ -8,12 +8,12 @@ export interface AgendaInformation extends DetailNavigable {
     /**
      * Should return the title for the agenda list view.
      */
-    getAgendaTitle(): string;
+    getAgendaTitle: () => string;
 
     /**
      * Should return the title for the list of speakers view.
      */
-    getAgendaTitleWithType(): string;
+    getAgendaTitleWithType: () => string;
 
     /**
      * An (optional) descriptive text to be exported in the CSV.
