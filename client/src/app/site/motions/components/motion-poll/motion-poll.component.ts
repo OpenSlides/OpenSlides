@@ -203,7 +203,8 @@ export class MotionPollComponent implements OnInit {
         const dialogRef = this.dialog.open(MotionPollDialogComponent, {
             data: { ...this.poll },
             maxHeight: '90vh',
-            minWidth: '250px'
+            minWidth: '250px',
+            disableClose: true
         });
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
