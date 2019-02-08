@@ -224,7 +224,8 @@
                 <div *ngIf="perms.isAllowed('change_metadata', motion)">
                     <mat-divider *ngIf="motion.nextStates.length > 0"></mat-divider>
                     <button *ngFor="let state of motion.previousStates" mat-menu-item (click)="setState(state.id)">
-                        <mat-icon>arrow_back</mat-icon> {{ state.name | translate }} <span *ngIf="state.show_state_extension_field">&nbsp;...</span>
+                        <mat-icon>arrow_back</mat-icon> {{ state.name | translate }}
+                        <span *ngIf="state.show_state_extension_field">&nbsp;...</span>
                     </button>
                     <button mat-menu-item (click)="setState(null)">
                         <mat-icon>replay</mat-icon> {{ 'Reset state' | translate }}
@@ -276,14 +277,26 @@
                     *ngIf="motion.recommendation && motion.recommendation.show_recommendation_extension_field"
                     class="spacer-top-10"
                 >
-                    <mat-form-field>
-                        <input
-                            matInput
-                            placeholder="{{ 'Extension' | translate }}"
-                            [(ngModel)]="newRecommendationExtension"
-                        />
-                    </mat-form-field>
-                    <button mat-icon-button (click)="setRecommendationExtension()"><mat-icon>check</mat-icon></button>
+                    <form [formGroup]="searchMotionForm">
+                        <mat-form-field>
+                            <input
+                                matInput
+                                [formControl]="searchMotionForm.get('recoExtension')"
+                                placeholder="{{ 'Extension' | translate }}"
+                            />
+                        </mat-form-field>
+                        <button mat-icon-button (click)="setRecommendationExtension()">
+                            <mat-icon>check</mat-icon>
+                        </button>
+                        <os-search-value-selector
+                            ngDefaultControl
+                            [form]="searchMotionForm"
+                            [formControl]="searchMotionForm.get('motion_id')"
+                            [multiple]="false"
+                            listname="{{ 'Motions' | translate }}"
+                            [InputListValues]="motionObserver"
+                        ></os-search-value-selector>
+                    </form>
                 </div>
             </div>
             <div *ngIf="!perms.isAllowed('change_metadata', motion)">

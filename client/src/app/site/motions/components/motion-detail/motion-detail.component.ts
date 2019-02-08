@@ -64,6 +64,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     public contentForm: FormGroup;
 
     /**
+     * To search other motions as extension via search value selector
+     */
+    public searchMotionForm: FormGroup;
+
+    /**
      * Determine if the motion is edited
      */
     public editMotion = false;
@@ -161,11 +166,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     public allChangingObjects: ViewUnifiedChange[];
 
     /**
-     * Holds all motions. Required to navigate back and forth
-     */
-    public allMotions: ViewMotion[];
-
-    /**
      * preload the next motion for direct navigation
      */
     public nextMotion: ViewMotion;
@@ -219,6 +219,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * Subject for tags
      */
     public tagObserver: BehaviorSubject<ViewTag[]>;
+
+    /**
+     * Subject for (other) motions
+     */
+    public motionObserver: BehaviorSubject<ViewMotion[]>;
 
     /**
      * Determine if the name of supporters are visible
@@ -311,11 +316,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     public newStateExtension = '';
 
     /**
-     * new recommendation extension label to be submitted, if recommendation extensions can be set
-     */
-    public newRecommendationExtension = '';
-
-    /**
      * Constuct the detail view.
      *
      * @param title
@@ -374,6 +374,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         this.mediafilesObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewMediafile));
         this.agendaItemObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewItem));
         this.tagObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewTag));
+        this.motionObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewMotion));
 
         // Make sure the subjects are updated, when a new Model for the type arrives
         this.DS.changeObservable.subscribe(newModel => {
@@ -392,6 +393,9 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
                 this.agendaItemObserver.next(this.viewModelStore.getAll(ViewItem));
             } else if (newModel instanceof Tag) {
                 this.tagObserver.next(this.viewModelStore.getAll(ViewTag));
+            } else if (newModel instanceof Motion) {
+                this.motionObserver.next(this.viewModelStore.getAll(ViewMotion));
+                this.setSurroundingMotions();
             }
         });
 
@@ -425,13 +429,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     public ngOnInit(): void {
         this.createForm();
         this.getMotionByUrl();
-
-        this.repo.getViewModelListObservable().subscribe(newMotionList => {
-            if (newMotionList) {
-                this.allMotions = newMotionList;
-                this.setSurroundingMotions();
-            }
-        });
+        this.setSurroundingMotions();
 
         this.statuteRepo.getViewModelListObservable().subscribe(newViewStatuteParagraphs => {
             this.statuteParagraphs = newViewStatuteParagraphs;
@@ -515,7 +513,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
                     if (newViewMotion) {
                         this.motion = newViewMotion;
                         this.newStateExtension = this.motion.stateExtension;
-                        this.newRecommendationExtension = this.motion.recommendationExtension;
                         this.personalNoteService.getPersonalNoteObserver(this.motion.motion).subscribe(pn => {
                             this.personalNoteContent = pn;
                         });
@@ -558,6 +555,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         const statuteAmendmentFieldName = 'statute_amendment';
         contentPatch[statuteAmendmentFieldName] = formMotion.isStatuteAmendment();
         this.contentForm.patchValue(contentPatch);
+        this.searchMotionForm.get('recoExtension').setValue(this.motion.recommendationExtension);
     }
 
     /**
@@ -596,6 +594,17 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
                 return value.match(/[^\d]/) !== null || parseInt(value, 10) >= maxLineNumber;
             }
         }();
+
+        // create the search motion form
+        this.searchMotionForm = this.formBuilder.group({
+            motion_id: [],
+            recoExtension: []
+        });
+
+        // Detect changes in in search motion form
+        this.searchMotionForm.get('motion_id').valueChanges.subscribe(change => {
+            this.addMotionExtension(change);
+        });
     }
 
     /**
@@ -978,7 +987,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * then appending motion without identifiers sorted by title
      */
     public setSurroundingMotions(): void {
-        this.allMotions.sort((a, b) => {
+        this.motionObserver.value.sort((a, b) => {
             if (a.identifier && b.identifier) {
                 return a.identifier.localeCompare(b.identifier, this.translate.currentLang);
             } else if (a.identifier) {
@@ -989,18 +998,18 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
                 return a.title.localeCompare(b.title, this.translate.currentLang);
             }
         });
-        const indexOfCurrent = this.allMotions.findIndex(motion => {
+        const indexOfCurrent = this.motionObserver.value.findIndex(motion => {
             return motion === this.motion;
         });
         if (indexOfCurrent > -1) {
             if (indexOfCurrent > 0) {
-                this.previousMotion = this.allMotions[indexOfCurrent - 1];
+                this.previousMotion = this.motionObserver.value[indexOfCurrent - 1];
             } else {
                 this.previousMotion = null;
             }
 
-            if (indexOfCurrent < this.allMotions.length - 1) {
-                this.nextMotion = this.allMotions[indexOfCurrent + 1];
+            if (indexOfCurrent < this.motionObserver.value.length - 1) {
+                this.nextMotion = this.motionObserver.value[indexOfCurrent + 1];
             } else {
                 this.nextMotion = null;
             }
@@ -1047,6 +1056,16 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     }
 
     /**
+     * Adds an extension in the shape: [Motion:id] to the recoExtension form control
+     *
+     * @param id the ID of a selected motion returned by a search value selector
+     */
+    public addMotionExtension(id: number): void {
+        const recoExtensionValue = this.searchMotionForm.get('recoExtension').value;
+        this.searchMotionForm.get('recoExtension').setValue(`${recoExtensionValue}[motion:${id}]`);
+    }
+
+    /**
      * Sets the recommendation
      *
      * @param id Motion recommendation id
@@ -1060,7 +1079,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * in {@link newRecommendationExtension}
      */
     public setRecommendationExtension(): void {
-        this.repo.setRecommendationExtension(this.motion, this.newRecommendationExtension);
+        this.repo.setRecommendationExtension(this.motion, this.searchMotionForm.get('recoExtension').value);
     }
 
     /**
