@@ -83,10 +83,12 @@ export class CsvExportService {
         filename: string,
         {
             lineSeparator = '\r\n',
-            columnSeparator = this.config.instant('general_csv_separator')
+            columnSeparator = this.config.instant('general_csv_separator'),
+            encoding = this.config.instant('general_csv_encoding')
         }: {
             lineSeparator?: string;
             columnSeparator?: string;
+            encoding?: 'utf-8' | 'iso-8859-15';
         } = {}
     ): void {
         let csvContent = []; // Holds all lines as arrays with each column-value
@@ -153,8 +155,12 @@ export class CsvExportService {
                 return line.map(entry => tsList[0] + entry + tsList[0]).join(columnSeparator);
             })
             .join(lineSeparator);
-
-        this.exporter.saveFile(csvContentAsString, filename, 'text/csv');
+        const filetype = `text/csv;charset=${encoding}`;
+        if (encoding === 'iso-8859-15') {
+            this.exporter.saveFile(this.exporter.convertTo8859_15(csvContentAsString), filename, filetype);
+        } else {
+            this.exporter.saveFile(csvContentAsString, filename, filetype);
+        }
     }
 
     /**
