@@ -5,7 +5,7 @@
     <div mat-dialog-content>
         <div>
             <p class="toggle-group-head" translate>Format</p>
-            <mat-button-toggle-group formControlName="format">
+            <mat-button-toggle-group class="smaller-buttons" formControlName="format">
                 <mat-button-toggle value="pdf">PDF</mat-button-toggle>
                 <mat-button-toggle value="csv">CSV</mat-button-toggle>
             </mat-button-toggle-group>
@@ -13,7 +13,7 @@
 
         <div>
             <p class="toggle-group-head" translate>Line numbering</p>
-            <mat-button-toggle-group formControlName="lnMode">
+            <mat-button-toggle-group class="smaller-buttons" formControlName="lnMode">
                 <mat-button-toggle [value]="lnMode.None"> <span translate>None</span> </mat-button-toggle>
                 <mat-button-toggle [value]="lnMode.Inside"> <span translate>Inline</span> </mat-button-toggle>
                 <mat-button-toggle [value]="lnMode.Outside"> <span translate>Outside</span> </mat-button-toggle>
@@ -22,7 +22,7 @@
 
         <div>
             <p class="toggle-group-head" translate>Change recommendations</p>
-            <mat-button-toggle-group formControlName="crMode">
+            <mat-button-toggle-group class="smaller-buttons" formControlName="crMode">
                 <mat-button-toggle [value]="crMode.Original">
                     <span translate>Original version</span>
                 </mat-button-toggle>
@@ -36,7 +36,7 @@
 
         <div>
             <p class="toggle-group-head" translate>Content</p>
-            <mat-button-toggle-group multiple formControlName="content">
+            <mat-button-toggle-group class="smaller-buttons" multiple formControlName="content">
                 <mat-button-toggle value="text"> <span translate>Text</span> </mat-button-toggle>
                 <mat-button-toggle value="reason"> <span translate>Reason</span> </mat-button-toggle>
             </mat-button-toggle-group>
@@ -44,14 +44,16 @@
 
         <div>
             <p class="toggle-group-head" translate>Meta information</p>
-            <mat-button-toggle-group multiple formControlName="metaInfo">
+            <mat-button-toggle-group class="smaller-buttons" multiple formControlName="metaInfo">
                 <mat-button-toggle value="submitters"> <span translate>Submitters</span> </mat-button-toggle>
-                <mat-button-toggle value="state" #stateButton> <span translate>State</span> </mat-button-toggle>
-                <mat-button-toggle value="recommendation" #recommendationButton> <span translate>Recommendation</span> </mat-button-toggle>
+                <mat-button-toggle value="state"> <span translate>State</span> </mat-button-toggle>
+                <mat-button-toggle value="recommendation"> <span translate>Recommendation</span> </mat-button-toggle>
                 <mat-button-toggle value="category"> <span translate>Category</span> </mat-button-toggle>
                 <mat-button-toggle value="origin"> <span translate>Origin</span> </mat-button-toggle>
                 <mat-button-toggle value="block"> <span translate>Motion block</span> </mat-button-toggle>
-                <mat-button-toggle value="votingResult" #votingResultButton> <span translate>Voting result</span> </mat-button-toggle>
+                <mat-button-toggle value="votingResult" #votingResultButton>
+                    <span translate>Voting result</span>
+                </mat-button-toggle>
             </mat-button-toggle-group>
         </div>
 

@@ -201,7 +201,9 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
      */
     public openExportDialog(): void {
         const exportDialogRef = this.dialog.open(MotionExportDialogComponent, {
-            width: '750px',
+            width: '950px',
+            maxWidth: '90vw',
+            maxHeight: '90vh',
             data: this.dataSource
         });
 
