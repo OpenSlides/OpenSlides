@@ -1,8 +1,8 @@
 import { ActivatedRoute, Router } from '@angular/router';
-import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, OnInit, ElementRef, HostListener } from '@angular/core';
 import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { MatDialog, MatExpansionPanel, MatSnackBar, MatCheckboxChange, ErrorStateMatcher } from '@angular/material';
+import { MatDialog, MatSnackBar, MatCheckboxChange, ErrorStateMatcher } from '@angular/material';
 
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -50,20 +50,6 @@ import { Tag } from 'app/shared/models/core/tag';
     styleUrls: ['./motion-detail.component.scss']
 })
 export class MotionDetailComponent extends BaseViewComponent implements OnInit {
-    /**
-     * MatExpansionPanel for the meta info
-     * Only relevant in mobile view
-     */
-    @ViewChild('metaInfoPanel')
-    public metaInfoPanel: MatExpansionPanel;
-
-    /**
-     * MatExpansionPanel for the content panel
-     * Only relevant in mobile view
-     */
-    @ViewChild('contentPanel')
-    public contentPanel: MatExpansionPanel;
-
     /**
      * Motion content. Can be a new version
      */
@@ -918,10 +904,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         if (mode) {
             this.motionCopy = this.motion.copy();
             this.patchForm(this.motionCopy);
-            if (this.vp.isMobile) {
-                this.metaInfoPanel.open();
-                this.contentPanel.open();
-            }
         }
         if (!mode && this.newMotion) {
             this.router.navigate(['./motions/']);
