@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { OpenSlidesComponent } from 'app/openslides.component';
 import { ConfigService } from './config.service';
 
 /**
@@ -12,7 +11,7 @@ import { ConfigService } from './config.service';
 @Injectable({
     providedIn: 'root'
 })
-export class LoginDataService extends OpenSlidesComponent {
+export class LoginDataService {
     /**
      * Holds the privacy policy
      */
@@ -43,8 +42,6 @@ export class LoginDataService extends OpenSlidesComponent {
      * @param configService
      */
     public constructor(private configService: ConfigService) {
-        super();
-
         this.configService.get<string>('general_event_privacy_policy').subscribe(value => {
             this.setPrivacyPolicy(value);
         });

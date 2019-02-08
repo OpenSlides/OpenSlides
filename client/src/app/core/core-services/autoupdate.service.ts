@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { OpenSlidesComponent } from 'app/openslides.component';
 import { WebsocketService } from './websocket.service';
-
 import { CollectionStringMapperService } from './collectionStringMapper.service';
 import { DataStoreService } from './data-store.service';
 import { BaseModel } from '../../shared/models/base/base-model';
@@ -42,13 +40,11 @@ interface AutoupdateFormat {
  * Handles the initial update and automatic updates using the {@link WebsocketService}
  * Incoming objects, usually BaseModels, will be saved in the dataStore (`this.DS`)
  * This service usually creates all models
- *
- * The dataStore will injected over the parent class: {@link OpenSlidesComponent}.
  */
 @Injectable({
     providedIn: 'root'
 })
-export class AutoupdateService extends OpenSlidesComponent {
+export class AutoupdateService {
     /**
      * Constructor to create the AutoupdateService. Calls the constructor of the parent class.
      * @param websocketService
@@ -60,7 +56,6 @@ export class AutoupdateService extends OpenSlidesComponent {
         private DS: DataStoreService,
         private modelMapper: CollectionStringMapperService
     ) {
-        super();
         this.websocketService.getOberservable<AutoupdateFormat>('autoupdate').subscribe(response => {
             this.storeResponse(response);
         });

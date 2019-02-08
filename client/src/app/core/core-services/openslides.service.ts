@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { OpenSlidesComponent } from 'app/openslides.component';
 import { WebsocketService } from './websocket.service';
 import { OperatorService } from './operator.service';
 import { StorageService } from './storage.service';
@@ -14,7 +13,7 @@ import { DataStoreService } from './data-store.service';
 @Injectable({
     providedIn: 'root'
 })
-export class OpenSlidesService extends OpenSlidesComponent {
+export class OpenSlidesService {
     /**
      * if the user tries to access a certain URL without being authenticated, the URL will be stored here
      */
@@ -37,8 +36,6 @@ export class OpenSlidesService extends OpenSlidesComponent {
         private autoupdateService: AutoupdateService,
         private DS: DataStoreService
     ) {
-        super();
-
         // Handler that gets called, if the websocket connection reconnects after a disconnection.
         // There might have changed something on the server, so we check the operator, if he changed.
         websocketService.reconnectEvent.subscribe(() => {

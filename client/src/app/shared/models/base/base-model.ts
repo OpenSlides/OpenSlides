@@ -1,4 +1,3 @@
-import { OpenSlidesComponent } from 'app/openslides.component';
 import { Deserializable } from './deserializable';
 import { Identifiable } from './identifiable';
 import { Collection } from './collection';
@@ -9,8 +8,7 @@ export type ModelConstructor<T extends BaseModel<T>> = new (...args: any[]) => T
  * Abstract parent class to set rules and functions for all models.
  * When inherit from this class, give the subclass as the type. E.g. `class Motion extends BaseModel<Motion>`
  */
-export abstract class BaseModel<T = object> extends OpenSlidesComponent
-    implements Deserializable, Identifiable, Collection {
+export abstract class BaseModel<T = object> implements Deserializable, Identifiable, Collection {
     /**
      * force children of BaseModel to have a collectionString.
      *
@@ -40,7 +38,6 @@ export abstract class BaseModel<T = object> extends OpenSlidesComponent
      * @param input
      */
     protected constructor(collectionString: string, input?: any) {
-        super();
         this._collectionString = collectionString;
 
         if (input) {

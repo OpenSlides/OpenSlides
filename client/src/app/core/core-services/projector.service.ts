@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 
-import { OpenSlidesComponent } from 'app/openslides.component';
 import {
     Projectable,
     ProjectorElementBuildDeskriptor,
@@ -29,7 +28,7 @@ import { ViewModelStoreService } from './view-model-store.service';
 @Injectable({
     providedIn: 'root'
 })
-export class ProjectorService extends OpenSlidesComponent {
+export class ProjectorService {
     /**
      * Constructor.
      *
@@ -41,9 +40,7 @@ export class ProjectorService extends OpenSlidesComponent {
         private http: HttpService,
         private slideManager: SlideManager,
         private viewModelStore: ViewModelStoreService
-    ) {
-        super();
-    }
+    ) {}
 
     /**
      * Retusn the identifiable projector element from the given types of slides/elements/descriptors

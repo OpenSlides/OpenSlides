@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 
-import { OpenSlidesComponent } from 'app/openslides.component';
 import { WebsocketService } from '../core-services/websocket.service';
 import { Observable, of, Subject } from 'rxjs';
 
@@ -24,7 +23,7 @@ interface Constants {
 @Injectable({
     providedIn: 'root'
 })
-export class ConstantsService extends OpenSlidesComponent {
+export class ConstantsService {
     /**
      * The constants
      */
@@ -49,8 +48,6 @@ export class ConstantsService extends OpenSlidesComponent {
      * @param websocketService
      */
     public constructor(private websocketService: WebsocketService) {
-        super();
-
         // The hook for recieving constants.
         websocketService.getOberservable<Constants>('constants').subscribe(constants => {
             this.constants = constants;

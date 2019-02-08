@@ -3,7 +3,6 @@ import { Directive, Input, TemplateRef, ViewContainerRef, OnDestroy, OnInit } fr
 import { Subscription } from 'rxjs';
 
 import { OperatorService, Permission } from 'app/core/core-services/operator.service';
-import { OpenSlidesComponent } from 'app/openslides.component';
 
 /**
  * Directive to check if the {@link OperatorService} has the correct permissions to access certain functions
@@ -15,7 +14,7 @@ import { OpenSlidesComponent } from 'app/openslides.component';
 @Directive({
     selector: '[osPerms]'
 })
-export class PermsDirective extends OpenSlidesComponent implements OnInit, OnDestroy {
+export class PermsDirective implements OnInit, OnDestroy {
     /**
      * Holds the required permissions the access a feature
      */
@@ -62,9 +61,7 @@ export class PermsDirective extends OpenSlidesComponent implements OnInit, OnDes
         private template: TemplateRef<any>,
         private viewContainer: ViewContainerRef,
         private operator: OperatorService
-    ) {
-        super();
-    }
+    ) {}
 
     public ngOnInit(): void {
         // observe groups of operator, so the directive can actively react to changes
