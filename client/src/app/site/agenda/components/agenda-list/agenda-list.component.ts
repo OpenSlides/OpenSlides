@@ -257,10 +257,16 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
             return '';
         }
         const durationString = this.durationService.durationToString(duration);
-        const endTimeString = this.repo
-            .calculateEndTime()
-            .toLocaleTimeString(this.translate.currentLang, { hour: 'numeric', minute: 'numeric' });
-        return `${this.translate.instant('Duration')}: ${durationString} (${this.translate.instant('Estimated end')}:
-            ${endTimeString} h)`;
+        const endTime = this.repo.calculateEndTime();
+        const result = `${this.translate.instant('Duration')}: ${durationString}`;
+        if (endTime) {
+            return (
+                result +
+                ` (${this.translate.instant('Estimated end')}:
+            ${endTime.toLocaleTimeString(this.translate.currentLang, { hour: 'numeric', minute: 'numeric' })} h)`
+            );
+        } else {
+            return result;
+        }
     }
 }

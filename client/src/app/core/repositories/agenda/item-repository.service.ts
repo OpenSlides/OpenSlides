@@ -273,11 +273,15 @@ export class ItemRepositoryService extends BaseRepository<ViewItem, Item> {
      * Calculates the estimated end time based on the configured start and the
      * sum of durations of all agenda items
      *
-     * @returns a Date object
+     * @returns a Date object or null
      */
     public calculateEndTime(): Date {
         const startTime = this.config.instant<number>('agenda_start_event_date_time'); // a timestamp
-        const durationTime = this.calculateDuration() * 60 * 1000; // minutes to miliseconds
+        const duration = this.calculateDuration();
+        if (!startTime || !duration) {
+            return null;
+        }
+        const durationTime = duration * 60 * 1000; // minutes to miliseconds
         return new Date(startTime + durationTime);
     }
 
