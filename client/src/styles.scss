@@ -24,7 +24,7 @@
 @import '~angular-tree-component/dist/angular-tree-component.css';
 
 /** date-time-picker */
-@import "~ng-pick-datetime/assets/style/picker.min.css";
+@import '~ng-pick-datetime/assets/style/picker.min.css';
 
 /** Define the classes to switch between themes */
 .openslides-theme {
@@ -139,7 +139,6 @@ b {
     }
 }
 
-
 .green-text {
     // TODO better name/theming
     color: #5a5;
@@ -181,7 +180,8 @@ mat-card {
 }
 
 .os-form-card-mobile {
-    .mat-form-field, .mat-select {
+    .mat-form-field,
+    .mat-select {
         width: 100%;
     }
 }
@@ -267,7 +267,6 @@ mat-card {
 .os-headed-listview-table {
     @extend %os-table;
 }
-
 
 /* TODO: find a better way to get more vertical space in (empty/small) tables for maximize filter dialog */
 mat-paginator {
@@ -598,14 +597,12 @@ button.mat-menu-item.selected {
     font-size: 16px;
 }
 
-
 /*** Projector slides ***/
 
 #slide {
-
     h3 {
         color: #222;
-        margin-bottom: 10px
+        margin-bottom: 10px;
     }
 
     .slidetitle {
@@ -628,7 +625,8 @@ button.mat-menu-item.selected {
         }
     }
 
-    ul, ol {
+    ul,
+    ol {
         margin: 0 0 10px 0;
     }
 

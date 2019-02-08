@@ -1,3 +1,16 @@
 .toggle-group-head {
     margin-bottom: 0;
 }
+
+h1 {
+    margin: 0;
+}
+
+.smaller-buttons {
+    ::ng-deep {
+        .mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
+            line-height: 2.5 !important;
+            padding: 0 10px !important;
+        }
+    }
+}

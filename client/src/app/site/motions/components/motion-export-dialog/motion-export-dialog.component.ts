@@ -75,18 +75,6 @@ export class MotionExportDialogComponent implements OnInit {
     public votingResultButton: MatButtonToggle;
 
     /**
-     * To deactivate the state button
-     */
-    @ViewChild('stateButton')
-    public stateButton: MatButtonToggle;
-
-    /**
-     * To deactivate the state button
-     */
-    @ViewChild('recommendationButton')
-    public recommendationButton: MatButtonToggle;
-
-    /**
      * Constructor
      * Sets the default values for the lineNumberingMode and changeRecoMode and creates the form.
      * This uses "instant" over observables to prevent on-fly-changes by auto update while
@@ -133,17 +121,15 @@ export class MotionExportDialogComponent implements OnInit {
                 //     }
                 // }
 
-                // remove the selection of "votingResult", "state" and "recommendation"
+                // remove the selection of "votingResult"
                 let metaInfoVal: string[] = this.exportForm.get('metaInfo').value;
                 metaInfoVal = metaInfoVal.filter(info => {
-                    return info !== 'votingResult' && info !== 'state' && info !== 'recommendation';
+                    return info !== 'votingResult';
                 });
                 this.exportForm.get('metaInfo').setValue(metaInfoVal);
 
-                // disable "Diff Version", "Voting Result", "State" and "Recommendation"
+                // disable "Diff Version" and "Voting Result"
                 this.votingResultButton.disabled = true;
-                this.stateButton.disabled = true;
-                this.recommendationButton.disabled = true;
                 // TODO: CSV Issues
                 // this.diffVersionButton.disabled = true;
             } else if (value === 'pdf') {
@@ -154,10 +140,8 @@ export class MotionExportDialogComponent implements OnInit {
                 this.exportForm.get('crMode').enable();
                 this.exportForm.get('crMode').setValue(this.defaultCrMode);
 
-                // enable "Diff Version", "Voting Result", "State" and "Recommendation"
+                // enable "Diff Version" and "Voting Result"
                 this.votingResultButton.disabled = false;
-                this.stateButton.disabled = false;
-                this.recommendationButton.disabled = false;
                 // TODO: Temporarily disabled. Will be required after CSV fixes
                 // this.diffVersionButton.disabled = false;
             }
