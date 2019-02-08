@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { E2EImportsModule } from '../../../../../e2e-imports.module';
 import { Component } from '@angular/core';
-import { ViewMotion } from '../../models/view-motion';
+import { LineNumberingMode, ViewMotion } from '../../models/view-motion';
 import { MotionDetailDiffComponent } from './motion-detail-diff.component';
 import { MotionDetailOriginalChangeRecommendationsComponent } from '../motion-detail-original-change-recommendations/motion-detail-original-change-recommendations.component';
 import { ViewUnifiedChange } from '../../models/view-unified-change';
@@ -16,6 +16,7 @@ import { ViewMotionChangeRecommendation } from '../../models/view-change-recomme
             [changes]="changes"
             [highlightedLine]="highlightedLine"
             [scrollToChange]="scrollToChange"
+            [lineNumberingMode]="lnMode"
             (createChangeRecommendation)="createChangeRecommendation($event)"
         >
         </os-motion-detail-diff>
@@ -24,6 +25,7 @@ import { ViewMotionChangeRecommendation } from '../../models/view-change-recomme
 class TestHostComponent {
     public motion: ViewMotion;
     public changes: ViewMotionChangeRecommendation[];
+    public lnMode: LineNumberingMode = LineNumberingMode.Outside;
     public scrollToChange: ViewUnifiedChange = null;
 
     public constructor() {
