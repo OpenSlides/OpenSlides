@@ -1,38 +1,48 @@
-<os-meta-text-block *ngFor="let section of sections" [showActionRow]="canEditSection(section)" icon="comment">
-    <ng-container class="meta-text-block-title">
-        <span>{{ section.getTitle() }}</span>
-    </ng-container>
-
-    <ng-container class="meta-text-block-content">
-        <ng-container *ngIf="!isCommentEdited(section)">
-            <div *ngIf="comments[section.id]" [innerHTML]="comments[section.id].comment"></div>
-            <div class="no-content" *ngIf="!comments[section.id] || !comments[section.id].comment" translate>
-                No comment
-            </div>
+<div class="text-warning" *ngFor="let section of sections">
+    <os-meta-text-block *ngIf="sectionVisible(section)" [showActionRow]="canEditSection(section)" icon="comment">
+        <ng-container class="meta-text-block-title">
+            <span>{{ section.getTitle() }}</span>
         </ng-container>
-        <form [formGroup]="commentForms[section.id]" *ngIf="isCommentEdited(section)">
-            <!-- The HTML Editor -->
-            <h4 translate>Comment</h4>
-            <editor
-                formControlName='comment'
-                [init]="tinyMceSettings"
-            ></editor>
-        </form>
-    </ng-container>
 
-    <ng-container class="meta-text-block-action-row">
-        <button mat-icon-button *ngIf="!isCommentEdited(section)" (click)="editComment(section)"
-        matTooltip="{{ 'Edit' | translate }}">
-            <mat-icon>edit</mat-icon>
-        </button>
-        <button mat-icon-button *ngIf="isCommentEdited(section)" (click)="saveComment(section)"
-        matTooltip="{{ 'Save' | translate }}">
-            <mat-icon>save</mat-icon>
-        </button>
-        <button mat-icon-button *ngIf="isCommentEdited(section)" (click)="cancelEditing(section)"
-        matTooltip="{{ 'Cancel edit' | translate }}">
-            <mat-icon>close</mat-icon>
-        </button>
-    </ng-container>
-</os-meta-text-block>
+        <ng-container class="meta-text-block-content">
+            <ng-container *ngIf="!isCommentEdited(section)">
+                <div *ngIf="comments[section.id]" [innerHTML]="comments[section.id].comment"></div>
+                <div class="no-content" *ngIf="!comments[section.id] || !comments[section.id].comment" translate>
+                    No comment
+                </div>
+            </ng-container>
+            <form [formGroup]="commentForms[section.id]" *ngIf="isCommentEdited(section)">
+                <!-- The HTML Editor -->
+                <h4 translate>Comment</h4>
+                <editor formControlName="comment" [init]="tinyMceSettings"></editor>
+            </form>
+        </ng-container>
 
+        <ng-container class="meta-text-block-action-row">
+            <button
+                mat-icon-button
+                *ngIf="!isCommentEdited(section)"
+                (click)="editComment(section)"
+                matTooltip="{{ 'Edit' | translate }}"
+            >
+                <mat-icon>edit</mat-icon>
+            </button>
+            <button
+                mat-icon-button
+                *ngIf="isCommentEdited(section)"
+                (click)="saveComment(section)"
+                matTooltip="{{ 'Save' | translate }}"
+            >
+                <mat-icon>save</mat-icon>
+            </button>
+            <button
+                mat-icon-button
+                *ngIf="isCommentEdited(section)"
+                (click)="cancelEditing(section)"
+                matTooltip="{{ 'Cancel edit' | translate }}"
+            >
+                <mat-icon>close</mat-icon>
+            </button>
+        </ng-container>
+    </os-meta-text-block>
+</div>

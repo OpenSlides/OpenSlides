@@ -156,6 +156,19 @@ export class MotionCommentsComponent extends BaseViewComponent {
     }
 
     /**
+     * Check if a section is visible at all
+     *
+     * @param section
+     * @returns true if there is any content or the user is allowed to edit
+     */
+    public sectionVisible(section: ViewMotionCommentSection): boolean {
+        if (!this.canEditSection(section) && (!this.comments[section.id] || !this.comments[section.id].comment)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Returns true, if the comment is edited.
      *
      * @param section The section for the comment.

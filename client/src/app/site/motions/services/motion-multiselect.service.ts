@@ -120,7 +120,7 @@ export class MotionMultiselectService {
                 id: motion.id,
                 recommendation: selectedChoice.action ? 0 : (selectedChoice.items as number)
             }));
-            await this.httpService.post('/rest/motions/motion/manage_multiple_recommendation', {
+            await this.httpService.post('/rest/motions/motion/manage_multiple_recommendation/', {
                 motions: requestData
             });
         }
@@ -171,7 +171,7 @@ export class MotionMultiselectService {
                     submitters: submitterIds
                 };
             });
-            await this.httpService.post('/rest/motions/motion/manage_multiple_submitters', { motions: requestData });
+            await this.httpService.post('/rest/motions/motion/manage_multiple_submitters/', { motions: requestData });
         } else if (selectedChoice && selectedChoice.action === choices[1]) {
             const requestData = motions.map(motion => {
                 const submitterIdsToRemove = selectedChoice.items as number[];
@@ -181,7 +181,7 @@ export class MotionMultiselectService {
                     submitters: submitterIds
                 };
             });
-            await this.httpService.post('/rest/motions/motion/manage_multiple_submitters', { motions: requestData });
+            await this.httpService.post('/rest/motions/motion/manage_multiple_submitters/', { motions: requestData });
         }
     }
 
@@ -203,7 +203,7 @@ export class MotionMultiselectService {
                     tags: tagIds
                 };
             });
-            await this.httpService.post('/rest/motions/motion/manage_multiple_tags', { motions: requestData });
+            await this.httpService.post('/rest/motions/motion/manage_multiple_tags/', { motions: requestData });
         } else if (selectedChoice && selectedChoice.action === choices[1]) {
             const requestData = motions.map(motion => {
                 const tagIdsToRemove = selectedChoice.items as number[];
@@ -213,7 +213,7 @@ export class MotionMultiselectService {
                     tags: tagIds
                 };
             });
-            await this.httpService.post('/rest/motions/motion/manage_multiple_tags', { motions: requestData });
+            await this.httpService.post('/rest/motions/motion/manage_multiple_tags/', { motions: requestData });
         } else if (selectedChoice && selectedChoice.action === choices[2]) {
             const requestData = motions.map(motion => {
                 return {
@@ -221,7 +221,7 @@ export class MotionMultiselectService {
                     tags: []
                 };
             });
-            await this.httpService.post('/rest/motions/motion/manage_multiple_tags', { motions: requestData });
+            await this.httpService.post('/rest/motions/motion/manage_multiple_tags/', { motions: requestData });
         }
     }
 

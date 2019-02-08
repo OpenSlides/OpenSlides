@@ -258,8 +258,13 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
      * Handler for bulk sending e-mail invitations. Uses selectedRows defined via
      * multiSelect mode.
      */
-    public sendInvitationEmailSelected(): void {
-        this.repo.sendInvitationEmail(this.selectedRows).then(this.raiseError, this.raiseError);
+    public async sendInvitationEmailSelected(): Promise<void> {
+        const content =
+            this.translate.instant('Send invitation e-Mails to the selected users?') +
+            ` (${this.selectedRows.length} E-Mails)`;
+        if (await this.promptService.open('Are you sure?', content)) {
+            this.repo.sendInvitationEmail(this.selectedRows).then(this.raiseError, this.raiseError);
+        }
     }
 
     /**

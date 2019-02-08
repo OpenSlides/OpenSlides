@@ -156,7 +156,10 @@ export class HistoryListComponent extends ListViewBaseComponent<ViewHistory> imp
      */
     private setFilters(): void {
         this.dataSource.filterPredicate = (data, filter) => {
-            filter = filter.toLowerCase();
+            if (!data || !data.information) {
+                return false;
+            }
+            filter = filter ? filter.toLowerCase() : '';
             if (
                 this.getElementInfo(data)
                     .toLowerCase()
@@ -164,7 +167,7 @@ export class HistoryListComponent extends ListViewBaseComponent<ViewHistory> imp
             ) {
                 return true;
             }
-            if (data.user.full_name.toLowerCase().indexOf(filter) >= 0) {
+            if (data.user && data.user.full_name.toLowerCase().indexOf(filter) >= 0) {
                 return true;
             }
             return (
