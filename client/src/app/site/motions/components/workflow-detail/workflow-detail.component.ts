@@ -10,6 +10,7 @@ import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewWorkflow } from '../../models/view-workflow';
 import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
 import { WorkflowState, MergeAmendment } from 'app/shared/models/motions/workflow-state';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 
 /**
  * Declares data for the workflow dialog
@@ -137,6 +138,7 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
      * @param title Set the page title
      * @param translate Handle translations
      * @param matSnackBar Showing error
+     * @param promtService Promts
      * @param dialog Opening dialogs
      * @param workflowRepo The repository for workflows
      * @param route Read out URL paramters
@@ -145,6 +147,7 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
         title: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
+        private promtService: PromptService,
         private dialog: MatDialog,
         private workflowRepo: WorkflowRepositoryService,
         private route: ActivatedRoute
@@ -180,7 +183,13 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
                 if (result.action === 'update') {
                     this.workflowRepo.updateState({ name: result.value }, state).then(() => {}, this.raiseError);
                 } else if (result.action === 'delete') {
-                    this.workflowRepo.deleteState(state).then(() => {}, this.raiseError);
+                    const content = this.translate.instant('Delete') + ` ${state.name}?`;
+
+                    this.promtService.open('Are you sure', content).then(promptResult => {
+                        if (promptResult) {
+                            this.workflowRepo.deleteState(state).then(() => {}, this.raiseError);
+                        }
+                    });
                 }
             }
         });

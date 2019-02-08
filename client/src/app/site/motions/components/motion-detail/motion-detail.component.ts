@@ -1066,7 +1066,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * @param id Motion tag id
      */
     public setTag(event: MouseEvent, id: number): void {
-        console.log('event: ', event);
         event.stopPropagation();
         this.repo.setTag(this.motion, id);
     }
