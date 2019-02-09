@@ -774,6 +774,31 @@ describe('LinenumberingService', () => {
         }));
     });
 
+    describe('adapting html for pdf generation', () => {
+        it('splits inline tags', inject([LinenumberingService], (service: LinenumberingService) => {
+            const inHtml =
+                '<ul><li><p><span class="test"><strong>' +
+                noMarkup(1) +
+                'Line 1' +
+                brMarkup(2) +
+                '<em>Line 2' +
+                brMarkup(3) +
+                'Line 3</em>' +
+                '</strong></span></p></li></ul>';
+            const stripped = service.splitInlineElementsAtLineBreaks(inHtml);
+            expect(stripped).toBe(
+                '<ul><li><p>' +
+                    noMarkup(1) +
+                    '<span class="test"><strong>Line 1</strong></span>' +
+                    brMarkup(2) +
+                    '<span class="test"><strong><em>Line 2</em></strong></span>' +
+                    brMarkup(3) +
+                    '<span class="test"><strong><em>Line 3</em></strong></span>' +
+                    '</p></li></ul>'
+            );
+        }));
+    });
+
     describe('caching', () => {
         it('caches based on line length', inject([LinenumberingService], (service: LinenumberingService) => {
             const inHtml = '<p>' + longstr(100) + '</p>';
