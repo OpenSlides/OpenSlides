@@ -537,6 +537,7 @@ export class DiffService {
             '&bull;': '•',
             '&sect;': '§',
             '&eacute;': 'é',
+            '&rsquo;': '’',
             '&euro;': '€'
         };
 
