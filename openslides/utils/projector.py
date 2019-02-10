@@ -85,7 +85,7 @@ async def get_projector_data(
             try:
                 data = projector_slide(all_data, element)
             except ProjectorElementException as err:
-                data = {"error": err}
+                data = {"error": str(err)}
             projector_data[projector_id].append({"data": data, "element": element})
 
     return projector_data
