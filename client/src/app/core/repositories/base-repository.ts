@@ -189,8 +189,8 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
     protected updateViewModelObservable(id: number): void {
         if (this.viewModelSubjects[id]) {
             this.viewModelSubjects[id].next(this.viewModelStore[id]);
-            this.generalViewModelSubject.next(this.viewModelStore[id]);
         }
+        this.generalViewModelSubject.next(this.viewModelStore[id]);
     }
 
     /**
