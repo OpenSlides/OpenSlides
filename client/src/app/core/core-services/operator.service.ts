@@ -10,7 +10,6 @@ import { environment } from 'environments/environment';
 import { DataStoreService } from './data-store.service';
 import { OfflineService } from './offline.service';
 import { ViewUser } from 'app/site/users/models/view-user';
-import { CollectionStringMapperService } from './collectionStringMapper.service';
 import { OnAfterAppsLoaded } from '../onAfterAppsLoaded';
 import { UserRepositoryService } from '../repositories/users/user-repository.service';
 
@@ -101,9 +100,9 @@ export class OperatorService extends OpenSlidesComponent implements OnAfterAppsL
     private viewOperatorSubject: BehaviorSubject<ViewUser> = new BehaviorSubject<ViewUser>(null);
 
     /**
-     * The user repository. Will be filled by the `onAfterAppsLoaded`.
+     * Do not access the repo before it wasn't loaded. Will be true after `onAfterAppsLoaded`.
      */
-    private userRepository: UserRepositoryService;
+    private userRepoLoaded = false;
 
     /**
      * Sets up an observer for watching changes in the DS. If the operator user or groups are changed,
@@ -117,7 +116,7 @@ export class OperatorService extends OpenSlidesComponent implements OnAfterAppsL
         private http: HttpClient,
         private DS: DataStoreService,
         private offlineService: OfflineService,
-        private collectionStringMapperService: CollectionStringMapperService
+        private userRepository: UserRepositoryService
     ) {
         super();
 
@@ -141,9 +140,7 @@ export class OperatorService extends OpenSlidesComponent implements OnAfterAppsL
      * Load the repo to get a view user.
      */
     public onAfterAppsLoaded(): void {
-        this.userRepository = this.collectionStringMapperService.getRepositoryFromModelConstructor(
-            User
-        ) as UserRepositoryService;
+        this.userRepoLoaded = true;
         if (this.user) {
             this._viewUser = this.userRepository.getViewModel(this.user.id);
         }
@@ -156,7 +153,7 @@ export class OperatorService extends OpenSlidesComponent implements OnAfterAppsL
      */
     private updateUser(user: User | null): void {
         this._user = user;
-        if (user && this.userRepository) {
+        if (user && this.userRepoLoaded) {
             this._viewUser = this.userRepository.getViewModel(user.id);
         } else {
             this._viewUser = null;
