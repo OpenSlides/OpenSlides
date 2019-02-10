@@ -33,6 +33,7 @@ import { ConfigService } from 'app/core/ui-services/config.service';
  *       [changes]="changes"
  *       [scrollToChange]="change"
  *       [highlightedLine]="highlightedLine"
+ *       [lineNumberingMode]="lnMode"
  *       (createChangeRecommendation)="createChangeRecommendation($event)"
  * ></os-motion-detail-diff>
  * ```
@@ -51,14 +52,11 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
     public scrollToChange: ViewUnifiedChange;
     @Input()
     public highlightedLine: number;
+    @Input()
+    public lineNumberingMode: LineNumberingMode;
 
     @Output()
     public createChangeRecommendation: EventEmitter<LineRange> = new EventEmitter<LineRange>();
-
-    /**
-     * Indicates the LineNumberingMode Mode.
-     */
-    public lnMode: LineNumberingMode;
 
     /**
      * Indicates the maximum line length as defined in the configuration.
@@ -89,9 +87,6 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
     ) {
         super(title, translate, matSnackBar);
 
-        this.configService
-            .get<LineNumberingMode>('motions_default_line_numbering')
-            .subscribe(mode => (this.lnMode = mode));
         this.configService.get<number>('motions_line_length').subscribe(lineLength => (this.lineLength = lineLength));
     }
 
@@ -181,7 +176,7 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
      * @returns whether there are line numbers at all
      */
     public isLineNumberingNone(): boolean {
-        return this.lnMode === LineNumberingMode.None;
+        return this.lineNumberingMode === LineNumberingMode.None;
     }
 
     /**
@@ -190,7 +185,7 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
      * @returns whether the line numberings are inside
      */
     public isLineNumberingInline(): boolean {
-        return this.lnMode === LineNumberingMode.Inside;
+        return this.lineNumberingMode === LineNumberingMode.Inside;
     }
 
     /**
@@ -199,7 +194,7 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
      * @returns whether the line numberings are outside
      */
     public isLineNumberingOutside(): boolean {
-        return this.lnMode === LineNumberingMode.Outside;
+        return this.lineNumberingMode === LineNumberingMode.Outside;
     }
 
     /**
