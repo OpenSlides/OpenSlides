@@ -132,11 +132,15 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
      *
      * @param user The user to update
      * @param password The password to set
+     * @param updateDefaultPassword Control, if the default password should be updated.
      */
-    public async resetPassword(user: ViewUser, password: string): Promise<void> {
+    public async resetPassword(
+        user: ViewUser,
+        password: string,
+        updateDefaultPassword: boolean = false
+    ): Promise<void> {
         const path = `/rest/users/user/${user.id}/reset_password/`;
-        await this.httpService.post(path, { password: password });
-        await this.update({ default_password: password }, user);
+        await this.httpService.post(path, { password: password, update_default_password: updateDefaultPassword });
     }
 
     /**

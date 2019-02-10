@@ -273,7 +273,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
     public async resetPasswordsSelected(): Promise<void> {
         for (const user of this.selectedRows) {
             const password = this.repo.getRandomPassword();
-            this.repo.resetPassword(user, password);
+            this.repo.resetPassword(user, password, true);
         }
     }
 
