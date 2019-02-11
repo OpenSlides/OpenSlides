@@ -1027,4 +1027,68 @@ export class LinenumberingService {
 
         return html;
     }
+
+    /**
+     * Helper function that does the actual work for `splitInlineElementsAtLineBreaks`
+     *
+     * @param {Element} lineNumber
+     */
+    private splitInlineElementsAtLineBreak(lineNumber: Element): void {
+        const parentIsInline = (el: Element) => this.isInlineElement(el.parentElement);
+        while (parentIsInline(lineNumber)) {
+            const parent: Element = lineNumber.parentElement;
+            const beforeParent: Element = <Element>parent.cloneNode(false);
+
+            // If the node right before the line number is a line break, move it outside along with the line number
+            let lineBreak: Element = null;
+            if (this.isOsLineBreakNode(lineNumber.previousSibling)) {
+                lineBreak = <Element>lineNumber.previousSibling;
+                lineBreak.remove();
+            }
+
+            // All nodes before the line break / number are moved into beforeParent
+            while (lineNumber.previousSibling) {
+                const previousSibling = lineNumber.previousSibling;
+                parent.removeChild(previousSibling);
+                if (beforeParent.childNodes.length > 0) {
+                    beforeParent.insertBefore(previousSibling, beforeParent.firstChild);
+                } else {
+                    beforeParent.appendChild(previousSibling);
+                }
+            }
+
+            // Insert beforeParent before the parent
+            if (beforeParent.childNodes.length > 0) {
+                parent.parentElement.insertBefore(beforeParent, parent);
+            }
+
+            // Add the line number and (if found) the line break inbetween
+            if (lineBreak) {
+                parent.parentElement.insertBefore(lineBreak, parent);
+            }
+            parent.parentElement.insertBefore(lineNumber, parent);
+        }
+    }
+
+    /**
+     * This splits all inline elements so that each line number (including preceding line breaks)
+     * are located directly in a block-level element.
+     * `<p><span>...[linebreak]...</span></p>`
+     * is therefore converted into
+     * `<p><span>...</span>[linebreak]<span>...</span></p>
+     *
+     * This function is mainly provided for the PDF generation
+     *
+     * @param {string} html
+     * @returns {string}
+     */
+    public splitInlineElementsAtLineBreaks(html: string): string {
+        const fragment = this.htmlToFragment(html);
+        const lineNumbers = fragment.querySelectorAll('span.os-line-number');
+        lineNumbers.forEach((lineNumber: Element) => {
+            this.splitInlineElementsAtLineBreak(lineNumber);
+        });
+
+        return this.fragmentToHtml(fragment);
+    }
 }
