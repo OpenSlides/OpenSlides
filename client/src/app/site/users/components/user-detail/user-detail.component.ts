@@ -7,14 +7,14 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
 import { BaseViewComponent } from '../../../base/base-view';
-import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { genders, User } from 'app/shared/models/users/user';
-import { Group } from 'app/shared/models/users/group';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { UserPdfExportService } from '../../services/user-pdf-export.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ViewUser } from '../../models/view-user';
+import { ViewGroup } from '../../models/view-group';
+import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 
 /**
  * Users detail component for both new and existing users
@@ -61,9 +61,9 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
     public user: ViewUser;
 
     /**
-     * Should contain all Groups, loaded or observed from DataStore
+     * Contains all groups, except for the default group.
      */
-    public groups: Group[];
+    public groups: ViewGroup[];
 
     /**
      * Hold the list of genders (sexes) publicly to dynamically iterate in the view
@@ -80,10 +80,10 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
      * @param route ActivatedRoute
      * @param router Router
      * @param repo UserRepositoryService
-     * @param DS DataStoreService
      * @param operator OperatorService
      * @param promptService PromptService
      * @param pdfService UserPdfExportService used for export to pdf
+     * @param groupRepo
      */
     public constructor(
         title: Title,
@@ -93,10 +93,10 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private repo: UserRepositoryService,
-        private DS: DataStoreService,
         private operator: OperatorService,
         private promptService: PromptService,
-        private pdfService: UserPdfExportService
+        private pdfService: UserPdfExportService,
+        private groupRepo: GroupRepositoryService
     ) {
         super(title, translate, matSnackBar);
         // prevent 'undefined' to appear in the ui
@@ -137,6 +137,18 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
             });
         }
         this.createForm();
+
+        this.groups = this.groupRepo.getViewModelList().filter(group => group.id !== 1);
+        this.groupRepo
+            .getViewModelListObservable()
+            .subscribe(groups => (this.groups = groups.filter(group => group.id !== 1)));
+    }
+
+    /**
+     * Init function.
+     */
+    public ngOnInit(): void {
+        this.makeFormEditable(this.editUser);
     }
 
     /**
@@ -365,19 +377,6 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
      */
     public changePassword(): void {
         this.router.navigate([`./users/password/${this.user.id}`]);
-    }
-
-    /**
-     * Init function.
-     */
-    public ngOnInit(): void {
-        this.makeFormEditable(this.editUser);
-        this.groups = this.DS.filter(Group, group => group.id !== 1);
-        this.DS.changeObservable.subscribe(model => {
-            if (model instanceof Group && model.id !== 1) {
-                this.groups.push(model as Group);
-            }
-        });
     }
 
     /**
