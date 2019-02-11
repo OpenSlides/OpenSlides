@@ -4,6 +4,7 @@ import { MatDialogRef, MatButtonToggle } from '@angular/material';
 
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { LineNumberingMode, ChangeRecoMode } from '../../models/view-motion';
+import { InfoToExport } from '../../services/motion-pdf.service';
 
 /**
  * Dialog component to determine exporting.
@@ -42,14 +43,15 @@ export class MotionExportDialogComponent implements OnInit {
     /**
      * Determine the default meta info to export.
      */
-    private defaultInfoToExport = [
+    private defaultInfoToExport: InfoToExport[] = [
         'submitters',
         'state',
         'recommendation',
         'category',
         'origin',
         'block',
-        'votingResult'
+        'polls',
+        'comments'
     ];
 
     /**

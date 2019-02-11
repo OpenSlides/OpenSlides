@@ -11,11 +11,20 @@ import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions
 import { ViewMotion, LineNumberingMode, ChangeRecoMode } from '../models/view-motion';
 import { ViewUnifiedChange } from '../models/view-unified-change';
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
+import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
 
 /**
  * Type declaring which strings are valid options for metainfos to be exported into a pdf
  */
-export type InfoToExport = 'submitters' | 'state' | 'recommendation' | 'category' | 'block' | 'origin' | 'polls';
+export type InfoToExport =
+    | 'submitters'
+    | 'state'
+    | 'recommendation'
+    | 'category'
+    | 'block'
+    | 'origin'
+    | 'polls'
+    | 'comments';
 
 /**
  * Converts a motion to pdf. Can be used from the motion detail view or executed on a list of motions
@@ -43,6 +52,7 @@ export class MotionPdfService {
      * @param htmlToPdfService To convert HTML text into pdfmake doc def
      * @param pollService MotionPollService for rendering the polls
      * @param linenumberingService Line numbers
+     * @param commentRepo MotionCommentSectionRepositoryService to print comments
      */
     public constructor(
         private translate: TranslateService,
@@ -52,7 +62,8 @@ export class MotionPdfService {
         private configService: ConfigService,
         private htmlToPdfService: HtmlToPdfService,
         private pollService: MotionPollService,
-        private linenumberingService: LinenumberingService
+        private linenumberingService: LinenumberingService,
+        private commentRepo: MotionCommentSectionRepositoryService
     ) {}
 
     /**
@@ -257,6 +268,7 @@ export class MotionPdfService {
             ]);
         }
 
+        // voting results
         if (motion.motion.polls.length && (!infoToExport || infoToExport.includes('polls'))) {
             const column1 = [];
             const column2 = [];
@@ -312,6 +324,20 @@ export class MotionPdfService {
                     columnGap: 7
                 }
             ]);
+        }
+
+        // comments
+        if (motion.commentSectionIds.length && (!infoToExport || infoToExport.includes('comments'))) {
+            const sections = this.commentRepo.getViewModelList();
+            sections.map(commentSection => {
+                const section = motion.getCommentForSection(commentSection);
+                if (section && section.comment) {
+                    metaTableBody.push({ text: commentSection.name, style: 'heading2' });
+                    metaTableBody.push({
+                        text: section.comment
+                    });
+                }
+            });
         }
 
         // summary of change recommendations (for motion diff version only)
