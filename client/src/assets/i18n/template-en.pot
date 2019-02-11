@@ -7,6 +7,18 @@ msgstr ""
 msgid "%num% emails were send sucessfully."
 msgstr ""
 
+msgid "0: All users"
+msgstr ""
+
+msgid "1: Submitters and all managers"
+msgstr ""
+
+msgid "2: Only managers for motions and metadata"
+msgstr ""
+
+msgid "3: Only managers for motions"
+msgstr ""
+
 msgid "A name is required"
 msgstr ""
 
@@ -34,6 +46,9 @@ msgstr ""
 msgid "Access data (PDF)"
 msgstr ""
 
+msgid "Access level"
+msgstr ""
+
 msgid "Access-data"
 msgstr ""
 
@@ -44,6 +59,9 @@ msgid "Activate statute amendments"
 msgstr ""
 
 msgid "Active filters"
+msgstr ""
+
+msgid "Add"
 msgstr ""
 
 msgid "Add me"
@@ -90,6 +108,9 @@ msgstr ""
 msgid "All selected files will be deleted!"
 msgstr ""
 
+msgid "All users"
+msgstr ""
+
 msgid "All valid ballots"
 msgstr ""
 
@@ -97,6 +118,15 @@ msgid "All your changes are saved immediately."
 msgstr ""
 
 msgid "Allow access for anonymous guest users"
+msgstr ""
+
+msgid "Allow create poll"
+msgstr ""
+
+msgid "Allow submitter edit"
+msgstr ""
+
+msgid "Allow support"
 msgstr ""
 
 msgid "Allow to disable versioning"
@@ -281,6 +311,9 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+msgid "Cancel edit"
+msgstr ""
+
 msgid "Categories"
 msgstr ""
 
@@ -314,6 +347,9 @@ msgstr ""
 msgid "Changed version"
 msgstr ""
 
+msgid "Changed version in line"
+msgstr ""
+
 msgid "Check in or check out participants based on their participant numbers:"
 msgstr ""
 
@@ -324,6 +360,9 @@ msgid "Clear all"
 msgstr ""
 
 msgid "Clear list"
+msgstr ""
+
+msgid "Clear tags"
 msgstr ""
 
 msgid "Close"
@@ -383,6 +422,9 @@ msgstr ""
 msgid "Create new category"
 msgstr ""
 
+msgid "Create new workflow"
+msgstr ""
+
 msgid "Current"
 msgstr ""
 
@@ -425,6 +467,9 @@ msgstr ""
 msgid "Default"
 msgstr ""
 
+msgid "Default encoding for all csv exports"
+msgstr ""
+
 msgid "Default line numbering"
 msgstr ""
 
@@ -452,6 +497,9 @@ msgid "Delete"
 msgstr ""
 
 msgid "Delete final print template"
+msgstr ""
+
+msgid "Delete recommendation"
 msgstr ""
 
 msgid "Delete whole history"
@@ -638,6 +686,9 @@ msgstr ""
 msgid "Export motions"
 msgstr ""
 
+msgid "Export personal note only"
+msgstr ""
+
 msgid "Extension"
 msgstr ""
 
@@ -669,6 +720,9 @@ msgid "Final version"
 msgstr ""
 
 msgid "Finished"
+msgstr ""
+
+msgid "First state"
 msgstr ""
 
 msgid "Follow recommendation"
@@ -704,10 +758,16 @@ msgstr ""
 msgid "Generate new passwords"
 msgstr ""
 
+msgid "Generate password"
+msgstr ""
+
 msgid "German"
 msgstr ""
 
 msgid "Given name"
+msgstr ""
+
+msgid "Go to line"
 msgstr ""
 
 msgid "Groups"
@@ -735,6 +795,9 @@ msgid "Hide internal items when projecting subitems"
 msgstr ""
 
 msgid "Hide meta information box on projector"
+msgstr ""
+
+msgid "Hide password"
 msgstr ""
 
 msgid "Hide reason on projector"
@@ -787,6 +850,9 @@ msgstr ""
 msgid "Input format: DD.MM.YYYY HH:MM"
 msgstr ""
 
+msgid "Insert after"
+msgstr ""
+
 msgid "Insert participants here"
 msgstr ""
 
@@ -803,6 +869,9 @@ msgid "Internal item"
 msgstr ""
 
 msgid "Invalid input."
+msgstr ""
+
+msgid "Invalid line number"
 msgstr ""
 
 msgid "Is a committee"
@@ -830,6 +899,9 @@ msgid "Keep each item in a single line."
 msgstr ""
 
 msgid "Keep each person in a single line."
+msgstr ""
+
+msgid "Label color"
 msgstr ""
 
 msgid "Last speakers"
@@ -928,6 +1000,9 @@ msgstr ""
 msgid "Motions have been imported."
 msgstr ""
 
+msgid "Move in call list"
+msgstr ""
+
 msgid "Move to agenda item"
 msgstr ""
 
@@ -950,6 +1025,9 @@ msgid "New Projector"
 msgstr ""
 
 msgid "New amendment"
+msgstr ""
+
+msgid "New change recommendation"
 msgstr ""
 
 msgid "New comment field"
@@ -991,7 +1069,13 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
+msgid "Next states"
+msgstr ""
+
 msgid "No"
+msgstr ""
+
+msgid "No category"
 msgstr ""
 
 msgid "No change recommendations yet"
@@ -1174,6 +1258,9 @@ msgstr ""
 msgid "Personal notes"
 msgstr ""
 
+msgid "Please enter a name for the new workflow:"
+msgstr ""
+
 msgid "Please enter a valid email address"
 msgstr ""
 
@@ -1274,6 +1361,9 @@ msgid "Reason required for creating new motion"
 msgstr ""
 
 msgid "Recommendation"
+msgstr ""
+
+msgid "Recommendation label"
 msgstr ""
 
 msgid "Recommendation set to {arg1}"
@@ -1403,6 +1493,9 @@ msgstr ""
 msgid "Serially numbered"
 msgstr ""
 
+msgid "Set as parent"
+msgstr ""
+
 msgid "Set category"
 msgstr ""
 
@@ -1410,6 +1503,9 @@ msgid "Set committee ..."
 msgstr ""
 
 msgid "Set hidden"
+msgstr ""
+
+msgid "Set identifier"
 msgstr ""
 
 msgid "Set internal"
@@ -1442,6 +1538,9 @@ msgstr ""
 msgid "Show all"
 msgstr ""
 
+msgid "Show amendment in parent motoin"
+msgstr ""
+
 msgid "Show amendments together with motions"
 msgstr ""
 
@@ -1470,6 +1569,12 @@ msgid "Show password"
 msgstr ""
 
 msgid "Show profile"
+msgstr ""
+
+msgid "Show recommendation extension field"
+msgstr ""
+
+msgid "Show state extension field"
 msgstr ""
 
 msgid "Show the clock on projector"
@@ -1666,6 +1771,11 @@ msgstr ""
 msgid "This will move all selected motions as childs to:"
 msgstr ""
 
+msgid ""
+"This will move all selected motions under or after the following motion in "
+"the call list:"
+msgstr ""
+
 msgid "This will set the following category for all selected motions:"
 msgstr ""
 
@@ -1751,6 +1861,9 @@ msgstr ""
 msgid "Username"
 msgstr ""
 
+msgid "Username or password is not correct."
+msgstr ""
+
 msgid "Visibility"
 msgstr ""
 
@@ -1822,6 +1935,9 @@ msgid "Workflow of new motions"
 msgstr ""
 
 msgid "Workflow of new statute amendments"
+msgstr ""
+
+msgid "Workflows"
 msgstr ""
 
 msgid "Wrong file type detected. Import failed."
@@ -1995,6 +2111,9 @@ msgid "submitted"
 msgstr ""
 
 msgid "supporters"
+msgstr ""
+
+msgid "to"
 msgstr ""
 
 msgid "undocumented"

@@ -28,8 +28,8 @@
                     -->
                 </span>
                 <span class="status">
-                    <ng-container *ngIf="change.isRejected()" translate>Rejected</ng-container>
-                    <ng-container *ngIf="change.isAccepted() && isAmendment(change)" translate>Accepted</ng-container>
+                    <ng-container *ngIf="change.isRejected()"><span translate>Rejected</span></ng-container>
+                    <ng-container *ngIf="change.isAccepted() && isAmendment(change)"><span translate>Accepted</span></ng-container>
                 </span>
             </a>
         </li>

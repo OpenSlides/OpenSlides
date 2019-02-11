@@ -117,7 +117,7 @@ export class HttpService {
             error += this.translate.instant("The server didn't respond.");
         } else if (typeof e.error === 'object') {
             if (e.error.detail) {
-                error += this.processErrorTexts(e.error.detail);
+                error += this.processErrorTexts(this.translate.instant(e.error.detail));
             } else {
                 error = Object.keys(e.error)
                     .map(key => {
