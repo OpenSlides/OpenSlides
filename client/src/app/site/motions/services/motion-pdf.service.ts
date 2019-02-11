@@ -10,6 +10,7 @@ import { MotionRepositoryService } from 'app/core/repositories/motions/motion-re
 import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions/statute-paragraph-repository.service';
 import { ViewMotion, LineNumberingMode, ChangeRecoMode } from '../models/view-motion';
 import { ViewUnifiedChange } from '../models/view-unified-change';
+import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
 
 /**
  * Type declaring which strings are valid options for metainfos to be exported into a pdf
@@ -41,6 +42,7 @@ export class MotionPdfService {
      * @param configService Read config variables
      * @param htmlToPdfService To convert HTML text into pdfmake doc def
      * @param pollService MotionPollService for rendering the polls
+     * @param linenumberingService Line numbers
      */
     public constructor(
         private translate: TranslateService,
@@ -49,7 +51,8 @@ export class MotionPdfService {
         private changeRecoRepo: ChangeRecommendationRepositoryService,
         private configService: ConfigService,
         private htmlToPdfService: HtmlToPdfService,
-        private pollService: MotionPollService
+        private pollService: MotionPollService,
+        private linenumberingService: LinenumberingService
     ) {}
 
     /**
@@ -436,6 +439,8 @@ export class MotionPdfService {
             // order of changes applied to the motion
             changes.sort((a, b) => a.getLineFrom() - b.getLineFrom());
             motionText = this.motionRepo.formatMotion(motion.id, crMode, changes, lineLength);
+            // reformat motion text to split long HTML elements to easier convert into PDF
+            motionText = this.linenumberingService.splitInlineElementsAtLineBreaks(motionText);
         }
 
         return this.htmlToPdfService.convertHtml(motionText, lnMode);
