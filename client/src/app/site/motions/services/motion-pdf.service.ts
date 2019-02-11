@@ -11,11 +11,21 @@ import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions
 import { ViewMotion, LineNumberingMode, ChangeRecoMode } from '../models/view-motion';
 import { ViewUnifiedChange } from '../models/view-unified-change';
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
+import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
 
 /**
  * Type declaring which strings are valid options for metainfos to be exported into a pdf
  */
-export type InfoToExport = 'submitters' | 'state' | 'recommendation' | 'category' | 'block' | 'origin' | 'polls';
+export type InfoToExport =
+    | 'submitters'
+    | 'state'
+    | 'recommendation'
+    | 'category'
+    | 'block'
+    | 'origin'
+    | 'polls'
+    | 'id'
+    | 'allcomments';
 
 /**
  * Converts a motion to pdf. Can be used from the motion detail view or executed on a list of motions
@@ -43,6 +53,7 @@ export class MotionPdfService {
      * @param htmlToPdfService To convert HTML text into pdfmake doc def
      * @param pollService MotionPollService for rendering the polls
      * @param linenumberingService Line numbers
+     * @param commentRepo MotionCommentSectionRepositoryService to print comments
      */
     public constructor(
         private translate: TranslateService,
@@ -52,7 +63,8 @@ export class MotionPdfService {
         private configService: ConfigService,
         private htmlToPdfService: HtmlToPdfService,
         private pollService: MotionPollService,
-        private linenumberingService: LinenumberingService
+        private linenumberingService: LinenumberingService,
+        private commentRepo: MotionCommentSectionRepositoryService
     ) {}
 
     /**
@@ -63,6 +75,7 @@ export class MotionPdfService {
      * @param crMode determine the used change Recommendation mode
      * @param contentToExport determine which content is to export. If left out, everything will be exported
      * @param infoToExport determine which metaInfo to export. If left out, everything will be exported.
+     * @param commentsToExport comments to chose for export. If 'allcomments' is set in infoToExport, this selection will be ignored and all comments exported
      * @returns doc def for the motion
      */
     public motionToDocDef(
@@ -70,7 +83,8 @@ export class MotionPdfService {
         lnMode?: LineNumberingMode,
         crMode?: ChangeRecoMode,
         contentToExport?: string[],
-        infoToExport?: InfoToExport[]
+        infoToExport?: InfoToExport[],
+        commentsToExport?: number[]
     ): object {
         let motionPdfContent = [];
 
@@ -85,7 +99,8 @@ export class MotionPdfService {
         }
 
         const title = this.createTitle(motion);
-        const subtitle = this.createSubtitle(motion);
+        const sequential = !infoToExport || infoToExport.includes('id');
+        const subtitle = this.createSubtitle(motion, sequential);
 
         motionPdfContent = [title, subtitle];
 
@@ -104,6 +119,13 @@ export class MotionPdfService {
         if (!contentToExport || contentToExport.includes('reason')) {
             const reason = this.createReason(motion, lnMode);
             motionPdfContent.push(reason);
+        }
+
+        if (infoToExport && infoToExport.includes('allcomments')) {
+            commentsToExport = this.commentRepo.getViewModelList().map(vm => vm.id);
+        }
+        if (commentsToExport) {
+            motionPdfContent.push(this.createComments(motion, commentsToExport));
         }
 
         return motionPdfContent;
@@ -129,18 +151,17 @@ export class MotionPdfService {
      * Create the motion subtitle and sequential number part of the doc definition
      *
      * @param motion the target motion
+     * @param sequential set to true to include the sequential number
      * @returns doc def for the subtitle
      */
-    private createSubtitle(motion: ViewMotion): object {
+    private createSubtitle(motion: ViewMotion, sequential?: boolean): object {
         const subtitleLines = [];
-        const exportSequentialNumber = this.configService.instant('motions_export_sequential_number');
-
-        if (exportSequentialNumber) {
+        if (sequential) {
             subtitleLines.push(`${this.translate.instant('Sequential number')}: ${motion.id}`);
         }
 
         if (motion.parent_id) {
-            if (exportSequentialNumber) {
+            if (sequential) {
                 subtitleLines.push(' • ');
             }
             subtitleLines.push(
@@ -257,6 +278,7 @@ export class MotionPdfService {
             ]);
         }
 
+        // voting results
         if (motion.motion.polls.length && (!infoToExport || infoToExport.includes('polls'))) {
             const column1 = [];
             const column2 = [];
@@ -633,5 +655,20 @@ export class MotionPdfService {
             style: 'heading2'
         };
         return [title, subtitle, metaInfo, subHeading, noteContent];
+    }
+
+    private createComments(motion: ViewMotion, comments: number[]): object[] {
+        const result: object[] = [];
+        for (const comment of comments) {
+            const viewComment = this.commentRepo.getViewModel(comment);
+            const section = motion.getCommentForSection(viewComment);
+            if (section && section.comment) {
+                result.push({ text: viewComment.name, style: 'heading3' });
+                result.push({
+                    text: this.htmlToPdfService.convertHtml(section.comment)
+                });
+            }
+        }
+        return result;
     }
 }

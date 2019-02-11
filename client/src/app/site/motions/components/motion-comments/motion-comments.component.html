@@ -29,6 +29,14 @@
             </button>
             <button
                 mat-icon-button
+                *ngIf="!isEditMode && comments[section.id]?.comment"
+                (click)="pdfExportSection(section)"
+                matTooltip="{{ 'Export comment' | translate }}"
+            >
+                <mat-icon>picture_as_pdf</mat-icon>
+            </button>
+            <button
+                mat-icon-button
                 *ngIf="isCommentEdited(section)"
                 (click)="saveComment(section)"
                 matTooltip="{{ 'Save' | translate }}"

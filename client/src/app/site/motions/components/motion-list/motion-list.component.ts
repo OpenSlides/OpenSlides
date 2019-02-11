@@ -216,7 +216,8 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
                         result.lnMode,
                         result.crMode,
                         result.content,
-                        result.metaInfo
+                        result.metaInfo,
+                        result.comments
                     );
                 } else if (result.format === 'csv') {
                     this.motionCsvExport.exportMotionList(

@@ -11,6 +11,7 @@ import { OperatorService } from 'app/core/core-services/operator.service';
 import { MotionComment } from 'app/shared/models/motions/motion-comment';
 import { ViewMotion } from '../../models/view-motion';
 import { BaseViewComponent } from 'app/site/base/base-view';
+import { MotionPdfExportService } from '../../services/motion-pdf-export.service';
 
 /**
  * Component for the motion comments view
@@ -63,6 +64,7 @@ export class MotionCommentsComponent extends BaseViewComponent {
      * @param commentRepo The repository that handles server communication
      * @param formBuilder Form builder to handle text editing
      * @param operator service to get the sections
+     * @param pdfService service to export a comment section to pdf
      * @param titleService set the browser title
      * @param translate the translation service
      * @param matSnackBar showing errors and information
@@ -71,6 +73,7 @@ export class MotionCommentsComponent extends BaseViewComponent {
         private commentRepo: MotionCommentSectionRepositoryService,
         private formBuilder: FormBuilder,
         private operator: OperatorService,
+        private pdfService: MotionPdfExportService,
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar
@@ -176,5 +179,14 @@ export class MotionCommentsComponent extends BaseViewComponent {
      */
     public isCommentEdited(section: ViewMotionCommentSection): boolean {
         return Object.keys(this.commentForms).includes('' + section.id);
+    }
+
+    /**
+     * Triggers a direct pdf export of this comment
+     *
+     * @param section
+     */
+    public pdfExportSection(section: ViewMotionCommentSection): void {
+        this.pdfService.exportComment(section, this.motion);
     }
 }

@@ -51,10 +51,24 @@
                 <mat-button-toggle value="category"> <span translate>Category</span> </mat-button-toggle>
                 <mat-button-toggle value="origin"> <span translate>Origin</span> </mat-button-toggle>
                 <mat-button-toggle value="block"> <span translate>Motion block</span> </mat-button-toggle>
-                <mat-button-toggle value="votingResult" #votingResultButton>
+                <mat-button-toggle value="poll" #votingResultButton>
                     <span translate>Voting result</span>
                 </mat-button-toggle>
+                <mat-button-toggle value="id"><span translate>Sequential number</span></mat-button-toggle>
             </mat-button-toggle-group>
+        </div>
+        <div *ngIf="commentsToExport.length && exportForm.get('format').value === 'pdf'">
+            <p class="toggle-group-head" translate>Comments information</p>
+            <mat-button-toggle-group
+                class="smaller-buttons"
+                multiple
+                formControlName="comments"
+            >
+                <mat-button-toggle *ngFor="let comment of commentsToExport" [value]="comment.id">
+                    <span>{{ comment.name }}</span>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+            <!-- TODO only if not csv -->
         </div>
 
         <br />
