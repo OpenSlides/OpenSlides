@@ -15,6 +15,7 @@ import { ItemRepositoryService } from 'app/core/repositories/agenda/item-reposit
 import { Displayable } from 'app/site/base/displayable';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
+import { TreeService } from 'app/core/ui-services/tree.service';
 
 /**
  * Contains all multiselect actions for the motion list view.
@@ -37,6 +38,7 @@ export class MotionMultiselectService {
      * @param agendaRepo
      * @param motionBlockRepo
      * @param httpService
+     * @param treeService
      */
     public constructor(
         private repo: MotionRepositoryService,
@@ -49,7 +51,8 @@ export class MotionMultiselectService {
         private tagRepo: TagRepositoryService,
         private agendaRepo: ItemRepositoryService,
         private motionBlockRepo: MotionBlockRepositoryService,
-        private httpService: HttpService
+        private httpService: HttpService,
+        private treeService: TreeService
     ) {}
 
     /**
@@ -244,6 +247,39 @@ export class MotionMultiselectService {
             for (const motion of motions) {
                 const blockId = selectedChoice.action ? null : (selectedChoice.items as number);
                 await this.repo.update({ motion_block_id: blockId }, motion);
+            }
+        }
+    }
+
+    /**
+     * Triggers the selected motions to be moved in the call-list (sort_parent, weight)
+     * as children or as following after a selected motion.
+     *
+     * @param motions The motions to move
+     */
+    public async bulkMoveItems(motions: ViewMotion[]): Promise<void> {
+        const title = this.translate.instant('This will assign the selected motions as belonging to:');
+        const options = ['Set as parent', 'Insert after'];
+        const allMotions = this.repo.getViewModelList();
+        const tree = this.treeService.makeTree(allMotions, 'weight', 'sort_parent_id');
+        const itemsToMove = this.treeService.getTopItemsFromTree(tree, motions);
+        const selectableItems = this.treeService.getTreeWithoutSelection(tree, motions);
+
+        const selectedChoice = await this.choiceService.open(title, selectableItems, false, options);
+        if (selectedChoice) {
+            if (selectedChoice.action === options[0]) {
+                // set choice as parent
+                this.repo.sortMotionBranches(itemsToMove, selectedChoice.items as number);
+            } else if (selectedChoice.action === options[1]) {
+                // insert after chosen
+                const olderSibling = this.repo.getViewModel(selectedChoice.items as number);
+                const parentId = olderSibling ? olderSibling.sort_parent_id : null;
+                const siblings = this.repo.getViewModelList().filter(motion => motion.sort_parent_id === parentId);
+                const idx = siblings.findIndex(sib => sib.id === olderSibling.id);
+                const before = siblings.slice(0, idx + 1);
+                const after = siblings.slice(idx + 1);
+                const sum = [].concat(before, itemsToMove, after);
+                this.repo.sortMotionBranches(sum, parentId);
             }
         }
     }

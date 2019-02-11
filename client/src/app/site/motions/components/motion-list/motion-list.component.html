@@ -248,10 +248,13 @@
                 <span translate>Add/remove tags</span>
             </button>
             <button mat-menu-item (click)="multiselectWrapper(multiselectService.moveToItem(selectedRows))">
-                <!-- TODO: Not implemented yet -->
                 <mat-icon>sort</mat-icon>
                 <span translate>Move to agenda item</span>
             </button>
+            <button mat-menu-item (click)="multiselectWrapper(multiselectService.bulkMoveItems(selectedRows))">
+                    <mat-icon>format_indent_increase</mat-icon>
+                    <span translate>Move in call list</span>
+                </button>
         </div>
         <div *ngIf="perms.isAllowed('manage')">
             <mat-divider></mat-divider>

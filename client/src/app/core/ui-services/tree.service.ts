@@ -131,4 +131,61 @@ export class TreeService {
         const tree = this.makeTree(items, weightKey, parentIdKey);
         return this.traverseTree(tree);
     }
+
+    /**
+     * Reduce a list of items to nodes independent from each other in a given
+     * branch of a tree
+     *
+     * @param branch the tree to traverse
+     * @param items the items to check
+     * @returns the selection of items that belong to different branches
+     */
+    private getTopItemsFromBranch<T extends Identifiable & Displayable>(branch: OSTreeNode<T>, items: T[]): T[] {
+        const item = items.find(i => branch.item.id === i.id);
+        if (item) {
+            return [item];
+        } else if (!branch.children) {
+            return [];
+        } else {
+            return [].concat(...branch.children.map(child => this.getTopItemsFromBranch(child, items)));
+        }
+    }
+
+    /**
+     * Reduce a list of items to nodes independent from each other in a given tree
+     *
+     * @param tree the tree to traverse
+     * @param items the items to check
+     * @returns the selection of items that belong to different branches
+     */
+    public getTopItemsFromTree<T extends Identifiable & Displayable>(tree: OSTreeNode<T>[], items: T[]): T[] {
+        let results: T[] = [];
+        tree.forEach(branch => {
+            const i = this.getTopItemsFromBranch(branch, items);
+            if (i.length) {
+                results = results.concat(i);
+            }
+        });
+        return results;
+    }
+
+    /**
+     * Return all items not being hierarchically dependant on the items in the input arrray
+     *
+     * @param tree
+     * @param items
+     * @returns all items that are neither in the input nor dependants of  items in the input
+     */
+    public getTreeWithoutSelection<T extends Identifiable & Displayable>(tree: OSTreeNode<T>[], items: T[]): T[] {
+        let result: T[] = [];
+        tree.forEach(branch => {
+            if (!items.find(i => i.id === branch.item.id)) {
+                result.push(branch.item);
+                if (branch.children) {
+                    result = result.concat(this.getTreeWithoutSelection(branch.children, items));
+                }
+            }
+        });
+        return result;
+    }
 }
