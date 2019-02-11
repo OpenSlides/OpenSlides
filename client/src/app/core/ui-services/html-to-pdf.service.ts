@@ -76,6 +76,23 @@ export class HtmlToPdfService {
     public constructor() {}
 
     /**
+     * Determine the ideal margin for a given node
+     *
+     * @param nodeName the parsing node
+     * @returns the margin bottom as number
+     */
+    private getMarginBottom(nodeName: string): number {
+        switch (nodeName) {
+            case 'li': {
+                return this.LI_MARGIN_BOTTOM;
+            }
+            default: {
+                return this.P_MARGIN_BOTTOM;
+            }
+        }
+    }
+
+    /**
      * Takes an HTML string, converts to HTML using a DOM parser and recursivly parses
      * the content into pdfmake compatible doc definition
      *
@@ -154,8 +171,10 @@ export class HtmlToPdfService {
             case 'h4':
             case 'h5':
             case 'h6':
-            case 'p': {
-                const children = this.parseChildren(element, newParagraph);
+            case 'li':
+            case 'p':
+            case 'div': {
+                const children = this.parseChildren(element, styles);
 
                 if (this.lineNumberingMode === LineNumberingMode.Outside) {
                     newParagraph = this.create('stack');
@@ -165,15 +184,14 @@ export class HtmlToPdfService {
                     newParagraph.text = children;
                 }
 
-                newParagraph.margin = [0, this.P_MARGIN_BOTTOM];
+                newParagraph.margin = [0, this.getMarginBottom(nodeName)];
                 newParagraph.lineHeight = this.LINE_HEIGHT;
 
-                styles = this.computeStyle(styles);
                 const implicitStyles = this.computeStyle(this.elementStyles[nodeName]);
 
                 newParagraph = {
                     ...newParagraph,
-                    ...styles,
+                    ...this.computeStyle(styles),
                     ...implicitStyles
                 };
                 break;
@@ -238,19 +256,6 @@ export class HtmlToPdfService {
                 }
 
                 newParagraph.lineHeight = this.LINE_HEIGHT;
-                break;
-            }
-            case 'li':
-            case 'div': {
-                newParagraph = this.create('text');
-                newParagraph.lineHeight = this.LI_MARGIN_BOTTOM;
-                newParagraph = {
-                    ...newParagraph,
-                    ...this.computeStyle(styles)
-                };
-
-                const children = this.parseChildren(element, styles);
-                newParagraph.text = children;
                 break;
             }
             case 'ul':
