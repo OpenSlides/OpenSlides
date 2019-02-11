@@ -859,6 +859,9 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      * @returns the translated state with the extension attached
      */
     public getExtendedStateLabel(motion: ViewMotion): string {
+        if (!motion.state) {
+            return null;
+        }
         let state = this.translate.instant(motion.state.name);
         if (motion.stateExtension && motion.state.show_state_extension_field) {
             state += ' ' + this.solveExtensionPlaceHolder(motion.stateExtension);

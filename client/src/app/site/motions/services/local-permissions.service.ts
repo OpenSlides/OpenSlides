@@ -57,34 +57,47 @@ export class LocalPermissionsService {
      */
     public isAllowed(action: string, motion?: ViewMotion): boolean {
         switch (action) {
-            case 'create':
+            case 'create': {
                 return this.operator.hasPerms('motions.can_create');
-            case 'support':
-                if (!motion) {
+            }
+            case 'support': {
+                if (!motion || !motion.state) {
                     return false;
                 }
                 return (
                     this.operator.hasPerms('motions.can_support') &&
                     this.configMinSupporters > 0 &&
+                    motion.state &&
                     motion.state.allow_support &&
+                    motion.submitters &&
                     motion.submitters.indexOf(this.operator.viewUser) === -1 &&
+                    motion.supporters &&
                     motion.supporters.indexOf(this.operator.viewUser) === -1
                 );
-            case 'unsupport':
+            }
+            case 'unsupport': {
                 if (!motion) {
                     return false;
                 }
-                return motion.state.allow_support && motion.supporters.indexOf(this.operator.viewUser) !== -1;
-            case 'createpoll':
+                return (
+                    motion.state &&
+                    motion.state.allow_support &&
+                    motion.supporters &&
+                    motion.supporters.indexOf(this.operator.viewUser) !== -1
+                );
+            }
+            case 'createpoll': {
                 if (!motion) {
                     return false;
                 }
                 return (
                     (this.operator.hasPerms('motions.can_manage') ||
                         this.operator.hasPerms('motions.can_manage_metadata')) &&
+                    motion.state &&
                     motion.state.allow_create_poll
                 );
-            case 'update':
+            }
+            case 'update': {
                 // check also for empty ViewMotion object (e.g. if motion.id is null)
                 // important for creating new motion as normal user
                 if (!motion || !motion.id) {
@@ -97,18 +110,23 @@ export class LocalPermissionsService {
                         motion.submitters &&
                         motion.submitters.some(submitter => submitter.id === this.operator.user.id))
                 );
-            case 'update_submitters':
+            }
+            case 'update_submitters': {
                 return this.operator.hasPerms('motions.can_manage');
-            case 'delete':
+            }
+            case 'delete': {
                 if (!motion) {
                     return false;
                 }
                 return (
                     this.operator.hasPerms('motions.can_manage') &&
+                    motion.state &&
                     motion.state.allow_submitter_edit &&
+                    motion.submitters &&
                     motion.submitters.some(submitter => submitter.id === this.operator.user.id)
                 );
-            case 'change_state':
+            }
+            case 'change_state': {
                 // check also for empty ViewMotion object (e.g. if motion.id is null)
                 // important for creating new motion as normal user
                 if (!motion || !motion.id) {
@@ -122,12 +140,14 @@ export class LocalPermissionsService {
                         motion.submitters &&
                         motion.submitters.some(submitter => submitter.id === this.operator.user.id))
                 );
-            case 'change_metadata':
+            }
+            case 'change_metadata': {
                 return (
                     this.operator.hasPerms('motions.can_manage') ||
                     this.operator.hasPerms('motions.can_manage_metadata')
                 );
-            case 'can_create_amendments':
+            }
+            case 'can_create_amendments': {
                 if (!motion) {
                     return false;
                 }
@@ -136,15 +156,19 @@ export class LocalPermissionsService {
                     this.amendmentEnabled &&
                     (!motion.parent_id || (motion.parent_id && this.amendmentOfAmendment))
                 );
-            case 'can_manage_metadata':
+            }
+            case 'can_manage_metadata': {
                 return (
                     this.operator.hasPerms('motions.can_manage') &&
                     this.operator.hasPerms('motions.can_manage_metadata')
                 );
-            case 'manage':
+            }
+            case 'manage': {
                 return this.operator.hasPerms('motions.can_manage');
-            default:
+            }
+            default: {
                 return false;
+            }
         }
     }
 }
