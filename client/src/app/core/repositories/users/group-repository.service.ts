@@ -9,6 +9,7 @@ import { Group } from 'app/shared/models/users/group';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { ViewGroup } from 'app/site/users/models/view-group';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Shape of a permission
@@ -52,10 +53,19 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group> {
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
         private dataSend: DataSendService,
-        private constants: ConstantsService
+        private constants: ConstantsService,
+        private translate: TranslateService
     ) {
         super(DS, mapperService, viewModelStoreService, Group);
         this.sortPermsPerApp();
+    }
+
+    public createViewModel(group: Group): ViewGroup {
+        const viewGroup = new ViewGroup(group);
+        viewGroup.getVerboseName = (plural: boolean = false) => {
+            return this.translate.instant(plural ? 'Groups' : 'Group');
+        };
+        return viewGroup;
     }
 
     /**
@@ -179,9 +189,5 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group> {
      */
     public async delete(viewGroup: ViewGroup): Promise<void> {
         await this.dataSend.deleteModel(viewGroup.group);
-    }
-
-    public createViewModel(group: Group): ViewGroup {
-        return new ViewGroup(group);
     }
 }

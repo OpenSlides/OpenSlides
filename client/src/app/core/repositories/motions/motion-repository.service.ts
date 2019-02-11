@@ -114,7 +114,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         if (workflow) {
             state = workflow.getStateById(motion.state_id);
         }
-        return new ViewMotion(
+        const viewMotion = new ViewMotion(
             motion,
             category,
             submitters,
@@ -127,6 +127,26 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
             tags,
             parent
         );
+        viewMotion.getVerboseName = (plural: boolean = false) => {
+            return this.translate.instant(plural ? 'Motions' : 'Motion');
+        };
+        viewMotion.getAgendaTitle = () => {
+            // if the identifier is set, the title will be 'Motion <identifier>'.
+            if (viewMotion.identifier) {
+                return this.translate.instant('Motion') + ' ' + viewMotion.identifier;
+            } else {
+                return viewMotion.getTitle();
+            }
+        };
+        viewMotion.getAgendaTitleWithType = () => {
+            // Append the verbose name only, if not the special format 'Motion <identifier>' is used.
+            if (viewMotion.identifier) {
+                return this.translate.instant('Motion') + ' ' + viewMotion.identifier;
+            } else {
+                return viewMotion.getTitle() + ' (' + viewMotion.getVerboseName() + ')';
+            }
+        };
+        return viewMotion;
     }
 
     /**

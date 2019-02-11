@@ -61,15 +61,20 @@ export class ViewMediafile extends BaseViewModel implements Searchable {
         return this.mediafile.hidden;
     }
 
+    /**
+     * This is set by the repository
+     */
+    public getVerboseName;
+
     public constructor(mediafile: Mediafile, uploader?: ViewUser) {
-        super('Mediafile');
+        super(Mediafile.COLLECTIONSTRING);
         this._mediafile = mediafile;
         this._uploader = uploader;
     }
 
-    public getTitle(): string {
+    public getTitle = () => {
         return this.title;
-    }
+    };
 
     public formatForSearch(): SearchRepresentation {
         return [this.title];

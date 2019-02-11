@@ -17,6 +17,7 @@ import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { Item } from 'app/shared/models/agenda/item';
 import { ViewItem } from 'app/site/agenda/models/view-item';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Repository service for motion blocks
@@ -40,9 +41,25 @@ export class MotionBlockRepositoryService extends BaseRepository<ViewMotionBlock
         viewModelStoreService: ViewModelStoreService,
         private dataSend: DataSendService,
         private motionRepo: MotionRepositoryService,
-        private httpService: HttpService
+        private httpService: HttpService,
+        private translate: TranslateService
     ) {
         super(DS, mapperService, viewModelStoreService, MotionBlock, [Item]);
+    }
+
+    /**
+     * Converts a given motion block into a ViewModel
+     *
+     * @param block a motion block
+     * @returns a new ViewMotionBlock
+     */
+    protected createViewModel(block: MotionBlock): ViewMotionBlock {
+        const item = this.viewModelStoreService.get(ViewItem, block.agenda_item_id);
+        const viewMotionBlock = new ViewMotionBlock(block, item);
+        viewMotionBlock.getVerboseName = (plural: boolean = false) => {
+            return this.translate.instant(plural ? 'Motion blocks' : 'Motion block');
+        };
+        return viewMotionBlock;
     }
 
     /**
@@ -75,17 +92,6 @@ export class MotionBlockRepositoryService extends BaseRepository<ViewMotionBlock
      */
     public async create(newBlock: MotionBlock): Promise<Identifiable> {
         return await this.dataSend.createModel(newBlock);
-    }
-
-    /**
-     * Converts a given motion block into a ViewModel
-     *
-     * @param block a motion block
-     * @returns a new ViewMotionBlock
-     */
-    protected createViewModel(block: MotionBlock): ViewMotionBlock {
-        const item = this.viewModelStoreService.get(ViewItem, block.agenda_item_id);
-        return new ViewMotionBlock(block, item);
     }
 
     /**

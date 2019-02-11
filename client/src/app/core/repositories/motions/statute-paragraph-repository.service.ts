@@ -8,6 +8,7 @@ import { StatuteParagraph } from 'app/shared/models/motions/statute-paragraph';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Repository Services for statute paragraphs
@@ -33,13 +34,18 @@ export class StatuteParagraphRepositoryService extends BaseRepository<ViewStatut
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        private dataSend: DataSendService
+        private dataSend: DataSendService,
+        private translate: TranslateService
     ) {
         super(DS, mapperService, viewModelStoreService, StatuteParagraph);
     }
 
     protected createViewModel(statuteParagraph: StatuteParagraph): ViewStatuteParagraph {
-        return new ViewStatuteParagraph(statuteParagraph);
+        const viewStatuteParagraph = new ViewStatuteParagraph(statuteParagraph);
+        viewStatuteParagraph.getVerboseName = (plural: boolean = false) => {
+            return this.translate.instant(plural ? 'Statute paragraphs' : 'Statute paragraph');
+        };
+        return viewStatuteParagraph;
     }
 
     public async create(statuteParagraph: StatuteParagraph): Promise<Identifiable> {

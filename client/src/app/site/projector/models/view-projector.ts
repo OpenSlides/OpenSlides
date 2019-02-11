@@ -52,14 +52,19 @@ export class ViewProjector extends BaseViewModel {
         return this.projector.reference_projector_id;
     }
 
+    /**
+     * This is set by the repository
+     */
+    public getVerboseName;
+
     public constructor(projector?: Projector) {
-        super('Projector');
+        super(Projector.COLLECTIONSTRING);
         this._projector = projector;
     }
 
-    public getTitle(): string {
+    public getTitle = () => {
         return this.name;
-    }
+    };
 
     public updateDependencies(update: BaseViewModel): void {}
 }

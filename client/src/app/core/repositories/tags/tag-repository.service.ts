@@ -8,6 +8,7 @@ import { BaseRepository } from '../base-repository';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Repository Services for Tags
@@ -36,13 +37,18 @@ export class TagRepositoryService extends BaseRepository<ViewTag, Tag> {
         protected DS: DataStoreService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        private dataSend: DataSendService
+        private dataSend: DataSendService,
+        private translate: TranslateService
     ) {
         super(DS, mapperService, viewModelStoreService, Tag);
     }
 
     protected createViewModel(tag: Tag): ViewTag {
-        return new ViewTag(tag);
+        const viewTag = new ViewTag(tag);
+        viewTag.getVerboseName = (plural: boolean = false) => {
+            return this.translate.instant(plural ? 'Tags' : 'Tag');
+        };
+        return viewTag;
     }
 
     public async create(update: Tag): Promise<Identifiable> {

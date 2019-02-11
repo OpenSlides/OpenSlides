@@ -58,8 +58,4 @@ export class PersonalNote extends BaseModel<PersonalNote> implements PersonalNot
     public constructor(input: any) {
         super(PersonalNote.COLLECTIONSTRING, input);
     }
-
-    public getTitle(): string {
-        return 'Personal note';
-    }
 }

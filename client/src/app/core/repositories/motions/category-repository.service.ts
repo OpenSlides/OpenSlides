@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+
 import { BehaviorSubject, Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -53,7 +54,11 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
     }
 
     protected createViewModel(category: Category): ViewCategory {
-        return new ViewCategory(category);
+        const viewCategory = new ViewCategory(category);
+        viewCategory.getVerboseName = (plural: boolean = false) => {
+            return this.translate.instant(plural ? 'Categories' : 'Category');
+        };
+        return viewCategory;
     }
 
     public async create(newCategory: Category): Promise<Identifiable> {

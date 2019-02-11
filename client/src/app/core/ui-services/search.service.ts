@@ -82,11 +82,11 @@ export class SearchService {
         ctor: new (...args: any[]) => Searchable & BaseViewModel,
         displayOrder: number
     ): void {
-        const instance = new ctor();
+        // const instance = new ctor();
         this.searchModels.push({
             collectionString: collectionString,
-            verboseNameSingular: instance.getVerboseName(),
-            verboseNamePlural: instance.getVerboseName(true),
+            verboseNameSingular: 'TODO', // instance.getVerboseName(),
+            verboseNamePlural: 'TODO', // instance.getVerboseName(true),
             displayOrder: displayOrder
         });
         this.searchModels.sort((a, b) => a.displayOrder - b.displayOrder);

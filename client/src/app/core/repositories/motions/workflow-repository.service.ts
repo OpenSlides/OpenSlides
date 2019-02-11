@@ -11,6 +11,7 @@ import { WorkflowState } from 'app/shared/models/motions/workflow-state';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { HttpService } from 'app/core/core-services/http.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Repository Services for Categories
@@ -45,7 +46,8 @@ export class WorkflowRepositoryService extends BaseRepository<ViewWorkflow, Work
         mapperService: CollectionStringMapperService,
         private httpService: HttpService,
         viewModelStoreService: ViewModelStoreService,
-        private dataSend: DataSendService
+        private dataSend: DataSendService,
+        private translate: TranslateService
     ) {
         super(DS, mapperService, viewModelStoreService, Workflow);
     }
@@ -56,7 +58,11 @@ export class WorkflowRepositoryService extends BaseRepository<ViewWorkflow, Work
      * @param workflow the Workflow to convert
      */
     protected createViewModel(workflow: Workflow): ViewWorkflow {
-        return new ViewWorkflow(workflow);
+        const viewWorkflow = new ViewWorkflow(workflow);
+        viewWorkflow.getVerboseName = (plural: boolean = false) => {
+            return this.translate.instant(plural ? 'Workflows' : 'Workflow');
+        };
+        return viewWorkflow;
     }
 
     /**

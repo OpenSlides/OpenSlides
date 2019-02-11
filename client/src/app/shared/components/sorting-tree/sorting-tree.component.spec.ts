@@ -17,13 +17,9 @@ class TestModel implements Identifiable, Displayable {
         public parent_id: number | null
     ) {}
 
-    public getTitle(): string {
-        return this.name;
-    }
+    public getTitle = () => this.name;
 
-    public getListTitle(): string {
-        return this.getTitle();
-    }
+    public getListTitle = () => this.getTitle();
 }
 
 describe('SortingTreeComponent', () => {

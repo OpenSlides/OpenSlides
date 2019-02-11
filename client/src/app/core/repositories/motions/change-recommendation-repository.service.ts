@@ -14,6 +14,7 @@ import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-cha
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from 'app/core/core-services/collectionStringMapper.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Repository Services for change recommendations
@@ -46,9 +47,23 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        private dataSend: DataSendService
+        private dataSend: DataSendService,
+        private translate: TranslateService
     ) {
         super(DS, mapperService, viewModelStoreService, MotionChangeRecommendation, [Category, User, Workflow]);
+    }
+
+    /**
+     * Creates this view wrapper based on an actual Change Recommendation model
+     *
+     * @param {MotionChangeRecommendation} model
+     */
+    protected createViewModel(model: MotionChangeRecommendation): ViewMotionChangeRecommendation {
+        const viewMotionChangeRecommendation = new ViewMotionChangeRecommendation(model);
+        viewMotionChangeRecommendation.getVerboseName = (plural: boolean = false) => {
+            return this.translate.instant(plural ? 'Change recommendations' : 'Change recommendation');
+        };
+        return viewMotionChangeRecommendation;
     }
 
     /**
@@ -68,15 +83,6 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<
      */
     public async createByViewModel(view: ViewMotionChangeRecommendation): Promise<Identifiable> {
         return await this.dataSend.createModel(view.changeRecommendation);
-    }
-
-    /**
-     * Creates this view wrapper based on an actual Change Recommendation model
-     *
-     * @param {MotionChangeRecommendation} model
-     */
-    protected createViewModel(model: MotionChangeRecommendation): ViewMotionChangeRecommendation {
-        return new ViewMotionChangeRecommendation(model);
     }
 
     /**

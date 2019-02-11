@@ -4,6 +4,11 @@ import { BaseViewModel } from 'app/site/base/base-view-model';
 export class ViewChatMessage extends BaseViewModel {
     private _chatMessage: ChatMessage;
 
+    /**
+     * This is set by the repository
+     */
+    public getVerboseName;
+
     public get chatmessage(): ChatMessage {
         return this._chatMessage;
     }
@@ -17,13 +22,13 @@ export class ViewChatMessage extends BaseViewModel {
     }
 
     public constructor(message?: ChatMessage) {
-        super('Chatmessage');
+        super(ChatMessage.COLLECTIONSTRING);
         this._chatMessage = message;
     }
 
-    public getTitle(): string {
+    public getTitle = () => {
         return 'Chatmessage';
-    }
+    };
 
     public updateDependencies(message: BaseViewModel): void {}
 }

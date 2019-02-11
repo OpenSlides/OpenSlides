@@ -55,15 +55,20 @@ export class ViewSpeaker extends BaseViewModel {
         return this.user ? this.user.gender : '';
     }
 
+    /**
+     * This is set by the repository
+     */
+    public getVerboseName;
+
     public constructor(speaker: Speaker, user?: ViewUser) {
-        super('Speaker');
+        super('TODO');
         this._speaker = speaker;
         this._user = user;
     }
 
-    public getTitle(): string {
+    public getTitle = () => {
         return this.name;
-    }
+    };
 
     /**
      * Speaker is not a base model,

@@ -3,12 +3,12 @@
  */
 export interface Displayable {
     /**
-     * Should return the title. Alway used except for list view, the agenda and in the projector.
+     * Should return the title. Always used except for list view, the agenda and in the projector.
      */
-    getTitle(): string;
+    getTitle: () => string;
 
     /**
      * Should return the title for the list view.
      */
-    getListTitle(): string;
+    getListTitle: () => string;
 }

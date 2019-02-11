@@ -18,14 +18,19 @@ export class ViewProjectorMessage extends BaseProjectableViewModel {
         return this.projctormessage.message;
     }
 
+    /**
+     * This is set by the repository
+     */
+    public getVerboseName;
+
     public constructor(message: ProjectorMessage) {
-        super('Message');
+        super(ProjectorMessage.COLLECTIONSTRING);
         this._message = message;
     }
 
-    public getTitle(): string {
+    public getTitle = () => {
         return 'Message';
-    }
+    };
 
     public updateDependencies(update: BaseViewModel): void {}
 

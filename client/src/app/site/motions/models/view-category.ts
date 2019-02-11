@@ -41,29 +41,19 @@ export class ViewCategory extends BaseViewModel implements Searchable {
         return this.prefix ? this.prefix + ' - ' + this.name : this.name;
     }
 
+    /**
+     * This is set by the repository
+     */
+    public getVerboseName;
+
     public constructor(category: Category) {
-        super('Category');
+        super(Category.COLLECTIONSTRING);
         this._category = category;
     }
 
-    /**
-     * Returns the verbose name of this model.
-     *
-     * @override
-     * @param plural If the name should be plural
-     * @param The verbose name
-     */
-    public getVerboseName(plural: boolean = false): string {
-        if (plural) {
-            return 'Categories';
-        } else {
-            return this._verboseName;
-        }
-    }
-
-    public getTitle(): string {
+    public getTitle = () => {
         return this.prefixedName;
-    }
+    };
 
     public formatForSearch(): SearchRepresentation {
         return [this.name, this.prefix];

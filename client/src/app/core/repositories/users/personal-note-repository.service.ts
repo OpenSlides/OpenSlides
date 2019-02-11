@@ -7,6 +7,7 @@ import { PersonalNote } from 'app/shared/models/users/personal-note';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { ViewPersonalNote } from 'app/site/users/models/view-personal-note';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  */
@@ -21,13 +22,18 @@ export class PersonalNoteRepositoryService extends BaseRepository<ViewPersonalNo
     public constructor(
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
-        viewModelStoreService: ViewModelStoreService
+        viewModelStoreService: ViewModelStoreService,
+        private translate: TranslateService
     ) {
         super(DS, mapperService, viewModelStoreService, PersonalNote);
     }
 
     protected createViewModel(personalNote: PersonalNote): ViewPersonalNote {
-        return new ViewPersonalNote();
+        const viewPersonalNote = new ViewPersonalNote();
+        viewPersonalNote.getVerboseName = (plural: boolean = false) => {
+            return this.translate.instant(plural ? 'Personal notes' : 'Personal note');
+        };
+        return viewPersonalNote;
     }
 
     public async create(personalNote: PersonalNote): Promise<Identifiable> {

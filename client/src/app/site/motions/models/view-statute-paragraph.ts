@@ -33,14 +33,19 @@ export class ViewStatuteParagraph extends BaseViewModel implements Searchable {
         return this.statuteParagraph.weight;
     }
 
+    /**
+     * This is set by the repository
+     */
+    public getVerboseName;
+
     public constructor(paragraph: StatuteParagraph) {
-        super('Statute paragraph');
+        super(StatuteParagraph.COLLECTIONSTRING);
         this._paragraph = paragraph;
     }
 
-    public getTitle(): string {
+    public getTitle = () => {
         return this.title;
-    }
+    };
 
     public formatForSearch(): SearchRepresentation {
         throw new Error('TODO');

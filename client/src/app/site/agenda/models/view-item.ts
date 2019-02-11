@@ -1,7 +1,7 @@
 import { BaseViewModel } from '../../base/base-view-model';
 import { Item } from 'app/shared/models/agenda/item';
 import { Speaker } from 'app/shared/models/agenda/speaker';
-import { BaseAgendaViewModel } from 'app/site/base/base-agenda-view-model';
+import { BaseAgendaViewModel, isAgendaBaseModel } from 'app/site/base/base-agenda-view-model';
 
 export class ViewItem extends BaseViewModel {
     private _item: Item;
@@ -29,52 +29,46 @@ export class ViewItem extends BaseViewModel {
     }
 
     public get id(): number {
-        return this.item ? this.item.id : null;
+        return this.item.id;
     }
 
     public get itemNumber(): string {
-        return this.item ? this.item.item_number : null;
+        return this.item.item_number;
     }
 
     public get duration(): number {
-        return this.item ? this.item.duration : null;
+        return this.item.duration;
     }
 
     public get waitingSpeakerAmount(): number {
-        return this.item ? this.item.waitingSpeakerAmount : null;
+        return this.item.waitingSpeakerAmount;
     }
 
     public get type(): number {
-        return this.item ? this.item.type : null;
+        return this.item.type;
     }
 
     public get closed(): boolean {
-        return this.item ? this.item.closed : null;
+        return this.item.closed;
     }
 
     public get comment(): string {
-        if (this.item && this.item.comment) {
-            return this.item.comment;
-        }
-        return '';
+        return this.item.comment;
     }
 
     public get verboseType(): string {
-        if (this.item && this.item.verboseType) {
-            return this.item.verboseType;
-        }
-        return '';
+        return this.item.verboseType;
     }
 
     public get verboseCsvType(): string {
-        return this.item ? this.item.verboseCsvType : '';
+        return this.item.verboseCsvType;
     }
 
     /**
      * TODO: make the repository set the ViewSpeakers here.
      */
     public get speakers(): Speaker[] {
-        return this.item ? this.item.speakers : [];
+        return this.item.speakers;
     }
 
     /**
@@ -82,29 +76,34 @@ export class ViewItem extends BaseViewModel {
      * it's own hierarchy level (items sharing a parent)
      */
     public get weight(): number {
-        return this.item ? this.item.weight : null;
+        return this.item.weight;
     }
 
     /**
      * @returns the parent's id of that item (0 if no parent is set).
      */
     public get parent_id(): number {
-        return this.item ? this.item.parent_id : null;
+        return this.item.parent_id;
     }
 
+    /**
+     * This is set by the repository
+     */
+    public getVerboseName;
+
     public constructor(item: Item, contentObject: BaseAgendaViewModel) {
-        super('Item');
+        super(Item.COLLECTIONSTRING);
         this._item = item;
         this._contentObject = contentObject;
     }
 
-    public getTitle(): string {
+    public getTitle = () => {
         if (this.contentObject) {
             return this.contentObject.getAgendaTitle();
         } else {
             return this.item ? this.item.title : null;
         }
-    }
+    };
 
     /**
      * Create the list view title.
@@ -112,16 +111,27 @@ export class ViewItem extends BaseViewModel {
      *
      * @returns the agenda list title as string
      */
-    public getListTitle(): string {
-        const contentObject: BaseAgendaViewModel = this.contentObject;
+    public getListTitle = () => {
         const numberPrefix = this.itemNumber ? `${this.itemNumber} · ` : '';
 
-        if (contentObject) {
-            return numberPrefix + contentObject.getAgendaTitleWithType();
+        if (this.contentObject) {
+            return numberPrefix + this.contentObject.getAgendaTitleWithType();
         } else {
-            return this.item ? numberPrefix + this.item.title_with_type : null;
+            return numberPrefix + this.item.title_with_type;
         }
-    }
+    };
 
-    public updateDependencies(update: BaseViewModel): void {}
+    public updateDependencies(update: BaseViewModel): boolean {
+        if (
+            update.collectionString === this.item.content_object.collection &&
+            update.id === this.item.content_object.id
+        ) {
+            if (!isAgendaBaseModel(update)) {
+                throw new Error('The item is not an BaseAgendaViewModel:' + update);
+            }
+            this._contentObject = update as BaseAgendaViewModel;
+            return true;
+        }
+        return false;
+    }
 }

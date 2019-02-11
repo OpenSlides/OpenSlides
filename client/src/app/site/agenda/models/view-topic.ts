@@ -47,25 +47,30 @@ export class ViewTopic extends BaseAgendaViewModel {
         return this.topic.text;
     }
 
+    /**
+     * This is set by the repository
+     */
+    public getVerboseName;
+
     public constructor(topic: Topic, attachments?: ViewMediafile[], item?: ViewItem) {
-        super('Topic');
+        super(Topic.COLLECTIONSTRING);
         this._topic = topic;
         this._attachments = attachments;
         this._agendaItem = item;
     }
 
-    public getTitle(): string {
+    public getTitle = () => {
         return this.title;
-    }
+    };
 
     public getAgendaItem(): ViewItem {
         return this.agendaItem;
     }
 
-    public getAgendaTitleWithType(): string {
+    public getAgendaTitleWithType = () => {
         // Do not append ' (Topic)' to the title.
         return this.getAgendaTitle();
-    }
+    };
 
     /**
      * Formats the category for search

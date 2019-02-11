@@ -11,6 +11,7 @@ import { CollectionStringMapperService } from '../../core-services/collectionStr
 import { HttpService } from 'app/core/core-services/http.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { ViewGroup } from 'app/site/users/models/view-group';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Repository Services for Categories
@@ -44,7 +45,8 @@ export class MotionCommentSectionRepositoryService extends BaseRepository<
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
         private dataSend: DataSendService,
-        private http: HttpService
+        private http: HttpService,
+        private translate: TranslateService
     ) {
         super(DS, mapperService, viewModelStoreService, MotionCommentSection, [Group]);
     }
@@ -58,7 +60,11 @@ export class MotionCommentSectionRepositoryService extends BaseRepository<
     protected createViewModel(section: MotionCommentSection): ViewMotionCommentSection {
         const readGroups = this.viewModelStoreService.getMany(ViewGroup, section.read_groups_id);
         const writeGroups = this.viewModelStoreService.getMany(ViewGroup, section.write_groups_id);
-        return new ViewMotionCommentSection(section, readGroups, writeGroups);
+        const viewMotionCommentSection = new ViewMotionCommentSection(section, readGroups, writeGroups);
+        viewMotionCommentSection.getVerboseName = (plural: boolean = false) => {
+            return this.translate.instant(plural ? 'Comment sections' : 'Comment section');
+        };
+        return viewMotionCommentSection;
     }
 
     /**

@@ -12,6 +12,7 @@ import { HttpService } from 'app/core/core-services/http.service';
 import { HttpHeaders } from '@angular/common/http';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { ViewUser } from 'app/site/users/models/view-user';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Repository for MediaFiles
@@ -32,9 +33,25 @@ export class MediafileRepositoryService extends BaseRepository<ViewMediafile, Me
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
         private dataSend: DataSendService,
-        private httpService: HttpService
+        private httpService: HttpService,
+        private translate: TranslateService
     ) {
         super(DS, mapperService, viewModelStoreService, Mediafile, [User]);
+    }
+
+    /**
+     * Creates mediafile ViewModels out of given mediafile objects
+     *
+     * @param file mediafile to convert
+     * @returns a new mediafile ViewModel
+     */
+    public createViewModel(file: Mediafile): ViewMediafile {
+        const uploader = this.viewModelStoreService.get(ViewUser, file.uploader_id);
+        const viewMediafile = new ViewMediafile(file, uploader);
+        viewMediafile.getVerboseName = (plural: boolean = false) => {
+            return this.translate.instant(plural ? 'Files' : 'File');
+        };
+        return viewMediafile;
     }
 
     /**
@@ -82,16 +99,5 @@ export class MediafileRepositoryService extends BaseRepository<ViewMediafile, Me
         const restPath = `rest/mediafiles/mediafile/`;
         const emptyHeader = new HttpHeaders();
         return this.httpService.post<Identifiable>(restPath, file, {}, emptyHeader);
-    }
-
-    /**
-     * Creates mediafile ViewModels out of given mediafile objects
-     *
-     * @param file mediafile to convert
-     * @returns a new mediafile ViewModel
-     */
-    public createViewModel(file: Mediafile): ViewMediafile {
-        const uploader = this.viewModelStoreService.get(ViewUser, file.uploader_id);
-        return new ViewMediafile(file, uploader);
     }
 }

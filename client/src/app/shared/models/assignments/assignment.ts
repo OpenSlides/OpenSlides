@@ -13,6 +13,7 @@ export const assignmentPhase = [
  * @ignore
  */
 export class Assignment extends BaseModel<Assignment> {
+    public static COLLECTIONSTRING = 'assignments/assignment';
     public id: number;
     public title: string;
     public description: string;
@@ -25,7 +26,7 @@ export class Assignment extends BaseModel<Assignment> {
     public tags_id: number[];
 
     public constructor(input?: any) {
-        super('assignments/assignment', input);
+        super(Assignment.COLLECTIONSTRING, input);
     }
 
     public get candidateIds(): number[] {

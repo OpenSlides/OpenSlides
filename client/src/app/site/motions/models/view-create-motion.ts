@@ -46,6 +46,10 @@ export class ViewCreateMotion extends ViewMotion {
         super(motion, category, submitters, supporters, workflow, state, item, block, null);
     }
 
+    public getVerboseName = () => {
+        throw new Error('This should not be used');
+    };
+
     /**
      * Duplicate this motion into a copy of itself
      */

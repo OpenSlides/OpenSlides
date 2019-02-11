@@ -78,6 +78,24 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
             }
         });
 
+        this.setupDependencyObservation();
+
+        // Watch the Observables for deleting
+        // TODO: What happens, if some related object was deleted?
+        // My quess: This must trigger an autoupdate also for this model, because some IDs changed, so the
+        // affected models will be newly created by the primaryModelChangeSubject.
+        this.DS.deletedObservable.subscribe(model => {
+            if (
+                model.collection ===
+                this.collectionStringMapperService.getCollectionStringFromModelConstructor(this.baseModelCtor)
+            ) {
+                delete this.viewModelStore[model.id];
+                this.updateAllObservables(model.id);
+            }
+        });
+    }
+
+    protected setupDependencyObservation(): void {
         if (this.depsModelCtors) {
             this.DS.secondaryModelChangeSubject.subscribe(model => {
                 const dependencyChanged: boolean = this.depsModelCtors.some(ctor => {
@@ -94,20 +112,6 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
                 }
             });
         }
-
-        // Watch the Observables for deleting
-        // TODO: What happens, if some related object was deleted?
-        // My quess: This must trigger an autoupdate also for this model, because some IDs changed, so the
-        // affected models will be newly created by the primaryModelChangeSubject.
-        this.DS.deletedObservable.subscribe(model => {
-            if (
-                model.collection ===
-                this.collectionStringMapperService.getCollectionStringFromModelConstructor(this.baseModelCtor)
-            ) {
-                delete this.viewModelStore[model.id];
-                this.updateAllObservables(model.id);
-            }
-        });
     }
 
     /**
