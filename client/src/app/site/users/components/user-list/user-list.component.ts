@@ -102,7 +102,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
      * to filter/sort services
      */
     public ngOnInit(): void {
-        super.setTitle('Users');
+        super.setTitle(this.translate.instant('Participants'));
         this.initTable();
 
         this.filterService.filter().subscribe(filteredData => {

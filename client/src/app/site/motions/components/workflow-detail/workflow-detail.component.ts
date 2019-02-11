@@ -117,10 +117,10 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
      * Determines possible access levels
      */
     public accessLevels = [
-        { level: 0, label: 'All users' },
-        { level: 1, label: 'Submitters, managers and users with permission to manage metadata' },
-        { level: 2, label: 'Only managers and users with permission to manage metadata' },
-        { level: 3, label: 'Managers only' }
+        { level: 0, label: '0: All users' },
+        { level: 1, label: '1: Submitters and all managers' },
+        { level: 2, label: '2: Only managers for motions and metadata' },
+        { level: 3, label: '3: Only managers for motions' }
     ] as AccessLevel[];
 
     /**
@@ -200,11 +200,13 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
      * Opens a dialog to enter the workflow name
      */
     public onNewStateButton(): void {
-        this.openEditDialog('', 'Create new state', 'Name').subscribe(result => {
-            if (result && result.action === 'update') {
-                this.workflowRepo.addState(result.value, this.workflow).then(() => {}, this.raiseError);
+        this.openEditDialog('', this.translate.instant('Create new state'), this.translate.instant('Name')).subscribe(
+            result => {
+                if (result && result.action === 'update') {
+                    this.workflowRepo.addState(result.value, this.workflow).then(() => {}, this.raiseError);
+                }
             }
-        });
+        );
     }
 
     /**

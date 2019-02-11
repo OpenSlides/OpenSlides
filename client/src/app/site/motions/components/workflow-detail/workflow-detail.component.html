@@ -56,7 +56,7 @@
                             (click)="onClickInputPerm(perm, state)"
                         >
                             <div class="inner-table">
-                                {{ state[perm.selector] || '-' | translate }}
+                                {{ (state[perm.selector] | translate) || '–' }}
                             </div>
                         </div>
                         <div class="inner-table" *ngIf="perm.type === 'color'">
@@ -76,7 +76,7 @@
                             [matMenuTriggerData]="{ state: state }"
                         >
                             <div class="inner-table">
-                                {{ state.next_states_id.length > 0 ? state.getNextStates(workflow.workflow) : '-' }}
+                                {{ state.next_states_id.length > 0 ? state.getNextStates(workflow.workflow) : '–' }}
                             </div>
                         </div>
                         <div
@@ -94,9 +94,10 @@
                             *ngIf="perm.type === 'accessLevel'"
                             [matMenuTriggerFor]="accessLevelMenu"
                             [matMenuTriggerData]="{ state: state }"
+                            matTooltip="{{ accessLevels[state.access_level].label | translate }}"
                         >
                             <div class="inner-table">
-                                {{ accessLevels[state.access_level].label }}
+                                {{ accessLevels[state.access_level].label | translate }}
                             </div>
                         </div>
                     </mat-cell>
@@ -112,10 +113,10 @@
 <!-- New state dialog -->
 <ng-template #workflowDialog>
     <h1 mat-dialog-title>
-        <span translate>{{ dialogData.title }}</span>
+        <span>{{ dialogData.title | translate }}</span>
     </h1>
     <div class="os-form-card-mobile" mat-dialog-content>
-        <p translate>{{ dialogData.description }}</p>
+        <p>{{ dialogData.description | translate }}</p>
         <mat-form-field>
             <input matInput osAutofocus [(ngModel)]="dialogData.value" />
         </mat-form-field>
@@ -171,7 +172,7 @@
     <ng-template let-state="state" matMenuContent>
         <button mat-menu-item *ngFor="let level of accessLevels" (click)="onSetAccesLevel(level.level, state)">
             <mat-icon *ngIf="state.access_level === level.level">check</mat-icon>
-            <span translate> {{ level.label }}</span>
+            <span>{{ level.label | translate }}</span>
         </button>
     </ng-template>
 </mat-menu>
@@ -182,7 +183,7 @@
         <div *ngFor="let amendment of amendmentIntoFinal">
             <button mat-menu-item (click)="setMergeAmendment(amendment.merge, state)">
                 <mat-icon *ngIf="amendment.merge === state.merge_amendment_into_final">check</mat-icon>
-                <span translate> {{ amendment.label }}</span>
+                <span>{{ amendment.label | translate }}</span>
             </button>
         </div>
     </ng-template>

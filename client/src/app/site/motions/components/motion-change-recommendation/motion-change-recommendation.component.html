@@ -1,14 +1,13 @@
-<h2 mat-dialog-title>New change recommendation</h2>
+<h2 mat-dialog-title translate>New change recommendation</h2>
 <mat-dialog-content>
     <form class="motion-content" [formGroup]='contentForm' (ngSubmit)='saveChangeRecommendation()'>
-        <h3>Change from line {{ lineRange.from }} to {{ lineRange.to }}:</h3>
 
         <mat-radio-group #rGroup formControlName="diffType">
             <mat-radio-button *ngFor="let radio of replacementTypes" [value]="radio.value">{{ radio.title }}</mat-radio-button>
         </mat-radio-group>
 
         <!-- The HTML Editor -->
-        <h4 translate>Changed version</h4>
+        <h4><span translate>Changed version in line</span> {{ lineRange.from }} <span translate>to</span> {{ lineRange.to }}:</h4>
         <editor
             formControlName='text'
             [init]="tinyMceSettings"

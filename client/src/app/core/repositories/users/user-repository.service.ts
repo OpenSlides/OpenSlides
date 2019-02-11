@@ -53,7 +53,7 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
         const groups = this.viewModelStoreService.getMany(ViewGroup, user.groups_id);
         const viewUser = new ViewUser(user, groups);
         viewUser.getVerboseName = (plural: boolean = false) => {
-            return this.translate.instant(plural ? 'Users' : 'User');
+            return this.translate.instant(plural ? 'Participants' : 'Participant');
         };
         return viewUser;
     }

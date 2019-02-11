@@ -252,12 +252,29 @@ _('Disabled');
 _('Put all candidates on the list of speakers');
 _('Title for PDF document (all elections)');
 _('Preamble text for PDF document (all elections)');
-//other translations
+// motion workflow
+_('Recommendation label');
+_('Allow support');
+_('Allow create poll');
+_('Allow submitter edit');
+_('Set identifier');
+_('Show state extension field');
+_('Show recommendation extension field');
+_('Show amendment in parent motoin');
+_('Access level');
+_('Label color');
+_('Next states');
+_('0: All users');
+_('1: Submitters and all managers');
+_('2: Only managers for motions and metadata');
+_('3: Only managers for motions');
+
+// other translations
 _('Searching for candidates');
 _('Voting');
 _('Finished');
 
-// Users
+// ** Users **
 // permission strings (see models.py of each Django app)
 // agenda
 _('Can see agenda');
@@ -335,6 +352,9 @@ _('Use these placeholders: {name}, {event_name}, {url}, {username}, {password}. 
 _(
     'Use <strong>admin</strong> and <strong>admin</strong> for your first login.<br>Please change your password to hide this message!'
 );
+
+// users misc
+_('Username or password is not correct.');
 
 // default groups
 _('Default');

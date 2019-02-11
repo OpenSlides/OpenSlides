@@ -50,7 +50,7 @@ export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignmen
      * data and sorting service
      */
     public ngOnInit(): void {
-        super.setTitle('Assignments');
+        super.setTitle(this.translate.instant('Elections'));
         this.initTable();
 
         this.filterService.filter().subscribe(filteredData => {

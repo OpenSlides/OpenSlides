@@ -336,7 +336,7 @@
         <!-- Tags -->
         <!-- Disabled during "new motion" since changing has no effect -->
         <div *ngIf="!editMotion && tagObserver.value.length > 0">
-            <h4 *ngIf="perms.isAllowed('change_metadata', motion) || motion.hasTags()">Tags</h4>
+            <h4 *ngIf="perms.isAllowed('change_metadata', motion) || motion.hasTags()" translate>Tags</h4>
 
             <!-- For privileged users -->
             <div *ngIf="perms.isAllowed('change_metadata', motion)">
