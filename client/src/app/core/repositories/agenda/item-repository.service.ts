@@ -232,8 +232,9 @@ export class ItemRepositoryService extends BaseRepository<ViewItem, Item> {
      *       from the agenda" permanently. Usually, items might juse be hidden but not
      *       deleted (right now)
      */
-    public delete(item: ViewItem): Promise<void> {
-        throw new Error('Method not implemented.');
+    public async delete(item: ViewItem): Promise<void> {
+        const restUrl = `/rest/${item.contentObject.collectionString}/${item.contentObject.id}/`;
+        return await this.httpService.delete(restUrl);
     }
 
     /**
