@@ -20,6 +20,7 @@ import { ViewProjector } from 'app/site/projector/models/view-projector';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { DurationService } from 'app/core/ui-services/duration.service';
+import { ChoiceService } from 'app/core/ui-services/choice.service';
 
 /**
  * The list of speakers for agenda items.
@@ -106,6 +107,7 @@ export class SpeakerListComponent extends BaseViewComponent implements OnInit {
      * @param promptService
      * @param currentListOfSpeakersService
      * @param durationService helper for speech duration display
+     * @param choiceService Choice Dialog for selecting options
      */
     public constructor(
         title: Title,
@@ -118,7 +120,8 @@ export class SpeakerListComponent extends BaseViewComponent implements OnInit {
         private promptService: PromptService,
         private currentListOfSpeakersService: CurrentListOfSpeakersSlideService,
         private durationService: DurationService,
-        private userRepository: UserRepositoryService
+        private userRepository: UserRepositoryService,
+        private choiceService: ChoiceService
     ) {
         super(title, translate, snackBar);
         this.isCurrentListOfSpeakers();
@@ -343,5 +346,41 @@ export class SpeakerListComponent extends BaseViewComponent implements OnInit {
             (new Date(speaker.end_time).valueOf() - new Date(speaker.begin_time).valueOf()) / 1000
         );
         return `${this.durationService.secondDurationToString(duration)} ${this.translate.instant('minutes')}`;
+    }
+
+    /**
+     * Sorts the speakers by a given (string) property. Currently surname, given name
+     * and participant number are offered, the sorting could be done with any string property
+     * of a ViewUser
+     */
+    public async sortSpeakersBy(): Promise<void> {
+        const content = this.translate.instant('Sort the list of speakers by:');
+        const options = ['Ascending', 'Descending'];
+        const sortingProperties = [
+            { id: 0, label: 'Surname', property: 'last_name' },
+            { id: 1, label: 'Given name', property: 'first_name' },
+            { id: 2, label: 'Participant number', property: 'number' }
+        ];
+        const selectedChoice = await this.choiceService.open(content, sortingProperties, false, options);
+        const property = sortingProperties[selectedChoice.items as number].property;
+        if (selectedChoice) {
+            this.speakers.sort((a, b) => {
+                if (a.user[property] && b.user[property]) {
+                    return (a.user[property] as string).localeCompare(
+                        b.user[property] as string,
+                        this.translate.currentLang
+                    );
+                } else if (!b.user[property]) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            });
+            if (selectedChoice.action === 'Descending') {
+                this.speakers.reverse();
+            }
+            const speakerIds = this.speakers.map(speaker => speaker.id);
+            this.itemRepo.sortSpeakers(speakerIds, this.viewItem.item).then(null, this.raiseError);
+        }
     }
 }

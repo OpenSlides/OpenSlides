@@ -40,8 +40,8 @@
                     <span>{{ number + 1 }}. {{ speaker }}</span>
                 </div>
                 <div class="finished-suffix">
-                    &nbsp;&nbsp; {{ durationString(speaker) }}
-                    ({{ 'Start time' | translate }}: {{ startTimeToString(speaker) }})
+                    &nbsp;&nbsp; {{ durationString(speaker) }} ({{ 'Start time' | translate }}:
+                    {{ startTimeToString(speaker) }})
                 </div>
                 <button
                     mat-stroked-button
@@ -141,10 +141,15 @@
         <span translate>Close list of speakers</span>
     </button>
 
+    <button mat-menu-item *ngIf="!closedList && !emptyList" (click)="sortSpeakersBy()">
+        <mat-icon>sort</mat-icon>
+        <span translate>Sort speakers by...</span>
+    </button>
+
     <mat-divider *ngIf="!emptyList"></mat-divider>
 
     <button mat-menu-item (click)="clearSpeakerList()" *ngIf="!emptyList" class="red-warning-text">
         <mat-icon>delete</mat-icon>
-        <span trabslate>Remove all speakers</span>
+        <span translate>Remove all speakers</span>
     </button>
 </mat-menu>
