@@ -1,5 +1,5 @@
 import { Title } from '@angular/platform-browser';
-import { OpenSlidesComponent } from './openslides.component';
+
 import { TranslateService } from '@ngx-translate/core';
 
 /**
@@ -9,7 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
  * A BaseComponent is an OpenSlides Component.
  * Components in the 'Side'- or 'projector' Folder are BaseComponents
  */
-export abstract class BaseComponent extends OpenSlidesComponent {
+export abstract class BaseComponent {
     /**
      * To manipulate the browser title bar, adds the Suffix "OpenSlides"
      *
@@ -38,12 +38,7 @@ export abstract class BaseComponent extends OpenSlidesComponent {
             link image charmap table | code preview fullscreen`
     };
 
-    /**
-     * Child constructor that implements the titleServices and calls Super from OpenSlidesComponent
-     */
-    public constructor(protected titleService?: Title, protected translate?: TranslateService) {
-        super();
-    }
+    public constructor(protected titleService?: Title, protected translate?: TranslateService) {}
 
     /**
      * Set the title in web browser using angulars TitleService

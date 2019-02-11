@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { OpenSlidesComponent } from '../../openslides.component';
 import { MatDialog } from '@angular/material';
+
 import {
     ChoiceDialogComponent,
     ChoiceDialogOptions,
@@ -13,15 +13,13 @@ import {
 @Injectable({
     providedIn: 'root'
 })
-export class ChoiceService extends OpenSlidesComponent {
+export class ChoiceService {
     /**
      * Ctor.
      *
      * @param dialog For opening the ChoiceDialog
      */
-    public constructor(private dialog: MatDialog) {
-        super();
-    }
+    public constructor(private dialog: MatDialog) {}
 
     /**
      * Opens the dialog. Returns the chosen value after the user accepts.

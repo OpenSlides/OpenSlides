@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 
-import { OpenSlidesComponent } from 'app/openslides.component';
 import { Displayable } from 'app/site/base/displayable';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 
@@ -21,14 +20,7 @@ export interface OSTreeNode<T> {
 @Injectable({
     providedIn: 'root'
 })
-export class TreeService extends OpenSlidesComponent {
-    /**
-     * Yes, a constructor.
-     */
-    public constructor() {
-        super();
-    }
-
+export class TreeService {
     /**
      * Returns the weight casted to a number from a given model.
      *

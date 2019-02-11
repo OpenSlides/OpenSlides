@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { OperatorService } from 'app/core/core-services/operator.service';
-import { OpenSlidesComponent } from '../../openslides.component';
 import { environment } from 'environments/environment';
 import { User } from '../../shared/models/users/user';
 import { OpenSlidesService } from './openslides.service';
@@ -22,11 +21,10 @@ interface LoginResponse {
 @Injectable({
     providedIn: 'root'
 })
-export class AuthService extends OpenSlidesComponent {
+export class AuthService {
     /**
      * Initializes the httpClient and the {@link OperatorService}.
      *
-     * Calls `super()` from the parent class.
      * @param http HttpService to send requests to the server
      * @param operator Who is using OpenSlides
      * @param OpenSlides The openslides service
@@ -37,9 +35,7 @@ export class AuthService extends OpenSlidesComponent {
         private operator: OperatorService,
         private OpenSlides: OpenSlidesService,
         private router: Router
-    ) {
-        super();
-    }
+    ) {}
 
     /**
      * Try to log in a user.

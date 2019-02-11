@@ -1,6 +1,5 @@
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
-import { OpenSlidesComponent } from '../../openslides.component';
 import { BaseViewModel } from '../../site/base/base-view-model';
 import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model';
 import { CollectionStringMapperService } from '../core-services/collectionStringMapper.service';
@@ -10,8 +9,7 @@ import { auditTime } from 'rxjs/operators';
 import { ViewModelStoreService } from '../core-services/view-model-store.service';
 import { OnAfterAppsLoaded } from '../onAfterAppsLoaded';
 
-export abstract class BaseRepository<V extends BaseViewModel, M extends BaseModel> extends OpenSlidesComponent
-    implements OnAfterAppsLoaded {
+export abstract class BaseRepository<V extends BaseViewModel, M extends BaseModel> implements OnAfterAppsLoaded {
     /**
      * Stores all the viewModel in an object
      */
@@ -54,7 +52,6 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
         protected baseModelCtor: ModelConstructor<M>,
         protected depsModelCtors?: ModelConstructor<BaseModel>[]
     ) {
-        super();
         this._name = baseModelCtor.name;
     }
 

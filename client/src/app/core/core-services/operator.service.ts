@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 
 import { Observable, BehaviorSubject } from 'rxjs';
 
-import { OpenSlidesComponent } from 'app/openslides.component';
 import { Group } from 'app/shared/models/users/group';
 import { User } from '../../shared/models/users/user';
 import { environment } from 'environments/environment';
@@ -33,13 +32,11 @@ export interface WhoAmIResponse {
  *
  * Changes in operator can be observed, directives do so on order to show
  * or hide certain information.
- *
- * The operator is an {@link OpenSlidesComponent}.
  */
 @Injectable({
     providedIn: 'root'
 })
-export class OperatorService extends OpenSlidesComponent implements OnAfterAppsLoaded {
+export class OperatorService implements OnAfterAppsLoaded {
     /**
      * The operator.
      */
@@ -118,8 +115,6 @@ export class OperatorService extends OpenSlidesComponent implements OnAfterAppsL
         private offlineService: OfflineService,
         private userRepository: UserRepositoryService
     ) {
-        super();
-
         this.DS.changeObservable.subscribe(newModel => {
             if (this._user) {
                 if (newModel instanceof Group) {

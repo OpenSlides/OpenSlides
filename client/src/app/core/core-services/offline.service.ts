@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 
-import { OpenSlidesComponent } from 'app/openslides.component';
 import { DataStoreService } from './data-store.service';
 import { WhoAmIResponse } from './operator.service';
 
@@ -13,7 +12,7 @@ import { WhoAmIResponse } from './operator.service';
 @Injectable({
     providedIn: 'root'
 })
-export class OfflineService extends OpenSlidesComponent {
+export class OfflineService {
     private _offline = false;
 
     public get offline(): boolean {
@@ -24,9 +23,7 @@ export class OfflineService extends OpenSlidesComponent {
      * Constructor to create the AutoupdateService. Calls the constructor of the parent class.
      * @param DS
      */
-    public constructor(private DS: DataStoreService) {
-        super();
-    }
+    public constructor(private DS: DataStoreService) {}
 
     /**
      * Sets the offline flag. Restores the DataStoreService to the last known configuration.

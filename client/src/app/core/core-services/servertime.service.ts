@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { OpenSlidesComponent } from 'app/openslides.component';
 import { HttpService } from './http.service';
 import { environment } from 'environments/environment.prod';
 
@@ -16,7 +15,7 @@ import { environment } from 'environments/environment.prod';
 @Injectable({
     providedIn: 'root'
 })
-export class ServertimeService extends OpenSlidesComponent {
+export class ServertimeService {
     private static FAILURE_TIMEOUT = 30;
     private static NORMAL_TIMEOUT = 60 * 5;
 
@@ -25,9 +24,7 @@ export class ServertimeService extends OpenSlidesComponent {
      */
     private serverOffsetSubject = new BehaviorSubject<number>(0);
 
-    public constructor(private http: HttpService) {
-        super();
-    }
+    public constructor(private http: HttpService) {}
 
     /**
      * Starts the scheduler to sync with the server.

@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { OpenSlidesComponent } from 'app/openslides.component';
 import { PromptDialogComponent } from '../../shared/components/prompt-dialog/prompt-dialog.component';
 import { MatDialog } from '@angular/material';
 
@@ -9,10 +8,8 @@ import { MatDialog } from '@angular/material';
 @Injectable({
     providedIn: 'root'
 })
-export class PromptService extends OpenSlidesComponent {
-    public constructor(private dialog: MatDialog) {
-        super();
-    }
+export class PromptService {
+    public constructor(private dialog: MatDialog) {}
 
     /**
      * Opens the dialog. Returns true, if the user accepts.

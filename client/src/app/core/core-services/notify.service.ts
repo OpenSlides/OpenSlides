@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 
 import { Subject, Observable } from 'rxjs';
 
-import { OpenSlidesComponent } from 'app/openslides.component';
 import { WebsocketService } from './websocket.service';
 import { OperatorService } from './operator.service';
 
@@ -66,7 +65,7 @@ export interface NotifyResponse<T> extends NotifyBase<T> {
 @Injectable({
     providedIn: 'root'
 })
-export class NotifyService extends OpenSlidesComponent {
+export class NotifyService {
     /**
      * A general subject for all messages.
      */
@@ -84,8 +83,6 @@ export class NotifyService extends OpenSlidesComponent {
      * @param websocketService
      */
     public constructor(private websocketService: WebsocketService, private operator: OperatorService) {
-        super();
-
         websocketService.getOberservable<NotifyResponse<any>>('notify').subscribe(notify => {
             notify.sendByThisUser = notify.senderUserId === (this.operator.user ? this.operator.user.id : 0);
             this.notifySubject.next(notify);

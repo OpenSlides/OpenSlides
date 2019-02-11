@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 
-import { OpenSlidesComponent } from 'app/openslides.component';
 import { CountUsersService } from 'app/core/ui-services/count-users.service';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
@@ -30,12 +29,10 @@ export interface CountUserStatistics {
 @Injectable({
     providedIn: 'root'
 })
-export class CountUsersStatisticsService extends OpenSlidesComponent {
+export class CountUsersStatisticsService {
     private runningCounts: { [token: string]: BehaviorSubject<CountUserStatistics> } = {};
 
-    public constructor(private countUserService: CountUsersService, private userRepo: UserRepositoryService) {
-        super();
-    }
+    public constructor(private countUserService: CountUsersService, private userRepo: UserRepositoryService) {}
 
     /**
      * Starts counting users.

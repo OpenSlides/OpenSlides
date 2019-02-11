@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-
-import { OpenSlidesComponent } from 'app/openslides.component';
-import { Projectable, ProjectorElementBuildDeskriptor, isProjectable } from 'app/site/base/projectable';
 import { MatDialog } from '@angular/material';
+
+import { Projectable, ProjectorElementBuildDeskriptor, isProjectable } from 'app/site/base/projectable';
 import {
     ProjectionDialogComponent,
     ProjectionDialogReturnType
@@ -15,16 +14,14 @@ import { ProjectorService } from '../core-services/projector.service';
 @Injectable({
     providedIn: 'root'
 })
-export class ProjectionDialogService extends OpenSlidesComponent {
+export class ProjectionDialogService {
     /**
      * Constructor.
      *
      * @param dialog
      * @param projectorService
      */
-    public constructor(private dialog: MatDialog, private projectorService: ProjectorService) {
-        super();
-    }
+    public constructor(private dialog: MatDialog, private projectorService: ProjectorService) {}
 
     /**
      * Opens the projection dialog for the given projectable. After the user's choice,

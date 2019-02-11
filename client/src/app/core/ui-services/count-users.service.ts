@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 
 import { Observable, Subject } from 'rxjs';
 
-import { OpenSlidesComponent } from 'app/openslides.component';
 import { NotifyService } from '../core-services/notify.service';
 import { OperatorService } from '../core-services/operator.service';
 
@@ -25,7 +24,7 @@ const RESPONSE_NAME = 'count-user-response';
 @Injectable({
     providedIn: 'root'
 })
-export class CountUsersService extends OpenSlidesComponent {
+export class CountUsersService {
     private activeCounts: { [token: string]: Subject<number> } = {};
 
     private currentUserId: number;
@@ -37,8 +36,6 @@ export class CountUsersService extends OpenSlidesComponent {
      * @param operator
      */
     public constructor(private notifyService: NotifyService, operator: OperatorService) {
-        super();
-
         // Listen for requests to send an answer.
         this.notifyService.getMessageObservable<CountUserRequest>(REQUEST_NAME).subscribe(request => {
             if (request.content.token) {
