@@ -112,6 +112,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
             this.dataSource.data = sortedData;
             this.checkSelection();
         });
+        this.setFulltextFilter();
     }
 
     /**
@@ -304,5 +305,19 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
     public async setPresent(viewUser: ViewUser): Promise<void> {
         viewUser.user.is_present = !viewUser.user.is_present;
         await this.repo.update(viewUser.user, viewUser);
+    }
+
+    /**
+     * Overwrites the dataSource's string filter with a case-insensitive search
+     * in the full_name property
+     */
+    private setFulltextFilter(): void {
+        this.dataSource.filterPredicate = (data, filter) => {
+            if (!data || !data.full_name) {
+                return false;
+            }
+            filter = filter ? filter.toLowerCase() : '';
+            return data.full_name.toLowerCase().indexOf(filter) >= 0;
+        };
     }
 }
