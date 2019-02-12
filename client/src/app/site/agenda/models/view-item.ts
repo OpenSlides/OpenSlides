@@ -125,6 +125,7 @@ export class ViewItem extends BaseViewModel {
 
     public updateDependencies(update: BaseViewModel): boolean {
         if (
+            update &&
             update.collectionString === this.item.content_object.collection &&
             update.id === this.item.content_object.id
         ) {
