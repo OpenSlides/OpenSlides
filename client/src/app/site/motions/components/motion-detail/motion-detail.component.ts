@@ -1179,7 +1179,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      */
     public canFollowRecommendation(): boolean {
         if (
-            this.perms.isAllowed('createPoll', this.motion) &&
+            this.perms.isAllowed('createpoll', this.motion) &&
             this.motion.recommendation &&
             this.motion.recommendation.recommendation_label
         ) {

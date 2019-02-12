@@ -236,7 +236,7 @@
                 <mat-basic-chip [matMenuTriggerFor]="stateMenu" [ngClass]="getStateCssColor()">
                     {{ stateLabel }}
                 </mat-basic-chip>
-                <div *ngIf="motion.state.show_state_extension_field" class="spacer-top-10">
+                <div *ngIf="motion.state && motion.state.show_state_extension_field" class="spacer-top-10">
                     <mat-form-field>
                         <input matInput placeholder="{{ 'Extension' | translate }}" [(ngModel)]="newStateExtension" />
                     </mat-form-field>
