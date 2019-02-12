@@ -489,6 +489,8 @@ export class MotionPdfService {
 
     /**
      * Creates pdfMake definitions for the call list of given motions
+     * Any motions that are 'top level' (no sort_parent_id) will have their tags
+     * used as comma separated header titles in an extra row
      *
      * @param motions A list of motions
      * @returns definitions ready to be opened or exported via {@link PdfDocumentService}
@@ -528,7 +530,32 @@ export class MotionPdfService {
             ]
         ];
 
-        const callListRows = motions.map(motion => this.createCallListRow(motion));
+        const callListRows: object[] = [];
+        let currentTitle = '';
+
+        motions.map(motion => {
+            if (!motion.sort_parent_id) {
+                const heading = motion.tags ? motion.tags.map(tag => tag.name).join(', ') : '';
+                if (heading !== currentTitle) {
+                    callListRows.push([
+                        {
+                            text: heading,
+                            colSpan: 6,
+                            style: 'heading3',
+                            margin: [0, 10, 0, 10]
+                        },
+                        '',
+                        '',
+                        '',
+                        '',
+                        ''
+                    ]);
+                    currentTitle = heading;
+                }
+            }
+            callListRows.push(this.createCallListRow(motion));
+        });
+
         const table: object = {
             table: {
                 widths: ['auto', 'auto', 'auto', '*', 'auto', 'auto'],
