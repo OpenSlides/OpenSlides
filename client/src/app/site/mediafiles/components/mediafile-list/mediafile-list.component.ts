@@ -15,6 +15,7 @@ import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { MediafileFilterListService } from '../../services/mediafile-filter.service';
 import { MediafilesSortListService } from '../../services/mediafiles-sort-list.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
+import { OperatorService } from 'app/core/core-services/operator.service';
 
 /**
  * Lists all the uploaded files.
@@ -56,6 +57,13 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile>
     public fileToEdit: ViewMediafile;
 
     /**
+     * @returns true if the user can manage media files
+     */
+    public get canEdit(): boolean {
+        return this.operator.hasPerms('mediafiles.can_manage');
+    }
+
+    /**
      * The form to edit Files
      */
     @ViewChild('fileEditForm')
@@ -73,6 +81,9 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile>
      * @param mediaManage service to manage media files (setting images as logos)
      * @param promptService prevent deletion by accident
      * @param vp viewport Service to check screen size
+     * @param fitlerService MediaFileFilterService for advanced filtering
+     * @param sortService MediaFileSortService sort for advanced sorting
+     * @param operator permission check
      */
     public constructor(
         titleService: Title,
@@ -85,7 +96,8 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile>
         private promptService: PromptService,
         public vp: ViewportService,
         public filterService: MediafileFilterListService,
-        public sortService: MediafilesSortListService
+        public sortService: MediafilesSortListService,
+        private operator: OperatorService
     ) {
         super(titleService, translate, matSnackBar);
 
@@ -123,6 +135,7 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile>
         this.mediaManage.getFontActions().subscribe(action => {
             this.fontActions = action;
         });
+        this.setFulltextFilter();
     }
 
     /**
@@ -290,5 +303,19 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile>
         if (event.key === 'Escape') {
             this.editFile = false;
         }
+    }
+
+    /**
+     * Overwrites the dataSource's string filter with a case-insensitive search
+     * in the file name property
+     */
+    private setFulltextFilter(): void {
+        this.dataSource.filterPredicate = (data, filter) => {
+            if (!data || !data.title) {
+                return false;
+            }
+            filter = filter ? filter.toLowerCase() : '';
+            return data.title.toLowerCase().indexOf(filter) >= 0;
+        };
     }
 }
