@@ -206,21 +206,13 @@ export class ViewUser extends BaseProjectableViewModel implements Searchable {
         return this.full_name;
     };
 
-    /**
-     * TODO: Implement
-     */
-    public replaceGroup(newGroup: ViewGroup): void {}
-
     public updateDependencies(update: BaseViewModel): void {
-        if (update instanceof ViewGroup) {
-            this.updateGroup(update);
-        }
-    }
-
-    public updateGroup(group: ViewGroup): void {
-        if (this.user && this.user.groups_id) {
-            if (this.user.containsGroupId(group.id)) {
-                this.replaceGroup(group);
+        if (update instanceof ViewGroup && this.user.groups_id.includes(update.id)) {
+            const groupIndex = this.groups.findIndex(group => group.id === update.id);
+            if (groupIndex < 0) {
+                this.groups.push(update);
+            } else {
+                this.groups[groupIndex] = update;
             }
         }
     }
