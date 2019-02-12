@@ -60,10 +60,8 @@ export class LocalPermissionsService {
             case 'create':
                 return this.operator.hasPerms('motions.can_create');
             case 'support':
-                if (!motion) {
-                    return false;
-                }
                 return (
+                    motion &&
                     this.operator.hasPerms('motions.can_support') &&
                     this.configMinSupporters > 0 &&
                     motion.state.allow_support &&
@@ -71,27 +69,19 @@ export class LocalPermissionsService {
                     motion.supporters.indexOf(this.operator.viewUser) === -1
                 );
             case 'unsupport':
-                if (!motion) {
-                    return false;
-                }
-                return motion.state.allow_support && motion.supporters.indexOf(this.operator.viewUser) !== -1;
+                return motion && motion.state.allow_support && motion.supporters.indexOf(this.operator.viewUser) !== -1;
             case 'createpoll':
-                if (!motion) {
-                    return false;
-                }
                 return (
                     (this.operator.hasPerms('motions.can_manage') ||
                         this.operator.hasPerms('motions.can_manage_metadata')) &&
+                    motion &&
                     motion.state.allow_create_poll
                 );
             case 'update':
                 // check also for empty ViewMotion object (e.g. if motion.id is null)
                 // important for creating new motion as normal user
-                if (!motion || !motion.id) {
-                    return false;
-                }
                 return (
-                    this.operator.hasPerms('motions.can_manage') ||
+                    (motion && motion.id && this.operator.hasPerms('motions.can_manage')) ||
                     (motion.state &&
                         motion.state.allow_submitter_edit &&
                         motion.submitters &&
@@ -100,10 +90,8 @@ export class LocalPermissionsService {
             case 'update_submitters':
                 return this.operator.hasPerms('motions.can_manage');
             case 'delete':
-                if (!motion) {
-                    return false;
-                }
                 return (
+                    motion &&
                     this.operator.hasPerms('motions.can_manage') &&
                     motion.state.allow_submitter_edit &&
                     motion.submitters.some(submitter => submitter.id === this.operator.user.id)
@@ -111,11 +99,8 @@ export class LocalPermissionsService {
             case 'change_state':
                 // check also for empty ViewMotion object (e.g. if motion.id is null)
                 // important for creating new motion as normal user
-                if (!motion || !motion.id) {
-                    return false;
-                }
                 return (
-                    this.operator.hasPerms('motions.can_manage') ||
+                    (motion && motion.id && this.operator.hasPerms('motions.can_manage')) ||
                     this.operator.hasPerms('motions.can_manage_metadata') ||
                     (motion.state &&
                         motion.state.allow_submitter_edit &&
@@ -128,10 +113,8 @@ export class LocalPermissionsService {
                     this.operator.hasPerms('motions.can_manage_metadata')
                 );
             case 'can_create_amendments':
-                if (!motion) {
-                    return false;
-                }
                 return (
+                    motion &&
                     this.operator.hasPerms('motions.can_create_amendments') &&
                     this.amendmentEnabled &&
                     (!motion.parent_id || (motion.parent_id && this.amendmentOfAmendment))
