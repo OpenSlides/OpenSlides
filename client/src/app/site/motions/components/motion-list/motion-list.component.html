@@ -46,7 +46,9 @@
         <ng-container matColumnDef="identifier">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Identifier</mat-header-cell>
             <mat-cell *matCellDef="let motion">
-                <div class="innerTable">{{ motion.identifier }}</div>
+                <div class="innerTable">
+                    {{ motion.identifier }}
+                </div>
             </mat-cell>
         </ng-container>
 
@@ -57,6 +59,10 @@
                 <div class="innerTable max-width">
                     <!-- title line -->
                     <div class="motion-list">
+                        <!-- favorite icon -->
+                        <span *ngIf="motion.star" class="favorite-star">
+                            <mat-icon inline>star</mat-icon>
+                        </span>
                         <!-- attachment icon -->
                         <span class="attached-files" *ngIf="motion.hasAttachments()">
                             <mat-icon>attach_file</mat-icon>
@@ -64,10 +70,6 @@
                         <!-- title -->
                         <span class="motion-list-title">
                             {{ motion.title }}
-                        </span>
-                        <!-- favorite icon -->
-                        <span *ngIf="motion.star" class="favorite-star">
-                            <mat-icon inline>star</mat-icon>
                         </span>
                     </div>
                     <!-- submitters line -->
@@ -92,7 +94,9 @@
 
                     <!-- recommendation -->
                     <span *ngIf="motion.recommendation && motion.state.next_states_id.length > 0">
-                        <mat-basic-chip class="bluegrey" [disabled]="true">{{ getRecommendationLabel(motion) }} </mat-basic-chip>
+                        <mat-basic-chip class="bluegrey" [disabled]="true">
+                            {{ getRecommendationLabel(motion) }}
+                        </mat-basic-chip>
                     </span>
                 </div>
             </mat-cell>
@@ -252,9 +256,9 @@
                 <span translate>Move to agenda item</span>
             </button>
             <button mat-menu-item (click)="multiselectWrapper(multiselectService.bulkMoveItems(selectedRows))">
-                    <mat-icon>format_indent_increase</mat-icon>
-                    <span translate>Move in call list</span>
-                </button>
+                <mat-icon>format_indent_increase</mat-icon>
+                <span translate>Move in call list</span>
+            </button>
         </div>
         <div *ngIf="perms.isAllowed('manage')">
             <mat-divider></mat-divider>
