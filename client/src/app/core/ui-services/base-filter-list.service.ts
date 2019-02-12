@@ -316,7 +316,7 @@ export abstract class BaseFilterListService<M extends BaseModel, V extends BaseV
             const compareValueCondition = (value, condition): boolean => {
                 if (value === condition) {
                     return true;
-                } else if (value.hasOwnProperty('id') && value.id === condition) {
+                } else if ('id' in value && value.id === condition) {
                     return true;
                 }
                 return false;
@@ -341,7 +341,7 @@ export abstract class BaseFilterListService<M extends BaseModel, V extends BaseV
             ) {
                 return true;
             }
-        } else if (typeof item[filter.property] === 'object' && item[filter.property].hasOwnProperty('id')) {
+        } else if (typeof item[filter.property] === 'object' && 'id' in item[filter.property]) {
             if (item[filter.property].id === option.condition) {
                 return true;
             }
