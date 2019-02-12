@@ -135,7 +135,7 @@ export class PdfDocumentService {
         pdfMake.vfs = await this.initVfs();
         const result = {
             pageSize: 'A4',
-            pageOrientation: landscape ? landscape : 'portrait',
+            pageOrientation: landscape ? 'landscape' : 'portrait',
             pageMargins: customMargins || [75, 90, 75, 75],
             defaultStyle: {
                 font: 'PdfFont',
