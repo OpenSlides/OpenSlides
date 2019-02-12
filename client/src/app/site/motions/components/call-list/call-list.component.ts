@@ -9,7 +9,6 @@ import { BaseViewComponent } from '../../../base/base-view';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { MotionCsvExportService } from '../../services/motion-csv-export.service';
 import { MotionPdfExportService } from '../../services/motion-pdf-export.service';
-
 import { ViewMotion } from '../../models/view-motion';
 import { OSTreeSortEvent } from 'app/shared/components/sorting-tree/sorting-tree.component';
 
@@ -67,7 +66,7 @@ export class CallListComponent extends BaseViewComponent {
      * @param data The event data. The representation fits the servers requirements, so it can directly
      * be send to the server via the repository.
      */
-    public sort(data: OSTreeSortEvent<ViewMotion>): void {
+    public sort(data: OSTreeSortEvent): void {
         this.motionRepo.sortMotions(data).then(null, this.raiseError);
     }
 

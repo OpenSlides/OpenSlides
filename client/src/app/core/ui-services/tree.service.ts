@@ -4,11 +4,18 @@ import { Displayable } from 'app/site/base/displayable';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 
 /**
- * A representation of nodes in our tree. Saves the displayed name, the id, the element and children to build a full tree.
+ * A basic representation of a tree node. This node does not stores any data.
  */
-export interface OSTreeNode<T> {
+export interface OSTreeNodeWithoutItem {
     name: string;
     id: number;
+    children?: OSTreeNodeWithoutItem[];
+}
+
+/**
+ * A representation of nodes with the item atached.
+ */
+export interface OSTreeNode<T> extends OSTreeNodeWithoutItem {
     item: T;
     children?: OSTreeNode<T>[];
 }
@@ -111,6 +118,25 @@ export class TreeService {
             }
             yield node.item;
         }
+    }
+
+    /**
+     * Removes `item` from the tree.
+     *
+     * @param tree The tree with items
+     * @returns The tree without items
+     */
+    public stripTree<T>(tree: OSTreeNode<T>[]): OSTreeNodeWithoutItem[] {
+        return tree.map(node => {
+            const nodeWithoutItem: OSTreeNodeWithoutItem = {
+                name: node.name,
+                id: node.id
+            };
+            if (node.children) {
+                nodeWithoutItem.children = this.stripTree(node.children);
+            }
+            return nodeWithoutItem;
+        });
     }
 
     /**

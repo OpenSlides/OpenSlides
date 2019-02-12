@@ -234,7 +234,7 @@ export class ItemRepositoryService extends BaseRepository<ViewItem, Item> {
      */
     public async delete(item: ViewItem): Promise<void> {
         const restUrl = `/rest/${item.contentObject.collectionString}/${item.contentObject.id}/`;
-        return await this.httpService.delete(restUrl);
+        await this.httpService.delete(restUrl);
     }
 
     /**
@@ -260,7 +260,7 @@ export class ItemRepositoryService extends BaseRepository<ViewItem, Item> {
      *
      * @param data The reordered data from the sorting
      */
-    public async sortItems(data: OSTreeSortEvent<ViewItem>): Promise<void> {
+    public async sortItems(data: OSTreeSortEvent): Promise<void> {
         const url = '/rest/agenda/item/sort/';
         await this.httpService.post(url, data);
     }

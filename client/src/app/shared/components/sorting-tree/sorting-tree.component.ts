@@ -7,16 +7,16 @@ import { Subscription, Observable } from 'rxjs';
 
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { Displayable } from 'app/site/base/displayable';
-import { OSTreeNode, TreeService } from 'app/core/ui-services/tree.service';
+import { OSTreeNode, TreeService, OSTreeNodeWithoutItem } from 'app/core/ui-services/tree.service';
 
 /**
  * The data representation for the sort event.
  */
-export interface OSTreeSortEvent<T> {
+export interface OSTreeSortEvent {
     /**
      * Gives all nodes to be inserted below the parent_id.
      */
-    nodes: OSTreeNode<T>[];
+    nodes: OSTreeNodeWithoutItem[];
 
     /**
      * Provides the parent id for the nodes array. Do not provide it, if it's the
@@ -85,7 +85,7 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
      * sorted part of the tree.
      */
     @Output()
-    public readonly sort = new EventEmitter<OSTreeSortEvent<T>>();
+    public readonly sort = new EventEmitter<OSTreeSortEvent>();
 
     /**
      * Options for the tree. As a default drag and drop is allowed.
@@ -159,6 +159,7 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
             to.parent.data.children = [];
         }
         transferArrayItem(fromArray, to.parent.data.children, from.index, to.index);
-        this.sort.emit({ nodes: to.parent.data.children, parent_id: parentId });
+        const strippedNodes = this.treeService.stripTree(to.parent.data.children);
+        this.sort.emit({ nodes: strippedNodes, parent_id: parentId });
     }
 }
