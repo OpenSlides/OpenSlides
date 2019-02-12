@@ -27,8 +27,7 @@
                             "src/manifest.json"
                         ],
                         "styles": [
-                            "src/styles.scss",
-                            "node_modules/material-design-icons/iconfont/material-icons.css"
+                            "src/styles.scss"
                         ],
                         "scripts": [
                             "node_modules/tinymce/tinymce.min.js",
