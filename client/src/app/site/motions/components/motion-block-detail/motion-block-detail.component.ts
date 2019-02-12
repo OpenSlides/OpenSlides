@@ -13,6 +13,7 @@ import { MotionRepositoryService } from 'app/core/repositories/motions/motion-re
 import { ViewMotionBlock } from '../../models/view-motion-block';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewMotion } from '../../models/view-motion';
+import { OperatorService } from '../../../../core/core-services/operator.service';
 
 /**
  * Detail component to display one motion block
@@ -50,6 +51,7 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
      * @param titleService Setting the title
      * @param translate translations
      * @param matSnackBar showing errors
+     * @param operator the current user
      * @param router navigating
      * @param route determine the blocks ID by the route
      * @param repo the motion blocks repository
@@ -60,6 +62,7 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
+        private operator: OperatorService,
         private router: Router,
         private route: ActivatedRoute,
         private repo: MotionBlockRepositoryService,
@@ -117,7 +120,11 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
      * @returns an array of strings building the column definition
      */
     public getColumnDefinition(): string[] {
-        return ['title', 'state', 'recommendation', 'remove'];
+        let columns = ['title', 'state', 'recommendation'];
+        if (this.operator.hasPerms('motions.can_manage_manage')) {
+            columns = columns.concat('remove');
+        }
+        return columns;
     }
 
     /**

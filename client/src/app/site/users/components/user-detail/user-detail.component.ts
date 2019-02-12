@@ -166,6 +166,7 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
      * correct permission to perform the given action.
      *
      * actions might be:
+     * - delete         (deleting the user) (users.can_manage and not ownPage)
      * - seeName        (title, 1st, last) (user.can_see_name or ownPage)
      * - seeExtra       (checkboxes, comment) (user.can_see_extra_data)
      * - seePersonal    (mail, username, about) (user.can_see_extra_data or ownPage)
@@ -176,6 +177,8 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
      */
     public isAllowed(action: string): boolean {
         switch (action) {
+            case 'delete':
+                return this.operator.hasPerms('users.can_manage') && !this.ownPage;
             case 'manage':
                 return this.operator.hasPerms('users.can_manage');
             case 'seeName':

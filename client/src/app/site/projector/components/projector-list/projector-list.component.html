@@ -1,4 +1,4 @@
-<os-head-bar [nav]="true" [mainButton]="true" (mainEvent)="onPlusButton()">
+<os-head-bar [nav]="true" [mainButton]="canManage" (mainEvent)="onPlusButton()">
     <!-- Title -->
     <div class="title-slot">
         <h2 translate>Projectors</h2>
@@ -44,7 +44,7 @@
             <ng-container class="meta-text-block-title">
                 {{ projector.name | translate }}
             </ng-container>
-            <ng-container class="meta-text-block-action-row">
+            <ng-container class="meta-text-block-action-row" *ngIf="canManage">
                 <button mat-icon-button *ngIf="editId !== projector.id" (click)=onEditButton(projector)>
                     <mat-icon>edit</mat-icon>
                 </button>

@@ -108,6 +108,7 @@ export class LocalPermissionsService {
                     (motion.state &&
                         motion.state.allow_submitter_edit &&
                         motion.submitters &&
+                        motion.submitters.length &&
                         motion.submitters.some(submitter => submitter.id === this.operator.user.id))
                 );
             }
@@ -123,6 +124,7 @@ export class LocalPermissionsService {
                     motion.state &&
                     motion.state.allow_submitter_edit &&
                     motion.submitters &&
+                    motion.submitters.length &&
                     motion.submitters.some(submitter => submitter.id === this.operator.user.id)
                 );
             }

@@ -30,8 +30,14 @@
 </os-head-bar>
 
 <mat-card>
-    <button mat-raised-button color="primary" (click)="onFollowRecButton()" [disabled]="isFollowingProhibited()">
-        <mat-icon>done_all</mat-icon>
+    <button
+        *osPerms="['motions.can_manage', 'motions.can_manage_metadata']"
+        mat-raised-button
+        color="primary"
+        (click)="onFollowRecButton()"
+        [disabled]="isFollowingProhibited()"
+    >
+        <mat-icon>done_all</mat-icon>&nbsp;
         <span translate>Follow recommendations for all motions</span>
     </button>
 
@@ -98,20 +104,20 @@
         <span translate>List of speakers</span>
     </button>
 
-    <button mat-menu-item>
+    <button mat-menu-item *osPerms="'core.can_manage_projector'">
         <mat-icon>videocam</mat-icon>
         <span translate>Project</span>
     </button>
+    <div *osPerms="['motions.can_manage', 'motions.can_manage_metadata']">
+        <button mat-menu-item (click)="toggleEditMode()">
+            <mat-icon>edit</mat-icon>
+            <span translate>Edit title</span>
+        </button>
+        <mat-divider></mat-divider>
 
-    <mat-divider></mat-divider>
-
-    <button mat-menu-item (click)="toggleEditMode()">
-        <mat-icon>edit</mat-icon>
-        <span translate>Edit title</span>
-    </button>
-
-    <button mat-menu-item class="red-warning-text" (click)="onDeleteBlockButton()">
-        <mat-icon>delete</mat-icon>
-        <span translate>Delete</span>
-    </button>
+        <button mat-menu-item class="red-warning-text" (click)="onDeleteBlockButton()">
+            <mat-icon>delete</mat-icon>
+            <span translate>Delete</span>
+        </button>
+    </div>
 </mat-menu>

@@ -17,7 +17,7 @@ import { MotionRepositoryService } from 'app/core/repositories/motions/motion-re
 import { MotionSortListService } from '../../services/motion-sort-list.service';
 import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
 import { ViewCategory } from '../../models/view-category';
-import { ViewMotion } from '../../models/view-motion';
+import { ViewMotion, LineNumberingMode, ChangeRecoMode } from '../../models/view-motion';
 import { ViewMotionBlock } from '../../models/view-motion-block';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewWorkflow } from '../../models/view-workflow';
@@ -273,5 +273,16 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
      */
     public getStateLabel(motion: ViewMotion): string {
         return this.motionRepo.getExtendedStateLabel(motion);
+    }
+
+    /**
+     * Directly export all motions as pdf, using the current default config settings
+     */
+    public directPdfExport(): void {
+        this.pdfExport.exportMotionCatalog(
+            this.dataSource.data,
+            this.configService.instant<string>('motions_default_line_numbering') as LineNumberingMode,
+            this.configService.instant<string>('motions_recommendation_text_mode') as ChangeRecoMode
+        );
     }
 }

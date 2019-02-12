@@ -11,6 +11,7 @@ import { Projector } from 'app/shared/models/core/projector';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ClockSlideService } from '../../services/clock-slide.service';
+import { OperatorService } from 'app/core/core-services/operator.service';
 
 /**
  * All supported aspect rations for projectors.
@@ -62,6 +63,15 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
     public projectors: ViewProjector[];
 
     /**
+     * Helper to check manage permissions
+     *
+     * @returns true if the user can manage projectors
+     */
+    public get canManage(): boolean {
+        return this.operator.hasPerms('core.can_manage_projector');
+    }
+
+    /**
      * Constructor. Initializes all forms.
      *
      * @param titleService
@@ -70,6 +80,8 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
      * @param repo
      * @param formBuilder
      * @param promptService
+     * @param clockSlideService
+     * @param operator OperatorService
      */
     public constructor(
         titleService: Title,
@@ -78,7 +90,8 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
         private repo: ProjectorRepositoryService,
         private formBuilder: FormBuilder,
         private promptService: PromptService,
-        private clockSlideService: ClockSlideService
+        private clockSlideService: ClockSlideService,
+        private operator: OperatorService
     ) {
         super(titleService, translate, matSnackBar);
 

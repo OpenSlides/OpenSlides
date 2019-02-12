@@ -1,4 +1,4 @@
-<os-head-bar [mainButton]="true" (mainEvent)="onPlusButton()" [multiSelectMode]="isMultiSelect">
+<os-head-bar [mainButton]="canManage" (mainEvent)="onPlusButton()" [multiSelectMode]="isMultiSelect">
     <!-- Title -->
     <div class="title-slot"><h2 translate>Agenda</h2></div>
     <!-- Menu -->
@@ -80,7 +80,9 @@
         <ng-container matColumnDef="menu">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Menu</mat-header-cell>
             <mat-cell *matCellDef="let item">
-                <button mat-icon-button [matMenuTriggerFor]="singleItemMenu" [matMenuTriggerData]="{ item: item }">
+                <button mat-icon-button
+                *osPerms="'agenda.can_manage'"
+                [matMenuTriggerFor]="singleItemMenu" [matMenuTriggerData]="{ item: item }">
                     <mat-icon>more_vert</mat-icon>
                 </button>
             </mat-cell>
@@ -121,7 +123,7 @@
             <span translate>Current list of speakers</span>
         </button>
         <!-- CSV export -->
-        <button mat-menu-item (click)="csvExportItemList()">
+        <button mat-menu-item *osPerms="'agenda.can_manage'" (click)="csvExportItemList()">
             <mat-icon>archive</mat-icon>
             <span translate>Export as CSV</span>
         </button>
@@ -199,17 +201,6 @@
         <button mat-menu-item (click)="onDoneSingleButton(item)">
             <mat-icon color="accent"> {{ item.closed ? 'check_box' : 'check_box_outline_blank' }} </mat-icon>
             <span translate>Done</span>
-        </button>
-
-        <!-- List of speakers for mobile -->
-        <button mat-menu-item (click)="onSpeakerIcon(item)" *ngIf="vp.isMobile">
-            <mat-icon
-                [matBadge]="item.waitingSpeakerAmount > 0 ? item.waitingSpeakerAmount : null"
-                matBadgeColor="accent"
-            >
-                mic
-            </mat-icon>
-            <span translate>List of speakers</span>
         </button>
 
         <!-- Edit button -->

@@ -13,7 +13,7 @@
             </div>
         </a>
     </div>
-    <div class="column-right">
+    <div class="column-right" *osPerms="'core.can_manage_projector'">
         <div class="control-group">
             <div class="button-size">{{ projector.scroll }}</div>
             <button type="button" mat-icon-button (click)="scroll(scrollScaleDirection.Up)">

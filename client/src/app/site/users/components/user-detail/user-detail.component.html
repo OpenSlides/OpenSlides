@@ -15,25 +15,33 @@
 
     <!-- Menu -->
     <div class="menu-slot">
-        <button type="button" mat-icon-button [matMenuTriggerFor]="userExtraMenu">
+        <button
+            type="button"
+            mat-icon-button
+            *ngIf="isAllowed('changePersonal')"
+            [matMenuTriggerFor]="userExtraMenu"
+        >
             <mat-icon>more_vert</mat-icon>
         </button>
     </div>
 
     <mat-menu #userExtraMenu="matMenu">
-        <button mat-menu-item class="red-warning-text" (click)="deleteUserButton()">
-            <mat-icon>delete</mat-icon>
-            <span translate>Delete</span>
-        </button>
-        <button mat-menu-item (click)="changePassword()">
+        <button mat-menu-item *ngIf="isAllowed('changePersonal')" (click)="changePassword()">
             <mat-icon>security</mat-icon>
             <span translate>Change password</span>
         </button>
         <!-- PDF -->
-        <button  mat-menu-item *ngIf="isAllowed('seePersonal')" (click)="onDownloadPdf()">
+        <button mat-menu-item *ngIf="isAllowed('manage')" (click)="onDownloadPdf()">
             <mat-icon>picture_as_pdf</mat-icon>
             <span translate>PDF</span>
         </button>
+        <div *ngIf="isAllowed('delete')">
+            <mat-divider></mat-divider>
+            <button mat-menu-item class="red-warning-text" (click)="deleteUserButton()">
+                <mat-icon>delete</mat-icon>
+                <span translate>Delete</span>
+            </button>
+        </div>
     </mat-menu>
 </os-head-bar>
 
@@ -61,7 +69,6 @@
                     [value]="user.title"
                 />
             </mat-form-field>
-
             <!-- First name -->
             <mat-form-field
                 class="form37 distance force-min-with"
@@ -97,7 +104,7 @@
                     placeholder="{{ 'Email' | translate }}"
                     name="email"
                     formControlName="email"
-                    [value]="user.email"
+                    [value]="user.email ? user.email: null"
                 />
                 <mat-error *ngIf="personalInfoForm.get('email').hasError('email')" translate>
                     Please enter a valid email address
@@ -126,10 +133,7 @@
             </mat-form-field>
 
             <!-- Participant Number -->
-            <mat-form-field
-                class="form25 force-min-with"
-                *ngIf="user.number || (editUser && isAllowed('manage'))"
-            >
+            <mat-form-field class="form25 force-min-with" *ngIf="user.number || (editUser && isAllowed('manage'))">
                 <input
                     type="text"
                     matInput
@@ -144,7 +148,9 @@
             <!-- Groups -->
             <mat-form-field *ngIf="(user.groups && user.groups.length > 0) || editUser">
                 <mat-select placeholder="{{ 'Groups' | translate }}" formControlName="groups_id" multiple>
-                    <mat-option *ngFor="let group of groups" [value]="group.id">{{ group.getTitle() | translate }}</mat-option>
+                    <mat-option *ngFor="let group of groups" [value]="group.id">{{
+                        group.getTitle() | translate
+                    }}</mat-option>
                 </mat-select>
             </mat-form-field>
         </div>
