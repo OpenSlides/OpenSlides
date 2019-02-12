@@ -483,11 +483,19 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
     public updateUser(update: ViewUser): void {
         if (this.motion.submitters && this.motion.submitters.findIndex(user => user.user_id === update.id)) {
             const userIndex = this.submitters.findIndex(user => user.id === update.id);
-            this.submitters[userIndex] = update;
+            if (userIndex < 0) {
+                this.submitters.push(update);
+            } else {
+                this.submitters[userIndex] = update;
+            }
         }
         if (this.motion.supporters_id && this.motion.supporters_id.includes(update.id)) {
             const userIndex = this.supporters.findIndex(user => user.id === update.id);
-            this.supporters[userIndex] = update;
+            if (userIndex < 0) {
+                this.supporters.push(update);
+            } else {
+                this.supporters[userIndex] = update;
+            }
         }
     }
 
@@ -499,14 +507,22 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
     public updateAttachments(mediafile: ViewMediafile): void {
         if (this.attachments_id && this.attachments_id.includes(mediafile.id)) {
             const attachmentIndex = this.attachments.findIndex(_mediafile => _mediafile.id === mediafile.id);
-            this.attachments[attachmentIndex] = mediafile;
+            if (attachmentIndex < 0) {
+                this.attachments.push(mediafile);
+            } else {
+                this.attachments[attachmentIndex] = mediafile;
+            }
         }
     }
 
     public updateTags(tag: ViewTag): void {
         if (this.tags_id && this.tags_id.includes(tag.id)) {
             const tagIndex = this.tags.findIndex(_tag => _tag.id === tag.id);
-            this.tags[tagIndex] = tag;
+            if (tagIndex < 0) {
+                this.tags.push(tag);
+            } else {
+                this.tags[tagIndex] = tag;
+            }
         }
     }
 
