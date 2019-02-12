@@ -51,7 +51,7 @@ export class AgendaSortComponent extends BaseViewComponent {
      * @param data The event data. The representation fits the servers requirements, so it can directly
      * be send to the server via the repository.
      */
-    public sort(data: OSTreeSortEvent<ViewItem>): void {
+    public sort(data: OSTreeSortEvent): void {
         this.agendaRepo.sortItems(data).then(null, this.raiseError);
     }
 

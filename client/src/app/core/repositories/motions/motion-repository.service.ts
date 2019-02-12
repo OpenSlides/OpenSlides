@@ -314,7 +314,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      *
      * @param data The reordered data from the sorting
      */
-    public async sortMotions(data: OSTreeSortEvent<ViewMotion>): Promise<void> {
+    public async sortMotions(data: OSTreeSortEvent): Promise<void> {
         const url = '/rest/motions/motion/sort/';
         await this.httpService.post(url, data);
     }
