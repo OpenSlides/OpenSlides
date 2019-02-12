@@ -136,7 +136,7 @@
             <div cdkDropList class="drop-list" (cdkDropListDropped)="onSortingChange($event)">
                 <div class="list-entry" *ngFor="let element of projector.elements_preview; let i = index" cdkDrag>
                     <div class="drag-handle" cdkDragHandle>
-                        <mat-icon>unfold_more</mat-icon>
+                        <mat-icon>drag_indicator</mat-icon>
                     </div>
                     <div class="name">
                         {{ i+1 }}.&nbsp;<span>{{ getElementDescription(element) }}</span>

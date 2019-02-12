@@ -13,6 +13,7 @@
 
 /** fonts */
 @import './assets/styles/fonts.scss';
+@import '~material-icon-font/dist/Material-Icons.css';
 
 /** Mix the component-related style-rules */
 @mixin openslides-components-theme($theme) {
@@ -51,7 +52,7 @@
 }
 
 mat-icon {
-    font-family: MaterialIcons-Regular;
+    font-family: 'Material Icons Baseline';
 }
 
 body {

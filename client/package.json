@@ -45,7 +45,7 @@
         "core-js": "^2.6.3",
         "css-element-queries": "^1.1.1",
         "file-saver": "^2.0.0",
-        "material-design-icons": "^3.0.1",
+        "material-icon-font": "git+https://github.com/petergng/materialIconFont.git",
         "ng-pick-datetime": "^7.0.0",
         "ngx-file-drop": "^5.0.2",
         "ngx-mat-select-search": "^1.5.2",

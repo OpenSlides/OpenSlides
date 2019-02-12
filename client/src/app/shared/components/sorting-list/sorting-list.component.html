@@ -1,8 +1,7 @@
 <div cdkDropList class="list" (cdkDropListDropped)="drop($event)">
     <div class="box line" *ngFor="let item of array; let i = index" cdkDrag>
         <div class="section-one" cdkDragHandle>
-            <!-- TODO: drag_indicator after icon update -->
-            <mat-icon>unfold_more</mat-icon>
+            <mat-icon>drag_indicator</mat-icon>
         </div>
         <div class="section-two">
             <!-- {number}. {item.toString()} -->
