@@ -7,6 +7,8 @@ import { ViewGroup } from './view-group';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 
 export class ViewUser extends BaseProjectableViewModel implements Searchable {
+    public static COLLECTIONSTRING = User.COLLECTIONSTRING;
+
     private _user: User;
     private _groups: ViewGroup[];
 

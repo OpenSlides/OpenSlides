@@ -129,7 +129,7 @@ export class AutoupdateService {
      * @returns A list of basemodels constructed from the given models.
      */
     private mapObjectsToBaseModels(collection: string, models: object[]): BaseModel[] {
-        const targetClass = this.modelMapper.getModelConstructorFromCollectionString(collection);
+        const targetClass = this.modelMapper.getModelConstructor(collection);
         if (!targetClass) {
             throw new Error(`Unregistered resource ${collection}`);
         }

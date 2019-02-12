@@ -45,6 +45,8 @@ export enum ChangeRecoMode {
  * @ignore
  */
 export class ViewMotion extends BaseAgendaViewModel implements Searchable {
+    public static COLLECTIONSTRING = Motion.COLLECTIONSTRING;
+
     protected _motion: Motion;
     protected _category: ViewCategory;
     protected _submitters: ViewUser[];

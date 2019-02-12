@@ -36,6 +36,8 @@ interface ConfigConstant {
  * The view model for configs.
  */
 export class ViewConfig extends BaseViewModel {
+    public static COLLECTIONSTRING = Config.COLLECTIONSTRING;
+
     /**
      * The underlying config.
      */
@@ -62,15 +64,15 @@ export class ViewConfig extends BaseViewModel {
     }
 
     public get id(): number {
-        return this.config ? this.config.id : null;
+        return this.config.id;
     }
 
     public get key(): string {
-        return this.config ? this.config.key : null;
+        return this.config.key;
     }
 
     public get value(): Object {
-        return this.config ? this.config.value : null;
+        return this.config.value;
     }
 
     public get label(): string {

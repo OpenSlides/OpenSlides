@@ -2,6 +2,8 @@ import { ChatMessage } from 'app/shared/models/core/chat-message';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 
 export class ViewChatMessage extends BaseViewModel {
+    public static COLLECTIONSTRING = ChatMessage.COLLECTIONSTRING;
+
     private _chatMessage: ChatMessage;
 
     /**

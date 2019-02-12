@@ -10,6 +10,8 @@ import { ViewGroup } from 'app/site/users/models/view-group';
  * @ignore
  */
 export class ViewMotionCommentSection extends BaseViewModel {
+    public static COLLECTIONSTRING = MotionCommentSection.COLLECTIONSTRING;
+
     private _section: MotionCommentSection;
 
     private _readGroups: ViewGroup[];

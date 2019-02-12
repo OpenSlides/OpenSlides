@@ -2,6 +2,8 @@ import { BaseViewModel } from '../../base/base-view-model';
 import { Projector, ProjectorElements } from 'app/shared/models/core/projector';
 
 export class ViewProjector extends BaseViewModel {
+    public static COLLECTIONSTRING = Projector.COLLECTIONSTRING;
+
     private _projector: Projector;
 
     public get projector(): Projector {

@@ -4,6 +4,8 @@ import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 
 export class ViewCountdown extends BaseProjectableViewModel {
+    public static COLLECTIONSTRING = Countdown.COLLECTIONSTRING;
+
     private _countdown: Countdown;
 
     public get countdown(): Countdown {

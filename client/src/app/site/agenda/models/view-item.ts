@@ -4,6 +4,8 @@ import { Speaker } from 'app/shared/models/agenda/speaker';
 import { BaseAgendaViewModel, isAgendaBaseModel } from 'app/site/base/base-agenda-view-model';
 
 export class ViewItem extends BaseViewModel {
+    public static COLLECTIONSTRING = Item.COLLECTIONSTRING;
+
     private _item: Item;
     private _contentObject: BaseAgendaViewModel;
 

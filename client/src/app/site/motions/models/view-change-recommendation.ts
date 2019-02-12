@@ -11,6 +11,8 @@ import { ViewUnifiedChange, ViewUnifiedChangeType } from './view-unified-change'
  * @ignore
  */
 export class ViewMotionChangeRecommendation extends BaseViewModel implements ViewUnifiedChange {
+    public static COLLECTIONSTRING = MotionChangeRecommendation.COLLECTIONSTRING;
+
     private _changeRecommendation: MotionChangeRecommendation;
 
     public get id(): number {

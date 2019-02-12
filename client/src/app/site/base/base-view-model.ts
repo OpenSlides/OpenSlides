@@ -2,7 +2,10 @@ import { Displayable } from './displayable';
 import { Identifiable } from '../../shared/models/base/identifiable';
 import { Collection } from 'app/shared/models/base/collection';
 
-export type ViewModelConstructor<T extends BaseViewModel> = new (...args: any[]) => T;
+export interface ViewModelConstructor<T extends BaseViewModel> {
+    COLLECTIONSTRING: string;
+    new (...args: any[]): T;
+}
 
 /**
  * Base class for view models. alls view models should have titles.

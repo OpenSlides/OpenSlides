@@ -11,6 +11,8 @@ import { Searchable } from 'app/site/base/searchable';
  * @ignore
  */
 export class ViewCategory extends BaseViewModel implements Searchable {
+    public static COLLECTIONSTRING = Category.COLLECTIONSTRING;
+
     private _category: Category;
 
     public get category(): Category {

@@ -6,6 +6,8 @@ import { ViewUser } from 'app/site/users/models/view-user';
  * View model for history objects
  */
 export class ViewHistory extends BaseViewModel {
+    public static COLLECTIONSTRING = History.COLLECTIONSTRING;
+
     /**
      * Private BaseModel of the history
      */

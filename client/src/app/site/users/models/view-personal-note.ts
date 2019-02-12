@@ -2,6 +2,8 @@ import { BaseViewModel } from 'app/site/base/base-view-model';
 import { PersonalNote } from 'app/shared/models/users/personal-note';
 
 export class ViewPersonalNote extends BaseViewModel {
+    public static COLLECTIONSTRING = PersonalNote.COLLECTIONSTRING;
+
     private _personalNote: PersonalNote;
 
     public get personalNote(): PersonalNote {

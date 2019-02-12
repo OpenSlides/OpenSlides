@@ -2,6 +2,8 @@ import { BaseViewModel } from '../../base/base-view-model';
 import { Group } from 'app/shared/models/users/group';
 
 export class ViewGroup extends BaseViewModel {
+    public static COLLECTIONSTRING = Group.COLLECTIONSTRING;
+
     private _group: Group;
 
     public get group(): Group {
