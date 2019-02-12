@@ -3,21 +3,8 @@
 from django.db import migrations, models
 
 
-def transform_required_permission_to_see_field(apps, schema_editor):
-    """
-    Sets new access_level of states to EXTENDED_MANAGERS_AND_SUBMITTER
-    if required_permission_to_see is given
-    """
-    # We get the model from the versioned app registry;
-    # if we directly import it, it will be the wrong version.
-    State = apps.get_model("motions", "State")
-    for state in State.objects.all():
-        if state.required_permission_to_see:
-            state.access_level = 1
-            state.save(skip_autoupdate=True)
-
-
 class Migration(migrations.Migration):
+    """ Note: this is a combined migration to execute code in a seperate transaction """
 
     dependencies = [("motions", "0020_auto_20190119_1425")]
 
@@ -37,7 +24,5 @@ class Migration(migrations.Migration):
                 ],
                 default=0,
             ),
-        ),
-        migrations.RunPython(transform_required_permission_to_see_field),
-        migrations.RemoveField(model_name="state", name="required_permission_to_see"),
+        )
     ]
