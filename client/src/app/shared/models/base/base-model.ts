@@ -2,7 +2,10 @@ import { Deserializable } from './deserializable';
 import { Identifiable } from './identifiable';
 import { Collection } from './collection';
 
-export type ModelConstructor<T extends BaseModel<T>> = new (...args: any[]) => T;
+export interface ModelConstructor<T extends BaseModel<T>> {
+    COLLECTIONSTRING: string;
+    new (...args: any[]): T;
+}
 
 /**
  * Abstract parent class to set rules and functions for all models.

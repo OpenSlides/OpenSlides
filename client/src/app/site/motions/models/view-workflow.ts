@@ -7,6 +7,8 @@ import { BaseViewModel } from '../../base/base-view-model';
  * @ignore
  */
 export class ViewWorkflow extends BaseViewModel {
+    public static COLLECTIONSTRING = Workflow.COLLECTIONSTRING;
+
     private _workflow: Workflow;
 
     public get workflow(): Workflow {

@@ -11,6 +11,8 @@ import { SearchRepresentation } from 'app/core/ui-services/search.service';
  * @ignore
  */
 export class ViewStatuteParagraph extends BaseViewModel implements Searchable {
+    public static COLLECTIONSTRING = StatuteParagraph.COLLECTIONSTRING;
+
     private _paragraph: StatuteParagraph;
 
     public get statuteParagraph(): StatuteParagraph {

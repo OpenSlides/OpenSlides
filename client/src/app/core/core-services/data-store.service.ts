@@ -187,7 +187,7 @@ export class DataStoreService {
         const storage: ModelStorage = {};
         Object.keys(serializedStore).forEach(collectionString => {
             storage[collectionString] = {} as ModelCollection;
-            const target = this.modelMapper.getModelConstructorFromCollectionString(collectionString);
+            const target = this.modelMapper.getModelConstructor(collectionString);
             if (target) {
                 Object.keys(serializedStore[collectionString]).forEach(id => {
                     const data = JSON.parse(serializedStore[collectionString][id]);
@@ -218,7 +218,7 @@ export class DataStoreService {
         if (typeof collectionType === 'string') {
             return collectionType;
         } else {
-            return this.modelMapper.getCollectionStringFromModelConstructor(collectionType);
+            return this.modelMapper.getCollectionString(collectionType);
         }
     }
 

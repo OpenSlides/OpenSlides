@@ -11,6 +11,8 @@ import { BaseViewModel } from 'app/site/base/base-view-model';
  * @ignore
  */
 export class ViewMotionBlock extends BaseAgendaViewModel implements Searchable {
+    public static COLLECTIONSTRING = MotionBlock.COLLECTIONSTRING;
+
     private _motionBlock: MotionBlock;
     private _agendaItem: ViewItem;
 

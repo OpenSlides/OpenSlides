@@ -8,6 +8,8 @@ import { ViewTag } from 'app/site/tags/models/view-tag';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 
 export class ViewAssignment extends BaseAgendaViewModel {
+    public static COLLECTIONSTRING = Assignment.COLLECTIONSTRING;
+
     private _assignment: Assignment;
     private _relatedUser: ViewUser[];
     private _agendaItem: ViewItem;

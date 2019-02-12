@@ -17,7 +17,7 @@ export interface ModelEntry extends BaseModelEntry {
 }
 
 export interface SearchableModelEntry extends BaseModelEntry {
-    viewModel: new (...args: any[]) => BaseViewModel & Searchable;
+    viewModel: ViewModelConstructor<BaseViewModel & Searchable>;
     searchOrder: number;
 }
 

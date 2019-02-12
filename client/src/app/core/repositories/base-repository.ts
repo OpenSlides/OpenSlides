@@ -8,8 +8,10 @@ import { Identifiable } from '../../shared/models/base/identifiable';
 import { auditTime } from 'rxjs/operators';
 import { ViewModelStoreService } from '../core-services/view-model-store.service';
 import { OnAfterAppsLoaded } from '../onAfterAppsLoaded';
+import { Collection } from 'app/shared/models/base/collection';
 
-export abstract class BaseRepository<V extends BaseViewModel, M extends BaseModel> implements OnAfterAppsLoaded {
+export abstract class BaseRepository<V extends BaseViewModel, M extends BaseModel>
+    implements OnAfterAppsLoaded, Collection {
     /**
      * Stores all the viewModel in an object
      */
@@ -30,10 +32,18 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
      */
     protected readonly generalViewModelSubject: Subject<V> = new Subject<V>();
 
-    private _name: string;
+    private _collectionString: string;
 
-    public get name(): string {
-        return this._name;
+    public get collectionString(): string {
+        return this._collectionString;
+    }
+
+    /**
+     * Needed for the collectionStringMapper service to treat repositories the same as
+     * ModelConstructors and ViewModelConstructors.
+     */
+    public get COLLECTIONSTRING(): string {
+        return this._collectionString;
     }
 
     /**
@@ -52,7 +62,7 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
         protected baseModelCtor: ModelConstructor<M>,
         protected depsModelCtors?: ModelConstructor<BaseModel>[]
     ) {
-        this._name = baseModelCtor.name;
+        this._collectionString = baseModelCtor.COLLECTIONSTRING;
     }
 
     public onAfterAppsLoaded(): void {
@@ -82,10 +92,7 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
         // My quess: This must trigger an autoupdate also for this model, because some IDs changed, so the
         // affected models will be newly created by the primaryModelChangeSubject.
         this.DS.deletedObservable.subscribe(model => {
-            if (
-                model.collection ===
-                this.collectionStringMapperService.getCollectionStringFromModelConstructor(this.baseModelCtor)
-            ) {
+            if (model.collection === this.collectionStringMapperService.getCollectionString(this.baseModelCtor)) {
                 delete this.viewModelStore[model.id];
                 this.updateAllObservables(model.id);
             }

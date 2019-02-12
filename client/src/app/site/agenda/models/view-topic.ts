@@ -11,6 +11,8 @@ import { BaseViewModel } from 'app/site/base/base-view-model';
  * @ignore
  */
 export class ViewTopic extends BaseAgendaViewModel {
+    public static COLLECTIONSTRING = Topic.COLLECTIONSTRING;
+
     protected _topic: Topic;
     private _attachments: ViewMediafile[];
     private _agendaItem: ViewItem;

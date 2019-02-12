@@ -11,6 +11,8 @@ import { Searchable } from 'app/site/base/searchable';
  * @ignore
  */
 export class ViewTag extends BaseViewModel implements Searchable {
+    public static COLLECTIONSTRING = Tag.COLLECTIONSTRING;
+
     private _tag: Tag;
 
     public get tag(): Tag {

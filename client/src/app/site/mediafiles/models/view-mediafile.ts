@@ -5,6 +5,8 @@ import { SearchRepresentation } from 'app/core/ui-services/search.service';
 import { ViewUser } from 'app/site/users/models/view-user';
 
 export class ViewMediafile extends BaseViewModel implements Searchable {
+    public static COLLECTIONSTRING = Mediafile.COLLECTIONSTRING;
+
     private _mediafile: Mediafile;
     private _uploader: ViewUser;
 

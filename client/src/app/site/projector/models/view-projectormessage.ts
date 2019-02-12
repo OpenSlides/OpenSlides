@@ -4,6 +4,8 @@ import { ProjectorMessage } from 'app/shared/models/core/projector-message';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 
 export class ViewProjectorMessage extends BaseProjectableViewModel {
+    public static COLLECTIONSTRING = ProjectorMessage.COLLECTIONSTRING;
+
     private _message: ProjectorMessage;
 
     public get projctormessage(): ProjectorMessage {
