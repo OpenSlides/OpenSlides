@@ -101,7 +101,7 @@ export class ViewMediafile extends BaseViewModel implements Searchable {
      * @returns true or false
      */
     public isFont(): boolean {
-        return ['font/ttf', 'font/woff'].includes(this.type);
+        return ['font/ttf', 'font/woff', 'application/font-woff', 'application/font-sfnt'].includes(this.type);
     }
 
     /**
