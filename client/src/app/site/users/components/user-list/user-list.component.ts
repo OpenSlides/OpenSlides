@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { MatSnackBar, MatDialog } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
@@ -17,6 +17,34 @@ import { UserSortListService } from '../../services/user-sort-list.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { ViewUser } from '../../models/view-user';
+import { ViewGroup } from '../../models/view-group';
+import { genders } from 'app/shared/models/users/user';
+
+/**
+ * Interface for the short editing dialog.
+ * Describe, which values the dialog has.
+ */
+interface InfoDialog {
+    /**
+     * The name of the user.
+     */
+    name: string;
+
+    /**
+     * Define all the groups the user is in.
+     */
+    groups_id: number[];
+
+    /**
+     * The gender of the user.
+     */
+    gender: string;
+
+    /**
+     * The participant number of the user.
+     */
+    number: string;
+}
 
 /**
  * Component for the user list view.
@@ -28,6 +56,27 @@ import { ViewUser } from '../../models/view-user';
     styleUrls: ['./user-list.component.scss']
 })
 export class UserListComponent extends ListViewBaseComponent<ViewUser> implements OnInit {
+    /**
+     * The reference to the template.
+     */
+    @ViewChild('userInfoDialog')
+    private userInfoDialog: TemplateRef<string>;
+
+    /**
+     * Declares the dialog for editing.
+     */
+    public infoDialog: InfoDialog;
+
+    /**
+     * All available groups, where the user can be in.
+     */
+    public groups: ViewGroup[];
+
+    /**
+     * The list of all genders.
+     */
+    public genderList = genders;
+
     /**
      * Columns to display in table when desktop view is available
      */
@@ -95,7 +144,8 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
         public filterService: UserFilterListService,
         public sortService: UserSortListService,
         config: ConfigService,
-        private userPdf: UserPdfExportService
+        private userPdf: UserPdfExportService,
+        private dialog: MatDialog
     ) {
         super(titleService, translate, matSnackBar);
 
@@ -122,6 +172,9 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
             this.checkSelection();
         });
         this.setFulltextFilter();
+
+        // Initialize the groups
+        this.groups = this.groupRepo.getViewModelList().filter(group => group.id !== 1);
     }
 
     /**
@@ -137,6 +190,41 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
      */
     public onPlusButton(): void {
         this.router.navigate(['./new'], { relativeTo: this.route });
+    }
+
+    /**
+     * This function opens the dialog,
+     * where the user can quick change the groups,
+     * the gender and the participant number.
+     *
+     * @param user is an instance of ViewUser. This is the given user, who will be modified.
+     */
+    public openEditInfo(user: ViewUser): void {
+        this.infoDialog = {
+            name: user.username,
+            groups_id: user.groups_id,
+            gender: user.gender,
+            number: user.number
+        };
+
+        const dialogRef = this.dialog.open(this.userInfoDialog, {
+            width: '400px',
+            maxWidth: '90vw',
+            maxHeight: '90vh',
+            disableClose: true
+        });
+
+        dialogRef.keydownEvents().subscribe((event: KeyboardEvent) => {
+            if (event.key === 'Enter' && event.shiftKey) {
+                dialogRef.close(this.infoDialog);
+            }
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.repo.update(result, user);
+            }
+        });
     }
 
     /**
