@@ -1,0 +1,24 @@
+<!-- TODO permission -->
+<os-head-bar [nav]="false">
+    <!-- Title -->
+    <div class="title-slot"><h2 translate>Sort motions</h2></div>
+</os-head-bar>
+
+<mat-card class="os-form-card">
+    <h3>{{ categoryName }}</h3>
+    <br />
+    <span translate>
+        Drag and drop motions to reorder the category. Then click the button to renumber.
+    </span>
+    <br />
+    <button
+        mat-raised-button
+        color="primary"
+        (click)="onNumberMotions()"
+        class="spacer-top-10"
+        [disabled]="!motionsCount"
+    >
+        <span translate>Number motions</span>
+    </button>
+    <os-sorting-list [input]="motionObservable" #sorter></os-sorting-list>
+</mat-card>

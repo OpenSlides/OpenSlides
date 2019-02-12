@@ -1,17 +1,17 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { BaseViewComponent } from '../../../base/base-view';
 import { Category } from 'app/shared/models/motions/category';
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
-import { ViewCategory } from '../../models/view-category';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Motion } from 'app/shared/models/motions/motion';
-import { SortingListComponent } from 'app/shared/components/sorting-list/sorting-list.component';
+import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
-import { BaseViewComponent } from '../../../base/base-view';
-import { MatSnackBar } from '@angular/material';
+import { ViewCategory } from '../../models/view-category';
+import { ViewMotion } from '../../models/view-motion';
 
 /**
  * List view for the categories.
@@ -28,14 +28,9 @@ export class CategoryListComponent extends BaseViewComponent implements OnInit {
     public categoryToCreate: Category | null;
 
     /**
-     * Determine which category to edit
+     * Determine which category is opened
      */
     public editId: number | null;
-
-    /**
-     * Determine which category is opened.
-     */
-    public openId: number | null;
 
     /**
      * Source of the data
@@ -53,12 +48,6 @@ export class CategoryListComponent extends BaseViewComponent implements OnInit {
     public updateForm: FormGroup;
 
     /**
-     * The MultiSelect Component
-     */
-    @ViewChild('sorter')
-    public sortSelector: SortingListComponent;
-
-    /**
      * The usual component constructor
      * @param titleService
      * @param translate
@@ -72,6 +61,7 @@ export class CategoryListComponent extends BaseViewComponent implements OnInit {
         translate: TranslateService,
         matSnackBar: MatSnackBar,
         private repo: CategoryRepositoryService,
+        private motionRepo: MotionRepositoryService,
         private formBuilder: FormBuilder,
         private promptService: PromptService
     ) {
@@ -89,7 +79,8 @@ export class CategoryListComponent extends BaseViewComponent implements OnInit {
     }
 
     /**
-     * Event on key-down in form
+     * Event on key-down in form. Submits the current form if the 'enter' button is pressed
+     *
      * @param event
      * @param viewCategory
      */
@@ -154,47 +145,33 @@ export class CategoryListComponent extends BaseViewComponent implements OnInit {
     }
 
     /**
-     * Saves the category
-     *
-     * TODO: Do not number the motions. This needs to be a separate button (maybe with propting for confirmation), because
-     * not every body uses this and this would destroy their own order in motion identifiers.
-     * See issue #3969
+     * Saves a category
+     * TODO: Some feedback
      *
      * @param viewCategory
      */
     public async onSaveButton(viewCategory: ViewCategory): Promise<void> {
-        // get the sorted motions. Save them before updating the category.
-        let sortedMotionIds;
-        if (this.sortSelector) {
-            sortedMotionIds = this.sortSelector.array.map(selectable => selectable.id);
-            this.repo.numberMotionsInCategory(viewCategory.category, sortedMotionIds);
-        }
-
-        if (this.updateForm.valid) {
+        if (this.updateForm.dirty && this.updateForm.valid) {
             const cat: Partial<Category> = { name: this.updateForm.get('name').value };
             if (this.updateForm.get('prefix').value) {
                 cat.prefix = this.updateForm.get('prefix').value;
             }
-            // wait for the category to update; then the (maybe) changed prefix can be applied to the motions
             await this.repo.update(cat, viewCategory);
-            this.onCancelButton();
-
-            if (this.sortSelector) {
-                this.repo.numberMotionsInCategory(viewCategory.category, sortedMotionIds);
-            }
+            this.updateForm.markAsPristine();
         }
     }
 
     /**
-     * executed on cancel button
-     * @param viewCategory
+     * Trigger after cancelling an edit. The updateForm is reset to an original
+     * value, which might belong to a different category
      */
     public onCancelButton(): void {
-        this.editId = null;
+        this.updateForm.markAsPristine();
     }
 
     /**
      * is executed, when the delete button is pressed
+     *
      * @param viewCategory The category to delete
      */
     public async onDeleteButton(viewCategory: ViewCategory): Promise<void> {
@@ -206,23 +183,36 @@ export class CategoryListComponent extends BaseViewComponent implements OnInit {
 
     /**
      * Returns the motions corresponding to a category
+     *
      * @param category target
      * @returns all motions in the category
      */
-    public motionsInCategory(category: Category): Motion[] {
-        const motions = this.repo.getMotionsOfCategory(category);
-        motions.sort((motion1, motion2) => (motion1 > motion2 ? 1 : -1));
-        return motions;
+    public motionsInCategory(category: Category): ViewMotion[] {
+        return this.motionRepo
+            .getViewModelList()
+            .filter(m => m.category_id === category.id)
+            .sort((motion1, motion2) => motion1.identifier.localeCompare(motion2.identifier));
     }
 
     /**
-     * Is executed when a mat-extension-panel is closed
-     * @param viewCategory the category in the panel
+     * Fetch the correct URL for a detail sort view
+     *
+     * @param viewCategory
      */
-    public panelClosed(viewCategory: ViewCategory): void {
-        this.openId = null;
-        if (this.editId) {
-            this.onSaveButton(viewCategory);
-        }
+    public getSortUrl(viewCategory: ViewCategory): string {
+        return `/motions/category/${viewCategory.id}`;
+    }
+
+    /**
+     * Set/reset the initial values and the referenced category of the update form
+     *
+     * @param category
+     */
+    public setValues(category: ViewCategory): void {
+        this.editId = category.id;
+        this.updateForm.setValue({
+            prefix: category.prefix,
+            name: category.name
+        });
     }
 }

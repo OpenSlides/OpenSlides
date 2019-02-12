@@ -1,12 +1,15 @@
-<div cdkDropList class="list" (cdkDropListDropped)="drop($event)">
+<div cdkDropList class="os-card" (cdkDropListDropped)="drop($event)">
+    <div class= "box line" *ngIf="!array.length">
+        <span translate>No data</span>
+    </div>
     <div class="box line" *ngFor="let item of array; let i = index" cdkDrag>
         <div class="section-one" cdkDragHandle>
             <mat-icon>drag_indicator</mat-icon>
         </div>
         <div class="section-two">
-            <!-- {number}. {item.toString()} -->
-            <span *ngIf="count">{{ i+1 }}.&nbsp;</span>
-            <span>{{ item }}</span>
+            <!-- {number}. {item.getTitle()} -->
+            <span *ngIf="count">{{ i + 1 }}.&nbsp;</span>
+            <span>{{ item.getTitle() }}</span>
         </div>
         <div class="section-three">
             <!-- Extra controls slot using implicit template references -->

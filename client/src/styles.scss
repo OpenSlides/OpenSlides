@@ -640,3 +640,9 @@ button.mat-menu-item.selected {
         margin: 10px 0;
     }
 }
+
+.ellipsis-overflow {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
