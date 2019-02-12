@@ -1,5 +1,5 @@
 <os-head-bar
-    [mainButton]="true"
+    [mainButton]="canEdit"
     [editMode]="editFile"
     [multiSelectMode]="isMultiSelect"
     (mainEvent)="onMainEvent()"
@@ -35,7 +35,7 @@
     </div>
 
     <!-- Menu -->
-    <div class="menu-slot">
+    <div class="menu-slot" *ngIf="canEdit">
         <button type="button" mat-icon-button [matMenuTriggerFor]="mediafilesMenu">
             <mat-icon>more_vert</mat-icon>
         </button>
@@ -170,7 +170,7 @@
             <span translate>Deselect all</span>
         </button>
         <mat-divider></mat-divider>
-        <button mat-menu-item *osPerms="'mediafiles.can_manage'" (click)="deleteSelected()">
+        <button mat-menu-item *ngIf="canEdit" (click)="deleteSelected()">
             <mat-icon>delete</mat-icon>
             <span translate>Delete</span>
         </button>
