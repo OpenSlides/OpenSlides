@@ -481,7 +481,7 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
      * @param update potentially the changed agenda Item. Needs manual verification
      */
     public updateUser(update: ViewUser): void {
-        if (this.motion.submitters && this.motion.submitters.findIndex(user => user.user_id === update.id)) {
+        if (this.motion.submitters && this.motion.submitters.find(user => user.user_id === update.id)) {
             const userIndex = this.submitters.findIndex(user => user.id === update.id);
             this.submitters[userIndex] = update;
         }
