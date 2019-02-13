@@ -100,6 +100,10 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
             this.lineLength = lineLength;
             this.getMotionByUrl();
         });
+        // // subscribe to 'motions_amendments_text_mode'
+        // {"value": "freestyle", "display_name": "Empty text field"},
+        // {"value": "fulltext", "display_name": "Edit the whole motion text"},
+        // {"value": "paragraph", "display_name": "Paragraph-based, Diff-enabled"},
     }
 
     /**
