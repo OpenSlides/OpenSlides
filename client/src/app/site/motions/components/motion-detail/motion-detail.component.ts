@@ -49,6 +49,7 @@ import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewItem } from 'app/site/agenda/models/view-item';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { formatQueryParams } from 'app/core/query-params';
 
 /**
  * Component for the motion detail view
@@ -508,8 +509,22 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
             // prevent 'undefined' to appear in the ui
             const defaultMotion = {
                 title: '',
-                origin: ''
+                origin: '',
+                text: ''
             };
+            if (this.route.snapshot.queryParams.parent) {
+                const parentMotion = this.repo.getViewModel(this.route.snapshot.queryParams.parent);
+                const defaultTitle = `${this.translate.instant('Amendment to')} ${parentMotion.identifierOrTitle}`;
+                switch (this.configService.instant<string>('motions_amendments_text_mode')) {
+                    case 'freestyle':
+                        defaultMotion.title = defaultTitle;
+                        break;
+                    case 'fulltext':
+                        defaultMotion.title = defaultTitle;
+                        defaultMotion.text = parentMotion.text;
+                }
+            }
+
             this.motion = new ViewCreateMotion(new CreateMotion(defaultMotion));
             this.motionCopy = new ViewCreateMotion(new CreateMotion(defaultMotion));
         } else {
@@ -878,7 +893,15 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * Goes to the amendment creation wizard. Executed via click.
      */
     public createAmendment(): void {
-        this.router.navigate(['./create-amendment'], { relativeTo: this.route });
+        const mode = this.configService.instant<string>('motions_amendments_text_mode');
+        if (mode === 'paragraph') {
+            this.router.navigate(['./create-amendment'], { relativeTo: this.route });
+        } else {
+            this.router.navigate(['./motions/new'], {
+                relativeTo: this.route.snapshot.params.relativeTo,
+                queryParams: { parent: this.motion.id || null }
+            });
+        }
     }
 
     /**
