@@ -1,6 +1,10 @@
 from typing import Any, Dict
 
-from ..utils.projector import AllData, register_projector_slide
+from ..utils.projector import (
+    AllData,
+    ProjectorElementException,
+    register_projector_slide,
+)
 
 
 # Important: All functions have to be prune. This means, that thay can only
@@ -12,8 +16,22 @@ from ..utils.projector import AllData, register_projector_slide
 def topic_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
     """
     Topic slide.
+
+    The returned dict can contain the following fields:
+    * title
+    * text
     """
-    return {"error": "TODO"}
+    topic_id = element.get("id")
+
+    if topic_id is None:
+        raise ProjectorElementException("id is required for topic slide")
+
+    try:
+        topic = all_data["topics/topic"][topic_id]
+    except KeyError:
+        raise ProjectorElementException(f"topic with id {topic_id} does not exist")
+
+    return {"title": topic["title"], "text": topic["text"]}
 
 
 def register_projector_slides() -> None:

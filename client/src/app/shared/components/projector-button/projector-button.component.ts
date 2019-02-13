@@ -24,7 +24,7 @@ export class ProjectorButtonComponent implements OnInit {
     /**
      * The object to project.
      */
-    private _object: Projectable | ProjectorElementBuildDeskriptor;
+    private _object: Projectable | ProjectorElementBuildDeskriptor | null;
 
     public get object(): Projectable | ProjectorElementBuildDeskriptor {
         return this._object;
@@ -35,10 +35,7 @@ export class ProjectorButtonComponent implements OnInit {
         if (isProjectable(obj) || isProjectorElementBuildDeskriptor(obj)) {
             this._object = obj;
         } else {
-            console.error(
-                'Your model for the projectorbutton is not projectable and not' + 'a projectorElementBuildDescriptor!',
-                obj
-            );
+            this.object = null;
         }
     }
 
@@ -62,7 +59,9 @@ export class ProjectorButtonComponent implements OnInit {
      */
     public onClick(event: Event): void {
         event.stopPropagation();
-        this.projectionDialogService.openProjectDialogFor(this.object);
+        if (this.object) {
+            this.projectionDialogService.openProjectDialogFor(this.object);
+        }
     }
 
     /**

@@ -36,7 +36,6 @@ export class ProjectionDialogService {
         } else {
             descriptor = obj;
         }
-
         const dialogRef = this.dialog.open<
             ProjectionDialogComponent,
             ProjectorElementBuildDeskriptor,

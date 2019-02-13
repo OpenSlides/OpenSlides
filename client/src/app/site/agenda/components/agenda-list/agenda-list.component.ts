@@ -54,6 +54,7 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
      * @param titleService Setting the browser tab title
      * @param translate translations
      * @param matSnackBar Shows errors and messages
+     * @param operator The current user
      * @param route Angulars ActivatedRoute
      * @param router Angulars router
      * @param repo the agenda repository,
@@ -66,12 +67,12 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
      * @param filterService: service for filtering data
      * @param agendaPdfService: service for preparing a pdf of the agenda
      * @param pdfService: Service for exporting a pdf
-     * @param operator the current user
      */
     public constructor(
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
+        private operator: OperatorService,
         private route: ActivatedRoute,
         private router: Router,
         private repo: ItemRepositoryService,
@@ -83,8 +84,7 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
         private csvExport: AgendaCsvExportService,
         public filterService: AgendaFilterListService,
         private agendaPdfService: AgendaPdfService,
-        private pdfService: PdfDocumentService,
-        private operator: OperatorService
+        private pdfService: PdfDocumentService
     ) {
         super(titleService, translate, matSnackBar);
 
@@ -238,11 +238,14 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
      * @returns an array of strings with the dialogs to show
      */
     public getColumnDefinition(): string[] {
-        const list = this.vp.isMobile ? this.displayedColumnsMobile : this.displayedColumnsDesktop;
-        if (this.isMultiSelect) {
-            return ['selector'].concat(list);
+        let columns = this.vp.isMobile ? this.displayedColumnsMobile : this.displayedColumnsDesktop;
+        if (this.operator.hasPerms('core.can_manage_projector')) {
+            columns = ['projector'].concat(columns);
         }
-        return list;
+        if (this.isMultiSelect) {
+            columns = ['selector'].concat(columns);
+        }
+        return columns;
     }
 
     /**
