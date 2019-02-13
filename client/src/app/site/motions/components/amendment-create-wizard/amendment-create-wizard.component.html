@@ -11,7 +11,7 @@
                 <section
                     *ngFor="let paragraph of paragraphs"
                     class="paragraph-row"
-                    [class.active]="selectedParagraph === paragraph.paragraphNo"
+                    [class.active]="contentForm.value.selectedParagraph === paragraph.paragraphNo"
                     (click)="selectParagraph(paragraph)"
                 >
                     <mat-radio-button
