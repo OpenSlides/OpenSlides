@@ -19,6 +19,7 @@ def get_config_variables():
         choices=(
             {"value": "first_name", "display_name": "Given name"},
             {"value": "last_name", "display_name": "Surname"},
+            {"value": "number", "display_name": "Participant number"},
         ),
         weight=510,
         group="Participants",

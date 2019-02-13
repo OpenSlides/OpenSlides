@@ -144,7 +144,7 @@ export class SpeakerListComponent extends BaseViewComponent implements OnInit {
     public ngOnInit(): void {
         // load and observe users
         this.users = new BehaviorSubject(this.userRepository.getViewModelList());
-        this.userRepository.getViewModelListObservable().subscribe(users => this.users.next(users));
+        this.userRepository.getSortedViewModelListObservable().subscribe(users => this.users.next(users));
 
         // detect changes in the form
         this.addSpeakerForm.valueChanges.subscribe(formResult => {

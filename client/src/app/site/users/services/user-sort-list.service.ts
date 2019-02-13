@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 
 import { BaseSortListService, OsSortingDefinition } from 'app/core/ui-services/base-sort-list.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
+import { StorageService } from 'app/core/core-services/storage.service';
 import { ViewUser } from '../models/view-user';
 
 @Injectable({
@@ -23,4 +26,16 @@ export class UserSortListService extends BaseSortListService<ViewUser> {
         ]
     };
     protected name = 'User';
+
+    /**
+     * Constructor. Sets the default sorting if none is set locally
+     *
+     * @param translate
+     * @param store
+     * @param config
+     */
+    public constructor(translate: TranslateService, store: StorageService, config: ConfigService) {
+        super(translate, store);
+        this.sortOptions.sortProperty = config.instant<keyof ViewUser>('motions_motions_sorting');
+    }
 }

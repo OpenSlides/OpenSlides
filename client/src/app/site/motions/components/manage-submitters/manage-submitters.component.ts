@@ -81,8 +81,10 @@ export class ManageSubmittersComponent extends BaseViewComponent {
         this.editSubmitterObservable = this.editSubmitterSubject.asObservable();
 
         // get all users for the submitter add form
-        this.users = new BehaviorSubject<ViewUser[]>(this.userRepository.getViewModelList());
-        this.userRepository.getViewModelListObservable().subscribe(users => this.users.next(users));
+        this.users = new BehaviorSubject<ViewUser[]>(
+            this.userRepository.sortViewUsersByConfig(this.userRepository.getViewModelList())
+        );
+        this.userRepository.getSortedViewModelListObservable().subscribe(users => this.users.next(users));
 
         // detect changes in the form
         this.addSubmitterForm.valueChanges.subscribe(formResult => {

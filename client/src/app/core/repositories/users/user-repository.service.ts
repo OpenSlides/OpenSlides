@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 import { BaseRepository } from '../base-repository';
 import { ViewUser } from 'app/site/users/models/view-user';
@@ -304,5 +305,43 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
      */
     public getUserDuplicates(user: ViewUser): ViewUser[] {
         return this.getViewModelList().filter(existingUser => existingUser.full_name === user.full_name);
+    }
+
+    /**
+     * @returns the observable for users sorted according to configuration
+     */
+    public getSortedViewModelListObservable(): Observable<ViewUser[]> {
+        const subject = new BehaviorSubject<ViewUser[]>([]);
+        this.getViewModelListObservable().subscribe(users => {
+            subject.next(this.sortViewUsersByConfig(users));
+        });
+        return subject.asObservable();
+    }
+
+    /**
+     * Sort viewUsers by the configured settings
+     *
+     * @param users
+     * @returns the users sorted by first name, last name or number, according
+     * to the config setting. Fallthrough and identical cases will be sorted by
+     * 'short_name'
+     */
+    public sortViewUsersByConfig(users: ViewUser[]): ViewUser[] {
+        const sort = this.configService.instant<'first_name' | 'last_name' | 'number'>('users_sort_by') || 'last_name';
+        return users.sort((a, b) => {
+            if (a[sort] && b[sort]) {
+                if (a[sort] === b[sort]) {
+                    return a.short_name.localeCompare(b.short_name, this.translate.currentLang);
+                } else {
+                    return a[sort].localeCompare(b[sort], this.translate.currentLang);
+                }
+            } else if (a[sort] && !b[sort]) {
+                return -1;
+            } else if (b[sort]) {
+                return 1;
+            } else {
+                return a.short_name.localeCompare(b.short_name);
+            }
+        });
     }
 }
