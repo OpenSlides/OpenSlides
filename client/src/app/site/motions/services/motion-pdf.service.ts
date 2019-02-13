@@ -24,7 +24,8 @@ export type InfoToExport =
     | 'block'
     | 'origin'
     | 'polls'
-    | 'comments';
+    | 'comments'
+    | 'id';
 
 /**
  * Converts a motion to pdf. Can be used from the motion detail view or executed on a list of motions
@@ -96,7 +97,8 @@ export class MotionPdfService {
         }
 
         const title = this.createTitle(motion);
-        const subtitle = this.createSubtitle(motion);
+        const sequential = !infoToExport || infoToExport.includes('id');
+        const subtitle = this.createSubtitle(motion, sequential);
 
         motionPdfContent = [title, subtitle];
 
@@ -140,18 +142,17 @@ export class MotionPdfService {
      * Create the motion subtitle and sequential number part of the doc definition
      *
      * @param motion the target motion
+     * @param sequential set to true to include the sequential number
      * @returns doc def for the subtitle
      */
-    private createSubtitle(motion: ViewMotion): object {
+    private createSubtitle(motion: ViewMotion, sequential?: boolean): object {
         const subtitleLines = [];
-        const exportSequentialNumber = this.configService.instant('motions_export_sequential_number');
-
-        if (exportSequentialNumber) {
+        if (sequential) {
             subtitleLines.push(`${this.translate.instant('Sequential number')}: ${motion.id}`);
         }
 
         if (motion.parent_id) {
-            if (exportSequentialNumber) {
+            if (sequential) {
                 subtitleLines.push(' • ');
             }
             subtitleLines.push(

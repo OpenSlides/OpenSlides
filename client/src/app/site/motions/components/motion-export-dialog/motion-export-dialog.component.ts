@@ -51,7 +51,8 @@ export class MotionExportDialogComponent implements OnInit {
         'origin',
         'block',
         'polls',
-        'comments'
+        'comments',
+        'id'
     ];
 
     /**
