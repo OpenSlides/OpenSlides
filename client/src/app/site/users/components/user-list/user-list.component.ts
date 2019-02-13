@@ -52,6 +52,15 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
     }
 
     /**
+     * Helper to check for main button permissions
+     *
+     * @returns true if the user should be able to create users
+     */
+    public get canAddUser(): boolean {
+        return this.operator.hasPerms('users.can_manage');
+    }
+
+    /**
      * The usual constructor for components
      * @param titleService Serivce for setting the title
      * @param translate Service for translation handling

@@ -7,14 +7,15 @@ import { MatSnackBar } from '@angular/material';
 import { BehaviorSubject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
+import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
+import { itemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { ListViewBaseComponent } from 'app/site/base/list-view-base';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
-import { itemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
-import { ViewMotionBlock } from '../../models/view-motion-block';
-import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
+import { OperatorService } from 'app/core/core-services/operator.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewItem } from 'app/site/agenda/models/view-item';
+import { ViewMotionBlock } from '../../models/view-motion-block';
 
 /**
  * Table for the motion blocks
@@ -51,6 +52,15 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
     public itemVisibility = itemVisibilityChoices;
 
     /**
+     * helper for permission checks
+     *
+     * @returns true if the user may alter motions or their metadata
+     */
+    public get canEdit(): boolean {
+        return this.operator.hasPerms('motions.can_manage', 'motions.can_manage_metadata');
+    }
+
+    /**
      * Constructor for the motion block list view
      *
      * @param titleService sets the title
@@ -63,6 +73,8 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
      * @param DS the dataStore
      * @param formBuilder creates forms
      * @param promptService the delete prompt
+     * @param itemRepo
+     * @param operator permission checks
      */
     public constructor(
         titleService: Title,
@@ -74,7 +86,8 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
         private agendaRepo: ItemRepositoryService,
         private formBuilder: FormBuilder,
         private promptService: PromptService,
-        private itemRepo: ItemRepositoryService
+        private itemRepo: ItemRepositoryService,
+        private operator: OperatorService
     ) {
         super(titleService, translate, matSnackBar);
 

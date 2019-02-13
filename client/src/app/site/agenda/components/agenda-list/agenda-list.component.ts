@@ -17,6 +17,7 @@ import { DurationService } from 'app/core/ui-services/duration.service';
 import { ItemInfoDialogComponent } from '../item-info-dialog/item-info-dialog.component';
 import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
+import { OperatorService } from 'app/core/core-services/operator.service';
 
 /**
  * List view for the agenda.
@@ -35,9 +36,18 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
     /**
      * Determine the display columns in mobile view
      */
-    public displayedColumnsMobile: string[] = ['title', 'menu'];
+    public displayedColumnsMobile: string[] = ['title', 'speakers', 'menu'];
 
     public isNumberingAllowed: boolean;
+
+    /**
+     * Helper to check main button permissions
+     *
+     * @returns true if the operator can manage agenda items
+     */
+    public get canManage(): boolean {
+        return this.operator.hasPerms('agenda.can_manage');
+    }
 
     /**
      * The usual constructor for components
@@ -56,6 +66,7 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
      * @param filterService: service for filtering data
      * @param agendaPdfService: service for preparing a pdf of the agenda
      * @param pdfService: Service for exporting a pdf
+     * @param operator the current user
      */
     public constructor(
         titleService: Title,
@@ -72,7 +83,8 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
         private csvExport: AgendaCsvExportService,
         public filterService: AgendaFilterListService,
         private agendaPdfService: AgendaPdfService,
-        private pdfService: PdfDocumentService
+        private pdfService: PdfDocumentService,
+        private operator: OperatorService
     ) {
         super(titleService, translate, matSnackBar);
 
@@ -116,6 +128,9 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
      * @param item The view item that was clicked
      */
     public openEditInfo(item: ViewItem): void {
+        if (!this.canManage) {
+            return;
+        }
         const dialogRef = this.dialog.open(ItemInfoDialogComponent, {
             width: '400px',
             data: item,

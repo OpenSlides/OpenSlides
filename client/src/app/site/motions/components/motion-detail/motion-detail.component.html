@@ -71,7 +71,7 @@
                 <span translate>List of speakers</span>
             </button>
             <!-- Project -->
-            <button mat-menu-item>
+            <button mat-menu-item *osPerms="'core.can_manage_projector'">
                 <mat-icon>videocam</mat-icon>
                 <span translate>Project</span>
             </button>

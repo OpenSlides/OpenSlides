@@ -1,4 +1,4 @@
-<os-head-bar [nav]="false" [mainButton]="true" (mainEvent)="onPlusButton()">
+<os-head-bar [nav]="false" [mainButton]="canEdit" (mainEvent)="onPlusButton()">
     <!-- Title -->
     <div class="title-slot"><h2 translate>Motion blocks</h2></div>
 </os-head-bar>
@@ -7,17 +7,11 @@
 <mat-card class="os-card" *ngIf="blockToCreate">
     <mat-card-title translate>New motion block</mat-card-title>
     <mat-card-content>
-        <form [formGroup]="createBlockForm"
-            (keydown)="onKeyDown($event)">
+        <form [formGroup]="createBlockForm" (keydown)="onKeyDown($event)">
             <!-- Title -->
             <p>
                 <mat-form-field>
-                    <input
-                        formControlName="title"
-                        matInput
-                        placeholder="{{ 'Title' | translate }}"
-                        required
-                    />
+                    <input formControlName="title" matInput placeholder="{{ 'Title' | translate }}" required />
                     <mat-error *ngIf="createBlockForm.get('title').hasError('required')" translate>
                         A name is required
                     </mat-error>
@@ -76,7 +70,12 @@
         <ng-container matColumnDef="menu">
             <mat-header-cell *matHeaderCellDef>Menu</mat-header-cell>
             <mat-cell *matCellDef="let block">
-                <button mat-icon-button [matMenuTriggerFor]="singleItemMenu" [matMenuTriggerData]="{ item: block }">
+                <button
+                    *ngIf="canEdit"
+                    mat-icon-button
+                    [matMenuTriggerFor]="singleItemMenu"
+                    [matMenuTriggerData]="{ item: block }"
+                >
                     <mat-icon>more_vert</mat-icon>
                 </button>
             </mat-cell>
