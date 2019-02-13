@@ -483,11 +483,7 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
     public updateUser(update: ViewUser): void {
         if (this.motion.submitters && this.motion.submitters.findIndex(user => user.user_id === update.id)) {
             const userIndex = this.submitters.findIndex(user => user.id === update.id);
-            if (userIndex < 0) {
-                this.submitters.push(update);
-            } else {
-                this.submitters[userIndex] = update;
-            }
+            this.submitters[userIndex] = update;
         }
         if (this.motion.supporters_id && this.motion.supporters_id.includes(update.id)) {
             const userIndex = this.supporters.findIndex(user => user.id === update.id);
