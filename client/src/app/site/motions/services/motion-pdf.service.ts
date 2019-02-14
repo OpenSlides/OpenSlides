@@ -315,7 +315,18 @@ export class MotionPdfService {
         }
 
         // summary of change recommendations (for motion diff version only)
-        const changeRecos = this.changeRecoRepo.getChangeRecoOfMotion(motion.id);
+        const changeRecos = this.changeRecoRepo
+            .getChangeRecoOfMotion(motion.id)
+            .sort((a: ViewUnifiedChange, b: ViewUnifiedChange) => {
+                if (a.getLineFrom() < b.getLineFrom()) {
+                    return -1;
+                } else if (a.getLineFrom() > b.getLineFrom()) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            });
+
         if (crMode === ChangeRecoMode.Diff && changeRecos.length > 0) {
             const columnLineNumbers = [];
             const columnChangeType = [];
