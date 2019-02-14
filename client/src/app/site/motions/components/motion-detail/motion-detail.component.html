@@ -420,13 +420,7 @@
 </ng-template>
 
 <ng-template #contentTemplate>
-    <form
-        class="motion-content"
-        [formGroup]="contentForm"
-        (keydown)="onKeyDown($event)"
-        (ngSubmit)="saveMotion()"
-        *ngIf="motion"
-    >
+    <form class="motion-content" [formGroup]="contentForm" (keydown)="onKeyDown($event)" *ngIf="motion">
         <!-- Line Number and Diff buttons -->
         <div *ngIf="!editMotion && !motion.isStatuteAmendment()" class="motion-text-controls">
             <mat-form-field class="motion-goto-line" *ngIf="highlightedLineOpened">

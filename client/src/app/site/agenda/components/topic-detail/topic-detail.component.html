@@ -10,7 +10,7 @@
     <!-- Title -->
     <div class="title-slot">
         <h2>
-            <span *ngIf="newTopic " translate>New topic</span>
+            <span *ngIf="newTopic" translate>New topic</span>
             <span *ngIf="editTopic && !newTopic" translate>Edit topic</span>
             <span *ngIf="!newTopic && !editTopic" translate>Topic</span>
         </h2>
@@ -24,9 +24,7 @@
     </div>
 </os-head-bar>
 
-<mat-card *ngIf="topic || editTopic"
-        [ngClass]="editTopic ? 'os-form-card' : 'os-card'"
-        class="on-transition-fade">
+<mat-card *ngIf="topic || editTopic" [ngClass]="editTopic ? 'os-form-card' : 'os-card'" class="on-transition-fade">
     <div *ngIf="!editTopic">
         <h1>{{ topic.title }}</h1>
     </div>
@@ -49,7 +47,7 @@
         </h3>
     </div>
 
-    <form *ngIf="editTopic" [formGroup]="topicForm" (keydown)="onKeyDown($event)" (ngSubmit)="saveTopic()">
+    <form *ngIf="editTopic" [formGroup]="topicForm" (keydown)="onKeyDown($event)">
         <div>
             <mat-form-field>
                 <input

@@ -111,14 +111,13 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
 
     /**
      * Links to the content object.
-     * Gets content object from the repository rather than from the model
-     * to avoid race conditions
      *
      * @param item the item that was selected from the list view
      */
     public singleSelectAction(item: ViewItem): void {
-        const contentObject = this.repo.getContentObject(item.item);
-        this.router.navigate([contentObject.getDetailStateURL()]);
+        if (item.contentObject) {
+            this.router.navigate([item.contentObject.getDetailStateURL()]);
+        }
     }
 
     /**

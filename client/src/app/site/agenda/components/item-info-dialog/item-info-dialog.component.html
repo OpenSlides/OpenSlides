@@ -1,6 +1,6 @@
 <h1 mat-dialog-title>{{ 'Edit details for' | translate }} {{ item.getTitle() }}</h1>
 <div mat-dialog-content>
-    <form class="itemDialogForm" [formGroup]="agendaInfoForm" (keydown)="onKeyDown($event)" (ngSubmit)="saveItemInfo()">
+    <form class="itemDialogForm" [formGroup]="agendaInfoForm" (keydown)="onKeyDown($event)">
         <!-- Visibility -->
         <mat-form-field>
             <mat-select formControlName="type" placeholder="{{ 'Agenda visibility' | translate }}">
