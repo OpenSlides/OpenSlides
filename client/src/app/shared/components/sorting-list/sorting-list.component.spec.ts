@@ -31,7 +31,7 @@ describe('SortingListComponent', () => {
     });
 
     it('should create', () => {
-        const inputList: Array<Selectable> = [];
+        const inputList: Selectable[] = [];
         for (let index = 0; index < 20; index++) {
             inputList.push(new EmptySelectable());
         }

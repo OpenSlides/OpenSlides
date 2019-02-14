@@ -34,7 +34,7 @@ describe('SearchValueSelectorComponent', () => {
     });
 
     it('should create', () => {
-        const subjectList: Array<Selectable> = [];
+        const subjectList: Selectable[] = [];
         for (let index = 0; index < 20; index++) {
             subjectList.push(new EmptySelectable());
         }

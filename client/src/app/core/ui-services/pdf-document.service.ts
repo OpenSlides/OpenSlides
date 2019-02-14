@@ -288,7 +288,7 @@ export class PdfDocumentService {
         const columns = [];
         let logoContainerWidth: string;
         let pageNumberPosition: string;
-        let logoContainerSize: Array<number>;
+        let logoContainerSize: number[];
         let logoFooterLeftUrl = this.configService.instant<any>('logo_pdf_footer_L').path;
         let logoFooterRightUrl = this.configService.instant<any>('logo_pdf_footer_R').path;
 

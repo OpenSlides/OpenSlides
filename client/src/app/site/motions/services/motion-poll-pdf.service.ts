@@ -164,7 +164,7 @@ export class MotionPollPdfService {
      * @param subtitle: second  line for the ballot.
      * @returns an array of content objects defining pdfMake instructions
      */
-    private getContent(title: string, subtitle: string): Array<object> {
+    private getContent(title: string, subtitle: string): object[] {
         const content = [];
         const amount = this.getBallotCount();
         const fullpages = Math.floor(amount / 8);
@@ -275,7 +275,7 @@ export class MotionPollPdfService {
      * @param size the size of the circle
      * @returns an array containing one circle definition for pdfMake
      */
-    private drawCircle(y: number, size: number): Array<object> {
+    private drawCircle(y: number, size: number): object[] {
         return [
             {
                 type: 'ellipse',

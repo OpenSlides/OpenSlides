@@ -187,10 +187,23 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
         }
         this.updateSuccessIconTimeout = <any>setTimeout(() => {
             this.updateSuccessIcon = false;
-            this.cdRef.detectChanges();
+            if (!this.wasViewDestroyed()) {
+                this.cdRef.detectChanges();
+            }
         }, 2000);
         this.updateSuccessIcon = true;
-        this.cdRef.detectChanges();
+        if (!this.wasViewDestroyed()) {
+            this.cdRef.detectChanges();
+        }
+    }
+
+    /**
+     * @returns true, if the veiw was destroyed. Note: This
+     * needs to access internal attributes from the change detection
+     * reference.
+     */
+    private wasViewDestroyed(): boolean {
+        return (<any>this.cdRef).destroyed;
     }
 
     /**
