@@ -16,8 +16,8 @@ import { moveItemInArray, CdkDragDrop } from '@angular/cdk/drag-drop';
 import { ProjectorElement } from 'app/shared/models/core/projector';
 import { SlideManager } from 'app/slides/services/slide-manager.service';
 import { CountdownRepositoryService } from 'app/core/repositories/projector/countdown-repository.service';
-import { ProjectorMessageRepositoryService } from 'app/core/repositories/projector/projectormessage-repository.service';
-import { ViewProjectorMessage } from 'app/site/projector/models/view-projectormessage';
+import { ProjectorMessageRepositoryService } from 'app/core/repositories/projector/projector-message-repository.service';
+import { ViewProjectorMessage } from 'app/site/projector/models/view-projector-message';
 import { ViewCountdown } from 'app/site/projector/models/view-countdown';
 import { Projectable } from 'app/site/base/projectable';
 import { CurrentListOfSpeakersSlideService } from '../../services/current-list-of-of-speakers-slide.service';
@@ -121,7 +121,7 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
             const idElement = this.slideManager.getIdentifialbeProjectorElement(element);
             const viewModel = this.projectorService.getViewModelFromProjectorElement(idElement);
             if (viewModel) {
-                return viewModel.getTitle();
+                return viewModel.getProjectorTitle();
             }
         }
 

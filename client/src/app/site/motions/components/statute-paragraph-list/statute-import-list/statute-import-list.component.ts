@@ -7,6 +7,7 @@ import { BaseImportListComponent } from 'app/site/base/base-import-list';
 import { ViewStatuteParagraph } from 'app/site/motions/models/view-statute-paragraph';
 import { StatuteImportService } from 'app/site/motions/services/statute-import.service';
 import { StatuteCsvExportService } from 'app/site/motions/services/statute-csv-export.service';
+import { stripHtmlTags } from 'app/shared/utils/strip-html-tags';
 
 /**
  * Component for the statute paragraphs import list view.
@@ -42,9 +43,9 @@ export class StatuteImportListComponent extends BaseImportListComponent<ViewStat
      */
     public getShortPreview(input: string): string {
         if (input.length > 50) {
-            return this.stripHtmlTags(input.substring(0, 47)) + '...';
+            return stripHtmlTags(input.substring(0, 47)) + '...';
         }
-        return this.stripHtmlTags(input);
+        return stripHtmlTags(input);
     }
 
     /**
@@ -55,24 +56,13 @@ export class StatuteImportListComponent extends BaseImportListComponent<ViewStat
      */
     public getLongPreview(input: string): string {
         if (input.length < 300) {
-            return this.stripHtmlTags(input);
+            return stripHtmlTags(input);
         }
         return (
-            this.stripHtmlTags(input.substring(0, 147)) +
+            stripHtmlTags(input.substring(0, 147)) +
             ' [...] ' +
-            this.stripHtmlTags(input.substring(input.length - 150, input.length))
+            stripHtmlTags(input.substring(input.length - 150, input.length))
         );
-    }
-
-    /**
-     * Helper to remove html tags from a string.
-     * CAUTION: It is just a basic "don't show distracting html tags in a
-     * preview", not an actual tested sanitizer!
-     * @param inputString
-     */
-    private stripHtmlTags(inputString: string): string {
-        const regexp = new RegExp(/<[^ ][^<>]*(>|$)/g);
-        return inputString.replace(regexp, '').trim();
     }
 
     /**

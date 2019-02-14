@@ -16,8 +16,8 @@ import {
 import { HttpService } from './http.service';
 import { SlideManager } from 'app/slides/services/slide-manager.service';
 import { BaseModel } from 'app/shared/models/base/base-model';
-import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ViewModelStoreService } from './view-model-store.service';
+import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
 
 /**
  * This service cares about Projectables being projected and manage all projection-related
@@ -260,9 +260,15 @@ export class ProjectorService {
      * @param element The projector element
      * @returns the view model from the projector element
      */
-    public getViewModelFromProjectorElement<T extends BaseViewModel>(element: IdentifiableProjectorElement): T {
+    public getViewModelFromProjectorElement<T extends BaseProjectableViewModel>(
+        element: IdentifiableProjectorElement
+    ): T {
         this.assertElementIsMappable(element);
-        return this.viewModelStore.get<T>(element.name, element.id);
+        const viewModel = this.viewModelStore.get<T>(element.name, element.id);
+        if (!isProjectable(viewModel)) {
+            console.error('The view model is not projectable', viewModel, element);
+        }
+        return viewModel;
     }
 
     /**

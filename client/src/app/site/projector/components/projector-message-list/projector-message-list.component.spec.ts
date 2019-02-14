@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { E2EImportsModule } from 'e2e-imports.module';
-import { ProjectorMessageListComponent } from './projectormessage-list.component';
+import { ProjectorMessageListComponent } from './projector-message-list.component';
 
 describe('CountdownListComponent', () => {
     let component: ProjectorMessageListComponent;

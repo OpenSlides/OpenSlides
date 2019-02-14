@@ -1,21 +1,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CoreCountdownSlideComponent } from './core-countdown-slide.component';
+import { CountdownSlideComponent } from './countdown-slide.component';
 import { E2EImportsModule } from '../../../../e2e-imports.module';
 
-describe('CoreCountdownSlideComponent', () => {
-    let component: CoreCountdownSlideComponent;
-    let fixture: ComponentFixture<CoreCountdownSlideComponent>;
+describe('CountdownSlideComponent', () => {
+    let component: CountdownSlideComponent;
+    let fixture: ComponentFixture<CountdownSlideComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [E2EImportsModule],
-            declarations: [CoreCountdownSlideComponent]
+            declarations: [CountdownSlideComponent]
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(CoreCountdownSlideComponent);
+        fixture = TestBed.createComponent(CountdownSlideComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

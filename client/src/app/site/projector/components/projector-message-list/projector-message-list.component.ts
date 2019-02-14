@@ -1,31 +1,31 @@
 import { Component, OnInit } from '@angular/core';
-import { Title } from '@angular/platform-browser';
+import { Title, SafeHtml, DomSanitizer } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder } from '@angular/forms';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { PromptService } from 'app/core/ui-services/prompt.service';
 import { BaseViewComponent } from '../../../base/base-view';
-import { ViewCountdown } from '../../models/view-countdown';
-import { CountdownRepositoryService } from 'app/core/repositories/projector/countdown-repository.service';
-import { Countdown } from 'app/shared/models/core/countdown';
+import { ProjectorMessage } from 'app/shared/models/core/projector-message';
+import { ViewProjectorMessage } from '../../models/view-projector-message';
+import { ProjectorMessageRepositoryService } from 'app/core/repositories/projector/projector-message-repository.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 
 /**
- * List view for the statute paragraphs.
+ * List view for the projector messages.
  */
 @Component({
-    selector: 'os-countdown-list',
-    templateUrl: './countdown-list.component.html',
-    styleUrls: ['./countdown-list.component.scss']
+    selector: 'os-projector-message-list',
+    templateUrl: './projector-message-list.component.html',
+    styleUrls: ['./projector-message-list.component.scss']
 })
-export class CountdownListComponent extends BaseViewComponent implements OnInit {
-    public countdownToCreate: Countdown | null;
+export class ProjectorMessageListComponent extends BaseViewComponent implements OnInit {
+    public messageToCreate: ProjectorMessage | null;
 
     /**
      * Source of the Data
      */
-    public countdowns: ViewCountdown[] = [];
+    public messages: ViewProjectorMessage[] = [];
 
     /**
      * The current focussed formgroup
@@ -43,14 +43,15 @@ export class CountdownListComponent extends BaseViewComponent implements OnInit 
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
-        private repo: CountdownRepositoryService,
+        private repo: ProjectorMessageRepositoryService,
         private formBuilder: FormBuilder,
-        private promptService: PromptService
+        private promptService: PromptService,
+        private santinizer: DomSanitizer
     ) {
         super(titleService, translate, matSnackBar);
 
         const form = {
-            description: ['', Validators.required]
+            message: ['']
         };
         this.createForm = this.formBuilder.group(form);
         this.updateForm = this.formBuilder.group(form);
@@ -59,25 +60,28 @@ export class CountdownListComponent extends BaseViewComponent implements OnInit 
     /**
      * Init function.
      *
-     * Sets the title and gets/observes countdowns from DataStore
+     * Sets the title and gets/observes messages from DataStore
      */
     public ngOnInit(): void {
-        super.setTitle('Countdowns');
-        this.repo.getViewModelListObservable().subscribe(newCountdowns => {
-            this.countdowns = newCountdowns;
-        });
+        super.setTitle('Messages');
+        this.messages = this.repo.getViewModelList();
+        this.repo.getViewModelListObservable().subscribe(messages => (this.messages = messages));
+    }
+
+    public getSafeMessage(message: ViewProjectorMessage): SafeHtml {
+        return this.santinizer.bypassSecurityTrustHtml(message.message);
     }
 
     /**
-     * Add a new countdown.
+     * Add a new message.
      */
     public onPlusButton(): void {
-        if (!this.countdownToCreate) {
+        if (!this.messageToCreate) {
             this.createForm.reset();
             this.createForm.setValue({
-                description: ''
+                message: ''
             });
-            this.countdownToCreate = new Countdown();
+            this.messageToCreate = new ProjectorMessage();
         }
     }
 
@@ -86,32 +90,32 @@ export class CountdownListComponent extends BaseViewComponent implements OnInit 
      */
     public create(): void {
         if (this.createForm.valid) {
-            this.countdownToCreate.patchValues(this.createForm.value as Countdown);
-            this.repo.create(this.countdownToCreate).then(() => {
-                this.countdownToCreate = null;
+            this.messageToCreate.patchValues(this.createForm.value as ProjectorMessage);
+            this.repo.create(this.messageToCreate).then(() => {
+                this.messageToCreate = null;
             }, this.raiseError);
         }
     }
 
     /**
      * Executed on edit button
-     * @param countdown
+     * @param message
      */
-    public onEditButton(countdown: ViewCountdown): void {
-        this.editId = countdown.id;
+    public onEditButton(message: ViewProjectorMessage): void {
+        this.editId = message.id;
 
         this.updateForm.setValue({
-            description: countdown.description
+            message: message.message
         });
     }
 
     /**
-     * Saves the countdown
-     * @param countdown The countdown to save
+     * Saves the message
+     * @param message The message to save
      */
-    public onSaveButton(countdown: ViewCountdown): void {
+    public onSaveButton(message: ViewProjectorMessage): void {
         if (this.updateForm.valid) {
-            this.repo.update(this.updateForm.value as Partial<Countdown>, countdown).then(() => {
+            this.repo.update(this.updateForm.value as Partial<ProjectorMessage>, message).then(() => {
                 this.openId = this.editId = null;
             }, this.raiseError);
         }
@@ -120,24 +124,24 @@ export class CountdownListComponent extends BaseViewComponent implements OnInit 
     /**
      * Is executed, when the delete button is pressed
      *
-     * @param countdown The countdown to delete
+     * @param message The message to delete
      */
-    public async onDeleteButton(countdown: ViewCountdown): Promise<void> {
-        const content = this.translate.instant('Delete') + ` ${countdown.description}?`;
+    public async onDeleteButton(message: ViewProjectorMessage): Promise<void> {
+        const content = this.translate.instant('Delete this message?');
         if (await this.promptService.open('Are you sure?', content)) {
-            this.repo.delete(countdown).then(() => (this.openId = this.editId = null), this.raiseError);
+            this.repo.delete(message).then(() => (this.openId = this.editId = null), this.raiseError);
         }
     }
 
     /**
      * Is executed when a mat-extension-panel is closed
      *
-     * @param countdown the statute paragraph in the panel
+     * @param message the message in the panel
      */
-    public panelClosed(countdown: ViewCountdown): void {
+    public panelClosed(message: ViewProjectorMessage): void {
         this.openId = null;
         if (this.editId) {
-            this.onSaveButton(countdown);
+            this.onSaveButton(message);
         }
     }
 
@@ -160,7 +164,7 @@ export class CountdownListComponent extends BaseViewComponent implements OnInit 
      * Cancels the current form action
      */
     public onCancelCreate(): void {
-        this.countdownToCreate = null;
+        this.messageToCreate = null;
     }
 
     /**
@@ -171,8 +175,8 @@ export class CountdownListComponent extends BaseViewComponent implements OnInit 
      */
     public onKeyDownUpdate(event: KeyboardEvent): void {
         if (event.key === 'Enter' && event.shiftKey) {
-            const countdown = this.countdowns.find(x => x.id === this.editId);
-            this.onSaveButton(countdown);
+            const message = this.messages.find(x => x.id === this.editId);
+            this.onSaveButton(message);
         }
         if (event.key === 'Escape') {
             this.onCancelUpdate();

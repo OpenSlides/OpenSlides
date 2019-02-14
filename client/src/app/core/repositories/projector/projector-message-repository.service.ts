@@ -4,9 +4,10 @@ import { BaseRepository } from '../base-repository';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
 import { ProjectorMessage } from 'app/shared/models/core/projector-message';
-import { ViewProjectorMessage } from 'app/site/projector/models/view-projectormessage';
+import { ViewProjectorMessage } from 'app/site/projector/models/view-projector-message';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { TranslateService } from '@ngx-translate/core';
+import { DataSendService } from 'app/core/core-services/data-send.service';
 
 @Injectable({
     providedIn: 'root'
@@ -16,7 +17,8 @@ export class ProjectorMessageRepositoryService extends BaseRepository<ViewProjec
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        private translate: TranslateService
+        private translate: TranslateService,
+        private dataSend: DataSendService
     ) {
         super(DS, mapperService, viewModelStoreService, ProjectorMessage);
     }
@@ -30,14 +32,16 @@ export class ProjectorMessageRepositoryService extends BaseRepository<ViewProjec
     }
 
     public async create(message: ProjectorMessage): Promise<Identifiable> {
-        throw new Error('TODO');
+        return await this.dataSend.createModel(message);
     }
 
     public async update(message: Partial<ProjectorMessage>, viewMessage: ViewProjectorMessage): Promise<void> {
-        throw new Error('TODO');
+        const update = viewMessage.projectormessage;
+        update.patchValues(message);
+        await this.dataSend.updateModel(update);
     }
 
     public async delete(viewMessage: ViewProjectorMessage): Promise<void> {
-        throw new Error('TODO');
+        await this.dataSend.deleteModel(viewMessage.projectormessage);
     }
 }

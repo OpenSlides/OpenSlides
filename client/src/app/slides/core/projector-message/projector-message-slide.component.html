@@ -1,0 +1,5 @@
+<div id="background" *ngIf="data">
+    <div id="message">
+        <div [innerHTML]="trustHTML(data.data.message)"></div>
+    </div>
+</div>

@@ -1,13 +1,10 @@
 <h2 mat-dialog-title>
-    <span *ngIf="projectorElementBuildDescriptor.projectionDefaultName !== 'motions'" translate>Project {{ projectorElementBuildDescriptor.getTitle() }}?</span>
-    <span *ngIf="projectorElementBuildDescriptor.projectionDefaultName === 'motions'" translate>Project motion {{ projectorElementBuildDescriptor.getTitle() }}?</span>
+    <span translate>Project</span> {{ projectorElementBuildDescriptor.getTitle() }}?
 </h2>
 <mat-dialog-content>
-    <div
-        class="projectors"
+    <div class="projectors"
         *ngFor="let projector of projectors"
-        [ngClass]="isProjectedOn(projector) ? 'projected' : ''"
-    >
+        [ngClass]="isProjectedOn(projector) ? 'projected' : ''">
         <mat-checkbox [checked]="isProjectorSelected(projector)" (change)="toggleProjector(projector)">
             {{ projector.name | translate }}
         </mat-checkbox>

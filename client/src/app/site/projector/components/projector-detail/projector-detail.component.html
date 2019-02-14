@@ -7,11 +7,14 @@
 
 <div class="content-container" *ngIf="projector">
     <div class="column-left">
-        <a [routerLink]="['/projector', projector.id]">
+        <!--<a [routerLink]="['/projector', projector.id]">
             <div id="projector">
                 <os-projector [projector]="projector"></os-projector>
             </div>
-        </a>
+        </a>-->
+        <div id="projector">
+            <os-projector [projector]="projector"></os-projector>
+        </div>
     </div>
     <div class="column-right" *osPerms="'core.can_manage_projector'">
         <div class="control-group">
@@ -75,7 +78,7 @@
             <div *ngIf="countdowns.length">
                 <h4>
                     <span translate>Countdowns</span>
-                    <button type="button" mat-icon-button disableRipple routerLink="/countdowns">
+                    <button type="button" mat-icon-button disableRipple routerLink="/projectors/countdowns">
                         <mat-icon>edit</mat-icon>
                     </button>
                 </h4>
@@ -92,16 +95,16 @@
             <div *ngIf="messages.length">
                 <h4>
                     <span translate>Messages</span>
-                    <button type="button" mat-icon-button disableRipple routerLink="/messages">
+                    <button type="button" mat-icon-button disableRipple routerLink="/projectors/messages">
                         <mat-icon>edit</mat-icon>
                     </button>
                 </h4>
                 <mat-list>
-                    <mat-list-item *ngFor="let message of messages; let i = index"  [ngClass]="{'projected': isProjected(message)}">
+                    <mat-list-item *ngFor="let message of messages"  [ngClass]="{'projected': isProjected(message)}">
                         <button type="button" mat-icon-button (click)="project(message)">
                             <mat-icon>videocam</mat-icon>
                         </button>
-                        <span translate>Message</span> {{ i + 1 }}
+                        <span translate>{{ message.getPreview(40) }}</span>
                     </mat-list-item>
                 </mat-list>
             </div>

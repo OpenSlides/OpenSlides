@@ -88,7 +88,7 @@ export class SlideContainerComponent extends BaseComponent {
     /**
      * The current slideoptions.
      */
-    private slideOptions: SlideOptions = { scaleable: false, scrollable: false };
+    public slideOptions: SlideOptions = { scaleable: false, scrollable: false };
 
     /**
      * Styles for scaling and scrolling.
