@@ -59,11 +59,10 @@
                 </div>
             </mat-nav-list>
         </mat-expansion-panel>
-        <!-- TODO: Could use translate.getLangs() to fetch available languages -->
         <mat-menu #languageMenu="matMenu">
-            <button mat-menu-item (click)="selectLang('en')" translate>English</button>
-            <button mat-menu-item (click)="selectLang('de')" translate>German</button>
-            <button mat-menu-item (click)="selectLang('cs')" translate>Czech</button>
+            <button mat-menu-item (click)="selectLang('en')">{{ getLangName('en') }}</button>
+            <button mat-menu-item (click)="selectLang('de')">{{ getLangName('de') }}</button>
+            <button mat-menu-item (click)="selectLang('cs')">{{ getLangName('cs') }}</button>
         </mat-menu>
 
         <!-- navigation -->

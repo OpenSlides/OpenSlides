@@ -108,9 +108,6 @@ msgstr ""
 msgid "All selected files will be deleted!"
 msgstr ""
 
-msgid "All users"
-msgstr ""
-
 msgid "All valid ballots"
 msgstr ""
 
@@ -389,6 +386,9 @@ msgstr ""
 msgid "Comment fields"
 msgstr ""
 
+msgid "Comments"
+msgstr ""
+
 msgid "Committees"
 msgstr ""
 
@@ -447,9 +447,6 @@ msgid "Custom number of ballot papers"
 msgstr ""
 
 msgid "Custom translations"
-msgstr ""
-
-msgid "Czech"
 msgstr ""
 
 msgid ""
@@ -560,6 +557,11 @@ msgid ""
 "will be saved immediately."
 msgstr ""
 
+msgid ""
+"Drag and drop motions to reorder the category. Then click the button to "
+"renumber."
+msgstr ""
+
 msgid "Drop files into this area OR select files"
 msgstr ""
 
@@ -567,9 +569,6 @@ msgid "Duration"
 msgstr ""
 
 msgid "Edit"
-msgstr ""
-
-msgid "Edit category"
 msgstr ""
 
 msgid "Edit comment field:"
@@ -582,6 +581,9 @@ msgid "Edit details"
 msgstr ""
 
 msgid "Edit details for"
+msgstr ""
+
+msgid "Edit message"
 msgstr ""
 
 msgid "Edit statute paragraph:"
@@ -635,9 +637,6 @@ msgstr ""
 msgid "End speech"
 msgstr ""
 
-msgid "English"
-msgstr ""
-
 msgid "Enter duration in seconds. Choose 0 to disable warning color."
 msgstr ""
 
@@ -681,6 +680,9 @@ msgid "Export as CSV"
 msgstr ""
 
 msgid "Export as PDF"
+msgstr ""
+
+msgid "Export comment"
 msgstr ""
 
 msgid "Export motions"
@@ -759,9 +761,6 @@ msgid "Generate new passwords"
 msgstr ""
 
 msgid "Generate password"
-msgstr ""
-
-msgid "German"
 msgstr ""
 
 msgid "Given name"
@@ -874,6 +873,9 @@ msgstr ""
 msgid "Invalid line number"
 msgstr ""
 
+msgid "Is PDF file"
+msgstr ""
+
 msgid "Is a committee"
 msgstr ""
 
@@ -884,6 +886,9 @@ msgid "Is committee"
 msgstr ""
 
 msgid "Is favorite"
+msgstr ""
+
+msgid "Is no PDF file"
 msgstr ""
 
 msgid "Is not favorite"
@@ -950,9 +955,6 @@ msgid "Manage the list of speakers for..."
 msgstr ""
 
 msgid "Mark speaker"
-msgstr ""
-
-msgid "Message"
 msgstr ""
 
 msgid "Messages"
@@ -1042,6 +1044,9 @@ msgstr ""
 msgid "New group name"
 msgstr ""
 
+msgid "New message"
+msgstr ""
+
 msgid "New motion"
 msgstr ""
 
@@ -1078,6 +1083,9 @@ msgstr ""
 msgid "No category"
 msgstr ""
 
+msgid "No category set"
+msgstr ""
+
 msgid "No change recommendations yet"
 msgstr ""
 
@@ -1091,6 +1099,9 @@ msgid "No concernment"
 msgstr ""
 
 msgid "No countdowns"
+msgstr ""
+
+msgid "No data"
 msgstr ""
 
 msgid "No decision"
@@ -1108,7 +1119,16 @@ msgstr ""
 msgid "No information available"
 msgstr ""
 
+msgid "No messages"
+msgstr ""
+
+msgid "No motion block set"
+msgstr ""
+
 msgid "No personal note"
+msgstr ""
+
+msgid "No recommendation"
 msgstr ""
 
 msgid "No search result found for"
@@ -1118,6 +1138,9 @@ msgid "No statute paragraphs"
 msgstr ""
 
 msgid "None"
+msgstr ""
+
+msgid "Number motions"
 msgstr ""
 
 msgid "Number of (minimum) required supporters for a motion"
@@ -1315,13 +1338,7 @@ msgstr ""
 msgid "Project"
 msgstr ""
 
-msgid "Project motion {{ projectorElementBuildDescriptor.getTitle() }}?"
-msgstr ""
-
 msgid "Project now"
-msgstr ""
-
-msgid "Project {{ projectorElementBuildDescriptor.getTitle() }}?"
 msgstr ""
 
 msgid "Projector"
@@ -1604,6 +1621,9 @@ msgstr ""
 msgid "Sort categories by"
 msgstr ""
 
+msgid "Sort motions"
+msgstr ""
+
 msgid "Sort name of participants by"
 msgstr ""
 
@@ -1830,6 +1850,9 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
+msgid "Undone"
+msgstr ""
+
 msgid "Unsupport"
 msgstr ""
 
@@ -2029,6 +2052,12 @@ msgstr ""
 msgid "inline"
 msgstr ""
 
+msgid "is hidden"
+msgstr ""
+
+msgid "is not hidden"
+msgstr ""
+
 msgid "is now"
 msgstr ""
 
@@ -2057,9 +2086,6 @@ msgid "not present"
 msgstr ""
 
 msgid "not reached."
-msgstr ""
-
-msgid "not set"
 msgstr ""
 
 msgid "of"

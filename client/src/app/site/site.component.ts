@@ -142,11 +142,11 @@ export class SiteComponent extends BaseComponent implements OnInit {
      */
     public getLangName(abbreviation: string): string {
         if (abbreviation === 'en') {
-            return this.translate.instant('English');
+            return 'English';
         } else if (abbreviation === 'de') {
-            return this.translate.instant('German');
+            return 'Deutsch';
         } else if (abbreviation === 'cs') {
-            return this.translate.instant('Czech');
+            return 'Čeština';
         }
     }
 

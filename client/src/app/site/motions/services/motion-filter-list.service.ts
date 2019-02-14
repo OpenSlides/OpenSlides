@@ -171,7 +171,7 @@ export class MotionFilterListService extends BaseFilterListService<Motion, ViewM
                 motionBlockOptions.push('-');
                 motionBlockOptions.push({
                     condition: null,
-                    label: 'No motion block set',
+                    label: this.translate.instant('No motion block set'),
                     isActive: false
                 });
             }
@@ -196,7 +196,7 @@ export class MotionFilterListService extends BaseFilterListService<Motion, ViewM
             if (categories.length) {
                 categoryOptions.push('-');
                 categoryOptions.push({
-                    label: 'No category set',
+                    label: this.translate.instant('No category set'),
                     condition: null
                 });
             }
@@ -275,14 +275,14 @@ export class MotionFilterListService extends BaseFilterListService<Motion, ViewM
                 condition: finalStates
             });
             workflowOptions.push({
-                label: 'Undone',
+                label: this.translate.instant('Undone'),
                 condition: nonFinalStates
             });
         }
         if (recommendationOptions.length) {
             recommendationOptions.push('-');
             recommendationOptions.push({
-                label: 'No recommendation',
+                label: this.translate.instant('No recommendation'),
                 condition: null
             });
         }
@@ -307,7 +307,7 @@ export class MotionFilterListService extends BaseFilterListService<Motion, ViewM
             if (comments.length) {
                 commentOptions.push('-');
                 commentOptions.push({
-                    label: 'No comment',
+                    label: this.translate.instant('No comment'),
                     condition: null
                 });
             }
