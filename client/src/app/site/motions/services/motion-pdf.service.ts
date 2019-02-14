@@ -4,15 +4,14 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { ViewUnifiedChange } from '../../../shared/models/motions/view-unified-change';
 import { HtmlToPdfService } from 'app/core/ui-services/html-to-pdf.service';
 import { MotionPollService, CalculablePollKey } from './motion-poll.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions/statute-paragraph-repository.service';
 import { ViewMotion, LineNumberingMode, ChangeRecoMode } from '../models/view-motion';
-import { ViewUnifiedChange } from '../models/view-unified-change';
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
 import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
+import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change';
 
 /**
  * Type declaring which strings are valid options for metainfos to be exported into a pdf

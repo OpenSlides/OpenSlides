@@ -54,8 +54,9 @@ export class MotionsMotionSlideComponent extends BaseSlideComponent<MotionsMotio
         this._data = value;
         this.lnMode = value.data.line_numbering_mode;
         this.lineLength = value.data.line_length;
-        this.crMode = value.data.change_recommendation_mode;
         this.preamble = value.data.preamble;
+        this.crMode = value.element.mode || 'original';
+        console.log(this.crMode);
 
         this.recalcUnifiedChanges();
     }

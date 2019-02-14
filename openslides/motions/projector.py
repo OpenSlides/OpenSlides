@@ -109,7 +109,7 @@ def motion_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
     * change_recommendations
     * submitter
     """
-    mode = element.get("mode")
+    mode = element.get("mode", "original")
     motion_id = element.get("id")
 
     if motion_id is None:
@@ -123,7 +123,6 @@ def motion_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
     show_meta_box = not get_config(all_data, "motions_disable_sidebox_on_projector")
     line_length = get_config(all_data, "motions_line_length")
     line_numbering_mode = get_config(all_data, "motions_default_line_numbering")
-    change_recommendation_mode = get_config(all_data, "motions_recommendation_text_mode")
     motions_preamble = get_config(all_data, "motions_preamble")
 
     if motion["statute_paragraph_id"]:
@@ -155,7 +154,6 @@ def motion_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
         "show_meta_box": show_meta_box,
         "change_recommendations": change_recommendations,
         "amendments": amendments,
-        "change_recommendation_mode": change_recommendation_mode,
         "line_length": line_length,
         "line_numbering_mode": line_numbering_mode,
     }
