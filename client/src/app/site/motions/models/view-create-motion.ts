@@ -25,7 +25,7 @@ export class ViewCreateMotion extends ViewMotion {
     }
 
     public get submitters_id(): number[] {
-        return this.motion ? this.motion.submitters_id : null;
+        return this.motion ? this.motion.sorted_submitters_id : null;
     }
 
     public set submitters(users: ViewUser[]) {

@@ -167,7 +167,7 @@ export class MotionMultiselectService {
         const selectedChoice = await this.choiceService.open(title, this.userRepo.getViewModelList(), true, choices);
         if (selectedChoice && selectedChoice.action === choices[0]) {
             const requestData = motions.map(motion => {
-                let submitterIds = [...motion.submitters_id, ...(selectedChoice.items as number[])];
+                let submitterIds = [...motion.sorted_submitters_id, ...(selectedChoice.items as number[])];
                 submitterIds = submitterIds.filter((id, index, self) => self.indexOf(id) === index); // remove duplicates
                 return {
                     id: motion.id,
@@ -178,7 +178,7 @@ export class MotionMultiselectService {
         } else if (selectedChoice && selectedChoice.action === choices[1]) {
             const requestData = motions.map(motion => {
                 const submitterIdsToRemove = selectedChoice.items as number[];
-                const submitterIds = motion.submitters_id.filter(id => !submitterIdsToRemove.includes(id));
+                const submitterIds = motion.sorted_submitters_id.filter(id => !submitterIdsToRemove.includes(id));
                 return {
                     id: motion.id,
                     submitters: submitterIds

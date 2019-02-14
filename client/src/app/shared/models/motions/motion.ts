@@ -50,7 +50,7 @@ export class Motion extends BaseModel {
     /**
      * returns the motion submitters user ids
      */
-    public get submitters_id(): number[] {
+    public get sorted_submitters_id(): number[] {
         return this.submitters
             .sort((a: MotionSubmitter, b: MotionSubmitter) => {
                 return a.weight - b.weight;
