@@ -80,6 +80,15 @@ export class ViewAssignment extends BaseAgendaViewModel {
     }
 
     public getSlide(): ProjectorElementBuildDeskriptor {
-        throw new Error('TODO');
+        return {
+            getBasicProjectorElement: () => ({
+                name: Assignment.COLLECTIONSTRING,
+                id: this.id,
+                getIdentifiers: () => ['name', 'id']
+            }),
+            slideOptions: [],
+            projectionDefaultName: 'assignments',
+            getTitle: () => this.getTitle()
+        };
     }
 }

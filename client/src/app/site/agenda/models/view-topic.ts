@@ -96,7 +96,16 @@ export class ViewTopic extends BaseAgendaViewModel {
     }
 
     public getSlide(): ProjectorElementBuildDeskriptor {
-        throw new Error('TODO');
+        return {
+            getBasicProjectorElement: () => ({
+                name: Topic.COLLECTIONSTRING,
+                id: this.id,
+                getIdentifiers: () => ['name', 'id']
+            }),
+            slideOptions: [],
+            projectionDefaultName: 'topics',
+            getTitle: () => this.getTitle()
+        };
     }
 
     public hasAttachments(): boolean {

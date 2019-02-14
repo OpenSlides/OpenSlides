@@ -5,6 +5,7 @@ import { SlideOptions } from './slide-options';
 export function isProjectorElementBuildDeskriptor(obj: any): obj is ProjectorElementBuildDeskriptor {
     const deskriptor = <ProjectorElementBuildDeskriptor>obj;
     return (
+        !!deskriptor &&
         deskriptor.slideOptions !== undefined &&
         deskriptor.getBasicProjectorElement !== undefined &&
         deskriptor.getTitle !== undefined
@@ -23,7 +24,11 @@ export interface ProjectorElementBuildDeskriptor {
 }
 
 export function isProjectable(obj: any): obj is Projectable {
-    return (<Projectable>obj).getSlide !== undefined;
+    if (obj) {
+        return (<Projectable>obj).getSlide !== undefined;
+    } else {
+        return false;
+    }
 }
 
 /**

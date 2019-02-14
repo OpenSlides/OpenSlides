@@ -28,6 +28,16 @@
             </mat-cell>
         </ng-container>
 
+        <!-- Projector column -->
+        <ng-container matColumnDef="projector">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Projector</mat-header-cell>
+            <mat-cell *matCellDef="let item">
+                <div *ngIf="item.contentObject">
+                    <os-projector-button [object]="item.contentObject"></os-projector-button>
+                </div>
+            </mat-cell>
+        </ng-container>
+
         <!-- title column -->
         <ng-container matColumnDef="title">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Topic</mat-header-cell>

@@ -9,6 +9,16 @@ import { SlideManifest } from './slide-manifest';
  */
 export const allSlides: SlideManifest[] = [
     {
+        slide: 'topics/topic',
+        path: 'topics/topic',
+        loadChildren: './slides/agenda/topic/topics-topic-slide.module#TopicsTopicSlideModule',
+        scaleable: true,
+        scrollable: true,
+        verboseName: 'Topic',
+        elementIdentifiers: ['name', 'id'],
+        canBeMappedToModel: true
+    },
+    {
         slide: 'motions/motion',
         path: 'motions/motion',
         loadChildren: './slides/motions/motion/motions-motion-slide.module#MotionsMotionSlideModule',

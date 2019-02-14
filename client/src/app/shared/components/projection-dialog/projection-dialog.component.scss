@@ -5,8 +5,13 @@ mat-dialog-content {
     div.projectors {
         padding: 15px 0;
 
+        mat-checkbox {
+            padding: 0 10px;
+        }
+
         .right {
             float: right;
+            padding-right: 10px;
         }
     }
 }
