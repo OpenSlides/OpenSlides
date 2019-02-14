@@ -94,7 +94,7 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
         this.createBlockForm = this.formBuilder.group({
             title: ['', Validators.required],
             agenda_type: ['', Validators.required],
-            agenda_parent_id: ['']
+            agenda_parent_id: []
         });
     }
 

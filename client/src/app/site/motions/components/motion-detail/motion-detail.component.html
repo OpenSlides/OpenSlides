@@ -14,7 +14,8 @@
             <span>&nbsp;</span> <span *ngIf="!editMotion">{{ motion.identifier }}</span>
             <span *ngIf="editMotion">{{ contentForm.get('identifier').value }}</span>
         </h2>
-        <h2 *ngIf="newMotion" translate>New motion</h2>
+        <h2 *ngIf="newMotion && !amendmentEdit" translate>New motion</h2>
+        <h2 *ngIf="amendmentEdit" translate>New amendment</h2>
     </div>
 
     <!-- Back and forth buttons -->

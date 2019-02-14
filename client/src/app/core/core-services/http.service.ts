@@ -100,8 +100,7 @@ export class HttpService {
      */
     private handleError(e: any): string {
         let error = this.translate.instant('Error') + ': ';
-
-        // If the rror is a string already, return it.
+        // If the error is a string already, return it.
         if (typeof e === 'string') {
             return error + e;
         }
@@ -117,7 +116,7 @@ export class HttpService {
             error += this.translate.instant("The server didn't respond.");
         } else if (typeof e.error === 'object') {
             if (e.error.detail) {
-                error += this.processErrorTexts(this.translate.instant(e.error.detail));
+                error += this.translate.instant(this.processErrorTexts(e.error.detail));
             } else {
                 error = Object.keys(e.error)
                     .map(key => {

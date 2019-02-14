@@ -74,6 +74,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     public editMotion = false;
 
     /**
+     * Determine if the motion is a new (unsent) amendment to another motion
+     */
+    public amendmentEdit = false;
+
+    /**
      * Determine if the motion is new
      */
     public newMotion = false;
@@ -512,10 +517,33 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
             this.newMotion = true;
             this.editMotion = true;
             // prevent 'undefined' to appear in the ui
-            const defaultMotion = {
+            const defaultMotion: Partial<CreateMotion> = {
                 title: '',
-                origin: ''
+                origin: '',
+                identifier: ''
             };
+            if (this.route.snapshot.queryParams.parent) {
+                this.amendmentEdit = true;
+                const parentMotion = this.repo.getViewModel(this.route.snapshot.queryParams.parent);
+                const defaultTitle = `${this.translate.instant('Amendment to')} ${parentMotion.identifierOrTitle}`;
+                const mode = this.configService.instant<string>('motions_amendments_text_mode');
+                if (mode === 'freestyle' || mode === 'fulltext') {
+                    defaultMotion.title = defaultTitle;
+                    defaultMotion.parent_id = parentMotion.id;
+                    defaultMotion.category_id = parentMotion.category_id;
+                    defaultMotion.motion_block_id = parentMotion.motion_block_id;
+                    this.contentForm.patchValue({
+                        title: defaultTitle,
+                        category_id: parentMotion.category_id,
+                        motion_block_id: parentMotion.motion_block_id,
+                        parent_id: parentMotion.id
+                    });
+                }
+                if (mode === 'fulltext') {
+                    defaultMotion.text = parentMotion.text;
+                    this.contentForm.patchValue({ text: parentMotion.text });
+                }
+            }
             this.motion = new ViewCreateMotion(new CreateMotion(defaultMotion));
             this.motionCopy = new ViewCreateMotion(new CreateMotion(defaultMotion));
         } else {
@@ -595,7 +623,9 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
             workflow_id: [],
             origin: [''],
             statute_amendment: [''], // Internal value for the checkbox, not saved to the model
-            statute_paragraph_id: ['']
+            statute_paragraph_id: [''],
+            motion_block_id: [],
+            parent_id: []
         });
         this.updateWorkflowIdForCreateForm();
 
@@ -684,7 +714,10 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      */
     private updateMotionFromForm(): void {
         const newMotionValues = { ...this.contentForm.value };
-        this.updateMotion(newMotionValues, this.motionCopy).then(() => (this.editMotion = false), this.raiseError);
+        this.updateMotion(newMotionValues, this.motionCopy).then(() => {
+            this.editMotion = false;
+            this.amendmentEdit = false;
+        }, this.raiseError);
     }
 
     private async updateMotion(newMotionValues: Partial<Motion>, motion: ViewMotion): Promise<void> {
@@ -884,7 +917,15 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * Goes to the amendment creation wizard. Executed via click.
      */
     public createAmendment(): void {
-        this.router.navigate(['./create-amendment'], { relativeTo: this.route });
+        const mode = this.configService.instant<string>('motions_amendments_text_mode');
+        if (mode === 'paragraph') {
+            this.router.navigate(['./create-amendment'], { relativeTo: this.route });
+        } else {
+            this.router.navigate(['./motions/new'], {
+                relativeTo: this.route.snapshot.params.relativeTo,
+                queryParams: { parent: this.motion.id || null }
+            });
+        }
     }
 
     /**
