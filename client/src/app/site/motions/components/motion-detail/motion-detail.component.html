@@ -184,7 +184,7 @@
             <!-- support button -->
             <button
                 type="button"
-                mat-raised-button
+                mat-stroked-button
                 color="primary"
                 (click)="support()"
                 *ngIf="perms.isAllowed('support', motion)"
@@ -198,7 +198,7 @@
                 type="button"
                 *ngIf="perms.isAllowed('unsupport', motion)"
                 (click)="unsupport()"
-                mat-raised-button
+                mat-stroked-button
                 color="primary"
             >
                 <mat-icon>thumb_down</mat-icon>
@@ -208,10 +208,10 @@
             <button type="button" *ngIf="motion.hasSupporters()" (click)="openSupportersDialog()" mat-button>
                 {{ motion.supporters.length }} {{ 'supporters' | translate }}
             </button>
-            <p *ngIf="showSupporters">
-                <mat-chip-list *ngFor="let supporter of motion.supporters">
-                    <mat-chip>{{ supporter.full_name }}</mat-chip>
-                </mat-chip-list>
+            <p *ngIf="showSupporters" class="supporters">
+                <span *ngFor="let supporter of motion.supporters; let last = last">
+                    {{ supporter.full_name }}<span *ngIf="!last">, </span>
+                </span>
             </p>
         </div>
 
@@ -251,7 +251,7 @@
 
         <!-- Recommendation -->
         <div *ngIf="recommender && !editMotion">
-            <h4>{{ recommender }}</h4>
+            <h4 *ngIf="perms.isAllowed('change_metadata', motion) || recommendationLabel">{{ recommender }}</h4>
             <mat-menu #recommendationMenu="matMenu">
                 <button
                     *ngFor="let recommendation of motion.possibleRecommendations"
@@ -272,7 +272,7 @@
             </mat-menu>
             <div *ngIf="perms.isAllowed('change_metadata', motion)">
                 <mat-basic-chip [matMenuTriggerFor]="recommendationMenu" class="bluegrey">
-                    {{ recommendationLabel }}
+                    {{ recommendationLabel || '–' }}
                 </mat-basic-chip>
                 <div
                     *ngIf="motion.recommendation && motion.recommendation.show_recommendation_extension_field"
@@ -300,10 +300,10 @@
                     </form>
                 </div>
             </div>
-            <div *ngIf="!perms.isAllowed('change_metadata', motion)">
+            <div *ngIf="!perms.isAllowed('change_metadata', motion) && recommendationLabel">
                 <mat-basic-chip class="bluegrey"> {{ recommendationLabel }} </mat-basic-chip>
             </div>
-            <button mat-button *ngIf="canFollowRecommendation()" (click)="onFollowRecButton()">
+            <button mat-stroked-button *ngIf="canFollowRecommendation()" (click)="onFollowRecButton()" class="spacer-top-10">
                 <span translate>Follow recommendation</span>
             </button>
         </div>
@@ -311,7 +311,7 @@
         <!-- Category -->
         <!-- Disabled during "new motion" since changing has no effect -->
         <div *ngIf="!editMotion && categoryObserver.value.length > 0">
-            <h4 translate>Category</h4>
+            <h4 *ngIf="perms.isAllowed('change_metadata', motion) || motion.category" translate>Category</h4>
             <mat-menu #categoryMenu="matMenu">
                 <button
                     mat-menu-item
@@ -327,10 +327,10 @@
                 [matMenuTriggerFor]="categoryMenu"
                 class="grey"
             >
-                {{ motion.category ? motion.category : '–' }}
+                {{ motion.category || '–' }}
             </mat-basic-chip>
-            <mat-basic-chip *ngIf="!perms.isAllowed('change_metadata', motion)" class="grey">
-                {{ motion.category ? motion.category : '–' }}
+            <mat-basic-chip *ngIf="!perms.isAllowed('change_metadata', motion) && motion.category" class="grey">
+                {{ motion.category }}
             </mat-basic-chip>
         </div>
 
@@ -373,7 +373,7 @@
 
         <!-- Block -->
         <div *ngIf="!editMotion && blockObserver.value.length > 0">
-            <h4 translate>Motion block</h4>
+            <h4 *ngIf="perms.isAllowed('change_metadata', motion) || motion.motion_block" translate>Motion block</h4>
             <mat-menu #blockMenu="matMenu">
                 <button mat-menu-item *ngFor="let block of blockObserver.value" (click)="setBlock(block.id)">
                     <mat-icon *ngIf="motion.motion_block_id === block.id">check</mat-icon>
@@ -385,10 +385,10 @@
                 [matMenuTriggerFor]="blockMenu"
                 class="grey"
             >
-                {{ motion.motion_block ? motion.motion_block : '–' }}
+                {{ motion.motion_block || '–' }}
             </mat-basic-chip>
-            <mat-basic-chip *ngIf="!perms.isAllowed('change_metadata', motion)" class="grey">
-                {{ motion.motion_block ? motion.motion_block : '–' }}
+            <mat-basic-chip *ngIf="!perms.isAllowed('change_metadata', motion) && motion.motion_block" class="grey">
+                {{ motion.motion_block }}
             </mat-basic-chip>
         </div>
 
