@@ -436,83 +436,115 @@
 
 <ng-template #contentTemplate>
     <form class="motion-content" [formGroup]="contentForm" (keydown)="onKeyDown($event)">
-        <!-- Line Number and Diff buttons -->
-        <div *ngIf="!editMotion && !motion.isStatuteAmendment()" class="motion-text-controls">
-            <mat-form-field class="motion-goto-line" *ngIf="highlightedLineOpened">
-                <input
-                    type="number"
-                    min="1"
-                    matInput
-                    placeholder="{{ 'Go to line' | translate }}"
-                    osAutofocus
-                    [(ngModel)]="highlightedLineTyping"
-                    [ngModelOptions]="{ standalone: true }"
-                    [errorStateMatcher]="highlightedLineMatcher"
-                />
-                <mat-error *ngIf="highlightedLineTyping > 10" translate>Invalid line number</mat-error>
-                <button
-                    type="submit"
-                    mat-button
-                    matSuffix
-                    mat-icon-button
-                    aria-label="Go to line"
-                    *ngIf="highlightedLineTyping"
-                    (click)="gotoHighlightedLine(highlightedLineTyping); highlightedLineTyping = ''"
-                >
-                    <mat-icon>redo</mat-icon>
+
+        <!-- Toolbar with text controls and buttonf for managing the (modified) final version-->
+        <div class="motion-text-toolbar-wrapper outline-border-bottom">
+            <!-- Line Number and Diff buttons -->
+            <div *ngIf="!editMotion && !motion.isStatuteAmendment()" class="motion-text-controls">
+                <mat-form-field class="motion-goto-line" *ngIf="highlightedLineOpened">
+                    <input
+                        type="number"
+                        min="1"
+                        matInput
+                        placeholder="{{ 'Go to line' | translate }}"
+                        osAutofocus
+                        [(ngModel)]="highlightedLineTyping"
+                        [ngModelOptions]="{ standalone: true }"
+                        [errorStateMatcher]="highlightedLineMatcher"
+                    />
+                    <mat-error *ngIf="highlightedLineTyping > 10" translate>Invalid line number</mat-error>
+                    <button
+                        type="submit"
+                        mat-button
+                        matSuffix
+                        mat-icon-button
+                        aria-label="Go to line"
+                        *ngIf="highlightedLineTyping"
+                        (click)="gotoHighlightedLine(highlightedLineTyping); highlightedLineTyping = ''"
+                    >
+                        <mat-icon>redo</mat-icon>
+                    </button>
+                </mat-form-field>
+                <button mat-icon-button (click)="highlightedLineOpened = false" *ngIf="highlightedLineOpened">
+                    <mat-icon>cancel</mat-icon>
                 </button>
-            </mat-form-field>
-            <button
-                mat-icon-button
-                matTooltip="{{ 'Go to line' | translate }}"
-                *ngIf="!highlightedLineOpened"
-                (click)="highlightedLineOpened = true"
-            >
-                <mat-icon>redo</mat-icon>
-            </button>
-            <button mat-icon-button (click)="highlightedLineOpened = false" *ngIf="highlightedLineOpened">
-                <mat-icon>cancel</mat-icon>
-            </button>
 
-            <button
-                type="button"
-                mat-icon-button
-                [matMenuTriggerFor]="lineNumberingMenu"
-                matTooltip="{{ 'Line numbering' | translate }}"
-            >
-                <mat-icon>format_list_numbered</mat-icon>
-            </button>
-            <button
-                type="button"
-                mat-icon-button
-                [matMenuTriggerFor]="changeRecoMenu"
-                matTooltip="{{ 'Change recommendations' | translate }}"
-                *ngIf="
-                    motion && !motion.isParagraphBasedAmendment() && allChangingObjects && allChangingObjects.length > 0
-                "
-            >
-                <mat-icon>rate_review</mat-icon>
-            </button>
+                <button
+                    type="button"
+                    mat-button
+                    [matMenuTriggerFor]="lineNumberingMenu"
+                >
+                    <mat-icon>format_list_numbered</mat-icon>
+                    &nbsp;<span translate>Line numbering</span>
+                    <span *ngIf="lnMode === LineNumberingMode.None">
+                        &nbsp;(<span translate>none</span>)
+                    </span>
+                </button>
+                <button
+                    type="button"
+                    mat-button
+                    [matMenuTriggerFor]="changeRecoMenu"
+                    *ngIf="
+                        motion && !motion.isParagraphBasedAmendment() && allChangingObjects && allChangingObjects.length > 0
+                    "
+                >
+                    <mat-icon>rate_review</mat-icon>
+                    &nbsp;<span>{{ verboseChangeRecoMode[crMode] | translate }}</span>
+                </button>
+            </div>
 
-            <button
-                type="button"
-                mat-icon-button
-                matTooltip="{{ 'Create final print template' | translate }}"
-                *osPerms="'motions.can_manage'; and: isRecoMode(ChangeRecoMode.Final)"
-                (click)="createModifiedFinalVersion()"
-            >
-                <mat-icon>description</mat-icon>
+            <!-- Final edit buttons -->
+            <div *ngIf="isRecoMode(ChangeRecoMode.ModifiedFinal) || isRecoMode(ChangeRecoMode.Final)">
+                <!-- create final version -->
+                <button
+                    type="button"
+                    mat-icon-button
+                    matTooltip="{{ 'Copy to final print template' | translate }}"
+                    *osPerms="'motions.can_manage'; and: isRecoMode(ChangeRecoMode.Final)"
+                    (click)="createModifiedFinalVersion()"
+                >
+                    <mat-icon>file_copy</mat-icon>
+                </button>
+                <!-- edit final version -->
+                <button
+                    type="button"
+                    mat-icon-button
+                    *ngIf="isRecoMode(ChangeRecoMode.ModifiedFinal) && !isFinalEdit"
+                    (click)="editModifiedFinal()"
+                >
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <!-- save final version -->
+                <button
+                    type="button"
+                    *ngIf="isRecoMode(ChangeRecoMode.ModifiedFinal) && isFinalEdit"
+                    mat-icon-button
+                    [disabled]="!finalVersionEdited"
+                    (click)="onSubmitFinalVersion()"
+                >
+                    <mat-icon>save</mat-icon>
+                </button>
+                <!-- cancel final version edit -->
+                <button
+                    type="button"
+                    *ngIf="isRecoMode(ChangeRecoMode.ModifiedFinal) && isFinalEdit"
+                    mat-icon-button
+                    (click)="cancelFinalVersionEdit()"
+                >
+                    <mat-icon>close</mat-icon>
+                </button>
+                <!-- delete final version edit -->
+                <button
+                    type="button"
+                    class="red-warning-text"
+                    mat-icon-button
+                    matTooltip="{{ 'Delete final print template' | translate }}"
+                    *ngIf="isRecoMode(ChangeRecoMode.ModifiedFinal) && !isFinalEdit"
+                    (click)="deleteModifiedFinalVersion()"
+                >
+                    <mat-icon>delete</mat-icon>
             </button>
-            <button
-                type="button"
-                class="red-warning-text"
-                mat-button
-                matTooltip="{{ 'Delete final print template' | translate }}"
-                *ngIf="isRecoMode(ChangeRecoMode.ModifiedFinal)"
-                (click)="deleteModifiedFinalVersion()"
-            >
-                <mat-icon>description</mat-icon>
-            </button>
+            </div>
         </div>
 
         <!-- Selecting statute paragraphs for amendment -->
@@ -579,13 +611,13 @@
             </div>
         </div>
 
-        <!-- Text -->
-        <span class="text-prefix-label">{{ preamble | translate }}</span>
+        <!-- Text (hide preamble, if diff mode. The preample is included in the motion-detail-diff component) -->
+        <span *ngIf="!isRecoMode(ChangeRecoMode.Diff)" class="text-prefix-label">{{ preamble | translate }}</span>
 
         <!-- Regular motions or traditional amendments -->
         <ng-container *ngIf="!editMotion && !motion.isStatuteAmendment() && !motion.isParagraphBasedAmendment()">
             <div
-                *ngIf="!isRecoMode(ChangeRecoMode.Diff)"
+                *ngIf="!isRecoMode(ChangeRecoMode.Diff) && !isFinalEdit"
                 class="motion-text"
                 [class.line-numbers-none]="isLineNumberingNone()"
                 [class.line-numbers-inline]="isLineNumberingInline()"
@@ -612,7 +644,23 @@
                 [lineNumberingMode]="lnMode"
                 (createChangeRecommendation)="createChangeRecommendation($event)"
             ></os-motion-detail-diff>
+
+            <div *ngIf="isFinalEdit">
+                <editor [hidden]="!isFinalEdit" formControlName="modified_final_version" [init]="tinyMceSettings" required></editor>
+                <div
+                    *ngIf="
+                        contentForm.get('modified_final_version').invalid &&
+                        (contentForm.get('modified_final_version').dirty || contentForm.get('modified_final_version').touched)
+                    "
+                    class="red-warning-text"
+                    translate
+                >
+                    This field is required.
+                </div>
+            </div>
         </ng-container>
+
+        <!-- formatted statute amendment -->
         <div
             class="motion-text line-numbers-none"
             *ngIf="!editMotion && motion.isStatuteAmendment()"
@@ -878,6 +926,15 @@
         >
             outside
         </button>
+        <mat-divider></mat-divider>
+        <button
+            mat-menu-item
+            *ngIf="!highlightedLineOpened"
+            (click)="highlightedLineOpened = true"
+        >
+            <mat-icon>redo</mat-icon>
+            <span translate>Go to line</span>
+        </button>
     </div>
 </mat-menu>
 
@@ -918,9 +975,9 @@
     <button
         mat-menu-item
         translate
-        *osPerms="'motions.can_manage'; and: isRecoMode(ChangeRecoMode.Final)"
+        *ngIf="motion && motion.modified_final_version"
         (click)="setChangeRecoMode(ChangeRecoMode.ModifiedFinal)"
-        [ngClass]="{ selected: motion?.crMode === ChangeRecoMode.ModifiedFinal }"
+        [ngClass]="{ selected: crMode === ChangeRecoMode.ModifiedFinal }"
     >
         Final print template
     </button>

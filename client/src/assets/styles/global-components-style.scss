@@ -46,6 +46,10 @@
         color: mat-color($warn);
     }
 
+    .outline-border-bottom {
+        border-bottom: 1px solid $os-outline;
+    }
+
     /* motion list/detail view */
     .mat-chip-list.user .mat-chip {
         color: mat-color($foreground, text);
