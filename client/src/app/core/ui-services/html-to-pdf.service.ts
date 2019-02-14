@@ -2,6 +2,14 @@ import { Injectable } from '@angular/core';
 import { LineNumberingMode } from 'app/site/motions/models/view-motion';
 
 /**
+ * Shape of line number objects
+ */
+interface LineNumberObject {
+    lineNumber: number;
+    marginBottom?: number;
+}
+
+/**
  * Converts HTML strings to pdfmake compatible document definition.
  *
  * TODO: Bring back upstream to pdfmake, so other projects may benefit from this converter and
@@ -26,7 +34,7 @@ export class HtmlToPdfService {
     /**
      * Space between list elements
      */
-    private LI_MARGIN_BOTTOM = 1.5;
+    private LI_MARGIN_BOTTOM = 8;
 
     /**
      * Normal line height for paragraphs
@@ -110,7 +118,7 @@ export class HtmlToPdfService {
         const parser = new DOMParser();
         const parsedHtml = parser.parseFromString(htmlText, 'text/html');
         // Since the spread operator did not work for HTMLCollection, use Array.from
-        const htmlArray = Array.from(parsedHtml.body.childNodes);
+        const htmlArray = Array.from(parsedHtml.body.childNodes) as Element[];
 
         // Parse the children of the current HTML element
         for (const child of htmlArray) {
@@ -129,7 +137,7 @@ export class HtmlToPdfService {
      * @param styles holds the style attributes of HTML elements (`<div style="color: green">...`)
      * @returns the doc def to the given element in consideration to the given paragraph and styles
      */
-    public parseElement(element: any, styles?: string[]): any {
+    public parseElement(element: Element, styles?: string[]): any {
         const nodeName = element.nodeName.toLowerCase();
         let classes = [];
         let newParagraph: any;
@@ -176,7 +184,8 @@ export class HtmlToPdfService {
             case 'div': {
                 const children = this.parseChildren(element, styles);
 
-                if (this.lineNumberingMode === LineNumberingMode.Outside) {
+                // this introduces a bug with rendering sub-lists in PDF
+                if (this.lineNumberingMode === LineNumberingMode.Outside && !this.isInsideAList(element)) {
                     newParagraph = this.create('stack');
                     newParagraph.stack = children;
                 } else {
@@ -184,7 +193,12 @@ export class HtmlToPdfService {
                     newParagraph.text = children;
                 }
 
-                newParagraph.margin = [0, this.getMarginBottom(nodeName)];
+                if (classes.includes('os-split-before')) {
+                    newParagraph.listType = 'none';
+                } else {
+                    newParagraph.marginBottom = this.getMarginBottom(nodeName);
+                }
+
                 newParagraph.lineHeight = this.LINE_HEIGHT;
 
                 const implicitStyles = this.computeStyle(this.elementStyles[nodeName]);
@@ -212,7 +226,7 @@ export class HtmlToPdfService {
             }
             case 'span': {
                 // Line numbering feature, will prevent compatibility to most other projects
-                if (element.getAttribute('data-line-number')) {
+                if (element.getAttribute('data-line-number') && !this.isInsideAList(element)) {
                     if (this.lineNumberingMode === LineNumberingMode.Inside) {
                         // TODO: algorithm for "inline" line numbers is not yet implemented
                     } else if (this.lineNumberingMode === LineNumberingMode.Outside) {
@@ -220,15 +234,7 @@ export class HtmlToPdfService {
                         newParagraph = {
                             columns: [
                                 // the line number column
-                                {
-                                    width: 20,
-                                    text: currentLineNumber,
-                                    color: 'gray',
-                                    fontSize: 8,
-                                    margin: [0, 2, 0, 0],
-                                    lineHeight: this.LINE_HEIGHT
-                                },
-                                // target to push text into the line
+                                this.getLineNumberObject({ lineNumber: +currentLineNumber }),
                                 {
                                     text: []
                                 }
@@ -249,20 +255,70 @@ export class HtmlToPdfService {
             }
             case 'br': {
                 newParagraph = this.create('text');
-                // Add a dummy line, if the next tag is a BR tag again. The line could
-                // not be empty otherwise it will be removed and the empty line is not displayed
-                if (element.nextSibling && element.nextSibling.nodeName === 'BR') {
-                    newParagraph.text.push(this.create('text', ' '));
-                }
-
+                // yep thats all
+                newParagraph.text = '\n';
                 newParagraph.lineHeight = this.LINE_HEIGHT;
                 break;
             }
             case 'ul':
             case 'ol': {
-                newParagraph = this.create(nodeName);
-                const children = this.parseChildren(element, styles);
-                newParagraph[nodeName] = children;
+                const list = this.create(nodeName);
+
+                // keep the numbers of the ol list
+                if (nodeName === 'ol') {
+                    const start = element.getAttribute('start');
+                    if (start) {
+                        list.start = +start;
+                    }
+                }
+
+                // in case of line numbers and only of the list is not nested in another list.
+                if (this.lineNumberingMode === LineNumberingMode.Outside && !this.isInsideAList(element)) {
+                    const lines = this.extractLineNumbers(element);
+
+                    const cleanedChildDom = this.cleanLineNumbers(element);
+                    const cleanedChildren = this.parseChildren(cleanedChildDom, styles);
+
+                    if (lines.length > 0) {
+                        const listCol = {
+                            columns: [
+                                {
+                                    width: 20,
+                                    stack: []
+                                }
+                            ],
+                            margin: [0, 0, 0, 0]
+                        };
+
+                        // For correction factor for "change reco" elements in lists, cause
+                        // they open a new OL-List and have additional distance
+                        if (
+                            element.classList.contains('os-split-before') &&
+                            element.classList.contains('os-split-after')
+                        ) {
+                            listCol.margin = [0, -this.LI_MARGIN_BOTTOM, 0, -this.LI_MARGIN_BOTTOM];
+                        } else if (!element.classList.contains('os-split-before')) {
+                            listCol.margin = [0, 5, 0, 0];
+                        }
+
+                        for (const line of lines) {
+                            listCol.columns[0].stack.push(this.getLineNumberObject(line));
+                        }
+
+                        list[nodeName] = cleanedChildren;
+                        listCol.columns.push(list);
+                        newParagraph = listCol;
+                    } else {
+                        // that is usually the case for "inserted" lists during change recomendations
+                        list.margin = [20, 0, 0, 0];
+                        newParagraph = list;
+                        newParagraph[nodeName] = cleanedChildren;
+                    }
+                } else {
+                    const children = this.parseChildren(element, styles);
+                    newParagraph = list;
+                    newParagraph[nodeName] = children;
+                }
                 break;
             }
             default: {
@@ -284,14 +340,15 @@ export class HtmlToPdfService {
      * @param styles the styles array, usually just to parse back into the `parseElement` function
      * @returns an array of parsed children
      */
-    private parseChildren(element: any, styles?: string[]): any {
-        const childNodes = element.childNodes;
+    private parseChildren(element: Element, styles?: Array<string>): Element[] {
+        const childNodes = Array.from(element.childNodes) as Element[];
         const paragraph = [];
         if (childNodes.length > 0) {
             for (const child of childNodes) {
                 // skip empty child nodes
                 if (!(child.nodeName === '#text' && child.textContent.trim() === '')) {
                     const parsedElement = this.parseElement(child, styles);
+                    const firstChild = element.firstChild as Element;
 
                     if (
                         // add the line number column
@@ -304,9 +361,9 @@ export class HtmlToPdfService {
                     } else if (
                         // if the first child of the parsed element is line number
                         this.lineNumberingMode === LineNumberingMode.Outside &&
-                        element.firstChild &&
-                        element.firstChild.classList &&
-                        element.firstChild.classList.contains('os-line-number')
+                        firstChild &&
+                        firstChild.classList &&
+                        firstChild.classList.contains('os-line-number')
                     ) {
                         const currentLine = paragraph.pop();
                         // push the parsed element into the "text" array
@@ -319,6 +376,135 @@ export class HtmlToPdfService {
             }
         }
         return paragraph;
+    }
+
+    /**
+     * Helper function to make a line-number object
+     *
+     * @param line and object in the shape: { lineNumber: X }
+     * @returns line number as pdfmake-object
+     */
+    private getLineNumberObject(line: LineNumberObject): object {
+        return {
+            width: 20,
+            text: [
+                {
+                    // Add a blank with the normal font size here, so in rare cases the text
+                    // is rendered on the next page and the line number on the previous page.
+                    text: ' ',
+                    fontSize: 10,
+                    decoration: ''
+                },
+                {
+                    text: line.lineNumber,
+                    color: 'gray',
+                    fontSize: 8
+                }
+            ],
+            marginBottom: line.marginBottom,
+            lineHeight: this.LINE_HEIGHT
+        };
+    }
+
+    /**
+     * Cleans the elements children from line-number spans
+     *
+     * @param element a html dom tree
+     * @returns a DOM element without line number spans
+     */
+    private cleanLineNumbers(element: Element): Element {
+        const elementCopy = element.cloneNode(true) as Element;
+        const children = elementCopy.childNodes;
+
+        // using for-of did not work as expected
+        for (let i = 0; i < children.length; i++) {
+            if (this.getLineNumber(children[i] as Element)) {
+                children[i].remove();
+            }
+
+            if (children[i].childNodes.length > 0) {
+                const cleanChildren = this.cleanLineNumbers(children[i] as Element);
+                elementCopy.replaceChild(cleanChildren, children[i]);
+            }
+        }
+
+        return elementCopy;
+    }
+
+    /**
+     * Helper function to extract line numbers from child elements
+     *
+     * TODO: Cleanup
+     *
+     * @param element element to check for containing line numbers (usually a list)
+     * @returns a list with the line numbers
+     */
+    private extractLineNumbers(element: Element): LineNumberObject[] {
+        let foundLineNumbers = [];
+        const lineNumber = this.getLineNumber(element);
+        if (lineNumber) {
+            foundLineNumbers.push({ lineNumber: lineNumber });
+        } else if (element.nodeName === 'BR') {
+            // Check if there is a new line, but it does not get a line number.
+            // If so, insert a dummy line, so the line numbers stays aligned with
+            // the text.
+            if (!this.getLineNumber(element.nextSibling as Element)) {
+                foundLineNumbers.push({ lineNumber: '' });
+            }
+        } else {
+            const children = Array.from(element.childNodes) as Element[];
+            let childrenLength = children.length;
+            let childrenLineNumbers = [];
+            for (let i = 0; i < children.length; i++) {
+                childrenLineNumbers = childrenLineNumbers.concat(this.extractLineNumbers(children[i]));
+                if (children.length < childrenLength) {
+                    i -= childrenLength - children.length;
+                    childrenLength = children.length;
+                }
+            }
+
+            // If this is an list item, add some space to the lineNumbers:
+            if (childrenLineNumbers.length && element.nodeName === 'LI') {
+                childrenLineNumbers[childrenLineNumbers.length - 1].marginBottom = this.LI_MARGIN_BOTTOM;
+            }
+
+            foundLineNumbers = foundLineNumbers.concat(childrenLineNumbers);
+        }
+        return foundLineNumbers;
+    }
+
+    /**
+     * Recursive helper function to determine if the element is inside a list
+     *
+     * @param element the current html node
+     * @returns wheater the element is inside a list or not
+     */
+    private isInsideAList(element: Element): boolean {
+        let parent = element.parentNode;
+        while (parent !== null) {
+            if (parent.nodeName === 'UL' || parent.nodeName === 'OL') {
+                return true;
+            }
+            parent = parent.parentNode;
+        }
+        return false;
+    }
+
+    /**
+     * Helper function to safer extract a line number from an element
+     *
+     * @param element
+     * @returns the line number of the element
+     */
+    private getLineNumber(element: Element): number {
+        if (
+            element &&
+            element.nodeName === 'SPAN' &&
+            element.getAttribute('class') &&
+            element.getAttribute('class').indexOf('os-line-number') > -1
+        ) {
+            return +element.getAttribute('data-line-number');
+        }
     }
 
     /**
