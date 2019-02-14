@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+
 import { BaseSlideComponent } from 'app/slides/base-slide-component';
 import { CountdownSlideData } from './countdown-slide-data';
 

@@ -97,7 +97,7 @@ export class ViewTopic extends BaseAgendaViewModel {
 
     public getSlide(): ProjectorElementBuildDeskriptor {
         return {
-            getBasicProjectorElement: () => ({
+            getBasicProjectorElement: options => ({
                 name: Topic.COLLECTIONSTRING,
                 id: this.id,
                 getIdentifiers: () => ['name', 'id']

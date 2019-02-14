@@ -1,3 +1,11 @@
-<div id="outer">
-    COUNTDOWN
+<div class="countdown overlay" *ngIf="data && !data.element.fullscreen">
+    <os-countdown-time [countdown]="data.data" [warningTime]="data.data.warning_time"></os-countdown-time>
+    <div class="description">
+        {{ data.data.description }}
+    </div>
+</div>
+<div class="countdown fullscreen" *ngIf="data && data.element.fullscreen">
+    <div>
+        <os-countdown-time [countdown]="data.data" [warningTime]="data.data.warning_time"></os-countdown-time>
+    </div>
 </div>

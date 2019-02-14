@@ -1,3 +1,6 @@
 export interface CountdownSlideData {
-    error: string;
+    description: string;
+    countdown_time: number;
+    running: boolean;
+    warning_time: number;
 }

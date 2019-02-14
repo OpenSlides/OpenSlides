@@ -81,7 +81,7 @@ export class ViewAssignment extends BaseAgendaViewModel {
 
     public getSlide(): ProjectorElementBuildDeskriptor {
         return {
-            getBasicProjectorElement: () => ({
+            getBasicProjectorElement: options => ({
                 name: Assignment.COLLECTIONSTRING,
                 id: this.id,
                 getIdentifiers: () => ['name', 'id']

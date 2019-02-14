@@ -1,27 +1,32 @@
 import { InjectionToken } from '@angular/core';
-import { IdentifiableProjectorElement } from 'app/shared/models/core/projector';
+import { IdentifiableProjectorElement, ProjectorElement } from 'app/shared/models/core/projector';
+
+type BooleanOrFunction = boolean | ((element: ProjectorElement) => boolean);
+
+export interface Slide {
+    slide: string;
+}
 
 /**
  * Slides can have these options.
  */
-export interface SlideOptions {
+export interface SlideDynamicConfiguration {
     /**
      * Should this slide be scrollable?
      */
-    scrollable: boolean;
+    scrollable: BooleanOrFunction;
 
     /**
      * Should this slide be scaleable?
      */
-    scaleable: boolean;
+    scaleable: BooleanOrFunction;
 }
 
 /**
  * Is similar to router entries, so we can trick the router. Keep slideName and
  * path in sync.
  */
-export interface SlideManifest extends SlideOptions {
-    slide: string;
+export interface SlideManifest extends Slide {
     path: string;
     loadChildren: string;
     verboseName: string;

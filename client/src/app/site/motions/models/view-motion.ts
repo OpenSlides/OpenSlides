@@ -561,7 +561,7 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
 
     public getSlide(): ProjectorElementBuildDeskriptor {
         return {
-            getBasicProjectorElement: () => ({
+            getBasicProjectorElement: options => ({
                 name: Motion.COLLECTIONSTRING,
                 id: this.id,
                 getIdentifiers: () => ['name', 'id']

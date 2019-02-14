@@ -18,6 +18,13 @@
                         <span translate>Required</span>
                     </mat-hint>
                 </mat-form-field>
+            </p><p>
+                <mat-form-field>
+                    <input formControlName="default_time" matInput placeholder="{{ 'Time' | translate}}" required>
+                    <mat-hint *ngIf="!createForm.controls.default_time.valid">
+                        <span translate>Required</span>
+                    </mat-hint>
+                </mat-form-field>
             </p>
         </form>
     </mat-card-content>
@@ -45,8 +52,10 @@
                     <div class="header-name">
                         {{ countdown.description }}
                     </div>
+                    <div class="header-controls">
+                        <os-countdown-controls [countdown]="countdown"></os-countdown-controls>
+                    </div>
                 </div>
-
             </mat-panel-title>
         </mat-expansion-panel-header>
         <form [formGroup]="updateForm"
@@ -60,11 +69,15 @@
                         <span translate>Required</span>
                     </mat-hint>
                 </mat-form-field>
+            </p><p>
+                <mat-form-field>
+                    <input formControlName="default_time" matInput placeholder="{{ 'Time' | translate}}" required>
+                    <mat-hint *ngIf="!updateForm.controls.default_time.valid">
+                        <span translate>Required</span>
+                    </mat-hint>
+                </mat-form-field>
             </p>
         </form>
-        <ng-container *ngIf="editId !== countdown.id">
-            TODO: Show countdown time etc.
-        </ng-container>
         <mat-action-row>
             <button *ngIf="editId !== countdown.id" mat-button class="on-transition-fade" (click)="onEditButton(countdown)"
                 mat-icon-button>

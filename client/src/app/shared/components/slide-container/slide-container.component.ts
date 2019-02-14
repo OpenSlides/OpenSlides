@@ -5,10 +5,13 @@ import { TranslateService } from '@ngx-translate/core';
 import { BaseComponent } from 'app/base.component';
 import { SlideManager } from 'app/slides/services/slide-manager.service';
 import { BaseSlideComponent } from 'app/slides/base-slide-component';
-import { SlideOptions } from 'app/slides/slide-manifest';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { SlideData } from 'app/site/projector/services/projector-data.service';
+import { ProjectorElement } from 'app/shared/models/core/projector';
 
+function hasError(obj: object): obj is { error: string } {
+    return (<{ error: string }>obj).error !== undefined;
+}
 /**
  * Container for one slide. Cares about the position (scale, scroll) in the projector,
  * and loading of slides.
@@ -31,24 +34,31 @@ export class SlideContainerComponent extends BaseComponent {
     private _slideData: SlideData<object>;
 
     @Input()
-    public set slideData(data: SlideData<object>) {
+    public set slideData(slideData: SlideData<object>) {
         // If there is no ata or an error, clear and exit.
-        if (!data || data.error) {
+        if (!slideData || hasError(slideData) || (slideData.data && hasError(slideData.data))) {
             // clear slide container:
             if (this.slide) {
                 this.slide.clear();
             }
 
-            if (data.error) {
-                console.error(data.error);
+            let error;
+            if (hasError(slideData)) {
+                error = slideData.error;
+            } else if (slideData.data && hasError(slideData.data)) {
+                error = slideData.data.error;
+            }
+
+            if (error) {
+                console.log(error);
             }
             return;
         }
 
-        this._slideData = data;
-        if (this.previousSlideName !== data.element.name) {
-            this.slideChanged(data.element.name);
-            this.previousSlideName = data.element.name;
+        this._slideData = slideData;
+        if (this.previousSlideName !== slideData.element.name) {
+            this.slideChanged(slideData.element);
+            this.previousSlideName = slideData.element.name;
         }
         this.setDataForComponent();
     }
@@ -88,7 +98,7 @@ export class SlideContainerComponent extends BaseComponent {
     /**
      * The current slideoptions.
      */
-    public slideOptions: SlideOptions = { scaleable: false, scrollable: false };
+    public slideOptions: { scaleable: boolean; scrollable: boolean } = { scaleable: false, scrollable: false };
 
     /**
      * Styles for scaling and scrolling.
@@ -137,9 +147,19 @@ export class SlideContainerComponent extends BaseComponent {
      *
      * @param slideName The slide to load.
      */
-    private slideChanged(slideName: string): void {
-        this.slideOptions = this.slideManager.getSlideOptions(slideName);
-        this.slideManager.getSlideFactory(slideName).then(slideFactory => {
+    private slideChanged(element: ProjectorElement): void {
+        const options = this.slideManager.getSlideConfiguration(element.name);
+        if (typeof options.scaleable === 'boolean') {
+            this.slideOptions.scaleable = options.scaleable;
+        } else {
+            this.slideOptions.scaleable = options.scaleable(element);
+        }
+        if (typeof options.scrollable === 'boolean') {
+            this.slideOptions.scrollable = options.scrollable;
+        } else {
+            this.slideOptions.scrollable = options.scrollable(element);
+        }
+        this.slideManager.getSlideFactory(element.name).then(slideFactory => {
             this.slide.clear();
             this.slideRef = this.slide.createComponent(slideFactory);
             this.setDataForComponent();

@@ -22,11 +22,9 @@ export class CurrentListOfSpeakersSlideService {
         private slideManager: SlideManager
     ) {
         this.projectorRepo.getGeneralViewModelObservable().subscribe(projector => {
-            if (projector) {
+            if (projector && this.currentItemIds[projector.id]) {
                 const item = this.getCurrentAgendaItemIdForProjector(projector);
-                if (this.currentItemIds[projector.id]) {
-                    this.currentItemIds[projector.id].next(item);
-                }
+                this.currentItemIds[projector.id].next(item);
             }
         });
     }

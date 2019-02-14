@@ -14,7 +14,7 @@ mat-card {
 .header-container {
     display: grid;
     grid-template-rows: auto;
-    grid-template-columns: 40px 1fr;
+    grid-template-columns: 40px 1fr 2fr;
     width: 100%;
 
     > div {
@@ -25,10 +25,17 @@ mat-card {
 
     .header-projector-button {
         grid-column-start: 1;
+        grid-column-end: 2;
     }
 
     .header-name {
         grid-column-start: 2;
+        grid-column-end: 3;
         padding: 10px;
+    }
+
+    .header-controls {
+        grid-column-start: 3;
+        grid-column-end: 4;
     }
 }
