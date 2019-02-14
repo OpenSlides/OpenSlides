@@ -34,7 +34,7 @@ export class SortingListComponent implements OnInit, OnDestroy {
     /**
      * Sorted and returned
      */
-    public array: Array<Selectable>;
+    public array: Selectable[];
 
     /**
      * Declare the templateRef to coexist between parent in child

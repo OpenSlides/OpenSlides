@@ -284,7 +284,7 @@ export class HtmlToPdfService {
      * @param styles the styles array, usually just to parse back into the `parseElement` function
      * @returns an array of parsed children
      */
-    private parseChildren(element: any, styles?: Array<string>): any {
+    private parseChildren(element: any, styles?: string[]): any {
         const childNodes = element.childNodes;
         const paragraph = [];
         if (childNodes.length > 0) {
