@@ -107,6 +107,7 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
         this.config
             .get<boolean>('agenda_enable_numbering')
             .subscribe(autoNumbering => (this.isNumberingAllowed = autoNumbering));
+        this.setFulltextFilter();
     }
 
     /**
@@ -285,5 +286,25 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
         } else {
             return result;
         }
+    }
+
+    /**
+     * Overwrites the dataSource's string filter with a case-insensitive search
+     * in the item number and title
+     */
+    private setFulltextFilter(): void {
+        this.dataSource.filterPredicate = (data, filter) => {
+            if (!data) {
+                return false;
+            }
+            filter = filter ? filter.toLowerCase() : '';
+            return (
+                data.itemNumber.toLowerCase().includes(filter) ||
+                data
+                    .getListTitle()
+                    .toLowerCase()
+                    .includes(filter)
+            );
+        };
     }
 }
