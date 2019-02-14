@@ -135,6 +135,7 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
             this.dataSource.data = sortedData;
             this.checkSelection();
         });
+        this.setFulltextFilter();
     }
 
     /**
@@ -284,5 +285,48 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
             this.configService.instant<string>('motions_default_line_numbering') as LineNumberingMode,
             this.configService.instant<string>('motions_recommendation_text_mode') as ChangeRecoMode
         );
+    }
+
+    /**
+     * Overwrites the dataSource's string filter with a case-insensitive search
+     * in the identifier, title, state, recommendations, submitters and motion blocks
+     */
+    private setFulltextFilter(): void {
+        this.dataSource.filterPredicate = (data, filter) => {
+            if (!data) {
+                return false;
+            }
+            filter = filter ? filter.toLowerCase() : '';
+            if (
+                data.recommendation &&
+                this.translate
+                    .instant(data.recommendation.recommendation_label)
+                    .toLowerCase()
+                    .includes(filter)
+            ) {
+                return true;
+            }
+            if (
+                this.translate
+                    .instant(data.state.name)
+                    .toLowerCase()
+                    .includes(filter)
+            ) {
+                return true;
+            }
+            if (data.submitters.length && data.submitters.find(user => user.full_name.toLowerCase().includes(filter))) {
+                return true;
+            }
+            if (data.motion_block && data.motion_block.title.toLowerCase().includes(filter)) {
+                return true;
+            }
+            if (data.title.toLowerCase().includes(filter)) {
+                return true;
+            }
+            if (data.identifier && data.identifier.toLowerCase().includes(filter)) {
+                return true;
+            }
+            return false;
+        };
     }
 }
