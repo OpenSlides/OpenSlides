@@ -128,8 +128,8 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
         return this._submitters;
     }
 
-    public get submitters_id(): number[] {
-        return this.motion.submitters_id;
+    public get sorted_submitters_id(): number[] {
+        return this.motion.sorted_submitters_id;
     }
 
     public get supporters(): ViewUser[] {
