@@ -22,46 +22,39 @@
         display: block;
         padding-left: 10px;
 
-        .motion-list {
-            display: flex;
-            padding-right: 20px;
+        .title-line {
+            font-weight: 500;
+            font-size: 16px;
 
-            .motion-list-title,
-            .motion-list-from {
-                flex: 2;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
+            .attached-files {
+                .mat-icon {
+                    display: inline-flex;
+                    vertical-align: middle;
+                    $icon-size: 16px;
+                    font-size: $icon-size;
+                    height: $icon-size;
+                    width: $icon-size;
+                }
             }
-            .motion-list-title {
-                font-weight: 500;
-                font-size: 16px;
-            }
+
             .favorite-star {
                 padding-right: 3px;
             }
         }
 
-        .motion-list-from {
+        .submitters-line {
             color: rgba(0, 0, 0, 0.5);
             font-size: 90%;
-        }
-
-        .attached-files {
-            .mat-icon {
-                display: inline-flex;
-                vertical-align: middle;
-                $icon-size: 16px;
-                font-size: $icon-size;
-                height: $icon-size;
-                width: $icon-size;
-            }
         }
     }
 
     /** State */
     .mat-column-state {
         flex: 0 0 160px;
+
+        .state-column {
+            width: 160px;
+        }
 
         mat-icon {
             font-size: 150%;

@@ -193,10 +193,11 @@ mat-card {
 
     /** size of the mat row  */
     mat-row {
-        height: 60px;
+        min-height: 60px;
     }
     mat-row.lg {
-        height: 90px;
+        height: 110px;
+        min-height: 90px;
     }
     mat-row:hover {
         cursor: pointer;
@@ -346,6 +347,7 @@ mat-expansion-panel {
     border-radius: 5px !important;
     padding: 4px 8px !important;
     margin: 8px 8px 8px 0;
+    line-height: 2;
 }
 
 .mat-chip-list.user .mat-chip {
@@ -645,4 +647,10 @@ button.mat-menu-item.selected {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    padding-right: 3px;
+    margin-right: 3px;
+}
+
+.white {
+    color: white;
 }

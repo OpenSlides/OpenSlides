@@ -853,7 +853,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
 
     /**
      * Get the label for the motion's current state with the extension
-     * attached (if present). For cross-referencing other motions, `[motion:id]`
+     * attached (if available). For cross-referencing other motions, `[motion:id]`
      * will replaced by the referenced motion's identifier (see {@link solveExtensionPlaceHolder})
      *
      * @param motion
@@ -872,21 +872,19 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
 
     /**
      * Get the label for the motion's current recommendation with the extension
-     * attached (if present)
+     * attached (if available)
      *
      * @param motion
-     * @returns the translated extension with the extension attached, 'not set'
-     * if no recommendation si set
+     * @returns the translated extension with the extension attached
      */
     public getExtendedRecommendationLabel(motion: ViewMotion): string {
-        if (!motion.recommendation) {
-            return this.translate.instant('not set');
+        if (motion.recommendation) {
+            let rec = this.translate.instant(motion.recommendation.recommendation_label);
+            if (motion.recommendationExtension && motion.recommendation.show_recommendation_extension_field) {
+                rec += ' ' + this.solveExtensionPlaceHolder(motion.recommendationExtension);
+            }
+            return rec;
         }
-        let rec = this.translate.instant(motion.recommendation.recommendation_label);
-        if (motion.recommendationExtension && motion.recommendation.show_recommendation_extension_field) {
-            rec += ' ' + this.solveExtensionPlaceHolder(motion.recommendationExtension);
-        }
-        return rec;
     }
 
     /**

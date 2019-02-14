@@ -58,7 +58,7 @@
             <mat-cell *matCellDef="let motion">
                 <div class="innerTable max-width">
                     <!-- title line -->
-                    <div class="motion-list">
+                    <div class="title-line ellipsis-overflow">
                         <!-- favorite icon -->
                         <span *ngIf="motion.star" class="favorite-star">
                             <mat-icon inline>star</mat-icon>
@@ -73,31 +73,32 @@
                         </span>
                     </div>
                     <!-- submitters line -->
-                    <div class="motion-list">
-                        <span class="motion-list-from ellipsis-overflow" *ngIf="motion.submitters.length">
-                            <span translate>by</span> {{ motion.submitters }}
-                        </span>
+                    <div class="submitters-line ellipsis-overflow" *ngIf="motion.submitters.length">
+                        <span translate>by</span> {{ motion.submitters }}
                     </div>
-                    <!-- state -->
-                    <mat-basic-chip
-                        *ngIf="motion.state"
-                        [ngClass]="{
-                            green: motion.state.css_class === 'success',
-                            red: motion.state.css_class === 'danger',
-                            grey: motion.state.css_class === 'default',
-                            lightblue: motion.state.css_class === 'primary'
-                        }"
-                        [disabled]="true"
+                    <!-- state line-->
+                    <div class="ellipsis-overflow white">
+                        <mat-basic-chip
+                            *ngIf="motion.state"
+                            [ngClass]="{
+                                green: motion.state.css_class === 'success',
+                                red: motion.state.css_class === 'danger',
+                                grey: motion.state.css_class === 'default',
+                                lightblue: motion.state.css_class === 'primary'
+                            }"
+                            [disabled]="true"
+                        >
+                            {{ getStateLabel(motion) }}
+                        </mat-basic-chip>
+                    </div>
+                    <!-- recommendation line -->
+                    <div *ngIf="motion.recommendation && motion.state.next_states_id.length > 0"
+                        class="ellipsis-overflow white"
                     >
-                        {{ getStateLabel(motion) }}
-                    </mat-basic-chip>
-
-                    <!-- recommendation -->
-                    <span *ngIf="motion.recommendation && motion.state.next_states_id.length > 0">
                         <mat-basic-chip class="bluegrey" [disabled]="true">
                             {{ getRecommendationLabel(motion) }}
                         </mat-basic-chip>
-                    </span>
+                    </div>
                 </div>
             </mat-cell>
         </ng-container>
@@ -106,12 +107,12 @@
         <ng-container matColumnDef="state">
             <mat-header-cell *matHeaderCellDef mat-sort-header>State</mat-header-cell>
             <mat-cell *matCellDef="let motion">
-                <div class="innerTable">
-                    <div class="small" *ngIf="motion.category">
+                <div class="innerTable state-column">
+                    <div class="small ellipsis-overflow" *ngIf="motion.category">
                         <mat-icon>device_hub</mat-icon>
                         {{ motion.category }}
                     </div>
-                    <div class="small" *ngIf="motion.motion_block">
+                    <div class="small ellipsis-overflow" *ngIf="motion.motion_block">
                         <mat-icon>widgets</mat-icon>
                         {{ motion.motion_block.title }}
                     </div>
