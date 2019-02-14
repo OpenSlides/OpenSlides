@@ -10,12 +10,12 @@ import { MotionCommentSection } from 'app/shared/models/motions/motion-comment-s
 import { ViewMotionCommentSection } from '../../models/view-motion-comment-section';
 import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
-import { Group } from 'app/shared/models/users/group';
-import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { BaseViewComponent } from '../../../base/base-view';
+import { ViewGroup } from 'app/site/users/models/view-group';
+import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 
 /**
- * List view for the categories.
+ * List view for the comment sections.
  */
 @Component({
     selector: 'os-motion-comment-section-list',
@@ -40,7 +40,7 @@ export class MotionCommentSectionListComponent extends BaseViewComponent impleme
     public openId: number | null;
     public editId: number | null;
 
-    public groups: BehaviorSubject<Array<Group>>;
+    public groups: BehaviorSubject<ViewGroup[]>;
 
     /**
      * The usual component constructor
@@ -59,7 +59,7 @@ export class MotionCommentSectionListComponent extends BaseViewComponent impleme
         private repo: MotionCommentSectionRepositoryService,
         private formBuilder: FormBuilder,
         private promptService: PromptService,
-        private DS: DataStoreService
+        private groupRepo: GroupRepositoryService
     ) {
         super(titleService, translate, matSnackBar);
 
@@ -97,20 +97,12 @@ export class MotionCommentSectionListComponent extends BaseViewComponent impleme
 
     /**
      * Init function.
-     *
-     * Sets the title and gets/observes categories from DataStore
      */
     public ngOnInit(): void {
         super.setTitle('Comment fields');
-        this.groups = new BehaviorSubject(this.DS.getAll(Group));
-        this.DS.changeObservable.subscribe(model => {
-            if (model instanceof Group) {
-                this.groups.next(this.DS.getAll(Group));
-            }
-        });
-        this.repo.getViewModelListObservable().subscribe(newViewSections => {
-            this.commentSections = newViewSections;
-        });
+        this.groups = new BehaviorSubject(this.groupRepo.getViewModelList());
+        this.groupRepo.getViewModelListObservable().subscribe(groups => this.groups.next(groups));
+        this.repo.getViewModelListObservable().subscribe(newViewSections => (this.commentSections = newViewSections));
     }
 
     /**
@@ -154,7 +146,8 @@ export class MotionCommentSectionListComponent extends BaseViewComponent impleme
     }
 
     /**
-     * Saves the categories
+     * Saves the comment section
+     *
      * @param viewSection The section to save
      */
     public onSaveButton(viewSection: ViewMotionCommentSection): void {
@@ -178,7 +171,7 @@ export class MotionCommentSectionListComponent extends BaseViewComponent impleme
 
     /**
      * Is executed when a mat-extension-panel is closed
-     * @param viewSection the category in the panel
+     * @param viewSection the section in the panel
      */
     public panelClosed(viewSection: ViewMotionCommentSection): void {
         this.openId = null;
