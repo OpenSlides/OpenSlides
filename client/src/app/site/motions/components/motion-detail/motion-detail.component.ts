@@ -9,7 +9,6 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { BaseViewComponent } from '../../../base/base-view';
-import { Category } from 'app/shared/models/motions/category';
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
 import { ChangeRecoMode, LineNumberingMode, ViewMotion } from '../../models/view-motion';
@@ -32,7 +31,6 @@ import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
 import { PersonalNoteService } from 'app/core/ui-services/personal-note.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions/statute-paragraph-repository.service';
-import { User } from 'app/shared/models/users/user';
 import { ViewMotionChangeRecommendation } from '../../models/view-change-recommendation';
 import { ViewCreateMotion } from '../../models/view-create-motion';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
@@ -41,6 +39,7 @@ import { ViewStatuteParagraph } from '../../models/view-statute-paragraph';
 import { Workflow } from 'app/shared/models/motions/workflow';
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
 import { Tag } from 'app/shared/models/core/tag';
+import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ViewMotionBlock } from '../../models/view-motion-block';
 import { ViewWorkflow } from '../../models/view-workflow';
 import { ViewUser } from 'app/site/users/models/view-user';
@@ -340,6 +339,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * @param pdfExport export the motion to pdf
      * @param personalNoteService: personal comments and favorite marker
      * @param categoryRepo
+     * @param userRepo
      */
     public constructor(
         title: Title,
@@ -364,13 +364,18 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         private personalNoteService: PersonalNoteService,
         private linenumberingService: LinenumberingService,
         private viewModelStore: ViewModelStoreService,
-        private categoryRepo: CategoryRepositoryService
+        private categoryRepo: CategoryRepositoryService,
+        private userRepo: UserRepositoryService
     ) {
         super(title, translate, matSnackBar);
 
         // Initial Filling of the Subjects
-        this.submitterObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewUser));
-        this.supporterObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewUser));
+        this.submitterObserver = new BehaviorSubject(
+            this.userRepo.sortViewUsersByConfig(this.userRepo.getViewModelList())
+        );
+        this.supporterObserver = new BehaviorSubject(
+            this.userRepo.sortViewUsersByConfig(this.userRepo.getViewModelList())
+        );
         this.categoryObserver = new BehaviorSubject(
             this.categoryRepo.sortViewCategoriesByConfig(this.viewModelStore.getAll(ViewCategory))
         );
@@ -381,16 +386,17 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         this.tagObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewTag));
         this.motionObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewMotion));
 
+        this.userRepo.getSortedViewModelListObservable().subscribe(sortedUsers => {
+            this.submitterObserver.next(sortedUsers);
+            this.supporterObserver.next(sortedUsers);
+        });
+        this.categoryRepo.getSortedViewModelListObservable().subscribe(sortedCategories => {
+            this.categoryObserver.next(sortedCategories);
+        });
         // Make sure the subjects are updated, when a new Model for the type arrives
+        // TODO get rid of DS here
         this.DS.changeObservable.subscribe(newModel => {
-            if (newModel instanceof User) {
-                this.submitterObserver.next(this.viewModelStore.getAll(ViewUser));
-                this.supporterObserver.next(this.viewModelStore.getAll(ViewUser));
-            } else if (newModel instanceof Category) {
-                this.categoryObserver.next(
-                    this.categoryRepo.sortViewCategoriesByConfig(this.viewModelStore.getAll(ViewCategory))
-                );
-            } else if (newModel instanceof Workflow) {
+            if (newModel instanceof Workflow) {
                 this.workflowObserver.next(this.viewModelStore.getAll(ViewWorkflow));
             } else if (newModel instanceof MotionBlock) {
                 this.blockObserver.next(this.viewModelStore.getAll(ViewMotionBlock));
