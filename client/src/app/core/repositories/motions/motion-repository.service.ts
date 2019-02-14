@@ -102,7 +102,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
      */
     protected createViewModel(motion: Motion): ViewMotion {
         const category = this.viewModelStoreService.get(ViewCategory, motion.category_id);
-        const submitters = this.viewModelStoreService.getMany(ViewUser, motion.submitterIds);
+        const submitters = this.viewModelStoreService.getMany(ViewUser, motion.submitters_id);
         const supporters = this.viewModelStoreService.getMany(ViewUser, motion.supporters_id);
         const workflow = this.viewModelStoreService.get(ViewWorkflow, motion.workflow_id);
         const item = this.viewModelStoreService.get(ViewItem, motion.agenda_item_id);

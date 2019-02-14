@@ -533,7 +533,7 @@ export class MotionPdfService {
         const callListRows: object[] = [];
         let currentTitle = '';
 
-        motions.map(motion => {
+        motions.forEach(motion => {
             if (!motion.sort_parent_id) {
                 const heading = motion.tags ? motion.tags.map(tag => tag.name).join(', ') : '';
                 if (heading !== currentTitle) {

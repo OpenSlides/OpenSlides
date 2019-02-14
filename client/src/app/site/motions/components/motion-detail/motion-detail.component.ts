@@ -948,8 +948,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     public updateWorkflowIdForCreateForm(): void {
         const isStatuteAmendment = !!this.contentForm.get('statute_amendment').value;
         const configKey = isStatuteAmendment ? 'motions_statute_amendments_workflow' : 'motions_workflow';
-        const workflowID = this.configService.instant<string>(configKey);
-        this.contentForm.patchValue({ workflow_id: +workflowID });
+        const workflowId = this.configService.instant<string>(configKey);
+        this.contentForm.patchValue({ workflow_id: +workflowId });
     }
 
     /**

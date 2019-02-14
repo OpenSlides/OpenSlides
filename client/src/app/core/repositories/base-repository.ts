@@ -70,6 +70,7 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
         this.DS.getAll(this.baseModelCtor).forEach((model: M) => {
             this.viewModelStore[model.id] = this.createViewModel(model);
         });
+
         // Update the list and then all models on their own
         this.updateViewModelListObservable();
         this.DS.getAll(this.baseModelCtor).forEach((model: M) => {

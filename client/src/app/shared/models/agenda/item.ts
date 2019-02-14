@@ -1,4 +1,4 @@
-import { Speaker, SpeakerState } from './speaker';
+import { Speaker } from './speaker';
 import { BaseModel } from '../base/base-model';
 
 /**
@@ -54,36 +54,5 @@ export class Item extends BaseModel<Item> {
                 return new Speaker(speakerData);
             });
         }
-    }
-
-    /**
-     * Gets the amount of waiting speakers
-     */
-    public get waitingSpeakerAmount(): number {
-        return this.speakers.filter(speaker => speaker.state === SpeakerState.WAITING).length;
-    }
-
-    /**
-     * Gets the string representation of the item type
-     * @returns The visibility for this item, as defined in {@link itemVisibilityChoices}
-     */
-    public get verboseType(): string {
-        if (!this.type) {
-            return '';
-        }
-        const type = itemVisibilityChoices.find(choice => choice.key === this.type);
-        return type ? type.name : '';
-    }
-
-    /**
-     * Gets a shortened string for CSV export
-     * @returns empty string if it is a public item, 'internal' or 'hidden' otherwise
-     */
-    public get verboseCsvType(): string {
-        if (!this.type) {
-            return '';
-        }
-        const type = itemVisibilityChoices.find(choice => choice.key === this.type);
-        return type ? type.csvName : '';
     }
 }
