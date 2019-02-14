@@ -45,6 +45,11 @@ export class MotionPdfCatalogService {
      * Public entry point to conversion of multiple motions
      *
      * @param motions the list of view motions to convert
+     * @param lnMode
+     * @param crMode
+     * @param contentToExport
+     * @param infoToExport
+     * @param commentsToExport
      * @returns pdfmake doc definition as object
      */
     public motionListToDocDef(
@@ -52,7 +57,8 @@ export class MotionPdfCatalogService {
         lnMode?: LineNumberingMode,
         crMode?: ChangeRecoMode,
         contentToExport?: string[],
-        infoToExport?: InfoToExport[]
+        infoToExport?: InfoToExport[],
+        commentsToExport?: number[]
     ): object {
         let doc = [];
         const motionDocList = [];
@@ -63,7 +69,8 @@ export class MotionPdfCatalogService {
                 lnMode,
                 crMode,
                 contentToExport,
-                infoToExport
+                infoToExport,
+                commentsToExport
             );
 
             // add id field to the first page of a motion to make it findable over TOC

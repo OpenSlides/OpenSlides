@@ -4,6 +4,9 @@ import { MatDialogRef, MatButtonToggle } from '@angular/material';
 
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { LineNumberingMode, ChangeRecoMode } from '../../models/view-motion';
+import { InfoToExport } from '../../services/motion-pdf.service';
+import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
+import { ViewMotionCommentSection } from '../../models/view-motion-comment-section';
 
 /**
  * Dialog component to determine exporting.
@@ -42,16 +45,23 @@ export class MotionExportDialogComponent implements OnInit {
     /**
      * Determine the default meta info to export.
      */
-    private defaultInfoToExport = [
+    private defaultInfoToExport: InfoToExport[] = [
         'submitters',
         'state',
         'recommendation',
         'category',
         'origin',
         'block',
-        'votingResult'
+        'polls',
+        'id'
     ];
 
+    /**
+     * @returns a list of availavble commentSections
+     */
+    public get commentsToExport(): ViewMotionCommentSection[] {
+        return this.commentRepo.getViewModelList();
+    }
     /**
      * Hold the default lnMode. Will be set by the constructor.
      */
@@ -82,11 +92,14 @@ export class MotionExportDialogComponent implements OnInit {
      *
      * @param formBuilder Creates the export form
      * @param dialogRef Make the dialog available
+     * @param configService
+     * @param commentRepo
      */
     public constructor(
         public formBuilder: FormBuilder,
         public dialogRef: MatDialogRef<MotionExportDialogComponent>,
-        public configService: ConfigService
+        public configService: ConfigService,
+        public commentRepo: MotionCommentSectionRepositoryService
     ) {
         this.defaultLnMode = this.configService.instant('motions_default_line_numbering');
         this.defaultCrMode = this.configService.instant('motions_recommendation_text_mode');
@@ -109,6 +122,8 @@ export class MotionExportDialogComponent implements OnInit {
                 //       the "normal" motion.text, therefore this is disabled for now
                 this.exportForm.get('crMode').setValue(this.crMode.Original);
                 this.exportForm.get('crMode').disable();
+
+                this.exportForm.get('comments').disable();
 
                 // remove the selection of "Diff Version" and set it to default or original
                 // TODO: Use this over the disable block logic above when the export service supports more than
@@ -133,6 +148,7 @@ export class MotionExportDialogComponent implements OnInit {
                 // TODO: CSV Issues
                 // this.diffVersionButton.disabled = true;
             } else if (value === 'pdf') {
+                this.exportForm.get('comments').enable();
                 this.exportForm.get('lnMode').enable();
                 this.exportForm.get('lnMode').setValue(this.defaultLnMode);
 
@@ -157,7 +173,8 @@ export class MotionExportDialogComponent implements OnInit {
             lnMode: [this.defaultLnMode],
             crMode: [this.defaultCrMode],
             content: [this.defaultContentToExport],
-            metaInfo: [this.defaultInfoToExport]
+            metaInfo: [this.defaultInfoToExport],
+            comments: []
         });
     }
 

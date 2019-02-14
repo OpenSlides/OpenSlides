@@ -368,13 +368,3 @@ def get_config_variables():
         group="Motions",
         subgroup="Export",
     )
-
-    yield ConfigVariable(
-        name="motions_export_sequential_number",
-        default_value=True,
-        input_type="boolean",
-        label="Include the sequential number in PDF and DOCX",
-        weight=380,
-        group="Motions",
-        subgroup="Export",
-    )

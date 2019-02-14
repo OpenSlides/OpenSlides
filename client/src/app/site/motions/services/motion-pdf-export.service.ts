@@ -8,6 +8,7 @@ import { ViewMotion, LineNumberingMode, ChangeRecoMode } from '../models/view-mo
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { MotionPdfCatalogService } from './motion-pdf-catalog.service';
 import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
+import { ViewMotionCommentSection } from '../models/view-motion-comment-section';
 
 /**
  * Export service to handle various kind of exporting necessities.
@@ -56,15 +57,24 @@ export class MotionPdfExportService {
      * @param crMode Change Recommendation Mode
      * @param contentToExport Determine to determine with text and/or reason
      * @param infoToExport Determine the meta info to export
+     * @param commentsToExport Comments (by id) to export
      */
     public exportMotionCatalog(
         motions: ViewMotion[],
         lnMode?: LineNumberingMode,
         crMode?: ChangeRecoMode,
         contentToExport?: string[],
-        infoToExport?: InfoToExport[]
+        infoToExport?: InfoToExport[],
+        commentsToExport?: number[]
     ): void {
-        const doc = this.pdfCatalogService.motionListToDocDef(motions, lnMode, crMode, contentToExport, infoToExport);
+        const doc = this.pdfCatalogService.motionListToDocDef(
+            motions,
+            lnMode,
+            crMode,
+            contentToExport,
+            infoToExport,
+            commentsToExport
+        );
         const filename = this.translate.instant(this.configService.instant<string>('motions_export_title'));
         const metadata = {
             title: filename
@@ -100,5 +110,22 @@ export class MotionPdfExportService {
             title: filename
         };
         this.pdfDocumentService.download(doc, filename, metadata);
+    }
+
+    /**
+     * Exports the given comment with some short information about the
+     * motion the note refers to
+     *
+     * @param comment
+     * @param motion
+     */
+    public exportComment(comment: ViewMotionCommentSection, motion: ViewMotion): void {
+        const motionComment = motion.getCommentForSection(comment);
+        if (motionComment && motionComment.comment) {
+            const doc = this.motionPdfService.textToDocDef(motionComment.comment, motion, comment.name);
+            const filename = `${motion.identifierOrTitle} - ${comment.name}`;
+            const metadata = { title: filename };
+            this.pdfDocumentService.download(doc, filename, metadata);
+        }
     }
 }
