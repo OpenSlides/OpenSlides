@@ -6,6 +6,7 @@ import { ViewMediafile } from '../models/view-mediafile';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
     providedIn: 'root'
@@ -18,15 +19,15 @@ export class MediafileFilterListService extends BaseFilterListService<Mediafile,
      */
     public pdfOption: OsFilter = {
         property: 'type',
-        label: 'Is PDF',
+        label: 'PDF',
         options: [
             {
                 condition: 'application/pdf',
-                label: 'Is PDF file'
+                label: this.translate.instant('Is PDF file')
             },
             {
                 condition: null,
-                label: 'Is no PDF file'
+                label: this.translate.instant('Is no PDF file')
             }
         ]
     };
@@ -36,8 +37,11 @@ export class MediafileFilterListService extends BaseFilterListService<Mediafile,
      */
     public hiddenOptions: OsFilter = {
         property: 'is_hidden',
-        label: 'Hidden',
-        options: [{ condition: true, label: 'is hidden' }, { condition: false, label: 'is not hidden', isActive: true }]
+        label: this.translate.instant('Hidden'),
+        options: [
+            { condition: true, label: this.translate.instant('is hidden') },
+            { condition: false, label: this.translate.instant('is not hidden'), isActive: true }
+        ]
     };
 
     /**
@@ -45,8 +49,14 @@ export class MediafileFilterListService extends BaseFilterListService<Mediafile,
      * @param store
      * @param repo
      * @param operator
+     * @param translate
      */
-    public constructor(store: StorageService, repo: MediafileRepositoryService, operator: OperatorService) {
+    public constructor(
+        store: StorageService,
+        repo: MediafileRepositoryService,
+        operator: OperatorService,
+        private translate: TranslateService
+    ) {
         super(store, repo);
         const filterOptions = operator.hasPerms('mediafiles.can_see_hidden')
             ? [this.hiddenOptions, this.pdfOption]

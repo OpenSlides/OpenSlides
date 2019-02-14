@@ -119,9 +119,6 @@ msgstr "Alle abgegebenen Stimmzettel"
 msgid "All selected files will be deleted!"
 msgstr "Alle ausgewählten Dateien werden gelöscht!"
 
-msgid "All users"
-msgstr ""
-
 msgid "All valid ballots"
 msgstr "Alle gültigen Stimmzettel"
 
@@ -407,6 +404,9 @@ msgstr "Kommentar"
 msgid "Comment fields"
 msgstr "Kommentarfelder"
 
+msgid "Comments"
+msgstr "Kommentare"
+
 msgid "Committees"
 msgstr "Gremien"
 
@@ -466,9 +466,6 @@ msgstr "Benutzerdefinierte Anzahl von Stimmzetteln"
 
 msgid "Custom translations"
 msgstr "Benutzerdefinierte Übersetzungen"
-
-msgid "Czech"
-msgstr "Tschechisch"
 
 msgid ""
 "Dear {name},\n"
@@ -597,6 +594,13 @@ msgstr ""
 "Verschieben Sie Einträge, um die Reihenfolge der Tagesordnung zu ändern. "
 "Ihre Änderungen werden sofort gespeichert."
 
+msgid ""
+"Drag and drop motions to reorder the category. Then click the button to "
+"renumber."
+msgstr ""
+"Verschieben Sie die Anträge um das Sachgebiet neu zu ordnen. Klicken Sie "
+"anschließend auf die Schaltfläche um neu zu nummerieren."
+
 msgid "Drop files into this area OR select files"
 msgstr "Dateien auf diesen Bereich ziehen ODER Dateien auswählen"
 
@@ -605,9 +609,6 @@ msgstr "Dauer"
 
 msgid "Edit"
 msgstr "Bearbeiten"
-
-msgid "Edit category"
-msgstr "Sachgebiet bearbeiten"
 
 msgid "Edit comment field:"
 msgstr "Kommentarfeld bearbeiten:"
@@ -620,6 +621,9 @@ msgstr "Details bearbeiten"
 
 msgid "Edit details for"
 msgstr "Details bearbeiten für"
+
+msgid "Edit message"
+msgstr "Mitteilung bearbeiten"
 
 msgid "Edit statute paragraph:"
 msgstr "Satzungsabschnitt bearbeiten:"
@@ -672,9 +676,6 @@ msgstr "Encoding der Datei"
 msgid "End speech"
 msgstr "Rede beenden"
 
-msgid "English"
-msgstr "Englisch"
-
 msgid "Enter duration in seconds. Choose 0 to disable warning color."
 msgstr ""
 "Geben Sie die Dauer in Sekunden an. Zum Deaktivieren der Warn-Farbe 0 "
@@ -723,6 +724,9 @@ msgstr "Exportieren als CSV"
 
 msgid "Export as PDF"
 msgstr "Als PDF exportieren"
+
+msgid "Export comment"
+msgstr "Kommentar exportieren"
 
 msgid "Export motions"
 msgstr "Anträge exportieren"
@@ -801,9 +805,6 @@ msgstr "Neue Passwörter generieren"
 
 msgid "Generate password"
 msgstr "Passwort generieren"
-
-msgid "German"
-msgstr "Deutsch"
 
 msgid "Given name"
 msgstr "Vorname"
@@ -917,6 +918,9 @@ msgstr "Ungültige Eingabe."
 msgid "Invalid line number"
 msgstr "Ungültige Zeilennummer"
 
+msgid "Is PDF file"
+msgstr "Ist eine PDF-Datei"
+
 msgid "Is a committee"
 msgstr "Ist ein Gremium"
 
@@ -928,6 +932,9 @@ msgstr "Ist Gremium"
 
 msgid "Is favorite"
 msgstr "Ist Favorit"
+
+msgid "Is no PDF file"
+msgstr "Ist keine PDF-Datei"
 
 msgid "Is not favorite"
 msgstr "Ist kein Favorit"
@@ -994,9 +1001,6 @@ msgstr "Redeliste verwalten für..."
 
 msgid "Mark speaker"
 msgstr "Redner/in markieren"
-
-msgid "Message"
-msgstr "Mitteilung"
 
 msgid "Messages"
 msgstr "Mitteilungen"
@@ -1085,6 +1089,9 @@ msgstr "Neuer Dateiname"
 msgid "New group name"
 msgstr "Neuer Gruppenname"
 
+msgid "New message"
+msgstr "Neue Mitteilung"
+
 msgid "New motion"
 msgstr "Neuer Antrag"
 
@@ -1121,6 +1128,9 @@ msgstr "Nein"
 msgid "No category"
 msgstr "Kein Sachgebiet"
 
+msgid "No category set"
+msgstr "Kein Sachgebiet gesetzt"
+
 msgid "No change recommendations yet"
 msgstr "Bisher keine Änderungsempfehlungen"
 
@@ -1135,6 +1145,9 @@ msgstr "Nichtbefassung"
 
 msgid "No countdowns"
 msgstr "Keine Countdowns"
+
+msgid "No data"
+msgstr "Keine Daten"
 
 msgid "No decision"
 msgstr "Keine Entscheidung"
@@ -1151,8 +1164,17 @@ msgstr "Keine Gruppen ausgewählt"
 msgid "No information available"
 msgstr "Keine Informationen verfügbar"
 
+msgid "No messages"
+msgstr "Keine Mitteilungen"
+
+msgid "No motion block set"
+msgstr "Kein Antragsblock gesetzt"
+
 msgid "No personal note"
 msgstr "Keine persönliche Notiz"
+
+msgid "No recommendation"
+msgstr "Keine Empfehlung gesetzt"
 
 msgid "No search result found for"
 msgstr "Keine Suchergebnisse gefunden für"
@@ -1162,6 +1184,9 @@ msgstr "Keine Satzungsabschnitte vorhanden"
 
 msgid "None"
 msgstr "aus"
+
+msgid "Number motions"
+msgstr "Anträgg nummerieren"
 
 msgid "Number of (minimum) required supporters for a motion"
 msgstr "Mindestanzahl erforderlicher Unterstützer/innen für einen Antrag"
@@ -1361,14 +1386,8 @@ msgstr "Datenschutzerklärung"
 msgid "Project"
 msgstr "Projizieren"
 
-msgid "Project motion {{ projectorElementBuildDescriptor.getTitle() }}?"
-msgstr "Antrag {{ projectorElementBuildDescriptor.getTitle() }} projizieren?"
-
 msgid "Project now"
 msgstr "Jetzt projizieren"
-
-msgid "Project {{ projectorElementBuildDescriptor.getTitle() }}?"
-msgstr "{{ projectorElementBuildDescriptor.getTitle() }} projizieren?"
 
 msgid "Projector"
 msgstr "Projektor"
@@ -1655,6 +1674,9 @@ msgstr "Tagesordnung sortieren"
 msgid "Sort categories by"
 msgstr "Sachgebiete sortieren nach"
 
+msgid "Sort motions"
+msgstr "Anträge sortieren"
+
 msgid "Sort name of participants by"
 msgstr "Namen der Teilnehmenden sortieren nach"
 
@@ -1908,6 +1930,9 @@ msgstr "Zweidrittelmehrheit"
 msgid "Type"
 msgstr "Typ"
 
+msgid "Undone"
+msgstr "unerledigt"
+
 msgid "Unsupport"
 msgstr "Unterstützung zurückziehen"
 
@@ -2121,6 +2146,12 @@ msgstr "Beispiel"
 msgid "inline"
 msgstr "innerhalb"
 
+msgid "is hidden"
+msgstr "ist versteckt"
+
+msgid "is not hidden"
+msgstr "ist nicht versteckt"
+
 msgid "is now"
 msgstr "ist jetzt"
 
@@ -2150,9 +2181,6 @@ msgstr "abwesend"
 
 msgid "not reached."
 msgstr "nicht erreicht."
-
-msgid "not set"
-msgstr "nicht gesetzt"
 
 msgid "of"
 msgstr "von"

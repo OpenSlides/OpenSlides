@@ -54,7 +54,7 @@
         </form>
         <ng-container *ngIf="editId !== message.id">
             <div class="message" *ngIf="message.message" [innerHTML]="getSafeMessage(message)"></div>
-            <div *ngIf="!message.message" class="no-content" translate>No message</div>
+            <div *ngIf="!message.message" class="no-content" translate>No messages</div>
         </ng-container>
         <mat-action-row>
             <button *ngIf="editId !== message.id" mat-button class="on-transition-fade" (click)="onEditButton(message)"
