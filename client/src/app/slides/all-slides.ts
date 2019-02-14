@@ -41,7 +41,7 @@ export const allSlides: SlideManifest[] = [
     {
         slide: 'core/clock',
         path: 'core/clock',
-        loadChildren: './slides/core/clock/core-clock-slide.module#CoreClockSlideModule',
+        loadChildren: './slides/core/clock/clock-slide.module#ClockSlideModule',
         scaleable: false,
         scrollable: false,
         verboseName: 'Clock',
@@ -51,10 +51,20 @@ export const allSlides: SlideManifest[] = [
     {
         slide: 'core/countdown',
         path: 'core/countdown',
-        loadChildren: './slides/core/countdown/core-countdown-slide.module#CoreCountdownSlideModule',
+        loadChildren: './slides/core/countdown/countdown-slide.module#CountdownSlideModule',
         scaleable: false,
         scrollable: false,
         verboseName: 'Countdown',
+        elementIdentifiers: ['name', 'id'],
+        canBeMappedToModel: true
+    },
+    {
+        slide: 'core/projector-message',
+        path: 'core/projector-message',
+        loadChildren: './slides/core/projector-message/projector-message-slide.module#ProjectorMessageSlideModule',
+        scaleable: false,
+        scrollable: false,
+        verboseName: 'Message',
         elementIdentifiers: ['name', 'id'],
         canBeMappedToModel: true
     },
@@ -79,5 +89,15 @@ export const allSlides: SlideManifest[] = [
         verboseName: 'Current list of speakers overlay',
         elementIdentifiers: ['name', 'id'],
         canBeMappedToModel: false
+    },
+    {
+        slide: 'assignments/assignment',
+        path: 'assignments/assignment',
+        loadChildren: './slides/assignments/assignment/assignment-slide.module#AssignmentSlideModule',
+        scaleable: true,
+        scrollable: true,
+        verboseName: 'Election',
+        elementIdentifiers: ['name', 'id'],
+        canBeMappedToModel: true
     }
 ];

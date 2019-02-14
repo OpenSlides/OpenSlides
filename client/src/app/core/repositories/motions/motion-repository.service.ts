@@ -138,6 +138,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
                 return viewMotion.getTitle();
             }
         };
+        viewMotion.getProjectorTitle = viewMotion.getAgendaTitle;
         viewMotion.getAgendaTitleWithType = () => {
             // Append the verbose name only, if not the special format 'Motion <identifier>' is used.
             if (viewMotion.identifier) {

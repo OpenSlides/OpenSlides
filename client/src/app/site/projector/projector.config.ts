@@ -4,10 +4,10 @@ import { Countdown } from 'app/shared/models/core/countdown';
 import { ProjectorMessage } from 'app/shared/models/core/projector-message';
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
 import { CountdownRepositoryService } from 'app/core/repositories/projector/countdown-repository.service';
-import { ProjectorMessageRepositoryService } from 'app/core/repositories/projector/projectormessage-repository.service';
+import { ProjectorMessageRepositoryService } from 'app/core/repositories/projector/projector-message-repository.service';
 import { ViewProjector } from './models/view-projector';
 import { ViewCountdown } from './models/view-countdown';
-import { ViewProjectorMessage } from './models/view-projectormessage';
+import { ViewProjectorMessage } from './models/view-projector-message';
 
 export const ProjectorAppConfig: AppConfig = {
     name: 'projector',

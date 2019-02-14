@@ -9,7 +9,7 @@ import { ClockSlideService } from './services/clock-slide.service';
 import { ProjectorDataService } from './services/projector-data.service';
 import { CurrentListOfSpeakersSlideService } from './services/current-list-of-of-speakers-slide.service';
 import { CountdownListComponent } from './components/countdown-list/countdown-list.component';
-import { ProjectorMessageListComponent } from './components/projectormessage-list/projectormessage-list.component';
+import { ProjectorMessageListComponent } from './components/projector-message-list/projector-message-list.component';
 
 @NgModule({
     providers: [ClockSlideService, ProjectorDataService, CurrentListOfSpeakersSlideService],

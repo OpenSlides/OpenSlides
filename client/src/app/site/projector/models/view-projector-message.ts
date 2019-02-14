@@ -2,22 +2,23 @@ import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-mo
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { ProjectorMessage } from 'app/shared/models/core/projector-message';
 import { BaseViewModel } from 'app/site/base/base-view-model';
+import { stripHtmlTags } from 'app/shared/utils/strip-html-tags';
 
 export class ViewProjectorMessage extends BaseProjectableViewModel {
     public static COLLECTIONSTRING = ProjectorMessage.COLLECTIONSTRING;
 
     private _message: ProjectorMessage;
 
-    public get projctormessage(): ProjectorMessage {
+    public get projectormessage(): ProjectorMessage {
         return this._message;
     }
 
     public get id(): number {
-        return this.projctormessage.id;
+        return this.projectormessage.id;
     }
 
     public get message(): string {
-        return this.projctormessage.message;
+        return this.projectormessage.message;
     }
 
     /**
@@ -48,5 +49,14 @@ export class ViewProjectorMessage extends BaseProjectableViewModel {
             projectionDefaultName: 'messages',
             getTitle: () => this.getTitle()
         };
+    }
+
+    public getPreview(maxLength: number = 100): string {
+        const html = stripHtmlTags(this.message);
+        if (html.length > maxLength) {
+            return html.substring(0, maxLength) + ' ...';
+        } else {
+            return html;
+        }
     }
 }
