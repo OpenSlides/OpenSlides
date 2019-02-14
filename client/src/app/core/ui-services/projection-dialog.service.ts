@@ -42,6 +42,7 @@ export class ProjectionDialogService {
             ProjectionDialogReturnType
         >(ProjectionDialogComponent, {
             maxHeight: '90vh',
+            autoFocus: false,
             data: descriptor
         });
         const response = await dialogRef.afterClosed().toPromise();
