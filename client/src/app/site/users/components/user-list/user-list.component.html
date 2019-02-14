@@ -49,7 +49,7 @@
         <!-- prefix column -->
         <ng-container matColumnDef="group">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Group</mat-header-cell>
-            <mat-cell *matCellDef="let user">
+            <mat-cell (click)="openEditInfo(user)" *matCellDef="let user">
                 <div class="groupsCell">
                     <span *ngIf="user.groups && user.groups.length">
                         <mat-icon>people</mat-icon>
@@ -195,3 +195,49 @@
         </div>
     </mat-menu>
 </mat-drawer-container>
+
+<ng-template #userInfoDialog>
+    <h1 mat-dialog-title>
+        <span>{{ 'Edit details for' | translate }} {{ infoDialog.name }}</span>
+    </h1>
+    <div class="os-form-card-mobile" mat-dialog-content>
+        <mat-form-field>
+            <mat-select placeholder="{{ 'Groups' | translate }}" [(ngModel)]="infoDialog.groups_id" multiple>
+                <mat-option *ngFor="let group of groups" [value]="group.id">
+                    {{ group.getTitle() | translate }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-select placeholder="{{ 'Gender' | translate }}" [(ngModel)]="infoDialog.gender">
+                <mat-option>-</mat-option>
+                <mat-option *ngFor="let gender of genderList" [value]="gender">{{ gender | translate }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+            <input
+                type="text"
+                matInput
+                placeholder="{{ 'Participant number' | translate }}"
+                [(ngModel)]="infoDialog.number"
+            />
+        </mat-form-field>
+    </div>
+    <div mat-dialog-actions>
+        <button
+            type="submit"
+            mat-button
+            color="primary"
+            [mat-dialog-close]="{
+                groups_id: infoDialog.groups_id,
+                gender: infoDialog.gender,
+                number: infoDialog.number
+            }"
+        >
+            <span translate>Save</span>
+        </button>
+        <button type="button" mat-button [mat-dialog-close]="null">
+            <span translate>Cancel</span>
+        </button>
+    </div>
+</ng-template>
