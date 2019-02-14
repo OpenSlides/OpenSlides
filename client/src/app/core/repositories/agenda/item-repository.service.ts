@@ -82,7 +82,6 @@ export class ItemRepositoryService extends BaseRepository<ViewItem, Item> {
 
     /**
      * Returns the corresponding content object to a given {@link Item} as an {@link AgendaBaseViewModel}
-     * Used dynamically because of heavy race conditions
      *
      * @param agendaItem the target agenda Item
      * @returns the content object of the given item. Might be null if it was not found.

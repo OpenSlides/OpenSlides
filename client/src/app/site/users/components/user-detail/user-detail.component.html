@@ -15,12 +15,7 @@
 
     <!-- Menu -->
     <div class="menu-slot">
-        <button
-            type="button"
-            mat-icon-button
-            *ngIf="isAllowed('changePersonal')"
-            [matMenuTriggerFor]="userExtraMenu"
-        >
+        <button type="button" mat-icon-button *ngIf="isAllowed('changePersonal')" [matMenuTriggerFor]="userExtraMenu">
             <mat-icon>more_vert</mat-icon>
         </button>
     </div>
@@ -49,7 +44,6 @@
     <form
         [ngClass]="{ 'mat-form-field-enabled': editUser }"
         [formGroup]="personalInfoForm"
-        (ngSubmit)="saveUser()"
         *ngIf="user"
         (keydown)="onKeyDown($event)"
     >
@@ -104,7 +98,7 @@
                     placeholder="{{ 'Email' | translate }}"
                     name="email"
                     formControlName="email"
-                    [value]="user.email ? user.email: null"
+                    [value]="user.email ? user.email : null"
                 />
                 <mat-error *ngIf="personalInfoForm.get('email').hasError('email')" translate>
                     Please enter a valid email address
