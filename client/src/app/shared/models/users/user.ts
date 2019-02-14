@@ -33,8 +33,4 @@ export class User extends BaseModel<User> {
     public constructor(input?: any) {
         super(User.COLLECTIONSTRING, input);
     }
-
-    public containsGroupId(id: number): boolean {
-        return this.groups_id.some(groupId => groupId === id);
-    }
 }

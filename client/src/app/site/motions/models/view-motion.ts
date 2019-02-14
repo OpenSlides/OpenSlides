@@ -129,7 +129,7 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
     }
 
     public get submitters_id(): number[] {
-        return this.motion.submitterIds;
+        return this.motion.submitters_id;
     }
 
     public get supporters(): ViewUser[] {
@@ -482,7 +482,7 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
      */
     public updateUser(update: ViewUser): void {
         if (this.motion.submitters && this.motion.submitters.find(user => user.user_id === update.id)) {
-            const userIndex = this.submitters.findIndex(user => user.id === update.id);
+            const userIndex = this.motion.submitters.findIndex(submitter => submitter.user_id === update.id);
             this.submitters[userIndex] = update;
         }
         if (this.motion.supporters_id && this.motion.supporters_id.includes(update.id)) {

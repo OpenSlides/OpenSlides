@@ -1,6 +1,6 @@
 import { BaseViewModel } from '../../base/base-view-model';
-import { Item } from 'app/shared/models/agenda/item';
-import { Speaker } from 'app/shared/models/agenda/speaker';
+import { Item, itemVisibilityChoices } from 'app/shared/models/agenda/item';
+import { Speaker, SpeakerState } from 'app/shared/models/agenda/speaker';
 import { BaseAgendaViewModel, isAgendaBaseModel } from 'app/site/base/base-agenda-view-model';
 
 export class ViewItem extends BaseViewModel {
@@ -42,8 +42,11 @@ export class ViewItem extends BaseViewModel {
         return this.item.duration;
     }
 
+    /**
+     * Gets the amount of waiting speakers
+     */
     public get waitingSpeakerAmount(): number {
-        return this.item.waitingSpeakerAmount;
+        return this.item.speakers.filter(speaker => speaker.state === SpeakerState.WAITING).length;
     }
 
     public get type(): number {
@@ -58,12 +61,28 @@ export class ViewItem extends BaseViewModel {
         return this.item.comment;
     }
 
+    /**
+     * Gets the string representation of the item type
+     * @returns The visibility for this item, as defined in {@link itemVisibilityChoices}
+     */
     public get verboseType(): string {
-        return this.item.verboseType;
+        if (!this.type) {
+            return '';
+        }
+        const type = itemVisibilityChoices.find(choice => choice.key === this.type);
+        return type ? type.name : '';
     }
 
+    /**
+     * Gets a shortened string for CSV export
+     * @returns empty string if it is a public item, 'internal' or 'hidden' otherwise
+     */
     public get verboseCsvType(): string {
-        return this.item.verboseCsvType;
+        if (!this.type) {
+            return '';
+        }
+        const type = itemVisibilityChoices.find(choice => choice.key === this.type);
+        return type ? type.csvName : '';
     }
 
     /**

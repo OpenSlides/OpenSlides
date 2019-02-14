@@ -29,7 +29,7 @@ export class Assignment extends BaseModel<Assignment> {
         super(Assignment.COLLECTIONSTRING, input);
     }
 
-    public get candidateIds(): number[] {
+    public get candidates_id(): number[] {
         return this.assignment_related_users
             .sort((a: AssignmentUser, b: AssignmentUser) => {
                 return a.weight - b.weight;
@@ -42,16 +42,14 @@ export class Assignment extends BaseModel<Assignment> {
 
         this.assignment_related_users = [];
         if (input.assignment_related_users instanceof Array) {
-            input.assignment_related_users.forEach(assignmentUserData => {
-                this.assignment_related_users.push(new AssignmentUser(assignmentUserData));
-            });
+            this.assignment_related_users = input.assignment_related_users.map(
+                assignmentUserData => new AssignmentUser(assignmentUserData)
+            );
         }
 
         this.polls = [];
         if (input.polls instanceof Array) {
-            input.polls.forEach(pollData => {
-                this.polls.push(new Poll(pollData));
-            });
+            this.polls = input.polls.map(pollData => new Poll(pollData));
         }
     }
 }

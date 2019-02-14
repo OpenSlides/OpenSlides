@@ -29,20 +29,14 @@ export class Workflow extends BaseModel<Workflow> {
             id = obj;
         }
 
-        return this.states.some(state => {
-            if (state.id === id) {
-                return true;
-            }
-        });
+        return this.states.some(state => state.id === id);
     }
 
     public deserialize(input: any): void {
         Object.assign(this, input);
+
         if (input.states instanceof Array) {
-            this.states = [];
-            input.states.forEach(workflowStateData => {
-                this.states.push(new WorkflowState(workflowStateData));
-            });
+            this.states = input.states.map(workflowStateData => new WorkflowState(workflowStateData));
         }
     }
 }

@@ -2,6 +2,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { MatSnackBar, MatSelectChange } from '@angular/material';
+import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -13,7 +14,6 @@ import { OperatorService } from 'app/core/core-services/operator.service';
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { SpeakerState } from 'app/shared/models/agenda/speaker';
-import { Title } from '@angular/platform-browser';
 import { ViewItem } from '../../models/view-item';
 import { ViewSpeaker } from '../../models/view-speaker';
 import { ViewProjector } from 'app/site/projector/models/view-projector';

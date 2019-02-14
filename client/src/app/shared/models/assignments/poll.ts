@@ -30,9 +30,7 @@ export class Poll extends Deserializer {
 
         this.options = [];
         if (input.options instanceof Array) {
-            input.options.forEach(pollOptionData => {
-                this.options.push(new PollOption(pollOptionData));
-            });
+            this.options = input.options.map(pollOptionData => new PollOption(pollOptionData));
         }
     }
 }

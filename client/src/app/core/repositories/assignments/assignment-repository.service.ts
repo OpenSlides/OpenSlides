@@ -39,7 +39,7 @@ export class AssignmentRepositoryService extends BaseRepository<ViewAssignment, 
     }
 
     public createViewModel(assignment: Assignment): ViewAssignment {
-        const relatedUser = this.viewModelStoreService.getMany(ViewUser, assignment.candidateIds);
+        const relatedUser = this.viewModelStoreService.getMany(ViewUser, assignment.candidates_id);
         const agendaItem = this.viewModelStoreService.get(ViewItem, assignment.agenda_item_id);
         const tags = this.viewModelStoreService.getMany(ViewTag, assignment.tags_id);
 
