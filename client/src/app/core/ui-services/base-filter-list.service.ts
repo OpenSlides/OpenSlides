@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { BaseModel } from '../../shared/models/base/base-model';
 import { BaseViewModel } from '../../site/base/base-view-model';
 import { StorageService } from '../core-services/storage.service';
+import { BaseRepository } from '../repositories/base-repository';
 
 /**
  * Describes the available filters for a listView.
@@ -103,9 +104,7 @@ export abstract class BaseFilterListService<M extends BaseModel, V extends BaseV
     /**
      * Constructor.
      */
-    public constructor(private store: StorageService, private repo: any) {
-        // repo( extends BaseRepository<V, M> ) { // TODO
-    }
+    public constructor(private store: StorageService, private repo: BaseRepository<V, M>) {}
 
     /**
      * Initializes the filterService. Returns the filtered data as Observable
@@ -316,7 +315,7 @@ export abstract class BaseFilterListService<M extends BaseModel, V extends BaseV
             const compareValueCondition = (value, condition): boolean => {
                 if (value === condition) {
                     return true;
-                } else if ('id' in value && value.id === condition) {
+                } else if (typeof value === 'object' && 'id' in value && value.id === condition) {
                     return true;
                 }
                 return false;
