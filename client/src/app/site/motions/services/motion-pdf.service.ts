@@ -455,7 +455,24 @@ export class MotionPdfService {
         const lineLength = this.configService.instant<number>('motions_line_length');
 
         if (motion.isParagraphBasedAmendment()) {
-            // TODO: special docs for special amendment
+            motionText = '';
+            // this is logically redundant with the formation of amendments in the motion-detail html.
+            // Should be refactored in a way that a service returns the correct html for both cases
+            for (const paragraph of this.motionRepo.getAmendedParagraphs(motion, lineLength)) {
+                if (paragraph.diffLineTo === paragraph.diffLineFrom + 1) {
+                    motionText += `<h3>
+                        ${this.translate.instant('Line')} ${paragraph.diffLineFrom}:
+                    </h3>`;
+                } else {
+                    motionText += `<h3>
+                        ${this.translate.instant('Line')} ${paragraph.diffLineFrom} - ${paragraph.diffLineTo - 1}:
+                    </h3>`;
+                }
+
+                motionText += `<div class="paragraphcontext">${paragraph.textPre}</div>`;
+                motionText += paragraph.text;
+                motionText += `<div class="paragraphcontext">${paragraph.textPost}</div>`;
+            }
         } else if (motion.isStatuteAmendment()) {
             // statute amendments
             const statutes = this.statureRepo.getViewModelList();
