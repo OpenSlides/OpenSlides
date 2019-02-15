@@ -1,6 +1,10 @@
 from typing import Any, Dict
 
-from ..utils.projector import AllData, register_projector_slide
+from ..utils.projector import (
+    AllData,
+    ProjectorElementException,
+    register_projector_slide,
+)
 
 
 # Important: All functions have to be prune. This means, that thay can only
@@ -13,7 +17,23 @@ def mediafile_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any
     """
     Slide for Mediafile.
     """
-    return {"error": "TODO"}
+    mediafile_id = element.get("id")
+
+    if mediafile_id is None:
+        raise ProjectorElementException("id is required for mediafile slide")
+
+    try:
+        mediafile = all_data["mediafiles/mediafile"][mediafile_id]
+    except KeyError:
+        raise ProjectorElementException(
+            f"mediafile with id {mediafile_id} does not exist"
+        )
+
+    return {
+        "path": mediafile["mediafile"]["name"],
+        "type": mediafile["mediafile"]["type"],
+        "media_url_prefix": mediafile["media_url_prefix"],
+    }
 
 
 def register_projector_slides() -> None:

@@ -278,9 +278,12 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile>
      * @returns the column definition for the screen size
      */
     public getColumnDefinition(): string[] {
-        const columns = this.vp.isMobile ? this.displayedColumnsMobile : this.displayedColumnsDesktop;
+        let columns = this.vp.isMobile ? this.displayedColumnsMobile : this.displayedColumnsDesktop;
+        if (this.operator.hasPerms('core.can_manage_projector')) {
+            columns = ['projector'].concat(columns);
+        }
         if (this.isMultiSelect) {
-            return ['selector'].concat(columns);
+            columns = ['selector'].concat(columns);
         }
         return columns;
     }
