@@ -7,7 +7,12 @@
         </mat-radio-group>
 
         <!-- The HTML Editor -->
-        <h4><span translate>Changed version in line</span> {{ lineRange.from }} <span translate>to</span> {{ lineRange.to }}:</h4>
+        <h4 *ngIf="lineRange.to == lineRange.from + 1">
+            <span translate>Changed version in line</span> {{ lineRange.from }}:
+        </h4>
+        <h4 *ngIf="lineRange.to != lineRange.from + 1">
+            <span translate>Changed version in line</span> {{ lineRange.from }} <span translate>to</span> {{ lineRange.to - 1 }}:
+        </h4>
         <editor
             formControlName='text'
             [init]="tinyMceSettings"
