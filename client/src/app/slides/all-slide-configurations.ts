@@ -45,5 +45,10 @@ export const allSlidesDynamicConfiguration: (SlideDynamicConfiguration & Slide)[
         slide: 'assignments/assignment',
         scaleable: true,
         scrollable: true
+    },
+    {
+        slide: 'mediafiles/mediafile',
+        scaleable: true,
+        scrollable: true
     }
 ];

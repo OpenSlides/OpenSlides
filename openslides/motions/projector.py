@@ -55,7 +55,7 @@ def motion_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
     motion_id = element.get("id")
 
     if motion_id is None:
-        return {"error": "id is required for motion slide"}
+        raise ProjectorElementException("id is required for motion slide")
 
     try:
         motion = all_data["motions/motion"][motion_id]

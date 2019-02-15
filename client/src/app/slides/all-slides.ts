@@ -81,5 +81,13 @@ export const allSlides: SlideManifest[] = [
         verboseName: 'Election',
         elementIdentifiers: ['name', 'id'],
         canBeMappedToModel: true
+    },
+    {
+        slide: 'mediafiles/mediafile',
+        path: 'mediafiles/mediafile',
+        loadChildren: './slides/mediafiles/mediafile/mediafile-slide.module#MediafileSlideModule',
+        verboseName: 'File',
+        elementIdentifiers: ['name', 'id'],
+        canBeMappedToModel: true
     }
 ];

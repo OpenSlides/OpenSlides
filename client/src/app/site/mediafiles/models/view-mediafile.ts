@@ -3,8 +3,10 @@ import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { Searchable } from 'app/site/base/searchable';
 import { SearchRepresentation } from 'app/core/ui-services/search.service';
 import { ViewUser } from 'app/site/users/models/view-user';
+import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
+import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 
-export class ViewMediafile extends BaseViewModel implements Searchable {
+export class ViewMediafile extends BaseProjectableViewModel implements Searchable {
     public static COLLECTIONSTRING = Mediafile.COLLECTIONSTRING;
 
     private _mediafile: Mediafile;
@@ -84,6 +86,19 @@ export class ViewMediafile extends BaseViewModel implements Searchable {
 
     public getDetailStateURL(): string {
         throw new Error('TODO');
+    }
+
+    public getSlide(): ProjectorElementBuildDeskriptor {
+        return {
+            getBasicProjectorElement: () => ({
+                name: Mediafile.COLLECTIONSTRING,
+                id: this.id,
+                getIdentifiers: () => ['name', 'id']
+            }),
+            slideOptions: [],
+            projectionDefaultName: 'mediafiles',
+            getTitle: () => this.getTitle()
+        };
     }
 
     /**
