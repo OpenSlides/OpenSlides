@@ -67,7 +67,7 @@ export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignmen
      * Sets the title, inits the table
      */
     public ngOnInit(): void {
-        super.setTitle(this.translate.instant('Elections'));
+        super.setTitle('Elections');
         this.initTable();
     }
 

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { LocalStorage } from '@ngx-pwa/local-storage';
+import { Observable } from 'rxjs';
 
 import { OpenSlidesStatusService } from './openslides-status.service';
 import { StoragelockService } from '../local-storage/storagelock.service';
@@ -31,7 +32,7 @@ export class StorageService {
     public async set(key: string, item: any): Promise<void> {
         await this.lock.promise;
 
-        this.assertNotHistroyMode();
+        this.assertNotHistoryMode();
         if (item === null || item === undefined) {
             await this.remove(key); // You cannot do a setItem with null or undefined...
         } else {
@@ -44,16 +45,13 @@ export class StorageService {
     /**
      * get a value from the store. You need to subscribe to the request to retrieve the value.
      *
-     * TODO: This needs adjustment to ensure safe access.
-     * Since angular 7 `LocalStorrage.getItem` will return "unknown" instead of any.
-     * https://github.com/cyrilletuzi/angular-async-local-storage/blob/master/docs/MIGRATION_TO_V7.md
      * @param key The key to get the value from
      * @returns The requested value to the key
      */
     public async get<T>(key: string): Promise<T> {
         await this.lock.promise;
 
-        return await this.localStorage.getUnsafeItem<T>(key).toPromise();
+        return ((await this.localStorage.getItem<T>(key)) as Observable<T>).toPromise();
     }
 
     /**
@@ -63,7 +61,7 @@ export class StorageService {
     public async remove(key: string): Promise<void> {
         await this.lock.promise;
 
-        this.assertNotHistroyMode();
+        this.assertNotHistoryMode();
         if (!(await this.localStorage.removeItem(key).toPromise())) {
             throw new Error('Could not delete the item.');
         }
@@ -75,7 +73,7 @@ export class StorageService {
     public async clear(): Promise<void> {
         await this.lock.promise;
 
-        this.assertNotHistroyMode();
+        this.assertNotHistoryMode();
         if (!(await this.localStorage.clear().toPromise())) {
             throw new Error('Could not clear the storage.');
         }
@@ -84,7 +82,7 @@ export class StorageService {
     /**
      * Throws an error, if we are in history mode.
      */
-    private assertNotHistroyMode(): void {
+    private assertNotHistoryMode(): void {
         if (this.OSStatus.isInHistoryMode) {
             throw new Error('You cannot use the storageService in histroy mode.');
         }

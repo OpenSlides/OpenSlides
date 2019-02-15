@@ -65,7 +65,7 @@ export class AgendaPdfService {
 
     /**
      * Parses an entry line and triggers parsing of any children
-     * (TODO: Check assumption: items with 'is_hidden' are not to be exported)
+     * Items with 'is_hidden' and their subitems are not exported
      *
      * @param nodeItem the item for the head line
      * @param level: The hierarchy index (beginning at 0 for top level agenda topics)

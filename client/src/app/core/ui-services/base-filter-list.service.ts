@@ -1,10 +1,10 @@
 import { auditTime } from 'rxjs/operators';
 import { BehaviorSubject, Observable } from 'rxjs';
 
+import { BaseRepository } from 'app/core/repositories/base-repository';
 import { BaseModel } from '../../shared/models/base/base-model';
 import { BaseViewModel } from '../../site/base/base-view-model';
 import { StorageService } from '../core-services/storage.service';
-import { BaseRepository } from '../repositories/base-repository';
 
 /**
  * Describes the available filters for a listView.
@@ -46,7 +46,7 @@ export interface OsFilterOption {
  * and will receive their filtered data as observable
  */
 
-export abstract class BaseFilterListService<M extends BaseModel, V extends BaseViewModel> {
+export abstract class BaseFilterListService<V extends BaseViewModel> {
     /**
      * stores the currently used raw data to be used for the filter
      */
@@ -110,7 +110,7 @@ export abstract class BaseFilterListService<M extends BaseModel, V extends BaseV
     /**
      * Constructor.
      */
-    public constructor(private store: StorageService, private repo: BaseRepository<V, M>) {}
+    public constructor(private store: StorageService, private repo: BaseRepository<V, BaseModel>) {}
 
     /**
      * Initializes the filterService. Returns the filtered data as Observable

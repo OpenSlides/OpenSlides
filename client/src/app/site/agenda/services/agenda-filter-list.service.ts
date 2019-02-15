@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { BaseFilterListService, OsFilter, OsFilterOption } from 'app/core/ui-services/base-filter-list.service';
-import { Item, itemVisibilityChoices } from 'app/shared/models/agenda/item';
+import { itemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { ViewItem } from '../models/view-item';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
@@ -10,7 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 @Injectable({
     providedIn: 'root'
 })
-export class AgendaFilterListService extends BaseFilterListService<Item, ViewItem> {
+export class AgendaFilterListService extends BaseFilterListService<ViewItem> {
     protected name = 'Agenda';
 
     public filterOptions: OsFilter[] = [];

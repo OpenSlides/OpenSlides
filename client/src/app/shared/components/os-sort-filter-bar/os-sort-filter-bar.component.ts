@@ -9,6 +9,7 @@ import { FilterMenuComponent } from './filter-menu/filter-menu.component';
 import { OsSortingItem } from 'app/core/ui-services/base-sort-list.service';
 import { BaseSortListService } from 'app/core/ui-services/base-sort-list.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
+import { BaseFilterListService } from 'app/core/ui-services/base-filter-list.service';
 
 /**
  * Reusable bar for list views, offering sorting and filter options.
@@ -47,7 +48,7 @@ export class OsSortFilterBarComponent<V extends BaseViewModel> {
      * be a FilterListService extendingFilterListService.
      */
     @Input()
-    public filterService: any; // TODO a FilterListService extending FilterListService
+    public filterService: BaseFilterListService<V>;
 
     /**
      * optional additional string to show after the item count. This string will not be translated here
@@ -80,7 +81,7 @@ export class OsSortFilterBarComponent<V extends BaseViewModel> {
      */
     public get displayedCount(): number {
         if (this.filterCount === undefined || this.filterCount === null) {
-            return this.filterService.filterCount;
+            return this.filterService.filteredCount;
         } else {
             return this.filterCount;
         }

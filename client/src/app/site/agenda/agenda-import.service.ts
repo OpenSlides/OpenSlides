@@ -205,7 +205,8 @@ export class AgendaImportService extends BaseImportService<ViewCreateTopic> {
             };
             const duplicates = this.repo.getTopicDuplicates(newTopic);
             if (duplicates.length) {
-                // TODO this is a dishonest casting. duplicates should not be required to be View
+                // TODO duplicates are not really ViewCreateTopics, but ViewTopics.
+                // TODO this should be fine as the duplicates will not be created
                 newEntry.duplicates = duplicates as ViewCreateTopic[];
                 this.setError(newEntry, 'Duplicates');
             }

@@ -12,9 +12,13 @@ import { ViewConfig } from '../../models/view-config';
 import { ConfigRepositoryService } from 'app/core/repositories/config/config-repository.service';
 
 /**
- * List view for the categories.
+ * Component for a config field, used by the {@link ConfigListComponent}. Handles
+ * all inpu types defined by the server, as well as updating the configs
  *
- * TODO: Creation of new Categories
+ * @example
+ * ```ts
+ * <os-config-field [item]="item.config"></os-config-field>
+ * ```
  */
 @Component({
     selector: 'os-config-field',
@@ -58,7 +62,8 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
     public rawDate: Date;
 
     /**
-     * The config item for this component. Just accept components with already populated constants-info.
+     * The config item for this component. Just accepts components with already
+     * populated constants-info.
      */
     @Input()
     public set item(value: ViewConfig) {

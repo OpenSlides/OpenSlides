@@ -97,7 +97,6 @@ export class ViewUser extends BaseProjectableViewModel implements Searchable {
         return this.user && !!this.user.last_email_send;
     }
 
-    // TODO read config values for "users_sort_by"
     /**
      * Getter for the short name (Title, given name, surname)
      *
@@ -111,16 +110,6 @@ export class ViewUser extends BaseProjectableViewModel implements Searchable {
         const title = this.title ? this.title.trim() : '';
         const firstName = this.first_name ? this.first_name.trim() : '';
         const lastName = this.last_name ? this.last_name.trim() : '';
-
-        // TODO need DS adjustment first first
-        // if (this.DS.getConfig('users_sort_by').value === 'last_name') {
-        //     if (lastName && firstName) {
-        //         shortName += `${lastName}, ${firstName}`;
-        //     } else {
-        //         shortName += lastName || firstName;
-        //     }
-        // }
-
         let shortName = `${firstName} ${lastName}`;
 
         if (shortName.length <= 1) {
