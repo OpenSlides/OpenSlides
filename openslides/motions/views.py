@@ -157,7 +157,13 @@ class MotionViewSet(ModelViewSet):
             # Remove fields that the user is not allowed to send.
             # The list() is required because we want to use del inside the loop.
             keys = list(request.data.keys())
-            whitelist = ["title", "text", "reason", "category_id"]
+            whitelist = [
+                "title",
+                "text",
+                "reason",
+                "category_id",
+                "statute_paragraph_id",
+            ]
             if parent_motion is not None:
                 # For creating amendments.
                 whitelist.extend(
