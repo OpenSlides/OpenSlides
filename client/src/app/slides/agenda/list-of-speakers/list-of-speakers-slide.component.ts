@@ -1,0 +1,28 @@
+import { Component } from '@angular/core';
+
+import { BaseSlideComponent } from 'app/slides/base-slide-component';
+import { ListOfSpeakersSlideData } from './list-of-speakers-slide-data';
+import { CollectionStringMapperService } from 'app/core/core-services/collectionStringMapper.service';
+import { isBaseAgendaContentObjectRepository } from 'app/core/repositories/base-agenda-content-object-repository';
+
+@Component({
+    selector: 'os-list-of-speakers-slide',
+    templateUrl: './list-of-speakers-slide.component.html',
+    styleUrls: ['./list-of-speakers-slide.component.scss']
+})
+export class ListOfSpeakersSlideComponent extends BaseSlideComponent<ListOfSpeakersSlideData> {
+    public constructor(private collectionStringMapperService: CollectionStringMapperService) {
+        super();
+    }
+
+    public getTitle(): string {
+        const numberPrefix = this.data.data.item_number ? `${this.data.data.item_number} · ` : '';
+        const repo = this.collectionStringMapperService.getRepository(this.data.data.content_object_collection);
+
+        if (isBaseAgendaContentObjectRepository(repo)) {
+            return numberPrefix + repo.getAgendaTitle(this.data.data.title_information);
+        } else {
+            throw new Error('The content object has no agenda based repository!');
+        }
+    }
+}

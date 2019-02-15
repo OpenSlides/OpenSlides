@@ -97,7 +97,7 @@ export class ViewMediafile extends BaseProjectableViewModel implements Searchabl
             }),
             slideOptions: [],
             projectionDefaultName: 'mediafiles',
-            getTitle: () => this.getTitle()
+            getDialogTitle: () => this.getTitle()
         };
     }
 

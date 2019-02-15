@@ -40,6 +40,8 @@ export class ViewMotionBlock extends BaseAgendaViewModel implements Searchable {
      * This is set by the repository
      */
     public getVerboseName;
+    public getAgendaTitle;
+    public getAgendaTitleWithType;
 
     public constructor(motionBlock: MotionBlock, agendaItem?: ViewItem) {
         super(MotionBlock.COLLECTIONSTRING);

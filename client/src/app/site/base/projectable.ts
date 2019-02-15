@@ -8,7 +8,7 @@ export function isProjectorElementBuildDeskriptor(obj: any): obj is ProjectorEle
         !!deskriptor &&
         deskriptor.slideOptions !== undefined &&
         deskriptor.getBasicProjectorElement !== undefined &&
-        deskriptor.getTitle !== undefined
+        deskriptor.getDialogTitle !== undefined
     );
 }
 
@@ -20,7 +20,7 @@ export interface ProjectorElementBuildDeskriptor {
     /**
      * The title to show in the projection dialog
      */
-    getTitle(): string;
+    getDialogTitle(): string;
 }
 
 export function isProjectable(obj: any): obj is Projectable {

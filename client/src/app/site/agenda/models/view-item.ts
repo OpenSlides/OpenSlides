@@ -2,6 +2,7 @@ import { BaseViewModel } from '../../base/base-view-model';
 import { Item, itemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { Speaker, SpeakerState } from 'app/shared/models/agenda/speaker';
 import { BaseAgendaViewModel, isAgendaBaseModel } from 'app/site/base/base-agenda-view-model';
+import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 
 export class ViewItem extends BaseViewModel {
     public static COLLECTIONSTRING = Item.COLLECTIONSTRING;
@@ -111,36 +112,25 @@ export class ViewItem extends BaseViewModel {
      * This is set by the repository
      */
     public getVerboseName;
+    public getTitle;
+    public getListTitle;
+
+    public listOfSpeakersSlide: ProjectorElementBuildDeskriptor = {
+        getBasicProjectorElement: options => ({
+            name: 'agenda/list-of-speakers',
+            id: this.id,
+            getIdentifiers: () => ['name', 'id']
+        }),
+        slideOptions: [],
+        projectionDefaultName: 'agenda_list_of_speakers',
+        getDialogTitle: () => this.getTitle()
+    };
 
     public constructor(item: Item, contentObject: BaseAgendaViewModel) {
         super(Item.COLLECTIONSTRING);
         this._item = item;
         this._contentObject = contentObject;
     }
-
-    public getTitle = () => {
-        if (this.contentObject) {
-            return this.contentObject.getAgendaTitle();
-        } else {
-            return this.item ? this.item.title : null;
-        }
-    };
-
-    /**
-     * Create the list view title.
-     * If a number was given, 'whitespac-dot-whitespace' will be added to the prefix number
-     *
-     * @returns the agenda list title as string
-     */
-    public getListTitle = () => {
-        const numberPrefix = this.itemNumber ? `${this.itemNumber} · ` : '';
-
-        if (this.contentObject) {
-            return numberPrefix + this.contentObject.getAgendaTitleWithType();
-        } else {
-            return numberPrefix + this.item.title_with_type;
-        }
-    };
 
     public updateDependencies(update: BaseViewModel): boolean {
         if (

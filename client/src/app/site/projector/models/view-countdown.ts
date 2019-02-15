@@ -64,7 +64,7 @@ export class ViewCountdown extends BaseProjectableViewModel {
                 }
             ],
             projectionDefaultName: 'countdowns',
-            getTitle: () => this.getTitle()
+            getDialogTitle: () => this.getTitle()
         };
     }
 }

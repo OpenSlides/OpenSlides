@@ -6,7 +6,7 @@
             <span *ngIf="currentListOfSpeakers">Current list of speakers</span>
         </h2>
     </div>
-    <div class="menu-slot" *osPerms="'agenda.can_manage_list_of_speakers'">
+    <div class="menu-slot" *osPerms="['agenda.can_manage_list_of_speakers', 'core.can_manage_projector']">
         <button type="button" mat-icon-button [matMenuTriggerFor]="speakerMenu"><mat-icon>more_vert</mat-icon></button>
     </div>
 </os-head-bar>
@@ -131,6 +131,8 @@
 </mat-card>
 
 <mat-menu #speakerMenu="matMenu">
+    <os-projector-button *ngIf="viewItem" [object]="viewItem.listOfSpeakersSlide" [menuItem]="true"></os-projector-button>
+
     <button mat-menu-item *ngIf="closedList" (click)="openSpeakerList()">
         <mat-icon>mic</mat-icon>
         <span translate>Open list of speakers</span>

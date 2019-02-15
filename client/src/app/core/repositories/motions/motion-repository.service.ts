@@ -4,7 +4,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
 
-import { BaseRepository } from '../base-repository';
 import { Category } from 'app/shared/models/motions/category';
 import { ChangeRecoMode, ViewMotion } from 'app/site/motions/models/view-motion';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
@@ -40,6 +39,7 @@ import { ViewItem } from 'app/site/agenda/models/view-item';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewTag } from 'app/site/tags/models/view-tag';
+import { BaseAgendaContentObjectRepository } from '../base-agenda-content-object-repository';
 
 /**
  * Repository Services for motions (and potentially categories)
@@ -54,7 +54,7 @@ import { ViewTag } from 'app/site/tags/models/view-tag';
 @Injectable({
     providedIn: 'root'
 })
-export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> {
+export class MotionRepositoryService extends BaseAgendaContentObjectRepository<ViewMotion, Motion> {
     /**
      * Creates a MotionRepository
      *
@@ -92,6 +92,28 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         ]);
     }
 
+    public getAgendaTitle = (motion: Partial<Motion> | Partial<ViewMotion>) => {
+        // if the identifier is set, the title will be 'Motion <identifier>'.
+        if (motion.identifier) {
+            return this.translate.instant('Motion') + ' ' + motion.identifier;
+        } else {
+            return motion.title;
+        }
+    };
+
+    public getAgendaTitleWithType = (motion: Partial<Motion> | Partial<ViewMotion>) => {
+        // Append the verbose name only, if not the special format 'Motion <identifier>' is used.
+        if (motion.identifier) {
+            return this.translate.instant('Motion') + ' ' + motion.identifier;
+        } else {
+            return motion.title + ' (' + this.getVerboseName() + ')';
+        }
+    };
+
+    public getVerboseName = (plural: boolean = false) => {
+        return this.translate.instant(plural ? 'Motions' : 'Motion');
+    };
+
     /**
      * Converts a motion to a ViewMotion and adds it to the store.
      *
@@ -127,26 +149,10 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
             tags,
             parent
         );
-        viewMotion.getVerboseName = (plural: boolean = false) => {
-            return this.translate.instant(plural ? 'Motions' : 'Motion');
-        };
-        viewMotion.getAgendaTitle = () => {
-            // if the identifier is set, the title will be 'Motion <identifier>'.
-            if (viewMotion.identifier) {
-                return this.translate.instant('Motion') + ' ' + viewMotion.identifier;
-            } else {
-                return viewMotion.getTitle();
-            }
-        };
+        viewMotion.getVerboseName = this.getVerboseName;
+        viewMotion.getAgendaTitle = () => this.getAgendaTitle(viewMotion);
         viewMotion.getProjectorTitle = viewMotion.getAgendaTitle;
-        viewMotion.getAgendaTitleWithType = () => {
-            // Append the verbose name only, if not the special format 'Motion <identifier>' is used.
-            if (viewMotion.identifier) {
-                return this.translate.instant('Motion') + ' ' + viewMotion.identifier;
-            } else {
-                return viewMotion.getTitle() + ' (' + viewMotion.getVerboseName() + ')';
-            }
-        };
+        viewMotion.getAgendaTitleWithType = () => this.getAgendaTitleWithType(viewMotion);
         return viewMotion;
     }
 

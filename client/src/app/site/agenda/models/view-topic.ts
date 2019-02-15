@@ -53,6 +53,8 @@ export class ViewTopic extends BaseAgendaViewModel {
      * This is set by the repository
      */
     public getVerboseName;
+    public getAgendaTitle;
+    public getAgendaTitleWithType;
 
     public constructor(topic: Topic, attachments?: ViewMediafile[], item?: ViewItem) {
         super(Topic.COLLECTIONSTRING);
@@ -68,11 +70,6 @@ export class ViewTopic extends BaseAgendaViewModel {
     public getAgendaItem(): ViewItem {
         return this.agendaItem;
     }
-
-    public getAgendaTitleWithType = () => {
-        // Do not append ' (Topic)' to the title.
-        return this.getAgendaTitle();
-    };
 
     /**
      * Formats the category for search
@@ -104,7 +101,7 @@ export class ViewTopic extends BaseAgendaViewModel {
             }),
             slideOptions: [],
             projectionDefaultName: 'topics',
-            getTitle: () => this.getTitle()
+            getDialogTitle: () => this.getTitle()
         };
     }
 

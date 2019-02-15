@@ -580,7 +580,7 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
                 }
             ],
             projectionDefaultName: 'motions',
-            getTitle: this.getAgendaTitle
+            getDialogTitle: this.getAgendaTitle
         };
     }
 

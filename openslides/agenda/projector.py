@@ -1,9 +1,11 @@
 from collections import defaultdict
 from typing import Any, Dict, List, Tuple
 
+from ..users.projector import get_user_name
 from ..utils.projector import (
     AllData,
     ProjectorElementException,
+    get_config,
     register_projector_slide,
 )
 
@@ -75,19 +77,56 @@ def list_of_speakers_slide(
 
     Returns all usernames, that are on the list of speaker of a slide.
     """
-    item_id = element.get("id") or 0  # item_id 0 means current_list_of_speakers
+    item_id = element.get("id")
 
-    # TODO: handle item_id == 0
+    if item_id is None:
+        raise ProjectorElementException("id is required for list of speakers slide")
 
     try:
         item = all_data["agenda/item"][item_id]
     except KeyError:
         raise ProjectorElementException(f"Item {item_id} does not exist")
 
-    user_ids = []
+    # Partition speaker objects to waiting, current and finished
+    speakers_waiting = []
+    speakers_finished = []
+    current_speaker = None
     for speaker in item["speakers"]:
-        user_ids.append(speaker["user"])
-    return {"user_ids": user_ids}
+        user = get_user_name(all_data, speaker["user_id"])
+        formatted_speaker = {
+            "user": user,
+            "marked": speaker["marked"],
+            "weight": speaker["weight"],
+            "end_time": speaker["end_time"],
+        }
+
+        if speaker["begin_time"] is None and speaker["end_time"] is None:
+            speakers_waiting.append(formatted_speaker)
+        elif speaker["begin_time"] is not None and speaker["end_time"] is None:
+            current_speaker = formatted_speaker
+        else:
+            speakers_finished.append(formatted_speaker)
+
+    # sort speakers
+    speakers_waiting = sorted(speakers_waiting, key=lambda s: s["weight"])
+    speakers_finished = sorted(speakers_finished, key=lambda s: s["end_time"])
+
+    number_of_last_speakers = get_config(all_data, "agenda_show_last_speakers")
+    if number_of_last_speakers == 0:
+        speakers_finished = []
+    else:
+        speakers_finished = speakers_finished[
+            -number_of_last_speakers:
+        ]  # Take the last speakers
+
+    return {
+        "waiting": speakers_waiting,
+        "current": current_speaker,
+        "finished": speakers_finished,
+        "content_object_collection": item["content_object"]["collection"],
+        "title_information": item["title_information"],
+        "item_number": item["item_number"],
+    }
 
 
 def current_list_of_speakers_slide(

@@ -520,32 +520,8 @@ class Motion(RESTModelMixin, models.Model):
     """
     agenda_item_update_information: Dict[str, Any] = {}
 
-    def get_agenda_title(self):
-        """
-        Return the title string for the agenda.
-
-        If the identifier is given, the title consists of the motion verbose name
-        and the identifier.
-        Note: It has to be the same return value like in JavaScript.
-        """
-        if self.identifier:
-            title = f"{self._meta.verbose_name} {self.identifier}"
-        else:
-            title = self.title
-        return title
-
-    def get_agenda_title_with_type(self):
-        """
-        Return a title for the agenda with the type or the modified title if the
-        identifier is set..
-
-        Note: It has to be the same return value like in JavaScript.
-        """
-        if self.identifier:
-            title = f"{self._meta.verbose_name} {self.identifier}"
-        else:
-            title = f"{self.title} ({self._meta.verbose_name})"
-        return title
+    def get_agenda_title_information(self):
+        return {"title": self.title, "identifier": self.identifier}
 
     @property
     def agenda_item(self):
@@ -908,11 +884,8 @@ class MotionBlock(RESTModelMixin, models.Model):
         """
         return self.agenda_item.pk
 
-    def get_agenda_title(self):
-        return self.title
-
-    def get_agenda_title_with_type(self):
-        return f"{self.get_agenda_title()} ({self._meta.verbose_name})"
+    def get_agenda_title_information(self):
+        return {"title": self.title}
 
 
 class MotionLog(RESTModelMixin, models.Model):

@@ -77,7 +77,13 @@ class RetrieveItem(TestCase):
         self.assertEqual(
             sorted(response.data.keys()),
             sorted(
-                ("id", "title", "speakers", "speaker_list_closed", "content_object")
+                (
+                    "id",
+                    "title_information",
+                    "speakers",
+                    "speaker_list_closed",
+                    "content_object",
+                )
             ),
         )
         forbidden_keys = (

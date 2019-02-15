@@ -1,21 +1,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TopicsTopicSlideComponent } from './topics-topic-slide.component';
+import { TopicSlideComponent } from './topic-slide.component';
 import { E2EImportsModule } from 'e2e-imports.module';
 
-describe('TopicsTopicSlideComponent', () => {
-    let component: TopicsTopicSlideComponent;
-    let fixture: ComponentFixture<TopicsTopicSlideComponent>;
+describe('TopicSlideComponent', () => {
+    let component: TopicSlideComponent;
+    let fixture: ComponentFixture<TopicSlideComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [E2EImportsModule],
-            declarations: [TopicsTopicSlideComponent]
+            declarations: [TopicSlideComponent]
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(TopicsTopicSlideComponent);
+        fixture = TestBed.createComponent(TopicSlideComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

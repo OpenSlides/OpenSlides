@@ -56,7 +56,7 @@
         <div class="queue">
             <h5 translate>History</h5>
             <p *ngFor="let elements of projector?.elements_history">
-                {{ getElementDescription(elements[0]) }}
+                {{ getSlideTitle(elements[0]) }}
             </p>
         </div>
 
@@ -70,7 +70,7 @@
                         <button type="button" mat-icon-button (click)="unprojectCurrent(element)">
                             <mat-icon>videocam</mat-icon>
                         </button>
-                        {{ getElementDescription(element) }}
+                        {{ getSlideTitle(element) }}
                     </mat-list-item>
                 </mat-list>
             </div>
@@ -142,7 +142,7 @@
                         <mat-icon>drag_indicator</mat-icon>
                     </div>
                     <div class="name">
-                        {{ i+1 }}.&nbsp;<span>{{ getElementDescription(element) }}</span>
+                        {{ i+1 }}.&nbsp;<span>{{ getSlideTitle(element) }}</span>
                     </div>
                     <div class="button-right">
                         <div>

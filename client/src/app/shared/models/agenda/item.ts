@@ -29,8 +29,7 @@ export class Item extends BaseModel<Item> {
 
     public id: number;
     public item_number: string;
-    public title: string;
-    public title_with_type: string;
+    public title_information: object;
     public comment: string;
     public closed: boolean;
     public type: number;

@@ -16,7 +16,7 @@ def listen_to_related_object_post_save(sender, instance, created, **kwargs):
     Do not run caching and autoupdate if the instance has a key
     skip_autoupdate in the agenda_item_update_information container.
     """
-    if hasattr(instance, "get_agenda_title"):
+    if hasattr(instance, "get_agenda_title_information"):
         if created:
             attrs = {}
             for attr in ("type", "parent_id", "comment", "duration", "weight"):

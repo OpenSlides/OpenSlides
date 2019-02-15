@@ -23,6 +23,10 @@ export class ViewAssignment extends BaseAgendaViewModel {
         return this._assignment;
     }
 
+    public get title(): string {
+        return this.assignment.title;
+    }
+
     public get candidates(): ViewUser[] {
         return this._relatedUser;
     }
@@ -50,6 +54,8 @@ export class ViewAssignment extends BaseAgendaViewModel {
      * This is set by the repository
      */
     public getVerboseName;
+    public getAgendaTitle;
+    public getAgendaTitleWithType;
 
     public constructor(assignment: Assignment, relatedUser?: ViewUser[], agendaItem?: ViewItem, tags?: ViewTag[]) {
         super(Assignment.COLLECTIONSTRING);
@@ -68,7 +74,7 @@ export class ViewAssignment extends BaseAgendaViewModel {
     }
 
     public getTitle = () => {
-        return this.assignment.title;
+        return this.title;
     };
 
     public formatForSearch(): SearchRepresentation {
@@ -88,7 +94,7 @@ export class ViewAssignment extends BaseAgendaViewModel {
             }),
             slideOptions: [],
             projectionDefaultName: 'assignments',
-            getTitle: () => this.getTitle()
+            getDialogTitle: () => this.getTitle()
         };
     }
 }
