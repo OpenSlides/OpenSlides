@@ -75,7 +75,8 @@ export class HtmlToPdfService {
      */
     private classStyles = {
         delete: ['color:red', 'text-decoration:line-through'],
-        insert: ['color:green', 'text-decoration:underline']
+        insert: ['color:green', 'text-decoration:underline'],
+        paragraphcontext: ['color:grey']
     };
 
     /**
@@ -125,7 +126,6 @@ export class HtmlToPdfService {
             const parsedElement = this.parseElement(child);
             docDef.push(parsedElement);
         }
-
         return docDef;
     }
 
@@ -185,7 +185,11 @@ export class HtmlToPdfService {
                 const children = this.parseChildren(element, styles);
 
                 // this introduces a bug with rendering sub-lists in PDF
-                if (this.lineNumberingMode === LineNumberingMode.Outside && !this.isInsideAList(element)) {
+                if (
+                    this.lineNumberingMode === LineNumberingMode.Outside &&
+                    !this.isInsideAList(element) &&
+                    !classes.includes('insert')
+                ) {
                     newParagraph = this.create('stack');
                     newParagraph.stack = children;
                 } else {
@@ -193,20 +197,28 @@ export class HtmlToPdfService {
                     newParagraph.text = children;
                 }
 
+                newParagraph.margin = [0, 0, 0, 0];
+                if (this.lineNumberingMode === LineNumberingMode.Outside) {
+                    // that is usually the case for inserted change which should appear
+                    // under a set of line numbers with correct alignment
+                    if (classes.includes('insert')) {
+                        newParagraph.margin[0] = 20;
+                        newParagraph.margin[1] = this.P_MARGIN_BOTTOM;
+                        newParagraph.margin[3] = this.P_MARGIN_BOTTOM;
+                    }
+                }
+
                 if (classes.includes('os-split-before')) {
                     newParagraph.listType = 'none';
-                } else {
-                    newParagraph.marginBottom = this.getMarginBottom(nodeName);
+                } else if (this.isInsideAList(element)) {
+                    newParagraph.margin[3] = this.getMarginBottom(nodeName);
                 }
 
                 newParagraph.lineHeight = this.LINE_HEIGHT;
-
-                const implicitStyles = this.computeStyle(this.elementStyles[nodeName]);
-
                 newParagraph = {
                     ...newParagraph,
                     ...this.computeStyle(styles),
-                    ...implicitStyles
+                    ...this.computeStyle(this.elementStyles[nodeName])
                 };
                 break;
             }
@@ -477,7 +489,7 @@ export class HtmlToPdfService {
      * Recursive helper function to determine if the element is inside a list
      *
      * @param element the current html node
-     * @returns wheater the element is inside a list or not
+     * @returns wether the element is inside a list or not
      */
     private isInsideAList(element: Element): boolean {
         let parent = element.parentNode;

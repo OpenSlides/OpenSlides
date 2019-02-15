@@ -765,6 +765,7 @@
             [class.line-numbers-outside]="isLineNumberingOutside()"
             [class.amendment-context]="showAmendmentContext"
         >
+            <!-- TODO: everything here is required for PDF as well. Should be in a service -->
             <div class="amendment-context" *ngIf="showAmendmentContext">
                 <div [innerHTML]="getParentMotionRange(1, paragraph.paragraphLineFrom)" class="context"></div>
             </div>
@@ -782,9 +783,9 @@
                 <span translate>Line</span> {{ paragraph.diffLineFrom }} - {{ paragraph.diffLineTo - 1 }}:
             </h3>
 
-            <div class="paragraph-context" [innerHtml]="sanitizedText(paragraph.textPre)"></div>
+            <div class="paragraphcontext" [innerHtml]="sanitizedText(paragraph.textPre)"></div>
             <div [innerHtml]="sanitizedText(paragraph.text)"></div>
-            <div class="paragraph-context" [innerHtml]="sanitizedText(paragraph.textPost)"></div>
+            <div class="paragraphcontext" [innerHtml]="sanitizedText(paragraph.textPost)"></div>
 
             <div class="amendment-context" *ngIf="showAmendmentContext">
                 <div [innerHtml]="getParentMotionRange(paragraph.paragraphLineTo, null)"></div>
