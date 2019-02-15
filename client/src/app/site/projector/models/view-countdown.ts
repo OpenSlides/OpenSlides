@@ -16,6 +16,18 @@ export class ViewCountdown extends BaseProjectableViewModel {
         return this.countdown.id;
     }
 
+    public get running(): boolean {
+        return this.countdown.running;
+    }
+
+    public get default_time(): number {
+        return this.countdown.default_time;
+    }
+
+    public get countdown_time(): number {
+        return this.countdown.countdown_time;
+    }
+
     public get description(): string {
         return this.countdown.description;
     }
@@ -38,13 +50,19 @@ export class ViewCountdown extends BaseProjectableViewModel {
 
     public getSlide(): ProjectorElementBuildDeskriptor {
         return {
-            getBasicProjectorElement: () => ({
+            getBasicProjectorElement: options => ({
                 stable: true,
                 name: Countdown.COLLECTIONSTRING,
                 id: this.id,
                 getIdentifiers: () => ['name', 'id']
             }),
-            slideOptions: [],
+            slideOptions: [
+                {
+                    key: 'fullscreen',
+                    displayName: 'Fullscreen',
+                    default: false
+                }
+            ],
             projectionDefaultName: 'countdowns',
             getTitle: () => this.getTitle()
         };

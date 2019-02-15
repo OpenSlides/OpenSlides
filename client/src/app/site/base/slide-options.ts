@@ -1,10 +1,14 @@
-export interface SlideDecisionOption {
+interface BaseSlideOption {
     key: string;
     displayName: string;
-    default: string;
 }
 
-export interface SlideChoiceOption extends SlideDecisionOption {
+export interface SlideDecisionOption extends BaseSlideOption {
+    default: boolean;
+}
+
+export interface SlideChoiceOption extends BaseSlideOption {
+    default: string;
     choices: { value: string; displayName: string }[];
 }
 

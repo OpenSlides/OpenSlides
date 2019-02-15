@@ -1,6 +1,11 @@
 from typing import Any, Dict
 
-from ..utils.projector import AllData, register_projector_slide
+from ..utils.projector import (
+    AllData,
+    ProjectorElementException,
+    get_config,
+    register_projector_slide,
+)
 
 
 # Important: All functions have to be prune. This means, that thay can only
@@ -23,9 +28,16 @@ def countdown_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any
     countdown_id = element.get("id") or 1
 
     try:
-        return all_data["core/countdown"][countdown_id]
+        countdown = all_data["core/countdown"][countdown_id]
     except KeyError:
-        return {"error": f"Countdown {countdown_id} does not exist"}
+        raise ProjectorElementException(f"Countdown {countdown_id} does not exist")
+
+    return {
+        "description": countdown["description"],
+        "running": countdown["running"],
+        "countdown_time": countdown["countdown_time"],
+        "warning_time": get_config(all_data, "agenda_countdown_warning_time"),
+    }
 
 
 def message_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
@@ -44,7 +56,7 @@ def message_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
     try:
         return all_data["core/projector-message"][message_id]
     except KeyError:
-        return {"error": f"Message {message_id} does not exist"}
+        raise ProjectorElementException(f"Message {message_id} does not exist")
 
 
 def clock_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:

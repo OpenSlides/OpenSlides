@@ -12,8 +12,6 @@ export const allSlides: SlideManifest[] = [
         slide: 'topics/topic',
         path: 'topics/topic',
         loadChildren: './slides/agenda/topic/topics-topic-slide.module#TopicsTopicSlideModule',
-        scaleable: true,
-        scrollable: true,
         verboseName: 'Topic',
         elementIdentifiers: ['name', 'id'],
         canBeMappedToModel: true
@@ -22,8 +20,6 @@ export const allSlides: SlideManifest[] = [
         slide: 'motions/motion',
         path: 'motions/motion',
         loadChildren: './slides/motions/motion/motions-motion-slide.module#MotionsMotionSlideModule',
-        scaleable: true,
-        scrollable: true,
         verboseName: 'Motion',
         elementIdentifiers: ['name', 'id'],
         canBeMappedToModel: true
@@ -32,8 +28,6 @@ export const allSlides: SlideManifest[] = [
         slide: 'users/user',
         path: 'users/user',
         loadChildren: './slides/users/user/users-user-slide.module#UsersUserSlideModule',
-        scaleable: true,
-        scrollable: true,
         verboseName: 'Participant',
         elementIdentifiers: ['name', 'id'],
         canBeMappedToModel: true
@@ -42,8 +36,6 @@ export const allSlides: SlideManifest[] = [
         slide: 'core/clock',
         path: 'core/clock',
         loadChildren: './slides/core/clock/clock-slide.module#ClockSlideModule',
-        scaleable: false,
-        scrollable: false,
         verboseName: 'Clock',
         elementIdentifiers: ['name'],
         canBeMappedToModel: false
@@ -52,8 +44,6 @@ export const allSlides: SlideManifest[] = [
         slide: 'core/countdown',
         path: 'core/countdown',
         loadChildren: './slides/core/countdown/countdown-slide.module#CountdownSlideModule',
-        scaleable: false,
-        scrollable: false,
         verboseName: 'Countdown',
         elementIdentifiers: ['name', 'id'],
         canBeMappedToModel: true
@@ -62,8 +52,6 @@ export const allSlides: SlideManifest[] = [
         slide: 'core/projector-message',
         path: 'core/projector-message',
         loadChildren: './slides/core/projector-message/projector-message-slide.module#ProjectorMessageSlideModule',
-        scaleable: false,
-        scrollable: false,
         verboseName: 'Message',
         elementIdentifiers: ['name', 'id'],
         canBeMappedToModel: true
@@ -73,8 +61,6 @@ export const allSlides: SlideManifest[] = [
         path: 'agenda/current-list-of-speakers',
         loadChildren:
             './slides/agenda/current-list-of-speakers/agenda-current-list-of-speakers-slide.module#AgendaCurrentListOfSpeakersSlideModule',
-        scaleable: true,
-        scrollable: true,
         verboseName: 'Current list of speakers',
         elementIdentifiers: ['name', 'id'],
         canBeMappedToModel: false
@@ -84,8 +70,6 @@ export const allSlides: SlideManifest[] = [
         path: 'agenda/current-list-of-speakers-overlay',
         loadChildren:
             './slides/agenda/current-list-of-speakers-overlay/agenda-current-list-of-speakers-overlay-slide.module#AgendaCurrentListOfSpeakersOverlaySlideModule',
-        scaleable: false,
-        scrollable: false,
         verboseName: 'Current list of speakers overlay',
         elementIdentifiers: ['name', 'id'],
         canBeMappedToModel: false
@@ -94,8 +78,6 @@ export const allSlides: SlideManifest[] = [
         slide: 'assignments/assignment',
         path: 'assignments/assignment',
         loadChildren: './slides/assignments/assignment/assignment-slide.module#AssignmentSlideModule',
-        scaleable: true,
-        scrollable: true,
         verboseName: 'Election',
         elementIdentifiers: ['name', 'id'],
         canBeMappedToModel: true

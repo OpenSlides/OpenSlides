@@ -39,7 +39,7 @@ export class ViewProjectorMessage extends BaseProjectableViewModel {
 
     public getSlide(): ProjectorElementBuildDeskriptor {
         return {
-            getBasicProjectorElement: () => ({
+            getBasicProjectorElement: options => ({
                 stable: true,
                 name: ProjectorMessage.COLLECTIONSTRING,
                 id: this.id,

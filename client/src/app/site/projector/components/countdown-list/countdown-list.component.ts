@@ -10,9 +10,10 @@ import { BaseViewComponent } from '../../../base/base-view';
 import { ViewCountdown } from '../../models/view-countdown';
 import { CountdownRepositoryService } from 'app/core/repositories/projector/countdown-repository.service';
 import { Countdown } from 'app/shared/models/core/countdown';
+import { DurationService } from 'app/core/ui-services/duration.service';
 
 /**
- * List view for the statute paragraphs.
+ * List view for countdowns.
  */
 @Component({
     selector: 'os-countdown-list',
@@ -37,20 +38,20 @@ export class CountdownListComponent extends BaseViewComponent implements OnInit 
     public openId: number | null;
     public editId: number | null;
 
-    /**
-     */
     public constructor(
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
         private repo: CountdownRepositoryService,
         private formBuilder: FormBuilder,
-        private promptService: PromptService
+        private promptService: PromptService,
+        private durationService: DurationService
     ) {
         super(titleService, translate, matSnackBar);
 
         const form = {
-            description: ['', Validators.required]
+            description: ['', Validators.required],
+            default_time: ['', Validators.required]
         };
         this.createForm = this.formBuilder.group(form);
         this.updateForm = this.formBuilder.group(form);
@@ -75,7 +76,8 @@ export class CountdownListComponent extends BaseViewComponent implements OnInit 
         if (!this.countdownToCreate) {
             this.createForm.reset();
             this.createForm.setValue({
-                description: ''
+                description: '',
+                default_time: '1:00 m'
             });
             this.countdownToCreate = new Countdown();
         }
@@ -86,7 +88,17 @@ export class CountdownListComponent extends BaseViewComponent implements OnInit 
      */
     public create(): void {
         if (this.createForm.valid) {
-            this.countdownToCreate.patchValues(this.createForm.value as Countdown);
+            let default_time = this.durationService.stringToDuration(this.createForm.value.default_time, 'm');
+            if (default_time === 0) {
+                default_time = 60;
+            }
+
+            const newValues: Partial<Countdown> = {
+                description: this.createForm.value.description,
+                default_time: default_time
+            };
+            newValues.countdown_time = default_time;
+            this.countdownToCreate.patchValues(newValues);
             this.repo.create(this.countdownToCreate).then(() => {
                 this.countdownToCreate = null;
             }, this.raiseError);
@@ -101,7 +113,8 @@ export class CountdownListComponent extends BaseViewComponent implements OnInit 
         this.editId = countdown.id;
 
         this.updateForm.setValue({
-            description: countdown.description
+            description: countdown.description,
+            default_time: this.durationService.durationToString(countdown.default_time, 'm')
         });
     }
 
@@ -111,7 +124,18 @@ export class CountdownListComponent extends BaseViewComponent implements OnInit 
      */
     public onSaveButton(countdown: ViewCountdown): void {
         if (this.updateForm.valid) {
-            this.repo.update(this.updateForm.value as Partial<Countdown>, countdown).then(() => {
+            let default_time = this.durationService.stringToDuration(this.updateForm.value.default_time, 'm');
+            if (default_time === 0) {
+                default_time = 60;
+            }
+            const newValues: Partial<Countdown> = {
+                description: this.updateForm.value.description,
+                default_time: default_time
+            };
+            if (!countdown.running) {
+                newValues.countdown_time = default_time;
+            }
+            this.repo.update(newValues, countdown).then(() => {
                 this.openId = this.editId = null;
             }, this.raiseError);
         }
@@ -123,7 +147,7 @@ export class CountdownListComponent extends BaseViewComponent implements OnInit 
      * @param countdown The countdown to delete
      */
     public async onDeleteButton(countdown: ViewCountdown): Promise<void> {
-        const content = this.translate.instant('Delete') + ` ${countdown.description}?`;
+        const content = this.translate.instant('Delete countdown') + ` ${countdown.description}?`;
         if (await this.promptService.open('Are you sure?', content)) {
             this.repo.delete(countdown).then(() => (this.openId = this.editId = null), this.raiseError);
         }

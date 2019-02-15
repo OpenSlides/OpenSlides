@@ -12,6 +12,9 @@ import { Injectable } from '@angular/core';
  * // will also result in 70
  * const b = this.durationService.stringToDuration('01:10');
  *
+ * // will also result in 89 (interpret as seconds)
+ * const b = this.durationService.stringToDuration('01:20 m', 'm');
+ *
  * // will result in 0
  * const c = this.durationService.stringToDuration('01:10b');
  * ```
@@ -20,6 +23,9 @@ import { Injectable } from '@angular/core';
  * ```ts
  * // will result in 01:10 h
  * const a = this.durationService.durationToString(70);
+ *
+ * // will result in 00:30 m (30 is interpreted as seconds)
+ * const a = this.durationService.durationToString(30);
  * ```
  */
 @Injectable({
@@ -32,13 +38,16 @@ export class DurationService {
     public constructor() {}
 
     /**
-     * Transform a duration string to duration in minutes.
+     * Transform a duration string to duration in minutes or seconds. This depends on the
+     * provided suffix for the input.
      *
      * @param durationText the text to be transformed into a duration
-     * @returns time in minutes or 0 if values are below 0 or no parsable numbers
+     * @param suffix may be 'h' or 'm' for hour or minute. This character will be removed
+     * from the duration text.
+     * @returns time in minutes or seconds or 0 if values are below 0 or no parsable numbers
      */
-    public stringToDuration(durationText: string): number {
-        const splitDuration = durationText.replace('h', '').split(':');
+    public stringToDuration(durationText: string, suffix: 'h' | 'm' = 'h'): number {
+        const splitDuration = durationText.replace(suffix, '').split(':');
         let time: number;
         if (splitDuration.length > 1 && !isNaN(+splitDuration[0]) && !isNaN(+splitDuration[1])) {
             time = +splitDuration[0] * 60 + +splitDuration[1];
@@ -54,31 +63,18 @@ export class DurationService {
     }
 
     /**
-     * Converts a duration number (given in minutes)
-     * To a string in HH:MM format
+     * Converts a duration number (given in minutes or seconds)
      *
      * @param duration value in minutes
      * @returns a more human readable time representation
      */
-    public durationToString(duration: number): string {
-        const hours = Math.floor(duration / 60);
-        const minutes = `0${Math.floor(duration - hours * 60)}`.slice(-2);
-        if (!isNaN(+hours) && !isNaN(+minutes)) {
-            return `${hours}:${minutes} h`;
+    public durationToString(duration: number, suffix: 'h' | 'm' = 'h'): string {
+        const major = Math.floor(duration / 60);
+        const minor = `0${duration % 60}`.slice(-2);
+        if (!isNaN(+major) && !isNaN(+minor)) {
+            return `${major}:${minor} ${suffix}`;
         } else {
             return '';
         }
-    }
-
-    /**
-     * Converts a duration number (given in seconds)o a string in `MMM:SS` format
-     *
-     * @param time value in seconds
-     * @returns a more human readable time representation
-     */
-    public secondDurationToString(time: number): string {
-        const minutes = Math.floor(time / 60);
-        const seconds = Math.floor(time % 60);
-        return `${minutes}:${`0${seconds}`.slice(-2)}`;
     }
 }

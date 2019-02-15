@@ -342,6 +342,6 @@ export class SpeakerListComponent extends BaseViewComponent implements OnInit {
         const duration = Math.floor(
             (new Date(speaker.end_time).valueOf() - new Date(speaker.begin_time).valueOf()) / 1000
         );
-        return `${this.durationService.secondDurationToString(duration)} ${this.translate.instant('minutes')}`;
+        return `${this.durationService.durationToString(duration, 'm')} ${this.translate.instant('minutes')}`;
     }
 }

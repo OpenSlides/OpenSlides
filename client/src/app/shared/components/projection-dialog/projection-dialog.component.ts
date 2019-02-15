@@ -26,7 +26,7 @@ export type ProjectionDialogReturnType = [Projector[], IdentifiableProjectorElem
 export class ProjectionDialogComponent {
     public projectors: Projector[];
     private selectedProjectors: Projector[] = [];
-    public projectorElement: IdentifiableProjectorElement;
+    public optionValues: object = {};
     public options: SlideOptions;
 
     public constructor(
@@ -52,11 +52,9 @@ export class ProjectionDialogComponent {
             }
         }
 
-        this.projectorElement = this.projectorElementBuildDescriptor.getBasicProjectorElement();
-
         // Set option defaults
         this.projectorElementBuildDescriptor.slideOptions.forEach(option => {
-            this.projectorElement[option.key] = option.default;
+            this.optionValues[option.key] = option.default;
         });
 
         this.options = this.projectorElementBuildDescriptor.slideOptions;
@@ -88,7 +86,9 @@ export class ProjectionDialogComponent {
     }
 
     public onOk(): void {
-        this.dialogRef.close([this.selectedProjectors, this.projectorElement]);
+        let element = this.projectorElementBuildDescriptor.getBasicProjectorElement(this.optionValues);
+        element = { ...element, ...this.optionValues };
+        this.dialogRef.close([this.selectedProjectors, element]);
     }
 
     public onCancel(): void {

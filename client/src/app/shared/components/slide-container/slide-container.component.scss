@@ -4,8 +4,9 @@
 
     &.content {
         width: calc(100% - 100px);
-        margin-left: 50px;
-        margin-right: 50px;
+        position: absolute;
+        left: 50px;
+        top: 0;
     }
 }
 

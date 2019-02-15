@@ -1,10 +1,11 @@
 import { Injectable, Inject, Injector, NgModuleFactoryLoader, ComponentFactory, Type } from '@angular/core';
 
-import { SlideManifest, SlideOptions } from '../slide-manifest';
+import { SlideManifest, SlideDynamicConfiguration, Slide } from '../slide-manifest';
 import { SLIDE } from '../slide-token';
 import { SLIDE_MANIFESTS } from '../slide-manifest';
 import { BaseSlideComponent } from '../base-slide-component';
 import { ProjectorElement, IdentifiableProjectorElement } from 'app/shared/models/core/projector';
+import { allSlidesDynamicConfiguration } from '../all-slide-configurations';
 
 /**
  * Cares about loading slides dynamically.
@@ -12,6 +13,7 @@ import { ProjectorElement, IdentifiableProjectorElement } from 'app/shared/model
 @Injectable()
 export class SlideManager {
     private loadedSlides: { [name: string]: SlideManifest } = {};
+    private loadedSlideConfigurations: { [name: string]: SlideDynamicConfiguration & Slide } = {};
 
     public constructor(
         @Inject(SLIDE_MANIFESTS) private manifests: SlideManifest[],
@@ -20,6 +22,9 @@ export class SlideManager {
     ) {
         this.manifests.forEach(slideManifest => {
             this.loadedSlides[slideManifest.slide] = slideManifest;
+        });
+        allSlidesDynamicConfiguration.forEach(config => {
+            this.loadedSlideConfigurations[config.slide] = config;
         });
     }
 
@@ -42,12 +47,13 @@ export class SlideManager {
      * @param slideName The slide
      * @returns SlideOptions for the requested slide.
      */
-    public getSlideOptions(slideName: string): SlideOptions {
-        return this.getManifest(slideName);
+    public getSlideConfiguration(slideName: string): SlideDynamicConfiguration {
+        if (!this.loadedSlideConfigurations[slideName]) {
+            throw new Error(`Could not find slide for "${slideName}"`);
+        }
+        return this.loadedSlideConfigurations[slideName];
     }
 
-    /**
-     */
     public getIdentifialbeProjectorElement(element: ProjectorElement): IdentifiableProjectorElement {
         const identifiableElement: IdentifiableProjectorElement = element as IdentifiableProjectorElement;
         const identifiers = this.getManifest(element.name).elementIdentifiers.map(x => x); // map to copy.

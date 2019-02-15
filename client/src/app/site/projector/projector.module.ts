@@ -10,6 +10,7 @@ import { ProjectorDataService } from './services/projector-data.service';
 import { CurrentListOfSpeakersSlideService } from './services/current-list-of-of-speakers-slide.service';
 import { CountdownListComponent } from './components/countdown-list/countdown-list.component';
 import { ProjectorMessageListComponent } from './components/projector-message-list/projector-message-list.component';
+import { CountdownControlsComponent } from './components/countdown-controls/countdown-controls.component';
 
 @NgModule({
     providers: [ClockSlideService, ProjectorDataService, CurrentListOfSpeakersSlideService],
@@ -18,7 +19,8 @@ import { ProjectorMessageListComponent } from './components/projector-message-li
         ProjectorListComponent,
         ProjectorDetailComponent,
         CountdownListComponent,
-        ProjectorMessageListComponent
+        ProjectorMessageListComponent,
+        CountdownControlsComponent
     ]
 })
 export class ProjectorModule {}

@@ -1,0 +1,12 @@
+<div *ngIf="countdown">
+    <os-countdown-time [countdown]="countdown" [warningTime]="warningTime"></os-countdown-time>
+    <button type="button" [disabled]="!canStop()" mat-icon-button (click)="stop($event)">
+        <mat-icon>stop</mat-icon>
+    </button>
+    <button *ngIf="!countdown.running" type="button" mat-icon-button (click)="start($event)">
+        <mat-icon>play_arrow</mat-icon>
+    </button>
+    <button *ngIf="countdown.running" type="button" mat-icon-button (click)="pause($event)">
+        <mat-icon>pause</mat-icon>
+    </button>
+</div>

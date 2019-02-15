@@ -1,0 +1,5 @@
+<div id="countdown" [ngClass]="{
+        'negative': seconds <= 0,
+        'warning_time': seconds <= warningTime && seconds > 0 }">
+    {{ time }}
+</div>

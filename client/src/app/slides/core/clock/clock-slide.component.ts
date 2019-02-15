@@ -15,6 +15,8 @@ export class ClockSlideComponent extends BaseSlideComponent<{}> implements OnIni
 
     private servertimeSubscription: Subscription | null = null;
 
+    private clockInterval: any;
+
     public constructor(private servertimeService: ServertimeService) {
         super();
     }
@@ -26,7 +28,7 @@ export class ClockSlideComponent extends BaseSlideComponent<{}> implements OnIni
             .subscribe(() => this.updateClock());
 
         // Update clock every 10 seconds.
-        setInterval(() => this.updateClock(), 10 * 1000);
+        this.clockInterval = setInterval(() => this.updateClock(), 10 * 1000);
     }
 
     private updateClock(): void {
@@ -41,6 +43,9 @@ export class ClockSlideComponent extends BaseSlideComponent<{}> implements OnIni
     public ngOnDestroy(): void {
         if (this.servertimeSubscription) {
             this.servertimeSubscription.unsubscribe();
+        }
+        if (this.clockInterval) {
+            clearInterval(this.clockInterval);
         }
     }
 }

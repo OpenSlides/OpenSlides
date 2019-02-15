@@ -52,9 +52,9 @@ export class ProjectorService {
         obj: Projectable | ProjectorElementBuildDeskriptor | IdentifiableProjectorElement
     ): IdentifiableProjectorElement {
         if (isProjectable(obj)) {
-            return obj.getSlide().getBasicProjectorElement();
+            return obj.getSlide().getBasicProjectorElement({});
         } else if (isProjectorElementBuildDeskriptor(obj)) {
-            return obj.getBasicProjectorElement();
+            return obj.getBasicProjectorElement({});
         } else {
             return obj;
         }
@@ -133,7 +133,9 @@ export class ProjectorService {
         const element = this.getProjectorElement(obj);
 
         if (element.stable) {
-            // Just add this stable element
+            // remove the same element, if it is currently projected
+            projector.removeElements(element);
+            // Add this stable element
             projector.addElement(element);
             await this.projectRequest(projector, projector.elements);
         } else {

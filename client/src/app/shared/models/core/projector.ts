@@ -1,11 +1,18 @@
 import { BaseModel } from '../base/base-model';
 
+export interface ProjectorElementOptions {
+    /**
+     * Additional data.
+     */
+    [key: string]: any;
+}
+
 /**
  * A projectorelement must have a name and optional attributes.
  * error is listed here, because this might be set by the server, if
  * something is wrong and I want you to be sensible about this.
  */
-export interface ProjectorElement {
+export interface ProjectorElement extends ProjectorElementOptions {
     /**
      * The name of the element.
      */
@@ -16,11 +23,6 @@ export interface ProjectorElement {
      * DO NOT read additional data (name is save).
      */
     error?: string;
-
-    /**
-     * Additional data.
-     */
-    [key: string]: any;
 }
 
 export interface IdentifiableProjectorElement extends ProjectorElement {

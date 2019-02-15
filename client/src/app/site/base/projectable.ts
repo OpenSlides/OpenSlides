@@ -1,5 +1,5 @@
 import { Displayable } from 'app/site/base/displayable';
-import { IdentifiableProjectorElement } from 'app/shared/models/core/projector';
+import { IdentifiableProjectorElement, ProjectorElementOptions } from 'app/shared/models/core/projector';
 import { SlideOptions } from './slide-options';
 
 export function isProjectorElementBuildDeskriptor(obj: any): obj is ProjectorElementBuildDeskriptor {
@@ -15,7 +15,7 @@ export function isProjectorElementBuildDeskriptor(obj: any): obj is ProjectorEle
 export interface ProjectorElementBuildDeskriptor {
     slideOptions: SlideOptions;
     projectionDefaultName?: string;
-    getBasicProjectorElement(): IdentifiableProjectorElement;
+    getBasicProjectorElement(options: ProjectorElementOptions): IdentifiableProjectorElement;
 
     /**
      * The title to show in the projection dialog

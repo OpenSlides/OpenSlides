@@ -188,7 +188,7 @@ export class ViewUser extends BaseProjectableViewModel implements Searchable {
 
     public getSlide(): ProjectorElementBuildDeskriptor {
         return {
-            getBasicProjectorElement: () => ({
+            getBasicProjectorElement: options => ({
                 name: User.COLLECTIONSTRING,
                 id: this.id,
                 getIdentifiers: () => ['name', 'id']
