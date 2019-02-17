@@ -809,6 +809,24 @@ describe('DiffService', () => {
             );
         }));
 
+        it('does not like splitting paragraphs too much, but respects line breaks between paragraphs', inject(
+            [DiffService],
+            (service: DiffService) => {
+                const before =
+                        '<P>Bavaria ipsum dolor sit amet o’ha wea nia ausgähd, kummt nia hoam i hob di narrisch gean helfgod ebba ded baddscher. Des so so, nia Biawambn back mas? Kaiwe Hetschapfah Trachtnhuat, a bravs.</P>',
+                    after =
+                        '<p>Bavaria ipsum dolor sit amet o’ha wea nia ausgähd, kummt nia hoam i hob di narrisch gean helfgod ebba ded baddscher.</p>\n<p>Des so so, nia Biawambn back mas? Kaiwe Hetschapfah Trachtnhuat, a bravs.';
+                const diff = service.diff(before, after);
+
+                expect(diff).toBe(
+                    '<P class="delete">Bavaria ipsum dolor sit amet o’ha wea nia ausgähd, kummt nia hoam i hob di narrisch gean helfgod ebba ded baddscher. Des so so, nia Biawambn back mas? Kaiwe Hetschapfah Trachtnhuat, a bravs.</P>' +
+                        '<P class="insert">Bavaria ipsum dolor sit amet o’ha wea nia ausgähd, kummt nia hoam i hob di narrisch gean helfgod ebba ded baddscher.</P>' +
+                        '<INS>\n</INS>' +
+                        '<P class="insert">Des so so, nia Biawambn back mas? Kaiwe Hetschapfah Trachtnhuat, a bravs.</P>'
+                );
+            }
+        ));
+
         it('does not repeat the last word (1)', inject([DiffService], (service: DiffService) => {
             const before = '<P>sem. Nulla consequat massa quis enim. </P>',
                 after = '<p>sem. Nulla consequat massa quis enim. TEST<br>\nTEST</p>';
