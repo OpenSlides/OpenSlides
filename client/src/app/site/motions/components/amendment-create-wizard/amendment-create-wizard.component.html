@@ -1,10 +1,22 @@
 <os-head-bar [nav]="false">
     <!-- Title -->
     <div class="title-slot"><h2 translate>New amendment</h2></div>
+    <div class="menu-slot">
+        <div *ngIf="matStepper.selectedIndex === 0">
+            <button mat-button [disabled]="contentForm.value.selectedParagraph === null" (click)="matStepper.next()">
+                <span class="upper" translate>Next</span>
+            </button>
+        </div>
+        <div *ngIf="matStepper.selectedIndex === 1">
+            <button type="button" mat-button (click)="saveAmendment()">
+                <span class="upper" translate>Create</span>
+            </button>
+        </div>
+    </div>
 </os-head-bar>
 
 <form [formGroup]="contentForm" (ngSubmit)="saveAmendment()" class="on-transition-fade">
-    <mat-horizontal-stepper linear>
+    <mat-horizontal-stepper #matStepper linear>
         <mat-step [completed]="contentForm.value.selectedParagraph">
             <ng-template matStepLabel>{{ 'Select paragraph' | translate }}</ng-template>
             <div>
@@ -21,16 +33,6 @@
                     <div class="paragraph-text motion-text" [innerHTML]="paragraph.safeHtml"></div>
                 </section>
             </div>
-            <div>
-                <button
-                    type="button"
-                    mat-button
-                    matStepperNext
-                    [disabled]="contentForm.value.selectedParagraph === null"
-                >
-                    <span translate>Next</span>
-                </button>
-            </div>
         </mat-step>
         <mat-step>
             <ng-template matStepLabel>{{ 'Change paragraph' | translate }}</ng-template>
@@ -42,11 +44,6 @@
             <h5 translate>Reason</h5>
             <!-- The HTML Editor -->
             <editor formControlName="reason" [init]="tinyMceSettings"></editor>
-
-            <div>
-                <button type="button" mat-button matStepperPrevious><span translate>Back</span></button>
-                <button type="button" mat-button (click)="saveAmendment()"><span translate>Create</span></button>
-            </div>
         </mat-step>
     </mat-horizontal-stepper>
 </form>
