@@ -16,6 +16,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core import mail
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
+from django.http.request import QueryDict
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
@@ -114,7 +115,8 @@ class UserViewSet(ModelViewSet):
                 self.permission_denied(request)
 
             # This is a hack to make request.data mutable. Otherwise fields can not be deleted.
-            request.data._mutable = True
+            if isinstance(request.data, QueryDict):
+                request.data._mutable = True
             # Remove fields that the user is not allowed to change.
             # The list() is required because we want to use del inside the loop.
             for key in list(request.data.keys()):

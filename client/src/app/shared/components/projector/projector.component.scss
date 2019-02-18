@@ -21,12 +21,12 @@
             margin-bottom: 20px;
             z-index: 1;
 
-            #logo {
+            .projector-logo-main {
+                height: 50px;
                 padding-left: 50px;
                 padding-top: 10px;
-                height: 50px;
-                margin-right: 25px;
                 float: left;
+                display: flex;
             }
 
             #eventdata {
