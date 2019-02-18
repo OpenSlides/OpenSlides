@@ -939,8 +939,8 @@ export class DiffService {
     private diffDetectBrokenDiffHtml(html: string): boolean {
         // If other HTML tags are contained within INS/DEL (e.g. "<ins>Test</p></ins>"), let's better be cautious
         // The "!!(found=...)"-construction is only used to make jshint happy :)
-        const findDel = /<del>(.*?)<\/del>/gi,
-            findIns = /<ins>(.*?)<\/ins>/gi;
+        const findDel = /<del>([\s\S]*?)<\/del>/gi,
+            findIns = /<ins>([\s\S]*?)<\/ins>/gi;
         let found, inner;
         while (!!(found = findDel.exec(html))) {
             inner = found[1].replace(/<br[^>]*>/gi, '');
