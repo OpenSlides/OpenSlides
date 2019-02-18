@@ -3,12 +3,13 @@ import { MatSnackBar } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { Title } from '@angular/platform-browser';
 
+import { Assignment } from 'app/shared/models/assignments/assignment';
 import { AssignmentFilterListService } from '../services/assignment-filter.service';
+import { AssignmentSortListService } from '../services/assignment-sort-list.service';
 import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
 import { ListViewBaseComponent } from '../../base/list-view-base';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewAssignment } from '../models/view-assignment';
-import { AssignmentSortListService } from '../services/assignment-sort-list.service';
 
 /**
  * Listview for the assignments
@@ -19,7 +20,7 @@ import { AssignmentSortListService } from '../services/assignment-sort-list.serv
     templateUrl: './assignment-list.component.html',
     styleUrls: ['./assignment-list.component.scss']
 })
-export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignment> implements OnInit {
+export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignment, Assignment> implements OnInit {
     /**
      * Constructor.
      * @param titleService
@@ -39,7 +40,7 @@ export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignmen
         public filterService: AssignmentFilterListService,
         public sortService: AssignmentSortListService
     ) {
-        super(titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, filterService, sortService);
         // activate multiSelect mode for this listview
         this.canMultiSelect = true;
     }
@@ -52,14 +53,6 @@ export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignmen
     public ngOnInit(): void {
         super.setTitle(this.translate.instant('Elections'));
         this.initTable();
-
-        this.filterService.filter().subscribe(filteredData => {
-            this.sortService.data = filteredData;
-        });
-        this.sortService.sort().subscribe(sortedData => {
-            this.dataSource.data = sortedData;
-            this.checkSelection();
-        });
     }
 
     /**

@@ -25,7 +25,7 @@ import { ViewMotionBlock } from '../../models/view-motion-block';
     templateUrl: './motion-block-list.component.html',
     styleUrls: ['./motion-block-list.component.scss']
 })
-export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBlock> implements OnInit {
+export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBlock, MotionBlock> implements OnInit {
     /**
      * Holds the create form
      */

@@ -5,8 +5,11 @@ import { ViewChild } from '@angular/core';
 
 import { BaseViewComponent } from './base-view';
 import { BaseViewModel } from './base-view-model';
+import { BaseSortListService } from 'app/core/ui-services/base-sort-list.service';
+import { BaseFilterListService } from 'app/core/ui-services/base-filter-list.service';
+import { BaseModel } from 'app/shared/models/base/base-model';
 
-export abstract class ListViewBaseComponent<V extends BaseViewModel> extends BaseViewComponent {
+export abstract class ListViewBaseComponent<V extends BaseViewModel, M extends BaseModel> extends BaseViewComponent {
     /**
      * The data source for a table. Requires to be initialized with a BaseViewModel
      */
@@ -59,7 +62,13 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel> extends Bas
      * @param translate the translate service
      * @param matSnackBar
      */
-    public constructor(titleService: Title, translate: TranslateService, matSnackBar: MatSnackBar) {
+    public constructor(
+        titleService: Title,
+        translate: TranslateService,
+        matSnackBar: MatSnackBar,
+        public filterService?: BaseFilterListService<M, V>,
+        public sortService?: BaseSortListService<V>
+    ) {
         super(titleService, translate, matSnackBar);
         this.selectedRows = [];
     }
@@ -72,6 +81,32 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel> extends Bas
     public initTable(): void {
         this.dataSource = new MatTableDataSource();
         this.dataSource.paginator = this.paginator;
+        if (this.filterService) {
+            this.onFilter();
+        }
+        if (this.sortService) {
+            this.onSort();
+        }
+    }
+
+    /**
+     * Standard filtering function. Sufficient for most list views but can be overwritten
+     */
+    protected onFilter(): void {
+        this.filterService.filter().subscribe(filteredData => (this.sortService.data = filteredData));
+    }
+
+    /**
+     * Standard sorting function. Siffucient for most list views but can be overwritten
+     */
+    protected onSort(): void {
+        this.sortService.sort().subscribe(sortedData => {
+            // the dataArray needs to be cleared (since angular 7)
+            // changes are not detected properly anymore
+            this.dataSource.data = [];
+            this.dataSource.data = sortedData;
+            this.checkSelection();
+        });
     }
 
     public onSortButton(itemProperty: string): void {

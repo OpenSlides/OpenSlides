@@ -92,7 +92,8 @@
                         </mat-basic-chip>
                     </div>
                     <!-- recommendation line -->
-                    <div *ngIf="motion.recommendation && motion.state.next_states_id.length > 0"
+                    <div
+                        *ngIf="motion.recommendation && motion.state.next_states_id.length > 0"
                         class="ellipsis-overflow white"
                     >
                         <mat-basic-chip class="bluegrey" [disabled]="true">

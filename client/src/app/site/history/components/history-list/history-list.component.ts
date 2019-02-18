@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { Title } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
-
 import { Subject } from 'rxjs';
+import { Title } from '@angular/platform-browser';
+
 import { TranslateService } from '@ngx-translate/core';
 
-import { ListViewBaseComponent } from 'app/site/base/list-view-base';
+import { History } from 'app/shared/models/core/history';
 import { HistoryRepositoryService } from 'app/core/repositories/history/history-repository.service';
 import { isDetailNavigable } from 'app/shared/models/base/detail-navigable';
+import { ListViewBaseComponent } from 'app/site/base/list-view-base';
 import { ViewHistory } from '../../models/view-history';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 
@@ -22,7 +23,7 @@ import { ViewModelStoreService } from 'app/core/core-services/view-model-store.s
     templateUrl: './history-list.component.html',
     styleUrls: ['./history-list.component.scss']
 })
-export class HistoryListComponent extends ListViewBaseComponent<ViewHistory> implements OnInit {
+export class HistoryListComponent extends ListViewBaseComponent<ViewHistory, History> implements OnInit {
     /**
      * Subject determine when the custom timestamp subject changes
      */
