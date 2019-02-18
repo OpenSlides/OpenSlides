@@ -2,6 +2,7 @@
     [mainButton]="isAllowed('changePersonal')"
     mainButtonIcon="edit"
     [nav]="false"
+    [goBack]="!isAllowed('seeOtherUsers')"
     [editMode]="editUser"
     (mainEvent)="setEditMode(!editUser)"
     (saveEvent)="saveUser()"
@@ -21,7 +22,7 @@
     </div>
 
     <mat-menu #userExtraMenu="matMenu">
-        <button mat-menu-item *ngIf="isAllowed('changePersonal')" (click)="changePassword()">
+        <button mat-menu-item *ngIf="isAllowed('changePassword')" (click)="changePassword()">
             <mat-icon>security</mat-icon>
             <span translate>Change password</span>
         </button>
@@ -40,7 +41,7 @@
     </mat-menu>
 </os-head-bar>
 
-<mat-card [ngClass]="editUser ? 'os-form-card' : 'os-card'" *osPerms="'users.can_see_name'">
+<mat-card [ngClass]="editUser ? 'os-form-card' : 'os-card'" *ngIf="isAllowed('seeName')">
     <form
         [ngClass]="{ 'mat-form-field-enabled': editUser }"
         [formGroup]="personalInfoForm"
@@ -156,7 +157,7 @@
                     matInput
                     placeholder="{{ 'Initial password' | translate }}"
                     formControlName="default_password"
-                    [value]="user.default_password"
+                    [value]="user.default_password || ''"
                 />
                 <mat-hint align="end">Generate</mat-hint>
                 <button
@@ -200,7 +201,7 @@
                     matInput
                     placeholder="{{ 'Comment' | translate }}"
                     formControlName="comment"
-                    [value]="user.comment"
+                    [value]="user.comment || ''"
                 />
                 <mat-hint translate>Only for internal notes.</mat-hint>
             </mat-form-field>
