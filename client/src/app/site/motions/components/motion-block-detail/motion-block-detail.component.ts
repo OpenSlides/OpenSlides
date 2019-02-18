@@ -23,7 +23,7 @@ import { OperatorService } from '../../../../core/core-services/operator.service
     templateUrl: './motion-block-detail.component.html',
     styleUrls: ['./motion-block-detail.component.scss']
 })
-export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion> implements OnInit {
+export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion, MotionBlock> implements OnInit {
     /**
      * Determines the block id from the given URL
      */

@@ -21,7 +21,7 @@ import { MatSnackBar } from '@angular/material';
     templateUrl: './tag-list.component.html',
     styleUrls: ['./tag-list.component.css']
 })
-export class TagListComponent extends ListViewBaseComponent<ViewTag> implements OnInit {
+export class TagListComponent extends ListViewBaseComponent<ViewTag, Tag> implements OnInit {
     public editTag = false;
     public newTag = false;
     public selectedTag: ViewTag;
@@ -55,7 +55,9 @@ export class TagListComponent extends ListViewBaseComponent<ViewTag> implements 
         super.setTitle('Tags');
         this.initTable();
         this.tagForm = new FormGroup({ name: new FormControl('', Validators.required) });
+        // TODO Tag has not yet sort or filtering functions
         this.repo.getViewModelListObservable().subscribe(newTags => {
+            this.dataSource.data = [];
             this.dataSource.data = newTags;
         });
     }

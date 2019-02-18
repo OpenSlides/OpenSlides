@@ -25,7 +25,7 @@ import { OperatorService } from 'app/core/core-services/operator.service';
     templateUrl: './mediafile-list.component.html',
     styleUrls: ['./mediafile-list.component.scss']
 })
-export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile> implements OnInit {
+export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile, Mediafile> implements OnInit {
     /**
      * Holds the actions for logos. Updated via an observable
      */
@@ -99,9 +99,9 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile>
         public sortService: MediafilesSortListService,
         private operator: OperatorService
     ) {
-        super(titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, filterService, sortService);
 
-        // embles multiSelection for this listView
+        // enables multiSelection for this listView
         this.canMultiSelect = true;
     }
 
@@ -116,14 +116,6 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile>
         this.fileEditForm = new FormGroup({
             title: new FormControl('', Validators.required),
             hidden: new FormControl()
-        });
-
-        this.filterService.filter().subscribe(filteredData => {
-            this.sortService.data = filteredData;
-        });
-
-        this.sortService.sort().subscribe(sortedData => {
-            this.dataSource.data = sortedData;
         });
 
         // Observe the logo actions

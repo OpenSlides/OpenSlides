@@ -19,7 +19,7 @@ import { Workflow } from 'app/shared/models/motions/workflow';
     templateUrl: './workflow-list.component.html',
     styleUrls: ['./workflow-list.component.scss']
 })
-export class WorkflowListComponent extends ListViewBaseComponent<ViewWorkflow> implements OnInit {
+export class WorkflowListComponent extends ListViewBaseComponent<ViewWorkflow, Workflow> implements OnInit {
     /**
      * Holds the new workflow title
      */

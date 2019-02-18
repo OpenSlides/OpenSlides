@@ -18,7 +18,7 @@ import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { ViewUser } from '../../models/view-user';
 import { ViewGroup } from '../../models/view-group';
-import { genders } from 'app/shared/models/users/user';
+import { genders, User } from 'app/shared/models/users/user';
 
 /**
  * Interface for the short editing dialog.
@@ -55,7 +55,7 @@ interface InfoDialog {
     templateUrl: './user-list.component.html',
     styleUrls: ['./user-list.component.scss']
 })
-export class UserListComponent extends ListViewBaseComponent<ViewUser> implements OnInit {
+export class UserListComponent extends ListViewBaseComponent<ViewUser, User> implements OnInit {
     /**
      * The reference to the template.
      */
@@ -147,7 +147,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
         private userPdf: UserPdfExportService,
         private dialog: MatDialog
     ) {
-        super(titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, filterService, sortService);
 
         // enable multiSelect for this listView
         this.canMultiSelect = true;
@@ -163,14 +163,6 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
     public ngOnInit(): void {
         super.setTitle(this.translate.instant('Participants'));
         this.initTable();
-
-        this.filterService.filter().subscribe(filteredData => {
-            this.sortService.data = filteredData;
-        });
-        this.sortService.sort().subscribe(sortedData => {
-            this.dataSource.data = sortedData;
-            this.checkSelection();
-        });
         this.setFulltextFilter();
 
         // Initialize the groups

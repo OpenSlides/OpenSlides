@@ -27,6 +27,7 @@ import { MotionPdfExportService } from '../../services/motion-pdf-export.service
 import { MotionExportDialogComponent } from '../motion-export-dialog/motion-export-dialog.component';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
+import { Motion } from 'app/shared/models/motions/motion';
 
 /**
  * Component that displays all the motions in a Table using DataSource.
@@ -36,7 +37,7 @@ import { ViewportService } from 'app/core/ui-services/viewport.service';
     templateUrl: './motion-list.component.html',
     styleUrls: ['./motion-list.component.scss']
 })
-export class MotionListComponent extends ListViewBaseComponent<ViewMotion> implements OnInit {
+export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motion> implements OnInit {
     /**
      * Columns to display in table when desktop view is available
      */
@@ -64,7 +65,9 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
      *
      * @param titleService Title
      * @param translate Translation
-     * @param matSnackBar
+     * @param matSnackBar showing errors
+     * @param sortService sorting
+     * @param filterService filtering
      * @param router Router
      * @param route Current route
      * @param configService The configuration provider
@@ -78,8 +81,6 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
      * @param pdfExport To export motions as PDF
      * @param multiselectService Service for the multiSelect actions
      * @param userRepo
-     * @param sortService
-     * @param filterService
      * @param vp
      * @param perms LocalPermissionService
      */
@@ -87,6 +88,8 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
+        sortService: MotionSortListService,
+        filterService: MotionFilterListService,
         private router: Router,
         private route: ActivatedRoute,
         private configService: ConfigService,
@@ -101,11 +104,9 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
         private dialog: MatDialog,
         private vp: ViewportService,
         public multiselectService: MotionMultiselectService,
-        public sortService: MotionSortListService,
-        public filterService: MotionFilterListService,
         public perms: LocalPermissionsService
     ) {
-        super(titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, filterService, sortService);
 
         // enable multiSelect for this listView
         this.canMultiSelect = true;
@@ -130,11 +131,6 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
         this.categoryRepo.getSortedViewModelListObservable().subscribe(cats => (this.categories = cats));
         this.tagRepo.getViewModelListObservable().subscribe(tags => (this.tags = tags));
         this.workflowRepo.getViewModelListObservable().subscribe(wfs => (this.workflows = wfs));
-        this.filterService.filter().subscribe(filteredData => (this.sortService.data = filteredData));
-        this.sortService.sort().subscribe(sortedData => {
-            this.dataSource.data = sortedData;
-            this.checkSelection();
-        });
         this.setFulltextFilter();
     }
 

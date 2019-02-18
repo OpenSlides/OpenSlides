@@ -4,20 +4,20 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
-import { AgendaFilterListService } from '../../services/agenda-filter-list.service';
-import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
-import { ListViewBaseComponent } from 'app/site/base/list-view-base';
-import { PromptService } from 'app/core/ui-services/prompt.service';
-import { ViewItem } from '../../models/view-item';
-
 import { AgendaCsvExportService } from '../../services/agenda-csv-export.service';
+import { AgendaFilterListService } from '../../services/agenda-filter-list.service';
 import { AgendaPdfService } from '../../services/agenda-pdf.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { DurationService } from 'app/core/ui-services/duration.service';
+import { Item } from 'app/shared/models/agenda/item';
 import { ItemInfoDialogComponent } from '../item-info-dialog/item-info-dialog.component';
+import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
+import { ListViewBaseComponent } from 'app/site/base/list-view-base';
+import { OperatorService } from 'app/core/core-services/operator.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
-import { OperatorService } from 'app/core/core-services/operator.service';
+import { ViewItem } from '../../models/view-item';
 
 /**
  * List view for the agenda.
@@ -27,7 +27,7 @@ import { OperatorService } from 'app/core/core-services/operator.service';
     templateUrl: './agenda-list.component.html',
     styleUrls: ['./agenda-list.component.scss']
 })
-export class AgendaListComponent extends ListViewBaseComponent<ViewItem> implements OnInit {
+export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item> implements OnInit {
     /**
      * Determine the display columns in desktop view
      */
@@ -86,7 +86,7 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
         private agendaPdfService: AgendaPdfService,
         private pdfService: PdfDocumentService
     ) {
-        super(titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, filterService);
 
         // activate multiSelect mode for this listview
         this.canMultiSelect = true;
@@ -99,15 +99,18 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
     public ngOnInit(): void {
         super.setTitle('Agenda');
         this.initTable();
+        this.config
+            .get<boolean>('agenda_enable_numbering')
+            .subscribe(autoNumbering => (this.isNumberingAllowed = autoNumbering));
+        this.setFulltextFilter();
+    }
+
+    protected onFilter(): void {
         this.filterService.filter().subscribe(newAgendaItems => {
             newAgendaItems.sort((a, b) => a.agendaListWeight - b.agendaListWeight);
             this.dataSource.data = newAgendaItems;
             this.checkSelection();
         });
-        this.config
-            .get<boolean>('agenda_enable_numbering')
-            .subscribe(autoNumbering => (this.isNumberingAllowed = autoNumbering));
-        this.setFulltextFilter();
     }
 
     /**
