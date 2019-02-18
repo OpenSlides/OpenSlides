@@ -1,7 +1,9 @@
 <div id="container" [osResized]="resizeSubject" [ngStyle]="containerStyle" #container>
     <div id="projector" [ngStyle]="projectorStyle">
         <div id="header" [ngStyle]="headerFooterStyle" *ngIf="enableHeaderAndFooter">
-            <!-- TODO: Logo <img *ngIf="enableLogo" id="logo"> -->
+            <!-- projector logo -->
+            <os-logo *ngIf="enableLogo" inputAction="logo_projector_main" class="projector-logo-main"> </os-logo>
+
             <div *ngIf="enableTitle" id="eventdata">
                 <div
                     *ngIf="eventName"

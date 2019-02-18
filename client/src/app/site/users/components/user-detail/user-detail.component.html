@@ -48,7 +48,6 @@
         *ngIf="user"
         (keydown)="onKeyDown($event)"
     >
-        <!-- <h3 translate>Personal Data</h3> -->
         <div *ngIf="isAllowed('seeName')">
             <!-- Title -->
             <mat-form-field
@@ -107,7 +106,7 @@
             </mat-form-field>
 
             <!-- Gender -->
-            <mat-form-field class="form25 force-min-with" *ngIf="user.gender || editUser">
+            <mat-form-field class="form25 force-min-with" *ngIf="user.gender || (editUser && isAllowed('manage'))">
                 <mat-select placeholder="{{ 'Gender' | translate }}" formControlName="gender">
                     <mat-option>-</mat-option>
                     <mat-option *ngFor="let gender of genderList" [value]="gender">{{ gender | translate }}</mat-option>

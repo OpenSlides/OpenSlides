@@ -124,72 +124,71 @@
                 <mat-icon>cloud_upload</mat-icon>
                 <span translate>Import</span><span>&nbsp;...</span>
             </button>
+        </div>
+        <div *ngIf="isMultiSelect">
+            <button mat-menu-item (click)="selectAll()">
+                <mat-icon>done_all</mat-icon>
+                <span translate>Select all</span>
+            </button>
 
-            <div *ngIf="isMultiSelect">
-                <button mat-menu-item (click)="selectAll()">
-                    <mat-icon>done_all</mat-icon>
-                    <span translate>Select all</span>
+            <button mat-menu-item (click)="deselectAll()">
+                <mat-icon>clear</mat-icon>
+                <span translate>Deselect all</span>
+            </button>
+
+            <div *osPerms="'users.can_manage'">
+                <mat-divider></mat-divider>
+                <button mat-menu-item (click)="setGroupSelected()">
+                    <mat-icon>people</mat-icon>
+                    <span translate>Add/remove groups ...</span>
                 </button>
 
-                <button mat-menu-item (click)="deselectAll()">
-                    <mat-icon>clear</mat-icon>
-                    <span translate>Deselect all</span>
+                <div *ngIf="presenceViewConfigured">
+                    <button mat-menu-item *osPerms="'users.can_manage'" routerLink="presence">
+                        <mat-icon>transfer_within_a_station</mat-icon>
+                        <span translate>Presence</span>
+                    </button>
+                </div>
+
+                <button mat-menu-item *osPerms="'users.can_manage'" routerLink="import">
+                    <mat-icon>save_alt</mat-icon>
+                    <span translate>Import</span><span>&nbsp;...</span>
                 </button>
 
                 <div *osPerms="'users.can_manage'">
                     <mat-divider></mat-divider>
-                    <button mat-menu-item (click)="setGroupSelected()">
-                        <mat-icon>people</mat-icon>
-                        <span translate>Add/remove groups ...</span>
+
+                    <button mat-menu-item (click)="setActiveSelected()">
+                        <mat-icon>block</mat-icon>
+                        <span translate>Enable/disable account ...</span>
                     </button>
 
-                    <div *ngIf="presenceViewConfigured">
-                        <button mat-menu-item *osPerms="'users.can_manage'" routerLink="presence">
-                            <mat-icon>transfer_within_a_station</mat-icon>
-                            <span translate>Presence</span>
-                        </button>
-                    </div>
-
-                    <button mat-menu-item *osPerms="'users.can_manage'" routerLink="import">
-                        <mat-icon>save_alt</mat-icon>
-                        <span translate>Import</span><span>&nbsp;...</span>
+                    <button mat-menu-item (click)="setPresentSelected()">
+                        <mat-icon>check_box</mat-icon>
+                        <span translate>Set presence ...</span>
                     </button>
 
-                    <div *osPerms="'users.can_manage'">
-                        <mat-divider></mat-divider>
+                    <button mat-menu-item (click)="setCommitteeSelected()">
+                        <mat-icon>account_balance</mat-icon>
+                        <span translate>Set committee ...</span>
+                    </button>
 
-                        <button mat-menu-item (click)="setActiveSelected()">
-                            <mat-icon>block</mat-icon>
-                            <span translate>Enable/disable account ...</span>
-                        </button>
+                    <mat-divider></mat-divider>
 
-                        <button mat-menu-item (click)="setPresentSelected()">
-                            <mat-icon>check_box</mat-icon>
-                            <span translate>Set presence ...</span>
-                        </button>
+                    <button mat-menu-item (click)="sendInvitationEmailSelected()">
+                        <mat-icon>mail</mat-icon>
+                        <span translate>Send invitation email</span>
+                    </button>
 
-                        <button mat-menu-item (click)="setCommitteeSelected()">
-                            <mat-icon>account_balance</mat-icon>
-                            <span translate>Set committee ...</span>
-                        </button>
-
-                        <mat-divider></mat-divider>
-
-                        <button mat-menu-item (click)="sendInvitationEmailSelected()">
-                            <mat-icon>mail</mat-icon>
-                            <span translate>Send invitation email</span>
-                        </button>
-
-                        <button mat-menu-item (click)="resetPasswordsSelected()">
-                            <mat-icon>vpn_key</mat-icon>
-                            <span translate>Generate new passwords</span>
-                        </button>
-                        <mat-divider></mat-divider>
-                        <button mat-menu-item class="red-warning-text" (click)="deleteSelected()">
-                            <mat-icon>delete</mat-icon>
-                            <span translate>Delete</span>
-                        </button>
-                    </div>
+                    <button mat-menu-item (click)="resetPasswordsSelected()">
+                        <mat-icon>vpn_key</mat-icon>
+                        <span translate>Generate new passwords</span>
+                    </button>
+                    <mat-divider></mat-divider>
+                    <button mat-menu-item class="red-warning-text" (click)="deleteSelected()">
+                        <mat-icon>delete</mat-icon>
+                        <span translate>Delete</span>
+                    </button>
                 </div>
             </div>
         </div>

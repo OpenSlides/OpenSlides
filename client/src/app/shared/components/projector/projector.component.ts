@@ -157,20 +157,33 @@ export class ProjectorComponent extends BaseComponent implements OnDestroy {
         super(titleService, translate);
 
         // Get all important config variables.
+
+        // enable header/footer
         this.configService
             .get<boolean>('projector_enable_header_footer')
             .subscribe(val => (this.enableHeaderAndFooter = val));
         this.configService.get<boolean>('projector_enable_title').subscribe(val => (this.enableTitle = val));
+
+        // projector colors
         this.configService
             .get<string>('projector_header_fontcolor')
             .subscribe(val => (this.headerFooterStyle.color = val));
         this.configService
             .get<string>('projector_header_backgroundcolor')
             .subscribe(val => (this.headerFooterStyle['background-color'] = val));
-        this.configService.get<boolean>('projector_enable_logo').subscribe(val => (this.enableLogo = val));
         this.configService
             .get<string>('projector_background_color')
             .subscribe(val => (this.projectorStyle['background-color'] = val));
+
+        // projector logo / background-image
+        this.configService.get<boolean>('projector_enable_logo').subscribe(val => (this.enableLogo = val));
+        this.configService.get<{ path?: string }>('logo_projector_header').subscribe(val => {
+            if (val && val.path) {
+                this.headerFooterStyle['background-image'] = "url('" + val.path + "')";
+            }
+        });
+
+        // event data
         this.configService.get<string>('general_event_name').subscribe(val => (this.eventName = val));
         this.configService.get<string>('general_event_description').subscribe(val => (this.eventDescription = val));
         this.configService.get<string>('general_event_date').subscribe(val => (this.eventDate = val));
