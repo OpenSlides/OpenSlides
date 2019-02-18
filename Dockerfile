@@ -26,5 +26,5 @@ RUN ng config -g cli.warnings.versionMismatch false && \
   cd client && \
   npm install
 RUN cd client && \
-  ng build --prod && \
+  npm run build && \
   ./node_modules/.bin/compodoc -t -p src/tsconfig.app.json -n 'OpenSlides Documentation' -d ../openslides/static/doc -e html
