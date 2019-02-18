@@ -168,10 +168,12 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
      * actions might be:
      * - delete         (deleting the user) (users.can_manage and not ownPage)
      * - seeName        (title, 1st, last) (user.can_see_name or ownPage)
+     * - seeOtherUsers  (title, 1st, last) (user.can_see_name)
      * - seeExtra       (checkboxes, comment) (user.can_see_extra_data)
      * - seePersonal    (mail, username, about) (user.can_see_extra_data or ownPage)
      * - manage         (everything) (user.can_manage)
      * - changePersonal (mail, username, about) (user.can_manage or ownPage)
+     * - changePassword (user.can_change_password)
      *
      * @param action the action the user tries to perform
      */
@@ -183,12 +185,16 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
                 return this.operator.hasPerms('users.can_manage');
             case 'seeName':
                 return this.operator.hasPerms('users.can_see_name', 'users.can_manage') || this.ownPage;
+            case 'seeOtherUsers':
+                return this.operator.hasPerms('users.can_see_name', 'users.can_manage');
             case 'seeExtra':
                 return this.operator.hasPerms('users.can_see_extra_data', 'users.can_manage');
             case 'seePersonal':
                 return this.operator.hasPerms('users.can_see_extra_data', 'users.can_manage') || this.ownPage;
             case 'changePersonal':
                 return this.operator.hasPerms('users.can_manage') || this.ownPage;
+            case 'changePassword':
+                return this.ownPage && this.operator.hasPerms('users.can_change_password');
             default:
                 return false;
         }
