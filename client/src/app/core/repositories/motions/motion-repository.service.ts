@@ -27,7 +27,7 @@ import { TreeService } from 'app/core/ui-services/tree.service';
 import { User } from 'app/shared/models/users/user';
 import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-change-recommendation';
 import { ViewMotionAmendedParagraph } from 'app/site/motions/models/view-motion-amended-paragraph';
-import { ViewUnifiedChange } from 'app/site/motions/models/view-unified-change';
+import { ViewUnifiedChange } from '../../../shared/models/motions/view-unified-change';
 import { ViewStatuteParagraph } from 'app/site/motions/models/view-statute-paragraph';
 import { Workflow } from 'app/shared/models/motions/workflow';
 import { WorkflowState } from 'app/shared/models/motions/workflow-state';
@@ -397,7 +397,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
                 case ChangeRecoMode.Original:
                     return this.lineNumbering.insertLineNumbers(targetMotion.text, lineLength, highlightLine);
                 case ChangeRecoMode.Changed:
-                    return this.diff.getTextWithChanges(targetMotion, changes, lineLength, highlightLine);
+                    return this.diff.getTextWithChanges(targetMotion.text, changes, lineLength, highlightLine);
                 case ChangeRecoMode.Diff:
                     let text = '';
                     changes.forEach((change: ViewUnifiedChange, idx: number) => {
@@ -424,13 +424,18 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
                                 highlightLine
                             );
                         }
-                        text += this.getChangeDiff(targetMotion, change, lineLength, highlightLine);
+                        text += this.diff.getChangeDiff(targetMotion.text, change, lineLength, highlightLine);
                     });
-                    text += this.getTextRemainderAfterLastChange(targetMotion, changes, lineLength, highlightLine);
+                    text += this.diff.getTextRemainderAfterLastChange(
+                        targetMotion.text,
+                        changes,
+                        lineLength,
+                        highlightLine
+                    );
                     return text;
                 case ChangeRecoMode.Final:
                     const appliedChanges: ViewUnifiedChange[] = changes.filter(change => change.isAccepted());
-                    return this.diff.getTextWithChanges(targetMotion, appliedChanges, lineLength, highlightLine);
+                    return this.diff.getTextWithChanges(targetMotion.text, appliedChanges, lineLength, highlightLine);
                 case ChangeRecoMode.ModifiedFinal:
                     if (targetMotion.modified_final_version) {
                         return this.lineNumbering.insertLineNumbers(
@@ -497,63 +502,6 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
     }
 
     /**
-     * Returns the remainder text of the motion after the last change
-     *
-     * @param {ViewMotion} motion
-     * @param {ViewUnifiedChange[]} changes
-     * @param {number} lineLength
-     * @param {number} highlight
-     * @returns {string}
-     */
-    public getTextRemainderAfterLastChange(
-        motion: ViewMotion,
-        changes: ViewUnifiedChange[],
-        lineLength: number,
-        highlight?: number
-    ): string {
-        let maxLine = 1;
-        changes.forEach((change: ViewUnifiedChange) => {
-            if (change.getLineTo() > maxLine) {
-                maxLine = change.getLineTo();
-            }
-        }, 0);
-
-        const numberedHtml = this.lineNumbering.insertLineNumbers(motion.text, lineLength);
-        if (changes.length === 0) {
-            return numberedHtml;
-        }
-
-        let data;
-
-        try {
-            data = this.diff.extractRangeByLineNumbers(numberedHtml, maxLine, null);
-        } catch (e) {
-            // This only happens (as far as we know) when the motion text has been altered (shortened)
-            // without modifying the change recommendations accordingly.
-            // That's a pretty serious inconsistency that should not happen at all,
-            // we're just doing some basic damage control here.
-            const msg =
-                'Inconsistent data. A change recommendation is probably referring to a non-existant line number.';
-            return '<em style="color: red; font-weight: bold;">' + msg + '</em>';
-        }
-
-        let html;
-        if (data.html !== '') {
-            // Add "merge-before"-css-class if the first line begins in the middle of a paragraph. Used for PDF.
-            html =
-                this.diff.addCSSClassToFirstTag(data.outerContextStart + data.innerContextStart, 'merge-before') +
-                data.html +
-                data.innerContextEnd +
-                data.outerContextEnd;
-            html = this.lineNumbering.insertLineNumbers(html, lineLength, highlight, null, maxLine);
-        } else {
-            // Prevents empty lines at the end of the motion
-            html = '';
-        }
-        return html;
-    }
-
-    /**
      * Returns the last line number of a motion
      *
      * @param {ViewMotion} motion
@@ -567,7 +515,7 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
     }
 
     /**
-     * Creates a {@link ViewChangeReco} object based on the motion ID and the given lange range.
+     * Creates a {@link ViewMotionChangeRecommendation} object based on the motion ID and the given lange range.
      * This object is not saved yet and does not yet have any changed HTML. It's meant to populate the UI form.
      *
      * @param {number} motionId
@@ -588,66 +536,6 @@ export class MotionRepositoryService extends BaseRepository<ViewMotion, Motion> 
         changeReco.motion_id = motionId;
 
         return new ViewMotionChangeRecommendation(changeReco);
-    }
-
-    /**
-     * Returns the HTML with the changes, optionally with a highlighted line.
-     * The original motion needs to be provided.
-     *
-     * @param {ViewMotion} motion
-     * @param {ViewUnifiedChange} change
-     * @param {number} lineLength
-     * @param {number} highlight
-     * @returns {string}
-     */
-    public getChangeDiff(
-        motion: ViewMotion,
-        change: ViewUnifiedChange,
-        lineLength: number,
-        highlight?: number
-    ): string {
-        const html = this.lineNumbering.insertLineNumbers(motion.text, lineLength);
-
-        let data, oldText;
-
-        try {
-            data = this.diff.extractRangeByLineNumbers(html, change.getLineFrom(), change.getLineTo());
-            oldText =
-                data.outerContextStart +
-                data.innerContextStart +
-                data.html +
-                data.innerContextEnd +
-                data.outerContextEnd;
-        } catch (e) {
-            // This only happens (as far as we know) when the motion text has been altered (shortened)
-            // without modifying the change recommendations accordingly.
-            // That's a pretty serious inconsistency that should not happen at all,
-            // we're just doing some basic damage control here.
-            const msg =
-                'Inconsistent data. A change recommendation is probably referring to a non-existant line number.';
-            return '<em style="color: red; font-weight: bold;">' + msg + '</em>';
-        }
-
-        oldText = this.lineNumbering.insertLineNumbers(oldText, lineLength, null, null, change.getLineFrom());
-        let diff = this.diff.diff(oldText, change.getChangeNewText());
-
-        // If an insertion makes the line longer than the line length limit, we need two line breaking runs:
-        // - First, for the official line numbers, ignoring insertions (that's been done some lines before)
-        // - Second, another one to prevent the displayed including insertions to exceed the page width
-        diff = this.lineNumbering.insertLineBreaksWithoutNumbers(diff, lineLength, true);
-
-        if (highlight > 0) {
-            diff = this.lineNumbering.highlightLine(diff, highlight);
-        }
-
-        const origBeginning = data.outerContextStart + data.innerContextStart;
-        if (diff.toLowerCase().indexOf(origBeginning.toLowerCase()) === 0) {
-            // Add "merge-before"-css-class if the first line begins in the middle of a paragraph. Used for PDF.
-            diff =
-                this.diff.addCSSClassToFirstTag(origBeginning, 'merge-before') + diff.substring(origBeginning.length);
-        }
-
-        return diff;
     }
 
     /**

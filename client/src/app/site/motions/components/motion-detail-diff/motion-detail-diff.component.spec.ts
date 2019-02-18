@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
 import { LineNumberingMode, ViewMotion } from '../../models/view-motion';
 import { MotionDetailDiffComponent } from './motion-detail-diff.component';
 import { MotionDetailOriginalChangeRecommendationsComponent } from '../motion-detail-original-change-recommendations/motion-detail-original-change-recommendations.component';
-import { ViewUnifiedChange } from '../../models/view-unified-change';
+import { ViewUnifiedChange } from '../../../../shared/models/motions/view-unified-change';
 import { Motion } from 'app/shared/models/motions/motion';
 import { ViewMotionChangeRecommendation } from '../../models/view-change-recommendation';
 

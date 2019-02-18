@@ -74,7 +74,99 @@ def all_data():
             "weight": 10000,
             "created": "2019-01-19T18:37:34.741336+01:00",
             "last_modified": "2019-01-19T18:37:34.741368+01:00",
-        }
+            "change_recommendations": [
+                {
+                    "id": 1,
+                    "motion_id": 1,
+                    "rejected": False,
+                    "internal": True,
+                    "type": 0,
+                    "other_description": "",
+                    "line_from": 1,
+                    "line_to": 2,
+                    "text": "internal new motion text",
+                    "creation_time": "2019-02-09T09:54:06.256378+01:00",
+                },
+                {
+                    "id": 2,
+                    "motion_id": 1,
+                    "rejected": False,
+                    "internal": False,
+                    "type": 0,
+                    "other_description": "",
+                    "line_from": 1,
+                    "line_to": 2,
+                    "text": "public new motion text",
+                    "creation_time": "2019-02-09T09:54:06.256378+01:00",
+                },
+            ],
+        },
+        2: {
+            "id": 2,
+            "identifier": "Ä1",
+            "title": "Amendment for 12345",
+            "text": "",
+            "amendment_paragraphs": ["New motion text"],
+            "modified_final_version": "",
+            "reason": "",
+            "parent_id": 1,
+            "category_id": None,
+            "comments": [],
+            "motion_block_id": None,
+            "origin": "",
+            "submitters": [{"id": 4, "user_id": 1, "motion_id": 1, "weight": 1}],
+            "supporters_id": [],
+            "state_id": 1,
+            "state_extension": None,
+            "state_access_level": 0,
+            "statute_paragraph_id": None,
+            "workflow_id": 1,
+            "recommendation_id": None,
+            "recommendation_extension": None,
+            "tags_id": [],
+            "attachments_id": [],
+            "polls": [],
+            "agenda_item_id": 4,
+            "log_messages": [],
+            "sort_parent_id": None,
+            "weight": 10000,
+            "created": "2019-01-19T18:37:34.741336+01:00",
+            "last_modified": "2019-01-19T18:37:34.741368+01:00",
+            "change_recommendations": [],
+        },
+        3: {
+            "id": 3,
+            "identifier": None,
+            "title": "Statute amendment for §1 Preamble",
+            "text": "<p>Some other preamble text</p>",
+            "amendment_paragraphs": None,
+            "modified_final_version": "",
+            "reason": "",
+            "parent_id": None,
+            "category_id": None,
+            "comments": [],
+            "motion_block_id": None,
+            "origin": "",
+            "submitters": [{"id": 4, "user_id": 1, "motion_id": 1, "weight": 1}],
+            "supporters_id": [],
+            "state_id": 1,
+            "state_extension": None,
+            "state_access_level": 0,
+            "statute_paragraph_id": 1,
+            "workflow_id": 1,
+            "recommendation_id": None,
+            "recommendation_extension": None,
+            "tags_id": [],
+            "attachments_id": [],
+            "polls": [],
+            "agenda_item_id": 4,
+            "log_messages": [],
+            "sort_parent_id": None,
+            "weight": 10000,
+            "created": "2019-01-19T18:37:34.741336+01:00",
+            "last_modified": "2019-01-19T18:37:34.741368+01:00",
+            "change_recommendations": [],
+        },
     }
     return_value["motions/workflow"] = {
         1: {
@@ -149,6 +241,14 @@ def all_data():
             "first_state_id": 1,
         }
     }
+    return_value["motions/statute-paragraph"] = {
+        1: {
+            "id": 1,
+            "title": "§1 Preamble",
+            "text": "<p>Some preamble text</p>",
+            "weight": 10000,
+        }
+    }
     return_value["motions/motion-change-recommendation"] = {}
     return return_value
 
@@ -162,9 +262,85 @@ def test_motion_slide(all_data):
         "identifier": "4",
         "title": "12345",
         "text": "motion text",
+        "amendments": [
+            {
+                "id": 2,
+                "title": "Amendment for 12345",
+                "amendment_paragraphs": ["New motion text"],
+                "identifier": "Ä1",
+                "merge_amendment_into_final": 0,
+            }
+        ],
         "amendment_paragraphs": None,
+        "change_recommendations": [
+            {
+                "id": 2,
+                "motion_id": 1,
+                "rejected": False,
+                "internal": False,
+                "type": 0,
+                "other_description": "",
+                "line_from": 1,
+                "line_to": 2,
+                "text": "public new motion text",
+                "creation_time": "2019-02-09T09:54:06.256378+01:00",
+            }
+        ],
+        "base_motion": None,
+        "base_statute": None,
         "is_child": False,
         "show_meta_box": True,
         "reason": "",
         "submitter": ["Administrator"],
+        "line_length": 90,
+        "line_numbering_mode": "none",
+        "preamble": "The assembly may decide:",
+    }
+
+
+def test_amendment_slide(all_data):
+    element: Dict[str, Any] = {"id": 2}
+
+    data = projector.motion_slide(all_data, element)
+
+    assert data == {
+        "identifier": "Ä1",
+        "title": "Amendment for 12345",
+        "text": "",
+        "amendments": [],
+        "amendment_paragraphs": ["New motion text"],
+        "change_recommendations": [],
+        "base_motion": {"identifier": "4", "text": "motion text", "title": "12345"},
+        "base_statute": None,
+        "is_child": True,
+        "show_meta_box": True,
+        "reason": "",
+        "submitter": ["Administrator"],
+        "line_length": 90,
+        "line_numbering_mode": "none",
+        "preamble": "The assembly may decide:",
+    }
+
+
+def test_statute_amendment_slide(all_data):
+    element: Dict[str, Any] = {"id": 3}
+
+    data = projector.motion_slide(all_data, element)
+
+    assert data == {
+        "identifier": None,
+        "title": "Statute amendment for §1 Preamble",
+        "text": "<p>Some other preamble text</p>",
+        "amendments": [],
+        "amendment_paragraphs": None,
+        "change_recommendations": [],
+        "base_motion": None,
+        "base_statute": {"title": "§1 Preamble", "text": "<p>Some preamble text</p>"},
+        "is_child": False,
+        "show_meta_box": True,
+        "reason": "",
+        "submitter": ["Administrator"],
+        "line_length": 90,
+        "line_numbering_mode": "none",
+        "preamble": "The assembly may decide:",
     }

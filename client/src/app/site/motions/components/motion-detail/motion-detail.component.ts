@@ -34,7 +34,7 @@ import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions
 import { ViewMotionChangeRecommendation } from '../../models/view-change-recommendation';
 import { ViewCreateMotion } from '../../models/view-create-motion';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
-import { ViewUnifiedChange } from '../../models/view-unified-change';
+import { ViewUnifiedChange } from '../../../../shared/models/motions/view-unified-change';
 import { ViewStatuteParagraph } from '../../models/view-statute-paragraph';
 import { Workflow } from 'app/shared/models/motions/workflow';
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
@@ -343,6 +343,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * @param promptService ensure safe deletion
      * @param pdfExport export the motion to pdf
      * @param personalNoteService: personal comments and favorite marker
+     * @param linenumberingService The line numbering service
      * @param categoryRepo
      * @param userRepo
      */

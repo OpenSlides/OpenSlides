@@ -20,12 +20,52 @@
             <h2><span translate>Motion</span> {{ data.data.identifier }}</h2>
         </div>
 
-        <!-- Text (original) -->
-        <div *ngIf="!data.data.is_child" [innerHTML]="data.data.text"></div>
+        <!-- Text -->
+        <span class="text-prefix-label">{{ preamble | translate }}</span>
+
+        <!-- Regular motions or traditional amendments -->
+        <ng-container *ngIf="!isStatuteAmendment() && !isParagraphBasedAmendment()">
+            <div
+                class="motion-text"
+                [class.line-numbers-none]="isLineNumberingNone()"
+                [class.line-numbers-inline]="isLineNumberingInline()"
+                [class.line-numbers-outside]="isLineNumberingOutside()"
+            >
+                <div [innerHTML]="sanitizedText(getFormattedText())"></div>
+            </div>
+        </ng-container>
+
+        <!-- Statute amendments -->
+        <div
+            class="motion-text line-numbers-none"
+            *ngIf="isStatuteAmendment()"
+            [innerHTML]="getFormattedStatuteAmendment()"
+        ></div>
 
         <!-- Amendment text -->
-        <div *ngIf="data.data.is_child && data.data.amendment_paragraphs"
-            [innerHTML]="data.data.amendment_paragraphs[0]"></div>
+        <section class="text-holder" *ngIf="isParagraphBasedAmendment()">
+            <div class="alert alert-info" *ngIf="getAmendedParagraphs().length === 0">
+                <span translate>No changes at the text.</span>
+            </div>
+            <div
+                *ngFor="let paragraph of getAmendedParagraphs()"
+                class="motion-text motion-text-diff amendment-view"
+                [class.line-numbers-none]="isLineNumberingNone()"
+                [class.line-numbers-inline]="isLineNumberingInline()"
+                [class.line-numbers-outside]="isLineNumberingOutside()"
+            >
+                <h3 *ngIf="paragraph.diffLineTo === paragraph.diffLineFrom + 1" class="amendment-line-header">
+                    <span translate>Line</span> {{ paragraph.diffLineFrom }}:
+                </h3>
+                <h3 *ngIf="paragraph.diffLineTo !== paragraph.diffLineFrom + 1" class="amendment-line-header">
+                    <span translate>Line</span> {{ paragraph.diffLineFrom }} - {{ paragraph.diffLineTo - 1 }}:
+                </h3>
+
+                <div class="paragraph-context" [innerHtml]="sanitizedText(paragraph.textPre)"></div>
+                <div [innerHtml]="sanitizedText(paragraph.text)"></div>
+                <div class="paragraph-context" [innerHtml]="sanitizedText(paragraph.textPost)"></div>
+            </div>
+        </section>
 
         <!-- Reason -->
         <div *ngIf="data.data.reason">

@@ -32,6 +32,71 @@ def get_state(
     )
 
 
+def get_amendment_merge_into_motion(all_data, motion, amendment):
+    """
+    HINT: This implementation should be consistent to isAccepted() in ViewMotionAmendedParagraph.ts
+    """
+    if amendment["state_id"] is None:
+        return 0
+
+    state = get_state(all_data, motion, amendment["state_id"])
+    if (
+        state["merge_amendment_into_final"] == -1
+        or state["merge_amendment_into_final"] == 1
+    ):
+        return state["merge_amendment_into_final"]
+
+    if amendment["recommendation_id"] is None:
+        return 0
+    recommendation = get_state(all_data, motion, amendment["recommendation_id"])
+    return recommendation["merge_amendment_into_final"]
+
+
+def get_amendments_for_motion(motion, all_data):
+    amendment_data = []
+    for amendment_id, amendment in all_data["motions/motion"].items():
+        if amendment["parent_id"] == motion["id"]:
+            merge_amendment_into_final = get_amendment_merge_into_motion(
+                all_data, motion, amendment
+            )
+            amendment_data.append(
+                {
+                    "id": amendment["id"],
+                    "identifier": amendment["identifier"],
+                    "title": amendment["title"],
+                    "amendment_paragraphs": amendment["amendment_paragraphs"],
+                    "merge_amendment_into_final": merge_amendment_into_final,
+                }
+            )
+    return amendment_data
+
+
+def get_amendment_base_motion(amendment, all_data):
+    try:
+        motion = all_data["motions/motion"][amendment["parent_id"]]
+    except KeyError:
+        motion_id = amendment["parent_id"]
+        raise ProjectorElementException(f"motion with id {motion_id} does not exist")
+
+    return {
+        "identifier": motion["identifier"],
+        "title": motion["title"],
+        "text": motion["text"],
+    }
+
+
+def get_amendment_base_statute(amendment, all_data):
+    try:
+        statute = all_data["motions/statute-paragraph"][
+            amendment["statute_paragraph_id"]
+        ]
+    except KeyError:
+        statute_id = amendment["statute_paragraph_id"]
+        raise ProjectorElementException(f"statute with id {statute_id} does not exist")
+
+    return {"title": statute["title"], "text": statute["text"]}
+
+
 def motion_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
     """
     Motion slide.
@@ -51,7 +116,7 @@ def motion_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
     * change_recommendations
     * submitter
     """
-    mode = element.get("mode")
+    mode = element.get("mode", get_config(all_data, "motions_recommendation_text_mode"))
     motion_id = element.get("id")
 
     if motion_id is None:
@@ -63,14 +128,44 @@ def motion_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
         raise ProjectorElementException(f"motion with id {motion_id} does not exist")
 
     show_meta_box = not get_config(all_data, "motions_disable_sidebox_on_projector")
+    line_length = get_config(all_data, "motions_line_length")
+    line_numbering_mode = get_config(all_data, "motions_default_line_numbering")
+    motions_preamble = get_config(all_data, "motions_preamble")
+
+    if motion["statute_paragraph_id"]:
+        change_recommendations = []  # type: ignore
+        amendments = []  # type: ignore
+        base_motion = None
+        base_statute = get_amendment_base_statute(motion, all_data)
+    elif bool(motion["parent_id"]) and motion["amendment_paragraphs"]:
+        change_recommendations = []
+        amendments = []
+        base_motion = get_amendment_base_motion(motion, all_data)
+        base_statute = None
+    else:
+        change_recommendations = list(
+            filter(
+                lambda reco: reco["internal"] is False, motion["change_recommendations"]
+            )
+        )
+        amendments = get_amendments_for_motion(motion, all_data)
+        base_motion = None
+        base_statute = None
 
     return_value = {
         "identifier": motion["identifier"],
         "title": motion["title"],
+        "preamble": motions_preamble,
         "text": motion["text"],
         "amendment_paragraphs": motion["amendment_paragraphs"],
+        "base_motion": base_motion,
+        "base_statute": base_statute,
         "is_child": bool(motion["parent_id"]),
         "show_meta_box": show_meta_box,
+        "change_recommendations": change_recommendations,
+        "amendments": amendments,
+        "line_length": line_length,
+        "line_numbering_mode": line_numbering_mode,
     }
 
     if not get_config(all_data, "motions_disable_reason_on_projector"):
@@ -98,7 +193,6 @@ def motion_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
             return_value["recommender"] = get_config(
                 all_data, "motions_recommendations_by"
             )
-            return_value["change_recommendations"] = motion["change_recommendations"]
 
         return_value["submitter"] = [
             get_user_name(all_data, submitter["user_id"])

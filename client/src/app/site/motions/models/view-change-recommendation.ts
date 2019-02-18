@@ -1,13 +1,13 @@
 import { BaseViewModel } from '../../base/base-view-model';
 import { ModificationType } from 'app/core/ui-services/diff.service';
 import { MotionChangeRecommendation } from 'app/shared/models/motions/motion-change-reco';
-import { ViewUnifiedChange, ViewUnifiedChangeType } from './view-unified-change';
+import { ViewUnifiedChange, ViewUnifiedChangeType } from '../../../shared/models/motions/view-unified-change';
 
 /**
  * Change recommendation class for the View
  *
  * Stores a motion including all (implicit) references
- * Provides "safe" access to variables and functions in {@link MotionChangeReco}
+ * Provides "safe" access to variables and functions in {@link MotionChangeRecommendation}
  * @ignore
  */
 export class ViewMotionChangeRecommendation extends BaseViewModel implements ViewUnifiedChange {
