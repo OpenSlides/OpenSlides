@@ -71,11 +71,13 @@ class ItemAccessPermissions(BaseAccessPermissions):
 
                 data = []
                 for full in full_data:
-                    if full["is_hidden"] and can_see_hidden:
-                        # Same filtering for internal and hidden items
-                        data.append(
-                            filtered_data(full, blocked_keys_internal_hidden_case)
-                        )
+                    if full["is_hidden"]:
+                        if can_see_hidden:
+                            # Same filtering for internal and hidden items
+                            data.append(
+                                filtered_data(full, blocked_keys_internal_hidden_case)
+                            )
+                        # If can_see_hidden is false, the user (which is a non manager) can not see anything.
                     elif full["is_internal"]:
                         data.append(
                             filtered_data(full, blocked_keys_internal_hidden_case)
