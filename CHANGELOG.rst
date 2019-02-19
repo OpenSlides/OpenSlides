@@ -23,6 +23,7 @@ Core:
  - Added password reset link (password reset via email) [#3914, #4199].
  - Added global history mode [#3977, #4141].
  - Projector refactoring [4119, #4130].
+ - Fixed logo configuration if logo file is deleted [#4374].
 
 Agenda:
  - Added viewpoint to assign multiple items to a new parent item [#4037].

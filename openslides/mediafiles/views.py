@@ -1,6 +1,7 @@
 from django.http import HttpResponseForbidden, HttpResponseNotFound
 from django.views.static import serve
 
+from ..core.config import config
 from ..utils.auth import has_perm
 from ..utils.rest_api import ModelViewSet, ValidationError
 from .access_permissions import MediafileAccessPermissions
@@ -76,6 +77,12 @@ class MediafileViewSet(ModelViewSet):
         # on server via Django methods (file, open(), save(), ...).
         mediafile = self.get_object()
         mediafile.mediafile.storage.delete(mediafile.mediafile.name)
+        for logo in config["logos_available"]:
+            if config[logo]["path"] == mediafile.mediafile.url:
+                config[logo] = {
+                    "display_name": config[logo]["display_name"],
+                    "path": "",
+                }
         return super().destroy(request, *args, **kwargs)
 
 
