@@ -286,18 +286,10 @@ export abstract class BaseImportService<V extends BaseViewModel> {
      * @param event type is Event, but has target.files, which typescript doesn't seem to recognize
      */
     public onSelectFile(event: any): void {
-        // TODO type
+        // TODO: error message for wrong file type (test Firefox on Windows!)
         if (event.target.files && event.target.files.length === 1) {
-            if (event.target.files[0].type.startsWith('text/csv')) {
-                this._rawFile = event.target.files[0];
-                this.readFile(event.target.files[0]);
-            } else {
-                this.matSnackbar.open(this.translate.instant('Wrong file type detected. Import failed.'), '', {
-                    duration: 3000
-                });
-                this.clearPreview();
-                this._rawFile = null;
-            }
+            this._rawFile = event.target.files[0];
+            this.readFile(event.target.files[0]);
         }
     }
 

@@ -78,7 +78,12 @@
         <!-- Filename -->
         <ng-container matColumnDef="title">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
-            <mat-cell *matCellDef="let file" (click)="selectItem(file, $event)">{{ file.title }}</mat-cell>
+            <mat-cell *matCellDef="let file" (click)="selectItem(file, $event)">
+                <span *ngIf="file.is_hidden">
+                    <mat-icon matTooltip="{{'is hidden' | translate }}">lock</mat-icon>
+                    &nbsp;
+                </span>
+                {{ file.title }}</mat-cell>
         </ng-container>
 
         <!-- Info -->

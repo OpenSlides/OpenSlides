@@ -12,6 +12,7 @@ import { MotionCommentSectionRepositoryService } from 'app/core/repositories/mot
 import { TranslateService } from '@ngx-translate/core';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { ViewWorkflow } from '../models/view-workflow';
+import { OperatorService } from 'app/core/core-services/operator.service';
 
 @Injectable({
     providedIn: 'root'
@@ -134,7 +135,8 @@ export class MotionFilterListService extends BaseFilterListService<Motion, ViewM
         private commentRepo: MotionCommentSectionRepositoryService,
         private translate: TranslateService,
         private config: ConfigService,
-        motionRepo: MotionRepositoryService
+        motionRepo: MotionRepositoryService,
+        private operator: OperatorService
     ) {
         super(store, motionRepo);
         this.subscribeWorkflows();
@@ -248,16 +250,22 @@ export class MotionFilterListService extends BaseFilterListService<Motion, ViewM
                 workflowOptions.push(workflow.name);
                 recommendationOptions.push(workflow.name);
                 workflow.states.forEach(state => {
-                    if (state.isFinalState) {
-                        finalStates.push(state.id);
-                    } else {
-                        nonFinalStates.push(state.id);
+                    // filter out restricted states for unpriviledged users
+                    if (
+                        this.operator.hasPerms('motions.can_manage', 'motions.can_manage_metadata') ||
+                        state.access_level === 0
+                    ) {
+                        if (state.isFinalState) {
+                            finalStates.push(state.id);
+                        } else {
+                            nonFinalStates.push(state.id);
+                        }
+                        workflowOptions.push({
+                            condition: state.id,
+                            label: state.name,
+                            isActive: false
+                        });
                     }
-                    workflowOptions.push({
-                        condition: state.id,
-                        label: state.name,
-                        isActive: false
-                    });
                     if (state.recommendation_label) {
                         recommendationOptions.push({
                             condition: state.id,
