@@ -355,3 +355,4 @@ class History(RESTModelMixin, models.Model):
 
     class Meta:
         default_permissions = ()
+        permissions = (("can_see_history", "Can see history"),)
