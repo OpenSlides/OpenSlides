@@ -28,7 +28,7 @@ export class AgendaFilterListService extends BaseFilterListService<Item, ViewIte
                 options: this.createVisibilityFilterOptions()
             },
             {
-                label: 'Hidden Status',
+                label: 'Status',
                 property: 'done',
                 options: [{ label: 'Open', condition: false }, { label: 'Closed', condition: true }]
             }

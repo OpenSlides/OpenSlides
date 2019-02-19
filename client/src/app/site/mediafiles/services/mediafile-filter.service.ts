@@ -37,7 +37,7 @@ export class MediafileFilterListService extends BaseFilterListService<Mediafile,
      */
     public hiddenOptions: OsFilter = {
         property: 'is_hidden',
-        label: this.translate.instant('Hidden status'),
+        label: this.translate.instant('Visibility'),
         options: [
             { condition: true, label: this.translate.instant('is hidden') },
             { condition: false, label: this.translate.instant('is not hidden') }

@@ -443,6 +443,9 @@ msgstr "Neues Sachgebiet erstellen"
 msgid "Create new workflow"
 msgstr "Neuen Arbeitsablauf erstellen"
 
+msgid "Creation date"
+msgstr "Erstellungsdatum"
+
 msgid "Current"
 msgstr "Aktuell"
 
@@ -582,7 +585,7 @@ msgid "Does not have notes"
 msgstr "Hat keine Notizen"
 
 msgid "Done"
-msgstr "Erledigt"
+msgstr "erledigt"
 
 msgid "Download CSV example file"
 msgstr "CSV-Beispiel-Datei herunterladen"
@@ -954,6 +957,9 @@ msgstr "Verwenden Sie eine Zeile pro Person."
 msgid "Label color"
 msgstr "Beschriftungsfarbe"
 
+msgid "Last modified"
+msgstr "Zuletzt geändert"
+
 msgid "Last speakers"
 msgstr "Letzte Redner"
 
@@ -1016,6 +1022,15 @@ msgstr "Antragsblock"
 
 msgid "Motion blocks"
 msgstr "Antragsblöcke"
+
+msgid "Motion change recommendation created"
+msgstr "Änderungsempfehlung erstellt"
+
+msgid "Motion change recommendation deleted"
+msgstr "Änderungsempfehlung gelöscht"
+
+msgid "Motion change recommendation updated"
+msgstr "Änderungsempfehlung aktualisiert"
 
 msgid "Motion created"
 msgstr "Antrag erstellt"
@@ -1129,7 +1144,7 @@ msgid "No category"
 msgstr "Kein Sachgebiet"
 
 msgid "No category set"
-msgstr "Kein Sachgebiet gesetzt"
+msgstr "kein Sachgebiet gesetzt"
 
 msgid "No change recommendations yet"
 msgstr "Bisher keine Änderungsempfehlungen"
@@ -1168,13 +1183,13 @@ msgid "No messages"
 msgstr "Keine Mitteilungen"
 
 msgid "No motion block set"
-msgstr "Kein Antragsblock gesetzt"
+msgstr "kein Antragsblock gesetzt"
 
 msgid "No personal note"
 msgstr "Keine persönliche Notiz"
 
 msgid "No recommendation"
-msgstr "Keine Empfehlung gesetzt"
+msgstr "keine Empfehlung gesetzt"
 
 msgid "No search result found for"
 msgstr "Keine Suchergebnisse gefunden für"
@@ -1186,7 +1201,7 @@ msgid "None"
 msgstr "aus"
 
 msgid "Number motions"
-msgstr "Anträgg nummerieren"
+msgstr "Anträge nummerieren"
 
 msgid "Number of (minimum) required supporters for a motion"
 msgstr "Mindestanzahl erforderlicher Unterstützer/innen für einen Antrag"
@@ -1243,6 +1258,9 @@ msgstr "Redeliste öffnen"
 
 msgid "OpenSlides access data"
 msgstr "OpenSlides-Zugangsdaten"
+
+msgid "OpenSlides is temporarily reset to following timestamp"
+msgstr "OpenSlides ist vorübergehend auf folgenden Zeitpunkt zurückgesetzt:"
 
 msgid "Origin"
 msgstr "Herkunft"
@@ -1889,6 +1907,9 @@ msgstr "Folgender Status wird für alle ausgewählten Anträge gesetzt:"
 msgid "Three-quarters majority"
 msgstr "Dreiviertelmehrheit"
 
+msgid "Time"
+msgstr "Zeit"
+
 msgid "Timestamp"
 msgstr "Zeitstempel"
 
@@ -2053,9 +2074,6 @@ msgstr "Arbeitsablauf für neue Satzungsänderungsanträge"
 msgid "Workflows"
 msgstr "Arbeitsabläufe"
 
-msgid "Wrong file type detected. Import failed."
-msgstr "Falscher Dateityp erkannt. Import fehlgeschlagen."
-
 msgid "Yes"
 msgstr "Ja"
 
@@ -2154,6 +2172,9 @@ msgstr "ist nicht versteckt"
 
 msgid "is now"
 msgstr "ist jetzt"
+
+msgid "items per page"
+msgstr "Einträge pro Seite"
 
 msgid "majority"
 msgstr "Mehrheit"

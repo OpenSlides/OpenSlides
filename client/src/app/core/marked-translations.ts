@@ -171,6 +171,9 @@ _('needed');
 _('Amendment');
 _('Amendment to');
 _('Statute amendment for');
+_('Creation date');
+_('Last modified');
+
 // motion workflow 1
 _('Simple Workflow');
 _('submitted');
@@ -375,3 +378,10 @@ _('Vote created');
 _('Vote updated');
 _('Vote deleted');
 _('Number set');
+_('OpenSlides is temporarily reset to following timestamp');
+_('Motion change recommendation created');
+_('Motion change recommendation updated');
+_('Motion change recommendation deleted');
+
+// core misc strings
+_('items per page');

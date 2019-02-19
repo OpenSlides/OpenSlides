@@ -34,7 +34,7 @@ export class ViewMotionChangeRecommendation extends BaseViewModel implements Vie
     }
 
     public getTitle = () => {
-        return 'Changerecommendation';
+        return 'Change recommendation';
     };
 
     public updateDependencies(update: BaseViewModel): void {}
