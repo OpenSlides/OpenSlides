@@ -47,6 +47,11 @@ export class HtmlToPdfService {
     private P_MARGIN_BOTTOM = 4.0;
 
     /**
+     * Space above H
+     */
+    private H_MARGIN_TOP = 10.0;
+
+    /**
      * Conversion of HTML tags into pdfmake directives
      */
     private elementStyles = {
@@ -85,13 +90,43 @@ export class HtmlToPdfService {
     public constructor() {}
 
     /**
+     * Determine the ideal top margin for a given node
+     *
+     * @param nodeName the node to parse
+     * @returns the margin tip as number
+     */
+    private getMarginTop(nodeName: string): number {
+        switch (nodeName) {
+            case 'h1':
+            case 'h2':
+            case 'h3':
+            case 'h4':
+            case 'h5':
+            case 'h6': {
+                return this.H_MARGIN_TOP;
+            }
+            default: {
+                return 0;
+            }
+        }
+    }
+
+    /**
      * Determine the ideal margin for a given node
      *
-     * @param nodeName the parsing node
+     * @param nodeName the node to parse
      * @returns the margin bottom as number
      */
     private getMarginBottom(nodeName: string): number {
         switch (nodeName) {
+            case 'h1':
+            case 'h2':
+            case 'h3':
+            case 'h4':
+            case 'h5':
+            case 'h6': {
+                return this.P_MARGIN_BOTTOM;
+            }
             case 'li': {
                 return this.LI_MARGIN_BOTTOM;
             }
@@ -126,6 +161,7 @@ export class HtmlToPdfService {
             const parsedElement = this.parseElement(child);
             docDef.push(parsedElement);
         }
+
         return docDef;
     }
 
@@ -198,20 +234,28 @@ export class HtmlToPdfService {
                 }
 
                 newParagraph.margin = [0, 0, 0, 0];
+
+                // determine the "normal" top and button margins
+                newParagraph.margin[1] = this.getMarginTop(nodeName);
+                newParagraph.margin[3] = this.getMarginBottom(nodeName);
+
                 if (this.lineNumberingMode === LineNumberingMode.Outside) {
                     // that is usually the case for inserted change which should appear
                     // under a set of line numbers with correct alignment
                     if (classes.includes('insert')) {
                         newParagraph.margin[0] = 20;
-                        newParagraph.margin[1] = this.P_MARGIN_BOTTOM;
                         newParagraph.margin[3] = this.P_MARGIN_BOTTOM;
                     }
                 }
 
+                // stop enumeration if the list was inserted
                 if (classes.includes('os-split-before')) {
                     newParagraph.listType = 'none';
-                } else if (this.isInsideAList(element)) {
-                    newParagraph.margin[3] = this.getMarginBottom(nodeName);
+                }
+
+                // if the list ends (usually due to a new insert cr) prevent margins
+                if (classes.includes('os-split-after')) {
+                    newParagraph.margin[3] = 0;
                 }
 
                 newParagraph.lineHeight = this.LINE_HEIGHT;
@@ -266,10 +310,14 @@ export class HtmlToPdfService {
                 break;
             }
             case 'br': {
-                newParagraph = this.create('text');
-                // yep thats all
-                newParagraph.text = '\n';
-                newParagraph.lineHeight = this.LINE_HEIGHT;
+                if (this.lineNumberingMode === LineNumberingMode.None && classes.includes('os-line-break')) {
+                    break;
+                } else {
+                    newParagraph = this.create('text');
+                    // yep thats all
+                    newParagraph.text = '\n';
+                    newParagraph.lineHeight = this.LINE_HEIGHT;
+                }
                 break;
             }
             case 'ul':
@@ -302,15 +350,11 @@ export class HtmlToPdfService {
                             margin: [0, 0, 0, 0]
                         };
 
-                        // For correction factor for "change reco" elements in lists, cause
-                        // they open a new OL-List and have additional distance
-                        if (
-                            element.classList.contains('os-split-before') &&
-                            element.classList.contains('os-split-after')
-                        ) {
-                            listCol.margin = [0, -this.LI_MARGIN_BOTTOM, 0, -this.LI_MARGIN_BOTTOM];
-                        } else if (!element.classList.contains('os-split-before')) {
-                            listCol.margin = [0, 5, 0, 0];
+                        // This has the effect that changed complex lists will look good with line numbers,
+                        // but simple lists will be too close. The information in the HTML is highly redundant and
+                        // there is currently no clear way to determine what to do with the lists.
+                        if (classes.includes('os-split-after')) {
+                            listCol.margin[3] = -this.LI_MARGIN_BOTTOM;
                         }
 
                         for (const line of lines) {
