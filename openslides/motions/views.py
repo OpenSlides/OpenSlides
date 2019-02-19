@@ -163,6 +163,7 @@ class MotionViewSet(ModelViewSet):
                 "reason",
                 "category_id",
                 "statute_paragraph_id",
+                "workflow_id",
             ]
             if parent_motion is not None:
                 # For creating amendments.

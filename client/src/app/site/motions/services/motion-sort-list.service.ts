@@ -15,15 +15,14 @@ export class MotionSortListService extends BaseSortListService<ViewMotion> {
         sortAscending: true,
         options: [
             { property: 'callListWeight', label: 'Call list' },
-            { property: 'supporters' },
             { property: 'identifier' },
             { property: 'title' },
             { property: 'submitters' },
             { property: 'category' },
             { property: 'motion_block_id', label: 'Motion block' },
             { property: 'state' },
-            { property: 'creationDate', label: 'Creation date' },
-            { property: 'lastChangeDate', label: 'Last modified' }
+            { property: 'creationDate', label: this.translate.instant('Creation date') },
+            { property: 'lastChangeDate', label: this.translate.instant('Last modified') }
         ]
     };
     protected name = 'Motion';
