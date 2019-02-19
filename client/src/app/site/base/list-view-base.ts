@@ -81,6 +81,9 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel, M extends B
     public initTable(): void {
         this.dataSource = new MatTableDataSource();
         this.dataSource.paginator = this.paginator;
+        if (this.dataSource.paginator) {
+            this.dataSource.paginator._intl.itemsPerPageLabel = this.translate.instant('items per page');
+        }
         if (this.filterService) {
             this.onFilter();
         }

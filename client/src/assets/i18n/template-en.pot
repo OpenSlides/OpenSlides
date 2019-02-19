@@ -425,6 +425,9 @@ msgstr ""
 msgid "Create new workflow"
 msgstr ""
 
+msgid "Creation date"
+msgstr ""
+
 msgid "Current"
 msgstr ""
 
@@ -909,6 +912,9 @@ msgstr ""
 msgid "Label color"
 msgstr ""
 
+msgid "Last modified"
+msgstr ""
+
 msgid "Last speakers"
 msgstr ""
 
@@ -970,6 +976,15 @@ msgid "Motion block"
 msgstr ""
 
 msgid "Motion blocks"
+msgstr ""
+
+msgid "Motion change recommendation created"
+msgstr ""
+
+msgid "Motion change recommendation deleted"
+msgstr ""
+
+msgid "Motion change recommendation updated"
 msgstr ""
 
 msgid "Motion created"
@@ -1195,6 +1210,9 @@ msgid "Open list of speakers"
 msgstr ""
 
 msgid "OpenSlides access data"
+msgstr ""
+
+msgid "OpenSlides is temporarily reset to following timestamp"
 msgstr ""
 
 msgid "Origin"
@@ -1811,6 +1829,9 @@ msgstr ""
 msgid "Three-quarters majority"
 msgstr ""
 
+msgid "Time"
+msgstr ""
+
 msgid "Timestamp"
 msgstr ""
 
@@ -1963,9 +1984,6 @@ msgstr ""
 msgid "Workflows"
 msgstr ""
 
-msgid "Wrong file type detected. Import failed."
-msgstr ""
-
 msgid "Yes"
 msgstr ""
 
@@ -2059,6 +2077,9 @@ msgid "is not hidden"
 msgstr ""
 
 msgid "is now"
+msgstr ""
+
+msgid "items per page"
 msgstr ""
 
 msgid "majority"

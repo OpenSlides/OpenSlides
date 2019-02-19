@@ -107,11 +107,11 @@ export class HistoryListComponent extends ListViewBaseComponent<ViewHistory, His
     public async onClickRow(history: ViewHistory): Promise<void> {
         await this.repo.browseHistory(history);
         const element = this.viewModelStore.get(history.getCollectionString(), history.getModelId());
-        let message = this.translate.instant('Temporarily reset OpenSlides to the state from ');
-        message += history.getLocaleString('DE-de') + '. ';
+        let message = this.translate.instant('OpenSlides is temporarily reset to following timestamp:');
+        console.log(message);
+        message += ' ' + history.getLocaleString('DE-de');
 
         if (isDetailNavigable(element)) {
-            message += this.translate.instant('You will be redirected to the detail state of the last changed item.');
             this.raiseError(message);
             this.router.navigate([element.getDetailStateURL()]);
         } else {
