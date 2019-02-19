@@ -1059,6 +1059,47 @@ class MotionChangeRecommendationViewSet(ModelViewSet):
         except DjangoValidationError as err:
             return Response({"detail": err.message}, status=400)
 
+    def perform_create(self, serializer):
+        """
+        Customized method to add history information.
+        """
+        instance = serializer.save()
+        # Fire autoupdate again to save information to OpenSlides history.
+        inform_changed_data(
+            instance,
+            information=["Motion change recommendation created"],
+            user_id=self.request.user.pk,
+        )
+
+    def perform_update(self, serializer):
+        """
+        Customized method to add history information.
+        """
+        instance = serializer.save()
+        # Fire autoupdate again to save information to OpenSlides history.
+        inform_changed_data(
+            instance,
+            information=["Motion change recommendation updated"],
+            user_id=self.request.user.pk,
+        )
+
+    def destroy(self, request, *args, **kwargs):
+        """
+        Customized method to add history information.
+        """
+        instance = self.get_object()
+
+        result = super().destroy(request, *args, **kwargs)
+
+        # Fire autoupdate again to save information to OpenSlides history.
+        inform_deleted_data(
+            [(instance.get_collection_string(), instance.pk)],
+            information=["Motion change recommendation deleted"],
+            user_id=request.user.pk,
+        )
+
+        return result
+
 
 class MotionCommentSectionViewSet(ModelViewSet):
     """
