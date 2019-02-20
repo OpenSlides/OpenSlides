@@ -350,10 +350,8 @@ export class HtmlToPdfService {
                             margin: [0, 0, 0, 0]
                         };
 
-                        // This has the effect that changed complex lists will look good with line numbers,
-                        // but simple lists will be too close. The information in the HTML is highly redundant and
-                        // there is currently no clear way to determine what to do with the lists.
-                        if (classes.includes('os-split-after')) {
+                        // if this is a "fake list" lower put it close to the element above
+                        if (this.isFakeList(element)) {
                             listCol.margin[3] = -this.LI_MARGIN_BOTTOM;
                         }
 
@@ -542,6 +540,28 @@ export class HtmlToPdfService {
                 return true;
             }
             parent = parent.parentNode;
+        }
+        return false;
+    }
+
+    /**
+     * Checks if a given UL or LI list (as element) is a "fake list"
+     * Fake lists in fact lists by should appear like the parent list
+     * would seamlessly continue.
+     * This usually happens when a user makes change recommendations in
+     * lists
+     *
+     * @param element the list to check, can be UL or LI
+     * returns wether the list is fake or not
+     */
+    private isFakeList(element: Element): boolean {
+        if (element.firstElementChild && element.classList.contains('os-split-after')) {
+            // either first child has split-before or last child has split-after
+            const firstChild = element.firstElementChild;
+            const lastChild = element.childNodes[element.childNodes.length - 1] as Element;
+            const splitBefore = firstChild.nodeName === 'LI' && firstChild.classList.contains('os-split-before');
+            const splitAfter = lastChild.nodeName === 'LI' && lastChild.classList.contains('os-split-after');
+            return splitBefore || splitAfter;
         }
         return false;
     }
