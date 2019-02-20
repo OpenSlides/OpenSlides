@@ -133,6 +133,8 @@ export class PdfDocumentService {
         this.initFonts();
         this.imageUrls = imageUrls ? imageUrls : [];
         pdfMake.vfs = await this.initVfs();
+        // needs to be done before, cause the footer is async
+        this.loadFooterImages();
         const result = {
             pageSize: 'A4',
             pageOrientation: landscape ? 'landscape' : 'portrait',
@@ -277,8 +279,6 @@ export class PdfDocumentService {
      * Creates the footer doc definition for normal PDF documents.
      * Adds page numbers into the footer
      *
-     * TODO: Add footer logos.
-     *
      * @param currentPage holds the number of the current page
      * @param pageCount holds the page count
      * @param lrMargin optionally overriding the margins
@@ -289,8 +289,8 @@ export class PdfDocumentService {
         let logoContainerWidth: string;
         let pageNumberPosition: string;
         let logoContainerSize: number[];
-        let logoFooterLeftUrl = this.configService.instant<any>('logo_pdf_footer_L').path;
-        let logoFooterRightUrl = this.configService.instant<any>('logo_pdf_footer_R').path;
+        const logoFooterLeftUrl = this.configService.instant<any>('logo_pdf_footer_L').path;
+        const logoFooterRightUrl = this.configService.instant<any>('logo_pdf_footer_R').path;
 
         // if there is a single logo, give it a lot of space
         if (logoFooterLeftUrl && logoFooterRightUrl) {
@@ -314,16 +314,12 @@ export class PdfDocumentService {
 
         // add the left footer logo, if any
         if (logoFooterLeftUrl) {
-            if (logoFooterLeftUrl.indexOf('/') === 0) {
-                logoFooterLeftUrl = logoFooterLeftUrl.substr(1); // remove trailing /
-            }
             columns.push({
                 image: logoFooterLeftUrl,
                 fit: logoContainerSize,
                 width: logoContainerWidth,
                 alignment: 'left'
             });
-            this.imageUrls.push(logoFooterLeftUrl);
         }
 
         // add the page number
@@ -335,16 +331,12 @@ export class PdfDocumentService {
 
         // add the right footer logo, if any
         if (logoFooterRightUrl) {
-            if (logoFooterRightUrl.indexOf('/') === 0) {
-                logoFooterRightUrl = logoFooterRightUrl.substr(1); // remove trailing /
-            }
             columns.push({
                 image: logoFooterRightUrl,
                 fit: logoContainerSize,
                 width: logoContainerWidth,
                 alignment: 'right'
             });
-            this.imageUrls.push(logoFooterRightUrl);
         }
 
         const margin = [lrMargin ? lrMargin[0] : 75, 0, lrMargin ? lrMargin[0] : 75, 10];
@@ -353,15 +345,6 @@ export class PdfDocumentService {
             columns: columns,
             columnGap: 10
         };
-    }
-
-    /**
-     * opens a pdf in a new tab
-     *
-     * @param docDefinition the structure of the PDF document
-     */
-    public open(docDefinition: object, metadata?: object): void {
-        pdfMake.createPdf(this.getStandardPaper(docDefinition, metadata)).open();
     }
 
     /**
@@ -531,6 +514,23 @@ export class PdfDocumentService {
     }
 
     /**
+     * Adds the footer images to the imageUrls-list, cause the create footer function is async and
+     * potentially called after loadAllImages was called.
+     */
+    private loadFooterImages(): void {
+        const logoFooterLeftUrl = this.configService.instant<any>('logo_pdf_footer_L').path;
+        const logoFooterRightUrl = this.configService.instant<any>('logo_pdf_footer_R').path;
+
+        if (logoFooterLeftUrl) {
+            this.imageUrls.push(logoFooterLeftUrl);
+        }
+
+        if (logoFooterRightUrl) {
+            this.imageUrls.push(logoFooterRightUrl);
+        }
+    }
+
+    /**
      * Triggers the addition of all images found during creation(including header and footer)
      * to the vfs.
      */
@@ -547,6 +547,10 @@ export class PdfDocumentService {
      * @param url
      */
     private async addImageToVfS(url: string): Promise<void> {
+        if (url.indexOf('/') === 0) {
+            url = url.substr(1);
+        }
+
         if (!pdfMake.vfs[url]) {
             const base64 = await this.convertUrlToBase64(url);
             pdfMake.vfs[url] = base64;
