@@ -1,5 +1,5 @@
 import { ActivatedRoute, Router } from '@angular/router';
-import { Component, OnInit, ElementRef, HostListener, TemplateRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, HostListener, TemplateRef } from '@angular/core';
 import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { MatDialog, MatSnackBar, MatCheckboxChange, ErrorStateMatcher } from '@angular/material';
@@ -7,7 +7,6 @@ import { MatDialog, MatSnackBar, MatCheckboxChange, ErrorStateMatcher } from '@a
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
-import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { BaseViewComponent } from '../../../base/base-view';
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
@@ -16,7 +15,9 @@ import { CreateMotion } from '../../models/create-motion';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { DiffLinesInParagraph, LineRange } from 'app/core/ui-services/diff.service';
+import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { itemVisibilityChoices, Item } from 'app/shared/models/agenda/item';
+import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
 import { LocalPermissionsService } from '../../services/local-permissions.service';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { Motion } from 'app/shared/models/motions/motion';
@@ -27,27 +28,30 @@ import {
 } from '../motion-change-recommendation/motion-change-recommendation.component';
 import { MotionPdfExportService } from '../../services/motion-pdf-export.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
+import { NotifyService } from 'app/core/core-services/notify.service';
+import { OperatorService } from 'app/core/core-services/operator.service';
 import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
 import { PersonalNoteService } from 'app/core/ui-services/personal-note.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions/statute-paragraph-repository.service';
-import { ViewMotionChangeRecommendation } from '../../models/view-change-recommendation';
-import { ViewCreateMotion } from '../../models/view-create-motion';
-import { ViewportService } from 'app/core/ui-services/viewport.service';
-import { ViewUnifiedChange } from '../../../../shared/models/motions/view-unified-change';
-import { ViewStatuteParagraph } from '../../models/view-statute-paragraph';
-import { Workflow } from 'app/shared/models/motions/workflow';
-import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
 import { Tag } from 'app/shared/models/core/tag';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ViewMotionBlock } from '../../models/view-motion-block';
 import { ViewWorkflow, StateCssClassMapping } from '../../models/view-workflow';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { ViewCategory } from '../../models/view-category';
-import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
+import { ViewCreateMotion } from '../../models/view-create-motion';
 import { ViewItem } from 'app/site/agenda/models/view-item';
-import { ViewTag } from 'app/site/tags/models/view-tag';
+import { ViewportService } from 'app/core/ui-services/viewport.service';
+import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { ViewMotionChangeRecommendation } from '../../models/view-change-recommendation';
+import { ViewMotionNotificationEditMotion, TypeOfNotificationViewMotion } from '../../models/view-motion-notify';
+import { ViewStatuteParagraph } from '../../models/view-statute-paragraph';
+import { ViewTag } from 'app/site/tags/models/view-tag';
+import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change';
+
+import { Workflow } from 'app/shared/models/motions/workflow';
 
 /**
  * Component for the motion detail view
@@ -57,7 +61,7 @@ import { ViewModelStoreService } from 'app/core/core-services/view-model-store.s
     templateUrl: './motion-detail.component.html',
     styleUrls: ['./motion-detail.component.scss']
 })
-export class MotionDetailComponent extends BaseViewComponent implements OnInit {
+export class MotionDetailComponent extends BaseViewComponent implements OnInit, OnDestroy {
     /**
      * Motion content. Can be a new version
      */
@@ -321,13 +325,31 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
     public newStateExtension = '';
 
     /**
+     * Constant to identify the notification-message.
+     */
+    public NOTIFICATION_EDIT_MOTION = 'notifyEditMotion';
+
+    /**
+     * Array to recognize, if there are other persons working on the same
+     * motion and see, if those persons leave the editing-view.
+     */
+    private otherWorkOnMotion: string[] = [];
+
+    /**
+     * The variable to hold the subscription for notifications in editing-view.
+     * Necessary to unsubscribe after leaving the editing-view.
+     */
+    private editNotificationSubscription: Subscription;
+
+    /**
      * Constuct the detail view.
      *
      * @param title
      * @param translate
      * @param matSnackBar
      * @param vp the viewport service
-     * @param op Operator Service
+     * @param operator Operator Service
+     * @param perms local permissions
      * @param router to navigate back to the motion list and to an existing motion
      * @param route determine if this is a new or an existing motion
      * @param formBuilder For reactive forms. Form Group and Form Control
@@ -345,13 +367,17 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * @param personalNoteService: personal comments and favorite marker
      * @param linenumberingService The line numbering service
      * @param categoryRepo Repository for categories
+     * @param viewModelStore accessing view models
+     * @param categoryRepo access the category repository
      * @param userRepo Repository for users
+     * @param notifyService: NotifyService work with notification
      */
     public constructor(
         title: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
         public vp: ViewportService,
+        private operator: OperatorService,
         public perms: LocalPermissionsService,
         private router: Router,
         private route: ActivatedRoute,
@@ -371,7 +397,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         private linenumberingService: LinenumberingService,
         private viewModelStore: ViewModelStoreService,
         private categoryRepo: CategoryRepositoryService,
-        private userRepo: UserRepositoryService
+        private userRepo: UserRepositoryService,
+        private notifyService: NotifyService
     ) {
         super(title, translate, matSnackBar);
 
@@ -472,6 +499,10 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
                 }
             }
         });
+    }
+
+    public ngOnDestroy(): void {
+        this.unsubscribeEditNotifications(TypeOfNotificationViewMotion.TYPE_CLOSING_EDITING_MOTION);
     }
 
     /**
@@ -738,6 +769,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
             this.createMotion();
         } else {
             this.updateMotionFromForm();
+            // When saving the changes, notify other users if they edit the same motion.
+            this.unsubscribeEditNotifications(TypeOfNotificationViewMotion.TYPE_SAVING_EDITING_MOTION);
         }
     }
 
@@ -988,9 +1021,16 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
         if (mode) {
             this.motionCopy = this.motion.copy();
             this.patchForm(this.motionCopy);
+            this.editNotificationSubscription = this.listenToEditNotification();
+            this.sendEditNotification(TypeOfNotificationViewMotion.TYPE_BEGIN_EDITING_MOTION);
         }
         if (!mode && this.newMotion) {
             this.router.navigate(['./motions/']);
+        }
+        // If the user cancels the work on this motion,
+        // notify the users who are still editing the same motion
+        if (!mode && !this.newMotion) {
+            this.unsubscribeEditNotifications(TypeOfNotificationViewMotion.TYPE_CLOSING_EDITING_MOTION);
         }
     }
 
@@ -1248,6 +1288,104 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      */
     public onFollowRecButton(): void {
         this.repo.followRecommendation(this.motion);
+    }
+
+    /**
+     * Function to send a notification, so that other persons can recognize editing the same motion, if they're doing.
+     *
+     * @param type TypeOfNotificationViewMotion defines the type of the notification which is sent.
+     * @param user Optional userId. If set the function will send a notification to the given userId.
+     */
+    private sendEditNotification(type: TypeOfNotificationViewMotion, user?: number): void {
+        const content: ViewMotionNotificationEditMotion = {
+            motionId: this.motion.id,
+            senderId: this.operator.viewUser.id,
+            senderName: this.operator.viewUser.short_name,
+            type: type
+        };
+        if (user) {
+            this.notifyService.sendToUsers(this.NOTIFICATION_EDIT_MOTION, content, user);
+        } else {
+            this.notifyService.sendToAllUsers<ViewMotionNotificationEditMotion>(this.NOTIFICATION_EDIT_MOTION, content);
+        }
+    }
+
+    /**
+     * Function to listen to notifications if the user edits this motion.
+     * Handles the notification messages.
+     *
+     * @returns A subscription, only if the user wants to edit this motion, to listen to notifications.
+     */
+    private listenToEditNotification(): Subscription {
+        return this.notifyService.getMessageObservable(this.NOTIFICATION_EDIT_MOTION).subscribe(message => {
+            const content = <ViewMotionNotificationEditMotion>message.content;
+            if (this.operator.viewUser.id !== content.senderId && content.motionId === this.motion.id) {
+                let warning = '';
+
+                switch (content.type) {
+                    case TypeOfNotificationViewMotion.TYPE_BEGIN_EDITING_MOTION:
+                    case TypeOfNotificationViewMotion.TYPE_ALSO_EDITING_MOTION: {
+                        if (!this.otherWorkOnMotion.includes(content.senderName)) {
+                            this.otherWorkOnMotion.push(content.senderName);
+                        }
+
+                        warning = `${this.translate.instant('Following users are currently editing this motion:')} ${
+                            this.otherWorkOnMotion
+                        }`;
+                        if (content.type === TypeOfNotificationViewMotion.TYPE_BEGIN_EDITING_MOTION) {
+                            this.sendEditNotification(
+                                TypeOfNotificationViewMotion.TYPE_ALSO_EDITING_MOTION,
+                                message.senderUserId
+                            );
+                        }
+                        break;
+                    }
+                    case TypeOfNotificationViewMotion.TYPE_CLOSING_EDITING_MOTION: {
+                        this.recognizeOtherWorkerOnMotion(content.senderName);
+                        break;
+                    }
+                    case TypeOfNotificationViewMotion.TYPE_SAVING_EDITING_MOTION: {
+                        warning = `${content.senderName} ${this.translate.instant(
+                            'has saved his work on this motion.'
+                        )}`;
+                        // Wait, to prevent overlapping snack bars
+                        setTimeout(() => this.recognizeOtherWorkerOnMotion(content.senderName), 2000);
+                        break;
+                    }
+                }
+
+                if (warning !== '') {
+                    this.raiseWarning(warning);
+                }
+            }
+        });
+    }
+
+    /**
+     * Function to handle leaving persons and
+     * recognize if there is no other person editing the same motion anymore.
+     *
+     * @param senderId The id of the sender who has left the editing-view.
+     */
+    private recognizeOtherWorkerOnMotion(senderName: string): void {
+        this.otherWorkOnMotion = this.otherWorkOnMotion.filter(value => value !== senderName);
+        if (this.otherWorkOnMotion.length === 0) {
+            this.closeSnackBar();
+        }
+    }
+
+    /**
+     * Function to unsubscribe the notification subscription.
+     * Before unsubscribing a notification will send with the reason.
+     *
+     * @param unsubscriptionReason The reason for the unsubscription.
+     */
+    private unsubscribeEditNotifications(unsubscriptionReason: TypeOfNotificationViewMotion): void {
+        if (!!this.editNotificationSubscription && !this.editNotificationSubscription.closed) {
+            this.sendEditNotification(unsubscriptionReason);
+            this.closeSnackBar();
+            this.editNotificationSubscription.unsubscribe();
+        }
     }
 
     /**

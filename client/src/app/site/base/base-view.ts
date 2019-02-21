@@ -15,7 +15,7 @@ export abstract class BaseViewComponent extends BaseComponent implements OnDestr
     /**
      * A reference to the current error snack bar.
      */
-    private errorSnackBar: MatSnackBarRef<SimpleSnackBar>;
+    private messageSnackBar: MatSnackBarRef<SimpleSnackBar>;
 
     /**
      * Constructor for bas elist views
@@ -28,23 +28,41 @@ export abstract class BaseViewComponent extends BaseComponent implements OnDestr
     }
 
     /**
+     * Opens the snack bar with the given message.
+     * This snack bar will only dismiss if the user clicks the 'OK'-button.
+     */
+    protected raiseWarning = (message: string): void => {
+        this.messageSnackBar = this.matSnackBar.open(message, this.translate.instant('OK'));
+    };
+
+    /**
      * Opens an error snack bar with the given error message.
      * This is implemented as an arrow function to capture the called `this`. You can use this function
      * as callback (`.then(..., this.raiseError)`) instead of doing `this.raiseError.bind(this)`.
      * @param message The message to show.
      */
     protected raiseError = (message: string): void => {
-        this.errorSnackBar = this.matSnackBar.open(message, this.translate.instant('OK'), {
+        this.messageSnackBar = this.matSnackBar.open(message, this.translate.instant('OK'), {
             duration: 0
         });
     };
 
     /**
+     * Function to manually close the snack bar if it will not automatically close
+     * or it should close in a previous step.
+     */
+    protected closeSnackBar(): void {
+        if (this.matSnackBar) {
+            this.matSnackBar.dismiss();
+        }
+    }
+
+    /**
      * automatically dismisses the error snack bar, if the component is destroyed.
      */
     public ngOnDestroy(): void {
-        if (this.errorSnackBar) {
-            this.errorSnackBar.dismiss();
+        if (this.messageSnackBar) {
+            this.messageSnackBar.dismiss();
         }
     }
 }
