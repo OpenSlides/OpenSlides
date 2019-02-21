@@ -4,7 +4,10 @@
 
     <!-- Menu -->
     <div class="menu-slot">
-        <button type="button" mat-icon-button [matMenuTriggerFor]="historyMenu"><mat-icon>more_vert</mat-icon></button>
+        <!-- Hidden for everyone but the superadmin -->
+        <button *osPerms="'superadmin'" type="button" mat-icon-button [matMenuTriggerFor]="historyMenu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
     </div>
 </os-head-bar>
 

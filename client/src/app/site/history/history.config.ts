@@ -23,7 +23,7 @@ export const HistoryAppConfig: AppConfig = {
             displayName: 'History',
             icon: 'history',
             weight: 1200,
-            permission: 'core.view_history'
+            permission: 'core.can_see_history'
         }
     ]
 };

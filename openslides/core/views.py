@@ -501,8 +501,10 @@ class HistoryViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ("list", "retrieve", "clear_history"):
+        if self.action in ("list", "retrieve"):
             result = self.get_access_permissions().check_permissions(self.request.user)
+        elif self.action == "clear_history":
+            result = in_some_groups(self.request.user.pk or 0, [GROUP_ADMIN_PK])
         else:
             result = False
         return result
