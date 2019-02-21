@@ -25,10 +25,10 @@ export class MotionBlockSlideComponent extends BaseSlideComponent<MotionBlockSli
         return StateCssClassMapping[motion.recommendation.css_class] || '';
     }
 
-    public getStateLabel(motion: MotionBlockSlideMotionRepresentation): string {
+    public getRecommendationLabel(motion: MotionBlockSlideMotionRepresentation): string {
         let recommendation = this.translate.instant(motion.recommendation.name);
         if (motion.recommendation_extension) {
-            recommendation += ' ' + motion.recommendation_extension;
+            recommendation += ' ' + this.motionRepo.solveExtensionPlaceHolder(motion.recommendation_extension);
         }
         return recommendation;
     }

@@ -41,7 +41,7 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
     /**
      * Columns to display in table when desktop view is available
      */
-    public displayedColumnsDesktop: string[] = ['identifier', 'title', 'state', 'speakers'];
+    public displayedColumnsDesktop: string[] = ['identifier', 'title', 'state'];
 
     /**
      * Columns to display in table when mobile view is available
@@ -236,6 +236,9 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
         }
         if (this.isMultiSelect) {
             columns = ['selector'].concat(columns);
+        }
+        if (this.operator.hasPerms('agenda.can_see')) {
+            columns = columns.concat(['speakers']);
         }
         return columns;
     }

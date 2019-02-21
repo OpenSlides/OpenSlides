@@ -234,7 +234,7 @@ def motion_block_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, 
                     all_data, motion, motion["recommendation_id"]
                 )
                 motion_object["recommendation"] = {
-                    "name": recommendation["name"],
+                    "name": recommendation["recommendation_label"],
                     "css_class": recommendation["css_class"],
                 }
                 if recommendation["show_recommendation_extension_field"]:

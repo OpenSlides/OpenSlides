@@ -63,8 +63,10 @@ export class ProjectorButtonComponent implements OnInit {
      *
      * @param event  the click event
      */
-    public onClick(event: Event): void {
-        event.stopPropagation();
+    public onClick(event?: Event): void {
+        if (event) {
+            event.stopPropagation();
+        }
         if (this.object) {
             this.projectionDialogService.openProjectDialogFor(this.object);
         }
