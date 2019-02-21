@@ -1,0 +1,13 @@
+<div *ngIf="data">
+    <h1 translate>Agenda</h1>
+
+    <div
+        *ngFor="let item of data.data.items"
+        [ngStyle]="getItemStyle(item)"
+        [ngClass]="item.depth === 0 ? 'mainitem' : 'subitem'"
+        class="item"
+    >
+        <span *ngIf="item.item_number">{{ item.item_number }} &middot;</span>
+        {{ getTitle(item) }}
+    </div>
+</div>

@@ -8,6 +8,7 @@ import { AgendaRoutingModule } from './agenda-routing.module';
 import { SharedModule } from '../../shared/shared.module';
 import { TopicDetailComponent } from './components/topic-detail/topic-detail.component';
 import { AgendaSortComponent } from './components/agenda-sort/agenda-sort.component';
+import { ListOfSpeakersComponent } from './components/list-of-speakers/list-of-speakers.component';
 
 /**
  * AppModule for the agenda and it's children.
@@ -20,7 +21,8 @@ import { AgendaSortComponent } from './components/agenda-sort/agenda-sort.compon
         TopicDetailComponent,
         ItemInfoDialogComponent,
         AgendaImportListComponent,
-        AgendaSortComponent
+        AgendaSortComponent,
+        ListOfSpeakersComponent
     ]
 })
 export class AgendaModule {}

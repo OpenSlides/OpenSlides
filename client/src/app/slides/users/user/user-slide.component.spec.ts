@@ -1,21 +1,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UsersUserSlideComponent } from './users-user-slide.component';
+import { UserSlideComponent } from './user-slide.component';
 import { E2EImportsModule } from '../../../../e2e-imports.module';
 
-describe('UsersUserSlideComponent', () => {
-    let component: UsersUserSlideComponent;
-    let fixture: ComponentFixture<UsersUserSlideComponent>;
+describe('UserSlideComponent', () => {
+    let component: UserSlideComponent;
+    let fixture: ComponentFixture<UserSlideComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [E2EImportsModule],
-            declarations: [UsersUserSlideComponent]
+            declarations: [UserSlideComponent]
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(UsersUserSlideComponent);
+        fixture = TestBed.createComponent(UserSlideComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
