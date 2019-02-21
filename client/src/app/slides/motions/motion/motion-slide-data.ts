@@ -5,7 +5,7 @@ import { MergeAmendment } from '../../../shared/models/motions/workflow-state';
  * This interface describes the data returned by the server about an amendment.
  * This object is used if actually the motion is shown and the amendment is shown in the context of the motion.
  */
-export interface MotionsMotionSlideDataAmendment {
+export interface MotionSlideDataAmendment {
     id: number;
     title: string;
     amendment_paragraphs: string[];
@@ -16,7 +16,7 @@ export interface MotionsMotionSlideDataAmendment {
  * This interface describes the data returned by the server about a motion that is changed by an amendment.
  * It only contains the data necessary for rendering the amendment's diff.
  */
-export interface MotionsMotionSlideDataBaseMotion {
+export interface MotionSlideDataBaseMotion {
     identifier: string;
     title: string;
     text: string;
@@ -26,7 +26,7 @@ export interface MotionsMotionSlideDataBaseMotion {
  * This interface describes the data returned by the server about a statute paragraph that is changed by an amendment.
  * It only contains the data necessary for rendering the amendment's diff.
  */
-export interface MotionsMotionSlideDataBaseStatute {
+export interface MotionSlideDataBaseStatute {
     title: string;
     text: string;
 }
@@ -34,7 +34,7 @@ export interface MotionsMotionSlideDataBaseStatute {
 /**
  * This interface describes the data returned by the server about a change recommendation.
  */
-export interface MotionsMotionSlideDataChangeReco {
+export interface MotionSlideDataChangeReco {
     creation_time: string;
     id: number;
     internal: boolean;
@@ -53,7 +53,7 @@ export interface MotionsMotionSlideDataChangeReco {
  * This interface describes either an motion (with all amendments and change recommendations enbedded)
  * or an amendment (with the bas motion embedded).
  */
-export interface MotionsMotionSlideData {
+export interface MotionSlideData {
     identifier: string;
     title: string;
     preamble: string;
@@ -65,11 +65,11 @@ export interface MotionsMotionSlideData {
     recommender?: string;
     recommendation?: string;
     recommendation_extension?: string;
-    base_motion?: MotionsMotionSlideDataBaseMotion;
-    base_statute?: MotionsMotionSlideDataBaseStatute;
+    base_motion?: MotionSlideDataBaseMotion;
+    base_statute?: MotionSlideDataBaseStatute;
     amendment_paragraphs: string[];
-    change_recommendations: MotionsMotionSlideDataChangeReco[];
-    amendments: MotionsMotionSlideDataAmendment[];
+    change_recommendations: MotionSlideDataChangeReco[];
+    amendments: MotionSlideDataAmendment[];
     modified_final_version?: string;
     line_length: number;
     line_numbering_mode: LineNumberingMode;

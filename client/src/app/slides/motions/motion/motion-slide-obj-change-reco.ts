@@ -1,11 +1,11 @@
 import { ViewUnifiedChange, ViewUnifiedChangeType } from '../../../shared/models/motions/view-unified-change';
-import { MotionsMotionSlideDataChangeReco } from './motions-motion-slide-data';
+import { MotionSlideDataChangeReco } from './motion-slide-data';
 
 /**
  * This class adds methods to the MotionsMotionSlideDataChangeReco data object
  * necessary for use it as a UnifiedChange in the Diff-Functions
  */
-export class MotionsMotionSlideObjChangeReco implements MotionsMotionSlideDataChangeReco, ViewUnifiedChange {
+export class MotionSlideObjChangeReco implements MotionSlideDataChangeReco, ViewUnifiedChange {
     public creation_time: string;
     public id: number;
     public internal: boolean;
@@ -17,7 +17,7 @@ export class MotionsMotionSlideObjChangeReco implements MotionsMotionSlideDataCh
     public text: string;
     public type: number;
 
-    public constructor(data: MotionsMotionSlideDataChangeReco) {
+    public constructor(data: MotionSlideDataChangeReco) {
         Object.assign(this, data);
     }
 

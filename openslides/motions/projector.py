@@ -206,9 +206,45 @@ def motion_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
 
 def motion_block_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
     """
-    Motion slide.
+    Motion block slide.
     """
-    return {"error": "TODO"}
+    motion_block_id = element.get("id")
+
+    if motion_block_id is None:
+        raise ProjectorElementException("id is required for motion block slide")
+
+    try:
+        motion_block = all_data["motions/motion-block"][motion_block_id]
+    except KeyError:
+        raise ProjectorElementException(
+            f"motion block with id {motion_block_id} does not exist"
+        )
+
+    motions = []
+    for motion in all_data["motions/motion"].values():
+        if motion["motion_block_id"] == motion_block_id:
+            motion_object = {
+                "title": motion["title"],
+                "identifier": motion["identifier"],
+            }
+
+            recommendation_id = motion["recommendation_id"]
+            if recommendation_id is not None:
+                recommendation = get_state(
+                    all_data, motion, motion["recommendation_id"]
+                )
+                motion_object["recommendation"] = {
+                    "name": recommendation["name"],
+                    "css_class": recommendation["css_class"],
+                }
+                if recommendation["show_recommendation_extension_field"]:
+                    motion_object["recommendation_extension"] = motion[
+                        "recommendation_extension"
+                    ]
+
+            motions.append(motion_object)
+
+    return {"title": motion_block["title"], "motions": motions}
 
 
 def register_projector_slides() -> None:

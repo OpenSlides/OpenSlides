@@ -1,5 +1,5 @@
 import { ViewUnifiedChange, ViewUnifiedChangeType } from '../../../shared/models/motions/view-unified-change';
-import { MotionsMotionSlideDataAmendment } from './motions-motion-slide-data';
+import { MotionSlideDataAmendment } from './motion-slide-data';
 import { MergeAmendment } from '../../../shared/models/motions/workflow-state';
 import { LineRange } from '../../../core/ui-services/diff.service';
 
@@ -7,13 +7,13 @@ import { LineRange } from '../../../core/ui-services/diff.service';
  * This class adds methods to the MotionsMotionSlideDataChangeReco data object
  * necessary for use it as a UnifiedChange in the Diff-Functions
  */
-export class MotionsMotionSlideObjAmendmentParagraph implements ViewUnifiedChange {
+export class MotionSlideObjAmendmentParagraph implements ViewUnifiedChange {
     public id: number;
     public type: number;
     public merge_amendment_into_final: MergeAmendment;
 
     public constructor(
-        data: MotionsMotionSlideDataAmendment,
+        data: MotionSlideDataAmendment,
         private paragraphNo: number,
         private newText: string,
         private lineRange: LineRange

@@ -82,6 +82,15 @@ export class ViewMotionBlock extends BaseAgendaViewModel implements Searchable {
     };
 
     public getSlide(): ProjectorElementBuildDeskriptor {
-        throw new Error('todo');
+        return {
+            getBasicProjectorElement: options => ({
+                name: MotionBlock.COLLECTIONSTRING,
+                id: this.id,
+                getIdentifiers: () => ['name', 'id']
+            }),
+            slideOptions: [],
+            projectionDefaultName: 'motionBlocks',
+            getDialogTitle: () => this.getTitle()
+        };
     }
 }

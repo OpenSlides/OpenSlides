@@ -1,21 +1,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MotionsMotionSlideComponent } from './motions-motion-slide.component';
+import { MotionSlideComponent } from './motion-slide.component';
 import { E2EImportsModule } from '../../../../e2e-imports.module';
 
 describe('MotionsMotionSlideComponent', () => {
-    let component: MotionsMotionSlideComponent;
-    let fixture: ComponentFixture<MotionsMotionSlideComponent>;
+    let component: MotionSlideComponent;
+    let fixture: ComponentFixture<MotionSlideComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [E2EImportsModule],
-            declarations: [MotionsMotionSlideComponent]
+            declarations: [MotionSlideComponent]
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(MotionsMotionSlideComponent);
+        fixture = TestBed.createComponent(MotionSlideComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

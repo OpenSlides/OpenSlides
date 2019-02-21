@@ -16,6 +16,11 @@ export const allSlidesDynamicConfiguration: (SlideDynamicConfiguration & Slide)[
         scrollable: true
     },
     {
+        slide: 'motions/motion-block',
+        scaleable: true,
+        scrollable: true
+    },
+    {
         slide: 'users/user',
         scaleable: true,
         scrollable: true
