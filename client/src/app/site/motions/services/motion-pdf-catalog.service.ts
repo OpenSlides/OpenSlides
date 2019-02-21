@@ -99,7 +99,7 @@ export class MotionPdfCatalogService {
      * @returns The motion list title for the PDF document
      */
     private createTitle(): object {
-        const titleText = this.configService.instant<string>('motions_export_title');
+        const titleText = this.translate.instant(this.configService.instant<string>('motions_export_title'));
         return {
             text: titleText,
             style: 'title'
