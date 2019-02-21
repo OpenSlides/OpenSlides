@@ -82,6 +82,7 @@ import { OpenSlidesTranslateModule } from '../core/translate/openslides-translat
 import { ProjectorComponent } from './components/projector/projector.component';
 import { SlideContainerComponent } from './components/slide-container/slide-container.component';
 import { CountdownTimeComponent } from './components/contdown-time/countdown-time.component';
+import { MediaUploadContentComponent } from './components/media-upload-content/media-upload-content.component';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -202,7 +203,8 @@ import { CountdownTimeComponent } from './components/contdown-time/countdown-tim
         SlideContainerComponent,
         OwlDateTimeModule,
         OwlNativeDateTimeModule,
-        CountdownTimeComponent
+        CountdownTimeComponent,
+        MediaUploadContentComponent
     ],
     declarations: [
         PermsDirective,
@@ -228,7 +230,8 @@ import { CountdownTimeComponent } from './components/contdown-time/countdown-tim
         MetaTextBlockComponent,
         ProjectorComponent,
         SlideContainerComponent,
-        CountdownTimeComponent
+        CountdownTimeComponent,
+        MediaUploadContentComponent
     ],
     providers: [
         { provide: DateAdapter, useClass: OpenSlidesDateAdapter },

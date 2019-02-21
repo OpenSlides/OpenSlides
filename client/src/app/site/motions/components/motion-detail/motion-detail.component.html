@@ -303,7 +303,12 @@
             <div *ngIf="!perms.isAllowed('change_metadata', motion) && recommendationLabel">
                 <mat-basic-chip class="bluegrey"> {{ recommendationLabel }} </mat-basic-chip>
             </div>
-            <button mat-stroked-button *ngIf="canFollowRecommendation()" (click)="onFollowRecButton()" class="spacer-top-10">
+            <button
+                mat-stroked-button
+                *ngIf="canFollowRecommendation()"
+                (click)="onFollowRecButton()"
+                class="spacer-top-10"
+            >
                 <span translate>Follow recommendation</span>
             </button>
         </div>
@@ -671,8 +676,9 @@
                         </mat-list-item>
                     </mat-list>
                 </div>
-                <div *ngIf="editMotion">
+                <div *ngIf="editMotion" class="shortened-selector">
                     <os-search-value-selector
+                        class="selector"
                         ngDefaultControl
                         [form]="contentForm"
                         [formControl]="contentForm.get('attachments_id')"
@@ -680,6 +686,9 @@
                         listname="{{ 'Attachments' | translate }}"
                         [InputListValues]="mediafilesObserver"
                     ></os-search-value-selector>
+                    <button type="button" mat-icon-button (click)="onUploadAttachmentsButton(uploadDialog)">
+                        <mat-icon>cloud_upload</mat-icon>
+                    </button>
                 </div>
             </div>
 
@@ -868,3 +877,14 @@
         Final print template
     </button>
 </mat-menu>
+
+<!-- upload file dialog -->
+<ng-template #uploadDialog>
+    <h1 mat-dialog-title>
+        <span translate>Upload Files</span>
+    </h1>
+    <os-media-upload-content
+        (uploadSuccessEvent)="uploadSuccess($event)"
+        (errorEvent)="showUploadError($event)"
+    ></os-media-upload-content>
+</ng-template>

@@ -1,5 +1,5 @@
 import { ActivatedRoute, Router } from '@angular/router';
-import { Component, OnInit, ElementRef, HostListener } from '@angular/core';
+import { Component, OnInit, ElementRef, HostListener, TemplateRef } from '@angular/core';
 import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { MatDialog, MatSnackBar, MatCheckboxChange, ErrorStateMatcher } from '@angular/material';
@@ -344,8 +344,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      * @param pdfExport export the motion to pdf
      * @param personalNoteService: personal comments and favorite marker
      * @param linenumberingService The line numbering service
-     * @param categoryRepo
-     * @param userRepo
+     * @param categoryRepo Repository for categories
+     * @param userRepo Repository for users
      */
     public constructor(
         title: Title,
@@ -1255,6 +1255,39 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
      */
     public async toggleFavorite(): Promise<void> {
         this.personalNoteService.setPersonalNoteStar(this.motion.motion, !this.motion.star);
+    }
+
+    /**
+     * Handler for the upload attachments button
+     */
+    public onUploadAttachmentsButton(templateRef: TemplateRef<string>): void {
+        this.dialogService.open(templateRef, {
+            maxHeight: '90vh',
+            width: '750px',
+            maxWidth: '90vw'
+        });
+    }
+
+    /**
+     * Handler for successful uploads.
+     * Adds the IDs of the upload process to the mediafile selector
+     *
+     * @param fileIds the ids of the uploads if they were successful
+     */
+    public uploadSuccess(fileIds: number[]): void {
+        const currentAttachments = this.contentForm.get('attachments_id').value as number[];
+        const newAttachments = [...currentAttachments, ...fileIds];
+        this.contentForm.get('attachments_id').setValue(newAttachments);
+        this.dialogService.closeAll();
+    }
+
+    /**
+     * Handler for upload errors
+     *
+     * @param error the error message passed by the upload component
+     */
+    public showUploadError(error: string): void {
+        this.raiseError(error);
     }
 
     /**
