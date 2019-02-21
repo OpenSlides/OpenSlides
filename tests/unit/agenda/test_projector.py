@@ -12,8 +12,7 @@ def all_data():
             1: {
                 "id": 1,
                 "item_number": "",
-                "title": "Item1",
-                "title_with_type": "Item1",
+                "title_information": {"title": "item1"},
                 "comment": None,
                 "closed": False,
                 "type": 1,
@@ -31,6 +30,7 @@ def all_data():
                 "item_number": "",
                 "title": "item2",
                 "title_with_type": "item2",
+                "title_information": {"title": "item2"},
                 "comment": None,
                 "closed": False,
                 "type": 1,
@@ -49,6 +49,7 @@ def all_data():
                 "item_number": "",
                 "title": "item3",
                 "title_with_type": "item3",
+                "title_information": {"title": "item3"},
                 "comment": None,
                 "closed": True,
                 "type": 2,
@@ -65,8 +66,7 @@ def all_data():
             4: {
                 "id": 4,
                 "item_number": "",
-                "title": "item4",
-                "title_with_type": "item4",
+                "title_information": {"title": "item4"},
                 "comment": None,
                 "closed": True,
                 "type": 1,
@@ -85,33 +85,51 @@ def all_data():
     return all_data
 
 
-def test_items(all_data):
+def test_main_items(all_data):
     element: Dict[str, Any] = {}
 
-    data = projector.items_slide(all_data, element)
+    data = projector.item_list_slide(all_data, element)
 
-    assert data == {"items": ["Item1", "item2"]}
-
-
-def test_items_parent(all_data):
-    element: Dict[str, Any] = {"id": 1}
-
-    data = projector.items_slide(all_data, element)
-
-    assert data == {"items": ["item4"]}
-
-
-def test_items_tree(all_data):
-    element: Dict[str, Any] = {"tree": True}
-
-    data = projector.items_slide(all_data, element)
-
-    assert data == {"items": [("Item1", [("item4", [])]), ("item2", [])]}
+    assert data == {
+        "items": [
+            {
+                "collection": "topics/topic",
+                "item_number": "",
+                "title_information": {"title": "item1"},
+            },
+            {
+                "collection": "topics/topic",
+                "item_number": "",
+                "title_information": {"title": "item2"},
+            },
+        ]
+    }
 
 
-def test_items_tree_parent(all_data):
-    element: Dict[str, Any] = {"tree": True, "id": 1}
+def test_all_items(all_data):
+    element: Dict[str, Any] = {"only_main_items": False}
 
-    data = projector.items_slide(all_data, element)
+    data = projector.item_list_slide(all_data, element)
 
-    assert data == {"items": [("item4", [])]}
+    assert data == {
+        "items": [
+            {
+                "collection": "topics/topic",
+                "depth": 0,
+                "item_number": "",
+                "title_information": {"title": "item1"},
+            },
+            {
+                "collection": "topics/topic",
+                "depth": 1,
+                "item_number": "",
+                "title_information": {"title": "item4"},
+            },
+            {
+                "collection": "topics/topic",
+                "depth": 0,
+                "item_number": "",
+                "title_information": {"title": "item2"},
+            },
+        ]
+    }

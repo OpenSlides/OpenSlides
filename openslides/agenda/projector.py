@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List
 
 from ..users.projector import get_user_name
 from ..utils.projector import (
@@ -16,9 +16,7 @@ from ..utils.projector import (
 #            to be fast!
 
 
-def get_tree(
-    all_data: AllData, parent_id: int = 0
-) -> List[Tuple[int, List[Tuple[int, List[Any]]]]]:
+def get_flat_tree(all_data: AllData, parent_id: int = 0) -> List[Dict[str, Any]]:
     """
     Build the item tree from all_data.
 
@@ -36,35 +34,51 @@ def get_tree(
         if item["type"] == 1:  # only normal items
             children[item["parent_id"] or 0].append(item["id"])
 
-    def get_children(
-        item_ids: List[int]
-    ) -> List[Tuple[int, List[Tuple[int, List[Any]]]]]:
-        return [
-            (all_data["agenda/item"][item_id]["title"], get_children(children[item_id]))
-            for item_id in item_ids
-        ]
+    tree = []
 
-    return get_children(children[parent_id])
+    def get_children(item_ids: List[int], depth: int) -> None:
+        for item_id in item_ids:
+            tree.append(
+                {
+                    "item_number": all_data["agenda/item"][item_id]["item_number"],
+                    "title_information": all_data["agenda/item"][item_id][
+                        "title_information"
+                    ],
+                    "collection": all_data["agenda/item"][item_id]["content_object"][
+                        "collection"
+                    ],
+                    "depth": depth,
+                }
+            )
+            get_children(children[item_id], depth + 1)
+
+    get_children(children[parent_id], 0)
+    return tree
 
 
-def items_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
+def item_list_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
     """
     Item list slide.
 
     Returns all root items or all children of an item.
     """
-    root_item_id = element.get("id") or None
-    show_tree = element.get("tree") or False
+    only_main_items = element.get("only_main_items", True)
 
-    if show_tree:
-        agenda_items = get_tree(all_data, root_item_id or 0)
-    else:
+    if only_main_items:
         agenda_items = []
         for item in sorted(
             all_data["agenda/item"].values(), key=lambda item: item["weight"]
         ):
-            if item["parent_id"] == root_item_id and item["type"] == 1:
-                agenda_items.append(item["title"])
+            if item["parent_id"] is None and item["type"] == 1:
+                agenda_items.append(
+                    {
+                        "item_number": item["item_number"],
+                        "title_information": item["title_information"],
+                        "collection": item["content_object"]["collection"],
+                    }
+                )
+    else:
+        agenda_items = get_flat_tree(all_data)
 
     return {"items": agenda_items}
 
@@ -144,7 +158,7 @@ def current_list_of_speakers_slide(
 
 
 def register_projector_slides() -> None:
-    register_projector_slide("agenda/item-list", items_slide)
+    register_projector_slide("agenda/item-list", item_list_slide)
     register_projector_slide("agenda/list-of-speakers", list_of_speakers_slide)
     register_projector_slide(
         "agenda/current-list-of-speakers", current_list_of_speakers_slide

@@ -67,7 +67,6 @@ import { SearchValueSelectorComponent } from './components/search-value-selector
 import { OpenSlidesDateAdapter } from './date-adapter';
 import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.component';
 import { SortingListComponent } from './components/sorting-list/sorting-list.component';
-import { SpeakerListComponent } from 'app/site/agenda/components/speaker-list/speaker-list.component';
 import { SortingTreeComponent } from './components/sorting-tree/sorting-tree.component';
 import { ChoiceDialogComponent } from './components/choice-dialog/choice-dialog.component';
 import { OsSortFilterBarComponent } from './components/os-sort-filter-bar/os-sort-filter-bar.component';
@@ -215,7 +214,6 @@ import { CountdownTimeComponent } from './components/contdown-time/countdown-tim
         SearchValueSelectorComponent,
         PromptDialogComponent,
         SortingListComponent,
-        SpeakerListComponent,
         SortingTreeComponent,
         ChoiceDialogComponent,
         OsSortFilterBarComponent,

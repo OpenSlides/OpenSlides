@@ -11,7 +11,6 @@ import { MotionCommentSectionListComponent } from './components/motion-comment-s
 import { MotionDetailComponent } from './components/motion-detail/motion-detail.component';
 import { MotionImportListComponent } from './components/motion-import-list/motion-import-list.component';
 import { MotionListComponent } from './components/motion-list/motion-list.component';
-import { SpeakerListComponent } from '../agenda/components/speaker-list/speaker-list.component';
 import { StatuteImportListComponent } from './components/statute-paragraph-list/statute-import-list/statute-import-list.component';
 import { StatuteParagraphListComponent } from './components/statute-paragraph-list/statute-paragraph-list.component';
 import { WorkflowListComponent } from './components/workflow-list/workflow-list.component';
@@ -32,7 +31,6 @@ const routes: Routes = [
     { path: 'workflow', component: WorkflowListComponent },
     { path: 'workflow/:id', component: WorkflowDetailComponent },
     { path: ':id', component: MotionDetailComponent },
-    { path: ':id/speakers', component: SpeakerListComponent },
     { path: ':id/create-amendment', component: AmendmentCreateWizardComponent }
 ];
 

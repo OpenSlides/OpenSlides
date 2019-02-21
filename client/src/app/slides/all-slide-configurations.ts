@@ -6,6 +6,11 @@ import { ProjectorElement } from 'app/shared/models/core/projector';
 
 export const allSlidesDynamicConfiguration: (SlideDynamicConfiguration & Slide)[] = [
     {
+        slide: 'agenda/item-list',
+        scaleable: true,
+        scrollable: true
+    },
+    {
         slide: 'topics/topic',
         scaleable: true,
         scrollable: true

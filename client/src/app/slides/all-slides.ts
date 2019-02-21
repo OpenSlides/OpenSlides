@@ -9,9 +9,17 @@ import { SlideManifest } from './slide-manifest';
  */
 export const allSlides: SlideManifest[] = [
     {
+        slide: 'agenda/item-list',
+        path: 'agenda/item-list',
+        loadChildren: './slides/agenda/item-list/item-list-slide.module#ItemListSlideModule',
+        verboseName: 'Agenda',
+        elementIdentifiers: ['name'],
+        canBeMappedToModel: false
+    },
+    {
         slide: 'topics/topic',
         path: 'topics/topic',
-        loadChildren: './slides/agenda/topic/topic-slide.module#TopicSlideModule',
+        loadChildren: './slides/topics/topic/topic-slide.module#TopicSlideModule',
         verboseName: 'Topic',
         elementIdentifiers: ['name', 'id'],
         canBeMappedToModel: true
@@ -35,7 +43,7 @@ export const allSlides: SlideManifest[] = [
     {
         slide: 'users/user',
         path: 'users/user',
-        loadChildren: './slides/users/user/users-user-slide.module#UsersUserSlideModule',
+        loadChildren: './slides/users/user/user-slide.module#UserSlideModule',
         verboseName: 'Participant',
         elementIdentifiers: ['name', 'id'],
         canBeMappedToModel: true

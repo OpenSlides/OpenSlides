@@ -25,11 +25,11 @@ import { DurationService } from 'app/core/ui-services/duration.service';
  * The list of speakers for agenda items.
  */
 @Component({
-    selector: 'os-speaker-list',
-    templateUrl: './speaker-list.component.html',
-    styleUrls: ['./speaker-list.component.scss']
+    selector: 'os-list-of-speakers',
+    templateUrl: './list-of-speakers.component.html',
+    styleUrls: ['./list-of-speakers.component.scss']
 })
-export class SpeakerListComponent extends BaseViewComponent implements OnInit {
+export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit {
     /**
      * Determine if the user is viewing the current list if speakers
      */

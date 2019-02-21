@@ -18,6 +18,7 @@ import { PromptService } from 'app/core/ui-services/prompt.service';
 import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { ViewItem } from '../../models/view-item';
+import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 
 /**
  * List view for the agenda.
@@ -48,6 +49,22 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item> i
     public get canManage(): boolean {
         return this.operator.hasPerms('agenda.can_manage');
     }
+
+    public itemListSlide: ProjectorElementBuildDeskriptor = {
+        getBasicProjectorElement: options => ({
+            name: 'agenda/item-list',
+            getIdentifiers: () => ['name']
+        }),
+        slideOptions: [
+            {
+                key: 'only_main_items',
+                displayName: 'Only main agenda items',
+                default: false
+            }
+        ],
+        projectionDefaultName: 'agenda_all_items',
+        getDialogTitle: () => this.translate.instant('Item list')
+    };
 
     /**
      * The usual constructor for components
