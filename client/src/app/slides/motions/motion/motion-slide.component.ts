@@ -2,21 +2,21 @@ import { Component, Input } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { BaseSlideComponent } from 'app/slides/base-slide-component';
-import { MotionsMotionSlideData, MotionsMotionSlideDataAmendment } from './motions-motion-slide-data';
+import { MotionSlideData, MotionSlideDataAmendment } from './motion-slide-data';
 import { ChangeRecoMode, LineNumberingMode } from '../../../site/motions/models/view-motion';
 import { DiffLinesInParagraph, DiffService, LineRange } from '../../../core/ui-services/diff.service';
 import { LinenumberingService } from '../../../core/ui-services/linenumbering.service';
 import { ViewUnifiedChange } from '../../../shared/models/motions/view-unified-change';
-import { MotionsMotionSlideObjChangeReco } from './motions-motion-slide-obj-change-reco';
+import { MotionSlideObjChangeReco } from './motion-slide-obj-change-reco';
 import { SlideData } from '../../../site/projector/services/projector-data.service';
-import { MotionsMotionSlideObjAmendmentParagraph } from './motions-motion-slide-obj-amendment-paragraph';
+import { MotionSlideObjAmendmentParagraph } from './motion-slide-obj-amendment-paragraph';
 
 @Component({
-    selector: 'os-motions-motion-slide',
-    templateUrl: './motions-motion-slide.component.html',
-    styleUrls: ['./motions-motion-slide.component.scss']
+    selector: 'os-motion-slide',
+    templateUrl: './motion-slide.component.html',
+    styleUrls: ['./motion-slide.component.scss']
 })
-export class MotionsMotionSlideComponent extends BaseSlideComponent<MotionsMotionSlideData> {
+export class MotionSlideComponent extends BaseSlideComponent<MotionSlideData> {
     /**
      * Indicates the LineNumberingMode Mode.
      */
@@ -48,10 +48,10 @@ export class MotionsMotionSlideComponent extends BaseSlideComponent<MotionsMotio
      */
     public allChangingObjects: ViewUnifiedChange[];
 
-    private _data: SlideData<MotionsMotionSlideData>;
+    private _data: SlideData<MotionSlideData>;
 
     @Input()
-    public set data(value: SlideData<MotionsMotionSlideData>) {
+    public set data(value: SlideData<MotionSlideData>) {
         this._data = value;
         this.lnMode = value.data.line_numbering_mode;
         this.lineLength = value.data.line_length;
@@ -62,7 +62,7 @@ export class MotionsMotionSlideComponent extends BaseSlideComponent<MotionsMotio
         this.recalcUnifiedChanges();
     }
 
-    public get data(): SlideData<MotionsMotionSlideData> {
+    public get data(): SlideData<MotionSlideData> {
         return this._data;
     }
 
@@ -77,19 +77,17 @@ export class MotionsMotionSlideComponent extends BaseSlideComponent<MotionsMotio
     /**
      * Returns all paragraphs that are affected by the given amendment as unified change objects.
      *
-     * @param {MotionsMotionSlideDataAmendment} amendment
-     * @returns {MotionsMotionSlideObjAmendmentParagraph[]}
+     * @param {MotionSlideDataAmendment} amendment
+     * @returns {MotionSlideObjAmendmentParagraph[]}
      */
-    public getAmendmentAmendedParagraphs(
-        amendment: MotionsMotionSlideDataAmendment
-    ): MotionsMotionSlideObjAmendmentParagraph[] {
+    public getAmendmentAmendedParagraphs(amendment: MotionSlideDataAmendment): MotionSlideObjAmendmentParagraph[] {
         let baseHtml = this.data.data.text;
         baseHtml = this.lineNumbering.insertLineNumbers(baseHtml, this.lineLength);
         const baseParagraphs = this.lineNumbering.splitToParagraphs(baseHtml);
 
         return amendment.amendment_paragraphs
             .map(
-                (newText: string, paraNo: number): MotionsMotionSlideObjAmendmentParagraph => {
+                (newText: string, paraNo: number): MotionSlideObjAmendmentParagraph => {
                     if (newText === null) {
                         return null;
                     }
@@ -114,10 +112,10 @@ export class MotionsMotionSlideComponent extends BaseSlideComponent<MotionsMotio
                         this.diff.extractRangeByLineNumbers(newTextLines, affectedLines.from, affectedLines.to)
                     );
 
-                    return new MotionsMotionSlideObjAmendmentParagraph(amendment, paraNo, newTextLines, affectedLines);
+                    return new MotionSlideObjAmendmentParagraph(amendment, paraNo, newTextLines, affectedLines);
                 }
             )
-            .filter((para: MotionsMotionSlideObjAmendmentParagraph) => para !== null);
+            .filter((para: MotionSlideObjAmendmentParagraph) => para !== null);
     }
 
     /**
@@ -129,7 +127,7 @@ export class MotionsMotionSlideComponent extends BaseSlideComponent<MotionsMotio
 
         if (this.data.data.change_recommendations) {
             this.data.data.change_recommendations.forEach(change => {
-                this.allChangingObjects.push(new MotionsMotionSlideObjChangeReco(change));
+                this.allChangingObjects.push(new MotionSlideObjChangeReco(change));
             });
         }
         if (this.data.data.amendments) {

@@ -104,10 +104,8 @@
         <span translate>List of speakers</span>
     </button>
 
-    <button mat-menu-item *osPerms="'core.can_manage_projector'">
-        <mat-icon>videocam</mat-icon>
-        <span translate>Project</span>
-    </button>
+    <os-projector-button *ngIf="block" [object]="block" [menuItem]="true"></os-projector-button>
+
     <div *osPerms="['motions.can_manage', 'motions.can_manage_metadata']">
         <button mat-menu-item (click)="toggleEditMode()">
             <mat-icon>edit</mat-icon>

@@ -41,7 +41,7 @@ import { LinenumberingService } from 'app/core/ui-services/linenumbering.service
 import { Tag } from 'app/shared/models/core/tag';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ViewMotionBlock } from '../../models/view-motion-block';
-import { ViewWorkflow } from '../../models/view-workflow';
+import { ViewWorkflow, StateCssClassMapping } from '../../models/view-workflow';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { ViewCategory } from '../../models/view-category';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
@@ -1280,17 +1280,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit {
             return '';
         }
 
-        switch (this.motion.state.css_class) {
-            case 'success':
-                return 'green';
-            case 'danger':
-                return 'red';
-            case 'default':
-                return 'grey';
-            case 'primary':
-                return 'lightblue';
-            default:
-                return '';
-        }
+        return StateCssClassMapping[this.motion.state.css_class] || '';
     }
 }

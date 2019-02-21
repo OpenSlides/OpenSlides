@@ -52,6 +52,14 @@
 <!-- Table -->
 <mat-card class="os-card">
     <table class="os-headed-listview-table on-transition-fade" mat-table [dataSource]="dataSource" matSort>
+        <!-- Projector column -->
+        <ng-container matColumnDef="projector">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Projector</mat-header-cell>
+            <mat-cell *matCellDef="let block">
+                <os-projector-button [object]="block"></os-projector-button>
+            </mat-cell>
+        </ng-container>
+
         <!-- title column -->
         <ng-container matColumnDef="title">
             <mat-header-cell *matHeaderCellDef mat-sort-header> <span translate>Title</span> </mat-header-cell>

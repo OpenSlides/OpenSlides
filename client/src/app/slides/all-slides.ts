@@ -19,8 +19,16 @@ export const allSlides: SlideManifest[] = [
     {
         slide: 'motions/motion',
         path: 'motions/motion',
-        loadChildren: './slides/motions/motion/motions-motion-slide.module#MotionsMotionSlideModule',
+        loadChildren: './slides/motions/motion/motion-slide.module#MotionSlideModule',
         verboseName: 'Motion',
+        elementIdentifiers: ['name', 'id'],
+        canBeMappedToModel: true
+    },
+    {
+        slide: 'motions/motion-block',
+        path: 'motions/motion-block',
+        loadChildren: './slides/motions/motion-block/motion-block-slide.module#MotionBlockSlideModule',
+        verboseName: 'Motion block',
         elementIdentifiers: ['name', 'id'],
         canBeMappedToModel: true
     },

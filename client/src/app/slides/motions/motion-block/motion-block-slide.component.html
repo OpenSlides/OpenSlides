@@ -1,0 +1,17 @@
+<div *ngIf="data">
+    <div class="slidetitle">
+        <h1>{{ data.data.title }}</h1>
+        <h2><span translate>Motion block</span> – {{ data.data.motions.length }} <span translate>motions</span></h2>
+    </div>
+
+    <div *ngFor="let motion of data.data.motions">
+        <div class="ellipsis-overflow">
+            {{ motion.identifier }}: {{ motion.title }}
+        </div>
+        <div class="white ellipsis-overflow">
+            <mat-basic-chip *ngIf="motion.recommendation" disableRipple [ngClass]="getStateCssColor(motion)">
+                {{ getRecommendationLabel(motion) }}
+            </mat-basic-chip>
+        </div>
+    </div>
+</div>

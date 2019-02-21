@@ -3,7 +3,7 @@
         [ngClass]="isProjected() ? 'projector-active' : 'projector-inactive'">
         <mat-icon>videocam</mat-icon>
     </button>
-    <button type="button" *ngIf="menuItem" mat-menu-item (click)="onClick($event)"
+    <button type="button" *ngIf="menuItem" mat-menu-item (click)="onClick()"
         [ngClass]="isProjected() ? 'projector-active' : 'projector-inactive'">
         <mat-icon>videocam</mat-icon>
         <span translate>Project</span>
