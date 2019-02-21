@@ -64,6 +64,14 @@
             </mat-cell>
         </ng-container>
 
+        <!-- Anchor column to open separate tab -->
+        <ng-container matColumnDef="anchor">
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell *matCellDef="let user">
+                <a [routerLink]="user.id"></a>
+            </mat-cell>
+        </ng-container>
+
         <!-- Presence column -->
         <ng-container matColumnDef="presence">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Presence</mat-header-cell>

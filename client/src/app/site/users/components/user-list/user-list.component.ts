@@ -80,12 +80,12 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User> imp
     /**
      * Columns to display in table when desktop view is available
      */
-    public displayedColumnsDesktop: string[] = ['name', 'group'];
+    public displayedColumnsDesktop: string[] = ['name', 'group', 'anchor'];
 
     /**
      * Columns to display in table when mobile view is available
      */
-    public displayedColumnsMobile = ['name'];
+    public displayedColumnsMobile = ['name', 'anchor'];
 
     /**
      * Stores the observed configuration if the presence view is available to administrators
