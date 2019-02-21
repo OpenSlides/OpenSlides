@@ -56,6 +56,10 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
         viewUser.getVerboseName = (plural: boolean = false) => {
             return this.translate.instant(plural ? 'Participants' : 'Participant');
         };
+
+        viewUser.getNumberForName = (nr: number) => {
+            return `${this.translate.instant('No.')} ${nr}`;
+        };
         return viewUser;
     }
 

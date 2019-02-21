@@ -62,6 +62,7 @@
         "@angular/cli": "^7.3.2",
         "@angular/compiler-cli": "^7.2.5",
         "@angular/language-service": "^7.2.5",
+        "@biesbjerg/ngx-translate-extract": "^2.3.4",
         "@compodoc/compodoc": "^1.1.8",
         "@types/jasmine": "^3.3.9",
         "@types/jasminewd2": "^2.0.6",

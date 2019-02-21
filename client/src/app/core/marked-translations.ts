@@ -1,8 +1,9 @@
-// import { _ } from '@biesbjerg/ngx-translate-extract';
+import { _ } from '@biesbjerg/ngx-translate-extract';
 
-function _(key: string | string[]): string | string[] {
-    return key;
-}
+// see issue: 4078
+// function _(key: string | string[]): string | string[] {
+//     return key;
+// }
 
 /**
  * Add strings here that require translations but have never been declared

@@ -152,8 +152,7 @@ export class ViewUser extends BaseProjectableViewModel implements Searchable {
 
         const number = this.number ? this.number.trim() : '';
         if (number) {
-            // TODO Translate
-            additions.push('No. ' + number);
+            additions.push(this.getNumberForName(number));
         }
 
         if (additions.length > 0) {
@@ -166,6 +165,11 @@ export class ViewUser extends BaseProjectableViewModel implements Searchable {
      * This is set by the repository
      */
     public getVerboseName;
+
+    /**
+     * This is set by the repository. Translates the number string.
+     */
+    public getNumberForName;
 
     public constructor(user: User, groups?: ViewGroup[]) {
         super(User.COLLECTIONSTRING);
