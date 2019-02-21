@@ -13,7 +13,9 @@ from ..utils.projector import (
 #            to be fast!
 
 
-def topic_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
+def topic_slide(
+    all_data: AllData, element: Dict[str, Any], projector_id: int
+) -> Dict[str, Any]:
     """
     Topic slide.
 

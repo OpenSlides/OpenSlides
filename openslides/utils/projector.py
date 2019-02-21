@@ -11,7 +11,7 @@ from .cache import element_cache
 
 
 AllData = Dict[str, Dict[int, Dict[str, Any]]]
-ProjectorSlide = Callable[[AllData, Dict[str, Any]], Dict[str, Any]]
+ProjectorSlide = Callable[[AllData, Dict[str, Any], int], Dict[str, Any]]
 
 
 projector_slides: Dict[str, ProjectorSlide] = {}
@@ -83,7 +83,7 @@ async def get_projector_data(
         for element in projector["elements"]:
             projector_slide = projector_slides[element["name"]]
             try:
-                data = projector_slide(all_data, element)
+                data = projector_slide(all_data, element, projector_id)
             except ProjectorElementException as err:
                 data = {"error": str(err)}
             projector_data[projector_id].append({"data": data, "element": element})

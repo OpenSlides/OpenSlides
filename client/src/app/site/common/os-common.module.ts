@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule as AngularCommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 
 import { CommonRoutingModule } from './common-routing.module';
 import { SharedModule } from '../../shared/shared.module';
@@ -10,7 +10,7 @@ import { SearchComponent } from './components/search/search.component';
 import { CountUsersComponent } from './components/count-users/count-users.component';
 
 @NgModule({
-    imports: [AngularCommonModule, CommonRoutingModule, SharedModule],
+    imports: [CommonModule, CommonRoutingModule, SharedModule],
     declarations: [PrivacyPolicyComponent, StartComponent, LegalNoticeComponent, SearchComponent, CountUsersComponent]
 })
-export class CommonModule {}
+export class OsCommonModule {}

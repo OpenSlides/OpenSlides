@@ -97,7 +97,9 @@ def get_amendment_base_statute(amendment, all_data):
     return {"title": statute["title"], "text": statute["text"]}
 
 
-def motion_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
+def motion_slide(
+    all_data: AllData, element: Dict[str, Any], projector_id: int
+) -> Dict[str, Any]:
     """
     Motion slide.
 
@@ -204,7 +206,9 @@ def motion_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
     return return_value
 
 
-def motion_block_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
+def motion_block_slide(
+    all_data: AllData, element: Dict[str, Any], projector_id: int
+) -> Dict[str, Any]:
     """
     Motion block slide.
     """

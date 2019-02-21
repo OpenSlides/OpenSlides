@@ -90,14 +90,18 @@ class TProjector:
         return elements
 
 
-def slide1(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
+def slide1(
+    all_data: AllData, element: Dict[str, Any], projector_id: int
+) -> Dict[str, Any]:
     """
     Slide that shows the general_event_name.
     """
     return {"name": "slide1", "event_name": get_config(all_data, "general_event_name")}
 
 
-def slide2(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
+def slide2(
+    all_data: AllData, element: Dict[str, Any], projector_id: int
+) -> Dict[str, Any]:
     return {"name": "slide2"}
 
 

@@ -7,14 +7,11 @@
 
 <div class="content-container" *ngIf="projector">
     <div class="column-left">
-        <!--<a [routerLink]="['/projector', projector.id]">
+        <a [routerLink]="['/projector', projector.id]">
             <div id="projector">
                 <os-projector [projector]="projector"></os-projector>
             </div>
-        </a>-->
-        <div id="projector">
-            <os-projector [projector]="projector"></os-projector>
-        </div>
+        </a>
     </div>
     <div class="column-right" *osPerms="'core.can_manage_projector'">
         <div class="control-group">

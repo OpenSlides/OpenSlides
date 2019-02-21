@@ -14,7 +14,9 @@ from ..utils.projector import (
 #            to be fast!
 
 
-def countdown_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
+def countdown_slide(
+    all_data: AllData, element: Dict[str, Any], projector_id: int
+) -> Dict[str, Any]:
     """
     Countdown slide.
 
@@ -40,7 +42,9 @@ def countdown_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any
     }
 
 
-def message_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
+def message_slide(
+    all_data: AllData, element: Dict[str, Any], projector_id: int
+) -> Dict[str, Any]:
     """
     Message slide.
 
@@ -59,7 +63,9 @@ def message_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
         raise ProjectorElementException(f"Message {message_id} does not exist")
 
 
-def clock_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
+def clock_slide(
+    all_data: AllData, element: Dict[str, Any], projector_id: int
+) -> Dict[str, Any]:
     return {}
 
 

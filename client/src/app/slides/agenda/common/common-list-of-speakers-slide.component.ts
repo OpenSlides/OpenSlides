@@ -1,16 +1,16 @@
 import { Component } from '@angular/core';
 
 import { BaseSlideComponent } from 'app/slides/base-slide-component';
-import { ListOfSpeakersSlideData } from './list-of-speakers-slide-data';
+import { CommonListOfSpeakersSlideData } from './common-list-of-speakers-slide-data';
 import { CollectionStringMapperService } from 'app/core/core-services/collectionStringMapper.service';
 import { isBaseAgendaContentObjectRepository } from 'app/core/repositories/base-agenda-content-object-repository';
 
 @Component({
-    selector: 'os-list-of-speakers-slide',
-    templateUrl: './list-of-speakers-slide.component.html',
-    styleUrls: ['./list-of-speakers-slide.component.scss']
+    selector: 'os-common-list-of-speakers-slide',
+    templateUrl: './common-list-of-speakers-slide.component.html',
+    styleUrls: ['./common-list-of-speakers-slide.component.scss']
 })
-export class ListOfSpeakersSlideComponent extends BaseSlideComponent<ListOfSpeakersSlideData> {
+export class CommonListOfSpeakersSlideComponent extends BaseSlideComponent<CommonListOfSpeakersSlideData> {
     public constructor(private collectionStringMapperService: CollectionStringMapperService) {
         super();
     }

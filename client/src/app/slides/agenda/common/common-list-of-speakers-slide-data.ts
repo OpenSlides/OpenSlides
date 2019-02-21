@@ -3,7 +3,7 @@ interface SlideSpeaker {
     marked: boolean;
 }
 
-export interface ListOfSpeakersSlideData {
+export interface CommonListOfSpeakersSlideData {
     waiting: SlideSpeaker[];
     current: SlideSpeaker;
     finished: SlideSpeaker[];

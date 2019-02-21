@@ -1,7 +1,13 @@
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
-import { makeSlideModule } from 'app/slides/base-slide-module';
-import { ListOfSpeakersSlideComponent } from './list-of-speakers-slide.component';
+import { SLIDE } from '../../slide-token';
+import { SharedModule } from 'app/shared/shared.module';
+import { CommonListOfSpeakersSlideModule } from '../common/common-list-of-speakers-slide.module';
+import { CommonListOfSpeakersSlideComponent } from '../common/common-list-of-speakers-slide.component';
 
-@NgModule(makeSlideModule(ListOfSpeakersSlideComponent))
+@NgModule({
+    imports: [CommonModule, SharedModule, CommonListOfSpeakersSlideModule],
+    providers: [{ provide: SLIDE, useValue: CommonListOfSpeakersSlideComponent }]
+})
 export class ListOfSpeakersSlideModule {}

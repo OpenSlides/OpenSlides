@@ -9,7 +9,9 @@ from ..utils.projector import AllData, register_projector_slide
 #            to be fast!
 
 
-def assignment_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
+def assignment_slide(
+    all_data: AllData, element: Dict[str, Any], projector_id: int
+) -> Dict[str, Any]:
     """
     Assignment slide.
     """
