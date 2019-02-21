@@ -10,6 +10,7 @@ import { History } from 'app/shared/models/core/history';
 import { HistoryRepositoryService } from 'app/core/repositories/history/history-repository.service';
 import { isDetailNavigable } from 'app/shared/models/base/detail-navigable';
 import { ListViewBaseComponent } from 'app/site/base/list-view-base';
+import { OperatorService } from 'app/core/core-services/operator.service';
 import { ViewHistory } from '../../models/view-history';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 
@@ -36,6 +37,9 @@ export class HistoryListComponent extends ListViewBaseComponent<ViewHistory, His
      * @param translate Handle translations
      * @param matSnackBar Showing errors and messages
      * @param repo The history repository
+     * @param viewModelStore Access view models
+     * @param router route to pages
+     * @param operator checks if the user is a super admin
      */
     public constructor(
         titleService: Title,
@@ -43,7 +47,8 @@ export class HistoryListComponent extends ListViewBaseComponent<ViewHistory, His
         matSnackBar: MatSnackBar,
         private repo: HistoryRepositoryService,
         private viewModelStore: ViewModelStoreService,
-        private router: Router
+        private router: Router,
+        private operator: OperatorService
     ) {
         super(titleService, translate, matSnackBar);
     }
@@ -105,17 +110,18 @@ export class HistoryListComponent extends ListViewBaseComponent<ViewHistory, His
      * @param history Represents the selected element
      */
     public async onClickRow(history: ViewHistory): Promise<void> {
-        await this.repo.browseHistory(history);
-        const element = this.viewModelStore.get(history.getCollectionString(), history.getModelId());
-        let message = this.translate.instant('OpenSlides is temporarily reset to following timestamp:');
-        console.log(message);
-        message += ' ' + history.getLocaleString('DE-de');
+        if (this.operator.isInGroupIds(2)) {
+            await this.repo.browseHistory(history);
+            const element = this.viewModelStore.get(history.getCollectionString(), history.getModelId());
+            let message = this.translate.instant('OpenSlides is temporarily reset to following timestamp:');
+            message += ' ' + history.getLocaleString('DE-de');
 
-        if (isDetailNavigable(element)) {
-            this.raiseError(message);
-            this.router.navigate([element.getDetailStateURL()]);
-        } else {
-            this.raiseError(message);
+            if (isDetailNavigable(element)) {
+                this.raiseError(message);
+                this.router.navigate([element.getDetailStateURL()]);
+            } else {
+                this.raiseError(message);
+            }
         }
     }
 
@@ -123,7 +129,9 @@ export class HistoryListComponent extends ListViewBaseComponent<ViewHistory, His
      * Handler for the delete all button
      */
     public onDeleteAllButton(): void {
-        this.repo.delete();
+        if (this.operator.isInGroupIds(2)) {
+            this.repo.delete();
+        }
     }
 
     /**
