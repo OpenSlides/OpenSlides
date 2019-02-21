@@ -23,6 +23,7 @@ export type InfoToExport =
     | 'category'
     | 'block'
     | 'origin'
+    | 'tags'
     | 'polls'
     | 'id'
     | 'allcomments';
@@ -248,6 +249,25 @@ export class MotionPdfService {
                     text: motion.category.prefix
                         ? `${motion.category.prefix} - ${motion.category.name}`
                         : `${motion.category.name}`
+                }
+            ]);
+        }
+
+        // tags
+        if (motion.tags.length && (!infoToExport || infoToExport.includes('tags'))) {
+            const tags = motion.tags
+                .map(tag => {
+                    return tag;
+                })
+                .join(', ');
+
+            metaTableBody.push([
+                {
+                    text: `${this.translate.instant('Tags')}:`,
+                    style: 'boldText'
+                },
+                {
+                    text: tags
                 }
             ]);
         }

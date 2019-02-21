@@ -51,6 +51,7 @@ export class MotionExportDialogComponent implements OnInit {
         'recommendation',
         'category',
         'origin',
+        'tags',
         'block',
         'polls',
         'id'

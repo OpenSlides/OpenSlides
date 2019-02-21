@@ -198,7 +198,7 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
      */
     public openExportDialog(): void {
         const exportDialogRef = this.dialog.open(MotionExportDialogComponent, {
-            width: '950px',
+            width: '1100px',
             maxWidth: '90vw',
             maxHeight: '90vh',
             data: this.dataSource

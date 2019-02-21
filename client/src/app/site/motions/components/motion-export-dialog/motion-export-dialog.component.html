@@ -49,6 +49,7 @@
                 <mat-button-toggle value="state"> <span translate>State</span> </mat-button-toggle>
                 <mat-button-toggle value="recommendation"> <span translate>Recommendation</span> </mat-button-toggle>
                 <mat-button-toggle value="category"> <span translate>Category</span> </mat-button-toggle>
+                <mat-button-toggle value="tags"> <span translate>Tags</span> </mat-button-toggle>
                 <mat-button-toggle value="origin"> <span translate>Origin</span> </mat-button-toggle>
                 <mat-button-toggle value="block"> <span translate>Motion block</span> </mat-button-toggle>
                 <mat-button-toggle value="poll" #votingResultButton>
@@ -59,11 +60,7 @@
         </div>
         <div *ngIf="commentsToExport.length && exportForm.get('format').value === 'pdf'">
             <p class="toggle-group-head" translate>Comments</p>
-            <mat-button-toggle-group
-                class="smaller-buttons"
-                multiple
-                formControlName="comments"
-            >
+            <mat-button-toggle-group class="smaller-buttons" multiple formControlName="comments">
                 <mat-button-toggle *ngFor="let comment of commentsToExport" [value]="comment.id">
                     <span>{{ comment.name }}</span>
                 </mat-button-toggle>
