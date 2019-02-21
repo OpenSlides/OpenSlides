@@ -116,16 +116,8 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
         this.projectorService.projectPreviewSlide(this.projector.projector, elementIndex).then(null, this.raiseError);
     }
 
-    public getElementDescription(element: ProjectorElement): string {
-        if (this.slideManager.canSlideBeMappedToModel(element.name)) {
-            const idElement = this.slideManager.getIdentifialbeProjectorElement(element);
-            const viewModel = this.projectorService.getViewModelFromProjectorElement(idElement);
-            if (viewModel) {
-                return viewModel.getProjectorTitle();
-            }
-        }
-
-        return this.slideManager.getSlideVerboseName(element.name);
+    public getSlideTitle(element: ProjectorElement): string {
+        return this.projectorService.getSlideTitle(element);
     }
 
     public isProjected(obj: Projectable): boolean {

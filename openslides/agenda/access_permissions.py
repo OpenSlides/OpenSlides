@@ -57,7 +57,13 @@ class ItemAccessPermissions(BaseAccessPermissions):
                 # so that list of speakers is provided regardless. Hidden items can only be seen by managers.
                 # We know that full_data has at least one entry which can be used to parse the keys.
                 blocked_keys_internal_hidden_case = set(full_data[0].keys()) - set(
-                    ("id", "title", "speakers", "speaker_list_closed", "content_object")
+                    (
+                        "id",
+                        "title_information",
+                        "speakers",
+                        "speaker_list_closed",
+                        "content_object",
+                    )
                 )
 
                 # In non internal case managers see everything and non managers see

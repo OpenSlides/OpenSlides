@@ -199,7 +199,7 @@ export class ViewUser extends BaseProjectableViewModel implements Searchable {
             }),
             slideOptions: [],
             projectionDefaultName: 'users',
-            getTitle: () => this.getTitle()
+            getDialogTitle: () => this.getTitle()
         };
     }
 

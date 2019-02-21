@@ -11,7 +11,7 @@ export const allSlides: SlideManifest[] = [
     {
         slide: 'topics/topic',
         path: 'topics/topic',
-        loadChildren: './slides/agenda/topic/topics-topic-slide.module#TopicsTopicSlideModule',
+        loadChildren: './slides/agenda/topic/topic-slide.module#TopicSlideModule',
         verboseName: 'Topic',
         elementIdentifiers: ['name', 'id'],
         canBeMappedToModel: true
@@ -60,7 +60,7 @@ export const allSlides: SlideManifest[] = [
         slide: 'agenda/current-list-of-speakers',
         path: 'agenda/current-list-of-speakers',
         loadChildren:
-            './slides/agenda/current-list-of-speakers/agenda-current-list-of-speakers-slide.module#AgendaCurrentListOfSpeakersSlideModule',
+            './slides/agenda/current-list-of-speakers/current-list-of-speakers-slide.module#CurrentListOfSpeakersSlideModule',
         verboseName: 'Current list of speakers',
         elementIdentifiers: ['name', 'id'],
         canBeMappedToModel: false
@@ -69,8 +69,16 @@ export const allSlides: SlideManifest[] = [
         slide: 'agenda/current-list-of-speakers-overlay',
         path: 'agenda/current-list-of-speakers-overlay',
         loadChildren:
-            './slides/agenda/current-list-of-speakers-overlay/agenda-current-list-of-speakers-overlay-slide.module#AgendaCurrentListOfSpeakersOverlaySlideModule',
+            './slides/agenda/current-list-of-speakers-overlay/current-list-of-speakers-overlay-slide.module#CurrentListOfSpeakersOverlaySlideModule',
         verboseName: 'Current list of speakers overlay',
+        elementIdentifiers: ['name', 'id'],
+        canBeMappedToModel: false
+    },
+    {
+        slide: 'agenda/list-of-speakers',
+        path: 'agenda/list-of-speakers',
+        loadChildren: './slides/agenda/list-of-speakers/list-of-speakers-slide.module#ListOfSpeakersSlideModule',
+        verboseName: 'List of speakers',
         elementIdentifiers: ['name', 'id'],
         canBeMappedToModel: false
     },

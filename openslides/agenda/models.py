@@ -283,32 +283,16 @@ class Item(RESTModelMixin, models.Model):
         )
         unique_together = ("content_type", "object_id")
 
-    def __str__(self):
-        return self.title
-
     @property
-    def title(self):
+    def title_information(self):
         """
-        Return get_agenda_title() from the content_object.
+        Return get_agenda_title_information() from the content_object.
         """
         try:
-            return self.content_object.get_agenda_title()
+            return self.content_object.get_agenda_title_information()
         except AttributeError:
             raise NotImplementedError(
-                "You have to provide a get_agenda_title "
-                "method on your related model."
-            )
-
-    @property
-    def title_with_type(self):
-        """
-        Return get_agenda_title_with_type() from the content_object.
-        """
-        try:
-            return self.content_object.get_agenda_title_with_type()
-        except AttributeError:
-            raise NotImplementedError(
-                "You have to provide a get_agenda_title_with_type "
+                "You have to provide a get_agenda_title_information "
                 "method on your related model."
             )
 

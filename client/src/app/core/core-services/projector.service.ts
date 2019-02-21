@@ -18,6 +18,7 @@ import { SlideManager } from 'app/slides/services/slide-manager.service';
 import { BaseModel } from 'app/shared/models/base/base-model';
 import { ViewModelStoreService } from './view-model-store.service';
 import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * This service cares about Projectables being projected and manage all projection-related
@@ -39,7 +40,8 @@ export class ProjectorService {
         private DS: DataStoreService,
         private http: HttpService,
         private slideManager: SlideManager,
-        private viewModelStore: ViewModelStoreService
+        private viewModelStore: ViewModelStoreService,
+        private translate: TranslateService
     ) {}
 
     /**
@@ -271,6 +273,24 @@ export class ProjectorService {
             console.error('The view model is not projectable', viewModel, element);
         }
         return viewModel;
+    }
+
+    /**
+     */
+    public getSlideTitle(element: ProjectorElement): string {
+        if (this.slideManager.canSlideBeMappedToModel(element.name)) {
+            const idElement = this.slideManager.getIdentifialbeProjectorElement(element);
+            const viewModel = this.getViewModelFromProjectorElement(idElement);
+            if (viewModel) {
+                return viewModel.getProjectorTitle();
+            }
+        }
+        const configuration = this.slideManager.getSlideConfiguration(element.name);
+        if (configuration.getSlideTitle) {
+            return configuration.getSlideTitle(element, this.translate, this.viewModelStore);
+        }
+
+        return this.translate.instant(this.slideManager.getSlideVerboseName(element.name));
     }
 
     /**

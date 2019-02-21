@@ -318,18 +318,8 @@ class Assignment(RESTModelMixin, models.Model):
     """
     agenda_item_update_information: Dict[str, Any] = {}
 
-    def get_agenda_title(self):
-        """
-        Returns the title for the agenda.
-        """
-        return str(self)
-
-    def get_agenda_title_with_type(self):
-        """
-        Return a title for the agenda with the appended assignment verbose name.
-        Note: It has to be the same return value like in JavaScript.
-        """
-        return f"{self.get_agenda_title()} (self._meta.verbose_name)"
+    def get_agenda_title_information(self):
+        return {"title": self.title}
 
     @property
     def agenda_item(self):

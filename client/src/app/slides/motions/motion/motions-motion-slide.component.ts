@@ -1,8 +1,9 @@
 import { Component, Input } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+
 import { BaseSlideComponent } from 'app/slides/base-slide-component';
 import { MotionsMotionSlideData, MotionsMotionSlideDataAmendment } from './motions-motion-slide-data';
 import { ChangeRecoMode, LineNumberingMode } from '../../../site/motions/models/view-motion';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { DiffLinesInParagraph, DiffService, LineRange } from '../../../core/ui-services/diff.service';
 import { LinenumberingService } from '../../../core/ui-services/linenumbering.service';
 import { ViewUnifiedChange } from '../../../shared/models/motions/view-unified-change';

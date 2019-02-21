@@ -1,4 +1,18 @@
-.projectorbutton-inactive {
+.projector-inactive {
     background-color: white !important;
-    color: grey !important;
+
+    mat-icon {
+        color: grey !important;
+    }
+}
+
+/** TODO: Take this from the accent color. Make the hovering visible */
+
+.projector-active {
+    background-color: #03a9f4;
+    color: white !important;
+}
+
+button.mat-menu-item.projector-active:hover {
+    background-color: #03a9f4;
 }

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 
 import { DataSendService } from 'app/core/core-services/data-send.service';
 import { User } from 'app/shared/models/users/user';
@@ -14,7 +15,6 @@ import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-cha
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from 'app/core/core-services/collectionStringMapper.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
-import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Repository Services for change recommendations

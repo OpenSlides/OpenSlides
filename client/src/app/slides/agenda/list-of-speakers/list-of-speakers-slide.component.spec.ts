@@ -1,21 +1,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AgendaCurrentListOfSpeakersSlideComponent } from './agenda-current-list-of-speakers-slide.component';
+import { ListOfSpeakersSlideComponent } from './list-of-speakers-slide.component';
 import { E2EImportsModule } from '../../../../e2e-imports.module';
 
-describe('CoreCountdownSlideComponent', () => {
-    let component: AgendaCurrentListOfSpeakersSlideComponent;
-    let fixture: ComponentFixture<AgendaCurrentListOfSpeakersSlideComponent>;
+describe('ListOfSpeakersSlideComponent', () => {
+    let component: ListOfSpeakersSlideComponent;
+    let fixture: ComponentFixture<ListOfSpeakersSlideComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [E2EImportsModule],
-            declarations: [AgendaCurrentListOfSpeakersSlideComponent]
+            declarations: [ListOfSpeakersSlideComponent]
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(AgendaCurrentListOfSpeakersSlideComponent);
+        fixture = TestBed.createComponent(ListOfSpeakersSlideComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

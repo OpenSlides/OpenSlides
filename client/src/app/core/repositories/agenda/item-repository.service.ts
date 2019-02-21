@@ -20,6 +20,7 @@ import { ViewModelStoreService } from 'app/core/core-services/view-model-store.s
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { TranslateService } from '@ngx-translate/core';
+import { BaseAgendaContentObjectRepository } from '../base-agenda-content-object-repository';
 
 /**
  * Repository service for users
@@ -76,6 +77,28 @@ export class ItemRepositoryService extends BaseRepository<ViewItem, Item> {
         const viewItem = new ViewItem(item, contentObject);
         viewItem.getVerboseName = (plural: boolean = false) => {
             return this.translate.instant(plural ? 'Items' : 'Item');
+        };
+        viewItem.getTitle = () => {
+            if (viewItem.contentObject) {
+                return viewItem.contentObject.getAgendaTitle();
+            } else {
+                const repo = this.collectionStringMapperService.getRepository(
+                    viewItem.item.content_object.collection
+                ) as BaseAgendaContentObjectRepository<any, any>;
+                return repo.getAgendaTitle(viewItem);
+            }
+        };
+        viewItem.getListTitle = () => {
+            const numberPrefix = viewItem.itemNumber ? `${viewItem.itemNumber} · ` : '';
+
+            if (viewItem.contentObject) {
+                return numberPrefix + viewItem.contentObject.getAgendaTitleWithType();
+            } else {
+                const repo = this.collectionStringMapperService.getRepository(
+                    viewItem.item.content_object.collection
+                ) as BaseAgendaContentObjectRepository<any, any>;
+                return numberPrefix + repo.getAgendaTitleWithType(viewItem);
+            }
         };
         return viewItem;
     }

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 
+import { TranslateService } from '@ngx-translate/core';
+
 import { Topic } from 'app/shared/models/topics/topic';
-import { BaseRepository } from 'app/core/repositories/base-repository';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { Item } from 'app/shared/models/agenda/item';
 import { DataStoreService } from 'app/core/core-services/data-store.service';
@@ -13,7 +14,7 @@ import { CreateTopic } from 'app/site/agenda/models/create-topic';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewItem } from 'app/site/agenda/models/view-item';
-import { TranslateService } from '@ngx-translate/core';
+import { BaseAgendaContentObjectRepository } from '../base-agenda-content-object-repository';
 
 /**
  * Repository for topics
@@ -21,7 +22,7 @@ import { TranslateService } from '@ngx-translate/core';
 @Injectable({
     providedIn: 'root'
 })
-export class TopicRepositoryService extends BaseRepository<ViewTopic, Topic> {
+export class TopicRepositoryService extends BaseAgendaContentObjectRepository<ViewTopic, Topic> {
     /**
      * Constructor calls the parent constructor
      *
@@ -39,6 +40,19 @@ export class TopicRepositoryService extends BaseRepository<ViewTopic, Topic> {
         super(DS, mapperService, viewModelStoreService, Topic, [Mediafile, Item]);
     }
 
+    public getAgendaTitle = (topic: Partial<Topic> | Partial<ViewTopic>) => {
+        return topic.title;
+    };
+
+    public getAgendaTitleWithType = (topic: Partial<Topic> | Partial<ViewTopic>) => {
+        // Do not append ' (Topic)' to the title.
+        return topic.title;
+    };
+
+    public getVerboseName = (plural: boolean = false) => {
+        return this.translate.instant(plural ? 'Topics' : 'Topic');
+    };
+
     /**
      * Creates a new viewModel out of the given model
      *
@@ -49,9 +63,9 @@ export class TopicRepositoryService extends BaseRepository<ViewTopic, Topic> {
         const attachments = this.viewModelStoreService.getMany(ViewMediafile, topic.attachments_id);
         const item = this.viewModelStoreService.get(ViewItem, topic.agenda_item_id);
         const viewTopic = new ViewTopic(topic, attachments, item);
-        viewTopic.getVerboseName = (plural: boolean = false) => {
-            return this.translate.instant(plural ? 'Topics' : 'Topic');
-        };
+        viewTopic.getVerboseName = this.getVerboseName;
+        viewTopic.getAgendaTitle = () => this.getAgendaTitle(viewTopic);
+        viewTopic.getAgendaTitleWithType = () => this.getAgendaTitle(viewTopic);
         return viewTopic;
     }
 

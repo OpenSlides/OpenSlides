@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 
-import { BaseRepository } from 'app/core/repositories/base-repository';
 import { CollectionStringMapperService } from 'app/core/core-services/collectionStringMapper.service';
 import { DataSendService } from 'app/core/core-services/data-send.service';
 import { DataStoreService } from 'app/core/core-services/data-store.service';
@@ -17,7 +17,7 @@ import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { Item } from 'app/shared/models/agenda/item';
 import { ViewItem } from 'app/site/agenda/models/view-item';
-import { TranslateService } from '@ngx-translate/core';
+import { BaseAgendaContentObjectRepository } from '../base-agenda-content-object-repository';
 
 /**
  * Repository service for motion blocks
@@ -25,7 +25,7 @@ import { TranslateService } from '@ngx-translate/core';
 @Injectable({
     providedIn: 'root'
 })
-export class MotionBlockRepositoryService extends BaseRepository<ViewMotionBlock, MotionBlock> {
+export class MotionBlockRepositoryService extends BaseAgendaContentObjectRepository<ViewMotionBlock, MotionBlock> {
     /**
      * Constructor for the motion block repository
      *
@@ -47,6 +47,18 @@ export class MotionBlockRepositoryService extends BaseRepository<ViewMotionBlock
         super(DS, mapperService, viewModelStoreService, MotionBlock, [Item]);
     }
 
+    public getAgendaTitle = (motionBlock: Partial<MotionBlock> | Partial<ViewMotionBlock>) => {
+        return motionBlock.title;
+    };
+
+    public getAgendaTitleWithType = (motionBlock: Partial<MotionBlock> | Partial<ViewMotionBlock>) => {
+        return motionBlock.title + ' (' + this.getVerboseName() + ')';
+    };
+
+    public getVerboseName = (plural: boolean = false) => {
+        return this.translate.instant(plural ? 'Motion blocks' : 'Motion block');
+    };
+
     /**
      * Converts a given motion block into a ViewModel
      *
@@ -56,9 +68,9 @@ export class MotionBlockRepositoryService extends BaseRepository<ViewMotionBlock
     protected createViewModel(block: MotionBlock): ViewMotionBlock {
         const item = this.viewModelStoreService.get(ViewItem, block.agenda_item_id);
         const viewMotionBlock = new ViewMotionBlock(block, item);
-        viewMotionBlock.getVerboseName = (plural: boolean = false) => {
-            return this.translate.instant(plural ? 'Motion blocks' : 'Motion block');
-        };
+        viewMotionBlock.getVerboseName = this.getVerboseName;
+        viewMotionBlock.getAgendaTitle = () => this.getAgendaTitle(viewMotionBlock);
+        viewMotionBlock.getAgendaTitleWithType = () => this.getAgendaTitleWithType(viewMotionBlock);
         return viewMotionBlock;
     }
 

@@ -47,7 +47,7 @@ export class ViewProjectorMessage extends BaseProjectableViewModel {
             }),
             slideOptions: [],
             projectionDefaultName: 'messages',
-            getTitle: () => this.getTitle()
+            getDialogTitle: () => this.getTitle()
         };
     }
 

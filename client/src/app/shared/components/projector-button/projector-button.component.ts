@@ -39,6 +39,12 @@ export class ProjectorButtonComponent implements OnInit {
         }
     }
 
+    @Input()
+    public text: string | null;
+
+    @Input()
+    public menuItem = false;
+
     /**
      * The constructor
      */

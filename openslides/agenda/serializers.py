@@ -1,4 +1,4 @@
-from openslides.utils.rest_api import ModelSerializer, RelatedField
+from openslides.utils.rest_api import JSONField, ModelSerializer, RelatedField
 
 from .models import Item, Speaker
 
@@ -42,13 +42,14 @@ class ItemSerializer(ModelSerializer):
     content_object = RelatedItemRelatedField(read_only=True)
     speakers = SpeakerSerializer(many=True, read_only=True)
 
+    title_information = JSONField(read_only=True)
+
     class Meta:
         model = Item
         fields = (
             "id",
             "item_number",
-            "title",
-            "title_with_type",
+            "title_information",
             "comment",
             "closed",
             "type",
