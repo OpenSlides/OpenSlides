@@ -82,6 +82,14 @@ class Projector(RESTModelMixin, models.Model):
     width = models.PositiveIntegerField(default=1024)
     height = models.PositiveIntegerField(default=768)
 
+    background_color = models.CharField(max_length=7, default="#ffffff")
+    header_background_color = models.CharField(max_length=7, default="#317796")
+    header_font_color = models.CharField(max_length=7, default="#f5f5f5")
+    header_h1_color = models.CharField(max_length=7, default="#317796")
+    show_header_footer = models.BooleanField(default=True)
+    show_title = models.BooleanField(default=True)
+    show_logo = models.BooleanField(default=True)
+
     name = models.CharField(max_length=255, unique=True, blank=True)
 
     reference_projector = models.ForeignKey(

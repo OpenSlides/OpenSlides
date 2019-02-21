@@ -99,6 +99,13 @@ class ProjectorSerializer(ModelSerializer):
             "height",
             "reference_projector",
             "projectiondefaults",
+            "background_color",
+            "header_background_color",
+            "header_font_color",
+            "header_h1_color",
+            "show_header_footer",
+            "show_title",
+            "show_logo",
         )
         read_only_fields = ("scale", "scroll")
 

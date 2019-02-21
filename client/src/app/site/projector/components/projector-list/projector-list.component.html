@@ -97,7 +97,52 @@
                         <mat-slider [thumbLabel]="true" formControlName="width" min="800" max="3840" step="10"></mat-slider>
                         {{ updateForm.value.width }}
 
-                        <!-- Clock -->
+                        <!-- colors -->
+                        <mat-form-field>
+                            <span translate>Background color</span>
+                            <input matInput formControlName="background_color" type="color" />
+                            <mat-hint *ngIf="!updateForm.controls.background_color.valid">
+                                <span translate>Required</span>
+                            </mat-hint>
+                        </mat-form-field>
+                        <mat-form-field>
+                            <span translate>Header background color</span>
+                            <input matInput formControlName="header_background_color" type="color" />
+                            <mat-hint *ngIf="!updateForm.controls.header_background_color.valid">
+                                <span translate>Required</span>
+                            </mat-hint>
+                        </mat-form-field>
+                        <mat-form-field>
+                            <span translate>Header font color</span>
+                            <input matInput formControlName="header_font_color" type="color" />
+                            <mat-hint *ngIf="!updateForm.controls.header_font_color.valid">
+                                <span translate>Required</span>
+                            </mat-hint>
+                        </mat-form-field>
+                        <mat-form-field>
+                            <span translate>Header headline color</span>
+                            <input matInput formControlName="header_h1_color" type="color" />
+                            <mat-hint *ngIf="!updateForm.controls.header_h1_color.valid">
+                                <span translate>Required</span>
+                            </mat-hint>
+                        </mat-form-field>
+
+                        <!-- checkboxes -->
+                        <div>
+                            <mat-checkbox formControlName="show_header_footer">
+                                <span translate>Show header and footer</span>
+                            </mat-checkbox>
+                        </div>
+                        <div>
+                            <mat-checkbox formControlName="show_title">
+                                <span translate>Show title</span>
+                            </mat-checkbox>
+                        </div>
+                        <div>
+                            <mat-checkbox formControlName="show_logo">
+                                <span translate>Show logo</span>
+                            </mat-checkbox>
+                        </div>
                         <div>
                             <mat-checkbox formControlName="clock">
                                 <span translate>Show clock</span>

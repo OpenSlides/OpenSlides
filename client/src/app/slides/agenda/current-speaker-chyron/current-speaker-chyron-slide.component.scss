@@ -1,0 +1,14 @@
+#chyron {
+    position: absolute;
+    left: 0;
+    bottom: 1em;
+    z-index: 10;
+    width: 100%;
+
+    #inner {
+        background-color: green;
+        padding: 12px;
+        margin: 12px;
+        font-size: 32px;
+    }
+}

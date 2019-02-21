@@ -1,10 +1,10 @@
 <div id="container" [osResized]="resizeSubject" [ngStyle]="containerStyle" #container>
     <div id="projector" [ngStyle]="projectorStyle">
-        <div id="header" [ngStyle]="headerFooterStyle" *ngIf="enableHeaderAndFooter">
+        <div id="header" [ngStyle]="headerFooterStyle" *ngIf="projector.show_header_footer">
             <!-- projector logo -->
             <img *ngIf="enableLogo && projectorLogo" src="{{ projectorLogo }}" class="projector-logo-main" />
 
-            <div *ngIf="enableTitle" id="eventdata">
+            <div *ngIf="projector.show_title" id="eventdata">
                 <div
                     *ngIf="eventName"
                     class="event-name"
@@ -19,7 +19,7 @@
             <os-slide-container [slideData]="slide" [scroll]="scroll" [scale]="scale"></os-slide-container>
         </div>
 
-        <div id="footer" [ngStyle]="headerFooterStyle" *ngIf="enableHeaderAndFooter">
+        <div id="footer" [ngStyle]="headerFooterStyle" *ngIf="projector.show_header_footer">
             <div class="footertext">
                 <span *ngIf="eventDate"> {{ eventDate }} </span>
                 <span *ngIf="eventDate && eventLocation"> | </span>

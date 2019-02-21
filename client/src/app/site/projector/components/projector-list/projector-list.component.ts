@@ -105,7 +105,14 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
             aspectRatio: ['', Validators.required],
             width: [0, Validators.required],
             clock: [true],
-            reference_projector_id: []
+            reference_projector_id: [],
+            background_color: ['', Validators.required],
+            header_background_color: ['', Validators.required],
+            header_font_color: ['', Validators.required],
+            header_h1_color: ['', Validators.required],
+            show_header_footer: [],
+            show_title: [],
+            show_logo: []
         });
     }
 
@@ -202,10 +209,20 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
         const reference_projector_id = projector.reference_projector_id
             ? projector.reference_projector_id
             : projector.id;
-        this.updateForm.patchValue({
+        /*this.updateForm.patchValue({
             name: projector.name,
             aspectRatio: this.getAspectRatioKey(projector),
             width: projector.width,
+            clock: this.clockSlideService.isProjectedOn(projector),
+            reference_projector_id: reference_projector_id,
+            background_color: projector.background_color,
+            show_header_footer: projector.show_header_footer,
+            show_title: projector.show_title,
+            show_logo: projector.show_logo
+        });*/
+        this.updateForm.patchValue(projector.projector);
+        this.updateForm.patchValue({
+            aspectRatio: this.getAspectRatioKey(projector),
             clock: this.clockSlideService.isProjectedOn(projector),
             reference_projector_id: reference_projector_id
         });
@@ -231,12 +248,21 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
         if (projector.id !== this.editId || !this.updateForm.valid) {
             return;
         }
-        const updateProjector: Partial<Projector> = {
+        const updateProjector: Partial<Projector> = this.updateForm.value;
+        /*const updateProjector: Partial<Projector> = {
             name: this.updateForm.value.name,
             width: this.updateForm.value.width,
             height: Math.round(this.updateForm.value.width / aspectRatios[this.updateForm.value.aspectRatio]),
-            reference_projector_id: this.updateForm.value.reference_projector_id
-        };
+            reference_projector_id: this.updateForm.value.reference_projector_id,
+            background_color: this.updateForm.value.background_color,
+            show_header_footer: this.updateForm.value.show_header_footer,
+            show_title: this.updateForm.value.show_title,
+            show_logo: this.updateForm.value.show_logo
+        };*/
+        updateProjector.height = Math.round(
+            this.updateForm.value.width / aspectRatios[this.updateForm.value.aspectRatio]
+        );
+
         try {
             await this.clockSlideService.setProjectedOn(projector, this.updateForm.value.clock);
             await this.repo.update(updateProjector, projector);

@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
 from ..users.projector import get_user_name
 from ..utils.projector import (
@@ -149,31 +149,16 @@ def get_list_of_speakers_slide_data(all_data: AllData, item_id: int) -> Dict[str
     }
 
 
-def current_list_of_speakers_slide(
-    all_data: AllData, element: Dict[str, Any], projector_id: int
-) -> Dict[str, Any]:
+def get_current_item_id_for_projector(
+    all_data: AllData, projector: Dict[str, Any]
+) -> Union[int, None]:
     """
-    The current list of speakers slide. Creates the data for the given projector.
+    Search for elements, that do have an agenda item:
+    Try to get a model by the collection and id in the element. This
+    model needs to have a 'agenda_item_id'. This item must exist. The first
+    matching element is taken.
     """
-    try:
-        this_projector = all_data["core/projector"][projector_id]
-    except KeyError:
-        raise ProjectorElementException(f"Projector {projector_id} does not exist")
-
-    reference_projector_id = this_projector["reference_projector_id"] or projector_id
-    try:
-        reference_projector = all_data["core/projector"][reference_projector_id]
-    except KeyError:
-        raise ProjectorElementException(
-            f"Projector {reference_projector_id} does not exist"
-        )
-
-    # Search for elements, that do have an agenda item:
-    # Try to get a model by the collection and id in the element. This
-    # model needs to have a 'agenda_item_id'. This item must exist. The first
-    # matching element is taken.
-
-    elements = reference_projector["elements"]
+    elements = projector["elements"]
     item_id = None
     for element in elements:
         if "id" not in element:
@@ -193,10 +178,67 @@ def current_list_of_speakers_slide(
         item_id = model["agenda_item_id"]
         break
 
+    return item_id
+
+
+def get_reference_projector(all_data: AllData, projector_id: int) -> Dict[str, Any]:
+    """
+    Returns the reference projector to the given projector (by id)
+    """
+    try:
+        this_projector = all_data["core/projector"][projector_id]
+    except KeyError:
+        raise ProjectorElementException(f"Projector {projector_id} does not exist")
+
+    reference_projector_id = this_projector["reference_projector_id"] or projector_id
+    try:
+        reference_projector = all_data["core/projector"][reference_projector_id]
+    except KeyError:
+        raise ProjectorElementException(
+            f"Projector {reference_projector_id} does not exist"
+        )
+
+    return reference_projector
+
+
+def current_list_of_speakers_slide(
+    all_data: AllData, element: Dict[str, Any], projector_id: int
+) -> Dict[str, Any]:
+    """
+    The current list of speakers slide. Creates the data for the given projector.
+    """
+    reference_projector = get_reference_projector(all_data, projector_id)
+    item_id = get_current_item_id_for_projector(all_data, reference_projector)
     if item_id is None:  # no element found
         return {}
 
     return get_list_of_speakers_slide_data(all_data, item_id)
+
+
+def current_speaker_chyron_slide(
+    all_data: AllData, element: Dict[str, Any], projector_id: int
+) -> Dict[str, Any]:
+    """
+    Returns the username for the current speaker.
+    """
+    reference_projector = get_reference_projector(all_data, projector_id)
+    item_id = get_current_item_id_for_projector(all_data, reference_projector)
+    if item_id is None:  # no element found
+        return {}
+
+    # get item
+    try:
+        item = all_data["agenda/item"][item_id]
+    except KeyError:
+        raise ProjectorElementException(f"Item {item_id} does not exist")
+
+    # find current speaker
+    current_speaker = None
+    for speaker in item["speakers"]:
+        if speaker["begin_time"] is not None and speaker["end_time"] is None:
+            current_speaker = get_user_name(all_data, speaker["user_id"])
+
+    return {"current_speaker": current_speaker}
 
 
 def register_projector_slides() -> None:
@@ -207,4 +249,7 @@ def register_projector_slides() -> None:
     )
     register_projector_slide(
         "agenda/current-list-of-speakers-overlay", current_list_of_speakers_slide
+    )
+    register_projector_slide(
+        "agenda/current-speaker-chyron", current_speaker_chyron_slide
     )

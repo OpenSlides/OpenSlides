@@ -204,76 +204,11 @@ def get_config_variables():
     )
 
     yield ConfigVariable(
-        name="projector_enable_logo",
-        default_value=True,
-        input_type="boolean",
-        label="Show logo on projector",
-        help_text="You can replace the logo by uploading an image and set it as "
-        'the "Projector logo" in "files".',
-        weight=152,
-        group="Projector",
-    )
-
-    yield ConfigVariable(
-        name="projector_enable_title",
-        default_value=True,
-        input_type="boolean",
-        label="Show title and description of event on projector",
-        weight=155,
-        group="Projector",
-    )
-
-    yield ConfigVariable(
-        name="projector_enable_header_footer",
-        default_value=True,
-        input_type="boolean",
-        label="Display header and footer",
-        weight=157,
-        group="Projector",
-    )
-
-    yield ConfigVariable(
-        name="projector_header_backgroundcolor",
-        default_value="#317796",
-        input_type="colorpicker",
-        label="Background color of projector header and footer",
-        weight=160,
-        group="Projector",
-    )
-
-    yield ConfigVariable(
-        name="projector_header_fontcolor",
-        default_value="#F5F5F5",
-        input_type="colorpicker",
-        label="Font color of projector header and footer",
-        weight=165,
-        group="Projector",
-    )
-
-    yield ConfigVariable(
-        name="projector_h1_fontcolor",
-        default_value="#317796",
-        input_type="colorpicker",
-        label="Font color of projector headline",
-        weight=170,
-        group="Projector",
-    )
-
-    yield ConfigVariable(
         name="projector_default_countdown",
         default_value=60,
         input_type="integer",
         label="Predefined seconds of new countdowns",
         weight=185,
-        group="Projector",
-    )
-
-    yield ConfigVariable(
-        name="projector_background_color",
-        default_value="#FFFFFF",
-        input_type="colorpicker",
-        label="Backgroundolor of the projector",
-        weight=190,
         group="Projector",
     )
 

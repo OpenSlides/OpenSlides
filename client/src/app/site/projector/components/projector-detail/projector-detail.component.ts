@@ -21,6 +21,7 @@ import { ViewProjectorMessage } from 'app/site/projector/models/view-projector-m
 import { ViewCountdown } from 'app/site/projector/models/view-countdown';
 import { Projectable } from 'app/site/base/projectable';
 import { CurrentListOfSpeakersSlideService } from '../../services/current-list-of-of-speakers-slide.service';
+import { CurrentSpeakerChyronSlideService } from '../../services/current-speaker-chyron-slide.service';
 
 /**
  * The projector detail view.
@@ -59,7 +60,8 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
         private slideManager: SlideManager,
         private countdownRepo: CountdownRepositoryService,
         private messageRepo: ProjectorMessageRepositoryService,
-        private currentListOfSpeakersSlideService: CurrentListOfSpeakersSlideService
+        private currentListOfSpeakersSlideService: CurrentListOfSpeakersSlideService,
+        private currentSpeakerChyronService: CurrentSpeakerChyronSlideService
     ) {
         super(titleService, translate, matSnackBar);
 
@@ -147,5 +149,13 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
 
     public toggleClos(stable: boolean): void {
         this.currentListOfSpeakersSlideService.toggleOn(this.projector, stable);
+    }
+
+    public isChyronProjected(): boolean {
+        return this.currentSpeakerChyronService.isProjectedOn(this.projector);
+    }
+
+    public toggleChyron(): void {
+        this.currentSpeakerChyronService.toggleOn(this.projector);
     }
 }

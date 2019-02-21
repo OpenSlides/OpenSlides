@@ -73,6 +73,11 @@ export const allSlidesDynamicConfiguration: (SlideDynamicConfiguration & Slide)[
         scrollable: false
     },
     {
+        slide: 'agenda/current-speaker-chyron',
+        scaleable: false,
+        scrollable: false
+    },
+    {
         slide: 'assignments/assignment',
         scaleable: true,
         scrollable: true

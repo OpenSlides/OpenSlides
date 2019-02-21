@@ -131,6 +131,18 @@
             </div>
         </div>
 
+        <div>
+            <h4>Current speaker chyron</h4>
+            <mat-list>
+                <mat-list-item [ngClass]="{'projected': isChyronProjected()}">
+                    <button type="button" mat-icon-button (click)="toggleChyron()">
+                        <mat-icon>videocam</mat-icon>
+                    </button>
+                    <span translate>Current speaker chyron</span>
+                </mat-list-item>
+            </mat-list>
+        </div>
+
         <div class="queue">
             <h5 translate>Queue</h5>
             <div cdkDropList class="drop-list" (cdkDropListDropped)="onSortingChange($event)">
