@@ -1,0 +1,16 @@
+.lastSpeakers {
+    color: #9a9898;
+    margin-left: 30px;
+}
+
+.currentSpeaker {
+    font-weight: bold;
+}
+
+.nextSpeakers {
+    margin-left: 13px !important;
+
+    li {
+        line-height: 150%;
+    }
+}

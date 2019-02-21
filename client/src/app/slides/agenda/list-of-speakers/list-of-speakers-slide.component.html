@@ -1,22 +1,29 @@
 <div *ngIf="data">
-    <h1 translate>List of speakers</h1>
-    <h3>{{ getTitle() }}</h3>
+    <div class="slidetitle">
+        <h1 translate>List of speakers</h1>
+        <h2> {{ getTitle() }}</h2>
+    </div>
 
+    <!-- Last speakers -->
     <div *ngIf="data.data.finished.length">
-        <span translate>Finished</span>:
-        <div *ngFor="let speaker of data.data.finished">
+        <div *ngFor="let speaker of data.data.finished" class="lastSpeakers">
             {{ speaker.user }}
+            <mat-icon *ngIf="speaker.marked">star</mat-icon>
         </div>
     </div>
 
-    <div *ngIf="data.data.current">
-        <span translate>Current</span>: {{ data.data.current.user }}
+    <!-- Current speaker -->
+    <div *ngIf="data.data.current" class="currentSpeaker">
+        <mat-icon>mic</mat-icon> {{ data.data.current.user }}
     </div>
 
+    <!-- Next speakers -->
     <div *ngIf="data.data.finished.length">
-        <span translate>Waiting</span>:
-        <div *ngFor="let speaker of data.data.waiting">
-            {{ speaker.user }} {{ speaker.marked ? 'marked' : '' }}
-        </div>
+        <ol class="nextSpeakers">
+            <li *ngFor="let speaker of data.data.waiting">
+                {{ speaker.user }}
+                <mat-icon *ngIf="speaker.marked">star</mat-icon>
+            </li>
+        </ol>
     </div>
 </div>
