@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { SiteComponent } from './site.component';
-
 import { AuthGuard } from '../core/core-services/auth-guard.service';
 
 /**
@@ -17,43 +16,53 @@ const routes: Routes = [
         children: [
             {
                 path: '',
-                loadChildren: './common/common.module#CommonModule'
+                loadChildren: './common/common.module#CommonModule',
+                data: { preload: true }
             },
             {
                 path: 'agenda',
-                loadChildren: './agenda/agenda.module#AgendaModule'
+                loadChildren: './agenda/agenda.module#AgendaModule',
+                data: { preload: true }
             },
             {
                 path: 'assignments',
-                loadChildren: './assignments/assignments.module#AssignmentsModule'
+                loadChildren: './assignments/assignments.module#AssignmentsModule',
+                data: { preload: true }
             },
             {
                 path: 'mediafiles',
-                loadChildren: './mediafiles/mediafiles.module#MediafilesModule'
+                loadChildren: './mediafiles/mediafiles.module#MediafilesModule',
+                data: { preload: true }
             },
             {
                 path: 'motions',
-                loadChildren: './motions/motions.module#MotionsModule'
+                loadChildren: './motions/motions.module#MotionsModule',
+                data: { preload: true }
             },
             {
                 path: 'settings',
-                loadChildren: './config/config.module#ConfigModule'
+                loadChildren: './config/config.module#ConfigModule',
+                data: { preload: true }
             },
             {
                 path: 'users',
-                loadChildren: './users/users.module#UsersModule'
+                loadChildren: './users/users.module#UsersModule',
+                data: { preload: true }
             },
             {
                 path: 'tags',
-                loadChildren: './tags/tag.module#TagModule'
+                loadChildren: './tags/tag.module#TagModule',
+                data: { preload: true }
             },
             {
                 path: 'history',
-                loadChildren: './history/history.module#HistoryModule'
+                loadChildren: './history/history.module#HistoryModule',
+                data: { preload: true }
             },
             {
                 path: 'projectors',
-                loadChildren: './projector/projector.module#ProjectorModule'
+                loadChildren: './projector/projector.module#ProjectorModule',
+                data: { preload: true }
             }
         ],
         canActivateChild: [AuthGuard]
