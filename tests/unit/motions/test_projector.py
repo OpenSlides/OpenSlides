@@ -256,7 +256,7 @@ def all_data():
 def test_motion_slide(all_data):
     element: Dict[str, Any] = {"id": 1}
 
-    data = projector.motion_slide(all_data, element)
+    data = projector.motion_slide(all_data, element, 1)
 
     assert data == {
         "identifier": "4",
@@ -301,7 +301,7 @@ def test_motion_slide(all_data):
 def test_amendment_slide(all_data):
     element: Dict[str, Any] = {"id": 2}
 
-    data = projector.motion_slide(all_data, element)
+    data = projector.motion_slide(all_data, element, 1)
 
     assert data == {
         "identifier": "Ä1",
@@ -325,7 +325,7 @@ def test_amendment_slide(all_data):
 def test_statute_amendment_slide(all_data):
     element: Dict[str, Any] = {"id": 3}
 
-    data = projector.motion_slide(all_data, element)
+    data = projector.motion_slide(all_data, element, 1)
 
     assert data == {
         "identifier": None,

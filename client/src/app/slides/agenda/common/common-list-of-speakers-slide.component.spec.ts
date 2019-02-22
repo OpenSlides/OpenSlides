@@ -1,21 +1,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ListOfSpeakersSlideComponent } from './list-of-speakers-slide.component';
+import { CommonListOfSpeakersSlideComponent } from './common-list-of-speakers-slide.component';
 import { E2EImportsModule } from '../../../../e2e-imports.module';
 
 describe('ListOfSpeakersSlideComponent', () => {
-    let component: ListOfSpeakersSlideComponent;
-    let fixture: ComponentFixture<ListOfSpeakersSlideComponent>;
+    let component: CommonListOfSpeakersSlideComponent;
+    let fixture: ComponentFixture<CommonListOfSpeakersSlideComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [E2EImportsModule],
-            declarations: [ListOfSpeakersSlideComponent]
+            declarations: [CommonListOfSpeakersSlideComponent]
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(ListOfSpeakersSlideComponent);
+        fixture = TestBed.createComponent(CommonListOfSpeakersSlideComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

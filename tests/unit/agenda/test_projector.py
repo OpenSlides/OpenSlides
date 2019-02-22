@@ -88,7 +88,7 @@ def all_data():
 def test_main_items(all_data):
     element: Dict[str, Any] = {}
 
-    data = projector.item_list_slide(all_data, element)
+    data = projector.item_list_slide(all_data, element, 1)
 
     assert data == {
         "items": [
@@ -109,7 +109,7 @@ def test_main_items(all_data):
 def test_all_items(all_data):
     element: Dict[str, Any] = {"only_main_items": False}
 
-    data = projector.item_list_slide(all_data, element)
+    data = projector.item_list_slide(all_data, element, 1)
 
     assert data == {
         "items": [

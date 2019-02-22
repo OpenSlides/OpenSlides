@@ -18,7 +18,7 @@
     </div>
 
     <!-- Next speakers -->
-    <div *ngIf="data.data.finished.length">
+    <div *ngIf="data.data.waiting.length">
         <ol class="nextSpeakers">
             <li *ngFor="let speaker of data.data.waiting">
                 {{ speaker.user }}

@@ -56,7 +56,9 @@ def get_flat_tree(all_data: AllData, parent_id: int = 0) -> List[Dict[str, Any]]
     return tree
 
 
-def item_list_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any]:
+def item_list_slide(
+    all_data: AllData, element: Dict[str, Any], projector_id: int
+) -> Dict[str, Any]:
     """
     Item list slide.
 
@@ -84,7 +86,7 @@ def item_list_slide(all_data: AllData, element: Dict[str, Any]) -> Dict[str, Any
 
 
 def list_of_speakers_slide(
-    all_data: AllData, element: Dict[str, Any]
+    all_data: AllData, element: Dict[str, Any], projector_id: int
 ) -> Dict[str, Any]:
     """
     List of speakers slide.
@@ -96,6 +98,10 @@ def list_of_speakers_slide(
     if item_id is None:
         raise ProjectorElementException("id is required for list of speakers slide")
 
+    return get_list_of_speakers_slide_data(all_data, item_id)
+
+
+def get_list_of_speakers_slide_data(all_data: AllData, item_id: int) -> Dict[str, Any]:
     try:
         item = all_data["agenda/item"][item_id]
     except KeyError:
@@ -144,17 +150,53 @@ def list_of_speakers_slide(
 
 
 def current_list_of_speakers_slide(
-    all_data: AllData, element: Dict[str, Any]
+    all_data: AllData, element: Dict[str, Any], projector_id: int
 ) -> Dict[str, Any]:
     """
-    TODO
-
-    Note: This data is for all projectors showing this slide, so we cannot give projector-
-    specific data. The work-around is to make a dict with projector-ids as keys and the
-    data-per-projector as values. This is not a security concern, because if a person can
-    see one projector, he is able to see all others, too. Maybe a bit more data..
+    The current list of speakers slide. Creates the data for the given projector.
     """
-    return {"error": "TODO"}
+    try:
+        this_projector = all_data["core/projector"][projector_id]
+    except KeyError:
+        raise ProjectorElementException(f"Projector {projector_id} does not exist")
+
+    reference_projector_id = this_projector["reference_projector_id"] or projector_id
+    try:
+        reference_projector = all_data["core/projector"][reference_projector_id]
+    except KeyError:
+        raise ProjectorElementException(
+            f"Projector {reference_projector_id} does not exist"
+        )
+
+    # Search for elements, that do have an agenda item:
+    # Try to get a model by the collection and id in the element. This
+    # model needs to have a 'agenda_item_id'. This item must exist. The first
+    # matching element is taken.
+
+    elements = reference_projector["elements"]
+    item_id = None
+    for element in elements:
+        if "id" not in element:
+            continue
+        collection = element["name"]
+        id = element["id"]
+        if collection not in all_data or id not in all_data[collection]:
+            continue
+
+        model = all_data[collection][id]
+        if "agenda_item_id" not in model:
+            continue
+
+        if not model["agenda_item_id"] in all_data["agenda/item"]:
+            continue
+
+        item_id = model["agenda_item_id"]
+        break
+
+    if item_id is None:  # no element found
+        return {}
+
+    return get_list_of_speakers_slide_data(all_data, item_id)
 
 
 def register_projector_slides() -> None:

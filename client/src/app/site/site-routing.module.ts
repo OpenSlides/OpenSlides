@@ -16,7 +16,7 @@ const routes: Routes = [
         children: [
             {
                 path: '',
-                loadChildren: './common/common.module#CommonModule',
+                loadChildren: './common/os-common.module#OsCommonModule',
                 data: { preload: true }
             },
             {
