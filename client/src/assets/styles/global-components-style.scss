@@ -65,8 +65,14 @@
         background-color: mat-color($background, app-bar);
     }
 
-    // drag & drop view
+    /* drag & drop views */
     .node-content-wrapper {
         background-color: mat-color($background, app-bar);
+    }
+
+    /* projector components */
+    #chyron {
+        background-color: mat-color($primary);
+        color: white; // TODO
     }
 }
