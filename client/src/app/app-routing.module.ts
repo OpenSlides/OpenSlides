@@ -7,6 +7,7 @@ import { LoginLegalNoticeComponent } from './site/login/components/login-legal-n
 import { LoginPrivacyPolicyComponent } from './site/login/components/login-privacy-policy/login-privacy-policy.component';
 import { ResetPasswordComponent } from './site/login/components/reset-password/reset-password.component';
 import { ResetPasswordConfirmComponent } from './site/login/components/reset-password-confirm/reset-password-confirm.component';
+import { AppPreloader } from './shared/utils/app-preloader';
 
 /**
  * Global app routing
@@ -29,7 +30,8 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    imports: [RouterModule.forRoot(routes)],
-    exports: [RouterModule]
+    imports: [RouterModule.forRoot(routes, { preloadingStrategy: AppPreloader })],
+    exports: [RouterModule],
+    providers: [AppPreloader]
 })
 export class AppRoutingModule {}
