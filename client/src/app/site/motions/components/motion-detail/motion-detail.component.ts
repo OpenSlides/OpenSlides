@@ -402,16 +402,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     ) {
         super(title, translate, matSnackBar);
 
-        // Initial Filling of the Subjects
-        this.submitterObserver = new BehaviorSubject(
-            this.userRepo.sortViewUsersByConfig(this.userRepo.getViewModelList())
-        );
-        this.supporterObserver = new BehaviorSubject(
-            this.userRepo.sortViewUsersByConfig(this.userRepo.getViewModelList())
-        );
-        this.categoryObserver = new BehaviorSubject(
-            this.categoryRepo.sortViewCategoriesByConfig(this.viewModelStore.getAll(ViewCategory))
-        );
         this.workflowObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewWorkflow));
         this.blockObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewMotionBlock));
         this.mediafilesObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewMediafile));
@@ -419,13 +409,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         this.tagObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewTag));
         this.motionObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewMotion));
 
-        this.userRepo.getSortedViewModelListObservable().subscribe(sortedUsers => {
-            this.submitterObserver.next(sortedUsers);
-            this.supporterObserver.next(sortedUsers);
-        });
-        this.categoryRepo.getSortedViewModelListObservable().subscribe(sortedCategories => {
-            this.categoryObserver.next(sortedCategories);
-        });
         // Make sure the subjects are updated, when a new Model for the type arrives
         // TODO get rid of DS here
         this.DS.changeObservable.subscribe(newModel => {
@@ -477,6 +460,23 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         this.getMotionByUrl();
         this.setSurroundingMotions();
 
+        // TODO: Changed to un-sort, since it's a really heavy operation
+        this.userRepo.getViewModelListObservable().subscribe(unsortedUsers => {
+            this.submitterObserver.next(unsortedUsers);
+            this.supporterObserver.next(unsortedUsers);
+        });
+
+        this.categoryRepo.getViewModelListObservable().subscribe(unsortedCategories => {
+            this.categoryObserver.next(unsortedCategories);
+        });
+
+        // Initial Filling of the Subjects
+        this.submitterObserver = new BehaviorSubject(this.userRepo.getViewModelList());
+        this.supporterObserver = new BehaviorSubject(this.userRepo.getViewModelList());
+        this.categoryObserver = new BehaviorSubject(
+            this.categoryRepo.sortViewCategoriesByConfig(this.viewModelStore.getAll(ViewCategory))
+        );
+
         this.statuteRepo.getViewModelListObservable().subscribe(newViewStatuteParagraphs => {
             this.statuteParagraphs = newViewStatuteParagraphs;
         });
@@ -501,6 +501,10 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         });
     }
 
+    /**
+     * Called during view destruction.
+     * Sends a notification to user editors of the motion was edited
+     */
     public ngOnDestroy(): void {
         this.unsubscribeEditNotifications(TypeOfNotificationViewMotion.TYPE_CLOSING_EDITING_MOTION);
     }
@@ -1086,6 +1090,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * then appending motion without identifiers sorted by title
      */
     public setSurroundingMotions(): void {
+        // TODO: that operation is HEAVY
         this.motionObserver.value.sort((a, b) => {
             if (a.identifier && b.identifier) {
                 return a.identifier.localeCompare(b.identifier, this.translate.currentLang);

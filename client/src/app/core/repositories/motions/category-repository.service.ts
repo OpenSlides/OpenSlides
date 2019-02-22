@@ -115,6 +115,8 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
      *
      * @param categories
      * @returns the categories sorted by prefix or name, according to the config setting
+     *
+     * TODO: That operation is HEAVY
      */
     public sortViewCategoriesByConfig(categories: ViewCategory[]): ViewCategory[] {
         const sort = this.configService.instant<'prefix' | 'name'>('motions_category_sorting') || 'prefix';

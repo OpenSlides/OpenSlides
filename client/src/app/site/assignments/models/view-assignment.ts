@@ -65,9 +65,7 @@ export class ViewAssignment extends BaseAgendaViewModel {
         this._tags = tags;
     }
 
-    public updateDependencies(update: BaseViewModel): void {
-        console.log('TODO: assignment updateDependencies');
-    }
+    public updateDependencies(update: BaseViewModel): void {}
 
     public getAgendaItem(): ViewItem {
         return this.agendaItem;
