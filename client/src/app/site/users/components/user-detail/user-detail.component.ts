@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
-import { Title } from '@angular/platform-browser';
+import { Title, SafeHtml, DomSanitizer } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
@@ -96,7 +96,8 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
         private operator: OperatorService,
         private promptService: PromptService,
         private pdfService: UserPdfExportService,
-        private groupRepo: GroupRepositoryService
+        private groupRepo: GroupRepositoryService,
+        private sanitizer: DomSanitizer
     ) {
         super(title, translate, matSnackBar);
         // prevent 'undefined' to appear in the ui
@@ -393,5 +394,17 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
      */
     public onDownloadPdf(): void {
         this.pdfService.exportSingleUserAccessPDF(this.user);
+    }
+
+    /**
+     * Function to sanitize the text.
+     * Necessary to render text etc. correctly.
+     *
+     * @param text which should be sanitized.
+     *
+     * @returns safeHtml which can be displayed.
+     */
+    public sanitizedText(text: string): SafeHtml {
+        return this.sanitizer.bypassSecurityTrustHtml(text);
     }
 }
