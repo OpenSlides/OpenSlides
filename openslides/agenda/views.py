@@ -15,6 +15,7 @@ from openslides.utils.rest_api import (
     detail_route,
     list_route,
 )
+from openslides.utils.views import TreeSortMixin
 
 from ..utils.auth import has_perm
 from .access_permissions import ItemAccessPermissions
@@ -24,7 +25,9 @@ from .models import Item, Speaker
 # Viewsets for the REST API
 
 
-class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
+class ItemViewSet(
+    ListModelMixin, RetrieveModelMixin, UpdateModelMixin, TreeSortMixin, GenericViewSet
+):
     """
     API endpoint for agenda items.
 
@@ -44,7 +47,13 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
             result = has_perm(self.request.user, "agenda.can_see")
             # For manage_speaker and tree requests the rest of the check is
             # done in the specific method. See below.
-        elif self.action in ("partial_update", "update", "sort", "assign"):
+        elif self.action in (
+            "partial_update",
+            "update",
+            "sort",
+            "sort_whole",
+            "assign",
+        ):
             result = (
                 has_perm(self.request.user, "agenda.can_see")
                 and has_perm(self.request.user, "agenda.can_see_internal_items")
@@ -322,34 +331,32 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
     @list_route(methods=["post"])
     def sort(self, request):
         """
-        Sort agenda items. Also checks parent field to prevent hierarchical
-        loops.
+        Sorts the whole agenda represented in a tree of ids. The request data should be a list (the root)
+        of all main agenda items. Each node is a dict with an id and optional children:
+        {
+            id: <the id>
+            children: [
+                <children, optional>
+            ]
+        }
+        Every id has to be given.
         """
-        nodes = request.data.get("nodes", [])
-        parent_id = request.data.get("parent_id")
-        items = []
-        with transaction.atomic():
-            for index, node in enumerate(nodes):
-                item = Item.objects.get(pk=node["id"])
-                item.parent_id = parent_id
-                item.weight = index
-                item.save(skip_autoupdate=True)
-                items.append(item)
+        return self.sort_tree(request, Item, "weight", "parent_id")
 
-                # Now check consistency. TODO: Try to use less DB queries.
-                item = Item.objects.get(pk=node["id"])
-                ancestor = item.parent
-                while ancestor is not None:
-                    if ancestor == item:
-                        raise ValidationError(
-                            {
-                                "detail": "There must not be a hierarchical loop. Please reload the page."
-                            }
-                        )
-                    ancestor = ancestor.parent
-
-        inform_changed_data(items)
-        return Response({"detail": "The agenda has been sorted."})
+    @list_route(methods=["post"])
+    def sort_whole(self, request):
+        """
+        Sorts the whole agenda represented in a tree of ids. The request data should be a list (the root)
+        of all main agenda items. Each node is a dict with an id and optional  all children:
+        {
+            id: <the id>
+            children: [
+                <children, optional>
+            ]
+        }
+        Every id has to be given.
+        """
+        return self.sort_tree(request, Item, "weight", "parent_id")
 
     @list_route(methods=["post"])
     @transaction.atomic

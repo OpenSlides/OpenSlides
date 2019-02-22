@@ -41,6 +41,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { CdkTreeModule } from '@angular/cdk/tree';
 
 // ngx-translate
 import { TranslateModule } from '@ngx-translate/core';
@@ -55,9 +56,6 @@ import { EditorModule } from '@tinymce/tinymce-angular';
 import { PermsDirective } from './directives/perms.directive';
 import { DomChangeDirective } from './directives/dom-change.directive';
 import { AutofocusDirective } from './directives/autofocus.directive';
-
-// tree sorting
-import { TreeModule } from 'angular-tree-component';
 
 // components
 import { HeadBarComponent } from './components/head-bar/head-bar.component';
@@ -140,7 +138,7 @@ import { MediaUploadContentComponent } from './components/media-upload-content/m
         NgxMatSelectSearchModule,
         FileDropModule,
         EditorModule,
-        TreeModule.forRoot()
+        CdkTreeModule
     ],
     exports: [
         FormsModule,
@@ -190,7 +188,6 @@ import { MediaUploadContentComponent } from './components/media-upload-content/m
         SortingListComponent,
         EditorModule,
         SortingTreeComponent,
-        TreeModule,
         OsSortFilterBarComponent,
         LogoComponent,
         CopyrightSignComponent,

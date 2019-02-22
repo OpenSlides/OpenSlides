@@ -1,23 +1,22 @@
 import { Injectable } from '@angular/core';
+
 import { tap, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseAgendaContentObjectRepository } from '../base-agenda-content-object-repository';
 import { BaseRepository } from '../base-repository';
-import { BaseAgendaViewModel } from 'app/site/base/base-agenda-view-model';
-import { BaseViewModel } from 'app/site/base/base-view-model';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { DataSendService } from 'app/core/core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { HttpService } from 'app/core/core-services/http.service';
 import { Item } from 'app/shared/models/agenda/item';
-import { OSTreeSortEvent } from 'app/shared/components/sorting-tree/sorting-tree.component';
-import { TreeService } from 'app/core/ui-services/tree.service';
 import { ViewItem } from 'app/site/agenda/models/view-item';
+import { TreeService, TreeIdNode } from 'app/core/ui-services/tree.service';
+import { BaseAgendaViewModel } from 'app/site/base/base-agenda-view-model';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { BaseViewModel } from 'app/site/base/base-view-model';
+import { BaseAgendaContentObjectRepository } from '../base-agenda-content-object-repository';
 
 /**
  * Repository service for users
@@ -152,9 +151,8 @@ export class ItemRepositoryService extends BaseRepository<ViewItem, Item> {
      *
      * @param data The reordered data from the sorting
      */
-    public async sortItems(data: OSTreeSortEvent): Promise<void> {
-        const url = '/rest/agenda/item/sort/';
-        await this.httpService.post(url, data);
+    public async sortItems(data: TreeIdNode[]): Promise<void> {
+        await this.httpService.post('/rest/agenda/item/sort/', data);
     }
 
     /**

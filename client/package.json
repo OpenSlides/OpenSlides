@@ -41,7 +41,6 @@
         "@ngx-translate/core": "^11.0.1",
         "@ngx-translate/http-loader": "^4.0.0",
         "@tinymce/tinymce-angular": "^3.0.0",
-        "angular-tree-component": "^8.2.0",
         "core-js": "^2.6.5",
         "css-element-queries": "^1.1.1",
         "file-saver": "^2.0.1",

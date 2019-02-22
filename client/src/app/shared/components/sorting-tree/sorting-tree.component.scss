@@ -1,0 +1,43 @@
+@import '../../../../assets/styles/drag.scss';
+
+cdk-tree-node {
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    div {
+        width: 100%;
+
+        mat-icon {
+            transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+        }
+    }
+}
+
+// Overwrite the preview
+.cdk-drag-preview {
+    box-shadow: none;
+    background-color: unset;
+
+    div {
+        box-sizing: border-box;
+        background-color: white;
+        border-radius: 4px;
+        box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+            0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    }
+}
+
+// Overwrite the placeholder
+.cdk-drag-placeholder {
+    opacity: 1;
+    background: #ccc;
+    border: dotted 3px #999;
+    min-height: 42px;
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drop-list.cdk-drop-list-dragging .cdk-tree-node:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}

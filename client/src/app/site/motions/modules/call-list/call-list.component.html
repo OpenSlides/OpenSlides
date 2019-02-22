@@ -1,4 +1,10 @@
-<os-head-bar prevUrl="../.." [nav]="false">
+<os-head-bar
+    prevUrl="../.."
+    [nav]="false"
+    [editMode]="hasChanged"
+    (mainEvent)="onCancel()"
+    (saveEvent)="onSave()">
+
     <!-- Title -->
     <div class="title-slot">
         <h2 translate>Call list</h2>
@@ -13,17 +19,12 @@
 </os-head-bar>
 
 <mat-card>
-    <button mat-button (click)="expandCollapseAll(true)">{{ 'Expand all' | translate }}</button>
-    <button mat-button (click)="expandCollapseAll(false)">{{ 'Collapse all' | translate }}</button>
     <os-sorting-tree
-        #sorter
-        (sort)="sort($event)"
-        parentIdKey="sort_parent_id"
+        #osSortedTree
+        parentKey="sort_parent_id"
         weightKey="weight"
-        [modelsObservable]="motionsObservable"
-        [expandCollapseAll]="expandCollapse"
-    >
-    </os-sorting-tree>
+        (hasChanged)="receiveChanges($event)"
+        [model]="motionsObservable"></os-sorting-tree>
 </mat-card>
 
 <mat-menu #downloadMenu="matMenu">

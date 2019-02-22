@@ -20,12 +20,11 @@ import { Motion } from 'app/shared/models/motions/motion';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { MotionChangeRecommendation } from 'app/shared/models/motions/motion-change-reco';
 import { MotionPoll } from 'app/shared/models/motions/motion-poll';
-import { OSTreeSortEvent } from 'app/shared/components/sorting-tree/sorting-tree.component';
-import { TreeService } from 'app/core/ui-services/tree.service';
+import { TreeService, TreeIdNode } from 'app/core/ui-services/tree.service';
 import { User } from 'app/shared/models/users/user';
 import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-change-recommendation';
 import { ViewMotionAmendedParagraph } from 'app/site/motions/models/view-motion-amended-paragraph';
-import { ViewUnifiedChange } from '../../../shared/models/motions/view-unified-change';
+import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change';
 import { ViewStatuteParagraph } from 'app/site/motions/models/view-statute-paragraph';
 import { Workflow } from 'app/shared/models/motions/workflow';
 import { WorkflowState } from 'app/shared/models/motions/workflow-state';
@@ -377,9 +376,8 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
      *
      * @param data The reordered data from the sorting
      */
-    public async sortMotions(data: OSTreeSortEvent): Promise<void> {
-        const url = '/rest/motions/motion/sort/';
-        await this.httpService.post(url, data);
+    public async sortMotions(data: TreeIdNode[]): Promise<void> {
+        await this.httpService.post('/rest/motions/motion/sort/', data);
     }
 
     /**
