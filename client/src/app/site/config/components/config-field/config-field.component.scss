@@ -13,18 +13,6 @@ input[type='color'] {
     margin-bottom: 15px;
 }
 
-/* Custom hint and error classes for the checkbox. Same values as .mat-hint and -mat-error */
-.hint,
-.error {
-    font-size: 75%;
-}
-.hint {
-    color: rgba(0, 0, 0, 0.54);
-}
-.error {
-    color: #f44336;
-}
-
 .config-field-wrapper {
     width: 100%;
     display: flex;
