@@ -27,8 +27,22 @@
         color: mat-color($primary);
     }
 
+    .projected .mat-icon {
+        color: mat-color($primary);
+    }
+
     //custom table header for search button, filtering and more. Used in ListViews
     .custom-table-header {
         background: mat-color($background, background);
+    }
+
+    /* Custom hint and error classes. Same values as .mat-hint and -mat-error */
+    .hint,
+    .error {
+        font-size: 75%;
+        display: block;
+    }
+    .error {
+        color: mat-color($warn);
     }
 }

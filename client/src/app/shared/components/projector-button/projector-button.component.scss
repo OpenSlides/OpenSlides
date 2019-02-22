@@ -1,18 +1,18 @@
-.projector-inactive {
-    background-color: white !important;
+@import '~@angular/material/theming';
 
-    mat-icon {
-        color: grey !important;
+@mixin os-projector-button-style($theme) {
+    $primary: map-get($theme, primary);
+    $accent: map-get($theme, accent);
+    $warn: map-get($theme, warn);
+    $contrast: map-get($primary, contrast);
+
+    .mat-mini-fab.projector-inactive {
+        color: mat-color($contrast, A200) !important;
+        background-color: mat-color($contrast, 500) !important;
     }
-}
 
-/** TODO: Take this from the accent color. Make the hovering visible */
-
-.projector-active {
-    background-color: #03a9f4;
-    color: white !important;
-}
-
-button.mat-menu-item.projector-active:hover {
-    background-color: #03a9f4;
+    .mat-menu-item.projector-active,
+    .projector-active > .mat-icon {
+        color: mat-color($primary) !important;
+    }
 }

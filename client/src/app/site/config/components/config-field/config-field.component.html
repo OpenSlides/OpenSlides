@@ -44,7 +44,7 @@
             <div class="config-form-group" *ngIf="isExcludedType(configItem.inputType)">
                 <div *ngIf="configItem.inputType === 'boolean'">
                     <mat-checkbox formControlName="value">{{ configItem.label | translate }}</mat-checkbox>
-                    <div class="hint" *ngIf="configItem.helpText && !error">{{ configItem.helpText | translate }}</div>
+                    <mat-hint class="hint" *ngIf="configItem.helpText && !error">{{ configItem.helpText | translate }}</mat-hint>
                     <div class="error" *ngIf="error">{{ error }}</div>
                 </div>
 
@@ -52,7 +52,7 @@
                 <div *ngIf="configItem.inputType === 'text'">
                     <mat-form-field>
                         <textarea rows="10" matInput placeholder="{{ configItem.label | translate }}" [value]="translatedValue"></textarea>
-                        <div class="hint" *ngIf="configItem.helpText && !error">{{ configItem.helpText | translate }}</div>
+                        <mat-hint class="hint" *ngIf="configItem.helpText && !error">{{ configItem.helpText | translate }}</mat-hint>
                     </mat-form-field>
                 </div>
 

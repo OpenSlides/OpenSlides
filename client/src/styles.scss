@@ -10,6 +10,7 @@
 /** Import the component-related stylesheets here */
 @import './app/site/site.component.scss-theme.scss';
 @import './assets/styles/global-components-style.scss';
+@import './app/shared/components/projector-button/projector-button.component.scss';
 
 /** fonts */
 @import './assets/styles/fonts.scss';
@@ -19,6 +20,7 @@
 @mixin openslides-components-theme($theme) {
     @include os-site-theme($theme);
     @include os-components-style($theme);
+    @include os-projector-button-style($theme);
     /** More components are added here */
 }
 
@@ -503,10 +505,6 @@ button.mat-menu-item.selected {
 .grey {
     background-color: #e0e0e0 !important;
     color: rgba(0, 0, 0, 0.87) !important;
-}
-
-.projected {
-    background-color: lightblue;
 }
 
 /* TODO: move to site.component.scss-theme.scss (does not work currently) */
