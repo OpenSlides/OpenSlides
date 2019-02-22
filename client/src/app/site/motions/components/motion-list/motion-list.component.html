@@ -121,6 +121,14 @@
             </mat-cell>
         </ng-container>
 
+        <!-- Anchor column to open separate tab -->
+        <ng-container matColumnDef="anchor">
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell *matCellDef="let motion">
+                <a [routerLink]="motion.id"></a>
+            </mat-cell>
+        </ng-container>
+
         <!-- Speakers column -->
         <ng-container matColumnDef="speakers">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Speakers</mat-header-cell>
@@ -139,7 +147,6 @@
         <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
         <mat-row
             [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected' : ''"
-            (click)="selectItem(row, $event)"
             *matRowDef="let row; columns: getColumnDefinition()"
             class="lg"
         >

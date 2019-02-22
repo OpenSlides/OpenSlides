@@ -41,12 +41,12 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
     /**
      * Columns to display in table when desktop view is available
      */
-    public displayedColumnsDesktop: string[] = ['identifier', 'title', 'state'];
+    public displayedColumnsDesktop: string[] = ['identifier', 'title', 'state', 'anchor'];
 
     /**
      * Columns to display in table when mobile view is available
      */
-    public displayedColumnsMobile = ['identifier', 'title'];
+    public displayedColumnsMobile = ['identifier', 'title', 'anchor'];
 
     /**
      * Value of the configuration variable `motions_statutes_enabled` - are statutes enabled?
