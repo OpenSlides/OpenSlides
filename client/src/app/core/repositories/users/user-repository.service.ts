@@ -305,6 +305,7 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
 
     /**
      * Returns all duplicates of an user (currently: full name matches)
+     *
      * @param user
      */
     public getUserDuplicates(user: ViewUser): ViewUser[] {
@@ -313,6 +314,8 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
 
     /**
      * @returns the observable for users sorted according to configuration
+     *
+     * TODO: This is leading to heavy operations
      */
     public getSortedViewModelListObservable(): Observable<ViewUser[]> {
         const subject = new BehaviorSubject<ViewUser[]>([]);
@@ -329,6 +332,8 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
      * @returns the users sorted by first name, last name or number, according
      * to the config setting. Fallthrough and identical cases will be sorted by
      * 'short_name'
+     *
+     * TODO: That operation is HEAVY
      */
     public sortViewUsersByConfig(users: ViewUser[]): ViewUser[] {
         const sort = this.configService.instant<'first_name' | 'last_name' | 'number'>('users_sort_by') || 'last_name';

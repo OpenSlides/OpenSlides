@@ -80,12 +80,6 @@ export class ManageSubmittersComponent extends BaseViewComponent {
         this.addSubmitterForm = new FormGroup({ userId: new FormControl([]) });
         this.editSubmitterObservable = this.editSubmitterSubject.asObservable();
 
-        // get all users for the submitter add form
-        this.users = new BehaviorSubject<ViewUser[]>(
-            this.userRepository.sortViewUsersByConfig(this.userRepository.getViewModelList())
-        );
-        this.userRepository.getSortedViewModelListObservable().subscribe(users => this.users.next(users));
-
         // detect changes in the form
         this.addSubmitterForm.valueChanges.subscribe(formResult => {
             if (formResult && formResult.userId) {
@@ -101,6 +95,10 @@ export class ManageSubmittersComponent extends BaseViewComponent {
         this.isEditMode = true;
         this.editSubmitterSubject.next(this.motion.submitters.map(x => x));
         this.addSubmitterForm.reset();
+
+        // get all users for the submitter add form
+        this.users = new BehaviorSubject<ViewUser[]>(this.userRepository.getViewModelList());
+        this.userRepository.getViewModelListObservable().subscribe(users => this.users.next(users));
     }
 
     /**

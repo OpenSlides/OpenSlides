@@ -90,9 +90,12 @@
         <ng-container matColumnDef="menu">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Menu</mat-header-cell>
             <mat-cell *matCellDef="let item">
-                <button mat-icon-button
-                *osPerms="'agenda.can_manage'"
-                [matMenuTriggerFor]="singleItemMenu" [matMenuTriggerData]="{ item: item }">
+                <button
+                    mat-icon-button
+                    *osPerms="'agenda.can_manage'"
+                    [matMenuTriggerFor]="singleItemMenu"
+                    [matMenuTriggerData]="{ item: item }"
+                >
                     <mat-icon>more_vert</mat-icon>
                 </button>
             </mat-cell>

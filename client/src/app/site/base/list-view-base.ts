@@ -96,20 +96,24 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel, M extends B
      * Standard filtering function. Sufficient for most list views but can be overwritten
      */
     protected onFilter(): void {
-        this.filterService.filter().subscribe(filteredData => (this.sortService.data = filteredData));
+        this.subscriptions.push(
+            this.filterService.filter().subscribe(filteredData => (this.sortService.data = filteredData))
+        );
     }
 
     /**
      * Standard sorting function. Siffucient for most list views but can be overwritten
      */
     protected onSort(): void {
-        this.sortService.sort().subscribe(sortedData => {
-            // the dataArray needs to be cleared (since angular 7)
-            // changes are not detected properly anymore
-            this.dataSource.data = [];
-            this.dataSource.data = sortedData;
-            this.checkSelection();
-        });
+        this.subscriptions.push(
+            this.sortService.sort().subscribe(sortedData => {
+                // the dataArray needs to be cleared (since angular 7)
+                // changes are not detected properly anymore
+                this.dataSource.data = [];
+                this.dataSource.data = sortedData;
+                this.checkSelection();
+            })
+        );
     }
 
     public onSortButton(itemProperty: string): void {

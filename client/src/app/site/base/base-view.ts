@@ -5,6 +5,7 @@ import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 
 import { BaseComponent } from '../../base.component';
+import { Subscription } from 'rxjs';
 
 /**
  * A base class for all views. Implements a generic error handling by raising a snack bar
@@ -18,6 +19,11 @@ export abstract class BaseViewComponent extends BaseComponent implements OnDestr
     private messageSnackBar: MatSnackBarRef<SimpleSnackBar>;
 
     /**
+     * Subscriptions added to this list will be cleared 'on destroy'
+     */
+    protected subscriptions: Subscription[];
+
+    /**
      * Constructor for bas elist views
      * @param titleService the title serivce, passed to the base component
      * @param translate the translate service, passed to the base component
@@ -25,6 +31,7 @@ export abstract class BaseViewComponent extends BaseComponent implements OnDestr
      */
     public constructor(titleService: Title, translate: TranslateService, private matSnackBar: MatSnackBar) {
         super(titleService, translate);
+        this.subscriptions = [];
     }
 
     /**
@@ -58,11 +65,18 @@ export abstract class BaseViewComponent extends BaseComponent implements OnDestr
     }
 
     /**
-     * automatically dismisses the error snack bar, if the component is destroyed.
+     * automatically dismisses the error snack bar and clears subscriptions
+     * if the component is destroyed.
      */
     public ngOnDestroy(): void {
         if (this.messageSnackBar) {
             this.messageSnackBar.dismiss();
+        }
+
+        if (this.subscriptions.length > 0) {
+            for (const sub of this.subscriptions) {
+                sub.unsubscribe();
+            }
         }
     }
 }
