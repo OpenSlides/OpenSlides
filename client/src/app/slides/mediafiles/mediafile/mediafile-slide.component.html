@@ -1,5 +1,13 @@
 <div *ngIf="data">
-    <p>{{ data.data.path }}</p>
-    <p>{{ data.data.type }}</p>
-    <p>{{ data.data.media_url_prefix }}</p>
+    <div *ngIf="data.data.type == 'image/png'">
+        <img [src]="url" alt=""/>
+    </div>
+    <div *ngIf="data.data.type == 'application/pdf'">
+          <pdf-viewer [src]="url"
+              [render-text]="true"
+              style="display: block;"></pdf-viewer>
+    </div>
+    <div *ngIf="data.data.type == 'image/jpeg'">
+        <img [src]="url" alt=""/>
+    </div>
 </div>
