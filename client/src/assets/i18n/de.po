@@ -930,6 +930,9 @@ msgstr "Ist ein Gremium"
 msgid "Is active"
 msgstr "Ist aktiv"
 
+msgid "Is already projected"
+msgstr "ist bereits projiziert"
+
 msgid "Is committee"
 msgstr "Ist Gremium"
 
@@ -1196,6 +1199,9 @@ msgstr "Keine Suchergebnisse gefunden für"
 
 msgid "No statute paragraphs"
 msgstr "Keine Satzungsabschnitte vorhanden"
+
+msgid "No."
+msgstr "Nr."
 
 msgid "None"
 msgstr "aus"
@@ -2178,6 +2184,9 @@ msgstr "Einträge pro Seite"
 
 msgid "majority"
 msgstr "Mehrheit"
+
+msgid "motions"
+msgstr "Anträge"
 
 msgid "motions-example"
 msgstr "Anträge-Beispiel"
