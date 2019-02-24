@@ -355,9 +355,9 @@ mat-expansion-panel {
 
 .mat-chip-list.user .mat-chip {
     border-radius: 16px !important;
-    padding: 15px !important;
-    border: solid 1px lightgray;
-    background: #fff;
+    padding: 5px 15px !important;
+    border: 1px solid;
+    height: auto;
 }
 
 // to display quantities. Use in span or div
@@ -606,6 +606,9 @@ button.mat-menu-item.selected {
 /*** Projector slides ***/
 
 #slide {
+    h2 {
+        line-height: 40px;
+    }
     h3 {
         color: #222;
         margin-bottom: 10px;
