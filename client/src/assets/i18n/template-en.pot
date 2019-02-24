@@ -885,6 +885,9 @@ msgstr ""
 msgid "Is active"
 msgstr ""
 
+msgid "Is already projected"
+msgstr ""
+
 msgid "Is committee"
 msgstr ""
 
@@ -1150,6 +1153,9 @@ msgid "No search result found for"
 msgstr ""
 
 msgid "No statute paragraphs"
+msgstr ""
+
+msgid "No."
 msgstr ""
 
 msgid "None"
@@ -2083,6 +2089,9 @@ msgid "items per page"
 msgstr ""
 
 msgid "majority"
+msgstr ""
+
+msgid "motions"
 msgstr ""
 
 msgid "motions-example"

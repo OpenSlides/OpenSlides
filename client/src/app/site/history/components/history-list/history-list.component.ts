@@ -115,7 +115,6 @@ export class HistoryListComponent extends ListViewBaseComponent<ViewHistory, His
             const element = this.viewModelStore.get(history.getCollectionString(), history.getModelId());
             let message = this.translate.instant('OpenSlides is temporarily reset to following timestamp:');
             message += ' ' + history.getLocaleString('DE-de');
-
             if (isDetailNavigable(element)) {
                 this.raiseError(message);
                 this.router.navigate([element.getDetailStateURL()]);

@@ -62,6 +62,11 @@
     }
 
     mat-card-header {
-        background-color: mat-color($background, app-bar);;
+        background-color: mat-color($background, app-bar);
+    }
+
+    // drag & drop view
+    .node-content-wrapper {
+        background-color: mat-color($background, app-bar);
     }
 }
