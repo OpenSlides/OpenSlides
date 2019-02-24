@@ -21,24 +21,31 @@ export abstract class BaseComponent {
      * Settings for the TinyMCE editor selector
      */
     public tinyMceSettings = {
-        // TODO: language_url: '/static/tinymce/i18n/' + gettextCatalog.getCurrentLanguage() + '.js',
-        // TODO: theme_url: '/static/js/openslides-libs.js',
+        language: null,
+        language_url: null,
         skin_url: '/assets/tinymce/skins/lightgray',
         inline: false,
         statusbar: false,
         browser_spellcheck: true,
         image_advtab: true,
+        image_description: false,
+        link_title: false,
         height: 320,
         // TODO: image_list: images,
         plugins: `autolink charmap code colorpicker fullscreen image imagetools
-            lists link paste preview searchreplace textcolor`,
+            lists link paste searchreplace textcolor`,
         menubar: '',
-        toolbar: `undo redo searchreplace | styleselect | bold italic underline strikethrough
-            | forecolor backcolor removeformat | bullist numlist | outdent indent |
-            link image charmap table | code preview fullscreen`
+        toolbar: `styleselect | bold italic underline strikethrough
+            | forecolor backcolor removeformat | bullist numlist |
+            link image charmap | code fullscreen`
     };
 
-    public constructor(protected titleService?: Title, protected translate?: TranslateService) {}
+    public constructor(protected titleService?: Title, protected translate?: TranslateService) {
+        if (this.translate) {
+            this.tinyMceSettings.language_url = '/assets/tinymce/langs/' + this.translate.currentLang + '.js';
+            this.tinyMceSettings.language = this.translate.currentLang;
+        }
+    }
 
     /**
      * Set the title in web browser using angulars TitleService

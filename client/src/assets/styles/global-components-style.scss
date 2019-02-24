@@ -45,4 +45,23 @@
     .error {
         color: mat-color($warn);
     }
+
+    /* motion list/detail view */
+    .mat-chip-list.user .mat-chip {
+        color: mat-color($foreground, text);
+        background: mat-color($background, card);
+        border-color: mat-color($background, selected-button);
+    }
+
+    .main-nav-color {
+        color: mat-color($foreground, secondary-text);
+    }
+
+    .submitters-line {
+        color: mat-color($foreground, secondary-text);
+    }
+
+    mat-card-header {
+        background-color: mat-color($background, app-bar);;
+    }
 }

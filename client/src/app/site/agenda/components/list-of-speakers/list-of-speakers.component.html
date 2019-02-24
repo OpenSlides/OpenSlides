@@ -2,8 +2,8 @@
     <!-- Title -->
     <div class="title-slot">
         <h2>
-            <span *ngIf="!currentListOfSpeakers">List of speakers</span>
-            <span *ngIf="currentListOfSpeakers">Current list of speakers</span>
+            <span *ngIf="!currentListOfSpeakers" translate>List of speakers</span>
+            <span *ngIf="currentListOfSpeakers" translate>Current list of speakers</span>
         </h2>
     </div>
     <div class="menu-slot" *osPerms="['agenda.can_manage_list_of_speakers', 'core.can_manage_projector']">
@@ -25,7 +25,7 @@
     </mat-form-field>
 </mat-card>
 
-<h1 class="title-left on-transition-fade" *ngIf="viewItem">{{ viewItem.getTitle() }}</h1>
+<h1 class="title on-transition-fade" *ngIf="viewItem">{{ viewItem.getTitle() }}</h1>
 
 <mat-card class="speaker-card" *ngIf="viewItem">
     <!-- List of finished speakers -->

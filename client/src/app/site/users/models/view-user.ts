@@ -152,7 +152,9 @@ export class ViewUser extends BaseProjectableViewModel implements Searchable {
 
         const number = this.number ? this.number.trim() : '';
         if (number) {
-            additions.push(this.getNumberForName(number));
+            if (this.getNumberForName) {
+                additions.push(this.getNumberForName(number));
+            }
         }
 
         if (additions.length > 0) {
