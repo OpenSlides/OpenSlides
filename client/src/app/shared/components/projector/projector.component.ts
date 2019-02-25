@@ -133,6 +133,7 @@ export class ProjectorComponent extends BaseComponent implements OnDestroy {
     public enableHeaderAndFooter = true;
     public enableTitle = true;
     public enableLogo = true;
+    public projectorLogo;
     public eventName;
     public eventDescription;
     public eventDate;
@@ -177,6 +178,11 @@ export class ProjectorComponent extends BaseComponent implements OnDestroy {
 
         // projector logo / background-image
         this.configService.get<boolean>('projector_enable_logo').subscribe(val => (this.enableLogo = val));
+        this.configService.get<{ path?: string }>('logo_projector_main').subscribe(val => {
+            if (val && val.path) {
+                this.projectorLogo = val.path;
+            }
+        });
         this.configService.get<{ path?: string }>('logo_projector_header').subscribe(val => {
             if (val && val.path) {
                 this.headerFooterStyle['background-image'] = "url('" + val.path + "')";
