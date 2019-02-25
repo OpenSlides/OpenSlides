@@ -45,12 +45,12 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<
      */
     public constructor(
         DS: DataStoreService,
+        dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        protected dataSend: DataSendService,
-        private translate: TranslateService
+        translate: TranslateService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, MotionChangeRecommendation, [
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, MotionChangeRecommendation, [
             Category,
             User,
             Workflow
@@ -85,7 +85,7 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<
      * return the Observable of all change recommendations belonging to the given motion
      */
     public getChangeRecosOfMotionObservable(motion_id: number): Observable<ViewMotionChangeRecommendation[]> {
-        return this.viewModelListSubject.asObservable().pipe(
+        return this.getViewModelListObservable().pipe(
             map((recos: ViewMotionChangeRecommendation[]) => {
                 return recos.filter(reco => reco.motion_id === motion_id);
             })

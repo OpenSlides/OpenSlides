@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { tap, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
+import { TranslateService } from '@ngx-translate/core';
+
 import { BaseAgendaContentObjectRepository } from '../base-agenda-content-object-repository';
 import { BaseRepository } from '../base-repository';
 import { BaseAgendaViewModel } from 'app/site/base/base-agenda-view-model';
@@ -13,7 +15,6 @@ import { DataStoreService } from '../../core-services/data-store.service';
 import { HttpService } from 'app/core/core-services/http.service';
 import { Item } from 'app/shared/models/agenda/item';
 import { OSTreeSortEvent } from 'app/shared/components/sorting-tree/sorting-tree.component';
-import { TranslateService } from '@ngx-translate/core';
 import { TreeService } from 'app/core/ui-services/tree.service';
 import { ViewItem } from 'app/site/agenda/models/view-item';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
@@ -39,15 +40,15 @@ export class ItemRepositoryService extends BaseRepository<ViewItem, Item> {
      */
     public constructor(
         DS: DataStoreService,
+        dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        protected dataSend: DataSendService,
+        translate: TranslateService,
         private httpService: HttpService,
         private config: ConfigService,
-        private treeService: TreeService,
-        private translate: TranslateService
+        private treeService: TreeService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, Item);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, Item);
     }
 
     public getVerboseName = (plural: boolean = false) => {
@@ -85,7 +86,7 @@ export class ItemRepositoryService extends BaseRepository<ViewItem, Item> {
                 const repo = this.collectionStringMapperService.getRepository(
                     viewItem.item.content_object.collection
                 ) as BaseAgendaContentObjectRepository<any, any>;
-                return numberPrefix + repo.getAgendaTitleWithType(viewItem);
+                return numberPrefix + repo.getAgendaTitleWithType(viewItem.title_information);
             }
         };
         viewItem.getListTitle = viewItem.getTitle;

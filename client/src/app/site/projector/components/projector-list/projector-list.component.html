@@ -19,7 +19,7 @@
         Reference projector for current list of speakers:
     </span>&nbsp;
     <mat-form-field>
-        <mat-select [disabled]="!!editId" [value]="projectors[0].reference_projector_id" (selectionChange)="onSelectReferenceProjector($event)">
+        <mat-select [disabled]="!!editId" [value]="projectors.length ? projectors[0].reference_projector_id : null" (selectionChange)="onSelectReferenceProjector($event)">
             <mat-option *ngFor="let projector of projectors" [value]="projector.id">
                 {{ projector.getTitle() | translate }}
             </mat-option>

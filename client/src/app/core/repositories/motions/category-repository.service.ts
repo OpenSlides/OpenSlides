@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 
-import { BehaviorSubject, Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
 import { BaseRepository } from '../base-repository';
@@ -12,6 +11,8 @@ import { DataStoreService } from '../../core-services/data-store.service';
 import { HttpService } from '../../core-services/http.service';
 import { ViewCategory } from 'app/site/motions/models/view-category';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+
+type SortProperty = 'prefix' | 'name';
 
 /**
  * Repository Services for Categories
@@ -27,6 +28,8 @@ import { ViewModelStoreService } from 'app/core/core-services/view-model-store.s
     providedIn: 'root'
 })
 export class CategoryRepositoryService extends BaseRepository<ViewCategory, Category> {
+    private sortProperty: SortProperty;
+
     /**
      * Creates a CategoryRepository
      * Converts existing and incoming category to ViewCategories
@@ -40,15 +43,21 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
      * @param translate translationService to get the currently selected locale
      */
     public constructor(
-        protected DS: DataStoreService,
+        DS: DataStoreService,
+        dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        protected dataSend: DataSendService,
+        translate: TranslateService,
         private httpService: HttpService,
-        private configService: ConfigService,
-        private translate: TranslateService
+        private configService: ConfigService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, Category);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, Category);
+
+        this.sortProperty = this.configService.instant('motions_category_sorting');
+        this.configService.get<SortProperty>('motions_category_sorting').subscribe(conf => {
+            this.sortProperty = conf;
+            this.setConfigSortFn();
+        });
     }
 
     public getVerboseName = (plural: boolean = false) => {
@@ -66,8 +75,7 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
      * @param category_id category ID
      */
     public getCategoryByID(category_id: number): Category {
-        const catList = this.DS.getAll(Category);
-        return catList.find(category => category.id === category_id);
+        return this.DS.find<Category>(Category, cat => cat.id === category_id);
     }
 
     /**
@@ -81,36 +89,19 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
     }
 
     /**
-     * @ returns the observable for categories sorted according to configuration
+     * Triggers an update for the sort function responsible for the default sorting of data items
      */
-    public getSortedViewModelListObservable(): Observable<ViewCategory[]> {
-        const subject = new BehaviorSubject<ViewCategory[]>([]);
-        this.getViewModelListObservable().subscribe(categories => {
-            subject.next(this.sortViewCategoriesByConfig(categories));
-        });
-        return subject.asObservable();
-    }
-
-    /**
-     * Sort viewCategories by the configured settings
-     *
-     * @param categories
-     * @returns the categories sorted by prefix or name, according to the config setting
-     *
-     * TODO: That operation is HEAVY
-     */
-    public sortViewCategoriesByConfig(categories: ViewCategory[]): ViewCategory[] {
-        const sort = this.configService.instant<'prefix' | 'name'>('motions_category_sorting') || 'prefix';
-        return categories.sort((a, b) => {
-            if (a[sort] && b[sort]) {
-                return a[sort].localeCompare(b[sort], this.translate.currentLang);
-            } else if (sort === 'prefix') {
+    public setConfigSortFn(): void {
+        this.setSortFunction((a: ViewCategory, b: ViewCategory) => {
+            if (a[this.sortProperty] && b[this.sortProperty]) {
+                return this.languageCollator.compare(a[this.sortProperty], b[this.sortProperty]);
+            } else if (this.sortProperty === 'prefix') {
                 if (a.prefix) {
                     return 1;
                 } else if (b.prefix) {
                     return -1;
                 } else {
-                    return a.name.localeCompare(b.name);
+                    return this.languageCollator.compare(a.name, b.name);
                 }
             }
         });

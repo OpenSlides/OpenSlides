@@ -14,12 +14,12 @@ import { DataSendService } from 'app/core/core-services/data-send.service';
 export class ProjectorMessageRepositoryService extends BaseRepository<ViewProjectorMessage, ProjectorMessage> {
     public constructor(
         DS: DataStoreService,
+        dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        protected dataSend: DataSendService,
-        private translate: TranslateService
+        translate: TranslateService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, ProjectorMessage);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, ProjectorMessage);
     }
 
     public getVerboseName = (plural: boolean = false) => {

@@ -49,13 +49,13 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group> {
      */
     public constructor(
         DS: DataStoreService,
+        dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        protected dataSend: DataSendService,
-        private constants: ConstantsService,
-        private translate: TranslateService
+        translate: TranslateService,
+        private constants: ConstantsService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, Group);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, Group);
         this.sortPermsPerApp();
     }
 

@@ -32,11 +32,12 @@ export class MediafileRepositoryService extends BaseRepository<ViewMediafile, Me
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
+        translate: TranslateService,
         protected dataSend: DataSendService,
-        private httpService: HttpService,
-        private translate: TranslateService
+        private httpService: HttpService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, Mediafile, [User]);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, Mediafile, [User]);
+        this.initSorting();
     }
 
     public getVerboseName = (plural: boolean = false) => {
@@ -68,5 +69,14 @@ export class MediafileRepositoryService extends BaseRepository<ViewMediafile, Me
         const restPath = `rest/mediafiles/mediafile/`;
         const emptyHeader = new HttpHeaders();
         return this.httpService.post<Identifiable>(restPath, file, {}, emptyHeader);
+    }
+
+    /**
+     * Sets the default sorting (e.g. in dropdowns and for new users) to 'title'
+     */
+    private initSorting(): void {
+        this.setSortFunction((a: ViewMediafile, b: ViewMediafile) => {
+            return this.languageCollator.compare(a.title, b.title);
+        });
     }
 }

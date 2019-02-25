@@ -139,7 +139,7 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
         }
         this.createForm();
 
-        this.groups = this.groupRepo.getViewModelList().filter(group => group.id !== 1);
+        this.groups = this.groupRepo.getSortedViewModelList().filter(group => group.id !== 1);
         this.groupRepo
             .getViewModelListObservable()
             .subscribe(groups => (this.groups = groups.filter(group => group.id !== 1)));

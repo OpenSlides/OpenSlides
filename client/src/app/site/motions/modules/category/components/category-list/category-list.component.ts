@@ -101,7 +101,7 @@ export class CategoryListComponent extends BaseViewComponent implements OnInit {
      */
     public ngOnInit(): void {
         super.setTitle('Category');
-        this.repo.getSortedViewModelListObservable().subscribe(newViewCategories => {
+        this.repo.getViewModelListObservable().subscribe(newViewCategories => {
             this.categories = newViewCategories;
         });
     }
@@ -187,21 +187,7 @@ export class CategoryListComponent extends BaseViewComponent implements OnInit {
      * @returns all motions in the category
      */
     public motionsInCategory(category: Category): ViewMotion[] {
-        const coll = new Intl.Collator(this.translate.currentLang);
-        return this.motionRepo
-            .getViewModelList()
-            .filter(m => m.category_id === category.id)
-            .sort((motion1, motion2) => {
-                if (motion1.identifier && motion2.identifier) {
-                    return coll.compare(motion1.identifier, motion2.identifier);
-                } else if (motion1.identifier) {
-                    return 1;
-                } else if (motion2.identifier) {
-                    return -1;
-                } else {
-                    return coll.compare(motion1.getTitle(), motion2.getTitle());
-                }
-            });
+        return this.motionRepo.getSortedViewModelList().filter(m => m.category_id === category.id);
     }
 
     /**

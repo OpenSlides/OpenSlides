@@ -1,3 +1,5 @@
+import { TranslateService } from '@ngx-translate/core';
+
 import { BaseViewModel } from '../../site/base/base-view-model';
 import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model';
 import { CollectionStringMapperService } from '../core-services/collectionStringMapper.service';
@@ -25,9 +27,18 @@ export abstract class BaseAgendaContentObjectRepository<
         dataSend: DataSendService,
         collectionStringMapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
+        translate: TranslateService,
         baseModelCtor: ModelConstructor<M>,
         depsModelCtors?: ModelConstructor<BaseModel>[]
     ) {
-        super(DS, dataSend, collectionStringMapperService, viewModelStoreService, baseModelCtor, depsModelCtors);
+        super(
+            DS,
+            dataSend,
+            collectionStringMapperService,
+            viewModelStoreService,
+            translate,
+            baseModelCtor,
+            depsModelCtors
+        );
     }
 }

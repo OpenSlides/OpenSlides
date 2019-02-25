@@ -98,9 +98,13 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel, M extends B
      * Standard filtering function. Sufficient for most list views but can be overwritten
      */
     protected onFilter(): void {
-        this.subscriptions.push(
-            this.filterService.filter().subscribe(filteredData => (this.sortService.data = filteredData))
-        );
+        if (this.sortService) {
+            this.subscriptions.push(
+                this.filterService.filter().subscribe(filteredData => (this.sortService.data = filteredData))
+            );
+        } else {
+            this.filterService.filter().subscribe(filteredData => (this.dataSource.data = filteredData));
+        }
     }
 
     /**

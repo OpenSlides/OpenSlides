@@ -30,12 +30,12 @@ export class TopicRepositoryService extends BaseAgendaContentObjectRepository<Vi
      */
     public constructor(
         DS: DataStoreService,
+        dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        protected dataSend: DataSendService,
-        private translate: TranslateService
+        translate: TranslateService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, Topic, [Mediafile, Item]);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, Topic, [Mediafile, Item]);
     }
 
     public getAgendaTitle = (topic: Partial<Topic> | Partial<ViewTopic>) => {

@@ -17,9 +17,9 @@ export class ChatMessageRepositoryService extends BaseRepository<ViewChatMessage
         dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        private translate: TranslateService
+        translate: TranslateService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, ChatMessage);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, ChatMessage);
     }
 
     public getVerboseName = (plural: boolean = false) => {

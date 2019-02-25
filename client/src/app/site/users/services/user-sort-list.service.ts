@@ -36,6 +36,6 @@ export class UserSortListService extends BaseSortListService<ViewUser> {
      */
     public constructor(translate: TranslateService, store: StorageService, config: ConfigService) {
         super(translate, store);
-        this.sortOptions.sortProperty = config.instant<keyof ViewUser>('motions_motions_sorting');
+        this.defaultSorting = config.instant<keyof ViewUser>('users_sort_by');
     }
 }

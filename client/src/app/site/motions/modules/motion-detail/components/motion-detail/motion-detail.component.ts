@@ -18,6 +18,7 @@ import { itemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
 import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
+import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
 import { Motion } from 'app/shared/models/motions/motion';
 import {
     MotionChangeRecommendationComponentData,
@@ -49,7 +50,6 @@ import { ViewStatuteParagraph } from 'app/site/motions/models/view-statute-parag
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change';
 import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
-import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
 import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
 
@@ -368,6 +368,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * @param agendaRepo Read out agenda variables
      * @param changeRecoRepo Change Recommendation Repository
      * @param statuteRepo: Statute Paragraph Repository
+     * @param mediafileRepo Mediafile Repository
      * @param DS The DataStoreService
      * @param configService The configuration provider
      * @param sanitizer For making HTML SafeHTML
@@ -863,7 +864,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         const content = this.motion.getTitle();
         if (await this.promptService.open(title, content)) {
             await this.repo.delete(this.motion);
-            this.router.navigate(['./motions/']);
+            this.router.navigate(['../motions/']);
         }
     }
 
@@ -1112,18 +1113,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * then appending motion without identifiers sorted by title
      */
     public setSurroundingMotions(): void {
-        // TODO: that operation is HEAVY
-        this.motionObserver.value.sort((a, b) => {
-            if (a.identifier && b.identifier) {
-                return a.identifier.localeCompare(b.identifier, this.translate.currentLang);
-            } else if (a.identifier) {
-                return 1;
-            } else if (b.identifier) {
-                return -1;
-            } else {
-                return a.title.localeCompare(b.title, this.translate.currentLang);
-            }
-        });
         const indexOfCurrent = this.motionObserver.value.findIndex(motion => {
             return motion === this.motion;
         });

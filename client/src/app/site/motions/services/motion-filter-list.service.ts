@@ -182,7 +182,7 @@ export class MotionFilterListService extends BaseFilterListService<Motion, ViewM
      * Subscibes to changing Categories, and updates the filter accordingly
      */
     private subscribeCategories(): void {
-        this.categoryRepo.getSortedViewModelListObservable().subscribe(categories => {
+        this.categoryRepo.getViewModelListObservable().subscribe(categories => {
             const categoryOptions: OsFilterOptions = categories.map(cat => ({
                 condition: cat.id,
                 label: cat.prefixedName,
