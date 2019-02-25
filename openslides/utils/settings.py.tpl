@@ -48,6 +48,9 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 
+# Increasing Upload size to 100mb (default is 2.5mb)
+DATA_UPLOAD_MAX_MEMORY_SIZE = 104857600
+
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
