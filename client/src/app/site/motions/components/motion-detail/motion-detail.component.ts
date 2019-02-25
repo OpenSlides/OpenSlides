@@ -460,25 +460,25 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         this.getMotionByUrl();
         this.setSurroundingMotions();
 
-        // TODO: Changed to un-sort, since it's a really heavy operation
-        this.userRepo.getViewModelListObservable().subscribe(unsortedUsers => {
-            this.submitterObserver.next(unsortedUsers);
-            this.supporterObserver.next(unsortedUsers);
-        });
-
-        this.categoryRepo.getViewModelListObservable().subscribe(unsortedCategories => {
-            this.categoryObserver.next(unsortedCategories);
-        });
-
         // Initial Filling of the Subjects
-        this.submitterObserver = new BehaviorSubject(this.userRepo.getViewModelList());
-        this.supporterObserver = new BehaviorSubject(this.userRepo.getViewModelList());
+        const initialUsers = this.userRepo.sortViewUsersByConfig(this.userRepo.getViewModelList());
+        this.submitterObserver = new BehaviorSubject(initialUsers);
+        this.supporterObserver = new BehaviorSubject(initialUsers);
         this.categoryObserver = new BehaviorSubject(
             this.categoryRepo.sortViewCategoriesByConfig(this.viewModelStore.getAll(ViewCategory))
         );
-
         this.statuteRepo.getViewModelListObservable().subscribe(newViewStatuteParagraphs => {
             this.statuteParagraphs = newViewStatuteParagraphs;
+        });
+
+        this.userRepo.getViewModelListObservable().subscribe(unsortedUsers => {
+            const sortedUsers = this.userRepo.sortViewUsersByConfig(unsortedUsers);
+            this.submitterObserver.next(sortedUsers);
+            this.supporterObserver.next(sortedUsers);
+        });
+
+        this.categoryRepo.getSortedViewModelListObservable().subscribe(unsortedCategories => {
+            this.categoryObserver.next(unsortedCategories);
         });
 
         // Set the default visibility using observers
@@ -845,7 +845,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         const title = this.translate.instant('Are you sure you want to delete this motion?');
         if (await this.promptService.open(title, this.motion.getTitle())) {
             await this.repo.delete(this.motion);
-            this.router.navigate(['./motions/']);
+            this.router.navigate(['../motions/']);
         }
     }
 
@@ -1090,16 +1090,16 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * then appending motion without identifiers sorted by title
      */
     public setSurroundingMotions(): void {
-        // TODO: that operation is HEAVY
+        const intl = new Intl.Collator(this.translate.currentLang);
         this.motionObserver.value.sort((a, b) => {
             if (a.identifier && b.identifier) {
-                return a.identifier.localeCompare(b.identifier, this.translate.currentLang);
+                return intl.compare(a.identifier, b.identifier);
             } else if (a.identifier) {
                 return 1;
             } else if (b.identifier) {
                 return -1;
             } else {
-                return a.title.localeCompare(b.title, this.translate.currentLang);
+                return intl.compare(a.title, b.title);
             }
         });
         const indexOfCurrent = this.motionObserver.value.findIndex(motion => {

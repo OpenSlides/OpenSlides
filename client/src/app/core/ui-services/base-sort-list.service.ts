@@ -200,7 +200,7 @@ export abstract class BaseSortListService<V extends BaseViewModel> {
     private updateSortFn(): void {
         const property = this.sortProperty as string;
         const ascending = this.ascending;
-        const lang = this.translate.currentLang; // TODO: observe and update sorting on change
+        const intl = new Intl.Collator(this.translate.currentLang); // TODO: observe and update sorting on language change
 
         this.sortFn = function(itemA: V, itemB: V): number {
             const firstProperty = ascending ? itemA[property] : itemB[property];
@@ -234,16 +234,16 @@ export abstract class BaseSortListService<V extends BaseViewModel> {
                         if (!firstProperty) {
                             return 1;
                         }
-                        return firstProperty.localeCompare(secondProperty, lang);
+                        return intl.compare(firstProperty, secondProperty);
                     case 'function':
                         const a = firstProperty();
                         const b = secondProperty();
-                        return a.localeCompare(b, lang);
+                        return intl.compare(a, b);
                     case 'object':
                         if (firstProperty instanceof Date) {
                             return firstProperty > secondProperty ? 1 : -1;
                         } else {
-                            return firstProperty.toString().localeCompare(secondProperty.toString(), lang);
+                            return intl.compare(firstProperty.toString(), secondProperty.toString());
                         }
                     case 'undefined':
                         return 1;

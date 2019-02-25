@@ -116,20 +116,20 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
      * @param categories
      * @returns the categories sorted by prefix or name, according to the config setting
      *
-     * TODO: That operation is HEAVY
      */
     public sortViewCategoriesByConfig(categories: ViewCategory[]): ViewCategory[] {
         const sort = this.configService.instant<'prefix' | 'name'>('motions_category_sorting') || 'prefix';
+        const intl = new Intl.Collator(this.translate.currentLang);
         return categories.sort((a, b) => {
             if (a[sort] && b[sort]) {
-                return a[sort].localeCompare(b[sort], this.translate.currentLang);
+                return intl.compare(a[sort], b[sort]);
             } else if (sort === 'prefix') {
                 if (a.prefix) {
                     return 1;
                 } else if (b.prefix) {
                     return -1;
                 } else {
-                    return a.name.localeCompare(b.name);
+                    return intl.compare(a.name, b.name);
                 }
             }
         });

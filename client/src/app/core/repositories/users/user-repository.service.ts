@@ -32,6 +32,12 @@ type StringNamingSchema = 'lastCommaFirst' | 'firstSpaceLast';
 })
 export class UserRepositoryService extends BaseRepository<ViewUser, User> {
     /**
+     * BehaviorSubject containing a sorted list of all users. Will be created
+     * and used by the {@link getSortedViewModelListObservable} method
+     */
+    private sortedViewModelList: BehaviorSubject<ViewUser[]>;
+
+    /**
      * Constructor for the user repo
      *
      * @param DS The DataStore
@@ -315,14 +321,15 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
     /**
      * @returns the observable for users sorted according to configuration
      *
-     * TODO: This is leading to heavy operations
      */
     public getSortedViewModelListObservable(): Observable<ViewUser[]> {
-        const subject = new BehaviorSubject<ViewUser[]>([]);
-        this.getViewModelListObservable().subscribe(users => {
-            subject.next(this.sortViewUsersByConfig(users));
-        });
-        return subject.asObservable();
+        if (!this.sortedViewModelList) {
+            this.sortedViewModelList = new BehaviorSubject<ViewUser[]>([]);
+            this.getViewModelListObservable().subscribe(users => {
+                this.sortedViewModelList.next(this.sortViewUsersByConfig(users));
+            });
+        }
+        return this.sortedViewModelList.asObservable();
     }
 
     /**
@@ -333,23 +340,23 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
      * to the config setting. Fallthrough and identical cases will be sorted by
      * 'short_name'
      *
-     * TODO: That operation is HEAVY
      */
     public sortViewUsersByConfig(users: ViewUser[]): ViewUser[] {
         const sort = this.configService.instant<'first_name' | 'last_name' | 'number'>('users_sort_by') || 'last_name';
+        const intl = new Intl.Collator(this.translate.currentLang);
         return users.sort((a, b) => {
             if (a[sort] && b[sort]) {
                 if (a[sort] === b[sort]) {
-                    return a.short_name.localeCompare(b.short_name, this.translate.currentLang);
+                    return intl.compare(a.short_name, b.short_name);
                 } else {
-                    return a[sort].localeCompare(b[sort], this.translate.currentLang);
+                    return intl.compare(a[sort], b[sort]);
                 }
             } else if (a[sort] && !b[sort]) {
                 return -1;
             } else if (b[sort]) {
                 return 1;
             } else {
-                return a.short_name.localeCompare(b.short_name);
+                return intl.compare(a.short_name, b.short_name);
             }
         });
     }
