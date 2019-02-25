@@ -1,8 +1,10 @@
 #projector {
     width: 100%; /*1000px;*/
+    border: 1px solid lightgrey;
 }
 
 .column-left {
+    color: black;
     display: inline-block;
     padding-top: 20px;
     width: 60%;

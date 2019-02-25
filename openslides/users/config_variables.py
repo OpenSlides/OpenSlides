@@ -121,7 +121,7 @@ def get_config_variables():
         default_value="Your login for {event_name}",
         input_type="string",
         label="Email subject",
-        help_text="You can use {event_name} as a placeholder.",
+        help_text="You can use {event_name} and {username} as placeholder.",
         weight=605,
         group="Participants",
         subgroup="Email",

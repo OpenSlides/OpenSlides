@@ -2,7 +2,7 @@
     <div id="projector" [ngStyle]="projectorStyle">
         <div id="header" [ngStyle]="headerFooterStyle" *ngIf="enableHeaderAndFooter">
             <!-- projector logo -->
-            <os-logo *ngIf="enableLogo" inputAction="logo_projector_main" class="projector-logo-main"> </os-logo>
+            <img *ngIf="enableLogo && projectorLogo" src="{{ projectorLogo }}" class="projector-logo-main" />
 
             <div *ngIf="enableTitle" id="eventdata">
                 <div

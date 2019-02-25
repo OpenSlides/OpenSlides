@@ -347,7 +347,7 @@ _('Email');
 _('Email sender');
 _('Email subject');
 _('Your login for {event_name}');
-_('You can use {event_name} as a placeholder.');
+_('You can use {event_name} and {username} as placeholder.');
 _('Email body');
 _(
     'Dear {name},\n\nthis is your OpenSlides login for the event {event_name}:\n\n    {url}\n    username: {username}\n    password: {password}\n\nThis email was generated automatically.'

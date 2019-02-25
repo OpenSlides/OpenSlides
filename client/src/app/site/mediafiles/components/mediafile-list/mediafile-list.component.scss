@@ -1,4 +1,9 @@
 .os-listview-table {
+    /** Projector button **/
+    .mat-column-projector {
+        padding-right: 15px;
+    }
+
     /** Title */
     .mat-column-title {
         flex: 2 0 50px;

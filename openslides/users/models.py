@@ -237,7 +237,9 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
         except KeyError as err:
             raise ValidationError({"detail": f"Invalid property {err}."})
 
-        subject_format = format_dict({"event_name": config["general_event_name"]})
+        subject_format = format_dict(
+            {"event_name": config["general_event_name"], "username": self.username}
+        )
         try:
             subject = subject.format(**subject_format)
         except KeyError as err:
