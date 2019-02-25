@@ -18,6 +18,35 @@ from openslides.utils.test import TestCase
 from ..helpers import count_queries
 
 
+class ContentObjects(TestCase):
+    """
+    Tests content objects with Topic as a content object.
+    Asserts, that it is recognizes as a content object and tests creation
+    and deletion of it and the related agenda item.
+    """
+
+    def setUp(self):
+        self.client = APIClient()
+        self.client.login(username="admin", password="admin")
+
+    def test_topic_is_content_object(self):
+        assert hasattr(Topic(), "get_agenda_title_information")
+
+    def test_create_content_object(self):
+        topic = Topic.objects.create(title="test_title_fk3Oc209JDiunw2!wwoH")
+
+        assert topic.agenda_item is not None
+        response = self.client.get(reverse("item-detail", args=[topic.agenda_item.pk]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_delete_content_object(self):
+        topic = Topic.objects.create(title="test_title_lwOCK32jZGFb37DpmoP(")
+        item_id = topic.agenda_item.id
+        topic.delete()
+        response = self.client.get(reverse("item-detail", args=[item_id]))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
 class RetrieveItem(TestCase):
     """
     Tests retrieving items.
