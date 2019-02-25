@@ -37,7 +37,7 @@ def listen_to_related_object_post_delete(sender, instance, **kwargs):
     Receiver function to delete agenda items. It is connected to the signal
     django.db.models.signals.post_delete during app loading.
     """
-    if hasattr(instance, "get_agenda_title"):
+    if hasattr(instance, "get_agenda_title_information"):
         content_type = ContentType.objects.get_for_model(instance)
         try:
             # Attention: This delete() call is also necessary to remove
