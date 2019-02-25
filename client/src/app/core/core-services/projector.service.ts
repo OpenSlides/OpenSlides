@@ -269,7 +269,7 @@ export class ProjectorService {
     ): T {
         this.assertElementIsMappable(element);
         const viewModel = this.viewModelStore.get<T>(element.name, element.id);
-        if (!isProjectable(viewModel)) {
+        if (viewModel && !isProjectable(viewModel)) {
             console.error('The view model is not projectable', viewModel, element);
         }
         return viewModel;
