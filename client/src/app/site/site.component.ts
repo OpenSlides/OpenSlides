@@ -13,6 +13,7 @@ import { ViewportService } from '../core/ui-services/viewport.service';
 import { MainMenuService } from '../core/core-services/main-menu.service';
 import { OpenSlidesStatusService } from '../core/core-services/openslides-status.service';
 import { TimeTravelService } from '../core/core-services/time-travel.service';
+import { langToLocale } from 'app/shared/utils/lang-to-locale';
 
 @Component({
     selector: 'os-site',
@@ -193,5 +194,15 @@ export class SiteComponent extends BaseComponent implements OnInit {
         const query = this.searchform.get('query').value;
         this.searchform.reset();
         this.router.navigate(['/search'], { queryParams: { query: query } });
+    }
+
+    /**
+     * Get the timestamp for the current point in history mode.
+     * Tries to detect the ideal timestamp format using the translation service
+     *
+     * @returns the timestamp as string
+     */
+    public getHistoryTimestamp(): string {
+        return this.OSStatus.getHistoryTimeStamp(langToLocale(this.translate.currentLang));
     }
 }

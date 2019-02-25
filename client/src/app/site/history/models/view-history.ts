@@ -88,16 +88,6 @@ export class ViewHistory extends BaseViewModel {
     }
 
     /**
-     * Converts the date (this.now) to a time and date string.
-     *
-     * @param locale locale indicator, i.e 'de-DE'
-     * @returns a human readable kind of time and date representation
-     */
-    public getLocaleString(locale: string): string {
-        return this.history.date.toLocaleString(locale);
-    }
-
-    /**
      * Converts elementID into collection string
      * @returns the CollectionString to the model
      */

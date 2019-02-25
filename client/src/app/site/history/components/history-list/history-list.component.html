@@ -21,7 +21,7 @@
     <!-- Timestamp -->
     <ng-container matColumnDef="time">
         <mat-header-cell *matHeaderCellDef translate>Timestamp</mat-header-cell>
-        <mat-cell *matCellDef="let history">{{ history.getLocaleString('DE-de') }}</mat-cell>
+        <mat-cell *matCellDef="let history">{{ getTimestamp(history) }}</mat-cell>
     </ng-container>
 
     <!-- Element -->

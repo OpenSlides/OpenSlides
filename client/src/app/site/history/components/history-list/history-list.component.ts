@@ -13,6 +13,7 @@ import { ListViewBaseComponent } from 'app/site/base/list-view-base';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { ViewHistory } from '../../models/view-history';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { langToLocale } from 'app/shared/utils/lang-to-locale';
 
 /**
  * A list view for the history.
@@ -113,15 +114,17 @@ export class HistoryListComponent extends ListViewBaseComponent<ViewHistory, His
         if (this.operator.isInGroupIds(2)) {
             await this.repo.browseHistory(history);
             const element = this.viewModelStore.get(history.getCollectionString(), history.getModelId());
-            let message = this.translate.instant('OpenSlides is temporarily reset to following timestamp:');
-            message += ' ' + history.getLocaleString('DE-de');
-            if (isDetailNavigable(element)) {
-                this.raiseError(message);
+            if (element && isDetailNavigable(element)) {
                 this.router.navigate([element.getDetailStateURL()]);
             } else {
+                const message = this.translate.instant('Cannot navigate to the selected history element.');
                 this.raiseError(message);
             }
         }
+    }
+
+    public getTimestamp(viewHistory: ViewHistory): string {
+        return viewHistory.history.getLocaleString(langToLocale(this.translate.currentLang));
     }
 
     /**

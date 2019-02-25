@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 
+import { History } from 'app/shared/models/core/history';
+
 /**
  * Holds information about OpenSlides. This is not included into other services to
  * avoid circular dependencies.
@@ -9,15 +11,15 @@ import { Injectable } from '@angular/core';
 })
 export class OpenSlidesStatusService {
     /**
-     * Saves, if OpenSlides is in the history mode.
+     * in History mode, saves the history point.
      */
-    private historyMode = false;
+    private history: History = null;
 
     /**
      * Returns, if OpenSlides is in the history mode.
      */
     public get isInHistoryMode(): boolean {
-        return this.historyMode;
+        return !!this.history;
     }
 
     /**
@@ -26,16 +28,26 @@ export class OpenSlidesStatusService {
     public constructor() {}
 
     /**
-     * Enters the histroy mode
+     * Calls the getLocaleString function of the history object, if present.
+     *
+     * @param format the required date representation format
+     * @returns the timestamp as string
      */
-    public enterHistoryMode(): void {
-        this.historyMode = true;
+    public getHistoryTimeStamp(format: string): string {
+        return this.history ? this.history.getLocaleString(format) : null;
     }
 
     /**
-     * Leaves the histroy mode
+     * Enters the history mode
      */
-    public leaveHistroyMode(): void {
-        this.historyMode = false;
+    public enterHistoryMode(history: History): void {
+        this.history = history;
+    }
+
+    /**
+     * Leaves the history mode
+     */
+    public leaveHistoryMode(): void {
+        this.history = null;
     }
 }

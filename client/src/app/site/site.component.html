@@ -1,5 +1,6 @@
 <div class="history-mode-indicator" *ngIf="OSStatus.isInHistoryMode">
     <span translate>You are using the history mode of OpenSlides. Changes will not be saved.</span>
+    <span>({{ getHistoryTimestamp() }})</span>
     <a (click)="timeTravel.resumeTime()" translate>Exit</a>
 </div>
 <mat-sidenav-container #siteContainer class="main-container" (backdropClick)="toggleSideNav()">
@@ -29,11 +30,7 @@
                     <span> {{ getLangName(this.translate.currentLang) }} </span>
                 </a>
                 <div *ngIf="isLoggedIn">
-                    <a
-                        [routerLink]="['/users/', operator.user.id]"
-                        (click)="mobileAutoCloseNav()"
-                        mat-list-item
-                    >
+                    <a [routerLink]="['/users/', operator.user.id]" (click)="mobileAutoCloseNav()" mat-list-item>
                         <mat-icon>person</mat-icon>
                         <span translate>Show profile</span>
                     </a>

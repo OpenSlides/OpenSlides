@@ -4,18 +4,19 @@ import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { LineNumberingMode, ViewMotion } from '../../models/view-motion';
-import { ViewUnifiedChange, ViewUnifiedChangeType } from '../../../../shared/models/motions/view-unified-change';
-import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
-import { DiffService, LineRange, ModificationType } from 'app/core/ui-services/diff.service';
-import { ViewMotionChangeRecommendation } from '../../models/view-change-recommendation';
+import { BaseViewComponent } from '../../../base/base-view';
+import { ConfigService } from 'app/core/ui-services/config.service';
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
+import { DiffService, LineRange, ModificationType } from 'app/core/ui-services/diff.service';
+import { LineNumberingMode, ViewMotion } from '../../models/view-motion';
 import {
     MotionChangeRecommendationComponent,
     MotionChangeRecommendationComponentData
 } from '../motion-change-recommendation/motion-change-recommendation.component';
-import { BaseViewComponent } from '../../../base/base-view';
-import { ConfigService } from 'app/core/ui-services/config.service';
+import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
+import { ViewUnifiedChange, ViewUnifiedChangeType } from '../../../../shared/models/motions/view-unified-change';
+import { ViewMotionChangeRecommendation } from '../../models/view-change-recommendation';
 
 /**
  * This component displays the original motion text with the change blocks inside.
@@ -74,6 +75,7 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
      * @param dialogService
      * @param configService
      * @param el
+     * @param promptService
      */
     public constructor(
         title: Title,
@@ -85,10 +87,10 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
         private recoRepo: ChangeRecommendationRepositoryService,
         private dialogService: MatDialog,
         private configService: ConfigService,
-        private el: ElementRef
+        private el: ElementRef,
+        private promptService: PromptService
     ) {
         super(title, translate, matSnackBar);
-
         this.configService.get<number>('motions_line_length').subscribe(lineLength => (this.lineLength = lineLength));
     }
 
@@ -287,10 +289,13 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
      * @param {ViewMotionChangeRecommendation} reco
      * @param {MouseEvent} $event
      */
-    public deleteChangeRecommendation(reco: ViewMotionChangeRecommendation, $event: MouseEvent): void {
+    public async deleteChangeRecommendation(reco: ViewMotionChangeRecommendation, $event: MouseEvent): Promise<void> {
         $event.stopPropagation();
         $event.preventDefault();
-        this.recoRepo.delete(reco).then(null, this.raiseError);
+        const content = this.translate.instant('Delete this change recommendation');
+        if (await this.promptService.open('Are you sure?', content)) {
+            this.recoRepo.delete(reco).then(null, this.raiseError);
+        }
     }
 
     /**
