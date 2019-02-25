@@ -1,20 +1,21 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 import { BaseRepository } from '../base-repository';
-import { ViewUser } from 'app/site/users/models/view-user';
-import { User } from 'app/shared/models/users/user';
-import { Group } from 'app/shared/models/users/group';
-import { DataStoreService } from '../../core-services/data-store.service';
-import { DataSendService } from '../../core-services/data-send.service';
-import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { HttpService } from 'app/core/core-services/http.service';
-import { TranslateService } from '@ngx-translate/core';
+import { DataSendService } from '../../core-services/data-send.service';
+import { DataStoreService } from '../../core-services/data-store.service';
 import { environment } from '../../../../environments/environment';
-import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { Group } from 'app/shared/models/users/group';
+import { HttpService } from 'app/core/core-services/http.service';
+import { Identifiable } from 'app/shared/models/base/identifiable';
+import { NewEntry } from 'app/core/ui-services/base-import.service';
+import { User } from 'app/shared/models/users/user';
+import { ViewUser } from 'app/site/users/models/view-user';
 import { ViewGroup } from 'app/site/users/models/view-group';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 
 /**
  * type for determining the user name from a string during import.
@@ -118,6 +119,22 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
         });
 
         return await this.dataSend.createModel(newUser);
+    }
+
+    /**
+     * Creates and saves a list of users in a bulk operation.
+     *
+     * @param newEntries
+     */
+    public async bulkCreate(newEntries: NewEntry<ViewUser>[]): Promise<number[]> {
+        const data = newEntries.map(entry => {
+            return { ...entry.newEntry.user, importTrackId: entry.importTrackId };
+        });
+        const response = (await this.httpService.post(`rest/users/user/mass_import/`, { users: data })) as {
+            detail: string;
+            importedTrackIds: number[];
+        };
+        return response.importedTrackIds;
     }
 
     /**

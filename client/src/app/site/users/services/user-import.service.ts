@@ -47,7 +47,8 @@ export class UserImportService extends BaseImportService<ViewUser> {
         Duplicates: 'This user already exists',
         NoName: 'Entry has no valid name',
         DuplicateImport: 'Entry cannot be imported twice. This line will be ommitted',
-        ParsingErrors: 'Some csv values could not be read correctly.'
+        ParsingErrors: 'Some csv values could not be read correctly.',
+        FailedImport: 'Imported user could not be imported.'
     };
 
     /**
@@ -134,6 +135,8 @@ export class UserImportService extends BaseImportService<ViewUser> {
      */
     public async doImport(): Promise<void> {
         this.newGroups = await this.createNewGroups();
+        const importUsers: NewEntry<ViewUser>[] = [];
+        let trackId = 1;
         for (const entry of this.entries) {
             if (entry.status !== 'new') {
                 continue;
@@ -144,10 +147,23 @@ export class UserImportService extends BaseImportService<ViewUser> {
                 this.updatePreview();
                 continue;
             }
-            await this.repo.create(entry.newEntry.user);
-            entry.status = 'done';
+            entry.importTrackId = trackId;
+            trackId += 1;
+            importUsers.push(entry);
         }
-        this.updatePreview();
+        while (importUsers.length) {
+            const subSet = importUsers.splice(0, 100); // don't send bulks too large
+            const importedTracks = await this.repo.bulkCreate(subSet);
+            subSet.map(entry => {
+                const importModel = this.entries.find(e => e.importTrackId === entry.importTrackId);
+                if (importModel && importedTracks.includes(importModel.importTrackId)) {
+                    importModel.status = 'done';
+                } else {
+                    this.setError(importModel, 'FailedImport');
+                }
+            });
+            this.updatePreview();
+        }
     }
 
     /**
