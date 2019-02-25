@@ -10,7 +10,6 @@ import { DurationService } from 'app/core/ui-services/duration.service';
 import { FileExportService } from 'app/core/ui-services/file-export.service';
 import { itemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { ViewCreateTopic } from '../../models/view-create-topic';
-import { stripHtmlTags } from 'app/shared/utils/strip-html-tags';
 
 /**
  * Component for the agenda import list view.
@@ -47,44 +46,6 @@ export class AgendaImportListComponent extends BaseImportListComponent<ViewCreat
     ) {
         super(importer, titleService, translate, matSnackBar);
         this.textAreaForm = formBuilder.group({ inputtext: [''] });
-    }
-
-    /**
-     * Get the first characters of a string, for preview purposes
-     *
-     * @param input any string
-     * @returns a string with at most 50 characters
-     */
-    public getShortPreview(input: string): string {
-        if (!input) {
-            return '';
-        }
-        if (input.length > 50) {
-            return stripHtmlTags(input.substring(0, 47)) + '...';
-        }
-        return stripHtmlTags(input);
-    }
-
-    /**
-     * Fetch the first and last 150 characters of a string; used within
-     * tooltips for the preview
-     *
-     * @param input any string
-     * @returns a string with the first and last 150 characters of the input
-     * string
-     */
-    public getLongPreview(input: string): string {
-        if (!input) {
-            return '';
-        }
-        if (input.length < 300) {
-            return stripHtmlTags(input);
-        }
-        return (
-            stripHtmlTags(input.substring(0, 147)) +
-            ' [...] ' +
-            stripHtmlTags(input.substring(input.length - 150, input.length))
-        );
     }
 
     /**

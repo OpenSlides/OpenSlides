@@ -6,12 +6,23 @@ import { BaseViewModel } from './base-view-model';
 import { NewEntry, ValueLabelCombination, BaseImportService } from 'app/core/ui-services/base-import.service';
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
+import { getLongPreview, getShortPreview } from 'app/shared/utils/previewStrings';
 
 export abstract class BaseImportListComponent<V extends BaseViewModel> extends BaseViewComponent implements OnInit {
     /**
      * The data source for a table. Requires to be initialised with a BaseViewModel
      */
     public dataSource: MatTableDataSource<NewEntry<V>>;
+
+    /**
+     * Helper function for previews
+     */
+    public getLongPreview = getLongPreview;
+
+    /**
+     * Helper function for previews
+     */
+    public getShortPreview = getShortPreview;
 
     /**
      * Switch that turns true if a file has been selected in the input

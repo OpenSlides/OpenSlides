@@ -8,7 +8,6 @@ import { BaseImportListComponent } from 'app/site/base/base-import-list';
 import { MotionCsvExportService } from '../../services/motion-csv-export.service';
 import { MotionImportService } from '../../services/motion-import.service';
 import { ViewMotion } from '../../models/view-motion';
-import { stripHtmlTags } from 'app/shared/utils/strip-html-tags';
 
 /**
  * Component for the motion import list view.
@@ -35,35 +34,6 @@ export class MotionImportListComponent extends BaseImportListComponent<ViewMotio
         private motionCSVExport: MotionCsvExportService
     ) {
         super(importer, titleService, translate, matSnackBar);
-    }
-
-    /**
-     * Returns the first characters of a string, for preview purposes
-     *
-     * @param input
-     */
-    public getShortPreview(input: string): string {
-        if (input.length > 50) {
-            return stripHtmlTags(input.substring(0, 47)) + '...';
-        }
-        return stripHtmlTags(input);
-    }
-
-    /**
-     * Returns the first and last 150 characters of a string; used within
-     * tooltips for the preview
-     *
-     * @param input
-     */
-    public getLongPreview(input: string): string {
-        if (input.length < 300) {
-            return stripHtmlTags(input);
-        }
-        return (
-            stripHtmlTags(input.substring(0, 147)) +
-            ' [...] ' +
-            stripHtmlTags(input.substring(input.length - 150, input.length))
-        );
     }
 
     /**
