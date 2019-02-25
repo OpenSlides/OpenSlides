@@ -60,7 +60,7 @@ export class TimeTravelService {
      * @param history the desired point in the history of OpenSlides
      */
     public async loadHistoryPoint(history: History): Promise<void> {
-        await this.stopTime();
+        await this.stopTime(history);
         const fullDataHistory: HistoryData[] = await this.getHistoryData(history);
         for (const historyObject of fullDataHistory) {
             let collectionString: string;
@@ -78,13 +78,13 @@ export class TimeTravelService {
 
     /**
      * Leaves the history mode. Just restart OpenSlides:
-     * The active user is chacked, a new WS connection established and
-     * all missed autoupdates are requested.
+     * The active user is checked, a new WS connection established and
+     * all missed auto updates are requested.
      */
     public async resumeTime(): Promise<void> {
         await this.DS.set();
         await this.OpenSlides.reboot();
-        this.OSStatus.leaveHistroyMode();
+        this.OSStatus.leaveHistoryMode();
     }
 
     /**
@@ -102,10 +102,10 @@ export class TimeTravelService {
     /**
      * Clears the DataStore and stops the WebSocket connection
      */
-    private async stopTime(): Promise<void> {
+    private async stopTime(history: History): Promise<void> {
         this.webSocketService.close();
         await this.cleanDataStore();
-        this.OSStatus.enterHistoryMode();
+        this.OSStatus.enterHistoryMode(history);
     }
 
     /**

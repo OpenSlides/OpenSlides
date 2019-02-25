@@ -86,13 +86,13 @@ mat-sidenav-container {
 
 /* History mode top bar*/
 .history-mode-indicator {
-    position: fixed;
+    position: relative; // was fixed before to prevent the overflow
+    min-height: 20px;
+    line-height: 20px;
     width: 100%;
-    z-index: 10;
+    // z-index: 10;
     background: repeating-linear-gradient(45deg, #ffee00, #ffee00 10px, #070600 10px, #000000 20px);
     text-align: center;
-    line-height: 20px;
-    height: 20px;
 
     span {
         padding: 2px;
