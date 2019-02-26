@@ -121,11 +121,11 @@
             </mat-cell>
         </ng-container>
 
-        <!-- Anchor column to open separate tab -->
+        <!-- Anchor column to open the separate tab -->
         <ng-container matColumnDef="anchor">
             <mat-header-cell *matHeaderCellDef></mat-header-cell>
             <mat-cell *matCellDef="let motion">
-                <a [routerLink]="motion.id"></a>
+                <a [routerLink]="motion.id" *ngIf="!isMultiSelect"></a>
             </mat-cell>
         </ng-container>
 
@@ -133,7 +133,7 @@
         <ng-container matColumnDef="speakers">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Speakers</mat-header-cell>
             <mat-cell *matCellDef="let motion">
-                <button mat-icon-button (click)="onSpeakerIcon(motion, $event)">
+                <button mat-icon-button (click)="onSpeakerIcon(motion, $event)" [disabled]="isMultiSelect">
                     <mat-icon
                         [matBadge]="motion.agendaSpeakerAmount > 0 ? motion.agendaSpeakerAmount : null"
                         matBadgeColor="accent"
@@ -147,6 +147,7 @@
         <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
         <mat-row
             [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected' : ''"
+            (click)="selectItem(row, $event)"
             *matRowDef="let row; columns: getColumnDefinition()"
             class="lg"
         >

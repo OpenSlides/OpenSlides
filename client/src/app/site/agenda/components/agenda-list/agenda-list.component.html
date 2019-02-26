@@ -23,7 +23,7 @@
         <!-- selector column -->
         <ng-container matColumnDef="selector">
             <mat-header-cell *matHeaderCellDef mat-sort-header class="checkbox-cell"></mat-header-cell>
-            <mat-cell (click)="selectItem(item, $event)" *matCellDef="let item" class="checkbox-cell">
+            <mat-cell *matCellDef="let item" class="checkbox-cell">
                 <mat-icon>{{ isSelected(item) ? 'check_circle' : '' }}</mat-icon>
             </mat-cell>
         </ng-container>
@@ -32,7 +32,7 @@
         <ng-container matColumnDef="projector">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Projector</mat-header-cell>
             <mat-cell *matCellDef="let item">
-                <div *ngIf="item.contentObject">
+                <div *ngIf="item.contentObject && !isMultiSelect">
                     <os-projector-button [object]="item.contentObject"></os-projector-button>
                 </div>
             </mat-cell>
@@ -41,8 +41,7 @@
         <!-- title column -->
         <ng-container matColumnDef="title">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Topic</mat-header-cell>
-            <!-- <mat-cell (click)="onTitleColumn(item)" *matCellDef="let item"> -->
-            <mat-cell (click)="selectItem(item, $event)" *matCellDef="let item">
+            <mat-cell *matCellDef="let item">
                 <div [ngStyle]="{ 'margin-left': item.agendaListLevel * 25 + 'px' }">
                     <span *ngIf="item.closed"> <mat-icon class="done-check">check</mat-icon> </span>
                     <span class="table-view-list-title">{{ item.getListTitle() }}</span>
@@ -53,7 +52,7 @@
         <!-- Info column -->
         <ng-container matColumnDef="info">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Info</mat-header-cell>
-            <mat-cell (click)="openEditInfo(item)" *matCellDef="let item">
+            <mat-cell (click)="openEditInfo(item, $event)" *matCellDef="let item">
                 <div class="info-col-items">
                     <div *ngIf="item.verboseType">
                         <mat-icon>visibility</mat-icon>
@@ -75,7 +74,8 @@
         <ng-container matColumnDef="speakers">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Speakers</mat-header-cell>
             <mat-cell *matCellDef="let item">
-                <button mat-icon-button (click)="onSpeakerIcon(item)">
+                <button mat-icon-button (click)="onSpeakerIcon(item, $event)"
+                [disabled]="isMultiSelect">
                     <mat-icon
                         [matBadge]="item.waitingSpeakerAmount > 0 ? item.waitingSpeakerAmount : null"
                         matBadgeColor="accent"
@@ -92,8 +92,10 @@
             <mat-cell *matCellDef="let item">
                 <button
                     mat-icon-button
+                    [disabled]="isMultiSelect"
                     *osPerms="'agenda.can_manage'"
                     [matMenuTriggerFor]="singleItemMenu"
+                    (click)="$event.stopPropagation()"
                     [matMenuTriggerData]="{ item: item }"
                 >
                     <mat-icon>more_vert</mat-icon>
@@ -105,6 +107,7 @@
         <mat-row
             class="lg"
             [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected' : ''"
+            (click)="selectItem(row, $event)"
             *matRowDef="let row; columns: getColumnDefinition()"
         ></mat-row>
     </mat-table>

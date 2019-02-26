@@ -147,10 +147,11 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item> i
      *
      * @param item The view item that was clicked
      */
-    public openEditInfo(item: ViewItem): void {
-        if (!this.canManage) {
+    public openEditInfo(item: ViewItem, event: MouseEvent): void {
+        if (this.isMultiSelect || !this.canManage) {
             return;
         }
+        event.stopPropagation();
         const dialogRef = this.dialog.open(ItemInfoDialogComponent, {
             width: '400px',
             data: item,
@@ -191,7 +192,8 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item> i
      *
      * @param item indicates the row that was clicked on
      */
-    public onSpeakerIcon(item: ViewItem): void {
+    public onSpeakerIcon(item: ViewItem, event: MouseEvent): void {
+        event.stopPropagation();
         this.router.navigate([`${item.id}/speakers`], { relativeTo: this.route });
     }
 
@@ -259,7 +261,7 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item> i
      */
     public getColumnDefinition(): string[] {
         let columns = this.vp.isMobile ? this.displayedColumnsMobile : this.displayedColumnsDesktop;
-        if (this.operator.hasPerms('core.can_manage_projector')) {
+        if (this.operator.hasPerms('core.can_manage_projector') && !this.isMultiSelect) {
             columns = ['projector'].concat(columns);
         }
         if (this.isMultiSelect) {

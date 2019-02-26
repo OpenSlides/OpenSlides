@@ -231,7 +231,7 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
      */
     public getColumnDefinition(): string[] {
         let columns = this.vp.isMobile ? this.displayedColumnsMobile : this.displayedColumnsDesktop;
-        if (this.operator.hasPerms('core.can_manage_projector')) {
+        if (this.operator.hasPerms('core.can_manage_projector') && !this.isMultiSelect) {
             columns = ['projector'].concat(columns);
         }
         if (this.isMultiSelect) {

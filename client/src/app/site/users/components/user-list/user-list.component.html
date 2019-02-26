@@ -27,7 +27,7 @@
         <!-- Selector column -->
         <ng-container matColumnDef="selector">
             <mat-header-cell *matHeaderCellDef mat-sort-header></mat-header-cell>
-            <mat-cell *matCellDef="let user" (click)="selectItem(user, $event)">
+            <mat-cell *matCellDef="let user">
                 <mat-icon>{{ isSelected(user) ? 'check_circle' : '' }}</mat-icon>
             </mat-cell>
         </ng-container>
@@ -43,13 +43,13 @@
         <!-- name column -->
         <ng-container matColumnDef="name">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
-            <mat-cell *matCellDef="let user" (click)="selectItem(user, $event)">{{ user.full_name }}</mat-cell>
+            <mat-cell *matCellDef="let user">{{ user.full_name }}</mat-cell>
         </ng-container>
 
         <!-- prefix column -->
         <ng-container matColumnDef="group">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Group</mat-header-cell>
-            <mat-cell (click)="openEditInfo(user)" *matCellDef="let user">
+            <mat-cell (click)="openEditInfo(user, $event)" *matCellDef="let user">
                 <div class="groupsCell">
                     <span *ngIf="user.groups && user.groups.length">
                         <mat-icon>people</mat-icon>
@@ -68,7 +68,7 @@
         <ng-container matColumnDef="anchor">
             <mat-header-cell *matHeaderCellDef></mat-header-cell>
             <mat-cell *matCellDef="let user">
-                <a [routerLink]="user.id"></a>
+                <a [routerLink]="user.id" *ngIf="!isMultiSelect"></a>
             </mat-cell>
         </ng-container>
 
@@ -77,7 +77,12 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header>Presence</mat-header-cell>
             <mat-cell *matCellDef="let user" class="presentCell">
                 <div *ngIf="user.is_active">
-                    <mat-checkbox class="checkboxPresent" (click)="setPresent(user)" [checked]="user.is_present">
+                    <mat-checkbox
+                        class="checkboxPresent"
+                        (click)="setPresent(user)"
+                        [checked]="user.is_present"
+                        [disabled]="isMultiSelect"
+                    >
                         <span translate>Present</span>
                     </mat-checkbox>
                 </div>
@@ -88,6 +93,7 @@
         <mat-row
             [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected' : ''"
             *matRowDef="let row; columns: getColumnDefinition()"
+            (click)="selectItem(row, $event)"
         >
         </mat-row>
     </mat-table>
