@@ -196,8 +196,8 @@ msgstr "Zurück"
 msgid "Back to login"
 msgstr "Zurück zur Anmeldung"
 
-msgid "Background color of projector header and footer"
-msgstr "Hintergrundfarbe des Projektor-Kopf- und Fußbereichs"
+msgid "Background color"
+msgstr "Hintergrundfarbe"
 
 msgid "Ballot and ballot papers"
 msgstr "Wahlgang und Stimmzettel"
@@ -294,6 +294,9 @@ msgstr ""
 msgid "Can see hidden files"
 msgstr "Darf versteckte Dateien sehen"
 
+msgid "Can see history"
+msgstr "Darf die Chronik sehen"
+
 msgid "Can see internal items and time scheduling of agenda"
 msgstr "Darf interne Einträge und Zeitplan der Tagesordnung sehen"
 
@@ -388,9 +391,6 @@ msgstr "Redeliste schließen"
 msgid "Collapse all"
 msgstr "Alle zusammenklappen"
 
-msgid "Color for blanked projector"
-msgstr "Farbe für ausgeblendeten Projektor"
-
 msgid "Column separator"
 msgstr "Spaltentrenner"
 
@@ -463,6 +463,9 @@ msgstr "Referenz zur aktuellen Redeliste"
 
 msgid "Current list of speakers slide"
 msgstr "Aktuelle Redeliste (Folie)"
+
+msgid "Current speaker chyron"
+msgstr "Bauchbinde aktuelle/r Redner/in"
 
 msgid "Custom number of ballot papers"
 msgstr "Benutzerdefinierte Anzahl von Stimmzetteln"
@@ -568,9 +571,6 @@ msgstr "Deaktiviert"
 
 msgid "Disabled (no percents)"
 msgstr "Deaktiviert (keine Prozente)"
-
-msgid "Display header and footer"
-msgstr "Kopf- und Fußzeile anzeigen"
 
 msgid "Do not concern"
 msgstr "Nicht befassen"
@@ -779,12 +779,6 @@ msgstr "Empfehlung folgen"
 msgid "Follow recommendations for all motions"
 msgstr "Empfehlungen für alle Anträge folgen"
 
-msgid "Font color of projector header and footer"
-msgstr "Schriftfarbe des Projektor-Kopf- und Fußbereichs"
-
-msgid "Font color of projector headline"
-msgstr "Schriftfarbe der Projektor-Überschrift"
-
 msgid "Forgot Password?"
 msgstr "Passwort vergessen?"
 
@@ -826,6 +820,15 @@ msgstr "Gruppen mit Schreibberechtigungen"
 
 msgid "Has notes"
 msgstr "Hat Notizen"
+
+msgid "Header background color"
+msgstr "Hintergrundfarbe Kopfbereich"
+
+msgid "Header font color"
+msgstr "Schriftfarbe Kopfbereich"
+
+msgid "Headline color"
+msgstr "Überschriftenfarbe"
 
 msgid "Help text for access data and welcome PDF"
 msgstr "Hilfetext für das Zugangsdaten- und Willkommens-PDF"
@@ -1652,8 +1655,11 @@ msgstr "Vollständigen Antragstext anzeigen"
 msgid "Show errors only"
 msgstr "Nur fehlerhafte Einträge anzeigen"
 
-msgid "Show logo on projector"
-msgstr "Logo auf dem Projektor anzeigen"
+msgid "Show header and footer"
+msgstr "Kopf- und Fußzeile anzeigen"
+
+msgid "Show logo"
+msgstr "Logo anzeigen"
 
 msgid "Show orange countdown in the last x seconds of speaking time"
 msgstr "Countdown in den letzten x Sekunden der Redezeit orange darstellen"
@@ -1670,15 +1676,11 @@ msgstr "Ergänzungsfeld für Empfehlung anzeigen"
 msgid "Show state extension field"
 msgstr "Ergänzungsfeld für Status anzeigen"
 
-msgid "Show the clock on projector"
-msgstr "Uhr auf dem Projektor anzeigen"
-
 msgid "Show this text on the login page"
 msgstr "Diesen Text auf der Login-Seite anzeigen"
 
-msgid "Show title and description of event on projector"
-msgstr ""
-"Titel und Kurzbeschreibung der Veranstaltung auf dem Projektor anzeigen"
+msgid "Show title"
+msgstr "Veranstaltungstitel anzeigen"
 
 msgid "Simple Workflow"
 msgstr "Einfacher Arbeitsablauf"
@@ -2102,15 +2104,8 @@ msgid ""
 "You are using the history mode of OpenSlides. Changes will not be saved."
 msgstr "Der Chronik-Modus ist aktiv. Änderungen werden nicht gespeichert."
 
-msgid ""
-"You can replace the logo by uploading an image and set it as the \"Projector"
-" logo\" in \"files\"."
-msgstr ""
-"Sie können das Logo austauschen indem Sie ein Bild unter \"Dateien\" "
-"hochladen und es als \"Projektor-Logo\" festlegen."
-
-msgid "You can use {event_name} as a placeholder."
-msgstr "Sie können {event_name} als Platzhalter verwenden."
+msgid "You can use {event_name} and {username} as placeholder."
+msgstr "Sie können {event_name} und {username} als Platzhalter verwenden."
 
 msgid "You override the personally set password!"
 msgstr "Sie überschreiben hiermit das persönlich gesetzte Passwort!"
