@@ -18,6 +18,16 @@ export abstract class BaseComponent {
     private titleSuffix = ' - OpenSlides';
 
     /**
+     * Holds the coordinates where a swipe gesture was used
+     */
+    protected swipeCoord?: [number, number];
+
+    /**
+     * Holds the time when the user was swiping
+     */
+    protected swipeTime?: number;
+
+    /**
      * Settings for the TinyMCE editor selector
      */
     public tinyMceSettings = {

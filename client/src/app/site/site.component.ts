@@ -39,16 +39,6 @@ export class SiteComponent extends BaseComponent implements OnInit {
     public isLoggedIn: boolean;
 
     /**
-     * Holds the coordinates where a swipe gesture was used
-     */
-    private swipeCoord?: [number, number];
-
-    /**
-     * Holds the time when the user was swiping
-     */
-    private swipeTime?: number;
-
-    /**
      * Holds the typed search query.
      */
     public searchform: FormGroup;
@@ -171,18 +161,29 @@ export class SiteComponent extends BaseComponent implements OnInit {
         } else if (when === 'end') {
             const direction = [coord[0] - this.swipeCoord[0], coord[1] - this.swipeCoord[1]];
             const duration = time - this.swipeTime;
-
-            // definition of a "swipe right" gesture to move in the navigation.
-            // Required mobile view
-            // works anywhere on the screen, but could be limited
-            // to the left side of the screen easily if required)
             if (
                 duration < 1000 &&
                 Math.abs(direction[0]) > 30 && // swipe length to be detected
-                Math.abs(direction[0]) > Math.abs(direction[1] * 3) && // 30° should be "horizontal enough"
-                direction[0] > 0 // swipe left to right
+                Math.abs(direction[0]) > Math.abs(direction[1] * 3) // 30° should be "horizontal enough"
             ) {
-                this.toggleSideNav();
+                // definition of a "swipe right" gesture to move in the navigation
+                // only works in the far left edge of the screen
+                if (
+                    direction[0] > 0 && // swipe left to right
+                    this.swipeCoord[0] < 20
+                ) {
+                    this.sideNav.open();
+                }
+
+                // definition of a "swipe left" gesture to remove the navigation
+                // should only work in mobile mode to prevent unwanted closing of the nav
+                // works anywhere on the screen
+                if (
+                    direction[0] < 0 && // swipe left to right
+                    this.vp.isMobile
+                ) {
+                    this.sideNav.close();
+                }
             }
         }
     }

@@ -60,7 +60,9 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel, M extends B
      * Constructor for list view bases
      * @param titleService the title serivce
      * @param translate the translate service
-     * @param matSnackBar
+     * @param matSnackBar showing errors
+     * @param filterService filter
+     * @param sortService sorting
      */
     public constructor(
         titleService: Title,
