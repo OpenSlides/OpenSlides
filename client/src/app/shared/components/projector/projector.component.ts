@@ -52,6 +52,9 @@ export class ProjectorComponent extends BaseComponent implements OnDestroy {
             ) {
                 this.updateScaling();
             }
+            this.projectorStyle['background-color'] = projector.background_color;
+            this.headerFooterStyle.color = projector.header_font_color;
+            this.headerFooterStyle['background-color'] = projector.header_background_color;
         }
     }
 
@@ -94,7 +97,8 @@ export class ProjectorComponent extends BaseComponent implements OnDestroy {
     /**
      * Dynamic style attributes for the header and footer.
      */
-    public headerFooterStyle: { 'background-color': string; color: string } = {
+    public headerFooterStyle: { 'background-image': string; 'background-color': string; color: string } = {
+        'background-image': 'none',
         'background-color': 'blue',
         color: 'white'
     };
@@ -156,26 +160,6 @@ export class ProjectorComponent extends BaseComponent implements OnDestroy {
         private configService: ConfigService
     ) {
         super(titleService, translate);
-
-        // Get all important config variables.
-
-        // enable header/footer
-        this.configService
-            .get<boolean>('projector_enable_header_footer')
-            .subscribe(val => (this.enableHeaderAndFooter = val));
-        this.configService.get<boolean>('projector_enable_title').subscribe(val => (this.enableTitle = val));
-
-        // projector colors
-        this.configService
-            .get<string>('projector_header_fontcolor')
-            .subscribe(val => (this.headerFooterStyle.color = val));
-        this.configService
-            .get<string>('projector_header_backgroundcolor')
-            .subscribe(val => (this.headerFooterStyle['background-color'] = val));
-        this.configService
-            .get<string>('projector_background_color')
-            .subscribe(val => (this.projectorStyle['background-color'] = val));
-
         // projector logo / background-image
         this.configService.get<boolean>('projector_enable_logo').subscribe(val => (this.enableLogo = val));
         this.configService.get<{ path?: string }>('logo_projector_main').subscribe(val => {
@@ -186,6 +170,8 @@ export class ProjectorComponent extends BaseComponent implements OnDestroy {
         this.configService.get<{ path?: string }>('logo_projector_header').subscribe(val => {
             if (val && val.path) {
                 this.headerFooterStyle['background-image'] = "url('" + val.path + "')";
+            } else {
+                this.headerFooterStyle['background-image'] = 'none';
             }
         });
 

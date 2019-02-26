@@ -9,7 +9,6 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { BaseViewComponent } from 'app/site/base/base-view';
-import { CurrentListOfSpeakersSlideService } from 'app/site/projector/services/current-list-of-of-speakers-slide.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
@@ -20,6 +19,7 @@ import { ViewProjector } from 'app/site/projector/models/view-projector';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { DurationService } from 'app/core/ui-services/duration.service';
+import { CurrentAgendaItemService } from 'app/site/projector/services/current-agenda-item.service';
 
 /**
  * The list of speakers for agenda items.
@@ -104,7 +104,7 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
      * @param itemRepo Repository fpr agenda items
      * @param op the current operator
      * @param promptService
-     * @param currentListOfSpeakersService
+     * @param currentAgendaItemService
      * @param durationService helper for speech duration display
      */
     public constructor(
@@ -116,7 +116,7 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
         private itemRepo: ItemRepositoryService,
         private op: OperatorService,
         private promptService: PromptService,
-        private currentListOfSpeakersService: CurrentListOfSpeakersSlideService,
+        private currentAgendaItemService: CurrentAgendaItemService,
         private durationService: DurationService,
         private userRepository: UserRepositoryService
     ) {
@@ -185,7 +185,7 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
             this.viewItem = null;
         }
 
-        this.projectorSubscription = this.currentListOfSpeakersService
+        this.projectorSubscription = this.currentAgendaItemService
             .getAgendaItemObservable(projector)
             .subscribe(item => {
                 if (item) {

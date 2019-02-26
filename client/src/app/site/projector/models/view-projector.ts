@@ -54,6 +54,34 @@ export class ViewProjector extends BaseViewModel {
         return this.projector.reference_projector_id;
     }
 
+    public get background_color(): string {
+        return this.projector.background_color;
+    }
+
+    public get header_background_color(): string {
+        return this.projector.header_background_color;
+    }
+
+    public get header_font_color(): string {
+        return this.projector.header_font_color;
+    }
+
+    public get header_h1_color(): string {
+        return this.projector.header_h1_color;
+    }
+
+    public get show_header_footer(): boolean {
+        return this.projector.show_header_footer;
+    }
+
+    public get show_title(): boolean {
+        return this.projector.show_title;
+    }
+
+    public get show_logo(): boolean {
+        return this.projector.show_logo;
+    }
+
     /**
      * This is set by the repository
      */

@@ -65,6 +65,13 @@ export class Projector extends BaseModel<Projector> {
     public height: number;
     public reference_projector_id: number;
     public projectiondefaults: ProjectionDefault[];
+    public background_color: string;
+    public header_background_color: string;
+    public header_font_color: string;
+    public header_h1_color: string;
+    public show_header_footer: boolean;
+    public show_title: boolean;
+    public show_logo: boolean;
 
     public constructor(input?: any) {
         super(Projector.COLLECTIONSTRING, input);
