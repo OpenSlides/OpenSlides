@@ -70,7 +70,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     /**
      * To search other motions as extension via search value selector
      */
-    public searchMotionForm: FormGroup;
+    public recommendationExtensionForm: FormGroup;
 
     /**
      * Determine if the motion is edited
@@ -636,7 +636,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         const statuteAmendmentFieldName = 'statute_amendment';
         contentPatch[statuteAmendmentFieldName] = formMotion.isStatuteAmendment();
         this.contentForm.patchValue(contentPatch);
-        this.searchMotionForm.get('recoExtension').setValue(this.motion.recommendationExtension);
+        this.recommendationExtensionForm.get('recoExtension').setValue(this.motion.recommendationExtension);
     }
 
     /**
@@ -679,13 +679,13 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         }();
 
         // create the search motion form
-        this.searchMotionForm = this.formBuilder.group({
+        this.recommendationExtensionForm = this.formBuilder.group({
             motion_id: [],
             recoExtension: []
         });
 
         // Detect changes in in search motion form
-        this.searchMotionForm.get('motion_id').valueChanges.subscribe(change => {
+        this.recommendationExtensionForm.get('motion_id').valueChanges.subscribe(change => {
             this.addMotionExtension(change);
         });
     }
@@ -1167,8 +1167,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * @param id the ID of a selected motion returned by a search value selector
      */
     public addMotionExtension(id: number): void {
-        const recoExtensionValue = this.searchMotionForm.get('recoExtension').value;
-        this.searchMotionForm.get('recoExtension').setValue(`${recoExtensionValue}[motion:${id}]`);
+        const recoExtensionValue = this.recommendationExtensionForm.get('recoExtension').value || '';
+        this.recommendationExtensionForm.get('recoExtension').setValue(`${recoExtensionValue}[motion:${id}]`);
     }
 
     /**
@@ -1185,7 +1185,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * in {@link newRecommendationExtension}
      */
     public setRecommendationExtension(): void {
-        this.repo.setRecommendationExtension(this.motion, this.searchMotionForm.get('recoExtension').value);
+        this.repo.setRecommendationExtension(this.motion, this.recommendationExtensionForm.get('recoExtension').value);
     }
 
     /**

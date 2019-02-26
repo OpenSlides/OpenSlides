@@ -323,17 +323,27 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
     /**
      * This is set by the repository
      */
-    public getAgendaTitle;
+    public getTitle: () => string;
 
     /**
      * This is set by the repository
      */
-    public getAgendaTitleWithType;
+    public getIdentifierOrTitle: () => string;
 
     /**
      * This is set by the repository
      */
-    public getVerboseName;
+    public getAgendaTitle: () => string;
+
+    /**
+     * This is set by the repository
+     */
+    public getAgendaTitleWithType: () => string;
+
+    /**
+     * This is set by the repository
+     */
+    public getVerboseName: () => string;
 
     public constructor(
         motion: Motion,
@@ -361,14 +371,6 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
         this._tags = tags;
         this._parent = parent;
     }
-
-    public getTitle = () => {
-        if (this.identifier) {
-            return this.identifier + ': ' + this.title;
-        } else {
-            return this.title;
-        }
-    };
 
     public getAgendaItem(): ViewItem {
         return this.item;

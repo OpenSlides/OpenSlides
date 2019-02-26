@@ -278,11 +278,11 @@
                     *ngIf="motion.recommendation && motion.recommendation.show_recommendation_extension_field"
                     class="spacer-top-10"
                 >
-                    <form [formGroup]="searchMotionForm">
+                    <form [formGroup]="recommendationExtensionForm">
                         <mat-form-field>
                             <input
                                 matInput
-                                [formControl]="searchMotionForm.get('recoExtension')"
+                                [formControl]="recommendationExtensionForm.get('recoExtension')"
                                 placeholder="{{ 'Extension' | translate }}"
                             />
                         </mat-form-field>
@@ -291,8 +291,8 @@
                         </button>
                         <os-search-value-selector
                             ngDefaultControl
-                            [form]="searchMotionForm"
-                            [formControl]="searchMotionForm.get('motion_id')"
+                            [form]="recommendationExtensionForm"
+                            [formControl]="recommendationExtensionForm.get('motion_id')"
                             [multiple]="false"
                             listname="{{ 'Motions' | translate }}"
                             [InputListValues]="motionObserver"
