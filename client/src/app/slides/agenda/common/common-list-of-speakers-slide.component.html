@@ -14,7 +14,8 @@
 
     <!-- Current speaker -->
     <div *ngIf="data.data.current" class="currentSpeaker">
-        <mat-icon>mic</mat-icon> {{ data.data.current.user }}
+        <mat-icon>mic</mat-icon>
+        <span>{{ data.data.current.user }}</span>
     </div>
 
     <!-- Next speakers -->

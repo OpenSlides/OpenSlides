@@ -3,7 +3,7 @@
     left: 0;
     top: 0;
     background-color: rgba($color: #000000, $alpha: 0.5);
-    z-index: 10;
+    z-index: 100;
     width: 100%;
     height: 100%;
     display: grid;
@@ -17,10 +17,11 @@
         justify-self: center;
         border-radius: 0.2em;
         background: #ffffff;
-        font-size: 2.75em;
-        padding: 0.2em 0;
+        font-size: 2.3em;
+        padding: 0.5em 0.25em;
         box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
         min-height: 20px;
+        line-height: normal;
 
         ::ng-deep p {
             margin: 0 0 10px;
