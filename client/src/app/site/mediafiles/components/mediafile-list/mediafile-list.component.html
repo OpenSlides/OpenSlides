@@ -78,18 +78,19 @@
         <!-- Filename -->
         <ng-container matColumnDef="title">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
-            <mat-cell *matCellDef="let file" (click)="selectItem(file, $event)">
+            <mat-cell *matCellDef="let file">
                 <span *ngIf="file.is_hidden">
-                    <mat-icon matTooltip="{{'is hidden' | translate }}">lock</mat-icon>
+                    <mat-icon matTooltip="{{ 'is hidden' | translate }}">lock</mat-icon>
                     &nbsp;
                 </span>
-                {{ file.title }}</mat-cell>
+                {{ file.title }}</mat-cell
+            >
         </ng-container>
 
         <!-- Info -->
         <ng-container matColumnDef="info">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Group</mat-header-cell>
-            <mat-cell *matCellDef="let file" (click)="selectItem(file, $event)">
+            <mat-cell *matCellDef="let file">
                 <div class="file-info-cell">
                     <span> <mat-icon [inline]="true">insert_drive_file</mat-icon> {{ file.type }} </span>
                     <span> <mat-icon [inline]="true">data_usage</mat-icon> {{ file.size }} </span>
@@ -100,7 +101,7 @@
         <!-- indicator -->
         <ng-container matColumnDef="indicator">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Indicator</mat-header-cell>
-            <mat-cell *matCellDef="let file" (click)="selectItem(file, $event)">
+            <mat-cell *matCellDef="let file">
                 <!-- check if the file is managed -->
 
                 <div
@@ -119,7 +120,12 @@
         <ng-container matColumnDef="menu">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Menu</mat-header-cell>
             <mat-cell *matCellDef="let file">
-                <button mat-icon-button [matMenuTriggerFor]="singleFileMenu" [matMenuTriggerData]="{ file: file }">
+                <button
+                    mat-icon-button
+                    [matMenuTriggerFor]="singleFileMenu"
+                    [matMenuTriggerData]="{ file: file }"
+                    [disabled]="isMultiSelect"
+                >
                     <mat-icon>more_vert</mat-icon>
                 </button>
             </mat-cell>
@@ -128,6 +134,7 @@
         <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
         <mat-row
             *matRowDef="let row; columns: getColumnDefinition()"
+            (click)="selectItem(row, $event)"
             [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected' : ''"
         ></mat-row>
     </mat-table>

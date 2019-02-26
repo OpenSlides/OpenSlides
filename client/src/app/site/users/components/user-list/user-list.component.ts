@@ -191,7 +191,11 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User> imp
      *
      * @param user is an instance of ViewUser. This is the given user, who will be modified.
      */
-    public openEditInfo(user: ViewUser): void {
+    public openEditInfo(user: ViewUser, ev: MouseEvent): void {
+        if (this.isMultiSelect) {
+            return;
+        }
+        ev.stopPropagation();
         this.infoDialog = {
             name: user.username,
             groups_id: user.groups_id,

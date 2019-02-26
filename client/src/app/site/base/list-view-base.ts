@@ -145,16 +145,17 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel, M extends B
      * @param event The Mouse event
      */
     public selectItem(row: V, event: MouseEvent): void {
-        event.stopPropagation();
-        if (!this._multiSelectMode) {
-            this.singleSelectAction(row);
-        } else {
+        if (this.isMultiSelect) {
+            event.stopPropagation();
             const idx = this.selectedRows.indexOf(row);
             if (idx < 0) {
                 this.selectedRows.push(row);
             } else {
                 this.selectedRows.splice(idx, 1);
             }
+        } else {
+            event.stopPropagation();
+            this.singleSelectAction(row);
         }
     }
 
