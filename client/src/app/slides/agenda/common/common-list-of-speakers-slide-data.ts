@@ -4,10 +4,10 @@ interface SlideSpeaker {
 }
 
 export interface CommonListOfSpeakersSlideData {
-    waiting: SlideSpeaker[];
-    current: SlideSpeaker;
-    finished: SlideSpeaker[];
-    title_information: object;
-    content_object_collection: string;
-    item_number: string;
+    waiting?: SlideSpeaker[];
+    current?: SlideSpeaker;
+    finished?: SlideSpeaker[];
+    title_information?: object;
+    content_object_collection?: string;
+    item_number?: string;
 }

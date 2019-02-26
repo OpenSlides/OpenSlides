@@ -16,13 +16,17 @@ export class CommonListOfSpeakersSlideComponent extends BaseSlideComponent<Commo
     }
 
     public getTitle(): string {
+        if (!this.data.data.content_object_collection || !this.data.data.title_information) {
+            return '';
+        }
+
         const numberPrefix = this.data.data.item_number ? `${this.data.data.item_number} · ` : '';
         const repo = this.collectionStringMapperService.getRepository(this.data.data.content_object_collection);
 
         if (isBaseAgendaContentObjectRepository(repo)) {
             return numberPrefix + repo.getAgendaTitle(this.data.data.title_information);
         } else {
-            throw new Error('The content object has no agenda based repository!');
+            throw new Error('The content object has no agenda base repository!');
         }
     }
 }
