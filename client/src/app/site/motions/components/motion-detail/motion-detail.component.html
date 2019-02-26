@@ -19,7 +19,7 @@
     </div>
 
     <!-- Back and forth buttons -->
-    <div *ngIf="!editMotion" class="extra-controls-slot on-transition-fade">
+    <div *ngIf="!editMotion && !vp.isMobile" class="extra-controls-slot on-transition-fade">
         <div *ngIf="previousMotion">
             <button mat-button (click)="navigateToMotion(previousMotion)">
                 <!-- possible icons:
@@ -103,7 +103,7 @@
     </mat-menu>
 </os-head-bar>
 
-<div class="content-container">
+<div class="content-container" (touchstart)="swipe($event, 'start')" (touchend)="swipe($event, 'end')">
     <!-- Title -->
     <div class="title on-transition-fade" *ngIf="motion && !editMotion">
         <div class="title-line">

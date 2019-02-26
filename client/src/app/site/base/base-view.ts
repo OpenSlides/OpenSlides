@@ -65,6 +65,12 @@ export abstract class BaseViewComponent extends BaseComponent implements OnDestr
     }
 
     /**
+     * To catch swipe gestures.
+     * Should be overwritten by children which need swipe gestures
+     */
+    protected swipe(e: TouchEvent, when: string): void {}
+
+    /**
      * automatically dismisses the error snack bar and clears subscriptions
      * if the component is destroyed.
      */

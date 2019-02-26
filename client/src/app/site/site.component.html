@@ -3,7 +3,13 @@
     <span>({{ getHistoryTimestamp() }})</span>
     <a (click)="timeTravel.resumeTime()" translate>Exit</a>
 </div>
-<mat-sidenav-container #siteContainer class="main-container" (backdropClick)="toggleSideNav()">
+<mat-sidenav-container
+    #siteContainer
+    class="main-container"
+    (backdropClick)="toggleSideNav()"
+    (touchstart)="swipe($event, 'start')"
+    (touchend)="swipe($event, 'end')"
+>
     <mat-sidenav
         #sideNav
         [mode]="vp.isMobile ? 'over' : 'side'"
