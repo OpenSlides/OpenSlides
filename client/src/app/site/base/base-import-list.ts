@@ -7,6 +7,7 @@ import { NewEntry, ValueLabelCombination, BaseImportService } from 'app/core/ui-
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { getLongPreview, getShortPreview } from 'app/shared/utils/previewStrings';
+import { auditTime } from 'rxjs/operators';
 
 export abstract class BaseImportListComponent<V extends BaseViewModel> extends BaseViewComponent implements OnInit {
     /**
@@ -131,10 +132,14 @@ export abstract class BaseImportListComponent<V extends BaseViewModel> extends B
     public initTable(): void {
         this.dataSource = new MatTableDataSource();
         this.setFilter();
-        this.importer.getNewEntries().subscribe(newEntries => {
-            this.dataSource.data = newEntries;
-            this.hasFile = newEntries.length > 0;
-        });
+        this.importer
+            .getNewEntries()
+            .pipe(auditTime(100))
+            .subscribe(newEntries => {
+                this.dataSource.data = [];
+                this.dataSource.data = newEntries;
+                this.hasFile = newEntries.length > 0;
+            });
     }
 
     /**

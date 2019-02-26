@@ -23,6 +23,7 @@ export interface NewEntry<V> {
     status: CsvImportStatus;
     errors: string[];
     duplicates: V[];
+    importTrackId?: number;
 }
 
 /**
