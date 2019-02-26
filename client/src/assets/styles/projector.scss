@@ -1,0 +1,42 @@
+#projector {
+    * {
+        font-family: customProjectorFont;
+    }
+
+    h2 {
+        line-height: 40px;
+    }
+    h3 {
+        color: #222;
+        margin-bottom: 10px;
+    }
+
+    .slidetitle {
+        border-bottom: 5px solid #d3d3d3;
+        margin-bottom: 40px;
+
+        h1 {
+            font-size: 1.8em;
+            line-height: 1.1em;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        h2 {
+            color: #9a9898;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            font-size: 28px;
+            font-weight: normal;
+            display: block;
+        }
+    }
+
+    ul,
+    ol {
+        margin: 0 0 10px 0;
+    }
+
+    hr {
+        margin: 10px 0;
+    }
+}

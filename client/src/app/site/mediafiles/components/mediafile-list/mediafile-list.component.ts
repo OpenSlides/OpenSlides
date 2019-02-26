@@ -149,7 +149,6 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile,
      * @param file the selected file
      */
     public onEditFile(file: ViewMediafile): void {
-        console.log('edit file ', file);
         this.fileToEdit = file;
 
         this.editFile = true;

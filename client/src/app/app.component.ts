@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
-import { OperatorService } from './core/core-services/operator.service';
-import { LoginDataService } from './core/ui-services/login-data.service';
 import { ConfigService } from './core/ui-services/config.service';
 import { ConstantsService } from './core/ui-services/constants.service';
+import { CountUsersService } from './core/ui-services/count-users.service';
+import { LoadFontService } from './core/ui-services/load-font.service';
+import { LoginDataService } from './core/ui-services/login-data.service';
+import { OperatorService } from './core/core-services/operator.service';
 import { ServertimeService } from './core/core-services/servertime.service';
 import { ThemeService } from './core/ui-services/theme.service';
-import { CountUsersService } from './core/ui-services/count-users.service';
 
 /**
  * Angular's global App Component
@@ -25,20 +26,26 @@ export class AppComponent {
      *
      * Handles the altering of Array.toString()
      *
-     * @param autoupdateService
-     * @param notifyService
-     * @param translate
+     * @param translate To set the default language
+     * @param operator To call the constructor of the OperatorService
+     * @param loginDataService to call the constructor of the LoginDataService
+     * @param constantService to call the constructor of the ConstantService
+     * @param servertimeService executes the scheduler early on
      * @param themeService used to listen to theme-changes
+     * @param countUsersService to call the constructor of the CountUserService
+     * @param configService to call the constructor of the ConfigService
+     * @param loadFontService to call the constructor of the LoadFontService
      */
     public constructor(
         translate: TranslateService,
         operator: OperatorService,
-        configService: ConfigService,
         loginDataService: LoginDataService,
         constantsService: ConstantsService, // Needs to be started, so it can register itself to the WebsocketService
         servertimeService: ServertimeService,
         themeService: ThemeService,
-        countUsersService: CountUsersService // Needed to register itself.
+        countUsersService: CountUsersService, // Needed to register itself.
+        configService: ConfigService,
+        loadFontService: LoadFontService
     ) {
         // manually add the supported languages
         translate.addLangs(['en', 'de', 'cs']);
@@ -50,7 +57,6 @@ export class AppComponent {
         translate.use(translate.getLangs().includes(browserLang) ? browserLang : 'en');
         // change default JS functions
         this.overloadArrayToString();
-
         servertimeService.startScheduler();
     }
 
