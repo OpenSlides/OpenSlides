@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { BaseSlideComponent } from 'app/slides/base-slide-component';
 import { CommonListOfSpeakersSlideData } from '../common/common-list-of-speakers-slide-data';
@@ -9,12 +9,6 @@ import { CommonListOfSpeakersSlideData } from '../common/common-list-of-speakers
     styleUrls: ['./current-list-of-speakers-overlay-slide.component.scss']
 })
 export class CurrentListOfSpeakersOverlaySlideComponent extends BaseSlideComponent<CommonListOfSpeakersSlideData> {
-    // TODO: remove to access data in the template
-    @Input()
-    public set data(value: any) {
-        console.log(value.data);
-    }
-
     public constructor() {
         super();
     }

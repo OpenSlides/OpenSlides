@@ -1,9 +1,17 @@
+@import '../common/common-list-of-speakers-slide.component.scss';
+
 #overlay {
     position: absolute;
     right: 0;
     bottom: 0;
-    background-color: green;
-    height: 30px;
+    background-color: #d3d3d3;
+    width: 40%;
+    height: 200px;
     margin: 10px;
-    z-index: 2;
+    z-index: 20;
+    border-radius: 7px;
+    border: 1px solid #999;
+    padding: 0px 7px 10px 19px;
+    box-shadow: 3px 3px 10px 1px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
 }

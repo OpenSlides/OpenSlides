@@ -1,14 +1,24 @@
 .lastSpeakers {
     color: #9a9898;
-    margin-left: 30px;
+    margin-left: 33px;
+    margin-bottom: 10px;
 }
 
 .currentSpeaker {
     font-weight: bold;
+
+    .mat-icon,
+    span {
+        vertical-align: middle;
+    }
+    span {
+        padding-left: 8px;
+    }
 }
 
 .nextSpeakers {
     margin-left: 13px !important;
+    margin-top: 10px !important;
 
     li {
         line-height: 150%;

@@ -21,10 +21,10 @@
     &.overlay {
         position: relative;
         float: right;
-        margin: 100px 10px 10px 10px;
-        padding: 10px 40px 7px 10px;
-        min-height: 72px;
-        min-width: 180px;
+        margin: 80px 0px 10px 10px;
+        padding: 35px 35px 0px 10px;
+        min-height: 60px;
+        min-width: 230px;
         font-size: 3.7em;
         font-weight: bold;
         text-align: right;
@@ -37,6 +37,7 @@
             font-weight: normal;
             font-size: 18px;
             padding-right: 6px;
+            padding-top: 20px;
         }
     }
 }
