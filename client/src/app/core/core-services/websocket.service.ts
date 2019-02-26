@@ -1,5 +1,6 @@
 import { Injectable, NgZone, EventEmitter } from '@angular/core';
 import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material';
+import { Router } from '@angular/router';
 
 import { Observable, Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -76,8 +77,14 @@ export class WebsocketService {
      * @param matSnackBar
      * @param zone
      * @param translate
+     * @param router
      */
-    public constructor(private matSnackBar: MatSnackBar, private zone: NgZone, public translate: TranslateService) {}
+    public constructor(
+        private matSnackBar: MatSnackBar,
+        private zone: NgZone,
+        public translate: TranslateService,
+        private router: Router
+    ) {}
 
     /**
      * Creates a new WebSocket connection and handles incomming events.
@@ -155,8 +162,11 @@ export class WebsocketService {
                 this.websocket = null;
                 this.connectionOpen = false;
                 if (event.code !== 1000) {
+                    // Do not show the message snackbar on the projector
+                    // tests for /projector and /projector/<id>
+                    const onProjector = this.router.url.match(/^\/projector(\/[0-9]+\/?)?$/);
                     // 1000 is a normal close, like the close on logout
-                    if (!this.connectionErrorNotice) {
+                    if (!this.connectionErrorNotice && !onProjector) {
                         // So here we have a connection failure that wasn't intendet.
                         this.connectionErrorNotice = this.matSnackBar.open(
                             this.translate.instant('Offline mode: You can use OpenSlides but changes are not saved.'),
