@@ -801,4 +801,31 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
             return value;
         }
     }
+
+    /**
+     * Sort viewMotions by identifier, then by name
+     * TODO: config value needed?
+     *
+     * @param motions
+     * @returns the motions sorted by identifier and title
+     */
+    public sortViewMotions(motions: ViewMotion[]): ViewMotion[] {
+        const sort = 'identifier';
+        const intl = new Intl.Collator(this.translate.currentLang);
+        return motions.sort((a, b) => {
+            if (a[sort] && b[sort]) {
+                if (a[sort] === b[sort]) {
+                    return intl.compare(a.title, b.title);
+                } else {
+                    return intl.compare(a[sort], b[sort]);
+                }
+            } else if (a[sort] && !b[sort]) {
+                return -1;
+            } else if (b[sort]) {
+                return 1;
+            } else {
+                return intl.compare(a.title, b.title);
+            }
+        });
+    }
 }

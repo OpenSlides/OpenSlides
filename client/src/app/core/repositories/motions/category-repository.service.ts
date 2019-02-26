@@ -111,6 +111,13 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
     }
 
     /**
+     * @returns the viewModels as sorted array as in the configuration
+     */
+    public getSortedViewModelList(): ViewCategory[] {
+        return this.sortViewCategoriesByConfig(this.getViewModelList());
+    }
+
+    /**
      * Sort viewCategories by the configured settings
      *
      * @param categories

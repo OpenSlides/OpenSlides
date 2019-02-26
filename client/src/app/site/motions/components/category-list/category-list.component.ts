@@ -188,10 +188,9 @@ export class CategoryListComponent extends BaseViewComponent implements OnInit {
      * @returns all motions in the category
      */
     public motionsInCategory(category: Category): ViewMotion[] {
-        return this.motionRepo
-            .getViewModelList()
-            .filter(m => m.category_id === category.id)
-            .sort((motion1, motion2) => motion1.identifier.localeCompare(motion2.identifier));
+        return this.motionRepo.sortViewMotions(
+            this.motionRepo.getViewModelList().filter(m => m.category_id === category.id)
+        );
     }
 
     /**

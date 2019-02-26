@@ -333,6 +333,13 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
     }
 
     /**
+     * @returns the viewModels as sorted array as in the configuration
+     */
+    public getSortedViewModelList(): ViewUser[] {
+        return this.sortViewUsersByConfig(this.getViewModelList());
+    }
+
+    /**
      * Sort viewUsers by the configured settings
      *
      * @param users

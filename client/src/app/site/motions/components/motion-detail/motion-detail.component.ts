@@ -461,24 +461,21 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         this.setSurroundingMotions();
 
         // Initial Filling of the Subjects
-        const initialUsers = this.userRepo.sortViewUsersByConfig(this.userRepo.getViewModelList());
+        const initialUsers = this.userRepo.getSortedViewModelList();
         this.submitterObserver = new BehaviorSubject(initialUsers);
         this.supporterObserver = new BehaviorSubject(initialUsers);
-        this.categoryObserver = new BehaviorSubject(
-            this.categoryRepo.sortViewCategoriesByConfig(this.viewModelStore.getAll(ViewCategory))
-        );
+        this.categoryObserver = new BehaviorSubject(this.categoryRepo.getSortedViewModelList());
         this.statuteRepo.getViewModelListObservable().subscribe(newViewStatuteParagraphs => {
             this.statuteParagraphs = newViewStatuteParagraphs;
         });
 
-        this.userRepo.getViewModelListObservable().subscribe(unsortedUsers => {
-            const sortedUsers = this.userRepo.sortViewUsersByConfig(unsortedUsers);
+        this.userRepo.getSortedViewModelListObservable().subscribe(sortedUsers => {
             this.submitterObserver.next(sortedUsers);
             this.supporterObserver.next(sortedUsers);
         });
 
-        this.categoryRepo.getSortedViewModelListObservable().subscribe(unsortedCategories => {
-            this.categoryObserver.next(unsortedCategories);
+        this.categoryRepo.getSortedViewModelListObservable().subscribe(sortedCategories => {
+            this.categoryObserver.next(sortedCategories);
         });
 
         // Set the default visibility using observers
