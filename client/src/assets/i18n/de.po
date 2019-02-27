@@ -26,6 +26,9 @@ msgstr "2: Nur Verwalter von Anträgen und Metadaten"
 msgid "3: Only managers for motions"
 msgstr "3: Nur Verwalter von Anträgen"
 
+msgid "<unknown motion>"
+msgstr "<unbekannter Antrag>"
+
 msgid "A name is required"
 msgstr "Ein Name ist erforderlich"
 
@@ -65,6 +68,9 @@ msgstr "Änderungsanträge aktivieren"
 
 msgid "Activate statute amendments"
 msgstr "Satzungsänderungsanträge"
+
+msgid "Active"
+msgstr "Aktiv"
 
 msgid "Active filters"
 msgstr "Aktive Filter"
@@ -407,6 +413,9 @@ msgstr "Kommentarfelder"
 msgid "Comments"
 msgstr "Kommentare"
 
+msgid "Committee"
+msgstr "Gremium"
+
 msgid "Committees"
 msgstr "Gremien"
 
@@ -562,6 +571,9 @@ msgid ""
 msgstr ""
 "Bestimmt, ob dieser Benutzer als aktiv behandelt werden soll. Sie können ihn"
 " deaktivieren anstatt ihn zu löschen."
+
+msgid "Didn't get an email"
+msgstr "Bekam keine E-Mail"
 
 msgid "Diff version"
 msgstr "Änderungsdarstellung"
@@ -809,6 +821,9 @@ msgstr "Vorname"
 msgid "Go to line"
 msgstr "Springe zur Zeile"
 
+msgid "Got an email"
+msgstr "Bekam eine E-Mail"
+
 msgid "Groups"
 msgstr "Gruppen"
 
@@ -944,6 +959,12 @@ msgstr "Ist Favorit"
 
 msgid "Is no PDF file"
 msgstr "Ist keine PDF-Datei"
+
+msgid "Is not a committee"
+msgstr "Ist kein Gremium"
+
+msgid "Is not active"
+msgstr "Ist nicht aktiv"
 
 msgid "Is not favorite"
 msgstr "Ist kein Favorit"
@@ -1839,11 +1860,17 @@ msgstr ""
 "Die maximale Zeichenanzahl pro Zeile. Relevant, wenn die Zeilennummerierung "
 "eingeschaltet ist. Minimum: 40."
 
+msgid "The reason field may not be blank."
+msgstr "Die Begründung darf nicht leer sein."
+
 msgid "The server could not be reached."
 msgstr "Der Server konnte nicht erreicht werden."
 
 msgid "The server didn't respond."
 msgstr "Der Server antwortet nicht."
+
+msgid "The text field may not be blank."
+msgstr "Der Antragstext darf nicht leer sein."
 
 msgid "The title of the motion is always applied."
 msgstr "Der Antragstitel wird immer übernommen."

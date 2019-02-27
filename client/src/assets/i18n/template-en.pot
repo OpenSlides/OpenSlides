@@ -19,6 +19,9 @@ msgstr ""
 msgid "3: Only managers for motions"
 msgstr ""
 
+msgid "<unknown motion>"
+msgstr ""
+
 msgid "A name is required"
 msgstr ""
 
@@ -56,6 +59,9 @@ msgid "Activate amendments"
 msgstr ""
 
 msgid "Activate statute amendments"
+msgstr ""
+
+msgid "Active"
 msgstr ""
 
 msgid "Active filters"
@@ -389,6 +395,9 @@ msgstr ""
 msgid "Comments"
 msgstr ""
 
+msgid "Committee"
+msgstr ""
+
 msgid "Committees"
 msgstr ""
 
@@ -526,6 +535,9 @@ msgstr ""
 msgid ""
 "Designates whether this user should be treated as active. Unselect this "
 "instead of deleting the account."
+msgstr ""
+
+msgid "Didn't get an email"
 msgstr ""
 
 msgid "Diff version"
@@ -766,6 +778,9 @@ msgstr ""
 msgid "Go to line"
 msgstr ""
 
+msgid "Got an email"
+msgstr ""
+
 msgid "Groups"
 msgstr ""
 
@@ -898,6 +913,12 @@ msgid "Is favorite"
 msgstr ""
 
 msgid "Is no PDF file"
+msgstr ""
+
+msgid "Is not a committee"
+msgstr ""
+
+msgid "Is not active"
 msgstr ""
 
 msgid "Is not favorite"
@@ -1779,10 +1800,16 @@ msgid ""
 "enabled. Min: 40"
 msgstr ""
 
+msgid "The reason field may not be blank."
+msgstr ""
+
 msgid "The server could not be reached."
 msgstr ""
 
 msgid "The server didn't respond."
+msgstr ""
+
+msgid "The text field may not be blank."
 msgstr ""
 
 msgid "The title of the motion is always applied."
