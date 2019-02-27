@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MediafileSlideComponent } from './mediafile-slide.component';
 import { E2EImportsModule } from '../../../../e2e-imports.module';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 describe('MediafileSlideComponent', () => {
     let component: MediafileSlideComponent;
@@ -9,7 +10,7 @@ describe('MediafileSlideComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            imports: [E2EImportsModule],
+            imports: [E2EImportsModule, PdfViewerModule],
             declarations: [MediafileSlideComponent]
         }).compileComponents();
     }));

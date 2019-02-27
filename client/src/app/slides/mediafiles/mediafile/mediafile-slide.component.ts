@@ -1,9 +1,7 @@
-import {Component} from '@angular/core';
-import {computed} from 'mobx-angular';
+import { Component } from '@angular/core';
 
-
-import {BaseSlideComponent} from 'app/slides/base-slide-component';
-import {MediafileSlideData} from './mediafile-slide-data';
+import { BaseSlideComponent } from 'app/slides/base-slide-component';
+import { MediafileSlideData } from './mediafile-slide-data';
 
 @Component({
     selector: 'os-mediafile-slide',
@@ -15,7 +13,11 @@ export class MediafileSlideComponent extends BaseSlideComponent<MediafileSlideDa
         super();
     }
 
-    @computed get url() {
+    public get page(): string {
+        return this.data.element.page;
+    }
+
+    public get url(): string {
         return `${this.data.data.media_url_prefix}/${this.data.data.path}`;
     }
 }

@@ -57,6 +57,10 @@ export class ViewMediafile extends BaseViewModelWithListOfSpeakers<Mediafile>
         return this.mediafile.downloadUrl;
     }
 
+    public get pages(): number | null {
+        return this.mediafile.mediafile.pages;
+    }
+
     /**
      * Determines if the file has the 'hidden' attribute
      * @returns the hidden attribute, also 'hidden' if there is no file
@@ -94,6 +98,10 @@ export class ViewMediafile extends BaseViewModelWithListOfSpeakers<Mediafile>
             projectionDefaultName: 'mediafiles',
             getDialogTitle: () => this.getTitle()
         };
+    }
+
+    public isProjectable(): boolean {
+        return this.isImage() || this.isPdf();
     }
 
     /**

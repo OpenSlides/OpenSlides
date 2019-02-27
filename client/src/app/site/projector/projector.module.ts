@@ -9,6 +9,7 @@ import { CountdownControlsComponent } from './components/countdown-controls/coun
 import { CountdownDialogComponent } from './components/countdown-dialog/countdown-dialog.component';
 import { MessageControlsComponent } from './components/message-controls/message-controls.component';
 import { MessageDialogComponent } from './components/message-dialog/message-dialog.component';
+import { PresentationControlComponent } from './components/presentation-control/presentation-control.component';
 import { ProjectorListEntryComponent } from './components/projector-list-entry/projector-list-entry.component';
 
 @NgModule({
@@ -22,6 +23,10 @@ import { ProjectorListEntryComponent } from './components/projector-list-entry/p
         MessageControlsComponent,
         MessageDialogComponent
     ],
-    entryComponents: [CountdownDialogComponent, MessageDialogComponent]
+    entryComponents: [
+        CountdownDialogComponent,
+        MessageDialogComponent,
+        PresentationControlComponent
+    ]
 })
 export class ProjectorModule {}
