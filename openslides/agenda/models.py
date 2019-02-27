@@ -423,6 +423,7 @@ class Speaker(RESTModelMixin, models.Model):
                 pk=1,
                 defaults={
                     "default_time": config["projector_default_countdown"],
+                    "title": "Default countdown",
                     "countdown_time": config["projector_default_countdown"],
                 },
             )

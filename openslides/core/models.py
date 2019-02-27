@@ -232,6 +232,8 @@ class Countdown(RESTModelMixin, models.Model):
 
     access_permissions = CountdownAccessPermissions()
 
+    title = models.CharField(max_length=256, unique=True, default="")
+
     description = models.CharField(max_length=256, blank=True)
 
     running = models.BooleanField(default=False)

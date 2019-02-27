@@ -29,7 +29,11 @@ export class ViewCountdown extends BaseProjectableViewModel {
     }
 
     public get description(): string {
-        return this.countdown.description;
+        return this.countdown.description || '';
+    }
+
+    public get title(): string {
+        return this.countdown.title;
     }
 
     /**
@@ -42,8 +46,12 @@ export class ViewCountdown extends BaseProjectableViewModel {
         this._countdown = countdown;
     }
 
+    /**
+     * @returns a title for the countdown, consisting of the title and additional
+     * text info that may be displayed on the projector
+     */
     public getTitle = () => {
-        return this.description;
+        return this.description ? `${this.title} (${this.description})` : this.title;
     };
 
     public updateDependencies(update: BaseViewModel): void {}
