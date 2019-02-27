@@ -55,6 +55,9 @@ export class ProjectorComponent extends BaseComponent implements OnDestroy {
             this.projectorStyle['background-color'] = projector.background_color;
             this.headerFooterStyle.color = projector.header_font_color;
             this.headerFooterStyle['background-color'] = projector.header_background_color;
+
+            // alter the local scope css variable with the header_h1_color
+            document.documentElement.style.setProperty('--header-h1-color', this.projector.header_h1_color);
         }
     }
 

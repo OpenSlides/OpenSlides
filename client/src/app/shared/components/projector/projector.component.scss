@@ -1,3 +1,9 @@
+// should be better using @host binding, but does not work
+// https://github.com/angular/angular/issues/9343
+:host-context(.os-slide-container) {
+    --header-h1-color: #000;
+}
+
 #container {
     background-color: lightgoldenrodyellow;
     position: relative;
@@ -10,6 +16,11 @@
         overflow: hidden;
         font-size: 22px !important;
         line-height: 24px !important;
+
+        // shadow pierce all children of projector to overwrite the h1 color
+        ::ng-deep h1 {
+            color: var(--header-h1-color);
+        }
 
         #header {
             position: absolute;
