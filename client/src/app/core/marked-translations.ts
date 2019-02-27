@@ -212,6 +212,8 @@ _('Called with');
 _('Recommendation');
 _('Motion block');
 _('Are you sure you want to delete this motion?');
+_('The text field may not be blank.');
+_('The reason field may not be blank.');
 
 // Assignment config strings
 _('Election method');

@@ -745,7 +745,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
             const response = await this.repo.create(motion);
             this.router.navigate(['./motions/' + response.id]);
         } catch (e) {
-            this.raiseError(e);
+            this.raiseError(this.translate.instant(e));
         }
     }
 
