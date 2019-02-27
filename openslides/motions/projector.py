@@ -1,3 +1,4 @@
+import re
 from typing import Any, Dict
 
 from ..users.projector import get_user_name
@@ -224,7 +225,17 @@ def motion_block_slide(
             f"motion block with id {motion_block_id} does not exist"
         )
 
+    # All motions in this motion block
     motions = []
+
+    # All motions meantioned in recommendations of the above motions.
+    # Only title_informations will be collected. With this, the client can
+    # replace the placeholders in the recommendation correctly
+    # This maps the motion id to the title information
+    referenced_motions: Dict[int, Dict[str, str]] = {}
+    motion_placeholder_regex = re.compile(r"\[motion:(\d+)\]")
+
+    # Search motions.
     for motion in all_data["motions/motion"].values():
         if motion["motion_block_id"] == motion_block_id:
             motion_object = {
@@ -242,13 +253,35 @@ def motion_block_slide(
                     "css_class": recommendation["css_class"],
                 }
                 if recommendation["show_recommendation_extension_field"]:
-                    motion_object["recommendation_extension"] = motion[
-                        "recommendation_extension"
+                    recommendation_extension = motion["recommendation_extension"]
+
+                    motion_object["recommendation_extension"] = recommendation_extension
+                    # Collect all meantioned motions via [motion:<id>]
+                    referenced_ids = [
+                        int(id)
+                        for id in motion_placeholder_regex.findall(
+                            recommendation_extension
+                        )
                     ]
+                    for id in referenced_ids:
+                        if (
+                            id not in referenced_motions
+                            and id in all_data["motions/motion"]
+                        ):
+                            referenced_motions[id] = {
+                                "title": all_data["motions/motion"][id]["title"],
+                                "identifier": all_data["motions/motion"][id][
+                                    "identifier"
+                                ],
+                            }
 
             motions.append(motion_object)
 
-    return {"title": motion_block["title"], "motions": motions}
+    return {
+        "title": motion_block["title"],
+        "motions": motions,
+        "referenced_motions": referenced_motions,
+    }
 
 
 def register_projector_slides() -> None:

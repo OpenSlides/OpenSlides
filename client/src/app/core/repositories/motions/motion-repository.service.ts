@@ -92,6 +92,22 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
         ]);
     }
 
+    public getTitle = (motion: Partial<Motion> | Partial<ViewMotion>) => {
+        if (motion.identifier) {
+            return motion.identifier + ': ' + motion.title;
+        } else {
+            return motion.title;
+        }
+    };
+
+    public getIdentifierOrTitle = (motion: Partial<Motion> | Partial<ViewMotion>) => {
+        if (motion.identifier) {
+            return motion.identifier;
+        } else {
+            return motion.title;
+        }
+    };
+
     public getAgendaTitle = (motion: Partial<Motion> | Partial<ViewMotion>) => {
         // if the identifier is set, the title will be 'Motion <identifier>'.
         if (motion.identifier) {
@@ -149,6 +165,8 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
             tags,
             parent
         );
+        viewMotion.getIdentifierOrTitle = () => this.getIdentifierOrTitle(viewMotion);
+        viewMotion.getTitle = () => this.getTitle(viewMotion);
         viewMotion.getVerboseName = this.getVerboseName;
         viewMotion.getAgendaTitle = () => this.getAgendaTitle(viewMotion);
         viewMotion.getProjectorTitle = viewMotion.getAgendaTitle;
@@ -759,7 +777,7 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
         }
         let state = this.translate.instant(motion.state.name);
         if (motion.stateExtension && motion.state.show_state_extension_field) {
-            state += ' ' + this.solveExtensionPlaceHolder(motion.stateExtension);
+            state += ' ' + this.parseMotionPlaceholders(motion.stateExtension);
         }
         return state;
     }
@@ -775,7 +793,7 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
         if (motion.recommendation) {
             let rec = this.translate.instant(motion.recommendation.recommendation_label);
             if (motion.recommendationExtension && motion.recommendation.show_recommendation_extension_field) {
-                rec += ' ' + this.solveExtensionPlaceHolder(motion.recommendationExtension);
+                rec += ' ' + this.parseMotionPlaceholders(motion.recommendationExtension);
             }
             return rec;
         }
@@ -785,20 +803,16 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
      * Replaces any motion placeholder (`[motion:id]`) with the motion's title(s)
      *
      * @param value
-     * @returns the string with the motion titles replacing the placeholders, '??' strings for errors
+     * @returns the string with the motion titles replacing the placeholders
      */
-    public solveExtensionPlaceHolder(value: string): string {
-        const beg = value.indexOf('[motion:');
-        const end = value.indexOf(']');
-        if (beg > -1 && (end > -1 && end > beg)) {
-            const id = Number(value.substring(beg + 8, end));
-            const referedMotion = Number.isNaN(id) ? null : this.getViewModel(id);
-            const title = referedMotion ? referedMotion.identifier : '??';
-            value = value.substring(0, beg) + title + value.substring(end + 1);
-            // recursively check for additional occurrences
-            return this.solveExtensionPlaceHolder(value);
-        } else {
-            return value;
-        }
+    public parseMotionPlaceholders(value: string): string {
+        return value.replace(/\[motion:(\d+)\]/g, (match, id) => {
+            const motion = this.getViewModel(id);
+            if (motion) {
+                return motion.getIdentifierOrTitle();
+            } else {
+                return this.translate.instant('<unknown motion>');
+            }
+        });
     }
 }
