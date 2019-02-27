@@ -12,7 +12,7 @@ export class AssignmentSortListService extends BaseSortListService<ViewAssignmen
         sortAscending: true,
         options: [
             { property: 'assignment', label: 'Name' },
-            { property: 'phase' },
+            { property: 'phase', label: 'Phase' },
             { property: 'candidateAmount', label: 'Number of candidates' }
         ]
     };

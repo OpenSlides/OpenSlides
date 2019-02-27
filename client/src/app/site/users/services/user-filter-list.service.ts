@@ -6,6 +6,7 @@ import { User } from 'app/shared/models/users/user';
 import { ViewUser } from '../models/view-user';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
     providedIn: 'root'
@@ -16,7 +17,7 @@ export class UserFilterListService extends BaseFilterListService<User, ViewUser>
     private userGroupFilterOptions = {
         isActive: false,
         property: 'groups_id',
-        label: 'User Group',
+        label: 'Groups',
         options: []
     };
 
@@ -29,21 +30,30 @@ export class UserFilterListService extends BaseFilterListService<User, ViewUser>
         },
         {
             property: 'is_active',
-            label: 'Active',
+            label: this.translate.instant('Active'),
             isActive: false,
-            options: [{ condition: true, label: 'Is active' }, { condition: false, label: 'Is not active' }]
+            options: [
+                { condition: true, label: 'Is active' },
+                { condition: false, label: this.translate.instant('Is not active') }
+            ]
         },
         {
             property: 'is_committee',
-            label: 'Committee',
+            label: this.translate.instant('Committee'),
             isActive: false,
-            options: [{ condition: true, label: 'Is a committee' }, { condition: false, label: 'Is not a committee' }]
+            options: [
+                { condition: true, label: 'Is a committee' },
+                { condition: false, label: this.translate.instant('Is not a committee') }
+            ]
         },
         {
             property: 'is_last_email_send',
             label: 'Last email send',
             isActive: false,
-            options: [{ condition: true, label: 'Got an email' }, { condition: false, label: "Didn't get an email" }]
+            options: [
+                { condition: true, label: this.translate.instant('Got an email') },
+                { condition: false, label: this.translate.instant("Didn't get an email") }
+            ]
         }
     ];
 
@@ -55,7 +65,21 @@ export class UserFilterListService extends BaseFilterListService<User, ViewUser>
         return [this.userGroupFilterOptions].concat(this.staticFilterOptions);
     }
 
-    public constructor(store: StorageService, private groupRepo: GroupRepositoryService, repo: UserRepositoryService) {
+    /**
+     * Contructor. Subscribes to incoming group definitions.
+     *
+     * @param store
+     * @param groupRepo
+     * @param repo
+     * @param translate marking some translations that are unique here
+     *
+     */
+    public constructor(
+        store: StorageService,
+        private groupRepo: GroupRepositoryService,
+        repo: UserRepositoryService,
+        private translate: TranslateService
+    ) {
         super(store, repo);
         this.subscribeGroups();
     }

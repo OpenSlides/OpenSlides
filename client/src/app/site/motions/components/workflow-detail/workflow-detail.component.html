@@ -2,7 +2,7 @@
     <!-- Title -->
     <div class="title-slot">
         <h2 *ngIf="workflow">
-            {{ workflow }}
+            {{ workflow.name | translate }}
         </h2>
     </div>
 
@@ -19,7 +19,7 @@
     <div class="title-line">
         <strong>
             <span translate>First state</span>:
-            <span>{{ workflow.firstState }}</span>
+            <span>{{ workflow.firstState.name | translate }}</span>
         </strong>
     </div>
 
@@ -66,7 +66,7 @@
                                 [disableRipple]="true"
                                 [ngClass]="getStateCssColor(state[perm.selector])"
                             >
-                                {{ state[perm.selector] }}
+                                {{ state[perm.selector] | translate }}
                             </mat-basic-chip>
                         </div>
                         <div
@@ -76,7 +76,19 @@
                             [matMenuTriggerData]="{ state: state }"
                         >
                             <div class="inner-table">
-                                {{ state.next_states_id.length > 0 ? state.getNextStates(workflow.workflow) : '–' }}
+                                <div *ngIf="!state.next_states_id.length">
+                                    -
+                                </div>
+                                <div *ngIf="state.next_states_id.length">
+                                    <span
+                                        *ngFor="
+                                            let nextstate of state.getNextStates(workflow.workflow);
+                                            let last = last
+                                        "
+                                    >
+                                        {{ nextstate.name | translate }}<span *ngIf="!last">,&nbsp;</span>
+                                    </span>
+                                </div>
                             </div>
                         </div>
                         <div
