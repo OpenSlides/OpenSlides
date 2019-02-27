@@ -18,8 +18,8 @@ export class UserSortListService extends BaseSortListService<ViewUser> {
             { property: 'last_name', label: 'Surname' },
             { property: 'is_present', label: 'Presence' },
             { property: 'is_active', label: 'Is active' },
-            { property: 'is_committee', label: 'Is Committee' },
-            { property: 'number', label: 'Number' },
+            { property: 'is_committee', label: 'Is committee' },
+            { property: 'number', label: 'Participant number' },
             { property: 'structure_level', label: 'Structure level' },
             { property: 'comment' }
             // TODO email send?

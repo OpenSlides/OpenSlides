@@ -53,7 +53,9 @@
                 <div class="groupsCell">
                     <span *ngIf="user.groups && user.groups.length">
                         <mat-icon>people</mat-icon>
-                        {{ user.groups }}
+                        <span *ngFor="let group of user.groups; let last = last"
+                            >{{ group.getTitle() | translate }}<span *ngIf="!last">,&nbsp;</span>
+                        </span>
                     </span>
                     <br *ngIf="user.groups && user.structureLevel" />
                     <span *ngIf="user.structureLevel">

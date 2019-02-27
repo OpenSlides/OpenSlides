@@ -8,7 +8,7 @@
             <mat-divider></mat-divider>
         </div>
         <mat-option *ngFor="let selectedItem of filteredItems | async" [value]="selectedItem.id">
-            {{ selectedItem.getTitle(translate) }}
+            {{ selectedItem.getTitle() | translate }}
         </mat-option>
     </mat-select>
 </mat-form-field>

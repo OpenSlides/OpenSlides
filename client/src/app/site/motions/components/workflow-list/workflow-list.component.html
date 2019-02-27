@@ -11,7 +11,7 @@
             <span translate>Name</span>
         </mat-header-cell>
         <mat-cell *matCellDef="let workflow" (click)="onClickWorkflow(workflow)">
-            {{ workflow }}
+            {{ workflow.name | translate }}
         </mat-cell>
     </ng-container>
 
