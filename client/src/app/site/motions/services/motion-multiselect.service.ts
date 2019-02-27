@@ -81,7 +81,7 @@ export class MotionMultiselectService {
                 items: motions.map(motion => motion.agenda_item_id),
                 parent_id: selectedChoice.items as number
             };
-            await this.httpService.post('/rest/agenda/item/assign', requestData);
+            await this.httpService.post('/rest/agenda/item/assign/', requestData);
         }
     }
 
