@@ -545,7 +545,7 @@
                         matInput
                         placeholder="{{ 'Identifier' | translate }}"
                         formControlName="identifier"
-                        [value]="motionCopy.identifier"
+                        [value]="motionCopy.identifier || ''"
                     />
                 </mat-form-field>
             </div>

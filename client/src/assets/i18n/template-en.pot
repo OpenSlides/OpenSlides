@@ -182,7 +182,7 @@ msgstr ""
 msgid "Back to login"
 msgstr ""
 
-msgid "Background color of projector header and footer"
+msgid "Background color"
 msgstr ""
 
 msgid "Ballot and ballot papers"
@@ -278,6 +278,9 @@ msgstr ""
 msgid "Can see hidden files"
 msgstr ""
 
+msgid "Can see history"
+msgstr ""
+
 msgid "Can see internal items and time scheduling of agenda"
 msgstr ""
 
@@ -371,9 +374,6 @@ msgstr ""
 msgid "Collapse all"
 msgstr ""
 
-msgid "Color for blanked projector"
-msgstr ""
-
 msgid "Column separator"
 msgstr ""
 
@@ -444,6 +444,9 @@ msgid "Current list of speakers reference"
 msgstr ""
 
 msgid "Current list of speakers slide"
+msgstr ""
+
+msgid "Current speaker chyron"
 msgstr ""
 
 msgid "Custom number of ballot papers"
@@ -532,9 +535,6 @@ msgid "Disabled"
 msgstr ""
 
 msgid "Disabled (no percents)"
-msgstr ""
-
-msgid "Display header and footer"
 msgstr ""
 
 msgid "Do not concern"
@@ -736,12 +736,6 @@ msgstr ""
 msgid "Follow recommendations for all motions"
 msgstr ""
 
-msgid "Font color of projector header and footer"
-msgstr ""
-
-msgid "Font color of projector headline"
-msgstr ""
-
 msgid "Forgot Password?"
 msgstr ""
 
@@ -782,6 +776,15 @@ msgid "Groups with write permissions"
 msgstr ""
 
 msgid "Has notes"
+msgstr ""
+
+msgid "Header background color"
+msgstr ""
+
+msgid "Header font color"
+msgstr ""
+
+msgid "Headline color"
 msgstr ""
 
 msgid "Help text for access data and welcome PDF"
@@ -1600,7 +1603,10 @@ msgstr ""
 msgid "Show errors only"
 msgstr ""
 
-msgid "Show logo on projector"
+msgid "Show header and footer"
+msgstr ""
+
+msgid "Show logo"
 msgstr ""
 
 msgid "Show orange countdown in the last x seconds of speaking time"
@@ -1618,13 +1624,10 @@ msgstr ""
 msgid "Show state extension field"
 msgstr ""
 
-msgid "Show the clock on projector"
-msgstr ""
-
 msgid "Show this text on the login page"
 msgstr ""
 
-msgid "Show title and description of event on projector"
+msgid "Show title"
 msgstr ""
 
 msgid "Simple Workflow"
@@ -2011,12 +2014,7 @@ msgstr ""
 msgid "You are using the history mode of OpenSlides. Changes will not be saved."
 msgstr ""
 
-msgid ""
-"You can replace the logo by uploading an image and set it as the "
-"\"Projector logo\" in \"files\"."
-msgstr ""
-
-msgid "You can use {event_name} as a placeholder."
+msgid "You can use {event_name} and {username} as placeholder."
 msgstr ""
 
 msgid "You override the personally set password!"
