@@ -225,8 +225,13 @@ def handle_changed_elements(elements: Iterable[Element]) -> None:
         for element in elements:
             if element.get("reload"):
                 model = get_model_from_collection_string(element["collection_string"])
-                instance = model.objects.get(pk=element["id"])
-                element["full_data"] = instance.get_full_data()
+                try:
+                    instance = model.objects.get(pk=element["id"])
+                except model.DoesNotExist:
+                    # The instance was deleted so we set full_data explicitly to None.
+                    element["full_data"] = None
+                else:
+                    element["full_data"] = instance.get_full_data()
 
         # Save histroy here using sync code.
         history_instances = save_history(elements)

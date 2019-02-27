@@ -176,7 +176,7 @@ def CASCADE_AND_AUTOUODATE(
     collector: Any, field: Any, sub_objs: Any, using: Any
 ) -> None:
     """
-    Like models.SET_NULL but also informs the autoupdate system about the
+    Like models.CASCADE but also informs the autoupdate system about the
     root rest element of the also deleted instance.
     """
     if len(sub_objs) != 1:
