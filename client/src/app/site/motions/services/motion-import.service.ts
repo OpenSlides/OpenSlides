@@ -122,12 +122,19 @@ export class MotionImportService extends BaseImportService<ViewMotion> {
             }
         }
         const updateModels = this.repo.getMotionDuplicates(newEntry);
-        return {
+        const entry: NewEntry<ViewMotion> = {
             newEntry: newEntry,
             duplicates: updateModels,
             status: updateModels.length ? 'error' : 'new',
             errors: updateModels.length ? ['Duplicates'] : []
         };
+        if (!entry.newEntry.title) {
+            this.setError(entry, 'Title');
+        }
+        if (!entry.newEntry.text) {
+            this.setError(entry, 'Title');
+        }
+        return entry;
     }
 
     /**
