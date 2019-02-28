@@ -394,8 +394,10 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User> imp
      * Sets the user present
      *
      * @param viewUser the viewUser Object
+     * @param event the mouse event (to prevent propagaton to row triggers)
      */
-    public async setPresent(viewUser: ViewUser): Promise<void> {
+    public async setPresent(viewUser: ViewUser, event: MouseEvent): Promise<void> {
+        event.stopPropagation();
         viewUser.user.is_present = !viewUser.user.is_present;
         await this.repo.update(viewUser.user, viewUser);
     }

@@ -107,6 +107,7 @@
                 <div
                     *ngIf="getFileSettings(file).length > 0"
                     [matMenuTriggerFor]="singleFileMenu"
+                    (click)="$event.stopPropagation()"
                     [matMenuTriggerData]="{ file: file }"
                     [matTooltip]="formatIndicatorTooltip(file)"
                 >
@@ -123,6 +124,7 @@
                 <button
                     mat-icon-button
                     [matMenuTriggerFor]="singleFileMenu"
+                    (click)="$event.stopPropagation()"
                     [matMenuTriggerData]="{ file: file }"
                     [disabled]="isMultiSelect"
                 >

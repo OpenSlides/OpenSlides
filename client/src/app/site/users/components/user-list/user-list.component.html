@@ -81,7 +81,7 @@
                 <div *ngIf="user.is_active">
                     <mat-checkbox
                         class="checkboxPresent"
-                        (click)="setPresent(user)"
+                        (click)="setPresent(user, $event)"
                         [checked]="user.is_present"
                         [disabled]="isMultiSelect"
                     >
