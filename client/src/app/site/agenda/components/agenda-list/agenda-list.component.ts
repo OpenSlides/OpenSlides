@@ -58,12 +58,12 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item> i
         slideOptions: [
             {
                 key: 'only_main_items',
-                displayName: 'Only main agenda items',
+                displayName: this.translate.instant('Only main agenda items'),
                 default: false
             }
         ],
         projectionDefaultName: 'agenda_all_items',
-        getDialogTitle: () => this.translate.instant('Item list')
+        getDialogTitle: () => this.translate.instant('Agenda')
     };
 
     /**

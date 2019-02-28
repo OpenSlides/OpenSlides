@@ -571,13 +571,13 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
             slideOptions: [
                 {
                     key: 'mode',
-                    displayName: 'Mode',
+                    displayName: 'Change recommendations',
                     default: 'original',
                     choices: [
-                        { value: 'original', displayName: 'Original' },
-                        { value: 'changed', displayName: 'Changed' },
-                        { value: 'diff', displayName: 'Diff' },
-                        { value: 'agreed', displayName: 'Agreed' }
+                        { value: 'original', displayName: 'Original version' },
+                        { value: 'changed', displayName: 'Changed version' },
+                        { value: 'diff', displayName: 'Diff version' },
+                        { value: 'agreed', displayName: 'Final version' }
                     ]
                 }
             ],

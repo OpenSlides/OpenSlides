@@ -88,6 +88,8 @@ _('Default visibility for new agenda items (except topics)');
 _('Public item');
 _('Internal item');
 _('Hidden item');
+// agenda misc strings
+_('Only main agenda items');
 
 // Motions config strings
 // subgroup general

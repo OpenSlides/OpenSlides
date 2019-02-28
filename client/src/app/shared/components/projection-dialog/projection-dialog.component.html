@@ -1,6 +1,8 @@
 <h2 mat-dialog-title>
-    <span translate>Project</span> {{ projectorElementBuildDescriptor.getDialogTitle() }}?
+    <span translate>Project selection?</span>
 </h2>
+<div class="element-name">{{ projectorElementBuildDescriptor.getDialogTitle() }}</div>
+
 <mat-dialog-content>
     <div class="projectors"
         *ngFor="let projector of projectors"
@@ -17,7 +19,7 @@
 
     <div *ngIf="options.length > 0">
         <div *ngFor="let option of options">
-            <div *ngIf="isDecisionOption(option)">
+            <div *ngIf="isDecisionOption(option)" class="spacer-top-10 spacer-left-10">
                 <mat-checkbox
                     [checked]="optionValues[option.key]"
                     (change)="optionValues[option.key] = !optionValues[option.key]"
@@ -37,7 +39,7 @@
     </div>
 </mat-dialog-content>
 <mat-dialog-actions>
-    <button mat-button osAutofocus (click)="onProject()" color="primary" translate>Project</button>
-    <button mat-button (click)="onAddToPreview()" translate>Add to preview</button>
-    <button mat-button (click)="onCancel()" translate>Cancel</button>
+    <button mat-button osAutofocus (click)="onProject()" color="primary">{{ 'Project' | translate }}</button>
+    <button mat-button (click)="onAddToPreview()">{{ 'Add to queue' | translate }}</button>
+    <button mat-button (click)="onCancel()">{{ 'Cancel' | translate }}</button>
 </mat-dialog-actions>
