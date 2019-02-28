@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 
 import { Observable, Subject } from 'rxjs';
 
@@ -124,6 +124,20 @@ export class DataStoreService {
     }
 
     /**
+     * Observable subject for changed or deleted models in the datastore.
+     */
+    private readonly clearEvent: EventEmitter<void> = new EventEmitter<void>();
+
+    /**
+     * Observe the datastore for changes and deletions.
+     *
+     * @return an observable for changed and deleted objects.
+     */
+    public get clearObservable(): Observable<void> {
+        return this.clearEvent.asObservable();
+    }
+
+    /**
      * The maximal change id from this DataStore.
      */
     private _maxChangeId = 0;
@@ -171,9 +185,7 @@ export class DataStoreService {
                 });
             });
         } else {
-            this.jsonStore = {};
-            this.modelStore = {};
-            this._maxChangeId = 0;
+            await this.clear();
         }
         return this.maxChangeId;
     }
@@ -207,6 +219,7 @@ export class DataStoreService {
         this._maxChangeId = 0;
         await this.storageService.remove(DataStoreService.cachePrefix + 'DS');
         await this.storageService.remove(DataStoreService.cachePrefix + 'maxChangeId');
+        this.clearEvent.next();
     }
 
     /**
