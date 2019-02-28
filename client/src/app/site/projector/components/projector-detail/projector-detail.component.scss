@@ -1,3 +1,5 @@
+@import '../../../../../assets/styles/drag.scss';
+
 #projector {
     width: 100%; /*1000px;*/
     border: 1px solid lightgrey;
@@ -25,8 +27,7 @@
 }
 
 .control-group {
-    text-align: center;
-    color: rgba(0, 0, 0, 0.54);
+    color: rgba(0, 0, 0, 0.5);
 
     .button-size {
         width: 40px;
@@ -34,64 +35,60 @@
     }
 }
 
-h4 {
-    margin-top: 5px;
+.slide-controls {
+    text-align: center;
+}
 
-    button {
-        width: 20px;
-        height: 20px;
+.projector-controls {
+    text-align: right;
+}
+
+.drop-list {
+    width: 100%;
+    display: block;
+    overflow: hidden;
+}
+
+.drop-list-entry {
+    display: table;
+    min-height: 50px;
+    width: 100%;
+    border-bottom: solid 1px #ccc;
+    color: rgba(0, 0, 0, 0.87);
+
+    .drag-handle {
+        display: table-cell;
+        padding: 0 10px;
+        line-height: 0px;
+        vertical-align: middle;
+        width: 25px;
+        color: slategrey;
+        cursor: move;
+    }
+
+    .name {
+        display: table-cell;
+        vertical-align: middle;
+    }
+
+    .button-right {
+        display: table-cell;
+        padding-right: 10px;
+        vertical-align: middle;
+        width: auto;
+        white-space: nowrap;
+
+        div {
+            float: right;
+        }
     }
 }
 
-h5 {
-    margin-bottom: 0;
+.drop-list-entry:last-child {
+    border: none;
 }
 
-.queue {
-    margin-top: 15px;
-
-    .drop-list {
-        width: 100%;
-        display: block;
-        overflow: hidden;
-
-        .list-entry {
-            display: table;
-            min-height: 50px;
-            width: 100%;
-            border-bottom: solid 1px #ccc;
-            color: rgba(0, 0, 0, 0.87);
-
-            .drag-handle {
-                display: table-cell;
-                padding: 0 10px;
-                line-height: 0px;
-                vertical-align: middle;
-                width: 25px;
-                color: slategrey;
-                cursor: move;
-            }
-
-            .name {
-                display: table-cell;
-                vertical-align: middle;
-            }
-
-            .button-right {
-                display: table-cell;
-                padding-right: 10px;
-                vertical-align: middle;
-                width: auto;
-                white-space: nowrap;
-
-                div {
-                    float: right;
-                }
-            }
-        }
-
-        .list-entry:last-child {
-            border: none;
-        }
-    }
+// move away from preview.
+.drop-list.cdk-drop-list-dragging .drop-list-entry:not(.cdk-drag-placeholder) {
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }

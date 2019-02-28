@@ -44,6 +44,11 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
     public messages: ViewProjectorMessage[] = [];
 
     /**
+     * true if the queue might be altered
+     */
+    public editQueue = false;
+
+    /**
      * @param titleService
      * @param translate
      * @param matSnackBar

@@ -1,5 +1,5 @@
 <div cdkDropList class="os-card" (cdkDropListDropped)="drop($event)">
-    <div class= "box line" *ngIf="!array.length">
+    <div class="box line" *ngIf="!array.length">
         <span translate>No data</span>
     </div>
     <div class="box line" *ngFor="let item of array; let i = index" cdkDrag>
