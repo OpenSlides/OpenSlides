@@ -147,7 +147,7 @@ export class MotionMultiselectService {
         if (selectedChoice) {
             for (const motion of motions) {
                 await this.repo.update(
-                    { category_id: selectedChoice.action ? 0 : (selectedChoice.items as number) },
+                    { category_id: selectedChoice.action ? null : (selectedChoice.items as number) },
                     motion
                 );
             }
