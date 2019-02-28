@@ -5,7 +5,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { BaseComponent } from 'app/base.component';
 import { SlideManager } from 'app/slides/services/slide-manager.service';
 import { BaseSlideComponent } from 'app/slides/base-slide-component';
-import { ConfigService } from 'app/core/ui-services/config.service';
 import { SlideData } from 'app/site/projector/services/projector-data.service';
 import { ProjectorElement } from 'app/shared/models/core/projector';
 
@@ -63,6 +62,12 @@ export class SlideContainerComponent extends BaseComponent {
         this.setDataForComponent();
     }
 
+    /**
+     * Variable, if the projector header is enabled.
+     */
+    @Input()
+    public headerEnabled: boolean;
+
     public get slideData(): SlideData<object> {
         return this._slideData;
     }
@@ -105,25 +110,11 @@ export class SlideContainerComponent extends BaseComponent {
      */
     public slideStyle: { 'font-size': string; 'margin-top': string } = {
         'font-size': '100%',
-        'margin-top': '100px'
+        'margin-top': '50px'
     };
 
-    /**
-     * Variable, if the projector header is enabled.
-     */
-    private headerEnabled = true;
-
-    public constructor(
-        titleService: Title,
-        translate: TranslateService,
-        private slideManager: SlideManager,
-        private configService: ConfigService
-    ) {
+    public constructor(titleService: Title, translate: TranslateService, private slideManager: SlideManager) {
         super(titleService, translate);
-
-        this.configService.get<boolean>('projector_enable_header_footer').subscribe(val => {
-            this.headerEnabled = val;
-        });
     }
 
     /**
@@ -134,7 +125,7 @@ export class SlideContainerComponent extends BaseComponent {
             let value = this._scroll;
             value *= -50;
             if (this.headerEnabled) {
-                value += 100; // Default offset for the header
+                value += 50; // Default offset for the header
             }
             this.slideStyle['margin-top'] = `${value}px`;
         } else {
