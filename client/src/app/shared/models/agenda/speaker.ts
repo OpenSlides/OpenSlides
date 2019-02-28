@@ -17,6 +17,8 @@ export enum SpeakerState {
  * @ignore
  */
 export class Speaker extends Deserializer {
+    public static COLLECTIONSTRING = 'agenda/item/speakers';
+
     public id: number;
     public user_id: number;
 
