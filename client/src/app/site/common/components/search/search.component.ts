@@ -114,7 +114,9 @@ export class SearchComponent extends BaseViewComponent implements OnInit {
         this.searchResults = this.searchService.search(this.query, collectionStrings);
 
         // Because the results are per model, we need to accumulate the total number of all search results.
-        this.searchResultCount = this.searchResults.map(sr => sr.models.length).reduce((acc, current) => acc + current);
+        this.searchResultCount = this.searchResults
+            .map(sr => sr.models.length)
+            .reduce((acc, current) => acc + current, 0);
 
         // Update the URL.
         this.router.navigate([], {

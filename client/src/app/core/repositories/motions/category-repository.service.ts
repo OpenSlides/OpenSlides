@@ -52,11 +52,13 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
         super(DS, mapperService, viewModelStoreService, Category);
     }
 
+    public getVerboseName = (plural: boolean = false) => {
+        return this.translate.instant(plural ? 'Categories' : 'Category');
+    };
+
     protected createViewModel(category: Category): ViewCategory {
         const viewCategory = new ViewCategory(category);
-        viewCategory.getVerboseName = (plural: boolean = false) => {
-            return this.translate.instant(plural ? 'Categories' : 'Category');
-        };
+        viewCategory.getVerboseName = this.getVerboseName;
         return viewCategory;
     }
 

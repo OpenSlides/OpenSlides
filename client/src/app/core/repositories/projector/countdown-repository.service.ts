@@ -25,11 +25,13 @@ export class CountdownRepositoryService extends BaseRepository<ViewCountdown, Co
         super(DS, mapperService, viewModelStoreService, Countdown);
     }
 
+    public getVerboseName = (plural: boolean = false) => {
+        return this.translate.instant(plural ? 'Countdowns' : 'Countdown');
+    };
+
     protected createViewModel(countdown: Countdown): ViewCountdown {
         const viewCountdown = new ViewCountdown(countdown);
-        viewCountdown.getVerboseName = (plural: boolean = false) => {
-            return this.translate.instant(plural ? 'Countdowns' : 'Countdown');
-        };
+        viewCountdown.getVerboseName = this.getVerboseName;
         return viewCountdown;
     }
 

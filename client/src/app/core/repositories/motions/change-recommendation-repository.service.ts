@@ -53,6 +53,10 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<
         super(DS, mapperService, viewModelStoreService, MotionChangeRecommendation, [Category, User, Workflow]);
     }
 
+    public getVerboseName = (plural: boolean = false) => {
+        return this.translate.instant(plural ? 'Change recommendations' : 'Change recommendation');
+    };
+
     /**
      * Creates this view wrapper based on an actual Change Recommendation model
      *
@@ -60,9 +64,7 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<
      */
     protected createViewModel(model: MotionChangeRecommendation): ViewMotionChangeRecommendation {
         const viewMotionChangeRecommendation = new ViewMotionChangeRecommendation(model);
-        viewMotionChangeRecommendation.getVerboseName = (plural: boolean = false) => {
-            return this.translate.instant(plural ? 'Change recommendations' : 'Change recommendation');
-        };
+        viewMotionChangeRecommendation.getVerboseName = this.getVerboseName;
         return viewMotionChangeRecommendation;
     }
 

@@ -46,6 +46,8 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
         return this._collectionString;
     }
 
+    public abstract getVerboseName: (plural?: boolean) => string;
+
     /**
      * Construction routine for the base repository
      *

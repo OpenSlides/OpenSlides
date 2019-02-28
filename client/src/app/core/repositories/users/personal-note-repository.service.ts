@@ -28,11 +28,13 @@ export class PersonalNoteRepositoryService extends BaseRepository<ViewPersonalNo
         super(DS, mapperService, viewModelStoreService, PersonalNote);
     }
 
+    public getVerboseName = (plural: boolean = false) => {
+        return this.translate.instant(plural ? 'Personal notes' : 'Personal note');
+    };
+
     protected createViewModel(personalNote: PersonalNote): ViewPersonalNote {
         const viewPersonalNote = new ViewPersonalNote();
-        viewPersonalNote.getVerboseName = (plural: boolean = false) => {
-            return this.translate.instant(plural ? 'Personal notes' : 'Personal note');
-        };
+        viewPersonalNote.getVerboseName = this.getVerboseName;
         return viewPersonalNote;
     }
 

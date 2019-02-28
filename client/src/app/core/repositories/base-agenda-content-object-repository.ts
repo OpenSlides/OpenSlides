@@ -7,12 +7,7 @@ import { BaseRepository } from './base-repository';
 
 export function isBaseAgendaContentObjectRepository(obj: any): obj is BaseAgendaContentObjectRepository<any, any> {
     const repo = obj as BaseAgendaContentObjectRepository<any, any>;
-    return (
-        !!obj &&
-        repo.getVerboseName !== undefined &&
-        repo.getAgendaTitle !== undefined &&
-        repo.getAgendaTitleWithType !== undefined
-    );
+    return !!obj && repo.getAgendaTitle !== undefined && repo.getAgendaTitleWithType !== undefined;
 }
 
 export abstract class BaseAgendaContentObjectRepository<
@@ -21,7 +16,6 @@ export abstract class BaseAgendaContentObjectRepository<
 > extends BaseRepository<V, M> {
     public abstract getAgendaTitle: (model: Partial<M> | Partial<V>) => string;
     public abstract getAgendaTitleWithType: (model: Partial<M> | Partial<V>) => string;
-    public abstract getVerboseName: (plural?: boolean) => string;
 
     /**
      */

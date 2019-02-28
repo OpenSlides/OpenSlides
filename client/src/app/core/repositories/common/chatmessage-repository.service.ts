@@ -21,11 +21,13 @@ export class ChatMessageRepositoryService extends BaseRepository<ViewChatMessage
         super(DS, mapperService, viewModelStoreService, ChatMessage);
     }
 
+    public getVerboseName = (plural: boolean = false) => {
+        return this.translate.instant(plural ? 'Chatmessages' : 'Chatmessage');
+    };
+
     protected createViewModel(message: ChatMessage): ViewChatMessage {
         const viewChatMessage = new ViewChatMessage(message);
-        viewChatMessage.getVerboseName = (plural: boolean = false) => {
-            return this.translate.instant(plural ? 'Chatmessages' : 'Chatmessage');
-        };
+        viewChatMessage.getVerboseName = this.getVerboseName;
         return viewChatMessage;
     }
 

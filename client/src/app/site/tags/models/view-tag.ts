@@ -46,7 +46,7 @@ export class ViewTag extends BaseViewModel implements Searchable {
     }
 
     public getDetailStateURL(): string {
-        throw new Error('TODO');
+        return `/tags`;
     }
 
     /**

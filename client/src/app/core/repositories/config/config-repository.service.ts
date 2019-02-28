@@ -112,15 +112,17 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
         });
     }
 
+    public getVerboseName = (plural: boolean = false) => {
+        return this.translate.instant(plural ? 'Configs' : 'Config');
+    };
+
     /**
      * Creates a new ViewConfig of a given Config object
      * @param config
      */
     public createViewModel(config: Config): ViewConfig {
         const viewConfig = new ViewConfig(config);
-        viewConfig.getVerboseName = (plural: boolean = false) => {
-            return this.translate.instant(plural ? 'Configs' : 'Config');
-        };
+        viewConfig.getVerboseName = this.getVerboseName;
         return viewConfig;
     }
 

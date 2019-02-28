@@ -76,7 +76,7 @@ export class ViewAssignment extends BaseAgendaViewModel {
     };
 
     public formatForSearch(): SearchRepresentation {
-        throw new Error('TODO');
+        return [this.title];
     }
 
     public getDetailStateURL(): string {

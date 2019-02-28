@@ -60,11 +60,13 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group> {
         this.sortPermsPerApp();
     }
 
+    public getVerboseName = (plural: boolean = false) => {
+        return this.translate.instant(plural ? 'Groups' : 'Group');
+    };
+
     public createViewModel(group: Group): ViewGroup {
         const viewGroup = new ViewGroup(group);
-        viewGroup.getVerboseName = (plural: boolean = false) => {
-            return this.translate.instant(plural ? 'Groups' : 'Group');
-        };
+        viewGroup.getVerboseName = this.getVerboseName;
         return viewGroup;
     }
 

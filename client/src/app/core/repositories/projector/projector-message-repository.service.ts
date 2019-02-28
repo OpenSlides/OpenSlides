@@ -23,11 +23,13 @@ export class ProjectorMessageRepositoryService extends BaseRepository<ViewProjec
         super(DS, mapperService, viewModelStoreService, ProjectorMessage);
     }
 
+    public getVerboseName = (plural: boolean = false) => {
+        return this.translate.instant(plural ? 'Messages' : 'Message');
+    };
+
     protected createViewModel(message: ProjectorMessage): ViewProjectorMessage {
         const viewProjectorMessage = new ViewProjectorMessage(message);
-        viewProjectorMessage.getVerboseName = (plural: boolean = false) => {
-            return this.translate.instant(plural ? 'Messages' : 'Message');
-        };
+        viewProjectorMessage.getVerboseName = this.getVerboseName;
         return viewProjectorMessage;
     }
 

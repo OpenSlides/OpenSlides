@@ -54,6 +54,10 @@ export class ItemRepositoryService extends BaseRepository<ViewItem, Item> {
         super(DS, mapperService, viewModelStoreService, Item);
     }
 
+    public getVerboseName = (plural: boolean = false) => {
+        return this.translate.instant(plural ? 'Items' : 'Item');
+    };
+
     protected setupDependencyObservation(): void {
         this.DS.secondaryModelChangeSubject.subscribe(model => {
             const viewModel = this.viewModelStoreService.get(model.collectionString, model.id);
@@ -75,9 +79,7 @@ export class ItemRepositoryService extends BaseRepository<ViewItem, Item> {
     public createViewModel(item: Item): ViewItem {
         const contentObject = this.getContentObject(item);
         const viewItem = new ViewItem(item, contentObject);
-        viewItem.getVerboseName = (plural: boolean = false) => {
-            return this.translate.instant(plural ? 'Items' : 'Item');
-        };
+        viewItem.getVerboseName = this.getVerboseName;
         viewItem.getTitle = () => {
             if (viewItem.contentObject) {
                 return viewItem.contentObject.getAgendaTitle();

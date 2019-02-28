@@ -51,6 +51,10 @@ export class MotionCommentSectionRepositoryService extends BaseRepository<
         super(DS, mapperService, viewModelStoreService, MotionCommentSection, [Group]);
     }
 
+    public getVerboseName = (plural: boolean = false) => {
+        return this.translate.instant(plural ? 'Comment sections' : 'Comment section');
+    };
+
     /**
      * Creates the ViewModel for the MotionComment Section
      *
@@ -61,9 +65,7 @@ export class MotionCommentSectionRepositoryService extends BaseRepository<
         const readGroups = this.viewModelStoreService.getMany(ViewGroup, section.read_groups_id);
         const writeGroups = this.viewModelStoreService.getMany(ViewGroup, section.write_groups_id);
         const viewMotionCommentSection = new ViewMotionCommentSection(section, readGroups, writeGroups);
-        viewMotionCommentSection.getVerboseName = (plural: boolean = false) => {
-            return this.translate.instant(plural ? 'Comment sections' : 'Comment section');
-        };
+        viewMotionCommentSection.getVerboseName = this.getVerboseName;
         return viewMotionCommentSection;
     }
 
