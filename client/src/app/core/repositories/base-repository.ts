@@ -68,6 +68,8 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
     }
 
     public onAfterAppsLoaded(): void {
+        this.DS.clearObservable.subscribe(() => this.clear());
+
         // Populate the local viewModelStore with ViewModel Objects.
         this.DS.getAll(this.baseModelCtor).forEach((model: M) => {
             this.viewModelStore[model.id] = this.createViewModel(model);
@@ -151,6 +153,14 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
      * @param model
      */
     protected abstract createViewModel(model: M): V;
+
+    /**
+     * Clears the repository.
+     */
+    protected clear(): void {
+        this.viewModelStore = {};
+        this.updateViewModelListObservable();
+    }
 
     /**
      * helper function to return one viewModel

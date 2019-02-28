@@ -6,6 +6,7 @@ import { environment } from 'environments/environment';
 import { User } from '../../shared/models/users/user';
 import { OpenSlidesService } from './openslides.service';
 import { HttpService } from './http.service';
+import { DataStoreService } from './data-store.service';
 
 /**
  * The data returned by a post request to the login route.
@@ -34,7 +35,8 @@ export class AuthService {
         private http: HttpService,
         private operator: OperatorService,
         private OpenSlides: OpenSlidesService,
-        private router: Router
+        private router: Router,
+        private DS: DataStoreService
     ) {}
 
     /**
@@ -71,6 +73,8 @@ export class AuthService {
         } catch (e) {
             // We do nothing on failures. Reboot OpenSlides anyway.
         }
+        // Clear the DataStore
+        this.DS.clear();
         this.router.navigate(['/']);
         this.OpenSlides.reboot();
     }
