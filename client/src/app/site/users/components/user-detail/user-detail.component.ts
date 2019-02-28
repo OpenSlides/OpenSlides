@@ -195,7 +195,10 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
             case 'changePersonal':
                 return this.operator.hasPerms('users.can_manage') || this.ownPage;
             case 'changePassword':
-                return this.ownPage && this.operator.hasPerms('users.can_change_password');
+                return (
+                    (this.ownPage && this.operator.hasPerms('users.can_change_password')) ||
+                    this.operator.hasPerms('users.can_manage')
+                );
             default:
                 return false;
         }
