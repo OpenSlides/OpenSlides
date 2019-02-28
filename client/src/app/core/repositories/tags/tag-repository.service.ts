@@ -43,11 +43,13 @@ export class TagRepositoryService extends BaseRepository<ViewTag, Tag> {
         super(DS, mapperService, viewModelStoreService, Tag);
     }
 
+    public getVerboseName = (plural: boolean = false) => {
+        return this.translate.instant(plural ? 'Tags' : 'Tag');
+    };
+
     protected createViewModel(tag: Tag): ViewTag {
         const viewTag = new ViewTag(tag);
-        viewTag.getVerboseName = (plural: boolean = false) => {
-            return this.translate.instant(plural ? 'Tags' : 'Tag');
-        };
+        viewTag.getVerboseName = this.getVerboseName;
         return viewTag;
     }
 

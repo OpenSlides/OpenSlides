@@ -41,6 +41,10 @@ export class HistoryRepositoryService extends BaseRepository<ViewHistory, Histor
         super(DS, mapperService, viewModelStoreService, History, [User]);
     }
 
+    public getVerboseName = (plural: boolean = false) => {
+        return this.translate.instant(plural ? 'Histories' : 'History');
+    };
+
     /**
      * Creates a new ViewHistory objects out of a historyObject
      *
@@ -50,9 +54,7 @@ export class HistoryRepositoryService extends BaseRepository<ViewHistory, Histor
     public createViewModel(history: History): ViewHistory {
         const user = this.viewModelStoreService.get(ViewUser, history.user_id);
         const viewHistory = new ViewHistory(history, user);
-        viewHistory.getVerboseName = (plural: boolean = false) => {
-            return this.translate.instant(plural ? 'Histories' : 'History'); // Whats about the plural case??
-        };
+        viewHistory.getVerboseName = this.getVerboseName;
         return viewHistory;
     }
 

@@ -79,7 +79,12 @@ export class AppLoadService {
                         repository
                     );
                     if (this.isSearchableModelEntry(entry)) {
-                        this.searchService.registerModel(entry.collectionString, entry.viewModel, entry.searchOrder);
+                        this.searchService.registerModel(
+                            entry.collectionString,
+                            repository,
+                            entry.searchOrder,
+                            entry.openInNewTab
+                        );
                     }
                 });
             }

@@ -11,6 +11,7 @@ export const MediafileAppConfig: AppConfig = {
             model: Mediafile,
             viewModel: ViewMediafile,
             searchOrder: 5,
+            openInNewTab: true,
             repository: MediafileRepositoryService
         }
     ],

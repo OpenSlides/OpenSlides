@@ -52,6 +52,10 @@ export class WorkflowRepositoryService extends BaseRepository<ViewWorkflow, Work
         super(DS, mapperService, viewModelStoreService, Workflow);
     }
 
+    public getVerboseName = (plural: boolean = false) => {
+        return this.translate.instant(plural ? 'Workflows' : 'Workflow');
+    };
+
     /**
      * Creates a ViewWorkflow from a given Workflow
      *
@@ -59,9 +63,7 @@ export class WorkflowRepositoryService extends BaseRepository<ViewWorkflow, Work
      */
     protected createViewModel(workflow: Workflow): ViewWorkflow {
         const viewWorkflow = new ViewWorkflow(workflow);
-        viewWorkflow.getVerboseName = (plural: boolean = false) => {
-            return this.translate.instant(plural ? 'Workflows' : 'Workflow');
-        };
+        viewWorkflow.getVerboseName = this.getVerboseName;
         return viewWorkflow;
     }
 

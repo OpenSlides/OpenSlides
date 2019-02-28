@@ -46,11 +46,13 @@ export class ProjectorRepositoryService extends BaseRepository<ViewProjector, Pr
         super(DS, mapperService, viewModelStoreService, Projector);
     }
 
+    public getVerboseName = (plural: boolean = false) => {
+        return this.translate.instant(plural ? 'Projectors' : 'Projector');
+    };
+
     public createViewModel(projector: Projector): ViewProjector {
         const viewProjector = new ViewProjector(projector);
-        viewProjector.getVerboseName = (plural: boolean = false) => {
-            return this.translate.instant(plural ? 'Projectors' : 'Projector');
-        };
+        viewProjector.getVerboseName = this.getVerboseName;
         return viewProjector;
     }
 

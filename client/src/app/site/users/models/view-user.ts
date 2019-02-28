@@ -189,7 +189,7 @@ export class ViewUser extends BaseProjectableViewModel implements Searchable {
     }
 
     public getDetailStateURL(): string {
-        throw new Error('TODO');
+        return `/users/${this.id}`;
     }
 
     public getSlide(): ProjectorElementBuildDeskriptor {

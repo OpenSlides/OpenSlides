@@ -44,10 +44,10 @@
             <mat-card-content>
                 <mat-list>
                     <mat-list-item *ngFor="let model of searchResult.models">
-                        <a
-                            [routerLink]="model.getDetailStateURL()"
-                            target="{{ searchResult.collectionString === 'mediafiles/mediafile' ? '_blank' : '' }}"
-                        >
+                        <a *ngIf="!searchResult.openInNewTab" [routerLink]="model.getDetailStateURL()">
+                            {{ model.getTitle() }}
+                        </a>
+                        <a *ngIf="searchResult.openInNewTab" [routerLink]="model.getDetailStateURL()" target="_blank" >
                             {{ model.getTitle() }}
                         </a>
                     </mat-list-item>

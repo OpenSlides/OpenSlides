@@ -85,7 +85,7 @@ export class ViewMediafile extends BaseProjectableViewModel implements Searchabl
     }
 
     public getDetailStateURL(): string {
-        throw new Error('TODO');
+        return this.downloadUrl;
     }
 
     public getSlide(): ProjectorElementBuildDeskriptor {

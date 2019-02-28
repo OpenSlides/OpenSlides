@@ -40,11 +40,13 @@ export class StatuteParagraphRepositoryService extends BaseRepository<ViewStatut
         super(DS, mapperService, viewModelStoreService, StatuteParagraph);
     }
 
+    public getVerboseName = (plural: boolean = false) => {
+        return this.translate.instant(plural ? 'Statute paragraphs' : 'Statute paragraph');
+    };
+
     protected createViewModel(statuteParagraph: StatuteParagraph): ViewStatuteParagraph {
         const viewStatuteParagraph = new ViewStatuteParagraph(statuteParagraph);
-        viewStatuteParagraph.getVerboseName = (plural: boolean = false) => {
-            return this.translate.instant(plural ? 'Statute paragraphs' : 'Statute paragraph');
-        };
+        viewStatuteParagraph.getVerboseName = this.getVerboseName;
         return viewStatuteParagraph;
     }
 

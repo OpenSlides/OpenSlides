@@ -19,6 +19,7 @@ export interface ModelEntry extends BaseModelEntry {
 export interface SearchableModelEntry extends BaseModelEntry {
     viewModel: ViewModelConstructor<BaseViewModel & Searchable>;
     searchOrder: number;
+    openInNewTab?: boolean;
 }
 
 /**

@@ -39,6 +39,10 @@ export class MediafileRepositoryService extends BaseRepository<ViewMediafile, Me
         super(DS, mapperService, viewModelStoreService, Mediafile, [User]);
     }
 
+    public getVerboseName = (plural: boolean = false) => {
+        return this.translate.instant(plural ? 'Files' : 'File');
+    };
+
     /**
      * Creates mediafile ViewModels out of given mediafile objects
      *
@@ -48,9 +52,7 @@ export class MediafileRepositoryService extends BaseRepository<ViewMediafile, Me
     public createViewModel(file: Mediafile): ViewMediafile {
         const uploader = this.viewModelStoreService.get(ViewUser, file.uploader_id);
         const viewMediafile = new ViewMediafile(file, uploader);
-        viewMediafile.getVerboseName = (plural: boolean = false) => {
-            return this.translate.instant(plural ? 'Files' : 'File');
-        };
+        viewMediafile.getVerboseName = this.getVerboseName;
         return viewMediafile;
     }
 
