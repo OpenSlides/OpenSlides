@@ -84,6 +84,9 @@ msgstr "Füge mich hinzu"
 msgid "Add new custom translation"
 msgstr "Neue benutzerdefinierte Übersetzung hinzufügen"
 
+msgid "Add to queue"
+msgstr "Zur Warteschlange hinzufügen"
+
 msgid "Add/remove groups ..."
 msgstr "Gruppen hinzufügen/entfernen ..."
 
@@ -379,6 +382,9 @@ msgstr ""
 msgid "Choose 0 to disable the supporting system."
 msgstr "Zum Deaktivieren des Unterstützersystems '0' eingeben."
 
+msgid "Chyron"
+msgstr "Bauchbinde"
+
 msgid "Clear all"
 msgstr "Alle löschen"
 
@@ -455,26 +461,14 @@ msgstr "Neuen Arbeitsablauf erstellen"
 msgid "Creation date"
 msgstr "Erstellungsdatum"
 
-msgid "Current"
-msgstr "Aktuell"
-
 msgid "Current browser language"
 msgstr "Aktuelle Browsersprache"
 
 msgid "Current list of speakers"
 msgstr "Aktuelle Redeliste"
 
-msgid "Current list of speakers overlay"
-msgstr "Aktuelle Redeliste (Einblendung)"
-
 msgid "Current list of speakers reference"
 msgstr "Referenz zur aktuellen Redeliste"
-
-msgid "Current list of speakers slide"
-msgstr "Aktuelle Redeliste (Folie)"
-
-msgid "Current speaker chyron"
-msgstr "Bauchbinde aktuelle/r Redner/in"
 
 msgid "Custom number of ballot papers"
 msgstr "Benutzerdefinierte Anzahl von Stimmzetteln"
@@ -1280,6 +1274,9 @@ msgstr "Eine E-Mail wurde erfolgreich versandt."
 msgid "Only for internal notes."
 msgstr "Nur für interne Notizen."
 
+msgid "Only main agenda items"
+msgstr "Nur Haupt-Tagesordnungspunkte"
+
 msgid "Open"
 msgstr "Öffnen"
 
@@ -1300,6 +1297,9 @@ msgstr "Originalfassung"
 
 msgid "Outside"
 msgstr "außerhalb"
+
+msgid "Overlay"
+msgstr "Einblendung"
 
 msgid "PDF"
 msgstr "PDF"
@@ -1434,8 +1434,8 @@ msgstr "Datenschutzerklärung"
 msgid "Project"
 msgstr "Projizieren"
 
-msgid "Project now"
-msgstr "Jetzt projizieren"
+msgid "Project selection?"
+msgstr "Auswahl projizieren?"
 
 msgid "Projector"
 msgstr "Projektor"
@@ -1709,8 +1709,8 @@ msgstr "Einfacher Arbeitsablauf"
 msgid "Simple majority"
 msgstr "Einfache Mehrheit"
 
-msgid "Slides"
-msgstr "Folien"
+msgid "Slide"
+msgstr "Folie"
 
 msgid "Sort"
 msgstr "Sortieren"

@@ -76,6 +76,9 @@ msgstr ""
 msgid "Add new custom translation"
 msgstr ""
 
+msgid "Add to queue"
+msgstr ""
+
 msgid "Add/remove groups ..."
 msgstr ""
 
@@ -362,6 +365,9 @@ msgstr ""
 msgid "Choose 0 to disable the supporting system."
 msgstr ""
 
+msgid "Chyron"
+msgstr ""
+
 msgid "Clear all"
 msgstr ""
 
@@ -437,25 +443,13 @@ msgstr ""
 msgid "Creation date"
 msgstr ""
 
-msgid "Current"
-msgstr ""
-
 msgid "Current browser language"
 msgstr ""
 
 msgid "Current list of speakers"
 msgstr ""
 
-msgid "Current list of speakers overlay"
-msgstr ""
-
 msgid "Current list of speakers reference"
-msgstr ""
-
-msgid "Current list of speakers slide"
-msgstr ""
-
-msgid "Current speaker chyron"
 msgstr ""
 
 msgid "Custom number of ballot papers"
@@ -1233,6 +1227,9 @@ msgstr ""
 msgid "Only for internal notes."
 msgstr ""
 
+msgid "Only main agenda items"
+msgstr ""
+
 msgid "Open"
 msgstr ""
 
@@ -1252,6 +1249,9 @@ msgid "Original version"
 msgstr ""
 
 msgid "Outside"
+msgstr ""
+
+msgid "Overlay"
 msgstr ""
 
 msgid "PDF"
@@ -1386,7 +1386,7 @@ msgstr ""
 msgid "Project"
 msgstr ""
 
-msgid "Project now"
+msgid "Project selection?"
 msgstr ""
 
 msgid "Projector"
@@ -1657,7 +1657,7 @@ msgstr ""
 msgid "Simple majority"
 msgstr ""
 
-msgid "Slides"
+msgid "Slide"
 msgstr ""
 
 msgid "Sort"
