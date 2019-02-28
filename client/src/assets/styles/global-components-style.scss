@@ -19,7 +19,7 @@
         color: mat-color($primary);
     }
 
-    .accent-text {
+    .accent, .accent-text {
         color: mat-color($accent);
     }
 
@@ -42,7 +42,7 @@
         font-size: 75%;
         display: block;
     }
-    .error {
+    .error, .warn {
         color: mat-color($warn);
     }
 
@@ -74,5 +74,14 @@
     #chyron {
         background-color: mat-color($primary);
         color: white; // TODO
+    }
+    .backgroundColorAccent {
+        background-color: mat-color($accent);
+        color: mat-color($accent, default-contrast) !important;
+    }
+
+    .backgroundColorLight {
+        background-color: mat-color($background, status-bar);
+        color: mat-color($foreground, text) !important;
     }
 }

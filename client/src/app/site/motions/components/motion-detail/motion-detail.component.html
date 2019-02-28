@@ -72,10 +72,7 @@
                 <span translate>List of speakers</span>
             </button>
             <!-- Project -->
-            <button mat-menu-item *osPerms="'core.can_manage_projector'">
-                <mat-icon>videocam</mat-icon>
-                <span translate>Project</span>
-            </button>
+            <os-projector-button [object]="motion" [menuItem]="true" *osPerms="'core.can_manage_projector'"></os-projector-button>
             <!-- New amendment -->
             <button mat-menu-item (click)="createAmendment()" *ngIf="perms.isAllowed('can_create_amendments', motion)">
                 <mat-icon>add</mat-icon>

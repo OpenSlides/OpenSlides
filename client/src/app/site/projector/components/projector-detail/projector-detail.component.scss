@@ -30,7 +30,7 @@
     color: rgba(0, 0, 0, 0.5);
 
     .button-size {
-        width: 40px;
+        padding-left: 5px;
         display: inline-block;
     }
 }
@@ -43,6 +43,37 @@
     text-align: right;
 }
 
+.currentElement {
+    margin-bottom: 20px;
+    box-shadow: 0px 3px 10px 0px rgba(0, 0, 0, 0.25);
+
+    .button-right {
+        position: absolute;
+        right: 10px;
+    }
+}
+
+.queue,
+.previous-slides {
+    box-shadow: none !important;
+    background: none !important;
+    margin-bottom: 20px;
+
+    .queue-element {
+        margin-bottom: 5px;
+    }
+
+    .mat-expansion-panel-header {
+        padding: 0 5px 0 0 !important;
+        height: 36px !important;
+    }
+
+    .mat-action-row {
+        border-top-style: none;
+        padding: 0;
+    }
+}
+
 .drop-list {
     width: 100%;
     display: block;
@@ -53,8 +84,6 @@
     display: table;
     min-height: 50px;
     width: 100%;
-    border-bottom: solid 1px #ccc;
-    color: rgba(0, 0, 0, 0.87);
 
     .drag-handle {
         display: table-cell;
@@ -64,11 +93,6 @@
         width: 25px;
         color: slategrey;
         cursor: move;
-    }
-
-    .name {
-        display: table-cell;
-        vertical-align: middle;
     }
 
     .button-right {
@@ -81,6 +105,11 @@
         div {
             float: right;
         }
+    }
+
+    .name {
+        display: table-cell;
+        vertical-align: middle;
     }
 }
 
