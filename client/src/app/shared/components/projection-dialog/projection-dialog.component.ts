@@ -14,7 +14,7 @@ import {
     SlideOptions
 } from 'app/site/base/slide-options';
 
-export type ProjectionDialogReturnType = [Projector[], IdentifiableProjectorElement];
+export type ProjectionDialogReturnType = ['project' | 'addToPreview', Projector[], IdentifiableProjectorElement];
 
 /**
  */
@@ -85,10 +85,16 @@ export class ProjectionDialogComponent {
         return isSlideChoiceOption(option);
     }
 
-    public onOk(): void {
+    public onProject(): void {
         let element = this.projectorElementBuildDescriptor.getBasicProjectorElement(this.optionValues);
         element = { ...element, ...this.optionValues };
-        this.dialogRef.close([this.selectedProjectors, element]);
+        this.dialogRef.close(['project', this.selectedProjectors, element]);
+    }
+
+    public onAddToPreview(): void {
+        let element = this.projectorElementBuildDescriptor.getBasicProjectorElement(this.optionValues);
+        element = { ...element, ...this.optionValues };
+        this.dialogRef.close(['addToPreview', this.selectedProjectors, element]);
     }
 
     public onCancel(): void {
