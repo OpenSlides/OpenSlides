@@ -153,9 +153,7 @@ export class CategoryListComponent extends BaseViewComponent implements OnInit {
     public async onSaveButton(viewCategory: ViewCategory): Promise<void> {
         if (this.updateForm.dirty && this.updateForm.valid) {
             const cat: Partial<Category> = { name: this.updateForm.get('name').value };
-            if (this.updateForm.get('prefix').value) {
-                cat.prefix = this.updateForm.get('prefix').value;
-            }
+            cat.prefix = this.updateForm.get('prefix').value || '';
             await this.repo.update(cat, viewCategory);
             this.updateForm.markAsPristine();
         }
