@@ -6,8 +6,8 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { AgendaImportService } from '../../agenda-import.service';
 import { BaseImportListComponent } from 'app/site/base/base-import-list';
+import { CsvExportService } from 'app/core/ui-services/csv-export.service';
 import { DurationService } from 'app/core/ui-services/duration.service';
-import { FileExportService } from 'app/core/ui-services/file-export.service';
 import { itemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { ViewCreateTopic } from '../../models/view-create-topic';
 
@@ -41,7 +41,7 @@ export class AgendaImportListComponent extends BaseImportListComponent<ViewCreat
         translate: TranslateService,
         importer: AgendaImportService,
         formBuilder: FormBuilder,
-        private exporter: FileExportService,
+        private exporter: CsvExportService,
         private durationService: DurationService
     ) {
         super(importer, titleService, translate, matSnackBar);
@@ -52,16 +52,17 @@ export class AgendaImportListComponent extends BaseImportListComponent<ViewCreat
      * Triggers an example csv download
      */
     public downloadCsvExample(): void {
-        const headerRow = ['Title', 'Text', 'Duration', 'Comment', 'Internal item']
-            .map(item => this.translate.instant(item))
-            .join(',');
+        const headerRow = ['Title', 'Text', 'Duration', 'Comment', 'Internal item'];
         const rows = [
-            headerRow,
-            'Demo 1,Demo text 1,1:00,test comment,',
-            'Break,,0:10,,internal',
-            'Demo 2,Demo text 2,1:30,,hidden'
+            ['Demo 1', 'Demo text 1', '1:00', 'test comment', null],
+            ['Break', null, '0:10', null, 'internal', null],
+            ['Demo 2', 'Demo text 2', '1:30', null, 'hidden']
         ];
-        this.exporter.saveFile(rows.join('\n'), this.translate.instant('Topic example') + '.csv', 'text/csv');
+        this.exporter.dummyCSVExport(
+            headerRow,
+            rows,
+            `${this.translate.instant('Agenda')}-${this.translate.instant('example')}.csv`
+        );
     }
 
     /**

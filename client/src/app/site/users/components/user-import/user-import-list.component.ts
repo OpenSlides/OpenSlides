@@ -4,7 +4,7 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
 import { BaseImportListComponent } from 'app/site/base/base-import-list';
-import { FileExportService } from 'app/core/ui-services/file-export.service';
+import { CsvExportService } from 'app/core/ui-services/csv-export.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { NewEntry } from 'app/core/ui-services/base-import.service';
 import { UserImportService } from '../../services/user-import.service';
@@ -27,7 +27,7 @@ export class UserImportListComponent extends BaseImportListComponent<ViewUser> {
      * @param matSnackBar snackbar for displaying errors
      * @param formBuilder: FormBuilder for the textArea
      * @param translate the translate service
-     * @param exporter: csv export service for dummy dat
+     * @param exporter: csv export service for dummy data
      * @param importer: The motion csv import service
      */
     public constructor(
@@ -35,7 +35,7 @@ export class UserImportListComponent extends BaseImportListComponent<ViewUser> {
         matSnackBar: MatSnackBar,
         formBuilder: FormBuilder,
         public translate: TranslateService,
-        private exporter: FileExportService,
+        private exporter: CsvExportService,
         importer: UserImportService
     ) {
         super(importer, titleService, translate, matSnackBar);
@@ -59,17 +59,40 @@ export class UserImportListComponent extends BaseImportListComponent<ViewUser> {
             'Is a committee',
             'Initial password',
             'Email'
-        ]
-            .map(item => this.translate.instant(item))
-            .join(',');
-        const rows = [
-            headerRow,
-            'Dr.,Max,Mustermann,"Berlin",1234567890,"Delegates, Staff",xyz,1,1,,initialPassword,',
-            ',John,Doe,Washington,75/99/8-2,Committees,"This is a comment, without doubt",1,1,,,john.doe@email.com',
-            ',Fred,Bloggs,London,,,,,,,,',
-            ',,Executive Board,,,,,,,1,,'
         ];
-        this.exporter.saveFile(rows.join('\n'), this.translate.instant('participants-example') + '.csv', 'text/csv');
+        const rows = [
+            [
+                'Dr.',
+                'Max',
+                'Mustermann',
+                'Berlin',
+                1234567890,
+                'Delegates, Staff',
+                'xyz',
+                1,
+                1,
+                ,
+                'initialPassword',
+                null
+            ],
+            [
+                null,
+                'John',
+                'Doe',
+                'Washington',
+                '75/99/8-2',
+                'Committees',
+                'This is a comment, without doubt',
+                1,
+                1,
+                null,
+                null,
+                'john.doe@email.com'
+            ],
+            [null, 'Fred', 'Bloggs', 'London', null, null, null, null, null, null, null, null],
+            [null, null, 'Executive Board', null, null, null, null, null, null, 1, null, null]
+        ];
+        this.exporter.dummyCSVExport(headerRow, rows, `${this.translate.instant('participants-example')}.csv`);
     }
 
     /**
