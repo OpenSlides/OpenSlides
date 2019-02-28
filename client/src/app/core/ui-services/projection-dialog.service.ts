@@ -47,8 +47,14 @@ export class ProjectionDialogService {
         });
         const response = await dialogRef.afterClosed().toPromise();
         if (response) {
-            const [projectors, projectorElement]: ProjectionDialogReturnType = response;
-            this.projectorService.projectOnMultiple(projectors, projectorElement);
+            const [action, projectors, projectorElement]: ProjectionDialogReturnType = response;
+            if (action === 'project') {
+                this.projectorService.projectOnMultiple(projectors, projectorElement);
+            } else if (action === 'addToPreview') {
+                projectors.forEach(projector => {
+                    this.projectorService.addElementToPreview(projector, projectorElement);
+                });
+            }
         }
     }
 }

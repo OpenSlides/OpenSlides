@@ -50,9 +50,9 @@
             </button>
         </div>
 
-        <div class="queue">
+        <div class="queue" *ngIf="projector.elements_history.length">
             <h5 translate>History</h5>
-            <p *ngFor="let elements of projector?.elements_history">
+            <p *ngFor="let elements of projector.elements_history">
                 {{ getSlideTitle(elements[0]) }}
             </p>
         </div>
@@ -143,7 +143,7 @@
             </mat-list>
         </div>
 
-        <div class="queue">
+        <div class="queue" *ngIf="projector.elements_preview.length">
             <h5 translate>Queue</h5>
             <div cdkDropList class="drop-list" (cdkDropListDropped)="onSortingChange($event)">
                 <div class="list-entry" *ngFor="let element of projector.elements_preview; let i = index" cdkDrag>
