@@ -28,11 +28,12 @@ def get_flat_tree(all_data: AllData, parent_id: int = 0) -> List[Dict[str, Any]]
 
     # Build a dict from an item_id to all its children
     children: Dict[int, List[int]] = defaultdict(list)
-    for item in sorted(
-        all_data["agenda/item"].values(), key=lambda item: item["weight"]
-    ):
-        if item["type"] == 1:  # only normal items
-            children[item["parent_id"] or 0].append(item["id"])
+    if "agenda/item" in all_data:
+        for item in sorted(
+            all_data["agenda/item"].values(), key=lambda item: item["weight"]
+        ):
+            if item["type"] == 1:  # only normal items
+                children[item["parent_id"] or 0].append(item["id"])
 
     tree = []
 
