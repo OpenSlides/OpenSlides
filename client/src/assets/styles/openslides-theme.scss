@@ -32,46 +32,11 @@ $openslides-blue: (
     )
 );
 
-$openslides-green: (
-    50: #e9f2e6,
-    100: #c8e0bf,
-    200: #a3cb95,
-    300: #7eb66b,
-    400: #62a64b,
-    500: #46962b,
-    600: #3f8e26,
-    700: #0a321e,
-    800: #092d1a,
-    900: #072616,
-    A100: #acff9d,
-    A200: #80ff6a,
-    A400: #55ff37,
-    A700: #3fff1e,
-    contrast: (
-        50: #000000,
-        100: #000000,
-        200: #000000,
-        300: #000000,
-        400: #000000,
-        500: #ffffff,
-        600: #ffffff,
-        700: #ffffff,
-        800: #ffffff,
-        900: #ffffff,
-        A100: #000000,
-        A200: #000000,
-        A400: #000000,
-        A700: #000000
-    )
-);
-
 // Generate paletes using: https://material.io/design/color/
 // default values fir mat-palette: $default: 500, $lighter: 100, $darker: 700.
 $openslides-primary: mat-palette($openslides-blue);
 
 $openslides-accent: mat-palette($mat-light-blue);
-// $openslides-primary: mat-palette($openslides-green);
-// $openslides-accent: mat-palette($mat-amber);
 
 $openslides-warn: mat-palette($mat-red);
 

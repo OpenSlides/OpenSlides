@@ -409,6 +409,9 @@ button.mat-menu-item.selected {
 .spacer-left-10 {
     margin-left: 10px;
 }
+.spacer-left-40 {
+    margin-left: 40px !important;
+}
 
 .button24 {
     background-color: white;
@@ -468,6 +471,12 @@ button.mat-menu-item.selected {
 /** more helper classes **/
 .center {
     text-align: center;
+}
+.pointer:hover {
+    cursor: pointer;
+}
+.pointer.selected {
+    cursor: pointer;
 }
 
 /** Colors **/
@@ -637,4 +646,11 @@ button.mat-menu-item.selected {
 /** functional items should lay over the anchor column */
 .mat-cell > * {
     z-index: 2;
+}
+
+
+.queue {
+    .mat-expansion-panel-body {
+        padding: 0 !important;
+    }
 }
