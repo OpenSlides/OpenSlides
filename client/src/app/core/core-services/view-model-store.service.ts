@@ -69,8 +69,11 @@ export class ViewModelStoreService {
      * @param callback The function to check
      * @returns all matched view models of the collection
      */
-    public filter<T extends BaseViewModel>(collectionString: string, callback: (model: T) => boolean): T[] {
-        return this.getAll<T>(collectionString).filter(callback);
+    public filter<T extends BaseViewModel>(
+        collectionType: ViewModelConstructor<T> | string,
+        callback: (model: T) => boolean
+    ): T[] {
+        return this.getAll<T>(collectionType).filter(callback);
     }
 
     /**
@@ -80,7 +83,10 @@ export class ViewModelStoreService {
      * @param callback THe callback to satisfy
      * @returns a found view model or null, if nothing was found.
      */
-    public find<T extends BaseViewModel>(collectionString: string, callback: (model: T) => boolean): T {
-        return this.getAll<T>(collectionString).find(callback);
+    public find<T extends BaseViewModel>(
+        collectionType: ViewModelConstructor<T> | string,
+        callback: (model: T) => boolean
+    ): T {
+        return this.getAll<T>(collectionType).find(callback);
     }
 }

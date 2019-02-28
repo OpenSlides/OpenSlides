@@ -15,6 +15,8 @@ import { ViewWorkflow } from './view-workflow';
 import { ViewCategory } from './view-category';
 import { ViewMotionBlock } from './view-motion-block';
 import { BaseViewModel } from 'app/site/base/base-view-model';
+import { ConfigService } from 'app/core/ui-services/config.service';
+import { ViewMotionChangeRecommendation } from './view-change-recommendation';
 
 /**
  * The line numbering mode for the motion detail view.
@@ -58,6 +60,7 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
     protected _attachments: ViewMediafile[];
     protected _tags: ViewTag[];
     protected _parent: ViewMotion;
+    protected _changeRecommendations: ViewMotionChangeRecommendation[];
     public personalNote: PersonalNoteContent;
 
     /**
@@ -155,6 +158,10 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
 
     public get state(): WorkflowState {
         return this._state;
+    }
+
+    public get changeRecommendations(): ViewMotionChangeRecommendation[] {
+        return this._changeRecommendations;
     }
 
     /**
@@ -356,7 +363,8 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
         block?: ViewMotionBlock,
         attachments?: ViewMediafile[],
         tags?: ViewTag[],
-        parent?: ViewMotion
+        parent?: ViewMotion,
+        changeRecommendations?: ViewMotionChangeRecommendation[]
     ) {
         super(Motion.COLLECTIONSTRING);
         this._motion = motion;
@@ -370,6 +378,7 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
         this._attachments = attachments;
         this._tags = tags;
         this._parent = parent;
+        this._changeRecommendations = changeRecommendations;
     }
 
     public getAgendaItem(): ViewItem {
@@ -429,6 +438,8 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
             this.updateTags(update);
         } else if (update instanceof ViewMotion && update.id !== this.id) {
             this.updateParent(update);
+        } else if (update instanceof ViewMotionChangeRecommendation) {
+            this.updateChangeRecommendation(update);
         }
     }
 
@@ -437,7 +448,7 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
      *
      * @param workflow potentially the (changed workflow (state). Needs manual verification
      */
-    public updateWorkflow(workflow: ViewWorkflow): void {
+    private updateWorkflow(workflow: ViewWorkflow): void {
         if (workflow.id === this.motion.workflow_id) {
             this._workflow = workflow;
             this._state = workflow.getStateById(this.state_id);
@@ -449,7 +460,7 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
      *
      * @param category potentially the changed category. Needs manual verification
      */
-    public updateCategory(category: ViewCategory): void {
+    private updateCategory(category: ViewCategory): void {
         if (this.category_id && category.id === this.motion.category_id) {
             this._category = category;
         }
@@ -460,7 +471,7 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
      *
      * @param item potentially the changed agenda Item. Needs manual verification
      */
-    public updateItem(item: ViewItem): void {
+    private updateItem(item: ViewItem): void {
         if (item.id === this.motion.agenda_item_id) {
             this._item = item;
         }
@@ -471,7 +482,7 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
      *
      * @param block potentially the changed motion block. Needs manual verification
      */
-    public updateMotionBlock(block: ViewMotionBlock): void {
+    private updateMotionBlock(block: ViewMotionBlock): void {
         if (this.motion_block_id && block.id === this.motion.motion_block_id) {
             this._block = block;
         }
@@ -482,7 +493,7 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
      *
      * @param update potentially the changed agenda Item. Needs manual verification
      */
-    public updateUser(update: ViewUser): void {
+    private updateUser(update: ViewUser): void {
         if (this.motion.submitters && this.motion.submitters.find(user => user.user_id === update.id)) {
             const userIndex = this.motion.submitters.findIndex(submitter => submitter.user_id === update.id);
             this.submitters[userIndex] = update;
@@ -502,7 +513,7 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
      *
      * @param mediafile
      */
-    public updateAttachments(mediafile: ViewMediafile): void {
+    private updateAttachments(mediafile: ViewMediafile): void {
         if (this.attachments_id && this.attachments_id.includes(mediafile.id)) {
             const attachmentIndex = this.attachments.findIndex(_mediafile => _mediafile.id === mediafile.id);
             if (attachmentIndex < 0) {
@@ -513,7 +524,7 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
         }
     }
 
-    public updateTags(tag: ViewTag): void {
+    private updateTags(tag: ViewTag): void {
         if (this.tags_id && this.tags_id.includes(tag.id)) {
             const tagIndex = this.tags.findIndex(_tag => _tag.id === tag.id);
             if (tagIndex < 0) {
@@ -524,9 +535,20 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
         }
     }
 
-    public updateParent(parent: ViewMotion): void {
+    private updateParent(parent: ViewMotion): void {
         if (this.parent_id && this.parent_id === parent.id) {
             this._parent = parent;
+        }
+    }
+
+    private updateChangeRecommendation(cr: ViewMotionChangeRecommendation): void {
+        if (cr.motion_id === this.id) {
+            const index = this.changeRecommendations.findIndex(_cr => _cr.id === cr.id);
+            if (index < 0) {
+                this.changeRecommendations.push(cr);
+            } else {
+                this.changeRecommendations[index] = cr;
+            }
         }
     }
 
@@ -561,26 +583,30 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
         return this.amendment_paragraphs.length > 0;
     }
 
-    public getSlide(): ProjectorElementBuildDeskriptor {
+    public getSlide(configService: ConfigService): ProjectorElementBuildDeskriptor {
+        const slideOptions = [];
+
+        if (this.changeRecommendations && this.changeRecommendations.length) {
+            slideOptions.push({
+                key: 'mode',
+                displayName: 'Which version?',
+                default: configService.instant('motions_recommendation_text_mode'),
+                choices: [
+                    { value: 'original', displayName: 'Original version' },
+                    { value: 'changed', displayName: 'Changed version' },
+                    { value: 'diff', displayName: 'Diff version' },
+                    { value: 'agreed', displayName: 'Final version' }
+                ]
+            });
+        }
+
         return {
             getBasicProjectorElement: options => ({
                 name: Motion.COLLECTIONSTRING,
                 id: this.id,
                 getIdentifiers: () => ['name', 'id']
             }),
-            slideOptions: [
-                {
-                    key: 'mode',
-                    displayName: 'Change recommendations',
-                    default: 'original',
-                    choices: [
-                        { value: 'original', displayName: 'Original version' },
-                        { value: 'changed', displayName: 'Changed version' },
-                        { value: 'diff', displayName: 'Diff version' },
-                        { value: 'agreed', displayName: 'Final version' }
-                    ]
-                }
-            ],
+            slideOptions: slideOptions,
             projectionDefaultName: 'motions',
             getDialogTitle: this.getAgendaTitle
         };

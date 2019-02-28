@@ -88,7 +88,8 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
             Item,
             MotionBlock,
             Mediafile,
-            Tag
+            Tag,
+            MotionChangeRecommendation
         ]);
     }
 
@@ -148,6 +149,10 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
         const attachments = this.viewModelStoreService.getMany(ViewMediafile, motion.attachments_id);
         const tags = this.viewModelStoreService.getMany(ViewTag, motion.tags_id);
         const parent = this.viewModelStoreService.get(ViewMotion, motion.parent_id);
+        const changeRecommendations = this.viewModelStoreService.filter(
+            ViewMotionChangeRecommendation,
+            cr => cr.motion_id === motion.id
+        );
         let state: WorkflowState = null;
         if (workflow) {
             state = workflow.getStateById(motion.state_id);
@@ -163,7 +168,8 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
             block,
             attachments,
             tags,
-            parent
+            parent,
+            changeRecommendations
         );
         viewMotion.getIdentifierOrTitle = () => this.getIdentifierOrTitle(viewMotion);
         viewMotion.getTitle = () => this.getTitle(viewMotion);

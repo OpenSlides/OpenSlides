@@ -167,6 +167,7 @@ _('Amendment to');
 _('Statute amendment for');
 _('Creation date');
 _('Last modified');
+_('Which version?');
 
 // motion workflow 1
 _('Simple Workflow');
