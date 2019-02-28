@@ -40,8 +40,8 @@
                     <span>{{ number + 1 }}. {{ speaker }}</span>
                 </div>
                 <div class="finished-suffix">
-                    &nbsp;&nbsp; {{ durationString(speaker) }}
-                    ({{ 'Start time' | translate }}: {{ startTimeToString(speaker) }})
+                    &nbsp;&nbsp; {{ durationString(speaker) }} ({{ 'Start time' | translate }}:
+                    {{ startTimeToString(speaker) }})
                 </div>
                 <button
                     mat-stroked-button
@@ -131,7 +131,11 @@
 </mat-card>
 
 <mat-menu #speakerMenu="matMenu">
-    <os-projector-button *ngIf="viewItem" [object]="viewItem.listOfSpeakersSlide" [menuItem]="true"></os-projector-button>
+    <os-projector-button
+        *ngIf="viewItem"
+        [object]="viewItem.listOfSpeakersSlide"
+        [menuItem]="true"
+    ></os-projector-button>
 
     <button mat-menu-item *ngIf="closedList" (click)="openSpeakerList()">
         <mat-icon>mic</mat-icon>
