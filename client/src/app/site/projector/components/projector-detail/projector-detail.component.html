@@ -14,7 +14,6 @@
         </a>
         <!-- Controls under the projector preview -->
         <div class="control-group projector-controls">
-
             <!-- scale up -->
             <button type="button" mat-icon-button (click)="scale(scrollScaleDirection.Up)">
                 <mat-icon>zoom_in</mat-icon>
@@ -44,7 +43,6 @@
             </button>
             <!-- scroll indicator -->
             <div class="button-size" [ngClass]="projector.scroll != 0 ? 'warn' : ''">{{ projector.scroll }}</div>
-
         </div>
     </div>
     <div class="column-right" *osPerms="'core.can_manage_projector'">
@@ -73,7 +71,10 @@
         <div>
             <div *ngIf="projector.non_stable_elements.length">
                 <mat-list>
-                    <mat-list-item *ngFor="let element of projector.non_stable_elements" class="currentElement backgroundColorAccent">
+                    <mat-list-item
+                        *ngFor="let element of projector.non_stable_elements"
+                        class="currentElement backgroundColorAccent"
+                    >
                         <button type="button" mat-icon-button (click)="unprojectCurrent(element)">
                             <mat-icon>videocam</mat-icon>
                         </button>
@@ -96,7 +97,6 @@
                     <mat-expansion-panel-header>
                         <span translate>Queue</span>
                     </mat-expansion-panel-header>
-
                     <div
                         cdkDropList
                         class="drop-list"
@@ -161,7 +161,7 @@
                             <button type="button" mat-icon-button (click)="project(countdown)">
                                 <mat-icon>videocam</mat-icon>
                             </button>
-                            {{ countdown.description }}
+                            {{ countdown.getTitle() | translate }}
                         </mat-list-item>
                     </mat-list>
                     <mat-action-row>

@@ -50,8 +50,9 @@ export class CountdownListComponent extends BaseViewComponent implements OnInit 
         super(titleService, translate, matSnackBar);
 
         const form = {
-            description: ['', Validators.required],
-            default_time: ['', Validators.required]
+            description: [''],
+            default_time: ['', Validators.required],
+            title: ['', Validators.required]
         };
         this.createForm = this.formBuilder.group(form);
         this.updateForm = this.formBuilder.group(form);
@@ -77,6 +78,7 @@ export class CountdownListComponent extends BaseViewComponent implements OnInit 
             this.createForm.reset();
             this.createForm.setValue({
                 description: '',
+                title: '',
                 default_time: '1:00 m'
             });
             this.countdownToCreate = new Countdown();
@@ -95,6 +97,7 @@ export class CountdownListComponent extends BaseViewComponent implements OnInit 
 
             const newValues: Partial<Countdown> = {
                 description: this.createForm.value.description,
+                title: this.createForm.value.title,
                 default_time: default_time
             };
             newValues.countdown_time = default_time;
@@ -114,6 +117,7 @@ export class CountdownListComponent extends BaseViewComponent implements OnInit 
 
         this.updateForm.setValue({
             description: countdown.description,
+            title: this.translate.instant(countdown.title),
             default_time: this.durationService.durationToString(countdown.default_time, 'm')
         });
     }
@@ -129,6 +133,7 @@ export class CountdownListComponent extends BaseViewComponent implements OnInit 
                 default_time = 60;
             }
             const newValues: Partial<Countdown> = {
+                title: this.updateForm.value.title,
                 description: this.updateForm.value.description,
                 default_time: default_time
             };
@@ -147,7 +152,7 @@ export class CountdownListComponent extends BaseViewComponent implements OnInit 
      * @param countdown The countdown to delete
      */
     public async onDeleteButton(countdown: ViewCountdown): Promise<void> {
-        const content = this.translate.instant('Delete countdown') + ` ${countdown.description}?`;
+        const content = this.translate.instant('Delete countdown') + ` ${this.translate.instant(countdown.title)}?`;
         if (await this.promptService.open('Are you sure?', content)) {
             this.repo.delete(countdown).then(() => (this.openId = this.editId = null), this.raiseError);
         }

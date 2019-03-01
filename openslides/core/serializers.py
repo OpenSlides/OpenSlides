@@ -165,7 +165,15 @@ class CountdownSerializer(ModelSerializer):
 
     class Meta:
         model = Countdown
-        fields = ("id", "description", "default_time", "countdown_time", "running")
+        fields = (
+            "id",
+            "title",
+            "description",
+            "default_time",
+            "countdown_time",
+            "running",
+        )
+        unique_together = ("title",)
 
 
 class HistorySerializer(ModelSerializer):

@@ -9,18 +9,23 @@
 <mat-card *ngIf="countdownToCreate">
     <mat-card-title translate>New countdown</mat-card-title>
     <mat-card-content>
-        <form [formGroup]="createForm"
-            (keydown)="onKeyDownCreate($event)">
+        <form [formGroup]="createForm" (keydown)="onKeyDownCreate($event)">
             <p>
                 <mat-form-field>
-                    <input formControlName="description" matInput placeholder="{{'Description' | translate}}" required>
-                    <mat-hint *ngIf="!createForm.controls.description.valid">
+                    <input formControlName="title" matInput placeholder="{{ 'Title' | translate }}" required />
+                    <mat-hint *ngIf="!createForm.controls.title.valid">
                         <span translate>Required</span>
                     </mat-hint>
                 </mat-form-field>
-            </p><p>
+            </p>
+            <p>
                 <mat-form-field>
-                    <input formControlName="default_time" matInput placeholder="{{ 'Time' | translate}}" required>
+                    <input formControlName="description" matInput placeholder="{{ 'Description' | translate }}" />
+                </mat-form-field>
+            </p>
+            <p>
+                <mat-form-field>
+                    <input formControlName="default_time" matInput placeholder="{{ 'Time' | translate }}" required />
                     <mat-hint *ngIf="!createForm.controls.default_time.valid">
                         <span translate>Required</span>
                     </mat-hint>
@@ -39,9 +44,13 @@
 </mat-card>
 
 <mat-accordion class="os-card">
-    <mat-expansion-panel *ngFor="let countdown of countdowns" (opened)="openId = countdown.id"
-        (closed)="panelClosed(countdown)" [expanded]="openId === countdown.id" multiple="false">
-
+    <mat-expansion-panel
+        *ngFor="let countdown of countdowns"
+        (opened)="openId = countdown.id"
+        (closed)="panelClosed(countdown)"
+        [expanded]="openId === countdown.id"
+        multiple="false"
+    >
         <!-- Projector button and countdown description-->
         <mat-expansion-panel-header>
             <mat-panel-title>
@@ -50,7 +59,7 @@
                         <os-projector-button [object]="countdown"></os-projector-button>
                     </div>
                     <div class="header-name">
-                        {{ countdown.description }}
+                        {{ countdown.getTitle() | translate }}
                     </div>
                     <div class="header-controls">
                         <os-countdown-controls [countdown]="countdown"></os-countdown-controls>
@@ -58,20 +67,28 @@
                 </div>
             </mat-panel-title>
         </mat-expansion-panel-header>
-        <form [formGroup]="updateForm"
-            *ngIf="editId === countdown.id"
-            (keydown)="onKeyDownUpdate($event)">
+        <form [formGroup]="updateForm" *ngIf="editId === countdown.id" (keydown)="onKeyDownUpdate($event)">
             <h5 translate>Edit countdown</h5>
             <p>
                 <mat-form-field>
-                    <input formControlName="description" matInput placeholder="{{ 'Description' | translate}}" required>
-                    <mat-hint *ngIf="!updateForm.controls.description.valid">
+                    <input formControlName="title" matInput placeholder="{{ 'Title' | translate }}" required />
+                    <mat-hint *ngIf="!updateForm.controls.title.valid">
                         <span translate>Required</span>
                     </mat-hint>
                 </mat-form-field>
-            </p><p>
+            </p>
+            <p>
                 <mat-form-field>
-                    <input formControlName="default_time" matInput placeholder="{{ 'Time' | translate}}" required>
+                    <input
+                        formControlName="description"
+                        matInput
+                        placeholder="{{ 'Description' | translate }}"
+                    />
+                </mat-form-field>
+            </p>
+            <p>
+                <mat-form-field>
+                    <input formControlName="default_time" matInput placeholder="{{ 'Time' | translate }}" required />
                     <mat-hint *ngIf="!updateForm.controls.default_time.valid">
                         <span translate>Required</span>
                     </mat-hint>
@@ -79,19 +96,34 @@
             </p>
         </form>
         <mat-action-row>
-            <button *ngIf="editId !== countdown.id" mat-button class="on-transition-fade" (click)="onEditButton(countdown)"
-                mat-icon-button>
+            <button
+                *ngIf="editId !== countdown.id"
+                mat-button
+                class="on-transition-fade"
+                (click)="onEditButton(countdown)"
+                mat-icon-button
+            >
                 <mat-icon>edit</mat-icon>
             </button>
-            <button *ngIf="editId === countdown.id" mat-button class="on-transition-fade" (click)="onCancelUpdate()"
-                mat-icon-button>
+            <button
+                *ngIf="editId === countdown.id"
+                mat-button
+                class="on-transition-fade"
+                (click)="onCancelUpdate()"
+                mat-icon-button
+            >
                 <mat-icon>close</mat-icon>
             </button>
-            <button *ngIf="editId === countdown.id" mat-button class="on-transition-fade" (click)="onSaveButton(countdown)"
-                mat-icon-button>
+            <button
+                *ngIf="editId === countdown.id"
+                mat-button
+                class="on-transition-fade"
+                (click)="onSaveButton(countdown)"
+                mat-icon-button
+            >
                 <mat-icon>save</mat-icon>
             </button>
-            <button mat-button class='on-transition-fade' (click)=onDeleteButton(countdown) mat-icon-button>
+            <button mat-button class="on-transition-fade" (click)="onDeleteButton(countdown)" mat-icon-button>
                 <mat-icon>delete</mat-icon>
             </button>
         </mat-action-row>
