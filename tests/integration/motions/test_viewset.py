@@ -696,6 +696,18 @@ class DeleteMotion(TestCase):
         motions = Motion.objects.count()
         self.assertEqual(motions, 0)
 
+    def test_delete_with_two_change_recommendations(self):
+        self.cr1 = MotionChangeRecommendation.objects.create(
+            motion=self.motion, internal=False, line_from=1, line_to=1
+        )
+        self.cr2 = MotionChangeRecommendation.objects.create(
+            motion=self.motion, internal=False, line_from=2, line_to=2
+        )
+        response = self.client.delete(reverse("motion-detail", args=[self.motion.pk]))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        motions = Motion.objects.count()
+        self.assertEqual(motions, 0)
+
 
 class ManageMultipleSubmitters(TestCase):
     """
@@ -1966,3 +1978,33 @@ class DeleteWorkflow(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(Workflow.objects.count(), 2)
+
+
+class DeleteCategory(TestCase):
+    """
+    Tests the deletion of categories.
+    """
+
+    def setUp(self):
+        self.client = APIClient()
+        self.client.login(username="admin", password="admin")
+        self.category = Category.objects.create(
+            name="test_name_dacei2iiTh", prefix="test_prefix_lahngoaW9L"
+        )
+
+    def test_simple_delete_category_with_two_motions(self):
+        self.motion1 = Motion.objects.create(
+            title="test_title_fieB5ko4ahGeex5ohsh7",
+            text="test_text_EFoh6Ahtho9eihei1xua",
+            category=self.category,
+        )
+        self.motion2 = Motion.objects.create(
+            title="test_title_ahboo8eerohchuoD7sut",
+            text="test_text_pahghah9iuM9moo8Ohve",
+            category=self.category,
+        )
+        response = self.client.delete(
+            reverse("category-detail", args=[self.category.pk])
+        )
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Category.objects.exists())

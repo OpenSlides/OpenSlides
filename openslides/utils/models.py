@@ -163,12 +163,11 @@ def SET_NULL_AND_AUTOUPDATE(
     Like models.SET_NULL but also informs the autoupdate system about the
     instance that was reference.
     """
-    if len(sub_objs) != 1:
-        raise RuntimeError(
-            "SET_NULL_AND_AUTOUPDATE is used in an invalid usecase. Please report the bug!"
-        )
-    setattr(sub_objs[0], field.name, None)
-    inform_changed_data(sub_objs[0])
+    instances = []
+    for sub_obj in sub_objs:
+        setattr(sub_obj, field.name, None)
+        instances.append(sub_obj)
+    inform_changed_data(instances)
     models.SET_NULL(collector, field, sub_objs, using)
 
 
@@ -179,19 +178,16 @@ def CASCADE_AND_AUTOUODATE(
     Like models.CASCADE but also informs the autoupdate system about the
     root rest element of the also deleted instance.
     """
-    if len(sub_objs) != 1:
-        raise RuntimeError(
-            "CASCADE_AND_AUTOUPDATE is used in an invalid usecase. Please report the bug!"
-        )
-    root_rest_element = sub_objs[0].get_root_rest_element()
-    inform_changed_elements(
-        [
+    elements = []
+    for sub_obj in sub_objs:
+        root_rest_element = sub_obj.get_root_rest_element()
+        elements.append(
             Element(
                 collection_string=root_rest_element.get_collection_string(),
                 id=root_rest_element.pk,
                 full_data=None,
                 reload=True,
             )
-        ]
-    )
+        )
+    inform_changed_elements(elements)
     models.CASCADE(collector, field, sub_objs, using)
