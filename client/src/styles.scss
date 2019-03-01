@@ -191,6 +191,9 @@ mat-card {
         width: 100%;
     }
 }
+.projector-card .mat-form-field-infix {
+    width: 320px;
+}
 
 // Shared table definitions
 %os-table {

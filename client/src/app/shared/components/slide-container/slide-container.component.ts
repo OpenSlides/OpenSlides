@@ -186,7 +186,6 @@ export class SlideContainerComponent extends BaseComponent {
      */
     private setProjectorForComponent(): void {
         if (this.slideRef && this.slideRef.instance) {
-            console.log(this.projector);
             this.slideRef.instance.projector = this.projector;
         }
     }
