@@ -5,9 +5,15 @@
     .material-icons {
         font-family: 'Material Icons';
     }
+    h1 {
+        font-size: 1.8em;
+        font-weight: 500;
+        line-height: 1.1em;
+    }
 
     h2 {
         line-height: 40px;
+        font-weight: normal;
     }
 
     h3 {
@@ -20,8 +26,6 @@
         margin-bottom: 40px;
 
         h1 {
-            font-size: 1.8em;
-            line-height: 1.1em;
             margin-bottom: 0;
             padding-bottom: 0;
         }

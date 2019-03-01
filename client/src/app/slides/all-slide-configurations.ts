@@ -55,11 +55,11 @@ export const allSlidesDynamicConfiguration: (SlideDynamicConfiguration & Slide)[
             viewModelStore: ViewModelStoreService
         ) => {
             const item = viewModelStore.get('agenda/item', element.id);
+            let title = translate.instant('List of speakers');
             if (item) {
-                const title = translate.instant('List of speakers for');
-                return title + ' ' + item.getTitle();
+                title = title + ' (' + item.getTitle() + ')';
             }
-            return translate.instant('List of speakers');
+            return title;
         }
     },
     {
