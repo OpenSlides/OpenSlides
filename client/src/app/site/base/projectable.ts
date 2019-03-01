@@ -1,6 +1,7 @@
 import { Displayable } from 'app/site/base/displayable';
 import { IdentifiableProjectorElement, ProjectorElementOptions } from 'app/shared/models/core/projector';
 import { SlideOptions } from './slide-options';
+import { ConfigService } from 'app/core/ui-services/config.service';
 
 export function isProjectorElementBuildDeskriptor(obj: any): obj is ProjectorElementBuildDeskriptor {
     const deskriptor = <ProjectorElementBuildDeskriptor>obj;
@@ -35,5 +36,5 @@ export function isProjectable(obj: any): obj is Projectable {
  * Interface for every model, that should be projectable.
  */
 export interface Projectable extends Displayable {
-    getSlide(): ProjectorElementBuildDeskriptor;
+    getSlide(configSerice?: ConfigService): ProjectorElementBuildDeskriptor;
 }

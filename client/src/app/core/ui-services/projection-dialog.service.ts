@@ -7,6 +7,7 @@ import {
     ProjectionDialogReturnType
 } from 'app/shared/components/projection-dialog/projection-dialog.component';
 import { ProjectorService } from '../core-services/projector.service';
+import { ConfigService } from './config.service';
 
 /**
  * Manages the projection dialog. Projects the result of the user's choice.
@@ -21,7 +22,11 @@ export class ProjectionDialogService {
      * @param dialog
      * @param projectorService
      */
-    public constructor(private dialog: MatDialog, private projectorService: ProjectorService) {}
+    public constructor(
+        private dialog: MatDialog,
+        private projectorService: ProjectorService,
+        private configService: ConfigService
+    ) {}
 
     /**
      * Opens the projection dialog for the given projectable. After the user's choice,
@@ -32,7 +37,7 @@ export class ProjectionDialogService {
     public async openProjectDialogFor(obj: Projectable | ProjectorElementBuildDeskriptor): Promise<void> {
         let descriptor: ProjectorElementBuildDeskriptor;
         if (isProjectable(obj)) {
-            descriptor = obj.getSlide();
+            descriptor = obj.getSlide(this.configService);
         } else {
             descriptor = obj;
         }

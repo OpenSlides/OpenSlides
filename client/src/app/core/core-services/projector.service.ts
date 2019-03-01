@@ -19,6 +19,7 @@ import { BaseModel } from 'app/shared/models/base/base-model';
 import { ViewModelStoreService } from './view-model-store.service';
 import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
 import { TranslateService } from '@ngx-translate/core';
+import { ConfigService } from '../ui-services/config.service';
 
 /**
  * This service cares about Projectables being projected and manage all projection-related
@@ -41,7 +42,8 @@ export class ProjectorService {
         private http: HttpService,
         private slideManager: SlideManager,
         private viewModelStore: ViewModelStoreService,
-        private translate: TranslateService
+        private translate: TranslateService,
+        private configService: ConfigService
     ) {}
 
     /**
@@ -54,7 +56,7 @@ export class ProjectorService {
         obj: Projectable | ProjectorElementBuildDeskriptor | IdentifiableProjectorElement
     ): IdentifiableProjectorElement {
         if (isProjectable(obj)) {
-            return obj.getSlide().getBasicProjectorElement({});
+            return obj.getSlide(this.configService).getBasicProjectorElement({});
         } else if (isProjectorElementBuildDeskriptor(obj)) {
             return obj.getBasicProjectorElement({});
         } else {
