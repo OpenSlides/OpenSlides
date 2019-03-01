@@ -1,5 +1,5 @@
 import { TestBed, inject } from '@angular/core/testing';
-import { E2EImportsModule } from '../../../../e2e-imports.module';
+import { E2EImportsModule } from '../../../e2e-imports.module';
 import { ProjectorDataService } from './projector-data.service';
 
 describe('ProjectorDataService', () => {

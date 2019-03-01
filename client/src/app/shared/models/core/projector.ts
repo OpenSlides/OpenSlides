@@ -30,6 +30,19 @@ export interface IdentifiableProjectorElement extends ProjectorElement {
 }
 
 /**
+ * Compares an identifiable element to an element. Every identifier of `a` must match, if
+ * the attribute is given in the element `b`.
+ *
+ * @param a The identifiable element
+ * @param b The non-identifiable element
+ */
+export function elementIdentifies(a: IdentifiableProjectorElement, b: ProjectorElement): boolean {
+    return a.getIdentifiers().every(identifier => {
+        return !b[identifier] || b[identifier] === a[identifier];
+    });
+}
+
+/**
  * Multiple elements.
  */
 export type ProjectorElements = ProjectorElement[];
@@ -128,12 +141,22 @@ export class Projector extends BaseModel<Projector> {
         let removedElements: ProjectorElements;
         let nonRemovedElements: ProjectorElements;
         [removedElements, nonRemovedElements] = this.partitionArray(this.elements, elementOnProjector => {
-            return element.getIdentifiers().every(identifier => {
-                return !elementOnProjector[identifier] || elementOnProjector[identifier] === element[identifier];
-            });
+            return elementIdentifies(element, elementOnProjector);
         });
         this.elements = nonRemovedElements;
         return removedElements;
+    }
+
+    /**
+     * Replaces all elements with the given elements, if these elements can identify to the
+     * given one.
+     *
+     * @param element The element to replace
+     */
+    public replaceElements(element: IdentifiableProjectorElement): void {
+        this.elements = this.elements.map(elementOnProjector =>
+            elementIdentifies(element, elementOnProjector) ? element : elementOnProjector
+        );
     }
 
     /**

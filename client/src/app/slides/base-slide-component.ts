@@ -1,6 +1,7 @@
 import { Input } from '@angular/core';
-import { SlideData } from 'app/site/projector/services/projector-data.service';
+
 import { ViewProjector } from 'app/site/projector/models/view-projector';
+import { SlideData } from 'app/core/core-services/projector-data.service';
 
 /**
  * Every slide has to extends this base class. It forces the slides
