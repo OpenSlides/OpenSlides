@@ -43,6 +43,8 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
 
     public messages: ViewProjectorMessage[] = [];
 
+    public projectorCount: number;
+
     /**
      * true if the queue might be altered
      */
@@ -72,6 +74,7 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
 
         this.countdownRepo.getViewModelListObservable().subscribe(countdowns => (this.countdowns = countdowns));
         this.messageRepo.getViewModelListObservable().subscribe(messages => (this.messages = messages));
+        this.repo.getViewModelListObservable().subscribe(projectors => (this.projectorCount = projectors.length));
     }
 
     /**
