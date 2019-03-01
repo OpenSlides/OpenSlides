@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 
+import { TranslateService } from '@ngx-translate/core';
+
 import {
     Projectable,
     ProjectorElementBuildDeskriptor,
@@ -11,15 +13,16 @@ import {
     Projector,
     ProjectorElement,
     ProjectorElements,
-    IdentifiableProjectorElement
+    IdentifiableProjectorElement,
+    elementIdentifies
 } from 'app/shared/models/core/projector';
 import { HttpService } from './http.service';
 import { SlideManager } from 'app/slides/services/slide-manager.service';
 import { BaseModel } from 'app/shared/models/base/base-model';
 import { ViewModelStoreService } from './view-model-store.service';
 import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
-import { TranslateService } from '@ngx-translate/core';
 import { ConfigService } from '../ui-services/config.service';
+import { ProjectorDataService } from './projector-data.service';
 
 /**
  * This service cares about Projectables being projected and manage all projection-related
@@ -43,7 +46,8 @@ export class ProjectorService {
         private slideManager: SlideManager,
         private viewModelStore: ViewModelStoreService,
         private translate: TranslateService,
-        private configService: ConfigService
+        private configService: ConfigService,
+        private projectorDataService: ProjectorDataService
     ) {}
 
     /**
@@ -201,7 +205,7 @@ export class ProjectorService {
     ): Promise<void> {
         const requestData: any = {};
         if (elements) {
-            requestData.elements = elements;
+            requestData.elements = this.cleanupElements(projector, elements);
         }
         if (preview) {
             requestData.preview = preview;
@@ -216,6 +220,31 @@ export class ProjectorService {
             throw new Error('You cannot append to the history and delete the last element at the same time');
         }
         await this.http.post(`/rest/core/projector/${projector.id}/project/`, requestData);
+    }
+
+    /**
+     * Cleans up stable elements with errors from the projector
+     *
+     * @param projector The projector
+     * @param elements The elements to clean up
+     * @reutns the cleaned up elements.
+     */
+    private cleanupElements(projector: Projector, elements: ProjectorElements): ProjectorElements {
+        const projectorData = this.projectorDataService.getAvailableProjectorData(projector);
+
+        if (projectorData) {
+            projectorData.forEach(entry => {
+                if (entry.data.error && entry.element.stable) {
+                    // Remove this element
+                    const idElementToRemove = this.slideManager.getIdentifialbeProjectorElement(entry.element);
+                    elements = elements.filter(element => {
+                        return !elementIdentifies(idElementToRemove, element);
+                    });
+                }
+            });
+        }
+
+        return elements;
     }
 
     /**

@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
-import { WebsocketService } from 'app/core/core-services/websocket.service';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { ProjectorElement } from 'app/shared/models/core/projector';
 
-export interface SlideData<T = object> {
+import { Observable, BehaviorSubject } from 'rxjs';
+
+import { WebsocketService } from 'app/core/core-services/websocket.service';
+import { ProjectorElement, Projector } from 'app/shared/models/core/projector';
+
+export interface SlideData<T = { error?: string }> {
     data: T;
     element: ProjectorElement;
     error?: string;
@@ -40,21 +42,16 @@ export class ProjectorDataService {
      * @param websocketService
      */
     public constructor(private websocketService: WebsocketService) {
-        // TODO: On reconnect, we do need to re-inform the server about all needed projectors. This also
-        // updates our projector data, which is great!
         this.websocketService.getOberservable('projector').subscribe((update: AllProjectorData) => {
             Object.keys(update).forEach(_id => {
                 const id = parseInt(_id, 10);
-                if ((<{ error: string }>update[id]).error !== undefined) {
-                    console.log(update, update[_id]);
-                    console.log('TODO: Why does the server sends errors on autoupdates?');
-                } else {
-                    if (this.currentProjectorData[id]) {
-                        this.currentProjectorData[id].next(update[id] as ProjectorData);
-                    }
+                if (this.currentProjectorData[id]) {
+                    this.currentProjectorData[id].next(update[id] as ProjectorData);
                 }
             });
         });
+
+        this.websocketService.reconnectEvent.subscribe(() => this.updateProjectorDataSubscription());
     }
 
     /**
@@ -104,5 +101,16 @@ export class ProjectorDataService {
             .map(id => parseInt(id, 10))
             .filter(id => this.openProjectorInstances[id] > 0);
         this.websocketService.send('listenToProjectors', { projector_ids: allActiveProjectorIds });
+    }
+
+    /**
+     * @returns the available projectior data for the given projector. Note that the data
+     * might not be there, if there is no subscribtion for this projector. But the
+     * data, if exist, is always the current data.
+     */
+    public getAvailableProjectorData(projector: Projector): ProjectorData | null {
+        if (this.currentProjectorData[projector.id]) {
+            return this.currentProjectorData[projector.id].getValue();
+        }
     }
 }

@@ -8,7 +8,7 @@ import { BaseComponent } from 'app/base.component';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { ViewProjector } from 'app/site/projector/models/view-projector';
 import { Size } from 'app/site/projector/size';
-import { SlideData, ProjectorDataService } from 'app/site/projector/services/projector-data.service';
+import { SlideData, ProjectorDataService } from 'app/core/core-services/projector-data.service';
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
 
 /**

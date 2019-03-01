@@ -8,7 +8,7 @@ import { DiffLinesInParagraph, DiffService, LineRange } from '../../../core/ui-s
 import { LinenumberingService } from '../../../core/ui-services/linenumbering.service';
 import { ViewUnifiedChange } from '../../../shared/models/motions/view-unified-change';
 import { MotionSlideObjChangeReco } from './motion-slide-obj-change-reco';
-import { SlideData } from '../../../site/projector/services/projector-data.service';
+import { SlideData } from '../../../core/core-services/projector-data.service';
 import { MotionSlideObjAmendmentParagraph } from './motion-slide-obj-amendment-paragraph';
 
 @Component({
