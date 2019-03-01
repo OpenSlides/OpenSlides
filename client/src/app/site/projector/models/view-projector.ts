@@ -5,9 +5,18 @@ export class ViewProjector extends BaseViewModel {
     public static COLLECTIONSTRING = Projector.COLLECTIONSTRING;
 
     private _projector: Projector;
+    private _referenceProjector: ViewProjector;
 
     public get projector(): Projector {
         return this._projector;
+    }
+
+    public get referenceProjector(): ViewProjector {
+        if (!this.reference_projector_id) {
+            return this;
+        } else {
+            return this._referenceProjector;
+        }
     }
 
     public get id(): number {
@@ -87,14 +96,19 @@ export class ViewProjector extends BaseViewModel {
      */
     public getVerboseName;
 
-    public constructor(projector?: Projector) {
+    public constructor(projector: Projector, referenceProjector?: ViewProjector) {
         super(Projector.COLLECTIONSTRING);
         this._projector = projector;
+        this._referenceProjector = referenceProjector;
     }
 
     public getTitle = () => {
         return this.name;
     };
 
-    public updateDependencies(update: BaseViewModel): void {}
+    public updateDependencies(update: BaseViewModel): void {
+        if (update instanceof ViewProjector && this.reference_projector_id === update.id) {
+            this._referenceProjector = update;
+        }
+    }
 }

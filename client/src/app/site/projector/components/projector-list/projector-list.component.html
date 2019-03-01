@@ -14,6 +14,19 @@
     </div>
 </os-head-bar>
 
+<mat-card *ngIf="!projectorToCreate && projectors">
+    <span translate>
+        Reference projector for current list of speakers:
+    </span>
+    <mat-form-field>
+        <mat-select [disabled]="!!editId" [value]="projectors[0].reference_projector_id" (selectionChange)="onSelectReferenceProjector($event)">
+            <mat-option *ngFor="let projector of projectors" [value]="projector.id">
+                {{ projector.getTitle() | translate }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</mat-card>
+
 <mat-card *ngIf="projectorToCreate">
     <mat-card-title translate>New Projector</mat-card-title>
     <mat-card-content>
@@ -72,19 +85,6 @@
                             <mat-hint *ngIf="!updateForm.controls.name.valid">
                                 <span translate>Required</span>
                             </mat-hint>
-                        </mat-form-field>
-
-                        <!-- Reference projector for the current list of speakers -->
-                        <h3 translate>Current list of speakers reference</h3>
-                        <mat-form-field>
-                            <mat-select formControlName="reference_projector_id" placeholder="{{ 'Reference projector' | translate }}">
-                                <mat-option [value]="projector.id">
-                                    <span translate>self</span>
-                                </mat-option>
-                                <mat-option *ngFor="let refProjector of getReferenceProjectorsFor(projector)" [value]="refProjector.id">
-                                    <span>{{ refProjector.getTitle() | translate }}</span>
-                                </mat-option>
-                            </mat-select>
                         </mat-form-field>
 
                         <h3 translate>Resolution and size</h3>

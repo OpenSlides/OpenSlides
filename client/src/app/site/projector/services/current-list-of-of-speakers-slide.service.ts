@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { ProjectorService } from 'app/core/core-services/projector.service';
 import { ViewProjector } from '../models/view-projector';
 import { IdentifiableProjectorElement } from 'app/shared/models/core/projector';
+import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 
 /**
  * Handles the curent list of speakers slide. Manages the projection and provides
@@ -26,6 +27,18 @@ export class CurrentListOfSpeakersSlideService {
             name: overlay ? 'agenda/current-list-of-speakers-overlay' : 'agenda/current-list-of-speakers',
             stable: overlay,
             getIdentifiers: () => ['name']
+        };
+    }
+
+    /**
+     * @returns the slide build descriptor for the overlay or slide
+     */
+    public getSlide(overlay: boolean): ProjectorElementBuildDeskriptor {
+        return {
+            getBasicProjectorElement: options => this.getCurrentListOfSpeakersProjectorElement(overlay),
+            slideOptions: [],
+            projectionDefaultName: 'agenda_current_list_of_speakers',
+            getDialogTitle: () => 'Current list of speakers'
         };
     }
 
