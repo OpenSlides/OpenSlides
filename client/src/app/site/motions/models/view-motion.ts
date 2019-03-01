@@ -11,7 +11,7 @@ import { ViewUser } from 'app/site/users/models/view-user';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewItem } from 'app/site/agenda/models/view-item';
-import { ViewWorkflow } from './view-workflow';
+import { ViewWorkflow, StateCssClassMapping } from './view-workflow';
 import { ViewCategory } from './view-category';
 import { ViewMotionBlock } from './view-motion-block';
 import { BaseViewModel } from 'app/site/base/base-view-model';
@@ -325,6 +325,15 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
      */
     public get hasNotes(): boolean {
         return this.personalNote && this.personalNote.note ? true : false;
+    }
+
+    /**
+     * Translate the state's css class into a color
+     *
+     * @returns a string representing a color
+     */
+    public get stateCssColor(): string {
+        return StateCssClassMapping[this.state.css_class] || '';
     }
 
     /**

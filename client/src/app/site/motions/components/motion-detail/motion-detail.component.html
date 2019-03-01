@@ -231,7 +231,7 @@
                 </div>
             </mat-menu>
             <div *ngIf="perms.isAllowed('change_state', motion)">
-                <mat-basic-chip [matMenuTriggerFor]="stateMenu" [ngClass]="getStateCssColor()">
+                <mat-basic-chip [matMenuTriggerFor]="stateMenu" [ngClass]="motion.stateCssColor">
                     {{ stateLabel }}
                 </mat-basic-chip>
                 <div *ngIf="motion.state && motion.state.show_state_extension_field" class="spacer-top-10">
@@ -242,7 +242,7 @@
                 </div>
             </div>
             <div *ngIf="!perms.isAllowed('change_state', motion)">
-                <mat-basic-chip [ngClass]="getStateCssColor()"> {{ stateLabel }} </mat-basic-chip>
+                <mat-basic-chip [ngClass]="motion.stateCssColor"> {{ stateLabel }} </mat-basic-chip>
             </div>
         </div>
 
