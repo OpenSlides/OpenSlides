@@ -16,7 +16,7 @@
 
 <mat-card *ngIf="!projectorToCreate && projectors">
     <span translate>
-        Current list of speakers reference
+        Reference projector for current list of speakers:
     </span>
     <mat-form-field>
         <mat-select [disabled]="!!editId" [value]="projectors[0].reference_projector_id" (selectionChange)="onSelectReferenceProjector($event)">

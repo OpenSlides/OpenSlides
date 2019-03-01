@@ -121,14 +121,14 @@
         *ngIf="viewItem && projectors && projectors.length > 1"
         [object]="getClosSlide()"
         [menuItem]="true"
-        text="Project current list of speakers (as slide)"
+        text="Current list of speakers (as slide)"
     ></os-projector-button>
 
     <os-projector-button
         *ngIf="viewItem"
         [object]="viewItem.listOfSpeakersSlide"
         [menuItem]="true"
-        text="Project list of speakers"
+        text="List of speakers"
     ></os-projector-button>
 
     <os-projector-button

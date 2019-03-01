@@ -257,7 +257,7 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
         const verboseName = this.collectionStringMapper
             .getRepository(this.viewItem.item.content_object.collection)
             .getVerboseName();
-        return this.translate.instant('Project') + ' ' + verboseName;
+        return verboseName;
     }
 
     /**
