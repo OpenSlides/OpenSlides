@@ -78,16 +78,7 @@
                     </div>
                     <!-- state line-->
                     <div class="ellipsis-overflow white">
-                        <mat-basic-chip
-                            *ngIf="motion.state"
-                            [ngClass]="{
-                                green: motion.state.css_class === 'success',
-                                red: motion.state.css_class === 'danger',
-                                grey: motion.state.css_class === 'default',
-                                lightblue: motion.state.css_class === 'primary'
-                            }"
-                            [disabled]="true"
-                        >
+                        <mat-basic-chip *ngIf="motion.state" [ngClass]="motion.stateCssColor" [disabled]="true">
                             {{ getStateLabel(motion) }}
                         </mat-basic-chip>
                     </div>

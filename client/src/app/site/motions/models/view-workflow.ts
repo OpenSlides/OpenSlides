@@ -6,7 +6,8 @@ export const StateCssClassMapping = {
     success: 'green',
     danger: 'red',
     default: 'grey',
-    primary: 'lightblue'
+    primary: 'lightblue',
+    warning: 'yellow'
 };
 
 /**

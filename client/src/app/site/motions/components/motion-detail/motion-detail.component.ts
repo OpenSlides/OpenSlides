@@ -38,7 +38,7 @@ import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions
 import { Tag } from 'app/shared/models/core/tag';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ViewMotionBlock } from '../../models/view-motion-block';
-import { ViewWorkflow, StateCssClassMapping } from '../../models/view-workflow';
+import { ViewWorkflow } from '../../models/view-workflow';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { ViewCategory } from '../../models/view-category';
 import { ViewCreateMotion } from '../../models/view-create-motion';
@@ -1446,19 +1446,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         if (this.editMotion) {
             $event.returnValue = null;
         }
-    }
-
-    /**
-     * Translate the state's css class into a color
-     *
-     * @returns a string representing a color
-     */
-    public getStateCssColor(): string {
-        if (!this.motion.state) {
-            return '';
-        }
-
-        return StateCssClassMapping[this.motion.state.css_class] || '';
     }
 
     public swipe(e: TouchEvent, when: string): void {
