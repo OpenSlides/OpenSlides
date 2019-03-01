@@ -1,7 +1,7 @@
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { MatSnackBar, MatSelectChange } from '@angular/material';
+import { MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -21,6 +21,9 @@ import { UserRepositoryService } from 'app/core/repositories/users/user-reposito
 import { DurationService } from 'app/core/ui-services/duration.service';
 import { CurrentAgendaItemService } from 'app/site/projector/services/current-agenda-item.service';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
+import { CollectionStringMapperService } from 'app/core/core-services/collectionStringMapper.service';
+import { CurrentListOfSpeakersSlideService } from 'app/site/projector/services/current-list-of-of-speakers-slide.service';
+import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 
 /**
  * The list of speakers for agenda items.
@@ -93,6 +96,13 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
     }
 
     /**
+     * Used to detect changes in the projector reference.
+     */
+    private closReferenceProjectorId: number | null;
+
+    private closItemSubscription: Subscription | null;
+
+    /**
      * Constructor for speaker list component. Generates the forms and subscribes
      * to the {@link currentListOfSpeakers}
      *
@@ -121,7 +131,9 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
         private promptService: PromptService,
         private currentAgendaItemService: CurrentAgendaItemService,
         private durationService: DurationService,
-        private userRepository: UserRepositoryService
+        private userRepository: UserRepositoryService,
+        private collectionStringMapper: CollectionStringMapperService,
+        private currentListOfSpeakersSlideService: CurrentListOfSpeakersSlideService
     ) {
         super(title, translate, snackBar);
         this.isCurrentListOfSpeakers();
@@ -129,9 +141,10 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
 
         if (this.currentListOfSpeakers) {
             this.projectors = projectorRepo.getViewModelList();
-            this.showClosOfProjector(this.projectors[0]);
+            this.updateClosProjector();
             projectorRepo.getViewModelListObservable().subscribe(newProjectors => {
                 this.projectors = newProjectors;
+                this.updateClosProjector();
             });
         } else {
             this.getItemByUrl();
@@ -173,33 +186,37 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
     }
 
     /**
-     * Executed by selecting projectors
-     *
-     * @param event Holds the selected projector
-     */
-    public onSelectProjector(event: MatSelectChange): void {
-        this.showClosOfProjector(event.value);
-    }
-
-    /**
      * Shows the current list of speakers (CLOS) of a given projector.
-     * Triggers after mat-select-change
-     *
-     * @param event Mat select change event, holds the projector in value
      */
-    private showClosOfProjector(projector: ViewProjector): void {
+    private updateClosProjector(): void {
+        if (!this.projectors.length) {
+            return;
+        }
+        const referenceProjector = this.projectors[0].referenceProjector;
+        if (!referenceProjector || referenceProjector.id === this.closReferenceProjectorId) {
+            return;
+        }
+        this.closReferenceProjectorId = referenceProjector.id;
+
         if (this.projectorSubscription) {
             this.projectorSubscription.unsubscribe();
             this.viewItem = null;
         }
 
         this.projectorSubscription = this.currentAgendaItemService
-            .getAgendaItemObservable(projector)
+            .getAgendaItemObservable(referenceProjector)
             .subscribe(item => {
                 if (item) {
                     this.setSpeakerList(item.id);
                 }
             });
+    }
+
+    /**
+     * @returns the CLOS slide build descriptor
+     */
+    public getClosSlide(): ProjectorElementBuildDeskriptor {
+        return this.currentListOfSpeakersSlideService.getSlide(false);
     }
 
     /**
@@ -217,7 +234,11 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
      * @param item the item to use as List of Speakers
      */
     private setSpeakerList(id: number): void {
-        this.itemRepo.getViewModelObservable(id).subscribe(newAgendaItem => {
+        if (this.closItemSubscription) {
+            this.closItemSubscription.unsubscribe();
+        }
+
+        this.closItemSubscription = this.itemRepo.getViewModelObservable(id).subscribe(newAgendaItem => {
             if (newAgendaItem) {
                 this.viewItem = newAgendaItem;
                 const allSpeakers = this.repo.createSpeakerList(newAgendaItem.item);
@@ -226,6 +247,17 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
                 this.activeSpeaker = allSpeakers.find(speaker => speaker.state === SpeakerState.CURRENT);
             }
         });
+    }
+
+    /**
+     * @returns the verbose name of the model of the content object from viewItem.
+     * If a motion is the current content object, "Motion" will be the returned value.
+     */
+    public getContentObjectProjectorButtonText(): string {
+        const verboseName = this.collectionStringMapper
+            .getRepository(this.viewItem.item.content_object.collection)
+            .getVerboseName();
+        return this.translate.instant('Project') + ' ' + verboseName;
     }
 
     /**

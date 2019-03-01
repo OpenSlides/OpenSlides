@@ -11,20 +11,6 @@
     </div>
 </os-head-bar>
 
-<!-- Select projector -->
-<mat-card *ngIf="currentListOfSpeakers">
-    <h3 translate>
-        Manage the list of speakers for...
-    </h3>
-    <mat-form-field *ngIf="projectors && projectors.length > 0">
-        <mat-select [value]="projectors[0]" (selectionChange)="onSelectProjector($event)">
-            <mat-option *ngFor="let projector of projectors" [value]="projector">
-                {{ projector.name | translate }}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-</mat-card>
-
 <h1 class="title on-transition-fade" *ngIf="viewItem">{{ viewItem.contentObject.getTitle() }}</h1>
 
 <mat-card class="speaker-card" *ngIf="viewItem">
@@ -132,9 +118,24 @@
 
 <mat-menu #speakerMenu="matMenu">
     <os-projector-button
+        *ngIf="viewItem && projectors && projectors.length > 1"
+        [object]="getClosSlide()"
+        [menuItem]="true"
+        text="Project current list of speakers (as slide)"
+    ></os-projector-button>
+
+    <os-projector-button
         *ngIf="viewItem"
         [object]="viewItem.listOfSpeakersSlide"
         [menuItem]="true"
+        text="Project list of speakers"
+    ></os-projector-button>
+
+    <os-projector-button
+        *ngIf="viewItem"
+        [object]="viewItem.contentObject"
+        [menuItem]="true"
+        [text]="getContentObjectProjectorButtonText()"
     ></os-projector-button>
 
     <button mat-menu-item *ngIf="closedList" (click)="openSpeakerList()">

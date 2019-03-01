@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatSelectChange } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
 
@@ -105,7 +105,6 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
             aspectRatio: ['', Validators.required],
             width: [0, Validators.required],
             clock: [true],
-            reference_projector_id: [],
             background_color: ['', Validators.required],
             header_background_color: ['', Validators.required],
             header_font_color: ['', Validators.required],
@@ -140,11 +139,12 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
     public create(): void {
         if (this.createForm.valid && this.projectorToCreate) {
             this.projectorToCreate.patchValues(this.createForm.value as Projector);
-            // TODO: the server shouldn't want to have this data..
+            // TODO: the server shouldn't want to have element data..
             this.projectorToCreate.patchValues({
                 elements: [{ name: 'core/clock', stable: true }],
                 elements_preview: [],
-                elements_history: []
+                elements_history: [],
+                reference_projector_id: this.projectors[0].reference_projector_id
             });
             this.repo.create(this.projectorToCreate).then(() => (this.projectorToCreate = null), this.raiseError);
         }
@@ -206,25 +206,11 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
         this.editId = projector.id;
         this.updateForm.reset();
 
-        const reference_projector_id = projector.reference_projector_id
-            ? projector.reference_projector_id
-            : projector.id;
-        /*this.updateForm.patchValue({
-            name: projector.name,
-            aspectRatio: this.getAspectRatioKey(projector),
-            width: projector.width,
-            clock: this.clockSlideService.isProjectedOn(projector),
-            reference_projector_id: reference_projector_id,
-            background_color: projector.background_color,
-            show_header_footer: projector.show_header_footer,
-            show_title: projector.show_title,
-            show_logo: projector.show_logo
-        });*/
         this.updateForm.patchValue(projector.projector);
         this.updateForm.patchValue({
+            name: this.translate.instant(projector.name),
             aspectRatio: this.getAspectRatioKey(projector),
-            clock: this.clockSlideService.isProjectedOn(projector),
-            reference_projector_id: reference_projector_id
+            clock: this.clockSlideService.isProjectedOn(projector)
         });
     }
 
@@ -249,16 +235,6 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
             return;
         }
         const updateProjector: Partial<Projector> = this.updateForm.value;
-        /*const updateProjector: Partial<Projector> = {
-            name: this.updateForm.value.name,
-            width: this.updateForm.value.width,
-            height: Math.round(this.updateForm.value.width / aspectRatios[this.updateForm.value.aspectRatio]),
-            reference_projector_id: this.updateForm.value.reference_projector_id,
-            background_color: this.updateForm.value.background_color,
-            show_header_footer: this.updateForm.value.show_header_footer,
-            show_title: this.updateForm.value.show_title,
-            show_logo: this.updateForm.value.show_logo
-        };*/
         updateProjector.height = Math.round(
             this.updateForm.value.width / aspectRatios[this.updateForm.value.aspectRatio]
         );
@@ -284,13 +260,13 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
         }
     }
 
-    /**
-     * Get all available reference projectors for the given projector. These
-     * projectors are all existing projectors exluding the given projector
-     *
-     * @returns all available reference projectors
-     */
-    public getReferenceProjectorsFor(projector: ViewProjector): ViewProjector[] {
-        return this.repo.getViewModelList().filter(p => p.id !== projector.id);
+    public onSelectReferenceProjector(change: MatSelectChange): void {
+        const update: Partial<Projector> = {
+            reference_projector_id: change.value
+        };
+        const promises = this.projectors.map(projector => {
+            return this.repo.update(update, projector);
+        });
+        Promise.all(promises).then(null, this.raiseError);
     }
 }
