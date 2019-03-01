@@ -7,6 +7,7 @@ import { SlideManager } from 'app/slides/services/slide-manager.service';
 import { BaseSlideComponent } from 'app/slides/base-slide-component';
 import { SlideData } from 'app/site/projector/services/projector-data.service';
 import { ProjectorElement } from 'app/shared/models/core/projector';
+import { ViewProjector } from 'app/site/projector/models/view-projector';
 
 function hasError(obj: object): obj is { error: string } {
     return (<{ error: string }>obj).error !== undefined;
@@ -62,14 +63,23 @@ export class SlideContainerComponent extends BaseComponent {
         this.setDataForComponent();
     }
 
+    public get slideData(): SlideData<object> {
+        return this._slideData;
+    }
+
+    private _projector: ViewProjector;
+
     /**
      * Variable, if the projector header is enabled.
      */
     @Input()
-    public headerEnabled: boolean;
+    public set projector(projector: ViewProjector) {
+        this._projector = projector;
+        this.setProjectorForComponent();
+    }
 
-    public get slideData(): SlideData<object> {
-        return this._slideData;
+    public get projector(): ViewProjector {
+        return this._projector;
     }
 
     /**
@@ -84,6 +94,10 @@ export class SlideContainerComponent extends BaseComponent {
     public set scroll(value: number) {
         this._scroll = value;
         this.updateScroll();
+    }
+
+    public get scroll(): number {
+        return this._scroll;
     }
 
     /**
@@ -122,9 +136,9 @@ export class SlideContainerComponent extends BaseComponent {
      */
     private updateScroll(): void {
         if (this.slideOptions.scrollable) {
-            let value = this._scroll;
+            let value = this.scroll;
             value *= -50;
-            if (this.headerEnabled) {
+            if (this.projector.show_header_footer) {
                 value += 50; // Default offset for the header
             }
             this.slideStyle['margin-top'] = `${value}px`;
@@ -154,6 +168,7 @@ export class SlideContainerComponent extends BaseComponent {
             this.slide.clear();
             this.slideRef = this.slide.createComponent(slideFactory);
             this.setDataForComponent();
+            this.setProjectorForComponent();
         });
     }
 
@@ -163,6 +178,16 @@ export class SlideContainerComponent extends BaseComponent {
     private setDataForComponent(): void {
         if (this.slideRef && this.slideRef.instance) {
             this.slideRef.instance.data = this.slideData;
+        }
+    }
+
+    /**
+     * "injects" the projector into the slide component.
+     */
+    private setProjectorForComponent(): void {
+        if (this.slideRef && this.slideRef.instance) {
+            console.log(this.projector);
+            this.slideRef.instance.projector = this.projector;
         }
     }
 }
