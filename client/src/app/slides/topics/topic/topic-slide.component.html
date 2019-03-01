@@ -1,5 +1,10 @@
 <div *ngIf="data">
-    <h1>{{ data.data.title }}</h1>
+    <h1>
+        <span *ngIf="data.data.item_number">
+            {{ data.data.item_number }} &middot;
+        </span>
+        {{ data.data.title }}
+    </h1>
 
     <div [innerHTML]="sanitizedText(data.data.text)"></div>
 </div>

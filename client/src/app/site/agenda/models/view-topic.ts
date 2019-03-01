@@ -64,7 +64,11 @@ export class ViewTopic extends BaseAgendaViewModel {
     }
 
     public getTitle = () => {
-        return this.title;
+        if (this.agendaItem) {
+            return this.agendaItem.itemNumber + ' · ' + this.title;
+        } else {
+            return this.title;
+        }
     };
 
     public getAgendaItem(): ViewItem {

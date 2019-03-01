@@ -117,12 +117,12 @@
                                 </button>
                             </div>
                             <div class="name">
-                                {{ i + 1 }}.&nbsp;<span>{{ getSlideTitle(element) }}</span>
+                                <span>{{ getSlideTitle(element) }}</span>
                             </div>
                             <div class="button-right" *ngIf="editQueue">
                                 <div>
                                     <button type="button" mat-icon-button (click)="removePreviewElement(i)">
-                                        <mat-icon>close</mat-icon>
+                                        <mat-icon>delete</mat-icon>
                                     </button>
                                 </div>
                             </div>
@@ -144,7 +144,7 @@
                         <span translate>History</span>
                     </mat-expansion-panel-header>
                     <p *ngFor="let elements of projector.elements_history; let i = index">
-                        {{ i + 1 }}. {{ getSlideTitle(elements[0]) }}
+                        {{ i + 1 }}. &nbsp; {{ getSlideTitle(elements[0]) }}
                     </p>
                 </mat-expansion-panel>
 
@@ -191,7 +191,7 @@
                     </mat-action-row>
                 </mat-expansion-panel>
 
-                <!-- Current List of Speakers -->
+                <!-- Current list of speakers -->
                 <mat-expansion-panel>
                     <mat-expansion-panel-header>
                         <span translate>Current list of speakers</span>
@@ -207,8 +207,8 @@
                         </mat-list-item>
                     </mat-list>
 
-                    <!-- Current Speaker -->
-                    <mat-list>
+                    <!-- Slide-->
+                    <mat-list *ngIf="projectorCount > 1">
                         <mat-list-item [ngClass]="{ projected: isClosProjected(false) }">
                             <button type="button" mat-icon-button (click)="toggleClos(false)">
                                 <mat-icon>videocam</mat-icon>

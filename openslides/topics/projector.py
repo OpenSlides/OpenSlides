@@ -33,7 +33,17 @@ def topic_slide(
     except KeyError:
         raise ProjectorElementException(f"topic with id {topic_id} does not exist")
 
-    return {"title": topic["title"], "text": topic["text"]}
+    item_id = topic["agenda_item_id"]
+    try:
+        item = all_data["agenda/item"][item_id]
+    except KeyError:
+        raise ProjectorElementException(f"item with id {item_id} does not exist")
+
+    return {
+        "title": topic["title"],
+        "text": topic["text"],
+        "item_number": item["item_number"],
+    }
 
 
 def register_projector_slides() -> None:
