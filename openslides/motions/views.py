@@ -668,7 +668,15 @@ class MotionViewSet(ModelViewSet):
             motion.set_state(state_id)
 
             # Save motion.
-            motion.save(update_fields=["state", "last_modified"], skip_autoupdate=True)
+            motion.save(
+                update_fields=[
+                    "state",
+                    "identifier",
+                    "identifier_number",
+                    "last_modified",
+                ],
+                skip_autoupdate=True,
+            )
 
             # Write the log message.
             motion.write_log(
