@@ -16,7 +16,7 @@
         </div>
 
         <div *ngFor="let slide of slides">
-            <os-slide-container [slideData]="slide" [scroll]="scroll" [scale]="scale" [headerEnabled]="projector.show_header_footer"></os-slide-container>
+            <os-slide-container [slideData]="slide" [scroll]="scroll" [scale]="scale" [projector]="projector"></os-slide-container>
         </div>
 
         <div id="footer" [ngStyle]="headerFooterStyle" *ngIf="projector && projector.show_header_footer">

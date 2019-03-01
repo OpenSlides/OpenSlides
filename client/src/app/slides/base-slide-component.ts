@@ -1,5 +1,6 @@
 import { Input } from '@angular/core';
 import { SlideData } from 'app/site/projector/services/projector-data.service';
+import { ViewProjector } from 'app/site/projector/models/view-projector';
 
 /**
  * Every slide has to extends this base class. It forces the slides
@@ -11,6 +12,12 @@ export abstract class BaseSlideComponent<T extends object> {
      */
     @Input()
     public data: SlideData<T>;
+
+    /**
+     * The projector where this slide is projected on.
+     */
+    @Input()
+    public projector: ViewProjector;
 
     public constructor() {}
 }
