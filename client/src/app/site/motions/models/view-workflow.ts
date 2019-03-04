@@ -58,13 +58,6 @@ export class ViewWorkflow extends BaseViewModel {
     };
 
     /**
-     * Duplicate this motion into a copy of itself
-     */
-    public copy(): ViewWorkflow {
-        return new ViewWorkflow(this._workflow);
-    }
-
-    /**
      * Updates the local objects if required
      *
      * @param update
