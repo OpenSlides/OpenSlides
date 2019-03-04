@@ -1,7 +1,13 @@
 import { MotionSubmitter } from './motion-submitter';
-import { MotionComment } from './motion-comment';
 import { MotionPoll } from './motion-poll';
 import { BaseModel } from '../base/base-model';
+
+export interface MotionComment {
+    id: number;
+    comment: string;
+    section_id: number;
+    read_groups_id: number[];
+}
 
 /**
  * Representation of Motion.
@@ -56,16 +62,5 @@ export class Motion extends BaseModel {
                 return a.weight - b.weight;
             })
             .map((submitter: MotionSubmitter) => submitter.user_id);
-    }
-
-    public deserialize(input: any): void {
-        Object.assign(this, input);
-
-        this.comments = [];
-        if (input.comments instanceof Array) {
-            input.comments.forEach(commentData => {
-                this.comments.push(new MotionComment(commentData));
-            });
-        }
     }
 }

@@ -1,5 +1,4 @@
-import { MotionComment } from 'app/shared/models/motions/motion-comment';
-import { Motion } from 'app/shared/models/motions/motion';
+import { Motion, MotionComment } from 'app/shared/models/motions/motion';
 import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
 import { ViewMotionCommentSection } from './view-motion-comment-section';
 import { WorkflowState } from 'app/shared/models/motions/workflow-state';
@@ -397,14 +396,25 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
     /**
      * Formats the category for search
      *
-     * TODO!!!!
-     *
      * @override
      */
     public formatForSearch(): SearchRepresentation {
         let searchValues = [this.title, this.text, this.reason];
         if (this.amendment_paragraphs) {
             searchValues = searchValues.concat(this.amendment_paragraphs.filter(x => !!x));
+        }
+        searchValues = searchValues.concat(this.submitters.map(user => user.full_name));
+        searchValues = searchValues.concat(this.supporters.map(user => user.full_name));
+        searchValues = searchValues.concat(this.tags.map(tag => tag.getTitle()));
+        searchValues = searchValues.concat(this.motion.comments.map(comment => comment.comment));
+        if (this.motion_block) {
+            searchValues.push(this.motion_block.getTitle());
+        }
+        if (this.category) {
+            searchValues.push(this.category.getTitle());
+        }
+        if (this.state) {
+            searchValues.push(this.state.name);
         }
         return searchValues;
     }

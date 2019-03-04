@@ -50,11 +50,11 @@ export class ViewStatuteParagraph extends BaseViewModel implements Searchable {
     };
 
     public formatForSearch(): SearchRepresentation {
-        throw new Error('TODO');
+        return [this.title];
     }
 
     public getDetailStateURL(): string {
-        throw new Error('TODO');
+        return '/motions/statute-paragraphs';
     }
 
     /**
@@ -62,11 +62,4 @@ export class ViewStatuteParagraph extends BaseViewModel implements Searchable {
      * @param section
      */
     public updateDependencies(update: BaseViewModel): void {}
-
-    /**
-     * Duplicate this motion into a copy of itself
-     */
-    public copy(): ViewStatuteParagraph {
-        return new ViewStatuteParagraph(this._paragraph);
-    }
 }

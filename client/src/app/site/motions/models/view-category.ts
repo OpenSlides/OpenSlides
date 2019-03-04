@@ -70,11 +70,4 @@ export class ViewCategory extends BaseViewModel implements Searchable {
      * @param update
      */
     public updateDependencies(update: BaseViewModel): void {}
-
-    /**
-     * Duplicate this motion into a copy of itself
-     */
-    public copy(): ViewCategory {
-        return new ViewCategory(this._category);
-    }
 }

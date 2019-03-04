@@ -79,11 +79,4 @@ export class ViewMotionCommentSection extends BaseViewModel {
     public updateGroup(group: ViewGroup): void {
         console.log('implement update group of motion comment section');
     }
-
-    /**
-     * Duplicate this motion into a copy of itself
-     */
-    public copy(): ViewMotionCommentSection {
-        return new ViewMotionCommentSection(this._section, this._readGroups, this._writeGroups);
-    }
 }

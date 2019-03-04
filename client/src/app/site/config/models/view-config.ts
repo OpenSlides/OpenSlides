@@ -140,8 +140,4 @@ export class ViewConfig extends BaseViewModel {
         }
         this._hasConstantsInfo = true;
     }
-
-    public copy(): ViewConfig {
-        return new ViewConfig(this._config);
-    }
 }
