@@ -170,7 +170,11 @@ export class LinenumberingService {
             'DEL',
             'STRIKE'
         ];
-        return inlineElements.indexOf(element.nodeName) > -1;
+        if (element) {
+            return inlineElements.indexOf(element.nodeName) > -1;
+        } else {
+            return false;
+        }
     }
 
     /**
