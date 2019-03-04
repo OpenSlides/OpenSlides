@@ -5,9 +5,9 @@ from django.apps import apps
 from django.core.exceptions import ValidationError as DjangoValidationError
 from mypy_extensions import TypedDict
 
-from ..utils.cache import element_cache
 from .exceptions import ConfigError, ConfigNotFound
 from .models import ConfigStore
+from ..utils.cache import element_cache
 
 
 INPUT_TYPE_MAPPING = {

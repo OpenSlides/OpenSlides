@@ -3,10 +3,10 @@ from typing import Any, Dict
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
+from .access_permissions import TopicAccessPermissions
 from ..agenda.models import Item
 from ..mediafiles.models import Mediafile
 from ..utils.models import RESTModelMixin
-from .access_permissions import TopicAccessPermissions
 
 
 class TopicManager(models.Manager):

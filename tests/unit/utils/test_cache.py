@@ -1,4 +1,3 @@
-import asyncio
 import json
 from typing import Any, Dict, List
 from unittest.mock import patch
@@ -306,8 +305,6 @@ async def test_update_restricted_data(element_cache):
     )
     # Make sure the lock is deleted
     assert not await element_cache.cache_provider.get_lock("restricted_data_0")
-    # And the future is done
-    assert element_cache.restricted_data_cache_updater[0].done()
 
 
 @pytest.mark.asyncio
@@ -330,8 +327,6 @@ async def test_update_restricted_data_full_restricted_elements(element_cache):
     )
     # Make sure the lock is deleted
     assert not await element_cache.cache_provider.get_lock("restricted_data_0")
-    # And the future is done
-    assert element_cache.restricted_data_cache_updater[0].done()
 
 
 @pytest.mark.asyncio
@@ -389,7 +384,7 @@ async def test_update_restricted_data_with_deleted_elements(element_cache):
 
 
 @pytest.mark.asyncio
-async def test_update_restricted_data_second_worker_on_different_server(element_cache):
+async def test_update_restricted_data_second_worker(element_cache):
     """
     Test, that if another worker is updating the data, noting is done.
 
@@ -399,26 +394,6 @@ async def test_update_restricted_data_second_worker_on_different_server(element_
     element_cache.cache_provider.restricted_data = {0: {}}
     await element_cache.cache_provider.set_lock("restricted_data_0")
     await element_cache.cache_provider.del_lock_after_wait("restricted_data_0")
-
-    await element_cache.update_restricted_data(0)
-
-    # Restricted_data_should not be set on second worker
-    assert element_cache.cache_provider.restricted_data == {0: {}}
-
-
-@pytest.mark.asyncio
-async def test_update_restricted_data_second_worker_on_same_server(element_cache):
-    """
-    Test, that if another worker is updating the data, noting is done.
-
-    This tests makes use of the future as it would on the same daphne server.
-    """
-    element_cache.use_restricted_data_cache = True
-    element_cache.cache_provider.restricted_data = {0: {}}
-    future: asyncio.Future = asyncio.Future()
-    element_cache.restricted_data_cache_updater[0] = future
-    await element_cache.cache_provider.set_lock("restricted_data_0")
-    await element_cache.cache_provider.del_lock_after_wait("restricted_data_0", future)
 
     await element_cache.update_restricted_data(0)
 

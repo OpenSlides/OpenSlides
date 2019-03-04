@@ -2,8 +2,8 @@ from django.apps import apps
 from django.contrib.auth.models import Permission
 from django.db.models import Q
 
-from ..utils.auth import GROUP_ADMIN_PK, GROUP_DEFAULT_PK
 from .models import Group, User
+from ..utils.auth import GROUP_ADMIN_PK, GROUP_DEFAULT_PK
 
 
 def get_permission_change_data(sender, permissions=None, **kwargs):

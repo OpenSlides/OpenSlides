@@ -1,8 +1,5 @@
 from typing import Any
 
-from ..utils.projector import projector_slides
-from ..utils.rest_api import Field, IntegerField, ModelSerializer, ValidationError
-from ..utils.validate import validate_html
 from .models import (
     ChatMessage,
     ConfigStore,
@@ -13,6 +10,9 @@ from .models import (
     ProjectorMessage,
     Tag,
 )
+from ..utils.projector import projector_slides
+from ..utils.rest_api import Field, IntegerField, ModelSerializer, ValidationError
+from ..utils.validate import validate_html
 
 
 class JSONSerializerField(Field):

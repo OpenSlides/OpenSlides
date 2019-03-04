@@ -16,9 +16,9 @@ from openslides.utils.rest_api import (
     list_route,
 )
 
-from ..utils.auth import has_perm
 from .access_permissions import ItemAccessPermissions
 from .models import Item, Speaker
+from ..utils.auth import has_perm
 
 
 # Viewsets for the REST API
