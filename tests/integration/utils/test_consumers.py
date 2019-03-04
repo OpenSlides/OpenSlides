@@ -17,8 +17,8 @@ from openslides.utils.autoupdate import (
 )
 from openslides.utils.cache import element_cache
 
-from ...unit.utils.cache_provider import Collection1, Collection2, get_cachable_provider
 from ..helpers import TConfig, TProjector, TUser
+from ...unit.utils.cache_provider import Collection1, Collection2, get_cachable_provider
 
 
 @pytest.fixture(autouse=True)

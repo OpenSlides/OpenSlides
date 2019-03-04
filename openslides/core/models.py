@@ -4,13 +4,6 @@ from django.db import models, transaction
 from django.utils.timezone import now
 from jsonfield import JSONField
 
-from ..utils.autoupdate import Element
-from ..utils.cache import element_cache, get_element_id
-from ..utils.models import (
-    CASCADE_AND_AUTOUODATE,
-    SET_NULL_AND_AUTOUPDATE,
-    RESTModelMixin,
-)
 from .access_permissions import (
     ChatMessageAccessPermissions,
     ConfigAccessPermissions,
@@ -19,6 +12,13 @@ from .access_permissions import (
     ProjectorAccessPermissions,
     ProjectorMessageAccessPermissions,
     TagAccessPermissions,
+)
+from ..utils.autoupdate import Element
+from ..utils.cache import element_cache, get_element_id
+from ..utils.models import (
+    CASCADE_AND_AUTOUODATE,
+    SET_NULL_AND_AUTOUPDATE,
+    RESTModelMixin,
 )
 
 

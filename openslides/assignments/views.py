@@ -12,10 +12,10 @@ from openslides.utils.rest_api import (
     detail_route,
 )
 
-from ..utils.auth import has_perm
 from .access_permissions import AssignmentAccessPermissions
 from .models import Assignment, AssignmentPoll, AssignmentRelatedUser
 from .serializers import AssignmentAllPollSerializer
+from ..utils.auth import has_perm
 
 
 # Viewsets for the REST API

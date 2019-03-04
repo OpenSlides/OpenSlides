@@ -1,10 +1,10 @@
 from django.conf import settings
 from django.db import models
 
+from .access_permissions import MediafileAccessPermissions
 from ..core.config import config
 from ..utils.autoupdate import inform_changed_data
 from ..utils.models import SET_NULL_AND_AUTOUPDATE, RESTModelMixin
-from .access_permissions import MediafileAccessPermissions
 
 
 class Mediafile(RESTModelMixin, models.Model):

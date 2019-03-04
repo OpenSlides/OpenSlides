@@ -69,9 +69,6 @@ class ElementCache:
             )
         self.start_time = start_time
 
-        # Contains Futures to controll, that only one client updates the restricted_data.
-        self.restricted_data_cache_updater: Dict[int, asyncio.Future] = {}
-
         # Tells if self.ensure_cache was called.
         self.ensured = False
 
@@ -280,8 +277,6 @@ class ElementCache:
         # TODO: Make a timeout. Else this could block forever
         lock_name = f"restricted_data_{user_id}"
         if await self.cache_provider.set_lock(lock_name):
-            future: asyncio.Future = asyncio.Future()
-            self.restricted_data_cache_updater[user_id] = future
             # Get change_id for this user
             value = await self.cache_provider.get_change_id_user(user_id)
             # If the change id is not in the cache yet, use -1 to get all data since 0
@@ -330,15 +325,10 @@ class ElementCache:
                     await self.cache_provider.del_elements(deleted_elements, user_id)
             # Unset the lock
             await self.cache_provider.del_lock(lock_name)
-            future.set_result(1)
         else:
             # Wait until the update if finshed
-            if user_id in self.restricted_data_cache_updater:
-                # The active worker is on the same asgi server, we can use the future
-                await self.restricted_data_cache_updater[user_id]
-            else:
-                while await self.cache_provider.get_lock(lock_name):
-                    await asyncio.sleep(0.01)
+            while await self.cache_provider.get_lock(lock_name):
+                await asyncio.sleep(0.01)
 
     async def get_all_restricted_data(
         self, user_id: int

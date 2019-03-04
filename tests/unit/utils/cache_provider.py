@@ -71,12 +71,7 @@ class TTestCacheProvider(MemmoryCacheProvider):
     async def del_lock_after_wait(
         self, lock_name: str, future: asyncio.Future = None
     ) -> None:
-        if future is None:
-            asyncio.ensure_future(self.del_lock(lock_name))
-        else:
+        async def set_future() -> None:
+            await self.del_lock(lock_name)
 
-            async def set_future() -> None:
-                await self.del_lock(lock_name)
-                future.set_result(1)  # type: ignore
-
-            asyncio.ensure_future(set_future())
+        asyncio.ensure_future(set_future())

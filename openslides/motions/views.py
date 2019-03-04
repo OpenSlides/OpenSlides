@@ -10,22 +10,6 @@ from django.db.models.deletion import ProtectedError
 from django.http.request import QueryDict
 from rest_framework import status
 
-from ..core.config import config
-from ..core.models import Tag
-from ..utils.auth import has_perm, in_some_groups
-from ..utils.autoupdate import inform_changed_data, inform_deleted_data
-from ..utils.rest_api import (
-    CreateModelMixin,
-    DestroyModelMixin,
-    GenericViewSet,
-    ModelViewSet,
-    Response,
-    ReturnDict,
-    UpdateModelMixin,
-    ValidationError,
-    detail_route,
-    list_route,
-)
 from .access_permissions import (
     CategoryAccessPermissions,
     MotionAccessPermissions,
@@ -50,6 +34,22 @@ from .models import (
     Workflow,
 )
 from .serializers import MotionPollSerializer, StateSerializer
+from ..core.config import config
+from ..core.models import Tag
+from ..utils.auth import has_perm, in_some_groups
+from ..utils.autoupdate import inform_changed_data, inform_deleted_data
+from ..utils.rest_api import (
+    CreateModelMixin,
+    DestroyModelMixin,
+    GenericViewSet,
+    ModelViewSet,
+    Response,
+    ReturnDict,
+    UpdateModelMixin,
+    ValidationError,
+    detail_route,
+    list_route,
+)
 
 
 # Viewsets for the REST API

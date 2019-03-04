@@ -20,6 +20,13 @@ from django.http.request import QueryDict
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 
+from .access_permissions import (
+    GroupAccessPermissions,
+    PersonalNoteAccessPermissions,
+    UserAccessPermissions,
+)
+from .models import Group, PersonalNote, User
+from .serializers import GroupSerializer, PermissionRelatedField
 from ..core.config import config
 from ..core.signals import permission_change
 from ..utils.auth import (
@@ -40,13 +47,6 @@ from ..utils.rest_api import (
     status,
 )
 from ..utils.views import APIView
-from .access_permissions import (
-    GroupAccessPermissions,
-    PersonalNoteAccessPermissions,
-    UserAccessPermissions,
-)
-from .models import Group, PersonalNote, User
-from .serializers import GroupSerializer, PermissionRelatedField
 
 
 # Viewsets for the REST API

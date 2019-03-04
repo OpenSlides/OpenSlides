@@ -1,6 +1,7 @@
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import Permission
 
+from .models import Group, PersonalNote, User
 from ..utils.autoupdate import inform_changed_data
 from ..utils.rest_api import (
     IdPrimaryKeyRelatedField,
@@ -9,7 +10,6 @@ from ..utils.rest_api import (
     RelatedField,
     ValidationError,
 )
-from .models import Group, PersonalNote, User
 
 
 USERCANSEESERIALIZER_FIELDS = (

@@ -11,6 +11,28 @@ from django.utils.timezone import now
 from django.views import static
 from django.views.generic.base import View
 
+from .access_permissions import (
+    ChatMessageAccessPermissions,
+    ConfigAccessPermissions,
+    CountdownAccessPermissions,
+    HistoryAccessPermissions,
+    ProjectorAccessPermissions,
+    ProjectorMessageAccessPermissions,
+    TagAccessPermissions,
+)
+from .config import config
+from .exceptions import ConfigError, ConfigNotFound
+from .models import (
+    ChatMessage,
+    ConfigStore,
+    Countdown,
+    History,
+    HistoryData,
+    ProjectionDefault,
+    Projector,
+    ProjectorMessage,
+    Tag,
+)
 from .. import __license__ as license, __url__ as url, __version__ as version
 from ..users.models import User
 from ..utils import views as utils_views
@@ -33,28 +55,6 @@ from ..utils.rest_api import (
     ValidationError,
     detail_route,
     list_route,
-)
-from .access_permissions import (
-    ChatMessageAccessPermissions,
-    ConfigAccessPermissions,
-    CountdownAccessPermissions,
-    HistoryAccessPermissions,
-    ProjectorAccessPermissions,
-    ProjectorMessageAccessPermissions,
-    TagAccessPermissions,
-)
-from .config import config
-from .exceptions import ConfigError, ConfigNotFound
-from .models import (
-    ChatMessage,
-    ConfigStore,
-    Countdown,
-    History,
-    HistoryData,
-    ProjectionDefault,
-    Projector,
-    ProjectorMessage,
-    Tag,
 )
 
 
