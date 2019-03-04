@@ -145,6 +145,10 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
      * Trigger an update of the data
      */
     private onChange(value: any): void {
+        if (this.configItem.inputType === 'markupText') {
+            // tinyMCE markuptext does not autoupdate on change, only when entering or leaving
+            return;
+        }
         if (this.configItem.inputType === 'datetimepicker') {
             this.dateValue = new Date(value as number);
         }
@@ -263,5 +267,29 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
      */
     public hasDefault(): boolean {
         return this.configItem.defaultValue !== undefined && this.configItem.defaultValue !== null;
+    }
+
+    /**
+     * Amends the application-wide tinyMCE settings with update triggers that
+     * send updated values only after leaving focus (Blur) or closing the editor (Remove)
+     *
+     * @returns an instance of tinyMCE settings with additional setup definitions
+     */
+    public getTinyMceSettings(): object {
+        return {
+            ...this.tinyMceSettings,
+            setup: editor => {
+                editor.on('Blur', ev => {
+                    if (ev.target.getContent() !== this.translatedValue) {
+                        this.update(ev.target.getContent());
+                    }
+                });
+                editor.on('Remove', ev => {
+                    if (ev.target.getContent() !== this.translatedValue) {
+                        this.update(ev.target.getContent());
+                    }
+                });
+            }
+        };
     }
 }

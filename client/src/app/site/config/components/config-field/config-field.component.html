@@ -91,7 +91,7 @@
                 <!-- The editor -->
                 <div *ngIf="configItem.inputType === 'markupText'">
                     <h4>{{ configItem.label | translate }}</h4>
-                    <editor formControlName="value" [init]="tinyMceSettings"></editor>
+                    <editor formControlName="value" [init]="getTinyMceSettings()"></editor>
                     <span matSuffix>
                         <mat-icon pull="right" class="text-success" *ngIf="updateSuccessIcon">check_circle</mat-icon>
                     </span>
