@@ -60,7 +60,7 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
     protected _tags: ViewTag[];
     protected _parent: ViewMotion;
     protected _changeRecommendations: ViewMotionChangeRecommendation[];
-    public personalNote: PersonalNoteContent;
+    public personalNote?: PersonalNoteContent;
 
     /**
      * Is set by the repository; this is the order of the flat call list given by
@@ -314,7 +314,7 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
      * @returns the current state
      */
     public get star(): boolean {
-        return this.personalNote && this.personalNote.star ? true : false;
+        return !!this.personalNote && !!this.personalNote.star;
     }
 
     /**
@@ -323,7 +323,7 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
      * @returns true if personalContent is present and has notes
      */
     public get hasNotes(): boolean {
-        return this.personalNote && this.personalNote.note ? true : false;
+        return !!this.personalNote && !!this.personalNote.note;
     }
 
     /**
@@ -372,7 +372,8 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
         attachments?: ViewMediafile[],
         tags?: ViewTag[],
         parent?: ViewMotion,
-        changeRecommendations?: ViewMotionChangeRecommendation[]
+        changeRecommendations?: ViewMotionChangeRecommendation[],
+        personalNote?: PersonalNoteContent
     ) {
         super(Motion.COLLECTIONSTRING);
         this._motion = motion;
@@ -387,6 +388,7 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
         this._tags = tags;
         this._parent = parent;
         this._changeRecommendations = changeRecommendations;
+        this.personalNote = personalNote;
     }
 
     public getAgendaItem(): ViewItem {

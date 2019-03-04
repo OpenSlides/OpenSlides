@@ -40,15 +40,15 @@ export class AppComponent {
      */
     public constructor(
         translate: TranslateService,
+        appRef: ApplicationRef,
+        servertimeService: ServertimeService,
         operator: OperatorService,
         loginDataService: LoginDataService,
         constantsService: ConstantsService, // Needs to be started, so it can register itself to the WebsocketService
-        servertimeService: ServertimeService,
         themeService: ThemeService,
         countUsersService: CountUsersService, // Needed to register itself.
         configService: ConfigService,
-        loadFontService: LoadFontService,
-        appRef: ApplicationRef
+        loadFontService: LoadFontService
     ) {
         // manually add the supported languages
         translate.addLangs(['en', 'de', 'cs']);
@@ -66,9 +66,7 @@ export class AppComponent {
                 filter(s => s),
                 take(1)
             )
-            .subscribe(() => {
-                servertimeService.startScheduler();
-            });
+            .subscribe(() => servertimeService.startScheduler());
     }
 
     /**

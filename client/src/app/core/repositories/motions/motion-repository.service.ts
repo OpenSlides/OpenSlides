@@ -21,7 +21,6 @@ import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { MotionChangeRecommendation } from 'app/shared/models/motions/motion-change-reco';
 import { MotionPoll } from 'app/shared/models/motions/motion-poll';
 import { OSTreeSortEvent } from 'app/shared/components/sorting-tree/sorting-tree.component';
-import { PersonalNoteService } from '../../ui-services/personal-note.service';
 import { TreeService } from 'app/core/ui-services/tree.service';
 import { User } from 'app/shared/models/users/user';
 import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-change-recommendation';
@@ -40,6 +39,10 @@ import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { BaseAgendaContentObjectRepository } from '../base-agenda-content-object-repository';
+import { BaseViewModel } from 'app/site/base/base-view-model';
+import { PersonalNote, PersonalNoteContent } from 'app/shared/models/users/personal-note';
+import { ViewPersonalNote } from 'app/site/users/models/view-personal-note';
+import { OperatorService } from 'app/core/core-services/operator.service';
 
 /**
  * Repository Services for motions (and potentially categories)
@@ -67,7 +70,6 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
      * @param httpService OpenSlides own Http service
      * @param lineNumbering Line numbering for motion text
      * @param diff Display changes in motion text as diff.
-     * @param personalNoteService service fo personal notes
      */
     public constructor(
         DS: DataStoreService,
@@ -78,8 +80,8 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
         private readonly lineNumbering: LinenumberingService,
         private readonly diff: DiffService,
         private treeService: TreeService,
-        private personalNoteService: PersonalNoteService,
-        private translate: TranslateService
+        private translate: TranslateService,
+        private operator: OperatorService
     ) {
         super(DS, mapperService, viewModelStoreService, Motion, [
             Category,
@@ -89,7 +91,8 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
             MotionBlock,
             Mediafile,
             Tag,
-            MotionChangeRecommendation
+            MotionChangeRecommendation,
+            PersonalNote
         ]);
     }
 
@@ -157,6 +160,7 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
         if (workflow) {
             state = workflow.getStateById(motion.state_id);
         }
+        const personalNote = this.getPersonalNoteForMotion(motion.id);
         const viewMotion = new ViewMotion(
             motion,
             category,
@@ -169,7 +173,8 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
             attachments,
             tags,
             parent,
-            changeRecommendations
+            changeRecommendations,
+            personalNote
         );
         viewMotion.getIdentifierOrTitle = () => this.getIdentifierOrTitle(viewMotion);
         viewMotion.getTitle = () => this.getTitle(viewMotion);
@@ -178,6 +183,60 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
         viewMotion.getProjectorTitle = viewMotion.getAgendaTitle;
         viewMotion.getAgendaTitleWithType = () => this.getAgendaTitleWithType(viewMotion);
         return viewMotion;
+    }
+
+    /**
+     * Get the personal note content for one motion by their id
+     *
+     * @param motionId the id of the motion
+     * @returns the personal note content for this motion or null
+     */
+    private getPersonalNoteForMotion(motionId: number): PersonalNoteContent | null {
+        if (this.operator.isAnonymous) {
+            return;
+        }
+
+        const personalNote = this.viewModelStoreService.find(ViewPersonalNote, pn => {
+            return pn.userId === this.operator.user.id;
+        });
+
+        if (!personalNote) {
+            return;
+        }
+
+        const notes = personalNote.notes;
+        const collection = Motion.COLLECTIONSTRING;
+        if (notes && notes[collection] && notes[collection][motionId]) {
+            return notes[collection][motionId];
+        }
+    }
+
+    /**
+     *
+     * @param update
+     *
+     * @overwrite
+     */
+    protected updateDependency(update: BaseViewModel): void {
+        if (update instanceof ViewPersonalNote) {
+            if (this.operator.isAnonymous || update.userId !== this.operator.user.id) {
+                return;
+            }
+            const notes = update.notes;
+            const collection = Motion.COLLECTIONSTRING;
+
+            this.getViewModelList().forEach(ownViewModel => {
+                if (notes && notes[collection] && notes[collection][ownViewModel.id]) {
+                    ownViewModel.personalNote = notes[collection][ownViewModel.id];
+                } else {
+                    ownViewModel.personalNote = null;
+                }
+                this.updateViewModelObservable(ownViewModel.id);
+            });
+            this.updateViewModelListObservable();
+        } else {
+            super.updateDependency(update);
+        }
     }
 
     /**
@@ -194,10 +253,6 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
                 let virtualWeightCounter = 0;
                 while (!(m = iterator.next()).done) {
                     m.value.callListWeight = virtualWeightCounter++;
-                    const motion = m.value;
-                    this.personalNoteService
-                        .getPersonalNoteObserver(motion.motion)
-                        .subscribe(note => (motion.personalNote = note));
                 }
             })
         );

@@ -145,7 +145,7 @@
     <os-motion-comments *ngIf="!editMotion" [motion]="motion"></os-motion-comments>
 
     <!-- Personal note -->
-    <os-personal-note *ngIf="!editMotion" [motion]="motion"></os-personal-note>
+    <os-personal-note *ngIf="!editMotion && !operator.isAnonymous" [motion]="motion"></os-personal-note>
 </ng-template>
 
 <ng-template #desktopView>
@@ -157,7 +157,7 @@
             </div>
 
             <os-motion-comments *ngIf="!editMotion" [motion]="motion"></os-motion-comments>
-            <os-personal-note *ngIf="!editMotion" [motion]="motion"></os-personal-note>
+            <os-personal-note *ngIf="!editMotion && !operator.isAnonymous" [motion]="motion"></os-personal-note>
         </div>
         <div class="desktop-right">
             <!-- Content -->

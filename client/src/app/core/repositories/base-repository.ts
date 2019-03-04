@@ -104,6 +104,9 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
         });
     }
 
+    /**
+     * Sets up the observation of dependency subjects.
+     */
     protected setupDependencyObservation(): void {
         if (this.depsModelCtors) {
             this.DS.secondaryModelChangeSubject.subscribe(model => {
@@ -112,15 +115,24 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
                 });
                 if (dependencyChanged) {
                     const viewModel = this.viewModelStoreService.get(model.collectionString, model.id);
-
-                    // if an domain object we need was added or changed, update viewModelStore
-                    this.getViewModelList().forEach(ownViewModel => {
-                        ownViewModel.updateDependencies(viewModel);
-                    });
-                    this.updateAllObservables(model.id);
+                    this.updateDependency(viewModel);
                 }
             });
         }
+    }
+
+    /**
+     * Updates all models with the provided `update` which is a dependency.
+     *
+     * @param update The dependency to update.
+     */
+    protected updateDependency(update: BaseViewModel): void {
+        // if an domain object we need was added or changed, update viewModelStore
+        this.getViewModelList().forEach(ownViewModel => {
+            ownViewModel.updateDependencies(update);
+            this.updateViewModelObservable(ownViewModel.id);
+        });
+        this.updateViewModelListObservable();
     }
 
     /**

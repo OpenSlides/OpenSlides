@@ -33,20 +33,20 @@ export class PersonalNoteRepositoryService extends BaseRepository<ViewPersonalNo
     };
 
     protected createViewModel(personalNote: PersonalNote): ViewPersonalNote {
-        const viewPersonalNote = new ViewPersonalNote();
+        const viewPersonalNote = new ViewPersonalNote(personalNote);
         viewPersonalNote.getVerboseName = this.getVerboseName;
         return viewPersonalNote;
     }
 
     public async create(personalNote: PersonalNote): Promise<Identifiable> {
-        throw new Error('TODO');
+        throw new Error('Not supported');
     }
 
     public async update(personalNote: Partial<PersonalNote>, viewPersonalNote: ViewPersonalNote): Promise<void> {
-        throw new Error('TODO');
+        throw new Error('Not supported');
     }
 
     public async delete(viewPersonalNote: ViewPersonalNote): Promise<void> {
-        throw new Error('TODO');
+        throw new Error('Not supported');
     }
 }

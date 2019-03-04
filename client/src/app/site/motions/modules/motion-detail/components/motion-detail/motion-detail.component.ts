@@ -29,7 +29,6 @@ import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-exp
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { NotifyService } from 'app/core/core-services/notify.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
-import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
 import { PersonalNoteService } from 'app/core/ui-services/personal-note.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions/statute-paragraph-repository.service';
@@ -317,11 +316,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     public highlightedLineTyping: number;
 
     /**
-     * The personal notes' content for this motion
-     */
-    public personalNoteContent: PersonalNoteContent;
-
-    /**
      * new state extension label to be submitted, if state extensions can be set
      */
     public newStateExtension = '';
@@ -379,7 +373,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         translate: TranslateService,
         matSnackBar: MatSnackBar,
         public vp: ViewportService,
-        private operator: OperatorService,
+        public operator: OperatorService,
         public perms: LocalPermissionsService,
         private router: Router,
         private route: ActivatedRoute,
@@ -562,9 +556,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
                     if (newViewMotion) {
                         this.motion = newViewMotion;
                         this.newStateExtension = this.motion.stateExtension;
-                        this.personalNoteService.getPersonalNoteObserver(this.motion.motion).subscribe(pn => {
-                            this.personalNoteContent = pn;
-                        });
                         this.patchForm(this.motion);
                     }
                 });
@@ -1400,8 +1391,16 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     /**
      * Toggles the favorite status
      */
-    public async toggleFavorite(): Promise<void> {
-        this.personalNoteService.setPersonalNoteStar(this.motion.motion, !this.motion.star);
+    public toggleFavorite(): void {
+        if (!this.motion.personalNote) {
+            this.motion.personalNote = {
+                note: '',
+                star: true
+            };
+        } else {
+            this.motion.personalNote.star = !this.motion.personalNote.star;
+        }
+        this.personalNoteService.savePersonalNote(this.motion, this.motion.personalNote).then(null, this.raiseError);
     }
 
     /**
