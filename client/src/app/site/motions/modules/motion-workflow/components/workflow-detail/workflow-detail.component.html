@@ -34,7 +34,7 @@
                 </mat-cell>
             </ng-container>
 
-            <div *ngFor="let state of workflow.states; trackBy: trackElement">
+            <div *ngFor="let state of workflow.states; trackBy: trackByIndex">
                 <ng-container [matColumnDef]="getColumnDef(state)">
                     <mat-header-cell *matHeaderCellDef (click)="onClickStateName(state)">
                         <div class="clickable-cell">

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
+import { Router, ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Title } from '@angular/platform-browser';
 
@@ -8,10 +9,10 @@ import { AssignmentFilterListService } from '../services/assignment-filter.servi
 import { AssignmentSortListService } from '../services/assignment-sort-list.service';
 import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
 import { ListViewBaseComponent } from '../../base/list-view-base';
+import { OperatorService } from 'app/core/core-services/operator.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
-import { ViewAssignment } from '../models/view-assignment';
 import { StorageService } from 'app/core/core-services/storage.service';
-import { ActivatedRoute } from '@angular/router';
+import { ViewAssignment } from '../models/view-assignment';
 
 /**
  * Listview for the assignments
@@ -32,17 +33,22 @@ export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignmen
      * @param promptService
      * @param filterService: A service to supply the filtered datasource
      * @param sortService: Service to sort the filtered dataSource
+     * @param route
+     * @param router
+     * @param operator
      */
     public constructor(
         titleService: Title,
         storage: StorageService,
-        route: ActivatedRoute,
         protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
         public repo: AssignmentRepositoryService,
         private promptService: PromptService,
         public filterService: AssignmentFilterListService,
-        public sortService: AssignmentSortListService
+        public sortService: AssignmentSortListService,
+        protected route: ActivatedRoute,
+        private router: Router,
+        public operator: OperatorService
     ) {
         super(titleService, translate, matSnackBar, route, storage, filterService, sortService);
         // activate multiSelect mode for this listview
@@ -51,8 +57,7 @@ export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignmen
 
     /**
      * Init function.
-     * Sets the title, inits the table, sets sorting and filter definitions, subscribes to filtered
-     * data and sorting service
+     * Sets the title, inits the table
      */
     public ngOnInit(): void {
         super.setTitle(this.translate.instant('Elections'));
@@ -60,18 +65,21 @@ export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignmen
     }
 
     /**
-     * Click on the plus button delegated from head-bar
+     * Handles a click on the plus button delegated from head-bar.
+     * Creates a new assignment
      */
     public onPlusButton(): void {
-        console.log('create new assignments');
+        this.router.navigate(['./new'], { relativeTo: this.route });
     }
 
     /**
-     * Action to be performed after a click on a row in the table, if in single select mode
+     * Action to be performed after a click on a row in the table, if in single select mode.
+     * Navigates to the corresponding assignment
+     *
      * @param assignment The entry of row clicked
      */
     public singleSelectAction(assignment: ViewAssignment): void {
-        console.log('select assignment list: ', assignment);
+        this.router.navigate([assignment.getDetailStateURL()], { relativeTo: this.route });
     }
 
     /**
@@ -79,7 +87,7 @@ export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignmen
      * TODO: Not yet implemented
      */
     public downloadAssignmentButton(): void {
-        console.log('Hello World');
+        this.raiseError('TODO: assignment download not yet implemented');
     }
 
     /**
@@ -95,6 +103,11 @@ export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignmen
         }
     }
 
+    /**
+     * Fetch the column definitions for the data table
+     *
+     * @returns a list of string matching the columns
+     */
     public getColumnDefintion(): string[] {
         const list = ['title', 'phase', 'candidates'];
         if (this.isMultiSelect) {

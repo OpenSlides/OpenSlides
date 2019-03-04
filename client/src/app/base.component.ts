@@ -64,4 +64,13 @@ export abstract class BaseComponent {
         const translatedPrefix = this.translate.instant(prefix);
         this.titleService.setTitle(translatedPrefix + this.titleSuffix);
     }
+
+    /**
+     * Helper for indexed *ngFor components
+     *
+     * @param index
+     */
+    public trackByIndex(index: number): number {
+        return index;
+    }
 }

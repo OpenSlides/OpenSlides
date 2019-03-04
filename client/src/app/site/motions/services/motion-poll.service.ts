@@ -2,9 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { MotionPoll } from 'app/shared/models/motions/motion-poll';
-import { PollService } from 'app/core/ui-services/poll.service';
-
-export type CalculablePollKey = 'votesvalid' | 'votesinvalid' | 'votescast' | 'yes' | 'no' | 'abstain';
+import { PollService, PollMajorityMethod, CalculablePollKey } from 'app/core/ui-services/poll.service';
 
 /**
  * Service class for motion polls.
@@ -37,7 +35,7 @@ export class MotionPollService extends PollService {
      * @param key
      * @returns a percentage number with two digits, null if the value cannot be calculated (consider 0 !== null)
      */
-    public calculatePercentage(poll: MotionPoll, key: CalculablePollKey): number {
+    public calculatePercentage(poll: MotionPoll, key: CalculablePollKey): number | null {
         const baseNumber = this.getBaseAmount(poll);
         if (!baseNumber) {
             return null;
@@ -126,18 +124,11 @@ export class MotionPollService extends PollService {
             return undefined;
         }
         let result: number;
-        switch (method) {
-            case 'simple_majority':
-                result = baseNumber * 0.5;
-                break;
-            case 'two-thirds_majority':
-                result = (baseNumber / 3) * 2;
-                break;
-            case 'three-quarters_majority':
-                result = (baseNumber / 4) * 3;
-                break;
-            default:
-                return undefined;
+        const calc = PollMajorityMethod.find(m => m.value === method);
+        if (calc && calc.calc) {
+            result = calc.calc(baseNumber);
+        } else {
+            result = null;
         }
         // rounding up, or if a integer was hit, adding one.
         if (result % 1 !== 0) {

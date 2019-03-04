@@ -1,4 +1,4 @@
-<os-head-bar plusButton="true" (plusButtonClicked)="onPlusButton()" [multiSelectMode]="isMultiSelect">
+<os-head-bar [mainButton]="operator.hasPerms('assignments.can_manage')" (mainEvent)="onPlusButton()" [multiSelectMode]="isMultiSelect">
     <!-- Title -->
     <div class="title-slot"><h2 translate>Elections</h2></div>
     <!-- Menu -->

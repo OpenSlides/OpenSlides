@@ -12,6 +12,7 @@ from openslides.utils.rest_api import (
     ValidationError,
 )
 
+from ..utils.autoupdate import inform_changed_data
 from ..utils.validate import validate_html
 from .models import (
     Assignment,
@@ -266,8 +267,11 @@ class AssignmentFullSerializer(ModelSerializer):
         """
         agenda_type = validated_data.pop("agenda_type", None)
         agenda_parent_id = validated_data.pop("agenda_parent_id", None)
+        tags = validated_data.pop("tags", [])
         assignment = Assignment(**validated_data)
         assignment.agenda_item_update_information["type"] = agenda_type
         assignment.agenda_item_update_information["parent_id"] = agenda_parent_id
         assignment.save()
+        assignment.tags.add(*tags)
+        inform_changed_data(assignment)
         return assignment

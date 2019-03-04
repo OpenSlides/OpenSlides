@@ -228,7 +228,7 @@ export class MotionImportService extends BaseImportService<ViewMotion> {
      * @param categoryString
      * @returns categories mapped to existing categories
      */
-    public getCategory(categoryString: string): CsvMapping {
+    public getCategory(categoryString: string): CsvMapping | null {
         if (!categoryString) {
             return null;
         }
@@ -266,7 +266,7 @@ export class MotionImportService extends BaseImportService<ViewMotion> {
      * @param blockString
      * @returns a CSVMap with the MotionBlock and an id (if the motionBlock is already in the dataStore)
      */
-    public getMotionBlock(blockString: string): CsvMapping {
+    public getMotionBlock(blockString: string): CsvMapping | null {
         if (!blockString) {
             return null;
         }

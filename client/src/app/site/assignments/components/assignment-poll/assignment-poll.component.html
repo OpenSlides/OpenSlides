@@ -1,0 +1,120 @@
+<!-- label: 'Ballot 1 ...' -->
+<h3 translate>Ballot</h3>
+<mat-card class="os-card">
+    <div class="flex-spaced">
+        <div>
+            <!-- *ngIf="poll.description"> -->
+            Description
+            <!-- {{ poll.description}} -->
+        </div>
+        <!-- Buttons -->
+        <div *osPerms="'assignments.can_manage'">
+            <button mat-button (click)="printBallot()">
+                <span translate>Print ballot paper</span>
+            </button>
+            <button mat-button [disabled]="assignment.phase == 2" (click)="enterVotes()">
+                <span translate>Enter votes</span>
+            </button>
+            <button mat-button (click)="togglePublished()">
+                <span *ngIf="!poll.published" translate>Publish</span>
+                <span *ngIf="poll.published" translate>Unpublish</span>
+            </button>
+        </div>
+        <div *osPerms="'core.can_manage_projector'">
+            <button mat-button>
+                <span translate>Project</span>
+                <!-- os-projector-button ?-->
+            </button>
+        </div>
+        <div *osPerms="'assignments.can_manage'">
+            <button mat-button class="red-warning-text" (click)="onDeletePoll(poll)">
+                <span translate>Delete</span>
+            </button>
+        </div>
+    </div>
+    <div>
+        <!-- text input 'set hint for pballot paper' -->
+        <!-- submit: setBallotHint(poll) -->
+    </div>
+
+    <div *ngIf="pollService.majorityMethods && majorityChoice">
+        <span translate>Majority method</span>
+
+        <mat-basic-chip *ngIf="canManage" [matMenuTriggerFor]="majorityMenu" class="grey" disableRipple>
+            {{ majorityChoice.display_name | translate }}
+        </mat-basic-chip>
+        <mat-basic-chip *ngIf="!canManage" class="grey" disableRipple>
+            {{ majorityChoice.display_name | translate }}
+        </mat-basic-chip>
+        <mat-menu #majorityMenu="matMenu">
+            <button mat-menu-item *ngFor="let method of pollService.majorityMethods" (click)="setMajority(method)">
+                <mat-icon *ngIf="method.value === majorityChoice.value">
+                    check
+                </mat-icon>
+                {{ method.display_name | translate }}
+            </button>
+        </mat-menu>
+    </div>
+    <div class="on-transition-fade" *ngIf="poll && poll.options">
+        <div *ngFor="let option of poll.options" class="flex-spaced">
+            <div *ngIf="poll.published">
+                <mat-checkbox [checked]="option.is_elected" (change)="toggleElected(option)">
+                    <!-- TODO mark/unkmark elected osPerms -->
+                </mat-checkbox>
+            </div>
+            <!-- candidate Name -->
+            <div>
+                {{ getCandidateName(option) }}
+            </div>
+            <!-- Votes -->
+            <div *ngIf="poll.published">
+                <div *ngFor="let vote of option.votes">
+                    <div class="poll-progress on-transition-fade">
+                        <span>{{ pollService.getLabel(vote.value) | translate }}:</span>
+                        {{ pollService.getSpecialLabel(vote.weight) }}
+                        <span *ngIf="!pollService.isAbstractOption(poll, option)"
+                            >({{ pollService.getPercent(poll, option, vote.value) }}%)</span
+                        >
+                    </div>
+                    <div *ngIf="!pollService.isAbstractOption(poll, option)" class="poll-progress-bar">
+                        <mat-progress-bar
+                            mode="determinate"
+                            [value]="pollService.getPercent(poll, option, vote.value)"
+                            [ngClass]="pollService.getProgressBarColor(vote.value)"
+                        >
+                        </mat-progress-bar>
+                    </div>
+                </div>
+            </div>
+            <div
+                *ngIf="
+                    poll.published &&
+                    majorityChoice &&
+                    majorityChoice.value !== 'disabled' &&
+                    !pollService.isAbstractOption(poll, option)
+                "
+            >
+                <span>{{ pollService.yesQuorum(majorityChoice, poll, option) }}</span>
+                <span *ngIf="quorumReached(option)" class="green-text">
+                    <mat-icon>done</mat-icon>
+                </span>
+                <span *ngIf="!quorumReached(option)" class="red-warning-text">
+                    <mat-icon>cancel</mat-icon>
+                </span>
+            </div>
+        </div>
+        <div>
+            <!-- summary -->
+            <div *ngFor="let key of pollValues">
+                <div *ngIf="!pollService.isAbstractValue(key)" class="poll-progress-bar">
+                    <mat-progress-bar
+                        mode="determinate"
+                        [value]="pollService.getPercent(key)"
+                        [ngClass]="pollService.getProgressBarColor(key)"
+                    >
+                    </mat-progress-bar>
+                </div>
+            </div>
+        </div>
+    </div>
+</mat-card>

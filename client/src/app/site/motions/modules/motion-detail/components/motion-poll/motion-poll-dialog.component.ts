@@ -3,7 +3,8 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 
 import { MotionPoll } from 'app/shared/models/motions/motion-poll';
-import { MotionPollService, CalculablePollKey } from 'app/site/motions/services/motion-poll.service';
+import { MotionPollService } from 'app/site/motions/services/motion-poll.service';
+import { CalculablePollKey } from 'app/core/ui-services/poll.service';
 
 /**
  * A dialog for updating the values of a poll.
@@ -15,7 +16,8 @@ import { MotionPollService, CalculablePollKey } from 'app/site/motions/services/
 })
 export class MotionPollDialogComponent {
     /**
-     * List of accepted special non-numerical values from {@link PollService}
+     * List of accepted special non-numerical values.
+     * See {@link PollService.specialPollVotes}
      */
     public specialValues: [number, string][];
 

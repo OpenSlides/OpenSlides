@@ -305,6 +305,12 @@ mat-paginator {
     margin-top: 50px;
 }
 
+/**even distribution of elements in a row*/
+.flex-spaced {
+    display: flex;
+    justify-content: space-between;
+}
+
 /**use to push content to the right side*/
 .spacer {
     flex: 1 1 auto;
