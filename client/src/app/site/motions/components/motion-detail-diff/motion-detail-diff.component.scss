@@ -21,13 +21,14 @@
 
     .action-row {
         font-size: 0.8em;
-        padding-top: 5px;
-        padding-bottom: 5px;
+        height: 22px;
+        padding-top: 2px;
         float: right;
         width: 150px;
         text-align: right;
         margin-right: -150px;
         opacity: 0.5;
+        overflow: hidden;
 
         .btn-delete {
             margin-left: 5px;
