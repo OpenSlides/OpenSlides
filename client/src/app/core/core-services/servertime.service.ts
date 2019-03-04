@@ -16,6 +16,8 @@ import { environment } from 'environments/environment.prod';
     providedIn: 'root'
 })
 export class ServertimeService {
+    // TODO: couple this with the offlineService: Just retry often, if we are online.
+    // When we are offline, this is not necessary.
     private static FAILURE_TIMEOUT = 30;
     private static NORMAL_TIMEOUT = 60 * 5;
 

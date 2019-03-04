@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { TranslateService } from '@ngx-translate/core';
-
-import { BaseComponent } from '../../../../base.component';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
-import { environment } from 'environments/environment';
 import { MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
+
+import { TranslateService } from '@ngx-translate/core';
+
+import { environment } from 'environments/environment';
+import { BaseComponent } from '../../../../base.component';
+import { HttpService } from 'app/core/core-services/http.service';
 
 /**
  * Reset password component.
@@ -30,7 +31,7 @@ export class ResetPasswordComponent extends BaseComponent implements OnInit {
     public constructor(
         protected titleService: Title,
         protected translate: TranslateService,
-        private http: HttpClient,
+        private http: HttpService,
         formBuilder: FormBuilder,
         private matSnackBar: MatSnackBar,
         private router: Router
@@ -57,11 +58,9 @@ export class ResetPasswordComponent extends BaseComponent implements OnInit {
         }
 
         try {
-            await this.http
-                .post<void>(environment.urlPrefix + '/users/reset-password/', {
-                    email: this.resetPasswordForm.get('email').value
-                })
-                .toPromise();
+            await this.http.post<void>(environment.urlPrefix + '/users/reset-password/', {
+                email: this.resetPasswordForm.get('email').value
+            });
             // TODO: Does we get a response for displaying?
             this.matSnackBar.open(
                 this.translate.instant('An email with a password reset link was send!'),

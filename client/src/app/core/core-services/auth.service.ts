@@ -42,8 +42,7 @@ export class AuthService {
     /**
      * Try to log in a user.
      *
-     * Returns an observable 'user' with the correct login information or an error.
-     * The user will then be stored in the {@link OperatorService},
+     * Returns an observable with the correct login information or an error.
      * errors will be forwarded to the parents error function.
      *
      * @param username
@@ -56,18 +55,17 @@ export class AuthService {
             password: password
         };
         const response = await this.http.post<LoginResponse>(environment.urlPrefix + '/users/login/', user);
-        this.operator.user = new User(response.user);
         return response;
     }
 
     /**
      * Logout function for both the client and the server.
      *
-     * Will clear the current {@link OperatorService} and
-     * send a `post`-request to `/apps/users/logout/'`
+     * Will clear the current operator and datastore and
+     * send a `post`-request to `/apps/users/logout/'`. Restarts OpenSlides.
      */
     public async logout(): Promise<void> {
-        this.operator.user = null;
+        await this.operator.setUser(null);
         try {
             await this.http.post(environment.urlPrefix + '/users/logout/', {});
         } catch (e) {

@@ -16,53 +16,43 @@ const routes: Routes = [
         children: [
             {
                 path: '',
-                loadChildren: './common/os-common.module#OsCommonModule',
-                data: { preload: true }
+                loadChildren: './common/os-common.module#OsCommonModule'
             },
             {
                 path: 'agenda',
-                loadChildren: './agenda/agenda.module#AgendaModule',
-                data: { preload: true }
+                loadChildren: './agenda/agenda.module#AgendaModule'
             },
             {
                 path: 'assignments',
-                loadChildren: './assignments/assignments.module#AssignmentsModule',
-                data: { preload: true }
+                loadChildren: './assignments/assignments.module#AssignmentsModule'
             },
             {
                 path: 'mediafiles',
-                loadChildren: './mediafiles/mediafiles.module#MediafilesModule',
-                data: { preload: true }
+                loadChildren: './mediafiles/mediafiles.module#MediafilesModule'
             },
             {
                 path: 'motions',
-                loadChildren: './motions/motions.module#MotionsModule',
-                data: { preload: true }
+                loadChildren: './motions/motions.module#MotionsModule'
             },
             {
                 path: 'settings',
-                loadChildren: './config/config.module#ConfigModule',
-                data: { preload: true }
+                loadChildren: './config/config.module#ConfigModule'
             },
             {
                 path: 'users',
-                loadChildren: './users/users.module#UsersModule',
-                data: { preload: true }
+                loadChildren: './users/users.module#UsersModule'
             },
             {
                 path: 'tags',
-                loadChildren: './tags/tag.module#TagModule',
-                data: { preload: true }
+                loadChildren: './tags/tag.module#TagModule'
             },
             {
                 path: 'history',
-                loadChildren: './history/history.module#HistoryModule',
-                data: { preload: true }
+                loadChildren: './history/history.module#HistoryModule'
             },
             {
                 path: 'projectors',
-                loadChildren: './projector/projector.module#ProjectorModule',
-                data: { preload: true }
+                loadChildren: './projector/projector.module#ProjectorModule'
             }
         ],
         canActivateChild: [AuthGuard]
