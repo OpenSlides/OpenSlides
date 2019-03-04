@@ -666,18 +666,17 @@ class MotionViewSet(ModelViewSet):
                     {"detail": f"You can not set the state to {state_id}."}
                 )
             motion.set_state(state_id)
-            state = State.objects.get(pk=state_id)
 
             # Save motion.
-            if not state.dont_set_identifier:
-                motion.save(
-                    update_fields=["state", "last_modified", "identifier"],
-                    skip_autoupdate=True,
-                )
-            else:
-                motion.save(
-                    update_fields=["state", "last_modified"], skip_autoupdate=True
-                )
+            motion.save(
+                update_fields=[
+                    "state",
+                    "identifier",
+                    "identifier_number",
+                    "last_modified",
+                ],
+                skip_autoupdate=True,
+            )
 
             # Write the log message.
             motion.write_log(
