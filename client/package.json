@@ -50,9 +50,9 @@
         "ngx-file-drop": "5.0.0",
         "ngx-mat-select-search": "1.5.2",
         "ngx-papaparse": "3.0.2",
-        "pdfmake": "0.1.52",
+        "pdfmake": "^0.1.53",
         "po2json": "1.0.0-alpha",
-        "rxjs": "6.3.3",
+        "rxjs": "^6.4.0",
         "tinymce": "4.9.2",
         "uuid": "3.3.2",
         "zone.js": "0.8.26"
