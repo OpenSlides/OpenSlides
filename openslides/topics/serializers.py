@@ -11,7 +11,7 @@ class TopicSerializer(ModelSerializer):
     """
 
     agenda_type = IntegerField(
-        write_only=True, required=False, min_value=1, max_value=3
+        write_only=True, required=False, min_value=1, max_value=3, allow_null=True
     )
     agenda_parent_id = IntegerField(write_only=True, required=False, min_value=1)
     agenda_comment = CharField(write_only=True, required=False, allow_blank=True)

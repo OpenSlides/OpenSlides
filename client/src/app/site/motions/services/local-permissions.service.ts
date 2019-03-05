@@ -109,6 +109,7 @@ export class LocalPermissionsService {
                         motion.state.allow_submitter_edit &&
                         motion.submitters &&
                         motion.submitters.length &&
+                        !this.operator.isAnonymous &&
                         motion.submitters.some(submitter => submitter.id === this.operator.user.id))
                 );
             }
@@ -139,6 +140,7 @@ export class LocalPermissionsService {
                     this.operator.hasPerms('motions.can_manage_metadata') ||
                     (motion.state &&
                         motion.state.allow_submitter_edit &&
+                        !this.operator.isAnonymous &&
                         motion.submitters &&
                         motion.submitters.some(submitter => submitter.id === this.operator.user.id))
                 );

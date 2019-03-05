@@ -68,7 +68,7 @@ class MotionBlockSerializer(ModelSerializer):
     """
 
     agenda_type = IntegerField(
-        write_only=True, required=False, min_value=1, max_value=3
+        write_only=True, required=False, min_value=1, max_value=3, allow_null=True
     )
     agenda_parent_id = IntegerField(write_only=True, required=False, min_value=1)
 
@@ -397,7 +397,7 @@ class MotionSerializer(ModelSerializer):
         min_value=1, required=False, validators=[validate_workflow_field]
     )
     agenda_type = IntegerField(
-        write_only=True, required=False, min_value=1, max_value=3
+        write_only=True, required=False, min_value=1, max_value=3, allow_null=True
     )
     agenda_parent_id = IntegerField(write_only=True, required=False, min_value=1)
     submitters = SubmitterSerializer(many=True, read_only=True)
