@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ApplicationRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 import { ConfigService } from './core/ui-services/config.service';
@@ -9,6 +9,8 @@ import { LoginDataService } from './core/ui-services/login-data.service';
 import { OperatorService } from './core/core-services/operator.service';
 import { ServertimeService } from './core/core-services/servertime.service';
 import { ThemeService } from './core/ui-services/theme.service';
+import { first, tap, switchMap } from 'rxjs/operators';
+import { interval } from 'rxjs';
 
 /**
  * Angular's global App Component
@@ -45,7 +47,8 @@ export class AppComponent {
         themeService: ThemeService,
         countUsersService: CountUsersService, // Needed to register itself.
         configService: ConfigService,
-        loadFontService: LoadFontService
+        loadFontService: LoadFontService,
+        applicationRef: ApplicationRef
     ) {
         // manually add the supported languages
         translate.addLangs(['en', 'de', 'cs']);
@@ -58,6 +61,11 @@ export class AppComponent {
         // change default JS functions
         this.overloadArrayToString();
         servertimeService.startScheduler();
+        applicationRef.isStable.pipe(
+            first(stable => stable),
+            tap(stable => console.log('App is stable now')),
+            switchMap(() => interval(1000))
+          ).subscribe(counter => console.log(counter));
     }
 
     /**
