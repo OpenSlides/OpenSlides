@@ -30,11 +30,11 @@ export class ClockSlideComponent extends BaseSlideComponent<{}> implements OnIni
             .subscribe(() => this.updateClock());
 
         // Update clock every 10 seconds.
-        this.clockInterval = this.applicationRef.isStable.subscribe(isStable => {
-            if (isStable) {
-                setInterval(() => this.updateClock(), 10 * 1000);
-            }
-        });
+        // this.clockInterval = this.applicationRef.isStable.subscribe(isStable => {
+        //     if (isStable) {
+        //         setInterval(() => this.updateClock(), 10 * 1000);
+        //     }
+        // });
     }
 
     private updateClock(): void {

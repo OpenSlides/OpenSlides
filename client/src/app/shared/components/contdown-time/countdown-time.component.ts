@@ -51,11 +51,11 @@ export class CountdownTimeComponent implements OnDestroy {
 
         if (data) {
             this.updateCountdownTime();
-            this.countdownInterval = this.applicationRef.isStable.subscribe(isStable => {
-                if (isStable) {
-                    setInterval(() => this.updateCountdownTime(), 0.5 * 1000);
-                }
-            });
+            // this.countdownInterval = this.applicationRef.isStable.subscribe(isStable => {
+            //     if (isStable) {
+            //         setInterval(() => this.updateCountdownTime(), 0.5 * 1000);
+            //     }
+            // });
         }
     }
 
