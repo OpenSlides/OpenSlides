@@ -1,9 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ApplicationRef } from '@angular/core';
 
 import { Subscription } from 'rxjs';
 
 import { BaseSlideComponent } from 'app/slides/base-slide-component';
 import { ServertimeService } from 'app/core/core-services/servertime.service';
+import { SelectMultipleControlValueAccessor } from '@angular/forms';
+import { SELECT_PANEL_INDENT_PADDING_X } from '@angular/material';
 
 @Component({
     selector: 'os-clock-slide',
@@ -17,7 +19,7 @@ export class ClockSlideComponent extends BaseSlideComponent<{}> implements OnIni
 
     private clockInterval: any;
 
-    public constructor(private servertimeService: ServertimeService) {
+    public constructor(private servertimeService: ServertimeService, private applicationRef: ApplicationRef) {
         super();
     }
 
@@ -28,7 +30,11 @@ export class ClockSlideComponent extends BaseSlideComponent<{}> implements OnIni
             .subscribe(() => this.updateClock());
 
         // Update clock every 10 seconds.
-        this.clockInterval = setInterval(() => this.updateClock(), 10 * 1000);
+        this.clockInterval = this.applicationRef.isStable.subscribe(isStable => {
+            if (isStable) {
+                setInterval(() => this.updateClock(), 10 * 1000);
+            }
+        });
     }
 
     private updateClock(): void {

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, Input } from '@angular/core';
+import { Component, OnDestroy, Input, ApplicationRef } from '@angular/core';
 
 import { ServertimeService } from 'app/core/core-services/servertime.service';
 
@@ -51,7 +51,11 @@ export class CountdownTimeComponent implements OnDestroy {
 
         if (data) {
             this.updateCountdownTime();
-            this.countdownInterval = setInterval(() => this.updateCountdownTime(), 500);
+            this.countdownInterval = this.applicationRef.isStable.subscribe(isStable => {
+                if (isStable) {
+                    setInterval(() => this.updateCountdownTime(), 0.5 * 1000);
+                }
+            });
         }
     }
 
@@ -59,7 +63,8 @@ export class CountdownTimeComponent implements OnDestroy {
         return this._countdown;
     }
 
-    public constructor(private servertimeService: ServertimeService) {}
+    public constructor(private servertimeService: ServertimeService,
+        private applicationRef: ApplicationRef) {}
 
     /**
      * Updates the countdown time and string format it.
