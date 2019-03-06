@@ -1,11 +1,11 @@
 from django.http import HttpResponseForbidden, HttpResponseNotFound
 from django.views.static import serve
 
-from .access_permissions import MediafileAccessPermissions
-from .models import Mediafile
 from ..core.config import config
 from ..utils.auth import has_perm
 from ..utils.rest_api import ModelViewSet, ValidationError
+from .access_permissions import MediafileAccessPermissions
+from .models import Mediafile
 
 
 # Viewsets for the REST API

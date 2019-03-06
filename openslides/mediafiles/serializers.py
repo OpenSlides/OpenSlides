@@ -5,8 +5,8 @@ from django.db import models as dbmodels
 from PyPDF2 import PdfFileReader
 from PyPDF2.utils import PdfReadError
 
-from .models import Mediafile
 from ..utils.rest_api import FileField, ModelSerializer, SerializerMethodField
+from .models import Mediafile
 
 
 class AngularCompatibleFileField(FileField):

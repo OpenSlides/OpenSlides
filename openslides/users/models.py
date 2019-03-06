@@ -17,14 +17,14 @@ from django.db.models import Prefetch
 from django.utils import timezone
 from jsonfield import JSONField
 
+from ..core.config import config
+from ..utils.auth import GROUP_ADMIN_PK
+from ..utils.models import CASCADE_AND_AUTOUODATE, RESTModelMixin
 from .access_permissions import (
     GroupAccessPermissions,
     PersonalNoteAccessPermissions,
     UserAccessPermissions,
 )
-from ..core.config import config
-from ..utils.auth import GROUP_ADMIN_PK
-from ..utils.models import CASCADE_AND_AUTOUODATE, RESTModelMixin
 
 
 class UserManager(BaseUserManager):

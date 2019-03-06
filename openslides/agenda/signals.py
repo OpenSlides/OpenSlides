@@ -1,8 +1,8 @@
 from django.apps import apps
 from django.contrib.contenttypes.models import ContentType
 
-from .models import Item
 from ..utils.autoupdate import inform_changed_data
+from .models import Item
 
 
 def listen_to_related_object_post_save(sender, instance, created, **kwargs):

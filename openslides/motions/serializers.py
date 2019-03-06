@@ -2,20 +2,6 @@ from typing import Dict, Optional
 
 from django.db import transaction
 
-from .models import (
-    Category,
-    Motion,
-    MotionBlock,
-    MotionChangeRecommendation,
-    MotionComment,
-    MotionCommentSection,
-    MotionLog,
-    MotionPoll,
-    State,
-    StatuteParagraph,
-    Submitter,
-    Workflow,
-)
 from ..core.config import config
 from ..poll.serializers import default_votes_validator
 from ..utils.auth import get_group_model
@@ -32,6 +18,20 @@ from ..utils.rest_api import (
     ValidationError,
 )
 from ..utils.validate import validate_html
+from .models import (
+    Category,
+    Motion,
+    MotionBlock,
+    MotionChangeRecommendation,
+    MotionComment,
+    MotionCommentSection,
+    MotionLog,
+    MotionPoll,
+    State,
+    StatuteParagraph,
+    Submitter,
+    Workflow,
+)
 
 
 def validate_workflow_field(value):

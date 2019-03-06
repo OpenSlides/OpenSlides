@@ -15,8 +15,8 @@ from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import RESTModelMixin
 from openslides.utils.utils import to_roman
 
-from .access_permissions import ItemAccessPermissions
 from ..utils.models import CASCADE_AND_AUTOUODATE, SET_NULL_AND_AUTOUPDATE
+from .access_permissions import ItemAccessPermissions
 
 
 class ItemManager(models.Manager):
