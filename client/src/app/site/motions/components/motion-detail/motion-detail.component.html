@@ -231,7 +231,7 @@
                 </div>
             </mat-menu>
             <div *ngIf="perms.isAllowed('change_state', motion)">
-                <mat-basic-chip [matMenuTriggerFor]="stateMenu" [ngClass]="motion.stateCssColor">
+                <mat-basic-chip [matMenuTriggerFor]="stateMenu" [ngClass]="motion.stateCssColor" disableRipple>
                     {{ stateLabel }}
                 </mat-basic-chip>
                 <div *ngIf="motion.state && motion.state.show_state_extension_field" class="spacer-top-10">
@@ -242,7 +242,7 @@
                 </div>
             </div>
             <div *ngIf="!perms.isAllowed('change_state', motion)">
-                <mat-basic-chip [ngClass]="motion.stateCssColor"> {{ stateLabel }} </mat-basic-chip>
+                <mat-basic-chip [ngClass]="motion.stateCssColor" disableRipple> {{ stateLabel }} </mat-basic-chip>
             </div>
         </div>
 
@@ -268,7 +268,7 @@
                 </button>
             </mat-menu>
             <div *ngIf="perms.isAllowed('change_metadata', motion)">
-                <mat-basic-chip [matMenuTriggerFor]="recommendationMenu" class="bluegrey">
+                <mat-basic-chip [matMenuTriggerFor]="recommendationMenu" class="bluegrey" disableRipple>
                     {{ recommendationLabel || '–' }}
                 </mat-basic-chip>
                 <div
@@ -298,7 +298,7 @@
                 </div>
             </div>
             <div *ngIf="!perms.isAllowed('change_metadata', motion) && recommendationLabel">
-                <mat-basic-chip class="bluegrey"> {{ recommendationLabel }} </mat-basic-chip>
+                <mat-basic-chip class="bluegrey" disableRipple> {{ recommendationLabel }} </mat-basic-chip>
             </div>
             <button
                 mat-stroked-button
@@ -328,10 +328,15 @@
                 *ngIf="perms.isAllowed('change_metadata', motion)"
                 [matMenuTriggerFor]="categoryMenu"
                 class="grey"
+                disableRipple
             >
                 {{ motion.category || '–' }}
             </mat-basic-chip>
-            <mat-basic-chip *ngIf="!perms.isAllowed('change_metadata', motion) && motion.category" class="grey">
+            <mat-basic-chip
+                *ngIf="!perms.isAllowed('change_metadata', motion) && motion.category"
+                class="grey"
+                disableRipple
+            >
                 {{ motion.category }}
             </mat-basic-chip>
         </div>
@@ -354,11 +359,11 @@
                 <!-- Make the whole container a trigger to prevent unexpected menu behavior -->
                 <div [matMenuTriggerFor]="tagMenu">
                     <!-- No selected tags -->
-                    <mat-basic-chip *ngIf="!motion.hasTags()" class="grey" disabled> {{ '–' }} </mat-basic-chip>
+                    <mat-basic-chip *ngIf="!motion.hasTags()" class="grey" disabled disableRipple> {{ '–' }} </mat-basic-chip>
 
                     <!-- Display a chip list of tags -->
                     <mat-chip-list class="mat-chip-list-stacked">
-                        <mat-basic-chip *ngFor="let tag of motion.tags" class="grey" disabled>
+                        <mat-basic-chip *ngFor="let tag of motion.tags" class="grey" disabled disableRipple>
                             {{ tag }}
                         </mat-basic-chip>
                     </mat-chip-list>
@@ -368,7 +373,7 @@
             <!-- For non privileged users -->
             <div *ngIf="!perms.isAllowed('change_metadata', motion)">
                 <mat-chip-list class="mat-chip-list-stacked">
-                    <mat-basic-chip *ngFor="let tag of motion.tags" class="grey"> {{ tag }} </mat-basic-chip>
+                    <mat-basic-chip *ngFor="let tag of motion.tags" class="grey" disableRipple> {{ tag }} </mat-basic-chip>
                 </mat-chip-list>
             </div>
         </div>
@@ -386,10 +391,15 @@
                 *ngIf="perms.isAllowed('change_metadata', motion)"
                 [matMenuTriggerFor]="blockMenu"
                 class="grey"
+                disableRipple
             >
                 {{ motion.motion_block || '–' }}
             </mat-basic-chip>
-            <mat-basic-chip *ngIf="!perms.isAllowed('change_metadata', motion) && motion.motion_block" class="grey">
+            <mat-basic-chip
+                *ngIf="!perms.isAllowed('change_metadata', motion) && motion.motion_block"
+                class="grey"
+                disableRipple
+            >
                 {{ motion.motion_block }}
             </mat-basic-chip>
         </div>
