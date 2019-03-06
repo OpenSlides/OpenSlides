@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, ApplicationRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+
+import { take, filter } from 'rxjs/operators';
 
 import { ConfigService } from './core/ui-services/config.service';
 import { ConstantsService } from './core/ui-services/constants.service';
@@ -45,7 +47,8 @@ export class AppComponent {
         themeService: ThemeService,
         countUsersService: CountUsersService, // Needed to register itself.
         configService: ConfigService,
-        loadFontService: LoadFontService
+        loadFontService: LoadFontService,
+        appRef: ApplicationRef
     ) {
         // manually add the supported languages
         translate.addLangs(['en', 'de', 'cs']);
@@ -57,7 +60,17 @@ export class AppComponent {
         translate.use(translate.getLangs().includes(browserLang) ? browserLang : 'en');
         // change default JS functions
         this.overloadArrayToString();
-        servertimeService.startScheduler();
+
+        appRef.isStable.subscribe(s => console.log('is stable', s));
+        appRef.isStable
+            .pipe(
+                filter(s => s),
+                take(1)
+            )
+            .subscribe(() => {
+                console.log('start scheduler');
+                servertimeService.startScheduler();
+            });
     }
 
     /**
