@@ -12,6 +12,7 @@ import { HttpService } from 'app/core/core-services/http.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { ViewGroup } from 'app/site/users/models/view-group';
 import { TranslateService } from '@ngx-translate/core';
+import { ViewMotion } from 'app/site/motions/models/view-motion';
 
 /**
  * Repository Services for Categories
@@ -106,17 +107,36 @@ export class MotionCommentSectionRepositoryService extends BaseRepository<
     }
 
     /**
-     * Saves a comment made at a MotionCommentSection
+     * Saves a comment made at a MotionCommentSection. Does an update, if
+     * there is a comment text. Deletes the comment, if the text is empty.
      *
-     * @param motionId ID of the Motion
-     * @param sectionId ID of the Section where the comment was made
+     * @param motion the motion
+     * @param section the section where the comment was made
      * @param sectionComment the comment text
-     * @returns the promise to create the object
+     * @returns the promise from the HTTP request
      */
-    public async saveComment(motionId: number, sectionId: number, sectionComment: String): Promise<object> {
-        return this.http.post(`rest/motions/motion/${motionId}/manage_comments/`, {
-            section_id: sectionId,
-            comment: sectionComment
+    public async saveComment(motion: ViewMotion, section: ViewMotionCommentSection, comment: string): Promise<void> {
+        if (comment) {
+            return await this.updateComment(motion, section, comment);
+        } else {
+            return await this.deleteComment(motion, section);
+        }
+    }
+
+    /**
+     * Updates the comment. Saves it on the server.
+     */
+    private async updateComment(motion: ViewMotion, section: ViewMotionCommentSection, comment: string): Promise<void> {
+        return await this.http.post(`rest/motions/motion/${motion.id}/manage_comments/`, {
+            section_id: section.id,
+            comment: comment
         });
+    }
+
+    /**
+     * Deletes a comment from the server
+     */
+    private async deleteComment(motion: ViewMotion, section: ViewMotionCommentSection): Promise<void> {
+        return await this.http.delete(`rest/motions/motion/${motion.id}/manage_comments/`, { section_id: section.id });
     }
 }

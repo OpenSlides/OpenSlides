@@ -97,14 +97,10 @@ def in_some_groups(user_id: int, groups: List[int]) -> bool:
     """
     Checks that user is in at least one given group. Groups can be given as a list
     of ids or group instances. If the user is in the admin group (pk = 2) the result
-    is always true.
+    is always true, even if no groups are given.
 
     user_id 0 means anonymous user.
     """
-
-    if len(groups) == 0:
-        return False  # early end here, if no groups are given.
-
     # Convert user to right type
     # TODO: Remove this and make use, that user has always the right type
     user_id = user_to_user_id(user_id)
@@ -115,14 +111,10 @@ async def async_in_some_groups(user_id: int, groups: List[int]) -> bool:
     """
     Checks that user is in at least one given group. Groups can be given as a list
     of ids. If the user is in the admin group (pk = 2) the result
-    is always true.
+    is always true, even if no groups are given.
 
     user_id 0 means anonymous user.
     """
-
-    if not len(groups):
-        return False  # early end here, if no groups are given.
-
     if not user_id and not await async_anonymous_is_enabled():
         in_some_groups = False
     elif not user_id:

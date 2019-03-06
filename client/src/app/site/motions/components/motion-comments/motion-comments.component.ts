@@ -130,15 +130,13 @@ export class MotionCommentsComponent extends BaseViewComponent {
     }
 
     /**
-     * Saves the comment. Makes a request to the server.
+     * Saves the comment.
      *
      * @param section The section for the comment to save
      */
-    public async saveComment(section: ViewMotionCommentSection): Promise<void> {
+    public saveComment(section: ViewMotionCommentSection): void {
         const commentText = this.commentForms[section.id].get('comment').value;
-        const sectionId = section.id;
-        const motionId = this.motion.id;
-        await this.commentRepo.saveComment(motionId, sectionId, commentText).then(
+        this.commentRepo.saveComment(this.motion, section, commentText).then(
             () => {
                 this.cancelEditing(section);
             },
