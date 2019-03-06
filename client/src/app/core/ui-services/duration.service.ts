@@ -22,10 +22,10 @@ import { Injectable } from '@angular/core';
  * @example
  * ```ts
  * // will result in 01:10 h
- * const a = this.durationService.durationToString(70);
+ * const a = this.durationService.durationToString(70, 'h');
  *
  * // will result in 00:30 m (30 is interpreted as seconds)
- * const a = this.durationService.durationToString(30);
+ * const a = this.durationService.durationToString(30, 'm');
  * ```
  */
 @Injectable({
@@ -65,10 +65,11 @@ export class DurationService {
     /**
      * Converts a duration number (given in minutes or seconds)
      *
-     * @param duration value in minutes
+     * @param duration value in minutes or seconds (60 units being the next bigger unit)
+     * @param suffix any suffix to add.
      * @returns a more human readable time representation
      */
-    public durationToString(duration: number, suffix: 'h' | 'm' = 'h'): string {
+    public durationToString(duration: number, suffix: 'h' | 'm'): string {
         const major = Math.floor(duration / 60);
         const minor = `0${duration % 60}`.slice(-2);
         if (!isNaN(+major) && !isNaN(+minor)) {
