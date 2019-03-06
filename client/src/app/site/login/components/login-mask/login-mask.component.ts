@@ -1,16 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+
+import { Subscription } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 import { BaseComponent } from 'app/base.component';
 import { AuthService } from 'app/core/core-services/auth.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { TranslateService } from '@ngx-translate/core';
 import { environment } from 'environments/environment';
 import { OpenSlidesService } from 'app/core/core-services/openslides.service';
 import { LoginDataService } from 'app/core/ui-services/login-data.service';
 import { ParentErrorStateMatcher } from 'app/shared/parent-error-state-matcher';
 import { HttpService } from 'app/core/core-services/http.service';
+import { User } from 'app/shared/models/users/user';
 
 /**
  * Login mask component.
@@ -22,7 +25,7 @@ import { HttpService } from 'app/core/core-services/http.service';
     templateUrl: './login-mask.component.html',
     styleUrls: ['./login-mask.component.scss']
 })
-export class LoginMaskComponent extends BaseComponent implements OnInit {
+export class LoginMaskComponent extends BaseComponent implements OnInit, OnDestroy {
     /**
      * Show or hide password and change the indicator accordingly
      */
@@ -52,6 +55,8 @@ export class LoginMaskComponent extends BaseComponent implements OnInit {
      * Show the Spinner if validation is in process
      */
     public inProcess = false;
+
+    public operatorSubscription: Subscription | null;
 
     /**
      * Constructor for the login component
@@ -99,6 +104,32 @@ export class LoginMaskComponent extends BaseComponent implements OnInit {
             },
             () => {}
         );
+
+        // Maybe the operator changes and the user is logged in. If so, redirect him and boot OpenSlides.
+        this.operatorSubscription = this.operator.getUserObservable().subscribe(user => {
+            if (user) {
+                this.clearOperatorSubscription();
+                this.redirectUser();
+                this.OpenSlides.afterLoginBootup(user.id);
+            }
+        });
+    }
+
+    /**
+     * Clear the subscription on destroy.
+     */
+    public ngOnDestroy(): void {
+        this.clearOperatorSubscription();
+    }
+
+    /**
+     * Clears the subscription to the operator.
+     */
+    private clearOperatorSubscription(): void {
+        if (this.operatorSubscription) {
+            this.operatorSubscription.unsubscribe();
+            this.operatorSubscription = null;
+        }
     }
 
     /**
@@ -120,14 +151,12 @@ export class LoginMaskComponent extends BaseComponent implements OnInit {
         this.loginErrorMsg = '';
         this.inProcess = true;
         try {
-            const res = await this.authService.login(this.loginForm.value.username, this.loginForm.value.password);
+            const response = await this.authService.login(this.loginForm.value.username, this.loginForm.value.password);
+            this.clearOperatorSubscription(); // We take control, not the subscription.
             this.inProcess = false;
-            this.OpenSlides.afterLoginBootup(res.user_id);
-            let redirect = this.OpenSlides.redirectUrl ? this.OpenSlides.redirectUrl : '/';
-            if (redirect.includes('login')) {
-                redirect = '/';
-            }
-            this.router.navigate([redirect]);
+            await this.operator.setUser(new User(response.user));
+            this.OpenSlides.afterLoginBootup(response.user_id);
+            this.redirectUser();
         } catch (e) {
             this.loginForm.setErrors({
                 notFound: true
@@ -135,6 +164,17 @@ export class LoginMaskComponent extends BaseComponent implements OnInit {
             this.loginErrorMsg = e;
             this.inProcess = false;
         }
+    }
+
+    /**
+     * Redirects the user to the page where he came from.
+     */
+    private redirectUser(): void {
+        let redirect = this.OpenSlides.redirectUrl ? this.OpenSlides.redirectUrl : '/';
+        if (redirect.includes('login')) {
+            redirect = '/';
+        }
+        this.router.navigate([redirect]);
     }
 
     /**

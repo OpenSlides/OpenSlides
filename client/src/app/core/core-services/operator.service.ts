@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 
 import { Observable, BehaviorSubject } from 'rxjs';
 
@@ -11,6 +10,9 @@ import { OfflineService } from './offline.service';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { OnAfterAppsLoaded } from '../onAfterAppsLoaded';
 import { UserRepositoryService } from '../repositories/users/user-repository.service';
+import { CollectionStringMapperService } from './collectionStringMapper.service';
+import { StorageService } from './storage.service';
+import { HttpService } from './http.service';
 
 /**
  * Permissions on the client are just strings. This makes clear, that
@@ -19,13 +21,23 @@ import { UserRepositoryService } from '../repositories/users/user-repository.ser
 export type Permission = string;
 
 /**
- * Response format of the WHoAMI request.
+ * Response format of the WhoAmI request.
  */
 export interface WhoAmIResponse {
     user_id: number;
     guest_enabled: boolean;
     user: User;
 }
+
+function isWhoAmIResponse(obj: any): obj is WhoAmIResponse {
+    if (!obj) {
+        return false;
+    }
+    const whoAmI = obj as WhoAmIResponse;
+    return whoAmI.guest_enabled !== undefined && whoAmI.user !== undefined && whoAmI.user_id !== undefined;
+}
+
+const WHOAMI_STORAGE_KEY = 'whoami';
 
 /**
  * The operator represents the user who is using OpenSlides.
@@ -42,6 +54,10 @@ export class OperatorService implements OnAfterAppsLoaded {
      */
     private _user: User;
 
+    public get user(): User {
+        return this._user;
+    }
+
     /**
      * The operator as a view user. We need a separation here, because
      * we need to acces the operators permissions, before we get data
@@ -52,24 +68,8 @@ export class OperatorService implements OnAfterAppsLoaded {
     /**
      * Get the user that corresponds to operator.
      */
-    public get user(): User {
-        return this._user;
-    }
-
-    /**
-     * Get the user that corresponds to operator.
-     */
     public get viewUser(): ViewUser {
         return this._viewUser;
-    }
-
-    /**
-     * Sets the current operator.
-     *
-     * The permissions are updated and the new user published.
-     */
-    public set user(user: User) {
-        this.updateUser(user);
     }
 
     public get isAnonymous(): boolean {
@@ -77,9 +77,11 @@ export class OperatorService implements OnAfterAppsLoaded {
     }
 
     /**
-     * Save, if quests are enabled.
+     * Save, if guests are enabled.
      */
-    public guestsEnabled: boolean;
+    public get guestsEnabled(): boolean {
+        return this.currentWhoAmIResponse ? this.currentWhoAmIResponse.guest_enabled : false;
+    }
 
     /**
      * The permissions of the operator. Updated via {@method updatePermissions}.
@@ -99,21 +101,27 @@ export class OperatorService implements OnAfterAppsLoaded {
     /**
      * Do not access the repo before it wasn't loaded. Will be true after `onAfterAppsLoaded`.
      */
-    private userRepoLoaded = false;
+    private userRepository: UserRepositoryService | null;
+
+    /**
+     * The current WhoAmI response to extract the user (the operator) from.
+     */
+    private currentWhoAmIResponse: WhoAmIResponse | null;
 
     /**
      * Sets up an observer for watching changes in the DS. If the operator user or groups are changed,
      * the operator's permissions are updated.
      *
-     * @param http HttpClient
+     * @param http
      * @param DS
      * @param offlineService
      */
     public constructor(
-        private http: HttpClient,
+        private http: HttpService,
         private DS: DataStoreService,
         private offlineService: OfflineService,
-        private userRepository: UserRepositoryService
+        private collectionStringMapper: CollectionStringMapperService,
+        private storageService: StorageService
     ) {
         this.DS.changeObservable.subscribe(newModel => {
             if (this._user) {
@@ -132,23 +140,59 @@ export class OperatorService implements OnAfterAppsLoaded {
     }
 
     /**
+     * Gets the current WHoAmI response from the storage.
+     */
+    public async whoAmIFromStorage(): Promise<WhoAmIResponse> {
+        const defaultResponse = {
+            user_id: null,
+            guest_enabled: false,
+            user: null
+        };
+        let response: WhoAmIResponse;
+        try {
+            response = await this.storageService.get<WhoAmIResponse>(WHOAMI_STORAGE_KEY);
+            if (response) {
+                this.processWhoAmIResponse(response);
+            } else {
+                response = defaultResponse;
+            }
+        } catch (e) {
+            response = defaultResponse;
+        }
+        this.currentWhoAmIResponse = response;
+        return this.currentWhoAmIResponse;
+    }
+
+    /**
      * Load the repo to get a view user.
      */
     public onAfterAppsLoaded(): void {
-        this.userRepoLoaded = true;
+        this.userRepository = this.collectionStringMapper.getRepository(ViewUser) as UserRepositoryService;
         if (this.user) {
             this._viewUser = this.userRepository.getViewModel(this.user.id);
         }
     }
 
     /**
+     * Sets the operator user. Will be saved to storage
+     * @param user The new operator.
+     */
+    public async setUser(user: User): Promise<void> {
+        await this.updateUser(user, true);
+    }
+
+    /**
      * Updates the user and update the permissions.
      *
      * @param user The user to set.
+     * @param saveToStoare Whether to save the user to the storage WhoAmI.
      */
-    private updateUser(user: User | null): void {
+    private async updateUser(user: User | null, saveToStorage: boolean = false): Promise<void> {
         this._user = user;
-        if (user && this.userRepoLoaded) {
+        if (saveToStorage) {
+            await this.saveUserToStorate();
+        }
+        if (user && this.userRepository) {
             this._viewUser = this.userRepository.getViewModel(user.id);
         } else {
             this._viewUser = null;
@@ -158,33 +202,68 @@ export class OperatorService implements OnAfterAppsLoaded {
 
     /**
      * Calls `/apps/users/whoami` to find out the real operator.
+     *
      * @returns The response of the WhoAmI request.
      */
     public async whoAmI(): Promise<WhoAmIResponse> {
         try {
-            const response = await this.http.get<WhoAmIResponse>(environment.urlPrefix + '/users/whoami/').toPromise();
-            if (response && response.user) {
-                this.user = new User(response.user);
+            const response = await this.http.get(environment.urlPrefix + '/users/whoami/');
+            if (isWhoAmIResponse(response)) {
+                this.processWhoAmIResponse(response);
+                await this.storageService.set(WHOAMI_STORAGE_KEY, response);
+                this.currentWhoAmIResponse = response;
+            } else {
+                this.offlineService.goOfflineBecauseFailedWhoAmI();
             }
-            return response;
         } catch (e) {
-            // TODO: Implement the offline service. Currently a guest-whoami response is returned and
-            // the DS cleared.
             this.offlineService.goOfflineBecauseFailedWhoAmI();
-            return this.offlineService.getLastWhoAmI();
         }
+        return this.currentWhoAmIResponse;
     }
 
     /**
-     * Returns the operatorSubject as an observable.
+     * Saves the user to storage by wrapping it into a (maybe existing)
+     * WhoAMI response.
+     */
+    private async saveUserToStorate(): Promise<void> {
+        if (!this.currentWhoAmIResponse) {
+            this.currentWhoAmIResponse = {
+                user_id: null,
+                guest_enabled: false,
+                user: null
+            };
+        }
+        if (this.user) {
+            this.currentWhoAmIResponse.user_id = this.user.id;
+            this.currentWhoAmIResponse.user = this.user;
+        } else {
+            this.currentWhoAmIResponse.user_id = null;
+            this.currentWhoAmIResponse.user = null;
+        }
+        await this.storageService.set(WHOAMI_STORAGE_KEY, this.currentWhoAmIResponse);
+    }
+
+    /**
+     * Processes a WhoAmI response and set the user appropriately.
      *
-     * Services an components can use it to get informed when something changes in
-     * the operator
+     * @param response The WhoAMI response
+     */
+    private processWhoAmIResponse(response: WhoAmIResponse): void {
+        this.updateUser(response.user ? new User(response.user) : null);
+    }
+
+    /**
+     * @returns an observable for the operator as a user.
      */
     public getUserObservable(): Observable<User> {
         return this.operatorSubject.asObservable();
     }
 
+    /**
+     * @returns an observable for the operator as a viewUser. Note, that
+     * the viewUser might not be there, so for reliable (and not display) information,
+     * use the `getUserObservable`.
+     */
     public getViewUserObservable(): Observable<ViewUser> {
         return this.viewOperatorSubject.asObservable();
     }

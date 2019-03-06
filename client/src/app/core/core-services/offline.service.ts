@@ -1,8 +1,5 @@
 import { Injectable } from '@angular/core';
 
-import { DataStoreService } from './data-store.service';
-import { WhoAmIResponse } from './operator.service';
-
 /**
  * This service handles everything connected with being offline.
  *
@@ -20,20 +17,15 @@ export class OfflineService {
     }
 
     /**
-     * Constructor to create the AutoupdateService. Calls the constructor of the parent class.
-     * @param DS
      */
-    public constructor(private DS: DataStoreService) {}
+    public constructor() {}
 
     /**
      * Sets the offline flag. Restores the DataStoreService to the last known configuration.
      */
-    public async goOfflineBecauseFailedWhoAmI(): Promise<void> {
+    public goOfflineBecauseFailedWhoAmI(): void {
         this._offline = true;
         console.log('offline because whoami failed.');
-
-        // TODO: Init the DS from cache.
-        await this.DS.clear();
     }
 
     /**
@@ -49,17 +41,5 @@ export class OfflineService {
      */
     public goOnline(): void {
         this._offline = false;
-    }
-
-    /**
-     * Returns the last cached WhoAmI response.
-     */
-    public getLastWhoAmI(): WhoAmIResponse {
-        // TODO: use a cached WhoAmI response.
-        return {
-            user_id: null,
-            guest_enabled: false,
-            user: null
-        };
     }
 }

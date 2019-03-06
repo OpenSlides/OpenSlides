@@ -46,16 +46,38 @@ export class WebsocketService {
      */
     private _connectEvent: EventEmitter<void> = new EventEmitter<void>();
 
-    private connectionOpen = false;
-
-    private sendQueueWhileNotConnected: string[] = [];
-
     /**
      * Getter for the connect event.
      */
     public get connectEvent(): EventEmitter<void> {
         return this._connectEvent;
     }
+
+    /**
+     * Listeners will be nofitied, if the wesocket connection is closed.
+     */
+    private _closeEvent: EventEmitter<void> = new EventEmitter<void>();
+
+    /**
+     * Getter for the close event.
+     */
+    public get closeEvent(): EventEmitter<void> {
+        return this._closeEvent;
+    }
+
+    /**
+     * Saves, if the connection is open
+     */
+    private _connectionOpen = false;
+
+    /**
+     * Whether the WebSocket connection is established
+     */
+    public get isConnected(): boolean {
+        return this._connectionOpen;
+    }
+
+    private sendQueueWhileNotConnected: string[] = [];
 
     /**
      * The websocket.
@@ -134,7 +156,7 @@ export class WebsocketService {
                     this._reconnectEvent.emit();
                 }
                 this._connectEvent.emit();
-                this.connectionOpen = true;
+                this._connectionOpen = true;
                 this.sendQueueWhileNotConnected.forEach(entry => {
                     this.websocket.send(entry);
                 });
@@ -160,8 +182,9 @@ export class WebsocketService {
         this.websocket.onclose = (event: CloseEvent) => {
             this.zone.run(() => {
                 this.websocket = null;
-                this.connectionOpen = false;
+                this._connectionOpen = false;
                 if (event.code !== 1000) {
+                    console.error(event);
                     // Do not show the message snackbar on the projector
                     // tests for /projector and /projector/<id>
                     const onProjector = this.router.url.match(/^\/projector(\/[0-9]+\/?)?$/);
@@ -182,6 +205,7 @@ export class WebsocketService {
                         this.connect({ enableAutoupdates: true });
                     }, timeout);
                 }
+                this._closeEvent.emit();
             });
         };
     }
@@ -235,7 +259,7 @@ export class WebsocketService {
 
         // Either send directly or add to queue, if not connected.
         const jsonMessage = JSON.stringify(message);
-        if (this.connectionOpen) {
+        if (this.isConnected) {
             this.websocket.send(jsonMessage);
         } else {
             this.sendQueueWhileNotConnected.push(jsonMessage);

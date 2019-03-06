@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { WebsocketService } from './websocket.service';
-import { OperatorService } from './operator.service';
+import { OperatorService, WhoAmIResponse } from './operator.service';
 import { StorageService } from './storage.service';
 import { AutoupdateService } from './autoupdate.service';
 import { DataStoreService } from './data-store.service';
+import { take } from 'rxjs/operators';
 
 /**
  * Handles the bootup/showdown of this application.
@@ -51,8 +52,11 @@ export class OpenSlidesService {
      */
     public async bootup(): Promise<void> {
         // start autoupdate if the user is logged in:
-        const response = await this.operator.whoAmI();
-        this.operator.guestsEnabled = response.guest_enabled;
+        const response = await this.operator.whoAmIFromStorage();
+        await this.bootupWithWhoAmI(response);
+    }
+
+    private async bootupWithWhoAmI(response: WhoAmIResponse): Promise<void> {
         if (!response.user && !response.guest_enabled) {
             this.redirectUrl = location.pathname;
 
@@ -66,8 +70,14 @@ export class OpenSlidesService {
                 // Goto login, if the user isn't login and guests are not allowed
                 this.router.navigate(['/login']);
             }
+
+            this.checkOperator(false);
         } else {
             await this.afterLoginBootup(response.user_id);
+
+            // Check for the operator via a async whoami (so no await here)
+            // to validate, that the cache was correct.
+            this.checkOperator(false);
         }
     }
 
@@ -78,7 +88,7 @@ export class OpenSlidesService {
      * @param userId
      */
     public async afterLoginBootup(userId: number): Promise<void> {
-        // Else, check, which user was logged in last time
+        // Check, which user was logged in last time
         const lastUserId = await this.storageService.get<number>('lastUserLoggedIn');
         // if the user changed, reset the cache and save the new user.
         if (userId !== lastUserId) {
@@ -96,33 +106,42 @@ export class OpenSlidesService {
         if (changeId > 0) {
             changeId += 1;
         }
+        // disconnect the WS connection, if there was one. This is needed
+        // to update the connection parameters, namely the cookies. If the user
+        // is changed, the WS needs to reconnect, so the new connection holds the new
+        // user information.
+        if (this.websocketService.isConnected) {
+            this.websocketService.close();
+            // Wait for the disconnect.
+            await this.websocketService.closeEvent.pipe(take(1)).toPromise();
+        }
         this.websocketService.connect({ changeId: changeId }); // Request changes after changeId.
     }
 
     /**
      * Shuts OpenSlides down. The websocket is closed and the operator is not set.
      */
-    public shutdown(): void {
+    public async shutdown(): Promise<void> {
         this.websocketService.close();
-        this.operator.user = null;
+        await this.operator.setUser(null);
     }
 
     /**
      * Shutdown and bootup.
      */
     public async reboot(): Promise<void> {
-        this.shutdown();
+        await this.shutdown();
         await this.bootup();
     }
 
     /**
      * Verify that the operator is the same as it was before. Should be alled on a reconnect.
      */
-    private async checkOperator(): Promise<void> {
+    private async checkOperator(requestChanges: boolean = true): Promise<void> {
         const response = await this.operator.whoAmI();
         // User logged off.
         if (!response.user && !response.guest_enabled) {
-            this.shutdown();
+            await this.shutdown();
             this.router.navigate(['/login']);
         } else {
             if (
@@ -130,8 +149,9 @@ export class OpenSlidesService {
                 (!this.operator.user && response.user_id)
             ) {
                 // user changed
+                await this.DS.clear();
                 await this.reboot();
-            } else {
+            } else if (requestChanges) {
                 // User is still the same, but check for missed autoupdates.
                 this.autoupdateService.requestChanges();
             }

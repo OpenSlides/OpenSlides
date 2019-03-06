@@ -99,7 +99,9 @@ export class SiteComponent extends BaseComponent implements OnInit {
             // Scroll to top if accessing a page, not via browser history stack
             if (event instanceof NavigationEnd) {
                 const contentContainer = document.querySelector('.mat-sidenav-content');
-                contentContainer.scrollTo(0, 0);
+                if (contentContainer) {
+                    contentContainer.scrollTo(0, 0);
+                }
             }
         });
     }

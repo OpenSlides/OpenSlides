@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material';
+
 import { TranslateService } from '@ngx-translate/core';
 
 import { BaseComponent } from '../../../../base.component';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { environment } from 'environments/environment';
-import { ActivatedRoute, Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material';
+import { HttpService } from 'app/core/core-services/http.service';
 
 /**
  * Reset password component.
@@ -40,7 +41,7 @@ export class ResetPasswordConfirmComponent extends BaseComponent implements OnIn
     public constructor(
         protected titleService: Title,
         protected translate: TranslateService,
-        private http: HttpClient,
+        private http: HttpService,
         formBuilder: FormBuilder,
         private activatedRoute: ActivatedRoute,
         private router: Router,
@@ -88,13 +89,11 @@ export class ResetPasswordConfirmComponent extends BaseComponent implements OnIn
         }
 
         try {
-            await this.http
-                .post<void>(environment.urlPrefix + '/users/reset-password-confirm/', {
-                    user_id: this.user_id,
-                    token: this.token,
-                    password: this.newPasswordForm.get('password').value
-                })
-                .toPromise();
+            await this.http.post<void>(environment.urlPrefix + '/users/reset-password-confirm/', {
+                user_id: this.user_id,
+                token: this.token,
+                password: this.newPasswordForm.get('password').value
+            });
             // TODO: Does we get a response for displaying?
             this.matSnackBar.open(
                 this.translate.instant('Your password was resetted successfully!'),

@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
+import { Subject } from 'rxjs';
 
 import { History } from 'app/shared/models/core/history';
 import { HistoryRepositoryService } from 'app/core/repositories/history/history-repository.service';

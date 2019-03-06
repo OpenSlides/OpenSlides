@@ -1,7 +1,7 @@
 import { Component, forwardRef } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { CustomTranslation, CustomTranslations } from 'app/core/translate/translation-parser';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 /**
  * Custom translations as custom form component

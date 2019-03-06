@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
+
 import { TranslateService } from '@ngx-translate/core';
-import { ConfigRepositoryService, ConfigGroup } from '../../../../core/repositories/config/config-repository.service';
-import { BaseComponent } from '../../../../base.component';
+
+import { ConfigRepositoryService, ConfigGroup } from 'app/core/repositories/config/config-repository.service';
+import { BaseComponent } from 'app/base.component';
 
 /**
  * List view for the global settings
