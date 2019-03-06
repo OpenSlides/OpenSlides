@@ -75,7 +75,7 @@ export class CsvExportService {
      * @param filename name of the resulting file
      * @param options optional:
      *      lineSeparator (defaults to \r\n windows style line separator),
-     *      columnseparator defaults to semicolon (other usual separators are ',' '\T' (tab), ' 'whitespace)
+     *      columnseparator defaults to configured option (',' , other values are ';', '\t' (tab), ' 'whitespace)
      */
     public export<T extends BaseViewModel>(
         models: T[],
@@ -189,5 +189,34 @@ export class CsvExportService {
     private capitalizeTranslate(input: string): string {
         const temp = input.charAt(0).toUpperCase() + input.slice(1);
         return this.translate.instant(temp);
+    }
+
+    public dummyCSVExport(header: string[], rows: (string | number | boolean | null)[][], filename: string): void {
+        const separator = this.config.instant<string>('general_csv_separator');
+        const tsList = this.checkCsvTextSafety(separator, ['"', "'", '`', '/', '\\', ';', '.']);
+        const headerRow = [header.map(item => this.translate.instant(item)).join(separator)];
+        const content = rows.map(row =>
+            row
+                .map(item => {
+                    if (item === null) {
+                        return '';
+                    }
+                    if (typeof item === 'string') {
+                        return `${tsList[0]}${item}${tsList[0]}`;
+                    } else if (typeof item === 'boolean') {
+                        return item ? '1' : '0';
+                    } else {
+                        return `${item}`;
+                    }
+                })
+                .join(separator)
+        );
+        const csvContentAsString = headerRow.concat(content).join('\r\n');
+        const encoding = this.config.instant<'utf-8' | 'iso-8859-15'>('general_csv_encoding');
+        if (encoding === 'iso-8859-15') {
+            this.exporter.saveFile(this.exporter.convertTo8859_15(csvContentAsString), filename, 'text/csv');
+        } else {
+            this.exporter.saveFile(csvContentAsString, filename, 'text/csv');
+        }
     }
 }

@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 import { CsvExportService, CsvColumnDefinitionProperty } from 'app/core/ui-services/csv-export.service';
-import { FileExportService } from 'app/core/ui-services/file-export.service';
 import { InfoToExport } from './motion-pdf.service';
 import { ViewMotion } from '../models/view-motion';
 
@@ -20,11 +19,7 @@ export class MotionCsvExportService {
      * @param csvExport CsvExportService
      * @param translate TranslateService
      */
-    public constructor(
-        private csvExport: CsvExportService,
-        private translate: TranslateService,
-        private fileExport: FileExportService
-    ) {}
+    public constructor(private csvExport: CsvExportService, private translate: TranslateService) {}
 
     /**
      * Export all motions as CSV
@@ -67,15 +62,12 @@ export class MotionCsvExportService {
     }
 
     public exportDummyMotion(): void {
-        const headerRow = ['Identifier', 'Title', 'Text', 'Reason', 'Submitters', 'Category', 'Origin', 'Motion block']
-            .map(item => this.translate.instant(item))
-            .join(',');
+        const headerRow = ['Identifier', 'Title', 'Text', 'Reason', 'Submitters', 'Category', 'Origin', 'Motion block'];
         const rows = [
-            headerRow,
-            'A1,Title 1,Text 1,Reason 1,Submitter A,Category A,"Last Year Conference A", Block A',
-            'B1,Title 2,Text 2,Reason 2,Submitter B, Category B,, Block A',
-            ',Title 3, Text 3,,,,,'
+            ['A1', 'Title 1', 'Text 1', 'Reason 1', 'Submitter A', 'Category A', 'Last Year Conference A', 'Block A'],
+            ['B1', 'Title 2', 'Text 2', 'Reason 2', 'Submitter B', 'Category B', null, 'Block A'],
+            [null, 'Title 3', 'Text 3', null, null, null, null, null]
         ];
-        this.fileExport.saveFile(rows.join('\n'), this.translate.instant('motions-example') + '.csv', 'text/csv');
+        this.csvExport.dummyCSVExport(headerRow, rows, `${this.translate.instant('motions-example')}.csv`);
     }
 }
