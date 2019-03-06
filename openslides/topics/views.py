@@ -1,8 +1,8 @@
 from openslides.utils.rest_api import ModelViewSet
 
+from ..utils.auth import has_perm
 from .access_permissions import TopicAccessPermissions
 from .models import Topic
-from ..utils.auth import has_perm
 
 
 class TopicViewSet(ModelViewSet):

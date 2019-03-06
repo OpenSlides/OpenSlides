@@ -23,6 +23,7 @@ from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import RESTModelMixin
 
+from ..utils.models import CASCADE_AND_AUTOUODATE, SET_NULL_AND_AUTOUPDATE
 from .access_permissions import (
     CategoryAccessPermissions,
     MotionAccessPermissions,
@@ -33,7 +34,6 @@ from .access_permissions import (
     WorkflowAccessPermissions,
 )
 from .exceptions import WorkflowError
-from ..utils.models import CASCADE_AND_AUTOUODATE, SET_NULL_AND_AUTOUPDATE
 
 
 class StatuteParagraph(RESTModelMixin, models.Model):

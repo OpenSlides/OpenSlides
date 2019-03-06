@@ -21,8 +21,8 @@ from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import RESTModelMixin
 
-from .access_permissions import AssignmentAccessPermissions
 from ..utils.models import CASCADE_AND_AUTOUODATE, SET_NULL_AND_AUTOUPDATE
+from .access_permissions import AssignmentAccessPermissions
 
 
 class AssignmentRelatedUser(RESTModelMixin, models.Model):

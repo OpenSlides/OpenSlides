@@ -12,6 +12,7 @@ from openslides.utils.rest_api import (
     ValidationError,
 )
 
+from ..utils.validate import validate_html
 from .models import (
     Assignment,
     AssignmentOption,
@@ -20,7 +21,6 @@ from .models import (
     AssignmentVote,
     models,
 )
-from ..utils.validate import validate_html
 
 
 def posts_validator(data):
