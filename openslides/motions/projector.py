@@ -10,6 +10,8 @@ from ..utils.projector import (
 )
 
 
+motion_placeholder_regex = re.compile(r"\[motion:(\d+)\]")
+
 # Important: All functions have to be prune. This means, that thay can only
 #            access the data, that they get as argument and do not have any
 #            side effects. They are called from an async context. So they have
@@ -96,6 +98,28 @@ def get_amendment_base_statute(amendment, all_data):
         raise ProjectorElementException(f"statute with id {statute_id} does not exist")
 
     return {"title": statute["title"], "text": statute["text"]}
+
+
+def extend_reference_motion_dict(
+    all_data: AllData,
+    recommendation: str,
+    referenced_motions: Dict[int, Dict[str, str]],
+) -> None:
+    """
+    Extends a dict of motion ids mapped to their title information.
+    The client can replace the placeholders in the recommendation correctly.
+    """
+    # Collect all meantioned motions via [motion:<id>]
+    referenced_ids = [
+        int(id) for id in motion_placeholder_regex.findall(recommendation)
+    ]
+    for id in referenced_ids:
+        # Put every referenced motion into the referenced_motions dict
+        if id not in referenced_motions and id in all_data["motions/motion"]:
+            referenced_motions[id] = {
+                "title": all_data["motions/motion"][id]["title"],
+                "identifier": all_data["motions/motion"][id]["identifier"],
+            }
 
 
 def motion_slide(
@@ -189,9 +213,14 @@ def motion_slide(
                 "recommendation_label"
             ]
             if recommendation_state["show_recommendation_extension_field"]:
-                return_value["recommendation_extension"] = motion[
-                    "recommendation_extension"
-                ]
+                recommendation_extension = motion["recommendation_extension"]
+                # All title information for referenced motions in the recommendation
+                referenced_motions: Dict[int, Dict[str, str]] = {}
+                extend_reference_motion_dict(
+                    all_data, recommendation_extension, referenced_motions
+                )
+                return_value["recommendation_extension"] = recommendation_extension
+                return_value["referenced_motions"] = referenced_motions
 
             return_value["recommender"] = get_config(
                 all_data, "motions_recommendations_by"
@@ -228,12 +257,8 @@ def motion_block_slide(
     # All motions in this motion block
     motions = []
 
-    # All motions meantioned in recommendations of the above motions.
-    # Only title_informations will be collected. With this, the client can
-    # replace the placeholders in the recommendation correctly
-    # This maps the motion id to the title information
+    # All title information for referenced motions in the recommendation
     referenced_motions: Dict[int, Dict[str, str]] = {}
-    motion_placeholder_regex = re.compile(r"\[motion:(\d+)\]")
 
     # Search motions.
     for motion in all_data["motions/motion"].values():
@@ -254,26 +279,10 @@ def motion_block_slide(
                 }
                 if recommendation["show_recommendation_extension_field"]:
                     recommendation_extension = motion["recommendation_extension"]
-
+                    extend_reference_motion_dict(
+                        all_data, recommendation_extension, referenced_motions
+                    )
                     motion_object["recommendation_extension"] = recommendation_extension
-                    # Collect all meantioned motions via [motion:<id>]
-                    referenced_ids = [
-                        int(id)
-                        for id in motion_placeholder_regex.findall(
-                            recommendation_extension
-                        )
-                    ]
-                    for id in referenced_ids:
-                        if (
-                            id not in referenced_motions
-                            and id in all_data["motions/motion"]
-                        ):
-                            referenced_motions[id] = {
-                                "title": all_data["motions/motion"][id]["title"],
-                                "identifier": all_data["motions/motion"][id][
-                                    "identifier"
-                                ],
-                            }
 
             motions.append(motion_object)
 

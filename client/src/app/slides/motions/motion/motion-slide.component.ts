@@ -1,7 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
-import { BaseSlideComponent } from 'app/slides/base-slide-component';
+import { TranslateService } from '@ngx-translate/core';
+
 import { MotionSlideData, MotionSlideDataAmendment } from './motion-slide-data';
 import { ChangeRecoMode, LineNumberingMode } from '../../../site/motions/models/view-motion';
 import { DiffLinesInParagraph, DiffService, LineRange } from '../../../core/ui-services/diff.service';
@@ -10,13 +11,15 @@ import { ViewUnifiedChange } from '../../../shared/models/motions/view-unified-c
 import { MotionSlideObjChangeReco } from './motion-slide-obj-change-reco';
 import { SlideData } from '../../../core/core-services/projector-data.service';
 import { MotionSlideObjAmendmentParagraph } from './motion-slide-obj-amendment-paragraph';
+import { BaseMotionSlideComponent } from '../base/base-motion-slide';
+import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 
 @Component({
     selector: 'os-motion-slide',
     templateUrl: './motion-slide.component.html',
     styleUrls: ['./motion-slide.component.scss']
 })
-export class MotionSlideComponent extends BaseSlideComponent<MotionSlideData> {
+export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideData> {
     /**
      * Indicates the LineNumberingMode Mode.
      */
@@ -67,11 +70,26 @@ export class MotionSlideComponent extends BaseSlideComponent<MotionSlideData> {
     }
 
     public constructor(
+        translate: TranslateService,
+        motionRepo: MotionRepositoryService,
         private sanitizer: DomSanitizer,
         private lineNumbering: LinenumberingService,
         private diff: DiffService
     ) {
-        super();
+        super(translate, motionRepo);
+    }
+
+    public getRecommendationLabel(): string {
+        let recommendation = this.translate.instant(this.data.data.recommendation);
+        if (this.data.data.recommendation_extension) {
+            recommendation +=
+                ' ' +
+                this.replaceReferencedMotions(
+                    this.data.data.recommendation_extension,
+                    this.data.data.referenced_motions
+                );
+        }
+        return recommendation;
     }
 
     /**

@@ -1,3 +1,5 @@
+import { ReferencedMotions } from '../base/base-motion-slide';
+
 export interface MotionTitleInformation {
     title: string;
     identifier?: string;
@@ -14,5 +16,5 @@ export interface MotionBlockSlideMotionRepresentation extends MotionTitleInforma
 export interface MotionBlockSlideData {
     title: string;
     motions: MotionBlockSlideMotionRepresentation[];
-    referenced_motions: { [id: number]: MotionTitleInformation };
+    referenced_motions: ReferencedMotions;
 }
