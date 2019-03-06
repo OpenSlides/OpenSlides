@@ -17,7 +17,7 @@ Core:
  - Enabled docs for using OpenSlides with Gunicorn and Uvicorn in big
    mode [#3799, #3817].
  - Changed format for elements send via autoupdate [#3926].
- - Fixed autoupdate system for related objects [#4140].
+ - Fixed autoupdate system for related objects [#4140, #4201].
  - Add a change-id system to get only new elements [#3938].
  - Switch from Yarn back to npm [#3964].
  - Added password reset link (password reset via email) [#3914, #4199].
