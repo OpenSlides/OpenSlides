@@ -9,11 +9,9 @@ import { BaseComponent } from 'app/base.component';
 import { AuthService } from 'app/core/core-services/auth.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { environment } from 'environments/environment';
-import { OpenSlidesService } from 'app/core/core-services/openslides.service';
 import { LoginDataService, LoginData } from 'app/core/ui-services/login-data.service';
 import { ParentErrorStateMatcher } from 'app/shared/parent-error-state-matcher';
 import { HttpService } from 'app/core/core-services/http.service';
-import { User } from 'app/shared/models/users/user';
 
 interface LoginDataWithInfoText extends LoginData {
     info_text?: string;
@@ -81,7 +79,6 @@ export class LoginMaskComponent extends BaseComponent implements OnInit, OnDestr
         private route: ActivatedRoute,
         private formBuilder: FormBuilder,
         private httpService: HttpService,
-        private OpenSlides: OpenSlidesService,
         private loginDataService: LoginDataService
     ) {
         super();
@@ -112,8 +109,7 @@ export class LoginMaskComponent extends BaseComponent implements OnInit, OnDestr
         this.operatorSubscription = this.operator.getUserObservable().subscribe(user => {
             if (user) {
                 this.clearOperatorSubscription();
-                this.redirectUser();
-                this.OpenSlides.afterLoginBootup(user.id);
+                this.authService.redirectUser(user.id);
             }
         });
     }
@@ -154,30 +150,16 @@ export class LoginMaskComponent extends BaseComponent implements OnInit, OnDestr
         this.loginErrorMsg = '';
         this.inProcess = true;
         try {
-            const response = await this.authService.login(this.loginForm.value.username, this.loginForm.value.password);
-            this.clearOperatorSubscription(); // We take control, not the subscription.
-            this.inProcess = false;
-            await this.operator.setUser(new User(response.user));
-            this.OpenSlides.afterLoginBootup(response.user_id);
-            this.redirectUser();
+            await this.authService.login(this.loginForm.value.username, this.loginForm.value.password, () => {
+                this.clearOperatorSubscription(); // We take control, not the subscription.
+            });
         } catch (e) {
             this.loginForm.setErrors({
                 notFound: true
             });
             this.loginErrorMsg = e;
-            this.inProcess = false;
         }
-    }
-
-    /**
-     * Redirects the user to the page where he came from.
-     */
-    private redirectUser(): void {
-        let redirect = this.OpenSlides.redirectUrl ? this.OpenSlides.redirectUrl : '/';
-        if (redirect.includes('login')) {
-            redirect = '/';
-        }
-        this.router.navigate([redirect]);
+        this.inProcess = false;
     }
 
     /**
@@ -198,6 +180,6 @@ export class LoginMaskComponent extends BaseComponent implements OnInit, OnDestr
      * Guests (if enabled) can navigate directly to the main page.
      */
     public guestLogin(): void {
-        this.router.navigate(['/']);
+        this.authService.guestLogin();
     }
 }

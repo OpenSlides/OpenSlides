@@ -1,20 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { OperatorService } from 'app/core/core-services/operator.service';
+import { OperatorService, WhoAmI } from 'app/core/core-services/operator.service';
 import { environment } from 'environments/environment';
-import { User } from '../../shared/models/users/user';
 import { OpenSlidesService } from './openslides.service';
 import { HttpService } from './http.service';
 import { DataStoreService } from './data-store.service';
-
-/**
- * The data returned by a post request to the login route.
- */
-interface LoginResponse {
-    user_id: number;
-    user: User;
-}
 
 /**
  * Authenticates an OpenSlides user with username and password
@@ -49,31 +40,57 @@ export class AuthService {
      * @param password
      * @returns The login response.
      */
-    public async login(username: string, password: string): Promise<LoginResponse> {
+    public async login(username: string, password: string, earlySuccessCallback: () => void): Promise<WhoAmI> {
         const user = {
             username: username,
             password: password
         };
-        const response = await this.http.post<LoginResponse>(environment.urlPrefix + '/users/login/', user);
+        const response = await this.http.post<WhoAmI>(environment.urlPrefix + '/users/login/', user);
+        earlySuccessCallback();
+        await this.operator.setWhoAmI(response);
+        await this.redirectUser(response.user_id);
         return response;
+    }
+
+    /**
+     * Redirects the user to the page where he came from. Boots OpenSlides,
+     * if it wasn't done before.
+     */
+    public async redirectUser(userId: number): Promise<void> {
+        if (!this.OpenSlides.booted) {
+            await this.OpenSlides.afterLoginBootup(userId);
+        }
+
+        let redirect = this.OpenSlides.redirectUrl ? this.OpenSlides.redirectUrl : '/';
+        if (redirect.includes('login')) {
+            redirect = '/';
+        }
+        this.router.navigate([redirect]);
+    }
+
+    /**
+     * Login for guests.
+     */
+    public async guestLogin(): Promise<void> {
+        this.redirectUser(null);
     }
 
     /**
      * Logout function for both the client and the server.
      *
-     * Will clear the current operator and datastore and
+     * Will clear the datastore, update the current operator and
      * send a `post`-request to `/apps/users/logout/'`. Restarts OpenSlides.
      */
     public async logout(): Promise<void> {
-        await this.operator.setUser(null);
+        let response = null;
         try {
-            await this.http.post(environment.urlPrefix + '/users/logout/', {});
+            response = await this.http.post<WhoAmI>(environment.urlPrefix + '/users/logout/', {});
         } catch (e) {
             // We do nothing on failures. Reboot OpenSlides anyway.
         }
-        // Clear the DataStore
-        this.DS.clear();
+        await this.DS.clear();
+        await this.operator.setWhoAmI(response);
+        await this.OpenSlides.reboot();
         this.router.navigate(['/']);
-        this.OpenSlides.reboot();
     }
 }

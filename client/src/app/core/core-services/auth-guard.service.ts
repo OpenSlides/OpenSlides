@@ -28,6 +28,10 @@ export class AuthGuard implements CanActivate, CanActivateChild {
     public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
         const basePerm: string | string[] = route.data.basePerm;
 
+        console.log('Auth guard');
+        console.log('motions.can_see:', this.operator.hasPerms('motions.can_see'));
+        console.log('motions.can_manage:', this.operator.hasPerms('motions.can_manage'));
+
         if (!basePerm) {
             return true;
         } else if (basePerm instanceof Array) {

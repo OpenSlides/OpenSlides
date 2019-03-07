@@ -15,7 +15,7 @@ class TestWhoAmIView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             json.loads(response.content.decode()),
-            {"user_id": None, "user": None, "guest_enabled": False},
+            {"user_id": None, "user": None, "permissions": [], "guest_enabled": False},
         )
 
     def test_get_authenticated_user(self):
@@ -56,6 +56,10 @@ class TestUserLogoutView(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertFalse(hasattr(self.client.session, "test_key"))
+        self.assertEqual(
+            json.loads(response.content.decode()),
+            {"user_id": None, "user": None, "permissions": [], "guest_enabled": False},
+        )
 
 
 class TestUserLoginView(TestCase):
