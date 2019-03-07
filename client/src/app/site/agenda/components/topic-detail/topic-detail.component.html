@@ -24,7 +24,7 @@
     </div>
 </os-head-bar>
 
-<mat-card *ngIf="topic || editTopic" [ngClass]="editTopic ? 'os-form-card' : 'os-card'" class="on-transition-fade">
+<mat-card *ngIf="topic || editTopic" [ngClass]="editTopic ? 'os-form-card' : 'os-card'">
     <div *ngIf="!editTopic">
         <h1>{{ topic.getTitle() }}</h1>
     </div>

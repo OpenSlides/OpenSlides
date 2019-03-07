@@ -1,8 +1,8 @@
-<mat-card class="os-card on-transition-fade">
+<mat-card class="os-card">
     <div>
-        <div class='legal-notice-text' [innerHtml]='legalNotice'></div>
+        <div class="legal-notice-text" [innerHtml]="legalNotice"></div>
         <mat-divider></mat-divider>
-        <div *ngIf="versionInfo" class='version-text'>
+        <div *ngIf="versionInfo" class="version-text">
             <a [attr.href]="versionInfo.openslides_url" target="_blank">
                 OpenSlides {{ versionInfo.openslides_version }}
             </a>
@@ -11,12 +11,8 @@
             <div *ngIf="versionInfo.plugins.length">
                 <p><span translate>Installed plugins</span>:</p>
                 <div *ngFor="let plugin of versionInfo.plugins">
-                    <a [attr.href]="plugin.url" target="_blank">
-                        {{ plugin.verbose_name }} {{ plugin.version }}
-                    </a>
-                    <div *ngIf="plugin.license">
-                        (<span translate>License</span>: {{ plugin.license }})
-                    </div>
+                    <a [attr.href]="plugin.url" target="_blank"> {{ plugin.verbose_name }} {{ plugin.version }} </a>
+                    <div *ngIf="plugin.license">(<span translate>License</span>: {{ plugin.license }})</div>
                 </div>
             </div>
         </div>

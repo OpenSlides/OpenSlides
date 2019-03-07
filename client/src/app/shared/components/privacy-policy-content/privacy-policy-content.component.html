@@ -1,6 +1,6 @@
-<mat-card class='os-card on-transition-fade'>
-    <div *ngIf='privacyPolicy' [innerHtml]='privacyPolicy'></div>
-    <div *ngIf='!privacyPolicy' translate>
+<mat-card class="os-card">
+    <div *ngIf="privacyPolicy" [innerHtml]="privacyPolicy"></div>
+    <div *ngIf="!privacyPolicy" translate>
         The event manager hasn't set up a privacy policy yet.
     </div>
 </mat-card>
