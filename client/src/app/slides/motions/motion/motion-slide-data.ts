@@ -1,5 +1,6 @@
 import { ChangeRecoMode, LineNumberingMode } from '../../../site/motions/models/view-motion';
 import { MergeAmendment } from '../../../shared/models/motions/workflow-state';
+import { ReferencedMotions } from '../base/base-motion-slide';
 
 /**
  * This interface describes the data returned by the server about an amendment.
@@ -65,6 +66,7 @@ export interface MotionSlideData {
     recommender?: string;
     recommendation?: string;
     recommendation_extension?: string;
+    referenced_motions?: ReferencedMotions;
     base_motion?: MotionSlideDataBaseMotion;
     base_statute?: MotionSlideDataBaseStatute;
     amendment_paragraphs: string[];

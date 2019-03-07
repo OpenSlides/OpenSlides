@@ -9,7 +9,7 @@
         <!-- Recommendation -->
         <div *ngIf="data.data.recommendation && data.data.recommender">
             <h3>{{ data.data.recommender }}</h3>
-            {{ data.data.recommendation | translate }} {{ data.data.recommendation_extension }}
+            {{ getRecommendationLabel() }}
         </div>
     </div>
 
