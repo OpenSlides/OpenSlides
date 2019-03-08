@@ -76,6 +76,7 @@ export class SlideContainerComponent extends BaseComponent {
     public set projector(projector: ViewProjector) {
         this._projector = projector;
         this.setProjectorForComponent();
+        this.updateScroll();
     }
 
     public get projector(): ViewProjector {
@@ -137,7 +138,7 @@ export class SlideContainerComponent extends BaseComponent {
     private updateScroll(): void {
         if (this.slideOptions.scrollable) {
             let value = this.scroll;
-            value *= -50;
+            value *= -100;
             if (this.projector.show_header_footer) {
                 value += 50; // Default offset for the header
             }

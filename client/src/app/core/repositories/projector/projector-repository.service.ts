@@ -90,9 +90,10 @@ export class ProjectorRepositoryService extends BaseRepository<ViewProjector, Pr
      *
      * @param projector The projector to scroll
      * @param direction The direction.
+     * @param step (default 1) The amount of scroll-steps
      */
-    public async scroll(projector: ViewProjector, direction: ScrollScaleDirection): Promise<void> {
-        await this.controlView(projector, direction, 'scroll');
+    public async scroll(projector: ViewProjector, direction: ScrollScaleDirection, step: number = 1): Promise<void> {
+        await this.controlView(projector, direction, 'scroll', step);
     }
 
     /**
@@ -100,9 +101,10 @@ export class ProjectorRepositoryService extends BaseRepository<ViewProjector, Pr
      *
      * @param projector The projector to scale
      * @param direction The direction.
+     * @param step (default 1) The amount of scale-steps
      */
-    public async scale(projector: ViewProjector, direction: ScrollScaleDirection): Promise<void> {
-        await this.controlView(projector, direction, 'scale');
+    public async scale(projector: ViewProjector, direction: ScrollScaleDirection, step: number = 1): Promise<void> {
+        await this.controlView(projector, direction, 'scale', step);
     }
 
     /**
@@ -111,15 +113,18 @@ export class ProjectorRepositoryService extends BaseRepository<ViewProjector, Pr
      * @param projector The projector to control.
      * @param direction The direction
      * @param action The action. Can be scale or scroll.
+     * @param step The amount of steps to make.
      */
     private async controlView(
         projector: ViewProjector,
         direction: ScrollScaleDirection,
-        action: 'scale' | 'scroll'
+        action: 'scale' | 'scroll',
+        step: number
     ): Promise<void> {
         await this.http.post<void>(`/rest/core/projector/${projector.id}/control_view/`, {
             action: action,
-            direction: direction
+            direction: direction,
+            step: step
         });
     }
 }

@@ -29,13 +29,44 @@
             <!-- scaling indicator -->
             <div class="button-size" [ngClass]="projector.scale != 0 ? 'warn' : ''">{{ projector.scale }}</div>
 
-            <!-- scroll down -->
-            <button type="button" class="spacer-left-40" mat-icon-button (click)="scroll(scrollScaleDirection.Down)">
-                <mat-icon>arrow_downward</mat-icon>
-            </button>
-            <!-- scroll up -->
-            <button type="button" mat-icon-button (click)="scroll(scrollScaleDirection.Up)">
+            <!-- scroll viewport up (fast), decrease scroll counter -->
+            <button
+                [disabled]="projector.scroll <= 4"
+                type="button"
+                class="spacer-left-50"
+                mat-icon-button
+                (click)="scroll(scrollScaleDirection.Down, 5)"
+                matTooltip="{{ 'Scroll up (big step)' | translate }}"
+            >
                 <mat-icon>arrow_upward</mat-icon>
+            </button>
+            <!-- scroll viewport up (slow), decrease scroll counter -->
+            <button
+                [disabled]="projector.scroll <= 0"
+                type="button"
+                mat-icon-button
+                (click)="scroll(scrollScaleDirection.Down)"
+                matTooltip="{{ 'Scroll up' | translate }}"
+            >
+                <mat-icon>arrow_drop_up</mat-icon>
+            </button>
+            <!-- scroll viewport down (slow), increase scroll counter -->
+            <button
+                type="button"
+                mat-icon-button
+                (click)="scroll(scrollScaleDirection.Up)"
+                matTooltip="{{ 'Scroll down' | translate }}"
+            >
+                <mat-icon>arrow_drop_down</mat-icon>
+            </button>
+            <!-- scroll viewport down (fast), increase scroll counter -->
+            <button
+                type="button"
+                mat-icon-button
+                (click)="scroll(scrollScaleDirection.Up, 5)"
+                matTooltip="{{ 'Scroll down (big step)' | translate }}"
+            >
+                <mat-icon>arrow_downward</mat-icon>
             </button>
             <!-- reset button -->
             <button type="button" mat-icon-button (click)="scroll(scrollScaleDirection.Reset)">
