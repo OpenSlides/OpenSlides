@@ -1,65 +1,33 @@
-// hide certain stuff whem editing is disabled
-.mat-form-field-disabled {
+.form70 {
     ::ng-deep {
-        .mat-input-element {
-            color: currentColor;
-        }
-
-        .mat-select-value {
-            color: currentColor;
-        }
-
-        .mat-form-field-underline {
-            display: none;
-        }
-
-        .mat-hint {
-            display: none;
-        }
-
-        .mat-select-value {
-            display: table-cell;
-        }
-
-        button {
-            display: none;
-        }
+        width: 70%;
     }
 }
 
-// angular material does not have this class. This is virtually set using ngClass
-.mat-form-field-enabled {
-    .form70 {
-        ::ng-deep {
-            width: 70%;
-        }
+.form37 {
+    ::ng-deep {
+        width: 37%;
     }
+}
 
-    .form37 {
-        ::ng-deep {
-            width: 37%;
-        }
+.form25 {
+    ::ng-deep {
+        width: 25%;
     }
+}
 
-    .form25 {
-        ::ng-deep {
-            width: 25%;
-        }
+.form16 {
+    ::ng-deep {
+        width: 16%;
     }
+}
 
-    .form16 {
-        ::ng-deep {
-            width: 16%;
-        }
-    }
+.force-min-with {
+    min-width: 110px;
+}
 
-    .force-min-with {
-        min-width: 110px;
-    }
-
-    .distance {
-        padding-right: 5%;
-    }
+.distance {
+    padding-right: 5%;
 }
 
 mat-checkbox {

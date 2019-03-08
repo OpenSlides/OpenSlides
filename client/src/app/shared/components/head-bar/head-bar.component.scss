@@ -14,8 +14,18 @@
 .toolbar-left {
     display: contents;
     .toolbar-left-text {
-        display: initial;
         margin-left: 10px;
+        width: 100%;
+        overflow: hidden;
+
+        ::ng-deep .title-slot {
+            h2 {
+                display: block;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+        }
     }
 }
 .toolbar-centered {

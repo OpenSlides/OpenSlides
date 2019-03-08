@@ -73,7 +73,11 @@
                 <span translate>List of speakers</span>
             </button>
             <!-- Project -->
-            <os-projector-button [object]="motion" [menuItem]="true" *osPerms="'core.can_manage_projector'"></os-projector-button>
+            <os-projector-button
+                [object]="motion"
+                [menuItem]="true"
+                *osPerms="'core.can_manage_projector'"
+            ></os-projector-button>
             <!-- New amendment -->
             <button mat-menu-item (click)="createAmendment()" *ngIf="perms.isAllowed('can_create_amendments', motion)">
                 <mat-icon>add</mat-icon>
@@ -360,7 +364,9 @@
                 <!-- Make the whole container a trigger to prevent unexpected menu behavior -->
                 <div [matMenuTriggerFor]="tagMenu">
                     <!-- No selected tags -->
-                    <mat-basic-chip *ngIf="!motion.hasTags()" class="grey" disabled disableRipple> {{ '–' }} </mat-basic-chip>
+                    <mat-basic-chip *ngIf="!motion.hasTags()" class="grey" disabled disableRipple>
+                        {{ '–' }}
+                    </mat-basic-chip>
 
                     <!-- Display a chip list of tags -->
                     <mat-chip-list class="mat-chip-list-stacked">
@@ -374,7 +380,9 @@
             <!-- For non privileged users -->
             <div *ngIf="!perms.isAllowed('change_metadata', motion)">
                 <mat-chip-list class="mat-chip-list-stacked">
-                    <mat-basic-chip *ngFor="let tag of motion.tags" class="grey" disableRipple> {{ tag }} </mat-basic-chip>
+                    <mat-basic-chip *ngFor="let tag of motion.tags" class="grey" disableRipple>
+                        {{ tag }}
+                    </mat-basic-chip>
                 </mat-chip-list>
             </div>
         </div>
