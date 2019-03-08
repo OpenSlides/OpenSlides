@@ -1,0 +1,186 @@
+@import '~assets/styles/motion-styles-common';
+
+span {
+    margin: 0;
+}
+
+.extra-controls-slot {
+    div {
+        padding: 0px;
+        button {
+            .mat-button-wrapper {
+                display: inherit;
+            }
+            font-size: 100%;
+        }
+        span {
+            font-size: 80%;
+        }
+    }
+}
+
+.motion-content {
+    display: flow-root;
+}
+
+.motion-text-controls {
+    float: right;
+    margin-left: 5px;
+    margin-top: -15px;
+    height: 50px;
+
+    button {
+        font-size: 115%;
+    }
+
+    > button {
+        // Prevent moving the buttons when the "go to line"-input is shown
+        margin-top: 7px;
+    }
+    .motion-goto-line {
+        width: 150px;
+    }
+    input[type='number']::-webkit-inner-spin-button,
+    input[type='number']::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    input[type='number'] {
+        -moz-appearance: textfield;
+    }
+}
+
+.meta-info-panel {
+    padding-top: 25px;
+
+    a:hover {
+        cursor: pointer;
+    }
+}
+
+.mat-accordion {
+    display: block;
+    margin-top: 0px;
+}
+
+.mat-expansion-panel {
+    padding-top: 0;
+    .expansion-panel-custom-body {
+        padding-left: 55px;
+    }
+}
+
+.statute-amendment-selector {
+    mat-form-field {
+        margin-left: 20px;
+        width: calc(100% - 20px);
+    }
+}
+
+.motion-content {
+    h4 {
+        margin: 10px 10px 15px 0;
+        display: block;
+        font-weight: 500;
+        font-size: 110%;
+    }
+
+    h5 {
+        margin: 15px 10px 10px 0;
+        display: block;
+        font-weight: 500;
+        font-size: 100%;
+    }
+
+    .motion-text {
+        clear: both;
+        margin-left: 0px;
+    }
+
+    //the assembly may decide ...
+    .text-prefix-label {
+        display: block;
+        margin: 0 10px 20px 0px;
+    }
+
+    .extra-data {
+        margin-top: 1em;
+    }
+
+    .content-field {
+        display: inline-block;
+        width: 100%;
+    }
+
+    .form-id-title {
+        display: flex;
+
+        .form-identifier {
+            flex: 0 0 95px;
+            max-width: 95px;
+            margin-right: 1em;
+        }
+
+        .form-title {
+            flex: 1 1 auto;
+        }
+    }
+}
+
+.desktop-view {
+    .desktop-left {
+        width: 30%;
+        float: left;
+        padding-right: 25px;
+    }
+
+    .desktop-right {
+        display: grid;
+
+        min-width: calc(70% - 90px);
+
+        mat-card {
+            display: inline;
+            margin: 0px 40px 10px 10px;
+        }
+        .os-card {
+            max-width: 900px;
+            min-width: 400px;
+            margin-left: 0 !important;
+            margin-top: 0 !important;
+        }
+    }
+}
+
+.title-line {
+    display: flex;
+}
+
+.create-poll-button {
+    margin-top: 10px;
+    button {
+        padding: 0px;
+    }
+}
+
+.mat-chip-list-stacked {
+    .mat-chip {
+        margin: 4px 4px 4px 4px;
+    }
+}
+
+.supporters {
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.shortened-selector {
+    justify-content: space-between;
+    display: flex;
+    .selector {
+        width: 95%;
+    }
+    .mat-icon-button {
+        top: 20px;
+    }
+}

@@ -8,7 +8,7 @@ import { ListOfSpeakersComponent } from './components/list-of-speakers/list-of-s
 import { TopicDetailComponent } from './components/topic-detail/topic-detail.component';
 
 const routes: Routes = [
-    { path: '', component: AgendaListComponent },
+    { path: '', component: AgendaListComponent, pathMatch: 'full' },
     { path: 'import', component: AgendaImportListComponent },
     { path: 'topics/new', component: TopicDetailComponent },
     { path: 'sort-agenda', component: AgendaSortComponent },

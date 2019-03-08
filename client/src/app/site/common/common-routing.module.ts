@@ -9,7 +9,8 @@ import { SearchComponent } from './components/search/search.component';
 const routes: Routes = [
     {
         path: '',
-        component: StartComponent
+        component: StartComponent,
+        pathMatch: 'full'
     },
     {
         path: 'legalnotice',

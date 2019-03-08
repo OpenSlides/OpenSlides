@@ -1,0 +1,51 @@
+<!-- <os-head-bar [mainButton]=true (mainEvent)="onPlusButton()" [multiSelectMode]="isMultiSelect"> -->
+<os-head-bar prevUrl="../.." [nav]="false" [mainButton]="true" (mainEvent)="onNewButton(newWorkflowDialog)">
+    <!-- Title -->
+    <div class="title-slot"><h2 translate>Workflows</h2></div>
+</os-head-bar>
+
+<mat-table class="os-headed-listview-table on-transition-fade" [dataSource]="dataSource">
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef>
+            <span translate>Name</span>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let workflow" (click)="onClickWorkflow(workflow)">
+            {{ workflow.name | translate }}
+        </mat-cell>
+    </ng-container>
+
+    <!-- Delete Column -->
+    <ng-container matColumnDef="delete">
+        <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+        <mat-cell *matCellDef="let workflow">
+            <button type="button" mat-icon-button (click)="onDeleteWorkflow(workflow)">
+                <mat-icon color="warn">delete</mat-icon>
+            </button>
+        </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: getColumnDefinition()"></mat-row>
+</mat-table>
+
+<!-- New workflow dialog -->
+<ng-template #newWorkflowDialog>
+    <h1 mat-dialog-title>
+        <span translate>Create new workflow</span>
+    </h1>
+    <div mat-dialog-content>
+        <p translate>Please enter a name for the new workflow:</p>
+        <mat-form-field>
+            <input matInput osAutofocus [(ngModel)]="newWorkflowTitle" />
+        </mat-form-field>
+    </div>
+    <div mat-dialog-actions>
+        <button type="submit" mat-button color="primary" [mat-dialog-close]="newWorkflowTitle">
+            <span translate>Save</span>
+        </button>
+        <button type="button" mat-button [mat-dialog-close]="null">
+            <span translate>Cancel</span>
+        </button>
+    </div>
+</ng-template>
