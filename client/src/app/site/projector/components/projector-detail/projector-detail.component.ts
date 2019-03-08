@@ -90,18 +90,22 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
 
     /**
      * Change the scroll
+     *
      * @param direction The direction to send.
+     * @param step (optional) The amount of steps to make.
      */
-    public scroll(direction: ScrollScaleDirection): void {
-        this.repo.scroll(this.projector, direction).then(null, this.raiseError);
+    public scroll(direction: ScrollScaleDirection, step: number = 1): void {
+        this.repo.scroll(this.projector, direction, step).then(null, this.raiseError);
     }
 
     /**
      * Change the scale
+     *
      * @param direction The direction to send.
+     * @param step (optional) The amount of steps to make.
      */
-    public scale(direction: ScrollScaleDirection): void {
-        this.repo.scale(this.projector, direction).then(null, this.raiseError);
+    public scale(direction: ScrollScaleDirection, step: number = 1): void {
+        this.repo.scale(this.projector, direction, step).then(null, this.raiseError);
     }
 
     public projectNextSlide(): void {

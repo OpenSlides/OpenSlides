@@ -204,7 +204,8 @@ class ProjectorViewSet(ModelViewSet):
         It expects a POST request to
         /rest/core/projector/<pk>/control_view/ with a dictionary with an
         action ('scale' or 'scroll') and a direction ('up', 'down' or
-        'reset').
+        'reset'). An optional 'step' can be given to control the amount
+        of scrolling and scaling. The default is 1.
 
         Example:
 
@@ -226,20 +227,24 @@ class ProjectorViewSet(ModelViewSet):
             )
 
         projector_instance = self.get_object()
+        step = request.data.get("step", 1)
+        if step < 1:
+            step = 1
+
         if request.data["action"] == "scale":
             if request.data["direction"] == "up":
-                projector_instance.scale = F("scale") + 1
+                projector_instance.scale = F("scale") + step
             elif request.data["direction"] == "down":
-                projector_instance.scale = F("scale") - 1
+                projector_instance.scale = F("scale") - step
             else:
                 # request.data['direction'] == 'reset'
                 projector_instance.scale = 0
         else:
             # request.data['action'] == 'scroll'
             if request.data["direction"] == "up":
-                projector_instance.scroll = F("scroll") + 1
+                projector_instance.scroll = F("scroll") + step
             elif request.data["direction"] == "down":
-                projector_instance.scroll = F("scroll") - 1
+                projector_instance.scroll = F("scroll") - step
             else:
                 # request.data['direction'] == 'reset'
                 projector_instance.scroll = 0

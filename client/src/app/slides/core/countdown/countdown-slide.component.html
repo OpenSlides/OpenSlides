@@ -1,4 +1,4 @@
-<div class="countdown overlay" *ngIf="data && !data.element.fullscreen">
+<div class="countdown overlay" *ngIf="data && !data.element.fullscreen" [ngStyle]="{'margin-top': (!projector || projector.show_header_footer) ? '80px' : '30px'}">
     <os-countdown-time [countdown]="data.data" [warningTime]="data.data.warning_time"></os-countdown-time>
     <div class="description">
         {{ data.data.description }}
