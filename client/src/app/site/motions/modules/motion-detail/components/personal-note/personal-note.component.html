@@ -5,8 +5,8 @@
 
     <ng-container class="meta-text-block-content">
         <ng-container *ngIf="!isEditMode">
-            <div *ngIf="personalNote" [innerHTML]="personalNote.note"></div>
-            <div class="no-content" *ngIf="!personalNote" translate>
+            <div *ngIf="motion && motion.personalNote" [innerHTML]="motion.personalNote.note"></div>
+            <div class="no-content" *ngIf="!motion || !motion.personalNote" translate>
                 No personal note
             </div>
         </ng-container>
@@ -25,7 +25,7 @@
         matTooltip="{{ 'Edit' | translate }}">
             <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button *ngIf="!isEditMode && personalNote" (click)="printPersonalNote()"
+        <button mat-icon-button *ngIf="!isEditMode && motion && motion.personalNote" (click)="printPersonalNote()"
         matTooltip="{{ 'Export personal note only' | translate }}">
             <mat-icon>picture_as_pdf</mat-icon>
         </button>

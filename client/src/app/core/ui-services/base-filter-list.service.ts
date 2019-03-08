@@ -18,9 +18,15 @@ import { BaseRepository } from '../repositories/base-repository';
 export interface OsFilter {
     property: string;
     label?: string;
-    options: (OsFilterOption | string)[];
+    options: OsFilterOptions;
     count?: number;
 }
+
+/**
+ * The type of all filter options. This is an array of options. One option
+ * can be OsFilterOption or a string.
+ */
+export type OsFilterOptions = (OsFilterOption | string)[];
 
 /**
  * Describes a list of available options for a drop down menu of a filter.

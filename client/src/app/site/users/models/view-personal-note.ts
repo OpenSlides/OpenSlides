@@ -1,5 +1,5 @@
 import { BaseViewModel } from 'app/site/base/base-view-model';
-import { PersonalNote } from 'app/shared/models/users/personal-note';
+import { PersonalNote, PersonalNotesFormat } from 'app/shared/models/users/personal-note';
 
 export class ViewPersonalNote extends BaseViewModel {
     public static COLLECTIONSTRING = PersonalNote.COLLECTIONSTRING;
@@ -7,11 +7,19 @@ export class ViewPersonalNote extends BaseViewModel {
     private _personalNote: PersonalNote;
 
     public get personalNote(): PersonalNote {
-        return this._personalNote ? this._personalNote : null;
+        return this._personalNote;
     }
 
     public get id(): number {
-        return this.personalNote ? this.personalNote.id : null;
+        return this.personalNote.id;
+    }
+
+    public get userId(): number {
+        return this.personalNote.user_id;
+    }
+
+    public get notes(): PersonalNotesFormat {
+        return this.personalNote.notes;
     }
 
     /**
@@ -19,7 +27,7 @@ export class ViewPersonalNote extends BaseViewModel {
      */
     public getVerboseName;
 
-    public constructor(personalNote?: PersonalNote) {
+    public constructor(personalNote: PersonalNote) {
         super(PersonalNote.COLLECTIONSTRING);
         this._personalNote = personalNote;
     }
@@ -28,7 +36,5 @@ export class ViewPersonalNote extends BaseViewModel {
         return this.personalNote ? this.personalNote.toString() : null;
     };
 
-    public updateDependencies(update: BaseViewModel): void {
-        throw new Error('Todo');
-    }
+    public updateDependencies(update: BaseViewModel): void {}
 }

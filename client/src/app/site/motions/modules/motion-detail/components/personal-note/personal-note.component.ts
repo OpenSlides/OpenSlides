@@ -1,7 +1,5 @@
-import { Component, Input, OnDestroy } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-
-import { Subscription } from 'rxjs';
 
 import { BaseComponent } from 'app/base.component';
 import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-export.service';
@@ -17,34 +15,12 @@ import { ViewMotion } from 'app/site/motions/models/view-motion';
     templateUrl: './personal-note.component.html',
     styleUrls: ['./personal-note.component.scss']
 })
-export class PersonalNoteComponent extends BaseComponent implements OnDestroy {
+export class PersonalNoteComponent extends BaseComponent {
     /**
      * The motion, which the personal note belong to.
      */
-    private _motion: ViewMotion;
-
-    /**
-     * Sets the motion. If the motion updates (changes, and so on), the subscription
-     * for the personal note will be established.
-     */
     @Input()
-    public set motion(motion: ViewMotion) {
-        this._motion = motion;
-        if (this.personalNoteSubscription) {
-            this.personalNoteSubscription.unsubscribe();
-        }
-        if (motion && motion.motion) {
-            this.personalNoteSubscription = this.personalNoteService
-                .getPersonalNoteObserver(motion.motion)
-                .subscribe(pn => {
-                    this.personalNote = pn;
-                });
-        }
-    }
-
-    public get motion(): ViewMotion {
-        return this._motion;
-    }
+    public motion: ViewMotion;
 
     /**
      * The edit form for the note
@@ -55,16 +31,6 @@ export class PersonalNoteComponent extends BaseComponent implements OnDestroy {
      * Saves, if the users edits the note.
      */
     public isEditMode = false;
-
-    /**
-     * The personal note.
-     */
-    public personalNote: PersonalNoteContent;
-
-    /**
-     * The subscription for the personal note.
-     */
-    private personalNoteSubscription: Subscription;
 
     /**
      * Constructor. Creates form
@@ -90,7 +56,7 @@ export class PersonalNoteComponent extends BaseComponent implements OnDestroy {
     public editPersonalNote(): void {
         this.personalNoteForm.reset();
         this.personalNoteForm.patchValue({
-            note: this.personalNote ? this.personalNote.note : ''
+            note: this.motion.personalNote ? this.motion.personalNote.note : ''
         });
         this.isEditMode = true;
     }
@@ -100,8 +66,8 @@ export class PersonalNoteComponent extends BaseComponent implements OnDestroy {
      */
     public async savePersonalNote(): Promise<void> {
         let content: PersonalNoteContent;
-        if (this.personalNote) {
-            content = Object.assign({}, this.personalNote);
+        if (this.motion.personalNote) {
+            content = Object.assign({}, this.motion.personalNote);
             content.note = this.personalNoteForm.get('note').value;
         } else {
             content = {
@@ -118,18 +84,9 @@ export class PersonalNoteComponent extends BaseComponent implements OnDestroy {
     }
 
     /**
-     * Remove the subscription if this component isn't needed anymore.
-     */
-    public ngOnDestroy(): void {
-        if (this.personalNoteSubscription) {
-            this.personalNoteSubscription.unsubscribe();
-        }
-    }
-
-    /**
      * Triggers a pdf export of the personal note
      */
     public printPersonalNote(): void {
-        this.pdfService.exportPersonalNote(this.personalNote, this.motion);
+        this.pdfService.exportPersonalNote(this.motion.personalNote, this.motion);
     }
 }

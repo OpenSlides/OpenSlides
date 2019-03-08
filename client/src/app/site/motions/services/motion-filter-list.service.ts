@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 
-import { BaseFilterListService, OsFilter, OsFilterOption } from 'app/core/ui-services/base-filter-list.service';
+import { TranslateService } from '@ngx-translate/core';
+
+import { BaseFilterListService, OsFilter, OsFilterOptions } from 'app/core/ui-services/base-filter-list.service';
 import { Motion } from 'app/shared/models/motions/motion';
 import { ViewMotion } from '../models/view-motion';
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
@@ -9,7 +11,6 @@ import { StorageService } from 'app/core/core-services/storage.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
 import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
-import { TranslateService } from '@ngx-translate/core';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { ViewWorkflow } from '../models/view-workflow';
 import { OperatorService } from 'app/core/core-services/operator.service';
@@ -25,13 +26,18 @@ export class MotionFilterListService extends BaseFilterListService<Motion, ViewM
      * generated dynamically, as the options change with the datastore
      */
     public get filterOptions(): OsFilter[] {
-        return [
+        let filterOptions = [
             this.flowFilterOptions,
             this.categoryFilterOptions,
             this.motionBlockFilterOptions,
             this.recommendationFilterOptions,
             this.motionCommentFilterOptions
-        ].concat(this.staticFilterOptions);
+        ];
+
+        if (!this.operator.isAnonymous) {
+            filterOptions = filterOptions.concat(this.personalNoteFilterOptions);
+        }
+        return filterOptions;
     }
 
     /**
@@ -81,7 +87,7 @@ export class MotionFilterListService extends BaseFilterListService<Motion, ViewM
         options: []
     };
 
-    public staticFilterOptions = [
+    public personalNoteFilterOptions = [
         {
             property: 'star',
             label: this.translate.instant('Favorites'),
@@ -143,32 +149,22 @@ export class MotionFilterListService extends BaseFilterListService<Motion, ViewM
         this.subscribeCategories();
         this.subscribeMotionBlocks();
         this.subscribeComments();
-    }
 
-    // TODO: Notes/Favorite
-    // does not work, some cloning error. I want to:
-    //  'check all items in filterService against this function, in the
-    //  scope of motion-filter.service'
-    // public getNoteFilterFn(): Function {
-    //     const notesRepo = this.notesRepo;
-    //     return (m: ViewMotion) => {
-    //         return notesRepo.hasPersonalNote('Motion', m.id)
-    //     }
-    // };
+        this.operator.getUserObservable().subscribe(() => {
+            this.updateFilterDefinitions(this.filterOptions);
+        });
+    }
 
     /**
      * Subscibes to changing MotionBlocks, and updates the filter accordingly
      */
     private subscribeMotionBlocks(): void {
         this.motionBlockRepo.getViewModelListObservable().subscribe(motionBlocks => {
-            const motionBlockOptions = [];
-            motionBlocks.forEach(mb => {
-                motionBlockOptions.push({
-                    condition: mb.id,
-                    label: mb.title,
-                    isActive: false
-                });
-            });
+            const motionBlockOptions: OsFilterOptions = motionBlocks.map(mb => ({
+                condition: mb.id,
+                label: mb.title,
+                isActive: false
+            }));
             if (motionBlocks.length) {
                 motionBlockOptions.push('-');
                 motionBlockOptions.push({
@@ -187,14 +183,11 @@ export class MotionFilterListService extends BaseFilterListService<Motion, ViewM
      */
     private subscribeCategories(): void {
         this.categoryRepo.getSortedViewModelListObservable().subscribe(categories => {
-            const categoryOptions: (OsFilterOption | string)[] = [];
-            categories.forEach(cat => {
-                categoryOptions.push({
-                    condition: cat.id,
-                    label: cat.prefixedName,
-                    isActive: false
-                });
-            });
+            const categoryOptions: OsFilterOptions = categories.map(cat => ({
+                condition: cat.id,
+                label: cat.prefixedName,
+                isActive: false
+            }));
             if (categories.length) {
                 categoryOptions.push('-');
                 categoryOptions.push({
@@ -235,10 +228,10 @@ export class MotionFilterListService extends BaseFilterListService<Motion, ViewM
      * set config options
      */
     private updateWorkflows(): void {
-        const workflowOptions: (OsFilterOption | string)[] = [];
+        const workflowOptions: OsFilterOptions = [];
         const finalStates: number[] = [];
         const nonFinalStates: number[] = [];
-        const recommendationOptions: (OsFilterOption | string)[] = [];
+        const recommendationOptions: OsFilterOptions = [];
         if (!this.currentWorkflows) {
             return;
         }
@@ -304,14 +297,11 @@ export class MotionFilterListService extends BaseFilterListService<Motion, ViewM
      */
     private subscribeComments(): void {
         this.commentRepo.getViewModelListObservable().subscribe(comments => {
-            const commentOptions: (OsFilterOption | string)[] = [];
-            comments.forEach(comm => {
-                commentOptions.push({
-                    condition: comm.id,
-                    label: comm.name,
-                    isActive: false
-                });
-            });
+            const commentOptions: OsFilterOptions = comments.map(comment => ({
+                condition: comment.id,
+                label: comment.name,
+                isActive: false
+            }));
             if (comments.length) {
                 commentOptions.push('-');
                 commentOptions.push({
