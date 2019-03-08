@@ -47,6 +47,7 @@ allowed_styles = [
     "text-align",
     "float",
     "padding",
+    "text-decoration",
 ]
 
 

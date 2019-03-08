@@ -45,8 +45,8 @@ export abstract class BaseComponent {
         plugins: `autolink charmap code colorpicker fullscreen image imagetools
             lists link paste searchreplace textcolor`,
         menubar: '',
-        toolbar: `styleselect | bold italic underline strikethrough
-            | forecolor backcolor removeformat | bullist numlist |
+        toolbar: `styleselect | bold italic underline strikethrough |
+            forecolor backcolor removeformat | bullist numlist |
             link image charmap | code fullscreen`
     };
 
