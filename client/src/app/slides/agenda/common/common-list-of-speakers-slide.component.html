@@ -1,7 +1,12 @@
 <div *ngIf="data">
     <div class="slidetitle">
         <h1 translate>List of speakers</h1>
-        <h2>{{ getTitle() }}</h2>
+        <h2>
+            {{ getTitle() }}
+            <span *ngIf="getSpeakersCount() > 0">
+                &ndash; {{ getSpeakersCount() }} <span translate>Speakers</span>
+            </span>
+        </h2>
     </div>
 
     <!-- Last speakers -->

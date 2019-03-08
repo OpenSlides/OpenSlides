@@ -29,4 +29,14 @@ export class CommonListOfSpeakersSlideComponent extends BaseSlideComponent<Commo
             throw new Error('The content object has no agenda base repository!');
         }
     }
+
+    /**
+     * @retuns the amount of waiting speakers
+     */
+    public getSpeakersCount(): number {
+        if (this.data && this.data.data.waiting) {
+            return this.data.data.waiting.length;
+        }
+        return 0;
+    }
 }
