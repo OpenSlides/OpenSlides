@@ -342,7 +342,7 @@ class Motion(RESTModelMixin, models.Model):
         if self.is_amendment():
             parent_identifier = self.parent.identifier or ""
             if without_blank:
-                prefix = f"{parent_identifier} {config['motions_amendments_prefix']} "
+                prefix = f"{parent_identifier}{config['motions_amendments_prefix']}"
             else:
                 prefix = f"{parent_identifier} {config['motions_amendments_prefix']} "
         elif self.category is None or not self.category.prefix:
