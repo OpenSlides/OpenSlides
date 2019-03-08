@@ -495,7 +495,7 @@
                 type="button"
                 mat-icon-button
                 matTooltip="{{ 'Create final print template' | translate }}"
-                *ngIf="isRecoMode(ChangeRecoMode.Final)"
+                *osPerms="'motions.can_manage';and:isRecoMode(ChangeRecoMode.Final)"
                 (click)="createModifiedFinalVersion()"
             >
                 <mat-icon>description</mat-icon>
@@ -878,7 +878,7 @@
     <button
         mat-menu-item
         translate
-        *ngIf="motion?.modified_final_version"
+        *osPerms="'motions.can_manage';and:isRecoMode(ChangeRecoMode.Final)"
         (click)="setChangeRecoMode(ChangeRecoMode.ModifiedFinal)"
         [ngClass]="{ selected: motion?.crMode === ChangeRecoMode.ModifiedFinal }"
     >

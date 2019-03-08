@@ -176,6 +176,10 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
         });
     }
 
+    public opCanManage(): boolean {
+        return this.op.hasPerms('agenda.can_manage_list_of_speakers');
+    }
+
     /**
      * Check the URL to determine a current list of Speakers
      */
