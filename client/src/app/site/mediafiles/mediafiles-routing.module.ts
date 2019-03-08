@@ -4,7 +4,7 @@ import { MediafileListComponent } from './components/mediafile-list/mediafile-li
 import { MediaUploadComponent } from './components/media-upload/media-upload.component';
 
 const routes: Routes = [
-    { path: '', component: MediafileListComponent },
+    { path: '', component: MediafileListComponent, pathMatch: 'full' },
     { path: 'upload', component: MediaUploadComponent }
 ];
 

@@ -16,7 +16,8 @@ const routes: Routes = [
         children: [
             {
                 path: '',
-                loadChildren: './common/os-common.module#OsCommonModule'
+                loadChildren: './common/os-common.module#OsCommonModule',
+                pathMatch: 'full'
             },
             {
                 path: 'agenda',

@@ -6,7 +6,8 @@ import { FullscreenProjectorComponent } from './fullscreen-projector/fullscreen-
 const routes: Routes = [
     {
         path: '',
-        component: FullscreenProjectorComponent
+        component: FullscreenProjectorComponent,
+        pathMatch: 'full'
     },
     {
         path: ':id',

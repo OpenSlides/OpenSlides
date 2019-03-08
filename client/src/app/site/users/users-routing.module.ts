@@ -11,7 +11,8 @@ import { UserListComponent } from './components/user-list/user-list.component';
 const routes: Routes = [
     {
         path: '',
-        component: UserListComponent
+        component: UserListComponent,
+        pathMatch: 'full'
     },
     {
         path: 'password',

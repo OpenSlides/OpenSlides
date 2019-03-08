@@ -16,6 +16,7 @@ import { MainMenuService } from 'app/core/core-services/main-menu.service';
  *
  * ```html
  * <os-head-bar
+ *   prevUrl="../.."
  *   [nav]="false"
  *   [goBack]="true"
  *   [mainButton]="opCanEdit()"
@@ -90,6 +91,15 @@ export class HeadBarComponent {
     public goBack = false;
 
     /**
+     * Determine the back URL. Default is ".." (previous parent page)
+     * Lazy Loaded modules sometimes have different routing events or require
+     * special "back" logic.
+     * Has only an effect if goBack is set to false
+     */
+    @Input()
+    public prevUrl = '../';
+
+    /**
      * Emit a signal to the parent component if the main button was clicked
      */
     @Output()
@@ -141,7 +151,7 @@ export class HeadBarComponent {
         if (this.goBack) {
             this.location.back();
         } else {
-            this.router.navigate(['../'], { relativeTo: this.route });
+            this.router.navigate([this.prevUrl], { relativeTo: this.route });
         }
     }
 }

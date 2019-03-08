@@ -16,7 +16,7 @@ const routes: Routes = [
         path: 'login',
         component: LoginWrapperComponent,
         children: [
-            { path: '', component: LoginMaskComponent },
+            { path: '', component: LoginMaskComponent, pathMatch: 'full' },
             { path: 'reset-password', component: ResetPasswordComponent },
             { path: 'reset-password-confirm', component: ResetPasswordConfirmComponent },
             { path: 'legalnotice', component: LoginLegalNoticeComponent },

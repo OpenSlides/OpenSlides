@@ -8,7 +8,8 @@ import { ProjectorMessageListComponent } from './components/projector-message-li
 const routes: Routes = [
     {
         path: '',
-        component: ProjectorListComponent
+        component: ProjectorListComponent,
+        pathMatch: 'full'
     },
     {
         path: 'detail/:id',
