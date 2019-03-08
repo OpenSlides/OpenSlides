@@ -37,13 +37,54 @@
         <mat-step>
             <ng-template matStepLabel>{{ 'Change paragraph' | translate }}</ng-template>
 
-            <h5 translate>Amendment text</h5>
-            <!-- The HTML Editor -->
-            <editor formControlName="text" [init]="tinyMceSettings"></editor>
+            <!-- Text -->
+            <h3
+                [ngClass]="
+                    contentForm.get('text').invalid &&
+                    (contentForm.get('text').dirty || contentForm.get('text').touched)
+                        ? 'red-warning-text'
+                        : ''
+                "
+            >
+                <span translate>Amendment text</span>&nbsp;<span>*</span>
+            </h3>
+            <editor formControlName="text" [init]="tinyMceSettings" required></editor>
+            <div
+                *ngIf="
+                    contentForm.get('text').invalid &&
+                    (contentForm.get('text').dirty || contentForm.get('text').touched)
+                "
+                class="red-warning-text"
+                translate
+            >
+                This field is required.
+            </div>
 
-            <h5 translate>Reason</h5>
-            <!-- The HTML Editor -->
-            <editor formControlName="reason" [init]="tinyMceSettings"></editor>
+            <!-- Reason -->
+            <h3
+                [ngClass]="
+                    reasonRequired &&
+                    contentForm.get('reason').invalid &&
+                    (contentForm.get('reason').dirty || contentForm.get('reason').touched)
+                        ? 'red-warning-text'
+                        : ''
+                "
+            >
+                <span translate>Reason</span>&nbsp;<span *ngIf="reasonRequired">*</span>
+            </h3>
+
+            <editor formControlName="reason" [init]="tinyMceSettings" required></editor>
+            <div
+                *ngIf="
+                    reasonRequired &&
+                    contentForm.get('reason').invalid &&
+                    (contentForm.get('reason').dirty || contentForm.get('reason').touched)
+                "
+                class="red-warning-text"
+                translate
+            >
+                This field is required.
+            </div>
         </mat-step>
     </mat-horizontal-stepper>
 </form>
