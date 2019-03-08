@@ -61,7 +61,6 @@ export class AppComponent {
         // change default JS functions
         this.overloadArrayToString();
 
-        appRef.isStable.subscribe(s => console.log('is stable', s));
         appRef.isStable
             .pipe(
                 filter(s => s),

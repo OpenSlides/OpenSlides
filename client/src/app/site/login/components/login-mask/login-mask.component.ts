@@ -10,10 +10,14 @@ import { AuthService } from 'app/core/core-services/auth.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { environment } from 'environments/environment';
 import { OpenSlidesService } from 'app/core/core-services/openslides.service';
-import { LoginDataService } from 'app/core/ui-services/login-data.service';
+import { LoginDataService, LoginData } from 'app/core/ui-services/login-data.service';
 import { ParentErrorStateMatcher } from 'app/shared/parent-error-state-matcher';
 import { HttpService } from 'app/core/core-services/http.service';
 import { User } from 'app/shared/models/users/user';
+
+interface LoginDataWithInfoText extends LoginData {
+    info_text?: string;
+}
 
 /**
  * Login mask component.
@@ -94,13 +98,12 @@ export class LoginMaskComponent extends BaseComponent implements OnInit, OnDestr
         // Get the login data. Save information to the login data service. If there is an
         // error, ignore it.
         // TODO: This has to be caught by the offline service
-        this.httpService.get<any>(environment.urlPrefix + '/users/login/').then(
+        this.httpService.get<LoginDataWithInfoText>(environment.urlPrefix + '/users/login/').then(
             response => {
                 if (response.info_text) {
                     this.installationNotice = response.info_text;
                 }
-                this.loginDataService.setPrivacyPolicy(response.privacy_policy);
-                this.loginDataService.setLegalNotice(response.legal_notice);
+                this.loginDataService.setLoginData(response);
             },
             () => {}
         );
