@@ -60,6 +60,7 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
     protected _attachments: ViewMediafile[];
     protected _tags: ViewTag[];
     protected _parent: ViewMotion;
+    protected _amendments: ViewMotion[];
     protected _changeRecommendations: ViewMotionChangeRecommendation[];
     public personalNote?: PersonalNoteContent;
 
@@ -255,6 +256,10 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
         return this._parent;
     }
 
+    public get amendments(): ViewMotion[] {
+        return this._amendments;
+    }
+
     /**
      * @returns the creation date as Date object
      */
@@ -374,6 +379,7 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
         tags?: ViewTag[],
         parent?: ViewMotion,
         changeRecommendations?: ViewMotionChangeRecommendation[],
+        amendments?: ViewMotion[],
         personalNote?: PersonalNoteContent
     ) {
         super(Motion.COLLECTIONSTRING);
@@ -388,6 +394,7 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
         this._attachments = attachments;
         this._tags = tags;
         this._parent = parent;
+        this._amendments = amendments;
         this._changeRecommendations = changeRecommendations;
         this.personalNote = personalNote;
     }
@@ -463,7 +470,7 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
         } else if (update instanceof ViewTag) {
             this.updateTags(update);
         } else if (update instanceof ViewMotion && update.id !== this.id) {
-            this.updateParent(update);
+            this.updateMotion(update);
         } else if (update instanceof ViewMotionChangeRecommendation) {
             this.updateChangeRecommendation(update);
         }
@@ -561,9 +568,19 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
         }
     }
 
-    private updateParent(parent: ViewMotion): void {
-        if (this.parent_id && this.parent_id === parent.id) {
-            this._parent = parent;
+    /**
+     * The update cen be the parent or a child motion (=amendment).
+     */
+    private updateMotion(update: ViewMotion): void {
+        if (this.parent_id && this.parent_id === update.id) {
+            this._parent = update;
+        } else if (update.parent_id && update.parent_id === this.id) {
+            const index = this._amendments.findIndex(m => m.id === update.id);
+            if (index >= 0) {
+                this._amendments[index] = update;
+            } else {
+                this._amendments.push(update);
+            }
         }
     }
 
@@ -611,8 +628,7 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
 
     public getSlide(configService: ConfigService): ProjectorElementBuildDeskriptor {
         const slideOptions = [];
-
-        if (this.changeRecommendations && this.changeRecommendations.length) {
+        if ((this.changeRecommendations && this.changeRecommendations.length) || this.amendments) {
             slideOptions.push({
                 key: 'mode',
                 displayName: _('Which version?'),
