@@ -3,10 +3,22 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { ConfigService } from './config.service';
+import { StorageService } from '../core-services/storage.service';
 
 /**
- * This service holds the privacy policy and the legal notice, so they are available
- * even if the user is not logged in.
+ * The login data send by the server.
+ */
+export interface LoginData {
+    privacy_policy: string;
+    legal_notice: string;
+    theme: string;
+}
+
+const LOGIN_DATA_STORAGE_KEY = 'LoginData';
+
+/**
+ * This service holds the privacy policy, the legal notice and the OpenSlides theme, so
+ * they are available even if the user is not logged in.
  */
 @Injectable({
     providedIn: 'root'
@@ -15,7 +27,7 @@ export class LoginDataService {
     /**
      * Holds the privacy policy
      */
-    private _privacy_policy = new BehaviorSubject<string>('');
+    private readonly _privacy_policy = new BehaviorSubject<string>('');
 
     /**
      * Returns an observable for the privacy policy
@@ -27,7 +39,7 @@ export class LoginDataService {
     /**
      * Holds the legal notice
      */
-    private _legal_notice = new BehaviorSubject<string>('');
+    private readonly _legal_notice = new BehaviorSubject<string>('');
 
     /**
      * Returns an observable for the legal notice
@@ -37,32 +49,75 @@ export class LoginDataService {
     }
 
     /**
+     * Holds the theme
+     */
+    private readonly _theme = new BehaviorSubject<string>('');
+
+    /**
+     * Returns an observable for the theme
+     */
+    public get theme(): Observable<string> {
+        return this._theme.asObservable();
+    }
+
+    /**
      * Constructs this service. The config service is needed to update the privacy
      * policy and legal notice, when their config values change.
      * @param configService
      */
-    public constructor(private configService: ConfigService) {
+    public constructor(private configService: ConfigService, private storageService: StorageService) {
         this.configService.get<string>('general_event_privacy_policy').subscribe(value => {
-            this.setPrivacyPolicy(value);
+            this._privacy_policy.next(value);
+            this.storeLoginData();
         });
         this.configService.get<string>('general_event_legal_notice').subscribe(value => {
-            this.setLegalNotice(value);
+            this._legal_notice.next(value);
+            this.storeLoginData();
         });
+        configService.get<string>('openslides_theme').subscribe(value => {
+            this._theme.next(value);
+            this.storeLoginData();
+        });
+
+        this.loadLoginData();
     }
 
     /**
-     * Setter for the privacy policy
-     * @param privacyPolicy The new privacy policy to set
+     * Load the login data from the storage. If it there, set it.
      */
-    public setPrivacyPolicy(privacyPolicy: string): void {
-        this._privacy_policy.next(privacyPolicy);
+    private async loadLoginData(): Promise<void> {
+        const loginData = await this.storageService.get<LoginData | null>(LOGIN_DATA_STORAGE_KEY);
+        if (loginData) {
+            this.setLoginData(loginData);
+        }
     }
 
     /**
-     * Setter for the legal notice
-     * @param legalNotice The new legal notice to set
+     * Setter for the login data
+     *
+     * @param loginData the login data
      */
-    public setLegalNotice(legalNotice: string): void {
-        this._legal_notice.next(legalNotice);
+    public setLoginData(loginData: LoginData): void {
+        this._privacy_policy.next(loginData.privacy_policy);
+        this._legal_notice.next(loginData.legal_notice);
+        this._theme.next(loginData.theme);
+        this.storeLoginData(loginData);
+    }
+
+    /**
+     * Saves the login data in the storage.
+     *
+     * @param loginData If given, this data is used. If it's null, the current values
+     * from the behaviour subject are taken.
+     */
+    private storeLoginData(loginData?: LoginData): void {
+        if (!loginData) {
+            loginData = {
+                privacy_policy: this._privacy_policy.getValue(),
+                legal_notice: this._legal_notice.getValue(),
+                theme: this._theme.getValue()
+            };
+        }
+        this.storageService.set(LOGIN_DATA_STORAGE_KEY, loginData);
     }
 }

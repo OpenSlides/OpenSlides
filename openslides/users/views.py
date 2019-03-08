@@ -521,6 +521,8 @@ class UserLoginView(APIView):
             # even, it is not logged in.
             context["privacy_policy"] = config["general_event_privacy_policy"]
             context["legal_notice"] = config["general_event_legal_notice"]
+            # Add the theme, so the loginpage is themed correctly
+            context["theme"] = config["openslides_theme"]
         else:
             # self.request.method == 'POST'
             context["user_id"] = self.user.pk
