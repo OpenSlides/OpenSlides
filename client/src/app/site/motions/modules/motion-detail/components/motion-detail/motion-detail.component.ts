@@ -338,6 +338,13 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     private editNotificationSubscription: Subscription;
 
     /**
+     * Determine what to "return" to.
+     * Handles the target for clicking the back button
+     * Several angular peculiarities prevent dynamic changing from working right now
+     */
+    public backTarget = '../..';
+
+    /**
      * Constructs the detail view.
      *
      * @param title

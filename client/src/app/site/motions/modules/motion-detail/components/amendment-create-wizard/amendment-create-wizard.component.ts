@@ -58,14 +58,14 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
     public contentForm: FormGroup;
 
     /**
-     * Motions meta-info
-     */
-    public metaInfoForm: FormGroup;
-
-    /**
      * Indicates the maximum line length as defined in the configuration.
      */
     public lineLength: number;
+
+    /**
+     * Determine, from the config service, if a reason is required
+     */
+    public reasonRequired: boolean;
 
     /**
      * Constructs this component.
@@ -100,6 +100,10 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
             this.lineLength = lineLength;
             this.getMotionByUrl();
         });
+
+        this.configService.get<boolean>('motions_reason_required').subscribe(required => {
+            this.reasonRequired = required;
+        });
     }
 
     /**
@@ -133,15 +137,6 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
             text: ['', Validators.required],
             reason: ['', Validators.required]
         });
-        this.metaInfoForm = this.formBuilder.group({
-            identifier: [''],
-            category_id: [''],
-            state_id: [''],
-            recommendation_id: [''],
-            submitters_id: [],
-            supporters_id: [[]],
-            origin: ['']
-        });
     }
 
     /**
@@ -172,10 +167,11 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
             }
         );
         const newMotionValues = {
-            ...this.metaInfoForm.value,
             ...this.contentForm.value,
             title: this.translate.instant('Amendment to') + ' ' + this.motion.identifier,
             parent_id: this.motion.id,
+            category_id: this.motion.category_id,
+            motion_block_id: this.motion.motion_block_id,
             amendment_paragraphs: amendedParagraphs
         };
 
