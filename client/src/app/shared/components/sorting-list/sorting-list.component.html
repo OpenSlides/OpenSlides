@@ -1,9 +1,9 @@
-<div cdkDropList class="os-card" (cdkDropListDropped)="drop($event)">
+<div cdkDropList class="os-card" [cdkDropListDisabled]="!enable" (cdkDropListDropped)="drop($event)">
     <div class="box line" *ngIf="!array.length">
         <span translate>No data</span>
     </div>
     <div class="box line" *ngFor="let item of array; let i = index" cdkDrag>
-        <div class="section-one" cdkDragHandle>
+        <div class="section-one" cdkDragHandle *ngIf="enable">
             <mat-icon>drag_indicator</mat-icon>
         </div>
         <div class="section-two">

@@ -60,7 +60,13 @@
     <!-- Waiting speakers -->
     <div>
         <div class="waiting-list" *ngIf="speakers && speakers.length > 0">
-            <os-sorting-list [input]="speakers" [live]="true" [count]="true" (sortEvent)="onSortingChange($event)">
+            <os-sorting-list
+                [input]="speakers"
+                [live]="true"
+                [count]="true"
+                [enable]="opCanManage()"
+                (sortEvent)="onSortingChange($event)"
+            >
                 <!-- implicit item references into the component using ng-template slot -->
                 <ng-template let-item>
                     <span *osPerms="'agenda.can_manage_list_of_speakers'">

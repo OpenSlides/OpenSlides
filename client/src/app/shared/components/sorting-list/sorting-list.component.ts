@@ -60,6 +60,12 @@ export class SortingListComponent implements OnInit, OnDestroy {
     public count = false;
 
     /**
+     * Can be set to false to disable drag n drop
+     */
+    @Input()
+    public enable = true;
+
+    /**
      * The Input List Values
      *
      * If live updates are enabled, new values are always converted into the sorting array.

@@ -47,6 +47,12 @@ export class PermsDirective implements OnInit, OnDestroy {
      */
     private complement: boolean;
 
+    /**
+     * Add a true-false-condition additional to osPerms
+     * `*osPerms="'motions.can_manage';and:isRecoMode(ChangeRecoMode.Final)"`
+     */
+    private and = true;
+
     private operatorSubscription: Subscription | null;
 
     /**
@@ -111,6 +117,16 @@ export class PermsDirective implements OnInit, OnDestroy {
     }
 
     /**
+     * Comes from the view.
+     * `;and:` turns into osPermsAnd during runtime.
+     */
+    @Input('osPermsAnd')
+    public set osPermsAnd(value: boolean) {
+        this.and = value;
+        this.updateView();
+    }
+
+    /**
      * Shows or hides certain content in the view.
      */
     private updateView(): void {
@@ -133,7 +149,10 @@ export class PermsDirective implements OnInit, OnDestroy {
      * Returns true if the users permissions fit.
      */
     private checkPermissions(): boolean {
-        const hasPerms = this.permissions.length === 0 || this.operator.hasPerms(...this.permissions);
+        const hasPerms = this.and
+            ? this.permissions.length === 0 || this.operator.hasPerms(...this.permissions)
+            : false;
+
         if (this.complement) {
             return !hasPerms;
         } else {
