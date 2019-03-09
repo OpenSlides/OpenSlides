@@ -122,9 +122,12 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
      * @returns an array of strings building the column definition
      */
     public getColumnDefinition(): string[] {
-        let columns = ['title', 'amount', 'menu'];
+        let columns = ['title', 'amount'];
         if (this.operator.hasPerms('core.can_manage_projector')) {
             columns = ['projector'].concat(columns);
+        }
+        if (this.operator.hasPerms('motions.can_manage')) {
+            columns = columns.concat(['menu']);
         }
         return columns;
     }

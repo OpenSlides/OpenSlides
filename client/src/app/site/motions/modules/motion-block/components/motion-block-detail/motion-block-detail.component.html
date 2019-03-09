@@ -45,7 +45,9 @@
         <!-- title column -->
         <ng-container matColumnDef="title">
             <mat-header-cell *matHeaderCellDef mat-sort-header> <span translate>Motion</span> </mat-header-cell>
-            <mat-cell *matCellDef="let motion" (click)="onClickMotionTitle(motion)"> {{ motion.title }} </mat-cell>
+            <mat-cell *matCellDef="let motion" (click)="onClickMotionTitle(motion)">
+                {{ motion.getTitle() }}
+            </mat-cell>
         </ng-container>
 
         <!-- state column -->

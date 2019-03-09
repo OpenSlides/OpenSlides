@@ -165,10 +165,14 @@
                 <mat-icon>device_hub</mat-icon>
                 <span translate>Categories</span>
             </button>
+        </div>
+        <div *ngIf="perms.isAllowed('manage') || motionBlocks.length">
             <button mat-menu-item routerLink="blocks">
                 <mat-icon>widgets</mat-icon>
                 <span translate>Motion blocks</span>
             </button>
+        </div>
+        <div *ngIf="perms.isAllowed('manage')">
             <button mat-menu-item routerLink="statute-paragraphs" *ngIf="statutesEnabled">
                 <mat-icon>account_balance</mat-icon>
                 <span translate>Statute</span>
