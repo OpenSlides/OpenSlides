@@ -16,6 +16,17 @@ from ..utils.projector import (
 #            to be fast!
 
 
+def get_sorted_agenda_items(all_data: AllData) -> List[Dict[str, Any]]:
+    """
+    Returns all sorted agenda items by id first and then weight, resulting in
+    ordered items, if some have the same weight.
+    """
+    return sorted(
+        sorted(all_data["agenda/item"].values(), key=lambda item: item["id"]),
+        key=lambda item: item["weight"],
+    )
+
+
 def get_flat_tree(all_data: AllData, parent_id: int = 0) -> List[Dict[str, Any]]:
     """
     Build the item tree from all_data.
@@ -29,9 +40,7 @@ def get_flat_tree(all_data: AllData, parent_id: int = 0) -> List[Dict[str, Any]]
     # Build a dict from an item_id to all its children
     children: Dict[int, List[int]] = defaultdict(list)
     if "agenda/item" in all_data:
-        for item in sorted(
-            all_data["agenda/item"].values(), key=lambda item: item["weight"]
-        ):
+        for item in get_sorted_agenda_items(all_data):
             if item["type"] == 1:  # only normal items
                 children[item["parent_id"] or 0].append(item["id"])
 
@@ -69,9 +78,7 @@ def item_list_slide(
 
     if only_main_items:
         agenda_items = []
-        for item in sorted(
-            all_data["agenda/item"].values(), key=lambda item: item["weight"]
-        ):
+        for item in get_sorted_agenda_items(all_data):
             if item["parent_id"] is None and item["type"] == 1:
                 agenda_items.append(
                     {
