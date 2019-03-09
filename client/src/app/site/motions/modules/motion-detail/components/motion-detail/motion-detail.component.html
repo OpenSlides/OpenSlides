@@ -608,7 +608,7 @@
             <os-motion-detail-diff
                 *ngIf="isRecoMode(ChangeRecoMode.Diff)"
                 [motion]="motion"
-                [changes]="allChangingObjects"
+                [changes]="getChangesForDiffMode()"
                 [scrollToChange]="scrollToChange"
                 [highlightedLine]="highlightedLine"
                 [lineNumberingMode]="lnMode"

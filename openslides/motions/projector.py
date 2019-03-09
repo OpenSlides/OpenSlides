@@ -35,31 +35,50 @@ def get_state(
     )
 
 
-def get_amendment_merge_into_motion(all_data, motion, amendment):
+def get_amendment_merge_into_motion_diff(all_data, motion, amendment):
     """
-    HINT: This implementation should be consistent to isAccepted() in ViewMotionAmendedParagraph.ts
+    HINT: This implementation should be consistent to showInDiffView() in ViewMotionAmendedParagraph.ts
     """
     if amendment["state_id"] is None:
         return 0
 
     state = get_state(all_data, motion, amendment["state_id"])
-    if (
-        state["merge_amendment_into_final"] == -1
-        or state["merge_amendment_into_final"] == 1
-    ):
-        return state["merge_amendment_into_final"]
+    if state["merge_amendment_into_final"] == -1:
+        return 0
+    if state["merge_amendment_into_final"] == 1:
+        return 1
 
     if amendment["recommendation_id"] is None:
         return 0
     recommendation = get_state(all_data, motion, amendment["recommendation_id"])
-    return recommendation["merge_amendment_into_final"]
+    if recommendation["merge_amendment_into_final"] == 1:
+        return 1
+
+    return 0
+
+
+def get_amendment_merge_into_motion_final(all_data, motion, amendment):
+    """
+    HINT: This implementation should be consistent to showInFinalView() in ViewMotionAmendedParagraph.ts
+    """
+    if amendment["state_id"] is None:
+        return 0
+
+    state = get_state(all_data, motion, amendment["state_id"])
+    if state["merge_amendment_into_final"] == 1:
+        return 1
+
+    return 0
 
 
 def get_amendments_for_motion(motion, all_data):
     amendment_data = []
     for amendment_id, amendment in all_data["motions/motion"].items():
         if amendment["parent_id"] == motion["id"]:
-            merge_amendment_into_final = get_amendment_merge_into_motion(
+            merge_amendment_into_final = get_amendment_merge_into_motion_final(
+                all_data, motion, amendment
+            )
+            merge_amendment_into_diff = get_amendment_merge_into_motion_diff(
                 all_data, motion, amendment
             )
             amendment_data.append(
@@ -68,6 +87,7 @@ def get_amendments_for_motion(motion, all_data):
                     "identifier": amendment["identifier"],
                     "title": amendment["title"],
                     "amendment_paragraphs": amendment["amendment_paragraphs"],
+                    "merge_amendment_into_diff": merge_amendment_into_diff,
                     "merge_amendment_into_final": merge_amendment_into_final,
                 }
             )

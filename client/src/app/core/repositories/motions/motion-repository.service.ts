@@ -485,32 +485,36 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
                     return this.diff.getTextWithChanges(targetMotion.text, changes, lineLength, highlightLine);
                 case ChangeRecoMode.Diff:
                     let text = '';
-                    changes.forEach((change: ViewUnifiedChange, idx: number) => {
-                        if (idx === 0) {
-                            text += this.extractMotionLineRange(
-                                id,
-                                {
-                                    from: 1,
-                                    to: change.getLineFrom()
-                                },
-                                true,
-                                lineLength,
-                                highlightLine
-                            );
-                        } else if (changes[idx - 1].getLineTo() < change.getLineFrom()) {
-                            text += this.extractMotionLineRange(
-                                id,
-                                {
-                                    from: changes[idx - 1].getLineTo(),
-                                    to: change.getLineFrom()
-                                },
-                                true,
-                                lineLength,
-                                highlightLine
-                            );
-                        }
-                        text += this.diff.getChangeDiff(targetMotion.text, change, lineLength, highlightLine);
-                    });
+                    changes
+                        .filter(change => {
+                            return change.showInDiffView();
+                        })
+                        .forEach((change: ViewUnifiedChange, idx: number) => {
+                            if (idx === 0) {
+                                text += this.extractMotionLineRange(
+                                    id,
+                                    {
+                                        from: 1,
+                                        to: change.getLineFrom()
+                                    },
+                                    true,
+                                    lineLength,
+                                    highlightLine
+                                );
+                            } else if (changes[idx - 1].getLineTo() < change.getLineFrom()) {
+                                text += this.extractMotionLineRange(
+                                    id,
+                                    {
+                                        from: changes[idx - 1].getLineTo(),
+                                        to: change.getLineFrom()
+                                    },
+                                    true,
+                                    lineLength,
+                                    highlightLine
+                                );
+                            }
+                            text += this.diff.getChangeDiff(targetMotion.text, change, lineLength, highlightLine);
+                        });
                     text += this.diff.getTextRemainderAfterLastChange(
                         targetMotion.text,
                         changes,
@@ -519,7 +523,7 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
                     );
                     return text;
                 case ChangeRecoMode.Final:
-                    const appliedChanges: ViewUnifiedChange[] = changes.filter(change => change.isAccepted());
+                    const appliedChanges: ViewUnifiedChange[] = changes.filter(change => change.showInFinalView());
                     return this.diff.getTextWithChanges(targetMotion.text, appliedChanges, lineLength, highlightLine);
                 case ChangeRecoMode.ModifiedFinal:
                     if (targetMotion.modified_final_version) {

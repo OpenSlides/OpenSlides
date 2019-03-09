@@ -48,4 +48,12 @@ export class MotionSlideObjChangeReco implements MotionSlideDataChangeReco, View
     public isRejected(): boolean {
         return this.rejected;
     }
+
+    public showInDiffView(): boolean {
+        return true;
+    }
+
+    public showInFinalView(): boolean {
+        return !this.rejected;
+    }
 }

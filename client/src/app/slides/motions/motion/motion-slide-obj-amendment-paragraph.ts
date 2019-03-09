@@ -1,6 +1,5 @@
 import { ViewUnifiedChange, ViewUnifiedChangeType } from '../../../shared/models/motions/view-unified-change';
 import { MotionSlideDataAmendment } from './motion-slide-data';
-import { MergeAmendment } from '../../../shared/models/motions/workflow-state';
 import { LineRange } from '../../../core/ui-services/diff.service';
 
 /**
@@ -10,7 +9,8 @@ import { LineRange } from '../../../core/ui-services/diff.service';
 export class MotionSlideObjAmendmentParagraph implements ViewUnifiedChange {
     public id: number;
     public type: number;
-    public merge_amendment_into_final: MergeAmendment;
+    public merge_amendment_into_final: number;
+    public merge_amendment_into_diff: number;
 
     public constructor(
         data: MotionSlideDataAmendment,
@@ -20,6 +20,7 @@ export class MotionSlideObjAmendmentParagraph implements ViewUnifiedChange {
     ) {
         this.id = data.id;
         this.merge_amendment_into_final = data.merge_amendment_into_final;
+        this.merge_amendment_into_diff = data.merge_amendment_into_diff;
     }
 
     public getChangeId(): string {
@@ -43,10 +44,18 @@ export class MotionSlideObjAmendmentParagraph implements ViewUnifiedChange {
     }
 
     public isAccepted(): boolean {
-        return this.merge_amendment_into_final === MergeAmendment.YES;
+        return this.merge_amendment_into_final === 1;
     }
 
     public isRejected(): boolean {
-        return this.merge_amendment_into_final === MergeAmendment.NO;
+        return this.merge_amendment_into_final === 0;
+    }
+
+    public showInDiffView(): boolean {
+        return this.merge_amendment_into_diff === 1;
+    }
+
+    public showInFinalView(): boolean {
+        return this.merge_amendment_into_final === 1;
     }
 }
