@@ -79,4 +79,32 @@ export class ViewMotionAmendedParagraph implements ViewUnifiedChange {
     public getIdentifier(): string {
         return this.amendment.identifier;
     }
+
+    public showInDiffView(): boolean {
+        const mergeState = this.amendment.state
+            ? this.amendment.state.merge_amendment_into_final
+            : MergeAmendment.UNDEFINED;
+        switch (mergeState) {
+            case MergeAmendment.YES:
+                return true;
+            case MergeAmendment.NO:
+                return false;
+            default:
+                const mergeRecommendation = this.amendment.recommendation
+                    ? this.amendment.recommendation.merge_amendment_into_final
+                    : MergeAmendment.UNDEFINED;
+                switch (mergeRecommendation) {
+                    case MergeAmendment.YES:
+                        return true;
+                    case MergeAmendment.NO:
+                        return false;
+                    default:
+                        return false;
+                }
+        }
+    }
+
+    public showInFinalView(): boolean {
+        return this.amendment.state && this.amendment.state.merge_amendment_into_final === MergeAmendment.YES;
+    }
 }

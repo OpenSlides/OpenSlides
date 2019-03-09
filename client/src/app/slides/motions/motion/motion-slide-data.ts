@@ -1,5 +1,4 @@
 import { ChangeRecoMode, LineNumberingMode } from '../../../site/motions/models/view-motion';
-import { MergeAmendment } from '../../../shared/models/motions/workflow-state';
 import { ReferencedMotions } from '../base/base-motion-slide';
 
 /**
@@ -10,7 +9,8 @@ export interface MotionSlideDataAmendment {
     id: number;
     title: string;
     amendment_paragraphs: string[];
-    merge_amendment_into_final: MergeAmendment;
+    merge_amendment_into_final: number;
+    merge_amendment_into_diff: number;
 }
 
 /**

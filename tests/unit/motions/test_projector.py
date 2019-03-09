@@ -269,6 +269,7 @@ def test_motion_slide(all_data):
                 "amendment_paragraphs": ["New motion text"],
                 "identifier": "Ä1",
                 "merge_amendment_into_final": 0,
+                "merge_amendment_into_diff": 0,
             }
         ],
         "amendment_paragraphs": None,

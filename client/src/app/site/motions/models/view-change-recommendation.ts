@@ -105,4 +105,12 @@ export class ViewMotionChangeRecommendation extends BaseViewModel implements Vie
     public isRejected(): boolean {
         return this.rejected;
     }
+
+    public showInDiffView(): boolean {
+        return true;
+    }
+
+    public showInFinalView(): boolean {
+        return !this.rejected;
+    }
 }

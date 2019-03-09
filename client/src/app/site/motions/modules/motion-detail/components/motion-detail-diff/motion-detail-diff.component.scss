@@ -93,14 +93,6 @@
     .status {
         color: gray;
         font-style: italic;
-
-        & > *:before {
-            content: '(';
-        }
-
-        & > *:after {
-            content: ')';
-        }
     }
 
     .no-changes {

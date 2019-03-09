@@ -838,6 +838,18 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         return this.sanitizer.bypassSecurityTrustHtml(diffHtml);
     }
 
+    public getChangesForDiffMode(): ViewUnifiedChange[] {
+        return this.allChangingObjects.filter(change => {
+            return change.showInDiffView();
+        });
+    }
+
+    public getChangesForFinalMode(): ViewUnifiedChange[] {
+        return this.allChangingObjects.filter(change => {
+            return change.showInFinalView();
+        });
+    }
+
     /**
      * Trigger to delete the motion.
      */
@@ -975,7 +987,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      */
     public async createModifiedFinalVersion(): Promise<void> {
         // Get the final version and remove line numbers
-        const changes: ViewUnifiedChange[] = Object.assign([], this.allChangingObjects);
+        const changes: ViewUnifiedChange[] = Object.assign([], this.getChangesForFinalMode());
         let finalVersion = this.repo.formatMotion(
             this.motion.id,
             ChangeRecoMode.Final,

@@ -202,21 +202,6 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
     }
 
     /**
-     * Returns accepted, rejected or an empty string depending on the state of this change.
-     *
-     * @param change
-     */
-    public getAcceptanceValue(change: ViewUnifiedChange): string {
-        if (change.isAccepted()) {
-            return 'accepted';
-        }
-        if (change.isRejected()) {
-            return 'rejected';
-        }
-        return '';
-    }
-
-    /**
      * Returns true if the change is an Amendment
      *
      * @param {ViewUnifiedChange} change

@@ -275,13 +275,16 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
                 );
             case ChangeRecoMode.Diff:
                 let text = '';
-                this.allChangingObjects.forEach((change: ViewUnifiedChange, idx: number) => {
+                const changes = this.allChangingObjects.filter(change => {
+                    return change.showInDiffView();
+                });
+                changes.forEach((change: ViewUnifiedChange, idx: number) => {
                     if (idx === 0) {
                         const lineRange = { from: 1, to: change.getLineFrom() };
                         text += this.extractMotionLineRange(motion.text, lineRange, true, this.lineLength);
-                    } else if (this.allChangingObjects[idx - 1].getLineTo() < change.getLineFrom()) {
+                    } else if (changes[idx - 1].getLineTo() < change.getLineFrom()) {
                         const lineRange = {
-                            from: this.allChangingObjects[idx - 1].getLineTo(),
+                            from: changes[idx - 1].getLineTo(),
                             to: change.getLineFrom()
                         };
                         text += this.extractMotionLineRange(motion.text, lineRange, true, this.lineLength);
@@ -290,14 +293,14 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
                 });
                 text += this.diff.getTextRemainderAfterLastChange(
                     motion.text,
-                    this.allChangingObjects,
+                    changes,
                     this.lineLength,
                     this.highlightedLine
                 );
                 return text;
             case ChangeRecoMode.Final:
                 const appliedChanges: ViewUnifiedChange[] = this.allChangingObjects.filter(change =>
-                    change.isAccepted()
+                    change.showInFinalView()
                 );
                 return this.diff.getTextWithChanges(motion.text, appliedChanges, this.lineLength, this.highlightedLine);
             case ChangeRecoMode.ModifiedFinal:
@@ -312,7 +315,7 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
                 } else {
                     // Use the final version as fallback, if the modified does not exist.
                     const appliedChangeObjects: ViewUnifiedChange[] = this.allChangingObjects.filter(change =>
-                        change.isAccepted()
+                        change.showInFinalView()
                     );
                     return this.diff.getTextWithChanges(
                         motion.text,

@@ -43,4 +43,19 @@ export interface ViewUnifiedChange {
      * True, if rejected. False, if accepted or undecided.
      */
     isRejected(): boolean;
+
+    /**
+     * If this object is to be shown in the Diff view.
+     */
+    showInDiffView(): boolean;
+
+    /**
+     * If this object is to be shown in the Diff view.
+     */
+    showInDiffView(): boolean;
+
+    /**
+     * If this object is to be shown in the Final view.
+     */
+    showInFinalView(): boolean;
 }
