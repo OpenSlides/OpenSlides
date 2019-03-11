@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { take } from 'rxjs/operators';
+
 import { WebsocketService } from './websocket.service';
-import { OperatorService, WhoAmIResponse } from './operator.service';
+import { OperatorService } from './operator.service';
 import { StorageService } from './storage.service';
 import { AutoupdateService } from './autoupdate.service';
 import { DataStoreService } from './data-store.service';
-import { take } from 'rxjs/operators';
 
 /**
  * Handles the bootup/showdown of this application.
@@ -16,9 +17,19 @@ import { take } from 'rxjs/operators';
 })
 export class OpenSlidesService {
     /**
-     * if the user tries to access a certain URL without being authenticated, the URL will be stored here
+     * If the user tries to access a certain URL without being authenticated, the URL will be stored here
      */
     public redirectUrl: string;
+
+    /**
+     * Saves, if OpenSlides is fully booted. This means, that a user must be logged in
+     * (Anonymous is also a user in this case). This is the case after `afterLoginBootup`.
+     */
+    private _booted = false;
+
+    public get booted(): boolean {
+        return this._booted;
+    }
 
     /**
      * Constructor to create the OpenSlidesService. Registers itself to the WebsocketService.
@@ -53,10 +64,6 @@ export class OpenSlidesService {
     public async bootup(): Promise<void> {
         // start autoupdate if the user is logged in:
         const response = await this.operator.whoAmIFromStorage();
-        await this.bootupWithWhoAmI(response);
-    }
-
-    private async bootupWithWhoAmI(response: WhoAmIResponse): Promise<void> {
         if (!response.user && !response.guest_enabled) {
             this.redirectUrl = location.pathname;
 
@@ -85,9 +92,10 @@ export class OpenSlidesService {
      * the login bootup-sequence: Check (and maybe clear) the cache und setup the DataStore
      * and websocket. This "login" also may be the "login" of an anonymous when he is using
      * OpenSlides as a guest.
-     * @param userId
+     * @param userId the id or null for guest
      */
-    public async afterLoginBootup(userId: number): Promise<void> {
+    public async afterLoginBootup(userId: number | null): Promise<void> {
+        console.log('user id', userId);
         // Check, which user was logged in last time
         const lastUserId = await this.storageService.get<number>('lastUserLoggedIn');
         // if the user changed, reset the cache and save the new user.
@@ -96,6 +104,8 @@ export class OpenSlidesService {
             await this.storageService.set('lastUserLoggedIn', userId);
         }
         await this.setupDataStoreAndWebSocket();
+        // Now finally booted.
+        this._booted = true;
     }
 
     /**
@@ -121,16 +131,16 @@ export class OpenSlidesService {
     /**
      * Shuts OpenSlides down. The websocket is closed and the operator is not set.
      */
-    public async shutdown(): Promise<void> {
+    public shutdown(): void {
         this.websocketService.close();
-        await this.operator.setUser(null);
+        this._booted = false;
     }
 
     /**
      * Shutdown and bootup.
      */
     public async reboot(): Promise<void> {
-        await this.shutdown();
+        this.shutdown();
         await this.bootup();
     }
 

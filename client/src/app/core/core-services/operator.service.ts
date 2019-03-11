@@ -13,6 +13,7 @@ import { UserRepositoryService } from '../repositories/users/user-repository.ser
 import { CollectionStringMapperService } from './collectionStringMapper.service';
 import { StorageService } from './storage.service';
 import { HttpService } from './http.service';
+import { filter, auditTime } from 'rxjs/operators';
 
 /**
  * Permissions on the client are just strings. This makes clear, that
@@ -23,18 +24,24 @@ export type Permission = string;
 /**
  * Response format of the WhoAmI request.
  */
-export interface WhoAmIResponse {
+export interface WhoAmI {
     user_id: number;
     guest_enabled: boolean;
     user: User;
+    permissions: Permission[];
 }
 
-function isWhoAmIResponse(obj: any): obj is WhoAmIResponse {
+function isWhoAmI(obj: any): obj is WhoAmI {
     if (!obj) {
         return false;
     }
-    const whoAmI = obj as WhoAmIResponse;
-    return whoAmI.guest_enabled !== undefined && whoAmI.user !== undefined && whoAmI.user_id !== undefined;
+    const whoAmI = obj as WhoAmI;
+    return (
+        whoAmI.guest_enabled !== undefined &&
+        whoAmI.user !== undefined &&
+        whoAmI.user_id !== undefined &&
+        whoAmI.permissions !== undefined
+    );
 }
 
 const WHOAMI_STORAGE_KEY = 'whoami';
@@ -80,7 +87,7 @@ export class OperatorService implements OnAfterAppsLoaded {
      * Save, if guests are enabled.
      */
     public get guestsEnabled(): boolean {
-        return this.currentWhoAmIResponse ? this.currentWhoAmIResponse.guest_enabled : false;
+        return this.currentWhoAmI ? this.currentWhoAmI.guest_enabled : false;
     }
 
     /**
@@ -106,7 +113,7 @@ export class OperatorService implements OnAfterAppsLoaded {
     /**
      * The current WhoAmI response to extract the user (the operator) from.
      */
-    private currentWhoAmIResponse: WhoAmIResponse | null;
+    private currentWhoAmI: WhoAmI | null;
 
     /**
      * Sets up an observer for watching changes in the DS. If the operator user or groups are changed,
@@ -124,43 +131,51 @@ export class OperatorService implements OnAfterAppsLoaded {
         private storageService: StorageService
     ) {
         this.DS.changeObservable.subscribe(newModel => {
-            if (this._user) {
-                if (newModel instanceof Group) {
-                    this.updatePermissions();
-                }
-
-                if (newModel instanceof User && this._user.id === newModel.id) {
-                    this.updateUser(newModel);
-                }
-            } else if (newModel instanceof Group && newModel.id === 1) {
-                // Group 1 (default) for anonymous changed
-                this.updatePermissions();
+            if (this._user && newModel instanceof User && this._user.id === newModel.id) {
+                this._user = newModel;
+                this.updateUserInCurrentWhoAmI();
             }
         });
+        this.DS.changeObservable
+            .pipe(
+                filter(
+                    model =>
+                        // Any group has changed if we have an operator or
+                        // group 1 (default) for anonymous changed
+                        model instanceof Group && (!!this._user || model.id === 1)
+                ),
+                auditTime(10)
+            )
+            .subscribe(newModel => this.updatePermissions());
     }
 
     /**
-     * Gets the current WHoAmI response from the storage.
+     * Returns a default WhoAmI response
      */
-    public async whoAmIFromStorage(): Promise<WhoAmIResponse> {
-        const defaultResponse = {
+    private getDefaultWhoAmIResponse(): WhoAmI {
+        return {
             user_id: null,
             guest_enabled: false,
-            user: null
+            user: null,
+            permissions: []
         };
-        let response: WhoAmIResponse;
+    }
+
+    /**
+     * Gets the current WhoAmI response from the storage.
+     */
+    public async whoAmIFromStorage(): Promise<WhoAmI> {
+        let response: WhoAmI;
         try {
-            response = await this.storageService.get<WhoAmIResponse>(WHOAMI_STORAGE_KEY);
-            if (response) {
-                this.processWhoAmIResponse(response);
-            } else {
-                response = defaultResponse;
+            response = await this.storageService.get<WhoAmI>(WHOAMI_STORAGE_KEY);
+            if (!response) {
+                response = this.getDefaultWhoAmIResponse();
             }
         } catch (e) {
-            response = defaultResponse;
+            response = this.getDefaultWhoAmIResponse();
         }
-        this.currentWhoAmIResponse = response;
-        return this.currentWhoAmIResponse;
+        await this.updateCurrentWhoAmI(response);
+        return this.currentWhoAmI;
     }
 
     /**
@@ -177,27 +192,11 @@ export class OperatorService implements OnAfterAppsLoaded {
      * Sets the operator user. Will be saved to storage
      * @param user The new operator.
      */
-    public async setUser(user: User): Promise<void> {
-        await this.updateUser(user, true);
-    }
-
-    /**
-     * Updates the user and update the permissions.
-     *
-     * @param user The user to set.
-     * @param saveToStoare Whether to save the user to the storage WhoAmI.
-     */
-    private async updateUser(user: User | null, saveToStorage: boolean = false): Promise<void> {
-        this._user = user;
-        if (saveToStorage) {
-            await this.saveUserToStorate();
+    public async setWhoAmI(whoami: WhoAmI | null): Promise<void> {
+        if (whoami === null) {
+            whoami = this.getDefaultWhoAmIResponse();
         }
-        if (user && this.userRepository) {
-            this._viewUser = this.userRepository.getViewModel(user.id);
-        } else {
-            this._viewUser = null;
-        }
-        this.updatePermissions();
+        await this.updateCurrentWhoAmI(whoami);
     }
 
     /**
@@ -205,51 +204,56 @@ export class OperatorService implements OnAfterAppsLoaded {
      *
      * @returns The response of the WhoAmI request.
      */
-    public async whoAmI(): Promise<WhoAmIResponse> {
+    public async whoAmI(): Promise<WhoAmI> {
         try {
             const response = await this.http.get(environment.urlPrefix + '/users/whoami/');
-            if (isWhoAmIResponse(response)) {
-                this.processWhoAmIResponse(response);
-                await this.storageService.set(WHOAMI_STORAGE_KEY, response);
-                this.currentWhoAmIResponse = response;
+            if (isWhoAmI(response)) {
+                await this.updateCurrentWhoAmI(response);
             } else {
                 this.offlineService.goOfflineBecauseFailedWhoAmI();
             }
         } catch (e) {
             this.offlineService.goOfflineBecauseFailedWhoAmI();
         }
-        return this.currentWhoAmIResponse;
+        return this.currentWhoAmI;
     }
 
     /**
      * Saves the user to storage by wrapping it into a (maybe existing)
      * WhoAMI response.
      */
-    private async saveUserToStorate(): Promise<void> {
-        if (!this.currentWhoAmIResponse) {
-            this.currentWhoAmIResponse = {
-                user_id: null,
-                guest_enabled: false,
-                user: null
-            };
+    private async updateUserInCurrentWhoAmI(): Promise<void> {
+        if (!this.currentWhoAmI) {
+            this.currentWhoAmI = this.getDefaultWhoAmIResponse();
         }
-        if (this.user) {
-            this.currentWhoAmIResponse.user_id = this.user.id;
-            this.currentWhoAmIResponse.user = this.user;
+        if (this.isAnonymous) {
+            this.currentWhoAmI.user_id = null;
+            this.currentWhoAmI.user = null;
         } else {
-            this.currentWhoAmIResponse.user_id = null;
-            this.currentWhoAmIResponse.user = null;
+            this.currentWhoAmI.user_id = this.user.id;
+            this.currentWhoAmI.user = this.user;
         }
-        await this.storageService.set(WHOAMI_STORAGE_KEY, this.currentWhoAmIResponse);
+        this.currentWhoAmI.permissions = this.permissions;
+        await this.updateCurrentWhoAmI();
     }
 
     /**
-     * Processes a WhoAmI response and set the user appropriately.
-     *
-     * @param response The WhoAMI response
+     * Updates the user and update the permissions.
      */
-    private processWhoAmIResponse(response: WhoAmIResponse): void {
-        this.updateUser(response.user ? new User(response.user) : null);
+    private async updateCurrentWhoAmI(whoami?: WhoAmI): Promise<void> {
+        if (whoami) {
+            this.currentWhoAmI = whoami;
+        } else {
+            whoami = this.currentWhoAmI;
+        }
+
+        this._user = whoami ? whoami.user : null;
+        if (this._user && this.userRepository) {
+            this._viewUser = this.userRepository.getViewModel(this._user.id);
+        } else {
+            this._viewUser = null;
+        }
+        await this.updatePermissions();
     }
 
     /**
@@ -306,24 +310,42 @@ export class OperatorService implements OnAfterAppsLoaded {
 
     /**
      * Update the operators permissions and publish the operator afterwards.
+     * Saves the current WhoAmI to storage with the updated permissions
      */
-    private updatePermissions(): void {
+    private async updatePermissions(): Promise<void> {
         this.permissions = [];
-        // Anonymous or users in the default group.
-        if (!this.user || this.user.groups_id.length === 0) {
-            const defaultGroup = this.DS.get<Group>('users/group', 1);
-            if (defaultGroup && defaultGroup.permissions instanceof Array) {
-                this.permissions = defaultGroup.permissions;
+
+        // If we do not have any groups, take the permissions from the
+        // latest WhoAmI response.
+        if (this.DS.getAll(Group).length === 0) {
+            if (this.currentWhoAmI) {
+                this.permissions = this.currentWhoAmI.permissions;
             }
         } else {
-            const permissionSet = new Set();
-            this.DS.getMany(Group, this.user.groups_id).forEach(group => {
-                group.permissions.forEach(permission => {
-                    permissionSet.add(permission);
+            // Anonymous or users in the default group.
+            if (!this.user || this.user.groups_id.length === 0) {
+                const defaultGroup = this.DS.get<Group>('users/group', 1);
+                if (defaultGroup && defaultGroup.permissions instanceof Array) {
+                    this.permissions = defaultGroup.permissions;
+                }
+            } else {
+                const permissionSet = new Set();
+                this.DS.getMany(Group, this.user.groups_id).forEach(group => {
+                    group.permissions.forEach(permission => {
+                        permissionSet.add(permission);
+                    });
                 });
-            });
-            this.permissions = Array.from(permissionSet.values());
+                this.permissions = Array.from(permissionSet.values());
+            }
         }
+
+        // Save perms to current WhoAmI
+        if (!this.currentWhoAmI) {
+            this.currentWhoAmI = this.getDefaultWhoAmIResponse();
+        }
+        this.currentWhoAmI.permissions = this.permissions;
+        await this.storageService.set(WHOAMI_STORAGE_KEY, this.currentWhoAmI);
+
         // publish changes in the operator.
         this.operatorSubject.next(this.user);
         this.viewOperatorSubject.next(this.viewUser);

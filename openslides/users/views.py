@@ -1,6 +1,6 @@
 import smtplib
 import textwrap
-from typing import List
+from typing import List, Set
 
 from asgiref.sync import async_to_sync
 from django.conf import settings
@@ -471,7 +471,46 @@ class PersonalNoteViewSet(ModelViewSet):
 # Special API views
 
 
-class UserLoginView(APIView):
+class WhoAmIDataView(APIView):
+    def get_whoami_data(self):
+        """
+        Appends the user id to the context. Uses None for the anonymous
+        user. Appends also a flag if guest users are enabled in the config.
+        Appends also the serialized user if available.
+        """
+        user_id = self.request.user.pk or 0
+        guest_enabled = anonymous_is_enabled()
+
+        if user_id:
+            user_data = async_to_sync(element_cache.get_element_restricted_data)(
+                user_id, self.request.user.get_collection_string(), user_id
+            )
+            group_ids = user_data["groups_id"] or [GROUP_DEFAULT_PK]
+        else:
+            user_data = None
+            group_ids = [GROUP_DEFAULT_PK] if guest_enabled else []
+
+        # collect all permissions
+        permissions: Set[str] = set()
+        group_all_data = async_to_sync(element_cache.get_all_full_data_ordered)()[
+            "users/group"
+        ]
+        for group_id in group_ids:
+            permissions.update(group_all_data[group_id]["permissions"])
+
+        return {
+            "user_id": user_id or None,
+            "guest_enabled": guest_enabled,
+            "user": user_data,
+            "permissions": list(permissions),
+        }
+
+    def get_context_data(self, **context):
+        context.update(self.get_whoami_data())
+        return super().get_context_data(**context)
+
+
+class UserLoginView(WhoAmIDataView):
     """
     Login the user.
     """
@@ -525,14 +564,11 @@ class UserLoginView(APIView):
             context["theme"] = config["openslides_theme"]
         else:
             # self.request.method == 'POST'
-            context["user_id"] = self.user.pk
-            context["user"] = async_to_sync(element_cache.get_element_restricted_data)(
-                self.user.pk or 0, self.user.get_collection_string(), self.user.pk
-            )
+            context.update(self.get_whoami_data())
         return super().get_context_data(**context)
 
 
-class UserLogoutView(APIView):
+class UserLogoutView(WhoAmIDataView):
     """
     Logout the user.
     """
@@ -546,32 +582,12 @@ class UserLogoutView(APIView):
         return super().post(*args, **kwargs)
 
 
-class WhoAmIView(APIView):
+class WhoAmIView(WhoAmIDataView):
     """
     Returns the id of the requesting user.
     """
 
     http_method_names = ["get"]
-
-    def get_context_data(self, **context):
-        """
-        Appends the user id to the context. Uses None for the anonymous
-        user. Appends also a flag if guest users are enabled in the config.
-        Appends also the serialized user if available.
-        """
-        user_id = self.request.user.pk or 0
-        if user_id:
-            user_data = async_to_sync(element_cache.get_element_restricted_data)(
-                user_id, self.request.user.get_collection_string(), user_id
-            )
-        else:
-            user_data = None
-        return super().get_context_data(
-            user_id=user_id or None,
-            guest_enabled=anonymous_is_enabled(),
-            user=user_data,
-            **context,
-        )
 
 
 class SetPasswordView(APIView):
