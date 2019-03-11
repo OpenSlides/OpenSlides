@@ -1,4 +1,4 @@
-import { Component, ApplicationRef } from '@angular/core';
+import { Component, ApplicationRef, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 import { take, filter } from 'rxjs/operators';
@@ -11,6 +11,7 @@ import { LoginDataService } from './core/ui-services/login-data.service';
 import { OperatorService } from './core/core-services/operator.service';
 import { ServertimeService } from './core/core-services/servertime.service';
 import { ThemeService } from './core/ui-services/theme.service';
+import { perf } from 'perf';
 
 /**
  * Angular's global App Component
@@ -20,7 +21,7 @@ import { ThemeService } from './core/ui-services/theme.service';
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit{
     /**
      * Master-component of all apps.
      *
@@ -66,7 +67,16 @@ export class AppComponent {
                 filter(s => s),
                 take(1)
             )
-            .subscribe(() => servertimeService.startScheduler());
+            .subscribe(() => {
+                servertimeService.startScheduler();
+                perf("first time stable");
+            });
+
+        perf("App constructor", "Components")
+    }
+
+    public ngOnInit(): void {
+        perf("App ngOnInit", "Components");
     }
 
     /**

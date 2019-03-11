@@ -13,6 +13,7 @@ import { MotionPollComponent } from './components/motion-poll/motion-poll.compon
 import { MotionDetailOriginalChangeRecommendationsComponent } from './components/motion-detail-original-change-recommendations/motion-detail-original-change-recommendations.component';
 import { MotionDetailDiffComponent } from './components/motion-detail-diff/motion-detail-diff.component';
 import { MotionChangeRecommendationComponent } from './components/motion-change-recommendation/motion-change-recommendation.component';
+import { perf } from 'perf';
 
 @NgModule({
     imports: [CommonModule, MotionDetailRoutingModule, SharedModule],
@@ -36,4 +37,8 @@ import { MotionChangeRecommendationComponent } from './components/motion-change-
         MotionChangeRecommendationComponent
     ]
 })
-export class MotionDetailModule {}
+export class MotionDetailModule {
+    public constructor() {
+        perf("Motion detail module constructor");
+    }
+}

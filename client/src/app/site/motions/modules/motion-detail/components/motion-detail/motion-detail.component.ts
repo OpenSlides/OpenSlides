@@ -53,6 +53,7 @@ import { ViewStatuteParagraph } from 'app/site/motions/models/view-statute-parag
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change';
 import { Workflow } from 'app/shared/models/motions/workflow';
+import { perf } from 'perf';
 
 /**
  * Component for the motion detail view
@@ -405,6 +406,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     ) {
         super(title, translate, matSnackBar);
 
+        perf("Motion detail constructor", "Components");
+
         this.workflowObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewWorkflow));
         this.blockObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewMotionBlock));
         this.mediafilesObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewMediafile));
@@ -459,6 +462,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * Sets the surrounding motions to navigate back and forth
      */
     public ngOnInit(): void {
+        perf("Motion detail ngOnInit", "Components");
+
         this.createForm();
         this.getMotionByUrl();
         this.setSurroundingMotions();

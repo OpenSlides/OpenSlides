@@ -17,6 +17,7 @@ import { OpenSlidesTranslateModule } from './core/translate/openslides-translate
 // PWA
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { perf } from 'perf';
 
 /**
  * Returns a function that returns a promis that will be resolved, if all apps are loaded.
@@ -50,4 +51,8 @@ export function AppLoaderFactory(appLoadService: AppLoadService): () => Promise<
     providers: [{ provide: APP_INITIALIZER, useFactory: AppLoaderFactory, deps: [AppLoadService], multi: true }],
     bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+    public constructor() {
+        perf("App module constructor", "Components");
+    }
+}

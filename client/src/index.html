@@ -6,6 +6,33 @@
     <title>OpenSlides</title>
     <base href="/">
 
+    <script>
+        var perfPoints = [["index loaded", "default", performance.now()]];
+        function perfPrintStats() {
+            console.log("### All events chronologically");
+            perfPoints.forEach((point, i) => {
+                const lastTimestamp = i === 0 ? 0 : perfPoints[i-1][2];
+                const msg = point[0] + " (wf " + point[1] + ", Δ=" + (Math.round(point[2] - lastTimestamp)) + "):";
+                console.log(msg, Math.round(point[2]));
+            });
+            console.log("");
+            console.log("### Per workflow");
+            const workflows = perfPoints.map(p => p[1]).filter((val, i, s) => s.indexOf(val) === i);
+            workflows.forEach(wf => {
+                console.log("# Workflow " + wf);
+                let lastTimestamp = 0;
+                perfPoints.forEach((point, i) => {
+                    if (point[1] !== wf) {
+                        return;
+                    }
+                    const msg = point[0] + " (Δ=" + (Math.round(point[2] - lastTimestamp)) + "):";
+                    console.log(msg, Math.round(point[2]));
+                    lastTimestamp = point[2];
+                });
+            })
+        }
+    </script>
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/x-icon" href="assets/img/favicon.png">
     <link rel="manifest" href="/manifest.json" />

@@ -8,6 +8,7 @@ import { OperatorService } from './operator.service';
 import { StorageService } from './storage.service';
 import { AutoupdateService } from './autoupdate.service';
 import { DataStoreService } from './data-store.service';
+import { perf } from 'perf';
 
 /**
  * Handles the bootup/showdown of this application.
@@ -54,6 +55,8 @@ export class OpenSlidesService {
             this.checkOperator();
         });
 
+        perf("OS bootup", "OSService");
+
         this.bootup();
     }
 
@@ -64,6 +67,7 @@ export class OpenSlidesService {
     public async bootup(): Promise<void> {
         // start autoupdate if the user is logged in:
         const response = await this.operator.whoAmIFromStorage();
+        perf("Got WhoAmI from storage", "OSService");
         if (!response.user && !response.guest_enabled) {
             this.redirectUrl = location.pathname;
 
@@ -98,10 +102,12 @@ export class OpenSlidesService {
         console.log('user id', userId);
         // Check, which user was logged in last time
         const lastUserId = await this.storageService.get<number>('lastUserLoggedIn');
+        perf("Got userid from storage", "OSService");
         // if the user changed, reset the cache and save the new user.
         if (userId !== lastUserId) {
             await this.DS.clear();
             await this.storageService.set('lastUserLoggedIn', userId);
+            perf("switched user", "OSService");
         }
         await this.setupDataStoreAndWebSocket();
         // Now finally booted.
@@ -113,6 +119,7 @@ export class OpenSlidesService {
      */
     private async setupDataStoreAndWebSocket(): Promise<void> {
         let changeId = await this.DS.initFromStorage();
+        perf("DS init from storage", "OSService");
         if (changeId > 0) {
             changeId += 1;
         }
@@ -126,6 +133,7 @@ export class OpenSlidesService {
             await this.websocketService.closeEvent.pipe(take(1)).toPromise();
         }
         this.websocketService.connect({ changeId: changeId }); // Request changes after changeId.
+        perf("bootup finished", "OSService");
     }
 
     /**

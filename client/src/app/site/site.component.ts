@@ -14,6 +14,7 @@ import { MainMenuService } from '../core/core-services/main-menu.service';
 import { OpenSlidesStatusService } from '../core/core-services/openslides-status.service';
 import { TimeTravelService } from '../core/core-services/time-travel.service';
 import { langToLocale } from 'app/shared/utils/lang-to-locale';
+import { perf } from 'perf';
 
 @Component({
     selector: 'os-site',
@@ -79,12 +80,16 @@ export class SiteComponent extends BaseComponent implements OnInit {
         });
 
         this.searchform = new FormGroup({ query: new FormControl([]) });
+
+        perf("site constructor", "Components");
     }
 
     /**
      * Initialize the site component
      */
     public ngOnInit(): void {
+        perf("site ngOnInit", "Components");
+
         this.vp.checkForChange();
 
         // observe the mainMenuService to receive toggle-requests

@@ -28,6 +28,7 @@ import { MotionCsvExportService } from 'app/site/motions/services/motion-csv-exp
 import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-export.service';
 import { MotionMultiselectService } from 'app/site/motions/services/motion-multiselect.service';
 import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
+import { perf } from 'perf';
 
 /**
  * Component that displays all the motions in a Table using DataSource.
@@ -108,6 +109,8 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
     ) {
         super(titleService, translate, matSnackBar, filterService, sortService);
 
+        perf("Motion list constructor", "Components");
+
         // enable multiSelect for this listView
         this.canMultiSelect = true;
     }
@@ -119,6 +122,8 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
      * subscribes to filter and sorting services
      */
     public ngOnInit(): void {
+        perf("Motion list ngOnInit", "Components");
+
         super.setTitle('Motions');
         this.initTable();
         this.configService
