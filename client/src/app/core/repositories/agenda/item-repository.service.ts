@@ -78,16 +78,6 @@ export class ItemRepositoryService extends BaseRepository<ViewItem, Item> {
         const viewItem = new ViewItem(item, contentObject);
         viewItem.getVerboseName = this.getVerboseName;
         viewItem.getTitle = () => {
-            if (viewItem.contentObject) {
-                return viewItem.contentObject.getAgendaTitle();
-            } else {
-                const repo = this.collectionStringMapperService.getRepository(
-                    viewItem.item.content_object.collection
-                ) as BaseAgendaContentObjectRepository<any, any>;
-                return repo.getAgendaTitle(viewItem);
-            }
-        };
-        viewItem.getListTitle = () => {
             const numberPrefix = viewItem.itemNumber ? `${viewItem.itemNumber} · ` : '';
 
             if (viewItem.contentObject) {
@@ -99,6 +89,7 @@ export class ItemRepositoryService extends BaseRepository<ViewItem, Item> {
                 return numberPrefix + repo.getAgendaTitleWithType(viewItem);
             }
         };
+        viewItem.getListTitle = viewItem.getTitle;
         return viewItem;
     }
 

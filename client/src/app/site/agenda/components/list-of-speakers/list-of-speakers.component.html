@@ -11,7 +11,7 @@
     </div>
 </os-head-bar>
 
-<h1 class="title on-transition-fade" *ngIf="viewItem">{{ viewItem.contentObject.getTitle() }}</h1>
+<h1 class="title on-transition-fade" *ngIf="viewItem">{{ viewItem.getTitle() }}</h1>
 
 <mat-card class="speaker-card" *ngIf="viewItem">
     <!-- List of finished speakers -->
