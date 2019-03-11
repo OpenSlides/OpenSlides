@@ -29,7 +29,7 @@ export class AgendaFilterListService extends BaseFilterListService<Item, ViewIte
             },
             {
                 label: 'Status',
-                property: 'done',
+                property: 'closed',
                 options: [{ label: 'Open', condition: false }, { label: 'Closed', condition: true }]
             }
         ];
