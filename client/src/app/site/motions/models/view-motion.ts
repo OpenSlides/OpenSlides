@@ -16,6 +16,7 @@ import { ViewMotionBlock } from './view-motion-block';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { ViewMotionChangeRecommendation } from './view-change-recommendation';
+import { _ } from 'app/core/translate/translation-marker';
 
 /**
  * The line numbering mode for the motion detail view.
@@ -610,7 +611,7 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
         if (this.changeRecommendations && this.changeRecommendations.length) {
             slideOptions.push({
                 key: 'mode',
-                displayName: 'Which version?',
+                displayName: _('Which version?'),
                 default: configService.instant('motions_recommendation_text_mode'),
                 choices: [
                     { value: 'original', displayName: 'Original version' },

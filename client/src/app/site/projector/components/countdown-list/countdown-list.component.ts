@@ -40,7 +40,7 @@ export class CountdownListComponent extends BaseViewComponent implements OnInit 
 
     public constructor(
         titleService: Title,
-        translate: TranslateService,
+        protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
         private repo: CountdownRepositoryService,
         private formBuilder: FormBuilder,
@@ -152,8 +152,9 @@ export class CountdownListComponent extends BaseViewComponent implements OnInit 
      * @param countdown The countdown to delete
      */
     public async onDeleteButton(countdown: ViewCountdown): Promise<void> {
-        const content = this.translate.instant('Delete countdown') + ` ${this.translate.instant(countdown.title)}?`;
-        if (await this.promptService.open('Are you sure?', content)) {
+        const title = this.translate.instant('Are you sure you want to delete this countdown?');
+        const content = countdown.title;
+        if (await this.promptService.open(title, content)) {
             this.repo.delete(countdown).then(() => (this.openId = this.editId = null), this.raiseError);
         }
     }

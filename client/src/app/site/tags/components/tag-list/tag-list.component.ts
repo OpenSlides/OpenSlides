@@ -39,7 +39,7 @@ export class TagListComponent extends ListViewBaseComponent<ViewTag, Tag> implem
      */
     public constructor(
         titleService: Title,
-        translate: TranslateService,
+        protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
         private repo: TagRepositoryService,
         private promptService: PromptService
@@ -102,8 +102,9 @@ export class TagListComponent extends ListViewBaseComponent<ViewTag, Tag> implem
      * Deletes the selected Tag after a successful confirmation.
      */
     public async deleteSelectedTag(): Promise<void> {
-        const content = this.translate.instant('Delete') + ` ${this.selectedTag.name}?`;
-        if (await this.promptService.open(this.translate.instant('Are you sure?'), content)) {
+        const title = this.translate.instant('Are you sure you want to delete this tag?');
+        const content = this.selectedTag.name;
+        if (await this.promptService.open(title, content)) {
             this.repo.delete(this.selectedTag).then(() => this.cancelEditing(), this.raiseError);
         }
     }

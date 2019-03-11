@@ -1,4 +1,4 @@
-<h2><span translate>Voting result</span></h2>
+<h2 translate>Voting result</h2>
 <div class="meta-text">
     <span translate>Special values</span>:<br />
     <mat-chip>-1</mat-chip>&nbsp;=&nbsp;
@@ -14,7 +14,7 @@
     </mat-form-field>
 </div>
 <div class="submit-buttons">
-    <button mat-button (click)="cancel()" translate>Cancel</button>
-    <button mat-button (click)="submit()" translate>Save</button>
+    <button mat-button (click)="submit()">{{ 'Save' | translate }}</button>
+    <button mat-button (click)="cancel()">{{ 'Cancel' | translate }}</button>
 </div>
 

@@ -97,8 +97,9 @@ export class WorkflowListComponent extends ListViewBaseComponent<ViewWorkflow, W
      * @param selected the selected workflow
      */
     public async onDeleteWorkflow(selected: ViewWorkflow): Promise<void> {
-        const content = this.translate.instant('Delete') + ` ${selected}?`;
-        if (await this.promptService.open('Are you sure?', content)) {
+        const title = this.translate.instant('Are you sure you want to delete this workflow?');
+        const content = selected.getTitle();
+        if (await this.promptService.open(title, content)) {
             this.workflowRepo.delete(selected).then(() => {}, this.raiseError);
         }
     }

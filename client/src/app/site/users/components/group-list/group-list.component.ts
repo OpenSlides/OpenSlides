@@ -58,7 +58,7 @@ export class GroupListComponent extends BaseViewComponent implements OnInit {
      */
     public constructor(
         titleService: Title,
-        translate: TranslateService,
+        protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
         public repo: GroupRepositoryService,
         private promptService: PromptService
@@ -131,8 +131,9 @@ export class GroupListComponent extends BaseViewComponent implements OnInit {
      * Deletes the selected Group
      */
     public async deleteSelectedGroup(): Promise<void> {
-        const content = this.translate.instant('Delete') + ` ${this.selectedGroup.name}?`;
-        if (await this.promptService.open(this.translate.instant('Are you sure?'), content)) {
+        const title = this.translate.instant('Are you sure you want to delete this group?');
+        const content = this.translate.instant(this.selectedGroup.name);
+        if (await this.promptService.open(title, content)) {
             this.repo.delete(this.selectedGroup).then(() => this.cancelEditing(), this.raiseError);
         }
     }

@@ -41,7 +41,7 @@ export class ProjectorMessageListComponent extends BaseViewComponent implements 
      */
     public constructor(
         titleService: Title,
-        translate: TranslateService,
+        protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
         private repo: ProjectorMessageRepositoryService,
         private formBuilder: FormBuilder,
@@ -127,8 +127,8 @@ export class ProjectorMessageListComponent extends BaseViewComponent implements 
      * @param message The message to delete
      */
     public async onDeleteButton(message: ViewProjectorMessage): Promise<void> {
-        const content = this.translate.instant('Delete this message?');
-        if (await this.promptService.open('Are you sure?', content)) {
+        const title = this.translate.instant('Are you sure you want to delete the selected message?');
+        if (await this.promptService.open(title, null)) {
             this.repo.delete(message).then(() => (this.openId = this.editId = null), this.raiseError);
         }
     }

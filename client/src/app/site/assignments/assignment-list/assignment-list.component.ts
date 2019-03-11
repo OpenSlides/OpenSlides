@@ -33,7 +33,7 @@ export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignmen
      */
     public constructor(
         titleService: Title,
-        translate: TranslateService,
+        protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
         public repo: AssignmentRepositoryService,
         private promptService: PromptService,
@@ -83,8 +83,8 @@ export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignmen
      * is only filled with any data in multiSelect mode
      */
     public async deleteSelected(): Promise<void> {
-        const content = this.translate.instant('This will delete all selected assignments.');
-        if (await this.promptService.open('Are you sure?', content)) {
+        const title = this.translate.instant('Are you sure you want to delete all selected elections?');
+        if (await this.promptService.open(title, null)) {
             for (const assignment of this.selectedRows) {
                 await this.repo.delete(assignment);
             }

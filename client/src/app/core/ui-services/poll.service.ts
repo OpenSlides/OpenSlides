@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 
+import { _ } from 'app/core/translate/translation-marker';
+
 /**
  * The possible keys of a poll object that represent numbers.
  * TODO Should be 'key of MotionPoll if type of key is number'
@@ -88,11 +90,11 @@ export class PollService {
             case 'abstain':
                 return 'Abstain';
             case 'votescast':
-                return 'Total votes cast';
+                return _('Total votes cast');
             case 'votesvalid':
-                return 'Valid votes';
+                return _('Valid votes');
             case 'votesinvalid':
-                return 'Invalid votes';
+                return _('Invalid votes');
             default:
                 return '';
         }

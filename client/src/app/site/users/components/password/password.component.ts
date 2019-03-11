@@ -66,7 +66,7 @@ export class PasswordComponent extends BaseViewComponent implements OnInit {
      */
     public constructor(
         title: Title,
-        translate: TranslateService,
+        protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
         private route: ActivatedRoute,
         private router: Router,
@@ -150,7 +150,7 @@ export class PasswordComponent extends BaseViewComponent implements OnInit {
                 const newPassword2 = this.userPasswordForm.value.newPassword2;
 
                 if (newPassword1 !== newPassword2) {
-                    this.raiseError(this.translate.instant('New passwords do not match'));
+                    this.raiseError(this.translate.instant('Error: The new passwords do not match.'));
                 } else {
                     await this.repo.setNewPassword(oldPassword, newPassword1);
                     this.router.navigate(['./']);

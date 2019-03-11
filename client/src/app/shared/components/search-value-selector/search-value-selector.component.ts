@@ -133,7 +133,7 @@ export class SearchValueSelectorComponent implements OnInit, OnDestroy {
     /**
      * Empty constructor
      */
-    public constructor(public translate: TranslateService) {}
+    public constructor(protected translate: TranslateService) {}
 
     /**
      * onInit with filter ans subscription on filter

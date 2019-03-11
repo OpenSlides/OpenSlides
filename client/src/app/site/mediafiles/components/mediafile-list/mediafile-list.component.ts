@@ -178,8 +178,9 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile,
      * @param file the file to delete
      */
     public async onDelete(file: ViewMediafile): Promise<void> {
-        const content = this.translate.instant('Do you want to delete this file?') + `<p><strong>${file}</strong>`;
-        if (await this.promptService.open('Are you sure?', content)) {
+        const title = this.translate.instant('Are you sure you want to delete this file?');
+        const content = file.getTitle();
+        if (await this.promptService.open(title, content)) {
             this.repo.delete(file);
         }
     }
@@ -189,8 +190,8 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile,
      * will be made available in multiSelect mode
      */
     public async deleteSelected(): Promise<void> {
-        const content = this.translate.instant('All selected files will be deleted!');
-        if (await this.promptService.open('Are you sure?', content)) {
+        const title = this.translate.instant('Are you sure you want to delete all selected files?');
+        if (await this.promptService.open(title, null)) {
             for (const mediafile of this.selectedRows) {
                 await this.repo.delete(mediafile);
             }

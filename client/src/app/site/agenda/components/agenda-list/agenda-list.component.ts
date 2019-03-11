@@ -19,6 +19,7 @@ import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { ViewItem } from '../../models/view-item';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
+import { _ } from 'app/core/translate/translation-marker';
 
 /**
  * List view for the agenda.
@@ -58,7 +59,7 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item> i
         slideOptions: [
             {
                 key: 'only_main_items',
-                displayName: this.translate.instant('Only main agenda items'),
+                displayName: _('Only main agenda items'),
                 default: false
             }
         ],
@@ -87,7 +88,7 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item> i
      */
     public constructor(
         titleService: Title,
-        translate: TranslateService,
+        protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
         private operator: OperatorService,
         private route: ActivatedRoute,
@@ -174,8 +175,8 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item> i
      * Click handler for the numbering button to enable auto numbering
      */
     public async onAutoNumbering(): Promise<void> {
-        const content = this.translate.instant('Are you sure you want to number all agenda items?');
-        if (await this.promptService.open('', content)) {
+        const title = this.translate.instant('Are you sure you want to number all agenda items?');
+        if (await this.promptService.open(title, null)) {
             await this.repo.autoNumbering().then(null, this.raiseError);
         }
     }
@@ -211,8 +212,9 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item> i
      * @param item The item to delete
      */
     public async onDelete(item: ViewItem): Promise<void> {
-        const content = this.translate.instant('Delete') + ` ${item.getTitle()}?`;
-        if (await this.promptService.open('Are you sure?', content)) {
+        const title = this.translate.instant('Are you sure you want to delete this entry?');
+        const content = item.contentObject.getTitle();
+        if (await this.promptService.open(title, content)) {
             await this.repo.delete(item).then(null, this.raiseError);
         }
     }
@@ -222,8 +224,8 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item> i
      * is only filled with any data in multiSelect mode
      */
     public async deleteSelected(): Promise<void> {
-        const content = this.translate.instant('This will delete all selected agenda items.');
-        if (await this.promptService.open('Are you sure?', content)) {
+        const title = this.translate.instant('Are you sure you want to delete all selected items?');
+        if (await this.promptService.open(title, null)) {
             for (const agenda of this.selectedRows) {
                 await this.repo.delete(agenda);
             }

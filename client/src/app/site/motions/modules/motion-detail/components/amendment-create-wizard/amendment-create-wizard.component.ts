@@ -83,7 +83,7 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
      */
     public constructor(
         titleService: Title,
-        translate: TranslateService,
+        protected translate: TranslateService, // protected required for ng-translate-extract
         private configService: ConfigService,
         private formBuilder: FormBuilder,
         private repo: MotionRepositoryService,

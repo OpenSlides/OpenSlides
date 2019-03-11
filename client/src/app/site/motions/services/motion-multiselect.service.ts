@@ -61,8 +61,8 @@ export class MotionMultiselectService {
      * @param motions The motions to delete
      */
     public async delete(motions: ViewMotion[]): Promise<void> {
-        const content = this.translate.instant('This will delete all selected motions.');
-        if (await this.promptService.open('Are you sure?', content)) {
+        const title = this.translate.instant('Are you sure you want to delete all selected motions?');
+        if (await this.promptService.open(title, null)) {
             for (const motion of motions) {
                 await this.repo.delete(motion);
             }
@@ -239,7 +239,7 @@ export class MotionMultiselectService {
      */
     public async setMotionBlock(motions: ViewMotion[]): Promise<void> {
         const title = this.translate.instant('This will set the following motion block for all selected motions:');
-        const clearChoice = 'Clear motion block';
+        const clearChoice = this.translate.instant('Clear motion block');
         const selectedChoice = await this.choiceService.open(
             title,
             this.motionBlockRepo.getViewModelList(),

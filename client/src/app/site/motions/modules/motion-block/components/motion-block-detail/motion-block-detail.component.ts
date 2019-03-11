@@ -131,10 +131,11 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
      * Click handler for recommendation button
      */
     public async onFollowRecButton(): Promise<void> {
-        const content = this.translate.instant(
-            `Are you sure you want to override the state of all motions of this motion block?`
+        const title = this.translate.instant(
+            'Are you sure you want to override the state of all motions of this motion block?'
         );
-        if (await this.promptService.open(this.block.title, content)) {
+        const content = this.block.title;
+        if (await this.promptService.open(title, content)) {
             this.repo.followRecommendation(this.block);
         }
     }
@@ -153,8 +154,9 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
      * Click handler to delete motion blocks
      */
     public async onDeleteBlockButton(): Promise<void> {
-        const content = this.translate.instant('Are you sure you want to delete this motion block?');
-        if (await this.promptService.open(this.block.title, content)) {
+        const title = this.translate.instant('Are you sure you want to delete this motion block?');
+        const content = this.block.title;
+        if (await this.promptService.open(title, content)) {
             await this.repo.delete(this.block);
             this.router.navigate(['../'], { relativeTo: this.route });
         }
@@ -166,8 +168,9 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
      * @param motion the corresponding motion
      */
     public async onRemoveMotionButton(motion: ViewMotion): Promise<void> {
-        const content = this.translate.instant('Are you sure you want to remove this motion from motion block?');
-        if (await this.promptService.open(motion.title, content)) {
+        const title = this.translate.instant('Are you sure you want to remove this motion from motion block?');
+        const content = motion.getTitle();
+        if (await this.promptService.open(title, content)) {
             this.repo.removeMotionFromBlock(motion);
         }
     }

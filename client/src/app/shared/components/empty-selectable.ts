@@ -1,5 +1,3 @@
-import { TranslateService } from '@ngx-translate/core';
-
 import { Selectable } from './selectable';
 
 /**
@@ -13,14 +11,13 @@ export class EmptySelectable implements Selectable {
 
     /**
      * Empty Constructor
-     * @param translate translate Service
      */
-    public constructor(private translate?: TranslateService) {}
+    public constructor() {}
 
     /**
      * gets the title
      */
-    public getTitle = () => (this.translate ? this.translate.instant('None') : 'None');
+    public getTitle = () => '–';
 
     /**
      * gets the list title

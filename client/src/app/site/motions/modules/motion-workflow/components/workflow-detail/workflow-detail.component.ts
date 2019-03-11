@@ -145,7 +145,7 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
      */
     public constructor(
         title: Title,
-        translate: TranslateService,
+        protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
         private promtService: PromptService,
         private dialog: MatDialog,

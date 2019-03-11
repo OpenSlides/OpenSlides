@@ -19,6 +19,7 @@ import { OperatorService } from 'app/core/core-services/operator.service';
 import { ViewUser } from '../../models/view-user';
 import { ViewGroup } from '../../models/view-group';
 import { genders, User } from 'app/shared/models/users/user';
+import { _ } from 'app/core/translate/translation-marker';
 
 /**
  * Interface for the short editing dialog.
@@ -130,7 +131,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User> imp
      */
     public constructor(
         titleService: Title,
-        translate: TranslateService,
+        protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
         private repo: UserRepositoryService,
         private groupRepo: GroupRepositoryService,
@@ -268,8 +269,8 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User> imp
      * Bulk deletes users. Needs multiSelect mode to fill selectedRows
      */
     public async deleteSelected(): Promise<void> {
-        const content = this.translate.instant('This will delete all selected users.');
-        if (await this.promptService.open('Are you sure?', content)) {
+        const title = this.translate.instant('Are you sure you want to delete all selected participants?');
+        if (await this.promptService.open(title, null)) {
             for (const user of this.selectedRows) {
                 await this.repo.delete(user);
             }
@@ -281,8 +282,10 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User> imp
      * SelectedRows is only filled with data in multiSelect mode
      */
     public async setGroupSelected(): Promise<void> {
-        const content = this.translate.instant('This will add or remove the following groups for all selected users:');
-        const choices = ['Add group(s)', 'Remove group(s)'];
+        const content = this.translate.instant(
+            'This will add or remove the following groups for all selected participants:'
+        );
+        const choices = [_('add group(s)'), _('remove group(s)')];
         const selectedChoice = await this.choiceService.open(content, this.groupRepo.getViewModelList(), true, choices);
         if (selectedChoice) {
             for (const user of this.selectedRows) {
@@ -305,8 +308,8 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User> imp
      * Uses selectedRows defined via multiSelect mode.
      */
     public async setActiveSelected(): Promise<void> {
-        const content = this.translate.instant('Set the active status for the selected users');
-        const options = ['Active', 'Not active'];
+        const content = this.translate.instant('Set active status for selected participants:');
+        const options = [_('active'), _('inactive')];
         const selectedChoice = await this.choiceService.open(content, null, false, options);
         if (selectedChoice) {
             const active = selectedChoice.action === options[0];
@@ -321,8 +324,8 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User> imp
      * Uses selectedRows defined via multiSelect mode.
      */
     public async setPresentSelected(): Promise<void> {
-        const content = this.translate.instant('Set the presence status for the selected users');
-        const options = ['Present', 'Not present'];
+        const content = this.translate.instant('Set presence status for selected participants:');
+        const options = [_('present'), _('absent')];
         const selectedChoice = await this.choiceService.open(content, null, false, options);
         if (selectedChoice) {
             const present = selectedChoice.action === options[0];
@@ -337,8 +340,8 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User> imp
      * Uses selectedRows defined via multiSelect mode.
      */
     public async setCommitteeSelected(): Promise<void> {
-        const content = this.translate.instant('Sets/unsets the committee status for the selected users');
-        const options = ['Is committee', 'Is not committee'];
+        const content = this.translate.instant('Set committee status for selected participants:');
+        const options = [_('committee'), _('no committee')];
         const selectedChoice = await this.choiceService.open(content, null, false, options);
         if (selectedChoice) {
             const committee = selectedChoice.action === options[0];
@@ -353,10 +356,9 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User> imp
      * multiSelect mode.
      */
     public async sendInvitationEmailSelected(): Promise<void> {
-        const content =
-            this.translate.instant('Send invitation e-Mails to the selected users?') +
-            ` (${this.selectedRows.length} E-Mails)`;
-        if (await this.promptService.open('Are you sure?', content)) {
+        const title = this.translate.instant('Are you sure you want to send emails to all selected participants?');
+        const content = this.selectedRows.length + ' ' + this.translate.instant('emails');
+        if (await this.promptService.open(title, content)) {
             this.repo.sendInvitationEmail(this.selectedRows).then(this.raiseError, this.raiseError);
         }
     }

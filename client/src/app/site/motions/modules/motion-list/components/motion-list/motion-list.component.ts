@@ -86,7 +86,7 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
      */
     public constructor(
         titleService: Title,
-        translate: TranslateService,
+        protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
         sortService: MotionSortListService,
         filterService: MotionFilterListService,

@@ -26,7 +26,10 @@ export class UserFilterListService extends BaseFilterListService<User, ViewUser>
             property: 'is_present',
             label: 'Presence',
             isActive: false,
-            options: [{ condition: true, label: 'Is present' }, { condition: false, label: 'Is not present' }]
+            options: [
+                { condition: true, label: this.translate.instant('Is present') },
+                { condition: false, label: this.translate.instant('Is not present') }
+            ]
         },
         {
             property: 'is_active',
@@ -48,7 +51,7 @@ export class UserFilterListService extends BaseFilterListService<User, ViewUser>
         },
         {
             property: 'is_last_email_send',
-            label: 'Last email send',
+            label: this.translate.instant('Last email send'),
             isActive: false,
             options: [
                 { condition: true, label: this.translate.instant('Got an email') },

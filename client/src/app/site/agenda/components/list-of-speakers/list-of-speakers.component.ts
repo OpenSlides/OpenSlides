@@ -121,7 +121,7 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
      */
     public constructor(
         title: Title,
-        translate: TranslateService,
+        protected translate: TranslateService, // protected required for ng-translate-extract
         snackBar: MatSnackBar,
         projectorRepo: ProjectorRepositoryService,
         private route: ActivatedRoute,
@@ -360,8 +360,10 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
      * after a confirmation dialog
      */
     public async clearSpeakerList(): Promise<void> {
-        const content = this.translate.instant('This will clear all speakers from the list.');
-        if (await this.promptService.open('Are you sure?', content)) {
+        const title = this.translate.instant(
+            'Are you sure you want to delete all speakers from this list of speakers?'
+        );
+        if (await this.promptService.open(title, null)) {
             this.repo.deleteAllSpeakers(this.viewItem);
         }
     }

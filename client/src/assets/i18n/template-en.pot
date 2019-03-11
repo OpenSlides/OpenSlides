@@ -114,9 +114,6 @@ msgstr ""
 msgid "All casted ballots"
 msgstr ""
 
-msgid "All selected files will be deleted!"
-msgstr ""
-
 msgid "All valid ballots"
 msgstr ""
 
@@ -168,10 +165,82 @@ msgstr ""
 msgid "Arabic"
 msgstr ""
 
+msgid "Are you sure you want to copy the final version to the print template?"
+msgstr ""
+
+msgid "Are you sure you want to delete all selected elections?"
+msgstr ""
+
+msgid "Are you sure you want to delete all selected files?"
+msgstr ""
+
+msgid "Are you sure you want to delete all selected items?"
+msgstr ""
+
+msgid "Are you sure you want to delete all selected motions?"
+msgstr ""
+
+msgid "Are you sure you want to delete all selected participants?"
+msgstr ""
+
+msgid "Are you sure you want to delete all speakers from this list of speakers?"
+msgstr ""
+
+msgid "Are you sure you want to delete the print template?"
+msgstr ""
+
+msgid "Are you sure you want to delete the selected message?"
+msgstr ""
+
+msgid "Are you sure you want to delete this category?"
+msgstr ""
+
+msgid "Are you sure you want to delete this change recommendation?"
+msgstr ""
+
+msgid "Are you sure you want to delete this comment field?"
+msgstr ""
+
+msgid "Are you sure you want to delete this countdown?"
+msgstr ""
+
+msgid "Are you sure you want to delete this entry?"
+msgstr ""
+
+msgid "Are you sure you want to delete this file?"
+msgstr ""
+
+msgid "Are you sure you want to delete this group?"
+msgstr ""
+
 msgid "Are you sure you want to delete this motion?"
 msgstr ""
 
+msgid "Are you sure you want to delete this participant?"
+msgstr ""
+
+msgid "Are you sure you want to delete this projector?"
+msgstr ""
+
+msgid "Are you sure you want to delete this statute paragraph?"
+msgstr ""
+
+msgid "Are you sure you want to delete this tag?"
+msgstr ""
+
 msgid "Are you sure you want to delete this vote?"
+msgstr ""
+
+msgid "Are you sure you want to delete this workflow?"
+msgstr ""
+
+msgid "Are you sure you want to number all agenda items?"
+msgstr ""
+
+msgid "Are you sure you want to renumber all motions of this category?"
+msgstr ""
+
+msgid "Are you sure you want to send emails to all selected participants?"
 msgstr ""
 
 msgid ""
@@ -374,6 +443,9 @@ msgstr ""
 msgid "Clear list"
 msgstr ""
 
+msgid "Clear motion block"
+msgstr ""
+
 msgid "Clear tags"
 msgstr ""
 
@@ -381,6 +453,9 @@ msgid "Close"
 msgstr ""
 
 msgid "Close list of speakers"
+msgstr ""
+
+msgid "Closed items"
 msgstr ""
 
 msgid "Collapse all"
@@ -437,6 +512,9 @@ msgstr ""
 msgid "Create new category"
 msgstr ""
 
+msgid "Create new state"
+msgstr ""
+
 msgid "Create new workflow"
 msgstr ""
 
@@ -447,9 +525,6 @@ msgid "Current browser language"
 msgstr ""
 
 msgid "Current list of speakers"
-msgstr ""
-
-msgid "Current list of speakers reference"
 msgstr ""
 
 msgid "Custom number of ballot papers"
@@ -547,9 +622,6 @@ msgid "Do not concern"
 msgstr ""
 
 msgid "Do not decide"
-msgstr ""
-
-msgid "Do you want to delete this file?"
 msgstr ""
 
 msgid "Does not have notes"
@@ -658,6 +730,12 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
+msgid "Error: The new passwords do not match."
+msgstr ""
+
+msgid "Estimated end"
+msgstr ""
+
 msgid "Event"
 msgstr ""
 
@@ -742,6 +820,9 @@ msgstr ""
 msgid "Follow recommendations for all motions"
 msgstr ""
 
+msgid "Following users are currently editing this motion:"
+msgstr ""
+
 msgid "Forgot Password?"
 msgstr ""
 
@@ -782,6 +863,9 @@ msgid "Groups with read permissions"
 msgstr ""
 
 msgid "Groups with write permissions"
+msgstr ""
+
+msgid "Guest"
 msgstr ""
 
 msgid "Has notes"
@@ -888,6 +972,9 @@ msgstr ""
 msgid "Invalid line number"
 msgstr ""
 
+msgid "Invalid votes"
+msgstr ""
+
 msgid "Is PDF file"
 msgstr ""
 
@@ -918,6 +1005,9 @@ msgstr ""
 msgid "Is not favorite"
 msgstr ""
 
+msgid "Is not present"
+msgstr ""
+
 msgid "Is present"
 msgstr ""
 
@@ -931,6 +1021,9 @@ msgid "Keep each person in a single line."
 msgstr ""
 
 msgid "Label color"
+msgstr ""
+
+msgid "Last email send"
 msgstr ""
 
 msgid "Last modified"
@@ -976,9 +1069,6 @@ msgid "Login as guest"
 msgstr ""
 
 msgid "Logout"
-msgstr ""
-
-msgid "Manage the list of speakers for..."
 msgstr ""
 
 msgid "Mark speaker"
@@ -1233,6 +1323,9 @@ msgstr ""
 msgid "Open"
 msgstr ""
 
+msgid "Open items"
+msgstr ""
+
 msgid "Open list of speakers"
 msgstr ""
 
@@ -1281,7 +1374,7 @@ msgstr ""
 msgid "Parallel upload"
 msgstr ""
 
-msgid "Parent item"
+msgid "Parent agenda item"
 msgstr ""
 
 msgid "Participant cannot be found"
@@ -1374,6 +1467,9 @@ msgstr ""
 msgid "Previous"
 msgstr ""
 
+msgid "Previous slides"
+msgstr ""
+
 msgid "Print ballot papers"
 msgstr ""
 
@@ -1437,7 +1533,7 @@ msgstr ""
 msgid "Refer to committee"
 msgstr ""
 
-msgid "Reference projector"
+msgid "Reference projector for current list of speakers:"
 msgstr ""
 
 msgid "Referral to committee"
@@ -1459,6 +1555,9 @@ msgid "Rejection (not authorized)"
 msgstr ""
 
 msgid "Remove"
+msgstr ""
+
+msgid "Remove all speakers"
 msgstr ""
 
 msgid ""
@@ -1516,6 +1615,18 @@ msgstr ""
 msgid "Scan this QR code to open URL."
 msgstr ""
 
+msgid "Scroll down"
+msgstr ""
+
+msgid "Scroll down (big step)"
+msgstr ""
+
+msgid "Scroll up"
+msgstr ""
+
+msgid "Scroll up (big step)"
+msgstr ""
+
 msgid "Search"
 msgstr ""
 
@@ -1558,6 +1669,9 @@ msgstr ""
 msgid "Serially numbered"
 msgstr ""
 
+msgid "Set active status for selected participants:"
+msgstr ""
+
 msgid "Set as parent"
 msgstr ""
 
@@ -1565,6 +1679,9 @@ msgid "Set category"
 msgstr ""
 
 msgid "Set committee ..."
+msgstr ""
+
+msgid "Set committee status for selected participants:"
 msgstr ""
 
 msgid "Set hidden"
@@ -1583,6 +1700,9 @@ msgid "Set motion block"
 msgstr ""
 
 msgid "Set presence ..."
+msgstr ""
+
+msgid "Set presence status for selected participants:"
 msgstr ""
 
 msgid "Set public"
@@ -1673,6 +1793,9 @@ msgid "Sort motions"
 msgstr ""
 
 msgid "Sort name of participants by"
+msgstr ""
+
+msgid "Speakers"
 msgstr ""
 
 msgid "Special values"
@@ -1833,13 +1956,13 @@ msgstr ""
 msgid "This prefix will be set if you run the automatic agenda numbering."
 msgstr ""
 
+msgid "This will add or remove the following groups for all selected participants:"
+msgstr ""
+
 msgid "This will add or remove the following submitters for all selected motions:"
 msgstr ""
 
 msgid "This will add or remove the following tags for all selected motions:"
-msgstr ""
-
-msgid "This will delete all selected motions."
 msgstr ""
 
 msgid "This will move all selected motions as childs to:"
@@ -1901,6 +2024,9 @@ msgstr ""
 msgid "Topics(s) will be imported."
 msgstr ""
 
+msgid "Total votes cast"
+msgstr ""
+
 msgid "Two-thirds majority"
 msgstr ""
 
@@ -1942,6 +2068,9 @@ msgid "Username"
 msgstr ""
 
 msgid "Username or password is not correct."
+msgstr ""
+
+msgid "Valid votes"
 msgstr ""
 
 msgid "Visibility"
@@ -1993,6 +2122,9 @@ msgid "Web interface header logo"
 msgstr ""
 
 msgid "Welcome to OpenSlides"
+msgstr ""
+
+msgid "Which version?"
 msgstr ""
 
 msgid ""
@@ -2062,10 +2194,19 @@ msgstr ""
 msgid "[Space for your welcome text.]"
 msgstr ""
 
+msgid "absent"
+msgstr ""
+
 msgid "accepted"
 msgstr ""
 
+msgid "active"
+msgstr ""
+
 msgid "active users"
+msgstr ""
+
+msgid "add group(s)"
 msgstr ""
 
 msgid "adjourned"
@@ -2080,6 +2221,9 @@ msgstr ""
 msgid "by"
 msgstr ""
 
+msgid "committee"
+msgstr ""
+
 msgid "connections"
 msgstr ""
 
@@ -2089,6 +2233,12 @@ msgstr ""
 msgid "disabled"
 msgstr ""
 
+msgid "diverse"
+msgstr ""
+
+msgid "emails"
+msgstr ""
+
 msgid "entries will be ommitted."
 msgstr ""
 
@@ -2096,6 +2246,15 @@ msgid "errors"
 msgstr ""
 
 msgid "example"
+msgstr ""
+
+msgid "female"
+msgstr ""
+
+msgid "has saved his work on this motion."
+msgstr ""
+
+msgid "inactive"
 msgstr ""
 
 msgid "inline"
@@ -2116,16 +2275,22 @@ msgstr ""
 msgid "majority"
 msgstr ""
 
+msgid "male"
+msgstr ""
+
+msgid "minutes"
+msgstr ""
+
 msgid "motions"
 msgstr ""
 
 msgid "motions-example"
 msgstr ""
 
-msgid "needed"
+msgid "needs review"
 msgstr ""
 
-msgid "needs review"
+msgid "no committee"
 msgstr ""
 
 msgid "none"
@@ -2135,9 +2300,6 @@ msgid "not concerned"
 msgstr ""
 
 msgid "not decided"
-msgstr ""
-
-msgid "not present"
 msgstr ""
 
 msgid "not reached."
@@ -2155,6 +2317,9 @@ msgstr ""
 msgid "permitted"
 msgstr ""
 
+msgid "present"
+msgstr ""
+
 msgid "published"
 msgstr ""
 
@@ -2170,6 +2335,9 @@ msgstr ""
 msgid "rejected (not authorized)"
 msgstr ""
 
+msgid "remove group(s)"
+msgstr ""
+
 msgid "result"
 msgstr ""
 
@@ -2177,9 +2345,6 @@ msgid "results"
 msgstr ""
 
 msgid "selected"
-msgstr ""
-
-msgid "self"
 msgstr ""
 
 msgid "statute paragraphs have been imported."

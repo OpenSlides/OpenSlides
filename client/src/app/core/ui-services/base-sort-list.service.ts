@@ -53,7 +53,7 @@ export abstract class BaseSortListService<V extends BaseViewModel> {
     /**
      * Constructor. Does nothing. TranslateService is used for localeCompeare.
      */
-    public constructor(public translate: TranslateService, private store: StorageService) {}
+    public constructor(protected translate: TranslateService, private store: StorageService) {}
 
     /**
      * Put an array of data that you want sorted.

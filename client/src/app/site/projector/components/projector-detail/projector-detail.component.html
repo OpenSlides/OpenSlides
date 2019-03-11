@@ -172,7 +172,7 @@
                 <!-- Previous Slides -->
                 <mat-expansion-panel *ngIf="projector.elements_history.length" class="previous-slides">
                     <mat-expansion-panel-header>
-                        <span translate>History</span>
+                        <span translate>Previous slides</span>
                     </mat-expansion-panel-header>
                     <p *ngFor="let elements of projector.elements_history; let i = index">
                         {{ i + 1 }}. &nbsp; {{ getSlideTitle(elements[0]) }}
@@ -228,16 +228,6 @@
                         <span translate>Current list of speakers</span>
                     </mat-expansion-panel-header>
 
-                    <!-- Overlay -->
-                    <mat-list>
-                        <mat-list-item [ngClass]="{ projected: isClosProjected(true) }">
-                            <button type="button" mat-icon-button (click)="toggleClos(true)">
-                                <mat-icon>videocam</mat-icon>
-                            </button>
-                            <span translate>Overlay</span>
-                        </mat-list-item>
-                    </mat-list>
-
                     <!-- Slide-->
                     <mat-list *ngIf="projectorCount > 1">
                         <mat-list-item [ngClass]="{ projected: isClosProjected(false) }">
@@ -245,6 +235,16 @@
                                 <mat-icon>videocam</mat-icon>
                             </button>
                             <span translate>Slide</span>
+                        </mat-list-item>
+                    </mat-list>
+
+                    <!-- Overlay -->
+                    <mat-list>
+                        <mat-list-item [ngClass]="{ projected: isClosProjected(true) }">
+                            <button type="button" mat-icon-button (click)="toggleClos(true)">
+                                <mat-icon>videocam</mat-icon>
+                            </button>
+                            <span translate>Overlay</span>
                         </mat-list-item>
                     </mat-list>
 

@@ -75,7 +75,7 @@ export class CategorySortComponent extends BaseViewComponent implements OnInit {
      */
     public constructor(
         title: Title,
-        translate: TranslateService,
+        protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
         private promptService: PromptService,
         private repo: CategoryRepositoryService,
@@ -107,8 +107,9 @@ export class CategorySortComponent extends BaseViewComponent implements OnInit {
      */
     public async onNumberMotions(): Promise<void> {
         if (this.sortSelector) {
-            const content = this.translate.instant('This will change the identifier for the motions of this category.');
-            if (await this.promptService.open('Are you sure?', content)) {
+            const title = this.translate.instant('Are you sure you want to renumber all motions of this category?');
+            const content = this.category.getTitle();
+            if (await this.promptService.open(title, content)) {
                 const sortedMotionIds = this.sortSelector.array.map(selectable => selectable.id);
                 await this.repo
                     .numberMotionsInCategory(this.category.category, sortedMotionIds)

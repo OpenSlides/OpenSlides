@@ -5,6 +5,7 @@ import { Item, itemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { ViewItem } from '../models/view-item';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
     providedIn: 'root'
@@ -18,8 +19,9 @@ export class AgendaFilterListService extends BaseFilterListService<Item, ViewIte
      * Constructor. Also creates the dynamic filter options
      * @param store
      * @param repo
+     * @param translate Translation service
      */
-    public constructor(store: StorageService, repo: ItemRepositoryService) {
+    public constructor(store: StorageService, repo: ItemRepositoryService, private translate: TranslateService) {
         super(store, repo);
         this.filterOptions = [
             {
@@ -30,7 +32,10 @@ export class AgendaFilterListService extends BaseFilterListService<Item, ViewIte
             {
                 label: 'Status',
                 property: 'closed',
-                options: [{ label: 'Open', condition: false }, { label: 'Closed', condition: true }]
+                options: [
+                    { label: this.translate.instant('Open items'), condition: false },
+                    { label: this.translate.instant('Closed items'), condition: true }
+                ]
             }
         ];
         this.updateFilterDefinitions(this.filterOptions);

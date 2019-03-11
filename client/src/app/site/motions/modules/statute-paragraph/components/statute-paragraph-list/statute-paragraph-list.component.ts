@@ -51,7 +51,7 @@ export class StatuteParagraphListComponent extends BaseViewComponent implements 
      */
     public constructor(
         titleService: Title,
-        translate: TranslateService,
+        protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
         private repo: StatuteParagraphRepositoryService,
         private formBuilder: FormBuilder,
@@ -136,8 +136,9 @@ export class StatuteParagraphListComponent extends BaseViewComponent implements 
      * @param viewStatuteParagraph The statute paragraph to delete
      */
     public async onDeleteButton(viewStatuteParagraph: ViewStatuteParagraph): Promise<void> {
-        const content = this.translate.instant('Delete') + ` ${viewStatuteParagraph.title}?`;
-        if (await this.promptService.open('Are you sure?', content)) {
+        const title = this.translate.instant('Are you sure you want to delete this statute paragraph?');
+        const content = viewStatuteParagraph.title;
+        if (await this.promptService.open(title, content)) {
             this.repo.delete(viewStatuteParagraph).then(() => (this.openId = this.editId = null), this.raiseError);
         }
     }

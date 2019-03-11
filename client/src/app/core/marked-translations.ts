@@ -1,9 +1,4 @@
-import { _ } from '@biesbjerg/ngx-translate-extract';
-
-// see issue: 4078
-// function _(key: string | string[]): string | string[] {
-//     return key;
-// }
+import { _ } from 'app/core/translate/translation-marker';
 
 /**
  * Add strings here that require translations but have never been declared
@@ -161,13 +156,8 @@ _('Preamble text for PDF and DOCX documents (all motions)');
 _('Sort categories by');
 _('Include the sequential number in PDF and DOCX');
 // misc motion strings
-_('needed');
 _('Amendment');
-_('Amendment to');
 _('Statute amendment for');
-_('Creation date');
-_('Last modified');
-_('Which version?');
 
 // motion workflow 1
 _('Simple Workflow');
@@ -214,7 +204,6 @@ _('Called');
 _('Called with');
 _('Recommendation');
 _('Motion block');
-_('Are you sure you want to delete this motion?');
 _('The text field may not be blank.');
 _('The reason field may not be blank.');
 
@@ -356,6 +345,7 @@ _(
 
 // users misc
 _('Username or password is not correct.');
+_('Guest');
 
 // default groups
 _('Default');

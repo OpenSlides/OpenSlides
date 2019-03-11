@@ -104,7 +104,7 @@ export class WebsocketService {
     public constructor(
         private matSnackBar: MatSnackBar,
         private zone: NgZone,
-        public translate: TranslateService,
+        private translate: TranslateService,
         private router: Router
     ) {}
 
