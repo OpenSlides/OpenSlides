@@ -60,7 +60,7 @@
                     </div>
                     <div *ngIf="item.duration">
                         <mat-icon>access_time</mat-icon>
-                        {{ durationService.durationToString(item.duration) }}
+                        {{ durationService.durationToString(item.duration, 'h') }}
                     </div>
                     <div *ngIf="item.comment">
                         <mat-icon>comment</mat-icon>

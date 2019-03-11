@@ -98,7 +98,7 @@ export class AgendaImportListComponent extends BaseImportListComponent<ViewCreat
      */
     public getDuration(duration: number): string {
         if (duration >= 0) {
-            return this.durationService.durationToString(duration);
+            return this.durationService.durationToString(duration, 'h');
         } else {
             return '';
         }

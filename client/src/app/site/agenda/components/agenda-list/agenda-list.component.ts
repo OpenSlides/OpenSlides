@@ -296,7 +296,7 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item> i
         if (!duration) {
             return '';
         }
-        const durationString = this.durationService.durationToString(duration);
+        const durationString = this.durationService.durationToString(duration, 'h');
         const endTime = this.repo.calculateEndTime();
         const result = `${this.translate.instant('Duration')}: ${durationString}`;
         if (endTime) {
