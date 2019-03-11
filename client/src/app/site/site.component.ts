@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
 import { MatDialog, MatSidenav } from '@angular/material';
+import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
@@ -57,17 +58,18 @@ export class SiteComponent extends BaseComponent implements OnInit {
      * @param timeTravel
      */
     public constructor(
+        title: Title,
+        translate: TranslateService,
         private authService: AuthService,
         private router: Router,
         public operator: OperatorService,
         public vp: ViewportService,
-        public translate: TranslateService,
         public dialog: MatDialog,
         public mainMenuService: MainMenuService,
         public OSStatus: OpenSlidesStatusService,
         public timeTravel: TimeTravelService
     ) {
-        super();
+        super(title, translate);
 
         this.operator.getViewUserObservable().subscribe(user => {
             if (user) {
@@ -132,8 +134,15 @@ export class SiteComponent extends BaseComponent implements OnInit {
 
     /**
      * Get the name of a Language by abbreviation.
+     *
+     * @param abbreviation The abbreviation of the languate or null, if the current
+     * language should be used.
      */
-    public getLangName(abbreviation: string): string {
+    public getLangName(abbreviation?: string): string {
+        if (!abbreviation) {
+            abbreviation = this.translate.currentLang;
+        }
+
         if (abbreviation === 'en') {
             return 'English';
         } else if (abbreviation === 'de') {

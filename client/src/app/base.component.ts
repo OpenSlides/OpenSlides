@@ -50,11 +50,9 @@ export abstract class BaseComponent {
             link image charmap | code fullscreen`
     };
 
-    public constructor(protected titleService?: Title, protected translate?: TranslateService) {
-        if (this.translate) {
-            this.tinyMceSettings.language_url = '/assets/tinymce/langs/' + this.translate.currentLang + '.js';
-            this.tinyMceSettings.language = this.translate.currentLang;
-        }
+    public constructor(protected titleService: Title, protected translate: TranslateService) {
+        this.tinyMceSettings.language_url = '/assets/tinymce/langs/' + this.translate.currentLang + '.js';
+        this.tinyMceSettings.language = this.translate.currentLang;
     }
 
     /**

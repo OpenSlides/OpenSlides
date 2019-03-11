@@ -33,7 +33,7 @@
             <mat-nav-list>
                 <a mat-list-item [matMenuTriggerFor]="languageMenu">
                     <mat-icon>language</mat-icon>
-                    <span> {{ getLangName(this.translate.currentLang) }} </span>
+                    <span>{{ getLangName() }}</span>
                 </a>
                 <div *ngIf="isLoggedIn">
                     <a [routerLink]="operator.user ? ['/users/', operator.user.id] : []" (click)="mobileAutoCloseNav()" mat-list-item>
