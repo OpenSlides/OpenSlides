@@ -708,19 +708,6 @@
                 </div>
             </div>
 
-            <!-- Parent item -->
-            <div class="content-field" *ngIf="newMotion && agendaItemObserver.value.length > 0">
-                <os-search-value-selector
-                    ngDefaultControl
-                    [form]="contentForm"
-                    [formControl]="contentForm.get('agenda_parent_id')"
-                    [multiple]="false"
-                    [includeNone]="true"
-                    listname="{{ 'Parent item' | translate }}"
-                    [InputListValues]="agendaItemObserver"
-                ></os-search-value-selector>
-            </div>
-
             <!-- Visibility -->
             <div class="content-field" *ngIf="newMotion">
                 <mat-form-field>
@@ -730,6 +717,19 @@
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
+            </div>
+
+            <!-- Parent item -->
+            <div class="content-field" *ngIf="newMotion && agendaItemObserver.value.length > 0">
+                <os-search-value-selector
+                    ngDefaultControl
+                    [form]="contentForm"
+                    [formControl]="contentForm.get('agenda_parent_id')"
+                    [multiple]="false"
+                    [includeNone]="true"
+                    listname="{{ 'Parent agenda item' | translate }}"
+                    [InputListValues]="agendaItemObserver"
+                ></os-search-value-selector>
             </div>
 
             <!-- Supporter form -->

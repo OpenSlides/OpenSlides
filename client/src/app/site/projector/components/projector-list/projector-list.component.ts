@@ -85,7 +85,7 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
      */
     public constructor(
         titleService: Title,
-        translate: TranslateService,
+        protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
         private repo: ProjectorRepositoryService,
         private formBuilder: FormBuilder,
@@ -254,8 +254,9 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
      * @param projector The projector to delete
      */
     public async onDeleteButton(projector: ViewProjector): Promise<void> {
-        const content = this.translate.instant('Delete') + ` ${projector.name}?`;
-        if (await this.promptService.open('Are you sure?', content)) {
+        const title = this.translate.instant('Are you sure you want to delete this projector?');
+        const content = projector.name;
+        if (await this.promptService.open(title, content)) {
             this.repo.delete(projector).then(null, this.raiseError);
         }
     }

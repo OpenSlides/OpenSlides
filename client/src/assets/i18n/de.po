@@ -125,9 +125,6 @@ msgstr "Sichtbarkeit in der Tagesordnung"
 msgid "All casted ballots"
 msgstr "Alle abgegebenen Stimmzettel"
 
-msgid "All selected files will be deleted!"
-msgstr "Alle ausgewählten Dateien werden gelöscht!"
-
 msgid "All valid ballots"
 msgstr "Alle gültigen Stimmzettel"
 
@@ -180,11 +177,88 @@ msgstr "Ein unbekannter Fehler ist aufgetreten."
 msgid "Arabic"
 msgstr "Arabisch"
 
+msgid "Are you sure you want to copy the final version to the print template?"
+msgstr ""
+"Soll die Beschlussfassung weiter bearbeitet und eine Beschluss-Druckvorlage "
+"erstellt werden?"
+
+msgid "Are you sure you want to delete all selected elections?"
+msgstr "Sollen alle ausgewählten Wahlen wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete all selected files?"
+msgstr "Sollen alle ausgewählten Dateien wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete all selected items?"
+msgstr "Sollen alle ausgewählten Dateien wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete all selected motions?"
+msgstr "Sollen alle ausgewählten Anträge wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete all selected participants?"
+msgstr "Sollen alle ausgewählten Teilnehmende wirklich gelöscht werden?"
+
+msgid ""
+"Are you sure you want to delete all speakers from this list of speakers?"
+msgstr "Sollen wirklich alle Redner/innen von dieser Liste entfernt werden?"
+
+msgid "Are you sure you want to delete the print template?"
+msgstr "Soll die Beschluss-Druckvorlage wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete the selected message?"
+msgstr "Soll die ausgewählte Mitteilung wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this category?"
+msgstr "Soll dieses Sachgebiet wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this change recommendation?"
+msgstr "Soll diese Änderungsempfehlung wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this comment field?"
+msgstr "Soll dieses Kommentarfeld wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this countdown?"
+msgstr "Soll dieser Countdown wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this entry?"
+msgstr "Soll dieser Eintrag wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this file?"
+msgstr "Soll diese Datei wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this group?"
+msgstr "Soll diese Gruppe wirklich gelöscht werden?"
+
 msgid "Are you sure you want to delete this motion?"
 msgstr "Soll dieser Antrag wirklich gelöscht werden?"
 
+msgid "Are you sure you want to delete this participant?"
+msgstr "Soll diese/r Teilnehmende wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this projector?"
+msgstr "Soll dieser Projektor wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this statute paragraph?"
+msgstr "Soll dieser Satzungsabschnitt wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this tag?"
+msgstr "Soll dieses Schlagwort wirklich gelöscht werden?"
+
 msgid "Are you sure you want to delete this vote?"
 msgstr "Soll diese Abstimmung wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this workflow?"
+msgstr "Soll dieser Arbeitsablauf wirklich gelöscht werden?"
+
+msgid "Are you sure you want to number all agenda items?"
+msgstr "Sollen alle Tagesordnungspunkte wirklich neu nummeriert werden?"
+
+msgid "Are you sure you want to renumber all motions of this category?"
+msgstr ""
+"Sollen alle Anträge dieses Sachgebiets wirklich neu nummeriert werden?"
+
+msgid "Are you sure you want to send emails to all selected participants?"
+msgstr ""
+"Sollen E-Mails wirklich an alle ausgewählten Teilnehmende gesendet werden?"
 
 msgid ""
 "At least given name or surname have to be filled in. All other fields are "
@@ -391,6 +465,9 @@ msgstr "Alle löschen"
 msgid "Clear list"
 msgstr "Liste leeren"
 
+msgid "Clear motion block"
+msgstr "Antragsblock löschen"
+
 msgid "Clear tags"
 msgstr "Schlagwörter löschen"
 
@@ -399,6 +476,9 @@ msgstr "Schließen"
 
 msgid "Close list of speakers"
 msgstr "Redeliste schließen"
+
+msgid "Closed items"
+msgstr "Erledigte Einträge"
 
 msgid "Collapse all"
 msgstr "Alle zusammenklappen"
@@ -455,6 +535,9 @@ msgstr "Beschluss-Druckvorlage erstellen"
 msgid "Create new category"
 msgstr "Neues Sachgebiet erstellen"
 
+msgid "Create new state"
+msgstr "Neuen Status erstellen"
+
 msgid "Create new workflow"
 msgstr "Neuen Arbeitsablauf erstellen"
 
@@ -466,9 +549,6 @@ msgstr "Aktuelle Browsersprache"
 
 msgid "Current list of speakers"
 msgstr "Aktuelle Redeliste"
-
-msgid "Current list of speakers reference"
-msgstr "Referenz zur aktuellen Redeliste"
 
 msgid "Custom number of ballot papers"
 msgstr "Benutzerdefinierte Anzahl von Stimmzetteln"
@@ -584,9 +664,6 @@ msgstr "Nicht befassen"
 msgid "Do not decide"
 msgstr "Nicht entscheiden"
 
-msgid "Do you want to delete this file?"
-msgstr "Soll diese Datei wirklich gelöscht werden?"
-
 msgid "Does not have notes"
 msgstr "Hat keine Notizen"
 
@@ -701,6 +778,12 @@ msgstr ""
 msgid "Error"
 msgstr "Fehler"
 
+msgid "Error: The new passwords do not match."
+msgstr "Fehler: Die neuen Passwörter stimmen nicht überein."
+
+msgid "Estimated end"
+msgstr "Voraussichtliches Ende"
+
 msgid "Event"
 msgstr "Veranstaltung"
 
@@ -785,6 +868,9 @@ msgstr "Empfehlung folgen"
 msgid "Follow recommendations for all motions"
 msgstr "Empfehlungen für alle Anträge folgen"
 
+msgid "Following users are currently editing this motion:"
+msgstr "Folgende Nutzer bearbeiten aktuell diesen Antrag:"
+
 msgid "Forgot Password?"
 msgstr "Passwort vergessen?"
 
@@ -826,6 +912,9 @@ msgstr "Gruppen mit Leseberechtigungen"
 
 msgid "Groups with write permissions"
 msgstr "Gruppen mit Schreibberechtigungen"
+
+msgid "Guest"
+msgstr "Gast"
 
 msgid "Has notes"
 msgstr "Hat Notizen"
@@ -933,6 +1022,9 @@ msgstr "Ungültige Eingabe."
 msgid "Invalid line number"
 msgstr "Ungültige Zeilennummer"
 
+msgid "Invalid votes"
+msgstr "Ungültige Stimmen"
+
 msgid "Is PDF file"
 msgstr "Ist eine PDF-Datei"
 
@@ -963,6 +1055,9 @@ msgstr "Ist nicht aktiv"
 msgid "Is not favorite"
 msgstr "Ist kein Favorit"
 
+msgid "Is not present"
+msgstr "Ist nicht anwesend"
+
 msgid "Is present"
 msgstr "Ist anwesend"
 
@@ -977,6 +1072,9 @@ msgstr "Verwenden Sie eine Zeile pro Person."
 
 msgid "Label color"
 msgstr "Beschriftungsfarbe"
+
+msgid "Last email send"
+msgstr "Letzte gesendet E-Mail"
 
 msgid "Last modified"
 msgstr "Zuletzt geändert"
@@ -1022,9 +1120,6 @@ msgstr "Als Gast anmelden"
 
 msgid "Logout"
 msgstr "Abmelden"
-
-msgid "Manage the list of speakers for..."
-msgstr "Redeliste verwalten für..."
 
 msgid "Mark speaker"
 msgstr "Redner/in markieren"
@@ -1280,6 +1375,9 @@ msgstr "Nur Haupt-Tagesordnungspunkte"
 msgid "Open"
 msgstr "Öffnen"
 
+msgid "Open items"
+msgstr "Offene Einträge"
+
 msgid "Open list of speakers"
 msgstr "Redeliste öffnen"
 
@@ -1328,8 +1426,8 @@ msgstr "Absatzbasiert mit Änderungsdarstellung"
 msgid "Parallel upload"
 msgstr "Parallel hochladen"
 
-msgid "Parent item"
-msgstr "Elternelement"
+msgid "Parent agenda item"
+msgstr "Elternelement in der Tagesordnung"
 
 msgid "Participant cannot be found"
 msgstr "Teilnehmende wurde nicht gefunden"
@@ -1422,6 +1520,9 @@ msgstr "Vorschau"
 msgid "Previous"
 msgstr "Zurück"
 
+msgid "Previous slides"
+msgstr "Letzte Folien"
+
 msgid "Print ballot papers"
 msgstr "Stimmzettel drucken"
 
@@ -1485,8 +1586,8 @@ msgstr "Empfehlung gesetzt auf {arg1}"
 msgid "Refer to committee"
 msgstr "In Ausschuss verweisen"
 
-msgid "Reference projector"
-msgstr "Referenzprojektor"
+msgid "Reference projector for current list of speakers:"
+msgstr "Referezprojektor für die aktuelle Redeliste:"
 
 msgid "Referral to committee"
 msgstr "Verweisung in Ausschuss"
@@ -1508,6 +1609,9 @@ msgstr "Verwerfung (nicht berechtigt)"
 
 msgid "Remove"
 msgstr "Entfernen"
+
+msgid "Remove all speakers"
+msgstr "Alle Redner/innen entfernen"
 
 msgid ""
 "Remove all supporters of a motion if a submitter edits his motion in early "
@@ -1568,6 +1672,18 @@ msgstr "QR-Code scannen um sich mit dem WLAN zu verbinden."
 msgid "Scan this QR code to open URL."
 msgstr "QR-Code scannen um die URL zu öffnen."
 
+msgid "Scroll down"
+msgstr "Nach unten scrollen"
+
+msgid "Scroll down (big step)"
+msgstr "Nach unten scrollen (in großen Schritten)"
+
+msgid "Scroll up"
+msgstr "Nach oben scrollen"
+
+msgid "Scroll up (big step)"
+msgstr "Nach oben scrollen (in großen Schritten)"
+
 msgid "Search"
 msgstr "Suche"
 
@@ -1610,6 +1726,9 @@ msgstr "Laufende Nummer"
 msgid "Serially numbered"
 msgstr "fortlaufend nummerieren"
 
+msgid "Set active status for selected participants:"
+msgstr "Aktiv-Status für ausgewählte Teilnehmende setzen:"
+
 msgid "Set as parent"
 msgstr "Als Eltern setzen"
 
@@ -1618,6 +1737,9 @@ msgstr "Sachgebiet setzen"
 
 msgid "Set committee ..."
 msgstr "Gremium setzen ..."
+
+msgid "Set committee status for selected participants:"
+msgstr "Gremium-Status für ausgewählte Teilnehmende setzen:"
 
 msgid "Set hidden"
 msgstr "Versteckt setzen"
@@ -1636,6 +1758,9 @@ msgstr "Antragsblock setzen"
 
 msgid "Set presence ..."
 msgstr "Anwesenheit setzen ..."
+
+msgid "Set presence status for selected participants:"
+msgstr "Anwesenheits-Status für ausgewählte Teilnehmende setzen:"
 
 msgid "Set public"
 msgstr "Öffentlich setzen"
@@ -1726,6 +1851,9 @@ msgstr "Anträge sortieren"
 
 msgid "Sort name of participants by"
 msgstr "Namen der Teilnehmenden sortieren nach"
+
+msgid "Speakers"
+msgstr "Redner/innen"
 
 msgid "Special values"
 msgstr "Spezielle Werte"
@@ -1902,6 +2030,12 @@ msgstr ""
 "Tagesordnung durchgeführt wird."
 
 msgid ""
+"This will add or remove the following groups for all selected participants:"
+msgstr ""
+"Folgende Gruppen werden für die ausgewählten Teilnehmenden hinzugefügt oder "
+"entfernt:"
+
+msgid ""
 "This will add or remove the following submitters for all selected motions:"
 msgstr ""
 "Folgende Antragsteller werden für die ausgewählten Anträge hinzugefügt oder "
@@ -1911,9 +2045,6 @@ msgid "This will add or remove the following tags for all selected motions:"
 msgstr ""
 "Folgende Schlagwörter werden für die ausgewählten Anträge hinzugefügt oder "
 "entfernt:"
-
-msgid "This will delete all selected motions."
-msgstr "Alle ausgewählten Anträge werden gelöscht."
 
 msgid "This will move all selected motions as childs to:"
 msgstr ""
@@ -1980,6 +2111,9 @@ msgstr "Themen wurden importiert."
 msgid "Topics(s) will be imported."
 msgstr "Themen werden importiert."
 
+msgid "Total votes cast"
+msgstr "Abgegebene Stimmen"
+
 msgid "Two-thirds majority"
 msgstr "Zweidrittelmehrheit"
 
@@ -2027,6 +2161,9 @@ msgstr "Benutzername"
 
 msgid "Username or password is not correct."
 msgstr "Benutzername oder Passwort war nicht korrekt."
+
+msgid "Valid votes"
+msgstr "Gültige Stimmen"
 
 msgid "Visibility"
 msgstr "Sichtbarkeit"
@@ -2078,6 +2215,9 @@ msgstr "Web-Interface-Kopfzeilen-Logo"
 
 msgid "Welcome to OpenSlides"
 msgstr "Willkommen bei OpenSlides"
+
+msgid "Which version?"
+msgstr "Welche Fassung?"
 
 msgid ""
 "Will be displayed as label before selected recommendation for statute "
@@ -2153,11 +2293,20 @@ msgstr "[Platz für Ihren Begrüßungs- und Hilfetext.]"
 msgid "[Space for your welcome text.]"
 msgstr "[Platz für Ihren Begrüßungstext.]"
 
+msgid "absent"
+msgstr "abwesend"
+
 msgid "accepted"
 msgstr "angenommen"
 
+msgid "active"
+msgstr "aktiv"
+
 msgid "active users"
 msgstr "aktive Nutzer"
+
+msgid "add group(s)"
+msgstr "Gruppe(n) hinzufügen"
 
 msgid "adjourned"
 msgstr "vertagt"
@@ -2171,6 +2320,9 @@ msgstr "stimmzettel"
 msgid "by"
 msgstr "von"
 
+msgid "committee"
+msgstr "Gremium"
+
 msgid "connections"
 msgstr "Verbindungen"
 
@@ -2180,6 +2332,12 @@ msgstr "Wortmeldung"
 msgid "disabled"
 msgstr "deaktiviert"
 
+msgid "diverse"
+msgstr "divers"
+
+msgid "emails"
+msgstr "E-Mails"
+
 msgid "entries will be ommitted."
 msgstr "Einträge werden ausgelassen. "
 
@@ -2188,6 +2346,15 @@ msgstr "Fehler"
 
 msgid "example"
 msgstr "Beispiel"
+
+msgid "female"
+msgstr "weiblich"
+
+msgid "has saved his work on this motion."
+msgstr "hat die Arbeit an diesem Antrag gespeichert."
+
+msgid "inactive"
+msgstr "inaktiv"
 
 msgid "inline"
 msgstr "innerhalb"
@@ -2207,17 +2374,23 @@ msgstr "Einträge pro Seite"
 msgid "majority"
 msgstr "Mehrheit"
 
+msgid "male"
+msgstr "männlich"
+
+msgid "minutes"
+msgstr "Minuten"
+
 msgid "motions"
 msgstr "Anträge"
 
 msgid "motions-example"
 msgstr "Anträge-Beispiel"
 
-msgid "needed"
-msgstr "erforderlich"
-
 msgid "needs review"
 msgstr "benötigt Überprüfung"
+
+msgid "no committee"
+msgstr "kein Gremium"
 
 msgid "none"
 msgstr "aus"
@@ -2227,9 +2400,6 @@ msgstr "nicht befasst"
 
 msgid "not decided"
 msgstr "nicht entschieden"
-
-msgid "not present"
-msgstr "abwesend"
 
 msgid "not reached."
 msgstr "nicht erreicht."
@@ -2246,6 +2416,9 @@ msgstr "Teilnehmende-Beispiel"
 msgid "permitted"
 msgstr "zugelassen"
 
+msgid "present"
+msgstr "anwesend"
+
 msgid "published"
 msgstr "veröffentlicht"
 
@@ -2261,6 +2434,9 @@ msgstr "abgelehnt"
 msgid "rejected (not authorized)"
 msgstr "verworfen (nicht zulässig)"
 
+msgid "remove group(s)"
+msgstr "Gruppe(n) entfernen"
+
 msgid "result"
 msgstr "Ergebnis"
 
@@ -2269,9 +2445,6 @@ msgstr "Ergebnisse"
 
 msgid "selected"
 msgstr "ausgewählt"
-
-msgid "self"
-msgstr "sich selbst"
 
 msgid "statute paragraphs have been imported."
 msgstr "Satzungsabschnitte wurden importiert."

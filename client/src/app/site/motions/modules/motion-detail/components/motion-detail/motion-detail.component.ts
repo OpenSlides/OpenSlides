@@ -377,7 +377,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      */
     public constructor(
         title: Title,
-        translate: TranslateService,
+        protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
         public vp: ViewportService,
         public operator: OperatorService,
@@ -855,7 +855,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      */
     public async deleteMotionButton(): Promise<void> {
         const title = this.translate.instant('Are you sure you want to delete this motion?');
-        if (await this.promptService.open(title, this.motion.getTitle())) {
+        const content = this.motion.getTitle();
+        if (await this.promptService.open(title, content)) {
             await this.repo.delete(this.motion);
             this.router.navigate(['./motions/']);
         }
@@ -1001,8 +1002,10 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         try {
             // Just confirm this, if there is one modified final version the user would override.
             if (this.motion.modified_final_version) {
-                const content = this.translate.instant('Are you sure to copy the final version to the print template?');
-                if (await this.promptService.open(this.motion.title, content)) {
+                const title = this.translate.instant(
+                    'Are you sure you want to copy the final version to the print template?'
+                );
+                if (await this.promptService.open(title, null)) {
                     await this.updateMotion({ modified_final_version: finalVersion }, this.motion);
                 }
             } else {
@@ -1018,8 +1021,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * Deletes the modified final version
      */
     public async deleteModifiedFinalVersion(): Promise<void> {
-        const content = this.translate.instant('Are you sure to delete the print template?');
-        if (await this.promptService.open(this.motion.title, content)) {
+        const title = this.translate.instant('Are you sure you want to delete the print template?');
+        if (await this.promptService.open(title, null)) {
             this.updateMotion({ modified_final_version: '' }, this.motion).then(
                 () => this.setChangeRecoMode(ChangeRecoMode.Final),
                 this.raiseError

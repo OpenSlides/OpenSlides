@@ -5,6 +5,7 @@ import { ViewMotion } from '../models/view-motion';
 import { TranslateService } from '@ngx-translate/core';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { _ } from 'app/core/translate/translation-marker';
 
 @Injectable({
     providedIn: 'root'
@@ -21,8 +22,8 @@ export class MotionSortListService extends BaseSortListService<ViewMotion> {
             { property: 'category' },
             { property: 'motion_block_id', label: 'Motion block' },
             { property: 'state' },
-            { property: 'creationDate', label: this.translate.instant('Creation date') },
-            { property: 'lastChangeDate', label: this.translate.instant('Last modified') }
+            { property: 'creationDate', label: _('Creation date') },
+            { property: 'lastChangeDate', label: _('Last modified') }
         ]
     };
     protected name = 'Motion';

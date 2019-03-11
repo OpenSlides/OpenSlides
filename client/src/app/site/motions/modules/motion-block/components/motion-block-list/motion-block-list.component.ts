@@ -157,8 +157,9 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
      * @param motionBlock the block to delete
      */
     public async onDelete(motionBlock: ViewMotionBlock): Promise<void> {
-        const content = this.translate.instant('Are you sure you want to delete this motion block?');
-        if (await this.promptService.open(motionBlock.title, content)) {
+        const title = this.translate.instant('Are you sure you want to delete this motion block?');
+        const content = motionBlock.title;
+        if (await this.promptService.open(title, content)) {
             await this.repo.delete(motionBlock);
         }
     }

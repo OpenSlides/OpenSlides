@@ -111,7 +111,7 @@ export class SortingListComponent implements OnInit, OnDestroy {
      * Creates an empty array.
      * @param translate the translation service
      */
-    public constructor(public translate: TranslateService) {
+    public constructor(protected translate: TranslateService) {
         this.array = [];
     }
 

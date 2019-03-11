@@ -79,7 +79,7 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
      */
     public constructor(
         title: Title,
-        translate: TranslateService,
+        protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
         private sanitizer: DomSanitizer,
         private motionRepo: MotionRepositoryService,
@@ -277,8 +277,8 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
     public async deleteChangeRecommendation(reco: ViewMotionChangeRecommendation, $event: MouseEvent): Promise<void> {
         $event.stopPropagation();
         $event.preventDefault();
-        const content = this.translate.instant('Delete this change recommendation');
-        if (await this.promptService.open('Are you sure?', content)) {
+        const title = this.translate.instant('Are you sure you want to delete this change recommendation?');
+        if (await this.promptService.open(title, null)) {
             this.recoRepo.delete(reco).then(null, this.raiseError);
         }
     }

@@ -1,9 +1,11 @@
 import { BaseModel } from '../base/base-model';
 
+import { _ } from 'app/core/translate/translation-marker';
+
 /**
  * Iterable pre selection of genders (sexes)
  */
-export const genders = ['Female', 'Male', 'Diverse'];
+export const genders = [_('female'), _('male'), _('diverse')];
 
 /**
  * Representation of a user in contrast to the operator.

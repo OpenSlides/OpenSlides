@@ -93,7 +93,7 @@ export class OsSortFilterBarComponent<V extends BaseViewModel> {
      * @param bottomSheet
      */
     public constructor(
-        public translate: TranslateService,
+        protected translate: TranslateService,
         public vp: ViewportService,
         private bottomSheet: MatBottomSheet
     ) {

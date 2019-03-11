@@ -55,7 +55,7 @@ export class MotionCommentSectionListComponent extends BaseViewComponent impleme
      */
     public constructor(
         titleService: Title,
-        translate: TranslateService,
+        protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
         private repo: MotionCommentSectionRepositoryService,
         private formBuilder: FormBuilder,
@@ -164,8 +164,9 @@ export class MotionCommentSectionListComponent extends BaseViewComponent impleme
      * @param viewSection The section to delete
      */
     public async onDeleteButton(viewSection: ViewMotionCommentSection): Promise<void> {
-        const content = this.translate.instant('Delete') + ` ${viewSection.name}?`;
-        if (await this.promptService.open('Are you sure?', content)) {
+        const title = this.translate.instant('Are you sure you want to delete this comment field?');
+        const content = viewSection.name;
+        if (await this.promptService.open(title, content)) {
             this.repo.delete(viewSection).then(() => (this.openId = this.editId = null), this.raiseError);
         }
     }
