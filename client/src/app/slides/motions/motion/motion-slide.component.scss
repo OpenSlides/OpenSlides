@@ -19,3 +19,15 @@
         margin-bottom: 0px;
     }
 }
+
+/* override the absolute position of outside linenumbers on motion slide */
+:host ::ng-deep .motion-text {
+    &.line-numbers-outside {
+        .os-line-number {
+            &:after {
+                top: 19px;
+                font-size: 13px;
+            }
+        }
+    }
+}
