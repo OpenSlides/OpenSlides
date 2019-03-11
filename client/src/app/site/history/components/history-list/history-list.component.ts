@@ -172,6 +172,7 @@ export class HistoryListComponent extends ListViewBaseComponent<ViewHistory, His
             }
             filter = filter ? filter.toLowerCase() : '';
             if (
+                this.getElementInfo(data) &&
                 this.getElementInfo(data)
                     .toLowerCase()
                     .indexOf(filter) >= 0
