@@ -111,9 +111,9 @@ export class ViewItem extends BaseViewModel {
     /**
      * This is set by the repository
      */
-    public getVerboseName;
-    public getTitle;
-    public getListTitle;
+    public getVerboseName: () => string;
+    public getTitle: () => string;
+    public getListTitle: () => string;
 
     public listOfSpeakersSlide: ProjectorElementBuildDeskriptor = {
         getBasicProjectorElement: options => ({
