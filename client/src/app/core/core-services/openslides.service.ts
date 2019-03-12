@@ -66,18 +66,7 @@ export class OpenSlidesService {
         const response = await this.operator.whoAmIFromStorage();
         if (!response.user && !response.guest_enabled) {
             this.redirectUrl = location.pathname;
-
-            // let the use navigate and reload on every login-page
-            if (this.redirectUrl.includes('/login/')) {
-                // Allow free navigation in the children of the login page
-                // required for resetting password and direct navigation to legal notice
-                // and privacy policy.
-                this.router.navigate([this.redirectUrl]);
-            } else {
-                // Goto login, if the user isn't login and guests are not allowed
-                this.router.navigate(['/login']);
-            }
-
+            this.redirectToLoginIfNotSubpage();
             this.checkOperator(false);
         } else {
             await this.afterLoginBootup(response.user_id);
@@ -85,6 +74,17 @@ export class OpenSlidesService {
             // Check for the operator via a async whoami (so no await here)
             // to validate, that the cache was correct.
             this.checkOperator(false);
+        }
+    }
+
+    /**
+     * Redirects the user to /login, if he isn't on a subpage.
+     */
+    private redirectToLoginIfNotSubpage(): void {
+        if (!this.redirectUrl.includes('/login/')) {
+            // Goto login, if the user isn't on a subpage like
+            // legal notice or reset passwort view.
+            this.router.navigate(['/login']);
         }
     }
 
@@ -152,7 +152,7 @@ export class OpenSlidesService {
         // User logged off.
         if (!response.user && !response.guest_enabled) {
             await this.shutdown();
-            this.router.navigate(['/login']);
+            this.redirectToLoginIfNotSubpage();
         } else {
             if (
                 (this.operator.user && this.operator.user.id !== response.user_id) ||
