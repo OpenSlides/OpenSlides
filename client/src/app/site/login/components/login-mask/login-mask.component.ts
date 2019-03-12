@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -72,7 +73,8 @@ export class LoginMaskComponent extends BaseComponent implements OnInit, OnDestr
      * @param loginDataService provide information about the legal notice and privacy policy
      */
     public constructor(
-        protected translate: TranslateService,
+        title: Title,
+        translate: TranslateService,
         private authService: AuthService,
         private operator: OperatorService,
         private router: Router,
@@ -81,7 +83,7 @@ export class LoginMaskComponent extends BaseComponent implements OnInit, OnDestr
         private httpService: HttpService,
         private loginDataService: LoginDataService
     ) {
-        super();
+        super(title, translate);
         this.createForm();
     }
 

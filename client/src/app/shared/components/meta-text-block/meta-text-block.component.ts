@@ -1,4 +1,7 @@
 import { Component, Input } from '@angular/core';
+import { Title } from '@angular/platform-browser';
+
+import { TranslateService } from '@ngx-translate/core';
 
 import { BaseComponent } from '../../../base.component';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
@@ -15,7 +18,7 @@ export class MetaTextBlockComponent extends BaseComponent {
     @Input()
     public showActionRow: boolean;
 
-    public constructor(public vp: ViewportService) {
-        super();
+    public constructor(title: Title, translate: TranslateService, public vp: ViewportService) {
+        super(title, translate);
     }
 }

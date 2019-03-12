@@ -1,5 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
+
+import { TranslateService } from '@ngx-translate/core';
 
 import { BaseComponent } from 'app/base.component';
 import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-export.service';
@@ -40,11 +43,13 @@ export class PersonalNoteComponent extends BaseComponent {
      * @param pdfService
      */
     public constructor(
+        title: Title,
+        translate: TranslateService,
         private personalNoteService: PersonalNoteService,
         formBuilder: FormBuilder,
         private pdfService: MotionPdfExportService
     ) {
-        super();
+        super(title, translate);
         this.personalNoteForm = formBuilder.group({
             note: ['']
         });
