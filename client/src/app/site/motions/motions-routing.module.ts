@@ -41,7 +41,8 @@ const routes: Routes = [
     },
     {
         path: ':id',
-        loadChildren: './modules/motion-detail/motion-detail.module#MotionDetailModule'
+        loadChildren: './modules/motion-detail/motion-detail.module#MotionDetailModule',
+        runGuardsAndResolvers: 'paramsChange'
     }
 ];
 

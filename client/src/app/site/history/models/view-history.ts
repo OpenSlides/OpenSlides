@@ -113,6 +113,10 @@ export class ViewHistory extends BaseViewModel {
         return this.element_id;
     };
 
+    public getModel(): History {
+        return this.history;
+    }
+
     /**
      * Updates the history object with new values
      *

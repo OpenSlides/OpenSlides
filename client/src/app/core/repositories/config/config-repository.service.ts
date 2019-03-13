@@ -4,10 +4,10 @@ import { Observable, BehaviorSubject } from 'rxjs';
 
 import { BaseRepository } from 'app/core/repositories/base-repository';
 import { Config } from 'app/shared/models/core/config';
+import { DataSendService } from 'app/core/core-services/data-send.service';
 import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { ConstantsService } from 'app/core/ui-services/constants.service';
 import { HttpService } from 'app/core/core-services/http.service';
-import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from 'app/core/core-services/collectionStringMapper.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { ViewConfig } from 'app/site/config/models/view-config';
@@ -97,13 +97,14 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
      */
     public constructor(
         DS: DataStoreService,
+        dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
         private constantsService: ConstantsService,
         private http: HttpService,
         private translate: TranslateService
     ) {
-        super(DS, mapperService, viewModelStoreService, Config);
+        super(DS, dataSend, mapperService, viewModelStoreService, Config);
 
         this.constantsService.get('OpenSlidesConfigVariables').subscribe(constant => {
             this.createConfigStructure(constant);
@@ -142,6 +143,7 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
         this.updateConfigListObservable();
 
         // Could be raise in error if the root injector is not known
+        // TODO go over repo
         this.DS.changeObservable.subscribe(model => {
             if (model instanceof Config) {
                 this.viewModelStore[model.id] = this.createViewModel(model as Config);
@@ -217,26 +219,6 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
         updatedConfig.patchValues(config);
         // TODO: Use datasendService, if it can switch correctly between put, post and patch
         await this.http.put('rest/' + updatedConfig.collectionString + '/' + updatedConfig.key + '/', updatedConfig);
-    }
-
-    /**
-     * This particular function should never be necessary since the creation of config
-     * values is not planed.
-     *
-     * Function exists solely to correctly implement {@link BaseRepository}
-     */
-    public async delete(config: ViewConfig): Promise<void> {
-        throw new Error('Config variables cannot be deleted');
-    }
-
-    /**
-     * This particular function should never be necessary since the creation of config
-     * values is not planed.
-     *
-     * Function exists solely to correctly implement {@link BaseRepository}
-     */
-    public async create(config: Config): Promise<Identifiable> {
-        throw new Error('Config variables cannot be created');
     }
 
     /**

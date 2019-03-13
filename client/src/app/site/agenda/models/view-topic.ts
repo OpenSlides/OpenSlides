@@ -71,6 +71,10 @@ export class ViewTopic extends BaseAgendaViewModel {
         }
     };
 
+    public getModel(): Topic {
+        return this.topic;
+    }
+
     public getAgendaItem(): ViewItem {
         return this.agendaItem;
     }

@@ -54,6 +54,10 @@ export class ViewCountdown extends BaseProjectableViewModel {
         return this.description ? `${this.title} (${this.description})` : this.title;
     };
 
+    public getModel(): Countdown {
+        return this.countdown;
+    }
+
     public updateDependencies(update: BaseViewModel): void {}
 
     public getSlide(): ProjectorElementBuildDeskriptor {

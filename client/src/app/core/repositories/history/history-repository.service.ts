@@ -5,13 +5,13 @@ import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { BaseRepository } from 'app/core/repositories/base-repository';
 import { History } from 'app/shared/models/core/history';
 import { User } from 'app/shared/models/users/user';
-import { Identifiable } from 'app/shared/models/base/identifiable';
 import { HttpService } from 'app/core/core-services/http.service';
 import { ViewHistory } from 'app/site/history/models/view-history';
 import { TimeTravelService } from 'app/core/core-services/time-travel.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { TranslateService } from '@ngx-translate/core';
+import { DataSendService } from 'app/core/core-services/data-send.service';
 
 /**
  * Repository for the history.
@@ -32,13 +32,14 @@ export class HistoryRepositoryService extends BaseRepository<ViewHistory, Histor
      */
     public constructor(
         DS: DataStoreService,
+        dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
         private httpService: HttpService,
         private timeTravel: TimeTravelService,
         private translate: TranslateService
     ) {
-        super(DS, mapperService, viewModelStoreService, History, [User]);
+        super(DS, dataSend, mapperService, viewModelStoreService, History, [User]);
     }
 
     public getVerboseName = (plural: boolean = false) => {
@@ -56,22 +57,6 @@ export class HistoryRepositoryService extends BaseRepository<ViewHistory, Histor
         const viewHistory = new ViewHistory(history, user);
         viewHistory.getVerboseName = this.getVerboseName;
         return viewHistory;
-    }
-
-    /**
-     * Clients usually do not need to create a history object themselves
-     * @ignore
-     */
-    public async create(): Promise<Identifiable> {
-        throw new Error('You cannot create a history object');
-    }
-
-    /**
-     * Clients usually do not need to modify existing history objects
-     * @ignore
-     */
-    public async update(): Promise<void> {
-        throw new Error('You cannot update a history object');
     }
 
     /**

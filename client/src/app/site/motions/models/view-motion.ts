@@ -396,6 +396,10 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
         return this.item;
     }
 
+    public getModel(): Motion {
+        return this.motion;
+    }
+
     /**
      * Formats the category for search
      *

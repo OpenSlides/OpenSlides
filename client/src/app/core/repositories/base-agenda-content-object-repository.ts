@@ -1,6 +1,7 @@
 import { BaseViewModel } from '../../site/base/base-view-model';
 import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model';
 import { CollectionStringMapperService } from '../core-services/collectionStringMapper.service';
+import { DataSendService } from '../core-services/data-send.service';
 import { DataStoreService } from '../core-services/data-store.service';
 import { ViewModelStoreService } from '../core-services/view-model-store.service';
 import { BaseRepository } from './base-repository';
@@ -21,11 +22,12 @@ export abstract class BaseAgendaContentObjectRepository<
      */
     public constructor(
         DS: DataStoreService,
+        dataSend: DataSendService,
         collectionStringMapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
         baseModelCtor: ModelConstructor<M>,
         depsModelCtors?: ModelConstructor<BaseModel>[]
     ) {
-        super(DS, collectionStringMapperService, viewModelStoreService, baseModelCtor, depsModelCtors);
+        super(DS, dataSend, collectionStringMapperService, viewModelStoreService, baseModelCtor, depsModelCtors);
     }
 }

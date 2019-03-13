@@ -1,6 +1,7 @@
 import { Displayable } from './displayable';
 import { Identifiable } from '../../shared/models/base/identifiable';
 import { Collection } from 'app/shared/models/base/collection';
+import { BaseModel } from 'app/shared/models/base/base-model';
 
 export interface ViewModelConstructor<T extends BaseViewModel> {
     COLLECTIONSTRING: string;
@@ -55,6 +56,9 @@ export abstract class BaseViewModel implements Displayable, Identifiable, Collec
     public getListTitle: () => string = () => {
         return this.getTitle();
     };
+
+    /** return the main model of a view model */
+    public abstract getModel(): BaseModel;
 
     public abstract updateDependencies(update: BaseViewModel): void;
 

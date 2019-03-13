@@ -47,10 +47,14 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        private dataSend: DataSendService,
+        protected dataSend: DataSendService,
         private translate: TranslateService
     ) {
-        super(DS, mapperService, viewModelStoreService, MotionChangeRecommendation, [Category, User, Workflow]);
+        super(DS, dataSend, mapperService, viewModelStoreService, MotionChangeRecommendation, [
+            Category,
+            User,
+            Workflow
+        ]);
     }
 
     public getVerboseName = (plural: boolean = false) => {
@@ -69,51 +73,12 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<
     }
 
     /**
-     * Creates a change recommendation
-     * Creates a (real) change recommendation and delegates it to the {@link DataSendService}
-     *
-     * @param {MotionChangeRecommendation} changeReco
-     */
-    public async create(changeReco: MotionChangeRecommendation): Promise<Identifiable> {
-        return await this.dataSend.createModel(changeReco);
-    }
-
-    /**
      * Given a change recommendation view object, a entry in the backend is created.
      * @param view
      * @returns The id of the created change recommendation
      */
     public async createByViewModel(view: ViewMotionChangeRecommendation): Promise<Identifiable> {
         return await this.dataSend.createModel(view.changeRecommendation);
-    }
-
-    /**
-     * Deleting a change recommendation.
-     *
-     * Extract the change recommendation out of the viewModel and delegate
-     * to {@link DataSendService}
-     * @param {ViewMotionChangeRecommendation} viewModel
-     */
-    public async delete(viewModel: ViewMotionChangeRecommendation): Promise<void> {
-        await this.dataSend.deleteModel(viewModel.changeRecommendation);
-    }
-
-    /**
-     * updates a change recommendation
-     *
-     * Updates a (real) change recommendation with patched data and delegate it
-     * to the {@link DataSendService}
-     *
-     * @param {Partial<MotionChangeRecommendation>} update the form data containing the update values
-     * @param {ViewMotionChangeRecommendation} viewModel The View Change Recommendation. If not present, a new motion will be created
-     */
-    public async update(
-        update: Partial<MotionChangeRecommendation>,
-        viewModel: ViewMotionChangeRecommendation
-    ): Promise<void> {
-        const changeReco = viewModel.changeRecommendation;
-        changeReco.patchValues(update);
-        await this.dataSend.partialUpdateModel(changeReco);
     }
 
     /**

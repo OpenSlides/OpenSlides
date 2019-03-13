@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { BaseRepository } from '../base-repository';
-import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
 import { ViewCountdown } from 'app/site/projector/models/view-countdown';
 import { Countdown } from 'app/shared/models/core/countdown';
@@ -18,11 +17,11 @@ export class CountdownRepositoryService extends BaseRepository<ViewCountdown, Co
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        private dataSend: DataSendService,
+        protected dataSend: DataSendService,
         private translate: TranslateService,
         private servertimeService: ServertimeService
     ) {
-        super(DS, mapperService, viewModelStoreService, Countdown);
+        super(DS, dataSend, mapperService, viewModelStoreService, Countdown);
     }
 
     public getVerboseName = (plural: boolean = false) => {
@@ -33,20 +32,6 @@ export class CountdownRepositoryService extends BaseRepository<ViewCountdown, Co
         const viewCountdown = new ViewCountdown(countdown);
         viewCountdown.getVerboseName = this.getVerboseName;
         return viewCountdown;
-    }
-
-    public async create(countdown: Countdown): Promise<Identifiable> {
-        return await this.dataSend.createModel(countdown);
-    }
-
-    public async update(countdown: Partial<Countdown>, viewCountdown: ViewCountdown): Promise<void> {
-        const update = viewCountdown.countdown;
-        update.patchValues(countdown);
-        await this.dataSend.updateModel(update);
-    }
-
-    public async delete(countdown: ViewCountdown): Promise<void> {
-        await this.dataSend.deleteModel(countdown.countdown);
     }
 
     public async start(countdown: ViewCountdown): Promise<void> {

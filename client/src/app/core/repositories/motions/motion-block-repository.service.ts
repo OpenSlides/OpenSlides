@@ -8,7 +8,6 @@ import { CollectionStringMapperService } from 'app/core/core-services/collection
 import { DataSendService } from 'app/core/core-services/data-send.service';
 import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { HttpService } from 'app/core/core-services/http.service';
-import { Identifiable } from 'app/shared/models/base/identifiable';
 import { Motion } from 'app/shared/models/motions/motion';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { MotionRepositoryService } from './motion-repository.service';
@@ -39,12 +38,12 @@ export class MotionBlockRepositoryService extends BaseAgendaContentObjectReposit
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        private dataSend: DataSendService,
+        protected dataSend: DataSendService,
         private motionRepo: MotionRepositoryService,
         private httpService: HttpService,
         private translate: TranslateService
     ) {
-        super(DS, mapperService, viewModelStoreService, MotionBlock, [Item]);
+        super(DS, dataSend, mapperService, viewModelStoreService, MotionBlock, [Item]);
     }
 
     public getAgendaTitle = (motionBlock: Partial<MotionBlock> | Partial<ViewMotionBlock>) => {
@@ -72,38 +71,6 @@ export class MotionBlockRepositoryService extends BaseAgendaContentObjectReposit
         viewMotionBlock.getAgendaTitle = () => this.getAgendaTitle(viewMotionBlock);
         viewMotionBlock.getAgendaTitleWithType = () => this.getAgendaTitleWithType(viewMotionBlock);
         return viewMotionBlock;
-    }
-
-    /**
-     * Updates a given motion block
-     *
-     * @param update a partial motion block containing the update data
-     * @param viewBlock the motion block to update
-     */
-    public async update(update: Partial<MotionBlock>, viewBlock: ViewMotionBlock): Promise<void> {
-        const updateMotionBlock = new MotionBlock();
-        updateMotionBlock.patchValues(viewBlock.motionBlock);
-        updateMotionBlock.patchValues(update);
-        return await this.dataSend.updateModel(updateMotionBlock);
-    }
-
-    /**
-     * Deletes a motion block from the server
-     *
-     * @param newBlock the motion block to delete
-     */
-    public async delete(newBlock: ViewMotionBlock): Promise<void> {
-        return await this.dataSend.deleteModel(newBlock.motionBlock);
-    }
-
-    /**
-     * Creates a new motion block to the server
-     *
-     * @param newBlock The new block to create
-     * @returns the ID of the created model as promise
-     */
-    public async create(newBlock: MotionBlock): Promise<Identifiable> {
-        return await this.dataSend.createModel(newBlock);
     }
 
     /**

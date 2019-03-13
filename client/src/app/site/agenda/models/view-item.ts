@@ -132,6 +132,10 @@ export class ViewItem extends BaseViewModel {
         this._contentObject = contentObject;
     }
 
+    public getModel(): Item {
+        return this.item;
+    }
+
     public updateDependencies(update: BaseViewModel): boolean {
         if (
             update &&

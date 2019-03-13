@@ -65,6 +65,10 @@ export class ViewMotionCommentSection extends BaseViewModel {
         return this.name;
     };
 
+    public getModel(): MotionCommentSection {
+        return this.section;
+    }
+
     /**
      * Updates the local objects if required
      * @param section

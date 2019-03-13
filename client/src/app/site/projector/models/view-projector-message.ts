@@ -35,6 +35,10 @@ export class ViewProjectorMessage extends BaseProjectableViewModel {
         return 'Message';
     };
 
+    public getModel(): ProjectorMessage {
+        return this.projectormessage;
+    }
+
     public updateDependencies(update: BaseViewModel): void {}
 
     public getSlide(): ProjectorElementBuildDeskriptor {

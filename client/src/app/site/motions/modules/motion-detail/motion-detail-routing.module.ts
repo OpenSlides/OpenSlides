@@ -5,7 +5,7 @@ import { MotionDetailComponent } from './components/motion-detail/motion-detail.
 import { AmendmentCreateWizardComponent } from './components/amendment-create-wizard/amendment-create-wizard.component';
 
 const routes: Routes = [
-    { path: '', component: MotionDetailComponent, pathMatch: 'full' },
+    { path: '', component: MotionDetailComponent, pathMatch: 'full', runGuardsAndResolvers: 'paramsChange' },
     { path: 'create-amendment', component: AmendmentCreateWizardComponent }
 ];
 

@@ -74,6 +74,15 @@ export class MotionCommentSectionListComponent extends BaseViewComponent impleme
     }
 
     /**
+     * Init function.
+     */
+    public ngOnInit(): void {
+        super.setTitle('Comment fields');
+        this.groups = this.groupRepo.getViewModelListBehaviorSubject();
+        this.repo.getViewModelListObservable().subscribe(newViewSections => (this.commentSections = newViewSections));
+    }
+
+    /**
      * Event on Key Down in update or create form.
      *
      * @param event the keyboard event
@@ -94,16 +103,6 @@ export class MotionCommentSectionListComponent extends BaseViewComponent impleme
                 this.commentSectionToCreate = null;
             }
         }
-    }
-
-    /**
-     * Init function.
-     */
-    public ngOnInit(): void {
-        super.setTitle('Comment fields');
-        this.groups = new BehaviorSubject(this.groupRepo.getViewModelList());
-        this.groupRepo.getViewModelListObservable().subscribe(groups => this.groups.next(groups));
-        this.repo.getViewModelListObservable().subscribe(newViewSections => (this.commentSections = newViewSections));
     }
 
     /**

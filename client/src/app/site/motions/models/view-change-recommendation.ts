@@ -39,6 +39,10 @@ export class ViewMotionChangeRecommendation extends BaseViewModel implements Vie
 
     public updateDependencies(update: BaseViewModel): void {}
 
+    public getModel(): MotionChangeRecommendation {
+        return this.changeRecommendation;
+    }
+
     public updateChangeReco(type: number, text: string, internal: boolean): void {
         // @TODO HTML sanitazion
         this._changeRecommendation.type = type;

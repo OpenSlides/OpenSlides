@@ -76,6 +76,10 @@ export class ViewGroup extends BaseViewModel {
         return this.name;
     };
 
+    public getModel(): Group {
+        return this.group;
+    }
+
     public updateDependencies(update: BaseViewModel): void {
         console.log('ViewGroups wants to update Values with : ', update);
     }

@@ -1,4 +1,4 @@
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { Component, OnInit, OnDestroy, ElementRef, HostListener, TemplateRef } from '@angular/core';
 import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
@@ -12,15 +12,13 @@ import { CategoryRepositoryService } from 'app/core/repositories/motions/categor
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
 import { CreateMotion } from 'app/site/motions/models/create-motion';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { DiffLinesInParagraph, LineRange } from 'app/core/ui-services/diff.service';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
-import { itemVisibilityChoices, Item } from 'app/shared/models/agenda/item';
+import { itemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
 import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { Motion } from 'app/shared/models/motions/motion';
-import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import {
     MotionChangeRecommendationComponentData,
     MotionChangeRecommendationComponent
@@ -32,7 +30,6 @@ import { OperatorService } from 'app/core/core-services/operator.service';
 import { PersonalNoteService } from 'app/core/ui-services/personal-note.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions/statute-paragraph-repository.service';
-import { Tag } from 'app/shared/models/core/tag';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
 import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
@@ -42,7 +39,6 @@ import { ViewCreateMotion } from 'app/site/motions/models/view-create-motion';
 import { ViewItem } from 'app/site/agenda/models/view-item';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
-import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-change-recommendation';
 import {
     ViewMotionNotificationEditMotion,
@@ -52,7 +48,10 @@ import { ViewMotion, ChangeRecoMode, LineNumberingMode } from 'app/site/motions/
 import { ViewStatuteParagraph } from 'app/site/motions/models/view-statute-paragraph';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change';
-import { Workflow } from 'app/shared/models/motions/workflow';
+import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
+import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
+import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
+import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
 
 /**
  * Component for the motion detail view
@@ -345,6 +344,13 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     public backTarget = '../..';
 
     /**
+     * Hold the subscription to the navigation.
+     * This cannot go into the subscription-list, since it should
+     * only get destroyed using ngOnDestroy routine and not on route changes.
+     */
+    private navigationSubscription: Subscription;
+
+    /**
      * Constructs the detail view.
      *
      * @param title
@@ -391,45 +397,44 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         private agendaRepo: ItemRepositoryService,
         private changeRecoRepo: ChangeRecommendationRepositoryService,
         private statuteRepo: StatuteParagraphRepositoryService,
-        private DS: DataStoreService,
         private configService: ConfigService,
         private sanitizer: DomSanitizer,
         private promptService: PromptService,
         private pdfExport: MotionPdfExportService,
         private personalNoteService: PersonalNoteService,
         private linenumberingService: LinenumberingService,
-        private viewModelStore: ViewModelStoreService,
         private categoryRepo: CategoryRepositoryService,
         private userRepo: UserRepositoryService,
-        private notifyService: NotifyService
+        private notifyService: NotifyService,
+        private tagRepo: TagRepositoryService,
+        private mediaFilerepo: MediafileRepositoryService,
+        private workflowRepo: WorkflowRepositoryService,
+        private blockRepo: MotionBlockRepositoryService,
+        private itemRepo: ItemRepositoryService
     ) {
         super(title, translate, matSnackBar);
+    }
 
-        this.workflowObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewWorkflow));
-        this.blockObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewMotionBlock));
-        this.mediafilesObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewMediafile));
-        this.agendaItemObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewItem));
-        this.tagObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewTag));
-        this.motionObserver = new BehaviorSubject(this.viewModelStore.getAll(ViewMotion));
+    /**
+     * Init.
+     * Sets all required subjects and fills in the required information
+     */
+    public ngOnInit(): void {
+        // get required information from the repositories
+        this.tagObserver = this.tagRepo.getViewModelListBehaviorSubject();
+        this.mediafilesObserver = this.mediaFilerepo.getViewModelListBehaviorSubject();
+        this.workflowObserver = this.workflowRepo.getViewModelListBehaviorSubject();
+        this.blockObserver = this.blockRepo.getViewModelListBehaviorSubject();
+        this.agendaItemObserver = this.itemRepo.getViewModelListBehaviorSubject();
+        this.motionObserver = this.repo.getViewModelListBehaviorSubject();
+        this.submitterObserver = this.userRepo.getViewModelListBehaviorSubject();
+        this.supporterObserver = this.userRepo.getViewModelListBehaviorSubject();
+        this.categoryObserver = this.categoryRepo.getViewModelListBehaviorSubject();
 
-        // Make sure the subjects are updated, when a new Model for the type arrives
-        // TODO get rid of DS here
-        this.DS.changeObservable.subscribe(newModel => {
-            if (newModel instanceof Workflow) {
-                this.workflowObserver.next(this.viewModelStore.getAll(ViewWorkflow));
-            } else if (newModel instanceof MotionBlock) {
-                this.blockObserver.next(this.viewModelStore.getAll(ViewMotionBlock));
-            } else if (newModel instanceof Mediafile) {
-                this.mediafilesObserver.next(this.viewModelStore.getAll(ViewMediafile));
-            } else if (newModel instanceof Item) {
-                this.agendaItemObserver.next(this.viewModelStore.getAll(ViewItem));
-            } else if (newModel instanceof Tag) {
-                this.tagObserver.next(this.viewModelStore.getAll(ViewTag));
-            } else if (newModel instanceof Motion) {
-                this.motionObserver.next(this.viewModelStore.getAll(ViewMotion));
-                this.setSurroundingMotions();
-            }
-        });
+        this.createForm();
+        this.observeRoute();
+        this.getMotionByUrl();
+        this.setSurroundingMotions();
 
         // load config variables
         this.configService
@@ -452,36 +457,17 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         this.configService
             .get<ChangeRecoMode>('motions_recommendation_text_mode')
             .subscribe(mode => (this.crMode = mode));
-    }
 
-    /**
-     * Init.
-     * Sets the surrounding motions to navigate back and forth
-     */
-    public ngOnInit(): void {
-        this.createForm();
-        this.getMotionByUrl();
-        this.setSurroundingMotions();
-
-        // TODO: Changed to un-sort, since it's a really heavy operation
-        this.userRepo.getViewModelListObservable().subscribe(unsortedUsers => {
-            this.submitterObserver.next(unsortedUsers);
-            this.supporterObserver.next(unsortedUsers);
-        });
-
-        this.categoryRepo.getViewModelListObservable().subscribe(unsortedCategories => {
-            this.categoryObserver.next(unsortedCategories);
-        });
-
-        // Initial Filling of the Subjects
-        this.submitterObserver = new BehaviorSubject(this.userRepo.getViewModelList());
-        this.supporterObserver = new BehaviorSubject(this.userRepo.getViewModelList());
-        this.categoryObserver = new BehaviorSubject(
-            this.categoryRepo.sortViewCategoriesByConfig(this.viewModelStore.getAll(ViewCategory))
-        );
-
-        this.statuteRepo.getViewModelListObservable().subscribe(newViewStatuteParagraphs => {
-            this.statuteParagraphs = newViewStatuteParagraphs;
+        // disable the selector for attachments if there are none
+        this.mediafilesObserver.subscribe(() => {
+            if (this.contentForm) {
+                const attachmentsCtrl = this.contentForm.get('attachments_id');
+                if (this.mediafilesObserver.value.length === 0) {
+                    attachmentsCtrl.disable();
+                } else {
+                    attachmentsCtrl.enable();
+                }
+            }
         });
 
         // Set the default visibility using observers
@@ -491,15 +477,15 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
             }
         });
 
-        // disable the selector for attachments if there are none
-        this.mediafilesObserver.subscribe(files => {
-            if (this.createForm) {
-                const attachmentsCtrl = this.contentForm.get('attachments_id');
-                if (this.mediafilesObserver.value.length === 0) {
-                    attachmentsCtrl.disable();
-                } else {
-                    attachmentsCtrl.enable();
-                }
+        // Update statute paragraphs
+        this.statuteRepo.getViewModelListObservable().subscribe(newViewStatuteParagraphs => {
+            this.statuteParagraphs = newViewStatuteParagraphs;
+        });
+
+        // Observe motion changes to trigger surrounding motions
+        this.motionObserver.subscribe(motionChanges => {
+            if (motionChanges) {
+                this.setSurroundingMotions();
             }
         });
     }
@@ -510,6 +496,22 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      */
     public ngOnDestroy(): void {
         this.unsubscribeEditNotifications(TypeOfNotificationViewMotion.TYPE_CLOSING_EDITING_MOTION);
+        if (this.navigationSubscription) {
+            this.navigationSubscription.unsubscribe();
+        }
+    }
+
+    /**
+     * Observes the route for events. Calls to clean all subs if the route changes.
+     * Calls the motion details from the new route
+     */
+    public observeRoute(): void {
+        this.navigationSubscription = this.router.events.subscribe(navEvent => {
+            if (navEvent instanceof NavigationEnd) {
+                this.cleanSubjects();
+                this.getMotionByUrl();
+            }
+        });
     }
 
     /**
@@ -555,65 +557,68 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * determine the motion to display using the URL
      */
     public getMotionByUrl(): void {
-        this.route.params.subscribe(params => {
-            if (Object.keys(params).length > 0) {
-                // load existing motion
-                const motionId: number = +params.id;
-                this.repo.getViewModelObservable(motionId).subscribe(newViewMotion => {
-                    if (newViewMotion) {
-                        this.motion = newViewMotion;
+        const params = this.route.snapshot.params;
+        if (params && params.id) {
+            // existing motion
+            const motionId: number = +params.id;
+
+            // the following subscriptions need to be cleared when the route changes
+            this.subscriptions.push(
+                this.repo.getViewModelObservable(motionId).subscribe(motion => {
+                    if (motion) {
+                        this.motion = motion;
                         this.newStateExtension = this.motion.stateExtension;
                         this.patchForm(this.motion);
                     }
-                });
+                }),
                 this.repo.amendmentsTo(motionId).subscribe(
                     (amendments: ViewMotion[]): void => {
                         this.amendments = amendments;
                         this.recalcUnifiedChanges();
                     }
-                );
+                ),
                 this.changeRecoRepo
                     .getChangeRecosOfMotionObservable(motionId)
                     .subscribe((recos: ViewMotionChangeRecommendation[]) => {
                         this.changeRecommendations = recos;
                         this.recalcUnifiedChanges();
+                    })
+            );
+        } else {
+            // new motion
+            this.newMotion = true;
+            this.editMotion = true;
+            // prevent 'undefined' to appear in the ui
+            const defaultMotion: Partial<CreateMotion> = {
+                title: '',
+                origin: '',
+                identifier: ''
+            };
+            if (this.route.snapshot.queryParams.parent) {
+                this.amendmentEdit = true;
+                const parentMotion = this.repo.getViewModel(this.route.snapshot.queryParams.parent);
+                const defaultTitle = `${this.translate.instant('Amendment to')} ${parentMotion.identifierOrTitle}`;
+                const mode = this.configService.instant<string>('motions_amendments_text_mode');
+                if (mode === 'freestyle' || mode === 'fulltext') {
+                    defaultMotion.title = defaultTitle;
+                    defaultMotion.parent_id = parentMotion.id;
+                    defaultMotion.category_id = parentMotion.category_id;
+                    defaultMotion.motion_block_id = parentMotion.motion_block_id;
+                    this.contentForm.patchValue({
+                        title: defaultTitle,
+                        category_id: parentMotion.category_id,
+                        motion_block_id: parentMotion.motion_block_id,
+                        parent_id: parentMotion.id
                     });
-            } else {
-                // creates a new motion
-                this.newMotion = true;
-                this.editMotion = true;
-                // prevent 'undefined' to appear in the ui
-                const defaultMotion: Partial<CreateMotion> = {
-                    title: '',
-                    origin: '',
-                    identifier: ''
-                };
-                if (this.route.snapshot.queryParams.parent) {
-                    this.amendmentEdit = true;
-                    const parentMotion = this.repo.getViewModel(this.route.snapshot.queryParams.parent);
-                    const defaultTitle = `${this.translate.instant('Amendment to')} ${parentMotion.identifierOrTitle}`;
-                    const mode = this.configService.instant<string>('motions_amendments_text_mode');
-                    if (mode === 'freestyle' || mode === 'fulltext') {
-                        defaultMotion.title = defaultTitle;
-                        defaultMotion.parent_id = parentMotion.id;
-                        defaultMotion.category_id = parentMotion.category_id;
-                        defaultMotion.motion_block_id = parentMotion.motion_block_id;
-                        this.contentForm.patchValue({
-                            title: defaultTitle,
-                            category_id: parentMotion.category_id,
-                            motion_block_id: parentMotion.motion_block_id,
-                            parent_id: parentMotion.id
-                        });
-                    }
-                    if (mode === 'fulltext') {
-                        defaultMotion.text = parentMotion.text;
-                        this.contentForm.patchValue({ text: parentMotion.text });
-                    }
                 }
-                this.motion = new ViewCreateMotion(new CreateMotion(defaultMotion));
-                this.motionCopy = new ViewCreateMotion(new CreateMotion(defaultMotion));
+                if (mode === 'fulltext') {
+                    defaultMotion.text = parentMotion.text;
+                    this.contentForm.patchValue({ text: parentMotion.text });
+                }
             }
-        });
+            this.motion = new ViewCreateMotion(new CreateMotion(defaultMotion));
+            this.motionCopy = new ViewCreateMotion(new CreateMotion(defaultMotion));
+        }
     }
 
     /**
@@ -1095,7 +1100,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      */
     public navigateToMotion(motion: ViewMotion): void {
         if (motion) {
-            this.router.navigate(['../contacts'], { relativeTo: this.route.parent });
+            this.router.navigate([`../${motion.id}`], { relativeTo: this.route.parent });
             // update the current motion
             this.motion = motion;
             this.setSurroundingMotions();
@@ -1243,15 +1248,17 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * Observes the repository for changes in the motion recommender
      */
     public setupRecommender(): void {
-        const configKey = this.motion.isStatuteAmendment()
-            ? 'motions_statute_recommendations_by'
-            : 'motions_recommendations_by';
-        if (this.recommenderSubscription) {
-            this.recommenderSubscription.unsubscribe();
+        if (this.motion) {
+            const configKey = this.motion.isStatuteAmendment()
+                ? 'motions_statute_recommendations_by'
+                : 'motions_recommendations_by';
+            if (this.recommenderSubscription) {
+                this.recommenderSubscription.unsubscribe();
+            }
+            this.recommenderSubscription = this.configService.get<string>(configKey).subscribe(recommender => {
+                this.recommender = recommender;
+            });
         }
-        this.recommenderSubscription = this.configService.get<string>(configKey).subscribe(recommender => {
-            this.recommender = recommender;
-        });
     }
 
     /**

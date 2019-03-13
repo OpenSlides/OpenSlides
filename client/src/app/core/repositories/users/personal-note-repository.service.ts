@@ -4,10 +4,10 @@ import { DataStoreService } from '../../core-services/data-store.service';
 import { BaseRepository } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
 import { PersonalNote } from 'app/shared/models/users/personal-note';
-import { Identifiable } from 'app/shared/models/base/identifiable';
 import { ViewPersonalNote } from 'app/site/users/models/view-personal-note';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { TranslateService } from '@ngx-translate/core';
+import { DataSendService } from 'app/core/core-services/data-send.service';
 
 /**
  */
@@ -21,11 +21,12 @@ export class PersonalNoteRepositoryService extends BaseRepository<ViewPersonalNo
      */
     public constructor(
         DS: DataStoreService,
+        dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
         private translate: TranslateService
     ) {
-        super(DS, mapperService, viewModelStoreService, PersonalNote);
+        super(DS, dataSend, mapperService, viewModelStoreService, PersonalNote);
     }
 
     public getVerboseName = (plural: boolean = false) => {
@@ -36,17 +37,5 @@ export class PersonalNoteRepositoryService extends BaseRepository<ViewPersonalNo
         const viewPersonalNote = new ViewPersonalNote(personalNote);
         viewPersonalNote.getVerboseName = this.getVerboseName;
         return viewPersonalNote;
-    }
-
-    public async create(personalNote: PersonalNote): Promise<Identifiable> {
-        throw new Error('Not supported');
-    }
-
-    public async update(personalNote: Partial<PersonalNote>, viewPersonalNote: ViewPersonalNote): Promise<void> {
-        throw new Error('Not supported');
-    }
-
-    public async delete(viewPersonalNote: ViewPersonalNote): Promise<void> {
-        throw new Error('Not supported');
     }
 }

@@ -41,6 +41,10 @@ export class ViewTag extends BaseViewModel implements Searchable {
         return this.name;
     };
 
+    public getModel(): Tag {
+        return this.tag;
+    }
+
     public formatForSearch(): SearchRepresentation {
         return [this.name];
     }

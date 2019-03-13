@@ -96,13 +96,8 @@ export class TopicDetailComponent extends BaseViewComponent {
         this.getTopicByUrl();
         this.createForm();
 
-        this.mediafilesObserver = new BehaviorSubject(this.mediafileRepo.getViewModelList());
-        this.itemObserver = new BehaviorSubject(this.itemRepo.getViewModelList());
-
-        this.mediafileRepo
-            .getViewModelListObservable()
-            .subscribe(mediafiles => this.mediafilesObserver.next(mediafiles));
-        this.itemRepo.getViewModelListObservable().subscribe(items => this.itemObserver.next(items));
+        this.mediafilesObserver = this.mediafileRepo.getViewModelListBehaviorSubject();
+        this.itemObserver = this.itemRepo.getViewModelListBehaviorSubject();
     }
 
     /**

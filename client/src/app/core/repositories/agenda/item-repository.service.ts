@@ -2,22 +2,21 @@ import { Injectable } from '@angular/core';
 import { tap, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
+import { BaseAgendaContentObjectRepository } from '../base-agenda-content-object-repository';
 import { BaseRepository } from '../base-repository';
+import { BaseAgendaViewModel } from 'app/site/base/base-agenda-view-model';
+import { BaseViewModel } from 'app/site/base/base-view-model';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { DataSendService } from 'app/core/core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { HttpService } from 'app/core/core-services/http.service';
-import { Identifiable } from 'app/shared/models/base/identifiable';
 import { Item } from 'app/shared/models/agenda/item';
 import { OSTreeSortEvent } from 'app/shared/components/sorting-tree/sorting-tree.component';
-import { ViewItem } from 'app/site/agenda/models/view-item';
-import { TreeService } from 'app/core/ui-services/tree.service';
-import { BaseAgendaViewModel } from 'app/site/base/base-agenda-view-model';
-import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
-import { BaseViewModel } from 'app/site/base/base-view-model';
 import { TranslateService } from '@ngx-translate/core';
-import { BaseAgendaContentObjectRepository } from '../base-agenda-content-object-repository';
+import { TreeService } from 'app/core/ui-services/tree.service';
+import { ViewItem } from 'app/site/agenda/models/view-item';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 
 /**
  * Repository service for users
@@ -42,13 +41,13 @@ export class ItemRepositoryService extends BaseRepository<ViewItem, Item> {
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
+        protected dataSend: DataSendService,
         private httpService: HttpService,
         private config: ConfigService,
-        private dataSend: DataSendService,
         private treeService: TreeService,
         private translate: TranslateService
     ) {
-        super(DS, mapperService, viewModelStoreService, Item);
+        super(DS, dataSend, mapperService, viewModelStoreService, Item);
     }
 
     public getVerboseName = (plural: boolean = false) => {
@@ -119,18 +118,6 @@ export class ItemRepositoryService extends BaseRepository<ViewItem, Item> {
     }
 
     /**
-     * Updates an agenda item
-     *
-     * @param update contains the update data
-     * @param viewItem the item to update
-     */
-    public async update(update: Partial<Item>, viewItem: ViewItem): Promise<void> {
-        const updateItem = viewItem.item;
-        updateItem.patchValues(update);
-        return await this.dataSend.partialUpdateModel(updateItem);
-    }
-
-    /**
      * Trigger the automatic numbering sequence on the server
      */
     public async autoNumbering(): Promise<void> {
@@ -148,15 +135,6 @@ export class ItemRepositoryService extends BaseRepository<ViewItem, Item> {
     public async delete(item: ViewItem): Promise<void> {
         const restUrl = `/rest/${item.contentObject.collectionString}/${item.contentObject.id}/`;
         await this.httpService.delete(restUrl);
-    }
-
-    /**
-     * @ignore
-     *
-     * Agenda items are created implicitly and do not have on create functions
-     */
-    public async create(item: Item): Promise<Identifiable> {
-        throw new Error('Method not implemented.');
     }
 
     /**

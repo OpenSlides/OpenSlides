@@ -111,6 +111,10 @@ export class ViewConfig extends BaseViewModel {
 
     public updateDependencies(update: BaseViewModel): void {}
 
+    public getModel(): Config {
+        return this.config;
+    }
+
     /**
      * Returns the time this config field needs to debounce before sending a request to the server.
      * A little debounce time for all inputs is given here and is usefull, if inputs sends multiple onChange-events,

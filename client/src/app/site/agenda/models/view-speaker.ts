@@ -1,6 +1,7 @@
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { Speaker, SpeakerState } from 'app/shared/models/agenda/speaker';
 import { ViewUser } from 'app/site/users/models/view-user';
+import { User } from 'app/shared/models/users/user';
 
 /**
  * Provides "safe" access to a speaker with all it's components
@@ -69,6 +70,10 @@ export class ViewSpeaker extends BaseViewModel {
     public getTitle = () => {
         return this.name;
     };
+
+    public getModel(): User {
+        return this.user.user;
+    }
 
     /**
      * Speaker is not a base model,

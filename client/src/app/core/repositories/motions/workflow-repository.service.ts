@@ -6,7 +6,6 @@ import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { BaseRepository } from '../base-repository';
-import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
 import { WorkflowState } from 'app/shared/models/motions/workflow-state';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
@@ -45,12 +44,12 @@ export class WorkflowRepositoryService extends BaseRepository<ViewWorkflow, Work
     public constructor(
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
-        private httpService: HttpService,
         viewModelStoreService: ViewModelStoreService,
-        private dataSend: DataSendService,
+        protected dataSend: DataSendService,
+        private httpService: HttpService,
         private translate: TranslateService
     ) {
-        super(DS, mapperService, viewModelStoreService, Workflow);
+        super(DS, dataSend, mapperService, viewModelStoreService, Workflow);
         this.viewModelListSubject.pipe(auditTime(1)).subscribe(models => {
             if (models && models.length > 0) {
                 this.initSorting(models);
@@ -85,43 +84,6 @@ export class WorkflowRepositoryService extends BaseRepository<ViewWorkflow, Work
         const viewWorkflow = new ViewWorkflow(workflow);
         viewWorkflow.getVerboseName = this.getVerboseName;
         return viewWorkflow;
-    }
-
-    /**
-     * Creates a new workflow
-     *
-     * @param newWorkflow the workflow to create
-     * @returns the ID of a new workflow as promise
-     */
-    public async create(newWorkflow: Workflow): Promise<Identifiable> {
-        return await this.dataSend.createModel(newWorkflow);
-    }
-
-    /**
-     * Updates the workflow by the given changes
-     *
-     * @param workflow Contains the update
-     * @param viewWorkflow the target workflow
-     */
-    public async update(workflow: Partial<Workflow>, viewWorkflow: ViewWorkflow): Promise<void> {
-        let updateWorkflow: Workflow;
-        if (viewWorkflow) {
-            updateWorkflow = viewWorkflow.workflow;
-        } else {
-            updateWorkflow = new Workflow();
-        }
-        updateWorkflow.patchValues(workflow);
-        await this.dataSend.updateModel(updateWorkflow);
-    }
-
-    /**
-     * Deletes the given workflow
-     *
-     * @param viewWorkflow the workflow to delete
-     */
-    public async delete(viewWorkflow: ViewWorkflow): Promise<void> {
-        const workflow = viewWorkflow.workflow;
-        await this.dataSend.deleteModel(workflow);
     }
 
     /**

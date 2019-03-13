@@ -95,7 +95,6 @@ export class OpenSlidesService {
      * @param userId the id or null for guest
      */
     public async afterLoginBootup(userId: number | null): Promise<void> {
-        console.log('user id', userId);
         // Check, which user was logged in last time
         const lastUserId = await this.storageService.get<number>('lastUserLoggedIn');
         // if the user changed, reset the cache and save the new user.
