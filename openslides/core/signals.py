@@ -1,3 +1,5 @@
+import sys
+
 from django.apps import apps
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
@@ -49,6 +51,11 @@ def autoupdate_for_many_to_many_relations(sender, instance, **kwargs):
     Send autoupdate for many-to-many related objects if the other side
     is deleted.
     """
+    # Hotfix for #4501: Skip autoupdate for many-to-many related objects
+    # during migrations.
+    if "migrate" in sys.argv:
+        return
+
     m2m_fields = (
         field
         for field in instance._meta.get_fields(include_hidden=True)
