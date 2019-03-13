@@ -1,6 +1,6 @@
-table {
-    width: 100%;
+@import '~assets/styles/tables.scss';
 
+table {
     .mat-cell {
         min-width: 80px;
     }
@@ -24,7 +24,7 @@ table {
     padding-left: 25px;
 }
 
-.new-group-form {
+.new-group-forrm {
     text-align: center;
     padding-top: 10px;
     background-color: #ffffff; // put in theme later

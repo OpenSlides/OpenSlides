@@ -1,0 +1,10 @@
+// shared definition for most (if not all) used tables
+.mat-table {
+    width: 100%;
+
+    // important is necessary, since the "sticky" attribute does not alter the real `.mat-table-sticky-class`
+    // but rather "patches" the DOM tree.
+    .mat-table-sticky {
+        z-index: 3 !important;
+    }
+}

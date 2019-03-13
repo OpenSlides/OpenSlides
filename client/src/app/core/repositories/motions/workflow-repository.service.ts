@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { auditTime } from 'rxjs/operators';
 
 import { Workflow } from 'app/shared/models/motions/workflow';
 import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
@@ -50,11 +51,30 @@ export class WorkflowRepositoryService extends BaseRepository<ViewWorkflow, Work
         private translate: TranslateService
     ) {
         super(DS, mapperService, viewModelStoreService, Workflow);
+        this.viewModelListSubject.pipe(auditTime(1)).subscribe(models => {
+            if (models && models.length > 0) {
+                this.initSorting(models);
+            }
+        });
     }
 
     public getVerboseName = (plural: boolean = false) => {
         return this.translate.instant(plural ? 'Workflows' : 'Workflow');
     };
+
+    /**
+     * Sort the states of custom workflows. Ignores simple and complex workflows.
+     * Implying the default workflows always have the IDs 1 und 2
+     *
+     * TODO: Temp Solution. Should be replaced by general sorting over repositories after PR 4411
+     *       This is an abstract to prevent further collisions. Real sorting is then done in 4411
+     *       For now this "just" sorts the Workflow states of all custom workflows
+     */
+    private initSorting(workflows: ViewWorkflow[]): void {
+        for (const workflow of workflows) {
+            workflow.sortStates();
+        }
+    }
 
     /**
      * Creates a ViewWorkflow from a given Workflow
