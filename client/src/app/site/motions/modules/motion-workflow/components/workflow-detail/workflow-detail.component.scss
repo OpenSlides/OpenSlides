@@ -1,10 +1,10 @@
+@import '~assets/styles/tables.scss';
+
 .title-line {
     margin: 20px 25px;
 }
 
 table {
-    width: 100%;
-
     .mat-header-cell {
         min-width: 150px;
         position: relative;

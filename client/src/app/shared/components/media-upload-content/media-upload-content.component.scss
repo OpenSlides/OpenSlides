@@ -1,9 +1,9 @@
+@import '~assets/styles/tables.scss';
+
 .table-container {
     overflow: auto;
 
     table {
-        width: 100%;
-
         /** Title */
         .mat-column-title {
             min-width: 100px;

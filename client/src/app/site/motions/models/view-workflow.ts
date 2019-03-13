@@ -57,6 +57,10 @@ export class ViewWorkflow extends BaseViewModel {
         return this.name;
     };
 
+    public sortStates(): void {
+        this.workflow.sortStates();
+    }
+
     /**
      * Updates the local objects if required
      *

@@ -32,6 +32,13 @@ export class Workflow extends BaseModel<Workflow> {
         return this.states.some(state => state.id === id);
     }
 
+    /**
+     * Sorts the states of this workflow
+     */
+    public sortStates(): void {
+        this.states.sort((a, b) => (a.id > b.id ? 1 : -1));
+    }
+
     public deserialize(input: any): void {
         Object.assign(this, input);
 
