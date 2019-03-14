@@ -771,6 +771,13 @@ class MotionChangeRecommendation(RESTModelMixin, models.Model):
     creation_time = models.DateTimeField(auto_now=True)
     """Time when the change recommendation was saved."""
 
+    class Meta:
+        default_permissions = ()
+
+    def __str__(self):
+        """Return a string, representing this object."""
+        return f"Recommendation for Motion {self.motion_id}, line {self.line_from} - {self.line_to}"
+
     def collides_with_other_recommendation(self, recommendations):
         for recommendation in recommendations:
             if not (
@@ -794,14 +801,21 @@ class MotionChangeRecommendation(RESTModelMixin, models.Model):
                 f"The recommendation collides with an existing one (line {self.line_from} - {self.line_to})."
             )
 
-        return super().save(*args, **kwargs)
+        result = super().save(*args, **kwargs)
 
-    class Meta:
-        default_permissions = ()
+        # Hotfix for #4491: Trigger extra autoupdate for motion so that the serializer
+        # field vor motion change recommendations gets updated too.
+        inform_changed_data(self.motion)
 
-    def __str__(self):
-        """Return a string, representing this object."""
-        return f"Recommendation for Motion {self.motion_id}, line {self.line_from} - {self.line_to}"
+        return result
+
+    def delete(self, *args, **kwargs):
+        # Hotfix for #4491: Trigger extra autoupdate for motion so that the serializer
+        # field vor motion change recommendations gets updated too.
+        motion = self.motion
+        result = super().delete(*args, **kwargs)
+        inform_changed_data(motion)
+        return result
 
 
 class Category(RESTModelMixin, models.Model):
