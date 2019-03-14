@@ -16,7 +16,12 @@
 
     <!-- Menu -->
     <div class="menu-slot">
-        <button type="button" mat-icon-button *ngIf="isAllowed('changePersonal')" [matMenuTriggerFor]="userExtraMenu">
+        <button
+            type="button"
+            mat-icon-button
+            *ngIf="isAllowed('changePersonal') && isAllowed('changePassword')"
+            [matMenuTriggerFor]="userExtraMenu"
+        >
             <mat-icon>more_vert</mat-icon>
         </button>
     </div>

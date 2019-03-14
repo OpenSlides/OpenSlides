@@ -54,7 +54,7 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header>Info</mat-header-cell>
             <mat-cell (click)="openEditInfo(item, $event)" *matCellDef="let item">
                 <div class="info-col-items">
-                    <div *ngIf="item.verboseType">
+                    <div *osPerms="'agenda.can_manage';and:item.verboseType">
                         <mat-icon>visibility</mat-icon>
                         {{ item.verboseType | translate }}
                     </div>
