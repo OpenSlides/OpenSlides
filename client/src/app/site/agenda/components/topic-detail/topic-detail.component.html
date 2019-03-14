@@ -111,9 +111,11 @@
         <mat-icon>mic</mat-icon>
         <span translate>List of speakers</span>
     </button>
-    <mat-divider></mat-divider>
-    <button mat-menu-item class="red-warning-text" (click)="onDeleteButton()">
-        <mat-icon>delete</mat-icon>
-        <span translate>Delete</span>
-    </button>
+    <div *osPerms="'agenda.can_manage'">
+        <mat-divider></mat-divider>
+        <button mat-menu-item class="red-warning-text" (click)="onDeleteButton()">
+            <mat-icon>delete</mat-icon>
+            <span translate>Delete</span>
+        </button>
+    </div>
 </mat-menu>

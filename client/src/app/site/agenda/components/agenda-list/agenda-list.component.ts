@@ -33,12 +33,12 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item> i
     /**
      * Determine the display columns in desktop view
      */
-    public displayedColumnsDesktop: string[] = ['title', 'info', 'speakers', 'menu'];
+    public displayedColumnsDesktop: string[] = ['title', 'info', 'speakers'];
 
     /**
      * Determine the display columns in mobile view
      */
-    public displayedColumnsMobile: string[] = ['title', 'speakers', 'menu'];
+    public displayedColumnsMobile: string[] = ['title', 'speakers'];
 
     public isNumberingAllowed: boolean;
 
@@ -263,6 +263,9 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item> i
      */
     public getColumnDefinition(): string[] {
         let columns = this.vp.isMobile ? this.displayedColumnsMobile : this.displayedColumnsDesktop;
+        if (this.operator.hasPerms('agenda.can_manage')) {
+            columns = columns.concat(['menu']);
+        }
         if (this.operator.hasPerms('core.can_manage_projector') && !this.isMultiSelect) {
             columns = ['projector'].concat(columns);
         }

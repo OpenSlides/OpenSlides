@@ -230,9 +230,9 @@ export class TopicDetailComponent extends BaseViewComponent {
     public isAllowed(action: string): boolean {
         switch (action) {
             case 'see':
-                return this.operator.hasPerms('agenda.can_manage');
-            case 'edit':
                 return this.operator.hasPerms('agenda.can_see');
+            case 'edit':
+                return this.operator.hasPerms('agenda.can_manage');
             case 'default':
                 return false;
         }
