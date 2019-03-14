@@ -7,12 +7,10 @@ import { tap, map } from 'rxjs/operators';
 import { Category } from 'app/shared/models/motions/category';
 import { ChangeRecoMode, ViewMotion } from 'app/site/motions/models/view-motion';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
-import { CreateMotion } from 'app/site/motions/models/create-motion';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { DiffLinesInParagraph, DiffService, LineRange, ModificationType } from '../../ui-services/diff.service';
 import { HttpService } from 'app/core/core-services/http.service';
-import { Identifiable } from 'app/shared/models/base/identifiable';
 import { Item } from 'app/shared/models/agenda/item';
 import { LinenumberingService } from '../../ui-services/linenumbering.service';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
@@ -75,7 +73,7 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        private dataSend: DataSendService,
+        protected dataSend: DataSendService,
         private httpService: HttpService,
         private readonly lineNumbering: LinenumberingService,
         private readonly diff: DiffService,
@@ -83,7 +81,7 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
         private translate: TranslateService,
         private operator: OperatorService
     ) {
-        super(DS, mapperService, viewModelStoreService, Motion, [
+        super(DS, dataSend, mapperService, viewModelStoreService, Motion, [
             Category,
             User,
             Workflow,
@@ -256,45 +254,6 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
                 }
             })
         );
-    }
-
-    /**
-     * Creates a motion
-     * Creates a (real) motion with patched data and delegate it
-     * to the {@link DataSendService}
-     *
-     * @param update the form data containing the updated values
-     * @param viewMotion The View Motion. If not present, a new motion will be created
-     */
-    public async create(motion: CreateMotion): Promise<Identifiable> {
-        // TODO how to handle category id and motion_block id in  CreateMotion?
-        return await this.dataSend.createModel(motion);
-    }
-
-    /**
-     * updates a motion
-     *
-     * Creates a (real) motion with patched data and delegate it
-     * to the {@link DataSendService}
-     *
-     * @param update the form data containing the updated values
-     * @param viewMotion The View Motion. If not present, a new motion will be created
-     */
-    public async update(update: Partial<Motion>, viewMotion: ViewMotion): Promise<void> {
-        const motion = viewMotion.motion;
-        motion.patchValues(update);
-        return await this.dataSend.partialUpdateModel(motion);
-    }
-
-    /**
-     * Deleting a motion.
-     *
-     * Extract the motion out of the motionView and delegate
-     * to {@link DataSendService}
-     * @param viewMotion
-     */
-    public async delete(viewMotion: ViewMotion): Promise<void> {
-        return await this.dataSend.deleteModel(viewMotion.motion);
     }
 
     /**

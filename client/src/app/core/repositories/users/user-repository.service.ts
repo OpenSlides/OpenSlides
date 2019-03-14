@@ -10,7 +10,6 @@ import { DataStoreService } from '../../core-services/data-store.service';
 import { environment } from '../../../../environments/environment';
 import { Group } from 'app/shared/models/users/group';
 import { HttpService } from 'app/core/core-services/http.service';
-import { Identifiable } from 'app/shared/models/base/identifiable';
 import { NewEntry } from 'app/core/ui-services/base-import.service';
 import { User } from 'app/shared/models/users/user';
 import { ViewUser } from 'app/site/users/models/view-user';
@@ -43,12 +42,12 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        private dataSend: DataSendService,
+        protected dataSend: DataSendService,
         private translate: TranslateService,
         private httpService: HttpService,
         private configService: ConfigService
     ) {
-        super(DS, mapperService, viewModelStoreService, User, [Group]);
+        super(DS, dataSend, mapperService, viewModelStoreService, User, [Group]);
     }
 
     public getVerboseName = (plural: boolean = false) => {
@@ -67,13 +66,14 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
 
     /**
      * Updates a the selected user with the form values.
+     * Since user should actually "delete" field, the unified update method
+     * cannot be used
      *
      * @param update the forms values
      * @param viewUser
      */
     public async update(update: Partial<User>, viewUser: ViewUser): Promise<void> {
         const updateUser = new User();
-        // copy the ViewUser to avoid manipulation of parameters
         updateUser.patchValues(viewUser.user);
         updateUser.patchValues(update);
 
@@ -89,37 +89,7 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
             updateUser.gender = '';
         }
 
-        return await this.dataSend.updateModel(updateUser);
-    }
-
-    /**
-     * Deletes a given user
-     */
-    public async delete(viewUser: ViewUser): Promise<void> {
-        return await this.dataSend.deleteModel(viewUser.user);
-    }
-
-    /**
-     * creates and saves a new user
-     *
-     * TODO: used over not-yet-existing detail view
-     * @param userData blank form value. Usually not yet a real user
-     */
-    public async create(userData: Partial<User>): Promise<Identifiable> {
-        const newUser = new User();
-        // collectionString of userData is still empty
-        newUser.patchValues(userData);
-
-        // during creation, the server demands that basically nothing must be null.
-        // during the update process, null values are interpreted as delete.
-        // therefore, remove "null" values.
-        Object.keys(newUser).forEach(key => {
-            if (!newUser[key]) {
-                delete newUser[key];
-            }
-        });
-
-        return await this.dataSend.createModel(newUser);
+        return await this.dataSend.partialUpdateModel(updateUser);
     }
 
     /**

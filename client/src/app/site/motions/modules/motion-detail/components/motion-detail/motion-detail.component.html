@@ -494,7 +494,9 @@
                 mat-icon-button
                 [matMenuTriggerFor]="changeRecoMenu"
                 matTooltip="{{ 'Change recommendations' | translate }}"
-                *ngIf="motion && !motion.isParagraphBasedAmendment() && allChangingObjects.length > 0"
+                *ngIf="
+                    motion && !motion.isParagraphBasedAmendment() && allChangingObjects && allChangingObjects.length > 0
+                "
             >
                 <mat-icon>rate_review</mat-icon>
             </button>
@@ -503,7 +505,7 @@
                 type="button"
                 mat-icon-button
                 matTooltip="{{ 'Create final print template' | translate }}"
-                *osPerms="'motions.can_manage';and:isRecoMode(ChangeRecoMode.Final)"
+                *osPerms="'motions.can_manage'; and: isRecoMode(ChangeRecoMode.Final)"
                 (click)="createModifiedFinalVersion()"
             >
                 <mat-icon>description</mat-icon>
@@ -886,7 +888,7 @@
     <button
         mat-menu-item
         translate
-        *osPerms="'motions.can_manage';and:isRecoMode(ChangeRecoMode.Final)"
+        *osPerms="'motions.can_manage'; and: isRecoMode(ChangeRecoMode.Final)"
         (click)="setChangeRecoMode(ChangeRecoMode.ModifiedFinal)"
         [ngClass]="{ selected: motion?.crMode === ChangeRecoMode.ModifiedFinal }"
     >

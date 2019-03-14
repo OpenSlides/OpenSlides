@@ -65,6 +65,10 @@ export class ViewCategory extends BaseViewModel implements Searchable {
         return '/motions/category';
     }
 
+    public getModel(): Category {
+        return this.category;
+    }
+
     /**
      * Updates the local objects if required
      * @param update

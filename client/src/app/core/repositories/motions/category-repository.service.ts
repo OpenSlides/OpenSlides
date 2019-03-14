@@ -10,7 +10,6 @@ import { ConfigService } from 'app/core/ui-services/config.service';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { HttpService } from '../../core-services/http.service';
-import { Identifiable } from 'app/shared/models/base/identifiable';
 import { ViewCategory } from 'app/site/motions/models/view-category';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 
@@ -44,12 +43,12 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
         protected DS: DataStoreService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        private dataSend: DataSendService,
+        protected dataSend: DataSendService,
         private httpService: HttpService,
         private configService: ConfigService,
         private translate: TranslateService
     ) {
-        super(DS, mapperService, viewModelStoreService, Category);
+        super(DS, dataSend, mapperService, viewModelStoreService, Category);
     }
 
     public getVerboseName = (plural: boolean = false) => {
@@ -60,26 +59,6 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
         const viewCategory = new ViewCategory(category);
         viewCategory.getVerboseName = this.getVerboseName;
         return viewCategory;
-    }
-
-    public async create(newCategory: Category): Promise<Identifiable> {
-        return await this.dataSend.createModel(newCategory);
-    }
-
-    public async update(category: Partial<Category>, viewCategory: ViewCategory): Promise<void> {
-        let updateCategory: Category;
-        if (viewCategory) {
-            updateCategory = viewCategory.category;
-        } else {
-            updateCategory = new Category();
-        }
-        updateCategory.patchValues(category);
-        await this.dataSend.updateModel(updateCategory);
-    }
-
-    public async delete(viewCategory: ViewCategory): Promise<void> {
-        const category = viewCategory.category;
-        await this.dataSend.deleteModel(category);
     }
 
     /**

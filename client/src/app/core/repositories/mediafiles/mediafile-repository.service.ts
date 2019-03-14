@@ -32,11 +32,11 @@ export class MediafileRepositoryService extends BaseRepository<ViewMediafile, Me
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        private dataSend: DataSendService,
+        protected dataSend: DataSendService,
         private httpService: HttpService,
         private translate: TranslateService
     ) {
-        super(DS, mapperService, viewModelStoreService, Mediafile, [User]);
+        super(DS, dataSend, mapperService, viewModelStoreService, Mediafile, [User]);
     }
 
     public getVerboseName = (plural: boolean = false) => {
@@ -54,39 +54,6 @@ export class MediafileRepositoryService extends BaseRepository<ViewMediafile, Me
         const viewMediafile = new ViewMediafile(file, uploader);
         viewMediafile.getVerboseName = this.getVerboseName;
         return viewMediafile;
-    }
-
-    /**
-     * Alter a given mediaFile
-     * Usually just i.e change the name and the hidden flag.
-     *
-     * @param file contains the new values
-     * @param viewFile the file that should be updated
-     */
-    public async update(file: Partial<Mediafile>, viewFile: ViewMediafile): Promise<void> {
-        const updateFile = new Mediafile();
-        updateFile.patchValues(viewFile.mediafile);
-        updateFile.patchValues(file);
-        await this.dataSend.updateModel(updateFile);
-    }
-
-    /**
-     * Deletes the given file from the server
-     *
-     * @param file the file to delete
-     */
-    public async delete(file: ViewMediafile): Promise<void> {
-        return await this.dataSend.deleteModel(file.mediafile);
-    }
-
-    /**
-     * Mediafiles are uploaded using FormData objects and (usually) not created locally.
-     *
-     * @param file a new mediafile
-     * @returns the ID as a promise
-     */
-    public async create(file: Mediafile): Promise<Identifiable> {
-        return await this.dataSend.createModel(file);
     }
 
     /**

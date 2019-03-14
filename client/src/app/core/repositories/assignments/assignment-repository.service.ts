@@ -2,19 +2,19 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { ViewAssignment } from 'app/site/assignments/models/view-assignment';
 import { Assignment } from 'app/shared/models/assignments/assignment';
-import { User } from 'app/shared/models/users/user';
-import { Tag } from 'app/shared/models/core/tag';
-import { Item } from 'app/shared/models/agenda/item';
-import { DataStoreService } from '../../core-services/data-store.service';
-import { Identifiable } from 'app/shared/models/base/identifiable';
-import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
-import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
-import { ViewItem } from 'app/site/agenda/models/view-item';
-import { ViewUser } from 'app/site/users/models/view-user';
-import { ViewTag } from 'app/site/tags/models/view-tag';
 import { BaseAgendaContentObjectRepository } from '../base-agenda-content-object-repository';
+import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
+import { DataSendService } from 'app/core/core-services/data-send.service';
+import { DataStoreService } from '../../core-services/data-store.service';
+import { Item } from 'app/shared/models/agenda/item';
+import { Tag } from 'app/shared/models/core/tag';
+import { User } from 'app/shared/models/users/user';
+import { ViewAssignment } from 'app/site/assignments/models/view-assignment';
+import { ViewItem } from 'app/site/agenda/models/view-item';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { ViewTag } from 'app/site/tags/models/view-tag';
+import { ViewUser } from 'app/site/users/models/view-user';
 
 /**
  * Repository Service for Assignments.
@@ -33,11 +33,12 @@ export class AssignmentRepositoryService extends BaseAgendaContentObjectReposito
      */
     public constructor(
         DS: DataStoreService,
+        dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
         private translate: TranslateService
     ) {
-        super(DS, mapperService, viewModelStoreService, Assignment, [User, Item, Tag]);
+        super(DS, dataSend, mapperService, viewModelStoreService, Assignment, [User, Item, Tag]);
     }
 
     public getAgendaTitle = (assignment: Partial<Assignment> | Partial<ViewAssignment>) => {
@@ -62,17 +63,5 @@ export class AssignmentRepositoryService extends BaseAgendaContentObjectReposito
         viewAssignment.getAgendaTitle = () => this.getAgendaTitle(viewAssignment);
         viewAssignment.getAgendaTitleWithType = () => this.getAgendaTitleWithType(viewAssignment);
         return viewAssignment;
-    }
-
-    public async update(assignment: Partial<Assignment>, viewAssignment: ViewAssignment): Promise<void> {
-        return null;
-    }
-
-    public async delete(viewAssignment: ViewAssignment): Promise<void> {
-        return null;
-    }
-
-    public async create(assignment: Assignment): Promise<Identifiable> {
-        return null;
     }
 }

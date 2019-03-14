@@ -81,6 +81,10 @@ export class ViewMotionBlock extends BaseAgendaViewModel implements Searchable {
         return this.title;
     };
 
+    public getModel(): MotionBlock {
+        return this.motionBlock;
+    }
+
     public getSlide(): ProjectorElementBuildDeskriptor {
         return {
             getBasicProjectorElement: options => ({

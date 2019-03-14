@@ -6,7 +6,6 @@ import { BaseRepository } from '../base-repository';
 import { ViewMotionCommentSection } from 'app/site/motions/models/view-motion-comment-section';
 import { MotionCommentSection } from 'app/shared/models/motions/motion-comment-section';
 import { Group } from 'app/shared/models/users/group';
-import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
 import { HttpService } from 'app/core/core-services/http.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
@@ -45,11 +44,11 @@ export class MotionCommentSectionRepositoryService extends BaseRepository<
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        private dataSend: DataSendService,
+        protected dataSend: DataSendService,
         private http: HttpService,
         private translate: TranslateService
     ) {
-        super(DS, mapperService, viewModelStoreService, MotionCommentSection, [Group]);
+        super(DS, dataSend, mapperService, viewModelStoreService, MotionCommentSection, [Group]);
     }
 
     public getVerboseName = (plural: boolean = false) => {
@@ -68,42 +67,6 @@ export class MotionCommentSectionRepositoryService extends BaseRepository<
         const viewMotionCommentSection = new ViewMotionCommentSection(section, readGroups, writeGroups);
         viewMotionCommentSection.getVerboseName = this.getVerboseName;
         return viewMotionCommentSection;
-    }
-
-    /**
-     * Creates the Comment Section
-     *
-     * @param section section to be created
-     * @returns the promise to create the comment section
-     */
-    public async create(section: MotionCommentSection): Promise<Identifiable> {
-        return await this.dataSend.createModel(section);
-    }
-
-    /**
-     * Updates an existion CommentSection
-     *
-     * @param section the update that the section should be created on
-     * @param viewSection the view model representation of that section
-     */
-    public async update(section: Partial<MotionCommentSection>, viewSection?: ViewMotionCommentSection): Promise<void> {
-        let updateSection: MotionCommentSection;
-        if (viewSection) {
-            updateSection = viewSection.section;
-        } else {
-            updateSection = new MotionCommentSection();
-        }
-        updateSection.patchValues(section);
-        await this.dataSend.updateModel(updateSection);
-    }
-
-    /**
-     * Deletes a MotionCommentSection
-     *
-     * @param viewSection the view model representation of the model that should be deleted
-     */
-    public async delete(viewSection: ViewMotionCommentSection): Promise<void> {
-        await this.dataSend.deleteModel(viewSection.section);
     }
 
     /**

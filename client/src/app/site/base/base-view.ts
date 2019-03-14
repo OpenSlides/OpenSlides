@@ -35,6 +35,18 @@ export abstract class BaseViewComponent extends BaseComponent implements OnDestr
     }
 
     /**
+     * automatically dismisses the error snack bar and clears subscriptions
+     * if the component is destroyed.
+     */
+    public ngOnDestroy(): void {
+        if (this.messageSnackBar) {
+            this.messageSnackBar.dismiss();
+        }
+
+        this.cleanSubjects();
+    }
+
+    /**
      * Opens the snack bar with the given message.
      * This snack bar will only dismiss if the user clicks the 'OK'-button.
      */
@@ -65,24 +77,23 @@ export abstract class BaseViewComponent extends BaseComponent implements OnDestr
     }
 
     /**
-     * To catch swipe gestures.
-     * Should be overwritten by children which need swipe gestures
+     * Manually clears all stored subscriptions.
+     * Necessary for manual routing control, since the Angular
+     * life cycle does not accept that navigation to the same URL
+     * executes the life cycle again
      */
-    protected swipe(e: TouchEvent, when: string): void {}
-
-    /**
-     * automatically dismisses the error snack bar and clears subscriptions
-     * if the component is destroyed.
-     */
-    public ngOnDestroy(): void {
-        if (this.messageSnackBar) {
-            this.messageSnackBar.dismiss();
-        }
-
+    protected cleanSubjects(): void {
         if (this.subscriptions.length > 0) {
             for (const sub of this.subscriptions) {
                 sub.unsubscribe();
             }
+            this.subscriptions = [];
         }
     }
+
+    /**
+     * To catch swipe gestures.
+     * Should be overwritten by children which need swipe gestures
+     */
+    protected swipe(e: TouchEvent, when: string): void {}
 }

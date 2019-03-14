@@ -75,6 +75,10 @@ export class ViewAssignment extends BaseAgendaViewModel {
         return this.title;
     };
 
+    public getModel(): Assignment {
+        return this.assignment;
+    }
+
     public formatForSearch(): SearchRepresentation {
         return [this.title];
     }

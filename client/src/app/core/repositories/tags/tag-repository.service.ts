@@ -5,7 +5,6 @@ import { ViewTag } from 'app/site/tags/models/view-tag';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { BaseRepository } from '../base-repository';
-import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -34,13 +33,13 @@ export class TagRepositoryService extends BaseRepository<ViewTag, Tag> {
      * @param dataSend sending changed objects
      */
     public constructor(
-        protected DS: DataStoreService,
+        DS: DataStoreService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        private dataSend: DataSendService,
+        protected dataSend: DataSendService,
         private translate: TranslateService
     ) {
-        super(DS, mapperService, viewModelStoreService, Tag);
+        super(DS, dataSend, mapperService, viewModelStoreService, Tag);
     }
 
     public getVerboseName = (plural: boolean = false) => {
@@ -51,22 +50,5 @@ export class TagRepositoryService extends BaseRepository<ViewTag, Tag> {
         const viewTag = new ViewTag(tag);
         viewTag.getVerboseName = this.getVerboseName;
         return viewTag;
-    }
-
-    public async create(update: Tag): Promise<Identifiable> {
-        const newTag = new Tag();
-        newTag.patchValues(update);
-        return await this.dataSend.createModel(newTag);
-    }
-
-    public async update(update: Partial<Tag>, viewTag: ViewTag): Promise<void> {
-        const updateTag = new Tag();
-        updateTag.patchValues(viewTag.tag);
-        updateTag.patchValues(update);
-        await this.dataSend.updateModel(updateTag);
-    }
-
-    public async delete(viewTag: ViewTag): Promise<void> {
-        await this.dataSend.deleteModel(viewTag.tag);
     }
 }

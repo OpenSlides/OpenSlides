@@ -106,6 +106,10 @@ export class ViewProjector extends BaseViewModel {
         return this.name;
     };
 
+    public getModel(): Projector {
+        return this.projector;
+    }
+
     public updateDependencies(update: BaseViewModel): void {
         if (update instanceof ViewProjector && this.reference_projector_id === update.id) {
             this._referenceProjector = update;

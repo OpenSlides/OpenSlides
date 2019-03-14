@@ -3,6 +3,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { BaseViewModel } from '../../site/base/base-view-model';
 import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model';
 import { CollectionStringMapperService } from '../core-services/collectionStringMapper.service';
+import { DataSendService } from '../core-services/data-send.service';
 import { DataStoreService } from '../core-services/data-store.service';
 import { Identifiable } from '../../shared/models/base/identifiable';
 import { auditTime } from 'rxjs/operators';
@@ -26,6 +27,8 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
      * Observable subject for the whole list
      */
     protected readonly viewModelListSubject: BehaviorSubject<V[]> = new BehaviorSubject<V[]>([]);
+
+    protected readonly viewModelListAuditSubject: BehaviorSubject<V[]> = new BehaviorSubject<V[]>([]);
 
     /**
      * Observable subject for any changes of view models.
@@ -59,12 +62,15 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
      */
     public constructor(
         protected DS: DataStoreService,
+        protected dataSend: DataSendService,
         protected collectionStringMapperService: CollectionStringMapperService,
         protected viewModelStoreService: ViewModelStoreService,
         protected baseModelCtor: ModelConstructor<M>,
         protected depsModelCtors?: ModelConstructor<BaseModel>[]
     ) {
         this._collectionString = baseModelCtor.COLLECTIONSTRING;
+
+        this.getViewModelListObservable().subscribe(x => this.viewModelListAuditSubject.next(x));
     }
 
     public onAfterAppsLoaded(): void {
@@ -137,25 +143,50 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
 
     /**
      * Saves the update to an existing model. So called "update"-function
+     * Provides a default procedure, but can be overwritten if required
+     *
      * @param update the update that should be created
      * @param viewModel the view model that the update is based on
      */
-    public abstract async update(update: Partial<M>, viewModel: V): Promise<void>;
+    public async update(update: object, viewModel: BaseViewModel): Promise<void> {
+        const sendUpdate = new this.baseModelCtor();
+        sendUpdate.patchValues(viewModel.getModel());
+        sendUpdate.patchValues(update);
+        return await this.dataSend.partialUpdateModel(sendUpdate);
+    }
 
     /**
      * Deletes a given Model
-     * @param update the update that should be created
-     * @param viewModel the view model that the update is based on
+     * Provides a default procedure, but can be overwritten if required
+     *
+     * @param viewModel the view model to delete
      */
-    public abstract async delete(viewModel: V): Promise<void>;
+    public async delete(viewModel: BaseViewModel): Promise<void> {
+        return await this.dataSend.deleteModel(viewModel.getModel());
+    }
 
     /**
-     * Creates a new model
-     * @param update the update that should be created
-     * @param viewModel the view model that the update is based on
-     * TODO: remove the viewModel
+     * Creates a new model.
+     * Provides a default procedure, but can be overwritten if required
+     *
+     * @param model the model to create on the server
      */
-    public abstract async create(update: M): Promise<Identifiable>;
+    public async create(model: BaseModel): Promise<Identifiable> {
+        // this ensures we get a valid base model, even if the view was just
+        // sending an object with "as MyModelClass"
+        const sendModel = new this.baseModelCtor();
+        sendModel.patchValues(model);
+
+        // Strips empty fields from the sending mode data.
+        // required for i.e. users, since group list is mandatory
+        Object.keys(sendModel).forEach(key => {
+            if (!sendModel[key]) {
+                delete sendModel[key];
+            }
+        });
+
+        return await this.dataSend.createModel(sendModel);
+    }
 
     /**
      * Creates a view model out of a base model.
@@ -207,6 +238,16 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
      */
     public getViewModelListObservable(): Observable<V[]> {
         return this.viewModelListSubject.asObservable().pipe(auditTime(1));
+    }
+
+    /**
+     * Returns the ViewModelList as piped Behavior Subject.
+     * Prevents unnecessary calls.
+     *
+     * @returns A subject that holds the model list
+     */
+    public getViewModelListBehaviorSubject(): BehaviorSubject<V[]> {
+        return this.viewModelListAuditSubject;
     }
 
     /**

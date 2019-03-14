@@ -49,6 +49,10 @@ export class ViewStatuteParagraph extends BaseViewModel implements Searchable {
         return this.title;
     };
 
+    public getModel(): StatuteParagraph {
+        return this.statuteParagraph;
+    }
+
     public formatForSearch(): SearchRepresentation {
         return [this.title];
     }

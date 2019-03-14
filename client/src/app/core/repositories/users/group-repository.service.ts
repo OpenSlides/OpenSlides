@@ -6,7 +6,6 @@ import { ConstantsService } from '../../ui-services/constants.service';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { Group } from 'app/shared/models/users/group';
-import { Identifiable } from 'app/shared/models/base/identifiable';
 import { ViewGroup } from 'app/site/users/models/view-group';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -52,11 +51,11 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group> {
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        private dataSend: DataSendService,
+        protected dataSend: DataSendService,
         private constants: ConstantsService,
         private translate: TranslateService
     ) {
-        super(DS, mapperService, viewModelStoreService, Group);
+        super(DS, dataSend, mapperService, viewModelStoreService, Group);
         this.sortPermsPerApp();
     }
 
@@ -160,36 +159,5 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group> {
                 app.permissions = see.concat(manage.concat(others));
             }
         });
-    }
-
-    /**
-     * creates and saves a new user
-     *
-     * @param groupData form value. Usually not yet a real user
-     */
-    public async create(groupData: Partial<Group>): Promise<Identifiable> {
-        const newGroup = new Group();
-        newGroup.patchValues(groupData);
-        return await this.dataSend.createModel(newGroup);
-    }
-
-    /**
-     * Updates the given Group with the new permission
-     *
-     * @param permission the new permission
-     * @param viewGroup the selected Group
-     */
-    public async update(groupData: Partial<Group>, viewGroup: ViewGroup): Promise<void> {
-        const updateGroup = new Group();
-        updateGroup.patchValues(viewGroup.group);
-        updateGroup.patchValues(groupData);
-        await this.dataSend.updateModel(updateGroup);
-    }
-
-    /**
-     * Deletes a given group
-     */
-    public async delete(viewGroup: ViewGroup): Promise<void> {
-        await this.dataSend.deleteModel(viewGroup.group);
     }
 }

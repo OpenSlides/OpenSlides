@@ -2,19 +2,17 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { Topic } from 'app/shared/models/topics/topic';
-import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
-import { Item } from 'app/shared/models/agenda/item';
+import { BaseAgendaContentObjectRepository } from '../base-agenda-content-object-repository';
+import { CollectionStringMapperService } from 'app/core/core-services/collectionStringMapper.service';
 import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { DataSendService } from 'app/core/core-services/data-send.service';
+import { Item } from 'app/shared/models/agenda/item';
+import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
+import { Topic } from 'app/shared/models/topics/topic';
 import { ViewTopic } from 'app/site/agenda/models/view-topic';
-import { Identifiable } from 'app/shared/models/base/identifiable';
-import { CollectionStringMapperService } from 'app/core/core-services/collectionStringMapper.service';
-import { CreateTopic } from 'app/site/agenda/models/create-topic';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewItem } from 'app/site/agenda/models/view-item';
-import { BaseAgendaContentObjectRepository } from '../base-agenda-content-object-repository';
 
 /**
  * Repository for topics
@@ -34,10 +32,10 @@ export class TopicRepositoryService extends BaseAgendaContentObjectRepository<Vi
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        private dataSend: DataSendService,
+        protected dataSend: DataSendService,
         private translate: TranslateService
     ) {
-        super(DS, mapperService, viewModelStoreService, Topic, [Mediafile, Item]);
+        super(DS, dataSend, mapperService, viewModelStoreService, Topic, [Mediafile, Item]);
     }
 
     public getAgendaTitle = (topic: Partial<Topic> | Partial<ViewTopic>) => {
@@ -67,39 +65,6 @@ export class TopicRepositoryService extends BaseAgendaContentObjectRepository<Vi
         viewTopic.getAgendaTitle = () => this.getAgendaTitle(viewTopic);
         viewTopic.getAgendaTitleWithType = () => this.getAgendaTitle(viewTopic);
         return viewTopic;
-    }
-
-    /**
-     * Save a new topic
-     *
-     * @param topicData Partial topic data to be created
-     * @returns an Identifiable (usually id) as promise
-     */
-    public async create(topic: CreateTopic): Promise<Identifiable> {
-        return await this.dataSend.createModel(topic);
-    }
-
-    /**
-     * Change an existing topic
-     *
-     * @param updateData form value containing the data meant to update the topic
-     * @param viewTopic the topic that should receive the update
-     */
-    public async update(updateData: Partial<Topic>, viewTopic: ViewTopic): Promise<void> {
-        const updateTopic = new Topic();
-        updateTopic.patchValues(viewTopic.topic);
-        updateTopic.patchValues(updateData);
-
-        return await this.dataSend.updateModel(updateTopic);
-    }
-
-    /**
-     * Delete a topic
-     *
-     * @param viewTopic the topic that should be removed
-     */
-    public async delete(viewTopic: ViewTopic): Promise<void> {
-        return await this.dataSend.deleteModel(viewTopic.topic);
     }
 
     /**

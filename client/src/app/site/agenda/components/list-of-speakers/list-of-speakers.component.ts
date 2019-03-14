@@ -159,9 +159,8 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
      */
     public ngOnInit(): void {
         // load and observe users
-        this.users = new BehaviorSubject(this.userRepository.getViewModelList());
-        this.userRepository.getSortedViewModelListObservable().subscribe(users => {
-            this.users.next(users);
+        this.users = this.userRepository.getViewModelListBehaviorSubject();
+        this.userRepository.getViewModelListBehaviorSubject().subscribe(newUsers => {
             if (this.viewItem) {
                 this.setSpeakerList(this.viewItem.id);
             }

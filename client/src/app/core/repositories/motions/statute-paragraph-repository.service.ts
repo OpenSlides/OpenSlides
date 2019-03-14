@@ -5,7 +5,6 @@ import { DataStoreService } from '../../core-services/data-store.service';
 import { BaseRepository } from '../base-repository';
 import { ViewStatuteParagraph } from 'app/site/motions/models/view-statute-paragraph';
 import { StatuteParagraph } from 'app/shared/models/motions/statute-paragraph';
-import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -34,10 +33,10 @@ export class StatuteParagraphRepositoryService extends BaseRepository<ViewStatut
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        private dataSend: DataSendService,
+        protected dataSend: DataSendService,
         private translate: TranslateService
     ) {
-        super(DS, mapperService, viewModelStoreService, StatuteParagraph);
+        super(DS, dataSend, mapperService, viewModelStoreService, StatuteParagraph);
     }
 
     public getVerboseName = (plural: boolean = false) => {
@@ -48,22 +47,5 @@ export class StatuteParagraphRepositoryService extends BaseRepository<ViewStatut
         const viewStatuteParagraph = new ViewStatuteParagraph(statuteParagraph);
         viewStatuteParagraph.getVerboseName = this.getVerboseName;
         return viewStatuteParagraph;
-    }
-
-    public async create(statuteParagraph: StatuteParagraph): Promise<Identifiable> {
-        return await this.dataSend.createModel(statuteParagraph);
-    }
-
-    public async update(
-        statuteParagraph: Partial<StatuteParagraph>,
-        viewStatuteParagraph: ViewStatuteParagraph
-    ): Promise<void> {
-        const updateParagraph = viewStatuteParagraph.statuteParagraph;
-        updateParagraph.patchValues(statuteParagraph);
-        await this.dataSend.updateModel(updateParagraph);
-    }
-
-    public async delete(viewStatuteParagraph: ViewStatuteParagraph): Promise<void> {
-        await this.dataSend.deleteModel(viewStatuteParagraph.statuteParagraph);
     }
 }

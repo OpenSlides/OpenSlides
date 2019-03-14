@@ -107,7 +107,7 @@ export class GroupListComponent extends BaseViewComponent implements OnInit {
         if (!this.groupForm.value || !this.groupForm.valid) {
             return;
         }
-        this.repo.create(this.groupForm.value).then(() => {
+        this.repo.create(this.groupForm.value as Group).then(() => {
             this.groupForm.reset();
             this.cancelEditing();
         }, this.raiseError);

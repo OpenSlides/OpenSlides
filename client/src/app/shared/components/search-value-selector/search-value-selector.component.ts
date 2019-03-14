@@ -87,7 +87,7 @@ export class SearchValueSelectorComponent implements OnInit, OnDestroy {
             this._inputListSubscription.unsubscribe();
         }
         this._inputListSubject = value;
-        this._inputListSubscription = this._inputListSubject.subscribe(values => {
+        this._inputListSubscription = this._inputListSubject.subscribe(() => {
             this.filterItems();
         });
     }

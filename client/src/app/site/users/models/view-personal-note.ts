@@ -36,5 +36,9 @@ export class ViewPersonalNote extends BaseViewModel {
         return this.personalNote ? this.personalNote.toString() : null;
     };
 
+    public getModel(): PersonalNote {
+        return this.personalNote;
+    }
+
     public updateDependencies(update: BaseViewModel): void {}
 }

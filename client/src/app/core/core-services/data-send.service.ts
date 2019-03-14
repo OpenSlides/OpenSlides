@@ -32,6 +32,7 @@ export class DataSendService {
 
     /**
      * Function to fully update a model on the server.
+     * TODO: Deprecated (?)
      *
      * @param model The model that is meant to be changed.
      */

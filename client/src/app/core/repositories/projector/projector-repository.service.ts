@@ -39,11 +39,11 @@ export class ProjectorRepositoryService extends BaseRepository<ViewProjector, Pr
         DS: DataStoreService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        private dataSend: DataSendService,
+        protected dataSend: DataSendService,
         private http: HttpService,
         private translate: TranslateService
     ) {
-        super(DS, mapperService, viewModelStoreService, Projector, [Projector]);
+        super(DS, dataSend, mapperService, viewModelStoreService, Projector, [Projector]);
     }
 
     public getVerboseName = (plural: boolean = false) => {
@@ -64,25 +64,6 @@ export class ProjectorRepositoryService extends BaseRepository<ViewProjector, Pr
         projector.patchValues(projectorData);
         projector.elements = [{ name: 'core/clock', stable: true }];
         return await this.dataSend.createModel(projector);
-    }
-
-    /**
-     * Updates a projector.
-     */
-    public async update(projectorData: Partial<Projector>, viewProjector: ViewProjector): Promise<void> {
-        const projector = new Projector();
-        projector.patchValues(viewProjector.projector);
-        projector.patchValues(projectorData);
-        await this.dataSend.updateModel(projector);
-    }
-
-    /**
-     * Deletes a given projector.
-     *
-     * @param projector
-     */
-    public async delete(projector: ViewProjector): Promise<void> {
-        await this.dataSend.deleteModel(projector.projector);
     }
 
     /**

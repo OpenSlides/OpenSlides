@@ -80,6 +80,10 @@ export class ViewMediafile extends BaseProjectableViewModel implements Searchabl
         return this.title;
     };
 
+    public getModel(): Mediafile {
+        return this.mediafile;
+    }
+
     public formatForSearch(): SearchRepresentation {
         const searchValues = [this.title];
         if (this.uploader) {

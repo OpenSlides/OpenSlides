@@ -32,5 +32,9 @@ export class ViewChatMessage extends BaseViewModel {
         return 'Chatmessage';
     };
 
+    public getModel(): ChatMessage {
+        return this.chatmessage;
+    }
+
     public updateDependencies(message: BaseViewModel): void {}
 }

@@ -179,6 +179,10 @@ export class ViewUser extends BaseProjectableViewModel implements Searchable {
         this._groups = groups;
     }
 
+    public getModel(): User {
+        return this.user;
+    }
+
     /**
      * Formats the category for search
      *

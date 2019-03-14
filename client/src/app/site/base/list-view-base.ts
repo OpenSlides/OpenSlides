@@ -104,7 +104,7 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel, M extends B
     }
 
     /**
-     * Standard sorting function. Siffucient for most list views but can be overwritten
+     * Standard sorting function. Sufficient for most list views but can be overwritten
      */
     protected onSort(): void {
         this.subscriptions.push(
