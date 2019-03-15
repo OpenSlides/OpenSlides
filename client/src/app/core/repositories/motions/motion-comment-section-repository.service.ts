@@ -42,13 +42,13 @@ export class MotionCommentSectionRepositoryService extends BaseRepository<
      */
     public constructor(
         DS: DataStoreService,
+        dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        protected dataSend: DataSendService,
-        private http: HttpService,
-        private translate: TranslateService
+        translate: TranslateService,
+        private http: HttpService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, MotionCommentSection, [Group]);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, MotionCommentSection, [Group]);
     }
 
     public getVerboseName = (plural: boolean = false) => {

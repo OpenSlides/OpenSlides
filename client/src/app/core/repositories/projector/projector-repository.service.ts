@@ -37,13 +37,13 @@ export class ProjectorRepositoryService extends BaseRepository<ViewProjector, Pr
      */
     public constructor(
         DS: DataStoreService,
+        dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        protected dataSend: DataSendService,
-        private http: HttpService,
-        private translate: TranslateService
+        translate: TranslateService,
+        private http: HttpService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, Projector, [Projector]);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, Projector, [Projector]);
     }
 
     public getVerboseName = (plural: boolean = false) => {

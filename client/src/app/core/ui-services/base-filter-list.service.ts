@@ -118,7 +118,7 @@ export abstract class BaseFilterListService<M extends BaseModel, V extends BaseV
     public filter(): Observable<V[]> {
         this.repo
             .getViewModelListObservable()
-            .pipe(auditTime(100))
+            .pipe(auditTime(10))
             .subscribe(data => {
                 this.currentRawData = data;
                 this.filteredData = this.filterData(data);

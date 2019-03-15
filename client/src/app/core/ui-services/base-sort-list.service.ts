@@ -51,6 +51,11 @@ export abstract class BaseSortListService<V extends BaseViewModel> {
     private sortFn: (a: V, b: V) => number;
 
     /**
+     * default sorting to use if the client was not initialized before
+     */
+    protected defaultSorting: keyof V = 'id';
+
+    /**
      * Constructor. Does nothing. TranslateService is used for localeCompeare.
      */
     public constructor(protected translate: TranslateService, private store: StorageService) {}
@@ -113,7 +118,7 @@ export abstract class BaseSortListService<V extends BaseViewModel> {
      * get the property of the viewModel the sorting is based on.
      */
     public get sortProperty(): string {
-        return this.sortOptions.sortProperty as string;
+        return this.sortOptions ? (this.sortOptions.sortProperty as string) : '';
     }
 
     public get isActive(): boolean {
@@ -138,7 +143,7 @@ export abstract class BaseSortListService<V extends BaseViewModel> {
      * @param option
      */
     public getSortIcon(option: OsSortingItem<V>): string {
-        if (this.sortProperty !== (option.property as string)) {
+        if (!this.sortProperty || this.sortProperty !== (option.property as string)) {
             return '';
         }
         return this.ascending ? 'arrow_downward' : 'arrow_upward';
@@ -156,20 +161,21 @@ export abstract class BaseSortListService<V extends BaseViewModel> {
      * Retrieve the currently saved sorting definition from the borwser's
      * store
      */
-    private loadStorageDefinition(): void {
-        const me = this;
-        this.store.get('sorting_' + this.name).then(function(sorting: OsSortingDefinition<V> | null): void {
-            if (sorting) {
-                if (sorting.sortProperty) {
-                    me.sortOptions.sortProperty = sorting.sortProperty;
-                    if (sorting.sortAscending !== undefined) {
-                        me.sortOptions.sortAscending = sorting.sortAscending;
-                    }
+    private async loadStorageDefinition(): Promise<void> {
+        const sorting: OsSortingDefinition<V> | null = await this.store.get('sorting_' + this.name);
+        if (sorting) {
+            if (sorting.sortProperty) {
+                this.sortOptions.sortProperty = sorting.sortProperty;
+                if (sorting.sortAscending !== undefined) {
+                    this.sortOptions.sortAscending = sorting.sortAscending;
                 }
             }
-            me.updateSortFn();
-            me.doAsyncSorting();
-        });
+        } else {
+            this.sortOptions.sortProperty = this.defaultSorting;
+            this.sortOptions.sortAscending = true;
+        }
+        this.updateSortFn();
+        this.doAsyncSorting();
     }
 
     /**
@@ -197,10 +203,10 @@ export abstract class BaseSortListService<V extends BaseViewModel> {
      * Recreates the sorting function. Is supposed to be called on init and
      * every time the sorting (property, ascending/descending) or the language changes
      */
-    private updateSortFn(): void {
+    protected updateSortFn(): void {
         const property = this.sortProperty as string;
         const ascending = this.ascending;
-        const lang = this.translate.currentLang; // TODO: observe and update sorting on change
+        const intl = new Intl.Collator(this.translate.currentLang); // TODO: observe and update sorting on language change
 
         this.sortFn = function(itemA: V, itemB: V): number {
             const firstProperty = ascending ? itemA[property] : itemB[property];
@@ -234,16 +240,16 @@ export abstract class BaseSortListService<V extends BaseViewModel> {
                         if (!firstProperty) {
                             return 1;
                         }
-                        return firstProperty.localeCompare(secondProperty, lang);
+                        return intl.compare(firstProperty, secondProperty);
                     case 'function':
                         const a = firstProperty();
                         const b = secondProperty();
-                        return a.localeCompare(b, lang);
+                        return intl.compare(a, b);
                     case 'object':
                         if (firstProperty instanceof Date) {
                             return firstProperty > secondProperty ? 1 : -1;
                         } else {
-                            return firstProperty.toString().localeCompare(secondProperty.toString(), lang);
+                            return intl.compare(firstProperty.toString(), secondProperty.toString());
                         }
                     case 'undefined':
                         return 1;

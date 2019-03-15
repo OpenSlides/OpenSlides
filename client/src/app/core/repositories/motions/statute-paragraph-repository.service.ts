@@ -31,12 +31,12 @@ export class StatuteParagraphRepositoryService extends BaseRepository<ViewStatut
      */
     public constructor(
         DS: DataStoreService,
+        dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        protected dataSend: DataSendService,
-        private translate: TranslateService
+        translate: TranslateService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, StatuteParagraph);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, StatuteParagraph);
     }
 
     public getVerboseName = (plural: boolean = false) => {

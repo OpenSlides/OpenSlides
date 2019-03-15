@@ -15,13 +15,13 @@ import { ServertimeService } from 'app/core/core-services/servertime.service';
 export class CountdownRepositoryService extends BaseRepository<ViewCountdown, Countdown> {
     public constructor(
         DS: DataStoreService,
+        dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        protected dataSend: DataSendService,
-        private translate: TranslateService,
+        translate: TranslateService,
         private servertimeService: ServertimeService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, Countdown);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, Countdown);
     }
 
     public getVerboseName = (plural: boolean = false) => {

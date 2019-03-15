@@ -35,11 +35,11 @@ export class HistoryRepositoryService extends BaseRepository<ViewHistory, Histor
         dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
+        translate: TranslateService,
         private httpService: HttpService,
-        private timeTravel: TimeTravelService,
-        private translate: TranslateService
+        private timeTravel: TimeTravelService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, History, [User]);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, History, [User]);
     }
 
     public getVerboseName = (plural: boolean = false) => {

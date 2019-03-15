@@ -167,7 +167,8 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User> imp
         this.setFulltextFilter();
 
         // Initialize the groups
-        this.groups = this.groupRepo.getViewModelList().filter(group => group.id !== 1);
+        this.groups = this.groupRepo.getSortedViewModelList().filter(group => group.id !== 1);
+        this.groupRepo.getViewModelListObservable().subscribe(groups => (this.groups = groups));
     }
 
     /**

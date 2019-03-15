@@ -74,7 +74,7 @@ export class MotionMultiselectService {
      */
     public async moveToItem(motions: ViewMotion[]): Promise<void> {
         const title = this.translate.instant('This will move all selected motions as childs to:');
-        const choices: (Displayable & Identifiable)[] = this.agendaRepo.getViewModelList();
+        const choices: (Displayable & Identifiable)[] = this.agendaRepo.getSortedViewModelList();
         const selectedChoice = await this.choiceService.open(title, choices);
         if (selectedChoice) {
             const requestData = {
@@ -139,7 +139,7 @@ export class MotionMultiselectService {
         const clearChoice = this.translate.instant('No category');
         const selectedChoice = await this.choiceService.open(
             title,
-            this.categoryRepo.sortViewCategoriesByConfig(this.categoryRepo.getViewModelList()),
+            this.categoryRepo.getSortedViewModelList(),
             false,
             null,
             clearChoice
@@ -164,7 +164,12 @@ export class MotionMultiselectService {
             'This will add or remove the following submitters for all selected motions:'
         );
         const choices = [this.translate.instant('Add'), this.translate.instant('Remove')];
-        const selectedChoice = await this.choiceService.open(title, this.userRepo.getViewModelList(), true, choices);
+        const selectedChoice = await this.choiceService.open(
+            title,
+            this.userRepo.getSortedViewModelList(),
+            true,
+            choices
+        );
         if (selectedChoice && selectedChoice.action === choices[0]) {
             const requestData = motions.map(motion => {
                 let submitterIds = [...motion.sorted_submitters_id, ...(selectedChoice.items as number[])];
@@ -200,7 +205,12 @@ export class MotionMultiselectService {
             this.translate.instant('Remove'),
             this.translate.instant('Clear tags')
         ];
-        const selectedChoice = await this.choiceService.open(title, this.tagRepo.getViewModelList(), true, choices);
+        const selectedChoice = await this.choiceService.open(
+            title,
+            this.tagRepo.getSortedViewModelList(),
+            true,
+            choices
+        );
         if (selectedChoice && selectedChoice.action === choices[0]) {
             const requestData = motions.map(motion => {
                 let tagIds = [...motion.tags_id, ...(selectedChoice.items as number[])];
@@ -242,7 +252,7 @@ export class MotionMultiselectService {
         const clearChoice = this.translate.instant('Clear motion block');
         const selectedChoice = await this.choiceService.open(
             title,
-            this.motionBlockRepo.getViewModelList(),
+            this.motionBlockRepo.getSortedViewModelList(),
             false,
             null,
             clearChoice
@@ -280,7 +290,7 @@ export class MotionMultiselectService {
                 // insert after chosen
                 const olderSibling = this.repo.getViewModel(selectedChoice.items as number);
                 const parentId = olderSibling ? olderSibling.sort_parent_id : null;
-                const siblings = this.repo.getViewModelList().filter(motion => motion.sort_parent_id === parentId);
+                const siblings = allMotions.filter(motion => motion.sort_parent_id === parentId);
                 const idx = siblings.findIndex(sib => sib.id === olderSibling.id);
                 const before = siblings.slice(0, idx + 1);
                 const after = siblings.slice(idx + 1);

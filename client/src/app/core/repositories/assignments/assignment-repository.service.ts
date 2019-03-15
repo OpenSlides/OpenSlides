@@ -36,9 +36,9 @@ export class AssignmentRepositoryService extends BaseAgendaContentObjectReposito
         dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        private translate: TranslateService
+        translate: TranslateService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, Assignment, [User, Item, Tag]);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, Assignment, [User, Item, Tag]);
     }
 
     public getAgendaTitle = (assignment: Partial<Assignment> | Partial<ViewAssignment>) => {

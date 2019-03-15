@@ -128,7 +128,7 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
             .get<string>('motions_recommendations_by')
             .subscribe(recommender => (this.recomendationEnabled = !!recommender));
         this.motionBlockRepo.getViewModelListObservable().subscribe(mBs => (this.motionBlocks = mBs));
-        this.categoryRepo.getSortedViewModelListObservable().subscribe(cats => (this.categories = cats));
+        this.categoryRepo.getViewModelListObservable().subscribe(cats => (this.categories = cats));
         this.tagRepo.getViewModelListObservable().subscribe(tags => (this.tags = tags));
         this.workflowRepo.getViewModelListObservable().subscribe(wfs => (this.workflows = wfs));
         this.setFulltextFilter();

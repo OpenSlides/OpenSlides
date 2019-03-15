@@ -64,7 +64,7 @@ export class ProjectorMessageListComponent extends BaseViewComponent implements 
      */
     public ngOnInit(): void {
         super.setTitle('Messages');
-        this.messages = this.repo.getViewModelList();
+        this.messages = this.repo.getSortedViewModelList();
         this.repo.getViewModelListObservable().subscribe(messages => (this.messages = messages));
     }
 

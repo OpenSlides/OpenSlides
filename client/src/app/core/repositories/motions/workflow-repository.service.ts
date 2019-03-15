@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { auditTime } from 'rxjs/operators';
 
 import { Workflow } from 'app/shared/models/motions/workflow';
 import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
@@ -43,14 +42,15 @@ export class WorkflowRepositoryService extends BaseRepository<ViewWorkflow, Work
      */
     public constructor(
         DS: DataStoreService,
+        dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        protected dataSend: DataSendService,
-        private httpService: HttpService,
-        private translate: TranslateService
+        translate: TranslateService,
+        private httpService: HttpService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, Workflow);
-        this.viewModelListSubject.pipe(auditTime(1)).subscribe(models => {
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, Workflow);
+
+        this.sortedViewModelListSubject.subscribe(models => {
             if (models && models.length > 0) {
                 this.initSorting(models);
             }

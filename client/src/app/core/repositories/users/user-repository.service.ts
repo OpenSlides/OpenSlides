@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
+
 import { TranslateService } from '@ngx-translate/core';
 
 import { BaseRepository } from '../base-repository';
@@ -22,6 +22,8 @@ import { ViewModelStoreService } from 'app/core/core-services/view-model-store.s
  */
 type StringNamingSchema = 'lastCommaFirst' | 'firstSpaceLast';
 
+type SortProperty = 'first_name' | 'last_name' | 'number';
+
 /**
  * Repository service for users
  *
@@ -32,22 +34,35 @@ type StringNamingSchema = 'lastCommaFirst' | 'firstSpaceLast';
 })
 export class UserRepositoryService extends BaseRepository<ViewUser, User> {
     /**
+     * The property the incoming data is sorted by
+     */
+    protected sortProperty: SortProperty;
+
+    /**
      * Constructor for the user repo
      *
      * @param DS The DataStore
      * @param mapperService Maps collection strings to classes
      * @param dataSend sending changed objects
+     * @param translate
+     * @param httpService
+     * @param configService
      */
     public constructor(
         DS: DataStoreService,
+        dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        protected dataSend: DataSendService,
-        private translate: TranslateService,
+        translate: TranslateService,
         private httpService: HttpService,
         private configService: ConfigService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, User, [Group]);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, User, [Group]);
+        this.sortProperty = this.configService.instant('users_sort_by');
+        this.configService.get<SortProperty>('users_sort_by').subscribe(conf => {
+            this.sortProperty = conf;
+            this.setConfigSortFn();
+        });
     }
 
     public getVerboseName = (plural: boolean = false) => {
@@ -219,7 +234,7 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
      * Searches and returns Users by full name
      *
      * @param name
-     * @returns all users matching that name
+     * @returns all users matching that name (unsorted)
      */
     public getUsersByName(name: string): ViewUser[] {
         return this.getViewModelList().filter(user => {
@@ -301,43 +316,22 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
     }
 
     /**
-     * @returns the observable for users sorted according to configuration
-     *
-     * TODO: This is leading to heavy operations
+     * Triggers an update for the sort function responsible for the default sorting of data items
      */
-    public getSortedViewModelListObservable(): Observable<ViewUser[]> {
-        const subject = new BehaviorSubject<ViewUser[]>([]);
-        this.getViewModelListObservable().subscribe(users => {
-            subject.next(this.sortViewUsersByConfig(users));
-        });
-        return subject.asObservable();
-    }
-
-    /**
-     * Sort viewUsers by the configured settings
-     *
-     * @param users
-     * @returns the users sorted by first name, last name or number, according
-     * to the config setting. Fallthrough and identical cases will be sorted by
-     * 'short_name'
-     *
-     * TODO: That operation is HEAVY
-     */
-    public sortViewUsersByConfig(users: ViewUser[]): ViewUser[] {
-        const sort = this.configService.instant<'first_name' | 'last_name' | 'number'>('users_sort_by') || 'last_name';
-        return users.sort((a, b) => {
-            if (a[sort] && b[sort]) {
-                if (a[sort] === b[sort]) {
-                    return a.short_name.localeCompare(b.short_name, this.translate.currentLang);
+    public setConfigSortFn(): void {
+        this.setSortFunction((a: ViewUser, b: ViewUser) => {
+            if (a[this.sortProperty] && b[this.sortProperty]) {
+                if (a[this.sortProperty] === b[this.sortProperty]) {
+                    return this.languageCollator.compare(a.short_name, b.short_name);
                 } else {
-                    return a[sort].localeCompare(b[sort], this.translate.currentLang);
+                    return this.languageCollator.compare(a[this.sortProperty], b[this.sortProperty]);
                 }
-            } else if (a[sort] && !b[sort]) {
+            } else if (a[this.sortProperty] && !b[this.sortProperty]) {
                 return -1;
-            } else if (b[sort]) {
+            } else if (b[this.sortProperty]) {
                 return 1;
             } else {
-                return a.short_name.localeCompare(b.short_name);
+                return this.languageCollator.compare(a.short_name, b.short_name);
             }
         });
     }

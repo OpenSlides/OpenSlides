@@ -48,7 +48,7 @@ export class MotionPdfService {
      *
      * @param translate handle translations
      * @param motionRepo get parent motions
-     * @param statureRepo To get formated stature paragraphs
+     * @param statuteRepo To get formated stature paragraphs
      * @param changeRecoRepo to get the change recommendations
      * @param configService Read config variables
      * @param htmlToPdfService To convert HTML text into pdfmake doc def
@@ -59,7 +59,7 @@ export class MotionPdfService {
     public constructor(
         private translate: TranslateService,
         private motionRepo: MotionRepositoryService,
-        private statureRepo: StatuteParagraphRepositoryService,
+        private statuteRepo: StatuteParagraphRepositoryService,
         private changeRecoRepo: ChangeRecommendationRepositoryService,
         private configService: ConfigService,
         private htmlToPdfService: HtmlToPdfService,
@@ -123,7 +123,7 @@ export class MotionPdfService {
         }
 
         if (infoToExport && infoToExport.includes('allcomments')) {
-            commentsToExport = this.commentRepo.getViewModelList().map(vm => vm.id);
+            commentsToExport = this.commentRepo.getSortedViewModelList().map(vm => vm.id);
         }
         if (commentsToExport) {
             motionPdfContent.push(this.createComments(motion, commentsToExport));
@@ -495,7 +495,7 @@ export class MotionPdfService {
             }
         } else if (motion.isStatuteAmendment()) {
             // statute amendments
-            const statutes = this.statureRepo.getViewModelList();
+            const statutes = this.statuteRepo.getViewModelList();
             motionText = this.motionRepo.formatStatuteAmendment(statutes, motion, lineLength);
         } else {
             // lead motion or normal amendments

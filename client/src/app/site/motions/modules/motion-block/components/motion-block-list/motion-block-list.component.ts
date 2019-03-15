@@ -107,7 +107,6 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
 
         this.items = this.itemRepo.getViewModelListBehaviorSubject();
 
-        // TODO: Should fall under generic sorting in PR 4411
         this.repo.getViewModelListObservable().subscribe(newMotionblocks => {
             newMotionblocks.sort((a, b) => (a > b ? 1 : -1));
             this.dataSource.data = newMotionblocks;

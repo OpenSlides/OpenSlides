@@ -34,12 +34,12 @@ export class TagRepositoryService extends BaseRepository<ViewTag, Tag> {
      */
     public constructor(
         DS: DataStoreService,
+        dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        protected dataSend: DataSendService,
-        private translate: TranslateService
+        translate: TranslateService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, Tag);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, Tag);
     }
 
     public getVerboseName = (plural: boolean = false) => {

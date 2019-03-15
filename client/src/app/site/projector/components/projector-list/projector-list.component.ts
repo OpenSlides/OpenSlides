@@ -120,6 +120,7 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
      */
     public ngOnInit(): void {
         super.setTitle('Projectors');
+        this.projectors = this.repo.getViewModelList();
         this.repo.getViewModelListObservable().subscribe(projectors => (this.projectors = projectors));
     }
 

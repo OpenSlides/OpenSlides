@@ -37,6 +37,6 @@ export class MotionSortListService extends BaseSortListService<ViewMotion> {
      */
     public constructor(translate: TranslateService, store: StorageService, config: ConfigService) {
         super(translate, store);
-        this.sortOptions.sortProperty = config.instant<keyof ViewMotion>('motions_motions_sorting');
+        this.defaultSorting = config.instant<keyof ViewMotion>('motions_motions_sorting');
     }
 }

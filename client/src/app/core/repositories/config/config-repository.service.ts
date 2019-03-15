@@ -100,11 +100,11 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
         dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
+        translate: TranslateService,
         private constantsService: ConstantsService,
-        private http: HttpService,
-        private translate: TranslateService
+        private http: HttpService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, Config);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, Config);
 
         this.constantsService.get('OpenSlidesConfigVariables').subscribe(constant => {
             this.createConfigStructure(constant);

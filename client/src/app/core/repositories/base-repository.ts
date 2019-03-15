@@ -1,4 +1,5 @@
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 import { BaseViewModel } from '../../site/base/base-view-model';
 import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model';
@@ -24,17 +25,35 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
     protected viewModelSubjects: { [modelId: number]: BehaviorSubject<V> } = {};
 
     /**
-     * Observable subject for the whole list
+     * Observable subject for the whole list. These entries are unsorted an not piped through
+     * autodTime. Just use this internally.
+     *
+     * It's used to debounce messages on the sortedViewModelListSubject
      */
-    protected readonly viewModelListSubject: BehaviorSubject<V[]> = new BehaviorSubject<V[]>([]);
+    private readonly viewModelListSubject: BehaviorSubject<V[]> = new BehaviorSubject<V[]>([]);
 
-    protected readonly viewModelListAuditSubject: BehaviorSubject<V[]> = new BehaviorSubject<V[]>([]);
+    /**
+     * Observable subject for the sorted view model list.
+     *
+     * All data is piped through an auditTime of 1ms. This is to prevent massive
+     * updates, if e.g. an autoupdate with a lot motions come in. The result is just one
+     * update of the new list instead of many unnecessary updates.
+     */
+    protected readonly sortedViewModelListSubject: BehaviorSubject<V[]> = new BehaviorSubject<V[]>([]);
 
     /**
      * Observable subject for any changes of view models.
      */
     protected readonly generalViewModelSubject: Subject<V> = new Subject<V>();
 
+    /**
+     * Can be used by the sort functions.
+     */
+    protected languageCollator: Intl.Collator;
+
+    /**
+     * The collection string of the managed model.
+     */
     private _collectionString: string;
 
     public get collectionString(): string {
@@ -65,16 +84,28 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
         protected dataSend: DataSendService,
         protected collectionStringMapperService: CollectionStringMapperService,
         protected viewModelStoreService: ViewModelStoreService,
+        protected translate: TranslateService,
         protected baseModelCtor: ModelConstructor<M>,
         protected depsModelCtors?: ModelConstructor<BaseModel>[]
     ) {
         this._collectionString = baseModelCtor.COLLECTIONSTRING;
 
-        this.getViewModelListObservable().subscribe(x => this.viewModelListAuditSubject.next(x));
+        // All data is piped through an auditTime of 1ms. This is to prevent massive
+        // updates, if e.g. an autoupdate with a lot motions come in. The result is just one
+        // update of the new list instead of many unnecessary updates.
+        this.viewModelListSubject.pipe(auditTime(1)).subscribe(models => {
+            this.sortedViewModelListSubject.next(models.sort(this.viewModelSortFn));
+        });
+
+        this.languageCollator = new Intl.Collator(this.translate.currentLang);
     }
 
     public onAfterAppsLoaded(): void {
         this.DS.clearObservable.subscribe(() => this.clear());
+        this.translate.onLangChange.subscribe(change => {
+            this.languageCollator = new Intl.Collator(change.lang);
+            this.updateViewModelListObservable();
+        });
 
         // Populate the local viewModelStore with ViewModel Objects.
         this.DS.getAll(this.baseModelCtor).forEach((model: M) => {
@@ -202,6 +233,19 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
      */
     protected clear(): void {
         this.viewModelStore = {};
+    }
+    /**
+     * The function used for sorting the data of this repository. The defualt sorts by ID.
+     */
+    protected viewModelSortFn: (a: V, b: V) => number = (a: V, b: V) => a.id - b.id;
+
+    /**
+     * Setter for a sort function. Updates the sorting.
+     *
+     * @param fn a sort function
+     */
+    public setSortFunction(fn: (a: V, b: V) => number): void {
+        this.viewModelSortFn = fn;
         this.updateViewModelListObservable();
     }
 
@@ -213,14 +257,24 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
     }
 
     /**
-     * helper function to return the viewModel as array
+     * @returns all view models stored in this repository. Sorting is not guaranteed
      */
     public getViewModelList(): V[] {
         return Object.values(this.viewModelStore);
     }
 
     /**
-     * returns the current observable for one viewModel
+     * Get a sorted ViewModelList. This passes through a (1ms short) delay,
+     * thus may not be accurate, especially on application loading.
+     *
+     * @returns all sorted view models stored in this repository.
+     */
+    public getSortedViewModelList(): V[] {
+        return this.sortedViewModelListSubject.getValue();
+    }
+
+    /**
+     * @returns the current observable for one viewModel
      */
     public getViewModelObservable(id: number): Observable<V> {
         if (!this.viewModelSubjects[id]) {
@@ -230,14 +284,10 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
     }
 
     /**
-     * Return the Observable of the whole store.
-     *
-     * All data is piped through an auditTime of 1ms. This is to prevent massive
-     * updates, if e.g. an autoupdate with a lot motions come in. The result is just one
-     * update of the new list instead of many unnecessary updates.
+     * @returns the (sorted) Observable of the whole store.
      */
     public getViewModelListObservable(): Observable<V[]> {
-        return this.viewModelListSubject.asObservable().pipe(auditTime(1));
+        return this.sortedViewModelListSubject.asObservable();
     }
 
     /**
@@ -247,7 +297,7 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
      * @returns A subject that holds the model list
      */
     public getViewModelListBehaviorSubject(): BehaviorSubject<V[]> {
-        return this.viewModelListAuditSubject;
+        return this.sortedViewModelListSubject;
     }
 
     /**
@@ -268,7 +318,7 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
     }
 
     /**
-     * update the observable of the list
+     * update the observable of the list. Also updates the sorting of the view model list.
      */
     protected updateViewModelListObservable(): void {
         this.viewModelListSubject.next(this.getViewModelList());

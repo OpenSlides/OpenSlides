@@ -13,13 +13,13 @@ export class ViewItem extends BaseViewModel {
     /**
      * virtual weight defined by the order in the agenda tree, representing a shortcut to sorting by
      * weight, parent_id and the parents' weight(s)
-     * TODO will be accurate if the viewMotion is observed via {@link getViewModelListObservable}, else, it will be undefined
+     * TODO will be accurate if the viewMotion is observed via {@link getSortedViewModelListObservable}, else, it will be undefined
      */
     public agendaListWeight: number;
 
     /**
      * The amount of parents in the agenda list tree.
-     * TODO will be accurate if the viewMotion is observed via {@link getViewModelListObservable}, else, it will be undefined
+     * TODO will be accurate if the viewMotion is observed via {@link getSortedViewModelListObservable}, else, it will be undefined
      */
     public agendaListLevel: number;
 
@@ -37,6 +37,10 @@ export class ViewItem extends BaseViewModel {
 
     public get itemNumber(): string {
         return this.item.item_number;
+    }
+
+    public get title_information(): object {
+        return this.item.title_information;
     }
 
     public get duration(): number {

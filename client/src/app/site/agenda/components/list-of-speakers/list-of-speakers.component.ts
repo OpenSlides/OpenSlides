@@ -140,7 +140,7 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
         this.addSpeakerForm = new FormGroup({ user_id: new FormControl([]) });
 
         if (this.currentListOfSpeakers) {
-            this.projectors = projectorRepo.getViewModelList();
+            this.projectors = projectorRepo.getSortedViewModelList();
             this.updateClosProjector();
             projectorRepo.getViewModelListObservable().subscribe(newProjectors => {
                 this.projectors = newProjectors;
@@ -160,11 +160,6 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
     public ngOnInit(): void {
         // load and observe users
         this.users = this.userRepository.getViewModelListBehaviorSubject();
-        this.userRepository.getViewModelListBehaviorSubject().subscribe(newUsers => {
-            if (this.viewItem) {
-                this.setSpeakerList(this.viewItem.id);
-            }
-        });
 
         // detect changes in the form
         this.addSpeakerForm.valueChanges.subscribe(formResult => {

@@ -36,14 +36,14 @@ export class MotionBlockRepositoryService extends BaseAgendaContentObjectReposit
      */
     public constructor(
         DS: DataStoreService,
+        dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        protected dataSend: DataSendService,
+        translate: TranslateService,
         private motionRepo: MotionRepositoryService,
-        private httpService: HttpService,
-        private translate: TranslateService
+        private httpService: HttpService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, MotionBlock, [Item]);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, MotionBlock, [Item]);
     }
 
     public getAgendaTitle = (motionBlock: Partial<MotionBlock> | Partial<ViewMotionBlock>) => {

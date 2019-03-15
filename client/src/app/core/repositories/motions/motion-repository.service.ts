@@ -7,6 +7,8 @@ import { tap, map } from 'rxjs/operators';
 import { Category } from 'app/shared/models/motions/category';
 import { ChangeRecoMode, ViewMotion } from 'app/site/motions/models/view-motion';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
+
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { DiffLinesInParagraph, DiffService, LineRange, ModificationType } from '../../ui-services/diff.service';
@@ -42,6 +44,8 @@ import { PersonalNote, PersonalNoteContent } from 'app/shared/models/users/perso
 import { ViewPersonalNote } from 'app/site/users/models/view-personal-note';
 import { OperatorService } from 'app/core/core-services/operator.service';
 
+type SortProperty = 'callListWeight' | 'identifier';
+
 /**
  * Repository Services for motions (and potentially categories)
  *
@@ -57,6 +61,11 @@ import { OperatorService } from 'app/core/core-services/operator.service';
 })
 export class MotionRepositoryService extends BaseAgendaContentObjectRepository<ViewMotion, Motion> {
     /**
+     * The property the incoming data is sorted by
+     */
+    protected sortProperty: SortProperty;
+
+    /**
      * Creates a MotionRepository
      *
      * Converts existing and incoming motions to ViewMotions
@@ -68,20 +77,23 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
      * @param httpService OpenSlides own Http service
      * @param lineNumbering Line numbering for motion text
      * @param diff Display changes in motion text as diff.
+     * @param personalNoteService service fo personal notes
+     * @param config ConfigService (subscribe to sorting config)
      */
     public constructor(
         DS: DataStoreService,
+        dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        protected dataSend: DataSendService,
+        translate: TranslateService,
+        config: ConfigService,
         private httpService: HttpService,
         private readonly lineNumbering: LinenumberingService,
         private readonly diff: DiffService,
         private treeService: TreeService,
-        private translate: TranslateService,
         private operator: OperatorService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, Motion, [
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, Motion, [
             Category,
             User,
             Workflow,
@@ -92,6 +104,10 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
             MotionChangeRecommendation,
             PersonalNote
         ]);
+        config.get<SortProperty>('motions_motions_sorting').subscribe(conf => {
+            this.sortProperty = conf;
+            this.setConfigSortFn();
+        });
     }
 
     public getTitle = (motion: Partial<Motion> | Partial<ViewMotion>) => {
@@ -836,6 +852,32 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
                 return motion.getIdentifierOrTitle();
             } else {
                 return this.translate.instant('<unknown motion>');
+            }
+        });
+    }
+
+    /**
+     * Triggers an update for the sort function responsible for the default sorting of data items
+     */
+    public setConfigSortFn(): void {
+        this.setSortFunction((a: ViewMotion, b: ViewMotion) => {
+            if (a[this.sortProperty] && b[this.sortProperty]) {
+                if (a[this.sortProperty] === b[this.sortProperty]) {
+                    return this.languageCollator.compare(a.title, b.title);
+                } else {
+                    if (this.sortProperty === 'callListWeight') {
+                        // handling numerical values
+                        return a.callListWeight - b.callListWeight;
+                    } else {
+                        return this.languageCollator.compare(a[this.sortProperty], b[this.sortProperty]);
+                    }
+                }
+            } else if (a[this.sortProperty]) {
+                return -1;
+            } else if (b[this.sortProperty]) {
+                return 1;
+            } else {
+                return this.languageCollator.compare(a.title, b.title);
             }
         });
     }
