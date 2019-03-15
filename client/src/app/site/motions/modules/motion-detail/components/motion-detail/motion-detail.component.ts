@@ -172,7 +172,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     /**
      * All change recommendations AND amendments, sorted by line number.
      */
-    public allChangingObjects: ViewUnifiedChange[];
+    public allChangingObjects: ViewUnifiedChange[] = [];
 
     /**
      * preload the next motion for direct navigation
@@ -451,7 +451,10 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         this.configService
             .get<boolean>('motions_amendments_enabled')
             .subscribe(enabled => (this.amendmentsEnabled = enabled));
-        this.configService.get<number>('motions_line_length').subscribe(lineLength => (this.lineLength = lineLength));
+        this.configService.get<number>('motions_line_length').subscribe(lineLength => {
+            this.lineLength = lineLength;
+            this.recalcUnifiedChanges();
+        });
         this.configService
             .get<LineNumberingMode>('motions_default_line_numbering')
             .subscribe(mode => (this.lnMode = mode));
@@ -524,6 +527,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      *          be avoided. It's safer and simpler to return values than to manipulate the scope
      */
     private recalcUnifiedChanges(): void {
+        if (!this.lineLength) {
+            // Happens if this function is called before the config variable has been loaded
+            return;
+        }
+
         this.allChangingObjects = [];
         if (this.changeRecommendations) {
             this.changeRecommendations.forEach(
@@ -936,7 +944,23 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         // setTimeout necessary for DOM-operations to work
         window.setTimeout(() => {
             const element = <HTMLElement>this.el.nativeElement;
-            const target = element.querySelector('.os-line-number.line-number-' + line.toString(10));
+
+            // We only scroll if it's not in the screen already
+            const bounding = element
+                .querySelector('.os-line-number.line-number-' + line.toString(10))
+                .getBoundingClientRect();
+            if (bounding.top >= 0 && bounding.bottom <= (window.innerHeight || document.documentElement.clientHeight)) {
+                return;
+            }
+
+            let target: Element;
+            // to make the selected line not stick at the very top of the screen, and to prevent it from being
+            // conceiled from the header, we actually scroll to a element a little bit above.
+            if (line > 4) {
+                target = element.querySelector('.os-line-number.line-number-' + (line - 4).toString(10));
+            } else {
+                target = element.querySelector('.title-line');
+            }
             target.scrollIntoView({ behavior: 'smooth' });
         }, 1);
     }
