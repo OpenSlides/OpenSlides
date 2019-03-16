@@ -2208,7 +2208,7 @@ export class DiffService {
             }
         }, 0);
 
-        const numberedHtml = this.lineNumberingService.insertLineNumbers(motionHtml, lineLength);
+        const numberedHtml = this.lineNumberingService.insertLineNumbers(motionHtml, lineLength, highlight);
         if (changes.length === 0) {
             return numberedHtml;
         }

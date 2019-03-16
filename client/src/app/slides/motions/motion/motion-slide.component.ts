@@ -60,7 +60,6 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
         this.lineLength = value.data.line_length;
         this.preamble = value.data.preamble;
         this.crMode = value.element.mode || 'original';
-        console.log(this.crMode);
 
         this.recalcUnifiedChanges();
     }
