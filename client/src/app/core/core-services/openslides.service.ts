@@ -81,7 +81,7 @@ export class OpenSlidesService {
      * Redirects the user to /login, if he isn't on a subpage.
      */
     private redirectToLoginIfNotSubpage(): void {
-        if (!this.redirectUrl.includes('/login/')) {
+        if (!this.redirectUrl || !this.redirectUrl.includes('/login/')) {
             // Goto login, if the user isn't on a subpage like
             // legal notice or reset passwort view.
             this.router.navigate(['/login']);
