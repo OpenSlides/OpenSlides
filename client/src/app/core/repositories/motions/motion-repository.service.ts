@@ -679,26 +679,18 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
                     }
 
                     const origText = baseParagraphs[paraNo],
-                        paragraphLines = this.lineNumbering.getLineNumberRange(origText),
                         diff = this.diff.diff(origText, newText),
                         affectedLines = this.diff.detectAffectedLineRange(diff);
 
                     if (affectedLines === null) {
                         return null;
                     }
-
-                    let newTextLines = this.lineNumbering.insertLineNumbers(
-                        newText,
-                        lineLength,
-                        null,
-                        null,
-                        paragraphLines.from
+                    const affectedDiff = this.diff.formatDiff(
+                        this.diff.extractRangeByLineNumbers(diff, affectedLines.from, affectedLines.to)
                     );
-                    newTextLines = this.diff.formatDiff(
-                        this.diff.extractRangeByLineNumbers(newTextLines, affectedLines.from, affectedLines.to)
-                    );
+                    const affectedConsolidated = this.diff.diffHtmlToFinalText(affectedDiff);
 
-                    return new ViewMotionAmendedParagraph(amendment, paraNo, newTextLines, affectedLines);
+                    return new ViewMotionAmendedParagraph(amendment, paraNo, affectedConsolidated, affectedLines);
                 }
             )
             .filter((para: ViewMotionAmendedParagraph) => para !== null);
