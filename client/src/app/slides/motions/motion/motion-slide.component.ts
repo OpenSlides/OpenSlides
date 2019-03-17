@@ -110,7 +110,6 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
                     }
 
                     const origText = baseParagraphs[paraNo],
-                        paragraphLines = this.lineNumbering.getLineNumberRange(origText),
                         diff = this.diff.diff(origText, newText),
                         affectedLines = this.diff.detectAffectedLineRange(diff);
 
@@ -118,18 +117,12 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
                         return null;
                     }
 
-                    let newTextLines = this.lineNumbering.insertLineNumbers(
-                        newText,
-                        this.lineLength,
-                        null,
-                        null,
-                        paragraphLines.from
+                    const affectedDiff = this.diff.formatDiff(
+                        this.diff.extractRangeByLineNumbers(diff, affectedLines.from, affectedLines.to)
                     );
-                    newTextLines = this.diff.formatDiff(
-                        this.diff.extractRangeByLineNumbers(newTextLines, affectedLines.from, affectedLines.to)
-                    );
+                    const affectedConsolidated = this.diff.diffHtmlToFinalText(affectedDiff);
 
-                    return new MotionSlideObjAmendmentParagraph(amendment, paraNo, newTextLines, affectedLines);
+                    return new MotionSlideObjAmendmentParagraph(amendment, paraNo, affectedConsolidated, affectedLines);
                 }
             )
             .filter((para: MotionSlideObjAmendmentParagraph) => para !== null);
