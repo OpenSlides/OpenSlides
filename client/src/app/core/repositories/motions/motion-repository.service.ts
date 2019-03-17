@@ -166,6 +166,7 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
         const attachments = this.viewModelStoreService.getMany(ViewMediafile, motion.attachments_id);
         const tags = this.viewModelStoreService.getMany(ViewTag, motion.tags_id);
         const parent = this.viewModelStoreService.get(ViewMotion, motion.parent_id);
+        const amendments = this.viewModelStoreService.filter(ViewMotion, m => m.parent_id && m.parent_id === motion.id);
         const changeRecommendations = this.viewModelStoreService.filter(
             ViewMotionChangeRecommendation,
             cr => cr.motion_id === motion.id
@@ -188,6 +189,7 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
             tags,
             parent,
             changeRecommendations,
+            amendments,
             personalNote
         );
         viewMotion.getIdentifierOrTitle = () => this.getIdentifierOrTitle(viewMotion);
