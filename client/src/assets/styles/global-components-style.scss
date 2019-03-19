@@ -11,7 +11,8 @@
     $foreground: map-get($theme, foreground);
     $background: map-get($theme, background);
 
-    h1, h3.accent {
+    h1,
+    h3.accent {
         color: mat-color($primary);
     }
 
@@ -19,15 +20,12 @@
         color: mat-color($primary);
     }
 
-    .accent, .accent-text {
+    .accent,
+    .accent-text {
         color: mat-color($accent);
     }
 
     .button24 {
-        color: mat-color($primary);
-    }
-
-    .projected .mat-icon {
         color: mat-color($primary);
     }
 
@@ -42,7 +40,9 @@
         font-size: 75%;
         display: block;
     }
-    .error, .warn {
+
+    .error,
+    .warn {
         color: mat-color($warn);
     }
 

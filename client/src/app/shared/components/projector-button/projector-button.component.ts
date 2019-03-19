@@ -6,6 +6,7 @@ import {
     isProjectable,
     isProjectorElementBuildDeskriptor
 } from 'app/site/base/projectable';
+import { Projector } from 'app/shared/models/core/projector';
 import { ProjectorService } from 'app/core/core-services/projector.service';
 import { ProjectionDialogService } from 'app/core/ui-services/projection-dialog.service';
 
@@ -46,6 +47,12 @@ export class ProjectorButtonComponent implements OnInit {
     public menuItem = false;
 
     /**
+     * Pre-define projection target
+     */
+    @Input()
+    public projector: Projector;
+
+    /**
      * The constructor
      */
     public constructor(
@@ -68,7 +75,19 @@ export class ProjectorButtonComponent implements OnInit {
             event.stopPropagation();
         }
         if (this.object) {
-            this.projectionDialogService.openProjectDialogFor(this.object);
+            if (this.projector) {
+                // if the projection target was defines before
+                if (this.isProjected()) {
+                    // remove the projected object
+                    this.projectorService.removeFrom(this.projector, this.object);
+                } else {
+                    // instantly project the object
+                    this.projectorService.projectOn(this.projector, this.object);
+                }
+            } else {
+                // open the projection dialog
+                this.projectionDialogService.openProjectDialogFor(this.object);
+            }
         }
     }
 

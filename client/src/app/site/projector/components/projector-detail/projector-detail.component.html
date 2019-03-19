@@ -180,24 +180,28 @@
                 </mat-expansion-panel>
 
                 <!-- countdowns -->
-                <mat-expansion-panel *ngIf="countdowns.length">
+                <mat-expansion-panel>
                     <mat-expansion-panel-header>
                         <span translate>Countdowns</span>
                     </mat-expansion-panel-header>
                     <mat-list>
                         <mat-list-item
                             *ngFor="let countdown of countdowns"
+                            class="larger-mat-list-item"
                             [ngClass]="{ projected: isProjected(countdown) }"
                         >
-                            <button type="button" mat-icon-button (click)="project(countdown)">
-                                <mat-icon>videocam</mat-icon>
-                            </button>
-                            {{ countdown.getTitle() | translate }}
+                            <os-countdown-controls
+                                class="dynamic-list-entry"
+                                [countdown]="countdown"
+                                [projector]="projector.projector"
+                                (editEvent)="openCountdownDialog($event)"
+                            ></os-countdown-controls>
                         </mat-list-item>
                     </mat-list>
                     <mat-action-row>
-                        <button type="button" mat-icon-button routerLink="/projectors/countdowns">
-                            <mat-icon>edit</mat-icon>
+                        <button type="button" mat-button (click)="openCountdownDialog()">
+                            <mat-icon>add</mat-icon>
+                            <span translate>Add countdown</span>
                         </button>
                     </mat-action-row>
                 </mat-expansion-panel>

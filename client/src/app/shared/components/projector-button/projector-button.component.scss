@@ -10,9 +10,4 @@
         color: mat-color($contrast, A200) !important;
         background-color: mat-color($contrast, 500) !important;
     }
-
-    .mat-menu-item.projector-active,
-    .projector-active > .mat-icon {
-        color: mat-color($primary) !important;
-    }
 }

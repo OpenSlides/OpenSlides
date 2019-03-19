@@ -121,3 +121,15 @@
 .drop-list.cdk-drop-list-dragging .drop-list-entry:not(.cdk-drag-placeholder) {
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
+
+.larger-mat-list-item {
+    height: 90px;
+}
+
+.larger-mat-list-item + .larger-mat-list-item {
+    margin-top: 15px;
+}
+
+.dynamic-list-entry {
+    width: 100%;
+}

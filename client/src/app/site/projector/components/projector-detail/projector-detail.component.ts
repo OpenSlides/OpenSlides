@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatDialog } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -11,6 +11,11 @@ import {
 } from 'app/core/repositories/projector/projector-repository.service';
 import { ViewProjector } from '../../models/view-projector';
 import { BaseViewComponent } from 'app/site/base/base-view';
+import { Countdown } from 'app/shared/models/core/countdown';
+import { CountdownDialogComponent, CountdownData } from '../countdown-dialog/countdown-dialog.component';
+import { CurrentListOfSpeakersSlideService } from '../../services/current-list-of-of-speakers-slide.service';
+import { CurrentSpeakerChyronSlideService } from '../../services/current-speaker-chyron-slide.service';
+import { DurationService } from 'app/core/ui-services/duration.service';
 import { ProjectorService } from 'app/core/core-services/projector.service';
 import { moveItemInArray, CdkDragDrop } from '@angular/cdk/drag-drop';
 import { ProjectorElement } from 'app/shared/models/core/projector';
@@ -20,8 +25,6 @@ import { ProjectorMessageRepositoryService } from 'app/core/repositories/project
 import { ViewProjectorMessage } from 'app/site/projector/models/view-projector-message';
 import { ViewCountdown } from 'app/site/projector/models/view-countdown';
 import { Projectable } from 'app/site/base/projectable';
-import { CurrentListOfSpeakersSlideService } from '../../services/current-list-of-of-speakers-slide.service';
-import { CurrentSpeakerChyronSlideService } from '../../services/current-speaker-chyron-slide.service';
 
 /**
  * The projector detail view.
@@ -61,6 +64,7 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
+        private dialog: MatDialog,
         private repo: ProjectorRepositoryService,
         private route: ActivatedRoute,
         private projectorService: ProjectorService,
@@ -68,7 +72,8 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
         private countdownRepo: CountdownRepositoryService,
         private messageRepo: ProjectorMessageRepositoryService,
         private currentListOfSpeakersSlideService: CurrentListOfSpeakersSlideService,
-        private currentSpeakerChyronService: CurrentSpeakerChyronSlideService
+        private currentSpeakerChyronService: CurrentSpeakerChyronSlideService,
+        private durationService: DurationService
     ) {
         super(titleService, translate, matSnackBar);
 
@@ -169,5 +174,64 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
 
     public toggleChyron(): void {
         this.currentSpeakerChyronService.toggleOn(this.projector);
+    }
+
+    /**
+     * Opens the countdown dialog
+     *
+     * @param viewCountdown optional existing countdown to edit
+     */
+    public openCountdownDialog(viewCountdown?: ViewCountdown): void {
+        let countdownData: CountdownData = {
+            title: '',
+            description: '',
+            duration: '',
+            count: this.countdowns.length
+        };
+
+        if (viewCountdown) {
+            countdownData = {
+                title: viewCountdown.title,
+                description: viewCountdown.description,
+                duration: this.durationService.durationToString(viewCountdown.default_time, 'm')
+            };
+        }
+
+        const dialogRef = this.dialog.open(CountdownDialogComponent, {
+            data: countdownData,
+            maxHeight: '90vh',
+            width: '400px',
+            maxWidth: '90vw',
+            disableClose: true
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.submitCountdown(result, viewCountdown);
+            }
+        });
+    }
+
+    /**
+     * Function to send a countdown
+     *
+     * @param data the countdown data to send
+     * @param viewCountdown optional existing countdown to update
+     */
+    public submitCountdown(data: CountdownData, viewCountdown?: ViewCountdown): void {
+        const defaultTime = this.durationService.stringToDuration(data.duration, 'm');
+
+        const sendData = new Countdown({
+            title: data.title,
+            description: data.description,
+            default_time: defaultTime,
+            countdown_time: viewCountdown && viewCountdown.running ? null : defaultTime
+        });
+
+        if (viewCountdown) {
+            this.countdownRepo.update(sendData, viewCountdown).then(() => {}, this.raiseError);
+        } else {
+            this.countdownRepo.create(sendData).then(() => {}, this.raiseError);
+        }
     }
 }
