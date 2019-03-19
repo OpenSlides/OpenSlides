@@ -16,10 +16,14 @@
 
 <mat-card *ngIf="!projectorToCreate && projectors && projectors.length > 1">
     <span translate>
-        Reference projector for current list of speakers:
-    </span>&nbsp;
+        Reference projector for current list of speakers: </span
+    >&nbsp;
     <mat-form-field>
-        <mat-select [disabled]="!!editId" [value]="projectors.length ? projectors[0].reference_projector_id : null" (selectionChange)="onSelectReferenceProjector($event)">
+        <mat-select
+            [disabled]="!!editId"
+            [value]="projectors.length ? projectors[0].reference_projector_id : null"
+            (selectionChange)="onSelectReferenceProjector($event)"
+        >
             <mat-option *ngFor="let projector of projectors" [value]="projector.id">
                 {{ projector.getTitle() | translate }}
             </mat-option>
@@ -33,7 +37,7 @@
         <form [formGroup]="createForm" (keydown)="keyDownFunction($event)">
             <p>
                 <mat-form-field>
-                    <input formControlName="name" matInput placeholder="{{'Name' | translate}}" required>
+                    <input formControlName="name" matInput placeholder="{{ 'Name' | translate }}" required />
                     <mat-hint *ngIf="!createForm.controls.name.valid">
                         <span translate>Required</span>
                     </mat-hint>
@@ -58,16 +62,16 @@
                 {{ projector.name | translate }}
             </ng-container>
             <ng-container class="meta-text-block-action-row" *ngIf="canManage">
-                <button mat-icon-button *ngIf="editId !== projector.id" (click)=onEditButton(projector)>
+                <button mat-icon-button *ngIf="editId !== projector.id" (click)="onEditButton(projector)">
                     <mat-icon>edit</mat-icon>
                 </button>
-                <button mat-icon-button *ngIf="editId === projector.id" (click)=onCancelButton(projector)>
+                <button mat-icon-button *ngIf="editId === projector.id" (click)="onCancelButton(projector)">
                     <mat-icon>close</mat-icon>
                 </button>
-                <button mat-icon-button *ngIf="editId === projector.id" (click)=onSaveButton(projector)>
+                <button mat-icon-button *ngIf="editId === projector.id" (click)="onSaveButton(projector)">
                     <mat-icon>save</mat-icon>
                 </button>
-                <button mat-icon-button color="warn" (click)=onDeleteButton(projector)>
+                <button mat-icon-button color="warn" (click)="onDeleteButton(projector)">
                     <mat-icon>delete</mat-icon>
                 </button>
             </ng-container>
@@ -81,7 +85,7 @@
                     <form [formGroup]="updateForm" (keydown)="keyDownFunction($event, projector)">
                         <!-- Name field -->
                         <mat-form-field>
-                            <input formControlName="name" matInput placeholder="{{'Name' | translate}}" required>
+                            <input formControlName="name" matInput placeholder="{{ 'Name' | translate }}" required />
                             <mat-hint *ngIf="!updateForm.controls.name.valid">
                                 <span translate>Required</span>
                             </mat-hint>
@@ -94,7 +98,13 @@
                                 {{ ratio }}
                             </mat-radio-button>
                         </mat-radio-group>
-                        <mat-slider [thumbLabel]="true" formControlName="width" min="800" max="3840" step="10"></mat-slider>
+                        <mat-slider
+                            [thumbLabel]="true"
+                            formControlName="width"
+                            min="800"
+                            max="3840"
+                            step="10"
+                        ></mat-slider>
                         {{ updateForm.value.width }}
 
                         <!-- colors -->
@@ -159,9 +169,5 @@
     <button type="button" mat-menu-item routerLink="/projectors/messages">
         <mat-icon>note</mat-icon>
         <span translate>Projector messages</span>
-    </button>
-    <button type="button" mat-menu-item routerLink="/projectors/countdowns">
-        <mat-icon>alarm</mat-icon>
-        <span translate>Countdowns</span>
     </button>
 </mat-menu>

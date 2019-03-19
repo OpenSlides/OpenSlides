@@ -1,0 +1,45 @@
+<h1 mat-dialog-title>
+    <span translate>Countdown</span>
+</h1>
+
+<form [formGroup]="countdownForm">
+    <div mat-dialog-content>
+        <!-- Title field -->
+        <mat-form-field>
+            <input
+                matInput
+                osAutofocus
+                placeholder="{{ 'Countdown title' | translate }}"
+                formControlName="title"
+                required
+            />
+        </mat-form-field>
+
+        <!-- Description field -->
+        <mat-form-field>
+            <input matInput placeholder="{{ 'Countdown description' | translate }}" formControlName="description" />
+        </mat-form-field>
+
+        <!-- Time field -->
+        <mat-form-field>
+            <input matInput placeholder="{{ 'Countdown time' | translate }}" formControlName="duration" required />
+        </mat-form-field>
+    </div>
+    <div mat-dialog-actions>
+        <!-- Submit countdown button -->
+        <button
+            type="submit"
+            mat-button
+            color="primary"
+            [mat-dialog-close]="countdownForm.value"
+            [disabled]="!countdownForm.valid"
+        >
+            <span translate>Save</span>
+        </button>
+
+        <!-- Cancel Countdown button -->
+        <button type="button" mat-button [mat-dialog-close]="null">
+            <span translate>Cancel</span>
+        </button>
+    </div>
+</form>
