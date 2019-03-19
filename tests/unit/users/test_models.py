@@ -162,7 +162,7 @@ class UserManagerCreateOrResetAdminUser(TestCase):
         mock_group.objects.get_or_create = MagicMock(return_value=(staff_group, True))
         mock_permission.get = MagicMock()
 
-        manager.create_or_reset_admin_user()
+        manager.create_or_reset_admin_user(skip_autoupdate=True)
 
         self.assertEqual(admin_user.default_password, "admin")
         admin_user.save.assert_called_once_with(skip_autoupdate=True)

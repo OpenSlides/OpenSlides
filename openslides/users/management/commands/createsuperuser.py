@@ -11,7 +11,7 @@ class Command(BaseCommand):
     help = "Creates or resets the admin user."
 
     def handle(self, *args, **options):
-        created = User.objects.create_or_reset_admin_user()
+        created = User.objects.create_or_reset_admin_user(skip_autoupdate=True)
         if created:
             self.stdout.write("Admin user successfully created.")
         else:

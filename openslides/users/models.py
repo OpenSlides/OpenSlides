@@ -60,7 +60,7 @@ class UserManager(BaseUserManager):
         user.save(skip_autoupdate=skip_autoupdate, using=self._db)
         return user
 
-    def create_or_reset_admin_user(self):
+    def create_or_reset_admin_user(self, skip_autoupdate=False):
         """
         Creates an user with the username 'admin'. If such a user already
         exists, resets it. The password is (re)set to 'admin'. The user
@@ -74,7 +74,7 @@ class UserManager(BaseUserManager):
             created = True
         admin.default_password = "admin"
         admin.password = make_password(admin.default_password)
-        admin.save(skip_autoupdate=True)
+        admin.save(skip_autoupdate=skip_autoupdate)
         admin.groups.add(GROUP_ADMIN_PK)
         return created
 

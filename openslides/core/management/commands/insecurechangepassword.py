@@ -19,4 +19,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         user = User.objects.get(username=options["username"])
         user.set_password(options["password"])
-        user.save()
+        user.save(skip_autoupdate=True)
+        self.stdout.write(
+            self.style.SUCCESS(
+                f"Password of user {options['username']} successfully changed."
+            )
+        )

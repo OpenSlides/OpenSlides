@@ -178,7 +178,7 @@ def create_builtin_groups_and_admin(**kwargs):
     group_committee.permissions.add(*committees_permissions)
 
     # Create or reset admin user
-    User.objects.create_or_reset_admin_user()
+    User.objects.create_or_reset_admin_user(skip_autoupdate=True)
 
     # After each group was created, the permissions (many to many fields) where
     # added to the group. But we do not have to update the cache by calling
