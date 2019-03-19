@@ -6,12 +6,13 @@ import { AgendaListComponent } from './components/agenda-list/agenda-list.compon
 import { AgendaSortComponent } from './components/agenda-sort/agenda-sort.component';
 import { ListOfSpeakersComponent } from './components/list-of-speakers/list-of-speakers.component';
 import { TopicDetailComponent } from './components/topic-detail/topic-detail.component';
+import { WatchSortingTreeGuard } from 'app/shared/utils/watch-sorting-tree.guard';
 
 const routes: Routes = [
     { path: '', component: AgendaListComponent, pathMatch: 'full' },
     { path: 'import', component: AgendaImportListComponent },
     { path: 'topics/new', component: TopicDetailComponent },
-    { path: 'sort-agenda', component: AgendaSortComponent },
+    { path: 'sort-agenda', component: AgendaSortComponent, canDeactivate: [WatchSortingTreeGuard] },
     { path: 'speakers', component: ListOfSpeakersComponent },
     { path: 'topics/:id', component: TopicDetailComponent },
     { path: ':id/speakers', component: ListOfSpeakersComponent }

@@ -26,6 +26,7 @@ from ..utils.rest_api import (
     detail_route,
     list_route,
 )
+from ..utils.views import TreeSortMixin
 from .access_permissions import (
     CategoryAccessPermissions,
     MotionAccessPermissions,
@@ -55,7 +56,7 @@ from .serializers import MotionPollSerializer, StateSerializer
 # Viewsets for the REST API
 
 
-class MotionViewSet(ModelViewSet):
+class MotionViewSet(TreeSortMixin, ModelViewSet):
     """
     API endpoint for motions.
 
@@ -325,35 +326,17 @@ class MotionViewSet(ModelViewSet):
     @list_route(methods=["post"])
     def sort(self, request):
         """
-        Sort motions. Also checks sort_parent field to prevent hierarchical loops.
-
-        Note: This view is not tested! Maybe needs to be refactored. Add documentation
-        abou the data to be send.
+        Sorts all motions represented in a tree of ids. The request data should be a list (the root)
+        of all main agenda items. Each node is a dict with an id and optional children:
+        {
+            id: <the id>
+            children: [
+                <children, optional>
+            ]
+        }
+        Every id has to be given.
         """
-        nodes = request.data.get("nodes", [])
-        sort_parent_id = request.data.get("parent_id")
-        motions = []
-        with transaction.atomic():
-            for index, node in enumerate(nodes):
-                id = node["id"]
-                motion = Motion.objects.get(pk=id)
-                motion.sort_parent_id = sort_parent_id
-                motion.weight = index
-                motion.save(skip_autoupdate=True)
-                motions.append(motion)
-
-                # Now check consistency. TODO: Try to use less DB queries.
-                motion = Motion.objects.get(pk=id)
-                ancestor = motion.sort_parent
-                while ancestor is not None:
-                    if ancestor == motion:
-                        raise ValidationError(
-                            {"detail": "There must not be a hierarchical loop."}
-                        )
-                    ancestor = ancestor.sort_parent
-
-        inform_changed_data(motions)
-        return Response({"detail": "The motions has been sorted."})
+        return self.sort_tree(request, Motion, "weight", "sort_parent_id")
 
     @detail_route(methods=["POST", "DELETE"])
     def manage_comments(self, request, pk=None):

@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { E2EImportsModule } from '../../../../e2e-imports.module';
+import { E2EImportsModule } from 'e2e-imports.module';
 import { SortingTreeComponent } from './sorting-tree.component';
 import { Component, ViewChild } from '@angular/core';
 import { Displayable } from 'app/site/base/displayable';
@@ -53,7 +53,7 @@ describe('SortingTreeComponent', () => {
             models.push(new TestModel(i, `TOP${i}`, i, null));
         }
         const modelSubject = new BehaviorSubject<TestModel[]>(models);
-        hostComponent.sortingTreeCompononent.modelsObservable = modelSubject.asObservable();
+        hostComponent.sortingTreeCompononent.model = modelSubject.asObservable();
 
         hostFixture.detectChanges();
         expect(hostComponent.sortingTreeCompononent).toBeTruthy();

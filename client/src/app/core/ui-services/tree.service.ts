@@ -6,18 +6,46 @@ import { Identifiable } from 'app/shared/models/base/identifiable';
 /**
  * A basic representation of a tree node. This node does not stores any data.
  */
-export interface OSTreeNodeWithoutItem {
-    name: string;
+export interface TreeIdNode {
     id: number;
-    children?: OSTreeNodeWithoutItem[];
+    children?: TreeIdNode[];
+}
+
+/**
+ * Extends the TreeIdNode with a name to display.
+ */
+export interface TreeNodeWithoutItem extends TreeIdNode {
+    name: string;
+    children?: TreeNodeWithoutItem[];
 }
 
 /**
  * A representation of nodes with the item atached.
  */
-export interface OSTreeNode<T> extends OSTreeNodeWithoutItem {
+export interface OSTreeNode<T> extends TreeNodeWithoutItem {
     item: T;
     children?: OSTreeNode<T>[];
+}
+
+/**
+ * Interface which defines the nodes for the sorting trees.
+ *
+ * Contains information like
+ * name: The name of the node.
+ * level: The level of the node. The higher, the deeper the level.
+ * position: The position in the array of the node.
+ * isExpanded: Boolean if the node is expanded.
+ * expandable: Boolean if the node is expandable.
+ * id: The id of the node.
+ */
+export interface FlatNode {
+    name: string;
+    level: number;
+    position?: number;
+    isExpanded?: boolean;
+    isSeen: boolean;
+    expandable: boolean;
+    id: number;
 }
 
 /**
@@ -54,6 +82,54 @@ export class TreeService {
             item: item,
             children: children
         };
+    }
+
+    /**
+     * Function to build flat nodes from `OSTreeNode`s.
+     * Iterates recursively through the list of nodes.
+     *
+     * @param items
+     * @param weightKey
+     * @param parentKey
+     *
+     * @returns An array containing flat nodes.
+     */
+    public makeFlatTree<T extends Identifiable & Displayable>(
+        items: T[],
+        weightKey: keyof T,
+        parentKey: keyof T
+    ): FlatNode[] {
+        const tree = this.makeTree(items, weightKey, parentKey);
+        const flatNodes: FlatNode[] = [];
+        for (const node of tree) {
+            flatNodes.push(...this.makePartialFlatTree(node, 0, []));
+        }
+        for (let i = 0; i < flatNodes.length; ++i) {
+            flatNodes[i].position = i;
+        }
+        return flatNodes;
+    }
+
+    /**
+     * Function to convert a flat tree to a nested tree built from `OSTreeNodeWithOutItem`.
+     *
+     * @param nodes The array of flat nodes, which should be converted.
+     *
+     * @returns The tree with nested information.
+     */
+    public makeTreeFromFlatTree(nodes: FlatNode[]): TreeIdNode[] {
+        const basicTree: TreeIdNode[] = [];
+
+        for (let i = 0; i < nodes.length; ) {
+            // build the next node inclusive its children
+            const nextNode = this.buildBranchFromFlatTree(nodes[i], nodes, 0);
+            // append this node to the tree
+            basicTree.push(nextNode.node);
+            // step to the next related item in the array
+            i += nextNode.length;
+        }
+
+        return basicTree;
     }
 
     /**
@@ -126,9 +202,9 @@ export class TreeService {
      * @param tree The tree with items
      * @returns The tree without items
      */
-    public stripTree<T>(tree: OSTreeNode<T>[]): OSTreeNodeWithoutItem[] {
+    public stripTree<T>(tree: OSTreeNode<T>[]): TreeNodeWithoutItem[] {
         return tree.map(node => {
-            const nodeWithoutItem: OSTreeNodeWithoutItem = {
+            const nodeWithoutItem: TreeNodeWithoutItem = {
                 name: node.name,
                 id: node.id
             };
@@ -213,5 +289,76 @@ export class TreeService {
             }
         });
         return result;
+    }
+
+    /**
+     * Helper function to go recursively through the children of given node.
+     *
+     * @param item
+     * @param level
+     *
+     * @returns An array containing the parent node with all its children.
+     */
+    private makePartialFlatTree<T extends Identifiable & Displayable>(
+        item: OSTreeNode<T>,
+        level: number,
+        parents: FlatNode[]
+    ): FlatNode[] {
+        const children = item.children;
+        const node: FlatNode = {
+            id: item.id,
+            name: item.name,
+            expandable: !!children,
+            isExpanded: !!children,
+            level: level,
+            isSeen: true
+        };
+        const flatNodes: FlatNode[] = [node];
+        if (children) {
+            parents.push(node);
+            for (const child of children) {
+                flatNodes.push(...this.makePartialFlatTree(child, level + 1, parents));
+            }
+        }
+        return flatNodes;
+    }
+
+    /**
+     * Function, that returns a node containing information like id, name and children.
+     * Children only, if available.
+     *
+     * @param node The node which is converted.
+     * @param nodes The array with all nodes to convert.
+     * @param length The number of converted nodes related to the parent node.
+     *
+     * @returns `OSTreeNodeWithOutItem`
+     */
+    private buildBranchFromFlatTree(
+        node: FlatNode,
+        nodes: FlatNode[],
+        length: number
+    ): { node: TreeIdNode; length: number } {
+        const children = [];
+        // Begins at the position of the node in the array.
+        // Ends if the next node has the same or higher level than the given node.
+        for (let i = node.position + 1; !!nodes[i] && nodes[i].level >= node.level + 1; ++i) {
+            const nextNode = nodes[i];
+            // The next node is a child if the level is one higher than the given node.
+            if (nextNode.level === node.level + 1) {
+                // Makes the child nodes recursively.
+                const child = this.buildBranchFromFlatTree(nextNode, nodes, 0);
+                length += child.length;
+                children.push(child.node);
+            }
+        }
+
+        // Makes the node with child nodes.
+        const osNode: TreeIdNode = {
+            id: node.id,
+            children: children.length > 0 ? children : undefined
+        };
+
+        // Returns the built node and increase the length by one.
+        return { node: osNode, length: ++length };
     }
 }
