@@ -75,9 +75,9 @@ class MotionViewSet(ModelViewSet):
             result = has_perm(self.request.user, "motions.can_see")
             # For partial_update, update and destroy requests the rest of the check is
             # done in the update method. See below.
-        elif self.action in ("create", "set_state"):
+        elif self.action in ("create", "set_state", "manage_comments"):
             result = has_perm(self.request.user, "motions.can_see")
-            # For create the rest of the check is done in the respective method. See below.
+            # The rest of the check is done in the respective method. See below.
         elif self.action in (
             "manage_multiple_state",
             "set_recommendation",
@@ -90,7 +90,7 @@ class MotionViewSet(ModelViewSet):
             result = has_perm(self.request.user, "motions.can_see") and has_perm(
                 self.request.user, "motions.can_manage_metadata"
             )
-        elif self.action in ("sort", "manage_comments"):
+        elif self.action == "sort":
             result = has_perm(self.request.user, "motions.can_see") and has_perm(
                 self.request.user, "motions.can_manage"
             )
