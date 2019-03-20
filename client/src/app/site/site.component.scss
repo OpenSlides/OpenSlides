@@ -32,6 +32,14 @@ mat-sidenav-container {
     }
 }
 
+.username {
+    span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
 .nav-toolbar {
     display: flex;
     margin: auto;

@@ -1,12 +1,4 @@
-.groupsCell {
-    display: inline-block;
-    vertical-align: middle;
-    line-height: normal;
-
-    mat-icon {
-        font-size: 80%;
-    }
-}
+@import '~assets/styles/tables.scss';
 
 .os-listview-table {
     .mat-column-projector {
@@ -18,8 +10,13 @@
     }
 
     .mat-column-group {
-        z-index: 3;
         flex: 2 0 60px;
+
+        .groupsCell {
+            mat-icon {
+                font-size: 80%;
+            }
+        }
     }
 
     .mat-column-presence {

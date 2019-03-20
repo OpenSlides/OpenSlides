@@ -28,7 +28,7 @@
         <mat-expansion-panel class="user-menu mat-elevation-z0">
             <mat-expansion-panel-header class="username">
                 <!-- Get the username from operator -->
-                {{ username }}
+                <span *ngIf="username">{{ username }}</span>
             </mat-expansion-panel-header>
             <mat-nav-list>
                 <a mat-list-item [matMenuTriggerFor]="languageMenu">
@@ -36,7 +36,11 @@
                     <span>{{ getLangName() }}</span>
                 </a>
                 <div *ngIf="isLoggedIn">
-                    <a [routerLink]="operator.user ? ['/users/', operator.user.id] : []" (click)="mobileAutoCloseNav()" mat-list-item>
+                    <a
+                        [routerLink]="operator.user ? ['/users/', operator.user.id] : []"
+                        (click)="mobileAutoCloseNav()"
+                        mat-list-item
+                    >
                         <mat-icon>person</mat-icon>
                         <span translate>Show profile</span>
                     </a>

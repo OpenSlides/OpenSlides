@@ -2,6 +2,47 @@
 .mat-table {
     width: 100%;
 
+    /** Style for the anchor column */
+    .mat-column-anchor {
+        position: absolute !important;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        opacity: 0.1;
+        z-index: 1;
+
+        a {
+            display: block;
+            height: 100%;
+            width: 100%;
+        }
+    }
+
+    .mat-cell {
+        position: relative;
+
+        /** child element to overwrite the a tag. */
+        .fill {
+            position: absolute;
+            display: inherit;
+            height: 100%;
+            width: 100%;
+            line-height: 0;
+
+            // try to put all children in the in the vertical middle
+            * {
+                margin-top: auto;
+                margin-bottom: auto;
+            }
+        }
+    }
+
+    /** functional items should lay over the anchor column */
+    .mat-cell > * {
+        z-index: 2;
+    }
+
     // important is necessary, since the "sticky" attribute does not alter the real `.mat-table-sticky-class`
     // but rather "patches" the DOM tree.
     .mat-table-sticky {

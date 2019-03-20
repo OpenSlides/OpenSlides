@@ -166,6 +166,18 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel, M extends B
     }
 
     /**
+     * row clicks that should be ignored.
+     * Required for buttons or check boxes in tables
+     *
+     * @param event click event
+     */
+    public ignoreClick(event: MouseEvent): void {
+        if (!this.isMultiSelect) {
+            event.stopPropagation();
+        }
+    }
+
+    /**
      * Method to perform an action on click on a row, if not in MultiSelect Modus.
      * Should be overridden by implementations. Currently there is no default action.
      * @param row a ViewModel
