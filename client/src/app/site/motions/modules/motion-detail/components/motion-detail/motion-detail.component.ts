@@ -1086,8 +1086,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     /**
      * Sets the default workflow ID during form creation
      */
-    public updateWorkflowIdForCreateForm(): void {
-        const isStatuteAmendment = !!this.contentForm.get('statute_amendment').value;
+    public updateWorkflowIdForCreateForm(paragraph?: number): void {
+        const isStatuteAmendment = !!this.contentForm.get('statute_amendment').value && !!paragraph;
         const configKey = isStatuteAmendment ? 'motions_statute_amendments_workflow' : 'motions_workflow';
         const workflowId = this.configService.instant<string>(configKey);
         this.contentForm.patchValue({ workflow_id: +workflowId });
@@ -1116,6 +1116,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
             title: this.translate.instant('Statute amendment for') + ` ${selectedParagraph.title}`,
             text: selectedParagraph.text
         });
+        this.updateWorkflowIdForCreateForm(newValue);
     }
 
     /**
