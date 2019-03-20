@@ -41,7 +41,9 @@ class MotionAccessPermissions(BaseAccessPermissions):
 
                 if await async_has_perm(user_id, "motions.can_manage"):
                     level = State.MANAGERS_ONLY
-                elif await async_has_perm(user_id, "motions.can_manage_metadata"):
+                elif await async_has_perm(
+                    user_id, "motions.can_manage_metadata"
+                ) or await async_has_perm(user_id, "motions.can_see_internal"):
                     level = State.EXTENDED_MANAGERS
                 elif is_submitter:
                     level = State.EXTENDED_MANAGERS_AND_SUBMITTER

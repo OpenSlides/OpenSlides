@@ -118,8 +118,8 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
      */
     public accessLevels = [
         { level: 0, label: '0: All users' },
-        { level: 1, label: '1: Submitters and all managers' },
-        { level: 2, label: '2: Only managers for motions and metadata' },
+        { level: 1, label: '1: Submitters, authorized users and managers' },
+        { level: 2, label: '2: Authorized users and managers for motions and metadata' },
         { level: 3, label: '3: Only managers for motions' }
     ] as AccessLevel[];
 
