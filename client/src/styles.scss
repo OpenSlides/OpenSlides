@@ -50,7 +50,8 @@
 * {
     font-family: OSFont, Fira Sans, Roboto, Arial, Helvetica, sans-serif;
 }
-.mat-toolbar h2, .mat-dialog-title {
+.mat-toolbar h2,
+.mat-dialog-title {
     font-family: OSFont, Fira Sans, Roboto, Arial, Helvetica, sans-serif !important;
 }
 
@@ -625,28 +626,6 @@ button.mat-menu-item.selected {
 
 .white {
     color: white;
-}
-
-/** Style for the anchor column */
-.mat-column-anchor {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    opacity: 0.1;
-    z-index: 1;
-
-    a {
-        display: block;
-        height: 100%;
-        width: 100%;
-    }
-}
-
-/** functional items should lay over the anchor column */
-.mat-cell > * {
-    z-index: 2;
 }
 
 .queue {

@@ -15,6 +15,7 @@ import { MainMenuService } from '../core/core-services/main-menu.service';
 import { OpenSlidesStatusService } from '../core/core-services/openslides-status.service';
 import { TimeTravelService } from '../core/core-services/time-travel.service';
 import { langToLocale } from 'app/shared/utils/lang-to-locale';
+import { ConfigService } from 'app/core/ui-services/config.service';
 
 @Component({
     selector: 'os-site',
@@ -60,6 +61,7 @@ export class SiteComponent extends BaseComponent implements OnInit {
     public constructor(
         title: Title,
         translate: TranslateService,
+        configService: ConfigService,
         private authService: AuthService,
         private router: Router,
         public operator: OperatorService,
@@ -74,7 +76,7 @@ export class SiteComponent extends BaseComponent implements OnInit {
         this.operator.getViewUserObservable().subscribe(user => {
             if (user) {
                 this.username = user.short_name;
-            } else {
+            } else if (!user && configService.instant<boolean>('general_system_enable_anonymous')) {
                 this.username = translate.instant('Guest');
             }
             this.isLoggedIn = !!user;

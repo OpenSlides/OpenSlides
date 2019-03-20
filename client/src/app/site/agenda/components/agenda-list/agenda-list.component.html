@@ -53,18 +53,20 @@
         <ng-container matColumnDef="info">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Info</mat-header-cell>
             <mat-cell (click)="openEditInfo(item, $event)" *matCellDef="let item">
-                <div class="info-col-items">
-                    <div *osPerms="'agenda.can_manage';and:item.verboseType">
-                        <mat-icon>visibility</mat-icon>
-                        {{ item.verboseType | translate }}
-                    </div>
-                    <div *ngIf="item.duration">
-                        <mat-icon>access_time</mat-icon>
-                        {{ durationService.durationToString(item.duration, 'h') }}
-                    </div>
-                    <div *ngIf="item.comment">
-                        <mat-icon>comment</mat-icon>
-                        {{ item.comment }}
+                <div class="fill">
+                    <div class="info-col-items">
+                        <div *osPerms="'agenda.can_manage'; and: item.verboseType">
+                            <mat-icon>visibility</mat-icon>
+                            {{ item.verboseType | translate }}
+                        </div>
+                        <div *ngIf="item.duration">
+                            <mat-icon>access_time</mat-icon>
+                            {{ durationService.durationToString(item.duration, 'h') }}
+                        </div>
+                        <div *ngIf="item.comment">
+                            <mat-icon>comment</mat-icon>
+                            {{ item.comment }}
+                        </div>
                     </div>
                 </div>
             </mat-cell>
@@ -74,8 +76,7 @@
         <ng-container matColumnDef="speakers">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Speakers</mat-header-cell>
             <mat-cell *matCellDef="let item">
-                <button mat-icon-button (click)="onSpeakerIcon(item, $event)"
-                [disabled]="isMultiSelect">
+                <button mat-icon-button (click)="onSpeakerIcon(item, $event)" [disabled]="isMultiSelect">
                     <mat-icon
                         [matBadge]="item.waitingSpeakerAmount > 0 ? item.waitingSpeakerAmount : null"
                         matBadgeColor="accent"
