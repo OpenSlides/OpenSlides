@@ -557,7 +557,7 @@
 
         <div class="form-id-title">
             <!-- Identifier -->
-            <div *ngIf="editMotion && !newMotion" class="content-field form-identifier">
+            <div *ngIf="editMotion && !newMotion && perms.isAllowed('change_metadata', motion)" class="content-field form-identifier">
                 <mat-form-field *ngIf="editMotion">
                     <input
                         matInput
