@@ -37,19 +37,27 @@ class MotionAccessPermissions(BaseAccessPermissions):
                     is_submitter = False
 
                 # Check see permission for this motion.
-                from .models import State
+                restriction = full["state_restriction"]
 
-                if await async_has_perm(user_id, "motions.can_manage"):
-                    level = State.MANAGERS_ONLY
-                elif await async_has_perm(
-                    user_id, "motions.can_manage_metadata"
-                ) or await async_has_perm(user_id, "motions.can_see_internal"):
-                    level = State.EXTENDED_MANAGERS
-                elif is_submitter:
-                    level = State.EXTENDED_MANAGERS_AND_SUBMITTER
-                else:
-                    level = State.ALL
-                permission = level >= full["state_access_level"]
+                # Managers can see all motions.
+                permission = await async_has_perm(user_id, "motions.can_manage")
+                # If restriction field is an empty list, everybody can see the motion.
+                permission = permission or not restriction
+
+                if not permission:
+                    # Parse values of restriction field.
+                    for value in restriction:
+                        if value == "managers_only":
+                            # permission remains false
+                            break
+                        elif value in ("motions.can_see_internal", "motions.can_manage_metadata"):
+                            if await async_has_perm(user_id, value):
+                                permission = True
+                                break
+                        elif value == "is_submitter":
+                            if is_submitter:
+                                permission = True
+                                break
 
                 # Parse single motion.
                 if permission:
