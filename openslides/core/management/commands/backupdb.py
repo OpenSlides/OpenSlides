@@ -41,7 +41,9 @@ class Command(BaseCommand):
         if database_path:
             do_backup(database_path, path)
             self.stdout.write(
-                f"Database {database_path} successfully stored at {path}."
+                self.style.SUCCESS(
+                    f"Database {database_path} successfully stored at {path}."
+                )
             )
         else:
             raise CommandError(

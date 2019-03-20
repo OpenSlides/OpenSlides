@@ -24,7 +24,7 @@ class Command(BaseCommand):
             "default_password": options["password"],
         }
         user = User.objects.create_user(
-            options["username"], options["password"], **user_data
+            options["username"], options["password"], skip_autoupdate=True, **user_data
         )
         if options["groups_id"].isdigit():
             user.groups.add(int(options["groups_id"]))

@@ -94,7 +94,7 @@ class CoreAppConfig(AppConfig):
             self.get_model("History").get_collection_string(), HistoryViewSet
         )
 
-        if "runserver" in sys.argv:
+        if "runserver" in sys.argv or "changeconfig" in sys.argv:
             startup()
 
         # Register client messages
