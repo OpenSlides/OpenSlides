@@ -264,6 +264,7 @@ class Motion(RESTModelMixin, models.Model):
         default_permissions = ()
         permissions = (
             ("can_see", "Can see motions"),
+            ("can_see_internal", "Can see motions in internal state"),
             ("can_create", "Can create motions"),
             ("can_create_amendments", "Can create amendments"),
             ("can_support", "Can support motions"),
@@ -1050,11 +1051,11 @@ class State(RESTModelMixin, models.Model):
         (ALL, "All users with permission to see motions"),
         (
             EXTENDED_MANAGERS_AND_SUBMITTER,
-            "Submitters, managers and users with permission to manage metadata",
+            "Submitters, authorized users (with permission to see internal motions), managers and users with permission to manage metadata",
         ),
         (
             EXTENDED_MANAGERS,
-            "Only managers and users with permission to manage metadata",
+            "Only authorized users (with permission to see internal motions), managers and users with permission to manage metadata",
         ),
         (MANAGERS_ONLY, "Only managers"),
     )
@@ -1083,7 +1084,8 @@ class State(RESTModelMixin, models.Model):
     access_level = models.IntegerField(choices=ACCESS_LEVELS, default=0)
     """
     Defines which users may see motions in this state e. g. only managers,
-    users with permission to manage metadata and submitters.
+    authorized users with permission to see internal motiosn, users with permission
+    to manage metadata and submitters.
     """
 
     allow_support = models.BooleanField(default=False)
