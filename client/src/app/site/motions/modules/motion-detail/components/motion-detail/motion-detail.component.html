@@ -1,7 +1,7 @@
 <os-head-bar
     [mainButton]="perms.isAllowed('update', motion)"
     mainButtonIcon="edit"
-    [prevUrl]="backTarget"
+    [prevUrl]="getPrevUrl()"
     [nav]="false"
     [editMode]="editMotion"
     (mainEvent)="setEditMode(!editMotion)"

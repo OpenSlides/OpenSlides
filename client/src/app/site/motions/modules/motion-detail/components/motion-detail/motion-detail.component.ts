@@ -337,13 +337,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     private editNotificationSubscription: Subscription;
 
     /**
-     * Determine what to "return" to.
-     * Handles the target for clicking the back button
-     * Several angular peculiarities prevent dynamic changing from working right now
-     */
-    public backTarget = '../..';
-
-    /**
      * Hold the subscription to the navigation.
      * This cannot go into the subscription-list, since it should
      * only get destroyed using ngOnDestroy routine and not on route changes.
@@ -1477,6 +1470,20 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      */
     public showUploadError(error: string): void {
         this.raiseError(error);
+    }
+
+    /**
+     * Tries to "logically" navigate back. If the motion has a parent, it will
+     * try to navigate to the parent
+     * rather than just into the list view.
+     *
+     * @returns the target to navigate to
+     */
+    public getPrevUrl(): string {
+        if (this.motion.parent_id) {
+            return `../../${this.motion.parent_id}`;
+        }
+        return '../..';
     }
 
     /**
