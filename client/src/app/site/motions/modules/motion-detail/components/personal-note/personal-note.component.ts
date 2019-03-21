@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Title } from '@angular/platform-browser';
+import { Title, SafeHtml, DomSanitizer } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
@@ -41,13 +41,15 @@ export class PersonalNoteComponent extends BaseComponent {
      * @param personalNoteService
      * @param formBuilder
      * @param pdfService
+     * @param sanitizer
      */
     public constructor(
         title: Title,
         translate: TranslateService,
         private personalNoteService: PersonalNoteService,
         formBuilder: FormBuilder,
-        private pdfService: MotionPdfExportService
+        private pdfService: MotionPdfExportService,
+        private sanitizer: DomSanitizer
     ) {
         super(title, translate);
         this.personalNoteForm = formBuilder.group({
@@ -93,5 +95,16 @@ export class PersonalNoteComponent extends BaseComponent {
      */
     public printPersonalNote(): void {
         this.pdfService.exportPersonalNote(this.motion.personalNote, this.motion);
+    }
+
+    /**
+     * Sanitize the text to be safe.
+     *
+     * @param text to be sanitized.
+     *
+     * @returns SafeHtml
+     */
+    public sanitizeText(text: string): SafeHtml {
+        return this.sanitizer.bypassSecurityTrustHtml(text);
     }
 }

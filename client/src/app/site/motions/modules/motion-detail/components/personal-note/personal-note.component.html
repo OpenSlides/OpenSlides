@@ -5,7 +5,7 @@
 
     <ng-container class="meta-text-block-content">
         <ng-container *ngIf="!isEditMode">
-            <div *ngIf="motion && motion.personalNote" [innerHTML]="motion.personalNote.note"></div>
+            <div *ngIf="motion && motion.personalNote" [innerHTML]="sanitizeText(motion.personalNote.note)"></div>
             <div class="no-content" *ngIf="!motion || !motion.personalNote" translate>
                 No personal note
             </div>

@@ -653,7 +653,7 @@
             >
                 <span translate>Reason</span>&nbsp;<span *ngIf="reasonRequired && editMotion">*</span>
             </h3>
-            <div class="motion-text" *ngIf="!editMotion"><div [innerHtml]="motion.reason"></div></div>
+            <div class="motion-text" *ngIf="!editMotion"><div [innerHtml]="sanitizedText(motion.reason)"></div></div>
 
             <!-- The HTML Editor -->
             <editor formControlName="reason" [init]="tinyMceSettings" *ngIf="editMotion" required></editor>
