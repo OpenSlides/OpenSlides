@@ -101,7 +101,8 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
             Mediafile,
             Tag,
             MotionChangeRecommendation,
-            PersonalNote
+            PersonalNote,
+            Motion
         ]);
         config.get<SortProperty>('motions_motions_sorting').subscribe(conf => {
             this.sortProperty = conf;
