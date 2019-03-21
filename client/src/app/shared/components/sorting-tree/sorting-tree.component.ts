@@ -1,8 +1,8 @@
-import { Component, OnInit, Input, OnDestroy, Output, EventEmitter } from '@angular/core';
-
+import { Component, OnInit, Input, OnDestroy, Output, EventEmitter, ContentChild, TemplateRef } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { ArrayDataSource } from '@angular/cdk/collections';
 import { CdkDragMove, CdkDragStart, CdkDragSortEvent } from '@angular/cdk/drag-drop';
+
 import { Observable, Subscription } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
 
@@ -25,7 +25,7 @@ enum Direction {
  * Interface which extends the `OSFlatNode`.
  * Containing further information like start- and next-position.
  */
-interface ExFlatNode extends FlatNode {
+interface ExFlatNode<T extends Identifiable & Displayable> extends FlatNode<T> {
     startPosition: number;
     nextPosition: number;
 }
@@ -56,12 +56,12 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
     /**
      * The data to build the tree
      */
-    public osTreeData: FlatNode[] = [];
+    public osTreeData: FlatNode<T>[] = [];
 
     /**
      * The tree control
      */
-    public treeControl = new FlatTreeControl<FlatNode>(node => node.level, node => node.expandable);
+    public treeControl = new FlatTreeControl<FlatNode<T>>(node => node.level, node => node.expandable);
 
     /**
      * Source for the tree
@@ -83,12 +83,22 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
      * Node with calculated next information.
      * Containing information like the position, when the drag starts and where it is in the moment.
      */
-    public nextNode: ExFlatNode = null;
+    public nextNode: ExFlatNode<T> = null;
 
     /**
      * Pointer for the move event
      */
     private pointer: DragEvent = null;
+
+    /**
+     * Number, that holds the current visible nodes.
+     */
+    private seenNodes: number;
+
+    /**
+     * Function that will be used for filtering the nodes.
+     */
+    private activeFilter: (node: T) => boolean;
 
     /**
      * Subscription for the data store
@@ -116,6 +126,8 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
     /**
      * Setter to get all models from data store.
      * It will create or replace the existing subscription.
+     *
+     * @param model Is the model the tree will be built of.
      */
     @Input()
     public set model(model: Observable<T[]>) {
@@ -127,10 +139,51 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
     }
 
     /**
+     * Setter to listen for state changes, expanded or collapsed.
+     *
+     * @param nextState Is an event emitter that emits a boolean whether the nodes should expand or not.
+     */
+    @Input()
+    public set stateChange(nextState: EventEmitter<Boolean>) {
+        nextState.subscribe((state: boolean) => {
+            if (state) {
+                this.expandAll();
+            } else {
+                this.collapseAll();
+            }
+        });
+    }
+
+    /**
+     * Setter to listen for filter change events.
+     *
+     * @param filter Is an event emitter that emits all active filters in an array.
+     */
+    @Input()
+    public set filterChange(filter: EventEmitter<(node: T) => boolean>) {
+        filter.subscribe((value: (node: T) => boolean) => {
+            this.activeFilter = value;
+            this.checkActiveFilters();
+        });
+    }
+
+    /**
      * EventEmitter to send info if changes has been made.
      */
     @Output()
     public hasChanged: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+    /**
+     * EventEmitter to emit the info about the currently shown nodes.
+     */
+    @Output()
+    public visibleNodes: EventEmitter<[number, number]> = new EventEmitter<[number, number]>();
+
+    /**
+     * Reference to the template content.
+     */
+    @ContentChild(TemplateRef)
+    public innerNode: TemplateRef<any>;
 
     /**
      * Constructor
@@ -158,7 +211,7 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
      *
      * @returns The parent node if available otherwise it returns null.
      */
-    public getParentNode(node: FlatNode): FlatNode {
+    public getParentNode(node: FlatNode<T>): FlatNode<T> {
         const nodeIndex = this.osTreeData.indexOf(node);
 
         for (let i = nodeIndex - 1; i >= 0; --i) {
@@ -178,11 +231,11 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
      *
      * @returns The node which is either the parent if not expanded or the next node.
      */
-    private getExpandedParentNode(node: FlatNode): FlatNode {
-        const allParents = this.getAllParents(node);
-        for (let i = allParents.length - 1; i >= 0; --i) {
-            if (!allParents[i].isExpanded) {
-                return allParents[i];
+    private getExpandedParentNode(node: FlatNode<T>): FlatNode<T> {
+        for (let i = node.position; i >= 0; --i) {
+            const treeNode = this.osTreeData[i];
+            if (treeNode.isSeen && !treeNode.filtered) {
+                return treeNode;
             }
         }
         return node;
@@ -195,7 +248,7 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
      *
      * @returns An array containing its parent and the parents of its parent.
      */
-    private getAllParents(node: FlatNode): FlatNode[] {
+    private getAllParents(node: FlatNode<T>): FlatNode<T>[] {
         return this._getAllParents(node, []);
     }
 
@@ -207,7 +260,7 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
      *
      * @returns An array containing all parents that are in relation to the given node.
      */
-    private _getAllParents(node: FlatNode, array: FlatNode[]): FlatNode[] {
+    private _getAllParents(node: FlatNode<T>, array: FlatNode<T>[]): FlatNode<T>[] {
         const parent = this.getParentNode(node);
         if (parent) {
             array.push(parent);
@@ -224,9 +277,9 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
      *
      * @returns An array that contains all the nearest children.
      */
-    public getChildNodes(node: FlatNode): FlatNode[] {
+    public getChildNodes(node: FlatNode<T>): FlatNode<T>[] {
         const nodeIndex = this.osTreeData.indexOf(node);
-        const childNodes: FlatNode[] = [];
+        const childNodes: FlatNode<T>[] = [];
 
         if (nodeIndex < this.osTreeData.length - 1) {
             for (let i = nodeIndex + 1; i < this.osTreeData.length && this.osTreeData[i].level >= node.level + 1; ++i) {
@@ -240,6 +293,17 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
     }
 
     /**
+     * Function to search for all nodes under the given node, that are not filtered.
+     *
+     * @param node is the parent whose visible children should be returned.
+     *
+     * @returns An array containing all nodes that are children and not filtered.
+     */
+    private getUnfilteredChildNodes(node: FlatNode<T>): FlatNode<T>[] {
+        return this.getChildNodes(node).filter(child => !child.filtered);
+    }
+
+    /**
      * Function to look for all nodes that are under the given node.
      * This includes not only the nearest children, but also the children of the children.
      *
@@ -247,7 +311,7 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
      *
      * @returns An array containing all the subnodes, inclusive the children of the children.
      */
-    private getAllSubNodes(node: FlatNode): FlatNode[] {
+    private getAllSubNodes(node: FlatNode<T>): FlatNode<T>[] {
         return this._getAllSubNodes(node, []);
     }
 
@@ -260,7 +324,7 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
      *
      * @returns An array containing all subnodes, inclusive the children of the children.
      */
-    private _getAllSubNodes(node: FlatNode, array: FlatNode[]): FlatNode[] {
+    private _getAllSubNodes(node: FlatNode<T>, array: FlatNode<T>[]): FlatNode<T>[] {
         array.push(node);
         for (const child of this.getChildNodes(node)) {
             this._getAllSubNodes(child, array);
@@ -276,7 +340,7 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
      *
      * @returns The calculated position as number.
      */
-    private getPositionOnScreen(node: FlatNode): number {
+    private getPositionOnScreen(node: FlatNode<T>): number {
         let currentPosition = this.osTreeData.length;
         for (let i = this.osTreeData.length - 1; i >= 0; --i) {
             --currentPosition;
@@ -297,7 +361,7 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
      *
      * @returns boolean if the node should render. Related to the state of the parent, if expanded or not.
      */
-    public shouldRender(node: FlatNode): boolean {
+    public shouldRender(node: FlatNode<T>): boolean {
         return node.isSeen;
     }
 
@@ -306,7 +370,7 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
      *
      * @param node which is clicked.
      */
-    public handleClick(node: FlatNode): void {
+    public handleClick(node: FlatNode<T>): void {
         node.isExpanded = !node.isExpanded;
         if (node.isExpanded) {
             for (const child of this.getChildNodes(node)) {
@@ -325,8 +389,8 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
      *
      * @param node is the node which should be shown again.
      */
-    private showChildren(node: FlatNode): void {
-        node.isSeen = true;
+    private showChildren(node: FlatNode<T>): void {
+        this.checkVisibility(node);
         if (node.expandable && node.isExpanded) {
             for (const child of this.getChildNodes(node)) {
                 this.showChildren(child);
@@ -338,14 +402,63 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
      * Function to check the visibility of moved nodes after moving them.
      * `Warning: Side Effects`: This function works with side effects. The changed nodes won't be returned!
      *
-     * @param nodes All affected nodes, that are either shown or not.
+     * @param node All affected nodes, that are either shown or not.
      */
-    private checkVisibility(nodes: FlatNode[]): void {
-        if (this.getAllParents(nodes[0]).find(item => item.expandable && !item.isExpanded)) {
-            for (const child of nodes) {
-                child.isSeen = false;
+    private checkVisibility(node: FlatNode<T>): void {
+        const shouldSee = !this.getAllParents(node).find(item => (item.expandable && !item.isExpanded) || !item.isSeen);
+        node.isSeen = !node.filtered && shouldSee;
+    }
+
+    /**
+     * Find the next not filtered node.
+     * Necessary to get the next node even though it is not seen.
+     *
+     * @param node is the directly next neighbor of the moved node.
+     * @param direction define in which way it runs.
+     *
+     * @returns The next node with parameter `isSeen = true`.
+     */
+    private getNextVisibleNode(node: FlatNode<T>, direction: Direction.DOWNWARDS | Direction.UPWARDS): FlatNode<T> {
+        if (node) {
+            switch (direction) {
+                case Direction.DOWNWARDS:
+                    for (let i = node.position; i < this.osTreeData.length; ++i) {
+                        if (!this.osTreeData[i].filtered) {
+                            return this.osTreeData[i];
+                        }
+                    }
+                    break;
+
+                case Direction.UPWARDS:
+                    for (let i = node.position; i >= 0; --i) {
+                        if (!this.osTreeData[i].filtered) {
+                            return this.osTreeData[i];
+                        }
+                    }
+                    break;
             }
         }
+        return null;
+    }
+
+    /**
+     * Function to get the last filtered child of a node.
+     * This is necessary to append moved nodes next to the last place of the corresponding parent.
+     *
+     * @param node is the node where it will start.
+     *
+     * @returns The node that is an filtered child or itself if there is no filtered child.
+     */
+    private getTheLastInvisibleNode(node: FlatNode<T>): FlatNode<T> {
+        let result = node;
+        for (let i = node.position + 1; i < this.osTreeData.length && this.osTreeData[i].level >= node.level + 1; ++i) {
+            if (this.osTreeData[i].filtered) {
+                result = this.osTreeData[i];
+            } else {
+                return result;
+            }
+        }
+        return node;
     }
 
     /**
@@ -391,7 +504,7 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
      */
     public startsDrag(event: CdkDragStart): void {
         this.removeSubscription();
-        const draggedNode = <FlatNode>event.source.data;
+        const draggedNode = <FlatNode<T>>event.source.data;
         this.placeholderLevel = draggedNode.level;
         this.nextNode = {
             ...draggedNode,
@@ -405,12 +518,11 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
      *
      * @param node Is the dropped node.
      */
-    public onDrop(node: FlatNode): void {
-        const moving = this.getDirection();
+    public onDrop(node: FlatNode<T>): void {
         this.pointer = null;
 
         this.madeChanges(true);
-        this.moveItemToTree(node, node.position, this.nextPosition, this.placeholderLevel, moving.verticalMove);
+        this.moveItemToTree(node, node.position, this.nextPosition, this.placeholderLevel);
     }
 
     /**
@@ -455,7 +567,13 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
         this.nextPosition = nextPosition;
 
         const corrector = direction.verticalMove === Direction.DOWNWARDS ? 0 : 1;
-        const possibleParent = this.osTreeData[nextPosition - corrector];
+        let possibleParent = this.osTreeData[nextPosition - corrector];
+        for (let i = 0; possibleParent && possibleParent.filtered; ++i) {
+            possibleParent = this.osTreeData[nextPosition - corrector - i];
+        }
+        if (possibleParent) {
+            this.nextPosition = this.getTheLastInvisibleNode(possibleParent).position + corrector;
+        }
         switch (direction.horizontalMove) {
             case Direction.LEFT:
                 if (this.nextNode.level > 0 || this.placeholderLevel > 0) {
@@ -506,7 +624,7 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
      */
     private findNextIndex(
         steps: number,
-        node: ExFlatNode,
+        node: ExFlatNode<T>,
         verticalMove: Direction.DOWNWARDS | Direction.UPWARDS | Direction.NOWAY
     ): number {
         let currentPosition = this.osTreeData.length;
@@ -519,7 +637,7 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
                     } else {
                         break;
                     }
-                    if (node.name === parent.name) {
+                    if (node.item.getTitle() === parent.item.getTitle()) {
                         --i;
                     }
                 }
@@ -553,20 +671,23 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
      * @param nextLevel The next level the node should have.
      * @param verticalMove The direction of the movement in the vertical way.
      */
-    private moveItemToTree(
-        node: FlatNode,
-        previousIndex: number,
-        nextIndex: number,
-        nextLevel: number,
-        verticalMove: Direction.UPWARDS | Direction.DOWNWARDS | Direction.NOWAY
-    ): void {
+    private moveItemToTree(node: FlatNode<T>, previousIndex: number, nextIndex: number, nextLevel: number): void {
+        let verticalMove: string;
+        if (previousIndex < nextIndex) {
+            verticalMove = Direction.DOWNWARDS;
+        } else if (previousIndex > nextIndex) {
+            verticalMove = Direction.UPWARDS;
+        } else {
+            verticalMove = Direction.NOWAY;
+        }
+
         // Get all affected nodes.
         const movedNodes = this.getAllSubNodes(node);
         const corrector = verticalMove === Direction.DOWNWARDS ? 0 : 1;
         const lastChildIndex = movedNodes[movedNodes.length - 1].position;
 
         // Get the neighbor above and below of the new index.
-        const nextNeighborAbove = this.osTreeData[nextIndex - corrector];
+        const nextNeighborAbove = this.getNextVisibleNode(this.osTreeData[nextIndex - corrector], Direction.UPWARDS);
         const nextNeighborBelow =
             verticalMove !== Direction.NOWAY
                 ? this.osTreeData[nextIndex - corrector + 1]
@@ -579,12 +700,11 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
 
             // Check if the node was a subnode.
             if (node.level > 0) {
-                const previousNode = this.osTreeData[previousIndex - 1];
-                const isMovedLowerLevel =
-                    previousIndex === nextIndex &&
-                    nextLevel <= previousNode.level &&
-                    this.getChildNodes(previousNode).length === 1;
-                const isMovedAway = previousIndex !== nextIndex && this.getChildNodes(previousNode).length === 1;
+                // const previousNode = this.osTreeData[previousIndex - 1];
+                const previousNode = this.getNextVisibleNode(this.osTreeData[previousIndex - 1], Direction.UPWARDS);
+                const onlyChild = this.getChildNodes(previousNode).length === 1;
+                const isMovedLowerLevel = previousIndex === nextIndex && nextLevel <= previousNode.level && onlyChild;
+                const isMovedAway = previousIndex !== nextIndex && onlyChild;
 
                 // Check if the previous parent will have no children anymore.
                 if (isMovedAway || isMovedLowerLevel) {
@@ -595,32 +715,32 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
 
             // Check if the node becomes a subnode.
             if (nextLevel > 0) {
+                const noChildren = this.getUnfilteredChildNodes(nextNeighborAbove).length === 0;
                 // Check if the new parent has not have any children before.
-                if (nextNeighborAbove.level + 1 === nextLevel && this.getChildNodes(nextNeighborAbove).length === 0) {
+                if (nextNeighborAbove.level + 1 === nextLevel && noChildren) {
                     nextNeighborAbove.expandable = true;
                     nextNeighborAbove.isExpanded =
                         (!!this.getParentNode(nextNeighborAbove) && this.getParentNode(nextNeighborAbove).isExpanded) ||
-                        this.getChildNodes(nextNeighborAbove).length === 0
-                            ? true
-                            : false;
+                        noChildren;
                 }
             }
 
             // Check if the neighbor below has a higher level than the moved node.
-            if (nextNeighborBelow && nextNeighborBelow.level === nextLevel + 1) {
+            if (nextNeighborBelow && nextNeighborBelow.level === nextLevel + 1 && !nextNeighborBelow.filtered) {
                 // Check if the new neighbor above has the same level like the moved node.
                 if (nextNeighborAbove.level === nextLevel) {
                     nextNeighborAbove.expandable = false;
                     nextNeighborAbove.isExpanded = false;
                 }
-
-                // Set the moved node to the new parent for the subnodes.
                 node.expandable = true;
                 node.isExpanded = true;
             }
 
             // Check if the neighbor below has a level equals to two or more higher than the moved node.
-            if (nextNeighborBelow && nextNeighborBelow.level >= nextLevel + 2) {
+            if (
+                (nextNeighborBelow && nextNeighborBelow.level >= nextLevel + 2) ||
+                (nextNeighborBelow.level === nextLevel + 1 && nextNeighborBelow.filtered)
+            ) {
                 let found = false;
                 for (let i = nextIndex + 1; i < this.osTreeData.length; ++i) {
                     if (this.osTreeData[i].level <= nextLevel && node !== this.osTreeData[i]) {
@@ -681,7 +801,9 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
             }
 
             // Check the visibility to prevent seeing nodes that are actually unseen.
-            this.checkVisibility(movedNodes);
+            for (const child of movedNodes) {
+                this.checkVisibility(child);
+            }
 
             // Set a new data source.
             this.dataSource = null;
@@ -716,6 +838,7 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
         this.madeChanges(false);
         this.modelSubscription = this._model.pipe(auditTime(10)).subscribe(values => {
             this.osTreeData = this.treeService.makeFlatTree(values, this.weightKey, this.parentKey);
+            this.checkActiveFilters();
             this.dataSource = new ArrayDataSource(this.osTreeData);
         });
     }
@@ -730,7 +853,70 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
     }
 
     /**
+     * Function to expand all nodes.
+     */
+    private expandAll(): void {
+        for (const child of this.osTreeData) {
+            this.checkVisibility(child);
+            if (child.isSeen && child.expandable) {
+                child.isExpanded = true;
+            }
+        }
+    }
+
+    /**
+     * Function to collapse all parent nodes and make their children invisible.
+     */
+    private collapseAll(): void {
+        for (const child of this.osTreeData) {
+            child.isExpanded = false;
+            if (child.level > 0) {
+                child.isSeen = false;
+            }
+        }
+    }
+
+    /**
+     * Function that iterates over all top level nodes and pass them to the next function
+     * to decide if they will be seen or filtered and whether they will be expandable.
+     */
+    private checkActiveFilters(): void {
+        this.seenNodes = 0;
+        for (const node of this.osTreeData.filter(item => item.level === 0)) {
+            this.checkChildrenToBeFiltered(node);
+        }
+        this.visibleNodes.emit([this.seenNodes, this.osTreeData.length]);
+    }
+
+    /**
+     * Function to check recursively the child nodes of a given node whether they will be filtered or if they should be seen.
+     * The result is necessary to decide whether the parent node is expandable or not.
+     *
+     * @param node is the inspected node.
+     * @param parent optional: If the node has a parent, it is necessary to see if this parent will be filtered or is seen.
+     *
+     * @returns A boolean which describes if the given node will be filtered.
+     */
+    private checkChildrenToBeFiltered(node: FlatNode<T>, parent?: FlatNode<T>): boolean {
+        let result = false;
+        const willFiltered = this.activeFilter ? this.activeFilter(node.item) || (parent && parent.filtered) : false;
+        node.filtered = willFiltered;
+        const willSeen = !willFiltered && ((parent && parent.isSeen && parent.isExpanded) || !parent);
+        node.isSeen = willSeen;
+        if (willSeen) {
+            this.seenNodes += 1;
+        }
+        for (const child of this.getChildNodes(node)) {
+            if (!this.checkChildrenToBeFiltered(child, node)) {
+                result = true;
+            }
+        }
+        node.expandable = result;
+        return willFiltered;
+    }
+
+    /**
      * Function to check if a node has children.
      */
-    public hasChild = (_: number, node: FlatNode) => node.expandable;
+    public hasChild = (_: number, node: FlatNode<T>) => node.expandable;
 }

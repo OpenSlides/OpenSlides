@@ -24,7 +24,11 @@
         parentKey="sort_parent_id"
         weightKey="weight"
         (hasChanged)="receiveChanges($event)"
-        [model]="motionsObservable"></os-sorting-tree>
+        [model]="motionsObservable">
+        <ng-template #innerNode let-item="item">
+            <span>{{ item.getTitle() }}</span>
+        </ng-template>
+    </os-sorting-tree>
 </mat-card>
 
 <mat-menu #downloadMenu="matMenu">
