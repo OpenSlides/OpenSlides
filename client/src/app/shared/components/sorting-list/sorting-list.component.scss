@@ -1,19 +1,11 @@
 @import '~assets/styles/drag.scss';
 
-.box {
-    width: 100%;
-    border-bottom: solid 1px #ccc;
-    color: rgba(0, 0, 0, 0.87);
-    font-size: 14px;
-}
-
-.box:last-child {
-    border: none;
-}
-
 .line {
     display: table;
+    width: 100%;
+    font-size: 14px;
     min-height: 50px;
+    margin-bottom: 5px;
 
     .section-one {
         display: table-cell;
@@ -28,7 +20,12 @@
     .section-two {
         display: table-cell;
         vertical-align: middle;
-        width: 80%;
+        width: 100%;
+        padding-left: 20px;
+
+        span + span {
+            margin-left: 20px;
+        }
     }
 
     .section-three {
