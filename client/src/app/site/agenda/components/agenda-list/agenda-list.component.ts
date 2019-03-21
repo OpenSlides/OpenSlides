@@ -20,6 +20,7 @@ import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { ViewItem } from '../../models/view-item';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { _ } from 'app/core/translate/translation-marker';
+import { StorageService } from 'app/core/core-services/storage.service';
 
 /**
  * List view for the agenda.
@@ -90,8 +91,9 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item> i
         titleService: Title,
         protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
+        storage: StorageService,
         private operator: OperatorService,
-        private route: ActivatedRoute,
+        protected route: ActivatedRoute,
         private router: Router,
         private repo: ItemRepositoryService,
         private promptService: PromptService,
@@ -104,7 +106,7 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item> i
         private agendaPdfService: AgendaPdfService,
         private pdfService: PdfDocumentService
     ) {
-        super(titleService, translate, matSnackBar, filterService);
+        super(titleService, translate, matSnackBar, route, storage, filterService);
 
         // activate multiSelect mode for this listview
         this.canMultiSelect = true;

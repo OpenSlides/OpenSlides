@@ -8,6 +8,8 @@ import { ViewTag } from '../../models/view-tag';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { MatSnackBar } from '@angular/material';
+import { StorageService } from 'app/core/core-services/storage.service';
+import { ActivatedRoute } from '@angular/router';
 
 /**
  * Listview for the complete lsit of available Tags
@@ -41,10 +43,12 @@ export class TagListComponent extends ListViewBaseComponent<ViewTag, Tag> implem
         titleService: Title,
         protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
+        storage: StorageService,
+        route: ActivatedRoute,
         private repo: TagRepositoryService,
         private promptService: PromptService
     ) {
-        super(titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, route, storage);
     }
 
     /**

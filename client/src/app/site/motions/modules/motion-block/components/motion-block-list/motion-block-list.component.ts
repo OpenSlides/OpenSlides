@@ -16,6 +16,7 @@ import { OperatorService } from 'app/core/core-services/operator.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewItem } from 'app/site/agenda/models/view-item';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
+import { StorageService } from 'app/core/core-services/storage.service';
 
 /**
  * Table for the motion blocks
@@ -80,8 +81,9 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
+        storage: StorageService,
         private router: Router,
-        private route: ActivatedRoute,
+        protected route: ActivatedRoute,
         private repo: MotionBlockRepositoryService,
         private agendaRepo: ItemRepositoryService,
         private formBuilder: FormBuilder,
@@ -89,7 +91,7 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
         private itemRepo: ItemRepositoryService,
         private operator: OperatorService
     ) {
-        super(titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, route, storage);
 
         this.createBlockForm = this.formBuilder.group({
             title: ['', Validators.required],
