@@ -13,7 +13,7 @@
 
 <mat-card class="os-card speaker-card" *ngIf="viewItem">
     <!-- Title -->
-    <h1 class="title on-transition-fade" *ngIf="viewItem">{{ viewItem.getTitle() }}</h1>
+    <h1 class="los-title on-transition-fade" *ngIf="viewItem">{{ viewItem.getTitle() }}</h1>
 
     <!-- List of finished speakers -->
     <mat-expansion-panel *ngIf="finishedSpeakers && finishedSpeakers.length > 0" class="finished-list">
