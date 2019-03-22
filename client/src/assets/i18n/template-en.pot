@@ -43,9 +43,6 @@ msgstr ""
 msgid "Acceptance"
 msgstr ""
 
-msgid "Accepted"
-msgstr ""
-
 msgid "Access data (PDF)"
 msgstr ""
 
@@ -68,6 +65,9 @@ msgid "Active filters"
 msgstr ""
 
 msgid "Add"
+msgstr ""
+
+msgid "Add countdown"
 msgstr ""
 
 msgid "Add me"
@@ -201,9 +201,6 @@ msgstr ""
 msgid "Are you sure you want to delete this comment field?"
 msgstr ""
 
-msgid "Are you sure you want to delete this countdown?"
-msgstr ""
-
 msgid "Are you sure you want to delete this entry?"
 msgstr ""
 
@@ -211,6 +208,9 @@ msgid "Are you sure you want to delete this file?"
 msgstr ""
 
 msgid "Are you sure you want to delete this group?"
+msgstr ""
+
+msgid "Are you sure you want to delete this motion block?"
 msgstr ""
 
 msgid "Are you sure you want to delete this motion?"
@@ -235,6 +235,14 @@ msgid "Are you sure you want to delete this workflow?"
 msgstr ""
 
 msgid "Are you sure you want to number all agenda items?"
+msgstr ""
+
+msgid ""
+"Are you sure you want to override the state of all motions of this motion "
+"block?"
+msgstr ""
+
+msgid "Are you sure you want to remove this motion from motion block?"
 msgstr ""
 
 msgid "Are you sure you want to renumber all motions of this category?"
@@ -458,9 +466,6 @@ msgstr ""
 msgid "Closed items"
 msgstr ""
 
-msgid "Collapse all"
-msgstr ""
-
 msgid "Column separator"
 msgstr ""
 
@@ -495,6 +500,18 @@ msgid "Copy and paste your participant names in this textbox."
 msgstr ""
 
 msgid "Count active users"
+msgstr ""
+
+msgid "Countdown"
+msgstr ""
+
+msgid "Countdown description"
+msgstr ""
+
+msgid "Countdown time"
+msgstr ""
+
+msgid "Countdown title"
 msgstr ""
 
 msgid "Countdowns"
@@ -589,9 +606,6 @@ msgstr ""
 msgid "Deletion"
 msgstr ""
 
-msgid "Description"
-msgstr ""
-
 msgid "Deselect all"
 msgstr ""
 
@@ -634,11 +648,6 @@ msgid "Download CSV example file"
 msgstr ""
 
 msgid ""
-"Drag and drop items to change the order of the agenda. Your modification "
-"will be saved immediately."
-msgstr ""
-
-msgid ""
 "Drag and drop motions to reorder the category. Then click the button to "
 "renumber."
 msgstr ""
@@ -653,9 +662,6 @@ msgid "Edit"
 msgstr ""
 
 msgid "Edit comment field:"
-msgstr ""
-
-msgid "Edit countdown"
 msgstr ""
 
 msgid "Edit details"
@@ -752,9 +758,6 @@ msgid "Event organizer"
 msgstr ""
 
 msgid "Exit"
-msgstr ""
-
-msgid "Expand all"
 msgstr ""
 
 msgid "Export"
@@ -1161,9 +1164,6 @@ msgstr ""
 msgid "New comment field"
 msgstr ""
 
-msgid "New countdown"
-msgstr ""
-
 msgid "New file name"
 msgstr ""
 
@@ -1222,9 +1222,6 @@ msgid "No comment"
 msgstr ""
 
 msgid "No concernment"
-msgstr ""
-
-msgid "No countdowns"
 msgstr ""
 
 msgid "No data"
@@ -1327,6 +1324,9 @@ msgid "Open items"
 msgstr ""
 
 msgid "Open list of speakers"
+msgstr ""
+
+msgid "Open projection dialog"
 msgstr ""
 
 msgid "OpenSlides access data"
@@ -1988,9 +1988,6 @@ msgstr ""
 msgid "Three-quarters majority"
 msgstr ""
 
-msgid "Time"
-msgstr ""
-
 msgid "Timestamp"
 msgstr ""
 
@@ -2276,9 +2273,6 @@ msgid "majority"
 msgstr ""
 
 msgid "male"
-msgstr ""
-
-msgid "minutes"
 msgstr ""
 
 msgid "motions"
