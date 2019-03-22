@@ -60,7 +60,7 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
      */
     public constructor(
         titleService: Title,
-        translate: TranslateService,
+        protected translate: TranslateService,
         matSnackBar: MatSnackBar,
         private operator: OperatorService,
         private router: Router,

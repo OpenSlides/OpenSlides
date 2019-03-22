@@ -53,7 +53,7 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
         dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        translate: TranslateService,
+        protected translate: TranslateService,
         private httpService: HttpService,
         private configService: ConfigService
     ) {

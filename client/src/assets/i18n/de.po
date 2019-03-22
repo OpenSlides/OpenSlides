@@ -51,9 +51,6 @@ msgstr "Annehmen"
 msgid "Acceptance"
 msgstr "Annahme"
 
-msgid "Accepted"
-msgstr "Angenommen"
-
 msgid "Access data (PDF)"
 msgstr "Zugangsdaten (PDF)"
 
@@ -77,6 +74,9 @@ msgstr "Aktive Filter"
 
 msgid "Add"
 msgstr "Hinzufügen"
+
+msgid "Add countdown"
+msgstr "Countdown hinzufügen"
 
 msgid "Add me"
 msgstr "Füge mich hinzu"
@@ -216,9 +216,6 @@ msgstr "Soll diese Änderungsempfehlung wirklich gelöscht werden?"
 msgid "Are you sure you want to delete this comment field?"
 msgstr "Soll dieses Kommentarfeld wirklich gelöscht werden?"
 
-msgid "Are you sure you want to delete this countdown?"
-msgstr "Soll dieser Countdown wirklich gelöscht werden?"
-
 msgid "Are you sure you want to delete this entry?"
 msgstr "Soll dieser Eintrag wirklich gelöscht werden?"
 
@@ -227,6 +224,9 @@ msgstr "Soll diese Datei wirklich gelöscht werden?"
 
 msgid "Are you sure you want to delete this group?"
 msgstr "Soll diese Gruppe wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this motion block?"
+msgstr "Soll dieser Antragsblock wirklich gelöscht werden?"
 
 msgid "Are you sure you want to delete this motion?"
 msgstr "Soll dieser Antrag wirklich gelöscht werden?"
@@ -251,6 +251,16 @@ msgstr "Soll dieser Arbeitsablauf wirklich gelöscht werden?"
 
 msgid "Are you sure you want to number all agenda items?"
 msgstr "Sollen alle Tagesordnungspunkte wirklich neu nummeriert werden?"
+
+msgid ""
+"Are you sure you want to override the state of all motions of this motion "
+"block?"
+msgstr ""
+"Soll der Status von allen Anträgen aus diesem Antragsblock wirklich "
+"überschrieben werden?"
+
+msgid "Are you sure you want to remove this motion from motion block?"
+msgstr "Soll dieser Antrag wirklich aus dem Antragsblock entfernt werden?"
 
 msgid "Are you sure you want to renumber all motions of this category?"
 msgstr ""
@@ -480,9 +490,6 @@ msgstr "Redeliste schließen"
 msgid "Closed items"
 msgstr "Erledigte Einträge"
 
-msgid "Collapse all"
-msgstr "Alle zusammenklappen"
-
 msgid "Column separator"
 msgstr "Spaltentrenner"
 
@@ -519,6 +526,18 @@ msgstr "Kopieren Sie die Name Ihrer Teilnehmer/innen in diese Textbox."
 
 msgid "Count active users"
 msgstr "Aktive Nutzer zählen"
+
+msgid "Countdown"
+msgstr "Countdown"
+
+msgid "Countdown description"
+msgstr "Countdown-Beschreibung"
+
+msgid "Countdown time"
+msgstr "Countdown-Zeit"
+
+msgid "Countdown title"
+msgstr "Countdown-Titel"
 
 msgid "Countdowns"
 msgstr "Countdowns"
@@ -627,9 +646,6 @@ msgstr "Chronik löschen"
 msgid "Deletion"
 msgstr "Streichung"
 
-msgid "Description"
-msgstr "Beschreibung"
-
 msgid "Deselect all"
 msgstr "Alle abwählen"
 
@@ -674,13 +690,6 @@ msgid "Download CSV example file"
 msgstr "CSV-Beispiel-Datei herunterladen"
 
 msgid ""
-"Drag and drop items to change the order of the agenda. Your modification "
-"will be saved immediately."
-msgstr ""
-"Verschieben Sie Einträge, um die Reihenfolge der Tagesordnung zu ändern. "
-"Ihre Änderungen werden sofort gespeichert."
-
-msgid ""
 "Drag and drop motions to reorder the category. Then click the button to "
 "renumber."
 msgstr ""
@@ -698,9 +707,6 @@ msgstr "Bearbeiten"
 
 msgid "Edit comment field:"
 msgstr "Kommentarfeld bearbeiten:"
-
-msgid "Edit countdown"
-msgstr "Countdown bearbeiten"
 
 msgid "Edit details"
 msgstr "Details bearbeiten"
@@ -801,9 +807,6 @@ msgstr "Veranstalter"
 
 msgid "Exit"
 msgstr "Beenden"
-
-msgid "Expand all"
-msgstr "Alle ausklappen"
 
 msgid "Export"
 msgstr "Exportieren"
@@ -1080,7 +1083,7 @@ msgid "Last modified"
 msgstr "Zuletzt geändert"
 
 msgid "Last speakers"
-msgstr "Letzte Redner"
+msgstr "Letzte Redner/innen"
 
 msgid "Left"
 msgstr "Links"
@@ -1211,9 +1214,6 @@ msgstr "Neue Änderungsempfehlung"
 msgid "New comment field"
 msgstr "Neues Kommentarfeld"
 
-msgid "New countdown"
-msgstr "Neuer Countdown"
-
 msgid "New file name"
 msgstr "Neuer Dateiname"
 
@@ -1273,9 +1273,6 @@ msgstr "Kein Kommentar"
 
 msgid "No concernment"
 msgstr "Nichtbefassung"
-
-msgid "No countdowns"
-msgstr "Keine Countdowns"
 
 msgid "No data"
 msgstr "Keine Daten"
@@ -1380,6 +1377,9 @@ msgstr "Offene Einträge"
 
 msgid "Open list of speakers"
 msgstr "Redeliste öffnen"
+
+msgid "Open projection dialog"
+msgstr "Projektionsdialog öffnen"
 
 msgid "OpenSlides access data"
 msgstr "OpenSlides-Zugangsdaten"
@@ -1587,7 +1587,7 @@ msgid "Refer to committee"
 msgstr "In Ausschuss verweisen"
 
 msgid "Reference projector for current list of speakers:"
-msgstr "Referezprojektor für die aktuelle Redeliste:"
+msgstr "Referenzprojektor für die aktuelle Redeliste:"
 
 msgid "Referral to committee"
 msgstr "Verweisung in Ausschuss"
@@ -2073,9 +2073,6 @@ msgstr "Folgender Status wird für alle ausgewählten Anträge gesetzt:"
 msgid "Three-quarters majority"
 msgstr "Dreiviertelmehrheit"
 
-msgid "Time"
-msgstr "Zeit"
-
 msgid "Timestamp"
 msgstr "Zeitstempel"
 
@@ -2376,9 +2373,6 @@ msgstr "Mehrheit"
 
 msgid "male"
 msgstr "männlich"
-
-msgid "minutes"
-msgstr "Minuten"
 
 msgid "motions"
 msgstr "Anträge"
