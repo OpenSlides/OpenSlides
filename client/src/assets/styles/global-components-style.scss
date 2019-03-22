@@ -81,7 +81,7 @@
     }
 
     .backgroundColorLight {
-        background-color: mat-color($background, status-bar);
+        background-color: mat-color($background, hover);
         color: mat-color($foreground, text) !important;
     }
 }

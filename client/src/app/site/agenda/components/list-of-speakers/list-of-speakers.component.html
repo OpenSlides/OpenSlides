@@ -11,85 +11,100 @@
     </div>
 </os-head-bar>
 
-<h1 class="title on-transition-fade" *ngIf="viewItem">{{ viewItem.getTitle() }}</h1>
+<mat-card class="os-card speaker-card" *ngIf="viewItem">
+    <!-- Title -->
+    <h1 class="title on-transition-fade" *ngIf="viewItem">{{ viewItem.getTitle() }}</h1>
 
-<mat-card class="speaker-card" *ngIf="viewItem">
     <!-- List of finished speakers -->
     <mat-expansion-panel *ngIf="finishedSpeakers && finishedSpeakers.length > 0" class="finished-list">
         <mat-expansion-panel-header>
             <mat-panel-title translate> Last speakers </mat-panel-title>
         </mat-expansion-panel-header>
         <mat-list>
-            <!-- {Number}. {full_name} {time} minutes (Start time: {begin_time}) [close button] -->
             <mat-list-item *ngFor="let speaker of finishedSpeakers; let number = index">
-                <div class="finished-prefix">
-                    <span>{{ number + 1 }}. {{ speaker }}</span>
+                <div class="finished-speaker-grid">
+                    <div class="number">{{ number + 1 }}.</div>
+                    <div class="name">{{ speaker }}</div>
+                    <div class="time">
+                        {{ durationString(speaker) }} ({{ 'Start time' | translate }}: {{ startTimeToString(speaker) }})
+                    </div>
+                    <div class="controls">
+                        <button
+                            mat-icon-button
+                            matTooltip="{{ 'Remove' | translate }}"
+                            *osPerms="'agenda.can_manage_list_of_speakers'"
+                            (click)="onDeleteButton(speaker)"
+                        >
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </div>
                 </div>
-                <div class="finished-suffix">
-                    &nbsp;&nbsp; {{ durationString(speaker) }} ({{ 'Start time' | translate }}:
-                    {{ startTimeToString(speaker) }})
-                </div>
-                <button
-                    mat-stroked-button
-                    matTooltip="{{ 'Remove' | translate }}"
-                    *osPerms="'agenda.can_manage_list_of_speakers'"
-                    (click)="onDeleteButton(speaker)"
-                >
-                    <mat-icon>close</mat-icon>
-                </button>
             </mat-list-item>
         </mat-list>
     </mat-expansion-panel>
 
+    <!-- horizontal separation line -->
+    <mat-divider *ngIf="finishedSpeakers && finishedSpeakers.length"></mat-divider>
+    <div *ngIf="finishedSpeakers && finishedSpeakers.length" class="spacer-bottom-40"></div>
+
     <!-- Current Speaker -->
     <div class="current-speaker" *ngIf="activeSpeaker">
-        <mat-icon class="speaking-icon">play_arrow</mat-icon>
-        <span class="speaking-name">{{ activeSpeaker }}</span>
+        <span class="prefix">
+            <mat-icon>mic</mat-icon>
+        </span>
 
-        <button
-            mat-stroked-button
-            matTooltip="{{ 'End speech' | translate }}"
-            *osPerms="'agenda.can_manage_list_of_speakers'"
-            (click)="onStopButton()"
-        >
-            <mat-icon>mic_off</mat-icon>
-            <span translate>Stop</span>
-        </button>
+        <span class="name">{{ activeSpeaker }}</span>
+
+        <span class="suffix">
+            <!-- Stop speaker button -->
+            <button
+                mat-icon-button
+                matTooltip="{{ 'End speech' | translate }}"
+                *osPerms="'agenda.can_manage_list_of_speakers'"
+                (click)="onStopButton()"
+            >
+                <mat-icon>stop</mat-icon>
+            </button>
+        </span>
     </div>
 
     <!-- Waiting speakers -->
-    <div>
-        <div class="waiting-list" *ngIf="speakers && speakers.length > 0">
-            <os-sorting-list
-                [input]="speakers"
-                [live]="true"
-                [count]="true"
-                [enable]="opCanManage()"
-                (sortEvent)="onSortingChange($event)"
-            >
-                <!-- implicit item references into the component using ng-template slot -->
-                <ng-template let-item>
-                    <span *osPerms="'agenda.can_manage_list_of_speakers'">
-                        <span *ngIf="hasSpokenCount(item)" class="red-warning-text speaker-warning">
-                            {{ hasSpokenCount(item) + 1 }}. <span translate>contribution</span>
-                        </span>
-                        <span *ngIf="item.gender">({{ item.gender | translate }})</span>
+    <div class="waiting-list" *ngIf="speakers && speakers.length > 0">
+        <os-sorting-list
+            [input]="speakers"
+            [live]="true"
+            [count]="true"
+            [enable]="opCanManage()"
+            (sortEvent)="onSortingChange($event)"
+        >
+            <!-- implicit item references into the component using ng-template slot -->
+            <ng-template let-item>
+                <span *osPerms="'agenda.can_manage_list_of_speakers'">
+                    <span *ngIf="hasSpokenCount(item)" class="red-warning-text speaker-warning">
+                        {{ hasSpokenCount(item) + 1 }}. <span translate>contribution</span>
                     </span>
-                    <mat-button-toggle-group *osPerms="'agenda.can_manage_list_of_speakers'">
-                        <mat-button-toggle matTooltip="{{ 'Begin speech' | translate }}" (click)="onStartButton(item)">
-                            <mat-icon>mic</mat-icon>
-                            <span translate>Start</span>
-                        </mat-button-toggle>
-                        <mat-button-toggle matTooltip="{{ 'Mark speaker' | translate }}" (click)="onMarkButton(item)">
-                            <mat-icon>{{ item.marked ? 'star' : 'star_border' }}</mat-icon>
-                        </mat-button-toggle>
-                        <mat-button-toggle matTooltip="{{ 'Remove' | translate }}" (click)="onDeleteButton(item)">
-                            <mat-icon>close</mat-icon>
-                        </mat-button-toggle>
-                    </mat-button-toggle-group>
-                </ng-template>
-            </os-sorting-list>
-        </div>
+                    <span *ngIf="item.gender">({{ item.gender | translate }})</span>
+                </span>
+
+                <!-- Start, start and delete buttons -->
+                <span *osPerms="'agenda.can_manage_list_of_speakers'">
+                    <!-- start button -->
+                    <button mat-icon-button matTooltip="{{ 'Begin speech' | translate }}" (click)="onStartButton(item)">
+                        <mat-icon>play_arrow</mat-icon>
+                    </button>
+
+                    <!-- star button -->
+                    <button mat-icon-button matTooltip="{{ 'Mark speaker' | translate }}" (click)="onMarkButton(item)">
+                        <mat-icon>{{ item.marked ? 'star' : 'star_border' }}</mat-icon>
+                    </button>
+
+                    <!-- delete button -->
+                    <button mat-icon-button matTooltip="{{ 'Remove' | translate }}" (click)="onDeleteButton(item)">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </span>
+            </ng-template>
+        </os-sorting-list>
     </div>
 
     <!-- Search for speakers -->
@@ -110,11 +125,11 @@
     <!-- Add me and remove me if OP has correct permission -->
     <div *osPerms="'agenda.can_be_speaker'" class="add-self-buttons">
         <div *ngIf="speakers && !closedList">
-            <button mat-raised-button (click)="addNewSpeaker()" *ngIf="!isOpInList()">
+            <button mat-stroked-button (click)="addNewSpeaker()" *ngIf="!isOpInList()">
                 <mat-icon>add</mat-icon>
                 <span translate>Add me</span>
             </button>
-            <button mat-raised-button (click)="onDeleteButton()" *ngIf="isOpInList()">
+            <button mat-stroked-button (click)="onDeleteButton()" *ngIf="isOpInList()">
                 <mat-icon>remove</mat-icon>
                 <span translate>Remove me</span>
             </button>

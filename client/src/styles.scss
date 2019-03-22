@@ -7,10 +7,11 @@
 @import './assets/styles/openslides-dark-theme.scss';
 @import './assets/styles/openslides-green-theme.scss';
 
-/** Import the component-related stylesheets here */
+/** Import the component-related style sheets here */
 @import './app/site/site.component.scss-theme.scss';
 @import './assets/styles/global-components-style.scss';
 @import './app/shared/components/projector-button/projector-button.component.scss';
+@import './app/site/agenda/components/list-of-speakers/list-of-speakers.component.scss';
 
 /** fonts */
 @import './assets/styles/fonts.scss';
@@ -21,6 +22,7 @@
     @include os-site-theme($theme);
     @include os-components-style($theme);
     @include os-projector-button-style($theme);
+    @include os-list-of-speakers-style($theme);
     /** More components are added here */
 }
 
@@ -407,6 +409,9 @@ button.mat-menu-item.selected {
 }
 .spacer-bottom-20 {
     margin-bottom: 20px !important;
+}
+.spacer-bottom-40 {
+    margin-bottom: 40px !important;
 }
 .spacer-left-10 {
     margin-left: 10px;

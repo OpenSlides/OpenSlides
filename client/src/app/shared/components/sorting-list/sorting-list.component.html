@@ -1,17 +1,17 @@
-<div cdkDropList class="os-card" [cdkDropListDisabled]="!enable" (cdkDropListDropped)="drop($event)">
-    <div class="box line" *ngIf="!array.length">
+<div cdkDropList [cdkDropListDisabled]="!enable" (cdkDropListDropped)="drop($event)">
+    <div class="line" *ngIf="!array.length">
         <span translate>No data</span>
     </div>
-    <div class="box line" *ngFor="let item of array; let i = index" cdkDrag>
-        <div class="section-one" cdkDragHandle *ngIf="enable">
+    <div class="line" *ngFor="let item of array; let i = index" cdkDrag>
+        <div class="section-one backgroundColorLight" cdkDragHandle *ngIf="enable">
             <mat-icon>drag_indicator</mat-icon>
         </div>
-        <div class="section-two">
+        <div class="section-two backgroundColorLight">
             <!-- {number}. {item.getTitle()} -->
             <span *ngIf="count">{{ i + 1 }}.&nbsp;</span>
             <span>{{ item.getTitle() }}</span>
         </div>
-        <div class="section-three">
+        <div class="section-three backgroundColorLight">
             <!-- Extra controls slot using implicit template references -->
             <ng-template [ngTemplateOutlet]="templateRef" [ngTemplateOutletContext]="{ $implicit: item }"></ng-template>
         </div>

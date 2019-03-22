@@ -1,72 +1,147 @@
+@import '~@angular/material/theming';
+
+@mixin os-list-of-speakers-style($theme) {
+    $primary: map-get($theme, primary);
+    $accent: map-get($theme, accent);
+    $warn: map-get($theme, warn);
+    $contrast: map-get($primary, contrast);
+    $foreground: map-get($theme, foreground);
+
+    .current-speaker {
+        background-color: mat-color($accent) !important;
+
+        > span {
+            color: mat-color($accent, default-contrast);
+        }
+    }
+
+    .finished-speaker-grid {
+        > .number .name .controls {
+            color: mat-color($foreground, text);
+        }
+
+        > .time {
+            color: mat-color($foreground, secondary-text);
+        }
+    }
+}
+
 .title {
     margin-left: 25px;
 }
 
-.speaker-card {
-    margin: 0 20px 0 20px;
-    padding: 0;
+.finished-list {
+    box-shadow: none !important;
+    margin-bottom: 15px;
 
-    .finished-list {
-        margin-bottom: 15px;
-        .finished-suffix {
-            color: slategray;
-            font-size: 80%;
-            margin-right: 10px;
-        }
+    .mat-list-item {
+        height: auto;
+        margin-bottom: 10px;
+    }
 
-        .mat-list-item {
-            height: auto;
-        }
+    .finished-speaker-grid {
+        display: grid;
+        width: 100%;
+        grid-template-areas: 'number name time controls';
+        grid-gap: 5px;
+        grid-template-columns: 30px 1fr min-content min-content;
+    }
 
-        button {
-            margin-left: 10px;
+    @media only screen and (max-width: 960px) {
+        .finished-speaker-grid {
+            grid-template-areas:
+                'number name controls'
+                'number time controls';
+            grid-template-columns: 30px 1fr min-content;
         }
     }
 
-    .current-speaker {
-        padding: 10px 25px 15px 25px;
-        display: table;
-        .speaking-icon {
-            display: table-cell;
-            vertical-align: middle;
-        }
-
-        .speaking-name {
-            display: table-cell;
-            vertical-align: middle;
-            font-weight: bold;
-            padding-left: 10px;
-        }
-
-        button {
-            display: table-cell;
-            vertical-align: middle;
-            margin-left: 10px;
-        }
+    .number {
+        grid-area: number;
+        margin: 0;
     }
 
-    .waiting-list {
-        padding: 10px 25px 0 25px;
-        width: 75%;
+    .name {
+        grid-area: name;
+        margin: 0;
     }
 
-    form {
-        padding: 15px 25px 10px 25px;
-        width: auto;
+    .time {
+        grid-area: time;
+        margin: 0;
+        //allows pushing this grid area as small as possible and aligns the end to the same level
+        white-space: nowrap;
+        font-size: 80%;
+    }
 
-        .search-users {
-            display: grid;
-            .mat-form-field {
-                width: 100%;
+    .controls {
+        grid-area: controls;
+        margin: 0;
+        opacity: 0.7;
+
+        .mat-icon-button {
+            height: 20px;
+            line-height: 1;
+
+            .mat-icon {
+                line-height: 19px;
             }
         }
     }
+}
 
-    .add-self-buttons {
-        padding: 20px 0 20px 25px;
+.current-speaker {
+    display: table;
+    width: -webkit-fill-available;
+    height: 50px;
+    margin: 50px 25px 20px 25px;
+    box-shadow: 0px 3px 10px 0px rgba(0, 0, 0, 0.25);
+
+    .prefix {
+        display: table-cell;
+        padding: 0 15px;
+        vertical-align: middle;
+        .mat-icon {
+            vertical-align: middle;
+        }
     }
 
-    .speaker-warning {
-        margin-right: 5px;
+    .name {
+        display: table-cell;
+        vertical-align: middle;
+        font-weight: bold;
+        padding-left: 10px;
+        width: 100%;
     }
+
+    .suffix {
+        display: table-cell;
+        vertical-align: middle;
+        white-space: nowrap;
+        padding-right: 10px;
+    }
+}
+
+.waiting-list {
+    padding: 10px 25px 0 25px;
+}
+
+form {
+    padding: 15px 25px 10px 25px;
+    width: auto;
+
+    .search-users {
+        display: grid;
+        .mat-form-field {
+            width: 100%;
+        }
+    }
+}
+
+.add-self-buttons {
+    padding: 15px 0 20px 25px;
+}
+
+.speaker-warning {
+    margin-right: 5px;
 }
