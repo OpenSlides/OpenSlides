@@ -1480,7 +1480,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * @returns the target to navigate to
      */
     public getPrevUrl(): string {
-        if (this.motion.parent_id) {
+        if (this.motion && this.motion.parent_id) {
             return `../../${this.motion.parent_id}`;
         }
         return '../..';
