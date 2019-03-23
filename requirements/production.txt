@@ -1,13 +1,13 @@
 # Requirements for OpenSlides in production in alphabetical order
-bleach>=1.5.0,<3.1
+bleach>=1.5.0,<3.2
 channels>=2.1.2,<2.2
 daphne>=2.2,<2.3
-Django>=1.11,<2.2
+Django>=1.11.17,<2.2
 djangorestframework>=3.4,<3.10
 jsonfield2>=3.0,<3.1
-jsonschema==3.0.0a3  # TODO: use a stabel version before release
+jsonschema>=3.0,<3.1
 mypy_extensions>=0.4,<0.5
 PyPDF2>=1.26,<1.27
 roman>=2.0,<3.2
 setuptools>=29.0,<41.0
-typing_extensions>=3.6.6,<3.7
+typing_extensions>=3.6.6,<3.8
