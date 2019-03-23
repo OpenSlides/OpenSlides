@@ -1,4 +1,4 @@
-from typing import Dict, List, Union, cast
+from typing import List, Union
 
 from asgiref.sync import async_to_sync
 from django.apps import apps
@@ -157,12 +157,9 @@ async def async_anonymous_is_enabled() -> bool:
     """
     from ..core.config import config
 
-    if config.key_to_id is None:
-        await config.build_key_to_id()
-        config.key_to_id = cast(Dict[str, int], config.key_to_id)
     element = await element_cache.get_element_full_data(
         config.get_collection_string(),
-        config.key_to_id["general_system_enable_anonymous"],
+        (await config.async_get_key_to_id())["general_system_enable_anonymous"],
     )
     return False if element is None else element["value"]
 

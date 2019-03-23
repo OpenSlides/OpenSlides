@@ -9,11 +9,10 @@ from ..utils.projector import (
 
 # Important: All functions have to be prune. This means, that thay can only
 #            access the data, that they get as argument and do not have any
-#            side effects. They are called from an async context. So they have
-#            to be fast!
+#            side effects.
 
 
-def user_slide(
+async def user_slide(
     all_data: AllData, element: Dict[str, Any], projector_id: int
 ) -> Dict[str, Any]:
     """
@@ -30,7 +29,7 @@ def user_slide(
     return {"user": get_user_name(all_data, user_id)}
 
 
-def get_user_name(all_data: AllData, user_id: int) -> str:
+async def get_user_name(all_data: AllData, user_id: int) -> str:
     """
     Returns the short name for an user_id.
     """

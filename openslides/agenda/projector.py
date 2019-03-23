@@ -12,11 +12,10 @@ from ..utils.projector import (
 
 # Important: All functions have to be prune. This means, that thay can only
 #            access the data, that they get as argument and do not have any
-#            side effects. They are called from an async context. So they have
-#            to be fast!
+#            side effects.
 
 
-def get_sorted_agenda_items(all_data: AllData) -> List[Dict[str, Any]]:
+async def get_sorted_agenda_items(all_data: AllData) -> List[Dict[str, Any]]:
     """
     Returns all sorted agenda items by id first and then weight, resulting in
     ordered items, if some have the same weight.
@@ -27,7 +26,7 @@ def get_sorted_agenda_items(all_data: AllData) -> List[Dict[str, Any]]:
     )
 
 
-def get_flat_tree(all_data: AllData, parent_id: int = 0) -> List[Dict[str, Any]]:
+async def get_flat_tree(all_data: AllData, parent_id: int = 0) -> List[Dict[str, Any]]:
     """
     Build the item tree from all_data.
 
@@ -40,13 +39,13 @@ def get_flat_tree(all_data: AllData, parent_id: int = 0) -> List[Dict[str, Any]]
     # Build a dict from an item_id to all its children
     children: Dict[int, List[int]] = defaultdict(list)
     if "agenda/item" in all_data:
-        for item in get_sorted_agenda_items(all_data):
+        for item in await get_sorted_agenda_items(all_data):
             if item["type"] == 1:  # only normal items
                 children[item["parent_id"] or 0].append(item["id"])
 
     tree = []
 
-    def get_children(item_ids: List[int], depth: int) -> None:
+    async def get_children(item_ids: List[int], depth: int) -> None:
         for item_id in item_ids:
             tree.append(
                 {
@@ -60,13 +59,13 @@ def get_flat_tree(all_data: AllData, parent_id: int = 0) -> List[Dict[str, Any]]
                     "depth": depth,
                 }
             )
-            get_children(children[item_id], depth + 1)
+            await get_children(children[item_id], depth + 1)
 
-    get_children(children[parent_id], 0)
+    await get_children(children[parent_id], 0)
     return tree
 
 
-def item_list_slide(
+async def item_list_slide(
     all_data: AllData, element: Dict[str, Any], projector_id: int
 ) -> Dict[str, Any]:
     """
@@ -78,7 +77,7 @@ def item_list_slide(
 
     if only_main_items:
         agenda_items = []
-        for item in get_sorted_agenda_items(all_data):
+        for item in await get_sorted_agenda_items(all_data):
             if item["parent_id"] is None and item["type"] == 1:
                 agenda_items.append(
                     {
@@ -88,12 +87,12 @@ def item_list_slide(
                     }
                 )
     else:
-        agenda_items = get_flat_tree(all_data)
+        agenda_items = await get_flat_tree(all_data)
 
     return {"items": agenda_items}
 
 
-def list_of_speakers_slide(
+async def list_of_speakers_slide(
     all_data: AllData, element: Dict[str, Any], projector_id: int
 ) -> Dict[str, Any]:
     """
@@ -106,10 +105,12 @@ def list_of_speakers_slide(
     if item_id is None:
         raise ProjectorElementException("id is required for list of speakers slide")
 
-    return get_list_of_speakers_slide_data(all_data, item_id)
+    return await get_list_of_speakers_slide_data(all_data, item_id)
 
 
-def get_list_of_speakers_slide_data(all_data: AllData, item_id: int) -> Dict[str, Any]:
+async def get_list_of_speakers_slide_data(
+    all_data: AllData, item_id: int
+) -> Dict[str, Any]:
     try:
         item = all_data["agenda/item"][item_id]
     except KeyError:
@@ -120,7 +121,7 @@ def get_list_of_speakers_slide_data(all_data: AllData, item_id: int) -> Dict[str
     speakers_finished = []
     current_speaker = None
     for speaker in item["speakers"]:
-        user = get_user_name(all_data, speaker["user_id"])
+        user = await get_user_name(all_data, speaker["user_id"])
         formatted_speaker = {
             "user": user,
             "marked": speaker["marked"],
@@ -139,7 +140,7 @@ def get_list_of_speakers_slide_data(all_data: AllData, item_id: int) -> Dict[str
     speakers_waiting = sorted(speakers_waiting, key=lambda s: s["weight"])
     speakers_finished = sorted(speakers_finished, key=lambda s: s["end_time"])
 
-    number_of_last_speakers = get_config(all_data, "agenda_show_last_speakers")
+    number_of_last_speakers = await get_config(all_data, "agenda_show_last_speakers")
     if number_of_last_speakers == 0:
         speakers_finished = []
     else:
@@ -157,7 +158,7 @@ def get_list_of_speakers_slide_data(all_data: AllData, item_id: int) -> Dict[str
     }
 
 
-def get_current_item_id_for_projector(
+async def get_current_item_id_for_projector(
     all_data: AllData, projector: Dict[str, Any]
 ) -> Union[int, None]:
     """
@@ -189,7 +190,9 @@ def get_current_item_id_for_projector(
     return item_id
 
 
-def get_reference_projector(all_data: AllData, projector_id: int) -> Dict[str, Any]:
+async def get_reference_projector(
+    all_data: AllData, projector_id: int
+) -> Dict[str, Any]:
     """
     Returns the reference projector to the given projector (by id)
     """
@@ -209,28 +212,28 @@ def get_reference_projector(all_data: AllData, projector_id: int) -> Dict[str, A
     return reference_projector
 
 
-def current_list_of_speakers_slide(
+async def current_list_of_speakers_slide(
     all_data: AllData, element: Dict[str, Any], projector_id: int
 ) -> Dict[str, Any]:
     """
     The current list of speakers slide. Creates the data for the given projector.
     """
-    reference_projector = get_reference_projector(all_data, projector_id)
-    item_id = get_current_item_id_for_projector(all_data, reference_projector)
+    reference_projector = await get_reference_projector(all_data, projector_id)
+    item_id = await get_current_item_id_for_projector(all_data, reference_projector)
     if item_id is None:  # no element found
         return {}
 
-    return get_list_of_speakers_slide_data(all_data, item_id)
+    return await get_list_of_speakers_slide_data(all_data, item_id)
 
 
-def current_speaker_chyron_slide(
+async def current_speaker_chyron_slide(
     all_data: AllData, element: Dict[str, Any], projector_id: int
 ) -> Dict[str, Any]:
     """
     Returns the username for the current speaker.
     """
-    reference_projector = get_reference_projector(all_data, projector_id)
-    item_id = get_current_item_id_for_projector(all_data, reference_projector)
+    reference_projector = await get_reference_projector(all_data, projector_id)
+    item_id = await get_current_item_id_for_projector(all_data, reference_projector)
     if item_id is None:  # no element found
         return {}
 
@@ -244,7 +247,7 @@ def current_speaker_chyron_slide(
     current_speaker = None
     for speaker in item["speakers"]:
         if speaker["begin_time"] is not None and speaker["end_time"] is None:
-            current_speaker = get_user_name(all_data, speaker["user_id"])
+            current_speaker = await get_user_name(all_data, speaker["user_id"])
 
     return {"current_speaker": current_speaker}
 

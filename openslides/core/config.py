@@ -1,3 +1,4 @@
+import asyncio
 from typing import Any, Callable, Dict, Iterable, Optional, TypeVar, Union, cast
 
 from asgiref.sync import async_to_sync
@@ -22,6 +23,8 @@ INPUT_TYPE_MAPPING = {
     "static": dict,
     "translations": list,
 }
+
+build_key_to_id_lock = asyncio.Lock()
 
 
 class ConfigHandler:
@@ -59,6 +62,15 @@ class ConfigHandler:
             self.key_to_id = cast(Dict[str, int], self.key_to_id)
         return self.key_to_id
 
+    async def async_get_key_to_id(self) -> Dict[str, int]:
+        """
+        Like get_key_to_id but in an async context.
+        """
+        if self.key_to_id is None:
+            await self.build_key_to_id()
+            self.key_to_id = cast(Dict[str, int], self.key_to_id)
+        return self.key_to_id
+
     async def build_key_to_id(self) -> None:
         """
         Build the key_to_id dict.
@@ -68,6 +80,11 @@ class ConfigHandler:
         This uses the element_cache. It expects, that the config values are in the database
         before this is called.
         """
+        async with build_key_to_id_lock:
+            # Another cliend could have build the key_to_id_dict, check and return early
+            if self.key_to_id is not None:
+                return
+
         config_full_data = await element_cache.get_collection_full_data(
             self.get_collection_string()
         )
