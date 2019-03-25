@@ -82,9 +82,9 @@ export class TimeTravelService {
      * all missed auto updates are requested.
      */
     public async resumeTime(): Promise<void> {
+        this.OSStatus.leaveHistoryMode();
         await this.DS.set();
         await this.OpenSlides.reboot();
-        this.OSStatus.leaveHistoryMode();
     }
 
     /**
