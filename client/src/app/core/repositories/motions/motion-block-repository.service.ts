@@ -44,6 +44,7 @@ export class MotionBlockRepositoryService extends BaseAgendaContentObjectReposit
         private httpService: HttpService
     ) {
         super(DS, dataSend, mapperService, viewModelStoreService, translate, MotionBlock, [Item]);
+        this.initSorting();
     }
 
     public getAgendaTitle = (motionBlock: Partial<MotionBlock> | Partial<ViewMotionBlock>) => {
@@ -124,5 +125,14 @@ export class MotionBlockRepositoryService extends BaseAgendaContentObjectReposit
     public async followRecommendation(motionBlock: ViewMotionBlock): Promise<void> {
         const restPath = `/rest/motions/motion-block/${motionBlock.id}/follow_recommendations/`;
         await this.httpService.post(restPath);
+    }
+
+    /**
+     * Sets the default sorting (e.g. in dropdowns and for new users) to 'title'
+     */
+    private initSorting(): void {
+        this.setSortFunction((a: ViewMotionBlock, b: ViewMotionBlock) => {
+            return this.languageCollator.compare(a.title, b.title);
+        });
     }
 }

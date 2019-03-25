@@ -40,6 +40,7 @@ export class TagRepositoryService extends BaseRepository<ViewTag, Tag> {
         translate: TranslateService
     ) {
         super(DS, dataSend, mapperService, viewModelStoreService, translate, Tag);
+        this.initSorting();
     }
 
     public getVerboseName = (plural: boolean = false) => {
@@ -50,5 +51,14 @@ export class TagRepositoryService extends BaseRepository<ViewTag, Tag> {
         const viewTag = new ViewTag(tag);
         viewTag.getVerboseName = this.getVerboseName;
         return viewTag;
+    }
+
+    /**
+     * Sets the default sorting (e.g. in dropdowns and for new users) to 'name'
+     */
+    private initSorting(): void {
+        this.setSortFunction((a: ViewTag, b: ViewTag) => {
+            return this.languageCollator.compare(a.name, b.name);
+        });
     }
 }
