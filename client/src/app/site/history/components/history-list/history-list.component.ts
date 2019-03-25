@@ -51,7 +51,7 @@ export class HistoryListComponent extends ListViewBaseComponent<ViewHistory, His
         private router: Router,
         private operator: OperatorService
     ) {
-        super(titleService, translate, matSnackBar, null, null);
+        super(titleService, translate, matSnackBar);
     }
 
     /**
