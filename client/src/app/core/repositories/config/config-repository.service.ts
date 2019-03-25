@@ -8,6 +8,7 @@ import { DataSendService } from 'app/core/core-services/data-send.service';
 import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { ConstantsService } from 'app/core/ui-services/constants.service';
 import { HttpService } from 'app/core/core-services/http.service';
+import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from 'app/core/core-services/collectionStringMapper.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { ViewConfig } from 'app/site/config/models/view-config';
@@ -125,6 +126,24 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
         const viewConfig = new ViewConfig(config);
         viewConfig.getVerboseName = this.getVerboseName;
         return viewConfig;
+    }
+
+    /**
+     * Overwrites the default delete procedure
+     *
+     * @ignore
+     */
+    public async delete(): Promise<void> {
+        throw new Error('Config variables cannot be deleted');
+    }
+
+    /**
+     * Overwrite the default create procedure.
+     *
+     * @ignore
+     */
+    public async create(): Promise<Identifiable> {
+        throw new Error('Config variables cannot be created');
     }
 
     /**
