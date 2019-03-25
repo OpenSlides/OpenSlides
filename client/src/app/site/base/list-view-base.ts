@@ -1,15 +1,18 @@
-import { MatTableDataSource, MatTable, MatSort, MatPaginator, MatSnackBar } from '@angular/material';
+import { MatTableDataSource, MatTable, MatSort, MatPaginator, MatSnackBar, PageEvent } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
-import { ViewChild } from '@angular/core';
+import { ViewChild, Type, OnDestroy } from '@angular/core';
 
 import { BaseViewComponent } from './base-view';
 import { BaseViewModel } from './base-view-model';
 import { BaseSortListService } from 'app/core/ui-services/base-sort-list.service';
 import { BaseFilterListService } from 'app/core/ui-services/base-filter-list.service';
 import { BaseModel } from 'app/shared/models/base/base-model';
+import { ActivatedRoute } from '@angular/router';
+import { StorageService } from 'app/core/core-services/storage.service';
 
-export abstract class ListViewBaseComponent<V extends BaseViewModel, M extends BaseModel> extends BaseViewComponent {
+export abstract class ListViewBaseComponent<V extends BaseViewModel, M extends BaseModel> extends BaseViewComponent
+    implements OnDestroy {
     /**
      * The data source for a table. Requires to be initialized with a BaseViewModel
      */
@@ -30,6 +33,17 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel, M extends B
      * see {@link selectItem}.
      */
     public selectedRows: V[];
+
+    /**
+     * Holds the key for the storage.
+     * This is by default the component's name.
+     */
+    private storageKey: string;
+
+    /**
+     * Holds the value from local storage with the 'Paginator' key.
+     */
+    private storageObject = {};
 
     /**
      * The table itself
@@ -68,11 +82,18 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel, M extends B
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
+        protected route: ActivatedRoute,
+        private storage: StorageService,
         public filterService?: BaseFilterListService<M, V>,
         public sortService?: BaseSortListService<V>
     ) {
         super(titleService, translate, matSnackBar);
         this.selectedRows = [];
+        try {
+            this.storageKey = (<Type<any>>route.component).name;
+        } catch (e) {
+            this.storageKey = '';
+        }
     }
 
     /**
@@ -80,10 +101,12 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel, M extends B
      * Calling these three functions in the constructor of this class
      * would be too early, resulting in non-paginated tables
      */
-    public initTable(): void {
+    public async initTable(): Promise<void> {
         this.dataSource = new MatTableDataSource();
         this.dataSource.paginator = this.paginator;
+        // Set the initial page settings.
         if (this.dataSource.paginator) {
+            this.initializePagination();
             this.dataSource.paginator._intl.itemsPerPageLabel = this.translate.instant('items per page');
         }
         if (this.filterService) {
@@ -142,6 +165,34 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel, M extends B
 
     public searchFilter(event: string): void {
         this.dataSource.filter = event;
+    }
+
+    /**
+     * Initialize the settings for the paginator in every list view.
+     */
+    private async initializePagination(): Promise<void> {
+        // If the storage is not available - like in history mode - do nothing.
+        if (this.storage) {
+            this.storageObject = (await this.storage.get('Pagination')) || {};
+            // Set the number of items per page -- by default to 25.
+            this.paginator.pageSize = this.storageObject[this.storageKey] || 25;
+            // Subscription to page change events, like size, index.
+            this.subscriptions.push(
+                this.paginator.page.subscribe(async (event: PageEvent) => {
+                    await this.setPageSettings(event.pageSize);
+                })
+            );
+        }
+    }
+
+    /**
+     * Function to set the new selected page size in the browser's local storage.
+     *
+     * @param size is the new page size.
+     */
+    public async setPageSettings(size: number): Promise<void> {
+        this.storageObject[this.storageKey] = size;
+        await this.storage.set('Pagination', this.storageObject);
     }
 
     /**

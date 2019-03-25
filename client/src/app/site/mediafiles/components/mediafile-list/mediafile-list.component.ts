@@ -16,6 +16,7 @@ import { MediafileFilterListService } from '../../services/mediafile-filter.serv
 import { MediafilesSortListService } from '../../services/mediafiles-sort-list.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
+import { StorageService } from 'app/core/core-services/storage.service';
 
 /**
  * Lists all the uploaded files.
@@ -88,9 +89,10 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile,
     public constructor(
         titleService: Title,
         matSnackBar: MatSnackBar,
+        storage: StorageService,
         protected translate: TranslateService,
         private router: Router,
-        private route: ActivatedRoute,
+        protected route: ActivatedRoute,
         private repo: MediafileRepositoryService,
         private mediaManage: MediaManageService,
         private promptService: PromptService,
@@ -99,7 +101,7 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile,
         public sortService: MediafilesSortListService,
         private operator: OperatorService
     ) {
-        super(titleService, translate, matSnackBar, filterService, sortService);
+        super(titleService, translate, matSnackBar, route, storage, filterService, sortService);
 
         // enables multiSelection for this listView
         this.canMultiSelect = true;

@@ -28,6 +28,7 @@ import { MotionCsvExportService } from 'app/site/motions/services/motion-csv-exp
 import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-export.service';
 import { MotionMultiselectService } from 'app/site/motions/services/motion-multiselect.service';
 import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
+import { StorageService } from 'app/core/core-services/storage.service';
 
 /**
  * Component that displays all the motions in a Table using DataSource.
@@ -90,8 +91,9 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
         matSnackBar: MatSnackBar,
         sortService: MotionSortListService,
         filterService: MotionFilterListService,
+        storage: StorageService,
         private router: Router,
-        private route: ActivatedRoute,
+        protected route: ActivatedRoute,
         private configService: ConfigService,
         private tagRepo: TagRepositoryService,
         private motionBlockRepo: MotionBlockRepositoryService,
@@ -106,7 +108,7 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
         public multiselectService: MotionMultiselectService,
         public perms: LocalPermissionsService
     ) {
-        super(titleService, translate, matSnackBar, filterService, sortService);
+        super(titleService, translate, matSnackBar, route, storage, filterService, sortService);
 
         // enable multiSelect for this listView
         this.canMultiSelect = true;

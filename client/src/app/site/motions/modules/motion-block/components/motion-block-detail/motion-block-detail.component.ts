@@ -14,6 +14,7 @@ import { OperatorService } from 'app/core/core-services/operator.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
+import { StorageService } from 'app/core/core-services/storage.service';
 
 /**
  * Detail component to display one motion block
@@ -62,14 +63,15 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
         titleService: Title,
         protected translate: TranslateService,
         matSnackBar: MatSnackBar,
+        storage: StorageService,
         private operator: OperatorService,
         private router: Router,
-        private route: ActivatedRoute,
+        protected route: ActivatedRoute,
         private repo: MotionBlockRepositoryService,
         private motionRepo: MotionRepositoryService,
         private promptService: PromptService
     ) {
-        super(titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, route, storage);
     }
 
     /**

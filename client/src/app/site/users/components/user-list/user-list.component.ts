@@ -20,6 +20,7 @@ import { ViewUser } from '../../models/view-user';
 import { ViewGroup } from '../../models/view-group';
 import { genders, User } from 'app/shared/models/users/user';
 import { _ } from 'app/core/translate/translation-marker';
+import { StorageService } from 'app/core/core-services/storage.service';
 
 /**
  * Interface for the short editing dialog.
@@ -133,11 +134,12 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User> imp
         titleService: Title,
         protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
+        storage: StorageService,
         private repo: UserRepositoryService,
         private groupRepo: GroupRepositoryService,
         private choiceService: ChoiceService,
         private router: Router,
-        private route: ActivatedRoute,
+        protected route: ActivatedRoute,
         private operator: OperatorService,
         private vp: ViewportService,
         protected csvExport: CsvExportService,
@@ -148,7 +150,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User> imp
         private userPdf: UserPdfExportService,
         private dialog: MatDialog
     ) {
-        super(titleService, translate, matSnackBar, filterService, sortService);
+        super(titleService, translate, matSnackBar, route, storage, filterService, sortService);
 
         // enable multiSelect for this listView
         this.canMultiSelect = true;

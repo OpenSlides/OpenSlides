@@ -10,6 +10,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
 import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
 import { Workflow } from 'app/shared/models/motions/workflow';
+import { StorageService } from 'app/core/core-services/storage.service';
 
 /**
  * List view for workflows
@@ -45,14 +46,15 @@ export class WorkflowListComponent extends ListViewBaseComponent<ViewWorkflow, W
     public constructor(
         titleService: Title,
         matSnackBar: MatSnackBar,
+        storage: StorageService,
         protected translate: TranslateService,
         private dialog: MatDialog,
         private router: Router,
-        private route: ActivatedRoute,
+        protected route: ActivatedRoute,
         private workflowRepo: WorkflowRepositoryService,
         private promptService: PromptService
     ) {
-        super(titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, route, storage);
     }
 
     /**

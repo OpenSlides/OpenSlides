@@ -10,6 +10,8 @@ import { AssignmentRepositoryService } from 'app/core/repositories/assignments/a
 import { ListViewBaseComponent } from '../../base/list-view-base';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewAssignment } from '../models/view-assignment';
+import { StorageService } from 'app/core/core-services/storage.service';
+import { ActivatedRoute } from '@angular/router';
 
 /**
  * Listview for the assignments
@@ -33,6 +35,8 @@ export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignmen
      */
     public constructor(
         titleService: Title,
+        storage: StorageService,
+        route: ActivatedRoute,
         protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
         public repo: AssignmentRepositoryService,
@@ -40,7 +44,7 @@ export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignmen
         public filterService: AssignmentFilterListService,
         public sortService: AssignmentSortListService
     ) {
-        super(titleService, translate, matSnackBar, filterService, sortService);
+        super(titleService, translate, matSnackBar, route, storage, filterService, sortService);
         // activate multiSelect mode for this listview
         this.canMultiSelect = true;
     }
