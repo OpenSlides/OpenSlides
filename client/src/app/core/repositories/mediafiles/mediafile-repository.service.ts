@@ -33,7 +33,7 @@ export class MediafileRepositoryService extends BaseRepository<ViewMediafile, Me
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
         translate: TranslateService,
-        protected dataSend: DataSendService,
+        dataSend: DataSendService,
         private httpService: HttpService
     ) {
         super(DS, dataSend, mapperService, viewModelStoreService, translate, Mediafile, [User]);

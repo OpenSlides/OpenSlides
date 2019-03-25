@@ -104,7 +104,7 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
             updateUser.gender = '';
         }
 
-        return await this.dataSend.partialUpdateModel(updateUser);
+        return await this.dataSend.updateModel(updateUser);
     }
 
     /**

@@ -4,6 +4,7 @@ import { CollectionStringMapperService } from 'app/core/core-services/collection
 import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { BaseRepository } from 'app/core/repositories/base-repository';
 import { History } from 'app/shared/models/core/history';
+import { Identifiable } from 'app/shared/models/base/identifiable';
 import { User } from 'app/shared/models/users/user';
 import { HttpService } from 'app/core/core-services/http.service';
 import { ViewHistory } from 'app/site/history/models/view-history';
@@ -60,6 +61,35 @@ export class HistoryRepositoryService extends BaseRepository<ViewHistory, Histor
     }
 
     /**
+     * Overwrites the default procedure
+     *
+     * @ignore
+     */
+    public async create(): Promise<Identifiable> {
+        throw new Error('You cannot create a history object');
+    }
+
+    /**
+     * Overwrites the default procedure
+     *
+     * @ignore
+     */
+    public async update(): Promise<void> {
+        throw new Error('You cannot update a history object');
+    }
+
+    /**
+     * Overwrites the default procedure
+     *
+     * @ignore
+     */
+    public async patch(): Promise<void> {
+        throw new Error('You cannot patch a history object');
+    }
+
+    /**
+     * Overwrites the default procedure
+     *
      * Sends a post-request to delete history objects
      */
     public async delete(): Promise<void> {

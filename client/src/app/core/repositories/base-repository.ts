@@ -173,17 +173,31 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
     }
 
     /**
-     * Saves the update to an existing model. So called "update"-function
+     * Saves the (full) update to an existing model. So called "update"-function
      * Provides a default procedure, but can be overwritten if required
      *
      * @param update the update that should be created
      * @param viewModel the view model that the update is based on
      */
-    public async update(update: object, viewModel: BaseViewModel): Promise<void> {
+    public async update(update: Partial<M>, viewModel: V): Promise<void> {
         const sendUpdate = new this.baseModelCtor();
         sendUpdate.patchValues(viewModel.getModel());
         sendUpdate.patchValues(update);
-        return await this.dataSend.partialUpdateModel(sendUpdate);
+        return await this.dataSend.updateModel(sendUpdate);
+    }
+
+    /**
+     * patches an existing model with new data,
+     * rather than sending a full update
+     *
+     * @param update the update to send
+     * @param viewModel the motion to update
+     */
+    public async patch(update: Partial<M>, viewModel: V): Promise<void> {
+        const patch = new this.baseModelCtor();
+        patch.id = viewModel.id;
+        patch.patchValues(update);
+        return await this.dataSend.partialUpdateModel(patch);
     }
 
     /**
@@ -192,7 +206,7 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
      *
      * @param viewModel the view model to delete
      */
-    public async delete(viewModel: BaseViewModel): Promise<void> {
+    public async delete(viewModel: V): Promise<void> {
         return await this.dataSend.deleteModel(viewModel.getModel());
     }
 
@@ -202,7 +216,7 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
      *
      * @param model the model to create on the server
      */
-    public async create(model: BaseModel): Promise<Identifiable> {
+    public async create(model: M): Promise<Identifiable> {
         // this ensures we get a valid base model, even if the view was just
         // sending an object with "as MyModelClass"
         const sendModel = new this.baseModelCtor();

@@ -317,9 +317,7 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
      * @param categoryId the number that indicates the category
      */
     public async setCatetory(viewMotion: ViewMotion, categoryId: number): Promise<void> {
-        const motion = viewMotion.motion;
-        motion.category_id = categoryId;
-        await this.update(motion, viewMotion);
+        await this.patch({ category_id: categoryId }, viewMotion);
     }
 
     /**
@@ -329,9 +327,7 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
      * @param blockId the ID of the motion block
      */
     public async setBlock(viewMotion: ViewMotion, blockId: number): Promise<void> {
-        const motion = viewMotion.motion;
-        motion.motion_block_id = blockId;
-        await this.update(motion, viewMotion);
+        await this.patch({ motion_block_id: blockId }, viewMotion);
     }
 
     /**
@@ -341,17 +337,17 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
      * @param tagId the tags id to add or remove
      */
     public async setTag(viewMotion: ViewMotion, tagId: number): Promise<void> {
-        const motion = viewMotion.motion;
-        const tagIndex = motion.tags_id.findIndex(tag => tag === tagId);
+        const tags = viewMotion.motion.tags_id.map(tag => tag);
+        const tagIndex = tags.findIndex(tag => tag === tagId);
 
         if (tagIndex === -1) {
             // add tag to motion
-            motion.tags_id.push(tagId);
+            tags.push(tagId);
         } else {
             // remove tag from motion
-            motion.tags_id.splice(tagIndex, 1);
+            tags.splice(tagIndex, 1);
         }
-        await this.update(motion, viewMotion);
+        await this.patch({ tags_id: tags }, viewMotion);
     }
 
     /**
@@ -780,7 +776,7 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
      */
     public async setStateExtension(viewMotion: ViewMotion, value: string): Promise<void> {
         if (viewMotion.state.show_state_extension_field) {
-            return this.update({ state_extension: value }, viewMotion);
+            return this.patch({ state_extension: value }, viewMotion);
         }
     }
 
@@ -792,7 +788,7 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
      */
     public async setRecommendationExtension(viewMotion: ViewMotion, value: string): Promise<void> {
         if (viewMotion.recommendation.show_recommendation_extension_field) {
-            return this.update({ recommendation_extension: value }, viewMotion);
+            return this.patch({ recommendation_extension: value }, viewMotion);
         }
     }
 

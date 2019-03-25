@@ -671,7 +671,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
             origin: [''],
             statute_amendment: [''], // Internal value for the checkbox, not saved to the model
             statute_paragraph_id: [''],
-            motion_block_id: [],
+            motion_block_id: [], // TODO: Can be removed if this is not required
             parent_id: []
         });
         this.updateWorkflowIdForCreateForm();
