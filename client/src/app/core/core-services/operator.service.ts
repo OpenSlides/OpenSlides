@@ -7,6 +7,7 @@ import { User } from '../../shared/models/users/user';
 import { environment } from 'environments/environment';
 import { DataStoreService } from './data-store.service';
 import { OfflineService } from './offline.service';
+import { OpenSlidesStatusService } from './openslides-status.service';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { OnAfterAppsLoaded } from '../onAfterAppsLoaded';
 import { UserRepositoryService } from '../repositories/users/user-repository.service';
@@ -128,7 +129,8 @@ export class OperatorService implements OnAfterAppsLoaded {
         private DS: DataStoreService,
         private offlineService: OfflineService,
         private collectionStringMapper: CollectionStringMapperService,
-        private storageService: StorageService
+        private storageService: StorageService,
+        private OSStatus: OpenSlidesStatusService
     ) {
         this.DS.changeObservable.subscribe(newModel => {
             if (this._user && newModel instanceof User && this._user.id === newModel.id) {
@@ -344,7 +346,10 @@ export class OperatorService implements OnAfterAppsLoaded {
             this.currentWhoAmI = this.getDefaultWhoAmIResponse();
         }
         this.currentWhoAmI.permissions = this.permissions;
-        await this.storageService.set(WHOAMI_STORAGE_KEY, this.currentWhoAmI);
+
+        if (!this.OSStatus.isInHistoryMode) {
+            await this.storageService.set(WHOAMI_STORAGE_KEY, this.currentWhoAmI);
+        }
 
         // publish changes in the operator.
         this.operatorSubject.next(this.user);

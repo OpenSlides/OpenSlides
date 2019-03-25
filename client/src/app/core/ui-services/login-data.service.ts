@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 
 import { ConfigService } from './config.service';
 import { StorageService } from '../core-services/storage.service';
+import { OpenSlidesStatusService } from '../core-services/openslides-status.service';
 
 /**
  * The login data send by the server.
@@ -65,7 +66,11 @@ export class LoginDataService {
      * policy and legal notice, when their config values change.
      * @param configService
      */
-    public constructor(private configService: ConfigService, private storageService: StorageService) {
+    public constructor(
+        private configService: ConfigService,
+        private storageService: StorageService,
+        private OSStatus: OpenSlidesStatusService
+    ) {
         this.configService.get<string>('general_event_privacy_policy').subscribe(value => {
             this._privacy_policy.next(value);
             this.storeLoginData();
@@ -118,6 +123,8 @@ export class LoginDataService {
                 theme: this._theme.getValue()
             };
         }
-        this.storageService.set(LOGIN_DATA_STORAGE_KEY, loginData);
+        if (!this.OSStatus.isInHistoryMode) {
+            this.storageService.set(LOGIN_DATA_STORAGE_KEY, loginData);
+        }
     }
 }
