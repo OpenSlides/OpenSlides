@@ -241,7 +241,17 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
                 this.viewItem = newAgendaItem;
                 const allSpeakers = this.repo.createSpeakerList(newAgendaItem.item);
                 this.speakers = allSpeakers.filter(speaker => speaker.state === SpeakerState.WAITING);
+                // Since the speaker repository is not a normal repository, sorting cannot be handled there
+                this.speakers.sort((a: ViewSpeaker, b: ViewSpeaker) => a.weight - b.weight);
                 this.finishedSpeakers = allSpeakers.filter(speaker => speaker.state === SpeakerState.FINISHED);
+
+                // convert begin time to date and sort
+                this.finishedSpeakers.sort((a: ViewSpeaker, b: ViewSpeaker) => {
+                    const aTime = new Date(a.begin_time).getTime();
+                    const bTime = new Date(b.begin_time).getTime();
+                    return aTime - bTime;
+                });
+
                 this.activeSpeaker = allSpeakers.find(speaker => speaker.state === SpeakerState.CURRENT);
             }
         });
