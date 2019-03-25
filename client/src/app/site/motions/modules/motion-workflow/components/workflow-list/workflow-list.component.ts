@@ -45,12 +45,12 @@ export class WorkflowListComponent extends ListViewBaseComponent<ViewWorkflow, W
      */
     public constructor(
         titleService: Title,
-        matSnackBar: MatSnackBar,
-        storage: StorageService,
         protected translate: TranslateService,
+        matSnackBar: MatSnackBar,
+        route: ActivatedRoute,
+        storage: StorageService,
         private dialog: MatDialog,
         private router: Router,
-        protected route: ActivatedRoute,
         private workflowRepo: WorkflowRepositoryService,
         private promptService: PromptService
     ) {

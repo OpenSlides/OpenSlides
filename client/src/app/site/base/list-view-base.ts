@@ -38,12 +38,12 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel, M extends B
      * Holds the key for the storage.
      * This is by default the component's name.
      */
-    private storageKey: string;
+    private paginationStorageKey: string;
 
     /**
      * Holds the value from local storage with the 'Paginator' key.
      */
-    private storageObject = {};
+    private paginationStorageObject: { [key: string]: number };
 
     /**
      * The table itself
@@ -82,17 +82,17 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel, M extends B
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
-        protected route: ActivatedRoute,
-        private storage: StorageService,
+        protected route?: ActivatedRoute,
+        protected storage?: StorageService,
         public filterService?: BaseFilterListService<M, V>,
         public sortService?: BaseSortListService<V>
     ) {
         super(titleService, translate, matSnackBar);
         this.selectedRows = [];
         try {
-            this.storageKey = (<Type<any>>route.component).name;
+            this.paginationStorageKey = (<Type<any>>route.component).name;
         } catch (e) {
-            this.storageKey = '';
+            this.paginationStorageKey = '';
         }
     }
 
@@ -101,7 +101,7 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel, M extends B
      * Calling these three functions in the constructor of this class
      * would be too early, resulting in non-paginated tables
      */
-    public async initTable(): Promise<void> {
+    public initTable(): void {
         this.dataSource = new MatTableDataSource();
         this.dataSource.paginator = this.paginator;
         // Set the initial page settings.
@@ -173,13 +173,13 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel, M extends B
     private async initializePagination(): Promise<void> {
         // If the storage is not available - like in history mode - do nothing.
         if (this.storage) {
-            this.storageObject = (await this.storage.get('Pagination')) || {};
+            this.paginationStorageObject = (await this.storage.get('Pagination')) || {};
             // Set the number of items per page -- by default to 25.
-            this.paginator.pageSize = this.storageObject[this.storageKey] || 25;
+            this.paginator.pageSize = this.paginationStorageObject[this.paginationStorageKey] || 25;
             // Subscription to page change events, like size, index.
             this.subscriptions.push(
-                this.paginator.page.subscribe(async (event: PageEvent) => {
-                    await this.setPageSettings(event.pageSize);
+                this.paginator.page.subscribe((event: PageEvent) => {
+                    this.setPageSettings(event.pageSize);
                 })
             );
         }
@@ -191,8 +191,10 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel, M extends B
      * @param size is the new page size.
      */
     public async setPageSettings(size: number): Promise<void> {
-        this.storageObject[this.storageKey] = size;
-        await this.storage.set('Pagination', this.storageObject);
+        if (this.paginationStorageObject) {
+            this.paginationStorageObject[this.paginationStorageKey] = size;
+            await this.storage.set('Pagination', this.paginationStorageObject);
+        }
     }
 
     /**

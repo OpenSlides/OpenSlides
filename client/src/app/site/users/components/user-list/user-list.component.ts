@@ -134,12 +134,12 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User> imp
         titleService: Title,
         protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
+        route: ActivatedRoute,
         storage: StorageService,
         private repo: UserRepositoryService,
         private groupRepo: GroupRepositoryService,
         private choiceService: ChoiceService,
         private router: Router,
-        protected route: ActivatedRoute,
         private operator: OperatorService,
         private vp: ViewportService,
         protected csvExport: CsvExportService,

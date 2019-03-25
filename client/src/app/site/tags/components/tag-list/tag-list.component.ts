@@ -1,15 +1,17 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 import { Title } from '@angular/platform-browser';
-import { Tag } from 'app/shared/models/core/tag';
-import { ListViewBaseComponent } from '../../../base/list-view-base';
-import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
-import { ViewTag } from '../../models/view-tag';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { PromptService } from 'app/core/ui-services/prompt.service';
-import { MatSnackBar } from '@angular/material';
-import { StorageService } from 'app/core/core-services/storage.service';
 import { ActivatedRoute } from '@angular/router';
+import { MatSnackBar } from '@angular/material';
+
+import { TranslateService } from '@ngx-translate/core';
+
+import { Tag } from 'app/shared/models/core/tag';
+import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
+import { StorageService } from 'app/core/core-services/storage.service';
+import { ListViewBaseComponent } from '../../../base/list-view-base';
+import { ViewTag } from '../../models/view-tag';
 
 /**
  * Listview for the complete lsit of available Tags
@@ -43,8 +45,8 @@ export class TagListComponent extends ListViewBaseComponent<ViewTag, Tag> implem
         titleService: Title,
         protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
-        storage: StorageService,
         route: ActivatedRoute,
+        storage: StorageService,
         private repo: TagRepositoryService,
         private promptService: PromptService
     ) {
