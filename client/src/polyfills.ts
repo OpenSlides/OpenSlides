@@ -69,9 +69,10 @@ import 'core-js/es7/reflect';
 // (window as any).__Zone_enable_cross_context_check = true;
 
 /***************************************************************************************************
- * Zone JS is required by default for Angular itself.
+ * Zone JS and Hammer JS are required by default for Angular itself.
  */
 import 'zone.js/dist/zone'; // Included with Angular CLI.
+import 'hammerjs';
 
 /***************************************************************************************************
  * APPLICATION IMPORTS
