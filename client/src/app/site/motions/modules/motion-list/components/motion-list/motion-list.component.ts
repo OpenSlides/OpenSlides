@@ -27,6 +27,7 @@ import { MotionFilterListService } from 'app/site/motions/services/motion-filter
 import { MotionCsvExportService } from 'app/site/motions/services/motion-csv-export.service';
 import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-export.service';
 import { MotionMultiselectService } from 'app/site/motions/services/motion-multiselect.service';
+import { MotionXlsxExportService } from 'app/site/motions/services/motion-xlsx-export.service';
 import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 
@@ -106,7 +107,8 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
         private dialog: MatDialog,
         private vp: ViewportService,
         public multiselectService: MotionMultiselectService,
-        public perms: LocalPermissionsService
+        public perms: LocalPermissionsService,
+        private motionXlsxExport: MotionXlsxExportService
     ) {
         super(titleService, translate, matSnackBar, route, storage, filterService, sortService);
 
@@ -223,6 +225,8 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
                         result.content,
                         result.metaInfo
                     );
+                } else if (result.format === 'xlsx') {
+                    this.motionXlsxExport.exportMotionList(this.dataSource.filteredData, result.metaInfo);
                 }
             }
         });

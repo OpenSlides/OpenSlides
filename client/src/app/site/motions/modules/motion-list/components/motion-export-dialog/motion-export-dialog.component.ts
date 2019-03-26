@@ -113,7 +113,17 @@ export class MotionExportDialogComponent implements OnInit {
      */
     public ngOnInit(): void {
         this.exportForm.get('format').valueChanges.subscribe((value: string) => {
-            if (value === 'csv') {
+            // disable content for xslx
+            if (value === 'xlsx') {
+                // disable the content selection
+                this.exportForm.get('content').disable();
+                // remove the selection of "content"
+                this.exportForm.get('content').setValue(null);
+            } else {
+                this.exportForm.get('content').enable();
+            }
+
+            if (value === 'csv' || value === 'xlsx') {
                 // disable and deselect "lnMode"
                 this.exportForm.get('lnMode').setValue(this.lnMode.None);
                 this.exportForm.get('lnMode').disable();
@@ -140,7 +150,7 @@ export class MotionExportDialogComponent implements OnInit {
                 // remove the selection of "votingResult"
                 let metaInfoVal: string[] = this.exportForm.get('metaInfo').value;
                 metaInfoVal = metaInfoVal.filter(info => {
-                    return info !== 'votingResult';
+                    return info !== 'polls';
                 });
                 this.exportForm.get('metaInfo').setValue(metaInfoVal);
 
