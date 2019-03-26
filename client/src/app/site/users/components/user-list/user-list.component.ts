@@ -370,7 +370,14 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User> imp
      * Handler for bulk setting new passwords. Needs multiSelect mode.
      */
     public async resetPasswordsSelected(): Promise<void> {
-        for (const user of this.selectedRows) {
+        if (this.selectedRows.find(row => row.user.id === this.operator.user.id)) {
+            this.raiseError(
+                this.translate.instant(
+                    'Note: Your own password will not be changed. Please use the password change dialog instead.'
+                )
+            );
+        }
+        for (const user of this.selectedRows.filter(u => u.user.id !== this.operator.user.id)) {
             const password = this.repo.getRandomPassword();
             this.repo.resetPassword(user, password, true);
         }
