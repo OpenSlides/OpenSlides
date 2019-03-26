@@ -80,4 +80,4 @@ def clean(args=None):
 @command("format", help="Format code with isort and black")
 def isort(args=None):
     call("isort --recursive openslides tests")
-    call("black --py36 openslides tests")
+    call("black --target-version py36 openslides tests")

@@ -9,6 +9,14 @@ class ProjectorAccessPermissions(BaseAccessPermissions):
     base_permission = "core.can_see_projector"
 
 
+class ProjectionDefaultAccessPermissions(BaseAccessPermissions):
+    """
+    Access permissions container for Projector and ProjectorViewSet.
+    """
+
+    base_permission = "core.can_see_projector"
+
+
 class TagAccessPermissions(BaseAccessPermissions):
     """
     Access permissions container for Tag and TagViewSet.

@@ -33,6 +33,7 @@ class CoreAppConfig(AppConfig):
             HistoryViewSet,
             ProjectorMessageViewSet,
             ProjectorViewSet,
+            ProjectionDefaultViewSet,
             TagViewSet,
         )
         from .websocket import (
@@ -73,6 +74,10 @@ class CoreAppConfig(AppConfig):
         # Register viewsets.
         router.register(
             self.get_model("Projector").get_collection_string(), ProjectorViewSet
+        )
+        router.register(
+            self.get_model("Projectiondefault").get_collection_string(),
+            ProjectionDefaultViewSet,
         )
         router.register(
             self.get_model("ChatMessage").get_collection_string(), ChatMessageViewSet
@@ -121,6 +126,7 @@ class CoreAppConfig(AppConfig):
         """
         for model_name in (
             "Projector",
+            "ProjectionDefault",
             "ChatMessage",
             "Tag",
             "ProjectorMessage",

@@ -23,6 +23,7 @@ import { ViewModelStoreService } from './view-model-store.service';
 import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
 import { ConfigService } from '../ui-services/config.service';
 import { ProjectorDataService } from './projector-data.service';
+import { ProjectionDefault } from 'app/shared/models/core/projection-default';
 
 /**
  * This service cares about Projectables being projected and manage all projection-related
@@ -254,10 +255,13 @@ export class ProjectorService {
      * @param projectiondefault The projection default
      * @return the projector associated to the given projectiondefault.
      */
-    public getProjectorForDefault(projectiondefault: string): Projector {
-        return this.DS.getAll<Projector>('core/projector').find(projector => {
-            return projector.projectiondefaults.map(pd => pd.name).includes(projectiondefault);
-        });
+    public getProjectorForDefault(projectiondefault: string): Projector | null {
+        const pd = this.DS.find(ProjectionDefault, _pd => _pd.name === projectiondefault);
+        if (pd) {
+            return this.DS.get<Projector>(Projector, pd.projector_id);
+        } else {
+            return null;
+        }
     }
 
     /**

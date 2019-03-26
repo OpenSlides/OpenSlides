@@ -39,6 +39,7 @@ from .access_permissions import (
     ConfigAccessPermissions,
     CountdownAccessPermissions,
     HistoryAccessPermissions,
+    ProjectionDefaultAccessPermissions,
     ProjectorAccessPermissions,
     ProjectorMessageAccessPermissions,
     TagAccessPermissions,
@@ -143,12 +144,18 @@ class ProjectorViewSet(ModelViewSet):
         REST API operation for DELETE requests.
 
         Assigns all ProjectionDefault objects from this projector to the
-        default projector (pk=1).
+        first projector found.
         """
+        if len(Projector.objects.all()) <= 1:
+            raise ValidationError({"detail": "You can't delete the last projector."})
         projector_instance = self.get_object()
+        new_projector_id = (
+            Projector.objects.exclude(pk=projector_instance.pk).first().pk
+        )
+
         for projection_default in ProjectionDefault.objects.all():
             if projection_default.projector.id == projector_instance.id:
-                projection_default.projector_id = 1
+                projection_default.projector_id = new_projector_id
                 projection_default.save()
         return super(ProjectorViewSet, self).destroy(*args, **kwargs)
 
@@ -272,32 +279,29 @@ class ProjectorViewSet(ModelViewSet):
         message = f"Setting scroll to {request.data} was successful."
         return Response({"detail": message})
 
-    @detail_route(methods=["post"])
-    def set_projectiondefault(self, request, pk):
-        """
-        REST API operation to set a projectiondefault to the requested projector. The argument
-        has to be an int representing the pk from the projectiondefault to be set.
 
-        It expects a POST request to
-        /rest/core/projector/<pk>/set_projectiondefault/ with the projectiondefault id as the argument
-        """
-        if not isinstance(request.data, int):
-            raise ValidationError({"detail": "Data must be an int."})
+class ProjectionDefaultViewSet(ModelViewSet):
+    """
+    API endpoint for projection defaults.
 
-        try:
-            projectiondefault = ProjectionDefault.objects.get(pk=request.data)
-        except ProjectionDefault.DoesNotExist:
-            raise ValidationError(
-                {
-                    "detail": f"The projectiondefault with pk={request.data} was not found."
-                }
-            )
+    There are the following views: list, retrieve, create, update,
+    partial_update and destroy.
+    """
+
+    access_permissions = ProjectionDefaultAccessPermissions()
+    queryset = ProjectionDefault.objects.all()
+
+    def check_view_permissions(self):
+        """
+        Returns True if the user has required permissions.
+        """
+        if self.action in ("list", "retrieve"):
+            result = self.get_access_permissions().check_permissions(self.request.user)
+        elif self.action in ("create", "partial_update", "update", "destroy"):
+            result = has_perm(self.request.user, "core.can_manage_projector")
         else:
-            projector_instance = self.get_object()
-            projectiondefault.projector = projector_instance
-            projectiondefault.save()
-
-        return Response()
+            result = False
+        return result
 
 
 class TagViewSet(ModelViewSet):

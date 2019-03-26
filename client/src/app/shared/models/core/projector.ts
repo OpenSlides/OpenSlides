@@ -48,17 +48,7 @@ export function elementIdentifies(a: IdentifiableProjectorElement, b: ProjectorE
 export type ProjectorElements = ProjectorElement[];
 
 /**
- * A projectiondefault
- */
-export interface ProjectionDefault {
-    id: number;
-    name: string;
-    display_name: string;
-    projector_id: number;
-}
-
-/**
- * Representation of a projector. Has the nested property "projectiondefaults"
+ * Representation of a projector.
  *
  * TODO: Move all function to the viewprojector.
  *
@@ -77,7 +67,7 @@ export class Projector extends BaseModel<Projector> {
     public width: number;
     public height: number;
     public reference_projector_id: number;
-    public projectiondefaults: ProjectionDefault[];
+    public projectiondefaults_id: number[];
     public background_color: string;
     public header_background_color: string;
     public header_font_color: string;
