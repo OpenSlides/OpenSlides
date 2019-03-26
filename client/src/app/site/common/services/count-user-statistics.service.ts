@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { CountUsersService } from 'app/core/ui-services/count-users.service';
+import { CountUsersService, CountUserData } from 'app/core/ui-services/count-users.service';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 
@@ -9,6 +9,7 @@ import { UserRepositoryService } from 'app/core/repositories/users/user-reposito
  */
 export interface CountUserStatistics {
     activeUserHandles: number;
+    usesIndexedDB: number;
     activeUsers: {
         [id: number]: number;
     };
@@ -42,25 +43,31 @@ export class CountUsersStatisticsService {
      */
     public countUsers(): [string, Observable<CountUserStatistics>] {
         let token: string;
-        let userIdObservable: Observable<number>;
+        let userDataObservable: Observable<CountUserData>;
 
         // Start counting
         // TODO: maybe we shold bet the observable bofore the actual countig was
         // started. We might miss some user ids.
-        [token, userIdObservable] = this.countUserService.countUsers();
+        [token, userDataObservable] = this.countUserService.countUsers();
         this.runningCounts[token] = new BehaviorSubject<CountUserStatistics>({
             activeUserHandles: 0,
+            usesIndexedDB: 0,
             activeUsers: {},
             groups: {}
         });
 
         // subscribe to responses
-        userIdObservable.subscribe(userId => {
+        userDataObservable.subscribe(data => {
+            const userId = !!data.userId ? data.userId : 0;
+
             const stats = this.runningCounts[token].getValue();
             const user = this.userRepo.getViewModel(userId);
 
             // Add to user stats
             stats.activeUserHandles++;
+            if (data.usesIndexedDB) {
+                stats.usesIndexedDB++;
+            }
             if (!stats.activeUsers[userId]) {
                 stats.activeUsers[userId] = 0;
             }

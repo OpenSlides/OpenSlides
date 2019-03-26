@@ -66,7 +66,7 @@ export class CustomIndexedDBDatabase extends IndexedDBDatabase {
                 } else {
                     // Storing the database connection for further access
                     this.database.next(db);
-                    this.storageLock.OK();
+                    this.storageLock.OK(true);
                 }
             },
             () => {
@@ -80,7 +80,7 @@ export class CustomIndexedDBDatabase extends IndexedDBDatabase {
     public setFallback(prefix: string): void {
         console.log('uses localStorage as IndexedDB fallback!');
         super.setFallback(prefix);
-        this.storageLock.OK();
+        this.storageLock.OK(false);
     }
 }
 
