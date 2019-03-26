@@ -6,13 +6,8 @@ from jsonfield import JSONField
 
 from ..utils.autoupdate import Element
 from ..utils.cache import element_cache, get_element_id
-from ..utils.models import (
-    CASCADE_AND_AUTOUODATE,
-    SET_NULL_AND_AUTOUPDATE,
-    RESTModelMixin,
-)
+from ..utils.models import SET_NULL_AND_AUTOUPDATE, RESTModelMixin
 from .access_permissions import (
-    ChatMessageAccessPermissions,
     ConfigAccessPermissions,
     CountdownAccessPermissions,
     HistoryAccessPermissions,
@@ -183,33 +178,6 @@ class ConfigStore(RESTModelMixin, models.Model):
     @classmethod
     def get_collection_string(cls):
         return "core/config"
-
-
-class ChatMessage(RESTModelMixin, models.Model):
-    """
-    Model for chat messages.
-
-    At the moment we only have one global chat room for managers.
-    """
-
-    access_permissions = ChatMessageAccessPermissions()
-    can_see_permission = "core.can_use_chat"
-
-    message = models.TextField()
-
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=CASCADE_AND_AUTOUODATE)
-
-    class Meta:
-        default_permissions = ()
-        permissions = (
-            ("can_use_chat", "Can use the chat"),
-            ("can_manage_chat", "Can manage the chat"),
-        )
-
-    def __str__(self):
-        return f"Message {self.timestamp}"
 
 
 class ProjectorMessage(RESTModelMixin, models.Model):

@@ -35,7 +35,6 @@ from ..utils.rest_api import (
     list_route,
 )
 from .access_permissions import (
-    ChatMessageAccessPermissions,
     ConfigAccessPermissions,
     CountdownAccessPermissions,
     HistoryAccessPermissions,
@@ -47,7 +46,6 @@ from .access_permissions import (
 from .config import config
 from .exceptions import ConfigError, ConfigNotFound
 from .models import (
-    ChatMessage,
     ConfigStore,
     Countdown,
     History,
@@ -394,64 +392,6 @@ class ConfigViewSet(ModelViewSet):
 
         # Return response.
         return Response({"key": key, "value": value})
-
-
-class ChatMessageViewSet(ModelViewSet):
-    """
-    API endpoint for chat messages.
-
-    There are the following views: metadata, list, retrieve and create.
-    The views partial_update, update and destroy are disabled.
-    """
-
-    access_permissions = ChatMessageAccessPermissions()
-    queryset = ChatMessage.objects.all()
-
-    def check_view_permissions(self):
-        """
-        Returns True if the user has required permissions.
-        """
-        if self.action in ("list", "retrieve"):
-            result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action in ("metadata", "create"):
-            # We do not want anonymous users to use the chat even the anonymous
-            # group has the permission core.can_use_chat.
-            result = self.request.user.is_authenticated and has_perm(
-                self.request.user, "core.can_use_chat"
-            )
-        elif self.action == "clear":
-            result = has_perm(self.request.user, "core.can_use_chat") and has_perm(
-                self.request.user, "core.can_manage_chat"
-            )
-        else:
-            result = False
-        return result
-
-    def perform_create(self, serializer):
-        """
-        Customized method to inject the request.user into serializer's save
-        method so that the request.user can be saved into the model field.
-        """
-        serializer.save(user=self.request.user)
-        # Send chatter via autoupdate because users without permission
-        # to see users may not have it but can get it now.
-        inform_changed_data([self.request.user])
-
-    @list_route(methods=["post"])
-    def clear(self, request):
-        """
-        Deletes all chat messages.
-        """
-        # Collect all chat messages with their collection_string and id
-        chatmessages = ChatMessage.objects.all()
-        args = []
-        for chatmessage in chatmessages:
-            args.append((chatmessage.get_collection_string(), chatmessage.pk))
-        chatmessages.delete()
-        # Trigger autoupdate and setup response.
-        if args:
-            inform_deleted_data(args)
-        return Response({"detail": "All chat messages deleted successfully."})
 
 
 class ProjectorMessageViewSet(ModelViewSet):

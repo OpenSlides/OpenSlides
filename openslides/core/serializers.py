@@ -10,7 +10,6 @@ from ..utils.rest_api import (
 )
 from ..utils.validate import validate_html
 from .models import (
-    ChatMessage,
     ConfigStore,
     Countdown,
     History,
@@ -139,17 +138,6 @@ class ConfigSerializer(ModelSerializer):
     class Meta:
         model = ConfigStore
         fields = ("id", "key", "value")
-
-
-class ChatMessageSerializer(ModelSerializer):
-    """
-    Serializer for core.models.ChatMessage objects.
-    """
-
-    class Meta:
-        model = ChatMessage
-        fields = ("id", "message", "timestamp", "user")
-        read_only_fields = ("user",)
 
 
 class ProjectorMessageSerializer(ModelSerializer):
