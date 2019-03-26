@@ -9,11 +9,13 @@ import { CountdownControlsComponent } from './components/countdown-controls/coun
 import { CountdownDialogComponent } from './components/countdown-dialog/countdown-dialog.component';
 import { MessageControlsComponent } from './components/message-controls/message-controls.component';
 import { MessageDialogComponent } from './components/message-dialog/message-dialog.component';
+import { ProjectorListEntryComponent } from './components/projector-list-entry/projector-list-entry.component';
 
 @NgModule({
     imports: [CommonModule, ProjectorRoutingModule, SharedModule],
     declarations: [
         ProjectorListComponent,
+        ProjectorListEntryComponent,
         ProjectorDetailComponent,
         CountdownControlsComponent,
         CountdownDialogComponent,
