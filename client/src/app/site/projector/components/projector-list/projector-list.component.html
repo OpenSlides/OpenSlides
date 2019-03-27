@@ -3,15 +3,6 @@
     <div class="title-slot">
         <h2 translate>Projectors</h2>
     </div>
-
-    <!-- Menu -->
-    <div class="menu-slot">
-        <div *osPerms="'core.can_manage_projector'">
-            <button type="button" mat-icon-button [matMenuTriggerFor]="ellipsisMenu">
-                <mat-icon>more_vert</mat-icon>
-            </button>
-        </div>
-    </div>
 </os-head-bar>
 
 <mat-card *ngIf="!projectorToCreate && projectors && projectors.length > 1">
@@ -164,10 +155,3 @@
         </os-meta-text-block>
     </div>
 </div>
-
-<mat-menu #ellipsisMenu="matMenu">
-    <button type="button" mat-menu-item routerLink="/projectors/messages">
-        <mat-icon>note</mat-icon>
-        <span translate>Projector messages</span>
-    </button>
-</mat-menu>

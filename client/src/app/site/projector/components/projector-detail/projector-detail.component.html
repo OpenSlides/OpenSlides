@@ -185,11 +185,7 @@
                         <span translate>Countdowns</span>
                     </mat-expansion-panel-header>
                     <mat-list>
-                        <mat-list-item
-                            *ngFor="let countdown of countdowns"
-                            class="larger-mat-list-item"
-                            [ngClass]="{ projected: isProjected(countdown) }"
-                        >
+                        <mat-list-item *ngFor="let countdown of countdowns" class="larger-mat-list-item">
                             <os-countdown-controls
                                 class="dynamic-list-entry"
                                 [countdown]="countdown"
@@ -207,21 +203,25 @@
                 </mat-expansion-panel>
 
                 <!-- messages -->
-                <mat-expansion-panel *ngIf="messages.length">
+                <mat-expansion-panel>
                     <mat-expansion-panel-header>
                         <span translate>Messages</span>
                     </mat-expansion-panel-header>
                     <mat-list>
-                        <mat-list-item *ngFor="let message of messages" [ngClass]="{ projected: isProjected(message) }">
-                            <button type="button" mat-icon-button (click)="project(message)">
-                                <mat-icon>videocam</mat-icon>
-                            </button>
-                            <span>{{ message.getPreview(40) }}</span>
+                        <mat-list-item *ngFor="let message of messages" class="larger-mat-list-item">
+                            <os-message-controls
+                                class="dynamic-list-entry"
+                                [message]="message"
+                                [projector]="projector.projector"
+                                (editEvent)="openMessagesDialog($event)"
+                            >
+                            </os-message-controls>
                         </mat-list-item>
                     </mat-list>
                     <mat-action-row>
-                        <button type="button" mat-icon-button routerLink="/projectors/messages">
-                            <mat-icon>edit</mat-icon>
+                        <button type="button" mat-button (click)="openMessagesDialog()">
+                            <mat-icon>add</mat-icon>
+                            <span translate>Add message</span>
                         </button>
                     </mat-action-row>
                 </mat-expansion-panel>

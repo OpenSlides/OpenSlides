@@ -18,13 +18,15 @@ import { CurrentSpeakerChyronSlideService } from '../../services/current-speaker
 import { DurationService } from 'app/core/ui-services/duration.service';
 import { ProjectorService } from 'app/core/core-services/projector.service';
 import { moveItemInArray, CdkDragDrop } from '@angular/cdk/drag-drop';
+import { Projectable } from 'app/site/base/projectable';
 import { ProjectorElement } from 'app/shared/models/core/projector';
+import { ProjectorMessage } from 'app/shared/models/core/projector-message';
 import { SlideManager } from 'app/slides/services/slide-manager.service';
 import { CountdownRepositoryService } from 'app/core/repositories/projector/countdown-repository.service';
 import { ProjectorMessageRepositoryService } from 'app/core/repositories/projector/projector-message-repository.service';
 import { ViewProjectorMessage } from 'app/site/projector/models/view-projector-message';
 import { ViewCountdown } from 'app/site/projector/models/view-countdown';
-import { Projectable } from 'app/site/base/projectable';
+import { MessageDialogComponent, MessageData } from '../message-dialog/message-dialog.component';
 
 /**
  * The projector detail view.
@@ -177,7 +179,7 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
     }
 
     /**
-     * Opens the countdown dialog
+     * Opens the countdown dialog*
      *
      * @param viewCountdown optional existing countdown to edit
      */
@@ -213,6 +215,37 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
     }
 
     /**
+     * opens the "edit/create" dialog for messages
+     *
+     * @param viewMessage an optional ViewProjectorMessage to edit. If empty, a new one was created
+     */
+    public openMessagesDialog(viewMessage?: ViewProjectorMessage): void {
+        let messageData: MessageData = {
+            text: ''
+        };
+
+        if (viewMessage) {
+            messageData = {
+                text: viewMessage.message
+            };
+        }
+
+        const dialogRef = this.dialog.open(MessageDialogComponent, {
+            data: messageData,
+            maxHeight: '90vh',
+            width: '800px',
+            maxWidth: '90vw',
+            disableClose: true
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.submitMessage(result, viewMessage);
+            }
+        });
+    }
+
+    /**
      * Function to send a countdown
      *
      * @param data the countdown data to send
@@ -232,6 +265,24 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
             this.countdownRepo.update(sendData, viewCountdown).then(() => {}, this.raiseError);
         } else {
             this.countdownRepo.create(sendData).then(() => {}, this.raiseError);
+        }
+    }
+
+    /**
+     * Submit altered messages to the message repository
+     *
+     * @param data: The message to post
+     * @param viewMessage optional, set viewMessage to update an existing message
+     */
+    public submitMessage(data: MessageData, viewMessage?: ViewProjectorMessage): void {
+        const sendData = new ProjectorMessage({
+            message: data.text
+        });
+
+        if (viewMessage) {
+            this.messageRepo.update(sendData, viewMessage).then(() => {}, this.raiseError);
+        } else {
+            this.messageRepo.create(sendData).then(() => {}, this.raiseError);
         }
     }
 }
