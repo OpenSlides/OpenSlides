@@ -218,6 +218,14 @@ export class WebsocketService {
                 this._closeEvent.emit();
             });
         };
+
+        this.websocket.onerror = (event: ErrorEvent) => {
+            // place for proper error handling and debugging.
+            // Required to get more information about errors
+            this.zone.run(() => {
+                console.warn('Websocket is on Error state. Error: ', event);
+            });
+        };
     }
 
     /**
