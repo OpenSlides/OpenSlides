@@ -1,5 +1,10 @@
 <div id="container" [osResized]="resizeSubject" [ngStyle]="containerStyle" #container>
     <div id="projector" [ngStyle]="projectorStyle">
+        <div id="offline-indicator" *ngIf="isOffline()">
+            <mat-icon>
+                fiber_manual_record
+            </mat-icon>
+        </div>
         <div id="header" [ngStyle]="headerFooterStyle" *ngIf="projector && projector.show_header_footer">
             <!-- projector logo -->
             <img *ngIf="enableLogo && projectorLogo" src="{{ projectorLogo }}" class="projector-logo-main" />
@@ -16,7 +21,12 @@
         </div>
 
         <div *ngFor="let slide of slides">
-            <os-slide-container [slideData]="slide" [scroll]="scroll" [scale]="scale" [projector]="projector"></os-slide-container>
+            <os-slide-container
+                [slideData]="slide"
+                [scroll]="scroll"
+                [scale]="scale"
+                [projector]="projector"
+            ></os-slide-container>
         </div>
 
         <div id="footer" [ngStyle]="headerFooterStyle" *ngIf="projector && projector.show_header_footer">

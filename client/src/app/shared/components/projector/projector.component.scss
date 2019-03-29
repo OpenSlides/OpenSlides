@@ -8,6 +8,17 @@
     background-color: lightgoldenrodyellow;
     position: relative;
 
+    #offline-indicator {
+        top: 5;
+        right: 0;
+        color: red;
+        position: absolute;
+        z-index: 100;
+        .mat-icon {
+            font-size: 14pt;
+        }
+    }
+
     #projector {
         position: absolute;
         top: 0;
