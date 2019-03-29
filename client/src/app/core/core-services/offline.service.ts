@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { WebsocketService } from './websocket.service';
 
 /**
  * This service handles everything connected with being offline.
@@ -18,7 +19,16 @@ export class OfflineService {
 
     /**
      */
-    public constructor() {}
+    public constructor(private socketService: WebsocketService) {}
+
+    /**
+     * Determines of you are either in Offline mode or not connected via websocket
+     *
+     * @returns whether the client is offline or not connected
+     */
+    public isOffline(): boolean {
+        return this.offline || !this.socketService.isConnected;
+    }
 
     /**
      * Sets the offline flag. Restores the DataStoreService to the last known configuration.

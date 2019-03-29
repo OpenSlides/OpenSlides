@@ -8,6 +8,7 @@ import { BaseComponent } from 'app/base.component';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { ViewProjector } from 'app/site/projector/models/view-projector';
 import { Size } from 'app/site/projector/size';
+import { OfflineService } from 'app/core/core-services/offline.service';
 import { SlideData, ProjectorDataService } from 'app/core/core-services/projector-data.service';
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
 
@@ -160,7 +161,8 @@ export class ProjectorComponent extends BaseComponent implements OnDestroy {
         translate: TranslateService,
         private projectorDataService: ProjectorDataService,
         private projectorRepository: ProjectorRepositoryService,
-        private configService: ConfigService
+        private configService: ConfigService,
+        private offlineService: OfflineService
     ) {
         super(titleService, translate);
         // projector logo / background-image
@@ -190,6 +192,15 @@ export class ProjectorComponent extends BaseComponent implements OnDestroy {
                 this.updateScaling();
             }
         });
+    }
+
+    /**
+     * determine if the server is offline
+     *
+     * @returns whether the client is offlien
+     */
+    public isOffline(): boolean {
+        return this.offlineService.isOffline();
     }
 
     /**
