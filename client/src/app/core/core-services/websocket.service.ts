@@ -95,6 +95,11 @@ export class WebsocketService {
     private retry = false;
 
     /**
+     * Counter for delaying the offline message.
+     */
+    private retryCounter = 0;
+
+    /**
      * Constructor that handles the router
      * @param matSnackBar
      * @param zone
@@ -147,6 +152,7 @@ export class WebsocketService {
         // The error notice will be removed and the reconnectSubject is published.
         this.websocket.onopen = (event: Event) => {
             this.zone.run(() => {
+                this.retryCounter = 0;
                 if (this.retry) {
                     if (this.connectionErrorNotice) {
                         this.connectionErrorNotice.dismiss();
@@ -183,13 +189,17 @@ export class WebsocketService {
             this.zone.run(() => {
                 this.websocket = null;
                 this._connectionOpen = false;
+                // 1000 is a normal close, like the close on logout
                 if (event.code !== 1000) {
                     console.error(event);
                     // Do not show the message snackbar on the projector
                     // tests for /projector and /projector/<id>
                     const onProjector = this.router.url.match(/^\/projector(\/[0-9]+\/?)?$/);
-                    // 1000 is a normal close, like the close on logout
-                    if (!this.connectionErrorNotice && !onProjector) {
+                    if (this.retryCounter <= 3) {
+                        this.retryCounter++;
+                    }
+
+                    if (!this.connectionErrorNotice && !onProjector && this.retryCounter > 3) {
                         // So here we have a connection failure that wasn't intendet.
                         this.connectionErrorNotice = this.matSnackBar.open(
                             this.translate.instant('Offline mode: You can use OpenSlides but changes are not saved.'),
