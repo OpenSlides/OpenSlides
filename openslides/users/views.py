@@ -492,9 +492,9 @@ class WhoAmIDataView(APIView):
 
         # collect all permissions
         permissions: Set[str] = set()
-        group_all_data = async_to_sync(element_cache.get_all_full_data_ordered)()[
+        group_all_data = async_to_sync(element_cache.get_collection_full_data)(
             "users/group"
-        ]
+        )
         for group_id in group_ids:
             permissions.update(group_all_data[group_id]["permissions"])
 

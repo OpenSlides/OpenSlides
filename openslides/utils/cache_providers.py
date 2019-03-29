@@ -44,6 +44,11 @@ class ElementCacheProvider(Protocol):
     async def get_all_data(self, user_id: Optional[int] = None) -> Dict[bytes, bytes]:
         ...
 
+    async def get_collection_data(
+        self, collection: str, user_id: Optional[int] = None
+    ) -> Dict[bytes, bytes]:
+        ...
+
     async def get_data_since(
         self, change_id: int, user_id: Optional[int] = None, max_change_id: int = -1
     ) -> Tuple[Dict[str, List[bytes]], List[str]]:
@@ -203,6 +208,23 @@ class RedisCacheProvider:
 
         async with get_connection() as redis:
             return await redis.hgetall(cache_key)
+
+    async def get_collection_data(
+        self, collection: str, user_id: Optional[int] = None
+    ) -> Dict[bytes, bytes]:
+        """
+        Returns all elements for a collection from the cache.
+        """
+        if user_id is None:
+            cache_key = self.get_full_data_cache_key()
+        else:
+            cache_key = self.get_restricted_data_cache_key(user_id)
+
+        async with get_connection() as redis:
+            out = {}
+            async for k, v in redis.ihscan(cache_key, match=f"{collection}:*"):
+                out[k] = v
+            return out
 
     async def get_element(
         self, element_id: str, user_id: Optional[int] = None
@@ -434,6 +456,20 @@ class MemmoryCacheProvider:
             cache_dict = self.restricted_data.get(user_id, {})
 
         return str_dict_to_bytes(cache_dict)
+
+    async def get_collection_data(
+        self, collection: str, user_id: Optional[int] = None
+    ) -> Dict[bytes, bytes]:
+        if user_id is None:
+            cache_dict = self.full_data
+        else:
+            cache_dict = self.restricted_data.get(user_id, {})
+
+        out = {}
+        for key, value in cache_dict.items():
+            if key.startswith(f"{collection}:"):
+                out[key] = value
+        return str_dict_to_bytes(out)
 
     async def get_element(
         self, element_id: str, user_id: Optional[int] = None
