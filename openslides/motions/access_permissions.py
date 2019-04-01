@@ -50,7 +50,10 @@ class MotionAccessPermissions(BaseAccessPermissions):
                         if value == "managers_only":
                             # permission remains false
                             break
-                        elif value in ("motions.can_see_internal", "motions.can_manage_metadata"):
+                        elif value in (
+                            "motions.can_see_internal",
+                            "motions.can_manage_metadata",
+                        ):
                             if await async_has_perm(user_id, value):
                                 permission = True
                                 break

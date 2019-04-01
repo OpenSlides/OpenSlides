@@ -5,6 +5,6 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [("motions", "0023_state_restriction_2")]
+    dependencies = [("motions", "0024_state_restriction_2")]
 
     operations = [migrations.RemoveField(model_name="state", name="access_level")]

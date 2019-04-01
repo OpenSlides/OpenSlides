@@ -14,6 +14,7 @@ from ..utils.rest_api import (
     Field,
     IdPrimaryKeyRelatedField,
     IntegerField,
+    JSONField,
     ModelSerializer,
     SerializerMethodField,
     ValidationError,
@@ -95,6 +96,8 @@ class StateSerializer(ModelSerializer):
     Serializer for motion.models.State objects.
     """
 
+    restriction = JSONField()
+
     class Meta:
         model = State
         fields = (
@@ -123,17 +126,20 @@ class StateSerializer(ModelSerializer):
             "title": "Motion workflow state restriction field schema",
             "description": "An array containing one or more explicit strings to control restriction for motions in this state.",
             "type": "array",
-            "enum": [
-                "motions.can_see_internal",
-                "motions.can_manage_metadata",
-                "is_submitter",
-                "managers_only",
-            ],
+            "items": {
+                "type": "string",
+                "enum": [
+                    "motions.can_see_internal",
+                    "motions.can_manage_metadata",
+                    "is_submitter",
+                    "managers_only",
+                ],
+            },
         }
 
         # Validate value.
         try:
-            jsonschema.validate(request.data, schema)
+            jsonschema.validate(value, schema)
         except jsonschema.ValidationError as err:
             raise ValidationError({"detail": str(err)})
         return value

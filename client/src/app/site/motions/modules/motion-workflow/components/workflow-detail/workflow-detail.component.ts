@@ -41,18 +41,18 @@ interface StatePerm {
 }
 
 /**
- * Defines the structure of access levels
+ * Defines the structure of AmendmentIntoFinal
  */
-interface AccessLevel {
-    level: number;
+interface AmendmentIntoFinal {
+    merge: MergeAmendment;
     label: string;
 }
 
 /**
- * Defines the structure of access levels
+ * Defines the structre of restrictions
  */
-interface AmendmentIntoFinal {
-    merge: MergeAmendment;
+interface Restriction {
+    key: string;
     label: string;
 }
 
@@ -108,20 +108,20 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
             type: 'check'
         },
         { name: 'Show amendment in parent motoin', selector: 'merge_amendment_into_final', type: 'amendment' },
-        { name: 'Access level', selector: 'access_level', type: 'accessLevel' },
+        { name: 'Restrictions', selector: 'restriction', type: 'restriction' },
         { name: 'Label color', selector: 'css_class', type: 'color' },
         { name: 'Next states', selector: 'next_states_id', type: 'state' }
     ] as StatePerm[];
 
     /**
-     * Determines possible access levels
+     * Determines possible restrictions
      */
-    public accessLevels = [
-        { level: 0, label: '0: All users' },
-        { level: 1, label: '1: Submitters, authorized users and managers' },
-        { level: 2, label: '2: Authorized users and managers for motions and metadata' },
-        { level: 3, label: '3: Only managers for motions' }
-    ] as AccessLevel[];
+    public restrictions = [
+        { key: 'managers_only', label: 'Managers only' },
+        { key: 'motions.can_see_internal', label: 'Can see internal (perm)' },
+        { key: 'motions.can_manage_metadata', label: 'Can manage metadata (perm)' },
+        { key: 'is_submitter', label: 'Is submitter' }
+    ] as Restriction[];
 
     /**
      * Determines possible "Merge amendments into final"
@@ -279,11 +279,27 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
     /**
      * Sets an access level to the given workflow state
      *
-     * @param level The new access level
+     * @param restrictions The new restrictions
      * @param state the state to change
      */
-    public onSetAccesLevel(level: number, state: WorkflowState): void {
-        this.workflowRepo.updateState({ access_level: level }, state).then(() => {}, this.raiseError);
+    public onSetRestriction(restriction: string, state: WorkflowState): void {
+        const restrictions = state.restriction.map(r => r);
+        const restrictionIndex = restrictions.findIndex(r => r === restriction);
+
+        if (restrictionIndex < 0) {
+            restrictions.push(restriction);
+        } else {
+            restrictions.splice(restrictionIndex, 1);
+        }
+        this.workflowRepo.updateState({ restriction: restrictions }, state).then(() => {}, this.raiseError);
+    }
+
+    /**
+     * @returns the restriction label for the given restriction
+     */
+    public getRestrictionLabel(restriction: string): string {
+        const entry = this.restrictions.find(r => r.key === restriction);
+        return entry ? entry.label : '';
     }
 
     /**
