@@ -4,13 +4,19 @@ import { Observable, Subject } from 'rxjs';
 
 import { NotifyService } from '../core-services/notify.service';
 import { OperatorService } from '../core-services/operator.service';
+import { StoragelockService } from '../local-storage/storagelock.service';
 
 interface CountUserRequest {
     token: string;
 }
 
-interface CountUserResponse extends CountUserRequest {
+export interface CountUserData {
     userId: number;
+    usesIndexedDB: boolean;
+}
+
+interface CountUserResponse extends CountUserRequest {
+    data: CountUserData;
 }
 
 const REQUEST_NAME = 'count-user-request';
@@ -25,7 +31,7 @@ const RESPONSE_NAME = 'count-user-response';
     providedIn: 'root'
 })
 export class CountUsersService {
-    private activeCounts: { [token: string]: Subject<number> } = {};
+    private activeCounts: { [token: string]: Subject<CountUserData> } = {};
 
     private currentUserId: number;
 
@@ -35,15 +41,22 @@ export class CountUsersService {
      * @param notifyService
      * @param operator
      */
-    public constructor(private notifyService: NotifyService, operator: OperatorService) {
+    public constructor(
+        private notifyService: NotifyService,
+        operator: OperatorService,
+        storageLockService: StoragelockService
+    ) {
         // Listen for requests to send an answer.
         this.notifyService.getMessageObservable<CountUserRequest>(REQUEST_NAME).subscribe(request => {
             if (request.content.token) {
-                this.notifyService.sendToChannels(
+                this.notifyService.sendToChannels<CountUserResponse>(
                     RESPONSE_NAME,
                     {
                         token: request.content.token,
-                        userId: this.currentUserId
+                        data: {
+                            userId: this.currentUserId,
+                            usesIndexedDB: storageLockService.indexedDBUsed
+                        }
                     },
                     request.senderChannelName
                 );
@@ -52,8 +65,8 @@ export class CountUsersService {
 
         // Listen for responses and distribute them through `activeCounts`
         this.notifyService.getMessageObservable<CountUserResponse>(RESPONSE_NAME).subscribe(response => {
-            if (response.content.userId && response.content.token && this.activeCounts[response.content.token]) {
-                this.activeCounts[response.content.token].next(response.content.userId);
+            if (response.content.data && response.content.token && this.activeCounts[response.content.token]) {
+                this.activeCounts[response.content.token].next(response.content.data);
             }
         });
 
@@ -80,9 +93,9 @@ export class CountUsersService {
      * counting with `stopCounting`. The second entry is an observable, where all user
      * ids will be published.
      */
-    public countUsers(): [string, Observable<number>] {
+    public countUsers(): [string, Observable<CountUserData>] {
         const trackToken = this.generateTrackToken();
-        const subject = new Subject<number>();
+        const subject = new Subject<CountUserData>();
         this.activeCounts[trackToken] = subject;
         this.notifyService.sendToAllUsers<CountUserRequest>(REQUEST_NAME, {
             token: trackToken

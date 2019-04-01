@@ -8,6 +8,8 @@
     <div *ngIf="stats">
         <p>
             {{ userIds().length }} <span translate>active users</span>
+            ({{ stats.usesIndexedDB }} <span translate>with indexedDB</span>,
+            {{ stats.activeUserHandles-stats.usesIndexedDB }} <span translate>with local storage</span>)
             ({{ stats.activeUserHandles }} <span translate>connections</span>)
         </p>
         <h3 translate>Groups</h3>
