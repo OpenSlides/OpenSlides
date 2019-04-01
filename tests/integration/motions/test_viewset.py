@@ -15,7 +15,6 @@ from openslides.motions.models import (
     MotionChangeRecommendation,
     MotionComment,
     MotionCommentSection,
-    MotionLog,
     State,
     StatuteParagraph,
     Submitter,
@@ -44,7 +43,6 @@ def test_motion_db_queries():
     * 1 request for all motion comment sections required for the comments
     * 1 request for all users required for the read_groups of the sections
     * 1 request to get the agenda item,
-    * 1 request to get the motion log,
     * 1 request to get the polls,
     * 1 request to get the attachments,
     * 1 request to get the tags,
@@ -71,7 +69,7 @@ def test_motion_db_queries():
         )
     # TODO: Create some polls etc.
 
-    assert count_queries(Motion.get_elements) == 13
+    assert count_queries(Motion.get_elements) == 12
 
 
 @pytest.mark.django_db(transaction=False)
@@ -914,12 +912,6 @@ class ManageComments(TestCase):
         comment = MotionComment.objects.get()
         self.assertEqual(comment.comment, "test_comment_fk3jrnfwsdg%fj=feijf")
 
-        # Check for a log entry
-        motion_logs = MotionLog.objects.filter(motion=self.motion)
-        self.assertEqual(motion_logs.count(), 1)
-        comment_log = motion_logs.get()
-        self.assertTrue(self.section_read_write.name in comment_log.message_list[0])
-
     def test_update_comment(self):
         comment = MotionComment(
             motion=self.motion,
@@ -940,12 +932,6 @@ class ManageComments(TestCase):
         comment = MotionComment.objects.get()
         self.assertEqual(comment.comment, "test_comment_fk3jrnfwsdg%fj=feijf")
 
-        # Check for a log entry
-        motion_logs = MotionLog.objects.filter(motion=self.motion)
-        self.assertEqual(motion_logs.count(), 1)
-        comment_log = motion_logs.get()
-        self.assertTrue(self.section_read_write.name in comment_log.message_list[0])
-
     def test_delete_comment(self):
         comment = MotionComment(
             motion=self.motion,
@@ -962,12 +948,6 @@ class ManageComments(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(MotionComment.objects.count(), 0)
 
-        # Check for a log entry
-        motion_logs = MotionLog.objects.filter(motion=self.motion)
-        self.assertEqual(motion_logs.count(), 1)
-        comment_log = motion_logs.get()
-        self.assertTrue(self.section_read_write.name in comment_log.message_list[0])
-
     def test_delete_not_existing_comment(self):
         """
         This should fail silently; no error, if the user wants to delete
@@ -980,10 +960,6 @@ class ManageComments(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(MotionComment.objects.count(), 0)
-
-        # Check that no log entry was created
-        motion_logs = MotionLog.objects.filter(motion=self.motion)
-        self.assertEqual(motion_logs.count(), 0)
 
     def test_create_comment_no_write_permission(self):
         response = self.client.post(
