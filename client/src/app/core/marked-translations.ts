@@ -282,8 +282,6 @@ _('Can manage the projector');
 _('Can see the front page');
 _('Can manage tags');
 _('Can manage configuration');
-_('Can use the chat');
-_('Can manage the chat');
 _('Can manage logos and fonts');
 _('Can see history');
 // mediafiles
