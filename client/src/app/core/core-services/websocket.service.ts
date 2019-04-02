@@ -90,9 +90,10 @@ export class WebsocketService {
     private subjects: { [type: string]: Subject<any> } = {};
 
     /**
-     * Saves, if the service is in retry mode to get a connection to a previos connection lost.
+     * Saves, if the WS Connection should be closed (e.g. after an explicit `close()`). Prohibits
+     * retry connection attempts.
      */
-    private retry = false;
+    private shouldBeClosed = true;
 
     /**
      * Counter for delaying the offline message.
@@ -122,10 +123,15 @@ export class WebsocketService {
         options: {
             changeId?: number;
             enableAutoupdates?: boolean;
-        } = {}
+        } = {},
+        retry: boolean = false
     ): void {
         if (this.websocket) {
             this.close();
+        }
+
+        if (!retry) {
+            this.shouldBeClosed = false;
         }
 
         // set defaults
@@ -153,12 +159,14 @@ export class WebsocketService {
         this.websocket.onopen = (event: Event) => {
             this.zone.run(() => {
                 this.retryCounter = 0;
-                if (this.retry) {
-                    if (this.connectionErrorNotice) {
-                        this.connectionErrorNotice.dismiss();
-                        this.connectionErrorNotice = null;
-                    }
-                    this.retry = false;
+
+                if (this.shouldBeClosed) {
+                    this.dismissConnectionErrorNotice();
+                    return;
+                }
+
+                if (retry) {
+                    this.dismissConnectionErrorNotice();
                     this._reconnectEvent.emit();
                 }
                 this._connectEvent.emit();
@@ -190,8 +198,8 @@ export class WebsocketService {
                 this.websocket = null;
                 this._connectionOpen = false;
                 // 1000 is a normal close, like the close on logout
-                if (event.code !== 1000) {
-                    console.error(event);
+                this._closeEvent.emit();
+                if (!this.shouldBeClosed && event.code !== 1000) {
                     // Do not show the message snackbar on the projector
                     // tests for /projector and /projector/<id>
                     const onProjector = this.router.url.match(/^\/projector(\/[0-9]+\/?)?$/);
@@ -211,11 +219,9 @@ export class WebsocketService {
                     // A random retry timeout between 2000 and 5000 ms.
                     const timeout = Math.floor(Math.random() * 3000 + 2000);
                     setTimeout(() => {
-                        this.retry = true;
-                        this.connect({ enableAutoupdates: true });
+                        this.connect({ enableAutoupdates: true }, true);
                     }, timeout);
                 }
-                this._closeEvent.emit();
             });
         };
 
@@ -228,10 +234,19 @@ export class WebsocketService {
         };
     }
 
+    private dismissConnectionErrorNotice(): void {
+        if (this.connectionErrorNotice) {
+            this.connectionErrorNotice.dismiss();
+            this.connectionErrorNotice = null;
+        }
+    }
+
     /**
      * Closes the websocket connection.
      */
     public close(): void {
+        this.shouldBeClosed = true;
+        this.dismissConnectionErrorNotice();
         if (this.websocket) {
             this.websocket.close();
             this.websocket = null;
