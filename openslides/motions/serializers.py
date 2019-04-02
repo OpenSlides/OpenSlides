@@ -472,10 +472,9 @@ class MotionSerializer(ModelSerializer):
         else:
             if "text" in data and not data["text"]:
                 raise ValidationError({"detail": "The text field may not be blank."})
-            if (
-                "reason" in data
-                and not data["reason"]
-                and config["motions_reason_required"]
+        if config["motions_reason_required"]:
+            if (self.partial and "reason" in data and not data["reason"]) or (
+                not self.partial and not data.get("reason")
             ):
                 raise ValidationError({"detail": "The reason field may not be blank."})
 
