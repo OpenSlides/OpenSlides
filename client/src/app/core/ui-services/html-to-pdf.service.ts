@@ -603,11 +603,11 @@ export class HtmlToPdfService {
                 if (styleDefinition.length === 2) {
                     switch (key) {
                         case 'padding-left': {
-                            styleObject.margin = [+value, 0, 0, 0];
+                            styleObject.margin = [parseFloat(value), 0, 0, 0];
                             break;
                         }
                         case 'font-size': {
-                            styleObject.fontSize = +value;
+                            styleObject.fontSize = parseFloat(value);
                             break;
                         }
                         case 'text-align': {
