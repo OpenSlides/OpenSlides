@@ -25,7 +25,6 @@ from .models import (
     MotionChangeRecommendation,
     MotionComment,
     MotionCommentSection,
-    MotionLog,
     MotionPoll,
     State,
     StatuteParagraph,
@@ -169,24 +168,6 @@ class AmendmentParagraphsJSONSerializerField(Field):
                     {"detail": "Paragraph must be either a string or null/None."}
                 )
         return data
-
-
-class MotionLogSerializer(ModelSerializer):
-    """
-    Serializer for motion.models.MotionLog objects.
-    """
-
-    message = SerializerMethodField()
-
-    class Meta:
-        model = MotionLog
-        fields = ("message_list", "person", "time", "message")
-
-    def get_message(self, obj):
-        """
-        Concats the message parts to one string. Useful for smart template code.
-        """
-        return str(obj)
 
 
 class MotionPollSerializer(ModelSerializer):
@@ -385,7 +366,6 @@ class MotionSerializer(ModelSerializer):
     """
 
     comments = MotionCommentSerializer(many=True, read_only=True)
-    log_messages = MotionLogSerializer(many=True, read_only=True)
     polls = MotionPollSerializer(many=True, read_only=True)
     modified_final_version = CharField(allow_blank=True, required=False)
     reason = CharField(allow_blank=True, required=False)
@@ -435,7 +415,6 @@ class MotionSerializer(ModelSerializer):
             "agenda_item_id",
             "agenda_type",
             "agenda_parent_id",
-            "log_messages",
             "sort_parent",
             "weight",
             "created",

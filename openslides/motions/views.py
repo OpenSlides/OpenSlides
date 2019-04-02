@@ -223,9 +223,6 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
         for submitter in submitters:
             Submitter.objects.add(submitter, motion)
 
-        # Write the log message and initiate response.
-        motion.write_log(["Motion created"], request.user)
-
         # Send new submitters and supporters via autoupdate because users
         # without permission to see users may not have them but can get it now.
         # TODO: Skip history.
@@ -298,16 +295,13 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
         serializer.is_valid(raise_exception=True)
         updated_motion = serializer.save()
 
-        # Write the log message, check removal of supporters and initiate response.
-        # TODO: Log if a motion was updated.
-        updated_motion.write_log(["Motion updated"], request.user)
+        # Check removal of supporters and initiate response.
         if (
             config["motions_remove_supporters"]
             and updated_motion.state.allow_support
             and not has_perm(request.user, "motions.can_manage")
         ):
             updated_motion.supporters.clear()
-            updated_motion.write_log(["All supporters removed"], request.user)
 
         # Send new supporters via autoupdate because users
         # without permission to see users may not have them but can get it now.
@@ -390,19 +384,15 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
                 comment.comment = comment_value
                 comment.save()
 
-            # write log
-            motion.write_log([f"Comment {section.name} updated"], request.user)
             message = ["Comment {arg1} updated", section.name]
         else:  # DELETE
             try:
                 comment = MotionComment.objects.get(motion=motion, section=section)
             except MotionComment.DoesNotExist:
-                # Be silent about not existing comments, but do not create a log entry.
+                # Be silent about not existing comments.
                 pass
             else:
                 comment.delete()
-
-                motion.write_log([f"Comment {section.name} deleted"], request.user)
             message = ["Comment {arg1} deleted", section.name]
 
         # Fire autoupdate again to save information to OpenSlides history.
@@ -512,7 +502,6 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
             ):
                 raise ValidationError({"detail": "You can not support this motion."})
             motion.supporters.add(request.user)
-            motion.write_log(["Motion supported"], request.user)
             # Send new supporter via autoupdate because users without permission
             # to see users may not have it but can get it now.
             # TODO: Skip history.
@@ -524,7 +513,6 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
             if not motion.state.allow_support or not motion.is_supporter(request.user):
                 raise ValidationError({"detail": "You can not unsupport this motion."})
             motion.supporters.remove(request.user)
-            motion.write_log(["Motion unsupported"], request.user)
             message = "You have unsupported this motion successfully."
 
         # Fire autoupdate again to save information to OpenSlides history.
@@ -579,13 +567,6 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
             skip_autoupdate=True,
         )
         message = f"The state of the motion was set to {motion.state.name}."
-
-        # Write the log message and initiate response.
-        motion.write_log(
-            message_list=[f"State set to {motion.state.name}"],
-            person=request.user,
-            skip_autoupdate=True,
-        )
 
         # Fire autoupdate again to save information to OpenSlides history.
         inform_changed_data(
@@ -661,13 +642,6 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
                 skip_autoupdate=True,
             )
 
-            # Write the log message.
-            motion.write_log(
-                message_list=["State set to", " ", motion.state.name],
-                person=request.user,
-                skip_autoupdate=True,
-            )
-
             # Fire autoupdate again to save information to OpenSlides history.
             inform_changed_data(
                 motion,
@@ -730,13 +704,6 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
             else "None"
         )
         message = f"The recommendation of the motion was set to {label}."
-
-        # Write the log message and initiate response.
-        motion.write_log(
-            message_list=["Recommendation set to", " ", label],
-            person=request.user,
-            skip_autoupdate=True,
-        )
 
         # Fire autoupdate again to save information to OpenSlides history.
         inform_changed_data(
@@ -820,13 +787,6 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
                 else "None"
             )
 
-            # Write the log message.
-            motion.write_log(
-                message_list=["Recommendation set to", " ", label],
-                person=request.user,
-                skip_autoupdate=True,
-            )
-
             # Fire autoupdate and save information to OpenSlides history.
             inform_changed_data(
                 motion,
@@ -850,7 +810,6 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
 
         motion.follow_recommendation()
 
-        # Save and write log.
         motion.save(
             update_fields=[
                 "state",
@@ -859,11 +818,6 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
                 "state_extension",
                 "last_modified",
             ],
-            skip_autoupdate=True,
-        )
-        motion.write_log(
-            message_list=["State set to", " ", motion.state.name],
-            person=request.user,
             skip_autoupdate=True,
         )
 
@@ -891,7 +845,6 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
                 poll = motion.create_poll(skip_autoupdate=True)
         except WorkflowError as err:
             raise ValidationError({"detail": err})
-        motion.write_log(["Vote created"], request.user, skip_autoupdate=True)
 
         # Fire autoupdate again to save information to OpenSlides history.
         inform_changed_data(
@@ -989,7 +942,6 @@ class MotionPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet):
         """
         response = super().update(*args, **kwargs)
         poll = self.get_object()
-        poll.motion.write_log(["Vote updated"], self.request.user)
 
         # Fire autoupdate again to save information to OpenSlides history.
         inform_changed_data(
@@ -1004,7 +956,6 @@ class MotionPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet):
         """
         poll = self.get_object()
         result = super().destroy(*args, **kwargs)
-        poll.motion.write_log(["Vote deleted"], self.request.user)
 
         # Fire autoupdate again to save information to OpenSlides history.
         inform_changed_data(
@@ -1362,12 +1313,6 @@ class MotionBlockViewSet(ModelViewSet):
                 # Follow recommendation.
                 motion.follow_recommendation()
                 motion.save(skip_autoupdate=True)
-                # Write the log message.
-                motion.write_log(
-                    message_list=["State set to", " ", motion.state.name],
-                    person=request.user,
-                    skip_autoupdate=True,
-                )
                 # Fire autoupdate and save information to OpenSlides history.
                 inform_changed_data(
                     motion,

@@ -6,7 +6,6 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.db import IntegrityError, models, transaction
 from django.db.models import Max
-from django.utils import formats, timezone
 from jsonfield import JSONField
 
 from openslides.agenda.models import Item
@@ -81,7 +80,6 @@ class MotionManager(models.Manager):
                 "comments__section",
                 "comments__section__read_groups",
                 "agenda_items",
-                "log_messages",
                 "polls",
                 "attachments",
                 "tags",
@@ -540,17 +538,6 @@ class Motion(RESTModelMixin, models.Model):
         """
         return self.agenda_item.pk
 
-    def write_log(self, message_list, person=None, skip_autoupdate=False):
-        """
-        Write a log message.
-
-        The message should be in English.
-        """
-        if person and not person.is_authenticated:
-            person = None
-        motion_log = MotionLog(motion=self, message_list=message_list, person=person)
-        motion_log.save(skip_autoupdate=skip_autoupdate)
-
     def is_amendment(self):
         """
         Returns True if the motion is an amendment.
@@ -901,50 +888,6 @@ class MotionBlock(RESTModelMixin, models.Model):
 
     def get_agenda_title_information(self):
         return {"title": self.title}
-
-
-class MotionLog(RESTModelMixin, models.Model):
-    """Save a logmessage for a motion."""
-
-    motion = models.ForeignKey(
-        Motion, on_delete=models.CASCADE, related_name="log_messages"
-    )
-    """The motion to witch the object belongs."""
-
-    message_list = JSONField()
-    """
-    The log message. It should be a list of strings in English.
-    """
-
-    person = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=SET_NULL_AND_AUTOUPDATE, null=True
-    )
-    """A user object, who created the log message. Optional."""
-
-    time = models.DateTimeField(auto_now=True)
-    """The Time, when the loged action was performed."""
-
-    class Meta:
-        default_permissions = ()
-        ordering = ["-time"]
-
-    def __str__(self):
-        """
-        Return a string, representing the log message.
-        """
-        localtime = timezone.localtime(self.time)
-        time = formats.date_format(localtime, "DATETIME_FORMAT")
-        message_list = "".join(self.message_list)
-        time_and_messages = f"{time} {message_list}"
-        if self.person is not None:
-            return f"{time_and_messages} by {self.person}"
-        return time_and_messages
-
-    def get_root_rest_element(self):
-        """
-        Returns the motion to this instance which is the root REST element.
-        """
-        return self.motion
 
 
 class MotionVote(RESTModelMixin, BaseVote):
