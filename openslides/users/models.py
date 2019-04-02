@@ -254,7 +254,8 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
         except smtplib.SMTPDataError as e:
             error = e.smtp_code
             helptext = ""
-            if error == 554:
+            if error == 554:  # The server does not accept our connection. The code is
+                # something like "transaction failed" or "No SMTP service here"
                 helptext = " Is the email sender correct?"
             connection.close()
             raise ValidationError(
@@ -262,6 +263,13 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
             )
         except smtplib.SMTPRecipientsRefused:
             pass  # Run into returning false later
+        except smtplib.SMTPAuthenticationError as e:
+            # Nice error message on auth failure
+            raise ValidationError(
+                {
+                    "detail": f"Error {e.smtp_code}: Authentication failure. Please contact your local administrator."
+                }
+            )
         else:
             if count == 1:
                 self.email_send = True

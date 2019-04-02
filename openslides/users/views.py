@@ -665,7 +665,21 @@ class PasswordResetView(APIView):
             subject = "".join(subject.splitlines())
             from_email = None  # TODO: Add nice from_email here.
             email_message = mail.EmailMessage(subject, body, from_email, [to_email])
-            email_message.send()
+            try:
+                email_message.send()
+            except smtplib.SMTPRecipientsRefused:
+                raise ValidationError(
+                    {
+                        "detail": f"Error: The email to {to_email} was refused by the server. Please contact your local administrator."
+                    }
+                )
+            except smtplib.SMTPAuthenticationError as e:
+                # Nice error message on auth failure
+                raise ValidationError(
+                    {
+                        "detail": f"Error {e.smtp_code}: Authentication failure. Please contact your administrator."
+                    }
+                )
         return super().post(request, *args, **kwargs)
 
     def get_users(self, email):
