@@ -224,6 +224,17 @@ class ElementCache:
             deleted_elements,
         )
 
+    async def get_collection_full_data(
+        self, collection_string: str
+    ) -> Dict[int, Dict[str, Any]]:
+        full_data = await self.cache_provider.get_collection_data(collection_string)
+        out = {}
+        for element_id, data in full_data.items():
+            returned_collection_string, id = split_element_id(element_id)
+            if returned_collection_string == collection_string:
+                out[id] = json.loads(data.decode())
+        return out
+
     async def get_element_full_data(
         self, collection_string: str, id: int
     ) -> Optional[Dict[str, Any]]:

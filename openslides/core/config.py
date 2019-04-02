@@ -68,8 +68,10 @@ class ConfigHandler:
         This uses the element_cache. It expects, that the config values are in the database
         before this is called.
         """
-        all_data = await element_cache.get_all_full_data()
-        elements = all_data[self.get_collection_string()]
+        config_full_data = await element_cache.get_collection_full_data(
+            self.get_collection_string()
+        )
+        elements = config_full_data.values()
         self.key_to_id = {}
         for element in elements:
             self.key_to_id[element["key"]] = element["id"]

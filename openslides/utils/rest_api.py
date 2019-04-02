@@ -244,6 +244,9 @@ class ListModelMixin(_ListModelMixin):
             # The corresponding queryset does not support caching.
             response = super().list(request, *args, **kwargs)
         else:
+            # This loads all data from the cache, not only the requested data.
+            # If we would use the rest api, we should add a method
+            # element_cache.get_collection_restricted_data
             all_restricted_data = async_to_sync(element_cache.get_all_restricted_data)(
                 request.user.pk or 0
             )
