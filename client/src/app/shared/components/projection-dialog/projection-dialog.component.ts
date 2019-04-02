@@ -47,7 +47,7 @@ export class ProjectionDialogComponent {
             const defaultProjector: Projector = this.projectorService.getProjectorForDefault(
                 this.projectorElementBuildDescriptor.projectionDefaultName
             );
-            if (!this.selectedProjectors.includes(defaultProjector)) {
+            if (defaultProjector && !this.selectedProjectors.includes(defaultProjector)) {
                 this.selectedProjectors.push(defaultProjector);
             }
         }

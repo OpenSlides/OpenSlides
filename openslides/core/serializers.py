@@ -81,7 +81,6 @@ class ProjectorSerializer(ModelSerializer):
     elements_preview = JSONSerializerField(validators=[elements_validator])
     elements_history = JSONSerializerField(validators=[elements_array_validator])
 
-    projectiondefaults = ProjectionDefaultSerializer(many=True, read_only=True)
     width = IntegerField(min_value=800, max_value=3840, required=False)
     height = IntegerField(min_value=340, max_value=2880, required=False)
 

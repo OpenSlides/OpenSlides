@@ -27,6 +27,10 @@ export class ViewProjector extends BaseViewModel {
         return this.projector.name;
     }
 
+    public get projectiondefaults_id(): number[] {
+        return this.projector.projectiondefaults_id;
+    }
+
     public get elements(): ProjectorElements {
         return this.projector.elements;
     }

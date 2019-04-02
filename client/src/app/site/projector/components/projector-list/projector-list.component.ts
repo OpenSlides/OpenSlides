@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
-import { MatSnackBar, MatSelectChange } from '@angular/material';
+import { MatSnackBar, MatSelectChange, MatSliderChange } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
 
@@ -12,6 +12,8 @@ import { BaseViewComponent } from 'app/site/base/base-view';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ClockSlideService } from '../../services/clock-slide.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
+import { ProjectionDefaultRepositoryService } from 'app/core/repositories/projector/projection-default-repository.service';
+import { ViewProjectionDefault } from '../../models/view-projection-default';
 
 /**
  * All supported aspect rations for projectors.
@@ -62,6 +64,8 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
      */
     public projectors: ViewProjector[];
 
+    public projectionDefaults: ViewProjectionDefault[];
+
     /**
      * Helper to check manage permissions
      *
@@ -91,7 +95,8 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
         private formBuilder: FormBuilder,
         private promptService: PromptService,
         private clockSlideService: ClockSlideService,
-        private operator: OperatorService
+        private operator: OperatorService,
+        private projectionDefaultRepo: ProjectionDefaultRepositoryService
     ) {
         super(titleService, translate, matSnackBar);
 
@@ -104,6 +109,7 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
             name: ['', Validators.required],
             aspectRatio: ['', Validators.required],
             width: [0, Validators.required],
+            projectiondefaults_id: [[]],
             clock: [true],
             background_color: ['', Validators.required],
             header_background_color: ['', Validators.required],
@@ -122,6 +128,8 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
         super.setTitle('Projectors');
         this.projectors = this.repo.getViewModelList();
         this.repo.getViewModelListObservable().subscribe(projectors => (this.projectors = projectors));
+        this.projectionDefaults = this.projectionDefaultRepo.getViewModelList();
+        this.projectionDefaultRepo.getViewModelListObservable().subscribe(pds => (this.projectionDefaults = pds));
     }
 
     /**
@@ -270,5 +278,14 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
             return this.repo.update(update, projector);
         });
         Promise.all(promises).then(null, this.raiseError);
+    }
+
+    public widthSliderValueChanged(projector: ViewProjector, event: MatSliderChange): void {
+        const aspectRatio = this.getAspectRatioKey(projector);
+        const updateProjector: Partial<Projector> = {
+            width: event.value
+        };
+        updateProjector.height = Math.round(event.value / aspectRatios[aspectRatio]);
+        this.repo.update(updateProjector, projector).then(null, this.raiseError);
     }
 }

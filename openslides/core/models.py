@@ -16,6 +16,7 @@ from .access_permissions import (
     ConfigAccessPermissions,
     CountdownAccessPermissions,
     HistoryAccessPermissions,
+    ProjectionDefaultAccessPermissions,
     ProjectorAccessPermissions,
     ProjectorMessageAccessPermissions,
     TagAccessPermissions,
@@ -123,6 +124,8 @@ class ProjectionDefault(RESTModelMixin, models.Model):
     name on the front end for the user.
     """
 
+    access_permissions = ProjectionDefaultAccessPermissions()
+
     name = models.CharField(max_length=256)
 
     display_name = models.CharField(max_length=256)
@@ -130,9 +133,6 @@ class ProjectionDefault(RESTModelMixin, models.Model):
     projector = models.ForeignKey(
         Projector, on_delete=models.PROTECT, related_name="projectiondefaults"
     )
-
-    def get_root_rest_element(self):
-        return self.projector
 
     class Meta:
         default_permissions = ()

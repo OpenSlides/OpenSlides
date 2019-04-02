@@ -104,8 +104,17 @@
                             min="800"
                             max="3840"
                             step="10"
+                            (change)="widthSliderValueChanged(projector, $event)"
                         ></mat-slider>
                         {{ updateForm.value.width }}
+
+                        <!-- projection defaults -->
+                        <h3 translate>Projectiondefaults</h3>
+                        <mat-select formControlName="projectiondefaults_id" placeholder="{{ 'Projectiondefaults' | translate }}" [multiple]="true">
+                            <mat-option *ngFor="let pd of projectionDefaults" [value]="pd.id">
+                                {{ pd.getTitle() | translate }}
+                            </mat-option>
+                        </mat-select>
 
                         <!-- colors -->
                         <mat-form-field>
