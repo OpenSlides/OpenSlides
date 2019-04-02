@@ -47,13 +47,7 @@ class ItemViewSet(
             result = has_perm(self.request.user, "agenda.can_see")
             # For manage_speaker and tree requests the rest of the check is
             # done in the specific method. See below.
-        elif self.action in (
-            "partial_update",
-            "update",
-            "sort",
-            "sort_whole",
-            "assign",
-        ):
+        elif self.action in ("partial_update", "update", "sort", "assign"):
             result = (
                 has_perm(self.request.user, "agenda.can_see")
                 and has_perm(self.request.user, "agenda.can_see_internal_items")
@@ -333,21 +327,6 @@ class ItemViewSet(
         """
         Sorts the whole agenda represented in a tree of ids. The request data should be a list (the root)
         of all main agenda items. Each node is a dict with an id and optional children:
-        {
-            id: <the id>
-            children: [
-                <children, optional>
-            ]
-        }
-        Every id has to be given.
-        """
-        return self.sort_tree(request, Item, "weight", "parent_id")
-
-    @list_route(methods=["post"])
-    def sort_whole(self, request):
-        """
-        Sorts the whole agenda represented in a tree of ids. The request data should be a list (the root)
-        of all main agenda items. Each node is a dict with an id and optional  all children:
         {
             id: <the id>
             children: [
