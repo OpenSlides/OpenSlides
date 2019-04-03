@@ -3,9 +3,10 @@ import { Injectable } from '@angular/core';
 import { Workbook } from 'exceljs';
 
 import { InfoToExport } from './motion-pdf.service';
+import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
+import { TranslateService } from '@ngx-translate/core';
 import { ViewMotion } from '../models/view-motion';
 import { XlsxExportServiceService } from 'app/core/ui-services/xlsx-export-service.service';
-import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Service to export motion elements to XLSX
@@ -16,8 +17,16 @@ import { TranslateService } from '@ngx-translate/core';
 export class MotionXlsxExportService {
     /**
      * Constructor
+     *
+     * @param xlsx XlsxExportServiceService
+     * @param translate translationService
+     * @param motionRepo MotionRepositoryService
      */
-    public constructor(private xlsx: XlsxExportServiceService, private translate: TranslateService) {}
+    public constructor(
+        private xlsx: XlsxExportServiceService,
+        private translate: TranslateService,
+        private motionRepo: MotionRepositoryService
+    ) {}
 
     /**
      * Export motions as XLSX
@@ -53,7 +62,14 @@ export class MotionXlsxExportService {
             properties.map(property => {
                 const motionProp = motion[property];
                 if (motionProp) {
-                    return this.translate.instant(motionProp.toString());
+                    switch (property) {
+                        case 'state':
+                            return this.motionRepo.getExtendedStateLabel(motion);
+                        case 'recommendation':
+                            return this.motionRepo.getExtendedRecommendationLabel(motion);
+                        default:
+                            return this.translate.instant(motionProp.toString());
+                    }
                 } else {
                     return null;
                 }

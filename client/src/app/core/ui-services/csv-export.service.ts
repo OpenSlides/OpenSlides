@@ -29,7 +29,7 @@ function isPropertyDefinition<T>(obj: any): obj is CsvColumnDefinitionProperty<T
  * all the models. This map function is called for every model and the user should return a string that is
  * put into the csv. Also a column label must be given, that is capitalized and translated.
  */
-interface CsvColumnDefinitionMap<T> {
+export interface CsvColumnDefinitionMap<T> {
     label: string;
     map: (model: T) => string;
 }
