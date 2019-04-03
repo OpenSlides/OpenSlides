@@ -10,6 +10,9 @@
         "experimentalDecorators": true,
         "target": "es5",
         "typeRoots": ["node_modules/@types"],
-        "lib": ["es2017", "dom"]
+        "lib": ["es2017", "dom"],
+        "paths": {
+            "exceljs": ["../node_modules/exceljs/dist/exceljs.min"]
+        }
     }
 }
