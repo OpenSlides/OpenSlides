@@ -1,0 +1,27 @@
+<h1 mat-dialog-title>
+    <span translate>Message</span>
+</h1>
+
+<form [formGroup]="messageForm">
+    <div mat-dialog-content>
+        <!-- Message -->
+        <editor formControlName="text" [init]="tinyMceSettings"></editor>
+    </div>
+    <div mat-dialog-actions>
+        <!-- Submit countdown button -->
+        <button
+            type="submit"
+            mat-button
+            color="primary"
+            [mat-dialog-close]="messageForm.value"
+            [disabled]="!messageForm.valid"
+        >
+            <span translate>Save</span>
+        </button>
+
+        <!-- Cancel Countdown button -->
+        <button type="button" mat-button [mat-dialog-close]="null">
+            <span translate>Cancel</span>
+        </button>
+    </div>
+</form>

@@ -1,0 +1,33 @@
+<mat-card *ngIf="message">
+    <div class="grid-wrapper">
+        <div class="projector-button">
+            <os-projector-button [object]="message" [projector]="projector"></os-projector-button>
+        </div>
+
+        <div class="action-buttons">
+            <button
+                type="button"
+                class="small-mat-icon-button"
+                mat-icon-button
+                (click)="onBringDialog()"
+                matTooltip="{{ 'Open projection dialog' | translate }}"
+            >
+                <mat-icon>
+                    open_in_new
+                </mat-icon>
+            </button>
+            <button type="button" class="small-mat-icon-button" mat-icon-button (click)="onEdit()">
+                <mat-icon>
+                    edit
+                </mat-icon>
+            </button>
+            <button type="button" class="small-mat-icon-button" mat-icon-button (click)="onDelete()">
+                <mat-icon>
+                    close
+                </mat-icon>
+            </button>
+        </div>
+
+        <div class="message" [innerHTML]="message.getPreview(100)"></div>
+    </div>
+</mat-card>

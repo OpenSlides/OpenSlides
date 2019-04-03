@@ -1,21 +1,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { MessageControlsComponent } from './message-controls.component';
 import { E2EImportsModule } from 'e2e-imports.module';
-import { ProjectorMessageListComponent } from './projector-message-list.component';
 
-describe('ProjectorMessageListComponent', () => {
-    let component: ProjectorMessageListComponent;
-    let fixture: ComponentFixture<ProjectorMessageListComponent>;
+describe('MessageControlsComponent', () => {
+    let component: MessageControlsComponent;
+    let fixture: ComponentFixture<MessageControlsComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [E2EImportsModule],
-            declarations: [ProjectorMessageListComponent]
+            declarations: [MessageControlsComponent]
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(ProjectorMessageListComponent);
+        fixture = TestBed.createComponent(MessageControlsComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

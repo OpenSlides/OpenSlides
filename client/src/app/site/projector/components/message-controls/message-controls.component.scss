@@ -2,8 +2,8 @@
     display: grid;
     width: 100%;
     grid-template-areas:
-        'project title buttons'
-        'project controls controls';
+        'project message buttons'
+        'project message buttons';
     grid-gap: 10px;
     grid-template-columns: min-content auto auto;
 }
@@ -14,29 +14,10 @@
     margin: auto 10px auto 0;
 }
 
-.title {
-    grid-area: title;
-    padding: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
 // could be in a shared scss
 .action-buttons {
     grid-area: buttons;
     text-align: right;
-}
-
-.timer {
-    grid-area: controls;
-    display: flex;
-}
-
-.larger-countdown {
-    font-size: 150%;
-    min-width: 60px;
-    margin-right: 10px;
 }
 
 // smaller and closer mat icon buttons.

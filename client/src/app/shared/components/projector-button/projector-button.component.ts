@@ -50,7 +50,7 @@ export class ProjectorButtonComponent implements OnInit {
      * Pre-define projection target
      */
     @Input()
-    public projector: Projector;
+    public projector: Projector | null;
 
     /**
      * The constructor
@@ -100,6 +100,9 @@ export class ProjectorButtonComponent implements OnInit {
         if (!this.object) {
             return false;
         }
-        return this.projectorService.isProjected(this.object);
+
+        return this.projector
+            ? this.projectorService.isProjectedOn(this.object, this.projector)
+            : this.projectorService.isProjected(this.object);
     }
 }
