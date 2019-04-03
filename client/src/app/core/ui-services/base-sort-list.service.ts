@@ -200,6 +200,16 @@ export abstract class BaseSortListService<V extends BaseViewModel> {
     }
 
     /**
+     * Sorts an array of data synchronously, using the currently configured sorting
+     *
+     * @param data
+     * @returns the data, sorted with the definitions of this service
+     */
+    public sortSync(data: V[]): V[] {
+        return data.sort(this.sortFn);
+    }
+
+    /**
      * Recreates the sorting function. Is supposed to be called on init and
      * every time the sorting (property, ascending/descending) or the language changes
      */

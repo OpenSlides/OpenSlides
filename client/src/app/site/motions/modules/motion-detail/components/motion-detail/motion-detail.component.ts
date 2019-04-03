@@ -52,6 +52,7 @@ import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change
 import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
 import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
+import { MotionSortListService } from 'app/site/motions/services/motion-sort-list.service';
 
 /**
  * Component for the motion detail view
@@ -374,6 +375,12 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * @param categoryRepo access the category repository
      * @param userRepo Repository for users
      * @param notifyService: NotifyService work with notification
+     * @param tagRepo
+     * @param mediaFilerepo
+     * @param workflowRepo
+     * @param blockRepo
+     * @param itemRepo
+     * @param motionSortService
      */
     public constructor(
         title: Title,
@@ -404,7 +411,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         private mediaFilerepo: MediafileRepositoryService,
         private workflowRepo: WorkflowRepositoryService,
         private blockRepo: MotionBlockRepositoryService,
-        private itemRepo: ItemRepositoryService
+        private itemRepo: ItemRepositoryService,
+        private motionSortService: MotionSortListService
     ) {
         super(title, translate, matSnackBar);
     }
@@ -1127,22 +1135,23 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     }
 
     /**
-     * Sets the previous and next motion. Sorts ascending by identifier, and
-     * then appending motion without identifiers sorted by title
+     * Sets the previous and next motion. Sorts by the current sorting as used
+     * in the {@link MotionSortListService}
      */
     public setSurroundingMotions(): void {
-        const indexOfCurrent = this.motionObserver.value.findIndex(motion => {
+        const sortedMotions = this.motionSortService.sortSync(this.motionObserver.value);
+        const indexOfCurrent = sortedMotions.findIndex(motion => {
             return motion === this.motion;
         });
         if (indexOfCurrent > -1) {
             if (indexOfCurrent > 0) {
-                this.previousMotion = this.motionObserver.value[indexOfCurrent - 1];
+                this.previousMotion = sortedMotions[indexOfCurrent - 1];
             } else {
                 this.previousMotion = null;
             }
 
-            if (indexOfCurrent < this.motionObserver.value.length - 1) {
-                this.nextMotion = this.motionObserver.value[indexOfCurrent + 1];
+            if (indexOfCurrent < sortedMotions.length - 1) {
+                this.nextMotion = sortedMotions[indexOfCurrent + 1];
             } else {
                 this.nextMotion = null;
             }
