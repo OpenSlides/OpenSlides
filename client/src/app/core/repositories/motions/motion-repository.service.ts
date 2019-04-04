@@ -430,6 +430,15 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
     }
 
     /**
+     * Returns the amendments to a given motion
+     *
+     * @param motionId the motion ID to get the amendments to
+     */
+    public getAmendmentsInstantly(motionId: number): ViewMotion[] {
+        return this.getViewModelList().filter(motion => motion.parent_id === motionId);
+    }
+
+    /**
      * Format the motion text using the line numbering and change
      * reco algorithm.
      *

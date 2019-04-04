@@ -504,6 +504,18 @@ export class MotionPdfService {
                 [],
                 this.changeRecoRepo.getChangeRecoOfMotion(motion.id)
             );
+
+            // TODO: Cleanup, everything change reco and amendment based needs a unified structure.
+            const amendments = this.motionRepo.getAmendmentsInstantly(motion.id);
+            if (amendments) {
+                for (const amendment of amendments) {
+                    const changedParagraphs = this.motionRepo.getAmendmentAmendedParagraphs(amendment, lineLength);
+                    for (const change of changedParagraphs) {
+                        changes.push(change as ViewUnifiedChange);
+                    }
+                }
+            }
+
             // changes need to be sorted, by "line from".
             // otherwise, formatMotion will make unexpected results by messing up the
             // order of changes applied to the motion
