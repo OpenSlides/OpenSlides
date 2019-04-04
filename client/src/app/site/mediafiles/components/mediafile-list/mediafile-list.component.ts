@@ -40,12 +40,12 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile,
     /**
      * Columns to display in Mediafile table when desktop view is available
      */
-    public displayedColumnsDesktop: string[] = ['title', 'info', 'indicator', 'menu'];
+    public displayedColumnsDesktop: string[] = ['title', 'info', 'indicator'];
 
     /**
      * Columns to display in Mediafile table when mobile view is available
      */
-    public displayedColumnsMobile: string[] = ['title', 'menu'];
+    public displayedColumnsMobile: string[] = ['title'];
 
     /**
      * Show or hide the edit mode
@@ -278,6 +278,9 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile,
         }
         if (this.isMultiSelect) {
             columns = ['selector'].concat(columns);
+        }
+        if (this.canEdit) {
+            columns = columns.concat(['menu']);
         }
         return columns;
     }
