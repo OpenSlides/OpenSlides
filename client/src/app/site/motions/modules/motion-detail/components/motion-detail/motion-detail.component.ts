@@ -515,9 +515,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * Merges amendments and change recommendations and sorts them by the line numbers.
      * Called each time one of these arrays changes.
      *
-     * TODO: 1. Having logic in a service is bad practice
+     * TODO: 1. Having logic outside of a service is bad practice
      *       2. Manipulating class parameters without an subscription should
      *          be avoided. It's safer and simpler to return values than to manipulate the scope
+     *       3. This have been used three times so far. Here, in the projector and in the PDF. Find an own
+     *          service to put the logic into.
      */
     private recalcUnifiedChanges(): void {
         if (!this.lineLength) {
