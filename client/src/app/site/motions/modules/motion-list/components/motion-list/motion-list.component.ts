@@ -295,7 +295,7 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
 
     /**
      * Overwrites the dataSource's string filter with a case-insensitive search
-     * in the identifier, title, state, recommendations, submitters and motion blocks
+     * in the identifier, title, state, recommendations, submitters, motion blocks and id
      */
     private setFulltextFilter(): void {
         this.dataSource.filterPredicate = (data, filter) => {
@@ -332,6 +332,12 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
             if (data.identifier && data.identifier.toLowerCase().includes(filter)) {
                 return true;
             }
+
+            const dataid = '' + data.id;
+            if (dataid.includes(filter)) {
+                return true;
+            }
+
             return false;
         };
     }

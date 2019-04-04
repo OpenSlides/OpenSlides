@@ -683,18 +683,18 @@
             ></os-search-value-selector>
         </div>
 
-        <div class="extra-data" *osPerms="'motion.can_manage'">
+        <div class="extra-data">
             <!-- Attachments -->
             <div *ngIf="motion.hasAttachments() || editMotion" class="content-field">
                 <div *ngIf="!editMotion">
                     <h3>{{ 'Attachments' | translate }}<mat-icon>attach_file</mat-icon></h3>
                     <mat-list dense>
                         <mat-list-item *ngFor="let file of motion.attachments">
-                            <a [routerLink]="" (click)="onClickAttacment(file)">{{ file.title }}</a>
+                            <a [routerLink]="" (click)="onClickAttachment(file)">{{ file.title }}</a>
                         </mat-list-item>
                     </mat-list>
                 </div>
-                <div *ngIf="editMotion" class="shortened-selector">
+                <div *osPerms="'motions.can_manage';and:editMotion" class="shortened-selector">
                     <os-search-value-selector
                         class="selector"
                         ngDefaultControl

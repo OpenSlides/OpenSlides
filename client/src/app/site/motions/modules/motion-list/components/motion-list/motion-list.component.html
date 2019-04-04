@@ -75,6 +75,11 @@
                     <!-- submitters line -->
                     <div class="submitters-line ellipsis-overflow" *ngIf="motion.submitters.length">
                         <span translate>by</span> {{ motion.submitters }}
+                        <span *osPerms="'motions.can_manage'">
+                            &middot;
+                            <span translate>Sequential number</span>
+                            {{ motion.id }}
+                        </span>
                     </div>
                     <!-- state line-->
                     <div class="ellipsis-overflow white">
