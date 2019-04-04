@@ -55,7 +55,7 @@
     <mat-row *matRowDef="let row; columns: getRowDef()" (click)="onClickRow(row)"></mat-row>
 </mat-table>
 
-<mat-paginator class="on-transition-fade" [pageSizeOptions]="[25, 50, 75, 100, 125]"></mat-paginator>
+<mat-paginator class="on-transition-fade" [pageSizeOptions]="pageSize"></mat-paginator>
 
 <mat-menu #historyMenu="matMenu">
     <button mat-menu-item class="red-warning-text" (click)="onDeleteAllButton()">

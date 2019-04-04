@@ -46,6 +46,11 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel, M extends B
     private paginationStorageObject: { [key: string]: number };
 
     /**
+     * Determine the default page size of paginated list views
+     */
+    public pageSize = [50, 100, 150, 200, 250];
+
+    /**
      * The table itself
      */
     @ViewChild(MatTable)

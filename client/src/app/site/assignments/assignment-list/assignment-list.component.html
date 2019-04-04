@@ -16,82 +16,91 @@
 </os-head-bar>
 
 <mat-drawer-container class="on-transition-fade">
-        <os-sort-filter-bar [filterCount]="filteredCount" [filterService]="filterService" [sortService]="sortService"
-            (searchFieldChange)="searchFilter($event)">
-        </os-sort-filter-bar>
-<mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
-    <!-- slector column -->
-    <ng-container matColumnDef="selector">
-        <mat-header-cell *matHeaderCellDef mat-sort-header class="icon-cell"></mat-header-cell>
-        <mat-cell *matCellDef="let assignment" class="icon-cell">
-            <mat-icon>{{ isSelected(assignment) ? 'check_circle' : '' }}</mat-icon>
-        </mat-cell>
-    </ng-container>
-    <!-- name column -->
-    <ng-container matColumnDef="title">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
-        <mat-cell *matCellDef="let assignment">{{ assignment.getTitle() }}</mat-cell>
-    </ng-container>
-    <!-- pahse column-->
-    <ng-container matColumnDef="phase">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Phase</mat-header-cell>
-        <mat-cell *matCellDef="let assignment">
-            <mat-chip-list>
-                <mat-chip color="primary" selected>{{ assignment.phase }}</mat-chip>
-            </mat-chip-list>
-        </mat-cell>
-        <button mat-menu-item (click)="selectAll()">
-            <mat-icon>done_all</mat-icon>
-            <span translate>Select all</span>
-        </button>
-        <button mat-menu-item (click)="deselectAll()">
-            <mat-icon>clear</mat-icon>
-            <span translate>Deselect all</span>
-        </button>
-    </ng-container>
-    <!-- candidates column -->
-    <ng-container matColumnDef="candidates">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Candidates</mat-header-cell>
-        <mat-cell *matCellDef="let assignment">
-            <mat-chip-list>
-                <mat-chip color="accent" selected>{{ assignment.candidateAmount }}</mat-chip>
-            </mat-chip-list>
-        </mat-cell>
-    </ng-container>
-
-    <mat-header-row *matHeaderRowDef="getColumnDefintion()"></mat-header-row>
-    <mat-row
-        [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected' : ''"
-        (click)="selectItem(row, $event)"
-        *matRowDef="let row; columns: getColumnDefintion()"
+    <os-sort-filter-bar
+        [filterCount]="filteredCount"
+        [filterService]="filterService"
+        [sortService]="sortService"
+        (searchFieldChange)="searchFilter($event)"
     >
-    </mat-row>
-</mat-table>
+    </os-sort-filter-bar>
+    <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
+        <!-- slector column -->
+        <ng-container matColumnDef="selector">
+            <mat-header-cell *matHeaderCellDef mat-sort-header class="icon-cell"></mat-header-cell>
+            <mat-cell *matCellDef="let assignment" class="icon-cell">
+                <mat-icon>{{ isSelected(assignment) ? 'check_circle' : '' }}</mat-icon>
+            </mat-cell>
+        </ng-container>
+        <!-- name column -->
+        <ng-container matColumnDef="title">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
+            <mat-cell *matCellDef="let assignment">{{ assignment.getTitle() }}</mat-cell>
+        </ng-container>
+        <!-- pahse column-->
+        <ng-container matColumnDef="phase">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Phase</mat-header-cell>
+            <mat-cell *matCellDef="let assignment">
+                <mat-chip-list>
+                    <mat-chip color="primary" selected>{{ assignment.phase }}</mat-chip>
+                </mat-chip-list>
+            </mat-cell>
+            <button mat-menu-item (click)="selectAll()">
+                <mat-icon>done_all</mat-icon>
+                <span translate>Select all</span>
+            </button>
+            <button mat-menu-item (click)="deselectAll()">
+                <mat-icon>clear</mat-icon>
+                <span translate>Deselect all</span>
+            </button>
+        </ng-container>
+        <!-- candidates column -->
+        <ng-container matColumnDef="candidates">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Candidates</mat-header-cell>
+            <mat-cell *matCellDef="let assignment">
+                <mat-chip-list>
+                    <mat-chip color="accent" selected>{{ assignment.candidateAmount }}</mat-chip>
+                </mat-chip-list>
+            </mat-cell>
+        </ng-container>
 
-<mat-paginator class="on-transition-fade" [pageSizeOptions]="[25, 50, 75, 100, 125]"></mat-paginator>
+        <mat-header-row *matHeaderRowDef="getColumnDefintion()"></mat-header-row>
+        <mat-row
+            [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected' : ''"
+            (click)="selectItem(row, $event)"
+            *matRowDef="let row; columns: getColumnDefintion()"
+        >
+        </mat-row>
+    </mat-table>
 
-<mat-menu #assignmentMenu="matMenu">
-    <div *ngIf="!isMultiSelect">
-        <button mat-menu-item *osPerms="'assignment.can_manage'" (click)="toggleMultiSelect()">
-            <mat-icon>library_add</mat-icon>
-            <span translate>Multiselect</span>
-        </button>
-        <button mat-menu-item (click)="downloadAssignmentButton()">
-            <mat-icon>archive</mat-icon>
-            <span translate>Export ...</span>
-        </button>
-    </div>
+    <mat-paginator class="on-transition-fade" [pageSizeOptions]="pageSize"></mat-paginator>
 
-    <div *ngIf="isMultiSelect">
-        <button mat-menu-item (click)="selectAll()">
-            <mat-icon>done_all</mat-icon>
-            <span translate>Select all</span>
-        </button>
-        <mat-divider></mat-divider>
-        <button mat-menu-item class="red-warning-text" *osPerms="'assignment.can_manage'" (click)="deleteSelected()">
-            <mat-icon>delete</mat-icon>
-            <span translate>Delete</span>
-        </button>
-    </div>
-</mat-menu>
+    <mat-menu #assignmentMenu="matMenu">
+        <div *ngIf="!isMultiSelect">
+            <button mat-menu-item *osPerms="'assignment.can_manage'" (click)="toggleMultiSelect()">
+                <mat-icon>library_add</mat-icon>
+                <span translate>Multiselect</span>
+            </button>
+            <button mat-menu-item (click)="downloadAssignmentButton()">
+                <mat-icon>archive</mat-icon>
+                <span translate>Export ...</span>
+            </button>
+        </div>
+
+        <div *ngIf="isMultiSelect">
+            <button mat-menu-item (click)="selectAll()">
+                <mat-icon>done_all</mat-icon>
+                <span translate>Select all</span>
+            </button>
+            <mat-divider></mat-divider>
+            <button
+                mat-menu-item
+                class="red-warning-text"
+                *osPerms="'assignment.can_manage'"
+                (click)="deleteSelected()"
+            >
+                <mat-icon>delete</mat-icon>
+                <span translate>Delete</span>
+            </button>
+        </div>
+    </mat-menu>
 </mat-drawer-container>
