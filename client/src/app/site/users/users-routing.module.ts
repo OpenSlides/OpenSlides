@@ -16,39 +16,39 @@ const routes: Routes = [
     },
     {
         path: 'password',
-        component: PasswordComponent
+        component: PasswordComponent,
+        data: { basePerm: 'users.can_change_password' }
     },
     {
         path: 'password/:id',
-        component: PasswordComponent
+        component: PasswordComponent,
+        data: { basePerm: 'can_manage' }
     },
     {
         path: 'new',
-        component: UserDetailComponent
+        component: UserDetailComponent,
+        data: { basePerm: 'users.can_manage' }
     },
     {
         path: 'import',
-        component: UserImportListComponent
+        component: UserImportListComponent,
+        data: { basePerm: 'users.can_manage' }
     },
     {
         path: 'presence',
-        component: PresenceDetailComponent
-        // FIXME: CRITICAL: restricted to basePerm: 'users.can_manage' and config 'users_enable_presence_view'
+        component: PresenceDetailComponent,
+        // TODO: 'users_enable_presence_view' missing in permissions
+        data: { basePerm: 'users.can_manage' }
     },
     {
         path: 'groups',
-        component: GroupListComponent
-        /**
-         * FIXME: CRITICAL:
-         * Refreshing the page, even while having the required permission, will navigate you back to "/"
-         * Makes developing protected areas impossible.
-         * Has the be (temporarily) removed if this page should be edited.
-         */
-        // data: { basePerm: 'users.can_manage' }
+        component: GroupListComponent,
+        data: { basePerm: 'users.can_manage' }
     },
     {
         path: ':id',
-        component: UserDetailComponent
+        component: UserDetailComponent,
+        data: { basePerm: 'users.can_see_name' }
     }
 ];
 

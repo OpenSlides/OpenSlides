@@ -9,40 +9,49 @@ const routes: Routes = [
     },
     {
         path: 'import',
-        loadChildren: './modules/motion-import/motion-import.module#MotionImportModule'
+        loadChildren: './modules/motion-import/motion-import.module#MotionImportModule',
+        data: { basePerm: 'motions.can_manage' }
     },
     {
         path: 'statute-paragraphs',
-        loadChildren: './modules/statute-paragraph/statute-paragraph.module#StatuteParagraphModule'
+        loadChildren: './modules/statute-paragraph/statute-paragraph.module#StatuteParagraphModule',
+        data: { basePerm: 'motions.can_manage' }
     },
     {
         path: 'comment-section',
-        loadChildren: './modules/motion-comment-section/motion-comment-section.module#MotionCommentSectionModule'
+        loadChildren: './modules/motion-comment-section/motion-comment-section.module#MotionCommentSectionModule',
+        data: { basePerm: 'motions.can_manage' }
     },
     {
         path: 'call-list',
-        loadChildren: './modules/call-list/call-list.module#CallListModule'
+        loadChildren: './modules/call-list/call-list.module#CallListModule',
+        data: { basePerm: 'motions.can_manage' }
     },
     {
         path: 'category',
-        loadChildren: './modules/category/category.module#CategoryModule'
+        loadChildren: './modules/category/category.module#CategoryModule',
+        data: { basePerm: 'motions.can_see' }
     },
     {
         path: 'blocks',
-        loadChildren: './modules/motion-block/motion-block.module#MotionBlockModule'
+        loadChildren: './modules/motion-block/motion-block.module#MotionBlockModule',
+        data: { basePerm: 'motions.can_manage' }
     },
     {
         path: 'workflow',
-        loadChildren: './modules/motion-workflow/motion-workflow.module#MotionWorkflowModule'
+        loadChildren: './modules/motion-workflow/motion-workflow.module#MotionWorkflowModule',
+        data: { basePerm: 'motions.can_manage' }
     },
     {
         path: 'new',
-        loadChildren: './modules/motion-detail/motion-detail.module#MotionDetailModule'
+        loadChildren: './modules/motion-detail/motion-detail.module#MotionDetailModule',
+        data: { basePerm: 'motions.can_create' }
     },
     {
         path: ':id',
         loadChildren: './modules/motion-detail/motion-detail.module#MotionDetailModule',
-        runGuardsAndResolvers: 'paramsChange'
+        runGuardsAndResolvers: 'paramsChange',
+        data: { basePerm: 'motions.can_see' }
     }
 ];
 

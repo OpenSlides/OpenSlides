@@ -60,6 +60,13 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile,
     /**
      * @returns true if the user can manage media files
      */
+    public get canUploadFiles(): boolean {
+        return this.operator.hasPerms('mediafiles.can_see') && this.operator.hasPerms('mediafiles.can_upload');
+    }
+
+    /**
+     * @return true if the user can manage media files
+     */
     public get canEdit(): boolean {
         return this.operator.hasPerms('mediafiles.can_manage');
     }

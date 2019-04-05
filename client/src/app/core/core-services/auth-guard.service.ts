@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, CanActivateChild } from '@angular/router';
+import { CanActivate, ActivatedRouteSnapshot, CanActivateChild, Router } from '@angular/router';
 
 import { OperatorService } from './operator.service';
 
@@ -11,9 +11,12 @@ import { OperatorService } from './operator.service';
 })
 export class AuthGuard implements CanActivate, CanActivateChild {
     /**
-     * @param operator
+     * Constructor
+     *
+     * @param router To navigate to a target URL
+     * @param operator Asking for the required permission
      */
-    public constructor(private operator: OperatorService) {}
+    public constructor(private router: Router, private operator: OperatorService) {}
 
     /**
      * Checks of the operator has the required permission to see the state.
@@ -22,10 +25,9 @@ export class AuthGuard implements CanActivate, CanActivateChild {
      * `data: {basePerm: ['<perm1>', '<perm2>']}` to lock the access to users
      * only with the given permission(s).
      *
-     * @param route required by `canActivate()`
-     * @param state the state (URL) that the user want to access
+     * @param route the route the user wants to navigate to
      */
-    public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    public canActivate(route: ActivatedRouteSnapshot): boolean {
         const basePerm: string | string[] = route.data.basePerm;
 
         if (!basePerm) {
@@ -39,10 +41,19 @@ export class AuthGuard implements CanActivate, CanActivateChild {
 
     /**
      * Calls {@method canActivate}. Should have the same logic.
-     * @param route
-     * @param state
+     *
+     * @param route the route the user wants to navigate to
      */
-    public canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-        return this.canActivate(route, state);
+    public canActivateChild(route: ActivatedRouteSnapshot): boolean {
+        if (this.canActivate(route)) {
+            return true;
+        } else {
+            this.router.navigate(['/error'], {
+                queryParams: {
+                    error: 'Authentication Error',
+                    msg: route.data.basePerm
+                }
+            });
+        }
     }
 }

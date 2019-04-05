@@ -83,7 +83,7 @@ class MotionChangeRecommendationAccessPermissions(BaseAccessPermissions):
         """
         # Parse data.
         if await async_has_perm(user_id, "motions.can_see"):
-            has_manage_perms = await async_has_perm(user_id, "motion.can_manage")
+            has_manage_perms = await async_has_perm(user_id, "motions.can_manage")
             data = []
             for full in full_data:
                 if not full["internal"] or has_manage_perms:

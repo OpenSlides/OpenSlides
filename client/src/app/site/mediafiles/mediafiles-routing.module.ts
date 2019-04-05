@@ -5,7 +5,7 @@ import { MediaUploadComponent } from './components/media-upload/media-upload.com
 
 const routes: Routes = [
     { path: '', component: MediafileListComponent, pathMatch: 'full' },
-    { path: 'upload', component: MediaUploadComponent }
+    { path: 'upload', component: MediaUploadComponent, data: { basePerm: 'mediafiles.can_upload' } }
 ];
 
 @NgModule({
