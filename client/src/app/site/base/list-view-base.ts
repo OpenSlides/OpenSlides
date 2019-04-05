@@ -168,6 +168,12 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel, M extends B
         this.dataSource.paginator = this.paginator;
     }
 
+    /**
+     * Central search/filter function. Can be extended and overwritten by a filterPredicate.
+     * Functions for that are usually called 'setFulltextFilter'
+     *
+     * @param event the string to search for
+     */
     public searchFilter(event: string): void {
         this.dataSource.filter = event;
     }
