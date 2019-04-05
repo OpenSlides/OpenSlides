@@ -2,8 +2,13 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { CsvExportService, CsvColumnDefinitionProperty } from 'app/core/ui-services/csv-export.service';
+import {
+    CsvExportService,
+    CsvColumnDefinitionProperty,
+    CsvColumnDefinitionMap
+} from 'app/core/ui-services/csv-export.service';
 import { InfoToExport } from './motion-pdf.service';
+import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { ViewMotion } from '../models/view-motion';
 
 /**
@@ -19,7 +24,11 @@ export class MotionCsvExportService {
      * @param csvExport CsvExportService
      * @param translate TranslateService
      */
-    public constructor(private csvExport: CsvExportService, private translate: TranslateService) {}
+    public constructor(
+        private csvExport: CsvExportService,
+        private translate: TranslateService,
+        private motionRepo: MotionRepositoryService
+    ) {}
 
     /**
      * Export all motions as CSV
@@ -30,8 +39,22 @@ export class MotionCsvExportService {
      */
     public exportMotionList(motions: ViewMotion[], contentToExport: string[], infoToExport: InfoToExport[]): void {
         const propertyList = ['identifier', 'title'].concat(contentToExport, infoToExport);
-        const exportProperties: CsvColumnDefinitionProperty<ViewMotion>[] = propertyList.map(option => {
-            return { property: option } as CsvColumnDefinitionProperty<ViewMotion>;
+        const exportProperties: (
+            | CsvColumnDefinitionProperty<ViewMotion>
+            | CsvColumnDefinitionMap<ViewMotion>)[] = propertyList.map(option => {
+            if (option === 'recommendation') {
+                return {
+                    label: 'recommendation',
+                    map: motion => this.motionRepo.getExtendedRecommendationLabel(motion)
+                };
+            } else if (option === 'state') {
+                return {
+                    label: 'state',
+                    map: motion => this.motionRepo.getExtendedStateLabel(motion)
+                };
+            } else {
+                return { property: option } as CsvColumnDefinitionProperty<ViewMotion>;
+            }
         });
 
         this.csvExport.export(motions, exportProperties, this.translate.instant('Motions') + '.csv');
@@ -52,8 +75,7 @@ export class MotionCsvExportService {
                 { property: 'title' },
                 {
                     label: 'recommendation',
-                    map: motion =>
-                        motion.recommendation ? this.translate.instant(motion.recommendation.recommendation_label) : ''
+                    map: motion => (motion.recommendation ? this.motionRepo.getExtendedRecommendationLabel(motion) : '')
                 },
                 { property: 'motion_block', label: 'Motion block' }
             ],
