@@ -63,12 +63,11 @@
         <input
             type="number"
             matInput
-            [value]="getSumValue('votestotal')"
-            (change)="setSumValue('votestotal', $event.target.value)"
+            [value]="getSumValue('votescast')"
+            (change)="setSumValue('votescast', $event.target.value)"
         />
         <mat-label translate>Total votes</mat-label>
     </mat-form-field>
-
 </div>
 <div class="submit-buttons">
     <button mat-button (click)="submit()">{{ 'Save' | translate }}</button>

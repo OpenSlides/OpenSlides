@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
 
@@ -12,17 +12,18 @@ import { Poll } from 'app/shared/models/assignments/poll';
 import { PollOption } from 'app/shared/models/assignments/poll-option';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewAssignment } from '../../models/view-assignment';
+import { BaseViewComponent } from 'app/site/base/base-view';
+import { Title } from '@angular/platform-browser';
 
 /**
  * Component for a single assignment poll. Used in assignment detail view
- * TODO DOCU
  */
 @Component({
     selector: 'os-assignment-poll',
     templateUrl: './assignment-poll.component.html',
     styleUrls: ['./assignment-poll.component.scss']
 })
-export class AssignmentPollComponent implements OnInit {
+export class AssignmentPollComponent extends BaseViewComponent implements OnInit {
     /**
      * The related assignment (used for metainfos, e.g. related user names)
      */
@@ -52,6 +53,8 @@ export class AssignmentPollComponent implements OnInit {
     }
 
     /**
+     * Gets the voting options
+     *
      * @returns all used (not undefined) option-independent values that are
      * used in this poll (e.g.)
      */
@@ -60,6 +63,8 @@ export class AssignmentPollComponent implements OnInit {
     }
 
     /**
+     * Gets the translated poll method name
+     *
      * TODO: check/improve text here
      *
      * @returns a name for the poll method this poll is set to (which is determined
@@ -92,15 +97,20 @@ export class AssignmentPollComponent implements OnInit {
      * @param promptService Prompts for confirmation dialogs
      */
     public constructor(
+        titleService: Title,
+        matSnackBar: MatSnackBar,
         public pollService: AssignmentPollService,
         private operator: OperatorService,
         private assignmentRepo: AssignmentRepositoryService,
         public translate: TranslateService,
         public dialog: MatDialog,
         private promptService: PromptService
-    ) {}
+    ) {
+        super(titleService, translate, matSnackBar);
+    }
 
     /**
+     * Gets the currently selected majority choice option from the repo
      */
     public ngOnInit(): void {
         this.majorityChoice =
@@ -116,17 +126,17 @@ export class AssignmentPollComponent implements OnInit {
     public async onDeletePoll(): Promise<void> {
         const title = this.translate.instant('Are you sure you want to delete this poll?');
         if (await this.promptService.open(title, null)) {
-            await this.assignmentRepo.deletePoll(this.poll);
+            await this.assignmentRepo.deletePoll(this.poll).then(null, this.raiseError);
         }
-        // TODO error handling
     }
 
     /**
+     * Print the PDF of this poll with the corresponding options and numbers
+     *
      * TODO Print the ballots for this poll.
      */
     public printBallot(poll: Poll): void {
-        this.promptService.open('TODO', 'TODO');
-        // TODO Print ballot not implemented
+        this.raiseError('Not yet implemented');
     }
 
     /**
@@ -136,7 +146,7 @@ export class AssignmentPollComponent implements OnInit {
      * @returns the full_name for the candidate
      */
     public getCandidateName(option: PollOption): string {
-        const user = this.assignment.candidates.find(c => c.id === option.candidate_id);
+        const user = this.assignment.candidates.find(candidate => candidate.id === option.candidate_id);
         return user ? user.full_name : '';
         // TODO this.assignment.candidates may not contain every candidates' name (if deleted later)
         // so we should rather use this.userRepo.getViewModel(option.id).full_name
@@ -161,7 +171,6 @@ export class AssignmentPollComponent implements OnInit {
     /**
      * Opens the {@link AssignmentPollDialogComponent} dialog and then updates the votes, if the dialog
      * closes successfully (validation is done there)
-     *
      */
     public enterVotes(): void {
         // TODO deep copy of this.poll (JSON parse is ugly workaround)
@@ -174,13 +183,12 @@ export class AssignmentPollComponent implements OnInit {
             data: data,
             maxHeight: '90vh',
             minWidth: '300px',
-            maxWidth: '80vh',
+            maxWidth: '80vw',
             disableClose: true
         });
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.assignmentRepo.updateVotes(result, this.poll);
-                // TODO error handling
+                this.assignmentRepo.updateVotes(result, this.poll).then(null, this.raiseError);
             }
         });
     }
@@ -188,6 +196,7 @@ export class AssignmentPollComponent implements OnInit {
     /**
      * Updates the majority method for this poll
      *
+     * @param method the selected majority method
      */
     public setMajority(method: MajorityMethod): void {
         this.majorityChoice = method;
@@ -209,9 +218,10 @@ export class AssignmentPollComponent implements OnInit {
         if (!this.operator.hasPerms('assignments.can_manage')) {
             return;
         }
+
         // TODO additional conditions: assignment not finished?
         const candidate = this.assignment.assignment.assignment_related_users.find(
-            u => u.user_id === option.candidate_id
+            user => user.user_id === option.candidate_id
         );
         if (candidate) {
             this.assignmentRepo.markElected(candidate, this.assignment, !option.is_elected);

@@ -1,4 +1,8 @@
-<os-head-bar [mainButton]="operator.hasPerms('assignments.can_manage')" (mainEvent)="onPlusButton()" [multiSelectMode]="isMultiSelect">
+<os-head-bar
+    [mainButton]="operator.hasPerms('assignments.can_manage')"
+    (mainEvent)="onPlusButton()"
+    [multiSelectMode]="isMultiSelect"
+>
     <!-- Title -->
     <div class="title-slot"><h2 translate>Elections</h2></div>
     <!-- Menu -->
@@ -90,6 +94,10 @@
             <button mat-menu-item (click)="selectAll()">
                 <mat-icon>done_all</mat-icon>
                 <span translate>Select all</span>
+            </button>
+            <button mat-menu-item (click)="deselectAll()">
+                <mat-icon>clear</mat-icon>
+                <span translate>Deselect all</span>
             </button>
             <mat-divider></mat-divider>
             <button

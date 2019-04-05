@@ -1,18 +1,16 @@
-import { Router, ActivatedRoute } from '@angular/router';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatSnackBar, MatSelectChange } from '@angular/material';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 
-import { BehaviorSubject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
-
-import { BaseViewComponent } from '../../../base/base-view';
 
 import { Assignment } from 'app/shared/models/assignments/assignment';
 import { AssignmentPollService } from '../../services/assignment-poll.service';
 import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
-import { AssignmentUser } from 'app/shared/models/assignments/assignment-user';
+import { BaseViewComponent } from 'app/site/base/base-view';
 import { ConstantsService } from 'app/core/ui-services/constants.service';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
@@ -34,7 +32,7 @@ import { ViewUser } from 'app/site/users/models/view-user';
     templateUrl: './assignment-detail.component.html',
     styleUrls: ['./assignment-detail.component.scss']
 })
-export class AssignmentDetailComponent extends BaseViewComponent implements OnInit, OnDestroy {
+export class AssignmentDetailComponent extends BaseViewComponent implements OnInit {
     /**
      * Determines if the assignment is new
      */
@@ -72,17 +70,17 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
     public assignmentForm: FormGroup;
 
     /**
-     * Used in the seacrhValue selector to assign tags
+     * Used in the search Value selector to assign tags
      */
     public tagsObserver: BehaviorSubject<ViewTag[]>;
 
     /**
-     * Used in the seacrhValue selector to assign an agenda item
+     * Used in the search Value selector to assign an agenda item
      */
     public agendaObserver: BehaviorSubject<ViewItem[]>;
 
     /**
-     * Sets the assignment, e.g. via an autoupdate. Reload important things here:
+     * Sets the assignment, e.g. via an auto update. Reload important things here:
      * - Poll base values are be recalculated
      *
      * @param assignment the assignment to set
@@ -253,7 +251,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
     }
 
     /**
-     * TODO: change/update the assignment form values
+     * Changes/updates the assignment form values
      *
      * @param assignment
      */
@@ -282,7 +280,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
 
     /**
      * Creates a new Poll
-     * TODO: directly open poll dialog
+     * TODO: directly open poll dialog?
      */
     public async createPoll(): Promise<void> {
         await this.repo.addPoll(this.assignment).then(null, this.raiseError);
@@ -304,14 +302,12 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
 
     /**
      * Adds a user to the list of candidates
-     *
-     * @param user
      */
     public async addUser(): Promise<void> {
         const candId = this.candidatesForm.get('candidate').value;
         this.candidatesForm.setValue({ candidate: null });
         if (candId) {
-            await this.repo.addCandidate(candId, this.assignment).then(null, this.raiseError);
+            await this.repo.changeCandidate(candId, this.assignment).then(null, this.raiseError);
         }
     }
 
@@ -320,8 +316,8 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
      *
      * @param user Assignment User
      */
-    public async removeUser(user: AssignmentUser): Promise<void> {
-        await this.repo.deleteCandidate(user, this.assignment).then(null, this.raiseError);
+    public async removeUser(user: ViewUser): Promise<void> {
+        await this.repo.changeCandidate(user.id, this.assignment).then(null, this.raiseError);
     }
 
     /**
@@ -343,7 +339,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
             );
         } else {
             this.newAssignment = true;
-            // TODO set defaults
+            // TODO set defaults?
             this.assignment = new ViewAssignment(new Assignment());
             this.patchForm(this.assignment);
             this.setEditMode(true);

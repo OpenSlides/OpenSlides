@@ -16,7 +16,7 @@ export type AssignmentPollMethod = 'yn' | 'yna' | 'votes';
 type AssignmentPercentBase = 'YES_NO_ABSTAIN' | 'YES_NO' | 'VALID' | 'CAST' | 'DISABLED';
 
 /**
- * Service class for motion polls.
+ * Service class for assignment polls.
  */
 @Injectable({
     providedIn: 'root'
@@ -46,6 +46,7 @@ export class AssignmentPollService extends PollService {
 
     /**
      * Constructor. Subscribes to the configuration values needed
+     *
      * @param config ConfigService
      */
     public constructor(config: ConfigService) {
@@ -59,12 +60,11 @@ export class AssignmentPollService extends PollService {
         config
             .get<AssignmentPercentBase>('assignments_poll_100_percent_base')
             .subscribe(base => (this.percentBase = base));
-        // assignments_add_candidates_to_list_of_speakers boolean
     }
 
     /**
      * Get the base amount for the 100% calculations. Note that some poll methods
-     * (e.g. yes/no/abstain may have a diffferent percentage base and will return null here)
+     * (e.g. yes/no/abstain may have a different percentage base and will return null here)
      *
      * @param poll
      * @returns The amount of votes indicating the 100% base
@@ -120,6 +120,8 @@ export class AssignmentPollService extends PollService {
     /**
      * Check if the option in a poll is abstract (percentages should not be calculated)
      *
+     * @param poll
+     * @param option
      * @returns true if the poll has no percentages, the poll option is a special value,
      * or if the calculations are disabled in the config
      */

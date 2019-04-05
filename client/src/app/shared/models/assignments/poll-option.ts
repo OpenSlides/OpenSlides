@@ -32,10 +32,10 @@ export class PollOption extends Deserializer {
                 }
             });
             if (input.votes) {
-                input.votes = input.votes.map(v => {
+                input.votes = input.votes.map(vote => {
                     return {
-                        value: v.value,
-                        weight: parseInt(v.weight, 10)
+                        value: vote.value,
+                        weight: parseInt(vote.weight, 10)
                     };
                 });
             }

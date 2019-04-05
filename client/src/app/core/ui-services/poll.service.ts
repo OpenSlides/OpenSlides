@@ -6,7 +6,6 @@ import { _ } from 'app/core/translate/translation-marker';
  * The possible keys of a poll object that represent numbers.
  * TODO Should be 'key of MotionPoll if type of key is number'
  * TODO: normalize MotionPoll model and other poll models
- * TODO: reuse more motion-poll-service stuff
  */
 export type CalculablePollKey = 'votesvalid' | 'votesinvalid' | 'votescast' | 'yes' | 'no' | 'abstain';
 
@@ -102,9 +101,9 @@ export abstract class PollService {
     /**
      * Gets an icon for a Poll Key
      *
-     * @param key
+     * @param key yes, no, abstain or something like that
      * @returns a string for material-icons to represent the icon for
-     * this key(e.g. yes: positiv sign, no: negative sign)
+     * this key(e.g. yes: positive sign, no: negative sign)
      */
     public getIcon(key: CalculablePollKey): string {
         switch (key) {
@@ -128,6 +127,7 @@ export abstract class PollService {
     /**
      * Gets a label for a poll Key
      *
+     * @param key yes, no, abstain or something like that
      * @returns A short descriptive name for the poll keys
      */
     public getLabel(key: CalculablePollKey | PollVoteValue): string {
@@ -151,11 +151,11 @@ export abstract class PollService {
 
     /**
      * retrieve special labels for a poll value
-     *
-     * @param value
-     * @returns the label for a non-positive value, according to
      * {@link specialPollVotes}. Positive values will return as string
      * representation of themselves
+     *
+     * @param value check value for special numbers
+     * @returns the label for a non-positive value, according to
      */
     public getSpecialLabel(value: number): string {
         if (value >= 0) {
@@ -166,10 +166,9 @@ export abstract class PollService {
     }
 
     /**
-     * Get the progressbar class for a decision key
+     * Get the progress bar class for a decision key
      *
-     * @param key
-     *
+     * @param key a calculable poll key (like yes or no)
      * @returns a css class designing a progress bar in a color, or an empty string
      */
     public getProgressBarColor(key: CalculablePollKey | PollVoteValue): string {

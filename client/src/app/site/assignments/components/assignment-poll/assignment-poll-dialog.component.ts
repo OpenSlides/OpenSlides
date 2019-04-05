@@ -69,7 +69,7 @@ export class AssignmentPollDialogComponent {
 
     /**
      * Validates candidates input (every candidate has their options filled in),
-     * submits and closes the dialog if successfull, else displays an error popup.
+     * submits and closes the dialog if successful, else displays an error popup.
      * TODO better validation
      */
     public submit(): void {
@@ -123,14 +123,14 @@ export class AssignmentPollDialogComponent {
      * @param candidate the candidate for whom to update the value
      * @param newData the new value
      */
-    public setValue(value: PollVoteValue, candidate: PollOption, newData: number): void {
+    public setValue(value: PollVoteValue, candidate: PollOption, newData: string): void {
         const vote = candidate.votes.find(v => v.value === value);
         if (vote) {
-            vote.weight = +newData;
+            vote.weight = parseInt(newData, 10);
         } else {
             candidate.votes.push({
                 value: value,
-                weight: +newData
+                weight: parseInt(newData, 10)
             });
         }
     }
@@ -142,7 +142,7 @@ export class AssignmentPollDialogComponent {
      * @param candidate the pollOption
      * @returns the currently entered number or undefined if no number has been set
      */
-    public getValue(value: PollVoteValue, candidate: PollOption): number {
+    public getValue(value: PollVoteValue, candidate: PollOption): number | undefined {
         const val = candidate.votes.find(v => v.value === value);
         return val ? val.weight : undefined;
     }
@@ -151,10 +151,10 @@ export class AssignmentPollDialogComponent {
      * Retrieves a per-poll value
      *
      * @param value
-     * @returns integer or null
+     * @returns integer or undefined
      */
-    public getSumValue(value: summaryPollKeys): number | null {
-        return this.data.poll[value] || null;
+    public getSumValue(value: summaryPollKeys): number | undefined {
+        return this.data.poll[value] || undefined;
     }
 
     /**
@@ -164,6 +164,6 @@ export class AssignmentPollDialogComponent {
      * @param weight
      */
     public setSumValue(value: summaryPollKeys, weight: string): void {
-        this.data.poll[value] = +weight;
+        this.data.poll[value] = parseInt(weight, 10);
     }
 }

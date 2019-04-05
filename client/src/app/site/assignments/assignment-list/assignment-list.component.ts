@@ -15,8 +15,7 @@ import { StorageService } from 'app/core/core-services/storage.service';
 import { ViewAssignment } from '../models/view-assignment';
 
 /**
- * Listview for the assignments
- *
+ * List view for the assignments
  */
 @Component({
     selector: 'os-assignment-list',
@@ -26,7 +25,9 @@ import { ViewAssignment } from '../models/view-assignment';
 export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignment, Assignment> implements OnInit {
     /**
      * Constructor.
+     *
      * @param titleService
+     * @param storage
      * @param translate
      * @param matSnackBar
      * @param repo the repository
@@ -51,7 +52,7 @@ export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignmen
         public operator: OperatorService
     ) {
         super(titleService, translate, matSnackBar, route, storage, filterService, sortService);
-        // activate multiSelect mode for this listview
+        // activate multiSelect mode for this list view
         this.canMultiSelect = true;
     }
 

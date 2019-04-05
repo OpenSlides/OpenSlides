@@ -33,11 +33,12 @@ export class Poll extends Deserializer {
         // cast stringify numbers
         if (typeof input === 'object') {
             const numberifyKeys = ['id', 'votesvalid', 'votesinvalid', 'votescast', 'assignment_id'];
-            Object.keys(input).forEach(key => {
+
+            for (const key of Object.keys(input)) {
                 if (numberifyKeys.includes(key) && typeof input[key] === 'string') {
                     input[key] = parseInt(input[key], 10);
                 }
-            });
+            }
         }
         super(input);
     }

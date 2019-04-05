@@ -69,6 +69,9 @@ export class ViewAssignment extends BaseAgendaViewModel {
 
     public constructor(assignment: Assignment, relatedUser?: ViewUser[], agendaItem?: ViewItem, tags?: ViewTag[]) {
         super(Assignment.COLLECTIONSTRING);
+
+        console.log('related user: ', relatedUser);
+
         this._assignment = assignment;
         this._relatedUser = relatedUser;
         this._agendaItem = agendaItem;

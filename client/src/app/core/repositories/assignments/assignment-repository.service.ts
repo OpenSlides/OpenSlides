@@ -10,6 +10,7 @@ import { DataSendService } from 'app/core/core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { HttpService } from 'app/core/core-services/http.service';
 import { Item } from 'app/shared/models/agenda/item';
+import { Poll } from 'app/shared/models/assignments/poll';
 import { Tag } from 'app/shared/models/core/tag';
 import { User } from 'app/shared/models/users/user';
 import { ViewAssignment } from 'app/site/assignments/models/view-assignment';
@@ -17,7 +18,6 @@ import { ViewItem } from 'app/site/agenda/models/view-item';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewUser } from 'app/site/users/models/view-user';
-import { Poll } from 'app/shared/models/assignments/poll';
 
 /**
  * Repository Service for Assignments.
@@ -28,14 +28,22 @@ import { Poll } from 'app/shared/models/assignments/poll';
     providedIn: 'root'
 })
 export class AssignmentRepositoryService extends BaseAgendaContentObjectRepository<ViewAssignment, Assignment> {
+    private readonly restPath = '/rest/assignments/assignment/';
+    private readonly restPollPath = '/rest/assignments/poll/';
+    private readonly candidatureOtherPath = '/candidature_other/';
+    private readonly candidatureSelfPath = '/candidature_self/';
+    private readonly createPollPath = '/create_poll/';
+    private readonly markElectedPath = '/mark_elected/';
+
     /**
      * Constructor for the Assignment Repository.
      *
-     * @param DS The DataStore
-     * @param mapperService Maps collection strings to classes
-     * @param viewModelStoreService
-     * @param translate
-     * @param httpService
+     * @param DS DataStore access
+     * @param dataSend Sending data
+     * @param mapperService Map models to object
+     * @param viewModelStoreService Access view models
+     * @param translate Translate string
+     * @param httpService make HTTP Requests
      */
     public constructor(
         DS: DataStoreService,
@@ -76,55 +84,42 @@ export class AssignmentRepositoryService extends BaseAgendaContentObjectReposito
      * Adds another user as a candidate
      *
      * @param userId User id of a candidate
-     * @param assignment
+     * @param assignment The assignment to add the candidate to
      */
-    public async addCandidate(userId: number, assignment: ViewAssignment): Promise<void> {
-        const restPath = `/rest/assignments/assignment/${assignment.id}/candidature_other/`;
+    public async changeCandidate(userId: number, assignment: ViewAssignment): Promise<void> {
         const data = { user: userId };
-        await this.httpService.post(restPath, data);
-    }
-
-    /**
-     * Removes an user from the list of candidates for an assignment
-     *
-     * @param user note: AssignmentUser, not a ViewUser
-     * @param assignment
-     */
-    public async deleteCandidate(user: AssignmentUser, assignment: ViewAssignment): Promise<void> {
-        const restPath = `/rest/assignments/assignment/${assignment.id}/candidature_other/`;
-        const data = { user: user.id };
-        await this.httpService.delete(restPath, data);
+        if (assignment.candidates.some(candidate => candidate.id === userId)) {
+            await this.httpService.delete(this.restPath + assignment.id + this.candidatureOtherPath, data);
+        } else {
+            await this.httpService.post(this.restPath + assignment.id + this.candidatureOtherPath, data);
+        }
     }
 
     /**
      * Add the operator as candidate to the assignment
      *
-     * @param assignment
+     * @param assignment The assignment to add the candidate to
      */
     public async addSelf(assignment: ViewAssignment): Promise<void> {
-        const restPath = `/rest/assignments/assignment/${assignment.id}/candidature_self/`;
-        await this.httpService.post(restPath);
+        await this.httpService.post(this.restPath + assignment.id + this.candidatureSelfPath);
     }
 
     /**
      * Removes the current user (operator) from the list of candidates for an assignment
      *
-     * @param assignment
+     * @param assignment The assignment to remove ourself from
      */
     public async deleteSelf(assignment: ViewAssignment): Promise<void> {
-        const restPath = `/rest/assignments/assignment/${assignment.id}/candidature_self/`;
-        await this.httpService.delete(restPath);
+        await this.httpService.delete(this.restPath + assignment.id + this.candidatureSelfPath);
     }
 
     /**
      * Creates a new Poll to a given assignment
      *
-     * @param assignment
+     * @param assignment The assignment to add the poll to
      */
     public async addPoll(assignment: ViewAssignment): Promise<void> {
-        const restPath = `/rest/assignments/assignment/${assignment.id}/create_poll/`;
-        await this.httpService.post(restPath);
-        // TODO set phase, too, if phase was 0. Should be done server side?
+        await this.httpService.post(this.restPath + assignment.id + this.createPollPath);
     }
 
     /**
@@ -133,8 +128,7 @@ export class AssignmentRepositoryService extends BaseAgendaContentObjectReposito
      * @param id id of the poll to delete
      */
     public async deletePoll(poll: Poll): Promise<void> {
-        const restPath = `/rest/assignments/poll/${poll.id}/`;
-        await this.httpService.delete(restPath);
+        await this.httpService.delete(`${this.restPollPath}${poll.id}/`);
     }
 
     /**
@@ -143,12 +137,11 @@ export class AssignmentRepositoryService extends BaseAgendaContentObjectReposito
      * @param poll the (partial) data to update
      * @param originalPoll the poll to update
      *
-     * TODO check if votes is untouched
+     * TODO: check if votes is untouched
      */
     public async updatePoll(poll: Partial<Poll>, originalPoll: Poll): Promise<void> {
-        const restPath = `/rest/assignments/poll/${originalPoll.id}/`;
         const data: Poll = Object.assign(originalPoll, poll);
-        await this.httpService.patch(restPath, data);
+        await this.httpService.patch(`${this.restPollPath}${originalPoll.id}/`, data);
     }
 
     /**
@@ -186,8 +179,7 @@ export class AssignmentRepositoryService extends BaseAgendaContentObjectReposito
             votesno: null,
             votesvalid: poll.votesvalid || null
         };
-        const restPath = `/rest/assignments/poll/${originalPoll.id}/`;
-        await this.httpService.put(restPath, data);
+        await this.httpService.put(`${this.restPollPath}${originalPoll.id}/`, data);
     }
 
     /**
@@ -198,12 +190,11 @@ export class AssignmentRepositoryService extends BaseAgendaContentObjectReposito
      * @param elected true if the candidate is to be elected, false if unelected
      */
     public async markElected(user: AssignmentUser, assignment: ViewAssignment, elected: boolean): Promise<void> {
-        const restPath = `/rest/assignments/assignment/${assignment.id}/mark_elected/`;
         const data = { user: user.user_id };
         if (elected) {
-            await this.httpService.post(restPath, data);
+            await this.httpService.post(this.restPath + assignment.id + this.markElectedPath, data);
         } else {
-            await this.httpService.delete(restPath, data);
+            await this.httpService.delete(this.restPath + assignment.id + this.markElectedPath, data);
         }
     }
 
