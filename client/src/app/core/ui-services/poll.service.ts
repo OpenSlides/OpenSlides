@@ -180,6 +180,8 @@ export abstract class PollService {
                 return 'progress-red';
             case 'abstain':
                 return 'progress-yellow';
+            case 'votes':
+                return 'progress-green';
             default:
                 return '';
         }

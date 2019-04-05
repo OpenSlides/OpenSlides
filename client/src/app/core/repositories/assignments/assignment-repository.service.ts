@@ -181,12 +181,11 @@ export class AssignmentRepositoryService extends BaseAgendaContentObjectReposito
             assignment_id: originalPoll.assignment_id,
             votes: votes,
             votesabstain: null,
-            votescast: null,
-            votesinvalid: null,
+            votescast: poll.votescast || null,
+            votesinvalid: poll.votesinvalid || null,
             votesno: null,
-            votesvalid: null
+            votesvalid: poll.votesvalid || null
         };
-        // TODO no response, no error shown, votes are not accepted
         const restPath = `/rest/assignments/poll/${originalPoll.id}/`;
         await this.httpService.put(restPath, data);
     }

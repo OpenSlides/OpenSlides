@@ -41,8 +41,34 @@
         </div>
         <mat-divider *ngIf="data.poll.pollmethod !== 'votes'"></mat-divider>
     </div>
+    <mat-form-field>
+        <input
+            type="number"
+            matInput
+            [value]="getSumValue('votesvalid')"
+            (change)="setSumValue('votesvalid', $event.target.value)"
+        />
+        <mat-label translate>Valid votes</mat-label>
+    </mat-form-field>
+    <mat-form-field>
+        <input
+            type="number"
+            matInput
+            [value]="getSumValue('votesinvalid')"
+            (change)="setSumValue('votesinvalid', $event.target.value)"
+        />
+        <mat-label translate>Invalid votes</mat-label>
+    </mat-form-field>
+    <mat-form-field>
+        <input
+            type="number"
+            matInput
+            [value]="getSumValue('votestotal')"
+            (change)="setSumValue('votestotal', $event.target.value)"
+        />
+        <mat-label translate>Total votes</mat-label>
+    </mat-form-field>
 
-    <!-- TODO: total votes -->
 </div>
 <div class="submit-buttons">
     <button mat-button (click)="submit()">{{ 'Save' | translate }}</button>

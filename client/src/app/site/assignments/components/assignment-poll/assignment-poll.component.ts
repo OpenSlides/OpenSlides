@@ -152,7 +152,8 @@ export class AssignmentPollComponent implements OnInit {
      * @returns true if the quorum is successfully met
      */
     public quorumReached(option: PollOption): boolean {
-        const amount = option.votes.find(v => v.value === 'Yes').weight;
+        const yesValue = this.poll.pollmethod === 'votes' ? 'Votes' : 'Yes';
+        const amount = option.votes.find(v => v.value === yesValue).weight;
         const yesQuorum = this.pollService.yesQuorum(this.majorityChoice, this.poll, option);
         return yesQuorum && amount >= yesQuorum;
     }

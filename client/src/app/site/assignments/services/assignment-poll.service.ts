@@ -90,14 +90,15 @@ export class AssignmentPollService extends PollService {
                 }
             case 'CAST':
                 return poll.votescast > 0 && poll.votesinvalid >= 0 ? poll.votescast : null;
+            case 'VALID':
+                return poll.votesvalid > 0 ? poll.votesvalid : null;
             default:
                 return null;
         }
     }
 
     /**
-     * Get the percentage for an option that calculates only on their own yes/no/abstain
-     * values
+     * Get the percentage for an option
      *
      * @param poll
      * @param option
@@ -105,10 +106,7 @@ export class AssignmentPollService extends PollService {
      * @returns a percentage number with two digits, null if the value cannot be calculated
      */
     public getPercent(poll: Poll, option: PollOption, value: PollVoteValue): number | null {
-        if (poll.pollmethod === 'votes') {
-            return null;
-        }
-        const base = this.getOptionBaseAmount(poll, option);
+        const base = poll.pollmethod === 'votes' ? poll.pollBase : this.getOptionBaseAmount(poll, option);
         if (!base) {
             return null;
         }

@@ -67,7 +67,7 @@
                 {{ getCandidateName(option) }}
             </div>
             <!-- Votes -->
-            <div *ngIf="poll.published">
+            <div *ngIf="poll.published && poll.has_votes">
                 <div *ngFor="let vote of option.votes">
                     <div class="poll-progress on-transition-fade">
                         <span>{{ pollService.getLabel(vote.value) | translate }}:</span>
@@ -88,6 +88,7 @@
             </div>
             <div
                 *ngIf="
+                    poll.has_votes &&
                     poll.published &&
                     majorityChoice &&
                     majorityChoice.value !== 'disabled' &&
@@ -106,13 +107,11 @@
         <div>
             <!-- summary -->
             <div *ngFor="let key of pollValues">
-                <div *ngIf="!pollService.isAbstractValue(key)" class="poll-progress-bar">
-                    <mat-progress-bar
-                        mode="determinate"
-                        [value]="pollService.getPercent(key)"
-                        [ngClass]="pollService.getProgressBarColor(key)"
-                    >
-                    </mat-progress-bar>
+                <div>
+                    <span>{{ key | translate }}</span>:
+                </div>
+                <div>
+                    {{ pollService.getSpecialLabel(poll[key]) }}
                 </div>
             </div>
         </div>

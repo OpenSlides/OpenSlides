@@ -6,7 +6,6 @@ from openslides.utils.rest_api import (
     DictField,
     IntegerField,
     ListField,
-    ListSerializer,
     ModelSerializer,
     SerializerMethodField,
     ValidationError,
@@ -20,7 +19,6 @@ from .models import (
     AssignmentPoll,
     AssignmentRelatedUser,
     AssignmentVote,
-    models,
 )
 
 

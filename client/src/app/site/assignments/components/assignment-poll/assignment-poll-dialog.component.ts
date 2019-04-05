@@ -9,6 +9,11 @@ import { PollOption } from 'app/shared/models/assignments/poll-option';
 import { ViewUser } from 'app/site/users/models/view-user';
 
 /**
+ * Vote entries included once for summary (e.g. total votes cast)
+ */
+type summaryPollKeys = 'votescast' | 'votesvalid' | 'votesinvalid';
+
+/**
  * A dialog for updating the values of an assignment-related poll.
  */
 @Component({
@@ -28,11 +33,6 @@ export class AssignmentPollDialogComponent {
      * requires one vote per candidate
      */
     public optionPollKeys: PollVoteValue[];
-
-    /**
-     * Vote entries included once for summary (e.g. total votes cast)
-     */
-    public summaryPollKeys: CalculablePollKey[];
 
     /**
      * Constructor. Retrieves necessary metadata from the pollService,
@@ -145,5 +145,25 @@ export class AssignmentPollDialogComponent {
     public getValue(value: PollVoteValue, candidate: PollOption): number {
         const val = candidate.votes.find(v => v.value === value);
         return val ? val.weight : undefined;
+    }
+
+    /**
+     * Retrieves a per-poll value
+     *
+     * @param value
+     * @returns integer or null
+     */
+    public getSumValue(value: summaryPollKeys): number | null {
+        return this.data.poll[value] || null;
+    }
+
+    /**
+     * Sets a per-poll value
+     *
+     * @param value
+     * @param weight
+     */
+    public setSumValue(value: summaryPollKeys, weight: string): void {
+        this.data.poll[value] = +weight;
     }
 }
