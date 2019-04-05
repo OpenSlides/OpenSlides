@@ -80,25 +80,6 @@ class AssignmentOptionSerializer(ModelSerializer):
         return obj.poll.assignment.is_elected(obj.candidate)
 
 
-class FilterPollListSerializer(ListSerializer):
-    """
-    Customized serializer to filter polls (exclude unpublished).
-    """
-
-    def to_representation(self, data):
-        """
-        List of object instances -> List of dicts of primitive datatypes.
-
-        This method is adapted to filter the data and exclude unpublished polls.
-        """
-        # Dealing with nested relationships, data can be a Manager,
-        # so, first get a queryset from the Manager if needed
-        iterable = (
-            data.filter(published=True) if isinstance(data, models.Manager) else data
-        )
-        return [self.child.to_representation(item) for item in iterable]
-
-
 class AssignmentAllPollSerializer(ModelSerializer):
     """
     Serializer for assignment.models.AssignmentPoll objects.
@@ -196,31 +177,6 @@ class AssignmentAllPollSerializer(ModelSerializer):
         instance.votescast = validated_data.get("votescast", instance.votescast)
         instance.save()
         return instance
-
-
-class AssignmentShortPollSerializer(AssignmentAllPollSerializer):
-    """
-    Serializer for assignment.models.AssignmentPoll objects.
-
-    Serializes only short polls (excluded unpublished polls).
-    """
-
-    class Meta:
-        list_serializer_class = FilterPollListSerializer
-        model = AssignmentPoll
-        fields = (
-            "id",
-            "pollmethod",
-            "description",
-            "published",
-            "options",
-            "votesabstain",
-            "votesno",
-            "votesvalid",
-            "votesinvalid",
-            "votescast",
-            "has_votes",
-        )
 
 
 class AssignmentFullSerializer(ModelSerializer):

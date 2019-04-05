@@ -204,6 +204,13 @@ class ModelSerializerRegisterer(SerializerMetaclass):
         except AttributeError:
             pass
         else:
+            if model_serializer_classes.get(model) is not None:
+                error = (
+                    f"Model {model} is already used for the serializer class "
+                    f"{model_serializer_classes[model]} and cannot be registered "
+                    f"for serializer class {serializer_class}."
+                )
+                raise RuntimeError(error)
             model_serializer_classes[model] = serializer_class
         return serializer_class
 
