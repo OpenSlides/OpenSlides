@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
@@ -14,7 +15,7 @@ import { DataStoreService } from '../../core-services/data-store.service';
 import { DiffLinesInParagraph, DiffService, LineRange, ModificationType } from '../../ui-services/diff.service';
 import { HttpService } from 'app/core/core-services/http.service';
 import { Item } from 'app/shared/models/agenda/item';
-import { LinenumberingService } from '../../ui-services/linenumbering.service';
+import { LinenumberingService, LineNumberRange } from '../../ui-services/linenumbering.service';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { Motion } from 'app/shared/models/motions/motion';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
@@ -46,6 +47,36 @@ import { OperatorService } from 'app/core/core-services/operator.service';
 type SortProperty = 'callListWeight' | 'identifier';
 
 /**
+ * Describes the single paragraphs from the base motion.
+ */
+export interface ParagraphToChoose {
+    /**
+     * The paragraph number.
+     */
+    paragraphNo: number;
+
+    /**
+     * The raw HTML of this paragraph.
+     */
+    rawHtml: string;
+
+    /**
+     * The HTML of this paragraph, wrapped in a `SafeHtml`-object.
+     */
+    safeHtml: SafeHtml;
+
+    /**
+     * The first line number
+     */
+    lineFrom: number;
+
+    /**
+     * The last line number
+     */
+    lineTo: number;
+}
+
+/**
  * Repository Services for motions (and potentially categories)
  *
  * The repository is meant to process domain objects (those found under
@@ -74,6 +105,7 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
      * @param mapperService Maps collection strings to classes
      * @param dataSend sending changed objects
      * @param httpService OpenSlides own Http service
+     * @param sanitizer DOM Sanitizer
      * @param lineNumbering Line numbering for motion text
      * @param diff Display changes in motion text as diff.
      * @param personalNoteService service fo personal notes
@@ -87,6 +119,7 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
         translate: TranslateService,
         config: ConfigService,
         private httpService: HttpService,
+        private readonly sanitizer: DomSanitizer,
         private readonly lineNumbering: LinenumberingService,
         private readonly diff: DiffService,
         private treeService: TreeService,
@@ -635,6 +668,25 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
             html = this.lineNumbering.insertLineNumbers(html, lineLength);
         }
         return this.lineNumbering.splitToParagraphs(html);
+    }
+
+    /**
+     * Returns the data structure used for creating and editing amendments
+     *
+     * @param {ViewMotion} motion
+     * @param {number} lineLength
+     */
+    public getParagraphsToChoose(motion: ViewMotion, lineLength: number): ParagraphToChoose[] {
+        return this.getTextParagraphs(motion, true, lineLength).map((paragraph: string, index: number) => {
+            const affected: LineNumberRange = this.lineNumbering.getLineNumberRange(paragraph);
+            return {
+                paragraphNo: index,
+                safeHtml: this.sanitizer.bypassSecurityTrustHtml(paragraph),
+                rawHtml: this.lineNumbering.stripLineNumbers(paragraph),
+                lineFrom: affected.from,
+                lineTo: affected.to
+            };
+        });
     }
 
     /**

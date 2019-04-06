@@ -623,17 +623,43 @@
             [innerHTML]="getFormattedStatuteAmendment()"
         ></div>
 
-        <!-- The HTML Editor -->
-        <editor formControlName="text" [init]="tinyMceSettings" *ngIf="motion && editMotion" required></editor>
-        <div
-            *ngIf="
+        <!-- The HTML Editor for motions and traditional amendments -->
+        <ng-container *ngIf="motion && editMotion && !motion.isParagraphBasedAmendment()">
+            <editor formControlName="text" [init]="tinyMceSettings" required></editor>
+            <div
+                *ngIf="
                 contentForm.get('text').invalid && (contentForm.get('text').dirty || contentForm.get('text').touched)
             "
-            class="red-warning-text"
-            translate
-        >
-            This field is required.
-        </div>
+                class="red-warning-text"
+                translate
+            >
+                This field is required.
+            </div>
+        </ng-container>
+
+        <!-- The HTML Editor for paragraph-based amendments -->
+        <ng-container *ngIf="motion && editMotion && motion.isParagraphBasedAmendment()">
+            <section *ngFor="let paragraph of contentForm.value.selected_paragraphs">
+                <h4>
+                    <span *ngIf="paragraph.lineFrom >= paragraph.lineTo - 1" class="line-number">
+                        {{ 'Line' | translate }} {{ paragraph.lineFrom }}</span>
+                    <span *ngIf="paragraph.lineFrom < paragraph.lineTo - 1" class="line-number">
+                        {{ 'Line' | translate }} {{ paragraph.lineFrom }} - {{ paragraph.lineTo - 1 }}</span>&nbsp;
+                    <span>*</span>
+                </h4>
+                <editor [formControlName]="'text_' + paragraph.paragraphNo" [init]="tinyMceSettings" required></editor>
+                <div
+                    *ngIf="contentForm.get('text_' + paragraph.paragraphNo).invalid && (
+                        contentForm.get('text_' + paragraph.paragraphNo).dirty ||
+                        contentForm.get('text_' + paragraph.paragraphNo).touched
+                    )"
+                    class="red-warning-text"
+                    translate
+                >
+                    This field is required.
+                </div>
+            </section>
+        </ng-container>
 
         <!-- Paragraph-based amendments -->
         <ng-container *ngIf="!editMotion && motion.isParagraphBasedAmendment()">

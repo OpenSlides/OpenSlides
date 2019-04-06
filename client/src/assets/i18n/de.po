@@ -1708,8 +1708,8 @@ msgstr "Redner/in auswählen oder suchen ..."
 msgid "Select or search new submitter ..."
 msgstr "Antragsteller/in auswählen oder suchen ..."
 
-msgid "Select paragraph"
-msgstr "Absatz auswählen"
+msgid "Select paragraphs"
+msgstr "Absätze auswählen"
 
 msgid "Selected values"
 msgstr "Ausgewählte Werte"
@@ -1785,6 +1785,9 @@ msgstr "Änderungsantrag im Hauptantrag anzeigen"
 
 msgid "Show amendments together with motions"
 msgstr "Änderungsanträge zusätzlich in der Hauptantragsübersicht anzeigen"
+
+msgid "Amendments can change multiple paragraphs"
+msgstr "Änderungsanträge können mehrere Absätze ändern"
 
 msgid "Show clock"
 msgstr "Uhr anzeigen"

@@ -120,6 +120,7 @@ _('Amendments');
 _('Activate statute amendments');
 _('Activate amendments');
 _('Show amendments together with motions');
+_('Amendments can change multiple paragraphs');
 _('Prefix for the identifier for amendments');
 _('The title of the motion is always applied.');
 _('How to create new amendments');
