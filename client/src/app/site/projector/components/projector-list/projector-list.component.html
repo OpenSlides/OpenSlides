@@ -6,9 +6,7 @@
 </os-head-bar>
 
 <mat-card *ngIf="!projectorToCreate && projectors && projectors.length > 1">
-    <span translate>
-        Reference projector for current list of speakers: </span
-    >&nbsp;
+    <span translate> Reference projector for current list of speakers: </span>&nbsp;
     <mat-form-field>
         <mat-select
             [disabled]="!!editId"

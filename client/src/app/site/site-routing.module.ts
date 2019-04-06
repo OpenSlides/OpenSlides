@@ -20,39 +20,48 @@ const routes: Routes = [
             },
             {
                 path: 'agenda',
-                loadChildren: './agenda/agenda.module#AgendaModule'
+                loadChildren: './agenda/agenda.module#AgendaModule',
+                data: { basePerm: 'agenda.can_see' }
             },
             {
                 path: 'assignments',
-                loadChildren: './assignments/assignments.module#AssignmentsModule'
+                loadChildren: './assignments/assignments.module#AssignmentsModule',
+                data: { basePerm: 'assignment.can_see' }
             },
             {
                 path: 'mediafiles',
-                loadChildren: './mediafiles/mediafiles.module#MediafilesModule'
+                loadChildren: './mediafiles/mediafiles.module#MediafilesModule',
+                data: { basePerm: 'mediafiles.can_see' }
             },
             {
                 path: 'motions',
-                loadChildren: './motions/motions.module#MotionsModule'
+                loadChildren: './motions/motions.module#MotionsModule',
+                data: { basePerm: 'motions.can_see' }
             },
             {
                 path: 'settings',
-                loadChildren: './config/config.module#ConfigModule'
+                loadChildren: './config/config.module#ConfigModule',
+                data: { basePerm: 'core.can_manage_config' }
             },
             {
                 path: 'users',
-                loadChildren: './users/users.module#UsersModule'
+                loadChildren: './users/users.module#UsersModule',
+                data: { basePerm: 'users.can_see_name' }
             },
             {
                 path: 'tags',
-                loadChildren: './tags/tag.module#TagModule'
+                loadChildren: './tags/tag.module#TagModule',
+                data: { basePerm: 'core.can_manage_tags' }
             },
             {
                 path: 'history',
-                loadChildren: './history/history.module#HistoryModule'
+                loadChildren: './history/history.module#HistoryModule',
+                data: { basePerm: 'core.can_see_history' }
             },
             {
                 path: 'projectors',
-                loadChildren: './projector/projector.module#ProjectorModule'
+                loadChildren: './projector/projector.module#ProjectorModule',
+                data: { basePerm: 'core.can_see_projector' }
             }
         ],
         canActivateChild: [AuthGuard]

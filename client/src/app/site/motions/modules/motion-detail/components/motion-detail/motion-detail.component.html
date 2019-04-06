@@ -704,7 +704,12 @@
                         listname="{{ 'Attachments' | translate }}"
                         [InputListValues]="mediafilesObserver"
                     ></os-search-value-selector>
-                    <button type="button" mat-icon-button (click)="onUploadAttachmentsButton(uploadDialog)">
+                    <button
+                        type="button"
+                        mat-icon-button
+                        (click)="onUploadAttachmentsButton(uploadDialog)"
+                        *osPerms="'mediafiles.can_upload'"
+                    >
                         <mat-icon>cloud_upload</mat-icon>
                     </button>
                 </div>

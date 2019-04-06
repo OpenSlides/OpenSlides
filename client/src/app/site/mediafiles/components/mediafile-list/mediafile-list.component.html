@@ -1,5 +1,5 @@
 <os-head-bar
-    [mainButton]="canEdit"
+    [mainButton]="canUploadFiles"
     [editMode]="editFile"
     [multiSelectMode]="isMultiSelect"
     (mainEvent)="onMainEvent()"
@@ -38,7 +38,7 @@
     </div>
 
     <!-- Menu -->
-    <div class="menu-slot" *ngIf="canEdit">
+    <div class="menu-slot" *osPerms="'mediafiles.can_manage'">
         <button type="button" mat-icon-button [matMenuTriggerFor]="mediafilesMenu">
             <mat-icon>more_vert</mat-icon>
         </button>
@@ -142,71 +142,68 @@
     </mat-table>
 
     <mat-paginator class="on-transition-fade" [pageSizeOptions]="pageSize"></mat-paginator>
+</mat-drawer-container>
 
-    <mat-menu #singleFileMenu="matMenu">
-        <ng-template matMenuContent let-file="file">
-            <!-- Exclusive for images -->
-            <div *ngIf="file.isImage()">
-                <div *ngFor="let action of logoActions">
-                    <ng-container
-                        *ngTemplateOutlet="manageButton; context: { file: file, action: action }"
-                    ></ng-container>
-                </div>
+<!-- Template for the managing buttons -->
+<ng-template #manageButton let-file="file" let-action="action">
+    <button mat-menu-item (click)="onManageButton($event, file, action)">
+        <mat-icon color="accent"> {{ isUsedAs(file, action) ? 'check_box' : 'check_box_outline_blank' }} </mat-icon>
+        <span>{{ getNameOfAction(action) }}</span>
+    </button>
+</ng-template>
+
+<!-- Menu for single files in the list -->
+<mat-menu #singleFileMenu="matMenu">
+    <ng-template matMenuContent let-file="file">
+        <!-- Exclusive for images -->
+        <div *ngIf="file.isImage()">
+            <div *ngFor="let action of logoActions">
+                <ng-container *ngTemplateOutlet="manageButton; context: { file: file, action: action }"></ng-container>
             </div>
+        </div>
 
-            <!-- Exclusive for fonts -->
-            <div *ngIf="file.isFont()">
-                <div *ngFor="let action of fontActions">
-                    <ng-container
-                        *ngTemplateOutlet="manageButton; context: { file: file, action: action }"
-                    ></ng-container>
-                </div>
+        <!-- Exclusive for fonts -->
+        <div *ngIf="file.isFont()">
+            <div *ngFor="let action of fontActions">
+                <ng-container *ngTemplateOutlet="manageButton; context: { file: file, action: action }"></ng-container>
             </div>
+        </div>
 
-            <!-- Edit and delete for all images -->
-            <mat-divider></mat-divider>
-            <button mat-menu-item (click)="onEditFile(file)">
-                <mat-icon>edit</mat-icon>
-                <span translate>Edit</span>
-            </button>
-            <button mat-menu-item class="red-warning-text" (click)="onDelete(file)">
-                <mat-icon>delete</mat-icon>
-                <span translate>Delete</span>
-            </button>
-        </ng-template>
-    </mat-menu>
-
-    <!-- Template for the managing buttons -->
-    <ng-template #manageButton let-file="file" let-action="action">
-        <button mat-menu-item (click)="onManageButton($event, file, action)">
-            <mat-icon color="accent"> {{ isUsedAs(file, action) ? 'check_box' : 'check_box_outline_blank' }} </mat-icon>
-            <span>{{ getNameOfAction(action) }}</span>
+        <!-- Edit and delete for all images -->
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="onEditFile(file)">
+            <mat-icon>edit</mat-icon>
+            <span translate>Edit</span>
+        </button>
+        <button mat-menu-item class="red-warning-text" (click)="onDelete(file)">
+            <mat-icon>delete</mat-icon>
+            <span translate>Delete</span>
         </button>
     </ng-template>
+</mat-menu>
 
-    <!-- Menu for Mediafiles -->
-    <mat-menu #mediafilesMenu="matMenu">
-        <div *ngIf="!isMultiSelect">
-            <button mat-menu-item *osPerms="'mediafiles.can_manage'" (click)="toggleMultiSelect()">
-                <mat-icon>library_add</mat-icon>
-                <span translate>Multiselect</span>
-            </button>
-        </div>
-        <div *ngIf="isMultiSelect">
-            <mat-divider></mat-divider>
-            <button mat-menu-item (click)="selectAll()">
-                <mat-icon>done_all</mat-icon>
-                <span translate>Select all</span>
-            </button>
-            <button mat-menu-item (click)="deselectAll()">
-                <mat-icon>clear</mat-icon>
-                <span translate>Deselect all</span>
-            </button>
-            <mat-divider></mat-divider>
-            <button mat-menu-item *osPerms="'mediafiles.can_manage'" (click)="deleteSelected()">
-                <mat-icon>delete</mat-icon>
-                <span translate>Delete</span>
-            </button>
-        </div>
-    </mat-menu>
-</mat-drawer-container>
+<!-- Menu for Mediafiles -->
+<mat-menu #mediafilesMenu="matMenu">
+    <div *ngIf="!isMultiSelect">
+        <button mat-menu-item *osPerms="'mediafiles.can_manage'" (click)="toggleMultiSelect()">
+            <mat-icon>library_add</mat-icon>
+            <span translate>Multiselect</span>
+        </button>
+    </div>
+    <div *ngIf="isMultiSelect">
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="selectAll()">
+            <mat-icon>done_all</mat-icon>
+            <span translate>Select all</span>
+        </button>
+        <button mat-menu-item (click)="deselectAll()">
+            <mat-icon>clear</mat-icon>
+            <span translate>Deselect all</span>
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item *osPerms="'mediafiles.can_manage'" (click)="deleteSelected()">
+            <mat-icon>delete</mat-icon>
+            <span translate>Delete</span>
+        </button>
+    </div>
+</mat-menu>

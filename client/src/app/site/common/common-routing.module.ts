@@ -5,12 +5,14 @@ import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-poli
 import { StartComponent } from './components/start/start.component';
 import { LegalNoticeComponent } from './components/legal-notice/legal-notice.component';
 import { SearchComponent } from './components/search/search.component';
+import { ErrorComponent } from './components/error/error.component';
 
 const routes: Routes = [
     {
         path: '',
         component: StartComponent,
-        pathMatch: 'full'
+        pathMatch: 'full',
+        data: { basePerm: 'core.can_see_frontpage' }
     },
     {
         path: 'legalnotice',
@@ -23,6 +25,10 @@ const routes: Routes = [
     {
         path: 'search',
         component: SearchComponent
+    },
+    {
+        path: 'error',
+        component: ErrorComponent
     }
 ];
 

@@ -10,12 +10,17 @@ import { WatchSortingTreeGuard } from 'app/shared/utils/watch-sorting-tree.guard
 
 const routes: Routes = [
     { path: '', component: AgendaListComponent, pathMatch: 'full' },
-    { path: 'import', component: AgendaImportListComponent },
-    { path: 'topics/new', component: TopicDetailComponent },
-    { path: 'sort-agenda', component: AgendaSortComponent, canDeactivate: [WatchSortingTreeGuard] },
-    { path: 'speakers', component: ListOfSpeakersComponent },
-    { path: 'topics/:id', component: TopicDetailComponent },
-    { path: ':id/speakers', component: ListOfSpeakersComponent }
+    { path: 'import', component: AgendaImportListComponent, data: { basePerm: 'agenda.can_manage' } },
+    { path: 'topics/new', component: TopicDetailComponent, data: { basePerm: 'agenda.can_manage' } },
+    {
+        path: 'sort-agenda',
+        component: AgendaSortComponent,
+        canDeactivate: [WatchSortingTreeGuard],
+        data: { basePerm: 'agenda.can_manage' }
+    },
+    { path: 'speakers', component: ListOfSpeakersComponent, data: { basePerm: 'agenda.can_see' } },
+    { path: 'topics/:id', component: TopicDetailComponent, data: { basePerm: 'agenda.can_see' } },
+    { path: ':id/speakers', component: ListOfSpeakersComponent, data: { basePerm: 'agenda.can_see' } }
 ];
 
 @NgModule({
