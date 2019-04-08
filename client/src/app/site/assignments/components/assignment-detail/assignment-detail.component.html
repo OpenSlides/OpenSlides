@@ -8,10 +8,7 @@
 >
     <!-- Title -->
     <div class="title-slot">
-        <h2 *ngIf="assignment && !newAssignment">
-            <span *ngIf="!editAssignment">{{ assignment.getTitle() }}</span>
-            <span *ngIf="editAssignment">{{ assignmentForm.get('title').value }}</span>
-        </h2>
+        <h2 *ngIf="!newAssignment" translate>Election</h2>
         <h2 *ngIf="newAssignment" translate>New election</h2>
     </div>
 
@@ -23,17 +20,17 @@
     </div>
 
     <mat-menu #assignmentDetailMenu="matMenu">
-        <!-- delete -->
-        <!-- print, edit, delete -->
         <div *ngIf="assignment">
             <!-- PDF -->
             <button mat-menu-item (click)="onDownloadPdf()">
-                <!-- TODO: results or descritipon. Results if published -->
+                <!-- TODO: results or description. Results if published -->
                 <mat-icon>picture_as_pdf</mat-icon>
                 <span translate>PDF</span>
             </button>
             <mat-divider></mat-divider>
             <!-- Delete -->
+        </div>
+        <div *ngIf="assignment && hasPerms('manage')">
             <button mat-menu-item class="red-warning-text" (click)="onDeleteAssignmentButton()">
                 <mat-icon>delete</mat-icon>
                 <span translate>Delete</span>
@@ -43,12 +40,6 @@
 </os-head-bar>
 
 <div class="content-container">
-    <!-- Title -->
-    <div class="title on-transition-fade" *ngIf="assignment && !editAssignment">
-        <div class="title-line">
-            <h1>{{ assignment.getTitle() }}</h1>
-        </div>
-    </div>
     <ng-container *ngIf="vp.isMobile; then mobileView; else desktopView"></ng-container>
 </div>
 
@@ -57,119 +48,130 @@
 </ng-template>
 
 <ng-template #desktopView>
-    <mat-card class="os-card">
-        <div *ngIf="editAssignment">
-            <ng-container [ngTemplateOutlet]="assignmentFormTemplate"></ng-container>
-        </div>
-        <div *ngIf="!editAssignment">
-            <mat-card class="os-card">
-                <ng-container [ngTemplateOutlet]="metaInfoTemplate"></ng-container>
-            </mat-card>
-            <mat-card class="os-card">
-                <ng-container [ngTemplateOutlet]="contentTemplate"></ng-container>
-            </mat-card>
-        </div>
-    </mat-card>
+    <div *ngIf="editAssignment">
+        <ng-container [ngTemplateOutlet]="assignmentFormTemplate"></ng-container>
+    </div>
+    <div *ngIf="!editAssignment">
+        <ng-container [ngTemplateOutlet]="metaInfoTemplate"></ng-container>
+        <ng-container [ngTemplateOutlet]="contentTemplate"></ng-container>
+    </div>
 </ng-template>
 
 <ng-template #metaInfoTemplate>
-    <span translate>Meta information</span>
-    <div *ngIf="assignment; &quot;flex-spaced&quot;">
+    <mat-card class="os-card" *ngIf="assignment">
+        <h1>{{ assignment.getTitle() }}</h1>
+        <div *ngIf="assignment">
+            <div *ngIf="assignment.assignment.description" [innerHTML]="assignment.assignment.description"></div>
+        </div>
         <div>
             <span translate>Number of persons to be elected</span>:&nbsp;
             <span>{{ assignment.assignment.open_posts }}</span>
         </div>
         <div>
-            <span> {{ phaseString | translate }}</span>
-            <mat-form-field>
-                <mat-label translate>Phase</mat-label>
-                <mat-select
-                    class="selection"
-                    [disabled]="!hasPerms('manage')"
-                    (selectionChange)="setPhase($event)"
-                    [value]="assignment.phase"
-                >
-                    <mat-option *ngFor="let option of phaseOptions" [value]="option.value">
-                        {{ option.display_name | translate }}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
+            <span translate>Phase</span>:&nbsp;
+            <mat-basic-chip *ngIf="hasPerms('manage')" [matMenuTriggerFor]="phaseMenu" class="bluegrey" disableRipple>
+                {{ assignment.phaseString | translate }}
+            </mat-basic-chip>
+            <mat-basic-chip *ngIf="!hasPerms('manage')" class="bluegrey" disableRipple>
+                {{ assignment.phaseString | translate }}
+            </mat-basic-chip>
+            <mat-menu #phaseMenu="matMenu">
+                <button *ngFor="let option of phaseOptions" mat-menu-item (click)="onSetPhaseButton(option.value)">
+                    {{ option.display_name | translate }}
+                </button>
+            </mat-menu>
         </div>
-    </div>
+    </mat-card>
 </ng-template>
 
 <ng-template #contentTemplate>
-    <ng-container *ngIf="assignment && assignment.phase !== 2" [ngTemplateOutlet]="candidatesTemplate">
-    </ng-container>
-    <!-- TODO related agenda item to create/updade: internal status; parent_id ? -->
-    <ng-container [ngTemplateOutlet]="pollTemplate"></ng-container>
-    <!-- TODO different status/display if finished -->
+    <mat-card class="os-card">
+        <ng-container *ngIf="assignment && !assignment.isFinished" [ngTemplateOutlet]="candidatesTemplate">
+        </ng-container>
+        <!-- TODO related agenda item to create/updade: internal status; parent_id ? -->
+        <ng-container [ngTemplateOutlet]="pollTemplate"></ng-container>
+        <!-- TODO different status/display if finished -->
+    </mat-card>
 </ng-template>
 
 <!-- poll template -->
 <ng-template #pollTemplate>
-    <div>
-        <!-- TODO: header. New poll button to the right, and with icon -->
-        <!-- new poll button -->
-        <button type="button" mat-button *ngIf="hasPerms('createPoll')" (click)="createPoll()">
-            <span translate>Create poll</span>
-        </button>
-    </div>
-    <mat-tab-group (selectedTabChange)="onTabChange()" *ngIf="assignment && assignment.polls">
+    <mat-tab-group
+        (selectedTabChange)="onTabChange()"
+        *ngIf="assignment && assignment.polls && assignment.polls.length"
+    >
         <!-- TODO avoid animation/switching on update -->
-        <mat-tab *ngFor="let poll of assignment.polls; let i = index" [label]="getPollLabel(poll, i)">
+        <mat-tab
+            *ngFor="let poll of assignment.polls; let i = index; trackBy: trackByIndex"
+            [label]="getPollLabel(poll, i)"
+        >
             <os-assignment-poll [assignment]="assignment" [poll]="poll"> </os-assignment-poll>
         </mat-tab>
     </mat-tab-group>
 </ng-template>
 
 <ng-template #candidatesTemplate>
-    <!-- TODO two columns here: Left candidates; right add/remove -->
-    <div>
-        <div>
-            <div *ngIf="assignment && assignment.candidates">
-                <!-- TODO: Sorting -->
-                <div *ngFor="let candidate of assignment.candidates">
-                    <span>{{ candidate.full_name }}</span>
-                    <button mat-button *ngIf="hasPerms('addOthers')" (click)="removeUser(candidate)">Remove</button>
-                </div>
-            </div>
-        </div>
-        <div>
-            <div *ngIf="hasPerms('addOthers')">
-                <!-- candidates: if open: Select list, sortable (like list of speakers) -->
-                <os-search-value-selector
-                    *ngIf="hasPerms('addOthers')"
-                    ngDefaultControl
-                    placeholder="Add candidate"
-                    [formControl]="candidatesForm.get('candidate')"
-                    [InputListValues]="availableCandidates"
-                    [form]="candidatesForm"
-                >
-                </os-search-value-selector>
-                <button mat-button [disabled]="!candidatesForm.get('candidate').value" (click)="addUser()">
-                    <span translate>add</span>
-                </button>
-                <!-- TODO disable if no user set; filter out users already in list of candidates -->
-            </div>
-        </div>
-
-        <!-- class="spacer-top-10" -->
-        <button
-            type="button"
-            mat-button
-            color="primary"
-            *ngIf="hasPerms('addSelf') && !isSelfCandidate"
-            (click)="addSelf()"
+    <!-- candidates -->
+    <div class="candidates-list" *ngIf="assignment && assignment.assignmentRelatedUsers && assignment.assignmentRelatedUsers.length > 0">
+        <os-sorting-list
+            [input]="assignment.assignmentRelatedUsers"
+            [live]="true"
+            [count]="true"
+            [enable]="hasPerms('addOthers')"
+            (sortEvent)="onSortingChange($event)"
         >
-            <span class="upper" translate>Add me</span>
-        </button>
-        <br />
-        <button type="button" mat-button *ngIf="hasPerms('addSelf') && isSelfCandidate" (click)="removeSelf()">
-            <span translate>Remove me</span>
-        </button>
-        <br />
+            <!-- implicit item references into the component using ng-template slot -->
+            <ng-template let-item>
+                <span *ngIf="hasPerms('addOthers')">
+                    <button
+                        mat-icon-button
+                        matTooltip="{{ 'Remove candidate' | translate }}"
+                        (click)="removeUser(item)"
+                    >
+                        <mat-icon>clear</mat-icon>
+                    </button>
+                </span>
+            </ng-template>
+        </os-sorting-list>
     </div>
+    <!-- Search for candidates -->
+    <div *ngIf="hasPerms('addOthers')">
+        <form *ngIf="filteredCandidates && filteredCandidates.value.length > 0" [formGroup]="candidatesForm">
+            <os-search-value-selector
+                *ngIf="hasPerms('addOthers')"
+                ngDefaultControl
+                listname="{{ 'Select a new candidate' | translate }}"
+                [formControl]="candidatesForm.get('userId')"
+                [InputListValues]="filteredCandidates"
+                [form]="candidatesForm"
+                [multiple]="false"
+            >
+                <!-- TODO: better class here: wider -->
+                <!-- TODO: Performance check: something seems off here with filteredCandidates -->
+            </os-search-value-selector>
+        </form>
+    </div>
+    <!-- Add me and remove me if OP has correct permission -->
+    <div *ngIf="assignment && hasPerms('addSelf') && assignment.candidates" class="add-self-buttons">
+        <div>
+            <button mat-stroked-button (click)="addSelf()" *ngIf="!isSelfCandidate">
+                <mat-icon>add</mat-icon>
+                <span translate>Add me</span>
+            </button>
+            <button mat-stroked-button (click)="removeSelf()" *ngIf="isSelfCandidate">
+                <mat-icon>remove</mat-icon>
+                <span translate>Remove me</span>
+            </button>
+        </div>
+    </div>
+    <div *ngIf="assignment && hasPerms('createPoll')">
+        <mat-divider></mat-divider>
+        <button mat-button (click)="createPoll()">
+            <mat-icon color="primary">poll</mat-icon>
+            <span translate>New poll</span>
+        </button>
+    </div>
+    <mat-divider *ngIf="assignment && assignment.polls && assignment.polls.length"> </mat-divider>
 </ng-template>
 
 <ng-template #assignmentFormTemplate>
@@ -180,15 +182,17 @@
             (keydown)="onKeyDown($event)"
             *ngIf="assignment && editAssignment"
         >
-            <!-- title -->
-            <mat-form-field>
-                <input
-                    matInput
-                    placeholder="{{ 'Title' | translate }}"
-                    formControlName="title"
-                    [value]="assignmentCopy.title || ''"
-                />
-            </mat-form-field>
+            <div>
+                <!-- title -->
+                <mat-form-field class="full-width">
+                    <input
+                        matInput
+                        placeholder="{{ 'Title' | translate }}"
+                        formControlName="title"
+                        [value]="assignmentCopy.getTitle() || ''"
+                    />
+                </mat-form-field>
+            </div>
 
             <!-- description: HTML Editor -->
             <editor
@@ -209,7 +213,7 @@
             </div>
 
             <!-- searchValueSelector: tags -->
-            <div class="content-field">
+            <div class="content-field" *ngIf="tagsAvailable">
                 <os-search-value-selector
                     ngDefaultControl
                     [form]="assignmentForm"
@@ -222,7 +226,7 @@
             </div>
 
             <!-- searchValueSelector:agendaItem -->
-            <div class="content-field">
+            <div class="content-field" *ngIf="parentsAvailable">
                 <os-search-value-selector
                     ngDefaultControl
                     [form]="assignmentForm"
@@ -235,23 +239,27 @@
             </div>
 
             <!-- poll_description_default -->
-            <mat-form-field>
-                <input
-                    matInput
-                    placeholder="{{ 'Default comment on the ballot paper' | translate }}"
-                    formControlName="poll_description_default"
-                    [value]="assignmentCopy.assignment.poll_description_default || ''"
-                />
-            </mat-form-field>
+            <div>
+                <mat-form-field>
+                    <input
+                        matInput
+                        placeholder="{{ 'Default comment on the ballot paper' | translate }}"
+                        formControlName="poll_description_default"
+                        [value]="assignmentCopy.assignment.poll_description_default || ''"
+                    />
+                </mat-form-field>
+            </div>
             <!-- open posts: number -->
-            <mat-form-field>
-                <input
-                    matInput
-                    placeholder="{{ 'Number of persons to be elected' | translate }}"
-                    formControlName="open_posts"
-                    [value]="assignmentCopy.assignment.open_posts || null"
-                />
-            </mat-form-field>
+            <div>
+                <mat-form-field>
+                    <input
+                        matInput
+                        placeholder="{{ 'Number of persons to be elected' | translate }}"
+                        formControlName="open_posts"
+                        [value]="assignmentCopy.assignment.open_posts || null"
+                    />
+                </mat-form-field>
+            </div>
             <!-- TODO searchValueSelector: Parent -->
         </form>
     </div>

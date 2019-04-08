@@ -1,73 +1,40 @@
 <h2 translate>Voting result</h2>
 <div class="meta-text">
     <span translate>Special values</span>:<br />
-    <mat-chip>-1</mat-chip>&nbsp;=&nbsp; <span translate>majority</span><br />
+    <mat-chip>-1</mat-chip>&nbsp;=&nbsp; <span translate>majority</span>&nbsp;
     <mat-chip color="accent">-2</mat-chip>&nbsp;=&nbsp;
     <span translate>undocumented</span>
 </div>
-<div>
-    <div class="flex-spaced" *ngFor="let candidate of data.poll.options">
-        <div>
-            {{ getName(candidate.candidate_id) }}
+<div class="spacer-top-10"></div>
+<div class="width-600">
+    <!-- Candidate values -->
+    <div [ngClass]="getGridClass()" *ngFor="let candidate of data.options">
+        <div class="candidate-name">
+            {{ candidate.user.full_name }}
         </div>
-        <div class="votes">
+        <div *ngFor="let key of optionPollKeys" class="votes">
             <mat-form-field>
-                <input
-                    type="number"
-                    matInput
-                    [value]="getValue('Yes', candidate)"
-                    (change)="setValue('Yes', candidate, $event.target.value)"
-                />
-                <mat-label *ngIf="data.poll.pollmethod !== 'votes'" translate>Yes</mat-label>
-            </mat-form-field>
-            <mat-form-field *ngIf="data.poll.pollmethod !== 'votes'">
-                <input
-                    type="number"
-                    matInput
-                    [value]="getValue('No', candidate)"
-                    (change)="setValue('No', candidate, $event.target.value)"
-                />
-                <mat-label translate>No</mat-label>
-            </mat-form-field>
-            <mat-form-field *ngIf="data.poll.pollmethod === 'yna'">
-                <input
-                    type="number"
-                    matInput
-                    [value]="getValue('Abstain', candidate)"
-                    (change)="setValue('Abstain', candidate, $event.target.value)"
-                />
-                <mat-label translate>Abstain</mat-label>
+                <input type="number"
+                            matInput
+                            [value]="getValue(key, candidate)"
+                            (change)="setValue(key, candidate, $event.target.value)"
+                        />
+                        <mat-label> {{ key | translate }}</mat-label>
             </mat-form-field>
         </div>
-        <mat-divider *ngIf="data.poll.pollmethod !== 'votes'"></mat-divider>
     </div>
-    <mat-form-field>
-        <input
-            type="number"
-            matInput
-            [value]="getSumValue('votesvalid')"
-            (change)="setSumValue('votesvalid', $event.target.value)"
-        />
-        <mat-label translate>Valid votes</mat-label>
-    </mat-form-field>
-    <mat-form-field>
-        <input
-            type="number"
-            matInput
-            [value]="getSumValue('votesinvalid')"
-            (change)="setSumValue('votesinvalid', $event.target.value)"
-        />
-        <mat-label translate>Invalid votes</mat-label>
-    </mat-form-field>
-    <mat-form-field>
-        <input
-            type="number"
-            matInput
-            [value]="getSumValue('votescast')"
-            (change)="setSumValue('votescast', $event.target.value)"
-        />
-        <mat-label translate>Total votes</mat-label>
-    </mat-form-field>
+    <!-- Summary values -->
+    <div *ngFor="let sumValue of sumValues" class="sum-value">
+        <mat-form-field>
+            <input
+                type="number"
+                matInput
+                [value]="getSumValue(sumValue)"
+                (change)="setSumValue(sumValue, $event.target.value)"
+            />
+            <mat-label>{{ pollService.getLabel(sumValue) }}</mat-label>
+        </mat-form-field>
+    </div>
 </div>
 <div class="submit-buttons">
     <button mat-button (click)="submit()">{{ 'Save' | translate }}</button>

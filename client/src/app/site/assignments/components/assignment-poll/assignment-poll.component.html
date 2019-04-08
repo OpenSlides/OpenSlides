@@ -1,119 +1,197 @@
-<!-- label: 'Ballot 1 ...' -->
-<h3 translate>Ballot</h3>
-<mat-card class="os-card">
-    <div class="flex-spaced">
-        <div>
-            <!-- *ngIf="poll.description"> -->
-            Description
-            <!-- {{ poll.description}} -->
-        </div>
+<mat-card class="os-card" *ngIf="poll">
+    <div class="flex-spaced poll-menu">
         <!-- Buttons -->
-        <div *osPerms="'assignments.can_manage'">
-            <button mat-button (click)="printBallot()">
-                <span translate>Print ballot paper</span>
-            </button>
-            <button mat-button [disabled]="assignment.phase == 2" (click)="enterVotes()">
-                <span translate>Enter votes</span>
-            </button>
-            <button mat-button (click)="togglePublished()">
-                <span *ngIf="!poll.published" translate>Publish</span>
-                <span *ngIf="poll.published" translate>Unpublish</span>
-            </button>
-        </div>
-        <div *osPerms="'core.can_manage_projector'">
-            <button mat-button>
-                <span translate>Project</span>
-                <!-- os-projector-button ?-->
-            </button>
-        </div>
-        <div *osPerms="'assignments.can_manage'">
-            <button mat-button class="red-warning-text" (click)="onDeletePoll(poll)">
-                <span translate>Delete</span>
-            </button>
-        </div>
-    </div>
-    <div>
-        <!-- text input 'set hint for pballot paper' -->
-        <!-- submit: setBallotHint(poll) -->
-    </div>
-
-    <div *ngIf="pollService.majorityMethods && majorityChoice">
-        <span translate>Majority method</span>
-
-        <mat-basic-chip *ngIf="canManage" [matMenuTriggerFor]="majorityMenu" class="grey" disableRipple>
-            {{ majorityChoice.display_name | translate }}
-        </mat-basic-chip>
-        <mat-basic-chip *ngIf="!canManage" class="grey" disableRipple>
-            {{ majorityChoice.display_name | translate }}
-        </mat-basic-chip>
-        <mat-menu #majorityMenu="matMenu">
-            <button mat-menu-item *ngFor="let method of pollService.majorityMethods" (click)="setMajority(method)">
-                <mat-icon *ngIf="method.value === majorityChoice.value">
-                    check
-                </mat-icon>
-                {{ method.display_name | translate }}
-            </button>
+        <button
+            mat-icon-button
+            *osPerms="'assignments.can_manage'; &quot;core.can_manage_projector&quot;"
+            [matMenuTriggerFor]="pollItemMenu"
+            (click)="$event.stopPropagation()"
+        >
+            <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #pollItemMenu="matMenu">
+            <div *osPerms="'assignments.can_manage'">
+                <button mat-menu-item (click)="printBallot()">
+                    <mat-icon>local_printshop</mat-icon>
+                    <span translate>Print ballot paper</span>
+                </button>
+                <button mat-menu-item *ngIf="!assignment.isFinished" (click)="enterVotes()">
+                    <mat-icon>edit</mat-icon>
+                    <span translate>Enter votes</span>
+                </button>
+                <button mat-menu-item (click)="togglePublished()">
+                    <mat-icon>
+                        {{ poll.published ? 'visibility_off' : 'visibility' }}
+                    </mat-icon>
+                    <span *ngIf="!poll.published" translate>Publish</span>
+                    <span *ngIf="poll.published" translate>Unpublish</span>
+                </button>
+            </div>
+            <div *osPerms="'core.can_manage_projector'">
+                <button mat-menu-item>
+                    <mat-icon>videocam</mat-icon>
+                    <span translate>Project</span>
+                    <!-- os-projector-button ?-->
+                </button>
+            </div>
+            <div *osPerms="'assignments.can_manage'">
+                <mat-divider></mat-divider>
+                <button mat-menu-item class="red-warning-text" (click)="onDeletePoll()">
+                    <mat-icon>delete</mat-icon>
+                    <span translate>Delete</span>
+                </button>
+            </div>
         </mat-menu>
     </div>
-    <div class="on-transition-fade" *ngIf="poll && poll.options">
-        <div *ngFor="let option of poll.options" class="flex-spaced">
-            <div *ngIf="poll.published">
-                <mat-checkbox [checked]="option.is_elected" (change)="toggleElected(option)">
-                    <!-- TODO mark/unkmark elected osPerms -->
-                </mat-checkbox>
-            </div>
-            <!-- candidate Name -->
-            <div>
-                {{ option.user.full_name }}
-            </div>
-            <!-- Votes -->
-            <div *ngIf="poll.published && poll.has_votes">
-                <div *ngFor="let vote of option.votes">
-                    <div class="poll-progress on-transition-fade">
-                        <span>{{ pollService.getLabel(vote.value) | translate }}:</span>
-                        {{ pollService.getSpecialLabel(vote.weight) }}
-                        <span *ngIf="!pollService.isAbstractOption(poll, option)"
-                            >({{ pollService.getPercent(poll, option, vote.value) }}%)</span
-                        >
+    <div>
+        <h4>
+            <span translate>Poll description</span>
+        </h4>
+        <div [formGroup]="descriptionForm">
+            <mat-form-field class="wide">
+                <input matInput formControlName="description" [disabled]="!canManage" />
+            </mat-form-field>
+            <button
+                mat-icon-button
+                [disabled]="!dirtyDescription"
+                *ngIf="canManage"
+                (click)="onEditDescriptionButton()"
+            >
+                <mat-icon inline>edit</mat-icon>
+            </button>
+        </div>
+        <div class="spacer-bottom-10">
+            <h4 translate>Poll method</h4>
+            <span>{{ pollMethodName | translate }}</span>
+        </div>
+    </div>
+    <div class="on-transition-fade" *ngIf="poll.options">
+        <div *ngIf="pollData">
+            <div class="poll-grid">
+                <div></div>
+                <div><span class="table-view-list-title" translate>Candidate</span></div>
+                <div><span class="table-view-list-title" translate>Votes</span></div>
+                <div *ngIf="pollService.majorityMethods && majorityChoice">
+                    <div>
+                        <span class="table-view-list-title" translate>Quorum</span>
                     </div>
-                    <div *ngIf="!pollService.isAbstractOption(poll, option)" class="poll-progress-bar">
-                        <mat-progress-bar
-                            mode="determinate"
-                            [value]="pollService.getPercent(poll, option, vote.value)"
-                            [ngClass]="pollService.getProgressBarColor(vote.value)"
-                        >
-                        </mat-progress-bar>
+                    <div>
+                        <!-- manager majority chip (menu trigger) -->
+                        <mat-basic-chip *ngIf="canManage" [matMenuTriggerFor]="majorityMenu" class="grey" disableRipple>
+                            {{ majorityChoice.display_name | translate }}
+                        </mat-basic-chip>
+                        <!-- non-manager (menuless) majority chip -->
+                        <mat-basic-chip *ngIf="!canManage" class="grey" disableRipple>
+                            {{ majorityChoice.display_name | translate }}
+                        </mat-basic-chip>
+                        <!-- menu for selecting quorum choices -->
+                        <mat-menu #majorityMenu="matMenu">
+                            <button
+                                mat-menu-item
+                                *ngFor="let method of pollService.majorityMethods"
+                                (click)="setMajority(method)"
+                            >
+                                <mat-icon *ngIf="method.value === majorityChoice.value">
+                                    check
+                                </mat-icon>
+                                {{ method.display_name | translate }}
+                            </button>
+                        </mat-menu>
                     </div>
                 </div>
             </div>
-            <div
-                *ngIf="
-                    poll.has_votes &&
-                    poll.published &&
-                    majorityChoice &&
-                    majorityChoice.value !== 'disabled' &&
-                    !pollService.isAbstractOption(poll, option)
-                "
-            >
-                <span>{{ pollService.yesQuorum(majorityChoice, poll, option) }}</span>
-                <span *ngIf="quorumReached(option)" class="green-text">
-                    <mat-icon>done</mat-icon>
-                </span>
-                <span *ngIf="!quorumReached(option)" class="red-warning-text">
-                    <mat-icon>cancel</mat-icon>
-                </span>
+            <div *ngFor="let option of poll.options" class="poll-grid poll-border">
+                <div>
+                    <div>
+                        <button
+                            type="button"
+                            mat-icon-button
+                            (click)="toggleElected(option)"
+                            [disabled]="!canManage || assignment.isFinished"
+                            disableRipple
+                        >
+                            <mat-icon
+                                *ngIf="option.is_elected"
+                                class="top-aligned green-text"
+                                matTooltip="{{ 'Elected' | translate }}"
+                                >check_box</mat-icon
+                            >
+                            <mat-icon
+                                *ngIf="!option.is_elected && canManage && !assignment.isFinished"
+                                class="top-aligned primary"
+                                matTooltip="{{ 'Not elected' | translate }}"
+                            >
+                                check_box_outline_blank</mat-icon
+                            >
+                        </button>
+                    </div>
+                </div>
+                <!-- candidate Name -->
+                <div class="candidate-name">
+                    {{ option.user.full_name }}
+                </div>
+                <!-- Votes -->
+                <div>
+                    <div *ngIf="poll.has_votes">
+                        <div *ngFor="let vote of option.votes" class="spacer-bottom-10">
+                            <div class="poll-progress on-transition-fade">
+                                <span *ngIf="vote.value !== 'Votes'"
+                                    >{{ pollService.getLabel(vote.value) | translate }}:</span
+                                >
+                                {{ pollService.getSpecialLabel(vote.weight) }}
+                                <span *ngIf="!pollService.isAbstractOption(poll, option)"
+                                    >({{ pollService.getPercent(poll, option, vote.value) }}%)</span
+                                >
+                            </div>
+                            <div *ngIf="!pollService.isAbstractOption(poll, option)" class="poll-progress-bar">
+                                <mat-progress-bar
+                                    mode="determinate"
+                                    [value]="pollService.getPercent(poll, option, vote.value)"
+                                    [ngClass]="pollService.getProgressBarColor(vote.value)"
+                                >
+                                </mat-progress-bar>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div
+                        *ngIf="
+                            poll.has_votes &&
+                            majorityChoice &&
+                            majorityChoice.value !== 'disabled' &&
+                            !pollService.isAbstractOption(poll, option)
+                        "
+                        class="poll-quorum"
+                    >
+                        <span>{{ pollService.yesQuorum(majorityChoice, poll, option) }}</span>
+                        <span [ngClass]="quorumReached(option) ? 'green-text' : 'red-warning-text'"
+                            matTooltip="{{ getQuorumReachedString(option) }}"
+                        >
+                            <mat-icon *ngIf="quorumReached(option)">{{ pollService.getIcon('yes') }}</mat-icon>
+                            <mat-icon *ngIf="!quorumReached(option)">{{ pollService.getIcon('no') }}</mat-icon>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <!-- summary -->
+            <div>
+                <div *ngFor="let key of pollValues" class="poll-grid">
+                    <div></div>
+                    <div class="candidate-name">
+                        <span>{{ pollService.getLabel(key) | translate }}</span
+                        >:
+                    </div>
+                    <div>
+                        {{ pollService.getSpecialLabel(poll[key]) | translate }}
+                    </div>
+                </div>
             </div>
         </div>
-        <div>
-            <!-- summary -->
-            <div *ngFor="let key of pollValues">
-                <div>
-                    <span>{{ key | translate }}</span>:
-                </div>
-                <div>
-                    {{ poll[key] | precisionPipe }}
-                    {{ pollService.getSpecialLabel(poll[key]) }}
-                </div>
+        <div *ngIf="!pollData">
+            <h4 translate>Candidates</h4>
+            <div *ngFor="let option of poll.options">
+                <span class="accent"> {{ option.user.full_name }}</span>
             </div>
         </div>
     </div>

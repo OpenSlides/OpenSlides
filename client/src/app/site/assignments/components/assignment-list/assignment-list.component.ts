@@ -13,7 +13,7 @@ import { ListViewBaseComponent } from 'app/site/base/list-view-base';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { StorageService } from 'app/core/core-services/storage.service';
-import { ViewAssignment } from '../../models/view-assignment';
+import { ViewAssignment, AssignmentPhases } from '../../models/view-assignment';
 
 /**
  * List view for the assignments
@@ -24,6 +24,11 @@ import { ViewAssignment } from '../../models/view-assignment';
     styleUrls: ['./assignment-list.component.scss']
 })
 export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignment, Assignment> implements OnInit {
+    /**
+     * The different phases of an assignment. Info is fetched from server
+     */
+    public phaseOptions = AssignmentPhases;
+
     /**
      * Constructor.
      *

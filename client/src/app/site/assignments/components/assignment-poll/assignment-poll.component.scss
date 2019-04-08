@@ -59,3 +59,36 @@
         padding: 1px;
     }
 }
+
+.poll-grid {
+    display: grid;
+    grid-gap: 5px;
+    padding: 5px;
+    grid-template-columns: 30px auto 250px 150px;
+    .candidate-name {
+        word-wrap: break-word;
+    }
+}
+.poll-border {
+    border: 1px solid lightgray;
+}
+.poll-menu {
+    justify-content: flex-end;
+}
+.poll-quorum {
+    text-align: right;
+    margin-right: 10px;
+    mat-icon {
+        vertical-align: middle;
+        font-size: 100%;
+    }
+}
+.top-aligned {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.wide {
+    width: 90%;
+}

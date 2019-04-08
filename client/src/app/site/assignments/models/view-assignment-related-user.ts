@@ -1,10 +1,11 @@
 import { AssignmentRelatedUser } from 'app/shared/models/assignments/assignment-related-user';
-import { ViewUser } from 'app/site/users/models/view-user';
 import { BaseViewModel } from 'app/site/base/base-view-model';
-import { Updateable } from 'app/site/base/updateable';
+import { Displayable } from 'app/site/base/displayable';
 import { Identifiable } from 'app/shared/models/base/identifiable';
+import { Updateable } from 'app/site/base/updateable';
+import { ViewUser } from 'app/site/users/models/view-user';
 
-export class ViewAssignmentRelatedUser implements Updateable, Identifiable {
+export class ViewAssignmentRelatedUser implements Updateable, Identifiable, Displayable {
     private _assignmentRelatedUser: AssignmentRelatedUser;
     private _user?: ViewUser;
 
@@ -45,5 +46,13 @@ export class ViewAssignmentRelatedUser implements Updateable, Identifiable {
         if (update instanceof ViewUser && update.id === this.user_id) {
             this._user = update;
         }
+    }
+
+    public getTitle(): string {
+        return this.user ? this.user.getTitle() : '';
+    }
+
+    public getListTitle(): string {
+        return this.getTitle();
     }
 }

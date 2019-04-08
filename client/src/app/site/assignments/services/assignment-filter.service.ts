@@ -4,8 +4,7 @@ import { AssignmentRepositoryService } from 'app/core/repositories/assignments/a
 import { Assignment } from 'app/shared/models/assignments/assignment';
 import { BaseFilterListService, OsFilter } from 'app/core/ui-services/base-filter-list.service';
 import { StorageService } from 'app/core/core-services/storage.service';
-import { ViewAssignment, AssignmentPhase } from '../models/view-assignment';
-import { ConstantsService } from 'app/core/core-services/constants.service';
+import { ViewAssignment, AssignmentPhases } from '../models/view-assignment';
 
 @Injectable({
     providedIn: 'root'
@@ -37,11 +36,7 @@ export class AssignmentFilterListService extends BaseFilterListService<Assignmen
      * @param assignmentRepo Repository
      * @param constants the openslides constant service to get the assignment options
      */
-    public constructor(
-        store: StorageService,
-        assignmentRepo: AssignmentRepositoryService,
-        private constants: ConstantsService
-    ) {
+    public constructor(store: StorageService, assignmentRepo: AssignmentRepositoryService) {
         super(store, assignmentRepo);
         this.createPhaseOptions();
     }
@@ -51,14 +46,8 @@ export class AssignmentFilterListService extends BaseFilterListService<Assignmen
      * constants
      */
     private createPhaseOptions(): void {
-        this.constants.get<AssignmentPhase[]>('AssignmentPhases').subscribe(phases => {
-            this.phaseFilter.options = phases.map(ph => {
-                return {
-                    label: ph.display_name,
-                    condition: ph.value,
-                    isActive: false
-                };
-            });
+        this.phaseFilter.options = AssignmentPhases.map(ap => {
+            return { label: ap.display_name, condition: ap.value, isActive: false };
         });
         this.updateFilterDefinitions(this.filterOptions);
     }

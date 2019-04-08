@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { MatSnackBar, MatSelectChange } from '@angular/material';
+import { MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 
@@ -8,22 +8,22 @@ import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
 
 import { Assignment } from 'app/shared/models/assignments/assignment';
+import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
 import { AssignmentPollService } from '../../services/assignment-poll.service';
 import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
 import { BaseViewComponent } from 'app/site/base/base-view';
-import { ConstantsService } from 'app/core/core-services/constants.service';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
-import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
-import { ViewAssignment, AssignmentPhase } from '../../models/view-assignment';
+import { ViewAssignment, AssignmentPhases } from '../../models/view-assignment';
+import { ViewAssignmentRelatedUser } from '../../models/view-assignment-related-user';
 import { ViewItem } from 'app/site/agenda/models/view-item';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewUser } from 'app/site/users/models/view-user';
-import { PromptService } from 'app/core/ui-services/prompt.service';
 
 /**
  * Component for the assignment detail view
@@ -47,16 +47,17 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
     /**
      * The different phases of an assignment. Info is fetched from server
      */
-    public phaseOptions: AssignmentPhase[] = [];
+    public phaseOptions = AssignmentPhases;
 
     /**
-     * List of users (used in searchValueSelector for candidates)
-     * TODO Candidates already in the list should be filtered out
+     * List of users available as candidates (used as raw data for {@link filteredCandidates})
      */
-    public availableCandidates = new BehaviorSubject<ViewUser[]>([]);
+    private availableCandidates = new BehaviorSubject<ViewUser[]>([]);
 
     /**
-     * TODO a filtered list (excluding users already in this.assignment.candidates)
+     * A BehaviourSubject with a filtered list of users (excluding users already
+     * in the list of candidates). It is updated each time {@link filterCandidates}
+     * is called (triggered by autoupdates)
      */
     public filteredCandidates = new BehaviorSubject<ViewUser[]>([]);
 
@@ -88,6 +89,8 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
      */
     public set assignment(assignment: ViewAssignment) {
         this._assignment = assignment;
+
+        this.filterCandidates();
         if (this.assignment.polls.length) {
             this.assignment.polls.forEach(poll => {
                 poll.pollBase = this.pollService.getBaseAmount(poll);
@@ -122,17 +125,21 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
     }
 
     /**
-     * gets the current assignment phase as string
-     *
-     * @returns a matching string (untranslated)
+     * Checks if there are any tags available
      */
-    public get phaseString(): string {
-        const mapping = this.phaseOptions.find(ph => ph.value === this.assignment.phase);
-        return mapping ? mapping.display_name : '';
+    public get tagsAvailable(): boolean {
+        return this.tagsObserver.getValue().length > 0;
     }
 
     /**
-     * Constructor. Build forms and subscribe to needed configs, constants and updates
+     * Checks if there are any tags available
+     */
+    public get parentsAvailable(): boolean {
+        return this.agendaObserver.getValue().length > 0;
+    }
+
+    /**
+     * Constructor. Build forms and subscribe to needed configs and updates
      *
      * @param title
      * @param translate
@@ -145,7 +152,6 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
      * @param formBuilder
      * @param repo
      * @param userRepo
-     * @param constants
      * @param pollService
      * @param agendaRepo
      * @param tagRepo
@@ -163,17 +169,19 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
         formBuilder: FormBuilder,
         public repo: AssignmentRepositoryService,
         private userRepo: UserRepositoryService,
-        private constants: ConstantsService,
         public pollService: AssignmentPollService,
         private agendaRepo: ItemRepositoryService,
         private tagRepo: TagRepositoryService,
         private promptService: PromptService
     ) {
         super(title, translate, matSnackBar);
-        /* Server side constants for phases */
-        this.constants.get<AssignmentPhase[]>('AssignmentPhases').subscribe(phases => (this.phaseOptions = phases));
-        /* List of eligible users */
-        this.userRepo.getViewModelListObservable().subscribe(users => this.availableCandidates.next(users));
+        this.subscriptions.push(
+            /* List of eligible users */
+            this.userRepo.getViewModelListObservable().subscribe(users => {
+                this.availableCandidates.next(users);
+                this.filterCandidates();
+            })
+        );
         this.assignmentForm = formBuilder.group({
             phase: null,
             tags_id: [],
@@ -184,7 +192,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
             agenda_item_id: '' // create agenda item
         });
         this.candidatesForm = formBuilder.group({
-            candidate: null
+            userId: null
         });
     }
 
@@ -201,9 +209,9 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
      * Permission check for interactions.
      *
      * Current operations supported:
-     *  - addSelf: the user can add themself to the list of candidates
-     *  - addOthers: the user can add other candidates
-     *  - createPoll: the user can add/edit election poll (requires candidates to be present)
+     *  - addSelf: the user can add/remove themself to the list of candidates
+     *  - addOthers: the user can add/remove other candidates
+     *  - createPoll: the user can add/edit an election poll (requires candidates to be present)
      *  - manage: the user has general manage permissions (i.e. editing the assignment metaInfo)
      *
      * @param operation the action requested
@@ -213,20 +221,28 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
         const isManager = this.operator.hasPerms('assignments.can_manage');
         switch (operation) {
             case 'addSelf':
-                if (isManager && this.assignment.phase !== 2) {
+                if (isManager && !this.assignment.isFinished) {
                     return true;
                 } else {
-                    return this.assignment.phase === 0 && this.operator.hasPerms('assignments.can_nominate_self');
+                    return (
+                        this.assignment.isSearchingForCandidates &&
+                        this.operator.hasPerms('assignments.can_nominate_self') &&
+                        !this.assignment.isFinished
+                    );
                 }
             case 'addOthers':
-                if (isManager && this.assignment.phase !== 2) {
+                if (isManager && !this.assignment.isFinished) {
                     return true;
                 } else {
-                    return this.assignment.phase === 0 && this.operator.hasPerms('assignments.can_nominate_others');
+                    return (
+                        this.assignment.isSearchingForCandidates &&
+                        this.operator.hasPerms('assignments.can_nominate_others') &&
+                        !this.assignment.isFinished
+                    );
                 }
             case 'createPoll':
                 return (
-                    isManager && this.assignment && this.assignment.phase !== 2 && this.assignment.candidateAmount > 0
+                    isManager && this.assignment && !this.assignment.isFinished && this.assignment.candidateAmount > 0
                 );
             case 'manage':
                 return isManager;
@@ -261,6 +277,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
     private patchForm(assignment: ViewAssignment): void {
         this.assignmentCopy = assignment;
         this.assignmentForm.patchValue({
+            title: assignment.title || '',
             tags_id: assignment.assignment.tags_id || [],
             agendaItem: assignment.assignment.agenda_item_id || null,
             phase: assignment.phase, // todo default: 0?
@@ -304,23 +321,24 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
     }
 
     /**
-     * Adds a user to the list of candidates
+     * Adds the user from the candidates form to the list of candidates
+     *
+     * @param userId the id of a ViewUser
      */
-    public async addUser(): Promise<void> {
-        const candId = this.candidatesForm.get('candidate').value;
-        this.candidatesForm.setValue({ candidate: null });
-        if (candId) {
-            await this.repo.changeCandidate(candId, this.assignment).then(null, this.raiseError);
+    public async addUser(userId: number): Promise<void> {
+        const user = this.userRepo.getViewModel(userId);
+        if (user) {
+            await this.repo.changeCandidate(user, this.assignment, true).then(null, this.raiseError);
         }
     }
 
     /**
      * Removes a user from the list of candidates
      *
-     * @param user Assignment User
+     * @param candidate A ViewAssignmentUser currently in the list of related users
      */
-    public async removeUser(user: ViewUser): Promise<void> {
-        await this.repo.changeCandidate(user.id, this.assignment).then(null, this.raiseError);
+    public async removeUser(candidate: ViewAssignmentRelatedUser): Promise<void> {
+        await this.repo.changeCandidate(candidate.user, this.assignment, false).then(null, this.raiseError);
     }
 
     /**
@@ -342,6 +360,14 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
                     }
                 })
             );
+            this.subscriptions.push(
+                this.candidatesForm.valueChanges.subscribe(formResult => {
+                    // resetting a form triggers a form.next(null) - check if data is present
+                    if (formResult && formResult.userId) {
+                        this.addUser(formResult.userId);
+                    }
+                })
+            );
         } else {
             this.newAssignment = true;
             // TODO set defaults?
@@ -357,8 +383,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
     public async onDeleteAssignmentButton(): Promise<void> {
         const title = this.translate.instant('Are you sure you want to delete this election?');
         if (await this.promptService.open(title, this.assignment.getTitle())) {
-            await this.repo.delete(this.assignment);
-            this.router.navigate(['../assignments/']);
+            this.repo.delete(this.assignment).then(() => this.router.navigate(['../']), this.raiseError);
         }
     }
 
@@ -374,12 +399,10 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
      * TODO: only with existing assignments, else it should fail
      * TODO check permissions and conditions
      *
-     * @param event
+     * @param value the phase to set
      */
-    public async setPhase(event: MatSelectChange): Promise<void> {
-        if (!this.newAssignment && this.phaseOptions.find(option => option.value === event.value)) {
-            this.repo.update({ phase: event.value }, this.assignment).then(null, this.raiseError);
-        }
+    public async onSetPhaseButton(value: number): Promise<void> {
+        this.repo.update({ phase: value }, this.assignment).then(null, this.raiseError);
     }
 
     public onDownloadPdf(): void {
@@ -426,11 +449,48 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
 
     /**
      * Assemble a meaningful label for the poll
-     * TODO (currently e.g. 'Ballot 10 (unublished)')
+     * Published polls will look like 'Ballot 2 (published)'
+     * other polls will be named 'Ballot 2' for normal users, with the hint
+     * '(unpulished)' appended for manager users
+     *
+     * @param poll
+     * @param index the index of the poll relative to the assignment
      */
     public getPollLabel(poll: AssignmentPoll, index: number): string {
-        const pubState = poll.published ? this.translate.instant('published') : this.translate.instant('unpublished');
-        const title = this.translate.instant('Ballot');
-        return `${title} ${index + 1} (${pubState})`;
+        const title = `${this.translate.instant('Ballot')} ${index + 1}`;
+        if (poll.published) {
+            return title + ` (${this.translate.instant('published')})`;
+        } else {
+            if (this.hasPerms('manage')) {
+                return title + ` (${this.translate.instant('unpublished')})`;
+            } else {
+                return title;
+            }
+        }
+    }
+
+    /**
+     * Triggers an update of the filter for the list of available candidates
+     * (triggered on an autoupdate of either users or the assignment)
+     */
+    private filterCandidates(): void {
+        if (!this.assignment || !this.assignment.candidates) {
+            this.filteredCandidates.next(this.availableCandidates.getValue());
+        } else {
+            this.filteredCandidates.next(
+                this.availableCandidates
+                    .getValue()
+                    .filter(u => !this.assignment.candidates.some(cand => cand.id === u.id))
+            );
+        }
+    }
+
+    /**
+     * Triggers an update of the sorting.
+     */
+    public onSortingChange(listInNewOrder: ViewAssignmentRelatedUser[]): void {
+        this.repo
+            .sortCandidates(listInNewOrder.map(relatedUser => relatedUser.id), this.assignment)
+            .then(null, this.raiseError);
     }
 }
