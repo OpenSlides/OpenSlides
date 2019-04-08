@@ -1,0 +1,75 @@
+<h2 translate>Voting result</h2>
+<div class="meta-text">
+    <span translate>Special values</span>:<br />
+    <mat-chip>-1</mat-chip>&nbsp;=&nbsp; <span translate>majority</span><br />
+    <mat-chip color="accent">-2</mat-chip>&nbsp;=&nbsp;
+    <span translate>undocumented</span>
+</div>
+<div>
+    <div class="flex-spaced" *ngFor="let candidate of data.poll.options">
+        <div>
+            {{ getName(candidate.candidate_id) }}
+        </div>
+        <div class="votes">
+            <mat-form-field>
+                <input
+                    type="number"
+                    matInput
+                    [value]="getValue('Yes', candidate)"
+                    (change)="setValue('Yes', candidate, $event.target.value)"
+                />
+                <mat-label *ngIf="data.poll.pollmethod !== 'votes'" translate>Yes</mat-label>
+            </mat-form-field>
+            <mat-form-field *ngIf="data.poll.pollmethod !== 'votes'">
+                <input
+                    type="number"
+                    matInput
+                    [value]="getValue('No', candidate)"
+                    (change)="setValue('No', candidate, $event.target.value)"
+                />
+                <mat-label translate>No</mat-label>
+            </mat-form-field>
+            <mat-form-field *ngIf="data.poll.pollmethod === 'yna'">
+                <input
+                    type="number"
+                    matInput
+                    [value]="getValue('Abstain', candidate)"
+                    (change)="setValue('Abstain', candidate, $event.target.value)"
+                />
+                <mat-label translate>Abstain</mat-label>
+            </mat-form-field>
+        </div>
+        <mat-divider *ngIf="data.poll.pollmethod !== 'votes'"></mat-divider>
+    </div>
+    <mat-form-field>
+        <input
+            type="number"
+            matInput
+            [value]="getSumValue('votesvalid')"
+            (change)="setSumValue('votesvalid', $event.target.value)"
+        />
+        <mat-label translate>Valid votes</mat-label>
+    </mat-form-field>
+    <mat-form-field>
+        <input
+            type="number"
+            matInput
+            [value]="getSumValue('votesinvalid')"
+            (change)="setSumValue('votesinvalid', $event.target.value)"
+        />
+        <mat-label translate>Invalid votes</mat-label>
+    </mat-form-field>
+    <mat-form-field>
+        <input
+            type="number"
+            matInput
+            [value]="getSumValue('votescast')"
+            (change)="setSumValue('votescast', $event.target.value)"
+        />
+        <mat-label translate>Total votes</mat-label>
+    </mat-form-field>
+</div>
+<div class="submit-buttons">
+    <button mat-button (click)="submit()">{{ 'Save' | translate }}</button>
+    <button mat-button (click)="cancel()">{{ 'Cancel' | translate }}</button>
+</div>

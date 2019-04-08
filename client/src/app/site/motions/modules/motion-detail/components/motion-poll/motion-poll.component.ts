@@ -86,7 +86,7 @@ export class MotionPollComponent implements OnInit {
      */
     public constructor(
         public dialog: MatDialog,
-        private pollService: MotionPollService,
+        public pollService: MotionPollService,
         private motionRepo: MotionRepositoryService,
         private constants: ConstantsService,
         private translate: TranslateService,
@@ -136,26 +136,6 @@ export class MotionPollComponent implements OnInit {
      */
     public getIcon(key: CalculablePollKey): string {
         return this.pollService.getIcon(key);
-    }
-
-    /**
-     * Get the progressbar class for a decision key
-     *
-     * @param key
-     *
-     * @returns a css class designing a progress bar in a color, or an empty string
-     */
-    public getProgressBarColor(key: CalculablePollKey): string {
-        switch (key) {
-            case 'yes':
-                return 'progress-green';
-            case 'no':
-                return 'progress-red';
-            case 'abstain':
-                return 'progress-yellow';
-            default:
-                return '';
-        }
     }
 
     /**

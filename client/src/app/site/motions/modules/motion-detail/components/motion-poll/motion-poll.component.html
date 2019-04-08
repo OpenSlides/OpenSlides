@@ -20,7 +20,7 @@
                             <mat-progress-bar
                                 mode="determinate"
                                 [value]="getPercent(key)"
-                                [ngClass]="getProgressBarColor(key)"
+                                [ngClass]="pollService.getProgressBarColor(key)"
                             >
                             </mat-progress-bar>
                         </div>

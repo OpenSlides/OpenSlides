@@ -44,7 +44,7 @@
                     </mat-cell>
                 </ng-container>
 
-                <div *ngFor=" let group of groups; trackBy: trackGroupArray">
+                <div *ngFor="let group of groups; trackBy: trackByIndex">
                     <ng-container [matColumnDef]="group.name">
                         <mat-header-cell class="group-head-table-cell" *matHeaderCellDef (click)="selectGroup(group)">
                             <div class="inner-table">

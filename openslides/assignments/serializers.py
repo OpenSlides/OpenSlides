@@ -6,12 +6,12 @@ from openslides.utils.rest_api import (
     DictField,
     IntegerField,
     ListField,
-    ListSerializer,
     ModelSerializer,
     SerializerMethodField,
     ValidationError,
 )
 
+from ..utils.autoupdate import inform_changed_data
 from ..utils.validate import validate_html
 from .models import (
     Assignment,
@@ -19,7 +19,6 @@ from .models import (
     AssignmentPoll,
     AssignmentRelatedUser,
     AssignmentVote,
-    models,
 )
 
 
@@ -77,25 +76,6 @@ class AssignmentOptionSerializer(ModelSerializer):
         Returns the election status of the candidate of this option.
         """
         return obj.poll.assignment.is_elected(obj.candidate)
-
-
-class FilterPollListSerializer(ListSerializer):
-    """
-    Customized serializer to filter polls (exclude unpublished).
-    """
-
-    def to_representation(self, data):
-        """
-        List of object instances -> List of dicts of primitive datatypes.
-
-        This method is adapted to filter the data and exclude unpublished polls.
-        """
-        # Dealing with nested relationships, data can be a Manager,
-        # so, first get a queryset from the Manager if needed
-        iterable = (
-            data.filter(published=True) if isinstance(data, models.Manager) else data
-        )
-        return [self.child.to_representation(item) for item in iterable]
 
 
 class AssignmentAllPollSerializer(ModelSerializer):
@@ -197,31 +177,6 @@ class AssignmentAllPollSerializer(ModelSerializer):
         return instance
 
 
-class AssignmentShortPollSerializer(AssignmentAllPollSerializer):
-    """
-    Serializer for assignment.models.AssignmentPoll objects.
-
-    Serializes only short polls (excluded unpublished polls).
-    """
-
-    class Meta:
-        list_serializer_class = FilterPollListSerializer
-        model = AssignmentPoll
-        fields = (
-            "id",
-            "pollmethod",
-            "description",
-            "published",
-            "options",
-            "votesabstain",
-            "votesno",
-            "votesvalid",
-            "votesinvalid",
-            "votescast",
-            "has_votes",
-        )
-
-
 class AssignmentFullSerializer(ModelSerializer):
     """
     Serializer for assignment.models.Assignment objects. With all polls.
@@ -266,8 +221,11 @@ class AssignmentFullSerializer(ModelSerializer):
         """
         agenda_type = validated_data.pop("agenda_type", None)
         agenda_parent_id = validated_data.pop("agenda_parent_id", None)
+        tags = validated_data.pop("tags", [])
         assignment = Assignment(**validated_data)
         assignment.agenda_item_update_information["type"] = agenda_type
         assignment.agenda_item_update_information["parent_id"] = agenda_parent_id
         assignment.save()
+        assignment.tags.add(*tags)
+        inform_changed_data(assignment)
         return assignment

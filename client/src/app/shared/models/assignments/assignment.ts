@@ -2,12 +2,6 @@ import { AssignmentUser } from './assignment-user';
 import { Poll } from './poll';
 import { BaseModel } from '../base/base-model';
 
-export const assignmentPhase = [
-    { key: 0, name: 'Searching for candidates' },
-    { key: 1, name: 'Voting' },
-    { key: 2, name: 'Finished' }
-];
-
 /**
  * Representation of an assignment.
  * @ignore
@@ -18,7 +12,7 @@ export class Assignment extends BaseModel<Assignment> {
     public title: string;
     public description: string;
     public open_posts: number;
-    public phase: number;
+    public phase: number; // see Openslides constants
     public assignment_related_users: AssignmentUser[];
     public poll_description_default: number;
     public polls: Poll[];

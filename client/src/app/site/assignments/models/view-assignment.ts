@@ -6,6 +6,12 @@ import { ViewUser } from 'app/site/users/models/view-user';
 import { ViewItem } from 'app/site/agenda/models/view-item';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { BaseViewModel } from 'app/site/base/base-view-model';
+import { Poll } from 'app/shared/models/assignments/poll';
+
+export interface AssignmentPhase {
+    value: number;
+    display_name: string;
+}
 
 export class ViewAssignment extends BaseAgendaViewModel {
     public static COLLECTIONSTRING = Assignment.COLLECTIONSTRING;
@@ -50,6 +56,10 @@ export class ViewAssignment extends BaseAgendaViewModel {
         return this.candidates ? this.candidates.length : 0;
     }
 
+    public get polls(): Poll[] {
+        return this.assignment ? this.assignment.polls : []; // TODO check
+    }
+
     /**
      * This is set by the repository
      */
@@ -59,6 +69,9 @@ export class ViewAssignment extends BaseAgendaViewModel {
 
     public constructor(assignment: Assignment, relatedUser?: ViewUser[], agendaItem?: ViewItem, tags?: ViewTag[]) {
         super(Assignment.COLLECTIONSTRING);
+
+        console.log('related user: ', relatedUser);
+
         this._assignment = assignment;
         this._relatedUser = relatedUser;
         this._agendaItem = agendaItem;
@@ -84,7 +97,7 @@ export class ViewAssignment extends BaseAgendaViewModel {
     }
 
     public getDetailStateURL(): string {
-        return 'TODO';
+        return `/assignments/${this.id}`;
     }
 
     public getSlide(): ProjectorElementBuildDeskriptor {
