@@ -112,7 +112,7 @@ if use_redis:
     SESSION_ENGINE = 'redis_sessions.session'
     SESSION_REDIS = {
         'host': '127.0.0.1',
-        'post': 6379,
+        'port': 6379,
         'db': 0,
         'prefix': 'session',
         'socket_timeout': 2
