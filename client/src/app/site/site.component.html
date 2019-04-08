@@ -20,7 +20,7 @@
         <div class="nav-toolbar">
             <!-- logo -->
             <a routerLink="/" (click)="toggleSideNav()">
-                <os-logo class="os-logo-container" inputAction="logo_web_header" [footer]="false"></os-logo>
+                <os-logo class="os-logo-container" [footer]="false"></os-logo>
             </a>
         </div>
 
@@ -130,7 +130,9 @@
                     <small><os-copyright-sign></os-copyright-sign>&nbsp;Copyright by OpenSlides</small>
                 </span>
             </a>
-            <div class="os-footer-logo-container"><os-logo inputAction="logo_web_header" footer="true"> </os-logo></div>
+            <div class="os-footer-logo-container">
+                <os-logo [footer]="true"></os-logo>
+            </div>
         </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content>

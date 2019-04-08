@@ -10,6 +10,26 @@ import { LoginDataService } from './login-data.service';
 })
 export class ThemeService {
     /**
+     * Constant, that describes the default theme class.
+     */
+    public static DEFAULT_THEME = 'openslides-theme';
+
+    /**
+     * Constant path of the logo with dark colors for bright themes.
+     */
+    public static STANDARD_LOGO = '/assets/img/openslides-logo-h.svg';
+
+    /**
+     * Constant path of the logo with white colors for dark themes.
+     */
+    public static STANDARD_LOGO_DARK_THEME = '/assets/img/openslides-logo-h-dark-transparent.svg';
+
+    /**
+     * Holds the current theme as member.
+     */
+    private currentTheme: string;
+
+    /**
      * Here it will subscribe to the observer from login data service. The stheme is part of
      * the login data, so get it from there and not from the config. This service will
      * also cache the theme and provide the right theme on login.
@@ -21,13 +41,31 @@ export class ThemeService {
             if (!newTheme) {
                 return;
             }
+            this.currentTheme = newTheme;
 
             const classList = document.getElementsByTagName('body')[0].classList; // Get the classlist of the body.
             const toRemove = Array.from(classList).filter((item: string) => item.includes('theme'));
             if (toRemove.length) {
                 classList.remove(...toRemove); // Remove all old themes.
             }
-            classList.add(newTheme); // Add the new theme.
+            classList.add(newTheme, ThemeService.DEFAULT_THEME); // Add the new theme.
         });
+    }
+
+    /**
+     * Returns the logo relative to the used theme.
+     *
+     * @param shouldDefault If this method should return the default logo.
+     *
+     * @returns the path to the logo.
+     */
+    public getLogoRelativeToTheme(shouldDefault?: boolean): string {
+        if (this.currentTheme) {
+            return this.currentTheme.includes('dark') && !shouldDefault
+                ? ThemeService.STANDARD_LOGO_DARK_THEME
+                : ThemeService.STANDARD_LOGO;
+        } else {
+            return null;
+        }
     }
 }

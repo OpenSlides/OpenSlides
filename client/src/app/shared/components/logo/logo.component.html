@@ -1,3 +1,4 @@
-<div *ngIf="getImage() != ''" class="logo-container">
-    <img [src]="getImage()">
+<div *ngIf="getImage()" class="logo-container">
+    <img [src]="getImage('true')" class="default" />
+    <img [src]="getImage()" class="dark"/>
 </div>

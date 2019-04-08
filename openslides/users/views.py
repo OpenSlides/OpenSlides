@@ -562,6 +562,7 @@ class UserLoginView(WhoAmIDataView):
             context["legal_notice"] = config["general_event_legal_notice"]
             # Add the theme, so the loginpage is themed correctly
             context["theme"] = config["openslides_theme"]
+            context["logo_web_header"] = config["logo_web_header"]
         else:
             # self.request.method == 'POST'
             context.update(self.get_whoami_data())

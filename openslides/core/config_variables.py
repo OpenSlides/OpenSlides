@@ -121,6 +121,10 @@ def get_config_variables():
             {"value": "openslides-theme", "display_name": "OpenSlides Default"},
             {"value": "openslides-dark-theme", "display_name": "OpenSlides Dark"},
             {"value": "openslides-green-theme", "display_name": "OpenSlides Green"},
+            {
+                "value": "openslides-developer-dark-theme",
+                "display_name": "OpenSlides Developer",
+            },
         ),
         weight=141,
         group="General",

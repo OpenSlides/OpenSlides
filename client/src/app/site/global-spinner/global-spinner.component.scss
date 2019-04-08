@@ -1,0 +1,83 @@
+@import '~@angular/material/theming';
+
+@mixin os-global-spinner-theme($theme) {
+    $primary: map-get($theme, primary);
+    $accent: map-get($theme, accent);
+    $warn: map-get($theme, warn);
+    $background: map-get($theme, background);
+    $foreground: map-get($theme, foreground);
+
+    $contrast-primary: map-get($primary, contrast);
+    $contrast-accent: map-get($accent, contrast);
+
+    .global-spinner-component,
+    .backdrop,
+    .spinner-container {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 999;
+    }
+
+    .global-spinner-component {
+        position: fixed;
+
+        .spinner-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            .spinner {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                margin: -136px 0 0 -53px;
+
+                height: 100px;
+                width: 100px;
+                border: 6px solid #000;
+                border-radius: 100%;
+                opacity: 0.2;
+
+                animation: rotation 1s infinite linear;
+
+                &:before {
+                    position: absolute;
+                    top: -6px;
+                    left: -6px;
+
+                    content: '';
+                    display: block;
+                    height: 100%;
+                    width: 100%;
+                    border-radius: 100%;
+                    border-style: solid;
+                    border-width: 6px;
+                    border-color: white transparent transparent;
+                }
+
+                @keyframes rotation {
+                    from {
+                        transform: rotate(0deg);
+                    }
+                    to {
+                        transform: rotate(359deg);
+                    }
+                }
+            }
+
+            .text {
+                text-align: center;
+                color: white;
+                font-size: 1.4rem;
+            }
+        }
+        .backdrop {
+            z-index: 899;
+            background-color: #303030;
+            opacity: 0.8;
+        }
+    }
+}
