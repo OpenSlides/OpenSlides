@@ -253,10 +253,11 @@ def all_data():
     return return_value
 
 
-def test_motion_slide(all_data):
+@pytest.mark.asyncio
+async def test_motion_slide(all_data):
     element: Dict[str, Any] = {"id": 1}
 
-    data = projector.motion_slide(all_data, element, 1)
+    data = await projector.motion_slide(all_data, element, 1)
 
     assert data == {
         "identifier": "4",
@@ -299,10 +300,11 @@ def test_motion_slide(all_data):
     }
 
 
-def test_amendment_slide(all_data):
+@pytest.mark.asyncio
+async def test_amendment_slide(all_data):
     element: Dict[str, Any] = {"id": 2}
 
-    data = projector.motion_slide(all_data, element, 1)
+    data = await projector.motion_slide(all_data, element, 1)
 
     assert data == {
         "identifier": "Ä1",
@@ -323,10 +325,11 @@ def test_amendment_slide(all_data):
     }
 
 
-def test_statute_amendment_slide(all_data):
+@pytest.mark.asyncio
+async def test_statute_amendment_slide(all_data):
     element: Dict[str, Any] = {"id": 3}
 
-    data = projector.motion_slide(all_data, element, 1)
+    data = await projector.motion_slide(all_data, element, 1)
 
     assert data == {
         "identifier": None,

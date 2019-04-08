@@ -5,13 +5,13 @@ Functions  that handel the registration of projector elements and the rendering
 of the data to present it on the projector.
 """
 
-from typing import Any, Callable, Dict, List
+from typing import Any, Awaitable, Callable, Dict, List
 
 from .cache import element_cache
 
 
 AllData = Dict[str, Dict[int, Dict[str, Any]]]
-ProjectorSlide = Callable[[AllData, Dict[str, Any], int], Dict[str, Any]]
+ProjectorSlide = Callable[[AllData, Dict[str, Any], int], Awaitable[Dict[str, Any]]]
 
 
 projector_slides: Dict[str, ProjectorSlide] = {}
@@ -83,7 +83,7 @@ async def get_projector_data(
         for element in projector["elements"]:
             projector_slide = projector_slides[element["name"]]
             try:
-                data = projector_slide(all_data, element, projector_id)
+                data = await projector_slide(all_data, element, projector_id)
             except ProjectorElementException as err:
                 data = {"error": str(err)}
             projector_data[projector_id].append({"data": data, "element": element})
@@ -91,12 +91,12 @@ async def get_projector_data(
     return projector_data
 
 
-def get_config(all_data: AllData, key: str) -> Any:
+async def get_config(all_data: AllData, key: str) -> Any:
     """
     Returns a config value from all_data.
     """
     from ..core.config import config
 
-    return all_data[config.get_collection_string()][config.get_key_to_id()[key]][
-        "value"
-    ]
+    config_id = (await config.async_get_key_to_id())[key]
+
+    return all_data[config.get_collection_string()][config_id]["value"]

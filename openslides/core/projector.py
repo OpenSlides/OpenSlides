@@ -10,11 +10,10 @@ from ..utils.projector import (
 
 # Important: All functions have to be prune. This means, that thay can only
 #            access the data, that they get as argument and do not have any
-#            side effects. They are called from an async context. So they have
-#            to be fast!
+#            side effects.
 
 
-def countdown_slide(
+async def countdown_slide(
     all_data: AllData, element: Dict[str, Any], projector_id: int
 ) -> Dict[str, Any]:
     """
@@ -42,7 +41,7 @@ def countdown_slide(
     }
 
 
-def message_slide(
+async def message_slide(
     all_data: AllData, element: Dict[str, Any], projector_id: int
 ) -> Dict[str, Any]:
     """
@@ -63,7 +62,7 @@ def message_slide(
         raise ProjectorElementException(f"Message {message_id} does not exist")
 
 
-def clock_slide(
+async def clock_slide(
     all_data: AllData, element: Dict[str, Any], projector_id: int
 ) -> Dict[str, Any]:
     return {}

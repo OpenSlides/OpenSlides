@@ -9,11 +9,10 @@ from ..utils.projector import (
 
 # Important: All functions have to be prune. This means, that thay can only
 #            access the data, that they get as argument and do not have any
-#            side effects. They are called from an async context. So they have
-#            to be fast!
+#            side effects.
 
 
-def topic_slide(
+async def topic_slide(
     all_data: AllData, element: Dict[str, Any], projector_id: int
 ) -> Dict[str, Any]:
     """

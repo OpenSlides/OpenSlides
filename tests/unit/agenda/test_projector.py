@@ -85,10 +85,11 @@ def all_data():
     return all_data
 
 
-def test_main_items(all_data):
+@pytest.mark.asyncio
+async def test_main_items(all_data):
     element: Dict[str, Any] = {}
 
-    data = projector.item_list_slide(all_data, element, 1)
+    data = await projector.item_list_slide(all_data, element, 1)
 
     assert data == {
         "items": [
@@ -106,10 +107,11 @@ def test_main_items(all_data):
     }
 
 
-def test_all_items(all_data):
+@pytest.mark.asyncio
+async def test_all_items(all_data):
     element: Dict[str, Any] = {"only_main_items": False}
 
-    data = projector.item_list_slide(all_data, element, 1)
+    data = await projector.item_list_slide(all_data, element, 1)
 
     assert data == {
         "items": [

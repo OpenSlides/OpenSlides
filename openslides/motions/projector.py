@@ -14,11 +14,10 @@ motion_placeholder_regex = re.compile(r"\[motion:(\d+)\]")
 
 # Important: All functions have to be prune. This means, that thay can only
 #            access the data, that they get as argument and do not have any
-#            side effects. They are called from an async context. So they have
-#            to be fast!
+#            side effects.
 
 
-def get_state(
+async def get_state(
     all_data: AllData, motion: Dict[str, Any], state_id: int
 ) -> Dict[str, Any]:
     """
@@ -35,14 +34,14 @@ def get_state(
     )
 
 
-def get_amendment_merge_into_motion_diff(all_data, motion, amendment):
+async def get_amendment_merge_into_motion_diff(all_data, motion, amendment):
     """
     HINT: This implementation should be consistent to showInDiffView() in ViewMotionAmendedParagraph.ts
     """
     if amendment["state_id"] is None:
         return 0
 
-    state = get_state(all_data, motion, amendment["state_id"])
+    state = await get_state(all_data, motion, amendment["state_id"])
     if state["merge_amendment_into_final"] == -1:
         return 0
     if state["merge_amendment_into_final"] == 1:
@@ -50,35 +49,35 @@ def get_amendment_merge_into_motion_diff(all_data, motion, amendment):
 
     if amendment["recommendation_id"] is None:
         return 0
-    recommendation = get_state(all_data, motion, amendment["recommendation_id"])
+    recommendation = await get_state(all_data, motion, amendment["recommendation_id"])
     if recommendation["merge_amendment_into_final"] == 1:
         return 1
 
     return 0
 
 
-def get_amendment_merge_into_motion_final(all_data, motion, amendment):
+async def get_amendment_merge_into_motion_final(all_data, motion, amendment):
     """
     HINT: This implementation should be consistent to showInFinalView() in ViewMotionAmendedParagraph.ts
     """
     if amendment["state_id"] is None:
         return 0
 
-    state = get_state(all_data, motion, amendment["state_id"])
+    state = await get_state(all_data, motion, amendment["state_id"])
     if state["merge_amendment_into_final"] == 1:
         return 1
 
     return 0
 
 
-def get_amendments_for_motion(motion, all_data):
+async def get_amendments_for_motion(motion, all_data):
     amendment_data = []
     for amendment_id, amendment in all_data["motions/motion"].items():
         if amendment["parent_id"] == motion["id"]:
-            merge_amendment_into_final = get_amendment_merge_into_motion_final(
+            merge_amendment_into_final = await get_amendment_merge_into_motion_final(
                 all_data, motion, amendment
             )
-            merge_amendment_into_diff = get_amendment_merge_into_motion_diff(
+            merge_amendment_into_diff = await get_amendment_merge_into_motion_diff(
                 all_data, motion, amendment
             )
             amendment_data.append(
@@ -94,7 +93,7 @@ def get_amendments_for_motion(motion, all_data):
     return amendment_data
 
 
-def get_amendment_base_motion(amendment, all_data):
+async def get_amendment_base_motion(amendment, all_data):
     try:
         motion = all_data["motions/motion"][amendment["parent_id"]]
     except KeyError:
@@ -108,7 +107,7 @@ def get_amendment_base_motion(amendment, all_data):
     }
 
 
-def get_amendment_base_statute(amendment, all_data):
+async def get_amendment_base_statute(amendment, all_data):
     try:
         statute = all_data["motions/statute-paragraph"][
             amendment["statute_paragraph_id"]
@@ -120,7 +119,7 @@ def get_amendment_base_statute(amendment, all_data):
     return {"title": statute["title"], "text": statute["text"]}
 
 
-def extend_reference_motion_dict(
+async def extend_reference_motion_dict(
     all_data: AllData,
     recommendation: str,
     referenced_motions: Dict[int, Dict[str, str]],
@@ -142,7 +141,7 @@ def extend_reference_motion_dict(
             }
 
 
-def motion_slide(
+async def motion_slide(
     all_data: AllData, element: Dict[str, Any], projector_id: int
 ) -> Dict[str, Any]:
     """
@@ -163,7 +162,9 @@ def motion_slide(
     * change_recommendations
     * submitter
     """
-    mode = element.get("mode", get_config(all_data, "motions_recommendation_text_mode"))
+    mode = element.get(
+        "mode", await get_config(all_data, "motions_recommendation_text_mode")
+    )
     motion_id = element.get("id")
 
     if motion_id is None:
@@ -174,20 +175,22 @@ def motion_slide(
     except KeyError:
         raise ProjectorElementException(f"motion with id {motion_id} does not exist")
 
-    show_meta_box = not get_config(all_data, "motions_disable_sidebox_on_projector")
-    line_length = get_config(all_data, "motions_line_length")
-    line_numbering_mode = get_config(all_data, "motions_default_line_numbering")
-    motions_preamble = get_config(all_data, "motions_preamble")
+    show_meta_box = not await get_config(
+        all_data, "motions_disable_sidebox_on_projector"
+    )
+    line_length = await get_config(all_data, "motions_line_length")
+    line_numbering_mode = await get_config(all_data, "motions_default_line_numbering")
+    motions_preamble = await get_config(all_data, "motions_preamble")
 
     if motion["statute_paragraph_id"]:
         change_recommendations = []  # type: ignore
         amendments = []  # type: ignore
         base_motion = None
-        base_statute = get_amendment_base_statute(motion, all_data)
+        base_statute = await get_amendment_base_statute(motion, all_data)
     elif bool(motion["parent_id"]) and motion["amendment_paragraphs"]:
         change_recommendations = []
         amendments = []
-        base_motion = get_amendment_base_motion(motion, all_data)
+        base_motion = await get_amendment_base_motion(motion, all_data)
         base_statute = None
     else:
         change_recommendations = list(
@@ -195,7 +198,7 @@ def motion_slide(
                 lambda reco: reco["internal"] is False, motion["change_recommendations"]
             )
         )
-        amendments = get_amendments_for_motion(motion, all_data)
+        amendments = await get_amendments_for_motion(motion, all_data)
         base_motion = None
         base_statute = None
 
@@ -215,7 +218,7 @@ def motion_slide(
         "line_numbering_mode": line_numbering_mode,
     }
 
-    if not get_config(all_data, "motions_disable_reason_on_projector"):
+    if not await get_config(all_data, "motions_disable_reason_on_projector"):
         return_value["reason"] = motion["reason"]
 
     if mode == "final":
@@ -223,10 +226,12 @@ def motion_slide(
 
     if show_meta_box:
         if (
-            not get_config(all_data, "motions_disable_recommendation_on_projector")
+            not await get_config(
+                all_data, "motions_disable_recommendation_on_projector"
+            )
             and motion["recommendation_id"]
         ):
-            recommendation_state = get_state(
+            recommendation_state = await get_state(
                 all_data, motion, motion["recommendation_id"]
             )
             return_value["recommendation"] = recommendation_state[
@@ -236,18 +241,18 @@ def motion_slide(
                 recommendation_extension = motion["recommendation_extension"]
                 # All title information for referenced motions in the recommendation
                 referenced_motions: Dict[int, Dict[str, str]] = {}
-                extend_reference_motion_dict(
+                await extend_reference_motion_dict(
                     all_data, recommendation_extension, referenced_motions
                 )
                 return_value["recommendation_extension"] = recommendation_extension
                 return_value["referenced_motions"] = referenced_motions
 
-            return_value["recommender"] = get_config(
+            return_value["recommender"] = await get_config(
                 all_data, "motions_recommendations_by"
             )
 
         return_value["submitter"] = [
-            get_user_name(all_data, submitter["user_id"])
+            await get_user_name(all_data, submitter["user_id"])
             for submitter in sorted(
                 motion["submitters"], key=lambda submitter: submitter["weight"]
             )
@@ -256,7 +261,7 @@ def motion_slide(
     return return_value
 
 
-def motion_block_slide(
+async def motion_block_slide(
     all_data: AllData, element: Dict[str, Any], projector_id: int
 ) -> Dict[str, Any]:
     """
@@ -290,7 +295,7 @@ def motion_block_slide(
 
             recommendation_id = motion["recommendation_id"]
             if recommendation_id is not None:
-                recommendation = get_state(
+                recommendation = await get_state(
                     all_data, motion, motion["recommendation_id"]
                 )
                 motion_object["recommendation"] = {
@@ -299,7 +304,7 @@ def motion_block_slide(
                 }
                 if recommendation["show_recommendation_extension_field"]:
                     recommendation_extension = motion["recommendation_extension"]
-                    extend_reference_motion_dict(
+                    await extend_reference_motion_dict(
                         all_data, recommendation_extension, referenced_motions
                     )
                     motion_object["recommendation_extension"] = recommendation_extension
