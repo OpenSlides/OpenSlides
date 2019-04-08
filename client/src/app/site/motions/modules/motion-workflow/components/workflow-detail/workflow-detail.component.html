@@ -103,13 +103,24 @@
                         </div>
                         <div
                             class="clickable-cell"
-                            *ngIf="perm.type === 'accessLevel'"
-                            [matMenuTriggerFor]="accessLevelMenu"
+                            *ngIf="perm.type === 'restriction'"
+                            [matMenuTriggerFor]="restrictionMenu"
                             [matMenuTriggerData]="{ state: state }"
-                            matTooltip="{{ accessLevels[state.access_level].label | translate }}"
                         >
                             <div class="inner-table">
-                                {{ accessLevels[state.access_level].label | translate }}
+                                <div *ngIf="!state.restriction.length">
+                                    -
+                                </div>
+                                <div *ngIf="state.restriction.length">
+                                    <span
+                                        *ngFor="
+                                            let restriction of state.restriction;
+                                            let last = last
+                                        "
+                                    >
+                                        {{ getRestrictionLabel(restriction) | translate }}<span *ngIf="!last">,&nbsp;</span>
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </mat-cell>
@@ -179,12 +190,12 @@
     </ng-template>
 </mat-menu>
 
-<!-- Select access level menu -->
-<mat-menu matMenuContent #accessLevelMenu="matMenu">
+<!-- Select restriction menu -->
+<mat-menu matMenuContent #restrictionMenu="matMenu">
     <ng-template let-state="state" matMenuContent>
-        <button mat-menu-item *ngFor="let level of accessLevels" (click)="onSetAccesLevel(level.level, state)">
-            <mat-icon *ngIf="state.access_level === level.level">check</mat-icon>
-            <span>{{ level.label | translate }}</span>
+        <button mat-menu-item *ngFor="let restriction of restrictions" (click)="onSetRestriction(restriction.key, state)">
+            <mat-icon *ngIf="state.restriction.includes(restriction.key)">check</mat-icon>
+            <span>{{ restriction.label | translate }}</span>
         </button>
     </ng-template>
 </mat-menu>

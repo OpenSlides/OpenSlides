@@ -246,7 +246,7 @@ export class MotionFilterListService extends BaseFilterListService<Motion, ViewM
                     // filter out restricted states for unpriviledged users
                     if (
                         this.operator.hasPerms('motions.can_manage', 'motions.can_manage_metadata') ||
-                        state.access_level === 0
+                        state.restriction.length === 0
                     ) {
                         if (state.isFinalState) {
                             finalStates.push(state.id);

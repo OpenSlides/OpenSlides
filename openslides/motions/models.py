@@ -985,24 +985,6 @@ class State(RESTModelMixin, models.Model):
     state.
     """
 
-    ALL = 0
-    EXTENDED_MANAGERS_AND_SUBMITTER = 1
-    EXTENDED_MANAGERS = 2
-    MANAGERS_ONLY = 3
-
-    ACCESS_LEVELS = (
-        (ALL, "All users with permission to see motions"),
-        (
-            EXTENDED_MANAGERS_AND_SUBMITTER,
-            "Submitters, authorized users (with permission to see internal motions), managers and users with permission to manage metadata",
-        ),
-        (
-            EXTENDED_MANAGERS,
-            "Only authorized users (with permission to see internal motions), managers and users with permission to manage metadata",
-        ),
-        (MANAGERS_ONLY, "Only managers"),
-    )
-
     name = models.CharField(max_length=255)
     """A string representing the state."""
 
@@ -1024,11 +1006,22 @@ class State(RESTModelMixin, models.Model):
     Default value is 'primary' (blue).
     """
 
-    access_level = models.IntegerField(choices=ACCESS_LEVELS, default=0)
+    restriction = JSONField(default=list)
     """
-    Defines which users may see motions in this state e. g. only managers,
-    authorized users with permission to see internal motiosn, users with permission
-    to manage metadata and submitters.
+    Defines which users may see motions in this state:
+
+    Contains a list of one or more of the following strings:
+     * motions.can_see_internal
+     * motions.can_manage_metadata
+     * is_submitter
+     * managers_only
+
+    If the list is empty, everybody with the general permission to see motions
+    can see this motion. If the list contains 'managers_only', only managers with
+    motions.can_manage permission may see this motion. In all other cases the user
+    shall have one of the given permissions respectivly is submitter of the motion.
+
+    Default: Empty list so everybody can see the motion.
     """
 
     allow_support = models.BooleanField(default=False)

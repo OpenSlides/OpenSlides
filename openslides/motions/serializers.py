@@ -1,5 +1,6 @@
 from typing import Dict, Optional
 
+import jsonschema
 from django.db import transaction
 
 from ..core.config import config
@@ -13,6 +14,7 @@ from ..utils.rest_api import (
     Field,
     IdPrimaryKeyRelatedField,
     IntegerField,
+    JSONField,
     ModelSerializer,
     SerializerMethodField,
     ValidationError,
@@ -94,6 +96,8 @@ class StateSerializer(ModelSerializer):
     Serializer for motion.models.State objects.
     """
 
+    restriction = JSONField()
+
     class Meta:
         model = State
         fields = (
@@ -101,7 +105,7 @@ class StateSerializer(ModelSerializer):
             "name",
             "recommendation_label",
             "css_class",
-            "access_level",
+            "restriction",
             "allow_support",
             "allow_create_poll",
             "allow_submitter_edit",
@@ -112,6 +116,33 @@ class StateSerializer(ModelSerializer):
             "next_states",
             "workflow",
         )
+
+    def validate_restriction(self, value):
+        """
+        Ensures that the value is a list and only contains valid values.
+        """
+        schema = {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "title": "Motion workflow state restriction field schema",
+            "description": "An array containing one or more explicit strings to control restriction for motions in this state.",
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "motions.can_see_internal",
+                    "motions.can_manage_metadata",
+                    "is_submitter",
+                    "managers_only",
+                ],
+            },
+        }
+
+        # Validate value.
+        try:
+            jsonschema.validate(value, schema)
+        except jsonschema.ValidationError as err:
+            raise ValidationError({"detail": str(err)})
+        return value
 
 
 class WorkflowSerializer(ModelSerializer):
@@ -369,7 +400,7 @@ class MotionSerializer(ModelSerializer):
     polls = MotionPollSerializer(many=True, read_only=True)
     modified_final_version = CharField(allow_blank=True, required=False)
     reason = CharField(allow_blank=True, required=False)
-    state_access_level = SerializerMethodField()
+    state_restriction = SerializerMethodField()
     text = CharField(allow_blank=True)
     title = CharField(max_length=255)
     amendment_paragraphs = AmendmentParagraphsJSONSerializerField(required=False)
@@ -404,7 +435,7 @@ class MotionSerializer(ModelSerializer):
             "supporters",
             "state",
             "state_extension",
-            "state_access_level",
+            "state_restriction",
             "statute_paragraph",
             "workflow_id",
             "recommendation",
@@ -509,9 +540,9 @@ class MotionSerializer(ModelSerializer):
 
         return result
 
-    def get_state_access_level(self, motion):
+    def get_state_restriction(self, motion):
         """
-        Returns the access level of this state. The default is 0 so everybody
+        Returns the restriction of this state. The default is an empty list so everybody
         with permission to see motions can see this motion.
         """
-        return motion.state.access_level
+        return motion.state.restriction
