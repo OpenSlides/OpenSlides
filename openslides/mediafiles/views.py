@@ -77,10 +77,19 @@ class MediafileViewSet(ModelViewSet):
         # on server via Django methods (file, open(), save(), ...).
         mediafile = self.get_object()
         mediafile.mediafile.storage.delete(mediafile.mediafile.name)
+
+        # check if the file was used as a logo or font
         for logo in config["logos_available"]:
             if config[logo]["path"] == mediafile.mediafile.url:
                 config[logo] = {
                     "display_name": config[logo]["display_name"],
+                    "path": "",
+                }
+        for font in config["fonts_available"]:
+            if config[font]["path"] == mediafile.mediafile.url:
+                config[font] = {
+                    "display_name": config[font]["display_name"],
+                    "default": config[font]["default"],
                     "path": "",
                 }
         return super().destroy(request, *args, **kwargs)
