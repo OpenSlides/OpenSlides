@@ -65,27 +65,39 @@ export class CollectionStringMapperService {
         }
     }
 
+    public isCollectionRegistered(collectionString: string): boolean {
+        return !!this.collectionStringMapping[collectionString];
+    }
+
     /**
      * @param obj The object to get the model constructor from.
      * @returns the model constructor
      */
-    public getModelConstructor<M extends BaseModel>(obj: TypeIdentifier): ModelConstructor<M> {
-        return this.collectionStringMapping[this.getCollectionString(obj)][0] as ModelConstructor<M>;
+    public getModelConstructor<M extends BaseModel>(obj: TypeIdentifier): ModelConstructor<M> | null {
+        if (this.isCollectionRegistered(this.getCollectionString(obj))) {
+            return this.collectionStringMapping[this.getCollectionString(obj)][0] as ModelConstructor<M>;
+        }
     }
 
     /**
      * @param obj The object to get the view model constructor from.
      * @returns the view model constructor
      */
-    public getViewModelConstructor<M extends BaseViewModel>(obj: TypeIdentifier): ViewModelConstructor<M> {
-        return this.collectionStringMapping[this.getCollectionString(obj)][1] as ViewModelConstructor<M>;
+    public getViewModelConstructor<M extends BaseViewModel>(obj: TypeIdentifier): ViewModelConstructor<M> | null {
+        if (this.isCollectionRegistered(this.getCollectionString(obj))) {
+            return this.collectionStringMapping[this.getCollectionString(obj)][1] as ViewModelConstructor<M>;
+        }
     }
 
     /**
      * @param obj The object to get the repository from.
      * @returns the repository
      */
-    public getRepository<V extends BaseViewModel, M extends BaseModel>(obj: TypeIdentifier): BaseRepository<V, M> {
-        return this.collectionStringMapping[this.getCollectionString(obj)][2] as BaseRepository<V, M>;
+    public getRepository<V extends BaseViewModel, M extends BaseModel>(
+        obj: TypeIdentifier
+    ): BaseRepository<V, M> | null {
+        if (this.isCollectionRegistered(this.getCollectionString(obj))) {
+            return this.collectionStringMapping[this.getCollectionString(obj)][2] as BaseRepository<V, M>;
+        }
     }
 }
