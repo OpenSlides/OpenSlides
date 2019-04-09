@@ -148,11 +148,7 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
     public create(): void {
         if (this.createForm.valid && this.projectorToCreate) {
             this.projectorToCreate.patchValues(this.createForm.value as Projector);
-            // TODO: the server shouldn't want to have element data..
             this.projectorToCreate.patchValues({
-                elements: [{ name: 'core/clock', stable: true }],
-                elements_preview: [],
-                elements_history: [],
                 reference_projector_id: this.projectors[0].reference_projector_id
             });
             this.repo.create(this.projectorToCreate).then(() => (this.projectorToCreate = null), this.raiseError);
