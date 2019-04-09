@@ -239,7 +239,7 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile,
      */
     public isUsedAs(file: ViewMediafile, mediaFileAction: string): boolean {
         const config = this.mediaManage.getMediaConfig(mediaFileAction);
-        return config.path === file.downloadUrl;
+        return config ? config.path === file.downloadUrl : false;
     }
 
     /**
