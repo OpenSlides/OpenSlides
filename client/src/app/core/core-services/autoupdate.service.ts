@@ -112,7 +112,11 @@ export class AutoupdateService {
 
             // Add the objects to the DataStore.
             for (const collection of Object.keys(autoupdate.changed)) {
-                await this.DS.add(this.mapObjectsToBaseModels(collection, autoupdate.changed[collection]));
+                if (this.modelMapper.isCollectionRegistered(collection)) {
+                    await this.DS.add(this.mapObjectsToBaseModels(collection, autoupdate.changed[collection]));
+                } else {
+                    console.error(`Unregistered collection "${collection}". Ignore it.`);
+                }
             }
 
             await this.DS.flushToStorage(autoupdate.to_change_id);
@@ -130,9 +134,6 @@ export class AutoupdateService {
      */
     private mapObjectsToBaseModels(collection: string, models: object[]): BaseModel[] {
         const targetClass = this.modelMapper.getModelConstructor(collection);
-        if (!targetClass) {
-            throw new Error(`Unregistered resource ${collection}`);
-        }
         return models.map(model => new targetClass(model));
     }
 
