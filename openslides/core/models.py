@@ -91,7 +91,7 @@ class Projector(RESTModelMixin, models.Model):
     show_title = models.BooleanField(default=True)
     show_logo = models.BooleanField(default=True)
 
-    name = models.CharField(max_length=255, unique=True, blank=True)
+    name = models.CharField(max_length=255, unique=True)
 
     reference_projector = models.ForeignKey(
         "self",

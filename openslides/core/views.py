@@ -57,6 +57,7 @@ from .models import (
     ProjectorMessage,
     Tag,
 )
+from .serializers import elements_array_validator, elements_validator
 
 
 # Special Django views
@@ -139,6 +140,11 @@ class ProjectorViewSet(ModelViewSet):
             result = False
         return result
 
+    def perform_create(self, serializer):
+        projector = serializer.save()
+        projector.elements = [{"name": "core/clock", "stable": True}]
+        projector.save()
+
     def destroy(self, *args, **kwargs):
         """
         REST API operation for DELETE requests.
@@ -184,22 +190,24 @@ class ProjectorViewSet(ModelViewSet):
             "delete_last_history_element", False
         )
 
-        changed_data = {}
         if elements is not None:
-            changed_data["elements"] = elements
+            elements_validator(elements)
+            projector.elements = elements
+
         if preview is not None:
-            changed_data["elements_preview"] = preview
+            elements_validator(preview)
+            projector.elements_preview = preview
+
+        elements_history = None
         if history_element is not None and delete_last_history_element is False:
-            history = projector.elements_history + [history_element]
-            changed_data["elements_history"] = history
+            elements_history = projector.elements_history + [history_element]
         if history_element is None and delete_last_history_element is True:
-            history = projector.elements_history[:-1]
-            changed_data["elements_history"] = history
+            elements_history = projector.elements_history[:-1]
+        if elements_history is not None:
+            elements_array_validator(elements_history)
+            projector.elements_history = elements_history
 
-        serializer = self.get_serializer(projector, data=changed_data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-
+        projector.save()
         return Response()
 
     @detail_route(methods=["post"])

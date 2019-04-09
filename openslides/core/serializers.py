@@ -1,7 +1,13 @@
 from typing import Any
 
 from ..utils.projector import projector_slides
-from ..utils.rest_api import Field, IntegerField, ModelSerializer, ValidationError
+from ..utils.rest_api import (
+    Field,
+    IdPrimaryKeyRelatedField,
+    IntegerField,
+    ModelSerializer,
+    ValidationError,
+)
 from ..utils.validate import validate_html
 from .models import (
     ChatMessage,
@@ -77,12 +83,16 @@ class ProjectorSerializer(ModelSerializer):
     Serializer for core.models.Projector objects.
     """
 
-    elements = JSONSerializerField(validators=[elements_validator])
-    elements_preview = JSONSerializerField(validators=[elements_validator])
-    elements_history = JSONSerializerField(validators=[elements_array_validator])
+    elements = JSONSerializerField(read_only=True)
+    elements_preview = JSONSerializerField(read_only=True)
+    elements_history = JSONSerializerField(read_only=True)
 
     width = IntegerField(min_value=800, max_value=3840, required=False)
     height = IntegerField(min_value=340, max_value=2880, required=False)
+
+    projectiondefaults = IdPrimaryKeyRelatedField(
+        many=True, required=False, queryset=ProjectionDefault.objects.all()
+    )
 
     class Meta:
         model = Projector

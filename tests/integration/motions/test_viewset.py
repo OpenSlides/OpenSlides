@@ -23,14 +23,14 @@ from openslides.motions.models import (
 from openslides.utils.auth import get_group_model
 from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.test import TestCase
+from tests.common_groups import (
+    GROUP_ADMIN_PK,
+    GROUP_DEFAULT_PK,
+    GROUP_DELEGATE_PK,
+    GROUP_STAFF_PK,
+)
 
 from ..helpers import count_queries
-
-
-GROUP_DEFAULT_PK = 1
-GROUP_ADMIN_PK = 2
-GROUP_DELEGATE_PK = 3
-GROUP_STAFF_PK = 4
 
 
 @pytest.mark.django_db(transaction=False)
