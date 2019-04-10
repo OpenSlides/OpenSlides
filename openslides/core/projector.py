@@ -37,7 +37,7 @@ async def countdown_slide(
         "description": countdown["description"],
         "running": countdown["running"],
         "countdown_time": countdown["countdown_time"],
-        "warning_time": get_config(all_data, "agenda_countdown_warning_time"),
+        "warning_time": await get_config(all_data, "agenda_countdown_warning_time"),
     }
 
 
