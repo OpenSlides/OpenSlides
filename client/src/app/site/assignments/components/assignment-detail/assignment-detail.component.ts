@@ -423,4 +423,11 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
         const title = this.translate.instant('Ballot');
         return `${title} ${index + 1} (${pubState})`;
     }
+
+    /**
+     * Returns a list of users that have been elected in this assignment
+     */
+    public electedUsers(): ViewUser[] {
+        return this.assignment.electedCandidateIds.map(userId => this.userRepo.getViewModel(userId));
+    }
 }

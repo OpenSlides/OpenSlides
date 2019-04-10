@@ -56,6 +56,22 @@ export class ViewAssignment extends BaseAgendaViewModel {
         return this.candidates ? this.candidates.length : 0;
     }
 
+    /**
+     * @returns a list of user ids that are marked as elected in the context of this assignment
+     */
+    public get electedCandidateIds(): number[] {
+        const electedId: number[] = [];
+        if (this.polls && this.polls.length) {
+            this.assignment.polls.forEach(poll => {
+                const electedOptions = poll.options.filter(option => option.is_elected === true);
+                electedOptions.map(option => {
+                    electedId.push(option.candidate_id);
+                });
+            });
+        }
+        return electedId;
+    }
+
     public get polls(): Poll[] {
         return this.assignment ? this.assignment.polls : []; // TODO check
     }
