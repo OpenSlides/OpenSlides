@@ -21,7 +21,7 @@ interface BreakablePoint {
 /**
  * An object specifying a range of line numbers.
  */
-interface LineNumberRange {
+export interface LineNumberRange {
     /**
      * The first line number to be included.
      */

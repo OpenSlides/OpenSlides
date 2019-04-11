@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -9,29 +9,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { CreateMotion } from 'app/site/motions/models/create-motion';
-import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
-import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
+import { MotionRepositoryService, ParagraphToChoose } from 'app/core/repositories/motions/motion-repository.service';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
-
-/**
- * Describes the single paragraphs from the base motion.
- */
-interface ParagraphToChoose {
-    /**
-     * The paragraph number.
-     */
-    paragraphNo: number;
-
-    /**
-     * The raw HTML of this paragraph.
-     */
-    rawHtml: string;
-
-    /**
-     * The HTML of this paragraph, wrapped in a `SafeHtml`-object.
-     */
-    safeHtml: SafeHtml;
-}
 
 /**
  * The wizard used to create a new amendment based on a motion.
@@ -68,6 +47,11 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
     public reasonRequired: boolean;
 
     /**
+     * Indicates if an amendment can change multiple paragraphs or only one
+     */
+    public multipleParagraphsAllowed: boolean;
+
+    /**
      * Constructs this component.
      *
      * @param {Title} titleService set the browser title
@@ -77,8 +61,6 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
      * @param {MotionRepositoryService} repo Motion Repository
      * @param {ActivatedRoute} route The activated route
      * @param {Router} router The router
-     * @param {DomSanitizer} sanitizer The DOM Sanitizing library
-     * @param {LinenumberingService} lineNumbering The line numbering service
      * @param {MatSnackBar} matSnackBar Material Design SnackBar
      */
     public constructor(
@@ -89,8 +71,6 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
         private repo: MotionRepositoryService,
         private route: ActivatedRoute,
         private router: Router,
-        private sanitizer: DomSanitizer,
-        private lineNumbering: LinenumberingService,
         matSnackBar: MatSnackBar
     ) {
         super(titleService, translate, matSnackBar);
@@ -104,6 +84,10 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
         this.configService.get<boolean>('motions_reason_required').subscribe(required => {
             this.reasonRequired = required;
         });
+
+        this.configService.get<boolean>('motions_amendments_multiple_paragraphs').subscribe(allowed => {
+            this.multipleParagraphsAllowed = allowed;
+        });
     }
 
     /**
@@ -114,16 +98,7 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
         this.route.params.subscribe(params => {
             this.repo.getViewModelObservable(params.id).subscribe(newViewMotion => {
                 this.motion = newViewMotion;
-
-                this.paragraphs = this.repo
-                    .getTextParagraphs(this.motion, true, this.lineLength)
-                    .map((paragraph: string, index: number) => {
-                        return {
-                            paragraphNo: index,
-                            safeHtml: this.sanitizer.bypassSecurityTrustHtml(paragraph),
-                            rawHtml: this.lineNumbering.stripLineNumbers(paragraph)
-                        };
-                    });
+                this.paragraphs = this.repo.getParagraphsToChoose(newViewMotion, this.lineLength);
             });
         });
     }
@@ -133,10 +108,72 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
      */
     public createForm(): void {
         this.contentForm = this.formBuilder.group({
-            selectedParagraph: [null, Validators.required],
-            text: ['', Validators.required],
+            selectedParagraphs: [[], Validators.required],
             reason: ['', Validators.required]
         });
+    }
+
+    public isParagraphSelected(paragraph: ParagraphToChoose): boolean {
+        return !!this.contentForm.value.selectedParagraphs.find(para => para.paragraphNo === paragraph.paragraphNo);
+    }
+
+    /**
+     * Called by the template when a paragraph is clicked in single paragraph mode.
+     * Behaves like a radio-button
+     *
+     * @param {ParagraphToChoose} paragraph
+     */
+    public setParagraph(paragraph: ParagraphToChoose): void {
+        this.contentForm.value.selectedParagraphs.forEach(para => {
+            this.contentForm.removeControl('text_' + para.paragraphNo);
+        });
+        this.contentForm.addControl(
+            'text_' + paragraph.paragraphNo,
+            new FormControl(paragraph.rawHtml, Validators.required)
+        );
+        this.contentForm.patchValue({
+            selectedParagraphs: [paragraph]
+        });
+    }
+
+    /**
+     * Called by the template when a paragraph is clicked in multiple paragraph mode.
+     * Behaves like a checkbox
+     *
+     * @param {ParagraphToChoose} paragraph
+     */
+    public toggleParagraph(paragraph: ParagraphToChoose): void {
+        let newParagraphs: ParagraphToChoose[];
+        const oldSelected: ParagraphToChoose[] = this.contentForm.value.selectedParagraphs;
+        if (this.isParagraphSelected(paragraph)) {
+            newParagraphs = oldSelected.filter(para => para.paragraphNo !== paragraph.paragraphNo);
+            this.contentForm.patchValue({
+                selectedParagraphs: newParagraphs
+            });
+            this.contentForm.removeControl('text_' + paragraph.paragraphNo);
+        } else {
+            newParagraphs = Object.assign([], oldSelected);
+            newParagraphs.push(paragraph);
+            newParagraphs.sort(
+                (para1: ParagraphToChoose, para2: ParagraphToChoose): number => {
+                    if (para1.paragraphNo < para2.paragraphNo) {
+                        return -1;
+                    } else if (para1.paragraphNo > para2.paragraphNo) {
+                        return 1;
+                    } else {
+                        return 0;
+                    }
+                }
+            );
+
+            this.contentForm.addControl(
+                'text_' + paragraph.paragraphNo,
+                new FormControl(paragraph.rawHtml, Validators.required)
+            );
+            this.contentForm.patchValue({
+                selectedParagraphs: newParagraphs
+            });
+        }
     }
 
     /**
@@ -144,11 +181,12 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
      *
      * @param {ParagraphToChoose} paragraph
      */
-    public selectParagraph(paragraph: ParagraphToChoose): void {
-        this.contentForm.patchValue({
-            selectedParagraph: paragraph.paragraphNo,
-            text: paragraph.rawHtml
-        });
+    public onParagraphClicked(paragraph: ParagraphToChoose): void {
+        if (this.multipleParagraphsAllowed) {
+            this.toggleParagraph(paragraph);
+        } else {
+            this.setParagraph(paragraph);
+        }
     }
 
     /**
@@ -157,10 +195,12 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
      * @returns {Promise<void>}
      */
     public async saveAmendment(): Promise<void> {
+        let text = '';
         const amendedParagraphs = this.paragraphs.map(
             (paragraph: ParagraphToChoose, index: number): string => {
-                if (index === this.contentForm.value.selectedParagraph) {
-                    return this.contentForm.value.text;
+                if (this.contentForm.value.selectedParagraphs.find(para => para.paragraphNo === index)) {
+                    text = this.contentForm.value['text_' + index];
+                    return this.contentForm.value['text_' + index];
                 } else {
                     return null;
                 }
@@ -169,6 +209,7 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
         const newMotionValues = {
             ...this.contentForm.value,
             title: this.translate.instant('Amendment to') + ' ' + this.motion.identifier,
+            text: text, // Workaround as 'text' is required from the backend
             parent_id: this.motion.id,
             category_id: this.motion.category_id,
             motion_block_id: this.motion.motion_block_id,

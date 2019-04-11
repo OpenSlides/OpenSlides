@@ -1651,7 +1651,7 @@ msgstr ""
 msgid "Select or search new submitter ..."
 msgstr ""
 
-msgid "Select paragraph"
+msgid "Select paragraphs"
 msgstr ""
 
 msgid "Selected values"
@@ -1726,7 +1726,10 @@ msgstr ""
 msgid "Show amendment in parent motoin"
 msgstr ""
 
-msgid "Show amendments together with motions"
+msgid "Amendments can change multiple paragraphs"
+msgstr ""
+
+msgid "Restrict amendments to only one paragraph"
 msgstr ""
 
 msgid "Show clock"

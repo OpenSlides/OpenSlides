@@ -261,6 +261,16 @@ def get_config_variables():
         subgroup="Amendments",
     )
 
+    yield ConfigVariable(
+        name="motions_amendments_multiple_paragraphs",
+        default_value=False,
+        input_type="boolean",
+        label="Amendments can change multiple paragraphs",
+        weight=343,
+        group="Motions",
+        subgroup="Amendments",
+    )
+
     # Supporters
 
     yield ConfigVariable(

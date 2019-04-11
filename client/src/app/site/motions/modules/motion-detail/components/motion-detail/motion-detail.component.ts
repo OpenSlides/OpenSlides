@@ -25,7 +25,7 @@ import {
     MotionChangeRecommendationComponent
 } from '../motion-change-recommendation/motion-change-recommendation.component';
 import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-export.service';
-import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
+import { MotionRepositoryService, ParagraphToChoose } from 'app/core/repositories/motions/motion-repository.service';
 import { NotifyService } from 'app/core/core-services/notify.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { PersonalNoteService } from 'app/core/ui-services/personal-note.service';
@@ -645,11 +645,28 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         });
 
         if (formMotion.isParagraphBasedAmendment()) {
-            contentPatch.text = formMotion.amendment_paragraphs.find(
-                (para: string): boolean => {
-                    return para !== null;
-                }
-            );
+            contentPatch.selected_paragraphs = [];
+            const parentMotion = this.repo.getViewModel(formMotion.parent_id);
+            // Hint: lineLength is sometimes not loaded yet when this form is initialized;
+            // This doesn't hurt as long as patchForm is called when editing mode is started, i.e., later.
+            if (parentMotion && this.lineLength) {
+                const paragraphsToChoose = this.repo.getParagraphsToChoose(parentMotion, this.lineLength);
+
+                paragraphsToChoose.forEach(
+                    (paragraph: ParagraphToChoose, paragraphNo: number): void => {
+                        if (formMotion.amendment_paragraphs[paragraphNo]) {
+                            this.contentForm.addControl(
+                                'text_' + paragraphNo,
+                                new FormControl('', Validators.required)
+                            );
+
+                            contentPatch.selected_paragraphs.push(paragraph);
+                            contentPatch.text = formMotion.amendment_paragraphs[paragraphNo]; // Workaround as 'text' is required from the backend
+                            contentPatch['text_' + paragraphNo] = formMotion.amendment_paragraphs[paragraphNo];
+                        }
+                    }
+                );
+            }
         }
 
         const statuteAmendmentFieldName = 'statute_amendment';
@@ -681,6 +698,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
             supporters_id: [[]],
             workflow_id: [],
             origin: [''],
+            selected_paragraphs: [],
             statute_amendment: [''], // Internal value for the checkbox, not saved to the model
             statute_paragraph_id: [''],
             motion_block_id: [], // TODO: Can be removed if this is not required
@@ -733,11 +751,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         const motion = new ctor();
         if (this.motion.isParagraphBasedAmendment()) {
             motion.amendment_paragraphs = this.motion.amendment_paragraphs.map(
-                (paragraph: string): string => {
+                (paragraph: string, paragraphNo: number): string => {
                     if (paragraph === null) {
                         return null;
                     } else {
-                        return motionValues.text;
+                        return motionValues['text_' + paragraphNo];
                     }
                 }
             );
