@@ -580,7 +580,9 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
                     if (motion) {
                         this.motion = motion;
                         this.newStateExtension = this.motion.stateExtension;
-                        this.patchForm(this.motion);
+                        if (!this.editMotion) {
+                            this.patchForm(this.motion);
+                        }
                     }
                 }),
                 this.repo.amendmentsTo(motionId).subscribe(

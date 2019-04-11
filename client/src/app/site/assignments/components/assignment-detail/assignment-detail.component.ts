@@ -333,7 +333,9 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
                 this.repo.getViewModelObservable(assignmentId).subscribe(assignment => {
                     if (assignment) {
                         this.assignment = assignment;
-                        this.patchForm(this.assignment);
+                        if (!this.editAssignment) {
+                            this.patchForm(this.assignment);
+                        }
                     }
                 })
             );
