@@ -188,7 +188,7 @@ export class TopicDetailComponent extends BaseViewComponent {
             if (newViewTopic && !this.editTopic) {
                 this.topic = newViewTopic;
                 // personalInfoForm is undefined during 'new' and directly after reloading
-                if (this.topicForm) {
+                if (this.topicForm && !this.editTopic) {
                     this.patchForm();
                 }
             }
