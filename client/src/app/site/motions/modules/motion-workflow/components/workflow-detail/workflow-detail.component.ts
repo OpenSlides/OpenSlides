@@ -117,10 +117,10 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
      * Determines possible restrictions
      */
     public restrictions = [
-        { key: 'managers_only', label: 'Managers only' },
-        { key: 'motions.can_see_internal', label: 'Can see internal (perm)' },
-        { key: 'motions.can_manage_metadata', label: 'Can manage metadata (perm)' },
-        { key: 'is_submitter', label: 'Is submitter' }
+        { key: 'managers_only', label: 'Can manage motions' },
+        { key: 'motions.can_see_internal', label: 'Can see motions in internal state' },
+        { key: 'motions.can_manage_metadata', label: 'Can manage motion metadata' },
+        { key: 'is_submitter', label: 'Submitters' }
     ] as Restriction[];
 
     /**
