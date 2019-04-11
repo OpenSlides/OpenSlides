@@ -251,13 +251,9 @@ _('Set identifier');
 _('Show state extension field');
 _('Show recommendation extension field');
 _('Show amendment in parent motoin');
-_('Access level');
+_('Restrictions');
 _('Label color');
 _('Next states');
-_('0: All users');
-_('1: Submitters and all managers');
-_('2: Only managers for motions and metadata');
-_('3: Only managers for motions');
 
 // other translations
 _('Searching for candidates');
@@ -292,6 +288,7 @@ _('Can manage files');
 _('Can see hidden files');
 // motions
 _('Can see motions');
+_('Can see motions in internal state');
 _('Can create motions');
 _('Can support motions');
 _('Can manage motions');

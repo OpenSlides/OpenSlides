@@ -373,7 +373,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User> imp
         if (this.selectedRows.find(row => row.user.id === this.operator.user.id)) {
             this.raiseError(
                 this.translate.instant(
-                    'Note: Your own password will not be changed. Please use the password change dialog instead.'
+                    'Note: Your own password was not changed. Please use the password change dialog instead.'
                 )
             );
         }

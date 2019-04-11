@@ -14,18 +14,6 @@ msgstr ""
 msgid "%num% emails were send sucessfully."
 msgstr "%num% E-Mails wurden erfolgreich versandt."
 
-msgid "0: All users"
-msgstr "0: Alle Nutzer"
-
-msgid "1: Submitters and all managers"
-msgstr "1: Antragsteller und alle Verwalter"
-
-msgid "2: Only managers for motions and metadata"
-msgstr "2: Nur Verwalter von Anträgen und Metadaten"
-
-msgid "3: Only managers for motions"
-msgstr "3: Nur Verwalter von Anträgen"
-
 msgid "<unknown motion>"
 msgstr "<unbekannter Antrag>"
 
@@ -54,9 +42,6 @@ msgstr "Annahme"
 msgid "Access data (PDF)"
 msgstr "Zugangsdaten (PDF)"
 
-msgid "Access level"
-msgstr "Zugangsebene"
-
 msgid "Access-data"
 msgstr "Zugangsdaten"
 
@@ -80,6 +65,9 @@ msgstr "Countdown hinzufügen"
 
 msgid "Add me"
 msgstr "Füge mich hinzu"
+
+msgid "Add message"
+msgstr "Mitteilung hinzufügen"
 
 msgid "Add new custom translation"
 msgstr "Neue benutzerdefinierte Übersetzung hinzufügen"
@@ -167,6 +155,9 @@ msgstr "Änderungsantrag zu"
 msgid "Amendments"
 msgstr "Änderungsanträge"
 
+msgid "Amendments can change multiple paragraphs"
+msgstr "Änderungsanträge können mehrere Absätze ändern"
+
 msgid "An email with a password reset link was send!"
 msgstr ""
 "Es wurde eine E-Mail mit einem Link zum Zurücksetzen des Passworts gesendet."
@@ -204,9 +195,6 @@ msgstr "Sollen wirklich alle Redner/innen von dieser Liste entfernt werden?"
 msgid "Are you sure you want to delete the print template?"
 msgstr "Soll die Beschluss-Druckvorlage wirklich gelöscht werden?"
 
-msgid "Are you sure you want to delete the selected message?"
-msgstr "Soll die ausgewählte Mitteilung wirklich gelöscht werden?"
-
 msgid "Are you sure you want to delete this category?"
 msgstr "Soll dieses Sachgebiet wirklich gelöscht werden?"
 
@@ -233,6 +221,9 @@ msgstr "Soll dieser Antrag wirklich gelöscht werden?"
 
 msgid "Are you sure you want to delete this participant?"
 msgstr "Soll diese/r Teilnehmende wirklich gelöscht werden?"
+
+msgid "Are you sure you want to delete this poll?"
+msgstr ""
 
 msgid "Are you sure you want to delete this projector?"
 msgstr "Soll dieser Projektor wirklich gelöscht werden?"
@@ -291,6 +282,9 @@ msgstr "Zurück zur Anmeldung"
 
 msgid "Background color"
 msgstr "Hintergrundfarbe"
+
+msgid "Ballot"
+msgstr "Wahlgang"
 
 msgid "Ballot and ballot papers"
 msgstr "Wahlgang und Stimmzettel"
@@ -352,9 +346,6 @@ msgstr "Darf Anträge verwalten"
 msgid "Can manage tags"
 msgstr "Darf Schlagwörter verwalten"
 
-msgid "Can manage the chat"
-msgstr "Darf den Chat verwalten"
-
 msgid "Can manage the projector"
 msgstr "Darf den Projektor steuern"
 
@@ -396,6 +387,9 @@ msgstr "Darf interne Einträge und Zeitplan der Tagesordnung sehen"
 msgid "Can see motions"
 msgstr "Darf Anträge sehen"
 
+msgid "Can see motions in internal state"
+msgstr "Darf Anträge im internen Status sehen"
+
 msgid "Can see names of users"
 msgstr "Darf die Namen der Benutzer sehen"
 
@@ -413,9 +407,6 @@ msgstr "Darf Anträge unterstützen"
 
 msgid "Can upload files"
 msgstr "Darf Dateien hochladen"
-
-msgid "Can use the chat"
-msgstr "Darf den Chat benutzen"
 
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -560,6 +551,9 @@ msgstr "Neuen Status erstellen"
 msgid "Create new workflow"
 msgstr "Neuen Arbeitsablauf erstellen"
 
+msgid "Create poll"
+msgstr ""
+
 msgid "Creation date"
 msgstr "Erstellungsdatum"
 
@@ -599,6 +593,9 @@ msgstr ""
 msgid "Default"
 msgstr "Standard"
 
+msgid "Default comment on the ballot paper"
+msgstr ""
+
 msgid "Default encoding for all csv exports"
 msgstr "Voreingestelltes Encoding für alle CSV-Exporte"
 
@@ -636,6 +633,9 @@ msgstr "Löschen"
 
 msgid "Delete final print template"
 msgstr "Beschluss-Druckvorlage löschen"
+
+msgid "Delete message"
+msgstr "Mitteilung löschen"
 
 msgid "Delete recommendation"
 msgstr "Empfehlung löschen"
@@ -714,9 +714,6 @@ msgstr "Details bearbeiten"
 msgid "Edit details for"
 msgstr "Details bearbeiten für"
 
-msgid "Edit message"
-msgstr "Mitteilung bearbeiten"
-
 msgid "Edit statute paragraph:"
 msgstr "Satzungsabschnitt bearbeiten:"
 
@@ -728,6 +725,9 @@ msgstr "Titel bearbeiten"
 
 msgid "Edit topic"
 msgstr "Thema bearbeiten"
+
+msgid "Election"
+msgstr "Wahl"
 
 msgid "Election method"
 msgstr "Wahlmethode"
@@ -775,6 +775,9 @@ msgstr ""
 
 msgid "Enter participant number"
 msgstr "Teilnehmernummer eingeben"
+
+msgid "Enter votes"
+msgstr "Stimmen eingeben"
 
 msgid "Enter your email to send the password reset link"
 msgstr ""
@@ -1124,8 +1127,14 @@ msgstr "Als Gast anmelden"
 msgid "Logout"
 msgstr "Abmelden"
 
+msgid "Majority method"
+msgstr ""
+
 msgid "Mark speaker"
 msgstr "Redner/in markieren"
+
+msgid "Message"
+msgstr "Mitteilung"
 
 msgid "Messages"
 msgstr "Mitteilungen"
@@ -1214,14 +1223,14 @@ msgstr "Neue Änderungsempfehlung"
 msgid "New comment field"
 msgstr "Neues Kommentarfeld"
 
+msgid "New election"
+msgstr "Neue Wahl"
+
 msgid "New file name"
 msgstr "Neuer Dateiname"
 
 msgid "New group name"
 msgstr "Neuer Gruppenname"
-
-msgid "New message"
-msgstr "Neue Mitteilung"
 
 msgid "New motion"
 msgstr "Neuer Antrag"
@@ -1292,9 +1301,6 @@ msgstr "Keine Gruppen ausgewählt"
 msgid "No information available"
 msgstr "Keine Informationen verfügbar"
 
-msgid "No messages"
-msgstr "Keine Mitteilungen"
-
 msgid "No motion block set"
 msgstr "kein Antragsblock gesetzt"
 
@@ -1316,6 +1322,13 @@ msgstr "Nr."
 msgid "None"
 msgstr "aus"
 
+msgid ""
+"Note: Your own password was not changed. Please use the password change "
+"dialog instead."
+msgstr ""
+"Hinweis: Ihr eigenes Passwort wurde nicht geändert. Nutzen Sie stattdessen "
+"die Passwort-Ändern-Funktion."
+
 msgid "Number motions"
 msgstr "Anträge nummerieren"
 
@@ -1333,6 +1346,9 @@ msgstr "Anzahl der Stimmzettel (Vorauswahl)"
 
 msgid "Number of last speakers to be shown on the projector"
 msgstr "Anzahl der dargestellten letzten Redner/innen auf dem Projektor"
+
+msgid "Number of persons to be elected"
+msgstr "Anzahl der zu wählenden Personen"
 
 msgid "Number set"
 msgstr "Nummer gesetzt"
@@ -1475,6 +1491,9 @@ msgstr "Persönliche Notiz"
 msgid "Personal notes"
 msgstr "Persönliche Notizen"
 
+msgid "Phase"
+msgstr "Phase"
+
 msgid "Please enter a name for the new workflow:"
 msgstr "Bitte geben Sie einen Namen für den neuen Arbeitsablauf ein:"
 
@@ -1489,6 +1508,9 @@ msgstr "Bitte geben Sie Ihr neues Passwort ein"
 
 msgid "Please fill in all required values"
 msgstr "Bitte füllen Sie alle erforderlichen Felder aus."
+
+msgid "Please fill in the values for each candidate"
+msgstr ""
 
 msgid "Preamble text for PDF and DOCX documents (all motions)"
 msgstr "Einleitungstext für PDF- und DOCX-Dokumente (alle Anträge) "
@@ -1523,6 +1545,9 @@ msgstr "Zurück"
 msgid "Previous slides"
 msgstr "Letzte Folien"
 
+msgid "Print ballot paper"
+msgstr "Stimmzettel drucken"
+
 msgid "Print ballot papers"
 msgstr "Stimmzettel drucken"
 
@@ -1538,6 +1563,9 @@ msgstr "Projizieren"
 msgid "Project selection?"
 msgstr "Auswahl projizieren?"
 
+msgid "Projection defaults"
+msgstr "Projektionsvorgaben"
+
 msgid "Projector"
 msgstr "Projektor"
 
@@ -1550,9 +1578,6 @@ msgstr "Projektorsprache"
 msgid "Projector logo"
 msgstr "Projektor-Logo"
 
-msgid "Projector messages"
-msgstr "Projektor-Mitteilungen"
-
 msgid "Projectors"
 msgstr "Projektoren"
 
@@ -1561,6 +1586,9 @@ msgstr "Öffentlich"
 
 msgid "Public item"
 msgstr "Öffentlicher Eintrag"
+
+msgid "Publish"
+msgstr "Veröffentlichen"
 
 msgid "Put all candidates on the list of speakers"
 msgstr "Alle Kandidaten auf die Redeliste setzen"
@@ -1656,6 +1684,9 @@ msgstr "Status zurücksetzen"
 
 msgid "Resolution and size"
 msgstr "Auflösung und Größe"
+
+msgid "Restrictions"
+msgstr "Zugriffsbeschränkung"
 
 msgid "Right"
 msgstr "Rechts"
@@ -1786,9 +1817,6 @@ msgstr "Änderungsantrag im Hauptantrag anzeigen"
 msgid "Show amendments together with motions"
 msgstr "Änderungsanträge zusätzlich in der Hauptantragsübersicht anzeigen"
 
-msgid "Amendments can change multiple paragraphs"
-msgstr "Änderungsanträge können mehrere Absätze ändern"
-
 msgid "Show clock"
 msgstr "Uhr anzeigen"
 
@@ -1867,9 +1895,6 @@ msgstr "Mitarbeitende"
 msgid "Standard font size in PDF"
 msgstr "Standard-Schriftgröße im PDF"
 
-msgid "Start"
-msgstr "Start"
-
 msgid "Start time"
 msgstr "Startzeit"
 
@@ -1896,9 +1921,6 @@ msgstr "Satzungsabschnitt wurde importiert"
 
 msgid "Statute paragraph will be imported"
 msgstr "Satzungsabschnitt wird importiert"
-
-msgid "Stop"
-msgstr "Stopp"
 
 msgid "Stop counting"
 msgstr "Zählen stoppen"
@@ -2111,6 +2133,9 @@ msgstr "Themen wurden importiert."
 msgid "Topics(s) will be imported."
 msgstr "Themen werden importiert."
 
+msgid "Total votes"
+msgstr ""
+
 msgid "Total votes cast"
 msgstr "Abgegebene Stimmen"
 
@@ -2122,6 +2147,9 @@ msgstr "Typ"
 
 msgid "Undone"
 msgstr "unerledigt"
+
+msgid "Unpublish"
+msgstr ""
 
 msgid "Unsupport"
 msgstr "Unterstützung zurückziehen"
@@ -2179,6 +2207,9 @@ msgstr "Abstimmung erstellt"
 
 msgid "Vote deleted"
 msgstr "Abstimmung gelöscht"
+
+msgid "Vote per Candidate"
+msgstr ""
 
 msgid "Vote updated"
 msgstr "Abstimmung aktualisiert"
@@ -2255,11 +2286,17 @@ msgstr "Ja"
 msgid "Yes/No"
 msgstr "Ja/Nein"
 
+msgid "Yes/No per Candidate"
+msgstr ""
+
 msgid "Yes/No per candidate"
 msgstr "Ja/Nein pro Kandidat"
 
 msgid "Yes/No/Abstain"
 msgstr "Ja/Nein/Enthaltung"
+
+msgid "Yes/No/Abstain per Candidate"
+msgstr ""
 
 msgid "Yes/No/Abstain per candidate"
 msgstr "Ja/Nein/Enthaltung pro Kandidat"
@@ -2273,6 +2310,9 @@ msgstr "Der Chronik-Modus ist aktiv. Änderungen werden nicht gespeichert."
 
 msgid "You can use {event_name} and {username} as placeholder."
 msgstr "Sie können {event_name} und {username} als Platzhalter verwenden."
+
+msgid "You do not have the required permission to see that page!"
+msgstr "Sie haben leider keine Berechtigung diese Seite zu sehen."
 
 msgid "You override the personally set password!"
 msgstr "Sie überschreiben hiermit das persönlich gesetzte Passwort!"
@@ -2304,6 +2344,9 @@ msgstr "aktiv"
 
 msgid "active users"
 msgstr "aktive Nutzer"
+
+msgid "add"
+msgstr ""
 
 msgid "add group(s)"
 msgstr "Gruppe(n) hinzufügen"
@@ -2460,6 +2503,12 @@ msgstr "bis"
 
 msgid "undocumented"
 msgstr "nicht erfasst"
+
+msgid "with indexedDB"
+msgstr "mit indexedDB"
+
+msgid "with local storage"
+msgstr "mit Local Storage"
 
 msgid "withdrawed"
 msgstr "zurückgezogen"

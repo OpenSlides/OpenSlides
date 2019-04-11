@@ -98,8 +98,8 @@
                         {{ updateForm.value.width }}
 
                         <!-- projection defaults -->
-                        <h3 translate>Projectiondefaults</h3>
-                        <mat-select formControlName="projectiondefaults_id" placeholder="{{ 'Projectiondefaults' | translate }}" [multiple]="true">
+                        <h3 translate>Projection defaults</h3>
+                        <mat-select formControlName="projectiondefaults_id" placeholder="{{ 'Projection defaults' | translate }}" [multiple]="true">
                             <mat-option *ngFor="let pd of projectionDefaults" [value]="pd.id">
                                 {{ pd.getTitle() | translate }}
                             </mat-option>

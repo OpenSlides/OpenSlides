@@ -7,18 +7,6 @@ msgstr ""
 msgid "%num% emails were send sucessfully."
 msgstr ""
 
-msgid "0: All users"
-msgstr ""
-
-msgid "1: Submitters and all managers"
-msgstr ""
-
-msgid "2: Only managers for motions and metadata"
-msgstr ""
-
-msgid "3: Only managers for motions"
-msgstr ""
-
 msgid "<unknown motion>"
 msgstr ""
 
@@ -46,9 +34,6 @@ msgstr ""
 msgid "Access data (PDF)"
 msgstr ""
 
-msgid "Access level"
-msgstr ""
-
 msgid "Access-data"
 msgstr ""
 
@@ -71,6 +56,9 @@ msgid "Add countdown"
 msgstr ""
 
 msgid "Add me"
+msgstr ""
+
+msgid "Add message"
 msgstr ""
 
 msgid "Add new custom translation"
@@ -156,6 +144,9 @@ msgstr ""
 msgid "Amendments"
 msgstr ""
 
+msgid "Amendments can change multiple paragraphs"
+msgstr ""
+
 msgid "An email with a password reset link was send!"
 msgstr ""
 
@@ -189,9 +180,6 @@ msgstr ""
 msgid "Are you sure you want to delete the print template?"
 msgstr ""
 
-msgid "Are you sure you want to delete the selected message?"
-msgstr ""
-
 msgid "Are you sure you want to delete this category?"
 msgstr ""
 
@@ -217,6 +205,9 @@ msgid "Are you sure you want to delete this motion?"
 msgstr ""
 
 msgid "Are you sure you want to delete this participant?"
+msgstr ""
+
+msgid "Are you sure you want to delete this poll?"
 msgstr ""
 
 msgid "Are you sure you want to delete this projector?"
@@ -269,6 +260,9 @@ msgid "Back to login"
 msgstr ""
 
 msgid "Background color"
+msgstr ""
+
+msgid "Ballot"
 msgstr ""
 
 msgid "Ballot and ballot papers"
@@ -331,9 +325,6 @@ msgstr ""
 msgid "Can manage tags"
 msgstr ""
 
-msgid "Can manage the chat"
-msgstr ""
-
 msgid "Can manage the projector"
 msgstr ""
 
@@ -373,6 +364,9 @@ msgstr ""
 msgid "Can see motions"
 msgstr ""
 
+msgid "Can see motions in internal state"
+msgstr ""
+
 msgid "Can see names of users"
 msgstr ""
 
@@ -389,9 +383,6 @@ msgid "Can support motions"
 msgstr ""
 
 msgid "Can upload files"
-msgstr ""
-
-msgid "Can use the chat"
 msgstr ""
 
 msgid "Cancel"
@@ -535,6 +526,9 @@ msgstr ""
 msgid "Create new workflow"
 msgstr ""
 
+msgid "Create poll"
+msgstr ""
+
 msgid "Creation date"
 msgstr ""
 
@@ -563,6 +557,9 @@ msgid ""
 msgstr ""
 
 msgid "Default"
+msgstr ""
+
+msgid "Default comment on the ballot paper"
 msgstr ""
 
 msgid "Default encoding for all csv exports"
@@ -595,6 +592,9 @@ msgid "Delete"
 msgstr ""
 
 msgid "Delete final print template"
+msgstr ""
+
+msgid "Delete message"
 msgstr ""
 
 msgid "Delete recommendation"
@@ -670,9 +670,6 @@ msgstr ""
 msgid "Edit details for"
 msgstr ""
 
-msgid "Edit message"
-msgstr ""
-
 msgid "Edit statute paragraph:"
 msgstr ""
 
@@ -683,6 +680,9 @@ msgid "Edit title"
 msgstr ""
 
 msgid "Edit topic"
+msgstr ""
+
+msgid "Election"
 msgstr ""
 
 msgid "Election method"
@@ -728,6 +728,9 @@ msgid "Enter duration in seconds. Choose 0 to disable warning color."
 msgstr ""
 
 msgid "Enter participant number"
+msgstr ""
+
+msgid "Enter votes"
 msgstr ""
 
 msgid "Enter your email to send the password reset link"
@@ -1074,7 +1077,13 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
+msgid "Majority method"
+msgstr ""
+
 msgid "Mark speaker"
+msgstr ""
+
+msgid "Message"
 msgstr ""
 
 msgid "Messages"
@@ -1164,13 +1173,13 @@ msgstr ""
 msgid "New comment field"
 msgstr ""
 
+msgid "New election"
+msgstr ""
+
 msgid "New file name"
 msgstr ""
 
 msgid "New group name"
-msgstr ""
-
-msgid "New message"
 msgstr ""
 
 msgid "New motion"
@@ -1242,9 +1251,6 @@ msgstr ""
 msgid "No information available"
 msgstr ""
 
-msgid "No messages"
-msgstr ""
-
 msgid "No motion block set"
 msgstr ""
 
@@ -1266,6 +1272,11 @@ msgstr ""
 msgid "None"
 msgstr ""
 
+msgid ""
+"Note: Your own password was not changed. Please use the password change "
+"dialog instead."
+msgstr ""
+
 msgid "Number motions"
 msgstr ""
 
@@ -1282,6 +1293,9 @@ msgid "Number of ballot papers (selection)"
 msgstr ""
 
 msgid "Number of last speakers to be shown on the projector"
+msgstr ""
+
+msgid "Number of persons to be elected"
 msgstr ""
 
 msgid "Number set"
@@ -1422,6 +1436,9 @@ msgstr ""
 msgid "Personal notes"
 msgstr ""
 
+msgid "Phase"
+msgstr ""
+
 msgid "Please enter a name for the new workflow:"
 msgstr ""
 
@@ -1435,6 +1452,9 @@ msgid "Please enter your new password"
 msgstr ""
 
 msgid "Please fill in all required values"
+msgstr ""
+
+msgid "Please fill in the values for each candidate"
 msgstr ""
 
 msgid "Preamble text for PDF and DOCX documents (all motions)"
@@ -1470,6 +1490,9 @@ msgstr ""
 msgid "Previous slides"
 msgstr ""
 
+msgid "Print ballot paper"
+msgstr ""
+
 msgid "Print ballot papers"
 msgstr ""
 
@@ -1485,6 +1508,9 @@ msgstr ""
 msgid "Project selection?"
 msgstr ""
 
+msgid "Projection defaults"
+msgstr ""
+
 msgid "Projector"
 msgstr ""
 
@@ -1497,9 +1523,6 @@ msgstr ""
 msgid "Projector logo"
 msgstr ""
 
-msgid "Projector messages"
-msgstr ""
-
 msgid "Projectors"
 msgstr ""
 
@@ -1507,6 +1530,9 @@ msgid "Public"
 msgstr ""
 
 msgid "Public item"
+msgstr ""
+
+msgid "Publish"
 msgstr ""
 
 msgid "Put all candidates on the list of speakers"
@@ -1598,6 +1624,9 @@ msgid "Reset state"
 msgstr ""
 
 msgid "Resolution and size"
+msgstr ""
+
+msgid "Restrictions"
 msgstr ""
 
 msgid "Right"
@@ -1726,10 +1755,7 @@ msgstr ""
 msgid "Show amendment in parent motoin"
 msgstr ""
 
-msgid "Amendments can change multiple paragraphs"
-msgstr ""
-
-msgid "Restrict amendments to only one paragraph"
+msgid "Show amendments together with motions"
 msgstr ""
 
 msgid "Show clock"
@@ -1810,9 +1836,6 @@ msgstr ""
 msgid "Standard font size in PDF"
 msgstr ""
 
-msgid "Start"
-msgstr ""
-
 msgid "Start time"
 msgstr ""
 
@@ -1838,9 +1861,6 @@ msgid "Statute paragraph has been imported"
 msgstr ""
 
 msgid "Statute paragraph will be imported"
-msgstr ""
-
-msgid "Stop"
 msgstr ""
 
 msgid "Stop counting"
@@ -2024,6 +2044,9 @@ msgstr ""
 msgid "Topics(s) will be imported."
 msgstr ""
 
+msgid "Total votes"
+msgstr ""
+
 msgid "Total votes cast"
 msgstr ""
 
@@ -2034,6 +2057,9 @@ msgid "Type"
 msgstr ""
 
 msgid "Undone"
+msgstr ""
+
+msgid "Unpublish"
 msgstr ""
 
 msgid "Unsupport"
@@ -2086,6 +2112,9 @@ msgid "Vote created"
 msgstr ""
 
 msgid "Vote deleted"
+msgstr ""
+
+msgid "Vote per Candidate"
 msgstr ""
 
 msgid "Vote updated"
@@ -2158,10 +2187,16 @@ msgstr ""
 msgid "Yes/No"
 msgstr ""
 
+msgid "Yes/No per Candidate"
+msgstr ""
+
 msgid "Yes/No per candidate"
 msgstr ""
 
 msgid "Yes/No/Abstain"
+msgstr ""
+
+msgid "Yes/No/Abstain per Candidate"
 msgstr ""
 
 msgid "Yes/No/Abstain per candidate"
@@ -2174,6 +2209,9 @@ msgid "You are using the history mode of OpenSlides. Changes will not be saved."
 msgstr ""
 
 msgid "You can use {event_name} and {username} as placeholder."
+msgstr ""
+
+msgid "You do not have the required permission to see that page!"
 msgstr ""
 
 msgid "You override the personally set password!"
@@ -2204,6 +2242,9 @@ msgid "active"
 msgstr ""
 
 msgid "active users"
+msgstr ""
+
+msgid "add"
 msgstr ""
 
 msgid "add group(s)"
@@ -2360,6 +2401,12 @@ msgid "to"
 msgstr ""
 
 msgid "undocumented"
+msgstr ""
+
+msgid "with indexedDB"
+msgstr ""
+
+msgid "with local storage"
 msgstr ""
 
 msgid "withdrawed"
