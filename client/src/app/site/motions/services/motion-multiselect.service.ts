@@ -2,20 +2,22 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { ViewMotion } from '../models/view-motion';
-import { ChoiceService } from 'app/core/ui-services/choice.service';
-import { PromptService } from 'app/core/ui-services/prompt.service';
-import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
-import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
-import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
-import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
-import { HttpService } from 'app/core/core-services/http.service';
-import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
+import { ChoiceDialogOptions } from 'app/shared/components/choice-dialog/choice-dialog.component';
+import { ChoiceService } from 'app/core/ui-services/choice.service';
 import { Displayable } from 'app/site/base/displayable';
+import { HttpService } from 'app/core/core-services/http.service';
 import { Identifiable } from 'app/shared/models/base/identifiable';
+import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
+import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
+import { PersonalNoteService } from 'app/core/ui-services/personal-note.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
+import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
 import { TreeService } from 'app/core/ui-services/tree.service';
+import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
+import { ViewMotion } from '../models/view-motion';
+import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
 
 /**
  * Contains all multiselect actions for the motion list view.
@@ -39,6 +41,7 @@ export class MotionMultiselectService {
      * @param motionBlockRepo
      * @param httpService
      * @param treeService
+     * @param personalNoteService
      */
     public constructor(
         private repo: MotionRepositoryService,
@@ -52,7 +55,8 @@ export class MotionMultiselectService {
         private agendaRepo: ItemRepositoryService,
         private motionBlockRepo: MotionBlockRepositoryService,
         private httpService: HttpService,
-        private treeService: TreeService
+        private treeService: TreeService,
+        private personalNoteService: PersonalNoteService
     ) {}
 
     /**
@@ -297,6 +301,24 @@ export class MotionMultiselectService {
                 const sum = [].concat(before, itemsToMove, after);
                 this.repo.sortMotionBranches(sum, parentId);
             }
+        }
+    }
+
+    /**
+     * Bulk sets/unsets the favorite status (after a confirmation dialog)
+     *
+     * @param motions The motions to set/unset the favorite status for
+     */
+    public async bulkSetFavorite(motions: ViewMotion[]): Promise<void> {
+        const title = this.translate.instant('This will set the favorite status for all selected motions:');
+        const choices: ChoiceDialogOptions = [
+            { id: 1, label: this.translate.instant('Set as favorite') },
+            { id: 2, label: this.translate.instant('Set as not favorite') }
+        ];
+        const selectedChoice = await this.choiceService.open(title, choices);
+        if (selectedChoice && motions.length) {
+            const star = (selectedChoice.items as number) === choices[0].id;
+            await this.personalNoteService.bulkSetStar(motions, star);
         }
     }
 }

@@ -60,6 +60,42 @@ export class PersonalNoteService {
         }
 
         pnObject.notes[model.collectionString][model.id] = content;
+        this.savePersonalNoteObject(pnObject);
+    }
+
+    /**
+     * Sets the 'favorite' status for several models of a type in bulk
+     *
+     * @param models The model the content belongs to
+     * @param star The new 'favorite' status
+     */
+    public async bulkSetStar(models: (BaseModel | BaseViewModel)[], star: boolean): Promise<void> {
+        if (!models.length) {
+            return;
+        }
+        const pnObject: Partial<PersonalNoteObject> = this.personalNoteObject || {};
+        if (!pnObject.notes) {
+            pnObject.notes = {};
+        }
+        for (const model of models) {
+            if (!pnObject.notes[model.collectionString]) {
+                pnObject.notes[model.collectionString] = {};
+            }
+            if (pnObject.notes[model.collectionString][model.id]) {
+                pnObject.notes[model.collectionString][model.id].star = star;
+            } else {
+                pnObject.notes[model.collectionString][model.id] = { star: star, note: '' };
+            }
+        }
+        await this.savePersonalNoteObject(pnObject);
+    }
+
+    /**
+     * Sends an updated personal note to the server
+     *
+     * @param pnObject a partial (if new) or complete personal note object
+     */
+    private async savePersonalNoteObject(pnObject: Partial<PersonalNoteObject>): Promise<void> {
         if (!pnObject.id) {
             await this.http.post('rest/users/personal-note/', pnObject);
         } else {

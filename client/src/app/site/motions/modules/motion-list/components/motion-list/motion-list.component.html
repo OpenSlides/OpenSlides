@@ -221,6 +221,10 @@
         </button>
         <div *ngIf="perms.isAllowed('change_metadata')">
             <mat-divider></mat-divider>
+            <button mat-menu-item (click)="multiselectWrapper(multiselectService.bulkToggleFavorite(selectedRows))">
+                <mat-icon>star</mat-icon>
+                <span translate>Set/unset Favorite</span>
+            </button>
             <button mat-menu-item (click)="multiselectWrapper(multiselectService.setStateOfMultiple(selectedRows))">
                 <mat-icon>label</mat-icon>
                 <span translate>Set status</span>
