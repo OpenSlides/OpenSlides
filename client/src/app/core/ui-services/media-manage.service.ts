@@ -117,7 +117,7 @@ export class MediaManageService {
      * @param action the logo action or font action
      * @returns A media config object containing the requested values
      */
-    public getMediaConfig(action: string): ImageConfigObject | FontConfigObject {
+    public getMediaConfig(action: string): ImageConfigObject | FontConfigObject | null {
         return this.config.instant(action);
     }
 }
