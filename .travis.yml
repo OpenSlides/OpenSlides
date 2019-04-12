@@ -87,6 +87,7 @@ matrix:
       install:
         - npm install
       script:
+        - npm list --depth=0 || cat --help
         - npm run prettify-check
 
     - language: node_js

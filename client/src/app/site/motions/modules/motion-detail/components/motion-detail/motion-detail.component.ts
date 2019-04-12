@@ -707,13 +707,13 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         this.updateWorkflowIdForCreateForm();
 
         const component = this;
-        this.highlightedLineMatcher = new class implements ErrorStateMatcher {
+        this.highlightedLineMatcher = new (class implements ErrorStateMatcher {
             public isErrorState(control: FormControl): boolean {
                 const value: string = control && control.value ? control.value + '' : '';
                 const maxLineNumber = component.repo.getLastLineNumber(component.motion, component.lineLength);
                 return value.match(/[^\d]/) !== null || parseInt(value, 10) >= maxLineNumber;
             }
-        }();
+        })();
 
         // create the search motion form
         this.recommendationExtensionForm = this.formBuilder.group({

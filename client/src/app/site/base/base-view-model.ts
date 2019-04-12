@@ -2,6 +2,7 @@ import { Displayable } from './displayable';
 import { Identifiable } from '../../shared/models/base/identifiable';
 import { Collection } from 'app/shared/models/base/collection';
 import { BaseModel } from 'app/shared/models/base/base-model';
+import { Updateable } from './updateable';
 
 export interface ViewModelConstructor<T extends BaseViewModel> {
     COLLECTIONSTRING: string;
@@ -11,7 +12,7 @@ export interface ViewModelConstructor<T extends BaseViewModel> {
 /**
  * Base class for view models. alls view models should have titles.
  */
-export abstract class BaseViewModel implements Displayable, Identifiable, Collection {
+export abstract class BaseViewModel implements Displayable, Identifiable, Collection, Updateable {
     /**
      * Force children to have an id.
      */

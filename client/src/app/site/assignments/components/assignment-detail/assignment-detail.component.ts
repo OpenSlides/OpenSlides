@@ -1,4 +1,3 @@
-import { BehaviorSubject } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatSnackBar, MatSelectChange } from '@angular/material';
@@ -6,6 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
+import { BehaviorSubject } from 'rxjs';
 
 import { Assignment } from 'app/shared/models/assignments/assignment';
 import { AssignmentPollService } from '../../services/assignment-poll.service';
@@ -15,7 +15,7 @@ import { ConstantsService } from 'app/core/ui-services/constants.service';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
-import { Poll } from 'app/shared/models/assignments/poll';
+import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
 import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ViewAssignment, AssignmentPhase } from '../../models/view-assignment';
@@ -23,6 +23,7 @@ import { ViewItem } from 'app/site/agenda/models/view-item';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewUser } from 'app/site/users/models/view-user';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 
 /**
  * Component for the assignment detail view
@@ -87,7 +88,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
      */
     public set assignment(assignment: ViewAssignment) {
         this._assignment = assignment;
-        if (this.assignment.polls && this.assignment.polls.length) {
+        if (this.assignment.polls.length) {
             this.assignment.polls.forEach(poll => {
                 poll.pollBase = this.pollService.getBaseAmount(poll);
             });
@@ -148,6 +149,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
      * @param pollService
      * @param agendaRepo
      * @param tagRepo
+     * @param promptService
      */
     public constructor(
         title: Title,
@@ -164,7 +166,8 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
         private constants: ConstantsService,
         public pollService: AssignmentPollService,
         private agendaRepo: ItemRepositoryService,
-        private tagRepo: TagRepositoryService
+        private tagRepo: TagRepositoryService,
+        private promptService: PromptService
     ) {
         super(title, translate, matSnackBar);
         /* Server side constants for phases */
@@ -342,7 +345,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
         } else {
             this.newAssignment = true;
             // TODO set defaults?
-            this.assignment = new ViewAssignment(new Assignment());
+            this.assignment = new ViewAssignment(new Assignment(), [], []);
             this.patchForm(this.assignment);
             this.setEditMode(true);
         }
@@ -350,9 +353,14 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
 
     /**
      * Handler for deleting the assignment
-     * TODO: navigating to assignment overview on delete
      */
-    public onDeleteAssignmentButton(): void {}
+    public async onDeleteAssignmentButton(): Promise<void> {
+        const title = this.translate.instant('Are you sure you want to delete this election?');
+        if (await this.promptService.open(title, this.assignment.getTitle())) {
+            await this.repo.delete(this.assignment);
+            this.router.navigate(['../assignments/']);
+        }
+    }
 
     /**
      * Handler for actions to be done on change of displayed poll
@@ -420,7 +428,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
      * Assemble a meaningful label for the poll
      * TODO (currently e.g. 'Ballot 10 (unublished)')
      */
-    public getPollLabel(poll: Poll, index: number): string {
+    public getPollLabel(poll: AssignmentPoll, index: number): string {
         const pubState = poll.published ? this.translate.instant('published') : this.translate.instant('unpublished');
         const title = this.translate.instant('Ballot');
         return `${title} ${index + 1} (${pubState})`;

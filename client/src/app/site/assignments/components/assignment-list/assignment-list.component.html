@@ -38,7 +38,7 @@
         <!-- name column -->
         <ng-container matColumnDef="title">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
-            <mat-cell *matCellDef="let assignment">{{ assignment.getTitle() }}</mat-cell>
+            <mat-cell *matCellDef="let assignment">{{ assignment.getListTitle() }}</mat-cell>
         </ng-container>
         <!-- pahse column-->
         <ng-container matColumnDef="phase">

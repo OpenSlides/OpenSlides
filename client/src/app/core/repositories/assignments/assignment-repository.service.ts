@@ -3,14 +3,14 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 import { Assignment } from 'app/shared/models/assignments/assignment';
-import { AssignmentUser } from 'app/shared/models/assignments/assignment-user';
+import { AssignmentRelatedUser } from 'app/shared/models/assignments/assignment-related-user';
 import { BaseAgendaContentObjectRepository } from '../base-agenda-content-object-repository';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
 import { DataSendService } from 'app/core/core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { HttpService } from 'app/core/core-services/http.service';
 import { Item } from 'app/shared/models/agenda/item';
-import { Poll } from 'app/shared/models/assignments/poll';
+import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
 import { Tag } from 'app/shared/models/core/tag';
 import { User } from 'app/shared/models/users/user';
 import { ViewAssignment } from 'app/site/assignments/models/view-assignment';
@@ -18,6 +18,9 @@ import { ViewItem } from 'app/site/agenda/models/view-item';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewUser } from 'app/site/users/models/view-user';
+import { ViewAssignmentRelatedUser } from 'app/site/assignments/models/view-assignment-related-user';
+import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
+import { ViewAssignmentPollOption } from 'app/site/assignments/models/view-assignment-poll-option';
 
 /**
  * Repository Service for Assignments.
@@ -69,15 +72,41 @@ export class AssignmentRepositoryService extends BaseAgendaContentObjectReposito
     };
 
     public createViewModel(assignment: Assignment): ViewAssignment {
-        const relatedUser = this.viewModelStoreService.getMany(ViewUser, assignment.candidates_id);
         const agendaItem = this.viewModelStoreService.get(ViewItem, assignment.agenda_item_id);
         const tags = this.viewModelStoreService.getMany(ViewTag, assignment.tags_id);
+        const assignmentRelatedUsers = this.createViewAssignmentRelatedUsers(assignment.assignment_related_users);
+        const assignmentPolls = this.createViewAssignmentPolls(assignment.polls);
 
-        const viewAssignment = new ViewAssignment(assignment, relatedUser, agendaItem, tags);
+        const viewAssignment = new ViewAssignment(
+            assignment,
+            assignmentRelatedUsers,
+            assignmentPolls,
+            agendaItem,
+            tags
+        );
         viewAssignment.getVerboseName = this.getVerboseName;
         viewAssignment.getAgendaTitle = () => this.getAgendaTitle(viewAssignment);
         viewAssignment.getAgendaTitleWithType = () => this.getAgendaTitleWithType(viewAssignment);
         return viewAssignment;
+    }
+
+    private createViewAssignmentRelatedUsers(
+        assignmentRelatedUsers: AssignmentRelatedUser[]
+    ): ViewAssignmentRelatedUser[] {
+        return assignmentRelatedUsers.map(aru => {
+            const user = this.viewModelStoreService.get(ViewUser, aru.user_id);
+            return new ViewAssignmentRelatedUser(aru, user);
+        });
+    }
+
+    private createViewAssignmentPolls(assignmentPolls: AssignmentPoll[]): ViewAssignmentPoll[] {
+        return assignmentPolls.map(poll => {
+            const options = poll.options.map(option => {
+                const user = this.viewModelStoreService.get(ViewUser, option.candidate_id);
+                return new ViewAssignmentPollOption(option, user);
+            });
+            return new ViewAssignmentPoll(poll, options);
+        });
     }
 
     /**
@@ -127,7 +156,7 @@ export class AssignmentRepositoryService extends BaseAgendaContentObjectReposito
      *
      * @param id id of the poll to delete
      */
-    public async deletePoll(poll: Poll): Promise<void> {
+    public async deletePoll(poll: ViewAssignmentPoll): Promise<void> {
         await this.httpService.delete(`${this.restPollPath}${poll.id}/`);
     }
 
@@ -139,8 +168,8 @@ export class AssignmentRepositoryService extends BaseAgendaContentObjectReposito
      *
      * TODO: check if votes is untouched
      */
-    public async updatePoll(poll: Partial<Poll>, originalPoll: Poll): Promise<void> {
-        const data: Poll = Object.assign(originalPoll, poll);
+    public async updatePoll(poll: Partial<AssignmentPoll>, originalPoll: ViewAssignmentPoll): Promise<void> {
+        const data: AssignmentPoll = Object.assign(originalPoll.poll, poll);
         await this.httpService.patch(`${this.restPollPath}${originalPoll.id}/`, data);
     }
 
@@ -151,7 +180,7 @@ export class AssignmentRepositoryService extends BaseAgendaContentObjectReposito
      * @param poll the updated Poll
      * @param originalPoll the original poll
      */
-    public async updateVotes(poll: Partial<Poll>, originalPoll: Poll): Promise<void> {
+    public async updateVotes(poll: Partial<AssignmentPoll>, originalPoll: ViewAssignmentPoll): Promise<void> {
         poll.options.sort((a, b) => a.weight - b.weight);
         const votes = poll.options.map(option => {
             switch (poll.pollmethod) {
@@ -185,12 +214,16 @@ export class AssignmentRepositoryService extends BaseAgendaContentObjectReposito
     /**
      * change the 'elected' state of an election candidate
      *
-     * @param user
+     * @param assignmentRelatedUser
      * @param assignment
      * @param elected true if the candidate is to be elected, false if unelected
      */
-    public async markElected(user: AssignmentUser, assignment: ViewAssignment, elected: boolean): Promise<void> {
-        const data = { user: user.user_id };
+    public async markElected(
+        assignmentRelatedUser: ViewAssignmentRelatedUser,
+        assignment: ViewAssignment,
+        elected: boolean
+    ): Promise<void> {
+        const data = { user: assignmentRelatedUser.user_id };
         if (elected) {
             await this.httpService.post(this.restPath + assignment.id + this.markElectedPath, data);
         } else {

@@ -9,8 +9,7 @@
     <!-- Title -->
     <div class="title-slot">
         <h2 *ngIf="assignment && !newAssignment">
-            <span translate>Election</span>
-            <span>&nbsp;</span> <span *ngIf="!editAssignment">{{ assignment.title }}</span>
+            <span *ngIf="!editAssignment">{{ assignment.getTitle() }}</span>
             <span *ngIf="editAssignment">{{ assignmentForm.get('title').value }}</span>
         </h2>
         <h2 *ngIf="newAssignment" translate>New election</h2>
@@ -47,7 +46,7 @@
     <!-- Title -->
     <div class="title on-transition-fade" *ngIf="assignment && !editAssignment">
         <div class="title-line">
-            <h1>{{ assignment.title }}</h1>
+            <h1>{{ assignment.getTitle() }}</h1>
         </div>
     </div>
     <ng-container *ngIf="vp.isMobile; then mobileView; else desktopView"></ng-container>
@@ -131,7 +130,7 @@
             <div *ngIf="assignment && assignment.candidates">
                 <!-- TODO: Sorting -->
                 <div *ngFor="let candidate of assignment.candidates">
-                    <span>{{ candidate.username }}</span>
+                    <span>{{ candidate.full_name }}</span>
                     <button mat-button *ngIf="hasPerms('addOthers')" (click)="removeUser(candidate)">Remove</button>
                 </div>
             </div>

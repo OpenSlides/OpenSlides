@@ -7,12 +7,12 @@ import { PollVoteValue } from 'app/core/ui-services/poll.service';
  * part of the 'polls-options'-array in poll
  * @ignore
  */
-export class PollOption extends Deserializer {
+export class AssignmentPollOption extends Deserializer {
     public id: number; // The AssignmentUser id of the candidate
     public candidate_id: number; // the User id of the candidate
     public is_elected: boolean;
     public votes: {
-        weight: number; // TODO arrives as string?
+        weight: number; // represented as a string because it's a decimal field
         value: PollVoteValue;
     }[];
     public poll_id: number;
@@ -24,21 +24,12 @@ export class PollOption extends Deserializer {
      * @param input
      */
     public constructor(input?: any) {
-        // cast stringify numbers
-        if (typeof input === 'object') {
-            Object.keys(input).forEach(key => {
-                if (typeof input[key] === 'string') {
-                    input[key] = parseInt(input[key], 10);
+        if (input && input.votes) {
+            input.votes.forEach(vote => {
+                if (vote.weight) {
+                    vote.weight = parseFloat(vote.weight);
                 }
             });
-            if (input.votes) {
-                input.votes = input.votes.map(vote => {
-                    return {
-                        value: vote.value,
-                        weight: parseInt(vote.weight, 10)
-                    };
-                });
-            }
         }
         super(input);
     }

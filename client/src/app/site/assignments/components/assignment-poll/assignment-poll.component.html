@@ -64,7 +64,7 @@
             </div>
             <!-- candidate Name -->
             <div>
-                {{ getCandidateName(option) }}
+                {{ option.user.full_name }}
             </div>
             <!-- Votes -->
             <div *ngIf="poll.published && poll.has_votes">
@@ -111,6 +111,7 @@
                     <span>{{ key | translate }}</span>:
                 </div>
                 <div>
+                    {{ poll[key] | precisionPipe }}
                     {{ pollService.getSpecialLabel(poll[key]) }}
                 </div>
             </div>

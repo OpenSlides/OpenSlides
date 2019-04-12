@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 
@@ -81,6 +81,7 @@ import { ProjectorComponent } from './components/projector/projector.component';
 import { SlideContainerComponent } from './components/slide-container/slide-container.component';
 import { CountdownTimeComponent } from './components/contdown-time/countdown-time.component';
 import { MediaUploadContentComponent } from './components/media-upload-content/media-upload-content.component';
+import { PrecisionPipe } from './pipes/precision.pipe';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -201,7 +202,8 @@ import { MediaUploadContentComponent } from './components/media-upload-content/m
         OwlDateTimeModule,
         OwlNativeDateTimeModule,
         CountdownTimeComponent,
-        MediaUploadContentComponent
+        MediaUploadContentComponent,
+        PrecisionPipe
     ],
     declarations: [
         PermsDirective,
@@ -228,7 +230,8 @@ import { MediaUploadContentComponent } from './components/media-upload-content/m
         ProjectorComponent,
         SlideContainerComponent,
         CountdownTimeComponent,
-        MediaUploadContentComponent
+        MediaUploadContentComponent,
+        PrecisionPipe
     ],
     providers: [
         { provide: DateAdapter, useClass: OpenSlidesDateAdapter },
@@ -236,7 +239,8 @@ import { MediaUploadContentComponent } from './components/media-upload-content/m
         SortingListComponent,
         SortingTreeComponent,
         OsSortFilterBarComponent,
-        OsSortBottomSheetComponent
+        OsSortBottomSheetComponent,
+        DecimalPipe
     ],
     entryComponents: [OsSortBottomSheetComponent, C4DialogComponent]
 })
