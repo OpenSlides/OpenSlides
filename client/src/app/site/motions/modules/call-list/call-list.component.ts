@@ -7,19 +7,22 @@ import { Observable } from 'rxjs';
 
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { BaseViewComponent } from 'app/site/base/base-view';
+import { CanComponentDeactivate } from 'app/shared/utils/watch-sorting-tree.guard';
+import { FlatNode } from 'app/core/ui-services/tree.service';
 import { MotionCsvExportService } from 'app/site/motions/services/motion-csv-export.service';
 import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-export.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 import { SortingTreeComponent } from 'app/shared/components/sorting-tree/sorting-tree.component';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
-import { PromptService } from 'app/core/ui-services/prompt.service';
-import { CanComponentDeactivate } from 'app/shared/utils/watch-sorting-tree.guard';
+import { ViewTag } from 'app/site/tags/models/view-tag';
 
 /**
  * Sort view for the call list.
  */
 @Component({
     selector: 'os-call-list',
-    templateUrl: './call-list.component.html'
+    templateUrl: './call-list.component.html',
+    styleUrls: ['./call-list.component.scss']
 })
 export class CallListComponent extends BaseViewComponent implements CanComponentDeactivate {
     /**
@@ -123,5 +126,16 @@ export class CallListComponent extends BaseViewComponent implements CanComponent
             return await this.promptService.open(title, content);
         }
         return true;
+    }
+
+    /**
+     * Get the tags associated with the motion of a sorting item
+     *
+     * @param item A FlatNode from a OsSortignTree
+     * @returns An array of ViewTags (or an empty adrray)
+     */
+    public getTags(item: FlatNode<ViewMotion>): ViewTag[] {
+        const motion = this.motionRepo.getViewModel(item.id);
+        return motion ? motion.tags : [];
     }
 }
