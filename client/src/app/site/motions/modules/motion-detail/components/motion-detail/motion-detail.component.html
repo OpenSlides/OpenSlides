@@ -92,8 +92,11 @@
                 <mat-icon>{{ !showAmendmentContext ? 'check_box_outline_blank' : 'check_box' }}</mat-icon>
                 <span translate>Show entire motion text</span>
             </button>
-
             <div *ngIf="perms.isAllowed('manage')">
+                <button mat-menu-item [disabled]="!selectedRows.length" (click)="openExportDialog()">
+                    <mat-icon>archive</mat-icon>
+                    <span translate>Export selected motions</span>
+                </button>
                 <mat-divider></mat-divider>
                 <!-- Delete -->
                 <button mat-menu-item class="red-warning-text" (click)="deleteMotionButton()">
@@ -557,7 +560,10 @@
 
         <div class="form-id-title">
             <!-- Identifier -->
-            <div *ngIf="editMotion && !newMotion && perms.isAllowed('change_metadata', motion)" class="content-field form-identifier">
+            <div
+                *ngIf="editMotion && !newMotion && perms.isAllowed('change_metadata', motion)"
+                class="content-field form-identifier"
+            >
                 <mat-form-field *ngIf="editMotion">
                     <input
                         matInput
@@ -628,8 +634,9 @@
             <editor formControlName="text" [init]="tinyMceSettings" required></editor>
             <div
                 *ngIf="
-                contentForm.get('text').invalid && (contentForm.get('text').dirty || contentForm.get('text').touched)
-            "
+                    contentForm.get('text').invalid &&
+                    (contentForm.get('text').dirty || contentForm.get('text').touched)
+                "
                 class="red-warning-text"
                 translate
             >
@@ -642,17 +649,20 @@
             <section *ngFor="let paragraph of contentForm.value.selected_paragraphs">
                 <h4>
                     <span *ngIf="paragraph.lineFrom >= paragraph.lineTo - 1" class="line-number">
-                        {{ 'Line' | translate }} {{ paragraph.lineFrom }}</span>
+                        {{ 'Line' | translate }} {{ paragraph.lineFrom }}</span
+                    >
                     <span *ngIf="paragraph.lineFrom < paragraph.lineTo - 1" class="line-number">
-                        {{ 'Line' | translate }} {{ paragraph.lineFrom }} - {{ paragraph.lineTo - 1 }}</span>&nbsp;
+                        {{ 'Line' | translate }} {{ paragraph.lineFrom }} - {{ paragraph.lineTo - 1 }}</span
+                    >&nbsp;
                     <span>*</span>
                 </h4>
                 <editor [formControlName]="'text_' + paragraph.paragraphNo" [init]="tinyMceSettings" required></editor>
                 <div
-                    *ngIf="contentForm.get('text_' + paragraph.paragraphNo).invalid && (
-                        contentForm.get('text_' + paragraph.paragraphNo).dirty ||
-                        contentForm.get('text_' + paragraph.paragraphNo).touched
-                    )"
+                    *ngIf="
+                        contentForm.get('text_' + paragraph.paragraphNo).invalid &&
+                        (contentForm.get('text_' + paragraph.paragraphNo).dirty ||
+                            contentForm.get('text_' + paragraph.paragraphNo).touched)
+                    "
                     class="red-warning-text"
                     translate
                 >
@@ -720,7 +730,7 @@
                         </mat-list-item>
                     </mat-list>
                 </div>
-                <div *osPerms="'motions.can_manage';and:editMotion" class="shortened-selector">
+                <div *osPerms="'motions.can_manage'; and: editMotion" class="shortened-selector">
                     <os-search-value-selector
                         class="selector"
                         ngDefaultControl
