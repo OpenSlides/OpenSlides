@@ -607,7 +607,7 @@ export class MotionPdfService {
                     style: 'tableHeader'
                 },
                 {
-                    text: this.translate.instant('Motion block'),
+                    text: this.translate.instant('Notes'),
                     style: 'tableHeader'
                 }
             ]
@@ -643,6 +643,7 @@ export class MotionPdfService {
             table: {
                 widths: ['auto', 'auto', 'auto', '*', 'auto', 'auto'],
                 headerRows: 1,
+                dontBreakRows: true,
                 body: callListTableBody.concat(callListRows)
             },
             layout: {
@@ -675,9 +676,9 @@ export class MotionPdfService {
             { text: motion.submitters.length ? motion.submitters.map(s => s.short_name).join(', ') : '' },
             { text: motion.title },
             {
-                text: motion.recommendation ? this.translate.instant(motion.recommendation.recommendation_label) : ''
+                text: motion.recommendation ? this.motionRepo.getExtendedRecommendationLabel(motion) : ''
             },
-            { text: motion.motion_block ? motion.motion_block.title : '' }
+            { text: '' }
         ];
     }
 
