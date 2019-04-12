@@ -169,20 +169,20 @@
         </button>
 
         <!-- Deselect all -->
-        <button mat-menu-item (click)="deselectAll()">
+        <button mat-menu-item [disabled]="!selectedRows.length" (click)="deselectAll()">
             <mat-icon>clear</mat-icon>
             <span translate>Deselect all</span>
         </button>
         <mat-divider></mat-divider>
         <div *osPerms="'agenda.can_manage'">
             <!-- Close selected -->
-            <button mat-menu-item (click)="setClosedSelected(true)">
+            <button mat-menu-item [disabled]="!selectedRows.length" (click)="setClosedSelected(true)">
                 <mat-icon>done</mat-icon>
                 <span translate>Close</span>
             </button>
 
             <!-- Open selected -->
-            <button mat-menu-item (click)="setClosedSelected(false)">
+            <button mat-menu-item [disabled]="!selectedRows.length" (click)="setClosedSelected(false)">
                 <mat-icon>redo</mat-icon>
                 <span translate>Open</span>
             </button>
@@ -190,26 +190,26 @@
             <mat-divider></mat-divider>
 
             <!-- Set multiple to public -->
-            <button mat-menu-item (click)="setAgendaType(1)">
+            <button mat-menu-item [disabled]="!selectedRows.length" (click)="setAgendaType(1)">
                 <mat-icon>public</mat-icon>
                 <span translate>Set public</span>
             </button>
 
             <!-- Set multiple to internal -->
-            <button mat-menu-item (click)="setAgendaType(2)">
+            <button mat-menu-item [disabled]="!selectedRows.length" (click)="setAgendaType(2)">
                 <mat-icon>visibility</mat-icon>
                 <span translate>Set internal</span>
             </button>
 
             <!-- Set multiple to hidden -->
-            <button mat-menu-item (click)="setAgendaType(3)">
+            <button mat-menu-item [disabled]="!selectedRows.length" (click)="setAgendaType(3)">
                 <mat-icon>visibility_off</mat-icon>
                 <span translate>Set hidden</span>
             </button>
             <mat-divider></mat-divider>
 
             <!-- Delete selected -->
-            <button mat-menu-item class="red-warning-text" (click)="deleteSelected()">
+            <button mat-menu-item [disabled]="!selectedRows.length" class="red-warning-text" (click)="deleteSelected()">
                 <mat-icon>delete</mat-icon>
                 <span translate>Delete</span>
             </button>
