@@ -14,6 +14,7 @@ import { MotionCommentSectionRepositoryService } from 'app/core/repositories/mot
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { ViewWorkflow } from '../models/view-workflow';
 import { OperatorService } from 'app/core/core-services/operator.service';
+import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
 
 @Injectable({
     providedIn: 'root'
@@ -31,7 +32,8 @@ export class MotionFilterListService extends BaseFilterListService<Motion, ViewM
             this.categoryFilterOptions,
             this.motionBlockFilterOptions,
             this.recommendationFilterOptions,
-            this.motionCommentFilterOptions
+            this.motionCommentFilterOptions,
+            this.tagFilterOptions
         ];
 
         if (!this.operator.isAnonymous) {
@@ -84,6 +86,12 @@ export class MotionFilterListService extends BaseFilterListService<Motion, ViewM
     public recommendationFilterOptions: OsFilter = {
         property: 'recommendation',
         label: 'Recommendation',
+        options: []
+    };
+
+    public tagFilterOptions: OsFilter = {
+        property: 'tags',
+        label: 'Tags',
         options: []
     };
 
@@ -142,13 +150,15 @@ export class MotionFilterListService extends BaseFilterListService<Motion, ViewM
         private translate: TranslateService,
         private config: ConfigService,
         motionRepo: MotionRepositoryService,
-        private operator: OperatorService
+        private operator: OperatorService,
+        private tagRepo: TagRepositoryService
     ) {
         super(store, motionRepo);
         this.subscribeWorkflows();
         this.subscribeCategories();
         this.subscribeMotionBlocks();
         this.subscribeComments();
+        this.subscribeTags();
 
         this.operator.getUserObservable().subscribe(() => {
             this.updateFilterDefinitions(this.filterOptions);
@@ -310,6 +320,28 @@ export class MotionFilterListService extends BaseFilterListService<Motion, ViewM
                 });
             }
             this.motionCommentFilterOptions.options = commentOptions;
+            this.updateFilterDefinitions(this.filterOptions);
+        });
+    }
+
+    /**
+     * Subscibes to changing Tags, and updates the filter accordingly
+     */
+    private subscribeTags(): void {
+        this.tagRepo.getViewModelListObservable().subscribe(tags => {
+            const tagOptions: OsFilterOptions = tags.map(tag => ({
+                condition: tag.id,
+                label: tag.name,
+                isActive: false
+            }));
+            if (tags.length) {
+                tagOptions.push('-');
+                tagOptions.push({
+                    label: this.translate.instant('No tags'),
+                    condition: null
+                });
+            }
+            this.tagFilterOptions.options = tagOptions;
             this.updateFilterDefinitions(this.filterOptions);
         });
     }
