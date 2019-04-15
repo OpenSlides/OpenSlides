@@ -5,7 +5,7 @@ import { Assignment } from 'app/shared/models/assignments/assignment';
 import { BaseFilterListService, OsFilter } from 'app/core/ui-services/base-filter-list.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { ViewAssignment, AssignmentPhase } from '../models/view-assignment';
-import { ConstantsService } from 'app/core/ui-services/constants.service';
+import { ConstantsService } from 'app/core/core-services/constants.service';
 
 @Injectable({
     providedIn: 'root'

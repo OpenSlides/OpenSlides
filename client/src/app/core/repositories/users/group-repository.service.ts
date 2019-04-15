@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { BaseRepository } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
-import { ConstantsService } from '../../ui-services/constants.service';
+import { ConstantsService } from '../../core-services/constants.service';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { Group } from 'app/shared/models/users/group';

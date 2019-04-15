@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 
 import { CalculablePollKey } from 'app/core/ui-services/poll.service';
-import { ConstantsService } from 'app/core/ui-services/constants.service';
+import { ConstantsService } from 'app/core/core-services/constants.service';
 import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
 import { MotionPoll } from 'app/shared/models/motions/motion-poll';
 import { MotionPollDialogComponent } from './motion-poll-dialog.component';
@@ -209,7 +209,7 @@ export class MotionPollComponent implements OnInit {
      * Subscribe to the available majority choices as given in the server-side constants
      */
     private subscribeMajorityChoices(): void {
-        this.constants.get<any>('OpenSlidesConfigVariables').subscribe(constants => {
+        this.constants.get<any>('ConfigVariables').subscribe(constants => {
             const motionconst = constants.find(c => c.name === 'Motions');
             if (motionconst) {
                 const ballotConst = motionconst.subgroups.find(s => s.name === 'Voting and ballot papers');

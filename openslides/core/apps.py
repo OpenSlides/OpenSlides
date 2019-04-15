@@ -6,6 +6,7 @@ from typing import Any, Dict, List, Set
 
 from django.apps import AppConfig
 from django.conf import settings
+from django.db.models import Max
 from django.db.models.signals import post_migrate, pre_delete
 
 
@@ -155,7 +156,7 @@ class CoreAppConfig(AppConfig):
                 # Settings key does not exist. Do nothing. The client will
                 # treat this as undefined.
                 pass
-        constants["OpenSlidesSettings"] = client_settings_dict
+        constants["Settings"] = client_settings_dict
 
         # Config variables
         config_groups: List[Any] = []
@@ -181,7 +182,14 @@ class CoreAppConfig(AppConfig):
                 )
             # Add the config variable to the current group and subgroup.
             config_groups[-1]["subgroups"][-1]["items"].append(config_variable.data)
-        constants["OpenSlidesConfigVariables"] = config_groups
+        constants["ConfigVariables"] = config_groups
+
+        # get max migration id -> the "version" of the DB
+        from django.db.migrations.recorder import MigrationRecorder
+
+        constants["MigrationVersion"] = MigrationRecorder.Migration.objects.aggregate(
+            Max("id")
+        )["id__max"]
 
         return constants
 

@@ -145,4 +145,22 @@ export class AutoupdateService {
         console.log('requesting changed objects with DS max change id', this.DS.maxChangeId + 1);
         this.websocketService.send('getElements', { change_id: this.DS.maxChangeId + 1 });
     }
+
+    /**
+     * Does a full update: Requests all data from the server and sets the DS to the fresh data.
+     */
+    public async doFullUpdate(): Promise<void> {
+        const response = await this.websocketService.sendAndGetResponse<{}, AutoupdateFormat>('getElements', {});
+
+        let allModels: BaseModel[] = [];
+        for (const collection of Object.keys(response.changed)) {
+            if (this.modelMapper.isCollectionRegistered(collection)) {
+                allModels = allModels.concat(this.mapObjectsToBaseModels(collection, response.changed[collection]));
+            } else {
+                console.error(`Unregistered collection "${collection}". Ignore it.`);
+            }
+        }
+
+        await this.DS.set(allModels, response.to_change_id);
+    }
 }

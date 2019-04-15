@@ -10,10 +10,24 @@ import { formatQueryParams, QueryParams } from '../query-params';
 /**
  * The generic message format in which messages are send and recieved by the server.
  */
-interface WebsocketMessage {
+interface BaseWebsocketMessage {
     type: string;
     content: any;
+}
+
+/**
+ * Outgoing messages must have an id.
+ */
+interface OutgoingWebsocketMessage extends BaseWebsocketMessage {
     id: string;
+}
+
+/**
+ * Incomming messages may have an `in_response`, if they are an answer to a previously
+ * submitted request.
+ */
+interface IncommingWebsocketMessage extends BaseWebsocketMessage {
+    in_response?: string;
 }
 
 /**
@@ -88,6 +102,8 @@ export class WebsocketService {
      * Subjects for types of websocket messages. A subscriber can get an Observable by {@function getOberservable}.
      */
     private subjects: { [type: string]: Subject<any> } = {};
+
+    private responseCallbacks: { [id: string]: [(val: any) => boolean, (error: string) => void | null] } = {};
 
     /**
      * Saves, if the WS Connection should be closed (e.g. after an explicit `close()`). Prohibits
@@ -180,16 +196,7 @@ export class WebsocketService {
 
         this.websocket.onmessage = (event: MessageEvent) => {
             this.zone.run(() => {
-                const message: WebsocketMessage = JSON.parse(event.data);
-                const type: string = message.type;
-                if (type === 'error') {
-                    console.error('Websocket error', message.content);
-                } else if (this.subjects[type]) {
-                    // Pass the content to the registered subscribers.
-                    this.subjects[type].next(message.content);
-                } else {
-                    console.log(`Got unknown websocket message type "${type}" with content`, message.content);
-                }
+                this.handleMessage(event.data);
             });
         };
 
@@ -234,6 +241,48 @@ export class WebsocketService {
         };
     }
 
+    /**
+     * Handles an incomming message.
+     *
+     * @param data The message
+     */
+    private handleMessage(data: string): void {
+        const message: IncommingWebsocketMessage = JSON.parse(data);
+        const type = message.type;
+        const inResponse = message.in_response;
+        const callbacks = this.responseCallbacks[inResponse];
+        if (callbacks) {
+            delete this.responseCallbacks[inResponse];
+        }
+
+        if (type === 'error') {
+            console.error('Websocket error', message.content);
+            if (inResponse && callbacks && callbacks[1]) {
+                callbacks[1](message.content as string);
+            }
+            return;
+        }
+
+        // Try to fire a response callback directly. If it returnes true, the message is handeled
+        // and not distributed further
+        if (inResponse && callbacks && callbacks[0](message.content)) {
+            return;
+        }
+
+        if (this.subjects[type]) {
+            // Pass the content to the registered subscribers.
+            this.subjects[type].next(message.content);
+        } else {
+            console.warn(
+                `Got unknown websocket message type "${type}" (inResponse: ${inResponse}) with content`,
+                message.content
+            );
+        }
+    }
+
+    /**
+     * Closes the connection error notice
+     */
     private dismissConnectionErrorNotice(): void {
         if (this.connectionErrorNotice) {
             this.connectionErrorNotice.dismiss();
@@ -269,13 +318,23 @@ export class WebsocketService {
      *
      * @param type the message type
      * @param content the actual content
+     * @param success an optional success callback for a response
+     * @param error an optional error callback for a response
+     * @param id an optional id for the message. If not given, a random id will be generated and returned.
+     * @returns the message id
      */
-    public send<T>(type: string, content: T, id?: string): void {
+    public send<T, R>(
+        type: string,
+        content: T,
+        success?: (val: R) => boolean,
+        error?: (error: string) => void,
+        id?: string
+    ): string {
         if (!this.websocket) {
             return;
         }
 
-        const message: WebsocketMessage = {
+        const message: OutgoingWebsocketMessage = {
             type: type,
             content: content,
             id: id
@@ -290,6 +349,10 @@ export class WebsocketService {
             }
         }
 
+        if (success) {
+            this.responseCallbacks[message.id] = [success, error];
+        }
+
         // Either send directly or add to queue, if not connected.
         const jsonMessage = JSON.stringify(message);
         if (this.isConnected) {
@@ -297,5 +360,29 @@ export class WebsocketService {
         } else {
             this.sendQueueWhileNotConnected.push(jsonMessage);
         }
+
+        return message.id;
+    }
+
+    /**
+     * Sends a message and waits for the response
+     *
+     * @param type the message type
+     * @param content the actual content
+     * @param id an optional id for the message. If not given, a random id will be generated and returned.
+     */
+    public sendAndGetResponse<T, R>(type: string, content: T, id?: string): Promise<R> {
+        return new Promise<R>((resolve, reject) => {
+            this.send<T, R>(
+                type,
+                content,
+                val => {
+                    resolve(val);
+                    return true;
+                },
+                reject,
+                id
+            );
+        });
     }
 }

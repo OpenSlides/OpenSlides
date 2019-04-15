@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { WebsocketService } from '../core-services/websocket.service';
+import { WebsocketService } from './websocket.service';
 import { Observable, of, Subject } from 'rxjs';
 
 /**
@@ -15,7 +15,7 @@ interface Constants {
  *
  * @example
  * ```ts
- * this.constantsService.get('OpenSlidesSettings').subscribe(constant => {
+ * this.constantsService.get('Settings').subscribe(constant => {
  *     console.log(constant);
  * });
  * ```
