@@ -111,7 +111,8 @@ export abstract class BaseImportService<V extends BaseViewModel> {
      */
     public textSeparators: ValueLabelCombination[] = [
         { label: 'Double quotes (")', value: '"' },
-        { label: "Single quotes (')", value: "'" }
+        { label: "Single quotes (')", value: "'" },
+        { label: 'Gravis (`)', value: '`' }
     ];
 
     /**
