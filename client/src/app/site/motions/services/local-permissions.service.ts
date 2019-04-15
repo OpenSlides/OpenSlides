@@ -3,9 +3,9 @@ import { Injectable } from '@angular/core';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { ViewMotion } from '../models/view-motion';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { ConstantsService } from 'app/core/ui-services/constants.service';
+import { ConstantsService } from 'app/core/core-services/constants.service';
 
-interface OpenSlidesSettings {
+interface Settings {
     MOTIONS_ALLOW_AMENDMENTS_OF_AMENDMENTS: boolean;
 }
 
@@ -30,7 +30,7 @@ export class LocalPermissionsService {
             .get<boolean>('motions_amendments_enabled')
             .subscribe(enabled => (this.amendmentEnabled = enabled));
         this.constants
-            .get<OpenSlidesSettings>('OpenSlidesSettings')
+            .get<Settings>('Settings')
             .subscribe(settings => (this.amendmentOfAmendment = settings.MOTIONS_ALLOW_AMENDMENTS_OF_AMENDMENTS));
     }
 

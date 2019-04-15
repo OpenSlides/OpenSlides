@@ -4,13 +4,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { take, filter } from 'rxjs/operators';
 
 import { ConfigService } from './core/ui-services/config.service';
-import { ConstantsService } from './core/ui-services/constants.service';
+import { ConstantsService } from './core/core-services/constants.service';
 import { CountUsersService } from './core/ui-services/count-users.service';
 import { LoadFontService } from './core/ui-services/load-font.service';
 import { LoginDataService } from './core/ui-services/login-data.service';
 import { OperatorService } from './core/core-services/operator.service';
 import { ServertimeService } from './core/core-services/servertime.service';
 import { ThemeService } from './core/ui-services/theme.service';
+import { DataStoreUpgradeService } from './core/core-services/data-store-upgrade.service';
 
 /**
  * Angular's global App Component
@@ -48,7 +49,8 @@ export class AppComponent {
         themeService: ThemeService,
         countUsersService: CountUsersService, // Needed to register itself.
         configService: ConfigService,
-        loadFontService: LoadFontService
+        loadFontService: LoadFontService,
+        dataStoreUpgradeService: DataStoreUpgradeService // to start it.
     ) {
         // manually add the supported languages
         translate.addLangs(['en', 'de', 'cs']);

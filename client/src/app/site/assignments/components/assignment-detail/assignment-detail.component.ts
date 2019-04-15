@@ -11,7 +11,7 @@ import { Assignment } from 'app/shared/models/assignments/assignment';
 import { AssignmentPollService } from '../../services/assignment-poll.service';
 import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
 import { BaseViewComponent } from 'app/site/base/base-view';
-import { ConstantsService } from 'app/core/ui-services/constants.service';
+import { ConstantsService } from 'app/core/core-services/constants.service';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
 import { OperatorService } from 'app/core/core-services/operator.service';

@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
 
 import { Observable, BehaviorSubject } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 import { BaseRepository } from 'app/core/repositories/base-repository';
 import { Config } from 'app/shared/models/core/config';
 import { DataSendService } from 'app/core/core-services/data-send.service';
 import { DataStoreService } from 'app/core/core-services/data-store.service';
-import { ConstantsService } from 'app/core/ui-services/constants.service';
+import { ConstantsService } from 'app/core/core-services/constants.service';
 import { HttpService } from 'app/core/core-services/http.service';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from 'app/core/core-services/collectionStringMapper.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { ViewConfig } from 'app/site/config/models/view-config';
-import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Holds a single config item.
@@ -107,7 +107,7 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
     ) {
         super(DS, dataSend, mapperService, viewModelStoreService, translate, Config);
 
-        this.constantsService.get('OpenSlidesConfigVariables').subscribe(constant => {
+        this.constantsService.get('ConfigVariables').subscribe(constant => {
             this.createConfigStructure(constant);
             this.updateConfigStructure(...Object.values(this.viewModelStore));
             this.updateConfigListObservable();
