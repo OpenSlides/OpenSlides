@@ -152,20 +152,25 @@
             <span translate>Select all</span>
         </button>
 
-        <button mat-menu-item (click)="deselectAll()">
+        <button mat-menu-item [disabled]="!selectedRows.length" (click)="deselectAll()">
             <mat-icon>clear</mat-icon>
             <span translate>Deselect all</span>
         </button>
 
         <div *osPerms="'users.can_manage'">
             <mat-divider></mat-divider>
-            <button mat-menu-item (click)="setGroupSelected()">
+            <button mat-menu-item [disabled]="!selectedRows.length" (click)="setGroupSelected()">
                 <mat-icon>people</mat-icon>
                 <span translate>Add/remove groups ...</span>
             </button>
 
             <div *ngIf="presenceViewConfigured">
-                <button mat-menu-item *osPerms="'users.can_manage'" routerLink="presence">
+                <button
+                    mat-menu-item
+                    *osPerms="'users.can_manage'"
+                    [disabled]="!selectedRows.length"
+                    routerLink="presence"
+                >
                     <mat-icon>transfer_within_a_station</mat-icon>
                     <span translate>Presence</span>
                 </button>
@@ -179,34 +184,39 @@
             <div *osPerms="'users.can_manage'">
                 <mat-divider></mat-divider>
 
-                <button mat-menu-item (click)="setActiveSelected()">
+                <button mat-menu-item [disabled]="!selectedRows.length" (click)="setActiveSelected()">
                     <mat-icon>block</mat-icon>
                     <span translate>Enable/disable account ...</span>
                 </button>
 
-                <button mat-menu-item (click)="setPresentSelected()">
+                <button mat-menu-item [disabled]="!selectedRows.length" (click)="setPresentSelected()">
                     <mat-icon>check_box</mat-icon>
                     <span translate>Set presence ...</span>
                 </button>
 
-                <button mat-menu-item (click)="setCommitteeSelected()">
+                <button mat-menu-item [disabled]="!selectedRows.length" (click)="setCommitteeSelected()">
                     <mat-icon>account_balance</mat-icon>
                     <span translate>Set committee ...</span>
                 </button>
 
                 <mat-divider></mat-divider>
 
-                <button mat-menu-item (click)="sendInvitationEmailSelected()">
+                <button mat-menu-item [disabled]="!selectedRows.length" (click)="sendInvitationEmailSelected()">
                     <mat-icon>mail</mat-icon>
                     <span translate>Send invitation email</span>
                 </button>
 
-                <button mat-menu-item (click)="resetPasswordsSelected()">
+                <button mat-menu-item [disabled]="!selectedRows.length" (click)="resetPasswordsSelected()">
                     <mat-icon>vpn_key</mat-icon>
                     <span translate>Generate new passwords</span>
                 </button>
                 <mat-divider></mat-divider>
-                <button mat-menu-item class="red-warning-text" (click)="deleteSelected()">
+                <button
+                    mat-menu-item
+                    class="red-warning-text"
+                    [disabled]="!selectedRows.length"
+                    (click)="deleteSelected()"
+                >
                     <mat-icon>delete</mat-icon>
                     <span translate>Delete</span>
                 </button>

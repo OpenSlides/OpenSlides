@@ -95,7 +95,7 @@
                 <mat-icon>done_all</mat-icon>
                 <span translate>Select all</span>
             </button>
-            <button mat-menu-item (click)="deselectAll()">
+            <button mat-menu-item [disabled]="!selectedRows.length" (click)="deselectAll()">
                 <mat-icon>clear</mat-icon>
                 <span translate>Deselect all</span>
             </button>
@@ -104,6 +104,7 @@
                 mat-menu-item
                 class="red-warning-text"
                 *osPerms="'assignment.can_manage'"
+                [disabled]="!selectedRows.length"
                 (click)="deleteSelected()"
             >
                 <mat-icon>delete</mat-icon>

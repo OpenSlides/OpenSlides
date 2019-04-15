@@ -198,7 +198,9 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
     }
 
     /**
-     * Opens the export dialog
+     * Opens the export dialog.
+     * The export will be limited to the selected data if multiselect modus is
+     * active and there are rows selected
      */
     public openExportDialog(): void {
         const exportDialogRef = this.dialog.open(MotionExportDialogComponent, {
@@ -210,9 +212,10 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
 
         exportDialogRef.afterClosed().subscribe((result: any) => {
             if (result && result.format) {
+                const data = this.isMultiSelect ? this.selectedRows : this.dataSource.filteredData;
                 if (result.format === 'pdf') {
                     this.pdfExport.exportMotionCatalog(
-                        this.dataSource.filteredData,
+                        data,
                         result.lnMode,
                         result.crMode,
                         result.content,
@@ -220,13 +223,9 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
                         result.comments
                     );
                 } else if (result.format === 'csv') {
-                    this.motionCsvExport.exportMotionList(
-                        this.dataSource.filteredData,
-                        result.content,
-                        result.metaInfo
-                    );
+                    this.motionCsvExport.exportMotionList(data, result.content, result.metaInfo);
                 } else if (result.format === 'xlsx') {
-                    this.motionXlsxExport.exportMotionList(this.dataSource.filteredData, result.metaInfo);
+                    this.motionXlsxExport.exportMotionList(data, result.metaInfo);
                 }
             }
         });
