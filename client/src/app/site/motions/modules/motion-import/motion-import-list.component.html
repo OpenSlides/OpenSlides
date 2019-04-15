@@ -190,7 +190,7 @@
             <ng-container matColumnDef="submitters">
                 <mat-header-cell *matHeaderCellDef translate>Submitters</mat-header-cell>
                 <mat-cell *matCellDef="let entry">
-                    <div *ngIf="entry.newEntry.csvSubmitters.length">
+                    <div *ngIf="entry.newEntry.csvSubmitters && entry.newEntry.csvSubmitters.length">
                         <mat-icon
                             color="warn"
                             *ngIf="hasError(entry, 'Submitters')"
