@@ -221,11 +221,19 @@
         </button>
         <div *ngIf="perms.isAllowed('change_metadata')">
             <mat-divider></mat-divider>
-            <button mat-menu-item [disabled]="!selectedRows.length" (click)="multiselectWrapper(multiselectService.bulkSetFavorite(selectedRows))">
+            <button
+                mat-menu-item
+                [disabled]="!selectedRows.length"
+                (click)="multiselectWrapper(multiselectService.bulkSetFavorite(selectedRows))"
+            >
                 <mat-icon>star</mat-icon>
                 <span translate>Set/unset Favorite</span>
             </button>
-            <button mat-menu-item [disabled]="!selectedRows.length" (click)="multiselectWrapper(multiselectService.setStateOfMultiple(selectedRows))">
+            <button
+                mat-menu-item
+                [disabled]="!selectedRows.length"
+                (click)="multiselectWrapper(multiselectService.setStateOfMultiple(selectedRows))"
+            >
                 <mat-icon>label</mat-icon>
                 <span translate>Set status</span>
             </button>
@@ -260,9 +268,11 @@
                 <span translate>Set motion block</span>
             </button>
 
-            <button mat-menu-item
-            [disabled]="!selectedRows.length"
-            (click)="multiselectWrapper(multiselectService.changeSubmitters(selectedRows))">
+            <button
+                mat-menu-item
+                [disabled]="!selectedRows.length"
+                (click)="multiselectWrapper(multiselectService.changeSubmitters(selectedRows))"
+            >
                 <mat-icon>person_add</mat-icon>
                 <!-- TODO: icon -->
                 <span translate>Add/remove submitters</span>
@@ -277,20 +287,28 @@
                 <!-- TODO: icon -->
                 <span translate>Add/remove tags</span>
             </button>
-            <button mat-menu-item
-            [disabled]="!selectedRows.length"
-            (click)="multiselectWrapper(multiselectService.moveToItem(selectedRows))">
+            <button
+                mat-menu-item
+                [disabled]="!selectedRows.length"
+                (click)="multiselectWrapper(multiselectService.moveToItem(selectedRows))"
+            >
                 <mat-icon>sort</mat-icon>
                 <span translate>Move to agenda item</span>
             </button>
-            <button mat-menu-item
-            [disabled]="!selectedRows.length"
-            (click)="multiselectWrapper(multiselectService.bulkMoveItems(selectedRows))">
+            <button
+                mat-menu-item
+                [disabled]="!selectedRows.length"
+                (click)="multiselectWrapper(multiselectService.bulkMoveItems(selectedRows))"
+            >
                 <mat-icon>format_indent_increase</mat-icon>
                 <span translate>Move in call list</span>
             </button>
         </div>
         <div *ngIf="perms.isAllowed('manage')">
+            <button mat-menu-item [disabled]="!selectedRows.length" (click)="openExportDialog()">
+                <mat-icon>archive</mat-icon>
+                <span translate>Export selected motions</span>
+            </button>
             <mat-divider></mat-divider>
             <button
                 mat-menu-item

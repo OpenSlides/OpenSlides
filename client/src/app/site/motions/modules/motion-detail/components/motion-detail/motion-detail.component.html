@@ -93,10 +93,6 @@
                 <span translate>Show entire motion text</span>
             </button>
             <div *ngIf="perms.isAllowed('manage')">
-                <button mat-menu-item [disabled]="!selectedRows.length" (click)="openExportDialog()">
-                    <mat-icon>archive</mat-icon>
-                    <span translate>Export selected motions</span>
-                </button>
                 <mat-divider></mat-divider>
                 <!-- Delete -->
                 <button mat-menu-item class="red-warning-text" (click)="deleteMotionButton()">
