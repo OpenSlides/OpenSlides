@@ -120,9 +120,9 @@ export class OpenSlidesService {
         // is changed, the WS needs to reconnect, so the new connection holds the new
         // user information.
         if (this.websocketService.isConnected) {
-            await this.websocketService.close();
+            await this.websocketService.close(); // Wait for the disconnect.
         }
-        this.websocketService.connect({ changeId: changeId }); // Request changes after changeId.
+        await this.websocketService.connect({ changeId: changeId }); // Request changes after changeId.
     }
 
     /**

@@ -43,6 +43,7 @@ class CoreAppConfig(AppConfig):
             GetElementsWebsocketClientMessage,
             AutoupdateWebsocketClientMessage,
             ListenToProjectors,
+            PingPong,
         )
         from ..utils.access_permissions import required_user
         from ..utils.rest_api import router
@@ -109,6 +110,7 @@ class CoreAppConfig(AppConfig):
         register_client_message(GetElementsWebsocketClientMessage())
         register_client_message(AutoupdateWebsocketClientMessage())
         register_client_message(ListenToProjectors())
+        register_client_message(PingPong())
 
         # register required_users
         required_user.add_collection_string(
@@ -147,6 +149,9 @@ class CoreAppConfig(AppConfig):
             "MOTION_IDENTIFIER_MIN_DIGITS",
             "MOTION_IDENTIFIER_WITHOUT_BLANKS",
             "MOTIONS_ALLOW_AMENDMENTS_OF_AMENDMENTS",
+            "PRIORITIZED_GROUP_IDS",
+            "PING_INTERVAL",
+            "PING_TIMEOUT",
         ]
         client_settings_dict = {}
         for key in client_settings_keys:

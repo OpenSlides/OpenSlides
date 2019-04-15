@@ -2,11 +2,12 @@ import { Injectable, NgZone, EventEmitter } from '@angular/core';
 import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
 
+import { TranslateService } from '@ngx-translate/core';
 import { Observable, Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { TranslateService } from '@ngx-translate/core';
 
 import { formatQueryParams, QueryParams } from '../query-params';
+import { OpenSlidesStatusService } from './openslides-status.service';
 
 /**
  * The generic message format in which messages are send and recieved by the server.
@@ -29,6 +30,14 @@ interface OutgoingWebsocketMessage extends BaseWebsocketMessage {
  */
 interface IncommingWebsocketMessage extends BaseWebsocketMessage {
     in_response?: string;
+}
+
+/*
+ * Options for (re-)connecting.
+ */
+interface ConnectOptions {
+    changeId?: number;
+    enableAutoupdates?: boolean;
 }
 
 /**
@@ -104,6 +113,9 @@ export class WebsocketService {
      */
     private subjects: { [type: string]: Subject<any> } = {};
 
+    /**
+     * Callbacks for a waiting response
+     */
     private responseCallbacks: { [id: string]: [(val: any) => boolean, (error: string) => void | null] } = {};
 
     /**
@@ -128,7 +140,8 @@ export class WebsocketService {
         private matSnackBar: MatSnackBar,
         private zone: NgZone,
         private translate: TranslateService,
-        private router: Router
+        private router: Router,
+        private openSlidesStatusService: OpenSlidesStatusService
     ) {}
 
     /**
@@ -136,15 +149,9 @@ export class WebsocketService {
      *
      * Uses NgZone to let all callbacks run in the angular context.
      */
-    public connect(
-        options: {
-            changeId?: number;
-            enableAutoupdates?: boolean;
-        } = {},
-        retry: boolean = false
-    ): void {
+    public async connect(options: ConnectOptions = {}, retry: boolean = false): Promise<void> {
         if (this.websocket) {
-            this.close();
+            await this.close();
         }
 
         if (!retry) {
@@ -166,7 +173,11 @@ export class WebsocketService {
 
         // Create the websocket
         let socketPath = location.protocol === 'https:' ? 'wss://' : 'ws://';
-        socketPath += window.location.host + '/ws/';
+        socketPath += window.location.host;
+        if (this.openSlidesStatusService.isPrioritizedClient) {
+            socketPath += '/prioritize';
+        }
+        socketPath += '/ws/';
         socketPath += formatQueryParams(queryParams);
 
         this.websocket = new WebSocket(socketPath);
@@ -203,33 +214,7 @@ export class WebsocketService {
 
         this.websocket.onclose = (event: CloseEvent) => {
             this.zone.run(() => {
-                this.websocket = null;
-                this._connectionOpen = false;
-                // 1000 is a normal close, like the close on logout
-                this._closeEvent.emit();
-                if (!this.shouldBeClosed && event.code !== 1000) {
-                    // Do not show the message snackbar on the projector
-                    // tests for /projector and /projector/<id>
-                    const onProjector = this.router.url.match(/^\/projector(\/[0-9]+\/?)?$/);
-                    if (this.retryCounter <= 3) {
-                        this.retryCounter++;
-                    }
-
-                    if (!this.connectionErrorNotice && !onProjector && this.retryCounter > 3) {
-                        // So here we have a connection failure that wasn't intendet.
-                        this.connectionErrorNotice = this.matSnackBar.open(
-                            this.translate.instant('Offline mode: You can use OpenSlides but changes are not saved.'),
-                            '',
-                            { duration: 0 }
-                        );
-                    }
-
-                    // A random retry timeout between 2000 and 5000 ms.
-                    const timeout = Math.floor(Math.random() * 3000 + 2000);
-                    setTimeout(() => {
-                        this.connect({ enableAutoupdates: true }, true);
-                    }, timeout);
-                }
+                this.onclose(event.code === 1000);
             });
         };
 
@@ -282,8 +267,48 @@ export class WebsocketService {
     }
 
     /**
+     * Simulates an abnormal close.
+     */
+    public simulateAbnormalClose(): void {
+        if (this.websocket) {
+            this.websocket.close();
+        }
+        this.onclose(false);
+    }
+
+    /**
      * Closes the connection error notice
      */
+    private onclose(normalClose: boolean): void {
+        this.websocket = null;
+        this._connectionOpen = false;
+        // 1000 is a normal close, like the close on logout
+        this._closeEvent.emit();
+        if (!this.shouldBeClosed && !normalClose) {
+            // Do not show the message snackbar on the projector
+            // tests for /projector and /projector/<id>
+            const onProjector = this.router.url.match(/^\/projector(\/[0-9]+\/?)?$/);
+            if (this.retryCounter <= 3) {
+                this.retryCounter++;
+            }
+
+            if (!this.connectionErrorNotice && !onProjector && this.retryCounter > 3) {
+                // So here we have a connection failure that wasn't intendet.
+                this.connectionErrorNotice = this.matSnackBar.open(
+                    this.translate.instant('Offline mode: You can use OpenSlides but changes are not saved.'),
+                    '',
+                    { duration: 0 }
+                );
+            }
+
+            // A random retry timeout between 2000 and 5000 ms.
+            const timeout = Math.floor(Math.random() * 3000 + 2000);
+            setTimeout(() => {
+                this.connect({ enableAutoupdates: true }, true);
+            }, timeout);
+        }
+    }
+
     private dismissConnectionErrorNotice(): void {
         if (this.connectionErrorNotice) {
             this.connectionErrorNotice.dismiss();
@@ -302,6 +327,17 @@ export class WebsocketService {
             this.websocket = null;
             await this.closeEvent.pipe(take(1)).toPromise();
         }
+    }
+
+    /**
+     * closes and reopens the connection. If the connection was closed before,
+     * it will be just opened.
+     *
+     * @param options The options for the new connection
+     */
+    public async reconnect(options: ConnectOptions = {}): Promise<void> {
+        await this.close();
+        await this.connect(options);
     }
 
     /**

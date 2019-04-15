@@ -190,3 +190,22 @@ class ListenToProjectors(BaseWebsocketClientMessage):
             await consumer.send_json(
                 type="projector", content=projector_data, in_response=id
             )
+
+
+class PingPong(BaseWebsocketClientMessage):
+    """
+    Responds to pings from the client.
+    """
+
+    identifier = "ping"
+    schema = {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "titel": "PingPong",
+        "description": "Does a ping pong handshake",
+        "anyOf": [{"type": "number"}, {"type": "null"}],
+    }
+
+    async def receive_content(
+        self, consumer: "ProtocollAsyncJsonWebsocketConsumer", content: Any, id: str
+    ) -> None:
+        await consumer.send_json(type="pong", content=content, in_response=id)
