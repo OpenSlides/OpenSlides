@@ -3,17 +3,18 @@ import { MatDialog, MatSnackBar } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { AssignmentPollDialogComponent } from './assignment-poll-dialog.component';
+import { AssignmentPollDialogComponent } from '../assignment-poll-dialog/assignment-poll-dialog.component';
 import { AssignmentPollService } from '../../services/assignment-poll.service';
 import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
 import { MajorityMethod, CalculablePollKey } from 'app/core/ui-services/poll.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
-import { Poll } from 'app/shared/models/assignments/poll';
-import { PollOption } from 'app/shared/models/assignments/poll-option';
+import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewAssignment } from '../../models/view-assignment';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { Title } from '@angular/platform-browser';
+import { ViewAssignmentPollOption } from '../../models/view-assignment-poll-option';
+import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
 
 /**
  * Component for a single assignment poll. Used in assignment detail view
@@ -34,7 +35,7 @@ export class AssignmentPollComponent extends BaseViewComponent implements OnInit
      * The poll represented in this component
      */
     @Input()
-    public poll: Poll;
+    public poll: ViewAssignmentPoll;
 
     /**
      * The selected Majority method to display quorum calculations. Will be
@@ -135,23 +136,8 @@ export class AssignmentPollComponent extends BaseViewComponent implements OnInit
      *
      * TODO Print the ballots for this poll.
      */
-    public printBallot(poll: Poll): void {
+    public printBallot(poll: AssignmentPoll): void {
         this.raiseError('Not yet implemented');
-    }
-
-    /**
-     * Fetches the name for a candidate from the assignment
-     *
-     * @param option Any poll option
-     * @returns the full_name for the candidate
-     */
-    public getCandidateName(option: PollOption): string {
-        const user = this.assignment.candidates.find(candidate => candidate.id === option.candidate_id);
-        return user ? user.full_name : '';
-        // TODO this.assignment.candidates may not contain every candidates' name (if deleted later)
-        // so we should rather use this.userRepo.getViewModel(option.id).full_name
-        // TODO is this name always available?
-        // TODO error handling
     }
 
     /**
@@ -161,7 +147,7 @@ export class AssignmentPollComponent extends BaseViewComponent implements OnInit
      * @param option
      * @returns true if the quorum is successfully met
      */
-    public quorumReached(option: PollOption): boolean {
+    public quorumReached(option: ViewAssignmentPollOption): boolean {
         const yesValue = this.poll.pollmethod === 'votes' ? 'Votes' : 'Yes';
         const amount = option.votes.find(v => v.value === yesValue).weight;
         const yesQuorum = this.pollService.yesQuorum(this.majorityChoice, this.poll, option);
@@ -214,17 +200,17 @@ export class AssignmentPollComponent extends BaseViewComponent implements OnInit
      *
      * @param option
      */
-    public toggleElected(option: PollOption): void {
+    public toggleElected(option: ViewAssignmentPollOption): void {
         if (!this.operator.hasPerms('assignments.can_manage')) {
             return;
         }
 
         // TODO additional conditions: assignment not finished?
-        const candidate = this.assignment.assignment.assignment_related_users.find(
-            user => user.user_id === option.candidate_id
+        const viewAssignmentRelatedUser = this.assignment.assignmentRelatedUsers.find(
+            user => user.user_id === option.user_id
         );
-        if (candidate) {
-            this.assignmentRepo.markElected(candidate, this.assignment, !option.is_elected);
+        if (viewAssignmentRelatedUser) {
+            this.assignmentRepo.markElected(viewAssignmentRelatedUser, this.assignment, !option.is_elected);
         }
     }
 }

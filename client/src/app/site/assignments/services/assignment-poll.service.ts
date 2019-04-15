@@ -8,8 +8,8 @@ import {
     CalculablePollKey,
     PollVoteValue
 } from 'app/core/ui-services/poll.service';
-import { Poll } from 'app/shared/models/assignments/poll';
-import { PollOption } from 'app/shared/models/assignments/poll-option';
+import { ViewAssignmentPollOption } from '../models/view-assignment-poll-option';
+import { ViewAssignmentPoll } from '../models/view-assignment-poll';
 
 type AssignmentPollValues = 'auto' | 'votes' | 'yesnoabstain' | 'yesno';
 export type AssignmentPollMethod = 'yn' | 'yna' | 'votes';
@@ -69,15 +69,15 @@ export class AssignmentPollService extends PollService {
      * @param poll
      * @returns The amount of votes indicating the 100% base
      */
-    public getBaseAmount(poll: Poll): number | null {
+    public getBaseAmount(poll: ViewAssignmentPoll): number | null {
         switch (this.percentBase) {
             case 'DISABLED':
                 return null;
             case 'YES_NO':
             case 'YES_NO_ABSTAIN':
                 if (poll.pollmethod === 'votes') {
-                    const yes = poll.options.map(cand => {
-                        const yesValue = cand.votes.find(v => v.value === 'Yes');
+                    const yes = poll.options.map(option => {
+                        const yesValue = option.votes.find(v => v.value === 'Yes');
                         return yesValue ? yesValue.weight : -99;
                     });
                     if (Math.min(...yes) < 0) {
@@ -105,7 +105,7 @@ export class AssignmentPollService extends PollService {
      * @param value
      * @returns a percentage number with two digits, null if the value cannot be calculated
      */
-    public getPercent(poll: Poll, option: PollOption, value: PollVoteValue): number | null {
+    public getPercent(poll: ViewAssignmentPoll, option: ViewAssignmentPollOption, value: PollVoteValue): number | null {
         const base = poll.pollmethod === 'votes' ? poll.pollBase : this.getOptionBaseAmount(poll, option);
         if (!base) {
             return null;
@@ -125,7 +125,7 @@ export class AssignmentPollService extends PollService {
      * @returns true if the poll has no percentages, the poll option is a special value,
      * or if the calculations are disabled in the config
      */
-    public isAbstractOption(poll: Poll, option: PollOption): boolean {
+    public isAbstractOption(poll: ViewAssignmentPoll, option: ViewAssignmentPollOption): boolean {
         if (!option.votes || !option.votes.length) {
             return true;
         }
@@ -146,7 +146,7 @@ export class AssignmentPollService extends PollService {
      * TODO: Yes, No, etc. in an option will always return true.
      * Use {@link isAbstractOption} for these
      */
-    public isAbstractValue(poll: Poll, value: CalculablePollKey): boolean {
+    public isAbstractValue(poll: ViewAssignmentPoll, value: CalculablePollKey): boolean {
         if (!poll.pollBase || !this.pollValues.includes(value)) {
             return true;
         }
@@ -163,7 +163,7 @@ export class AssignmentPollService extends PollService {
      *
      * @returns an positive integer to be used as percentage base, or null
      */
-    private getOptionBaseAmount(poll: Poll, option: PollOption): number | null {
+    private getOptionBaseAmount(poll: ViewAssignmentPoll, option: ViewAssignmentPollOption): number | null {
         if (poll.pollmethod === 'votes') {
             return null;
         }
@@ -193,7 +193,11 @@ export class AssignmentPollService extends PollService {
      * @param option
      * @returns a positive integer number; may return null if quorum is not calculable
      */
-    public yesQuorum(method: MajorityMethod, poll: Poll, option: PollOption): number | null {
+    public yesQuorum(
+        method: MajorityMethod,
+        poll: ViewAssignmentPoll,
+        option: ViewAssignmentPollOption
+    ): number | null {
         const baseAmount = poll.pollmethod === 'votes' ? poll.pollBase : this.getOptionBaseAmount(poll, option);
         return method.calc(baseAmount);
     }

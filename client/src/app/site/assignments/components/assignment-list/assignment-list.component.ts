@@ -1,18 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
 import { Title } from '@angular/platform-browser';
 
+import { TranslateService } from '@ngx-translate/core';
+
 import { Assignment } from 'app/shared/models/assignments/assignment';
-import { AssignmentFilterListService } from '../services/assignment-filter.service';
-import { AssignmentSortListService } from '../services/assignment-sort-list.service';
+import { AssignmentFilterListService } from '../../services/assignment-filter.service';
+import { AssignmentSortListService } from '../../services/assignment-sort-list.service';
 import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
-import { ListViewBaseComponent } from '../../base/list-view-base';
+import { ListViewBaseComponent } from 'app/site/base/list-view-base';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { StorageService } from 'app/core/core-services/storage.service';
-import { ViewAssignment } from '../models/view-assignment';
+import { ViewAssignment } from '../../models/view-assignment';
 
 /**
  * List view for the assignments
@@ -97,7 +98,7 @@ export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignmen
      */
     public async deleteSelected(): Promise<void> {
         const title = this.translate.instant('Are you sure you want to delete all selected elections?');
-        if (await this.promptService.open(title, null)) {
+        if (await this.promptService.open(title, '')) {
             for (const assignment of this.selectedRows) {
                 await this.repo.delete(assignment);
             }

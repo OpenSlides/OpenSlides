@@ -4,9 +4,9 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { AssignmentPollService } from '../../services/assignment-poll.service';
 import { CalculablePollKey, PollVoteValue } from 'app/core/ui-services/poll.service';
-import { Poll } from 'app/shared/models/assignments/poll';
-import { PollOption } from 'app/shared/models/assignments/poll-option';
+import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
 import { ViewUser } from 'app/site/users/models/view-user';
+import { AssignmentPollOption } from 'app/shared/models/assignments/assignment-poll-option';
 
 /**
  * Vote entries included once for summary (e.g. total votes cast)
@@ -40,7 +40,7 @@ export class AssignmentPollDialogComponent {
      */
     public constructor(
         public dialogRef: MatDialogRef<AssignmentPollDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: { poll: Poll; users: ViewUser[] },
+        @Inject(MAT_DIALOG_DATA) public data: { poll: AssignmentPoll; users: ViewUser[] },
         private matSnackBar: MatSnackBar,
         private translate: TranslateService,
         private pollService: AssignmentPollService
@@ -123,7 +123,7 @@ export class AssignmentPollDialogComponent {
      * @param candidate the candidate for whom to update the value
      * @param newData the new value
      */
-    public setValue(value: PollVoteValue, candidate: PollOption, newData: string): void {
+    public setValue(value: PollVoteValue, candidate: AssignmentPollOption, newData: string): void {
         const vote = candidate.votes.find(v => v.value === value);
         if (vote) {
             vote.weight = parseInt(newData, 10);
@@ -142,7 +142,7 @@ export class AssignmentPollDialogComponent {
      * @param candidate the pollOption
      * @returns the currently entered number or undefined if no number has been set
      */
-    public getValue(value: PollVoteValue, candidate: PollOption): number | undefined {
+    public getValue(value: PollVoteValue, candidate: AssignmentPollOption): number | undefined {
         const val = candidate.votes.find(v => v.value === value);
         return val ? val.weight : undefined;
     }
