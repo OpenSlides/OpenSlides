@@ -1089,6 +1089,14 @@ class MotionCommentSectionViewSet(ModelViewSet):
             raise ValidationError({"detail": msg})
         return result
 
+    def update(self, *args, **kwargs):
+        response = super().update(*args, **kwargs)
+        # Update all affected motioncomments to update their `read_groups_id` field,
+        # which is taken from the updated section.
+        section = self.get_object()
+        inform_changed_data(MotionComment.objects.filter(section=section))
+        return response
+
 
 class StatuteParagraphViewSet(ModelViewSet):
     """

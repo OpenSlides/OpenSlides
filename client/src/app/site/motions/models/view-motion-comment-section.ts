@@ -75,12 +75,21 @@ export class ViewMotionCommentSection extends BaseViewModel {
      */
     public updateDependencies(update: BaseViewModel): void {
         if (update instanceof ViewGroup) {
-            this.updateGroup(update);
+            if (this.section.read_groups_id.includes(update.id)) {
+                const groupIndex = this.read_groups.findIndex(group => group.id === update.id);
+                if (groupIndex < 0) {
+                    this.read_groups.push(update);
+                } else {
+                    this.read_groups[groupIndex] = update;
+                }
+            } else if (this.section.write_groups_id.includes(update.id)) {
+                const groupIndex = this.write_groups.findIndex(group => group.id === update.id);
+                if (groupIndex < 0) {
+                    this.write_groups.push(update);
+                } else {
+                    this.write_groups[groupIndex] = update;
+                }
+            }
         }
-    }
-
-    // TODO: Implement updating of groups
-    public updateGroup(group: ViewGroup): void {
-        console.log('implement update group of motion comment section');
     }
 }
