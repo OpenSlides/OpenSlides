@@ -44,7 +44,13 @@
 </div>
 
 <ng-template #mobileView>
-    <!-- TODO -->
+    <div *ngIf="editAssignment">
+        <ng-container [ngTemplateOutlet]="assignmentFormTemplate"></ng-container>
+    </div>
+    <div *ngIf="!editAssignment">
+        <ng-container [ngTemplateOutlet]="metaInfoTemplate"></ng-container>
+        <ng-container [ngTemplateOutlet]="contentTemplate"></ng-container>
+    </div>
 </ng-template>
 
 <ng-template #desktopView>
