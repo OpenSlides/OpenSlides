@@ -1425,3 +1425,14 @@ class StateViewSet(
             msg = self.getProtectedErrorMessage("workflow", err)
             raise ValidationError({"detail": msg})
         return result
+
+    def update(self, *args, **kwargs):
+        """
+        Sends autoupdate for all motions that are affected by the state change.
+        Maybe the restriction was changed, so the view permission for some
+        motions could have been changed.
+        """
+        result = super().update(*args, **kwargs)
+        state = self.get_object()
+        inform_changed_data(Motion.objects.filter(state=state))
+        return result
