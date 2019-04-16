@@ -1,7 +1,6 @@
-from typing import Any, Dict, List, Set
+from typing import Any, Dict, Set
 
 from django.apps import AppConfig
-from mypy_extensions import TypedDict
 
 
 class AssignmentsAppConfig(AppConfig):
@@ -50,14 +49,6 @@ class AssignmentsAppConfig(AppConfig):
         connection.
         """
         yield self.get_model("Assignment")
-
-    def get_angular_constants(self):
-        assignment = self.get_model("Assignment")
-        Item = TypedDict("Item", {"value": int, "display_name": str})
-        phases: List[Item] = []
-        for phase in assignment.PHASES:
-            phases.append({"value": phase[0], "display_name": phase[1]})
-        return {"AssignmentPhases": phases}
 
 
 def required_users(element: Dict[str, Any]) -> Set[int]:

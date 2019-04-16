@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { MatDialog, MatSnackBar } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -6,15 +7,15 @@ import { TranslateService } from '@ngx-translate/core';
 import { AssignmentPollDialogComponent } from '../assignment-poll-dialog/assignment-poll-dialog.component';
 import { AssignmentPollService } from '../../services/assignment-poll.service';
 import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
+import { BaseViewComponent } from 'app/site/base/base-view';
 import { MajorityMethod, CalculablePollKey } from 'app/core/ui-services/poll.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
 import { PromptService } from 'app/core/ui-services/prompt.service';
-import { ViewAssignment } from '../../models/view-assignment';
-import { BaseViewComponent } from 'app/site/base/base-view';
 import { Title } from '@angular/platform-browser';
-import { ViewAssignmentPollOption } from '../../models/view-assignment-poll-option';
+import { ViewAssignment } from '../../models/view-assignment';
 import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
+import { ViewAssignmentPollOption } from '../../models/view-assignment-poll-option';
 
 /**
  * Component for a single assignment poll. Used in assignment detail view
@@ -36,6 +37,11 @@ export class AssignmentPollComponent extends BaseViewComponent implements OnInit
      */
     @Input()
     public poll: ViewAssignmentPoll;
+
+    /**
+     * Form for updating the poll's description
+     */
+    public descriptionForm: FormGroup;
 
     /**
      * The selected Majority method to display quorum calculations. Will be
@@ -61,6 +67,23 @@ export class AssignmentPollComponent extends BaseViewComponent implements OnInit
      */
     public get pollValues(): CalculablePollKey[] {
         return this.pollService.pollValues.filter(name => this.poll[name] !== undefined);
+    }
+
+    /**
+     * @returns true if the description on the form differs from the poll's description
+     */
+    public get dirtyDescription(): boolean {
+        return this.descriptionForm.get('description').value !== this.poll.description;
+    }
+
+    /**
+     * @returns true if vote results can be seen by the user
+     */
+    public get pollData(): boolean {
+        if (!this.poll.has_votes) {
+            return false;
+        }
+        return this.poll.published || this.canManage;
     }
 
     /**
@@ -90,6 +113,8 @@ export class AssignmentPollComponent extends BaseViewComponent implements OnInit
     /**
      * constructor. Does nothing
      *
+     * @param titleService
+     * @param matSnackBar
      * @param pollService poll related calculations
      * @param operator permission checks
      * @param assignmentRepo The repository to the assignments
@@ -105,7 +130,8 @@ export class AssignmentPollComponent extends BaseViewComponent implements OnInit
         private assignmentRepo: AssignmentRepositoryService,
         public translate: TranslateService,
         public dialog: MatDialog,
-        private promptService: PromptService
+        private promptService: PromptService,
+        private formBuilder: FormBuilder
     ) {
         super(titleService, translate, matSnackBar);
     }
@@ -117,6 +143,9 @@ export class AssignmentPollComponent extends BaseViewComponent implements OnInit
         this.majorityChoice =
             this.pollService.majorityMethods.find(method => method.value === this.pollService.defaultMajorityMethod) ||
             null;
+        this.descriptionForm = this.formBuilder.group({
+            description: this.poll ? this.poll.description : ''
+        });
     }
 
     /**
@@ -159,14 +188,9 @@ export class AssignmentPollComponent extends BaseViewComponent implements OnInit
      * closes successfully (validation is done there)
      */
     public enterVotes(): void {
-        // TODO deep copy of this.poll (JSON parse is ugly workaround)
-        // or sending just copy of the options
-        const data = {
-            poll: JSON.parse(JSON.stringify(this.poll)),
-            users: this.assignment.candidates // used to get the names of the users
-        };
         const dialogRef = this.dialog.open(AssignmentPollDialogComponent, {
-            data: data,
+            // TODO deep copy of this.poll (JSON parse is ugly workaround) or sending just copy of the options
+            data: this.poll.copy(),
             maxHeight: '90vh',
             minWidth: '300px',
             maxWidth: '80vw',
@@ -212,5 +236,28 @@ export class AssignmentPollComponent extends BaseViewComponent implements OnInit
         if (viewAssignmentRelatedUser) {
             this.assignmentRepo.markElected(viewAssignmentRelatedUser, this.assignment, !option.is_elected);
         }
+    }
+
+    /**
+     * Sends the edited poll description to the server
+     * TODO: Better feedback
+     */
+    public async onEditDescriptionButton(): Promise<void> {
+        const desc: string = this.descriptionForm.get('description').value;
+        await this.assignmentRepo.updatePoll({ description: desc }, this.poll).then(null, this.raiseError);
+    }
+
+    /**
+     * Fetches a tooltip string about the quorum
+     * @param option
+     * @returns a translated
+     */
+    public getQuorumReachedString(option: ViewAssignmentPollOption): string {
+        const name = this.translate.instant(this.majorityChoice.display_name);
+        const quorum = this.pollService.yesQuorum(this.majorityChoice, this.poll, option);
+        const isReached = this.quorumReached(option)
+            ? this.translate.instant('reached')
+            : this.translate.instant('not reached');
+        return `${name} (${quorum}) ${isReached}`;
     }
 }

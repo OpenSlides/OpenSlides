@@ -40,12 +40,12 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
             <mat-cell *matCellDef="let assignment">{{ assignment.getListTitle() }}</mat-cell>
         </ng-container>
-        <!-- pahse column-->
+        <!-- phase column-->
         <ng-container matColumnDef="phase">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Phase</mat-header-cell>
             <mat-cell *matCellDef="let assignment">
                 <mat-chip-list>
-                    <mat-chip color="primary" selected>{{ assignment.phase }}</mat-chip>
+                    <mat-chip color="primary" selected>{{ assignment.phaseString | translate }}</mat-chip>
                 </mat-chip-list>
             </mat-cell>
             <button mat-menu-item (click)="selectAll()">
@@ -62,7 +62,7 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header>Candidates</mat-header-cell>
             <mat-cell *matCellDef="let assignment">
                 <mat-chip-list>
-                    <mat-chip color="accent" selected>{{ assignment.candidateAmount }}</mat-chip>
+                    <mat-chip color="accent" selected matTooltip="{{ 'Number of candidates' | translate }}">{{ assignment.candidateAmount }}</mat-chip>
                 </mat-chip-list>
             </mat-cell>
         </ng-container>

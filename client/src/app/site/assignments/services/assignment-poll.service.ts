@@ -118,6 +118,25 @@ export class AssignmentPollService extends PollService {
     }
 
     /**
+     * get the percentage for a non-abstract per-poll value
+     * TODO: similar code to getPercent. Mergeable?
+     *
+     * @param poll the poll this value refers to
+     * @param value a per-poll value (e.g. 'votesvalid')
+     * @returns a percentage number with two digits, null if the value cannot be calculated
+     */
+    public getValuePercent(poll: ViewAssignmentPoll, value: CalculablePollKey): number | null {
+        if (!poll.pollBase) {
+            return null;
+        }
+        const amount = poll[value];
+        if (amount === undefined || amount < 0) {
+            return null;
+        }
+        return Math.round(((amount * 100) / poll.pollBase) * 100) / 100;
+    }
+
+    /**
      * Check if the option in a poll is abstract (percentages should not be calculated)
      *
      * @param poll

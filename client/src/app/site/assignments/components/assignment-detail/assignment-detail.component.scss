@@ -1,0 +1,33 @@
+.full-width {
+    width: 100%;
+}
+
+.candidates {
+    width: 60%;
+}
+.candidate {
+    display: flex;
+    width: 100%;
+    border-bottom: 1px solid lightgray;
+    vertical-align: top;
+    .name {
+        word-wrap: break-word;
+        flex: 1;
+    }
+}
+
+.top-aligned {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+// TODO: same as .waiting-list in list-of-speakers
+.candidates-list {
+    padding: 10px 25px 0 25px;
+}
+
+// TODO: duplicate in list-of-speakers
+.add-self-buttons {
+    padding: 15px 0 20px 25px;
+}

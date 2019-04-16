@@ -4,6 +4,7 @@ import { Identifiable } from 'app/shared/models/base/identifiable';
 import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
 import { AssignmentPollMethod } from '../services/assignment-poll.service';
 import { ViewAssignmentPollOption } from './view-assignment-poll-option';
+import { AssignmentPollOption } from 'app/shared/models/assignments/assignment-poll-option';
 
 export class ViewAssignmentPoll implements Identifiable, Updateable {
     private _assignmentPoll: AssignmentPoll;
@@ -37,12 +38,23 @@ export class ViewAssignmentPoll implements Identifiable, Updateable {
         return this.poll.votesvalid;
     }
 
+    public set votesvalid(amount: number) {
+        this.poll.votesvalid = amount;
+    }
+
     public get votesinvalid(): number {
         return this.poll.votesinvalid;
+    }
+    public set votesinvalid(amount: number) {
+        this.poll.votesinvalid = amount;
     }
 
     public get votescast(): number {
         return this.poll.votescast;
+    }
+
+    public set votescast(amount: number) {
+        this.poll.votescast = amount;
     }
 
     public get has_votes(): boolean {
@@ -67,5 +79,23 @@ export class ViewAssignmentPoll implements Identifiable, Updateable {
 
     public updateDependencies(update: BaseViewModel): void {
         this.options.forEach(option => option.updateDependencies(update));
+    }
+
+    /**
+     * Creates a copy with deep-copy on all changing numerical values,
+     * but intact uncopied references to the users
+     *
+     * TODO check and review
+     */
+    public copy(): ViewAssignmentPoll {
+        return new ViewAssignmentPoll(
+            new AssignmentPoll(JSON.parse(JSON.stringify(this._assignmentPoll))),
+            this._assignmentPollOptions.map(option => {
+                return new ViewAssignmentPollOption(
+                    new AssignmentPollOption(JSON.parse(JSON.stringify(option.option))),
+                    option.user
+                );
+            })
+        );
     }
 }

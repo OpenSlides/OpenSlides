@@ -9,10 +9,28 @@ import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ViewAssignmentRelatedUser } from './view-assignment-related-user';
 import { ViewAssignmentPoll } from './view-assignment-poll';
 
-export interface AssignmentPhase {
-    value: number;
-    display_name: string;
-}
+/**
+ * A constant containing all possible assignment phases and their different
+ * representations as numerical value, string as used in server, and the display
+ * name.
+ */
+export const AssignmentPhases: { name: string; value: number; display_name: string }[] = [
+    {
+        name: 'PHASE_SEARCH',
+        value: 0,
+        display_name: 'Searching for candidates'
+    },
+    {
+        name: 'PHASE_VOTING',
+        value: 1,
+        display_name: 'Voting'
+    },
+    {
+        name: 'PHASE_FINISHED',
+        value: 2,
+        display_name: 'Finished'
+    }
+];
 
 export class ViewAssignment extends BaseAgendaViewModel {
     public static COLLECTIONSTRING = Assignment.COLLECTIONSTRING;
@@ -62,12 +80,37 @@ export class ViewAssignment extends BaseAgendaViewModel {
         return this.assignment.phase;
     }
 
+    public get phaseString(): string {
+        const phase = AssignmentPhases.find(ap => ap.value === this.assignment.phase);
+        return phase ? phase.display_name : '';
+    }
+
+    /**
+     * @returns true if the assignment is in the 'finished' state
+     * (not accepting votes or candidates anymore)
+     */
+    public get isFinished(): boolean {
+        const finishedState = AssignmentPhases.find(ap => ap.name === 'PHASE_FINISHED');
+        return this.phase === finishedState.value;
+    }
+
+    /**
+     * @returns true if the assignment is in the 'searching' state
+     */
+    public get isSearchingForCandidates(): boolean {
+        const searchState = AssignmentPhases.find(ap => ap.name === 'PHASE_SEARCH');
+        return this.phase === searchState.value;
+    }
+
+    /**
+     * @returns the amount of candidates in the assignment's candidate list
+     */
     public get candidateAmount(): number {
         return this._assignmentRelatedUsers ? this._assignmentRelatedUsers.length : 0;
     }
 
     /**
-     * This is set by the repository
+     * Constructor. Is set by the repository
      */
     public getVerboseName;
     public getAgendaTitle;

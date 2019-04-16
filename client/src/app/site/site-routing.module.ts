@@ -26,7 +26,7 @@ const routes: Routes = [
             {
                 path: 'assignments',
                 loadChildren: './assignments/assignments.module#AssignmentsModule',
-                data: { basePerm: 'assignment.can_see' }
+                data: { basePerm: 'assignments.can_see' }
             },
             {
                 path: 'mediafiles',

@@ -2,16 +2,17 @@ import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 
+import { AssignmentPollOption } from 'app/shared/models/assignments/assignment-poll-option';
 import { AssignmentPollService } from '../../services/assignment-poll.service';
 import { CalculablePollKey, PollVoteValue } from 'app/core/ui-services/poll.service';
-import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
-import { ViewUser } from 'app/site/users/models/view-user';
-import { AssignmentPollOption } from 'app/shared/models/assignments/assignment-poll-option';
+import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
+import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
+import { ViewAssignmentPollOption } from '../../models/view-assignment-poll-option';
 
 /**
  * Vote entries included once for summary (e.g. total votes cast)
  */
-type summaryPollKeys = 'votescast' | 'votesvalid' | 'votesinvalid';
+type summaryPollKey = 'votescast' | 'votesvalid' | 'votesinvalid';
 
 /**
  * A dialog for updating the values of an assignment-related poll.
@@ -22,6 +23,11 @@ type summaryPollKeys = 'votescast' | 'votesvalid' | 'votesinvalid';
     styleUrls: ['./assignment-poll-dialog.component.scss']
 })
 export class AssignmentPollDialogComponent {
+    /**
+     * The summary values that will have fields in the dialog
+     */
+    public sumValues: summaryPollKey[] = ['votesvalid', 'votesinvalid', 'votescast'];
+
     /**
      * List of accepted special non-numerical values.
      * See {@link PollService.specialPollVotes}
@@ -40,15 +46,16 @@ export class AssignmentPollDialogComponent {
      */
     public constructor(
         public dialogRef: MatDialogRef<AssignmentPollDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: { poll: AssignmentPoll; users: ViewUser[] },
+        @Inject(MAT_DIALOG_DATA) public data: ViewAssignmentPoll,
         private matSnackBar: MatSnackBar,
         private translate: TranslateService,
-        private pollService: AssignmentPollService
+        public pollService: AssignmentPollService,
+        private userRepo: UserRepositoryService
     ) {
         this.specialValues = this.pollService.specialPollVotes;
-        switch (this.data.poll.pollmethod) {
+        switch (this.data.pollmethod) {
             case 'votes':
-                this.optionPollKeys = ['Yes'];
+                this.optionPollKeys = ['Votes'];
                 break;
             case 'yn':
                 this.optionPollKeys = ['Yes', 'No'];
@@ -73,7 +80,7 @@ export class AssignmentPollDialogComponent {
      * TODO better validation
      */
     public submit(): void {
-        const error = this.data.poll.options.find(dataoption => {
+        const error = this.data.options.find(dataoption => {
             for (const key of this.optionPollKeys) {
                 const keyValue = dataoption.votes.find(o => o.value === key);
                 if (!keyValue || keyValue.weight === undefined) {
@@ -90,7 +97,7 @@ export class AssignmentPollDialogComponent {
                 }
             );
         } else {
-            this.dialogRef.close(this.data.poll);
+            this.dialogRef.close(this.data);
         }
     }
 
@@ -105,32 +112,20 @@ export class AssignmentPollDialogComponent {
     }
 
     /**
-     * Get the (full) name of a pollOption candidate
-     *
-     * @param the id of the candidate
-     * @returns the full_name property
-     */
-    public getName(candidateId: number): string {
-        const user = this.data.users.find(c => c.id === candidateId);
-        return user ? user.full_name : 'unknown user';
-        // TODO error handling
-    }
-
-    /**
      * Updates a vote value
      *
      * @param value the value to update
      * @param candidate the candidate for whom to update the value
      * @param newData the new value
      */
-    public setValue(value: PollVoteValue, candidate: AssignmentPollOption, newData: string): void {
+    public setValue(value: PollVoteValue, candidate: ViewAssignmentPollOption, newData: string): void {
         const vote = candidate.votes.find(v => v.value === value);
         if (vote) {
-            vote.weight = parseInt(newData, 10);
+            vote.weight = parseFloat(newData);
         } else {
             candidate.votes.push({
                 value: value,
-                weight: parseInt(newData, 10)
+                weight: parseFloat(newData)
             });
         }
     }
@@ -153,8 +148,8 @@ export class AssignmentPollDialogComponent {
      * @param value
      * @returns integer or undefined
      */
-    public getSumValue(value: summaryPollKeys): number | undefined {
-        return this.data.poll[value] || undefined;
+    public getSumValue(value: summaryPollKey): number | undefined {
+        return this.data[value] || undefined;
     }
 
     /**
@@ -163,7 +158,23 @@ export class AssignmentPollDialogComponent {
      * @param value
      * @param weight
      */
-    public setSumValue(value: summaryPollKeys, weight: string): void {
-        this.data.poll[value] = parseInt(weight, 10);
+    public setSumValue(value: summaryPollKey, weight: string): void {
+        this.data[value] = parseFloat(weight);
+    }
+
+    public getGridClass(): string {
+        return `votes-grid-${this.optionPollKeys.length}`;
+    }
+
+    /**
+     * Fetches the name for a poll option
+     * TODO: observable. Note that the assignment.related_user may not contain the user (anymore?)
+     *
+     * @param option Any poll option
+     * @returns the full_name for the candidate
+     */
+    public getCandidateName(option: AssignmentPollOption): string {
+        const user = this.userRepo.getViewModel(option.candidate_id);
+        return user ? user.full_name : '';
     }
 }

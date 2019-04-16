@@ -93,33 +93,40 @@ export class AssignmentRepositoryService extends BaseAgendaContentObjectReposito
     private createViewAssignmentRelatedUsers(
         assignmentRelatedUsers: AssignmentRelatedUser[]
     ): ViewAssignmentRelatedUser[] {
-        return assignmentRelatedUsers.map(aru => {
-            const user = this.viewModelStoreService.get(ViewUser, aru.user_id);
-            return new ViewAssignmentRelatedUser(aru, user);
-        });
+        return assignmentRelatedUsers
+            .map(aru => {
+                const user = this.viewModelStoreService.get(ViewUser, aru.user_id);
+                return new ViewAssignmentRelatedUser(aru, user);
+            })
+            .sort((a, b) => a.weight - b.weight);
     }
 
     private createViewAssignmentPolls(assignmentPolls: AssignmentPoll[]): ViewAssignmentPoll[] {
         return assignmentPolls.map(poll => {
-            const options = poll.options.map(option => {
-                const user = this.viewModelStoreService.get(ViewUser, option.candidate_id);
-                return new ViewAssignmentPollOption(option, user);
-            });
+            const options = poll.options
+                .map(option => {
+                    const user = this.viewModelStoreService.get(ViewUser, option.candidate_id);
+                    return new ViewAssignmentPollOption(option, user);
+                })
+                .sort((a, b) => a.weight - b.weight);
             return new ViewAssignmentPoll(poll, options);
         });
     }
 
     /**
-     * Adds another user as a candidate
+     * Adds/removes another user to/from the candidates list of an assignment
      *
-     * @param userId User id of a candidate
+     * @param user A ViewUser
      * @param assignment The assignment to add the candidate to
+     * @param adding optional boolean to force an add (true)/ remove (false)
+     * of the candidate. Else, the candidate will be added if not on the list,
+     * and removed if on the list
      */
-    public async changeCandidate(userId: number, assignment: ViewAssignment): Promise<void> {
-        const data = { user: userId };
-        if (assignment.candidates.some(candidate => candidate.id === userId)) {
+    public async changeCandidate(user: ViewUser, assignment: ViewAssignment, adding?: boolean): Promise<void> {
+        const data = { user: user.id };
+        if (assignment.candidates.some(candidate => candidate.id === user.id) && adding !== true) {
             await this.httpService.delete(this.restPath + assignment.id + this.candidatureOtherPath, data);
-        } else {
+        } else if (adding !== false) {
             await this.httpService.post(this.restPath + assignment.id + this.candidatureOtherPath, data);
         }
     }
@@ -149,6 +156,7 @@ export class AssignmentRepositoryService extends BaseAgendaContentObjectReposito
      */
     public async addPoll(assignment: ViewAssignment): Promise<void> {
         await this.httpService.post(this.restPath + assignment.id + this.createPollPath);
+        // TODO: change current tab to new poll
     }
 
     /**
@@ -185,7 +193,7 @@ export class AssignmentRepositoryService extends BaseAgendaContentObjectReposito
         const votes = poll.options.map(option => {
             switch (poll.pollmethod) {
                 case 'votes':
-                    return { Votes: option.votes.find(v => v.value === 'Yes').weight };
+                    return { Votes: option.votes.find(v => v.value === 'Votes').weight };
                 case 'yn':
                     return {
                         Yes: option.votes.find(v => v.value === 'Yes').weight,
@@ -232,16 +240,14 @@ export class AssignmentRepositoryService extends BaseAgendaContentObjectReposito
     }
 
     /**
-     * Sorting the candidates
-     * TODO untested stub
+     * Sends a request to sort an assignment's candidates
      *
-     * @param sortedCandidates
+     * @param sortedCandidates the id of the assignment related users (note: NOT viewUsers)
      * @param assignment
      */
-    public async sortCandidates(sortedCandidates: any[], assignment: ViewAssignment): Promise<void> {
-        throw Error('TODO');
-        // const restPath = `/rest/assignments/assignment/${assignment.id}/sort_related_users`;
-        // const data = { related_users: sortedCandidates };
-        // await this.httpService.post(restPath, data);
+    public async sortCandidates(sortedCandidates: number[], assignment: ViewAssignment): Promise<void> {
+        const restPath = `/rest/assignments/assignment/${assignment.id}/sort_related_users/`;
+        const data = { related_users: sortedCandidates };
+        await this.httpService.post(restPath, data);
     }
 }

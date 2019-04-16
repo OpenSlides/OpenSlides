@@ -4,8 +4,7 @@ import { _ } from 'app/core/translate/translation-marker';
 
 /**
  * The possible keys of a poll object that represent numbers.
- * TODO Should be 'key of MotionPoll if type of key is number'
- * TODO: normalize MotionPoll model and other poll models
+ * TODO Should be 'key of MotionPoll|AssinmentPoll if type of key is number'
  */
 export type CalculablePollKey = 'votesvalid' | 'votesinvalid' | 'votescast' | 'yes' | 'no' | 'abstain';
 
@@ -13,12 +12,12 @@ export type CalculablePollKey = 'votesvalid' | 'votesinvalid' | 'votescast' | 'y
  * TODO: may be obsolete if the server switches to lower case only
  * (lower case variants are already in CalculablePollKey)
  */
-export type PollVoteValue = 'Yes' | 'No' | 'Abstain';
+export type PollVoteValue = 'Yes' | 'No' | 'Abstain' | 'Votes';
 
 /**
  * Interface representing possible majority calculation methods. The implementing
  * calc function should return an integer number that must be reached for the
- * option to reach the quorum, or null if disabled
+ * option to successfully fulfill the quorum, or null if disabled
  */
 export interface MajorityMethod {
     value: string;
@@ -33,17 +32,26 @@ export const PollMajorityMethod: MajorityMethod[] = [
     {
         value: 'simple_majority',
         display_name: 'Simple majority',
-        calc: base => Math.ceil(base * 0.5)
+        calc: base => {
+            const q = base * 0.5;
+            return Number.isInteger(q) ? q + 1 : Math.ceil(q);
+        }
     },
     {
         value: 'two-thirds_majority',
         display_name: 'Two-thirds majority',
-        calc: base => Math.ceil((base / 3) * 2)
+        calc: base => {
+            const q = (base / 3) * 2;
+            return Number.isInteger(q) ? q + 1 : Math.ceil(q);
+        }
     },
     {
         value: 'three-quarters_majority',
         display_name: 'Three-quarters majority',
-        calc: base => Math.ceil((base / 4) * 3)
+        calc: base => {
+            const q = (base / 4) * 3;
+            return Number.isInteger(q) ? q + 1 : Math.ceil(q);
+        }
     },
     {
         value: 'disabled',
@@ -95,6 +103,7 @@ export abstract class PollService {
 
     /**
      * empty constructor
+     *
      */
     public constructor() {}
 

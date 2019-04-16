@@ -13,7 +13,52 @@
     }
 }
 
-.votes {
+.candidate-name {
+    word-wrap: break-word;
+    width: 100%;
+    border-bottom: 1px solid grey;
+}
+
+.votes-grid-1 {
+    display: grid;
+    grid-gap: 5px;
+    margin-bottom: 10px;
+    grid-template-columns: auto 60px;
+    align-items: center;
+    .mat-form-field {
+        width: 100%;
+    }
+}
+
+// TODO: more elegant way. Only grid-template-columns is different
+.votes-grid-2 {
+    display: grid;
+    grid-gap: 5px;
+    margin-bottom: 10px;
+    align-items: center;
+    grid-template-columns: auto 60px 60px;
+    .mat-form-field {
+        width: 100%;
+    }
+}
+
+// TODO: more elegant way. Only grid-template-columns is different
+.votes-grid-3 {
+    display: grid;
+    grid-gap: 5px;
+    margin-bottom: 10px;
+    align-items: center;
+    grid-template-columns: auto 60px 60px 60px;
+    .mat-form-field {
+        width: 100%;
+    }
+}
+
+.sum-value {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
+}
+
+.width-600 {
+    max-width: 600px;
 }
