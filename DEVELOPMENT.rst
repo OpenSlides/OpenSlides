@@ -166,6 +166,10 @@ To extract translations run::
 
     $ npm run extract
 
+When updating, adding or changing used packages from npm, please update the README.md using following command::
+
+    $ npm run licenses
+
 OpenSlides in big mode
 ======================
 
