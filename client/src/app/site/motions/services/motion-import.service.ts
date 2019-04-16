@@ -271,12 +271,12 @@ export class MotionImportService extends BaseImportService<ViewMotion> {
             return null;
         }
         blockString = blockString.trim();
-        let existingBlock = this.motionBlockRepo.getMotionBlockByTitle(blockString);
-        if (!existingBlock) {
-            existingBlock = this.motionBlockRepo.getMotionBlockByTitle(this.translate.instant(blockString));
+        let existingBlock = this.motionBlockRepo.getMotionBlocksByTitle(blockString);
+        if (!existingBlock.length) {
+            existingBlock = this.motionBlockRepo.getMotionBlocksByTitle(this.translate.instant(blockString));
         }
-        if (existingBlock) {
-            return { id: existingBlock.id, name: existingBlock.title };
+        if (existingBlock.length) {
+            return { id: existingBlock[0].id, name: existingBlock[0].title };
         } else {
             if (!this.newMotionBlocks.find(newBlock => newBlock.name === blockString)) {
                 this.newMotionBlocks.push({ name: blockString });

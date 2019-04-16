@@ -95,11 +95,10 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User> imp
     private _presenceViewConfigured = false;
 
     /**
-     * TODO: Does not check for user manage rights itself
      * @returns true if the presence view is available to administrators
      */
     public get presenceViewConfigured(): boolean {
-        return this._presenceViewConfigured;
+        return this._presenceViewConfigured && this.operator.hasPerms('users.can_manage');
     }
 
     /**
@@ -164,7 +163,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User> imp
      * to filter/sort services
      */
     public ngOnInit(): void {
-        super.setTitle(this.translate.instant('Participants'));
+        super.setTitle('Participants');
         this.initTable();
         this.setFulltextFilter();
 

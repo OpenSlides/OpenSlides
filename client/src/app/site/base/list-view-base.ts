@@ -89,7 +89,7 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel, M extends B
         matSnackBar: MatSnackBar,
         protected route?: ActivatedRoute,
         protected storage?: StorageService,
-        public filterService?: BaseFilterListService<M, V>,
+        public filterService?: BaseFilterListService<V>,
         public sortService?: BaseSortListService<V>
     ) {
         super(titleService, translate, matSnackBar);

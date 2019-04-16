@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 
 import { BaseFilterListService, OsFilter } from 'app/core/ui-services/base-filter-list.service';
 import { StorageService } from 'app/core/core-services/storage.service';
-import { User } from 'app/shared/models/users/user';
 import { ViewUser } from '../models/view-user';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
@@ -11,7 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 @Injectable({
     providedIn: 'root'
 })
-export class UserFilterListService extends BaseFilterListService<User, ViewUser> {
+export class UserFilterListService extends BaseFilterListService<ViewUser> {
     protected name = 'User';
 
     private userGroupFilterOptions = {

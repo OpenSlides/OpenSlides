@@ -265,14 +265,18 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
     }
 
     /**
-     * Tries to convert a user string into an user. If it is two words, expect
-     * a first and a last name, if one word only, expect a first name only.
-     * If more than two words, they will all be put as the first name
-     * TODO: More advanced logic to fit names
+     * Tries to convert a user string into an user. Names that don't fit the scheme given
+     * will be entered into the first_name field
+     *
+     * Naming schemes are:
+     * - firstSpaceLast: One or two space-separated words are assumed, matching
+     * given name and surname
+     * - lastCommaFirst: A comma is supposed to separate last name(s) from given name(s).
+     * TODO: More advanced logic(s) to fit names
      *
      * @param inputUser A raw user string
-     * @param schema optional hint on how to handle the strings. TODO: Not fully implemented.
-     * @returns A User object (not uploaded to the server)
+     * @param schema optional hint on how to handle the strings.
+     * @returns A User object (note: is only a local object, not uploaded to the server)
      */
     public parseUserString(inputUser: string, schema?: StringNamingSchema): User {
         const newUser: Partial<User> = {};

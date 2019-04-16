@@ -109,12 +109,13 @@ export class MotionBlockRepositoryService extends BaseAgendaContentObjectReposit
     }
 
     /**
-     * Retrieves motion block(s) by name
-     * TODO: check if a title is unique for a motionBlock
-     * @param title Strign to check for
+     * Retrieves motion blocks by name
+     *
+     * @param title String to check for
+     * @returns the motion blocks found
      */
-    public getMotionBlockByTitle(title: string): MotionBlock {
-        return this.DS.find(MotionBlock, block => block.title === title);
+    public getMotionBlocksByTitle(title: string): MotionBlock[] {
+        return this.DS.filter(MotionBlock, block => block.title === title);
     }
 
     /**

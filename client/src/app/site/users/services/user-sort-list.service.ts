@@ -22,7 +22,6 @@ export class UserSortListService extends BaseSortListService<ViewUser> {
             { property: 'number', label: 'Participant number' },
             { property: 'structure_level', label: 'Structure level' },
             { property: 'comment' }
-            // TODO email send?
         ]
     };
     protected name = 'User';

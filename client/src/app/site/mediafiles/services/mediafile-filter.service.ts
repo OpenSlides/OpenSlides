@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 
 import { BaseFilterListService, OsFilter } from 'app/core/ui-services/base-filter-list.service';
-import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { ViewMediafile } from '../models/view-mediafile';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
@@ -11,7 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 @Injectable({
     providedIn: 'root'
 })
-export class MediafileFilterListService extends BaseFilterListService<Mediafile, ViewMediafile> {
+export class MediafileFilterListService extends BaseFilterListService<ViewMediafile> {
     protected name = 'Mediafile';
 
     /**

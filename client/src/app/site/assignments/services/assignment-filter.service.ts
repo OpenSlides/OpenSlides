@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 
 import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
-import { Assignment } from 'app/shared/models/assignments/assignment';
 import { BaseFilterListService, OsFilter } from 'app/core/ui-services/base-filter-list.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { ViewAssignment, AssignmentPhases } from '../models/view-assignment';
@@ -9,7 +8,7 @@ import { ViewAssignment, AssignmentPhases } from '../models/view-assignment';
 @Injectable({
     providedIn: 'root'
 })
-export class AssignmentFilterListService extends BaseFilterListService<Assignment, ViewAssignment> {
+export class AssignmentFilterListService extends BaseFilterListService<ViewAssignment> {
     protected name = 'Assignment';
 
     /**

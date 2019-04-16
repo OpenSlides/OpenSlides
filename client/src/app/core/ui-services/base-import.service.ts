@@ -8,11 +8,14 @@ import { BaseViewModel } from 'app/site/base/base-view-model';
 
 /**
  * Interface for value- Label combinations.
- * Map objects didn't work, TODO: Use map objects (needs iterating through all objects of a map)
  */
 export interface ValueLabelCombination {
     value: string;
     label: string;
+}
+
+interface FileReaderProgressEvent extends ProgressEvent {
+    readonly target: FileReader | null;
 }
 
 /**
@@ -168,10 +171,8 @@ export abstract class BaseImportService<V extends BaseViewModel> {
      * @param matSnackBar snackBar to display import errors
      */
     public constructor(protected translate: TranslateService, private papa: Papa, protected matSnackbar: MatSnackBar) {
-        this.reader.onload = (event: any) => {
-            // TODO type: event is a progressEvent,
-            // but has a property target.result, which typescript doesn't recognize
-            this.parseInput(event.target.result);
+        this.reader.onload = (event: FileReaderProgressEvent) => {
+            this.parseInput(event.target.result as string);
         };
     }
 

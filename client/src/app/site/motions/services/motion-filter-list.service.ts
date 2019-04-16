@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 import { BaseFilterListService, OsFilter, OsFilterOptions } from 'app/core/ui-services/base-filter-list.service';
-import { Motion } from 'app/shared/models/motions/motion';
 import { ViewMotion } from '../models/view-motion';
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
@@ -19,7 +18,7 @@ import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.
 @Injectable({
     providedIn: 'root'
 })
-export class MotionFilterListService extends BaseFilterListService<Motion, ViewMotion> {
+export class MotionFilterListService extends BaseFilterListService<ViewMotion> {
     protected name = 'Motion';
 
     /**

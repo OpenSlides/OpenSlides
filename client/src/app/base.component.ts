@@ -58,7 +58,6 @@ export abstract class BaseComponent {
     /**
      * Set the title in web browser using angulars TitleService
      * @param prefix The title prefix. Should be translated here.
-     * TODO Might translate the prefix here?
      */
     public setTitle(prefix: string): void {
         const translatedPrefix = this.translate.instant(prefix);
