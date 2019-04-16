@@ -15,6 +15,7 @@ import { UserRepositoryService } from 'app/core/repositories/users/user-reposito
 import { ViewUser } from '../../models/view-user';
 import { ViewGroup } from '../../models/view-group';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
+import { OneOfValidator } from 'app/shared/validators/one-of-validator';
 
 /**
  * Users detail component for both new and existing users
@@ -226,24 +227,29 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
      * initialize the form with default values
      */
     public createForm(): void {
-        this.personalInfoForm = this.formBuilder.group({
-            username: [''],
-            title: [''],
-            first_name: [''],
-            last_name: [''],
-            gender: [''],
-            structure_level: [''],
-            number: [''],
-            about_me: [''],
-            groups_id: [''],
-            is_present: [true],
-            is_committee: [false],
-            email: ['', Validators.email],
-            last_email_send: [''],
-            comment: [''],
-            is_active: [true],
-            default_password: ['']
-        });
+        this.personalInfoForm = this.formBuilder.group(
+            {
+                username: [''],
+                title: [''],
+                first_name: [''],
+                last_name: [''],
+                gender: [''],
+                structure_level: [''],
+                number: [''],
+                about_me: [''],
+                groups_id: [''],
+                is_present: [true],
+                is_committee: [false],
+                email: ['', Validators.email],
+                last_email_send: [''],
+                comment: [''],
+                is_active: [true],
+                default_password: ['']
+            },
+            {
+                validators: OneOfValidator.validation('username', 'first_name', 'last_name')
+            }
+        );
 
         // patch the form only for existing users
         if (!this.newUser) {
@@ -342,11 +348,26 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
      * Save / Submit a user
      */
     public async saveUser(): Promise<void> {
+        if (this.personalInfoForm.invalid) {
+            let hint = '';
+            if (this.personalInfoForm.errors) {
+                hint = 'At least one of username, first name or last name has to be set.';
+            } else {
+                for (const formControl in this.personalInfoForm.controls) {
+                    if (this.personalInfoForm.get(formControl).errors) {
+                        hint = formControl + ' is incorrect.';
+                    }
+                }
+            }
+            this.raiseError(this.translate.instant(hint));
+            return;
+        }
         try {
             if (this.newUser) {
-                this.newUser = false;
-                await this.repo.create(this.personalInfoForm.value);
-                this.router.navigate([`./users/`]);
+                await this.repo.create(this.personalInfoForm.value).then(() => {
+                    this.newUser = false;
+                    this.router.navigate([`./users/`]);
+                }, this.raiseError);
             } else {
                 // TODO (Issue #3962): We need a waiting-State, so if autoupdates come before the response,
                 // the user is also updated.
