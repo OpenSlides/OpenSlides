@@ -1,7 +1,15 @@
 import { Injectable } from '@angular/core';
 
-import { Worksheet, Workbook } from 'exceljs';
+import { Worksheet, Workbook, Color, FillPatterns } from 'exceljs/dist/exceljs.min.js';
 import { saveAs } from 'file-saver';
+
+// interface required for filling cells (`cell.fill`)
+export interface CellFillingDefinition {
+    type: 'pattern';
+    pattern: FillPatterns;
+    fgColor: Partial<Color>;
+    bgColor: Partial<Color>;
+}
 
 @Injectable({
     providedIn: 'root'
@@ -77,5 +85,21 @@ export class XlsxExportServiceService {
                 col.width = width / this.PIXELS_PER_EXCEL_WIDTH_UNIT + 1;
             }
         }
+    }
+
+    /**
+     * Tries to calculate a fitting row hight for a given text
+     *
+     * @param title The text to analyse
+     * @param columnWidth the width of the column to fit the text in
+     */
+    public calcRowHeight(title: string, columnWidth: number): number {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        ctx.font = '14pt Arial';
+        const metricsWidth = Math.floor(ctx.measureText(title).width);
+        const factor = Math.ceil(metricsWidth / (columnWidth * 10));
+        // add 1 for correction
+        return factor + 1;
     }
 }

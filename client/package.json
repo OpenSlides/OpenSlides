@@ -43,7 +43,7 @@
         "@tinymce/tinymce-angular": "^3.0.0",
         "core-js": "^2.6.5",
         "css-element-queries": "^1.1.1",
-        "exceljs": "1.8.0",
+        "exceljs": "1.9.0",
         "file-saver": "^2.0.1",
         "hammerjs": "^2.0.8",
         "material-icon-font": "git+https://github.com/petergng/materialIconFont.git",
