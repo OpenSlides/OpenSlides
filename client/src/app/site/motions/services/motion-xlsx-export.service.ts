@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 
-import { Workbook } from 'exceljs';
+import { Workbook } from 'exceljs/dist/exceljs.min.js';
 
 import { InfoToExport } from './motion-pdf.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ViewMotion } from '../models/view-motion';
-import { XlsxExportServiceService } from 'app/core/ui-services/xlsx-export-service.service';
+import { XlsxExportServiceService, CellFillingDefinition } from 'app/core/ui-services/xlsx-export-service.service';
 
 /**
  * Service to export motion elements to XLSX
@@ -15,6 +15,20 @@ import { XlsxExportServiceService } from 'app/core/ui-services/xlsx-export-servi
     providedIn: 'root'
 })
 export class MotionXlsxExportService {
+    /**
+     * Defines the head row style
+     */
+    private headRowFilling: CellFillingDefinition = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+            argb: 'FFFFE699'
+        },
+        bgColor: {
+            argb: 'FFFFE699'
+        }
+    };
+
     /**
      * Constructor
      *
@@ -37,8 +51,17 @@ export class MotionXlsxExportService {
      */
     public exportMotionList(motions: ViewMotion[], infoToExport: InfoToExport[]): void {
         const workbook = new Workbook();
-        const worksheet = workbook.addWorksheet(this.translate.instant('Motions'));
         const properties = ['identifier', 'title'].concat(infoToExport);
+        const worksheet = workbook.addWorksheet(this.translate.instant('Motions'), {
+            pageSetup: {
+                paperSize: 9,
+                orientation: 'portrait',
+                fitToPage: true,
+                fitToHeight: 5,
+                fitToWidth: properties.length,
+                printTitlesRow: '1:1'
+            }
+        });
 
         // if the ID was exported as well, shift it to the first position
         if (properties[properties.length - 1] === 'id') {
@@ -51,11 +74,13 @@ export class MotionXlsxExportService {
             };
         });
 
-        // style the header row
-        worksheet.getRow(1).font = {
-            underline: true,
-            bold: true
-        };
+        worksheet.getRow(1).eachCell(cell => {
+            cell.font = {
+                underline: true,
+                bold: true
+            };
+            cell.fill = this.headRowFilling;
+        });
 
         // map motion data to properties
         const motionData = motions.map(motion =>
