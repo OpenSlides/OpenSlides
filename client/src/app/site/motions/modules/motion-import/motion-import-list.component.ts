@@ -18,6 +18,22 @@ import { ViewMotion } from 'app/site/motions/models/view-motion';
 })
 export class MotionImportListComponent extends BaseImportListComponent<ViewMotion> {
     /**
+     * Fetach a list of the headers expected by the importer, and prepare them
+     * to be translateable (upper case)
+     *
+     * @returns a list of strings matching the expected headers
+     */
+    public get expectedHeader(): string[] {
+        return this.importer.expectedHeader.map(header => {
+            if (header === 'motion_block') {
+                return 'Motion block';
+            } else {
+                return header.charAt(0).toUpperCase() + header.slice(1);
+            }
+        });
+    }
+
+    /**
      * Constructor for list view bases
      *
      * @param titleService the title serivce

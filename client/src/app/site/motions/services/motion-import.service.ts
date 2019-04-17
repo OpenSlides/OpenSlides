@@ -4,15 +4,16 @@ import { MatSnackBar } from '@angular/material';
 import { Papa } from 'ngx-papaparse';
 import { TranslateService } from '@ngx-translate/core';
 
+import { BaseImportService, NewEntry } from 'app/core/ui-services/base-import.service';
 import { Category } from 'app/shared/models/motions/category';
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 import { CreateMotion } from '../models/create-motion';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
+import { motionExportOnly, motionImportExportHeaderOrder } from '../motion-import-export-order';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ViewCsvCreateMotion, CsvMapping } from '../models/view-csv-create-motion';
-import { BaseImportService, NewEntry } from 'app/core/ui-services/base-import.service';
 import { ViewMotion } from '../models/view-motion';
 
 /**
@@ -74,17 +75,7 @@ export class MotionImportService extends BaseImportService<ViewMotion> {
         matSnackbar: MatSnackBar
     ) {
         super(translate, papa, matSnackbar);
-
-        this.expectedHeader = [
-            'identifier',
-            'title',
-            'text',
-            'reason',
-            'submitters',
-            'category',
-            'origin',
-            'motion_block'
-        ];
+        this.expectedHeader = motionImportExportHeaderOrder.filter(head => !motionExportOnly.includes(head));
     }
 
     /**

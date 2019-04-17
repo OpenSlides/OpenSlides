@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Workbook } from 'exceljs/dist/exceljs.min.js';
 
 import { InfoToExport } from './motion-pdf.service';
+import { motionImportExportHeaderOrder } from '../motion-import-export-order';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ViewMotion } from '../models/view-motion';
@@ -51,7 +52,9 @@ export class MotionXlsxExportService {
      */
     public exportMotionList(motions: ViewMotion[], infoToExport: InfoToExport[]): void {
         const workbook = new Workbook();
-        const properties = ['identifier', 'title'].concat(infoToExport);
+        const propertyList = ['identifier', 'title'].concat(infoToExport);
+        // reorders the exported properties according to motionImportExportHeaderOrder
+        const properties = motionImportExportHeaderOrder.filter(property => propertyList.includes(property));
         const worksheet = workbook.addWorksheet(this.translate.instant('Motions'), {
             pageSetup: {
                 paperSize: 9,
@@ -63,14 +66,13 @@ export class MotionXlsxExportService {
             }
         });
 
-        // if the ID was exported as well, shift it to the first position
-        if (properties[properties.length - 1] === 'id') {
-            properties.unshift(properties.pop());
-        }
-
         worksheet.columns = properties.map(property => {
+            const propertyHeader =
+                property === 'motion_block'
+                    ? 'Motion block'
+                    : property.charAt(0).toLocaleUpperCase() + property.slice(1);
             return {
-                header: this.translate.instant(property.charAt(0).toLocaleUpperCase() + property.slice(1))
+                header: this.translate.instant(propertyHeader)
             };
         });
 

@@ -887,6 +887,7 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
             }
             return rec;
         }
+        return '';
     }
 
     /**
