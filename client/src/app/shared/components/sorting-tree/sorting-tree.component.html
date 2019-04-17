@@ -36,10 +36,12 @@
                         chevron_right
                     </mat-icon>
                 </button>
-                {{ node.name }}
+                <ng-container
+                    [ngTemplateOutlet]="innerNode"
+                    [ngTemplateOutletContext]="{item: node.item}"></ng-container>
             </div>
             <div
-                [style.margin-left]="placeholderLevel * 40 + 'px'"
-                *cdkDragPlaceholder></div>
+            [style.margin-left]="placeholderLevel * 40 + 'px'"
+            *cdkDragPlaceholder></div>
         </cdk-tree-node>
     </cdk-tree>

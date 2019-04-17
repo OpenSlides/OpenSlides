@@ -7,13 +7,59 @@
     <!-- Title -->
     <div class="title-slot"><h2 translate>Sort agenda</h2></div>
 </os-head-bar>
-
+<div class="custom-table-header sort-header">
+    <div class="button-menu left">
+        <button mat-button (click)="onStateChange(true)">{{ 'Expand all' | translate }}</button>
+        <button mat-button (click)="onStateChange(false)">{{ 'Collapse all' | translate }}</button>
+    </div>
+    <div class="current-filters" *ngIf="hasActiveFilter">
+        <div><span translate>Active filters</span>:&nbsp;</div>
+        <div>
+            <button mat-button (click)="resetFilters()">
+                <mat-icon inline>cancel</mat-icon>
+                <span>{{ 'Visibility' | translate }}</span>
+            </button>
+        </div>
+    </div>
+    <div class="button-menu right">
+        <button mat-button (click)="visibilityFilter.opened ? visibilityFilter.close() : visibilityFilter.open()">Filter</button>
+        <mat-drawer #visibilityFilter mode="over" position="end">
+            <section class="sort-drawer-content">
+                <button mat-button (click)="visibilityFilter.toggle()">
+                    <mat-icon>keyboard_arrow_right</mat-icon>
+                </button>
+                <span class="sort-grid">
+                    <div class="hint">{{ 'Visibility' | translate }}</div>
+                    <div>
+                        <mat-checkbox *ngFor="let option of filterOptions" [(ngModel)]="option.state" (change)="onFilterChange(option.name)">
+                            <mat-icon matTooltip="{{ option.name | translate }}">{{ getIcon(option.name) }}</mat-icon> {{ option.name | translate }}
+                        </mat-checkbox>
+                    </div>
+                </span>
+            </section>
+        </mat-drawer>
+    </div>
+</div>
 <mat-card>
+    <div class="current-nodes">
+        <span translate>You are currently seeing {{ seenNodes[0] }} of {{ seenNodes[1] }} items.</span>
+        <mat-divider></mat-divider>
+    </div>
     <os-sorting-tree
         #osSortedTree
         (hasChanged)="receiveChanges($event)"
+        (visibleNodes)="onChangeAmountOfItems($event)"
         [model]="itemsObservable"
+        [stateChange]="changeState"
+        [filterChange]="changeFilter"
         parentKey="parent_id"
         weightKey="weight"
-    ></os-sorting-tree>
+    >
+        <ng-template #innerNode class="sorting-tree-node" let-item="item">
+            <span class="sort-node-title">{{ item.getTitle() }}</span>
+            <span class="sort-node-icon">
+                {{ item.verboseType | translate }} <mat-icon>{{ getIcon(item.verboseType) }}</mat-icon>
+            </span>
+        </ng-template>
+    </os-sorting-tree>
 </mat-card>

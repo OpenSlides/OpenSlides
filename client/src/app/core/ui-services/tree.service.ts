@@ -31,21 +31,23 @@ export interface OSTreeNode<T> extends TreeNodeWithoutItem {
  * Interface which defines the nodes for the sorting trees.
  *
  * Contains information like
- * name: The name of the node.
+ * item: The base item the node is created from.
  * level: The level of the node. The higher, the deeper the level.
  * position: The position in the array of the node.
  * isExpanded: Boolean if the node is expanded.
  * expandable: Boolean if the node is expandable.
  * id: The id of the node.
+ * filtered: Optional boolean to check, if the node is filtered.
  */
-export interface FlatNode {
-    name: string;
+export interface FlatNode<T> {
+    item: T;
     level: number;
     position?: number;
     isExpanded?: boolean;
     isSeen: boolean;
     expandable: boolean;
     id: number;
+    filtered?: boolean;
 }
 
 /**
@@ -98,11 +100,11 @@ export class TreeService {
         items: T[],
         weightKey: keyof T,
         parentKey: keyof T
-    ): FlatNode[] {
+    ): FlatNode<T>[] {
         const tree = this.makeTree(items, weightKey, parentKey);
-        const flatNodes: FlatNode[] = [];
+        const flatNodes: FlatNode<T>[] = [];
         for (const node of tree) {
-            flatNodes.push(...this.makePartialFlatTree(node, 0, []));
+            flatNodes.push(...this.makePartialFlatTree(node, 0));
         }
         for (let i = 0; i < flatNodes.length; ++i) {
             flatNodes[i].position = i;
@@ -117,7 +119,7 @@ export class TreeService {
      *
      * @returns The tree with nested information.
      */
-    public makeTreeFromFlatTree(nodes: FlatNode[]): TreeIdNode[] {
+    public makeTreeFromFlatTree<T extends Identifiable & Displayable>(nodes: FlatNode<T>[]): TreeIdNode[] {
         const basicTree: TreeIdNode[] = [];
 
         for (let i = 0; i < nodes.length; ) {
@@ -294,30 +296,29 @@ export class TreeService {
     /**
      * Helper function to go recursively through the children of given node.
      *
-     * @param item
-     * @param level
+     * @param item The current item from which the flat node will be created.
+     * @param level The level the flat node will be.
+     * @param additionalTag Optional: A key of the items. If this parameter is set, the nodes will have a tag for filtering them.
      *
      * @returns An array containing the parent node with all its children.
      */
     private makePartialFlatTree<T extends Identifiable & Displayable>(
         item: OSTreeNode<T>,
-        level: number,
-        parents: FlatNode[]
-    ): FlatNode[] {
+        level: number
+    ): FlatNode<T>[] {
         const children = item.children;
-        const node: FlatNode = {
+        const node: FlatNode<T> = {
             id: item.id,
-            name: item.name,
+            item: item.item,
             expandable: !!children,
             isExpanded: !!children,
             level: level,
             isSeen: true
         };
-        const flatNodes: FlatNode[] = [node];
+        const flatNodes: FlatNode<T>[] = [node];
         if (children) {
-            parents.push(node);
             for (const child of children) {
-                flatNodes.push(...this.makePartialFlatTree(child, level + 1, parents));
+                flatNodes.push(...this.makePartialFlatTree(child, level + 1));
             }
         }
         return flatNodes;
@@ -333,9 +334,9 @@ export class TreeService {
      *
      * @returns `OSTreeNodeWithOutItem`
      */
-    private buildBranchFromFlatTree(
-        node: FlatNode,
-        nodes: FlatNode[],
+    private buildBranchFromFlatTree<T extends Identifiable & Displayable>(
+        node: FlatNode<T>,
+        nodes: FlatNode<T>[],
         length: number
     ): { node: TreeIdNode; length: number } {
         const children = [];
