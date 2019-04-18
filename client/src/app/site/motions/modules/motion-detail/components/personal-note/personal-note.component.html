@@ -25,7 +25,8 @@
         matTooltip="{{ 'Edit' | translate }}">
             <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button *ngIf="!isEditMode && motion && motion.personalNote" (click)="printPersonalNote()"
+        <button mat-icon-button *ngIf="!isEditMode && motion && motion.personalNote && motion.personalNote.note"
+        (click)="printPersonalNote()"
         matTooltip="{{ 'Export personal note only' | translate }}">
             <mat-icon>picture_as_pdf</mat-icon>
         </button>
