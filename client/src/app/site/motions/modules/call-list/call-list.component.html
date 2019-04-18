@@ -26,7 +26,17 @@
         (hasChanged)="receiveChanges($event)"
         [model]="motionsObservable">
         <ng-template #innerNode let-item="item">
-            <span>{{ item.getTitle() }}</span>
+            <div class="line">
+                <div class="left">
+                    {{ item.getTitle() }}
+                </div>
+                <div class="right">
+                    <span *ngFor="let tag of getTags(item)">
+                        <mat-icon inline>local_offer</mat-icon>
+                        {{ tag.getTitle() }}
+                    </span>
+                </div>
+            </div>
         </ng-template>
     </os-sorting-tree>
 </mat-card>

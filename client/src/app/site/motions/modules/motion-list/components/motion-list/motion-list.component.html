@@ -113,6 +113,13 @@
                         <mat-icon>widgets</mat-icon>
                         {{ motion.motion_block.title }}
                     </div>
+                    <div class="small ellipsis-overflow" *ngIf="motion.tags && motion.tags.length">
+                        <mat-icon>local_offer</mat-icon>
+                        <span *ngFor="let tag of motion.tags; let last = last">
+                            {{ tag.getTitle() }}
+                            <span *ngIf="!last">,&nbsp;</span>
+                        </span>
+                    </div>
                 </div>
             </mat-cell>
         </ng-container>

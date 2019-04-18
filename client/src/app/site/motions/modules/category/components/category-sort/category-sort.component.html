@@ -20,5 +20,15 @@
     >
         <span translate>Number motions</span>
     </button>
-    <os-sorting-list [input]="motionObservable" #sorter></os-sorting-list>
+    <os-sorting-list [input]="motionObservable" #sorter>
+        <!-- implicit motion references into the component using ng-template slot -->
+        <ng-template let-motion>
+            <div class="ellipsis-overflow small" *ngIf="motion.tags && motion.tags.length">
+                <span *ngFor="let tag of motion.tags">
+                    <mat-icon inline>local_offer</mat-icon>
+                    {{ tag.getTitle() }}
+                </span>
+            </div>
+        </ng-template>
+    </os-sorting-list>
 </mat-card>

@@ -54,6 +54,12 @@ class Movement {
 })
 export class SortingTreeComponent<T extends Identifiable & Displayable> implements OnInit, OnDestroy {
     /**
+     * Declare the templateRef to coexist between parent in child
+     */
+    @ContentChild(TemplateRef)
+    public templateRef: TemplateRef<T>;
+
+    /**
      * The data to build the tree
      */
     public osTreeData: FlatNode<T>[] = [];
