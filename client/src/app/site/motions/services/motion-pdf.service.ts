@@ -22,7 +22,7 @@ export type InfoToExport =
     | 'state'
     | 'recommendation'
     | 'category'
-    | 'block'
+    | 'motion_block'
     | 'origin'
     | 'tags'
     | 'polls'
@@ -274,7 +274,7 @@ export class MotionPdfService {
         }
 
         // motion block
-        if (motion.motion_block && (!infoToExport || infoToExport.includes('block'))) {
+        if (motion.motion_block && (!infoToExport || infoToExport.includes('motion_block'))) {
             metaTableBody.push([
                 {
                     text: `${this.translate.instant('Motion block')}:`,

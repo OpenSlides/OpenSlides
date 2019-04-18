@@ -13,9 +13,10 @@
     <span translate>Required comma or semicolon separated values with these column header names in the first row:</span>
     <br />
     <div class="code red-warning-text">
-        <span translate>Identifier</span>, <span translate>Title</span>, <span translate>Text</span>,
-        <span translate>Reason</span>, <span translate>Submitter</span>, <span translate>Category</span>,
-        <span translate>Origin</span>, <span translate>Motion block</span>
+        <span *ngFor="let header of this.expectedHeader; let last = last">
+            <span translate>{{ header }}</span
+            ><span *ngIf="!last">,&nbsp;</span>
+        </span>
     </div>
     <ul>
         <li translate>

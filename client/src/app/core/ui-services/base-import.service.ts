@@ -61,7 +61,7 @@ export abstract class BaseImportService<V extends BaseViewModel> {
     /**
      * The headers expected in the CSV matching import properties (in order)
      */
-    public expectedHeader: (string)[];
+    public expectedHeader: string[];
 
     /**
      * The minimimal number of header entries needed to successfully create an entry

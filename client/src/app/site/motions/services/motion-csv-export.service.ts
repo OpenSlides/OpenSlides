@@ -7,7 +7,7 @@ import {
     CsvColumnDefinitionProperty,
     CsvColumnDefinitionMap
 } from 'app/core/ui-services/csv-export.service';
-import { InfoToExport } from './motion-pdf.service';
+import { motionImportExportHeaderOrder } from '../motion-import-export-order';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { ViewMotion } from '../models/view-motion';
 
@@ -35,10 +35,10 @@ export class MotionCsvExportService {
      *
      * @param motions Motions to export
      * @param contentToExport content properties to export
-     * @param infoToExport meta info to export
      */
-    public exportMotionList(motions: ViewMotion[], contentToExport: string[], infoToExport: InfoToExport[]): void {
-        const propertyList = ['identifier', 'title'].concat(contentToExport, infoToExport);
+    public exportMotionList(motions: ViewMotion[], contentToExport: string[]): void {
+        // reorders the exported properties according to motionImportExportHeaderOrder
+        const propertyList = motionImportExportHeaderOrder.filter(property => contentToExport.includes(property));
         const exportProperties: (
             | CsvColumnDefinitionProperty<ViewMotion>
             | CsvColumnDefinitionMap<ViewMotion>)[] = propertyList.map(option => {
@@ -51,6 +51,11 @@ export class MotionCsvExportService {
                 return {
                     label: 'state',
                     map: motion => this.motionRepo.getExtendedStateLabel(motion)
+                };
+            } else if (option === 'motion_block') {
+                return {
+                    label: 'Motion block',
+                    map: motion => (motion.motion_block ? motion.motion_block.getTitle() : '')
                 };
             } else {
                 return { property: option } as CsvColumnDefinitionProperty<ViewMotion>;
@@ -83,6 +88,7 @@ export class MotionCsvExportService {
         );
     }
 
+    // TODO does not reflect updated export order. any more. Hard coded for now
     public exportDummyMotion(): void {
         const headerRow = ['Identifier', 'Title', 'Text', 'Reason', 'Submitters', 'Category', 'Origin', 'Motion block'];
         const rows = [
