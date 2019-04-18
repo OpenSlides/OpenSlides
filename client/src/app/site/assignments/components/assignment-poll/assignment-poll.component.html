@@ -139,11 +139,11 @@
                                     >{{ pollService.getLabel(vote.value) | translate }}:</span
                                 >
                                 {{ pollService.getSpecialLabel(vote.weight) }}
-                                <span *ngIf="!pollService.isAbstractOption(poll, option)"
+                                <span *ngIf="!pollService.isAbstractOption(poll, option, vote.value)"
                                     >({{ pollService.getPercent(poll, option, vote.value) }}%)</span
                                 >
                             </div>
-                            <div *ngIf="!pollService.isAbstractOption(poll, option)" class="poll-progress-bar">
+                            <div *ngIf="!pollService.isAbstractOption(poll, option, vote.value)" class="poll-progress-bar">
                                 <mat-progress-bar
                                     mode="determinate"
                                     [value]="pollService.getPercent(poll, option, vote.value)"
@@ -184,6 +184,9 @@
                     </div>
                     <div>
                         {{ pollService.getSpecialLabel(poll[key]) | translate }}
+                        <span *ngIf="!pollService.isAbstractValue(poll, key)">
+                            ({{ pollService.getValuePercent(poll,key) }} %)
+                        </span>
                     </div>
                 </div>
             </div>

@@ -1,18 +1,19 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { MatDialog, MatSnackBar } from '@angular/material';
+import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
 import { AssignmentPollDialogComponent } from '../assignment-poll-dialog/assignment-poll-dialog.component';
-import { AssignmentPollService } from '../../services/assignment-poll.service';
+import { AssignmentPollService, AssignmentPercentBase } from '../../services/assignment-poll.service';
 import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
 import { BaseViewComponent } from 'app/site/base/base-view';
+import { ConfigService } from 'app/core/ui-services/config.service';
 import { MajorityMethod, CalculablePollKey } from 'app/core/ui-services/poll.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
-import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
 import { PromptService } from 'app/core/ui-services/prompt.service';
-import { Title } from '@angular/platform-browser';
 import { ViewAssignment } from '../../models/view-assignment';
 import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
 import { ViewAssignmentPollOption } from '../../models/view-assignment-poll-option';
@@ -131,7 +132,8 @@ export class AssignmentPollComponent extends BaseViewComponent implements OnInit
         public translate: TranslateService,
         public dialog: MatDialog,
         private promptService: PromptService,
-        private formBuilder: FormBuilder
+        private formBuilder: FormBuilder,
+        private config: ConfigService
     ) {
         super(titleService, translate, matSnackBar);
     }
@@ -146,6 +148,13 @@ export class AssignmentPollComponent extends BaseViewComponent implements OnInit
         this.descriptionForm = this.formBuilder.group({
             description: this.poll ? this.poll.description : ''
         });
+        this.subscriptions.push(
+            this.config.get<AssignmentPercentBase>('assignments_poll_100_percent_base').subscribe(() => {
+                if (this.poll) {
+                    this.poll.pollBase = this.pollService.getBaseAmount(this.poll);
+                }
+            })
+        );
     }
 
     /**

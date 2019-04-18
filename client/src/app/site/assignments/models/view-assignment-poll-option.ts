@@ -5,6 +5,11 @@ import { Identifiable } from 'app/shared/models/base/identifiable';
 import { PollVoteValue } from 'app/core/ui-services/poll.service';
 import { AssignmentPollOption } from 'app/shared/models/assignments/assignment-poll-option';
 
+/**
+ * Defines the order the option's votes are sorted in (server might send raw data in any order)
+ */
+const votesOrder: PollVoteValue[] = ['Votes', 'Yes', 'No', 'Abstain'];
+
 export class ViewAssignmentPollOption implements Identifiable, Updateable {
     private _assignmentPollOption: AssignmentPollOption;
     private _user: ViewUser; // This is the "candidate". We'll stay consistent wich user here...
@@ -39,7 +44,7 @@ export class ViewAssignmentPollOption implements Identifiable, Updateable {
         weight: number;
         value: PollVoteValue;
     }[] {
-        return this.option.votes;
+        return this.option.votes.sort((a, b) => votesOrder.indexOf(a.value) - votesOrder.indexOf(b.value));
     }
 
     public get poll_id(): number {
