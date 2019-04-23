@@ -13,7 +13,7 @@ import { ViewAssignmentPoll } from '../models/view-assignment-poll';
 
 type AssignmentPollValues = 'auto' | 'votes' | 'yesnoabstain' | 'yesno';
 export type AssignmentPollMethod = 'yn' | 'yna' | 'votes';
-type AssignmentPercentBase = 'YES_NO_ABSTAIN' | 'YES_NO' | 'VALID' | 'CAST' | 'DISABLED';
+export type AssignmentPercentBase = 'YES_NO_ABSTAIN' | 'YES_NO' | 'VALID' | 'CAST' | 'DISABLED';
 
 /**
  * Service class for assignment polls.

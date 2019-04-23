@@ -5,8 +5,9 @@ import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
 import { AssignmentPollMethod } from '../services/assignment-poll.service';
 import { ViewAssignmentPollOption } from './view-assignment-poll-option';
 import { AssignmentPollOption } from 'app/shared/models/assignments/assignment-poll-option';
+import { Projectable, ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 
-export class ViewAssignmentPoll implements Identifiable, Updateable {
+export class ViewAssignmentPoll implements Identifiable, Updateable, Projectable {
     private _assignmentPoll: AssignmentPoll;
     private _assignmentPollOptions: ViewAssignmentPollOption[];
 
@@ -81,6 +82,14 @@ export class ViewAssignmentPoll implements Identifiable, Updateable {
         this.options.forEach(option => option.updateDependencies(update));
     }
 
+    public getTitle(): string {
+        return 'TODO';
+    }
+
+    public getListTitle(): string {
+        return this.getTitle();
+    }
+
     /**
      * Creates a copy with deep-copy on all changing numerical values,
      * but intact uncopied references to the users
@@ -97,5 +106,19 @@ export class ViewAssignmentPoll implements Identifiable, Updateable {
                 );
             })
         );
+    }
+
+    public getSlide(): ProjectorElementBuildDeskriptor {
+        return {
+            getBasicProjectorElement: options => ({
+                name: 'assignments/poll',
+                assignment_id: this.assignment_id,
+                poll_id: this.id,
+                getIdentifiers: () => ['name', 'assignment_id', 'poll_id']
+            }),
+            slideOptions: [],
+            projectionDefaultName: 'assignments',
+            getDialogTitle: () => 'TODO'
+        };
     }
 }

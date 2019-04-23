@@ -28,11 +28,7 @@
                 </button>
             </div>
             <div *osPerms="'core.can_manage_projector'">
-                <button mat-menu-item>
-                    <mat-icon>videocam</mat-icon>
-                    <span translate>Project</span>
-                    <!-- os-projector-button ?-->
-                </button>
+                <os-projector-button menuItem=true [object]="poll"></os-projector-button>
             </div>
             <div *osPerms="'assignments.can_manage'">
                 <mat-divider></mat-divider>

@@ -15,6 +15,8 @@ import { ProjectionDialogService } from 'app/core/ui-services/projection-dialog.
  *
  * Use the input [object] to specify the object to project. It can either be
  * a Projectable or a ProjectorElementBuildDeskriptor
+ *
+ * For useage in menues set `menuItem=true`.
  */
 @Component({
     selector: 'os-projector-button',

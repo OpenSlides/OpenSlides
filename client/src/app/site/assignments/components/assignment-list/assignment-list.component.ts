@@ -116,9 +116,12 @@ export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignmen
      * @returns a list of string matching the columns
      */
     public getColumnDefintion(): string[] {
-        const list = ['title', 'phase', 'candidates'];
+        let list = ['title', 'phase', 'candidates'];
+        if (this.operator.hasPerms('core.can_manage_projector')) {
+            list = ['projector'].concat(list);
+        }
         if (this.isMultiSelect) {
-            return ['selector'].concat(list);
+            list = ['selector'].concat(list);
         }
         return list;
     }

@@ -1,13 +1,13 @@
 import { AssignmentSlideModule } from './assignment-slide.module';
 
-describe('UsersUserSlideModule', () => {
-    let usersUserSlideModule: AssignmentSlideModule;
+describe('AssignmentSlideModule', () => {
+    let assignmentSlideModule: AssignmentSlideModule;
 
     beforeEach(() => {
-        usersUserSlideModule = new AssignmentSlideModule();
+        assignmentSlideModule = new AssignmentSlideModule();
     });
 
     it('should create an instance', () => {
-        expect(usersUserSlideModule).toBeTruthy();
+        expect(assignmentSlideModule).toBeTruthy();
     });
 });
