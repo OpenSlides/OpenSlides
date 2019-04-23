@@ -3,7 +3,7 @@
 
     <div class="selection-area">
         <file-drop (onFileDrop)="onDropFile($event)" (click)="fileInput.click()" customstyle="file-drop-style">
-            <span translate>Drop files into this area OR select files</span>
+            <span translate>Drop files into this area OR click here to select files</span>
         </file-drop>
     </div>
 
@@ -68,10 +68,18 @@
 
 <!-- Upload and clear buttons -->
 <div class="action-buttons">
-    <button type="button" mat-raised-button (click)="onUploadButton()" color="primary">
+    <button
+        type="button"
+        mat-raised-button
+        (click)="onUploadButton()"
+        color="primary"
+        [disabled]="uploadList.data.length === 0"
+    >
         <span translate> Upload </span>
     </button>
-    <button type="button" mat-raised-button (click)="onClearButton()"><span translate> Clear list </span></button>
+    <button type="button" mat-raised-button (click)="onClearButton()" [disabled]="uploadList.data.length === 0">
+        <span translate> Clear list </span>
+    </button>
 </div>
 
 <mat-card class="os-card" *ngIf="showProgress">

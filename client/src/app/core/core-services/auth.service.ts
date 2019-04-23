@@ -62,7 +62,9 @@ export class AuthService {
         }
 
         let redirect = this.OpenSlides.redirectUrl ? this.OpenSlides.redirectUrl : '/';
-        if (redirect.includes('login')) {
+
+        const excludedUrls = ['login'];
+        if (excludedUrls.some(url => redirect.includes(url))) {
             redirect = '/';
         }
         this.router.navigate([redirect]);

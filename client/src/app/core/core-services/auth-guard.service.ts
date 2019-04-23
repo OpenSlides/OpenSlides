@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, CanActivateChild, Router } from '@angular/router';
 
 import { OperatorService } from './operator.service';
+import { OpenSlidesService } from './openslides.service';
 
 /**
  * Classical Auth-Guard. Checks if the user has to correct permissions to enter a page, and forwards to login if not.
@@ -15,8 +16,13 @@ export class AuthGuard implements CanActivate, CanActivateChild {
      *
      * @param router To navigate to a target URL
      * @param operator Asking for the required permission
+     * @param openSlidesService Handle OpenSlides functions
      */
-    public constructor(private router: Router, private operator: OperatorService) {}
+    public constructor(
+        private router: Router,
+        private operator: OperatorService,
+        private openSlidesService: OpenSlidesService
+    ) {}
 
     /**
      * Checks of the operator has the required permission to see the state.
@@ -44,10 +50,13 @@ export class AuthGuard implements CanActivate, CanActivateChild {
      *
      * @param route the route the user wants to navigate to
      */
-    public canActivateChild(route: ActivatedRouteSnapshot): boolean {
+    public async canActivateChild(route: ActivatedRouteSnapshot): Promise<boolean> {
+        await this.operator.loaded;
+
         if (this.canActivate(route)) {
             return true;
         } else {
+            this.openSlidesService.redirectUrl = location.pathname;
             this.router.navigate(['/error'], {
                 queryParams: {
                     error: 'Authentication Error',

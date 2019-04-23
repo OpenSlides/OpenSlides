@@ -6,6 +6,7 @@ import { Group } from 'app/shared/models/users/group';
 import { User } from '../../shared/models/users/user';
 import { environment } from 'environments/environment';
 import { DataStoreService } from './data-store.service';
+import { Deferred } from '../deferred';
 import { OfflineService } from './offline.service';
 import { OpenSlidesStatusService } from './openslides-status.service';
 import { ViewUser } from 'app/site/users/models/view-user';
@@ -116,6 +117,12 @@ export class OperatorService implements OnAfterAppsLoaded {
      */
     private currentWhoAmI: WhoAmI | null;
 
+    private readonly _loaded: Deferred<void> = new Deferred();
+
+    public get loaded(): Promise<void> {
+        return this._loaded.promise;
+    }
+
     /**
      * Sets up an observer for watching changes in the DS. If the operator user or groups are changed,
      * the operator's permissions are updated.
@@ -177,6 +184,7 @@ export class OperatorService implements OnAfterAppsLoaded {
             response = this.getDefaultWhoAmIResponse();
         }
         await this.updateCurrentWhoAmI(response);
+        this._loaded.resolve();
         return this.currentWhoAmI;
     }
 
