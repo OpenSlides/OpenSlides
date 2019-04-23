@@ -109,7 +109,7 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
 
         this.constantsService.get('ConfigVariables').subscribe(constant => {
             this.createConfigStructure(constant);
-            this.updateConfigStructure(...Object.values(this.viewModelStore));
+            this.updateConfigStructure(true, ...Object.values(this.viewModelStore));
             this.updateConfigListObservable();
         });
     }
@@ -157,7 +157,7 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
 
         this.DS.getAll(Config).forEach((config: Config) => {
             this.viewModelStore[config.id] = this.createViewModel(config);
-            this.updateConfigStructure(this.viewModelStore[config.id]);
+            this.updateConfigStructure(false, this.viewModelStore[config.id]);
         });
         this.updateConfigListObservable();
 
@@ -166,7 +166,7 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
         this.DS.changeObservable.subscribe(model => {
             if (model instanceof Config) {
                 this.viewModelStore[model.id] = this.createViewModel(model as Config);
-                this.updateConfigStructure(this.viewModelStore[model.id]);
+                this.updateConfigStructure(false, this.viewModelStore[model.id]);
                 this.updateConfigListObservable();
             }
         });
@@ -197,9 +197,11 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
 
     /**
      * With a given (and maybe partially filled) config structure, all given view configs are put into it.
+     * @param check Whether to check, if all given configs are there (according to the config structure).
+     * If check is true and one viewConfig is missing, the user will get an error message.
      * @param viewConfigs All view configs to put into the structure
      */
-    protected updateConfigStructure(...viewConfigs: ViewConfig[]): void {
+    protected updateConfigStructure(check: boolean, ...viewConfigs: ViewConfig[]): void {
         if (!this.configs) {
             return;
         }
@@ -217,6 +219,12 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
                     if (keyConfigMap[item.key]) {
                         keyConfigMap[item.key].setConstantsInfo(item.data);
                         item.config = keyConfigMap[item.key];
+                    } else if (check) {
+                        throw new Error(
+                            `No config variable found for "${
+                                item.key
+                            }". Please migrate the database or rebuild the servercache.`
+                        );
                     }
                 }
             }
@@ -224,6 +232,12 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
                 if (keyConfigMap[item.key]) {
                     keyConfigMap[item.key].setConstantsInfo(item.data);
                     item.config = keyConfigMap[item.key];
+                } else if (check) {
+                    throw new Error(
+                        `No config variable found for "${
+                            item.key
+                        }". Please migrate the database or rebuild the servercache.`
+                    );
                 }
             }
         }
