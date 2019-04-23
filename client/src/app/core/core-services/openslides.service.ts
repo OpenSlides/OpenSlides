@@ -65,7 +65,9 @@ export class OpenSlidesService {
         // start autoupdate if the user is logged in:
         const response = await this.operator.whoAmIFromStorage();
         if (!response.user && !response.guest_enabled) {
-            this.redirectUrl = location.pathname;
+            if (!location.pathname.includes('error')) {
+                this.redirectUrl = location.pathname;
+            }
             this.redirectToLoginIfNotSubpage();
             this.checkOperator(false);
         } else {
