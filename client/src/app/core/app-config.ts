@@ -8,7 +8,7 @@ import { BaseViewModel, ViewModelConstructor } from 'app/site/base/base-view-mod
 
 interface BaseModelEntry {
     collectionString: string;
-    repository: Type<BaseRepository<any, any>>;
+    repository: Type<BaseRepository<any, any, any>>;
     model: ModelConstructor<BaseModel>;
 }
 

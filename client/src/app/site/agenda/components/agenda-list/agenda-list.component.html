@@ -77,14 +77,7 @@
         <ng-container matColumnDef="speakers">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Speakers</mat-header-cell>
             <mat-cell *matCellDef="let item">
-                <button mat-icon-button (click)="onSpeakerIcon(item, $event)" [disabled]="isMultiSelect">
-                    <mat-icon
-                        [matBadge]="item.waitingSpeakerAmount > 0 ? item.waitingSpeakerAmount : null"
-                        matBadgeColor="accent"
-                    >
-                        mic
-                    </mat-icon>
-                </button>
+                <os-speaker-button [object]="item.contentObjectData" [disabled]="isMultiSelect"></os-speaker-button>
             </mat-cell>
         </ng-container>
 

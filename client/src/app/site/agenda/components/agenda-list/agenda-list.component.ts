@@ -21,6 +21,8 @@ import { ViewItem } from '../../models/view-item';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { _ } from 'app/core/translate/translation-marker';
 import { StorageService } from 'app/core/core-services/storage.service';
+import { ListOfSpeakersRepositoryService } from 'app/core/repositories/agenda/list-of-speakers-repository.service';
+import { ViewListOfSpeakers } from '../../models/view-list-of-speakers';
 
 /**
  * List view for the agenda.
@@ -35,12 +37,12 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item, I
     /**
      * Determine the display columns in desktop view
      */
-    public displayedColumnsDesktop: string[] = ['title', 'info', 'speakers'];
+    public displayedColumnsDesktop: string[] = ['title', 'info'];
 
     /**
      * Determine the display columns in mobile view
      */
-    public displayedColumnsMobile: string[] = ['title', 'speakers'];
+    public displayedColumnsMobile: string[] = ['title'];
 
     public isNumberingAllowed: boolean;
 
@@ -105,7 +107,8 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item, I
         private csvExport: AgendaCsvExportService,
         public filterService: AgendaFilterListService,
         private agendaPdfService: AgendaPdfService,
-        private pdfService: PdfDocumentService
+        private pdfService: PdfDocumentService,
+        private listOfSpeakersRepo: ListOfSpeakersRepositoryService
     ) {
         super(titleService, translate, matSnackBar, repo, route, storage, filterService);
 
@@ -124,6 +127,16 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item, I
             .get<boolean>('agenda_enable_numbering')
             .subscribe(autoNumbering => (this.isNumberingAllowed = autoNumbering));
         this.setFulltextFilter();
+    }
+
+    /**
+     * Gets the list of speakers for an agenda item. Might be null, if the items content
+     * object does not have a list of speakers.
+     *
+     * @param item The item to get the list of speakers from
+     */
+    public getListOfSpeakers(item: ViewItem): ViewListOfSpeakers | null {
+        return this.listOfSpeakersRepo.findByContentObject(item.item.content_object);
     }
 
     /**
@@ -181,16 +194,6 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item, I
      */
     public async onDoneSingleButton(item: ViewItem): Promise<void> {
         await this.repo.update({ closed: !item.closed }, item).then(null, this.raiseError);
-    }
-
-    /**
-     * Handler for the speakers button
-     *
-     * @param item indicates the row that was clicked on
-     */
-    public onSpeakerIcon(item: ViewItem, event: MouseEvent): void {
-        event.stopPropagation();
-        this.router.navigate([`${item.id}/speakers`], { relativeTo: this.route });
     }
 
     /**
@@ -258,6 +261,9 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item, I
      */
     public getColumnDefinition(): string[] {
         let columns = this.vp.isMobile ? this.displayedColumnsMobile : this.displayedColumnsDesktop;
+        if (this.operator.hasPerms('agenda.can_see_list_of_speakers')) {
+            columns = columns.concat(['speakers']);
+        }
         if (this.operator.hasPerms('agenda.can_manage')) {
             columns = columns.concat(['menu']);
         }

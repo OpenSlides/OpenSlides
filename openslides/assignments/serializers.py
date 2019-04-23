@@ -203,6 +203,7 @@ class AssignmentFullSerializer(ModelSerializer):
             "poll_description_default",
             "polls",
             "agenda_item_id",
+            "list_of_speakers_id",
             "agenda_type",
             "agenda_parent_id",
             "tags",

@@ -83,6 +83,7 @@ import { SlideContainerComponent } from './components/slide-container/slide-cont
 import { CountdownTimeComponent } from './components/contdown-time/countdown-time.component';
 import { MediaUploadContentComponent } from './components/media-upload-content/media-upload-content.component';
 import { PrecisionPipe } from './pipes/precision.pipe';
+import { SpeakerButtonComponent } from './components/speaker-button/speaker-button.component';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -206,7 +207,8 @@ import { PrecisionPipe } from './pipes/precision.pipe';
         CountdownTimeComponent,
         MediaUploadContentComponent,
         PrecisionPipe,
-        ScrollingModule
+        ScrollingModule,
+        SpeakerButtonComponent
     ],
     declarations: [
         PermsDirective,
@@ -234,7 +236,8 @@ import { PrecisionPipe } from './pipes/precision.pipe';
         SlideContainerComponent,
         CountdownTimeComponent,
         MediaUploadContentComponent,
-        PrecisionPipe
+        PrecisionPipe,
+        SpeakerButtonComponent
     ],
     providers: [
         { provide: DateAdapter, useClass: OpenSlidesDateAdapter },

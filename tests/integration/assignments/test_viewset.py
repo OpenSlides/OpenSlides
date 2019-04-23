@@ -21,6 +21,7 @@ def test_assignment_db_queries():
     * 1 requests to get the list of all assignments,
     * 1 request to get all related users,
     * 1 request to get the agenda item,
+    * 1 request to get the list of speakers,
     * 1 request to get the polls,
     * 1 request to get the tags,
     * 1 request to get the attachments and
@@ -32,7 +33,7 @@ def test_assignment_db_queries():
     for index in range(10):
         Assignment.objects.create(title=f"assignment{index}", open_posts=1)
 
-    assert count_queries(Assignment.get_elements) == 16
+    assert count_queries(Assignment.get_elements) == 17
 
 
 class CreateAssignment(TestCase):

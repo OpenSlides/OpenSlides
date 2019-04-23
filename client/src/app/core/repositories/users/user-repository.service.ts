@@ -12,7 +12,7 @@ import { Group } from 'app/shared/models/users/group';
 import { HttpService } from 'app/core/core-services/http.service';
 import { NewEntry } from 'app/core/ui-services/base-import.service';
 import { User } from 'app/shared/models/users/user';
-import { ViewUser } from 'app/site/users/models/view-user';
+import { ViewUser, UserTitleInformation } from 'app/site/users/models/view-user';
 import { ViewGroup } from 'app/site/users/models/view-group';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 
@@ -32,7 +32,7 @@ type SortProperty = 'first_name' | 'last_name' | 'number';
 @Injectable({
     providedIn: 'root'
 })
-export class UserRepositoryService extends BaseRepository<ViewUser, User> {
+export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTitleInformation> {
     /**
      * The property the incoming data is sorted by
      */
@@ -65,6 +65,55 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
         });
     }
 
+    public getTitle = (titleInformation: UserTitleInformation) => {
+        return this.getFullName(titleInformation);
+    };
+
+    /**
+     * Getter for the short name (Title, given name, surname)
+     *
+     * @returns a non-empty string
+     */
+    public getShortName(titleInformation: UserTitleInformation): string {
+        const title = titleInformation.title ? titleInformation.title.trim() : '';
+        const firstName = titleInformation.first_name ? titleInformation.first_name.trim() : '';
+        const lastName = titleInformation.last_name ? titleInformation.last_name.trim() : '';
+        let shortName = `${firstName} ${lastName}`;
+
+        if (shortName.length <= 1) {
+            // We have at least one space from the concatination of
+            // first- and lastname.
+            shortName = titleInformation.username;
+        }
+
+        if (title) {
+            shortName = `${title} ${shortName}`;
+        }
+
+        return shortName;
+    }
+
+    public getFullName(titleInformation: UserTitleInformation): string {
+        let name = this.getShortName(titleInformation);
+        const additions: string[] = [];
+
+        // addition: add number and structure level
+        const structure_level = titleInformation.structure_level ? titleInformation.structure_level.trim() : '';
+        if (structure_level) {
+            additions.push(structure_level);
+        }
+
+        const number = titleInformation.number ? titleInformation.number.trim() : '';
+        if (number) {
+            additions.push(`${this.translate.instant('No.')} ${number}`);
+        }
+
+        if (additions.length > 0) {
+            name += ' (' + additions.join(' · ') + ')';
+        }
+        return name.trim();
+    }
+
     public getVerboseName = (plural: boolean = false) => {
         return this.translate.instant(plural ? 'Participants' : 'Participant');
     };
@@ -72,10 +121,8 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
     public createViewModel(user: User): ViewUser {
         const groups = this.viewModelStoreService.getMany(ViewGroup, user.groups_id);
         const viewUser = new ViewUser(user, groups);
-        viewUser.getVerboseName = this.getVerboseName;
-        viewUser.getNumberForName = (nr: number) => {
-            return `${this.translate.instant('No.')} ${nr}`;
-        };
+        viewUser.getFullName = () => this.getFullName(viewUser);
+        viewUser.getShortName = () => this.getShortName(viewUser);
         return viewUser;
     }
 

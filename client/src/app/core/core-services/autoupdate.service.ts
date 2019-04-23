@@ -123,11 +123,7 @@ export class AutoupdateService {
 
             // Add the objects to the DataStore.
             for (const collection of Object.keys(autoupdate.changed)) {
-                if (this.modelMapper.isCollectionRegistered(collection)) {
-                    await this.DS.add(this.mapObjectsToBaseModels(collection, autoupdate.changed[collection]));
-                } else {
-                    console.error(`Unregistered collection "${collection}". Ignore it.`);
-                }
+                await this.DS.add(this.mapObjectsToBaseModels(collection, autoupdate.changed[collection]));
             }
 
             await this.DS.flushToStorage(autoupdate.to_change_id);
@@ -140,14 +136,21 @@ export class AutoupdateService {
     }
 
     /**
-     * Creates baseModels for each plain object
+     * Creates baseModels for each plain object. If the collection is not registered,
+     * A console error will be issued and an empty list returned.
+     *
      * @param collection The collection all models have to be from.
      * @param models All models that should be mapped to BaseModels
      * @returns A list of basemodels constructed from the given models.
      */
     private mapObjectsToBaseModels(collection: string, models: object[]): BaseModel[] {
-        const targetClass = this.modelMapper.getModelConstructor(collection);
-        return models.map(model => new targetClass(model));
+        if (this.modelMapper.isCollectionRegistered(collection)) {
+            const targetClass = this.modelMapper.getModelConstructor(collection);
+            return models.map(model => new targetClass(model));
+        } else {
+            console.error(`Unregistered collection "${collection}". Ignore it.`);
+            return [];
+        }
     }
 
     /**

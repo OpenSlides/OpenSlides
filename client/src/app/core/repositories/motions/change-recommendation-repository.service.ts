@@ -11,7 +11,10 @@ import { Workflow } from 'app/shared/models/motions/workflow';
 import { BaseRepository } from '../base-repository';
 import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { MotionChangeRecommendation } from 'app/shared/models/motions/motion-change-reco';
-import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-change-recommendation';
+import {
+    ViewMotionChangeRecommendation,
+    MotionChangeRecommendationTitleInformation
+} from 'app/site/motions/models/view-motion-change-recommendation';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from 'app/core/core-services/collection-string-mapper.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
@@ -31,7 +34,8 @@ import { ViewModelStoreService } from 'app/core/core-services/view-model-store.s
 })
 export class ChangeRecommendationRepositoryService extends BaseRepository<
     ViewMotionChangeRecommendation,
-    MotionChangeRecommendation
+    MotionChangeRecommendation,
+    MotionChangeRecommendationTitleInformation
 > {
     /**
      * Creates a MotionRepository
@@ -57,6 +61,10 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<
         ]);
     }
 
+    public getTitle = (titleInformation: MotionChangeRecommendationTitleInformation) => {
+        return this.getVerboseName();
+    };
+
     public getVerboseName = (plural: boolean = false) => {
         return this.translate.instant(plural ? 'Change recommendations' : 'Change recommendation');
     };
@@ -67,9 +75,7 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<
      * @param {MotionChangeRecommendation} model
      */
     protected createViewModel(model: MotionChangeRecommendation): ViewMotionChangeRecommendation {
-        const viewMotionChangeRecommendation = new ViewMotionChangeRecommendation(model);
-        viewMotionChangeRecommendation.getVerboseName = this.getVerboseName;
-        return viewMotionChangeRecommendation;
+        return new ViewMotionChangeRecommendation(model);
     }
 
     /**

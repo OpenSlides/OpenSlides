@@ -2,8 +2,8 @@
     <!-- Title -->
     <div class="title-slot">
         <h2>
-            <span *ngIf="!currentListOfSpeakers" translate>List of speakers</span>
-            <span *ngIf="currentListOfSpeakers" translate>Current list of speakers</span>
+            <span *ngIf="!isCurrentListOfSpeakers" translate>List of speakers</span>
+            <span *ngIf="isCurrentListOfSpeakers" translate>Current list of speakers</span>
         </h2>
     </div>
     <div class="menu-slot" *osPerms="['agenda.can_manage_list_of_speakers', 'core.can_manage_projector']">
@@ -11,9 +11,9 @@
     </div>
 </os-head-bar>
 
-<mat-card class="os-card speaker-card" *ngIf="viewItem">
+<mat-card class="os-card speaker-card" *ngIf="viewListOfSpeakers">
     <!-- Title -->
-    <h1 class="los-title on-transition-fade" *ngIf="viewItem">{{ viewItem.getTitle() }}</h1>
+    <h1 class="los-title on-transition-fade">{{ viewListOfSpeakers.getTitle() }}</h1>
 
     <!-- List of finished speakers -->
     <mat-expansion-panel *ngIf="finishedSpeakers && finishedSpeakers.length > 0" class="finished-list">
@@ -24,7 +24,7 @@
             <mat-list-item *ngFor="let speaker of finishedSpeakers; let number = index">
                 <div class="finished-speaker-grid">
                     <div class="number">{{ number + 1 }}.</div>
-                    <div class="name">{{ speaker }}</div>
+                    <div class="name">{{ speaker.getTitle() }}</div>
                     <div class="time">
                         {{ durationString(speaker) }} ({{ 'Start time' | translate }}: {{ startTimeToString(speaker) }})
                     </div>
@@ -53,7 +53,7 @@
             <mat-icon>mic</mat-icon>
         </span>
 
-        <span class="name">{{ activeSpeaker }}</span>
+        <span class="name">{{ activeSpeaker.getTitle() }}</span>
 
         <span class="suffix">
             <!-- Stop speaker button -->
@@ -77,29 +77,29 @@
             [enable]="opCanManage()"
             (sortEvent)="onSortingChange($event)"
         >
-            <!-- implicit item references into the component using ng-template slot -->
-            <ng-template let-item>
+            <!-- implicit speaker references into the component using ng-template slot -->
+            <ng-template let-speaker>
                 <span *osPerms="'agenda.can_manage_list_of_speakers'">
-                    <span *ngIf="hasSpokenCount(item)" class="red-warning-text speaker-warning">
-                        {{ hasSpokenCount(item) + 1 }}. <span translate>contribution</span>
+                    <span *ngIf="hasSpokenCount(speaker)" class="red-warning-text speaker-warning">
+                        {{ hasSpokenCount(speaker) + 1 }}. <span translate>contribution</span>
                     </span>
-                    <span *ngIf="item.gender">({{ item.gender | translate }})</span>
+                    <span *ngIf="speaker.gender">({{ speaker.gender | translate }})</span>
                 </span>
 
                 <!-- Start, start and delete buttons -->
                 <span *osPerms="'agenda.can_manage_list_of_speakers'">
                     <!-- start button -->
-                    <button mat-icon-button matTooltip="{{ 'Begin speech' | translate }}" (click)="onStartButton(item)">
+                    <button mat-icon-button matTooltip="{{ 'Begin speech' | translate }}" (click)="onStartButton(speaker)">
                         <mat-icon>play_arrow</mat-icon>
                     </button>
 
                     <!-- star button -->
-                    <button mat-icon-button matTooltip="{{ 'Mark speaker' | translate }}" (click)="onMarkButton(item)">
-                        <mat-icon>{{ item.marked ? 'star' : 'star_border' }}</mat-icon>
+                    <button mat-icon-button matTooltip="{{ 'Mark speaker' | translate }}" (click)="onMarkButton(speaker)">
+                        <mat-icon>{{ speaker.marked ? 'star' : 'star_border' }}</mat-icon>
                     </button>
 
                     <!-- delete button -->
-                    <button mat-icon-button matTooltip="{{ 'Remove' | translate }}" (click)="onDeleteButton(item)">
+                    <button mat-icon-button matTooltip="{{ 'Remove' | translate }}" (click)="onDeleteButton(speaker)">
                         <mat-icon>close</mat-icon>
                     </button>
                 </span>
@@ -139,39 +139,39 @@
 
 <mat-menu #speakerMenu="matMenu">
     <os-projector-button
-        *ngIf="viewItem && projectors && projectors.length > 1"
+        *ngIf="viewListOfSpeakers && projectors && projectors.length > 1"
         [object]="getClosSlide()"
         [menuItem]="true"
         text="Current list of speakers (as slide)"
     ></os-projector-button>
 
     <os-projector-button
-        *ngIf="viewItem"
-        [object]="viewItem.listOfSpeakersSlide"
+        *ngIf="viewListOfSpeakers"
+        [object]="viewListOfSpeakers"
         [menuItem]="true"
         text="List of speakers"
     ></os-projector-button>
 
     <os-projector-button
-        *ngIf="viewItem"
-        [object]="viewItem.contentObject"
+        *ngIf="viewListOfSpeakers"
+        [object]="viewListOfSpeakers.contentObject"
         [menuItem]="true"
         [text]="getContentObjectProjectorButtonText()"
     ></os-projector-button>
 
-    <button mat-menu-item *ngIf="closedList" (click)="openSpeakerList()">
+    <button mat-menu-item *ngIf="isListOfSpeakersClosed" (click)="openSpeakerList()">
         <mat-icon>mic</mat-icon>
         <span translate>Open list of speakers</span>
     </button>
 
-    <button mat-menu-item *ngIf="!closedList" (click)="closeSpeakerList()">
+    <button mat-menu-item *ngIf="!isListOfSpeakersClosed" (click)="closeSpeakerList()">
         <mat-icon>mic_off</mat-icon>
         <span translate>Close list of speakers</span>
     </button>
 
-    <mat-divider *ngIf="!emptyList"></mat-divider>
+    <mat-divider *ngIf="!isListOfSpeakersEmpty"></mat-divider>
 
-    <button mat-menu-item (click)="clearSpeakerList()" *ngIf="!emptyList" class="red-warning-text">
+    <button mat-menu-item (click)="clearSpeakerList()" *ngIf="!isListOfSpeakersEmpty" class="red-warning-text">
         <mat-icon>delete</mat-icon>
         <span translate>Remove all speakers</span>
     </button>

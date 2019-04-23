@@ -120,7 +120,12 @@ export class HttpService {
             return error;
         }
 
-        if (!e.error) {
+        if (e.status === 405) {
+            // this should only happen, if the url is wrong -> a bug.
+            error += this.translate.instant(
+                'The requested method is not allowed. Please contact your system administrator.'
+            );
+        } else if (!e.error) {
             error += this.translate.instant("The server didn't respond.");
         } else if (typeof e.error === 'object') {
             if (e.error.detail) {

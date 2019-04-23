@@ -2,7 +2,7 @@ import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 
 import { BaseModel } from 'app/shared/models/base/base-model';
 import { BaseRepository } from '../repositories/base-repository';
-import { BaseViewModel } from '../../site/base/base-view-model';
+import { BaseViewModel, TitleInformation } from '../../site/base/base-view-model';
 import { StorageService } from '../core-services/storage.service';
 
 /**
@@ -208,7 +208,7 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
      * @param exexcludeIds Set if certain ID's should be excluded from filtering
      */
     protected updateFilterForRepo(
-        repo: BaseRepository<BaseViewModel, BaseModel>,
+        repo: BaseRepository<BaseViewModel, BaseModel, TitleInformation>,
         filter: OsFilter,
         noneOptionLabel?: string,
         excludeIds?: number[]

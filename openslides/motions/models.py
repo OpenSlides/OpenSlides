@@ -1,14 +1,11 @@
-from typing import Any, Dict
-
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
-from django.contrib.contenttypes.fields import GenericRelation
 from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.db import IntegrityError, models, transaction
 from django.db.models import Max
 from jsonfield import JSONField
 
-from openslides.agenda.models import Item
+from openslides.agenda.mixins import AgendaItemWithListOfSpeakersMixin
 from openslides.core.config import config
 from openslides.core.models import Tag
 from openslides.mediafiles.models import Mediafile
@@ -80,6 +77,7 @@ class MotionManager(models.Manager):
                 "comments__section",
                 "comments__section__read_groups",
                 "agenda_items",
+                "lists_of_speakers",
                 "polls",
                 "attachments",
                 "tags",
@@ -90,7 +88,7 @@ class MotionManager(models.Manager):
         )
 
 
-class Motion(RESTModelMixin, models.Model):
+class Motion(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model):
     """
     Model for motions.
 
@@ -259,10 +257,6 @@ class Motion(RESTModelMixin, models.Model):
     """
     Timestamp when motion is modified.
     """
-
-    # In theory there could be one then more agenda_item. But we support only
-    # one. See the property agenda_item.
-    agenda_items = GenericRelation(Item, related_name="motions")
 
     class Meta:
         default_permissions = ()
@@ -520,29 +514,8 @@ class Motion(RESTModelMixin, models.Model):
             ):
                 self.state_extension = self.recommendation_extension
 
-    """
-    Container for runtime information for agenda app (on create or update of this instance).
-    """
-    agenda_item_update_information: Dict[str, Any] = {}
-
-    def get_agenda_title_information(self):
+    def get_title_information(self):
         return {"title": self.title, "identifier": self.identifier}
-
-    @property
-    def agenda_item(self):
-        """
-        Returns the related agenda item.
-        """
-        # We support only one agenda item so just return the first element of
-        # the queryset.
-        return self.agenda_items.all()[0]
-
-    @property
-    def agenda_item_id(self):
-        """
-        Returns the id of the agenda item object related to this object.
-        """
-        return self.agenda_item.pk
 
     def is_amendment(self):
         """
@@ -846,10 +819,10 @@ class MotionBlockManager(models.Manager):
         Returns the normal queryset with all motion blocks. In the
         background the related agenda item is prefetched from the database.
         """
-        return self.get_queryset().prefetch_related("agenda_items")
+        return self.get_queryset().prefetch_related("agenda_items", "lists_of_speakers")
 
 
-class MotionBlock(RESTModelMixin, models.Model):
+class MotionBlock(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model):
     """
     Model for blocks of motions.
     """
@@ -860,10 +833,6 @@ class MotionBlock(RESTModelMixin, models.Model):
 
     title = models.CharField(max_length=255)
 
-    # In theory there could be one then more agenda_item. But we support only
-    # one. See the property agenda_item.
-    agenda_items = GenericRelation(Item, related_name="topics")
-
     class Meta:
         verbose_name = "Motion block"
         default_permissions = ()
@@ -871,28 +840,7 @@ class MotionBlock(RESTModelMixin, models.Model):
     def __str__(self):
         return self.title
 
-    """
-    Container for runtime information for agenda app (on create or update of this instance).
-    """
-    agenda_item_update_information: Dict[str, Any] = {}
-
-    @property
-    def agenda_item(self):
-        """
-        Returns the related agenda item.
-        """
-        # We support only one agenda item so just return the first element of
-        # the queryset.
-        return self.agenda_items.all()[0]
-
-    @property
-    def agenda_item_id(self):
-        """
-        Returns the id of the agenda item object related to this object.
-        """
-        return self.agenda_item.pk
-
-    def get_agenda_title_information(self):
+    def get_title_information(self):
         return {"title": self.title}
 
 

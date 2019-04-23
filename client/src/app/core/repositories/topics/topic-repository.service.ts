@@ -2,17 +2,17 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseAgendaContentObjectRepository } from '../base-agenda-content-object-repository';
 import { CollectionStringMapperService } from 'app/core/core-services/collection-string-mapper.service';
 import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { DataSendService } from 'app/core/core-services/data-send.service';
-import { Item } from 'app/shared/models/agenda/item';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { Topic } from 'app/shared/models/topics/topic';
-import { ViewTopic } from 'app/site/agenda/models/view-topic';
+import { ViewTopic, TopicTitleInformation } from 'app/site/agenda/models/view-topic';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewItem } from 'app/site/agenda/models/view-item';
+import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
+import { BaseIsAgendaItemAndListOfSpeakersContentObjectRepository } from '../base-is-agenda-item-and-list-of-speakers-content-object-repository';
 
 /**
  * Repository for topics
@@ -20,7 +20,11 @@ import { ViewItem } from 'app/site/agenda/models/view-item';
 @Injectable({
     providedIn: 'root'
 })
-export class TopicRepositoryService extends BaseAgendaContentObjectRepository<ViewTopic, Topic> {
+export class TopicRepositoryService extends BaseIsAgendaItemAndListOfSpeakersContentObjectRepository<
+    ViewTopic,
+    Topic,
+    TopicTitleInformation
+> {
     /**
      * Constructor calls the parent constructor
      *
@@ -35,16 +39,25 @@ export class TopicRepositoryService extends BaseAgendaContentObjectRepository<Vi
         viewModelStoreService: ViewModelStoreService,
         translate: TranslateService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, Topic, [Mediafile, Item]);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, Topic, [Mediafile]);
     }
 
-    public getAgendaTitle = (topic: Partial<Topic> | Partial<ViewTopic>) => {
-        return topic.title;
+    public getTitle = (titleInformation: TopicTitleInformation) => {
+        if (titleInformation.agenda_item_number) {
+            return titleInformation.agenda_item_number + ' · ' + titleInformation.title;
+        } else {
+            return titleInformation.title;
+        }
     };
 
-    public getAgendaTitleWithType = (topic: Partial<Topic> | Partial<ViewTopic>) => {
+    public getAgendaListTitle = (titleInformation: TopicTitleInformation) => {
         // Do not append ' (Topic)' to the title.
-        return topic.title;
+        return this.getTitle(titleInformation);
+    };
+
+    public getAgendaSlideTitle = (titleInformation: TopicTitleInformation) => {
+        // Do not append ' (Topic)' to the title.
+        return this.getTitle(titleInformation);
     };
 
     public getVerboseName = (plural: boolean = false) => {
@@ -60,11 +73,8 @@ export class TopicRepositoryService extends BaseAgendaContentObjectRepository<Vi
     public createViewModel(topic: Topic): ViewTopic {
         const attachments = this.viewModelStoreService.getMany(ViewMediafile, topic.attachments_id);
         const item = this.viewModelStoreService.get(ViewItem, topic.agenda_item_id);
-        const viewTopic = new ViewTopic(topic, attachments, item);
-        viewTopic.getVerboseName = this.getVerboseName;
-        viewTopic.getAgendaTitle = () => this.getAgendaTitle(viewTopic);
-        viewTopic.getAgendaTitleWithType = () => this.getAgendaTitle(viewTopic);
-        return viewTopic;
+        const listOfSpeakers = this.viewModelStoreService.get(ViewListOfSpeakers, topic.list_of_speakers_id);
+        return new ViewTopic(topic, attachments, item, listOfSpeakers);
     }
 
     /**

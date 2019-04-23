@@ -3,6 +3,10 @@ import { StatuteParagraph } from 'app/shared/models/motions/statute-paragraph';
 import { Searchable } from 'app/site/base/searchable';
 import { SearchRepresentation } from 'app/core/ui-services/search.service';
 
+export interface StatuteParagraphTitleInformation {
+    title: string;
+}
+
 /**
  * State paragrpah class for the View
  *
@@ -10,17 +14,12 @@ import { SearchRepresentation } from 'app/core/ui-services/search.service';
  * Provides "safe" access to variables and functions in {@link StatuteParagraph}
  * @ignore
  */
-export class ViewStatuteParagraph extends BaseViewModel implements Searchable {
+export class ViewStatuteParagraph extends BaseViewModel<StatuteParagraph>
+    implements StatuteParagraphTitleInformation, Searchable {
     public static COLLECTIONSTRING = StatuteParagraph.COLLECTIONSTRING;
 
-    private _paragraph: StatuteParagraph;
-
     public get statuteParagraph(): StatuteParagraph {
-        return this._paragraph;
-    }
-
-    public get id(): number {
-        return this.statuteParagraph.id;
+        return this._model;
     }
 
     public get title(): string {
@@ -35,22 +34,8 @@ export class ViewStatuteParagraph extends BaseViewModel implements Searchable {
         return this.statuteParagraph.weight;
     }
 
-    /**
-     * This is set by the repository
-     */
-    public getVerboseName;
-
-    public constructor(paragraph: StatuteParagraph) {
-        super(StatuteParagraph.COLLECTIONSTRING);
-        this._paragraph = paragraph;
-    }
-
-    public getTitle = () => {
-        return this.title;
-    };
-
-    public getModel(): StatuteParagraph {
-        return this.statuteParagraph;
+    public constructor(statuteParagraph: StatuteParagraph) {
+        super(StatuteParagraph.COLLECTIONSTRING, statuteParagraph);
     }
 
     public formatForSearch(): SearchRepresentation {

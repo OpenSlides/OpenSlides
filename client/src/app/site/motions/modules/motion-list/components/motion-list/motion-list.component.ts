@@ -229,16 +229,6 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
     }
 
     /**
-     * Handler for the speakers button
-     *
-     * @param motion indicates the row that was clicked on
-     */
-    public onSpeakerIcon(motion: ViewMotion, event: MouseEvent): void {
-        event.stopPropagation();
-        this.router.navigate([`/agenda/${motion.agenda_item_id}/speakers`]);
-    }
-
-    /**
      * Handler for the plus button
      */
     public onPlusButton(): void {

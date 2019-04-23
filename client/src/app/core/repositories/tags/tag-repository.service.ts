@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 
+import { TranslateService } from '@ngx-translate/core';
+
 import { Tag } from 'app/shared/models/core/tag';
-import { ViewTag } from 'app/site/tags/models/view-tag';
+import { ViewTag, TagTitleInformation } from 'app/site/tags/models/view-tag';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { BaseRepository } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
-import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Repository Services for Tags
@@ -22,7 +23,7 @@ import { TranslateService } from '@ngx-translate/core';
 @Injectable({
     providedIn: 'root'
 })
-export class TagRepositoryService extends BaseRepository<ViewTag, Tag> {
+export class TagRepositoryService extends BaseRepository<ViewTag, Tag, TagTitleInformation> {
     /**
      * Creates a TagRepository
      * Converts existing and incoming Tags to ViewTags
@@ -43,14 +44,16 @@ export class TagRepositoryService extends BaseRepository<ViewTag, Tag> {
         this.initSorting();
     }
 
+    public getTitle = (titleInformation: TagTitleInformation) => {
+        return titleInformation.name;
+    };
+
     public getVerboseName = (plural: boolean = false) => {
         return this.translate.instant(plural ? 'Tags' : 'Tag');
     };
 
     protected createViewModel(tag: Tag): ViewTag {
-        const viewTag = new ViewTag(tag);
-        viewTag.getVerboseName = this.getVerboseName;
-        return viewTag;
+        return new ViewTag(tag);
     }
 
     /**

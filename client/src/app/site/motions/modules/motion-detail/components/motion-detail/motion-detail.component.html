@@ -68,10 +68,7 @@
                 <span translate>PDF</span>
             </button>
             <!-- List of speakers -->
-            <button mat-menu-item [routerLink]="getSpeakerLink()" *osPerms="'agenda.can_see'">
-                <mat-icon>mic</mat-icon>
-                <span translate>List of speakers</span>
-            </button>
+            <os-speaker-button [object]="motion" [menuItem]="true"></os-speaker-button>
             <!-- Project -->
             <os-projector-button
                 [object]="motion"

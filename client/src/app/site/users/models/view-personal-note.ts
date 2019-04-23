@@ -1,17 +1,13 @@
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { PersonalNote, PersonalNotesFormat, PersonalNoteContent } from 'app/shared/models/users/personal-note';
 
-export class ViewPersonalNote extends BaseViewModel {
+export type PersonalNoteTitleInformation = object;
+
+export class ViewPersonalNote extends BaseViewModel<PersonalNote> implements PersonalNoteTitleInformation {
     public static COLLECTIONSTRING = PersonalNote.COLLECTIONSTRING;
 
-    private _personalNote: PersonalNote;
-
     public get personalNote(): PersonalNote {
-        return this._personalNote;
-    }
-
-    public get id(): number {
-        return this.personalNote.id;
+        return this._model;
     }
 
     public get userId(): number {
@@ -22,14 +18,8 @@ export class ViewPersonalNote extends BaseViewModel {
         return this.personalNote.notes;
     }
 
-    /**
-     * This is set by the repository
-     */
-    public getVerboseName;
-
     public constructor(personalNote: PersonalNote) {
-        super(PersonalNote.COLLECTIONSTRING);
-        this._personalNote = personalNote;
+        super(PersonalNote.COLLECTIONSTRING, personalNote);
     }
 
     public getNoteContent(collection: string, id: number): PersonalNoteContent | null {
@@ -38,14 +28,6 @@ export class ViewPersonalNote extends BaseViewModel {
         } else {
             return null;
         }
-    }
-
-    public getTitle = () => {
-        return this.personalNote ? this.personalNote.toString() : null;
-    };
-
-    public getModel(): PersonalNote {
-        return this.personalNote;
     }
 
     public updateDependencies(update: BaseViewModel): void {}

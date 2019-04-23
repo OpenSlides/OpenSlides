@@ -1,6 +1,5 @@
 import { CreateTopic } from './create-topic';
 import { ViewTopic } from './view-topic';
-import { Topic } from 'app/shared/models/topics/topic';
 
 /**
  * View model for Topic('Agenda item') creation.
@@ -8,7 +7,7 @@ import { Topic } from 'app/shared/models/topics/topic';
  */
 export class ViewCreateTopic extends ViewTopic {
     public get topic(): CreateTopic {
-        return this._topic as CreateTopic;
+        return this._model as CreateTopic;
     }
 
     /**
@@ -107,10 +106,6 @@ export class ViewCreateTopic extends ViewTopic {
      */
     public constructor(topic: CreateTopic) {
         super(topic);
-    }
-
-    public getModel(): Topic {
-        return super.getModel();
     }
 
     public getVerboseName = () => {

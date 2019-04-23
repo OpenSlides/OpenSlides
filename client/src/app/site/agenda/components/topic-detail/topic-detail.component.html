@@ -106,10 +106,7 @@
 </mat-card>
 
 <mat-menu #topicExtraMenu="matMenu">
-    <button mat-menu-item *ngIf="topic" [routerLink]="getSpeakerLink()">
-        <mat-icon>mic</mat-icon>
-        <span translate>List of speakers</span>
-    </button>
+    <os-speaker-button [object]="topic" [menuItem]="true"></os-speaker-button>
     <div *osPerms="'agenda.can_manage'">
         <mat-divider></mat-divider>
         <button mat-menu-item class="red-warning-text" (click)="onDeleteButton()">

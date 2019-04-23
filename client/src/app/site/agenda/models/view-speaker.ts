@@ -1,14 +1,24 @@
 import { BaseViewModel } from 'app/site/base/base-view-model';
-import { Speaker, SpeakerState } from 'app/shared/models/agenda/speaker';
+import { Speaker } from 'app/shared/models/agenda/speaker';
 import { ViewUser } from 'app/site/users/models/view-user';
-import { User } from 'app/shared/models/users/user';
+import { Updateable } from 'app/site/base/updateable';
+import { Identifiable } from 'app/shared/models/base/identifiable';
+
+/**
+ * Determine the state of the speaker
+ */
+export enum SpeakerState {
+    WAITING,
+    CURRENT,
+    FINISHED
+}
 
 /**
  * Provides "safe" access to a speaker with all it's components
  */
-export class ViewSpeaker extends BaseViewModel {
+export class ViewSpeaker implements Updateable, Identifiable {
     private _speaker: Speaker;
-    private _user: ViewUser | null;
+    private _user?: ViewUser;
 
     public get speaker(): Speaker {
         return this._speaker;
@@ -20,6 +30,10 @@ export class ViewSpeaker extends BaseViewModel {
 
     public get id(): number {
         return this.speaker.id;
+    }
+
+    public get userId(): number {
+        return this.speaker.user_id;
     }
 
     public get weight(): number {
@@ -44,8 +58,20 @@ export class ViewSpeaker extends BaseViewModel {
         return this.speaker.end_time;
     }
 
+    /**
+     * @returns
+     *  - waiting if there is no begin nor end time
+     *  - current if there is a begin time and not end time
+     *  - finished if there are both begin and end time
+     */
     public get state(): SpeakerState {
-        return this.speaker.state;
+        if (!this.begin_time && !this.end_time) {
+            return SpeakerState.WAITING;
+        } else if (this.begin_time && !this.end_time) {
+            return SpeakerState.CURRENT;
+        } else {
+            return SpeakerState.FINISHED;
+        }
     }
 
     public get name(): string {
@@ -56,13 +82,7 @@ export class ViewSpeaker extends BaseViewModel {
         return this.user ? this.user.gender : '';
     }
 
-    /**
-     * This is set by the repository
-     */
-    public getVerboseName;
-
     public constructor(speaker: Speaker, user?: ViewUser) {
-        super('TODO');
         this._speaker = speaker;
         this._user = user;
     }
@@ -71,13 +91,11 @@ export class ViewSpeaker extends BaseViewModel {
         return this.name;
     };
 
-    public getModel(): User {
-        return this.user.user;
+    public updateDependencies(update: BaseViewModel): boolean {
+        if (update instanceof ViewUser && update.id === this.speaker.user_id) {
+            this._user = update;
+            return true;
+        }
+        return false;
     }
-
-    /**
-     * Speaker is not a base model,
-     * @param update the incoming update
-     */
-    public updateDependencies(update: BaseViewModel): void {}
 }

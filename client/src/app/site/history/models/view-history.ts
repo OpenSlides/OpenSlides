@@ -4,22 +4,21 @@ import { ViewUser } from 'app/site/users/models/view-user';
 
 export type ProxyHistory = History & { user?: ViewUser };
 
+export interface HistoryTitleInformation {
+    element_id: string;
+}
+
 /**
  * View model for history objects
  */
-export class ViewHistory extends BaseViewModel {
+export class ViewHistory extends BaseViewModel<ProxyHistory> implements HistoryTitleInformation {
     public static COLLECTIONSTRING = History.COLLECTIONSTRING;
-
-    /**
-     * Private BaseModel of the history
-     */
-    private _history: ProxyHistory;
 
     /**
      * Read the history property
      */
     public get history(): ProxyHistory {
-        return this._history;
+        return this._model;
     }
 
     /**
@@ -74,19 +73,13 @@ export class ViewHistory extends BaseViewModel {
     }
 
     /**
-     * This is set by the repository
-     */
-    public getVerboseName;
-
-    /**
      * Construction of a ViewHistory
      *
      * @param history the real history BaseModel
      * @param user the real user BaseModel
      */
     public constructor(history: ProxyHistory) {
-        super(History.COLLECTIONSTRING);
-        this._history = history;
+        super(History.COLLECTIONSTRING, history);
     }
 
     /**
@@ -103,20 +96,6 @@ export class ViewHistory extends BaseViewModel {
      */
     public getModelId(): number {
         return +this.element_id.split(':')[1];
-    }
-
-    /**
-     * Get the history objects title
-     * Required by BaseViewModel
-     *
-     * @returns history.getTitle which returns the element_id
-     */
-    public getTitle = () => {
-        return this.element_id;
-    };
-
-    public getModel(): History {
-        return this.history;
     }
 
     public updateDependencies(update: BaseViewModel): void {}

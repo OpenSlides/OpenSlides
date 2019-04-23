@@ -1,15 +1,14 @@
-import { BaseModel } from '../base/base-model';
+import { BaseModelWithAgendaItemAndListOfSpeakers } from '../base/base-model-with-agenda-item-and-list-of-speakers';
 
 /**
  * Representation of a motion block.
  * @ignore
  */
-export class MotionBlock extends BaseModel {
+export class MotionBlock extends BaseModelWithAgendaItemAndListOfSpeakers<MotionBlock> {
     public static COLLECTIONSTRING = 'motions/motion-block';
 
     public id: number;
     public title: string;
-    public agenda_item_id: number;
 
     public constructor(input?: any) {
         super(MotionBlock.COLLECTIONSTRING, input);

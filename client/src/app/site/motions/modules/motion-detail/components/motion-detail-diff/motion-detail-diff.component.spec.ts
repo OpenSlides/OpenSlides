@@ -5,7 +5,7 @@ import { MotionDetailDiffComponent } from './motion-detail-diff.component';
 import { MotionDetailOriginalChangeRecommendationsComponent } from '../motion-detail-original-change-recommendations/motion-detail-original-change-recommendations.component';
 import { Motion } from 'app/shared/models/motions/motion';
 import { ViewMotion, LineNumberingMode } from 'app/site/motions/models/view-motion';
-import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-change-recommendation';
+import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
 import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change';
 import { E2EImportsModule } from 'e2e-imports.module';
 

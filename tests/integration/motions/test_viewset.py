@@ -43,6 +43,7 @@ def test_motion_db_queries():
     * 1 request for all motion comment sections required for the comments
     * 1 request for all users required for the read_groups of the sections
     * 1 request to get the agenda item,
+    * 1 request to get the list of speakers,
     * 1 request to get the polls,
     * 1 request to get the attachments,
     * 1 request to get the tags,
@@ -69,7 +70,7 @@ def test_motion_db_queries():
         )
     # TODO: Create some polls etc.
 
-    assert count_queries(Motion.get_elements) == 12
+    assert count_queries(Motion.get_elements) == 13
 
 
 @pytest.mark.django_db(transaction=False)

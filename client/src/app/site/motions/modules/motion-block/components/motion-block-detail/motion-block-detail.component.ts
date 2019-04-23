@@ -104,17 +104,6 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
     }
 
     /**
-     * Get link to the list of speakers of the corresponding agenda item
-     *
-     * @returns the link to the list of speakers as string
-     */
-    public getSpeakerLink(): string {
-        if (this.block) {
-            return `/agenda/${this.block.agenda_item_id}/speakers`;
-        }
-    }
-
-    /**
      * Returns the columns that should be shown in the table
      *
      * @returns an array of strings building the column definition

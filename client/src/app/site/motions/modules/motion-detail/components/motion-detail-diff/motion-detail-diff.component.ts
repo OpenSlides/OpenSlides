@@ -16,7 +16,7 @@ import { MotionRepositoryService } from 'app/core/repositories/motions/motion-re
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewMotion, LineNumberingMode } from 'app/site/motions/models/view-motion';
 import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/motions/view-unified-change';
-import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-change-recommendation';
+import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
 
 /**
  * This component displays the original motion text with the change blocks inside.

@@ -41,10 +41,6 @@ export class ViewCsvCreateUser extends ViewUser {
         super(user);
     }
 
-    public getModel(): User {
-        return super.getModel();
-    }
-
     /**
      * takes a list of solved group maps to update. Returns the amount of
      * entries that remain unmatched

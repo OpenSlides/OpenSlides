@@ -101,7 +101,7 @@
 
 <!-- The menu content -->
 <mat-menu #motionBlockMenu="matMenu">
-    <button mat-menu-item [routerLink]="getSpeakerLink()">
+    <button *ngIf="block" mat-menu-item [routerLink]="block.listOfSpeakersUrl">
         <mat-icon>mic</mat-icon>
         <span translate>List of speakers</span>
     </button>

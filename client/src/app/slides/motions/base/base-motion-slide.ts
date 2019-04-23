@@ -2,11 +2,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { BaseSlideComponent } from 'app/slides/base-slide-component';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
-
-export interface MotionTitleInformation {
-    title: string;
-    identifier?: string;
-}
+import { MotionTitleInformation } from 'app/site/motions/models/view-motion';
 
 /**
  * Format for referenced motions: A mapping of motion ids to their title information.

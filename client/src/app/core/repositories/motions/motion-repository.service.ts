@@ -6,14 +6,13 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { Category } from 'app/shared/models/motions/category';
-import { ChangeRecoMode, ViewMotion } from 'app/site/motions/models/view-motion';
+import { ChangeRecoMode, ViewMotion, MotionTitleInformation } from 'app/site/motions/models/view-motion';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { DiffLinesInParagraph, DiffService, LineRange, ModificationType } from '../../ui-services/diff.service';
 import { HttpService } from 'app/core/core-services/http.service';
-import { Item } from 'app/shared/models/agenda/item';
 import { LinenumberingService, LineNumberRange } from '../../ui-services/linenumbering.service';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { Motion } from 'app/shared/models/motions/motion';
@@ -22,7 +21,7 @@ import { MotionChangeRecommendation } from 'app/shared/models/motions/motion-cha
 import { MotionPoll } from 'app/shared/models/motions/motion-poll';
 import { TreeIdNode } from 'app/core/ui-services/tree.service';
 import { User } from 'app/shared/models/users/user';
-import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-change-recommendation';
+import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
 import { ViewMotionAmendedParagraph } from 'app/site/motions/models/view-motion-amended-paragraph';
 import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change';
 import { ViewStatuteParagraph } from 'app/site/motions/models/view-statute-paragraph';
@@ -37,11 +36,12 @@ import { ViewItem } from 'app/site/agenda/models/view-item';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewTag } from 'app/site/tags/models/view-tag';
-import { BaseAgendaContentObjectRepository } from '../base-agenda-content-object-repository';
-import { PersonalNote, PersonalNoteContent } from 'app/shared/models/users/personal-note';
 import { ViewPersonalNote } from 'app/site/users/models/view-personal-note';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { CollectionIds } from 'app/core/core-services/data-store-update-manager.service';
+import { PersonalNote, PersonalNoteContent } from 'app/shared/models/users/personal-note';
+import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
+import { BaseIsAgendaItemAndListOfSpeakersContentObjectRepository } from '../base-is-agenda-item-and-list-of-speakers-content-object-repository';
 
 type SortProperty = 'weight' | 'identifier';
 
@@ -88,7 +88,11 @@ export interface ParagraphToChoose {
 @Injectable({
     providedIn: 'root'
 })
-export class MotionRepositoryService extends BaseAgendaContentObjectRepository<ViewMotion, Motion> {
+export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersContentObjectRepository<
+    ViewMotion,
+    Motion,
+    MotionTitleInformation
+> {
     /**
      * The property the incoming data is sorted by
      */
@@ -127,7 +131,6 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
             Category,
             User,
             Workflow,
-            Item,
             MotionBlock,
             Mediafile,
             Tag,
@@ -141,37 +144,39 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
         });
     }
 
-    public getTitle = (motion: Partial<Motion> | Partial<ViewMotion>) => {
-        if (motion.identifier) {
-            return motion.identifier + ': ' + motion.title;
+    public getTitle = (titleInformation: MotionTitleInformation) => {
+        if (titleInformation.identifier) {
+            return titleInformation.identifier + ': ' + titleInformation.title;
         } else {
-            return motion.title;
+            return titleInformation.title;
         }
     };
 
-    public getIdentifierOrTitle = (motion: Partial<Motion> | Partial<ViewMotion>) => {
-        if (motion.identifier) {
-            return motion.identifier;
+    public getIdentifierOrTitle = (titleInformation: MotionTitleInformation) => {
+        if (titleInformation.identifier) {
+            return titleInformation.identifier;
         } else {
-            return motion.title;
+            return titleInformation.title;
         }
     };
 
-    public getAgendaTitle = (motion: Partial<Motion> | Partial<ViewMotion>) => {
+    public getAgendaSlideTitle = (titleInformation: MotionTitleInformation) => {
+        const numberPrefix = titleInformation.agenda_item_number ? `${titleInformation.agenda_item_number} · ` : '';
         // if the identifier is set, the title will be 'Motion <identifier>'.
-        if (motion.identifier) {
-            return this.translate.instant('Motion') + ' ' + motion.identifier;
+        if (titleInformation.identifier) {
+            return numberPrefix + this.translate.instant('Motion') + ' ' + titleInformation.identifier;
         } else {
-            return motion.title;
+            return numberPrefix + titleInformation.title;
         }
     };
 
-    public getAgendaTitleWithType = (motion: Partial<Motion> | Partial<ViewMotion>) => {
+    public getAgendaListTitle = (titleInformation: MotionTitleInformation) => {
+        const numberPrefix = titleInformation.agenda_item_number ? `${titleInformation.agenda_item_number} · ` : '';
         // Append the verbose name only, if not the special format 'Motion <identifier>' is used.
-        if (motion.identifier) {
-            return this.translate.instant('Motion') + ' ' + motion.identifier;
+        if (titleInformation.identifier) {
+            return numberPrefix + this.translate.instant('Motion') + ' ' + titleInformation.identifier;
         } else {
-            return motion.title + ' (' + this.getVerboseName() + ')';
+            return numberPrefix + titleInformation.title + ' (' + this.getVerboseName() + ')';
         }
     };
 
@@ -193,6 +198,7 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
         const supporters = this.viewModelStoreService.getMany(ViewUser, motion.supporters_id);
         const workflow = this.viewModelStoreService.get(ViewWorkflow, motion.workflow_id);
         const item = this.viewModelStoreService.get(ViewItem, motion.agenda_item_id);
+        const listOfSpeakers = this.viewModelStoreService.get(ViewListOfSpeakers, motion.list_of_speakers_id);
         const block = this.viewModelStoreService.get(ViewMotionBlock, motion.motion_block_id);
         const attachments = this.viewModelStoreService.getMany(ViewMediafile, motion.attachments_id);
         const tags = this.viewModelStoreService.getMany(ViewTag, motion.tags_id);
@@ -215,6 +221,7 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
             workflow,
             state,
             item,
+            listOfSpeakers,
             block,
             attachments,
             tags,
@@ -224,11 +231,7 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
             personalNote
         );
         viewMotion.getIdentifierOrTitle = () => this.getIdentifierOrTitle(viewMotion);
-        viewMotion.getTitle = () => this.getTitle(viewMotion);
-        viewMotion.getVerboseName = this.getVerboseName;
-        viewMotion.getAgendaTitle = () => this.getAgendaTitle(viewMotion);
-        viewMotion.getProjectorTitle = viewMotion.getAgendaTitle;
-        viewMotion.getAgendaTitleWithType = () => this.getAgendaTitleWithType(viewMotion);
+        viewMotion.getProjectorTitle = () => this.getAgendaSlideTitle(viewMotion);
         return viewMotion;
     }
 

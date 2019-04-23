@@ -40,7 +40,7 @@ import { ViewCreateMotion } from 'app/site/motions/models/view-create-motion';
 import { ViewItem } from 'app/site/agenda/models/view-item';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
-import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-change-recommendation';
+import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
 import {
     ViewMotionNotificationEditMotion,
     TypeOfNotificationViewMotion
@@ -1300,15 +1300,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
                 this.recommender = recommender;
             });
         }
-    }
-
-    /**
-     * Create the absolute path to the corresponding list of speakers
-     *
-     * @returns the link to the corresponding list of speakers as string
-     */
-    public getSpeakerLink(): string {
-        return `/agenda/${this.motion.agenda_item_id}/speakers`;
     }
 
     /**

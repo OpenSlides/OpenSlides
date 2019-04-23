@@ -1,4 +1,5 @@
-import { ReferencedMotions, MotionTitleInformation } from '../base/base-motion-slide';
+import { MotionTitleInformation } from 'app/site/motions/models/view-motion';
+import { ReferencedMotions } from '../base/base-motion-slide';
 
 export interface MotionBlockSlideMotionRepresentation extends MotionTitleInformation {
     recommendation?: {

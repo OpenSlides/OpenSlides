@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
+import { HttpHeaders } from '@angular/common/http';
 
-import { BaseRepository } from '../base-repository';
-import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
+import { TranslateService } from '@ngx-translate/core';
+
+import { ViewMediafile, MediafileTitleInformation } from 'app/site/mediafiles/models/view-mediafile';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { User } from 'app/shared/models/users/user';
 import { DataStoreService } from '../../core-services/data-store.service';
@@ -9,10 +11,10 @@ import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataSendService } from 'app/core/core-services/data-send.service';
 import { HttpService } from 'app/core/core-services/http.service';
-import { HttpHeaders } from '@angular/common/http';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { ViewUser } from 'app/site/users/models/view-user';
-import { TranslateService } from '@ngx-translate/core';
+import { BaseIsListOfSpeakersContentObjectRepository } from '../base-is-list-of-speakers-content-object-repository';
+import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
 
 /**
  * Repository for MediaFiles
@@ -20,7 +22,11 @@ import { TranslateService } from '@ngx-translate/core';
 @Injectable({
     providedIn: 'root'
 })
-export class MediafileRepositoryService extends BaseRepository<ViewMediafile, Mediafile> {
+export class MediafileRepositoryService extends BaseIsListOfSpeakersContentObjectRepository<
+    ViewMediafile,
+    Mediafile,
+    MediafileTitleInformation
+> {
     /**
      * Constructor for the mediafile repository
      * @param DS Data store
@@ -40,6 +46,10 @@ export class MediafileRepositoryService extends BaseRepository<ViewMediafile, Me
         this.initSorting();
     }
 
+    public getTitle = (titleInformation: MediafileTitleInformation) => {
+        return titleInformation.title;
+    };
+
     public getVerboseName = (plural: boolean = false) => {
         return this.translate.instant(plural ? 'Files' : 'File');
     };
@@ -51,10 +61,9 @@ export class MediafileRepositoryService extends BaseRepository<ViewMediafile, Me
      * @returns a new mediafile ViewModel
      */
     public createViewModel(file: Mediafile): ViewMediafile {
+        const listOfSpeakers = this.viewModelStoreService.get(ViewListOfSpeakers, file.list_of_speakers_id);
         const uploader = this.viewModelStoreService.get(ViewUser, file.uploader_id);
-        const viewMediafile = new ViewMediafile(file, uploader);
-        viewMediafile.getVerboseName = this.getVerboseName;
-        return viewMediafile;
+        return new ViewMediafile(file, listOfSpeakers, uploader);
     }
 
     /**

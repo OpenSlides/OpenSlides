@@ -3,11 +3,11 @@ from decimal import Decimal
 from typing import Any, Dict, List
 
 from django.conf import settings
-from django.contrib.contenttypes.fields import GenericRelation
 from django.core.validators import MinValueValidator
 from django.db import models
 
-from openslides.agenda.models import Item, Speaker
+from openslides.agenda.mixins import AgendaItemWithListOfSpeakersMixin
+from openslides.agenda.models import Speaker
 from openslides.core.config import config
 from openslides.core.models import Tag
 from openslides.mediafiles.models import Mediafile
@@ -79,11 +79,16 @@ class AssignmentManager(models.Manager):
         polls are prefetched from the database.
         """
         return self.get_queryset().prefetch_related(
-            "related_users", "agenda_items", "polls", "tags", "attachments"
+            "related_users",
+            "agenda_items",
+            "lists_of_speakers",
+            "polls",
+            "tags",
+            "attachments",
         )
 
 
-class Assignment(RESTModelMixin, models.Model):
+class Assignment(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model):
     """
     Model for assignments.
     """
@@ -146,10 +151,6 @@ class Assignment(RESTModelMixin, models.Model):
     """
     Mediafiles as attachments for this assignment.
     """
-
-    # In theory there could be one then more agenda_item. But we support only
-    # one. See the property agenda_item.
-    agenda_items = GenericRelation(Item, related_name="assignments")
 
     class Meta:
         default_permissions = ()
@@ -275,13 +276,13 @@ class Assignment(RESTModelMixin, models.Model):
             for candidate in self.candidates:
                 try:
                     Speaker.objects.add(
-                        candidate, self.agenda_item, skip_autoupdate=True
+                        candidate, self.list_of_speakers, skip_autoupdate=True
                     )
                 except OpenSlidesError:
                     # The Speaker is already on the list. Do nothing.
                     # TODO: Find a smart way not to catch the error concerning AnonymousUser.
                     pass
-            inform_changed_data(self.agenda_item)
+            inform_changed_data(self.list_of_speakers)
 
         return poll
 
@@ -319,29 +320,8 @@ class Assignment(RESTModelMixin, models.Model):
                 vote_results_dict[candidate].append(votes)
         return vote_results_dict
 
-    """
-    Container for runtime information for agenda app (on create or update of this instance).
-    """
-    agenda_item_update_information: Dict[str, Any] = {}
-
-    def get_agenda_title_information(self):
+    def get_title_information(self):
         return {"title": self.title}
-
-    @property
-    def agenda_item(self):
-        """
-        Returns the related agenda item.
-        """
-        # We support only one agenda item so just return the first element of
-        # the queryset.
-        return self.agenda_items.all()[0]
-
-    @property
-    def agenda_item_id(self):
-        """
-        Returns the id of the agenda item object related to this object.
-        """
-        return self.agenda_item.pk
 
 
 class AssignmentVote(RESTModelMixin, BaseVote):

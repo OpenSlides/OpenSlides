@@ -11,19 +11,17 @@ import { BaseViewComponent } from 'app/site/base/base-view';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
-import { SpeakerState } from 'app/shared/models/agenda/speaker';
-import { SpeakerRepositoryService } from 'app/core/repositories/agenda/speaker-repository.service';
-import { ViewItem } from '../../models/view-item';
-import { ViewSpeaker } from '../../models/view-speaker';
+import { ViewSpeaker, SpeakerState } from '../../models/view-speaker';
 import { ViewProjector } from 'app/site/projector/models/view-projector';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { DurationService } from 'app/core/ui-services/duration.service';
-import { CurrentAgendaItemService } from 'app/site/projector/services/current-agenda-item.service';
-import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { CollectionStringMapperService } from 'app/core/core-services/collection-string-mapper.service';
+import { CurrentListOfSpeakersService } from 'app/site/projector/services/current-agenda-item.service';
 import { CurrentListOfSpeakersSlideService } from 'app/site/projector/services/current-list-of-of-speakers-slide.service';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
+import { ListOfSpeakersRepositoryService } from 'app/core/repositories/agenda/list-of-speakers-repository.service';
+import { ViewListOfSpeakers } from '../../models/view-list-of-speakers';
 
 /**
  * The list of speakers for agenda items.
@@ -37,12 +35,12 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
     /**
      * Determine if the user is viewing the current list if speakers
      */
-    public currentListOfSpeakers = false;
+    public isCurrentListOfSpeakers = false;
 
     /**
      * Holds the view item to the given topic
      */
-    public viewItem: ViewItem;
+    public viewListOfSpeakers: ViewListOfSpeakers;
 
     /**
      * Holds the speakers
@@ -80,19 +78,19 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
     public addSpeakerForm: FormGroup;
 
     /**
-     * @returns true if the items' speaker list is currently not open
+     * @returns true if the list of speakers list is currently closed
      */
-    public get closedList(): boolean {
-        return this.viewItem && this.viewItem.item.speaker_list_closed;
+    public get isListOfSpeakersClosed(): boolean {
+        return this.viewListOfSpeakers && this.viewListOfSpeakers.closed;
     }
 
-    public get emptyList(): boolean {
+    public get isListOfSpeakersEmpty(): boolean {
         if (this.speakers && this.speakers.length) {
             return false;
         } else if (this.finishedSpeakers && this.finishedSpeakers.length) {
             return false;
         }
-        return this.activeSpeaker ? false : true;
+        return !this.activeSpeaker;
     }
 
     /**
@@ -100,11 +98,10 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
      */
     private closReferenceProjectorId: number | null;
 
-    private closItemSubscription: Subscription | null;
+    private closSubscription: Subscription | null;
 
     /**
-     * Constructor for speaker list component. Generates the forms and subscribes
-     * to the {@link currentListOfSpeakers}
+     * Constructor for speaker list component. Generates the forms.
      *
      * @param title
      * @param translate
@@ -112,43 +109,29 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
      * @param projectorRepo
      * @param route Angulars ActivatedRoute
      * @param DS the DataStore
-     * @param repo Repository for speakers
-     * @param itemRepo Repository for agendaItems
-     * @param op the current operator
+     * @param listOfSpeakersRepo Repository for list of speakers
+     * @param operator the current operator
      * @param promptService
-     * @param currentAgendaItemService
+     * @param currentListOfSpeakersService
      * @param durationService helper for speech duration display
      */
     public constructor(
         title: Title,
         protected translate: TranslateService, // protected required for ng-translate-extract
         snackBar: MatSnackBar,
-        projectorRepo: ProjectorRepositoryService,
+        private projectorRepo: ProjectorRepositoryService,
         private route: ActivatedRoute,
-        private repo: SpeakerRepositoryService,
-        private itemRepo: ItemRepositoryService,
-        private op: OperatorService,
+        private listOfSpeakersRepo: ListOfSpeakersRepositoryService,
+        private operator: OperatorService,
         private promptService: PromptService,
-        private currentAgendaItemService: CurrentAgendaItemService,
+        private currentListOfSpeakersService: CurrentListOfSpeakersService,
         private durationService: DurationService,
         private userRepository: UserRepositoryService,
         private collectionStringMapper: CollectionStringMapperService,
         private currentListOfSpeakersSlideService: CurrentListOfSpeakersSlideService
     ) {
         super(title, translate, snackBar);
-        this.isCurrentListOfSpeakers();
         this.addSpeakerForm = new FormGroup({ user_id: new FormControl([]) });
-
-        if (this.currentListOfSpeakers) {
-            this.projectors = projectorRepo.getSortedViewModelList();
-            this.updateClosProjector();
-            projectorRepo.getViewModelListObservable().subscribe(newProjectors => {
-                this.projectors = newProjectors;
-                this.updateClosProjector();
-            });
-        } else {
-            this.getItemByUrl();
-        }
     }
 
     /**
@@ -158,6 +141,24 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
      * React to form changes
      */
     public ngOnInit(): void {
+        // Check, if we are on the current list of speakers.
+        this.isCurrentListOfSpeakers =
+            this.route.snapshot.url.length > 0
+                ? this.route.snapshot.url[this.route.snapshot.url.length - 1].path === 'speakers'
+                : true;
+
+        if (this.isCurrentListOfSpeakers) {
+            this.projectors = this.projectorRepo.getSortedViewModelList();
+            this.updateClosProjector();
+            this.projectorRepo.getViewModelListObservable().subscribe(newProjectors => {
+                this.projectors = newProjectors;
+                this.updateClosProjector();
+            });
+        } else {
+            const id = +this.route.snapshot.url[this.route.snapshot.url.length - 1].path;
+            this.setListOfSpeakersId(id);
+        }
+
         // load and observe users
         this.users = this.userRepository.getViewModelListBehaviorSubject();
 
@@ -171,16 +172,7 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
     }
 
     public opCanManage(): boolean {
-        return this.op.hasPerms('agenda.can_manage_list_of_speakers');
-    }
-
-    /**
-     * Check the URL to determine a current list of Speakers
-     */
-    private isCurrentListOfSpeakers(): void {
-        if (this.route.snapshot.url[0]) {
-            this.currentListOfSpeakers = this.route.snapshot.url[0].path === 'speakers';
-        }
+        return this.operator.hasPerms('agenda.can_manage_list_of_speakers');
     }
 
     /**
@@ -198,14 +190,14 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
 
         if (this.projectorSubscription) {
             this.projectorSubscription.unsubscribe();
-            this.viewItem = null;
+            this.viewListOfSpeakers = null;
         }
 
-        this.projectorSubscription = this.currentAgendaItemService
-            .getAgendaItemObservable(referenceProjector)
-            .subscribe(item => {
-                if (item) {
-                    this.setSpeakerList(item.id);
+        this.projectorSubscription = this.currentListOfSpeakersService
+            .getListOfSpeakersObservable(referenceProjector)
+            .subscribe(listOfSpeakers => {
+                if (listOfSpeakers) {
+                    this.setListOfSpeakersId(listOfSpeakers.id);
                 }
             });
     }
@@ -218,31 +210,20 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
     }
 
     /**
-     * Extract the ID from the url
-     * Determine whether the speaker list belongs to a motion or a topic
-     */
-    private getItemByUrl(): void {
-        const id = +this.route.snapshot.url[0];
-        this.setSpeakerList(id);
-    }
-
-    /**
-     * Sets the current item as list of speakers
+     * Sets the current list of speakers id to show
      *
-     * @param item the item to use as List of Speakers
+     * @param id the list of speakers id
      */
-    private setSpeakerList(id: number): void {
-        if (this.closItemSubscription) {
-            this.closItemSubscription.unsubscribe();
+    private setListOfSpeakersId(id: number): void {
+        if (this.closSubscription) {
+            this.closSubscription.unsubscribe();
         }
 
-        this.closItemSubscription = this.itemRepo.getViewModelObservable(id).subscribe(newAgendaItem => {
-            if (newAgendaItem) {
-                this.viewItem = newAgendaItem;
-                const allSpeakers = this.repo.createSpeakerList(newAgendaItem.item);
+        this.closSubscription = this.listOfSpeakersRepo.getViewModelObservable(id).subscribe(listOfSpeakers => {
+            if (listOfSpeakers) {
+                this.viewListOfSpeakers = listOfSpeakers;
+                const allSpeakers = this.viewListOfSpeakers.speakers.sort((a, b) => a.weight - b.weight);
                 this.speakers = allSpeakers.filter(speaker => speaker.state === SpeakerState.WAITING);
-                // Since the speaker repository is not a normal repository, sorting cannot be handled there
-                this.speakers.sort((a: ViewSpeaker, b: ViewSpeaker) => a.weight - b.weight);
                 this.finishedSpeakers = allSpeakers.filter(speaker => speaker.state === SpeakerState.FINISHED);
 
                 // convert begin time to date and sort
@@ -259,11 +240,11 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
 
     /**
      * @returns the verbose name of the model of the content object from viewItem.
-     * If a motion is the current content object, "Motion" will be the returned value.
+     * E.g. if a motion is the current content object, "Motion" will be the returned value.
      */
     public getContentObjectProjectorButtonText(): string {
         const verboseName = this.collectionStringMapper
-            .getRepository(this.viewItem.item.content_object.collection)
+            .getRepository(this.viewListOfSpeakers.listOfSpeakers.content_object.collection)
             .getVerboseName();
         return verboseName;
     }
@@ -274,7 +255,9 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
      * @param userId the user id to add to the list. No parameter adds the operators user as speaker.
      */
     public addNewSpeaker(userId?: number): void {
-        this.repo.create(userId, this.viewItem).then(() => this.addSpeakerForm.reset(), this.raiseError);
+        this.listOfSpeakersRepo
+            .createSpeaker(this.viewListOfSpeakers, userId)
+            .then(() => this.addSpeakerForm.reset(), this.raiseError);
     }
 
     /**
@@ -285,32 +268,34 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
     public onSortingChange(listInNewOrder: ViewSpeaker[]): void {
         // extract the ids from the ViewSpeaker array
         const userIds = listInNewOrder.map(speaker => speaker.id);
-        this.repo.sortSpeakers(userIds, this.viewItem.item).then(null, this.raiseError);
+        this.listOfSpeakersRepo.sortSpeakers(this.viewListOfSpeakers, userIds).then(null, this.raiseError);
     }
 
     /**
      * Click on the mic button to mark a speaker as speaking
      *
-     * @param item the speaker marked in the list
+     * @param speaker the speaker marked in the list
      */
-    public onStartButton(item: ViewSpeaker): void {
-        this.repo.startSpeaker(item.id, this.viewItem).then(null, this.raiseError);
+    public onStartButton(speaker: ViewSpeaker): void {
+        this.listOfSpeakersRepo.startSpeaker(this.viewListOfSpeakers, speaker).then(null, this.raiseError);
     }
 
     /**
      * Click on the mic-cross button
      */
     public onStopButton(): void {
-        this.repo.stopCurrentSpeaker(this.viewItem).then(null, this.raiseError);
+        this.listOfSpeakersRepo.stopCurrentSpeaker(this.viewListOfSpeakers).then(null, this.raiseError);
     }
 
     /**
-     * Click on the star button
+     * Click on the star button. Toggles the marked attribute.
      *
-     * @param item
+     * @param speaker The speaker clicked on.
      */
-    public onMarkButton(item: ViewSpeaker): void {
-        this.repo.markSpeaker(item.user.id, !item.marked, this.viewItem).then(null, this.raiseError);
+    public onMarkButton(speaker: ViewSpeaker): void {
+        this.listOfSpeakersRepo
+            .markSpeaker(this.viewListOfSpeakers, speaker, !speaker.marked)
+            .then(null, this.raiseError);
     }
 
     /**
@@ -319,7 +304,9 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
      * @param speaker
      */
     public onDeleteButton(speaker?: ViewSpeaker): void {
-        this.repo.delete(this.viewItem, speaker ? speaker.id : null).then(null, this.raiseError);
+        this.listOfSpeakersRepo
+            .delete(this.viewListOfSpeakers, speaker ? speaker.id : null)
+            .then(null, this.raiseError);
     }
 
     /**
@@ -328,7 +315,7 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
      * @returns whether or not the current operator is in the list
      */
     public isOpInList(): boolean {
-        return this.speakers.some(speaker => speaker.user.id === this.op.user.id);
+        return this.speakers.some(speaker => speaker.userId === this.operator.user.id);
     }
 
     /**
@@ -342,20 +329,24 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
     }
 
     /**
-     * Closes the current speaker list
+     * Closes the current list of speakers
      */
     public closeSpeakerList(): Promise<void> {
-        if (!this.viewItem.item.speaker_list_closed) {
-            return this.itemRepo.update({ speaker_list_closed: true }, this.viewItem);
+        if (!this.viewListOfSpeakers.closed) {
+            return this.listOfSpeakersRepo
+                .update({ closed: true }, this.viewListOfSpeakers)
+                .then(null, this.raiseError);
         }
     }
 
     /**
-     * Opens the speaker list for the current item
+     * Opens the list of speaker for the current item
      */
     public openSpeakerList(): Promise<void> {
-        if (this.viewItem.item.speaker_list_closed) {
-            return this.itemRepo.update({ speaker_list_closed: false }, this.viewItem);
+        if (this.viewListOfSpeakers.closed) {
+            return this.listOfSpeakersRepo
+                .update({ closed: false }, this.viewListOfSpeakers)
+                .then(null, this.raiseError);
         }
     }
 
@@ -368,7 +359,7 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
             'Are you sure you want to delete all speakers from this list of speakers?'
         );
         if (await this.promptService.open(title, null)) {
-            this.repo.deleteAllSpeakers(this.viewItem);
+            this.listOfSpeakersRepo.deleteAllSpeakers(this.viewListOfSpeakers);
         }
     }
 

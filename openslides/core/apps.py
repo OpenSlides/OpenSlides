@@ -13,7 +13,6 @@ from django.db.models.signals import post_migrate, pre_delete
 class CoreAppConfig(AppConfig):
     name = "openslides.core"
     verbose_name = "OpenSlides Core"
-    angular_site_module = True
 
     def ready(self):
         # Import all required stuff.

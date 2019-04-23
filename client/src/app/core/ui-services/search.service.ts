@@ -92,7 +92,7 @@ export class SearchService {
      */
     public registerModel(
         collectionString: string,
-        repo: BaseRepository<any, any>,
+        repo: BaseRepository<any, any, any>,
         displayOrder: number,
         openInNewTab: boolean = false
     ): void {

@@ -1,40 +1,33 @@
 import { Topic } from 'app/shared/models/topics/topic';
-import { BaseAgendaViewModel } from 'app/site/base/base-agenda-view-model';
 import { SearchRepresentation } from 'app/core/ui-services/search.service';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewItem } from './view-item';
 import { BaseViewModel } from 'app/site/base/base-view-model';
+import { ViewListOfSpeakers } from './view-list-of-speakers';
+import { BaseViewModelWithAgendaItemAndListOfSpeakers } from 'app/site/base/base-view-model-with-agenda-item-and-list-of-speakers';
+import { TitleInformationWithAgendaItem } from 'app/site/base/base-view-model-with-agenda-item';
+
+export interface TopicTitleInformation extends TitleInformationWithAgendaItem {
+    title: string;
+    agenda_item_number?: string;
+}
 
 /**
  * Provides "safe" access to topic with all it's components
  * @ignore
  */
-export class ViewTopic extends BaseAgendaViewModel {
+export class ViewTopic extends BaseViewModelWithAgendaItemAndListOfSpeakers implements TopicTitleInformation {
     public static COLLECTIONSTRING = Topic.COLLECTIONSTRING;
 
-    protected _topic: Topic;
-    private _attachments: ViewMediafile[];
-    private _agendaItem: ViewItem;
+    private _attachments?: ViewMediafile[];
 
     public get topic(): Topic {
-        return this._topic;
+        return this._model;
     }
 
     public get attachments(): ViewMediafile[] {
-        return this._attachments;
-    }
-
-    public get agendaItem(): ViewItem {
-        return this._agendaItem;
-    }
-
-    public get id(): number {
-        return this.topic.id;
-    }
-
-    public get agenda_item_id(): number {
-        return this.topic.agenda_item_id;
+        return this._attachments || [];
     }
 
     public get attachments_id(): number[] {
@@ -49,34 +42,14 @@ export class ViewTopic extends BaseAgendaViewModel {
         return this.topic.text;
     }
 
-    /**
-     * This is set by the repository
-     */
-    public getVerboseName;
-    public getAgendaTitle;
-    public getAgendaTitleWithType;
-
-    public constructor(topic: Topic, attachments?: ViewMediafile[], item?: ViewItem) {
-        super(Topic.COLLECTIONSTRING);
-        this._topic = topic;
+    public constructor(
+        topic: Topic,
+        attachments?: ViewMediafile[],
+        item?: ViewItem,
+        listOfSpeakers?: ViewListOfSpeakers
+    ) {
+        super(Topic.COLLECTIONSTRING, topic, item, listOfSpeakers);
         this._attachments = attachments;
-        this._agendaItem = item;
-    }
-
-    public getTitle = () => {
-        if (this.agendaItem && this.agendaItem.itemNumber) {
-            return this.agendaItem.itemNumber + ' · ' + this.title;
-        } else {
-            return this.title;
-        }
-    };
-
-    public getModel(): Topic {
-        return this.topic;
-    }
-
-    public getAgendaItem(): ViewItem {
-        return this.agendaItem;
     }
 
     /**
@@ -118,6 +91,7 @@ export class ViewTopic extends BaseAgendaViewModel {
     }
 
     public updateDependencies(update: BaseViewModel): void {
+        super.updateDependencies(update);
         if (update instanceof ViewMediafile && this.attachments_id.includes(update.id)) {
             const attachmentIndex = this.attachments.findIndex(mediafile => mediafile.id === update.id);
             if (attachmentIndex < 0) {
@@ -125,9 +99,6 @@ export class ViewTopic extends BaseAgendaViewModel {
             } else {
                 this.attachments[attachmentIndex] = update;
             }
-        }
-        if (update instanceof ViewItem && this.agenda_item_id === update.id) {
-            this._agendaItem = update;
         }
     }
 }

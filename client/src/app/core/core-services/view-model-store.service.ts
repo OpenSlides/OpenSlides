@@ -20,10 +20,10 @@ export class ViewModelStoreService {
      *
      * @param collectionType The collection string or constructor.
      */
-    private getRepository<T extends BaseViewModel>(
-        collectionType: ViewModelConstructor<T> | string
-    ): BaseRepository<T, any> {
-        return this.mapperService.getRepository(collectionType) as BaseRepository<T, any>;
+    private getRepository<V extends BaseViewModel>(
+        collectionType: ViewModelConstructor<V> | string
+    ): BaseRepository<V, any, any> {
+        return this.mapperService.getRepository(collectionType) as BaseRepository<V, any, any>;
     }
 
     /**
@@ -32,7 +32,7 @@ export class ViewModelStoreService {
      * @param collectionString The collection of the view model
      * @param id The id of the view model
      */
-    public get<T extends BaseViewModel>(collectionType: ViewModelConstructor<T> | string, id: number): T {
+    public get<V extends BaseViewModel>(collectionType: ViewModelConstructor<V> | string, id: number): V {
         return this.getRepository(collectionType).getViewModel(id);
     }
 

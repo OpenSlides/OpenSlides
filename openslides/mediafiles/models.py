@@ -1,17 +1,32 @@
 from django.conf import settings
 from django.db import models
 
+from ..agenda.mixins import ListOfSpeakersMixin
 from ..core.config import config
 from ..utils.autoupdate import inform_changed_data
 from ..utils.models import SET_NULL_AND_AUTOUPDATE, RESTModelMixin
 from .access_permissions import MediafileAccessPermissions
 
 
-class Mediafile(RESTModelMixin, models.Model):
+class MediafileManager(models.Manager):
+    """
+    Customized model manager to support our get_full_queryset method.
+    """
+
+    def get_full_queryset(self):
+        """
+        Returns the normal queryset with all mediafiles. In the background
+        all related list of speakers are prefetched from the database.
+        """
+        return self.get_queryset().prefetch_related("lists_of_speakers")
+
+
+class Mediafile(RESTModelMixin, ListOfSpeakersMixin, models.Model):
     """
     Class for uploaded files which can be delivered under a certain url.
     """
 
+    objects = MediafileManager()
     access_permissions = MediafileAccessPermissions()
     can_see_permission = "mediafiles.can_see"
 
@@ -96,3 +111,6 @@ class Mediafile(RESTModelMixin, models.Model):
             if config[key]["path"] == self.mediafile.url:
                 return True
         return False
+
+    def get_list_of_speakers_title_information(self):
+        return {"title": self.title}

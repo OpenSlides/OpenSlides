@@ -25,16 +25,14 @@ export interface ProjectorElementBuildDeskriptor {
 }
 
 export function isProjectable(obj: any): obj is Projectable {
-    if (obj) {
-        return (<Projectable>obj).getSlide !== undefined;
-    } else {
-        return false;
-    }
+    return !!obj && obj.getSlide !== undefined && obj.getProjectorTitle !== undefined;
 }
 
 /**
  * Interface for every model, that should be projectable.
  */
 export interface Projectable extends Displayable {
+    getProjectorTitle: () => string;
+
     getSlide(configSerice?: ConfigService): ProjectorElementBuildDeskriptor;
 }

@@ -1,6 +1,6 @@
 import { MotionSubmitter } from './motion-submitter';
 import { MotionPoll } from './motion-poll';
-import { BaseModel } from '../base/base-model';
+import { BaseModelWithAgendaItemAndListOfSpeakers } from '../base/base-model-with-agenda-item-and-list-of-speakers';
 
 export interface MotionComment {
     id: number;
@@ -12,11 +12,11 @@ export interface MotionComment {
 /**
  * Representation of Motion.
  *
- * Slightly Defined cause heavy maintaince on server side.
+ * Slightly defined cause heavy maintenance on server side.
  *
  * @ignore
  */
-export class Motion extends BaseModel {
+export class Motion extends BaseModelWithAgendaItemAndListOfSpeakers<Motion> {
     public static COLLECTIONSTRING = 'motions/motion';
 
     public id: number;
@@ -44,7 +44,6 @@ export class Motion extends BaseModel {
     public tags_id: number[];
     public attachments_id: number[];
     public polls: MotionPoll[];
-    public agenda_item_id: number;
     public weight: number;
     public sort_parent_id: number;
     public created: string;

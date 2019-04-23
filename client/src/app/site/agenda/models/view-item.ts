@@ -1,25 +1,23 @@
-import { BaseViewModel } from '../../base/base-view-model';
 import { Item, itemVisibilityChoices } from 'app/shared/models/agenda/item';
-import { Speaker, SpeakerState } from 'app/shared/models/agenda/speaker';
-import { BaseAgendaViewModel, isAgendaBaseModel } from 'app/site/base/base-agenda-view-model';
-import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
+import {
+    BaseViewModelWithAgendaItem,
+    isBaseViewModelWithAgendaItem
+} from 'app/site/base/base-view-model-with-agenda-item';
+import { BaseViewModelWithContentObject } from 'app/site/base/base-view-model-with-content-object';
+import { ContentObject } from 'app/shared/models/base/content-object';
 
-export class ViewItem extends BaseViewModel {
+export interface ItemTitleInformation {
+    contentObject: BaseViewModelWithAgendaItem;
+    contentObjectData: ContentObject;
+    title_information: object;
+}
+
+export class ViewItem extends BaseViewModelWithContentObject<Item, BaseViewModelWithAgendaItem>
+    implements ItemTitleInformation {
     public static COLLECTIONSTRING = Item.COLLECTIONSTRING;
 
-    private _item: Item;
-    private _contentObject: BaseAgendaViewModel;
-
     public get item(): Item {
-        return this._item;
-    }
-
-    public get contentObject(): BaseAgendaViewModel {
-        return this._contentObject;
-    }
-
-    public get id(): number {
-        return this.item.id;
+        return this._model;
     }
 
     public get itemNumber(): string {
@@ -32,13 +30,6 @@ export class ViewItem extends BaseViewModel {
 
     public get duration(): number {
         return this.item.duration;
-    }
-
-    /**
-     * Gets the amount of waiting speakers
-     */
-    public get waitingSpeakerAmount(): number {
-        return this.item.speakers.filter(speaker => speaker.state === SpeakerState.WAITING).length;
     }
 
     public get type(): number {
@@ -82,13 +73,6 @@ export class ViewItem extends BaseViewModel {
     }
 
     /**
-     * TODO: make the repository set the ViewSpeakers here.
-     */
-    public get speakers(): Speaker[] {
-        return this.item.speakers;
-    }
-
-    /**
      * @returns the weight the server assigns to that item. Mostly useful for sorting within
      * it's own hierarchy level (items sharing a parent)
      */
@@ -103,46 +87,7 @@ export class ViewItem extends BaseViewModel {
         return this.item.parent_id;
     }
 
-    /**
-     * This is set by the repository
-     */
-    public getVerboseName: () => string;
-    public getTitle: () => string;
-    public getListTitle: () => string;
-
-    public listOfSpeakersSlide: ProjectorElementBuildDeskriptor = {
-        getBasicProjectorElement: options => ({
-            name: 'agenda/list-of-speakers',
-            id: this.id,
-            getIdentifiers: () => ['name', 'id']
-        }),
-        slideOptions: [],
-        projectionDefaultName: 'agenda_list_of_speakers',
-        getDialogTitle: () => this.getTitle()
-    };
-
-    public constructor(item: Item, contentObject: BaseAgendaViewModel) {
-        super(Item.COLLECTIONSTRING);
-        this._item = item;
-        this._contentObject = contentObject;
-    }
-
-    public getModel(): Item {
-        return this.item;
-    }
-
-    public updateDependencies(update: BaseViewModel): boolean {
-        if (
-            update &&
-            update.collectionString === this.item.content_object.collection &&
-            update.id === this.item.content_object.id
-        ) {
-            if (!isAgendaBaseModel(update)) {
-                throw new Error('The item is not an BaseAgendaViewModel:' + update);
-            }
-            this._contentObject = update as BaseAgendaViewModel;
-            return true;
-        }
-        return false;
+    public constructor(item: Item, contentObject?: BaseViewModelWithAgendaItem) {
+        super(Item.COLLECTIONSTRING, item, isBaseViewModelWithAgendaItem, 'BaseViewModelWithAgendaItem', contentObject);
     }
 }

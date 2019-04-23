@@ -3,25 +3,26 @@ import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { Searchable } from 'app/site/base/searchable';
 import { SearchRepresentation } from 'app/core/ui-services/search.service';
 import { ViewUser } from 'app/site/users/models/view-user';
-import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
+import { BaseViewModelWithListOfSpeakers } from 'app/site/base/base-view-model-with-list-of-speakers';
+import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
 
-export class ViewMediafile extends BaseProjectableViewModel implements Searchable {
+export interface MediafileTitleInformation {
+    title: string;
+}
+
+export class ViewMediafile extends BaseViewModelWithListOfSpeakers<Mediafile>
+    implements MediafileTitleInformation, Searchable {
     public static COLLECTIONSTRING = Mediafile.COLLECTIONSTRING;
 
-    private _mediafile: Mediafile;
     private _uploader: ViewUser;
 
     public get mediafile(): Mediafile {
-        return this._mediafile;
+        return this._model;
     }
 
     public get uploader(): ViewUser {
         return this._uploader;
-    }
-
-    public get id(): number {
-        return this.mediafile.id;
     }
 
     public get uploader_id(): number {
@@ -65,23 +66,9 @@ export class ViewMediafile extends BaseProjectableViewModel implements Searchabl
         return this.mediafile.hidden;
     }
 
-    /**
-     * This is set by the repository
-     */
-    public getVerboseName;
-
-    public constructor(mediafile: Mediafile, uploader?: ViewUser) {
-        super(Mediafile.COLLECTIONSTRING);
-        this._mediafile = mediafile;
+    public constructor(mediafile: Mediafile, listOfSpeakers?: ViewListOfSpeakers, uploader?: ViewUser) {
+        super(Mediafile.COLLECTIONSTRING, mediafile, listOfSpeakers);
         this._uploader = uploader;
-    }
-
-    public getTitle = () => {
-        return this.title;
-    };
-
-    public getModel(): Mediafile {
-        return this.mediafile;
     }
 
     public formatForSearch(): SearchRepresentation {
@@ -167,6 +154,7 @@ export class ViewMediafile extends BaseProjectableViewModel implements Searchabl
     }
 
     public updateDependencies(update: BaseViewModel): void {
+        super.updateDependencies(update);
         if (update instanceof ViewUser && this.uploader_id === update.id) {
             this._uploader = update;
         }

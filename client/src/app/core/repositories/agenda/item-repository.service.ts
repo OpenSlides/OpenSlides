@@ -4,33 +4,41 @@ import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseRepository } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { DataSendService } from 'app/core/core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { HttpService } from 'app/core/core-services/http.service';
 import { Item } from 'app/shared/models/agenda/item';
-import { ViewItem } from 'app/site/agenda/models/view-item';
 import { TreeIdNode } from 'app/core/ui-services/tree.service';
-import { BaseAgendaViewModel } from 'app/site/base/base-agenda-view-model';
+import { ViewItem, ItemTitleInformation } from 'app/site/agenda/models/view-item';
+import {
+    BaseViewModelWithAgendaItem,
+    isBaseViewModelWithAgendaItem
+} from 'app/site/base/base-view-model-with-agenda-item';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { BaseViewModel } from 'app/site/base/base-view-model';
-import { BaseAgendaContentObjectRepository } from '../base-agenda-content-object-repository';
 import { Motion } from 'app/shared/models/motions/motion';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { Topic } from 'app/shared/models/topics/topic';
 import { Assignment } from 'app/shared/models/assignments/assignment';
+import { BaseIsAgendaItemContentObjectRepository } from '../base-is-agenda-item-content-object-repository';
+import { BaseHasContentObjectRepository } from '../base-has-content-object-repository';
 
 /**
- * Repository service for users
+ * Repository service for items
  *
  * Documentation partially provided in {@link BaseRepository}
  */
 @Injectable({
     providedIn: 'root'
 })
-export class ItemRepositoryService extends BaseRepository<ViewItem, Item> {
+export class ItemRepositoryService extends BaseHasContentObjectRepository<
+    ViewItem,
+    Item,
+    BaseViewModelWithAgendaItem,
+    ItemTitleInformation
+> {
     /**
      * Contructor for agenda repository.
      *
@@ -57,19 +65,22 @@ export class ItemRepositoryService extends BaseRepository<ViewItem, Item> {
             MotionBlock
         ]);
 
-        this.setSortFunction((a, b) => {
-            // TODO: In some occasions weight will be undefined, if the user has not the correct set of permission.
-            //       That should not be the case here.
-            if (a.weight && b.weight) {
-                return a.weight - b.weight;
-            } else {
-                return -1;
-            }
-        });
+        this.setSortFunction((a, b) => a.weight - b.weight);
     }
 
     public getVerboseName = (plural: boolean = false) => {
         return this.translate.instant(plural ? 'Items' : 'Item');
+    };
+
+    public getTitle = (titleInformation: ItemTitleInformation) => {
+        if (titleInformation.contentObject) {
+            return titleInformation.contentObject.getAgendaListTitle();
+        } else {
+            const repo = this.collectionStringMapperService.getRepository(
+                titleInformation.contentObjectData.collection
+            ) as BaseIsAgendaItemContentObjectRepository<any, any, any>;
+            return repo.getAgendaListTitle(titleInformation.title_information);
+        }
     };
 
     /**
@@ -80,31 +91,16 @@ export class ItemRepositoryService extends BaseRepository<ViewItem, Item> {
      */
     public createViewModel(item: Item): ViewItem {
         const contentObject = this.getContentObject(item);
-        const viewItem = new ViewItem(item, contentObject);
-        viewItem.getVerboseName = this.getVerboseName;
-        viewItem.getTitle = () => {
-            const numberPrefix = viewItem.itemNumber ? `${viewItem.itemNumber} · ` : '';
-
-            if (viewItem.contentObject) {
-                return numberPrefix + viewItem.contentObject.getAgendaTitleWithType();
-            } else {
-                const repo = this.collectionStringMapperService.getRepository(
-                    viewItem.item.content_object.collection
-                ) as BaseAgendaContentObjectRepository<any, any>;
-                return numberPrefix + repo.getAgendaTitleWithType(viewItem.title_information);
-            }
-        };
-        viewItem.getListTitle = viewItem.getTitle;
-        return viewItem;
+        return new ViewItem(item, contentObject);
     }
 
     /**
-     * Returns the corresponding content object to a given {@link Item} as an {@link AgendaBaseViewModel}
+     * Returns the corresponding content object to a given {@link Item} as an {@link BaseAgendaItemViewModel}
      *
      * @param agendaItem the target agenda Item
      * @returns the content object of the given item. Might be null if it was not found.
      */
-    public getContentObject(agendaItem: Item): BaseAgendaViewModel {
+    public getContentObject(agendaItem: Item): BaseViewModelWithAgendaItem {
         const contentObject = this.viewModelStoreService.get<BaseViewModel>(
             agendaItem.content_object.collection,
             agendaItem.content_object.id
@@ -112,13 +108,13 @@ export class ItemRepositoryService extends BaseRepository<ViewItem, Item> {
         if (!contentObject) {
             return null;
         }
-        if (contentObject instanceof BaseAgendaViewModel) {
-            return contentObject as BaseAgendaViewModel;
+        if (isBaseViewModelWithAgendaItem(contentObject)) {
+            return contentObject;
         } else {
             throw new Error(
                 `The content object (${agendaItem.content_object.collection}, ${
                     agendaItem.content_object.id
-                }) of item ${agendaItem.id} is not a AgendaBaseViewModel.`
+                }) of item ${agendaItem.id} is not a BaseAgendaItemViewModel.`
             );
         }
     }

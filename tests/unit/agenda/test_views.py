@@ -1,20 +1,20 @@
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 
-from openslides.agenda.views import ItemViewSet
+from openslides.agenda.views import ListOfSpeakersViewSet
 
 
-class ItemViewSetManageSpeaker(TestCase):
+class ListOfSpeakersViewSetManageSpeaker(TestCase):
     """
-    Tests views of ItemViewSet to manage speakers.
+    Tests views of ListOfSpeakersViewSet to manage speakers.
     """
 
     def setUp(self):
         self.request = MagicMock()
-        self.view_instance = ItemViewSet()
+        self.view_instance = ListOfSpeakersViewSet()
         self.view_instance.request = self.request
         self.view_instance.get_object = get_object_mock = MagicMock()
-        get_object_mock.return_value = self.mock_item = MagicMock()
+        get_object_mock.return_value = self.mock_list_of_speakers = MagicMock()
 
     @patch("openslides.agenda.views.inform_changed_data")
     @patch("openslides.agenda.views.has_perm")
@@ -24,11 +24,13 @@ class ItemViewSetManageSpeaker(TestCase):
         self.request.user = 1
         mock_has_perm.return_value = True
         self.request.data = {}
-        self.mock_item.speaker_list_closed = False
+        self.mock_list_of_speakers.closed = False
 
         self.view_instance.manage_speaker(self.request)
 
-        mock_speaker.objects.add.assert_called_with(self.request.user, self.mock_item)
+        mock_speaker.objects.add.assert_called_with(
+            self.request.user, self.mock_list_of_speakers
+        )
 
     @patch("openslides.agenda.views.inform_changed_data")
     @patch("openslides.agenda.views.has_perm")
@@ -49,7 +51,9 @@ class ItemViewSetManageSpeaker(TestCase):
         self.view_instance.manage_speaker(self.request)
 
         MockUser.objects.get.assert_called_with(pk=2)
-        mock_speaker.objects.add.assert_called_with(mock_user, self.mock_item)
+        mock_speaker.objects.add.assert_called_with(
+            mock_user, self.mock_list_of_speakers
+        )
 
     @patch("openslides.agenda.views.Speaker")
     def test_remove_oneself(self, mock_speaker):
@@ -76,26 +80,28 @@ class ItemViewSetManageSpeaker(TestCase):
         mock_speaker.objects.get.return_value.delete.assert_called_with(
             skip_autoupdate=True
         )
-        mock_inform_changed_data.assert_called_with(self.mock_item)
+        mock_inform_changed_data.assert_called_with(self.mock_list_of_speakers)
 
 
-class ItemViewSetSpeak(TestCase):
+class ListOfSpeakersViewSetSpeak(TestCase):
     """
-    Tests views of ItemViewSet to begin and end speech.
+    Tests views of ListOfSpeakersViewSet to begin and end speech.
     """
 
     def setUp(self):
         self.request = MagicMock()
-        self.view_instance = ItemViewSet()
+        self.view_instance = ListOfSpeakersViewSet()
         self.view_instance.request = self.request
         self.view_instance.get_object = get_object_mock = MagicMock()
-        get_object_mock.return_value = self.mock_item = MagicMock()
+        get_object_mock.return_value = self.mock_list_of_speakers = MagicMock()
 
     def test_begin_speech(self):
         self.request.method = "PUT"
         self.request.user.has_perm.return_value = True
         self.request.data = {}
-        self.mock_item.get_next_speaker.return_value = mock_next_speaker = MagicMock()
+        self.mock_list_of_speakers.get_next_speaker.return_value = (
+            mock_next_speaker
+        ) = MagicMock()
         self.view_instance.speak(self.request)
         mock_next_speaker.begin_speech.assert_called_with()
 

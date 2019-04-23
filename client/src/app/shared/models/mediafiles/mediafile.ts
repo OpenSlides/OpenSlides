@@ -1,15 +1,23 @@
-import { File } from './file';
-import { BaseModel } from '../base/base-model';
+import { BaseModelWithListOfSpeakers } from '../base/base-model-with-list-of-speakers';
+
+interface FileMetadata {
+    name: string;
+    type: string;
+
+    // Only for PDFs
+    pages: number;
+    encrypted?: boolean;
+}
 
 /**
  * Representation of MediaFile. Has the nested property "File"
  * @ignore
  */
-export class Mediafile extends BaseModel<Mediafile> {
+export class Mediafile extends BaseModelWithListOfSpeakers<Mediafile> {
     public static COLLECTIONSTRING = 'mediafiles/mediafile';
     public id: number;
     public title: string;
-    public mediafile: File;
+    public mediafile: FileMetadata;
     public media_url_prefix: string;
     public uploader_id: number;
     public filesize: string;
@@ -18,11 +26,6 @@ export class Mediafile extends BaseModel<Mediafile> {
 
     public constructor(input?: any) {
         super(Mediafile.COLLECTIONSTRING, input);
-    }
-
-    public deserialize(input: any): void {
-        Object.assign(this, input);
-        this.mediafile = new File(input.mediafile);
     }
 
     /**
