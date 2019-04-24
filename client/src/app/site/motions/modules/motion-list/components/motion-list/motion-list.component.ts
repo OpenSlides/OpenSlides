@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { MatSnackBar, MatDialog } from '@angular/material';
@@ -32,6 +32,32 @@ import { LocalPermissionsService } from 'app/site/motions/services/local-permiss
 import { StorageService } from 'app/core/core-services/storage.service';
 
 /**
+ * Interface to describe possible values and changes for
+ * meta information dialog.
+ */
+interface InfoDialog {
+    /**
+     * The title of the motion
+     */
+    title: string;
+
+    /**
+     * The motion block id
+     */
+    motionBlock: number;
+
+    /**
+     * The category id
+     */
+    category: number;
+
+    /**
+     * The motions tag ids
+     */
+    tags: number[];
+}
+
+/**
  * Component that displays all the motions in a Table using DataSource.
  */
 @Component({
@@ -40,6 +66,17 @@ import { StorageService } from 'app/core/core-services/storage.service';
     styleUrls: ['./motion-list.component.scss']
 })
 export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motion> implements OnInit {
+    /**
+     * Reference to the dialog for quick editing meta information.
+     */
+    @ViewChild('motionInfoDialog')
+    private motionInfoDialog: TemplateRef<string>;
+
+    /**
+     * Interface to hold meta information.
+     */
+    public infoDialog: InfoDialog;
+
     /**
      * Columns to display in table when desktop view is available
      */
@@ -55,7 +92,7 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
      * @TODO replace by direct access to config variable, once it's available from the templates
      */
     public statutesEnabled: boolean;
-    public recomendationEnabled: boolean;
+    public recommendationEnabled: boolean;
 
     public tags: ViewTag[] = [];
     public workflows: ViewWorkflow[] = [];
@@ -128,9 +165,9 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
         this.configService
             .get<boolean>('motions_statutes_enabled')
             .subscribe(enabled => (this.statutesEnabled = enabled));
-        this.configService
-            .get<string>('motions_recommendations_by')
-            .subscribe(recommender => (this.recomendationEnabled = !!recommender));
+        this.configService.get<string>('motions_recommendations_by').subscribe(recommender => {
+            this.recommendationEnabled = !!recommender;
+        });
         this.motionBlockRepo.getViewModelListObservable().subscribe(mBs => (this.motionBlocks = mBs));
         this.categoryRepo.getViewModelListObservable().subscribe(cats => (this.categories = cats));
         this.tagRepo.getViewModelListObservable().subscribe(tags => (this.tags = tags));
@@ -340,5 +377,55 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
 
             return false;
         };
+    }
+
+    /**
+     * Opens a dialog to edit some meta information about a motion.
+     *
+     * @param motion the ViewMotion whose content is edited.
+     * @param ev a MouseEvent.
+     */
+    public async openEditInfo(motion: ViewMotion, ev: MouseEvent): Promise<void> {
+        ev.stopPropagation();
+
+        // The interface holding the current information from motion.
+        this.infoDialog = {
+            title: motion.title,
+            motionBlock: motion.motion_block_id,
+            category: motion.category_id,
+            tags: motion.tags_id
+        };
+
+        // Copies the interface to check, if changes were made.
+        const copyDialog = { ...this.infoDialog };
+
+        const dialogRef = this.dialog.open(this.motionInfoDialog, {
+            width: '400px',
+            maxWidth: '90vw',
+            maxHeight: '90vh',
+            disableClose: true
+        });
+
+        dialogRef.keydownEvents().subscribe((event: KeyboardEvent) => {
+            if (event.key === 'Enter' && event.shiftKey) {
+                dialogRef.close(this.infoDialog);
+            }
+        });
+
+        // After closing the dialog: Goes through the fields and check if they are changed
+        // TODO: Logic like this should be handled in a service
+        dialogRef.afterClosed().subscribe(async (result: InfoDialog) => {
+            if (result) {
+                const partialUpdate = {
+                    category_id: result.category !== copyDialog.category ? result.category : undefined,
+                    motion_block_id: result.motionBlock !== copyDialog.motionBlock ? result.motionBlock : undefined,
+                    tags_id: JSON.stringify(result.tags) !== JSON.stringify(copyDialog.tags) ? result.tags : undefined
+                };
+                // TODO: "only update if different" was another repo-todo
+                if (!Object.keys(partialUpdate).every(key => partialUpdate[key] === undefined)) {
+                    await this.motionRepo.update(partialUpdate, motion).then(null, this.raiseError);
+                }
+            }
+        });
     }
 }

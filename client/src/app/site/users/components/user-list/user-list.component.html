@@ -61,10 +61,7 @@
                             </span>
                         </span>
                         <br *ngIf="user.groups && user.structure_level" />
-                        <span *ngIf="user.structure_level">
-                            <mat-icon>flag</mat-icon>
-                            {{ user.structure_level }}
-                        </span>
+                        <span *ngIf="user.structure_level"> <mat-icon>flag</mat-icon>{{ user.structure_level }}</span>
                     </div>
                 </div>
             </mat-cell>

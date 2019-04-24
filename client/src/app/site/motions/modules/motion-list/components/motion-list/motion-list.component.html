@@ -103,22 +103,24 @@
         <!-- state column -->
         <ng-container matColumnDef="state">
             <mat-header-cell *matHeaderCellDef mat-sort-header>State</mat-header-cell>
-            <mat-cell *matCellDef="let motion">
-                <div class="innerTable state-column">
-                    <div class="small ellipsis-overflow" *ngIf="motion.category">
-                        <mat-icon>device_hub</mat-icon>
-                        {{ motion.category }}
-                    </div>
-                    <div class="small ellipsis-overflow" *ngIf="motion.motion_block">
-                        <mat-icon>widgets</mat-icon>
-                        {{ motion.motion_block.title }}
-                    </div>
-                    <div class="small ellipsis-overflow" *ngIf="motion.tags && motion.tags.length">
-                        <mat-icon>local_offer</mat-icon>
-                        <span *ngFor="let tag of motion.tags; let last = last">
-                            {{ tag.getTitle() }}
-                            <span *ngIf="!last">,&nbsp;</span>
-                        </span>
+            <mat-cell (click)="openEditInfo(motion, $event)" *matCellDef="let motion">
+                <div class="fill">
+                    <div class="innerTable state-column">
+                        <div class="small ellipsis-overflow" *ngIf="motion.category">
+                            <mat-icon>device_hub</mat-icon>
+                            {{ motion.category }}
+                        </div>
+                        <div class="small ellipsis-overflow" *ngIf="motion.motion_block">
+                            <mat-icon>widgets</mat-icon>
+                            {{ motion.motion_block.title }}
+                        </div>
+                        <div class="small ellipsis-overflow" *ngIf="motion.tags && motion.tags.length">
+                            <mat-icon>local_offer</mat-icon>
+                            <span *ngFor="let tag of motion.tags; let last = last">
+                                {{ tag.getTitle() }}
+                                <span *ngIf="!last">,&nbsp;</span>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </mat-cell>
@@ -245,7 +247,7 @@
                 <span translate>Set status</span>
             </button>
             <button
-                *ngIf="recomendationEnabled"
+                *ngIf="recommendationEnabled"
                 [disabled]="!selectedRows.length"
                 mat-menu-item
                 (click)="multiselectWrapper(multiselectService.setRecommendation(selectedRows))"
@@ -329,3 +331,47 @@
         </div>
     </div>
 </mat-menu>
+
+<!-- Template for dialog for quick editing -->
+<ng-template #motionInfoDialog>
+    <h1 mat-dialog-title>
+        <span>{{ 'Edit details for' | translate }} {{ infoDialog.title }}</span>
+    </h1>
+    <div class="os-form-card-mobile" mat-dialog-content>
+        <!-- Category -->
+        <mat-form-field>
+            <mat-select placeholder="{{ 'Category' | translate }}" [(ngModel)]="infoDialog.category">
+                <mat-option [value]="null">-</mat-option>
+                <mat-option *ngFor="let category of categories" [value]="category.id">
+                    {{ category.getTitle() | translate }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <!-- Motion block -->
+        <mat-form-field>
+            <mat-select placeholder="{{ 'Motion block' | translate }}" [(ngModel)]="infoDialog.motionBlock">
+                <mat-option [value]="null">-</mat-option>
+                <mat-option *ngFor="let block of motionBlocks" [value]="block.id">
+                    {{ block.getTitle() | translate }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <!-- Tag -->
+        <mat-form-field>
+            <mat-select multiple placeholder="{{ 'Tags' | translate }}" [(ngModel)]="infoDialog.tags">
+                <mat-option *ngFor="let tag of tags" [value]="tag.id">
+                    {{ tag.getTitle() | translate }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <div mat-dialog-actions>
+        <button type="submit" mat-button color="primary" [mat-dialog-close]="infoDialog">
+            <span translate>Save</span>
+        </button>
+        <button type="button" mat-button [mat-dialog-close]="null">
+            <span translate>Cancel</span>
+        </button>
+    </div>
+</ng-template>
