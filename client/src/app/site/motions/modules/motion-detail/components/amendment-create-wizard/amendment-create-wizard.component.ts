@@ -212,6 +212,7 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
             text: text, // Workaround as 'text' is required from the backend
             parent_id: this.motion.id,
             category_id: this.motion.category_id,
+            tags_id: this.motion.tags_id,
             motion_block_id: this.motion.motion_block_id,
             amendment_paragraphs: amendedParagraphs
         };
