@@ -108,7 +108,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name="users_email_sender",
-        default_value="noreply@yourdomain.com",
+        default_value="noreply@example.com",
         input_type="string",
         label="Email sender",
         weight=600,
