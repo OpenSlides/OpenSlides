@@ -13,7 +13,7 @@ import { ViewAssignmentPoll } from '../models/view-assignment-poll';
 
 type AssignmentPollValues = 'auto' | 'votes' | 'yesnoabstain' | 'yesno';
 export type AssignmentPollMethod = 'yn' | 'yna' | 'votes';
-type AssignmentPercentBase = 'YES_NO_ABSTAIN' | 'YES_NO' | 'VALID' | 'CAST' | 'DISABLED';
+export type AssignmentPercentBase = 'YES_NO_ABSTAIN' | 'YES_NO' | 'VALID' | 'CAST' | 'DISABLED';
 
 /**
  * Service class for assignment polls.
@@ -77,7 +77,7 @@ export class AssignmentPollService extends PollService {
             case 'YES_NO_ABSTAIN':
                 if (poll.pollmethod === 'votes') {
                     const yes = poll.options.map(option => {
-                        const yesValue = option.votes.find(v => v.value === 'Yes');
+                        const yesValue = option.votes.find(v => v.value === 'Votes');
                         return yesValue ? yesValue.weight : -99;
                     });
                     if (Math.min(...yes) < 0) {
@@ -106,8 +106,17 @@ export class AssignmentPollService extends PollService {
      * @returns a percentage number with two digits, null if the value cannot be calculated
      */
     public getPercent(poll: ViewAssignmentPoll, option: ViewAssignmentPollOption, value: PollVoteValue): number | null {
-        const base = poll.pollmethod === 'votes' ? poll.pollBase : this.getOptionBaseAmount(poll, option);
-        if (!base) {
+        let base = 0;
+        if (this.percentBase === 'DISABLED') {
+            return null;
+        } else if (this.percentBase === 'VALID') {
+            base = poll.votesvalid;
+        } else if (this.percentBase === 'CAST') {
+            base = poll.votescast;
+        } else {
+            base = poll.pollmethod === 'votes' ? poll.pollBase : this.getOptionBaseAmount(poll, option);
+        }
+        if (!base || base < 0) {
             return null;
         }
         const vote = option.votes.find(v => v.value === value);
@@ -141,11 +150,15 @@ export class AssignmentPollService extends PollService {
      *
      * @param poll
      * @param option
+     * @param key (optional) the key to calculate
      * @returns true if the poll has no percentages, the poll option is a special value,
      * or if the calculations are disabled in the config
      */
-    public isAbstractOption(poll: ViewAssignmentPoll, option: ViewAssignmentPollOption): boolean {
-        if (!option.votes || !option.votes.length) {
+    public isAbstractOption(poll: ViewAssignmentPoll, option: ViewAssignmentPollOption, key?: PollVoteValue): boolean {
+        if (this.percentBase === 'DISABLED' || !option.votes || !option.votes.length) {
+            return true;
+        }
+        if (key === 'Abstain' && this.percentBase === 'YES_NO') {
             return true;
         }
         if (poll.pollmethod === 'votes') {
@@ -166,7 +179,7 @@ export class AssignmentPollService extends PollService {
      * Use {@link isAbstractOption} for these
      */
     public isAbstractValue(poll: ViewAssignmentPoll, value: CalculablePollKey): boolean {
-        if (!poll.pollBase || !this.pollValues.includes(value)) {
+        if (this.percentBase === 'DISABLED' || !poll.pollBase || !this.pollValues.includes(value)) {
             return true;
         }
         if (this.percentBase === 'CAST' && poll[value] >= 0) {
@@ -183,17 +196,21 @@ export class AssignmentPollService extends PollService {
      * @returns an positive integer to be used as percentage base, or null
      */
     private getOptionBaseAmount(poll: ViewAssignmentPoll, option: ViewAssignmentPollOption): number | null {
-        if (poll.pollmethod === 'votes') {
+        if (this.percentBase === 'DISABLED' || poll.pollmethod === 'votes') {
             return null;
+        } else if (this.percentBase === 'CAST') {
+            return poll.votescast > 0 ? poll.votescast : null;
+        } else if (this.percentBase === 'VALID') {
+            return poll.votesvalid > 0 ? poll.votesvalid : null;
         }
         const yes = option.votes.find(v => v.value === 'Yes');
         const no = option.votes.find(v => v.value === 'No');
-        if (poll.pollmethod === 'yn') {
+        if (this.percentBase === 'YES_NO') {
             if (!yes || yes.weight === undefined || !no || no.weight === undefined) {
                 return null;
             }
             return yes.weight >= 0 && no.weight >= 0 ? yes.weight + no.weight : null;
-        } else {
+        } else if (this.percentBase === 'YES_NO_ABSTAIN') {
             const abstain = option.votes.find(v => v.value === 'Abstain');
             if (!abstain || abstain.weight === undefined) {
                 return null;
