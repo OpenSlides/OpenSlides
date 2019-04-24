@@ -64,7 +64,7 @@
         <ng-container matColumnDef="recommendation">
             <mat-header-cell *matHeaderCellDef> <span translate>Recommendation</span> </mat-header-cell>
             <mat-cell class="chip-container" *matCellDef="let motion">
-                <mat-basic-chip disableRipple class="bluegrey">
+                <mat-basic-chip *ngIf="motion.recommendation" disableRipple class="bluegrey">
                     {{ getRecommendationLabel(motion) }}
                 </mat-basic-chip>
             </mat-cell>
