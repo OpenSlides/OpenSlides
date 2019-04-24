@@ -84,4 +84,8 @@
         background-color: mat-color($background, hover);
         color: mat-color($foreground, text) !important;
     }
+
+    input[readonly] {
+        cursor: default;
+    }
 }
