@@ -617,12 +617,14 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
                     defaultMotion.title = defaultTitle;
                     defaultMotion.parent_id = parentMotion.id;
                     defaultMotion.category_id = parentMotion.category_id;
+                    defaultMotion.tags_id = parentMotion.tags_id;
                     defaultMotion.motion_block_id = parentMotion.motion_block_id;
                     this.contentForm.patchValue({
                         title: defaultTitle,
                         category_id: parentMotion.category_id,
                         motion_block_id: parentMotion.motion_block_id,
-                        parent_id: parentMotion.id
+                        parent_id: parentMotion.id,
+                        tags_id: parentMotion.tags_id
                     });
                 }
                 if (mode === 'fulltext') {
@@ -697,6 +699,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
             submitters_id: [],
             supporters_id: [[]],
             workflow_id: [],
+            tags_id: [],
             origin: [''],
             selected_paragraphs: [],
             statute_amendment: [''], // Internal value for the checkbox, not saved to the model
