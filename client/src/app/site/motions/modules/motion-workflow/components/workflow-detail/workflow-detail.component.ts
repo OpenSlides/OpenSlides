@@ -49,7 +49,7 @@ interface AmendmentIntoFinal {
 }
 
 /**
- * Defines the structre of restrictions
+ * Defines the structure of restrictions
  */
 interface Restriction {
     key: string;
@@ -107,7 +107,7 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
             selector: 'show_recommendation_extension_field',
             type: 'check'
         },
-        { name: 'Show amendment in parent motoin', selector: 'merge_amendment_into_final', type: 'amendment' },
+        { name: 'Show amendment in parent motion', selector: 'merge_amendment_into_final', type: 'amendment' },
         { name: 'Restrictions', selector: 'restriction', type: 'restriction' },
         { name: 'Label color', selector: 'css_class', type: 'color' },
         { name: 'Next states', selector: 'next_states_id', type: 'state' }
