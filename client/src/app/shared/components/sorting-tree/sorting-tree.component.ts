@@ -708,7 +708,7 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
             if (node.level > 0) {
                 // const previousNode = this.osTreeData[previousIndex - 1];
                 const previousNode = this.getNextVisibleNode(this.osTreeData[previousIndex - 1], Direction.UPWARDS);
-                const onlyChild = this.getChildNodes(previousNode).length === 1;
+                const onlyChild = this.getUnfilteredChildNodes(previousNode).length === 1;
                 const isMovedLowerLevel = previousIndex === nextIndex && nextLevel <= previousNode.level && onlyChild;
                 const isMovedAway = previousIndex !== nextIndex && onlyChild;
 
