@@ -6,8 +6,8 @@ import { AssignmentListComponent } from './components/assignment-list/assignment
 
 const routes: Routes = [
     { path: '', component: AssignmentListComponent, pathMatch: 'full' },
-    { path: 'new', component: AssignmentDetailComponent },
-    { path: ':id', component: AssignmentDetailComponent }
+    { path: 'new', component: AssignmentDetailComponent, data: { basePerm: 'assignments.can_manage' } },
+    { path: ':id', component: AssignmentDetailComponent, data: { basePerm: 'assignments.can_see' } }
 ];
 
 @NgModule({

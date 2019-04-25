@@ -2,8 +2,13 @@
     <input hidden type="file" #fileInput (change)="onSelectFile($event)" multiple />
 
     <div class="selection-area">
-        <file-drop (onFileDrop)="onDropFile($event)" (click)="fileInput.click()" customstyle="file-drop-style">
-            <span translate>Drop files into this area OR click here to select files</span>
+        <file-drop
+            (onFileDrop)="onDropFile($event)"
+            (click)="fileInput.click()"
+            dropZoneLabel="{{ 'Drop files into this area OR click here to select files' | translate }}"
+            contentClassName="file-drop-content-style"
+            dropZoneClassName="file-drop-zone-style"
+        >
         </file-drop>
     </div>
 

@@ -12,7 +12,9 @@
         "typeRoots": ["node_modules/@types"],
         "lib": ["es2017", "dom"],
         "paths": {
-            "exceljs": ["../node_modules/exceljs/dist/exceljs.min"]
+            "exceljs": ["../node_modules/exceljs/dist/exceljs.min"],
+            "core-js/es7/*": ["../node_modules/core-js/proposals/reflect-metadata"],
+            "core-js/es6/*": ["../node_modules/core-js/es/*"]
         }
     }
 }

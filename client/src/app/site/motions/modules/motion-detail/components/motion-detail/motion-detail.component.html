@@ -132,27 +132,29 @@
 </div>
 
 <ng-template #mobileView>
-    <!-- Meta info -->
-    <div class="hspacing"><ng-container *ngTemplateOutlet="metaInfoTemplate"></ng-container></div>
+    <div *ngIf="motion">
+        <!-- Meta info -->
+        <div class="hspacing"><ng-container *ngTemplateOutlet="metaInfoTemplate"></ng-container></div>
 
-    <mat-divider *ngIf="!editMotion" class="spacer-top-10 spacer-bottom-20"></mat-divider>
+        <mat-divider *ngIf="!editMotion" class="spacer-top-10 spacer-bottom-20"></mat-divider>
 
-    <!-- Content -->
-    <div class="hspacing" [ngClass]="editMotion ? 'os-form-card-mobile' : 'os-card-mobile'">
-        <ng-container *ngTemplateOutlet="contentTemplate"></ng-container>
+        <!-- Content -->
+        <div class="hspacing" [ngClass]="editMotion ? 'os-form-card-mobile' : 'os-card-mobile'">
+            <ng-container *ngTemplateOutlet="contentTemplate"></ng-container>
+        </div>
+
+        <mat-divider *ngIf="!editMotion" class="spacer-top-10 spacer-bottom-20"></mat-divider>
+
+        <!-- Comments -->
+        <os-motion-comments *ngIf="!editMotion" [motion]="motion"></os-motion-comments>
+
+        <!-- Personal note -->
+        <os-personal-note *ngIf="!editMotion && !operator.isAnonymous" [motion]="motion"></os-personal-note>
     </div>
-
-    <mat-divider *ngIf="!editMotion" class="spacer-top-10 spacer-bottom-20"></mat-divider>
-
-    <!-- Comments -->
-    <os-motion-comments *ngIf="!editMotion" [motion]="motion"></os-motion-comments>
-
-    <!-- Personal note -->
-    <os-personal-note *ngIf="!editMotion && !operator.isAnonymous" [motion]="motion"></os-personal-note>
 </ng-template>
 
 <ng-template #desktopView>
-    <div class="desktop-view">
+    <div class="desktop-view" *ngIf="motion">
         <div class="desktop-left on-transition-fade">
             <!-- Meta Info -->
             <div class="meta-info-block meta-info-desktop">
@@ -172,7 +174,7 @@
 </ng-template>
 
 <ng-template #metaInfoTemplate>
-    <div *ngIf="motion">
+    <div>
         <!-- Submitters -->
         <div *ngIf="motion.submitters || newMotion">
             <div *ngIf="!editMotion"><os-manage-submitters [motion]="motion"></os-manage-submitters></div>
@@ -441,7 +443,7 @@
 </ng-template>
 
 <ng-template #contentTemplate>
-    <form class="motion-content" [formGroup]="contentForm" (keydown)="onKeyDown($event)" *ngIf="motion">
+    <form class="motion-content" [formGroup]="contentForm" (keydown)="onKeyDown($event)">
         <!-- Line Number and Diff buttons -->
         <div *ngIf="!editMotion && !motion.isStatuteAmendment()" class="motion-text-controls">
             <mat-form-field class="motion-goto-line" *ngIf="highlightedLineOpened">
