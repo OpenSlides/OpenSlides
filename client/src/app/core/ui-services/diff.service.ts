@@ -1966,6 +1966,41 @@ export class DiffService {
             }
         );
 
+        // <P><ins>NEUE ZEILE</P>\n<P></ins> => <ins><P>NEUE ZEILE</P>\n</ins><P>
+        diffUnnormalized = diffUnnormalized.replace(
+            /<(p|div|blockquote|li)([^>]*)><(ins|del)>([\s\S]*?)<\/\1>(\s*)<(p|div|blockquote|li)([^>]*)><\/\3>/gi,
+            (
+                whole: string,
+                block1: string,
+                att1: string,
+                insDel: string,
+                content: string,
+                space: string,
+                block2: string,
+                att2: string
+            ): string => {
+                return (
+                    '<' +
+                    insDel +
+                    '><' +
+                    block1 +
+                    att1 +
+                    '>' +
+                    content +
+                    '</' +
+                    block1 +
+                    '>' +
+                    space +
+                    '</' +
+                    insDel +
+                    '><' +
+                    block2 +
+                    att2 +
+                    '>'
+                );
+            }
+        );
+
         // If larger inserted HTML text contains block elements, we separate the inserted text into
         // inline <ins> elements and "insert"-class-based block elements.
         // <ins>...<div>...</div>...</ins> => <ins>...</ins><div class="insert">...</div><ins>...</ins>
