@@ -449,7 +449,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
 
     /**
      * Assemble a meaningful label for the poll
-     * Published polls will look like 'Ballot 2 (published)'
+     * Published polls will look like 'Ballot 2'
      * other polls will be named 'Ballot 2' for normal users, with the hint
      * '(unpulished)' appended for manager users
      *
@@ -458,14 +458,10 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
      */
     public getPollLabel(poll: AssignmentPoll, index: number): string {
         const title = `${this.translate.instant('Ballot')} ${index + 1}`;
-        if (poll.published) {
-            return title + ` (${this.translate.instant('published')})`;
+        if (!poll.published && this.hasPerms('manage')) {
+            return title + ` (${this.translate.instant('unpublished')})`;
         } else {
-            if (this.hasPerms('manage')) {
-                return title + ` (${this.translate.instant('unpublished')})`;
-            } else {
-                return title;
-            }
+            return title;
         }
     }
 
@@ -492,5 +488,12 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
         this.repo
             .sortCandidates(listInNewOrder.map(relatedUser => relatedUser.id), this.assignment)
             .then(null, this.raiseError);
+    }
+
+    /**
+     * Gets the link to the list of speakers associated with the assignment
+     */
+    public getSpeakerLink(): string {
+        return `/agenda/${this.assignment.agendaItem.id}/speakers`;
     }
 }
