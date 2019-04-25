@@ -28,14 +28,22 @@
                 <span translate>PDF</span>
             </button>
             <mat-divider></mat-divider>
-            <!-- Delete -->
         </div>
+        <!-- Project -->
+        <os-projector-button
+            [object]="assignment"
+            [menuItem]="true"
+            *osPerms="'core.can_manage_projector'"
+        ></os-projector-button>
+
+        <!-- Delete -->
         <div *ngIf="assignment && hasPerms('manage')">
             <button mat-menu-item class="red-warning-text" (click)="onDeleteAssignmentButton()">
                 <mat-icon>delete</mat-icon>
                 <span translate>Delete</span>
             </button>
         </div>
+
     </mat-menu>
 </os-head-bar>
 

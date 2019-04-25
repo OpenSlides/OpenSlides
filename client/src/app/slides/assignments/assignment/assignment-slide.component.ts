@@ -17,12 +17,11 @@ export class AssignmentSlideComponent extends BaseSlideComponent<AssignmentSlide
     @Input()
     public set data(data: SlideData<AssignmentSlideData>) {
         this._data = data;
-        console.log('Data: ', data);
     }
+
     public get data(): SlideData<AssignmentSlideData> {
         return this._data;
     }
-    // UNTIL HERE
 
     public constructor() {
         super();

@@ -3,16 +3,11 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 
 import { AssignmentPollOption } from 'app/shared/models/assignments/assignment-poll-option';
-import { AssignmentPollService } from '../../services/assignment-poll.service';
+import { AssignmentPollService, SummaryPollKey } from '../../services/assignment-poll.service';
 import { CalculablePollKey, PollVoteValue } from 'app/core/ui-services/poll.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
 import { ViewAssignmentPollOption } from '../../models/view-assignment-poll-option';
-
-/**
- * Vote entries included once for summary (e.g. total votes cast)
- */
-type summaryPollKey = 'votescast' | 'votesvalid' | 'votesinvalid';
 
 /**
  * A dialog for updating the values of an assignment-related poll.
@@ -26,7 +21,7 @@ export class AssignmentPollDialogComponent {
     /**
      * The summary values that will have fields in the dialog
      */
-    public sumValues: summaryPollKey[] = ['votesvalid', 'votesinvalid', 'votescast'];
+    public sumValues: SummaryPollKey[] = ['votesvalid', 'votesinvalid', 'votescast'];
 
     /**
      * List of accepted special non-numerical values.
@@ -148,7 +143,7 @@ export class AssignmentPollDialogComponent {
      * @param value
      * @returns integer or undefined
      */
-    public getSumValue(value: summaryPollKey): number | undefined {
+    public getSumValue(value: SummaryPollKey): number | undefined {
         return this.data[value] || undefined;
     }
 
@@ -158,7 +153,7 @@ export class AssignmentPollDialogComponent {
      * @param value
      * @param weight
      */
-    public setSumValue(value: summaryPollKey, weight: string): void {
+    public setSumValue(value: SummaryPollKey, weight: string): void {
         this.data[value] = parseFloat(weight);
     }
 

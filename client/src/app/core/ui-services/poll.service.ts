@@ -169,6 +169,7 @@ export abstract class PollService {
     public getSpecialLabel(value: number): string {
         if (value >= 0) {
             return value.toString();
+            // TODO: toLocaleString(lang); but translateService is not usable here, thus lang is not well defined
         }
         const vote = this.specialPollVotes.find(special => special[0] === value);
         return vote ? vote[1] : 'Undocumented special (negative) value';

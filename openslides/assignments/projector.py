@@ -87,7 +87,7 @@ async def poll_slide(
 
         poll_data["options"] = [
             {
-                "user": await get_user_name(all_data, option["user_id"]),
+                "user": await get_user_name(all_data, option["candidate_id"]),
                 "is_elected": option["is_elected"],
                 "votes": option["votes"],
             }
