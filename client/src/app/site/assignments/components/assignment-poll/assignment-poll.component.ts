@@ -101,11 +101,11 @@ export class AssignmentPollComponent extends BaseViewComponent implements OnInit
         }
         switch (this.poll.pollmethod) {
             case 'votes':
-                return this.translate.instant('Vote per Candidate');
+                return this.translate.instant('One vote per candidate');
             case 'yna':
-                return this.translate.instant('Yes/No/Abstain per Candidate');
+                return this.translate.instant('Yes/No/Abstain per candidate');
             case 'yn':
-                return this.translate.instant('Yes/No per Candidate');
+                return this.translate.instant('Yes/No per candidate');
             default:
                 return '';
         }
@@ -163,7 +163,7 @@ export class AssignmentPollComponent extends BaseViewComponent implements OnInit
      * TODO: Some confirmation (advanced logic (e.g. not deleting published?))
      */
     public async onDeletePoll(): Promise<void> {
-        const title = this.translate.instant('Are you sure you want to delete this poll?');
+        const title = this.translate.instant('Are you sure you want to delete this ballot?');
         if (await this.promptService.open(title, null)) {
             await this.assignmentRepo.deletePoll(this.poll).then(null, this.raiseError);
         }
