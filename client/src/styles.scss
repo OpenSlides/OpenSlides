@@ -338,11 +338,18 @@ mat-expansion-panel {
     display: none;
 }
 
-// ngx-file-drop requires the custom style in the global css file
-.file-drop-style {
-    margin: auto;
+.file-drop-zone-style {
+    border: 2px dotted #0782d0 !important;
     height: 100px;
-    border: 2px dotted #0782d0;
+}
+
+.file-drop-content-style {
+    height: 100px;
+
+    .ngx-file-drop__drop-zone-label {
+        color: #0782d0;
+        line-height: 100px;
+    }
 }
 
 .os-tree {
