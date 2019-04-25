@@ -857,6 +857,21 @@ describe('DiffService', () => {
             );
         }));
 
+        it('does handle insertions at the end of a paragraph correctly', inject(
+            [DiffService],
+            (service: DiffService) => {
+                const before =
+                        '<p>Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi.</p>\n<p>Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc,</p>',
+                    after =
+                        '<p>Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi.</p>\n<p>Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, NEU NEU NEU.</p>';
+                const diff = service.diff(before, after);
+
+                expect(diff).toBe(
+                    '<p>Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi.</p>\n<p>Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, <del>augue velit cursus nunc,</del><ins>NEU NEU NEU.</ins></p>'
+                );
+            }
+        ));
+
         it('does not break when an insertion followes a beginning tag occuring twice', inject(
             [DiffService],
             (service: DiffService) => {
