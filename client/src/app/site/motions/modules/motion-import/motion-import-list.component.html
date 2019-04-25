@@ -14,7 +14,7 @@
     <br />
     <div class="code red-warning-text">
         <span *ngFor="let header of this.expectedHeader; let last = last">
-            <span translate>{{ header }}</span
+            <span>{{ header | translate }}</span
             ><span *ngIf="!last">,&nbsp;</span>
         </span>
     </div>

@@ -159,7 +159,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
      */
     public constructor(
         title: Title,
-        translate: TranslateService,
+        protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
         public vp: ViewportService,
         private operator: OperatorService,

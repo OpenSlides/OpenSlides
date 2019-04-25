@@ -182,7 +182,7 @@
         <mat-divider></mat-divider>
         <button mat-button (click)="createPoll()">
             <mat-icon color="primary">poll</mat-icon>
-            <span translate>New poll</span>
+            <span translate>New ballot</span>
         </button>
     </div>
     <mat-divider *ngIf="assignment && assignment.polls && assignment.polls.length"> </mat-divider>
@@ -239,7 +239,7 @@
                 ></os-search-value-selector>
             </div>
 
-            <!-- searchValueSelector:agendaItem -->
+            <!-- searchValueSelector: agendaItem -->
             <div class="content-field" *ngIf="parentsAvailable">
                 <os-search-value-selector
                     ngDefaultControl
@@ -247,7 +247,7 @@
                     [formControl]="assignmentForm.get('agenda_item_id')"
                     [multiple]="false"
                     [includeNone]="false"
-                    listname="{{ 'Topic' | translate }}"
+                    listname="{{ 'Parent agenda item' | translate }}"
                     [InputListValues]="agendaObserver"
                 ></os-search-value-selector>
             </div>
