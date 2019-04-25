@@ -1,26 +1,30 @@
 <div *ngIf="data">
-    <h1>{{ data.data.title }}</h1>
+    <div class="slidetitle">
+        <h1>{{ data.data.title }}</h1>
+        <h2 translate>Election result</h2>
+    </div>
+
     <div class="spacer-top-10"></div>
     <div *ngIf="!data.data.poll.published"><span translate>Waiting for results</span><span>...</span></div>
     <div *ngIf="data.data.poll.published">
-        <div *ngIf="data.data.poll.has_votes">
+        <div *ngIf="data.data.poll.has_votes" class="result-table">
             <div class="row">
-                <div class="option-name">
+                <div class="option-name heading">
                     <h3 translate>Candidates</h3>
                 </div>
-                <div class="option-percents">
+                <div class="option-percents heading">
                     <h3 translate>Votes</h3>
                 </div>
             </div>
             <div *ngFor="let option of data.data.poll.options">
                 <div class="row">
                     <div class="option-name">
+                        <span class="bold">{{ option.user }}</span>
                         <mat-icon *ngIf="option.is_elected">star</mat-icon>
-                        <span [ngClass]="option.is_elected ? 'bold': ''">{{ option.user }}</span>
                     </div>
                     <div class="option-percents">
-                        <div *ngFor="let vote of option.votes">
-                            <span *ngIf="vote.value !== 'Votes'"> {{ vote.value | translate }}: </span>
+                        <div *ngFor="let vote of option.votes" class="bold">
+                            <span *ngIf="vote.value !== 'Votes'">{{ vote.value | translate }}:</span>
                             <span>
                                 {{ labelValue(vote.weight) | translate }}
                             </span>
