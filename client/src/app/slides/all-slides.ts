@@ -116,6 +116,14 @@ export const allSlides: SlideManifest[] = [
         canBeMappedToModel: true
     },
     {
+        slide: 'assignments/poll',
+        path: 'assignments/poll',
+        loadChildren: './slides/assignments/poll/poll-slide.module#PollSlideModule',
+        verboseName: 'Poll',
+        elementIdentifiers: ['name', 'assignment_id', 'poll_id'],
+        canBeMappedToModel: false
+    },
+    {
         slide: 'mediafiles/mediafile',
         path: 'mediafiles/mediafile',
         loadChildren: './slides/mediafiles/mediafile/mediafile-slide.module#MediafileSlideModule',

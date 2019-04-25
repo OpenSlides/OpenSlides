@@ -28,18 +28,28 @@
     >
     </os-sort-filter-bar>
     <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
-        <!-- slector column -->
+        <!-- selector column -->
         <ng-container matColumnDef="selector">
             <mat-header-cell *matHeaderCellDef mat-sort-header class="icon-cell"></mat-header-cell>
             <mat-cell *matCellDef="let assignment" class="icon-cell">
                 <mat-icon>{{ isSelected(assignment) ? 'check_circle' : '' }}</mat-icon>
             </mat-cell>
         </ng-container>
+
+         <!-- projector column -->
+         <ng-container matColumnDef="projector">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Projector</mat-header-cell>
+            <mat-cell *matCellDef="let assignment">
+                <os-projector-button [object]="assignment"></os-projector-button>
+            </mat-cell>
+        </ng-container>
+
         <!-- name column -->
         <ng-container matColumnDef="title">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
             <mat-cell *matCellDef="let assignment">{{ assignment.getListTitle() }}</mat-cell>
         </ng-container>
+
         <!-- phase column-->
         <ng-container matColumnDef="phase">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Phase</mat-header-cell>
@@ -57,6 +67,7 @@
                 <span translate>Deselect all</span>
             </button>
         </ng-container>
+
         <!-- candidates column -->
         <ng-container matColumnDef="candidates">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Candidates</mat-header-cell>

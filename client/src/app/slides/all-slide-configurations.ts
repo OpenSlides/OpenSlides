@@ -83,6 +83,11 @@ export const allSlidesDynamicConfiguration: (SlideDynamicConfiguration & Slide)[
         scrollable: true
     },
     {
+        slide: 'assignments/poll',
+        scaleable: true,
+        scrollable: true
+    },
+    {
         slide: 'mediafiles/mediafile',
         scaleable: true,
         scrollable: true
