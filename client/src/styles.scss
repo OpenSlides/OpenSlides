@@ -462,7 +462,23 @@ button.mat-menu-item.selected {
     margin: 0 65px;
 }
 
+/**
+ * cdk-virtual-scroll-viewport requires a hight, otherwise it would always be 0
+ * Depending in mobile-mode and desktop mode we need to subtract different values
+ * from 100vh
+ */
+.virtual-scroll-full-page {
+    height: calc(100vh - 128px);
+}
+
 /** media queries */
+
+/* medium to small */
+@media only screen and (max-width: 960px) {
+    .virtual-scroll-full-page {
+        height: calc(100vh - 64px);
+    }
+}
 
 /* medium */
 @media only screen and (min-width: 500px) and (max-width: 960px) {
