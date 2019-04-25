@@ -19,7 +19,7 @@ export interface PollSlideData {
         description?: string;
         has_votes?: boolean;
         pollmethod?: AssignmentPollMethod;
-        votesno?: string; // TODO: same conversion needed as for the PollModel
+        votesno?: string;
         votesabstain?: string;
         votesvalid?: string;
         votesinvalid?: string;

@@ -10,6 +10,11 @@ import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
 import { ViewAssignmentPollOption } from '../../models/view-assignment-poll-option';
 
 /**
+ * Vote entries included once for summary (e.g. total votes cast)
+ */
+type summaryPollKey = 'votescast' | 'votesvalid' | 'votesinvalid' | 'votesno' | 'votesabstain';
+
+/**
  * A dialog for updating the values of an assignment-related poll.
  */
 @Component({
@@ -21,7 +26,14 @@ export class AssignmentPollDialogComponent {
     /**
      * The summary values that will have fields in the dialog
      */
-    public sumValues: SummaryPollKey[] = ['votesvalid', 'votesinvalid', 'votescast'];
+    public get sumValues(): summaryPollKey[] {
+        const generalValues: summaryPollKey[] = ['votesvalid', 'votesinvalid', 'votescast'];
+        if (this.data.pollmethod === 'votes') {
+            return ['votesno', 'votesabstain', ...generalValues];
+        } else {
+            return generalValues;
+        }
+    }
 
     /**
      * List of accepted special non-numerical values.
