@@ -2001,6 +2001,14 @@ export class DiffService {
             }
         );
 
+        // <del>deleted text</P></del><ins>inserted.</P></ins> => <del>deleted tet</del><ins>inserted.</ins></P>
+        diffUnnormalized = diffUnnormalized.replace(
+            /<del>([^<]*)<\/(p|div|blockquote|li)><\/del><ins>([^<]*)<\/\2><\/ins>\s*$/gi,
+            (whole: string, deleted: string, tag: string, inserted: string): string => {
+                return '<del>' + deleted + '</del><ins>' + inserted + '</ins></' + tag + '>';
+            }
+        );
+
         // If larger inserted HTML text contains block elements, we separate the inserted text into
         // inline <ins> elements and "insert"-class-based block elements.
         // <ins>...<div>...</div>...</ins> => <ins>...</ins><div class="insert">...</div><ins>...</ins>
