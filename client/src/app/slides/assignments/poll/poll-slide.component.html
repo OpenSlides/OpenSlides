@@ -1,3 +1,60 @@
 <div *ngIf="data">
-    <h1>TODO</h1>
+    <h1>{{ data.data.title }}</h1>
+    <div class="spacer-top-10"></div>
+    <div *ngIf="!data.data.poll.published"><span translate>Waiting for results</span><span>...</span></div>
+    <div *ngIf="data.data.poll.published">
+        <div *ngIf="data.data.poll.has_votes">
+            <div class="row">
+                <div class="option-name">
+                    <h3 translate>Candidates</h3>
+                </div>
+                <div class="option-percents">
+                    <h3 translate>Votes</h3>
+                </div>
+            </div>
+            <div *ngFor="let option of data.data.poll.options">
+                <div class="row">
+                    <div class="option-name">
+                        <mat-icon *ngIf="option.is_elected">star</mat-icon>
+                        <span [ngClass]="option.is_elected ? 'bold': ''">{{ option.user }}</span>
+                    </div>
+                    <div class="option-percents">
+                        <div *ngFor="let vote of option.votes">
+                            <span *ngIf="vote.value !== 'Votes'"> {{ vote.value | translate }}: </span>
+                            <span>
+                                {{ labelValue(vote.weight) | translate }}
+                            </span>
+                            <span *ngIf="vote.percent">
+                                ({{ vote.percent }})
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="data.data.poll.votesvalid !== null" class="row">
+                <div class="option-name grey">
+                    <span translate>Valid votes</span>
+                </div>
+                <div class="option-percents grey">
+                    {{ labelValue(data.data.poll.votesvalid) | translate }}
+                </div>
+            </div>
+            <div *ngIf="data.data.poll.votesinvalid !== null" class="row">
+                <div class="option-name grey">
+                    <span translate>Invalid votes</span>
+                </div>
+                <div class="option-percents grey">
+                    {{ labelValue(data.data.poll.votesinvalid) | translate }}
+                </div>
+            </div>
+            <div *ngIf="data.data.poll.votescast !== null" class="row">
+                <div class="option-name grey">
+                    <span translate>Total votes cast</span>
+                </div>
+                <div class="option-percents grey">
+                    {{ labelValue(data.data.poll.votescast) | translate }}
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

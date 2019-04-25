@@ -1,3 +1,16 @@
 <div *ngIf="data">
-    <h1>TODO</h1>
+    <div>
+        <h1> {{ data.data.title }} </h1>
+    </div>
+    <mat-divider></mat-divider>
+    <div *ngIf="data.data && data.data.description" [innerHTML]="data.data.description"></div>
+
+    <mat-divider></mat-divider>
+    <h3 translate>Candidates</h3>
+    <div *ngIf="data.data.assignment_related_users && data.data.assignment_related_users.length">
+        <div *ngFor="let candidate of data.data.assignment_related_users">
+            {{ candidate.user }}
+            <mat-icon>{{ candidate.elected ? 'star' : 'star_border' }}</mat-icon>
+        </div>
+    </div>
 </div>

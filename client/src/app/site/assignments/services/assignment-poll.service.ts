@@ -16,6 +16,11 @@ export type AssignmentPollMethod = 'yn' | 'yna' | 'votes';
 export type AssignmentPercentBase = 'YES_NO_ABSTAIN' | 'YES_NO' | 'VALID' | 'CAST' | 'DISABLED';
 
 /**
+ * Vote entries included once for summary (e.g. total votes cast)
+ */
+export type SummaryPollKey = 'votescast' | 'votesvalid' | 'votesinvalid' | 'votesno' | 'votesabstain';
+
+/**
  * Service class for assignment polls.
  */
 @Injectable({
