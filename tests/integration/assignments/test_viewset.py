@@ -1,10 +1,13 @@
 import pytest
 from django.contrib.auth import get_user_model
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
 from openslides.assignments.models import Assignment
+from openslides.core.models import Tag
+from openslides.mediafiles.models import Mediafile
 from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.test import TestCase
 
@@ -19,16 +22,56 @@ def test_assignment_db_queries():
     * 1 request to get all related users,
     * 1 request to get the agenda item,
     * 1 request to get the polls,
-    * 1 request to get the tags and
+    * 1 request to get the tags,
+    * 1 request to get the attachments and
 
     * 10 request to fetch each related user again.
 
-    TODO: The last request are a bug.
+    TODO: The last requests are a bug.
     """
     for index in range(10):
         Assignment.objects.create(title=f"assignment{index}", open_posts=1)
 
-    assert count_queries(Assignment.get_elements) == 15
+    assert count_queries(Assignment.get_elements) == 16
+
+
+class CreateAssignment(TestCase):
+    """
+    Tests basic creation of assignments.
+    """
+
+    def setUp(self):
+        self.client = APIClient()
+        self.client.login(username="admin", password="admin")
+
+    def test_simple(self):
+        response = self.client.post(
+            reverse("assignment-list"),
+            {"title": "test_title_ef3jpF)M329f30m)f82", "open_posts": 1},
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        assignment = Assignment.objects.get()
+        self.assertEqual(assignment.title, "test_title_ef3jpF)M329f30m)f82")
+
+    def test_with_tags_and_mediafiles(self):
+        Tag.objects.create(name="test_tag")
+        Mediafile.objects.create(
+            title="test_file", mediafile=SimpleUploadedFile("title.txt", b"content")
+        )
+        response = self.client.post(
+            reverse("assignment-list"),
+            {
+                "title": "test_title_ef3jpF)M329f30m)f82",
+                "open_posts": 1,
+                "tags_id": [1],
+                "attachments_id": [1],
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        assignment = Assignment.objects.get()
+        self.assertEqual(assignment.title, "test_title_ef3jpF)M329f30m)f82")
+        self.assertTrue(assignment.tags.exists())
+        self.assertTrue(assignment.attachments.exists())
 
 
 class CanidatureSelf(TestCase):

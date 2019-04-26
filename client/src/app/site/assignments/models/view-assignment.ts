@@ -8,6 +8,7 @@ import { ViewTag } from 'app/site/tags/models/view-tag';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ViewAssignmentRelatedUser } from './view-assignment-related-user';
 import { ViewAssignmentPoll } from './view-assignment-poll';
+import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 
 /**
  * A constant containing all possible assignment phases and their different
@@ -40,6 +41,7 @@ export class ViewAssignment extends BaseAgendaViewModel {
     private _assignmentPolls: ViewAssignmentPoll[];
     private _agendaItem?: ViewItem;
     private _tags?: ViewTag[];
+    private _attachments?: ViewMediafile[];
 
     public get id(): number {
         return this._assignment ? this._assignment.id : null;
@@ -79,6 +81,10 @@ export class ViewAssignment extends BaseAgendaViewModel {
 
     public get tags(): ViewTag[] {
         return this._tags || [];
+    }
+
+    public get attachments(): ViewMediafile[] {
+        return this._attachments || [];
     }
 
     /**
@@ -129,7 +135,8 @@ export class ViewAssignment extends BaseAgendaViewModel {
         assignmentRelatedUsers: ViewAssignmentRelatedUser[],
         assignmentPolls: ViewAssignmentPoll[],
         agendaItem?: ViewItem,
-        tags?: ViewTag[]
+        tags?: ViewTag[],
+        attachments?: ViewMediafile[]
     ) {
         super(Assignment.COLLECTIONSTRING);
 
@@ -138,6 +145,7 @@ export class ViewAssignment extends BaseAgendaViewModel {
         this._assignmentPolls = assignmentPolls;
         this._agendaItem = agendaItem;
         this._tags = tags;
+        this._attachments = attachments;
     }
 
     public updateDependencies(update: BaseViewModel): void {
@@ -153,6 +161,13 @@ export class ViewAssignment extends BaseAgendaViewModel {
         } else if (update instanceof ViewUser) {
             this.assignmentRelatedUsers.forEach(aru => aru.updateDependencies(update));
             this.polls.forEach(poll => poll.updateDependencies(update));
+        } else if (update instanceof ViewMediafile && this.assignment.attachments_id.includes(update.id)) {
+            const mediafileIndex = this._attachments.findIndex(_mediafile => _mediafile.id === update.id);
+            if (mediafileIndex < 0) {
+                this._attachments.push(update);
+            } else {
+                this._attachments[mediafileIndex] = update;
+            }
         }
     }
 

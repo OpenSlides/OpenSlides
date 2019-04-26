@@ -10,6 +10,7 @@ from django.db import models
 from openslides.agenda.models import Item, Speaker
 from openslides.core.config import config
 from openslides.core.models import Tag
+from openslides.mediafiles.models import Mediafile
 from openslides.poll.models import (
     BaseOption,
     BasePoll,
@@ -78,7 +79,7 @@ class AssignmentManager(models.Manager):
         polls are prefetched from the database.
         """
         return self.get_queryset().prefetch_related(
-            "related_users", "agenda_items", "polls", "tags"
+            "related_users", "agenda_items", "polls", "tags", "attachments"
         )
 
 
@@ -139,6 +140,11 @@ class Assignment(RESTModelMixin, models.Model):
     tags = models.ManyToManyField(Tag, blank=True)
     """
     Tags for the assignment.
+    """
+
+    attachments = models.ManyToManyField(Mediafile, blank=True)
+    """
+    Mediafiles as attachments for this assignment.
     """
 
     # In theory there could be one then more agenda_item. But we support only

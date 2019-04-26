@@ -25,6 +25,8 @@ import { ViewItem } from 'app/site/agenda/models/view-item';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewUser } from 'app/site/users/models/view-user';
+import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
+import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
 
 /**
  * Component for the assignment detail view
@@ -76,6 +78,11 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
      * Used in the search Value selector to assign tags
      */
     public tagsObserver: BehaviorSubject<ViewTag[]>;
+
+    /**
+     * Used for the search value selector
+     */
+    public mediafilesObserver: BehaviorSubject<ViewMediafile[]>;
 
     /**
      * Used in the search Value selector to assign an agenda item
@@ -133,7 +140,14 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
     }
 
     /**
-     * Checks if there are any tags available
+     * Checks if there are any mediafiles available
+     */
+    public get mediafilesAvailable(): boolean {
+        return this.mediafilesObserver.getValue().length > 0;
+    }
+
+    /**
+     * Checks if there are any items available
      */
     public get parentsAvailable(): boolean {
         return this.agendaObserver.getValue().length > 0;
@@ -174,7 +188,8 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
         private agendaRepo: ItemRepositoryService,
         private tagRepo: TagRepositoryService,
         private promptService: PromptService,
-        private pdfService: AssignmentPdfExportService
+        private pdfService: AssignmentPdfExportService,
+        private mediafileRepo: MediafileRepositoryService
     ) {
         super(title, translate, matSnackBar);
         this.subscriptions.push(
@@ -187,6 +202,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
         this.assignmentForm = formBuilder.group({
             phase: null,
             tags_id: [],
+            attachments_id: [],
             title: '',
             description: '',
             poll_description_default: '',
@@ -205,6 +221,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
         this.getAssignmentByUrl();
         this.agendaObserver = this.agendaRepo.getViewModelListBehaviorSubject();
         this.tagsObserver = this.tagRepo.getViewModelListBehaviorSubject();
+        this.mediafilesObserver = this.mediafileRepo.getViewModelListBehaviorSubject();
     }
 
     /**
@@ -281,6 +298,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
         this.assignmentForm.patchValue({
             title: assignment.title || '',
             tags_id: assignment.assignment.tags_id || [],
+            attachments_id: assignment.assignment.attachments_id || [],
             agendaItem: assignment.assignment.agenda_item_id || null,
             phase: assignment.phase, // todo default: 0?
             description: assignment.assignment.description || '',

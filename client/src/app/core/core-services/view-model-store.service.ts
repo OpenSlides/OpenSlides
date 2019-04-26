@@ -42,7 +42,10 @@ export class ViewModelStoreService {
      * @param collectionType The collection of the view model
      * @param ids All ids to match
      */
-    public getMany<T extends BaseViewModel>(collectionType: ViewModelConstructor<T> | string, ids: number[]): T[] {
+    public getMany<T extends BaseViewModel>(collectionType: ViewModelConstructor<T> | string, ids?: number[]): T[] {
+        if (!ids) {
+            return [];
+        }
         const repository = this.getRepository<T>(collectionType);
 
         return ids
