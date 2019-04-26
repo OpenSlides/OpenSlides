@@ -1,5 +1,9 @@
 <div class="text-warning" *ngFor="let section of sections">
-    <os-meta-text-block *ngIf="sectionVisible(section)" [showActionRow]="canEditSection(section)" icon="comment">
+    <os-meta-text-block
+        *ngIf="sectionVisible(section)"
+        [showActionRow]="canEditSection(section) || comments[section.id].comment"
+        icon="comment"
+    >
         <ng-container class="meta-text-block-title">
             <span>{{ section.getTitle() }}</span>
         </ng-container>
@@ -21,7 +25,7 @@
         <ng-container class="meta-text-block-action-row">
             <button
                 mat-icon-button
-                *ngIf="!isCommentEdited(section)"
+                *ngIf="!isCommentEdited(section) && canEditSection(section)"
                 (click)="editComment(section)"
                 matTooltip="{{ 'Edit' | translate }}"
             >
@@ -29,7 +33,7 @@
             </button>
             <button
                 mat-icon-button
-                *ngIf="!isEditMode && comments[section.id]?.comment"
+                *ngIf="!commentForms[section.id] && comments[section.id]?.comment"
                 (click)="pdfExportSection(section)"
                 matTooltip="{{ 'Export comment' | translate }}"
             >
