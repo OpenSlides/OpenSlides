@@ -5,9 +5,8 @@ export interface PollSlideOption {
     user: string;
     is_elected: boolean;
     votes: {
-        weight: PollVoteValue;
-        value: string;
-        percent?: string;
+        weight: string;
+        value: PollVoteValue;
     }[];
 }
 

@@ -24,39 +24,18 @@
                     </div>
                     <div class="option-percents">
                         <div *ngFor="let vote of option.votes" class="bold">
-                            <span *ngIf="vote.value !== 'Votes'">{{ vote.value | translate }}:</span>
-                            <span>
-                                {{ labelValue(vote.weight) | translate }}
-                            </span>
-                            <span *ngIf="vote.percent">
-                                ({{ vote.percent }})
-                            </span>
+                            <span *ngIf="vote.value !== 'Votes'">{{ getLabel(vote.value) }}:</span>
+                            <span> {{ getVotePercent(vote.value, option) }}</span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div *ngIf="data.data.poll.votesvalid !== null" class="row">
+            <div *ngFor="let value of pollValues" class="row">
                 <div class="option-name grey">
-                    <span translate>Valid votes</span>
+                    <span>{{ getLabel(value) }}</span>
                 </div>
                 <div class="option-percents grey">
-                    {{ labelValue(data.data.poll.votesvalid) | translate }}
-                </div>
-            </div>
-            <div *ngIf="data.data.poll.votesinvalid !== null" class="row">
-                <div class="option-name grey">
-                    <span translate>Invalid votes</span>
-                </div>
-                <div class="option-percents grey">
-                    {{ labelValue(data.data.poll.votesinvalid) | translate }}
-                </div>
-            </div>
-            <div *ngIf="data.data.poll.votescast !== null" class="row">
-                <div class="option-name grey">
-                    <span translate>Total votes cast</span>
-                </div>
-                <div class="option-percents grey">
-                    {{ labelValue(data.data.poll.votescast) | translate }}
+                    {{ getPollPercent(value) }}
                 </div>
             </div>
         </div>

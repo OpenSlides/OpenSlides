@@ -1,9 +1,15 @@
 import { Component, Input } from '@angular/core';
 
-import { AssignmentPollService, SummaryPollKey } from 'app/site/assignments/services/assignment-poll.service';
+import {
+    AssignmentPollService,
+    CalculationData,
+    SummaryPollKey
+} from 'app/site/assignments/services/assignment-poll.service';
 import { BaseSlideComponent } from 'app/slides/base-slide-component';
-import { PollSlideData } from './poll-slide-data';
+import { PollSlideData, PollSlideOption } from './poll-slide-data';
+import { PollVoteValue, CalculablePollKey } from 'app/core/ui-services/poll.service';
 import { SlideData } from 'app/core/core-services/projector-data.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'os-poll-slide',
@@ -13,85 +19,78 @@ import { SlideData } from 'app/core/core-services/projector-data.service';
 export class PollSlideComponent extends BaseSlideComponent<PollSlideData> {
     private _data: SlideData<PollSlideData>;
 
-    public pollValues: SummaryPollKey[] = ['votesno', 'votesabstain', 'votesvalid', 'votesinvalid', 'votescast'];
+    private calculationData: CalculationData;
+
+    public get pollValues(): SummaryPollKey[] {
+        if (!this.data) {
+            return [];
+        }
+        const values: SummaryPollKey[] = ['votesno', 'votesabstain', 'votesvalid', 'votesinvalid', 'votescast'];
+        return values.filter(val => this.data.data.poll[val] !== null);
+    }
 
     @Input()
     public set data(data: SlideData<PollSlideData>) {
         this._data = data;
-        this.setPercents();
+        this.calculationData = {
+            pollMethod: data.data.poll.pollmethod,
+            votesno: parseFloat(data.data.poll.votesno),
+            votesabstain: parseFloat(data.data.poll.votesabstain),
+            votescast: parseFloat(data.data.poll.votescast),
+            votesvalid: parseFloat(data.data.poll.votesvalid),
+            votesinvalid: parseFloat(data.data.poll.votesinvalid),
+            pollOptions: data.data.poll.options.map(opt => {
+                return {
+                    votes: opt.votes.map(vote => {
+                        return {
+                            weight: parseFloat(vote.weight),
+                            value: vote.value
+                        };
+                    })
+                };
+            }),
+            percentBase: data.data.assignments_poll_100_percent_base
+        };
     }
 
     public get data(): SlideData<PollSlideData> {
         return this._data;
     }
 
-    public constructor(private pollService: AssignmentPollService) {
+    public constructor(private pollService: AssignmentPollService, private translate: TranslateService) {
         super();
     }
 
-    public getVoteString(rawValue: string): string {
-        const num = parseFloat(rawValue);
-        if (!isNaN(num)) {
-            return this.pollService.getSpecialLabel(num);
-        }
-        return '-';
+    /**
+     * get a vote's numerical or special label, including percent values if these are to
+     * be displayed
+     *
+     * @param key
+     * @param option
+     */
+    public getVotePercent(key: PollVoteValue, option: PollSlideOption): string {
+        const calcOption = {
+            votes: option.votes.map(vote => {
+                return { weight: parseFloat(vote.weight), value: vote.value };
+            })
+        };
+        const percent = this.pollService.getPercent(this.calculationData, calcOption, key);
+        const number = this.translate.instant(
+            this.pollService.getSpecialLabel(parseFloat(option.votes.find(v => v.value === key).weight))
+        );
+        return percent === null ? number : `${number} (${percent}%)`;
     }
 
-    private setPercents(): void {
-        if (
-            this.data.data.assignments_poll_100_percent_base === 'DISABLED' ||
-            !this.data.data.poll.has_votes ||
-            !this.data.data.poll.options.length
-        ) {
-            return;
-        }
-        for (const option of this.data.data.poll.options) {
-            for (const vote of option.votes) {
-                const voteweight = parseFloat(vote.weight);
-                if (isNaN(voteweight) || voteweight < 0) {
-                    return;
-                }
-                let base: number;
-                switch (this.data.data.assignments_poll_100_percent_base) {
-                    case 'CAST':
-                        base = this.data.data.poll.votescast ? parseFloat(this.data.data.poll.votescast) : 0;
-                        break;
-                    case 'VALID':
-                        base = this.data.data.poll.votesvalid ? parseFloat(this.data.data.poll.votesvalid) : 0;
-                        break;
-                    case 'YES_NO':
-                    case 'YES_NO_ABSTAIN':
-                        const yesOption = option.votes.find(v => v.value === 'Yes');
-                        const yes = yesOption ? parseFloat(yesOption.weight) : -1;
-                        const noOption = option.votes.find(v => v.value === 'No');
-                        const no = noOption ? parseFloat(noOption.weight) : -1;
-                        const absOption = option.votes.find(v => v.value === 'Abstain');
-                        const abs = absOption ? parseFloat(absOption.weight) : -1;
-                        if (this.data.data.assignments_poll_100_percent_base === 'YES_NO_ABSTAIN') {
-                            base = yes >= 0 && no >= 0 && abs >= 0 ? yes + no + abs : 0;
-                        } else {
-                            if (vote.value !== 'Abstain') {
-                                base = yes >= 0 && no >= 0 ? yes + no : 0;
-                            }
-                        }
-                        break;
-                    default:
-                        break;
-                }
-                if (base) {
-                    vote.percent = `${Math.round(((parseFloat(vote.weight) * 100) / base) * 100) / 100}%`;
-                }
-            }
-        }
+    public getPollPercent(key: CalculablePollKey): string {
+        const percent = this.pollService.getValuePercent(this.calculationData, key);
+        const number = this.translate.instant(this.pollService.getSpecialLabel(this.calculationData[key]));
+        return percent === null ? number : `${number} (${percent}%)`;
     }
 
     /**
-     * Converts a number-like string to a simpler, more readable version
-     *
-     * @param input a server-sent string representing a numerical value
-     * @returns either the special label or a cleaned-up number of the inpu string
+     * @returns a translated label for a key
      */
-    public labelValue(input: string): string {
-        return this.pollService.getSpecialLabel(parseFloat(input));
+    public getLabel(key: CalculablePollKey): string {
+        return this.translate.instant(this.pollService.getLabel(key));
     }
 }

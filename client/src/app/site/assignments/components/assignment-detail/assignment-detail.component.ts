@@ -98,11 +98,6 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
         this._assignment = assignment;
 
         this.filterCandidates();
-        if (this.assignment.polls.length) {
-            this.assignment.polls.forEach(poll => {
-                poll.pollBase = this.pollService.getBaseAmount(poll);
-            });
-        }
     }
 
     /**

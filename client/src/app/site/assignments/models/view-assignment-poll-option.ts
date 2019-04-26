@@ -1,9 +1,9 @@
-import { ViewUser } from 'app/site/users/models/view-user';
+import { AssignmentPollOption, AssignmentOptionVote } from 'app/shared/models/assignments/assignment-poll-option';
 import { BaseViewModel } from 'app/site/base/base-view-model';
-import { Updateable } from 'app/site/base/updateable';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { PollVoteValue } from 'app/core/ui-services/poll.service';
-import { AssignmentPollOption } from 'app/shared/models/assignments/assignment-poll-option';
+import { Updateable } from 'app/site/base/updateable';
+import { ViewUser } from 'app/site/users/models/view-user';
 
 /**
  * Defines the order the option's votes are sorted in (server might send raw data in any order)
@@ -40,10 +40,7 @@ export class ViewAssignmentPollOption implements Identifiable, Updateable {
         return this.option.is_elected;
     }
 
-    public get votes(): {
-        weight: number;
-        value: PollVoteValue;
-    }[] {
+    public get votes(): AssignmentOptionVote[] {
         return this.option.votes.sort((a, b) => votesOrder.indexOf(a.value) - votesOrder.indexOf(b.value));
     }
 
