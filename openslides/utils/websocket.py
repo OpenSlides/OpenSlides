@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional
 
 import jsonschema
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
+from websockets.exceptions import ConnectionClosed
 
 from .autoupdate import AutoupdateFormat
 from .cache import element_cache
@@ -20,16 +21,23 @@ class ProtocollAsyncJsonWebsocketConsumer(AsyncJsonWebsocketConsumer):
         content: Any,
         id: Optional[str] = None,
         in_response: Optional[str] = None,
+        silence_errors: Optional[bool] = True,
     ) -> None:
         """
         Sends the data with the type.
+        If silence_errors is True (default), all ConnectionClosed errors
+        during sending will be ignored.
         """
         out = {"type": type, "content": content}
         if id:
             out["id"] = id
         if in_response:
             out["in_response"] = in_response
-        await super().send_json(out)
+        try:
+            await super().send_json(out)
+        except ConnectionClosed as e:
+            if not silence_errors:
+                raise e
 
     async def receive_json(self, content: Any) -> None:
         """
