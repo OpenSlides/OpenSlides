@@ -262,6 +262,15 @@
                         </mat-list-item>
                     </mat-list>
                 </mat-expansion-panel>
+
+                <!-- File display controls -->
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                            <span translate>Media controls</span>
+                    </mat-expansion-panel-header>
+                    <os-presentation-control [projector]="projector">
+                    </os-presentation-control>
+                </mat-expansion-panel>
             </mat-accordion>
         </div>
     </div>
