@@ -142,8 +142,9 @@ export class AutoupdateService {
      * The server should return an autoupdate with all new data.
      */
     public requestChanges(): void {
-        console.log('requesting changed objects with DS max change id', this.DS.maxChangeId + 1);
-        this.websocketService.send('getElements', { change_id: this.DS.maxChangeId + 1 });
+        const changeId = this.DS.maxChangeId === 0 ? 0 : this.DS.maxChangeId + 1;
+        console.log(`requesting changed objects with DS max change id ${changeId}`);
+        this.websocketService.send('getElements', { change_id: changeId });
     }
 
     /**
