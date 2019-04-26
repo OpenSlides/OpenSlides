@@ -28,7 +28,7 @@
                 </button>
             </div>
             <div *osPerms="'core.can_manage_projector'">
-                <os-projector-button menuItem=true [object]="poll"></os-projector-button>
+                <os-projector-button menuItem="true" [object]="poll"></os-projector-button>
             </div>
             <div *osPerms="'assignments.can_manage'">
                 <mat-divider></mat-divider>
@@ -38,28 +38,6 @@
                 </button>
             </div>
         </mat-menu>
-    </div>
-    <div>
-        <h4>
-            <span translate>Hint for ballot paper</span>
-        </h4>
-        <div [formGroup]="descriptionForm">
-            <mat-form-field class="wide">
-                <input matInput formControlName="description" [disabled]="!canManage" />
-            </mat-form-field>
-            <button
-                mat-icon-button
-                [disabled]="!dirtyDescription"
-                *ngIf="canManage"
-                (click)="onEditDescriptionButton()"
-            >
-                <mat-icon inline>edit</mat-icon>
-            </button>
-        </div>
-        <div class="spacer-bottom-10">
-            <h4 translate>Election method</h4>
-            <span>{{ pollMethodName | translate }}</span>
-        </div>
     </div>
     <div class="on-transition-fade" *ngIf="poll.options">
         <div *ngIf="pollData">
@@ -139,7 +117,10 @@
                                     >({{ pollService.getPercent(poll, option, vote.value) }}%)</span
                                 >
                             </div>
-                            <div *ngIf="!pollService.isAbstractOption(poll, option, vote.value)" class="poll-progress-bar">
+                            <div
+                                *ngIf="!pollService.isAbstractOption(poll, option, vote.value)"
+                                class="poll-progress-bar"
+                            >
                                 <mat-progress-bar
                                     mode="determinate"
                                     [value]="pollService.getPercent(poll, option, vote.value)"
@@ -161,7 +142,8 @@
                         class="poll-quorum"
                     >
                         <span>{{ pollService.yesQuorum(majorityChoice, poll, option) }}</span>
-                        <span [ngClass]="quorumReached(option) ? 'green-text' : 'red-warning-text'"
+                        <span
+                            [ngClass]="quorumReached(option) ? 'green-text' : 'red-warning-text'"
                             matTooltip="{{ getQuorumReachedString(option) }}"
                         >
                             <mat-icon *ngIf="quorumReached(option)">{{ pollService.getIcon('yes') }}</mat-icon>
@@ -181,7 +163,7 @@
                     <div>
                         {{ pollService.getSpecialLabel(poll[key]) | translate }}
                         <span *ngIf="!pollService.isAbstractValue(poll, key)">
-                            ({{ pollService.getValuePercent(poll,key) }} %)
+                            ({{ pollService.getValuePercent(poll, key) }} %)
                         </span>
                     </div>
                 </div>
@@ -192,6 +174,29 @@
             <div *ngFor="let option of poll.options">
                 <span class="accent"> {{ option.user.full_name }}</span>
             </div>
+        </div>
+    </div>
+
+    <div class="spacer-bottom-10">
+        <h4 translate>Election method</h4>
+        <span>{{ pollMethodName | translate }}</span>
+    </div>
+    <div>
+        <h4>
+            <span translate>Hint for ballot paper</span>
+        </h4>
+        <div [formGroup]="descriptionForm">
+            <mat-form-field class="wide">
+                <input matInput formControlName="description" [disabled]="!canManage" />
+            </mat-form-field>
+            <button
+                mat-icon-button
+                [disabled]="!dirtyDescription"
+                *ngIf="canManage"
+                (click)="onEditDescriptionButton()"
+            >
+                <mat-icon inline>check</mat-icon>
+            </button>
         </div>
     </div>
 </mat-card>

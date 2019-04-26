@@ -27,23 +27,26 @@
                 <mat-icon>picture_as_pdf</mat-icon>
                 <span translate>PDF</span>
             </button>
-            <mat-divider></mat-divider>
+            <!-- List of speakers -->
+            <div *ngIf="assignment.agendaItem">
+                <button mat-menu-item [routerLink]="getSpeakerLink()" *osPerms="'agenda.can_see'">
+                    <mat-icon>mic</mat-icon>
+                    <span translate>List of speakers</span>
+                </button>
+            </div>
         </div>
         <!-- Project -->
-        <os-projector-button
-            [object]="assignment"
-            [menuItem]="true"
-            *osPerms="'core.can_manage_projector'"
-        ></os-projector-button>
+        <os-projector-button [object]="assignment" [menuItem]="true"></os-projector-button>
 
         <!-- Delete -->
         <div *ngIf="assignment && hasPerms('manage')">
+            <!-- Delete -->
+            <mat-divider></mat-divider>
             <button mat-menu-item class="red-warning-text" (click)="onDeleteAssignmentButton()">
                 <mat-icon>delete</mat-icon>
                 <span translate>Delete</span>
             </button>
         </div>
-
     </mat-menu>
 </os-head-bar>
 
@@ -126,7 +129,10 @@
 
 <ng-template #candidatesTemplate>
     <!-- candidates -->
-    <div class="candidates-list" *ngIf="assignment && assignment.assignmentRelatedUsers && assignment.assignmentRelatedUsers.length > 0">
+    <div
+        class="candidates-list"
+        *ngIf="assignment && assignment.assignmentRelatedUsers && assignment.assignmentRelatedUsers.length > 0"
+    >
         <os-sorting-list
             [input]="assignment.assignmentRelatedUsers"
             [live]="true"
@@ -148,23 +154,25 @@
             </ng-template>
         </os-sorting-list>
     </div>
+
     <!-- Search for candidates -->
-    <div *ngIf="hasPerms('addOthers')">
-        <form *ngIf="filteredCandidates && filteredCandidates.value.length > 0" [formGroup]="candidatesForm">
+    <div class="search-field" *ngIf="hasPerms('addOthers')">
+        <form
+            *ngIf="hasPerms('addOthers') && filteredCandidates && filteredCandidates.value.length > 0"
+            [formGroup]="candidatesForm"
+        >
             <os-search-value-selector
-                *ngIf="hasPerms('addOthers')"
+                class="search-bar"
                 ngDefaultControl
-                listname="{{ 'Select a new candidate' | translate }}"
-                [formControl]="candidatesForm.get('userId')"
-                [InputListValues]="filteredCandidates"
                 [form]="candidatesForm"
+                [formControl]="candidatesForm.get('userId')"
                 [multiple]="false"
-            >
-                <!-- TODO: better class here: wider -->
-                <!-- TODO: Performance check: something seems off here with filteredCandidates -->
-            </os-search-value-selector>
+                listname="{{ 'Select a new candidate' | translate }}"
+                [InputListValues]="filteredCandidates"
+            ></os-search-value-selector>
         </form>
     </div>
+
     <!-- Add me and remove me if OP has correct permission -->
     <div *ngIf="assignment && hasPerms('addSelf') && assignment.candidates" class="add-self-buttons">
         <div>
@@ -179,17 +187,15 @@
         </div>
     </div>
     <div *ngIf="assignment && hasPerms('createPoll')">
-        <mat-divider></mat-divider>
         <button mat-button (click)="createPoll()">
             <mat-icon color="primary">poll</mat-icon>
             <span translate>New ballot</span>
         </button>
     </div>
-    <mat-divider *ngIf="assignment && assignment.polls && assignment.polls.length"> </mat-divider>
 </ng-template>
 
 <ng-template #assignmentFormTemplate>
-    <div>
+    <mat-card class="os-form-card">
         <form
             class="content"
             [formGroup]="assignmentForm"
@@ -207,7 +213,7 @@
                     />
                 </mat-form-field>
             </div>
-
+            <h4 translate>Description:</h4>
             <!-- description: HTML Editor -->
             <editor
                 formControlName="description"
@@ -215,17 +221,6 @@
                 *ngIf="assignment && editAssignment"
                 required
             ></editor>
-            <div
-                *ngIf="
-                    assignmentForm.get('description').invalid &&
-                    (assignmentForm.get('description').dirty || assignmentForm.get('description').touched)
-                "
-                class="red-warning-text"
-                translate
-            >
-                This field is required.
-            </div>
-
             <!-- searchValueSelector: tags -->
             <div class="content-field" *ngIf="tagsAvailable">
                 <os-search-value-selector
@@ -276,5 +271,5 @@
             </div>
             <!-- TODO searchValueSelector: Parent -->
         </form>
-    </div>
+    </mat-card>
 </ng-template>
