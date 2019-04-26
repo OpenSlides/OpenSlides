@@ -30,6 +30,7 @@ import { MotionMultiselectService } from 'app/site/motions/services/motion-multi
 import { MotionXlsxExportService } from 'app/site/motions/services/motion-xlsx-export.service';
 import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
 import { StorageService } from 'app/core/core-services/storage.service';
+import { PdfError } from 'app/core/ui-services/pdf-document.service';
 
 /**
  * Interface to describe possible values and changes for
@@ -251,14 +252,22 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
             if (result && result.format) {
                 const data = this.isMultiSelect ? this.selectedRows : this.dataSource.filteredData;
                 if (result.format === 'pdf') {
-                    this.pdfExport.exportMotionCatalog(
-                        data,
-                        result.lnMode,
-                        result.crMode,
-                        result.content,
-                        result.metaInfo,
-                        result.comments
-                    );
+                    try {
+                        this.pdfExport.exportMotionCatalog(
+                            data,
+                            result.lnMode,
+                            result.crMode,
+                            result.content,
+                            result.metaInfo,
+                            result.comments
+                        );
+                    } catch (err) {
+                        if (err instanceof PdfError) {
+                            this.raiseError(err.message);
+                        } else {
+                            throw err;
+                        }
+                    }
                 } else if (result.format === 'csv') {
                     this.motionCsvExport.exportMotionList(data, [...result.content, ...result.metaInfo]);
                 } else if (result.format === 'xlsx') {

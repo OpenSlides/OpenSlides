@@ -9,6 +9,19 @@ import { ConfigService } from './config.service';
 import { HttpService } from '../core-services/http.service';
 
 /**
+ * Custom PDF error class to handle errors in a safer way
+ */
+export class PdfError extends Error {
+    public __proto__: PdfError;
+
+    public constructor(public message: string) {
+        super(message);
+        const trueProto = new.target.prototype;
+        this.__proto__ = trueProto;
+    }
+}
+
+/**
  * Provides the general document structure for PDF documents, such as page margins, header, footer and styles.
  * Also provides general purpose open and download functions.
  *
