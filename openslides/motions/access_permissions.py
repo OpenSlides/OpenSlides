@@ -46,10 +46,12 @@ class MotionAccessPermissions(BaseAccessPermissions):
 
                 if not permission:
                     # Parse values of restriction field.
+                    # If at least one restriction is ok, permissions are granted.
                     for value in restriction:
                         if value == "managers_only":
-                            # permission remains false
-                            break
+                            # permission remains false, becuase the user does not
+                            # have this permission (see above); continue to check other fields
+                            continue
                         elif value in (
                             "motions.can_see_internal",
                             "motions.can_manage_metadata",
