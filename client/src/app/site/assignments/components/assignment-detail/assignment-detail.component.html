@@ -36,11 +36,7 @@
             </div>
         </div>
         <!-- Project -->
-        <os-projector-button
-            [object]="assignment"
-            [menuItem]="true"
-            *osPerms="'core.can_manage_projector'"
-        ></os-projector-button>
+        <os-projector-button [object]="assignment" [menuItem]="true"></os-projector-button>
 
         <!-- Delete -->
         <div *ngIf="assignment && hasPerms('manage')">
@@ -51,7 +47,6 @@
                 <span translate>Delete</span>
             </button>
         </div>
-
     </mat-menu>
 </os-head-bar>
 
@@ -134,7 +129,10 @@
 
 <ng-template #candidatesTemplate>
     <!-- candidates -->
-    <div class="candidates-list" *ngIf="assignment && assignment.assignmentRelatedUsers && assignment.assignmentRelatedUsers.length > 0">
+    <div
+        class="candidates-list"
+        *ngIf="assignment && assignment.assignmentRelatedUsers && assignment.assignmentRelatedUsers.length > 0"
+    >
         <os-sorting-list
             [input]="assignment.assignmentRelatedUsers"
             [live]="true"
@@ -156,21 +154,25 @@
             </ng-template>
         </os-sorting-list>
     </div>
+
     <!-- Search for candidates -->
-    <div *ngIf="hasPerms('addOthers')" class="os-form-card">
-        <form *ngIf="hasPerms('addOthers') && filteredCandidates && filteredCandidates.value.length > 0" [formGroup]="candidatesForm">
+    <div class="search-field" *ngIf="hasPerms('addOthers')">
+        <form
+            *ngIf="hasPerms('addOthers') && filteredCandidates && filteredCandidates.value.length > 0"
+            [formGroup]="candidatesForm"
+        >
             <os-search-value-selector
-                *ngIf="hasPerms('addOthers')"
+                class="search-bar"
                 ngDefaultControl
-                listname="{{ 'Select a new candidate' | translate }}"
-                [formControl]="candidatesForm.get('userId')"
-                [InputListValues]="filteredCandidates"
                 [form]="candidatesForm"
+                [formControl]="candidatesForm.get('userId')"
                 [multiple]="false"
-            >
-            </os-search-value-selector>
+                listname="{{ 'Select a new candidate' | translate }}"
+                [InputListValues]="filteredCandidates"
+            ></os-search-value-selector>
         </form>
     </div>
+
     <!-- Add me and remove me if OP has correct permission -->
     <div *ngIf="assignment && hasPerms('addSelf') && assignment.candidates" class="add-self-buttons">
         <div>

@@ -38,7 +38,7 @@ export class ProjectorButtonComponent implements OnInit {
         if (isProjectable(obj) || isProjectorElementBuildDeskriptor(obj)) {
             this._object = obj;
         } else {
-            this.object = null;
+            this._object = null;
         }
     }
 
