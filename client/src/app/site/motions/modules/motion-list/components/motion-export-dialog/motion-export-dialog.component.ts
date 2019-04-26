@@ -7,6 +7,7 @@ import { MotionCommentSectionRepositoryService } from 'app/core/repositories/mot
 import { LineNumberingMode, ChangeRecoMode } from 'app/site/motions/models/view-motion';
 import { InfoToExport } from 'app/site/motions/services/motion-pdf.service';
 import { ViewMotionCommentSection } from 'app/site/motions/models/view-motion-comment-section';
+import { motionImportExportHeaderOrder, noMetaData } from 'app/site/motions/motion-import-export-order';
 
 /**
  * Dialog component to determine exporting.
@@ -41,6 +42,11 @@ export class MotionExportDialogComponent implements OnInit {
      * Determine the default content to export.
      */
     private defaultContentToExport = ['text', 'reason'];
+
+    /**
+     * Determine the export order of the meta data
+     */
+    public metaInfoExportOrder: string[];
 
     /**
      * Determine the default meta info to export.
@@ -104,6 +110,10 @@ export class MotionExportDialogComponent implements OnInit {
     ) {
         this.defaultLnMode = this.configService.instant('motions_default_line_numbering');
         this.defaultCrMode = this.configService.instant('motions_recommendation_text_mode');
+        // Get the export order, exclude everything that does not count as meta-data
+        this.metaInfoExportOrder = motionImportExportHeaderOrder.filter(metaData => {
+            return !noMetaData.some(noMeta => metaData === noMeta);
+        });
         this.createForm();
     }
 
@@ -194,5 +204,25 @@ export class MotionExportDialogComponent implements OnInit {
      */
     public onCloseClick(): void {
         this.dialogRef.close();
+    }
+
+    /**
+     * Gets the untranslated label for metaData
+     */
+    public getLabelForMetadata(metaDataName: string): string {
+        switch (metaDataName) {
+            case 'polls': {
+                return 'Voting result';
+            }
+            case 'id': {
+                return 'Sequential number';
+            }
+            case 'motion_block': {
+                return 'Motion block';
+            }
+            default: {
+                return metaDataName.charAt(0).toUpperCase() + metaDataName.slice(1);
+            }
+        }
     }
 }

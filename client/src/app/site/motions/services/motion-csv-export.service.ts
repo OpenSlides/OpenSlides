@@ -7,7 +7,7 @@ import {
     CsvColumnDefinitionProperty,
     CsvColumnDefinitionMap
 } from 'app/core/ui-services/csv-export.service';
-import { motionImportExportHeaderOrder } from '../motion-import-export-order';
+import { sortMotionPropertyList } from '../motion-import-export-order';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { ViewMotion } from '../models/view-motion';
 
@@ -37,11 +37,10 @@ export class MotionCsvExportService {
      * @param contentToExport content properties to export
      */
     public exportMotionList(motions: ViewMotion[], contentToExport: string[]): void {
-        // reorders the exported properties according to motionImportExportHeaderOrder
-        const propertyList = motionImportExportHeaderOrder.filter(property => contentToExport.includes(property));
+        const properties = sortMotionPropertyList(['identifier', 'title'].concat(contentToExport));
         const exportProperties: (
             | CsvColumnDefinitionProperty<ViewMotion>
-            | CsvColumnDefinitionMap<ViewMotion>)[] = propertyList.map(option => {
+            | CsvColumnDefinitionMap<ViewMotion>)[] = properties.map(option => {
             if (option === 'recommendation') {
                 return {
                     label: 'recommendation',

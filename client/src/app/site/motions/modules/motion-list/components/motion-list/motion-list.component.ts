@@ -260,8 +260,7 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
                         result.comments
                     );
                 } else if (result.format === 'csv') {
-                    const content = ['identifier', ...result.content, ...result.metaInfo];
-                    this.motionCsvExport.exportMotionList(data, content);
+                    this.motionCsvExport.exportMotionList(data, [...result.content, ...result.metaInfo]);
                 } else if (result.format === 'xlsx') {
                     this.motionXlsxExport.exportMotionList(data, result.metaInfo);
                 }
