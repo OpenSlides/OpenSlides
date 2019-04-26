@@ -13,6 +13,7 @@ import { ViewMotion, LineNumberingMode, ChangeRecoMode } from '../models/view-mo
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
 import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
 import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change';
+import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
 
 /**
  * Type declaring which strings are valid options for metainfos to be exported into a pdf
@@ -52,6 +53,7 @@ export class MotionPdfService {
      * @param statuteRepo To get formated stature paragraphs
      * @param changeRecoRepo to get the change recommendations
      * @param configService Read config variables
+     * @param pdfDocumentService Global PDF Functions
      * @param htmlToPdfService To convert HTML text into pdfmake doc def
      * @param pollService MotionPollService for rendering the polls
      * @param linenumberingService Line numbers
@@ -63,6 +65,7 @@ export class MotionPdfService {
         private statuteRepo: StatuteParagraphRepositoryService,
         private changeRecoRepo: ChangeRecommendationRepositoryService,
         private configService: ConfigService,
+        private pdfDocumentService: PdfDocumentService,
         private htmlToPdfService: HtmlToPdfService,
         private pollService: MotionPollService,
         private linenumberingService: LinenumberingService,
@@ -646,17 +649,7 @@ export class MotionPdfService {
                 dontBreakRows: true,
                 body: callListTableBody.concat(callListRows)
             },
-            layout: {
-                hLineWidth: rowIndex => {
-                    return rowIndex === 1;
-                },
-                vLineWidth: () => {
-                    return 0;
-                },
-                fillColor: rowIndex => {
-                    return rowIndex % 2 === 0 ? '#EEEEEE' : null;
-                }
-            }
+            layout: this.pdfDocumentService.switchColorTableLayout
         };
         return [title, table];
     }

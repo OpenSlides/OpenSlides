@@ -57,6 +57,14 @@ export class ViewAssignment extends BaseAgendaViewModel {
         return this.assignment.title;
     }
 
+    public get open_posts(): number {
+        return this.assignment.open_posts;
+    }
+
+    public get description(): string {
+        return this.assignment.description;
+    }
+
     public get candidates(): ViewUser[] {
         return this._assignmentRelatedUsers.map(aru => aru.user);
     }

@@ -67,6 +67,10 @@ export class AssignmentPollService extends PollService {
             .subscribe(base => (this.percentBase = base));
     }
 
+    public getVoteOptionsByPoll(poll: ViewAssignmentPoll): CalculablePollKey[] {
+        return this.pollValues.filter(name => poll[name] !== undefined);
+    }
+
     /**
      * Get the base amount for the 100% calculations. Note that some poll methods
      * (e.g. yes/no/abstain may have a different percentage base and will return null here)

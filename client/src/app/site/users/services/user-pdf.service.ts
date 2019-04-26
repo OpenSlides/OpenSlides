@@ -4,6 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { ViewUser } from '../models/view-user';
+import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
 
 /**
  * Creates a pdf for a user, containing greetings and initial login information
@@ -24,8 +25,13 @@ export class UserPdfService {
      *
      * @param translate handle translations
      * @param configService Read config variables
+     * @param pdfDocumentService Global PDF Functions
      */
-    public constructor(private translate: TranslateService, private configService: ConfigService) {}
+    public constructor(
+        private translate: TranslateService,
+        private configService: ConfigService,
+        private pdfDocumentService: PdfDocumentService
+    ) {}
 
     /**
      * Converts a user to PdfMake doc definition, containing access information
@@ -252,17 +258,7 @@ export class UserPdfService {
                 headerRows: 1,
                 body: userTableBody.concat(this.getListUsers(users))
             },
-            layout: {
-                hLineWidth: rowIndex => {
-                    return rowIndex === 1;
-                },
-                vLineWidth: () => {
-                    return 0;
-                },
-                fillColor: rowIndex => {
-                    return rowIndex % 2 === 0 ? '#EEEEEE' : null;
-                }
-            }
+            layout: this.pdfDocumentService.switchColorTableLayout
         };
     }
 
