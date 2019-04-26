@@ -6,6 +6,7 @@ import { ViewMotion, LineNumberingMode, ChangeRecoMode } from '../models/view-mo
 import { MotionPdfService, InfoToExport } from './motion-pdf.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { ViewCategory } from '../models/view-category';
+import { PdfError } from 'app/core/ui-services/pdf-document.service';
 
 /**
  * Service to export a list of motions.
@@ -64,22 +65,30 @@ export class MotionPdfCatalogService {
         const motionDocList = [];
 
         for (let motionIndex = 0; motionIndex < motions.length; ++motionIndex) {
-            const motionDocDef: any = this.motionPdfService.motionToDocDef(
-                motions[motionIndex],
-                lnMode,
-                crMode,
-                contentToExport,
-                infoToExport,
-                commentsToExport
-            );
+            try {
+                const motionDocDef: any = this.motionPdfService.motionToDocDef(
+                    motions[motionIndex],
+                    lnMode,
+                    crMode,
+                    contentToExport,
+                    infoToExport,
+                    commentsToExport
+                );
 
-            // add id field to the first page of a motion to make it findable over TOC
-            motionDocDef[0].id = `${motions[motionIndex].id}`;
+                // add id field to the first page of a motion to make it findable over TOC
+                motionDocDef[0].id = `${motions[motionIndex].id}`;
 
-            motionDocList.push(motionDocDef);
+                motionDocList.push(motionDocDef);
 
-            if (motionIndex < motions.length - 1) {
-                motionDocList.push(this.pageBreak);
+                if (motionIndex < motions.length - 1) {
+                    motionDocList.push(this.pageBreak);
+                }
+            } catch (err) {
+                const errorText = `${this.translate.instant('Error during PDF creation of motion:')} ${
+                    motions[motionIndex].identifierOrTitle
+                }`;
+                console.error(`${errorText}\nDebugInfo:\n`, err);
+                throw new PdfError(errorText);
             }
         }
 

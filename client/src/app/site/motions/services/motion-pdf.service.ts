@@ -90,6 +90,12 @@ export class MotionPdfService {
     ): object {
         let motionPdfContent = [];
 
+        // Enforces that statutes should always have Diff Mode and no line numbers
+        if (motion.isStatuteAmendment()) {
+            lnMode = LineNumberingMode.None;
+            crMode = ChangeRecoMode.Diff;
+        }
+
         // determine the default lnMode if not explicitly given
         if (!lnMode) {
             lnMode = this.configService.instant('motions_default_line_numbering');
