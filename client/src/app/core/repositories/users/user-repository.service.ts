@@ -339,4 +339,18 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User> {
             }
         });
     }
+
+    /**
+     * Get the date of the last invitation email.
+     *
+     * @param user
+     * @returns a localized string representation of the date/time the last email was sent;
+     * or an empty string
+     */
+    public lastSentEmailTimeString(user: ViewUser): string {
+        if (!user.user || !user.user.last_email_send) {
+            return '';
+        }
+        return new Date(user.user.last_email_send).toLocaleString(this.translate.currentLang);
+    }
 }

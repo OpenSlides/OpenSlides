@@ -31,11 +31,17 @@
             <mat-icon>security</mat-icon>
             <span translate>Change password</span>
         </button>
+        <!-- invitation email -->
+        <button mat-menu-item *ngIf="isAllowed('manage')" (click)="sendInvitationEmail()">
+            <mat-icon>mail</mat-icon>
+            <span translate>Send invitation email</span>
+        </button>
         <!-- PDF -->
         <button mat-menu-item *ngIf="isAllowed('manage')" (click)="onDownloadPdf()">
             <mat-icon>picture_as_pdf</mat-icon>
             <span translate>PDF</span>
         </button>
+        <!-- delete button -->
         <div *ngIf="isAllowed('delete')">
             <mat-divider></mat-divider>
             <button mat-menu-item class="red-warning-text" (click)="deleteUserButton()">
@@ -313,6 +319,15 @@
         <div *ngIf="user.comment">
             <h4 translate>Comment</h4>
             <span>{{ user.comment }}</span>
+        </div>
+    </div>
+
+    <div *ngIf="isAllowed('seePersonal') && user.is_last_email_send">
+        <div>
+            <h4 translate>
+                Last email sent
+            </h4>
+            <span>{{ getEmailSentTime() }}</span>
         </div>
     </div>
 </ng-template>

@@ -27,7 +27,7 @@ export class User extends BaseModel<User> {
     public is_present: boolean;
     public is_committee: boolean;
     public email: string;
-    public last_email_send?: string;
+    public last_email_send?: string; // ISO datetime string
     public comment: string;
     public is_active: boolean;
     public default_password: string;
