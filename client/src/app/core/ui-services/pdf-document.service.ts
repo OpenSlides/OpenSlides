@@ -45,6 +45,25 @@ export class PdfDocumentService {
     private imageUrls: string[] = [];
 
     /**
+     * Table layout that switches the background color every other row.
+     * @example
+     * ```ts
+     * layout: this.pdfDocumentService.switchColorTableLayout
+     * ```
+     */
+    public switchColorTableLayout = {
+        hLineWidth: rowIndex => {
+            return rowIndex === 1;
+        },
+        vLineWidth: () => {
+            return 0;
+        },
+        fillColor: rowIndex => {
+            return rowIndex % 2 === 0 ? '#EEEEEE' : null;
+        }
+    };
+
+    /**
      * Constructor
      *
      * @param translate translations
@@ -502,6 +521,10 @@ export class PdfDocumentService {
             listChild: {
                 fontSize: 12,
                 margin: [0, 5]
+            },
+            textItem: {
+                fontSize: 11,
+                margin: [0, 7]
             }
         };
     }

@@ -67,7 +67,7 @@ export class AssignmentPollComponent extends BaseViewComponent implements OnInit
      * used in this poll (e.g.)
      */
     public get pollValues(): CalculablePollKey[] {
-        return this.pollService.pollValues.filter(name => this.poll[name] !== undefined);
+        return this.pollService.getVoteOptionsByPoll(this.poll);
     }
 
     /**

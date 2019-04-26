@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
 
 import { Assignment } from 'app/shared/models/assignments/assignment';
+import { AssignmentPdfExportService } from '../../services/assignment-pdf-export.service';
 import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
 import { AssignmentPollService } from '../../services/assignment-poll.service';
 import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
@@ -172,7 +173,8 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
         public pollService: AssignmentPollService,
         private agendaRepo: ItemRepositoryService,
         private tagRepo: TagRepositoryService,
-        private promptService: PromptService
+        private promptService: PromptService,
+        private pdfService: AssignmentPdfExportService
     ) {
         super(title, translate, matSnackBar);
         this.subscriptions.push(
@@ -406,7 +408,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
     }
 
     public onDownloadPdf(): void {
-        // TODO: Download summary pdf
+        this.pdfService.exportSingleAssignment(this.assignment);
     }
 
     /**
