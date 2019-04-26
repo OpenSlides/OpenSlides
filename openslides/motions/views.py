@@ -568,6 +568,11 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
         )
         message = f"The state of the motion was set to {motion.state.name}."
 
+        # Send submitters and supporters via autoupdate because users without
+        # users.can_see may see them now.
+        inform_changed_data(map(lambda s: s.user, motion.submitters.all()))
+        inform_changed_data(motion.supporters.all())
+
         # Fire autoupdate again to save information to OpenSlides history.
         inform_changed_data(
             motion,
@@ -641,6 +646,11 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
                 ],
                 skip_autoupdate=True,
             )
+
+            # Send submitters and supporters via autoupdate because users without
+            # users.can_see may see them now.
+            inform_changed_data(map(lambda s: s.user, motion.submitters.all()))
+            inform_changed_data(motion.supporters.all())
 
             # Fire autoupdate again to save information to OpenSlides history.
             inform_changed_data(
