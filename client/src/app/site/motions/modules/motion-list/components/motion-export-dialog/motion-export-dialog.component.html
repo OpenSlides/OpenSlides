@@ -46,17 +46,12 @@
         <div>
             <p class="toggle-group-head" translate>Meta information</p>
             <mat-button-toggle-group class="smaller-buttons" multiple formControlName="metaInfo">
-                <mat-button-toggle value="submitters"> <span translate>Submitters</span> </mat-button-toggle>
-                <mat-button-toggle value="state"> <span translate>State</span> </mat-button-toggle>
-                <mat-button-toggle value="recommendation"> <span translate>Recommendation</span> </mat-button-toggle>
-                <mat-button-toggle value="category"> <span translate>Category</span> </mat-button-toggle>
-                <mat-button-toggle value="tags"> <span translate>Tags</span> </mat-button-toggle>
-                <mat-button-toggle value="origin"> <span translate>Origin</span> </mat-button-toggle>
-                <mat-button-toggle value="motion_block"> <span translate>Motion block</span> </mat-button-toggle>
+                <mat-button-toggle *ngFor="let metaInfo of metaInfoExportOrder" [value]="metaInfo">
+                    <span translate>{{ getLabelForMetadata(metaInfo) }}</span>
+                </mat-button-toggle>
                 <mat-button-toggle value="polls" #votingResultButton>
                     <span translate>Voting result</span>
                 </mat-button-toggle>
-                <mat-button-toggle value="id"><span translate>Sequential number</span></mat-button-toggle>
             </mat-button-toggle-group>
         </div>
         <div *ngIf="commentsToExport.length && exportForm.get('format').value === 'pdf'">
