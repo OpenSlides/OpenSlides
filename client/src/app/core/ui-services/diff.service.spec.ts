@@ -886,6 +886,22 @@ describe('DiffService', () => {
             }
         ));
 
+        it('detects inline insertions exceeding block paragraphs', inject([DiffService], (service: DiffService) => {
+            const before =
+                    '<P>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</P>\n' +
+                    '<P>At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</P>',
+                after =
+                    '<P>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. Insertion 1</P>\n' +
+                    '<P>Insertion 2 At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</P>';
+
+            const diff = service.diff(before, after);
+
+            expect(diff).toBe(
+                '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.<ins> Insertion 1</ins></p>\n' +
+                    '<p><ins>Insertion 2 </ins>At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>'
+            );
+        }));
+
         it('does not lose formattings when multiple lines are deleted', inject(
             [DiffService],
             (service: DiffService) => {

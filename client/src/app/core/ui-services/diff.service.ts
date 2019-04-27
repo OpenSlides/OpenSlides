@@ -2001,14 +2001,6 @@ export class DiffService {
             }
         );
 
-        // <del>deleted text</P></del><ins>inserted.</P></ins> => <del>deleted tet</del><ins>inserted.</ins></P>
-        diffUnnormalized = diffUnnormalized.replace(
-            /<del>([^<]*)<\/(p|div|blockquote|li)><\/del><ins>([^<]*)<\/\2><\/ins>\s*$/gi,
-            (whole: string, deleted: string, tag: string, inserted: string): string => {
-                return '<del>' + deleted + '</del><ins>' + inserted + '</ins></' + tag + '>';
-            }
-        );
-
         // If larger inserted HTML text contains block elements, we separate the inserted text into
         // inline <ins> elements and "insert"-class-based block elements.
         // <ins>...<div>...</div>...</ins> => <ins>...</ins><div class="insert">...</div><ins>...</ins>
@@ -2023,6 +2015,54 @@ export class DiffService {
                         return '</' + insDel + '>' + modifiedTag + content + closing + '<' + insDel + '>';
                     }
                 );
+            }
+        );
+
+        // <del>deleted text</P></del><ins>inserted.</P></ins> => <del>deleted tet</del><ins>inserted.</ins></P>
+        diffUnnormalized = diffUnnormalized.replace(
+            /<del>([^<]*)<\/(p|div|blockquote|li)><\/del><ins>([^<]*)<\/\2>(\s*)<\/ins>/gi,
+            (whole: string, deleted: string, tag: string, inserted: string, white: string): string => {
+                return '<del>' + deleted + '</del><ins>' + inserted + '</ins></' + tag + '>' + white;
+            }
+        );
+
+        // <ins>...</p><p>...</ins> => <ins>...</ins></p><p><ins>...</ins>
+        diffUnnormalized = diffUnnormalized.replace(
+            /<(ins|del)>([\s\S]*?)<\/(p|div|blockquote|li)>\s*<(p|div|blockquote|li)([^>]*)>([\s\S]*?)<\/\1>/gi,
+            (
+                whole: string,
+                insDel: string,
+                content1: string,
+                blockEnd: string,
+                blockStart: string,
+                blockAttrs: string,
+                content2: string
+            ): string => {
+                if (this.isValidInlineHtml(content1) && this.isValidInlineHtml(content2)) {
+                    return (
+                        '<' +
+                        insDel +
+                        '>' +
+                        content1 +
+                        '</' +
+                        insDel +
+                        '></' +
+                        blockEnd +
+                        '>' +
+                        '<' +
+                        blockStart +
+                        blockAttrs +
+                        '><' +
+                        insDel +
+                        '>' +
+                        content2 +
+                        '</' +
+                        insDel +
+                        '>'
+                    );
+                } else {
+                    return whole;
+                }
             }
         );
 
