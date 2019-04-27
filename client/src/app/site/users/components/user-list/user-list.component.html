@@ -44,7 +44,7 @@
         <ng-container matColumnDef="name">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
             <mat-cell *matCellDef="let user">
-                {{ user.full_name }}
+                {{ user.short_name }}
             </mat-cell>
         </ng-container>
 
@@ -72,6 +72,19 @@
             <mat-header-cell *matHeaderCellDef></mat-header-cell>
             <mat-cell *matCellDef="let user">
                 <a [routerLink]="user.id" *ngIf="!isMultiSelect"></a>
+            </mat-cell>
+        </ng-container>
+
+        <!-- Infos column -->
+        <ng-container matColumnDef="infos">
+            <mat-header-cell *matHeaderCellDef mat-sort-header></mat-header-cell>
+            <mat-cell *matCellDef="let user" class="infoCell">
+                <div>
+                    <mat-icon inline *ngIf="user.is_last_email_send"
+                        matTooltip="{{ 'Email sent' | translate }} ({{ getEmailSentTime(user) }})">
+                        mail
+                    </mat-icon>
+                </div>
             </mat-cell>
         </ng-container>
 

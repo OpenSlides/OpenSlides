@@ -366,6 +366,19 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User> imp
     }
 
     /**
+     * Get information about the last time an invitation email was sent to a user
+     *
+     * @param user
+     * @returns a string representation about the last time an email was sent to a user
+     */
+    public getEmailSentTime(user: ViewUser): string {
+        if (!user.is_last_email_send) {
+            return this.translate.instant('No email sent');
+        }
+        return this.repo.lastSentEmailTimeString(user);
+    }
+
+    /**
      * Handler for bulk setting new passwords. Needs multiSelect mode.
      */
     public async resetPasswordsSelected(): Promise<void> {
@@ -393,7 +406,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User> imp
             columns = ['projector'].concat(columns);
         }
         if (this.operator.hasPerms('users.can_manage')) {
-            columns = columns.concat(['presence']);
+            columns = columns.concat(['infos', 'presence']);
         }
         if (this.isMultiSelect) {
             columns = ['selector'].concat(columns);

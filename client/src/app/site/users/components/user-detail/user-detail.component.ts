@@ -430,4 +430,27 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
     public sanitizedText(text: string): SafeHtml {
         return this.sanitizer.bypassSecurityTrustHtml(text);
     }
+
+    /**
+     * (Re)- send an invitation email for this user after confirmation
+     */
+    public async sendInvitationEmail(): Promise<void> {
+        const title = this.translate.instant('Sending an invitation email');
+        const content = this.translate.instant('Are you sure you want to send an invitation email to the user?');
+        if (await this.promptService.open(title, content)) {
+            this.repo.sendInvitationEmail([this.user]).then(this.raiseError, this.raiseError);
+        }
+    }
+
+    /**
+     * Fetches a localized string for the time the last email was sent.
+     *
+     * @returns a translated string with either the localized date/time; of 'No email sent'
+     */
+    public getEmailSentTime(): string {
+        if (!this.user.is_last_email_send) {
+            return this.translate.instant('No email sent');
+        }
+        return this.repo.lastSentEmailTimeString(this.user);
+    }
 }
