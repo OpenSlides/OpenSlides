@@ -95,8 +95,6 @@ export class WorkflowRepositoryService extends BaseRepository<ViewWorkflow, Work
     public async addState(stateName: string, viewWorkflow: ViewWorkflow): Promise<void> {
         const newStatePayload = {
             name: stateName,
-            // TODO: The server requires a string-array of restrictions. Should really not be necessary
-            restriction: [],
             workflow_id: viewWorkflow.id
         };
         await this.httpService.post(this.restStateUrl, newStatePayload);

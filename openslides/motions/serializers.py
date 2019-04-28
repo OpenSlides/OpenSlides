@@ -96,7 +96,7 @@ class StateSerializer(ModelSerializer):
     Serializer for motion.models.State objects.
     """
 
-    restriction = JSONField()
+    restriction = JSONField(required=False)
 
     class Meta:
         model = State
