@@ -12,7 +12,6 @@
     </div>
 </os-head-bar>
 
-<div class="head-spacer"></div>
 <mat-card *ngIf="statuteParagraphToCreate">
     <mat-card-title translate>New statute paragraph</mat-card-title>
     <mat-card-content>
@@ -42,77 +41,84 @@
     </mat-card-actions>
 </mat-card>
 
-<mat-accordion class="os-card">
-    <mat-expansion-panel
-        *ngFor="let statuteParagraph of this.statuteParagraphs"
-        (opened)="openId = statuteParagraph.id"
-        (closed)="panelClosed(statuteParagraph)"
-        [expanded]="openId === statuteParagraph.id"
-        multiple="false"
-    >
-        <mat-expansion-panel-header>
-            <mat-panel-title>
-                {{ statuteParagraph.title }}
-            </mat-panel-title>
-        </mat-expansion-panel-header>
-        <form [formGroup]="updateForm" *ngIf="editId === statuteParagraph.id" (keydown)="onKeyDownUpdate($event)">
-            <span translate>Edit statute paragraph:</span>
-            <p>
-                <mat-form-field>
-                    <input formControlName="title" matInput placeholder="{{ 'Title' | translate }}" required />
-                    <mat-hint *ngIf="!updateForm.controls.title.valid">
-                        <span translate>Required</span>
-                    </mat-hint>
-                </mat-form-field>
-            </p>
-            <span>
-                <!-- The HTML Editor -->
-                <h4>Statute paragraph</h4>
-                <editor formControlName="text" [init]="tinyMceSettings"></editor>
-            </span>
-        </form>
-        <ng-container *ngIf="editId !== statuteParagraph.id">
-            <mat-card>
-                <mat-card-title>{{ statuteParagraph.title }}</mat-card-title>
-                <mat-card-content>
-                    <div [innerHTML]="statuteParagraph.text"></div>
-                </mat-card-content>
-            </mat-card>
-        </ng-container>
-        <mat-action-row>
-            <button
-                *ngIf="editId !== statuteParagraph.id"
-                mat-button
-                class="on-transition-fade"
-                (click)="onEditButton(statuteParagraph)"
-                mat-icon-button
-            >
-                <mat-icon>edit</mat-icon>
-            </button>
-            <button
-                *ngIf="editId === statuteParagraph.id"
-                mat-button
-                class="on-transition-fade"
-                (click)="onCancelUpdate()"
-                mat-icon-button
-            >
-                <mat-icon>close</mat-icon>
-            </button>
-            <button
-                *ngIf="editId === statuteParagraph.id"
-                mat-button
-                class="on-transition-fade"
-                (click)="onSaveButton(statuteParagraph)"
-                mat-icon-button
-            >
-                <mat-icon>save</mat-icon>
-            </button>
-            <button mat-button class="on-transition-fade" (click)="onDeleteButton(statuteParagraph)" mat-icon-button>
-                <mat-icon>delete</mat-icon>
-            </button>
-        </mat-action-row>
-    </mat-expansion-panel>
-</mat-accordion>
+<cdk-virtual-scroll-viewport itemSize="50" class="virtual-scroll-full-page">
+    <mat-accordion class="os-card">
+        <mat-expansion-panel
+            *cdkVirtualFor="let statuteParagraph of statuteParagraphs"
+            (opened)="openId = statuteParagraph.id"
+            (closed)="panelClosed(statuteParagraph)"
+            [expanded]="openId === statuteParagraph.id"
+            multiple="false"
+        >
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    {{ statuteParagraph.title }}
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <form [formGroup]="updateForm" *ngIf="editId === statuteParagraph.id" (keydown)="onKeyDownUpdate($event)">
+                <span translate>Edit statute paragraph:</span>
+                <p>
+                    <mat-form-field>
+                        <input formControlName="title" matInput placeholder="{{ 'Title' | translate }}" required />
+                        <mat-hint *ngIf="!updateForm.controls.title.valid">
+                            <span translate>Required</span>
+                        </mat-hint>
+                    </mat-form-field>
+                </p>
+                <span>
+                    <!-- The HTML Editor -->
+                    <h4>Statute paragraph</h4>
+                    <editor formControlName="text" [init]="tinyMceSettings"></editor>
+                </span>
+            </form>
+            <ng-container *ngIf="editId !== statuteParagraph.id">
+                <mat-card>
+                    <mat-card-title>{{ statuteParagraph.title }}</mat-card-title>
+                    <mat-card-content>
+                        <div [innerHTML]="statuteParagraph.text"></div>
+                    </mat-card-content>
+                </mat-card>
+            </ng-container>
+            <mat-action-row>
+                <button
+                    *ngIf="editId !== statuteParagraph.id"
+                    mat-button
+                    class="on-transition-fade"
+                    (click)="onEditButton(statuteParagraph)"
+                    mat-icon-button
+                >
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button
+                    *ngIf="editId === statuteParagraph.id"
+                    mat-button
+                    class="on-transition-fade"
+                    (click)="onCancelUpdate()"
+                    mat-icon-button
+                >
+                    <mat-icon>close</mat-icon>
+                </button>
+                <button
+                    *ngIf="editId === statuteParagraph.id"
+                    mat-button
+                    class="on-transition-fade"
+                    (click)="onSaveButton(statuteParagraph)"
+                    mat-icon-button
+                >
+                    <mat-icon>save</mat-icon>
+                </button>
+                <button
+                    mat-button
+                    class="on-transition-fade"
+                    (click)="onDeleteButton(statuteParagraph)"
+                    mat-icon-button
+                >
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </mat-action-row>
+        </mat-expansion-panel>
+    </mat-accordion>
+</cdk-virtual-scroll-viewport>
 
 <mat-card *ngIf="statuteParagraphs.length === 0">
     <mat-card-content>

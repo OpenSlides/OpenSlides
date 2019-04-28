@@ -42,6 +42,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CdkTreeModule } from '@angular/cdk/tree';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 // ngx-translate
 import { TranslateModule } from '@ngx-translate/core';
@@ -139,7 +140,8 @@ import { PrecisionPipe } from './pipes/precision.pipe';
         NgxMatSelectSearchModule,
         FileDropModule,
         EditorModule,
-        CdkTreeModule
+        CdkTreeModule,
+        ScrollingModule
     ],
     exports: [
         FormsModule,
@@ -203,7 +205,8 @@ import { PrecisionPipe } from './pipes/precision.pipe';
         OwlNativeDateTimeModule,
         CountdownTimeComponent,
         MediaUploadContentComponent,
-        PrecisionPipe
+        PrecisionPipe,
+        ScrollingModule
     ],
     declarations: [
         PermsDirective,
