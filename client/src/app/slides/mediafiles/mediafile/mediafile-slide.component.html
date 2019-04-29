@@ -1,17 +1,19 @@
 <div *ngIf="data">
-    <div *ngIf="data.data.type == 'image/png'">
-        <img [src]="url" alt=""/>
+    <div *ngIf="isImage">
+        <img [src]="url" alt="" [ngClass]="'rotate' + (data.element.rotation || 0)"/>
+        {{ data.element.fullscreen || false }}
     </div>
-    <div *ngIf="data.data.type == 'image/jpeg'">
-        <img [src]="url" alt=""/>
-    </div>
-    <div *ngIf="data.data.type == 'application/pdf'">
-          <pdf-viewer
-              [show-all]="false"
-              [original-size]="false"
-              [autoresize]="true"
-              [page]="page"
-              [src]="url"
-              style="display: block;"></pdf-viewer>
+    <div *ngIf="isPdf">
+        {{ data.element.rotation || 0 }}
+        <pdf-viewer
+            [show-all]="false"
+            [original-size]="false"
+            [fit-to-page]="true"
+            [autoresize]="true"
+            [page]="data.element.page || 1"
+            [zoom]="zoom"
+            [rotation]="data.element.rotation || 0"
+            [src]="url"
+            style="display: block;"></pdf-viewer>
     </div>
 </div>

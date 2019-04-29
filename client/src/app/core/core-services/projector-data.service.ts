@@ -5,9 +5,9 @@ import { Observable, BehaviorSubject } from 'rxjs';
 import { WebsocketService } from 'app/core/core-services/websocket.service';
 import { ProjectorElement, Projector } from 'app/shared/models/core/projector';
 
-export interface SlideData<T = { error?: string }> {
+export interface SlideData<T = { error?: string }, P extends ProjectorElement = ProjectorElement> {
     data: T;
-    element: ProjectorElement;
+    element: P;
     error?: string;
 }
 
