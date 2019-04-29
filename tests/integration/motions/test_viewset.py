@@ -481,7 +481,7 @@ class RetrieveMotion(TestCase):
         config["general_system_enable_anonymous"] = True
         guest_client = APIClient()
         state = self.motion.state
-        state.restriction = ["managers_only"]
+        state.restriction = ["motions.can_manage"]
         state.save()
         # The cache has to be cleared, see:
         # https://github.com/OpenSlides/OpenSlides/issues/3396
@@ -492,7 +492,7 @@ class RetrieveMotion(TestCase):
 
     def test_admin_state_with_restriction(self):
         state = self.motion.state
-        state.restriction = ["managers_only"]
+        state.restriction = ["motions.can_manage"]
         state.save()
         response = self.client.get(reverse("motion-detail", args=[self.motion.pk]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
