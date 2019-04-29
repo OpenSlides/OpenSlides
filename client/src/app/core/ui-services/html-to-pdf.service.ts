@@ -328,7 +328,7 @@ export class HtmlToPdfService {
                 if (nodeName === 'ol') {
                     const start = element.getAttribute('start');
                     if (start) {
-                        list.start = +start;
+                        list.start = parseInt(start, 10);
                     }
                 }
 
@@ -579,7 +579,7 @@ export class HtmlToPdfService {
             element.getAttribute('class') &&
             element.getAttribute('class').indexOf('os-line-number') > -1
         ) {
-            return +element.getAttribute('data-line-number');
+            return parseInt(element.getAttribute('data-line-number'), 10);
         }
     }
 
@@ -603,11 +603,11 @@ export class HtmlToPdfService {
                 if (styleDefinition.length === 2) {
                     switch (key) {
                         case 'padding-left': {
-                            styleObject.margin = [+value, 0, 0, 0];
+                            styleObject.margin = [parseInt(value, 10), 0, 0, 0];
                             break;
                         }
                         case 'font-size': {
-                            styleObject.fontSize = +value;
+                            styleObject.fontSize = parseInt(value, 10);
                             break;
                         }
                         case 'text-align': {
@@ -688,7 +688,7 @@ export class HtmlToPdfService {
         } else if (rgbRegex.test(color)) {
             const decimalColors = rgbRegex.exec(color).slice(1);
             for (let i = 0; i < 3; i++) {
-                let decimalValue = +decimalColors[i];
+                let decimalValue = parseInt(decimalColors[i], 10);
                 if (decimalValue > 255) {
                     decimalValue = 255;
                 }
