@@ -62,6 +62,8 @@
                         </span>
                         <br *ngIf="user.groups && user.structure_level" />
                         <span *ngIf="user.structure_level"> <mat-icon>flag</mat-icon>{{ user.structure_level }}</span>
+                        <br *ngIf="user.number" />
+                        <span *ngIf="user.number"> <mat-icon>perm_identity</mat-icon>{{ user.number }}</span>
                     </div>
                 </div>
             </mat-cell>
@@ -110,6 +112,7 @@
             [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected' : ''"
             *matRowDef="let row; columns: getColumnDefinition()"
             (click)="selectItem(row, $event)"
+            class="lg"
         >
         </mat-row>
     </mat-table>
@@ -257,6 +260,14 @@
             <input
                 type="text"
                 matInput
+                placeholder="{{ 'Structure level' | translate }}"
+                [(ngModel)]="infoDialog.structure_level"
+            />
+        </mat-form-field>
+        <mat-form-field>
+            <input
+                type="text"
+                matInput
                 placeholder="{{ 'Participant number' | translate }}"
                 [(ngModel)]="infoDialog.number"
             />
@@ -270,7 +281,8 @@
             [mat-dialog-close]="{
                 groups_id: infoDialog.groups_id,
                 gender: infoDialog.gender,
-                number: infoDialog.number
+                number: infoDialog.number,
+                structure_level: infoDialog.structure_level
             }"
         >
             <span translate>Save</span>
