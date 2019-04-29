@@ -19,6 +19,7 @@ export class Assignment extends BaseModel<Assignment> {
     public polls: AssignmentPoll[];
     public agenda_item_id: number;
     public tags_id: number[];
+    public attachments_id: number[];
 
     public constructor(input?: any) {
         super(Assignment.COLLECTIONSTRING, input);

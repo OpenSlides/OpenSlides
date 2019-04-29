@@ -21,6 +21,8 @@ import { ViewUser } from 'app/site/users/models/view-user';
 import { ViewAssignmentRelatedUser } from 'app/site/assignments/models/view-assignment-related-user';
 import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
 import { ViewAssignmentPollOption } from 'app/site/assignments/models/view-assignment-poll-option';
+import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
+import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 
 /**
  * Repository Service for Assignments.
@@ -56,7 +58,7 @@ export class AssignmentRepositoryService extends BaseAgendaContentObjectReposito
         protected translate: TranslateService,
         private httpService: HttpService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, Assignment, [User, Item, Tag]);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, Assignment, [User, Item, Tag, Mediafile]);
     }
 
     public getAgendaTitle = (assignment: Partial<Assignment> | Partial<ViewAssignment>) => {
@@ -74,6 +76,7 @@ export class AssignmentRepositoryService extends BaseAgendaContentObjectReposito
     public createViewModel(assignment: Assignment): ViewAssignment {
         const agendaItem = this.viewModelStoreService.get(ViewItem, assignment.agenda_item_id);
         const tags = this.viewModelStoreService.getMany(ViewTag, assignment.tags_id);
+        const attachments = this.viewModelStoreService.getMany(ViewMediafile, assignment.attachments_id);
         const assignmentRelatedUsers = this.createViewAssignmentRelatedUsers(assignment.assignment_related_users);
         const assignmentPolls = this.createViewAssignmentPolls(assignment.polls);
 
@@ -82,7 +85,8 @@ export class AssignmentRepositoryService extends BaseAgendaContentObjectReposito
             assignmentRelatedUsers,
             assignmentPolls,
             agendaItem,
-            tags
+            tags,
+            attachments
         );
         viewAssignment.getVerboseName = this.getVerboseName;
         viewAssignment.getAgendaTitle = () => this.getAgendaTitle(viewAssignment);

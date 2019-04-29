@@ -98,6 +98,14 @@
                 </button>
             </mat-menu>
         </div>
+        <div *ngIf="assignment.attachments.length">
+            <span translate>Election documents</span>:
+            <mat-list dense>
+                <mat-list-item *ngFor="let file of assignment.attachments">
+                    <a [routerLink]="file.downloadUrl" target="_blank">{{ file.getTitle() }}</a>
+                </mat-list-item>
+            </mat-list>
+        </div>
     </mat-card>
 </ng-template>
 
@@ -214,6 +222,7 @@
                 </mat-form-field>
             </div>
             <h4 translate>Description:</h4>
+
             <!-- description: HTML Editor -->
             <editor
                 formControlName="description"
@@ -221,6 +230,7 @@
                 *ngIf="assignment && editAssignment"
                 required
             ></editor>
+
             <!-- searchValueSelector: tags -->
             <div class="content-field" *ngIf="tagsAvailable">
                 <os-search-value-selector
@@ -231,6 +241,18 @@
                     [includeNone]="true"
                     listname="{{ 'Tags' | translate }}"
                     [InputListValues]="tagsObserver"
+                ></os-search-value-selector>
+            </div>
+
+            <!-- Attachments -->
+            <div class="content-field" *ngIf="mediafilesAvailable">
+                <os-search-value-selector
+                    ngDefaultControl
+                    [form]="assignmentForm"
+                    [formControl]="assignmentForm.get('attachments_id')"
+                    [multiple]="true"
+                    listname="{{ 'Election documents' | translate }}"
+                    [InputListValues]="mediafilesObserver"
                 ></os-search-value-selector>
             </div>
 
@@ -258,6 +280,7 @@
                     />
                 </mat-form-field>
             </div>
+
             <!-- open posts: number -->
             <div>
                 <mat-form-field>

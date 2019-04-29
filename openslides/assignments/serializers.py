@@ -206,6 +206,7 @@ class AssignmentFullSerializer(ModelSerializer):
             "agenda_type",
             "agenda_parent_id",
             "tags",
+            "attachments",
         )
         validators = (posts_validator,)
 
@@ -222,10 +223,12 @@ class AssignmentFullSerializer(ModelSerializer):
         agenda_type = validated_data.pop("agenda_type", None)
         agenda_parent_id = validated_data.pop("agenda_parent_id", None)
         tags = validated_data.pop("tags", [])
+        attachments = validated_data.pop("attachments", [])
         assignment = Assignment(**validated_data)
         assignment.agenda_item_update_information["type"] = agenda_type
         assignment.agenda_item_update_information["parent_id"] = agenda_parent_id
         assignment.save()
         assignment.tags.add(*tags)
+        assignment.attachments.add(*attachments)
         inform_changed_data(assignment)
         return assignment
