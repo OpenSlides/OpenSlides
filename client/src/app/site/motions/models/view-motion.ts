@@ -128,6 +128,10 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
         return this._category;
     }
 
+    public get category_weight(): number {
+        return this.motion.category_weight;
+    }
+
     public get submitters(): ViewUser[] {
         return this._submitters;
     }

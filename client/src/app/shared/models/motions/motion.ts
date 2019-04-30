@@ -28,6 +28,7 @@ export class Motion extends BaseModel {
     public modified_final_version: string;
     public parent_id: number;
     public category_id: number;
+    public category_weight: number;
     public motion_block_id: number;
     public origin: string;
     public submitters: MotionSubmitter[];
