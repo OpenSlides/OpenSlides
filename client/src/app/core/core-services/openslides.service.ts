@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { take } from 'rxjs/operators';
-
 import { WebsocketService } from './websocket.service';
 import { OperatorService } from './operator.service';
 import { StorageService } from './storage.service';
@@ -122,18 +120,16 @@ export class OpenSlidesService {
         // is changed, the WS needs to reconnect, so the new connection holds the new
         // user information.
         if (this.websocketService.isConnected) {
-            this.websocketService.close();
-            // Wait for the disconnect.
-            await this.websocketService.closeEvent.pipe(take(1)).toPromise();
+            await this.websocketService.close();
         }
         this.websocketService.connect({ changeId: changeId }); // Request changes after changeId.
     }
 
     /**
-     * Shuts OpenSlides down. The websocket is closed and the operator is not set.
+     * Shuts down OpenSlides. The websocket connection is closed and the operator is not set.
      */
-    public shutdown(): void {
-        this.websocketService.close();
+    public async shutdown(): Promise<void> {
+        await this.websocketService.close();
         this._booted = false;
     }
 
@@ -141,7 +137,17 @@ export class OpenSlidesService {
      * Shutdown and bootup.
      */
     public async reboot(): Promise<void> {
-        this.shutdown();
+        await this.shutdown();
+        await this.bootup();
+    }
+
+    /**
+     * Clears the client cache and restarts OpenSlides. Results in "flickering" of the
+     * login mask, because the cached operator is also cleared.
+     */
+    public async reset(): Promise<void> {
+        await this.shutdown();
+        await this.storageService.clear();
         await this.bootup();
     }
 

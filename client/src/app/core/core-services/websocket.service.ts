@@ -3,6 +3,7 @@ import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
 
 import { Observable, Subject } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 
 import { formatQueryParams, QueryParams } from '../query-params';
@@ -293,12 +294,13 @@ export class WebsocketService {
     /**
      * Closes the websocket connection.
      */
-    public close(): void {
+    public async close(): Promise<void> {
         this.shouldBeClosed = true;
         this.dismissConnectionErrorNotice();
         if (this.websocket) {
             this.websocket.close();
             this.websocket = null;
+            await this.closeEvent.pipe(take(1)).toPromise();
         }
     }
 
