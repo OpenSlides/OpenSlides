@@ -13,6 +13,10 @@
         flex: 2 0 60px;
 
         .groupsCell {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+
             mat-icon {
                 font-size: 80%;
             }

@@ -46,6 +46,11 @@ interface InfoDialog {
      * The participant number of the user.
      */
     number: string;
+
+    /**
+     * Structure level for one user.
+     */
+    structure_level: string;
 }
 
 /**
@@ -169,7 +174,9 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User> imp
 
         // Initialize the groups
         this.groups = this.groupRepo.getSortedViewModelList().filter(group => group.id !== 1);
-        this.groupRepo.getViewModelListObservable().subscribe(groups => (this.groups = groups));
+        this.groupRepo
+            .getViewModelListObservable()
+            .subscribe(groups => (this.groups = groups.filter(group => group.id !== 1)));
     }
 
     /**
@@ -203,6 +210,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User> imp
             name: user.username,
             groups_id: user.groups_id,
             gender: user.gender,
+            structure_level: user.structure_level,
             number: user.number
         };
 
