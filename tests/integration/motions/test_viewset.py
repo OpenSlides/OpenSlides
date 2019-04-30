@@ -582,6 +582,26 @@ class UpdateMotion(TestCase):
         self.assertEqual(motion.title, "test_title_aeng7ahChie3waiR8xoh")
         self.assertEqual(motion.workflow_id, 2)
 
+    def test_patch_category(self):
+        """
+        Tests to only update the category of a motion. Expects the
+        category_weight to be resetted.
+        """
+        category = Category.objects.create(
+            name="test_category_name_FE3jO(Fm83doqqlwcvlv",
+            prefix="test_prefix_w3ofg2mv79UGFqjk3f8h",
+        )
+        self.motion.category_weight = 1
+        self.motion.save()
+        response = self.client.patch(
+            reverse("motion-detail", args=[self.motion.pk]),
+            {"category_id": category.pk},
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        motion = Motion.objects.get()
+        self.assertEqual(motion.category, category)
+        self.assertEqual(motion.category_weight, 10000)
+
     def test_patch_supporters(self):
         supporter = get_user_model().objects.create_user(
             username="test_username_ieB9eicah0uqu6Phoovo",

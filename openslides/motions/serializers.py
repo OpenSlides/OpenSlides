@@ -428,6 +428,7 @@ class MotionSerializer(ModelSerializer):
             "reason",
             "parent",
             "category",
+            "category_weight",
             "comments",
             "motion_block",
             "origin",
@@ -455,6 +456,8 @@ class MotionSerializer(ModelSerializer):
         read_only_fields = (
             "state",
             "recommendation",
+            "weight",
+            "category_weight",
         )  # Some other fields are also read_only. See definitions above.
 
     def validate(self, data):
@@ -527,16 +530,34 @@ class MotionSerializer(ModelSerializer):
     def update(self, motion, validated_data):
         """
         Customized method to update a motion.
+        - If the workflow changes, the state of the motions is resetted to
+          the initial state of the new workflow.
+        - If the category changes, the category_weight is reset to the default value.
         """
         workflow_id = None
         if "workflow_id" in validated_data:
             workflow_id = validated_data.pop("workflow_id")
 
+        old_category_id = motion.category.pk if motion.category is not None else None
+        new_category_id = (
+            validated_data["category"].pk
+            if validated_data.get("category") is not None
+            else None
+        )
+
         result = super().update(motion, validated_data)
 
+        # Check for changed workflow
         if workflow_id is not None and workflow_id != motion.workflow_id:
             motion.reset_state(workflow_id)
-            motion.save()
+            motion.save(skip_autoupdate=True)
+
+        # Check for changed category
+        if old_category_id != new_category_id:
+            motion.category_weight = 10000
+            motion.save(skip_autoupdate=True)
+
+        inform_changed_data(motion)
 
         return result
 

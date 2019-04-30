@@ -1,5 +1,5 @@
 import re
-from typing import List
+from typing import List, Set
 
 import jsonschema
 from django.conf import settings
@@ -1158,6 +1158,7 @@ class CategoryViewSet(ModelViewSet):
             "partial_update",
             "update",
             "destroy",
+            "sort",
             "numbering",
         ):
             result = has_perm(self.request.user, "motions.can_see") and has_perm(
@@ -1166,6 +1167,52 @@ class CategoryViewSet(ModelViewSet):
         else:
             result = False
         return result
+
+    @detail_route(methods=["post"])
+    @transaction.atomic
+    def sort(self, request, pk=None):
+        """
+        Endpoint to sort all motions in the category.
+
+        Send POST {'motions': [<list of motion ids>]} to sort the given
+        motions in the given order. Ids of motions with another category or
+        non existing motions are ignored, but all motions of this category
+        have to be send.
+        """
+        category = self.get_object()
+
+        ids = request.data.get("motions", None)
+        if not isinstance(ids, list):
+            raise ValidationError("The ids must be a list.")
+
+        motions = []
+        motion_ids: Set[int] = set()  # To detect duplicated
+        for id in ids:
+            if not isinstance(id, int):
+                raise ValidationError("All ids must be int.")
+
+            if id in motion_ids:
+                continue  # Duplicate id
+
+            try:
+                motion = Motion.objects.get(pk=id)
+            except Motion.DoesNotExist:
+                continue  # Ignore invalid ids.
+
+            if motion.category is not None and motion.category.pk == category.pk:
+                motions.append(motion)
+                motion_ids.add(id)
+
+        if Motion.objects.filter(category=category).count() != len(motions):
+            raise ValidationError("Not all motions for this category are given")
+
+        # assign the category_weight field:
+        for weight, motion in enumerate(motions, start=1):
+            motion.category_weight = weight
+            motion.save(skip_autoupdate=True)
+
+        inform_changed_data(motions)
+        return Response()
 
     @detail_route(methods=["post"])
     def numbering(self, request, pk=None):

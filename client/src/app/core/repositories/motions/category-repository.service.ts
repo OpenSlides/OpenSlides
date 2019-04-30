@@ -71,20 +71,24 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
     }
 
     /**
-     * Returns the category for the ID
-     * @param category_id category ID
-     */
-    public getCategoryByID(category_id: number): Category {
-        return this.DS.find<Category>(Category, cat => cat.id === category_id);
-    }
-
-    /**
      * Updates a categories numbering.
+     *
      * @param category the category it should be updated in
-     * @param motionList the list of motions on this category
+     * @param motionIds the list of motion ids on this category
      */
     public async numberMotionsInCategory(category: Category, motionIds: number[]): Promise<void> {
         const collectionString = 'rest/motions/category/' + category.id + '/numbering/';
+        await this.httpService.post(collectionString, { motions: motionIds });
+    }
+
+    /**
+     * Updates the sorting of motions in a category.
+     *
+     * @param category the category it should be updated in
+     * @param motionIds the list of motion ids on this category
+     */
+    public async sortMotionsInCategory(category: Category, motionIds: number[]): Promise<void> {
+        const collectionString = 'rest/motions/category/' + category.id + '/sort/';
         await this.httpService.post(collectionString, { motions: motionIds });
     }
 

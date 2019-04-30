@@ -187,6 +187,12 @@ class Motion(RESTModelMixin, models.Model):
     ForeignKey to one category of motions.
     """
 
+    category_weight = models.IntegerField(default=10000)
+    """
+    Sorts the motions inside a category. Default is 10000 so new motions
+    in a category will be added on the end of the list.
+    """
+
     motion_block = models.ForeignKey(
         "MotionBlock", on_delete=SET_NULL_AND_AUTOUPDATE, null=True, blank=True
     )
