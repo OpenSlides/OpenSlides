@@ -1,5 +1,5 @@
 import re
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from ..users.projector import get_user_name
 from ..utils.projector import (
@@ -121,13 +121,16 @@ async def get_amendment_base_statute(amendment, all_data):
 
 async def extend_reference_motion_dict(
     all_data: AllData,
-    recommendation: str,
+    recommendation: Optional[str],
     referenced_motions: Dict[int, Dict[str, str]],
 ) -> None:
     """
     Extends a dict of motion ids mapped to their title information.
     The client can replace the placeholders in the recommendation correctly.
     """
+    if recommendation is None:
+        return
+
     # Collect all meantioned motions via [motion:<id>]
     referenced_ids = [
         int(id) for id in motion_placeholder_regex.findall(recommendation)

@@ -1,4 +1,9 @@
-.blockitem {
+table {
     line-height: 1;
-    margin-bottom: 10px;
+    width: 100%;
+    table-layout: fixed;
+}
+
+td {
+    min-width: 50%;
 }
