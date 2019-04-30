@@ -339,7 +339,7 @@
     </h1>
     <div class="os-form-card-mobile" mat-dialog-content>
         <!-- Category -->
-        <mat-form-field>
+        <mat-form-field *ngIf="isCategoryAvailable()">
             <mat-select placeholder="{{ 'Category' | translate }}" [(ngModel)]="infoDialog.category">
                 <mat-option [value]="null">-</mat-option>
                 <mat-option *ngFor="let category of categories" [value]="category.id">
@@ -348,7 +348,7 @@
             </mat-select>
         </mat-form-field>
         <!-- Motion block -->
-        <mat-form-field>
+        <mat-form-field *ngIf="isMotionBlockAvailable()">
             <mat-select placeholder="{{ 'Motion block' | translate }}" [(ngModel)]="infoDialog.motionBlock">
                 <mat-option [value]="null">-</mat-option>
                 <mat-option *ngFor="let block of motionBlocks" [value]="block.id">
@@ -357,7 +357,7 @@
             </mat-select>
         </mat-form-field>
         <!-- Tag -->
-        <mat-form-field>
+        <mat-form-field *ngIf="isTagAvailable()">
             <mat-select multiple placeholder="{{ 'Tags' | translate }}" [(ngModel)]="infoDialog.tags">
                 <mat-option *ngFor="let tag of tags" [value]="tag.id">
                     {{ tag.getTitle() | translate }}
