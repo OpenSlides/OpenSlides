@@ -1,5 +1,9 @@
 <!-- TODO permission -->
-<os-head-bar [nav]="false">
+<os-head-bar
+    [editMode]="hasChanged"
+    (saveEvent)="sendUpdate()"
+    (mainEvent)="onCancel()"
+    [nav]="false">
     <!-- Title -->
     <div class="title-slot"><h2 translate>Sort motions</h2></div>
 </os-head-bar>
@@ -15,20 +19,26 @@
         mat-raised-button
         color="primary"
         (click)="onNumberMotions()"
-        class="spacer-top-10"
-        [disabled]="!motionsCount"
+        class="spacer-top-10 spacer-bottom-10"
+        [disabled]="!motionsCount || hasChanged"
     >
         <span translate>Number motions</span>
     </button>
-    <os-sorting-list [input]="motionObservable" #sorter>
+
+    <os-sorting-list
+        (sortEvent)="onListUpdate($event)"
+        [input]="motionObservable"
+        #sorter
+    >
         <!-- implicit motion references into the component using ng-template slot -->
         <ng-template let-motion>
-            <div class="ellipsis-overflow small" *ngIf="motion.tags && motion.tags.length">
+            <span class="ellipsis-overflow small" *ngIf="motion.tags && motion.tags.length">
                 <span *ngFor="let tag of motion.tags">
                     <mat-icon inline>local_offer</mat-icon>
                     {{ tag.getTitle() }}
                 </span>
-            </div>
+            </span>
+            <mat-chip matTooltip="{{ 'Sequential number' | translate }}">{{ motion.id }}</mat-chip>
         </ng-template>
     </os-sorting-list>
 </mat-card>

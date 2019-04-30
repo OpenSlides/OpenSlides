@@ -12,6 +12,7 @@ import { PromptService } from 'app/core/ui-services/prompt.service';
 import { SortingListComponent } from 'app/shared/components/sorting-list/sorting-list.component';
 import { ViewCategory } from 'app/site/motions/models/view-category';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
+import { CanComponentDeactivate } from 'app/shared/utils/watch-sorting-tree.guard';
 
 /**
  * View for rearranging and renumbering the motions of a category. The {@link onNumberMotions}
@@ -23,7 +24,7 @@ import { ViewMotion } from 'app/site/motions/models/view-motion';
     templateUrl: './category-sort.component.html',
     styleUrls: ['./category-sort.component.scss']
 })
-export class CategorySortComponent extends BaseViewComponent implements OnInit {
+export class CategorySortComponent extends BaseViewComponent implements OnInit, CanComponentDeactivate {
     /**
      * The current category. Determined by the route
      */
@@ -38,6 +39,22 @@ export class CategorySortComponent extends BaseViewComponent implements OnInit {
      * Counter indicating the amount of motions currently in the category
      */
     public motionsCount = 0;
+
+    /**
+     * Flag to define if the list has changed.
+     */
+    public hasChanged = false;
+
+    /**
+     * Copied array of the motions in this category
+     */
+    private motionsCopy: ViewMotion[] = [];
+
+    /**
+     * Array that contains the initial list of motions.
+     * Necessary to reset the list.
+     */
+    private motionsBackup: ViewMotion[] = [];
 
     /**
      * @returns an observable for the {@link motionsSubject}
@@ -95,9 +112,25 @@ export class CategorySortComponent extends BaseViewComponent implements OnInit {
         });
         this.motionRepo.getViewModelListObservable().subscribe(motions => {
             const filtered = motions.filter(m => m.category_id === category_id);
+            this.motionsBackup = [...filtered];
             this.motionsCount = filtered.length;
-            this.motionsSubject.next(filtered);
+            if (this.motionsCopy.length === 0) {
+                this.initializeList(filtered);
+            } else {
+                this.motionsSubject.next(this.handleMotionUpdates(filtered));
+            }
         });
+    }
+
+    /**
+     * Function to (re-)set the current list of motions.
+     *
+     * @param motions An array containing the new motions.
+     */
+    private initializeList(motions: ViewMotion[]): void {
+        motions.sort((a, b) => (a.category_weight < b.category_weight ? -1 : 1));
+        this.motionsSubject.next(motions);
+        this.motionsCopy = motions;
     }
 
     /**
@@ -116,5 +149,87 @@ export class CategorySortComponent extends BaseViewComponent implements OnInit {
                     .then(null, this.raiseError);
             }
         }
+    }
+
+    /**
+     * Listener for the sorting event in the `sorting-list`.
+     *
+     * @param motions ViewMotion[]: The sorted array of motions.
+     */
+    public onListUpdate(motions: ViewMotion[]): void {
+        this.hasChanged = true;
+        this.motionsCopy = motions;
+    }
+
+    /**
+     * Resets the current list.
+     */
+    public async onCancel(): Promise<void> {
+        if (await this.canDeactivate()) {
+            this.motionsSubject.next([]);
+            this.initializeList(this.motionsBackup);
+            this.hasChanged = false;
+        }
+    }
+
+    /**
+     * This function sends the changed list.
+     * Only an array containing ids from the motions will be sent.
+     */
+    public async sendUpdate(): Promise<void> {
+        const title = this.translate.instant('Save changes');
+        const content = this.translate.instant('Do you really want to save your changes?');
+        if (await this.promptService.open(title, content)) {
+            const ids = this.motionsCopy.map(motion => motion.id);
+            this.repo.sortMotionsInCategory(this.category.category, ids);
+            this.hasChanged = false;
+        }
+    }
+
+    /**
+     * This function handles the incoming motions after the user sorted them previously.
+     *
+     * @param nextMotions are the motions that are received from the server.
+     *
+     * @returns An array containing the new motions or not the removed motions.
+     */
+    private handleMotionUpdates(nextMotions: ViewMotion[]): ViewMotion[] {
+        const copy = this.motionsCopy;
+        if (nextMotions.length > copy.length) {
+            for (const motion of nextMotions) {
+                if (!this.motionsCopy.includes(motion)) {
+                    copy.push(motion);
+                }
+            }
+        } else if (nextMotions.length < copy.length) {
+            for (const motion of copy) {
+                if (!nextMotions.includes(motion)) {
+                    copy.splice(copy.indexOf(motion), 1);
+                }
+            }
+        } else {
+            for (const motion of copy) {
+                if (!nextMotions.includes(motion)) {
+                    const updatedMotion = nextMotions.find(theMotion => theMotion.id === motion.id);
+                    copy.splice(copy.indexOf(motion), 1, updatedMotion);
+                }
+            }
+        }
+        return copy;
+    }
+
+    /**
+     * Function to open a prompt dialog,
+     * so the user will be warned if he has made changes and not saved them.
+     *
+     * @returns The result from the prompt dialog.
+     */
+    public async canDeactivate(): Promise<boolean> {
+        if (this.hasChanged) {
+            const title = this.translate.instant('You made changes.');
+            const content = this.translate.instant('Do you really want to exit?');
+            return await this.promptService.open(title, content);
+        }
+        return true;
     }
 }
