@@ -17,6 +17,16 @@ import { XlsxExportServiceService, CellFillingDefinition } from 'app/core/ui-ser
 })
 export class MotionXlsxExportService {
     /**
+     * Determine the default font size
+     */
+    private fontSize = 12;
+
+    /**
+     * The defa
+     */
+    private fontName = 'Arial';
+
+    /**
      * Defines the head row style
      */
     private headRowFilling: CellFillingDefinition = {
@@ -27,6 +37,20 @@ export class MotionXlsxExportService {
         },
         bgColor: {
             argb: 'FFFFE699'
+        }
+    };
+
+    /**
+     * Filling Style of odd rows
+     */
+    private oddFilling: CellFillingDefinition = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {
+            argb: 'FFDDDDDD'
+        },
+        bgColor: {
+            argb: 'FFDDDDDD'
         }
     };
 
@@ -57,11 +81,19 @@ export class MotionXlsxExportService {
         const worksheet = workbook.addWorksheet(this.translate.instant('Motions'), {
             pageSetup: {
                 paperSize: 9,
-                orientation: 'portrait',
+                orientation: 'landscape',
                 fitToPage: true,
                 fitToHeight: 5,
                 fitToWidth: properties.length,
-                printTitlesRow: '1:1'
+                printTitlesRow: '1:1',
+                margins: {
+                    left: 0.4,
+                    right: 0.4,
+                    top: 1.0,
+                    bottom: 0.5,
+                    header: 0.3,
+                    footer: 0.3
+                }
             }
         });
 
@@ -77,6 +109,8 @@ export class MotionXlsxExportService {
 
         worksheet.getRow(1).eachCell(cell => {
             cell.font = {
+                name: this.fontName,
+                size: this.fontSize,
                 underline: true,
                 bold: true
             };
@@ -97,14 +131,25 @@ export class MotionXlsxExportService {
                             return this.translate.instant(motionProp.toString());
                     }
                 } else {
-                    return null;
+                    return '';
                 }
             })
         );
 
         // add to sheet
-        for (const motion of motionData) {
-            worksheet.addRow(motion);
+        for (let i = 0; i < motionData.length; i++) {
+            const row = worksheet.addRow(motionData[i]);
+            row.eachCell(cell => {
+                cell.alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
+                cell.font = {
+                    name: this.fontName,
+                    size: this.fontSize
+                };
+                // zebra styled filling
+                if (i % 2 !== 0) {
+                    cell.fill = this.oddFilling;
+                }
+            });
         }
 
         this.xlsx.autoSize(worksheet, 0);
