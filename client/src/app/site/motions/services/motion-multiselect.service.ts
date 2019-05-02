@@ -331,24 +331,33 @@ export class MotionMultiselectService {
         const options = [this.translate.instant('Set as parent'), this.translate.instant('Insert after')];
         const allMotions = this.repo.getViewModelList();
         const tree = this.treeService.makeTree(allMotions, 'weight', 'sort_parent_id');
-        const itemsToMove = this.treeService.getTopItemsFromTree(tree, motions);
-        const selectableItems = this.treeService.getTreeWithoutSelection(tree, motions);
-
-        const selectedChoice = await this.choiceService.open(title, selectableItems, false, options);
-        if (selectedChoice) {
-            if (selectedChoice.action === options[0]) {
-                // set choice as parent
-                this.repo.sortMotionBranches(itemsToMove, selectedChoice.items as number);
-            } else if (selectedChoice.action === options[1]) {
-                // insert after chosen
-                const olderSibling = this.repo.getViewModel(selectedChoice.items as number);
-                const parentId = olderSibling ? olderSibling.sort_parent_id : null;
-                const siblings = allMotions.filter(motion => motion.sort_parent_id === parentId);
-                const idx = siblings.findIndex(sib => sib.id === olderSibling.id);
-                const before = siblings.slice(0, idx + 1);
-                const after = siblings.slice(idx + 1);
-                const sum = [].concat(before, itemsToMove, after);
-                this.repo.sortMotionBranches(sum, parentId);
+        const itemsToMove = this.treeService.getBranchesFromTree(tree, motions);
+        const partialTree = this.treeService.getTreeWithoutSelection(tree, motions);
+        const availableMotions = this.treeService.getFlatItemsFromTree(partialTree);
+        if (!availableMotions.length) {
+            throw new Error(this.translate.instant('There are no items left to chose from'));
+        } else {
+            const selectedChoice = await this.choiceService.open(title, availableMotions, false, options);
+            if (selectedChoice) {
+                if (!selectedChoice.items) {
+                    throw this.translate.instant('No items selected');
+                }
+                if (selectedChoice.action === options[0]) {
+                    const sortedChildTree = this.treeService.insertBranchesIntoTree(
+                        partialTree,
+                        itemsToMove,
+                        selectedChoice.items as number
+                    );
+                    this.repo.sortMotions(this.treeService.stripTree(sortedChildTree));
+                } else if (selectedChoice.action === options[1]) {
+                    const sortedSiblingTree = this.treeService.insertBranchesIntoTree(
+                        partialTree,
+                        itemsToMove,
+                        this.repo.getViewModel(selectedChoice.items as number).parent_id,
+                        selectedChoice.items as number
+                    );
+                    this.repo.sortMotions(this.treeService.stripTree(sortedSiblingTree));
+                }
             }
         }
     }
