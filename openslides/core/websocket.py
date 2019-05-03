@@ -1,5 +1,6 @@
-from typing import Any
+from typing import Any, Dict
 
+from ..utils.auth import async_has_perm
 from ..utils.constants import get_constants
 from ..utils.projector import get_projector_data
 from ..utils.websocket import (
@@ -44,19 +45,34 @@ class NotifyWebsocketClientMessage(BaseWebsocketClientMessage):
         },
         "required": ["name", "content"],
     }
+    # Define a required permission for a notify message here. If the emitting user does not
+    # have this permission, he will get an error message in response.
+    notify_permissions: Dict[str, str] = {"swCheckForUpdate": "users.can_manage"}
 
     async def receive_content(
         self, consumer: "ProtocollAsyncJsonWebsocketConsumer", content: Any, id: str
     ) -> None:
-        await consumer.channel_layer.group_send(
-            "site",
-            {
-                "type": "send_notify",
-                "incomming": content,
-                "senderChannelName": consumer.channel_name,
-                "senderUserId": consumer.scope["user"]["id"],
-            },
-        )
+        # Check if the user is allowed to send this notify message
+        perm = self.notify_permissions.get(content["name"])
+        if perm is not None and not await async_has_perm(
+            consumer.scope["user"]["id"], perm
+        ):
+            await consumer.send_json(
+                type="error",
+                content=f"You need '{perm}' to send this message.",
+                in_response=id,
+            )
+        else:
+            # Forward to all other active site consumers to handle the notify message.
+            await consumer.channel_layer.group_send(
+                "site",
+                {
+                    "type": "send_notify",
+                    "incomming": content,
+                    "senderChannelName": consumer.channel_name,
+                    "senderUserId": consumer.scope["user"]["id"],
+                },
+            )
 
 
 class ConstantsWebsocketClientMessage(BaseWebsocketClientMessage):
