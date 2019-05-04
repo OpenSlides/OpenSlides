@@ -26,7 +26,7 @@ async def user_slide(
     if user_id is None:
         raise ProjectorElementException("id is required for user slide")
 
-    return {"user": get_user_name(all_data, user_id)}
+    return {"user": await get_user_name(all_data, user_id)}
 
 
 async def get_user_name(all_data: AllData, user_id: int) -> str:
