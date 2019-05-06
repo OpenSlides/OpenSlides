@@ -1,3 +1,5 @@
+import logging
+import time
 from collections import defaultdict
 from typing import Any, Dict, List
 from urllib.parse import parse_qs
@@ -5,7 +7,11 @@ from urllib.parse import parse_qs
 from .auth import async_anonymous_is_enabled
 from .autoupdate import AutoupdateFormat
 from .cache import element_cache, split_element_id
+from .utils import get_worker_id
 from .websocket import ProtocollAsyncJsonWebsocketConsumer, get_element_data
+
+
+logger = logging.getLogger("openslides.websocket")
 
 
 class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
@@ -15,8 +21,15 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
 
     groups = ["site"]
 
+    ID_COUNTER = 0
+    """
+    ID counter for assigning each instance of this class an unique id.
+    """
+
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         self.projector_hash: Dict[int, int] = {}
+        SiteConsumer.ID_COUNTER += 1
+        self._id = get_worker_id() + "-" + str(SiteConsumer.ID_COUNTER)
         super().__init__(*args, **kwargs)
 
     async def connect(self) -> None:
@@ -27,12 +40,14 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
 
         Sends the startup data to the user.
         """
+        self.connect_time = time.time()
         # self.scope['user'] is the full_data dict of the user. For an
         # anonymous user is it the dict {'id': 0}
         change_id = None
         if not await async_anonymous_is_enabled() and not self.scope["user"]["id"]:
             await self.accept()  # workaround for #4009
             await self.close()
+            logger.debug(f"connect: denied ({self._id})")
             return
 
         query_string = parse_qs(self.scope["query_string"])
@@ -42,6 +57,7 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
             except ValueError:
                 await self.accept()  # workaround for #4009
                 await self.close()  # TODO: Find a way to send an error code
+                logger.debug(f"connect: wrong change id ({self._id})")
                 return
 
         if b"autoupdate" in query_string and query_string[b"autoupdate"][
@@ -53,6 +69,7 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
         await self.accept()
 
         if change_id is not None:
+            logger.debug(f"connect: change id {change_id} ({self._id})")
             try:
                 data = await get_element_data(self.scope["user"]["id"], change_id)
             except ValueError:
@@ -60,12 +77,18 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
                 pass
             else:
                 await self.send_json(type="autoupdate", content=data)
+        else:
+            logger.debug(f"connect: no change id ({self._id})")
 
     async def disconnect(self, close_code: int) -> None:
         """
         A user disconnects. Remove it from autoupdate.
         """
         await self.channel_layer.group_discard("autoupdate", self.channel_name)
+        active_seconds = int(time.time() - self.connect_time)
+        logger.debug(
+            f"disconnect code={close_code} active_secs={active_seconds} ({self._id})"
+        )
 
     async def send_notify(self, event: Dict[str, Any]) -> None:
         """

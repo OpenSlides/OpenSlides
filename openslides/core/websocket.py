@@ -1,8 +1,9 @@
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from ..utils.auth import async_has_perm
 from ..utils.constants import get_constants
 from ..utils.projector import get_projector_data
+from ..utils.stats import WebsocketLatencyLogger
 from ..utils.websocket import (
     BaseWebsocketClientMessage,
     ProtocollAsyncJsonWebsocketConsumer,
@@ -206,6 +207,11 @@ class PingPong(BaseWebsocketClientMessage):
     }
 
     async def receive_content(
-        self, consumer: "ProtocollAsyncJsonWebsocketConsumer", content: Any, id: str
+        self,
+        consumer: "ProtocollAsyncJsonWebsocketConsumer",
+        latency: Optional[int],
+        id: str,
     ) -> None:
-        await consumer.send_json(type="pong", content=content, in_response=id)
+        await consumer.send_json(type="pong", content=latency, in_response=id)
+        if latency is not None:
+            await WebsocketLatencyLogger.add_latency(latency)

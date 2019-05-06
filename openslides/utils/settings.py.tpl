@@ -144,6 +144,38 @@ MEDIA_ROOT = os.path.join(OPENSLIDES_USER_DATA_DIR, 'media', '')
 # AUTH_PASSWORD_VALIDATORS = []
 
 
+# Logging
+# see https://docs.djangoproject.com/en/2.2/topics/logging/
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'gunicorn': {
+            'format': '{asctime} [{process:d}] [{levelname}] {name} {message}',
+            'style': '{',
+            'datefmt': '[%%Y-%%m-%%d %%H:%%M:%%S %%z]',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'gunicorn',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+        },
+        'openslides': {
+            'handlers': ['console'],
+            'level': os.getenv('OPENSLIDES_LOG_LEVEL', 'INFO'),
+        }
+    },
+}
+
+
 # Customization of OpenSlides apps
 
 MOTION_IDENTIFIER_MIN_DIGITS = 1
