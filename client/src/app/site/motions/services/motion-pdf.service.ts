@@ -564,14 +564,7 @@ export class MotionPdfService {
             //     columnWidth = '100%';
             // }
 
-            reason.push({
-                columns: [
-                    {
-                        // width: columnWidth,
-                        stack: this.htmlToPdfService.convertHtml(motion.reason)
-                    }
-                ]
-            });
+            reason.push(this.addHtml(motion.reason));
 
             return reason;
         } else {
@@ -698,7 +691,7 @@ export class MotionPdfService {
             this.configService.instant('motions_recommendation_text_mode'),
             ['submitters', 'state', 'category']
         );
-        const noteContent = this.htmlToPdfService.convertHtml(note);
+        const noteContent = this.htmlToPdfService.convertHtml(note, LineNumberingMode.None);
 
         const subHeading = {
             text: this.translate.instant(noteTitle),
@@ -713,12 +706,26 @@ export class MotionPdfService {
             const viewComment = this.commentRepo.getViewModel(comment);
             const section = motion.getCommentForSection(viewComment);
             if (section && section.comment) {
-                result.push({ text: viewComment.name, style: 'heading3' });
-                result.push({
-                    text: this.htmlToPdfService.convertHtml(section.comment)
-                });
+                result.push({ text: viewComment.name, style: 'heading3', margin: [0, 25, 0, 10] });
+                result.push(this.addHtml(section.comment));
             }
         }
         return result;
+    }
+
+    /**
+     * Helper function to add simple rendered HTML in a new column-stack object.
+     * Prevents all kinds of malformation
+     *
+     * @param content the HTML content
+     */
+    private addHtml(content: string): object {
+        return {
+            columns: [
+                {
+                    stack: this.htmlToPdfService.convertHtml(content, LineNumberingMode.None)
+                }
+            ]
+        };
     }
 }
