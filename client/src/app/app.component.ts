@@ -12,6 +12,7 @@ import { OperatorService } from './core/core-services/operator.service';
 import { ServertimeService } from './core/core-services/servertime.service';
 import { ThemeService } from './core/ui-services/theme.service';
 import { DataStoreUpgradeService } from './core/core-services/data-store-upgrade.service';
+import { UpdateService } from './core/ui-services/update.service';
 
 /**
  * Angular's global App Component
@@ -38,6 +39,8 @@ export class AppComponent {
      * @param countUsersService to call the constructor of the CountUserService
      * @param configService to call the constructor of the ConfigService
      * @param loadFontService to call the constructor of the LoadFontService
+     * @param dataStoreUpgradeService
+     * @param update Service Worker Updates
      */
     public constructor(
         translate: TranslateService,
@@ -50,7 +53,8 @@ export class AppComponent {
         countUsersService: CountUsersService, // Needed to register itself.
         configService: ConfigService,
         loadFontService: LoadFontService,
-        dataStoreUpgradeService: DataStoreUpgradeService // to start it.
+        dataStoreUpgradeService: DataStoreUpgradeService, // to start it.
+        update: UpdateService
     ) {
         // manually add the supported languages
         translate.addLangs(['en', 'de', 'cs']);
