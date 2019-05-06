@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { BaseRepository } from '../base-repository';
-import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
+import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { ProjectorMessage } from 'app/shared/models/core/projector-message';
 import { ViewProjectorMessage } from 'app/site/projector/models/view-projector-message';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';

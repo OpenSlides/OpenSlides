@@ -2,6 +2,8 @@ import { BaseViewModel } from 'app/site/base/base-view-model';
 import { History } from 'app/shared/models/core/history';
 import { ViewUser } from 'app/site/users/models/view-user';
 
+export type ProxyHistory = History & { user?: ViewUser };
+
 /**
  * View model for history objects
  */
@@ -11,36 +13,37 @@ export class ViewHistory extends BaseViewModel {
     /**
      * Private BaseModel of the history
      */
-    private _history: History;
-
-    /**
-     * Real representation of the user who altered the history.
-     * Determined from `History.user_id`
-     */
-    private _user: ViewUser | null;
+    private _history: ProxyHistory;
 
     /**
      * Read the history property
      */
-    public get history(): History {
+    public get history(): ProxyHistory {
         return this._history;
     }
 
     /**
-     * Read the user property
+     * Gets the users ViewUser.
      */
-    public get user(): ViewUser {
-        return this._user ? this._user : null;
+    public get user(): ViewUser | null {
+        return this.history.user;
     }
 
     /**
-     * Get the ID of the history object
+     * Get the id of the history object
      * Required by BaseViewModel
      *
-     * @returns the ID as number
+     * @returns the id as number
      */
     public get id(): number {
         return this.history.id;
+    }
+
+    /**
+     * @returns the users full name
+     */
+    public get user_full_name(): string {
+        return this.history.user ? this.history.user.full_name : '';
     }
 
     /**
@@ -81,10 +84,9 @@ export class ViewHistory extends BaseViewModel {
      * @param history the real history BaseModel
      * @param user the real user BaseModel
      */
-    public constructor(history: History, user?: ViewUser) {
+    public constructor(history: ProxyHistory) {
         super(History.COLLECTIONSTRING);
         this._history = history;
-        this._user = user;
     }
 
     /**
@@ -117,14 +119,5 @@ export class ViewHistory extends BaseViewModel {
         return this.history;
     }
 
-    /**
-     * Updates the history object with new values
-     *
-     * @param update potentially the new values for history or it's components.
-     */
-    public updateDependencies(update: BaseViewModel): void {
-        if (update instanceof ViewUser && this.history.user_id === update.id) {
-            this._user = update;
-        }
-    }
+    public updateDependencies(update: BaseViewModel): void {}
 }

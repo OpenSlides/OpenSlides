@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 import { BaseAgendaContentObjectRepository } from '../base-agenda-content-object-repository';
-import { CollectionStringMapperService } from 'app/core/core-services/collectionStringMapper.service';
+import { CollectionStringMapperService } from 'app/core/core-services/collection-string-mapper.service';
 import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { DataSendService } from 'app/core/core-services/data-send.service';
 import { Item } from 'app/shared/models/agenda/item';

@@ -2,7 +2,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { BaseViewModel } from '../../site/base/base-view-model';
 import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model';
-import { CollectionStringMapperService } from '../core-services/collectionStringMapper.service';
+import { CollectionStringMapperService } from '../core-services/collection-string-mapper.service';
 import { DataSendService } from '../core-services/data-send.service';
 import { DataStoreService } from '../core-services/data-store.service';
 import { ViewModelStoreService } from '../core-services/view-model-store.service';

@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { DataSendService } from 'app/core/core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { BaseRepository } from '../base-repository';
-import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
+import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { PersonalNote } from 'app/shared/models/users/personal-note';
 import { ViewPersonalNote } from 'app/site/users/models/view-personal-note';

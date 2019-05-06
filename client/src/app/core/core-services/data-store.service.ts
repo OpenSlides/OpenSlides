@@ -4,7 +4,8 @@ import { Observable, Subject } from 'rxjs';
 
 import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model';
 import { StorageService } from './storage.service';
-import { CollectionStringMapperService } from './collectionStringMapper.service';
+import { CollectionStringMapperService } from './collection-string-mapper.service';
+import { DataStoreUpdateManagerService } from './data-store-update-manager.service';
 
 /**
  * Represents information about a deleted model.
@@ -68,59 +69,23 @@ export class DataStoreService {
     private jsonStore: JsonStorage = {};
 
     /**
-     * Observable subject for changed models in the datastore.
+     * Subjects for changed elements (notified, even if there is a current update slot) for
+     * a specific collection.
      */
-    private readonly changedSubject: Subject<BaseModel> = new Subject<BaseModel>();
-
-    /**
-     * This is subject notify all subscribers _before_ the `secondaryModelChangeSubject`.
-     * It's the same subject as the changedSubject.
-     */
-    public readonly primaryModelChangeSubject = new Subject<BaseModel>();
-
-    /**
-     * This is subject notify all subscribers _after_ the `primaryModelChangeSubject`.
-     * It's the same subject as the changedSubject.
-     */
-    public readonly secondaryModelChangeSubject = new Subject<BaseModel>();
-
-    /**
-     * Observe the datastore for changes.
-     *
-     * @return an observable for changed models
-     */
-    public get changeObservable(): Observable<BaseModel> {
-        return this.changedSubject.asObservable();
-    }
-
-    /**
-     * Observable subject for changed models in the datastore.
-     */
-    private readonly deletedSubject: Subject<DeletedInformation> = new Subject<DeletedInformation>();
-
-    /**
-     * Observe the datastore for deletions.
-     *
-     * @return an observable for deleted objects.
-     */
-    public get deletedObservable(): Observable<DeletedInformation> {
-        return this.deletedSubject.asObservable();
-    }
+    private changedSubjects: { [collection: string]: Subject<BaseModel> } = {};
 
     /**
      * Observable subject for changed or deleted models in the datastore.
      */
-    private readonly changedOrDeletedSubject: Subject<BaseModel | DeletedInformation> = new Subject<
-        BaseModel | DeletedInformation
-    >();
+    private readonly modifiedSubject: Subject<void> = new Subject<void>();
 
     /**
      * Observe the datastore for changes and deletions.
      *
      * @return an observable for changed and deleted objects.
      */
-    public get changedOrDeletedObservable(): Observable<BaseModel | DeletedInformation> {
-        return this.changedOrDeletedSubject.asObservable();
+    public get modifiedObservable(): Observable<void> {
+        return this.modifiedSubject.asObservable();
     }
 
     /**
@@ -152,12 +117,26 @@ export class DataStoreService {
     /**
      * @param storageService use StorageService to preserve the DataStore.
      * @param modelMapper
+     * @param DSUpdateManager
      */
-    public constructor(private storageService: StorageService, private modelMapper: CollectionStringMapperService) {
-        this.changeObservable.subscribe(model => {
-            this.primaryModelChangeSubject.next(model);
-            this.secondaryModelChangeSubject.next(model);
-        });
+    public constructor(
+        private storageService: StorageService,
+        private modelMapper: CollectionStringMapperService,
+        private DSUpdateManager: DataStoreUpdateManagerService
+    ) {}
+
+    /**
+     * Get an model observable for models from a given collection. These observable will be notified,
+     * even if there is an active update slot. So use this with caution (-> only collections with less models).
+     *
+     * @param collectionType The collection
+     */
+    public getChangeObservable<T extends BaseModel>(collectionType: ModelConstructor<T> | string): Observable<T> {
+        const collection = this.getCollectionString(collectionType);
+        if (!this.changedSubjects[collection]) {
+            this.changedSubjects[collection] = new Subject();
+        }
+        return this.changedSubjects[collection].asObservable() as Observable<T>;
     }
 
     /**
@@ -165,12 +144,15 @@ export class DataStoreService {
      * @returns The max change id.
      */
     public async initFromStorage(): Promise<number> {
-        // This promise will be resolved with the maximal change id of the cache.
+        // This promise will be resolved with cached datastore.
         const store = await this.storageService.get<JsonStorage>(DataStoreService.cachePrefix + 'DS');
         if (store) {
+            const updateSlot = await this.DSUpdateManager.getNewUpdateSlot(this);
+
             // There is a store. Deserialize it
             this.jsonStore = store;
             this.modelStore = this.deserializeJsonStore(this.jsonStore);
+
             // Get the maxChangeId from the cache
             let maxChangeId = await this.storageService.get<number>(DataStoreService.cachePrefix + 'maxChangeId');
             if (!maxChangeId) {
@@ -184,6 +166,8 @@ export class DataStoreService {
                     this.publishChangedInformation(this.modelStore[collection][id]);
                 });
             });
+
+            this.DSUpdateManager.commit(updateSlot);
         } else {
             await this.clear();
         }
@@ -414,8 +398,17 @@ export class DataStoreService {
      * @param model The model to publish
      */
     private publishChangedInformation(model: BaseModel): void {
-        this.changedSubject.next(model);
-        this.changedOrDeletedSubject.next(model);
+        const slot = this.DSUpdateManager.getCurrentUpdateSlot();
+        if (slot) {
+            slot.addChangedModel(model.collectionString, model.id);
+            // triggerModifiedObservable will be called by committing the update slot.
+        } else {
+            this.triggerModifiedObservable();
+        }
+
+        if (this.changedSubjects[model.collectionString]) {
+            this.changedSubjects[model.collectionString].next(model);
+        }
     }
 
     /**
@@ -424,8 +417,20 @@ export class DataStoreService {
      * @param information The information about the deleted model
      */
     private publishDeletedInformation(information: DeletedInformation): void {
-        this.deletedSubject.next(information);
-        this.changedOrDeletedSubject.next(information);
+        const slot = this.DSUpdateManager.getCurrentUpdateSlot();
+        if (slot) {
+            slot.addDeletedModel(information.collection, information.id);
+            // triggerModifiedObservable will be called by committing the update slot.
+        } else {
+            this.triggerModifiedObservable();
+        }
+    }
+
+    /**
+     * Triggers the modified subject.
+     */
+    public triggerModifiedObservable(): void {
+        this.modifiedSubject.next();
     }
 
     /**

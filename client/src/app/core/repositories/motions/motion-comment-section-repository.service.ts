@@ -6,7 +6,7 @@ import { BaseRepository } from '../base-repository';
 import { ViewMotionCommentSection } from 'app/site/motions/models/view-motion-comment-section';
 import { MotionCommentSection } from 'app/shared/models/motions/motion-comment-section';
 import { Group } from 'app/shared/models/users/group';
-import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
+import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { HttpService } from 'app/core/core-services/http.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { ViewGroup } from 'app/site/users/models/view-group';

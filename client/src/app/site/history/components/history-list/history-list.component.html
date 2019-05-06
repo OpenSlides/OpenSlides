@@ -49,7 +49,7 @@
     <!-- User -->
     <ng-container matColumnDef="user">
         <mat-header-cell *matHeaderCellDef translate>Changed by</mat-header-cell>
-        <mat-cell *matCellDef="let history">{{ history.user }}</mat-cell>
+        <mat-cell *matCellDef="let history">{{ history.user_full_name }}</mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="getRowDef()"></mat-header-row>

@@ -3,7 +3,7 @@ import { Injectable, Injector } from '@angular/core';
 import { plugins } from '../../../plugins';
 import { CommonAppConfig } from '../../site/common/common.config';
 import { AppConfig, SearchableModelEntry, ModelEntry } from '../app-config';
-import { CollectionStringMapperService } from './collectionStringMapper.service';
+import { CollectionStringMapperService } from './collection-string-mapper.service';
 import { MediafileAppConfig } from '../../site/mediafiles/mediafile.config';
 import { MotionsAppConfig } from '../../site/motions/motions.config';
 import { ConfigAppConfig } from '../../site/config/config.config';

@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Assignment } from 'app/shared/models/assignments/assignment';
 import { AssignmentRelatedUser } from 'app/shared/models/assignments/assignment-related-user';
 import { BaseAgendaContentObjectRepository } from '../base-agenda-content-object-repository';
-import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
+import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataSendService } from 'app/core/core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { HttpService } from 'app/core/core-services/http.service';

@@ -7,7 +7,7 @@ import { tap, map } from 'rxjs/operators';
 
 import { Category } from 'app/shared/models/motions/category';
 import { ChangeRecoMode, ViewMotion } from 'app/site/motions/models/view-motion';
-import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
+import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 
 import { DataSendService } from '../../core-services/data-send.service';
@@ -39,10 +39,10 @@ import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { BaseAgendaContentObjectRepository } from '../base-agenda-content-object-repository';
-import { BaseViewModel } from 'app/site/base/base-view-model';
 import { PersonalNote, PersonalNoteContent } from 'app/shared/models/users/personal-note';
 import { ViewPersonalNote } from 'app/site/users/models/view-personal-note';
 import { OperatorService } from 'app/core/core-services/operator.service';
+import { CollectionIds } from 'app/core/core-services/data-store-update-manager.service';
 
 type SortProperty = 'callListWeight' | 'identifier';
 
@@ -261,30 +261,48 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
     }
 
     /**
-     *
-     * @param update
-     *
-     * @overwrite
+     * Special handling of updating personal notes.
+     * @override
      */
-    protected updateDependency(update: BaseViewModel): void {
-        if (update instanceof ViewPersonalNote) {
-            if (this.operator.isAnonymous || update.userId !== this.operator.user.id) {
+    public updateDependencies(changedModels: CollectionIds): void {
+        if (!this.depsModelCtors || this.depsModelCtors.length === 0) {
+            return;
+        }
+        const viewModels = this.getViewModelList();
+        let somethingUpdated = false;
+        Object.keys(changedModels).forEach(collection => {
+            const dependencyChanged: boolean = this.depsModelCtors.some(ctor => {
+                return ctor.COLLECTIONSTRING === collection;
+            });
+            if (collection === this.collectionString || !dependencyChanged) {
                 return;
             }
-            const notes = update.notes;
-            const collection = Motion.COLLECTIONSTRING;
 
-            this.getViewModelList().forEach(ownViewModel => {
-                if (notes && notes[collection] && notes[collection][ownViewModel.id]) {
-                    ownViewModel.personalNote = notes[collection][ownViewModel.id];
-                } else {
-                    ownViewModel.personalNote = null;
-                }
+            // Do not update personal notes, if the operator is anonymous
+            if (collection === PersonalNote.COLLECTIONSTRING && this.operator.isAnonymous) {
+                return;
+            }
+
+            viewModels.forEach(ownViewModel => {
+                changedModels[collection].forEach(id => {
+                    const viewModel = this.viewModelStoreService.get(collection, id);
+                    // Only update the personal note, if the operator is the right user.
+                    if (
+                        collection === PersonalNote.COLLECTIONSTRING &&
+                        (<ViewPersonalNote>viewModel).userId !== this.operator.user.id
+                    ) {
+                        return;
+                    }
+                    ownViewModel.updateDependencies(viewModel);
+                });
+            });
+            somethingUpdated = true;
+        });
+        if (somethingUpdated) {
+            viewModels.forEach(ownViewModel => {
                 this.updateViewModelObservable(ownViewModel.id);
             });
             this.updateViewModelListObservable();
-        } else {
-            super.updateDependency(update);
         }
     }
 

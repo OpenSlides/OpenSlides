@@ -80,7 +80,7 @@ export class SearchComponent extends BaseViewComponent implements OnInit {
 
         this.registeredModels = this.searchService.getRegisteredModels().map(rm => ({ ...rm, enabled: true }));
 
-        this.DS.changedOrDeletedObservable.pipe(auditTime(100)).subscribe(() => this.search());
+        this.DS.modifiedObservable.pipe(auditTime(100)).subscribe(() => this.search());
         this.quickSearchSubject.pipe(debounceTime(250)).subscribe(query => this.search(query));
     }
 

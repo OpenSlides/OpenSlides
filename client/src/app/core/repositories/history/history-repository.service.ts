@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 
-import { CollectionStringMapperService } from 'app/core/core-services/collectionStringMapper.service';
+import { CollectionStringMapperService } from 'app/core/core-services/collection-string-mapper.service';
 import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { BaseRepository } from 'app/core/repositories/base-repository';
 import { History } from 'app/shared/models/core/history';
 import { Identifiable } from 'app/shared/models/base/identifiable';
-import { User } from 'app/shared/models/users/user';
 import { HttpService } from 'app/core/core-services/http.service';
-import { ViewHistory } from 'app/site/history/models/view-history';
+import { ViewHistory, ProxyHistory } from 'app/site/history/models/view-history';
 import { TimeTravelService } from 'app/core/core-services/time-travel.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { ViewUser } from 'app/site/users/models/view-user';
@@ -40,7 +39,7 @@ export class HistoryRepositoryService extends BaseRepository<ViewHistory, Histor
         private httpService: HttpService,
         private timeTravel: TimeTravelService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, History, [User]);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, History);
     }
 
     public getVerboseName = (plural: boolean = false) => {
@@ -54,10 +53,27 @@ export class HistoryRepositoryService extends BaseRepository<ViewHistory, Histor
      * @return a new ViewHistory object
      */
     public createViewModel(history: History): ViewHistory {
-        const user = this.viewModelStoreService.get(ViewUser, history.user_id);
-        const viewHistory = new ViewHistory(history, user);
+        const viewHistory = new ViewHistory(this.createProxyHistory(history));
         viewHistory.getVerboseName = this.getVerboseName;
         return viewHistory;
+    }
+
+    /**
+     * Creates a ProxyHistory from a History by wrapping it and give access to the user.
+     *
+     * @param history The History object
+     * @returns the ProxyHistory
+     */
+    private createProxyHistory(history: History): ProxyHistory {
+        return new Proxy(history, {
+            get: (instance, property) => {
+                if (property === 'user') {
+                    return this.viewModelStoreService.get(ViewUser, instance.user_id);
+                } else {
+                    return instance[property];
+                }
+            }
+        });
     }
 
     /**

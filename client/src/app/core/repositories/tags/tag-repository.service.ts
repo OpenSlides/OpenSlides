@@ -5,7 +5,7 @@ import { ViewTag } from 'app/site/tags/models/view-tag';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { BaseRepository } from '../base-repository';
-import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
+import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { TranslateService } from '@ngx-translate/core';
 

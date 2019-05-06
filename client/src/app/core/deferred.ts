@@ -13,7 +13,7 @@
  * //
  * ```
  */
-export class Deferred<T> {
+export class Deferred<T = void> {
     /**
      * The promise to wait for
      */
@@ -22,7 +22,7 @@ export class Deferred<T> {
     /**
      * custom resolve function
      */
-    private _resolve: () => void;
+    private _resolve: (val?: T) => void;
 
     /**
      * Creates the promise and overloads the resolve function
@@ -36,7 +36,7 @@ export class Deferred<T> {
     /**
      * Entry point for the resolve function
      */
-    public resolve(): void {
-        this._resolve();
+    public resolve(val?: T): void {
+        this._resolve(val);
     }
 }

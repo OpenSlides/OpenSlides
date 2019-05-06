@@ -33,9 +33,9 @@ export class ConfigService {
      * Listen for changes of config variables.
      */
     public constructor(private DS: DataStoreService) {
-        this.DS.changeObservable.subscribe(data => {
+        this.DS.getChangeObservable(Config).subscribe(data => {
             // on changes notify the observers for specific keys.
-            if (data instanceof Config && this.configSubjects[data.key]) {
+            if (this.configSubjects[data.key]) {
                 this.configSubjects[data.key].next(data.value);
             }
         });
