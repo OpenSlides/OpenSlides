@@ -8,18 +8,20 @@ import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 
 import { BaseViewComponent } from 'app/site/base/base-view';
+import { CollectionStringMapperService } from 'app/core/core-services/collection-string-mapper.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
+import { CurrentListOfSpeakersService } from 'app/site/projector/services/current-agenda-item.service';
+import { CurrentListOfSpeakersSlideService } from 'app/site/projector/services/current-list-of-of-speakers-slide.service';
+import { DurationService } from 'app/core/ui-services/duration.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
+import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewSpeaker, SpeakerState } from '../../models/view-speaker';
+import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ViewProjector } from 'app/site/projector/models/view-projector';
 import { ViewUser } from 'app/site/users/models/view-user';
-import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
-import { DurationService } from 'app/core/ui-services/duration.service';
-import { CollectionStringMapperService } from 'app/core/core-services/collection-string-mapper.service';
-import { CurrentListOfSpeakersService } from 'app/site/projector/services/current-agenda-item.service';
-import { CurrentListOfSpeakersSlideService } from 'app/site/projector/services/current-list-of-of-speakers-slide.service';
-import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
+
 import { ListOfSpeakersRepositoryService } from 'app/core/repositories/agenda/list-of-speakers-repository.service';
 import { ViewListOfSpeakers } from '../../models/view-list-of-speakers';
 
@@ -70,7 +72,12 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
     /**
      * Hold the users
      */
-    public users: BehaviorSubject<ViewUser[]>;
+    public users = new BehaviorSubject<ViewUser[]>([]);
+
+    /**
+     * A filtered list of users, excluding those not available to be added to the list
+     */
+    public filteredUsers = new BehaviorSubject<ViewUser[]>([]);
 
     /**
      * Required for the user search selector
@@ -91,6 +98,13 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
             return false;
         }
         return !this.activeSpeaker;
+    }
+
+    /**
+     * @returns true if the current user can be added to the list of speakers
+     */
+    public get canAddSelf(): boolean {
+        return !this.config.instant('agenda_present_speakers_only') || this.operator.user.is_present;
     }
 
     /**
@@ -128,7 +142,8 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
         private durationService: DurationService,
         private userRepository: UserRepositoryService,
         private collectionStringMapper: CollectionStringMapperService,
-        private currentListOfSpeakersSlideService: CurrentListOfSpeakersSlideService
+        private currentListOfSpeakersSlideService: CurrentListOfSpeakersSlideService,
+        private config: ConfigService
     ) {
         super(title, translate, snackBar);
         this.addSpeakerForm = new FormGroup({ user_id: new FormControl([]) });
@@ -160,15 +175,27 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
         }
 
         // load and observe users
-        this.users = this.userRepository.getViewModelListBehaviorSubject();
-
-        // detect changes in the form
-        this.addSpeakerForm.valueChanges.subscribe(formResult => {
-            // resetting a form triggers a form.next(null) - check if user_id
-            if (formResult && formResult.user_id) {
-                this.addNewSpeaker(formResult.user_id);
-            }
-        });
+        this.subscriptions.push(
+            /* List of eligible users */
+            this.userRepository.getViewModelListObservable().subscribe(users => {
+                this.users.next(users);
+                this.filterUsers();
+            })
+        );
+        this.subscriptions.push(
+            // detect changes in the form
+            this.addSpeakerForm.valueChanges.subscribe(formResult => {
+                // resetting a form triggers a form.next(null) - check if user_id
+                if (formResult && formResult.user_id) {
+                    this.addNewSpeaker(formResult.user_id);
+                }
+            })
+        );
+        this.subscriptions.push(
+            this.config.get('agenda_present_speakers_only').subscribe(() => {
+                this.filterUsers();
+            })
+        );
     }
 
     public opCanManage(): boolean {
@@ -224,6 +251,9 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
                 this.viewListOfSpeakers = listOfSpeakers;
                 const allSpeakers = this.viewListOfSpeakers.speakers.sort((a, b) => a.weight - b.weight);
                 this.speakers = allSpeakers.filter(speaker => speaker.state === SpeakerState.WAITING);
+                // Since the speaker repository is not a normal repository, sorting cannot be handled there
+                this.speakers.sort((a: ViewSpeaker, b: ViewSpeaker) => a.weight - b.weight);
+                this.filterUsers();
                 this.finishedSpeakers = allSpeakers.filter(speaker => speaker.state === SpeakerState.FINISHED);
 
                 // convert begin time to date and sort
@@ -276,15 +306,25 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
      *
      * @param speaker the speaker marked in the list
      */
-    public onStartButton(speaker: ViewSpeaker): void {
-        this.listOfSpeakersRepo.startSpeaker(this.viewListOfSpeakers, speaker).then(null, this.raiseError);
+    public async onStartButton(speaker: ViewSpeaker): Promise<void> {
+        try {
+            await this.listOfSpeakersRepo.startSpeaker(this.viewListOfSpeakers, speaker);
+            this.filterUsers();
+        } catch (e) {
+            this.raiseError(e);
+        }
     }
 
     /**
      * Click on the mic-cross button
      */
-    public onStopButton(): void {
-        this.listOfSpeakersRepo.stopCurrentSpeaker(this.viewListOfSpeakers).then(null, this.raiseError);
+    public async onStopButton(): Promise<void> {
+        try {
+            await this.listOfSpeakersRepo.stopCurrentSpeaker(this.viewListOfSpeakers);
+            this.filterUsers();
+        } catch (e) {
+            this.raiseError(e);
+        }
     }
 
     /**
@@ -299,14 +339,18 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
     }
 
     /**
-     * Click on the X button
+     * Click on the X button - removes the speaker from the list of speakers
      *
-     * @param speaker
+     * @param speaker optional speaker to remove. If none is given,
+     * the operator themself is removed
      */
-    public onDeleteButton(speaker?: ViewSpeaker): void {
-        this.listOfSpeakersRepo
-            .delete(this.viewListOfSpeakers, speaker ? speaker.id : null)
-            .then(null, this.raiseError);
+    public async onDeleteButton(speaker?: ViewSpeaker): Promise<void> {
+        try {
+            await this.listOfSpeakersRepo.delete(this.viewListOfSpeakers, speaker ? speaker.id : null);
+            this.filterUsers();
+        } catch (e) {
+            this.raiseError(e);
+        }
     }
 
     /**
@@ -384,5 +428,19 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
             (new Date(speaker.end_time).valueOf() - new Date(speaker.begin_time).valueOf()) / 1000
         );
         return `${this.durationService.durationToString(duration, 'm')}`;
+    }
+
+    /**
+     * Triggers an update of the filter for the list of available potential speakers
+     * (triggered on an update of users or config)
+     */
+    private filterUsers(): void {
+        const presentUsersOnly = this.config.instant('agenda_present_speakers_only');
+        const users = presentUsersOnly ? this.users.getValue().filter(u => u.is_present) : this.users.getValue();
+        if (!this.speakers || !this.speakers.length) {
+            this.filteredUsers.next(users);
+        } else {
+            this.filteredUsers.next(users.filter(u => !this.speakers.some(speaker => speaker.user.id === u.id)));
+        }
     }
 }

@@ -47,14 +47,14 @@ export class ViewSpeaker implements Updateable, Identifiable {
     /**
      * @returns an ISO datetime string or null
      */
-    public get begin_time(): string {
+    public get begin_time(): string | null {
         return this.speaker.begin_time;
     }
 
     /**
      * @returns an ISO datetime string or null
      */
-    public get end_time(): string {
+    public get end_time(): string | null {
         return this.speaker.end_time;
     }
 

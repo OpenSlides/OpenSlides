@@ -422,6 +422,8 @@ class SpeakerManager(models.Manager):
             raise OpenSlidesError(f"{user} is already on the list of speakers.")
         if isinstance(user, AnonymousUser):
             raise OpenSlidesError("An anonymous user can not be on lists of speakers.")
+        if config["agenda_present_speakers_only"] and not user.is_present:
+            raise OpenSlidesError("Only present users can be on the lists of speakers.")
         weight = (
             self.filter(list_of_speakers=list_of_speakers).aggregate(
                 models.Max("weight")
