@@ -128,7 +128,7 @@ export class CategorySortComponent extends BaseViewComponent implements OnInit, 
      * @param motions An array containing the new motions.
      */
     private initializeList(motions: ViewMotion[]): void {
-        motions.sort((a, b) => (a.category_weight < b.category_weight ? -1 : 1));
+        motions.sort((a, b) => a.category_weight - b.category_weight);
         this.motionsSubject.next(motions);
         this.motionsCopy = motions;
     }
