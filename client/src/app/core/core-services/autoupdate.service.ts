@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 
 import { WebsocketService } from './websocket.service';
-import { CollectionStringMapperService } from './collectionStringMapper.service';
+import { CollectionStringMapperService } from './collection-string-mapper.service';
 import { DataStoreService } from './data-store.service';
 import { BaseModel } from '../../shared/models/base/base-model';
+import { DataStoreUpdateManagerService } from './data-store-update-manager.service';
 
 interface AutoupdateFormat {
     /**
@@ -54,7 +55,8 @@ export class AutoupdateService {
     public constructor(
         private websocketService: WebsocketService,
         private DS: DataStoreService,
-        private modelMapper: CollectionStringMapperService
+        private modelMapper: CollectionStringMapperService,
+        private DSUpdateManager: DataStoreUpdateManagerService
     ) {
         this.websocketService.getOberservable<AutoupdateFormat>('autoupdate').subscribe(response => {
             this.storeResponse(response);
@@ -105,6 +107,8 @@ export class AutoupdateService {
 
         // Normal autoupdate
         if (autoupdate.from_change_id <= maxChangeId + 1 && autoupdate.to_change_id > maxChangeId) {
+            const updateSlot = await this.DSUpdateManager.getNewUpdateSlot(this.DS);
+
             // Delete the removed objects from the DataStore
             for (const collection of Object.keys(autoupdate.deleted)) {
                 await this.DS.remove(collection, autoupdate.deleted[collection]);
@@ -120,6 +124,8 @@ export class AutoupdateService {
             }
 
             await this.DS.flushToStorage(autoupdate.to_change_id);
+
+            this.DSUpdateManager.commit(updateSlot);
         } else {
             // autoupdate fully in the future. we are missing something!
             this.requestChanges();

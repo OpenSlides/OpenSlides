@@ -24,10 +24,8 @@ export class PersonalNoteService {
      */
     public constructor(private operator: OperatorService, private DS: DataStoreService, private http: HttpService) {
         operator.getUserObservable().subscribe(() => this.updatePersonalNoteObject());
-        this.DS.changeObservable.subscribe(model => {
-            if (model instanceof PersonalNote) {
-                this.updatePersonalNoteObject();
-            }
+        this.DS.getChangeObservable(PersonalNote).subscribe(_ => {
+            this.updatePersonalNoteObject();
         });
     }
 

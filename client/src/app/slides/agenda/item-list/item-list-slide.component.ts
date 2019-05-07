@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { BaseSlideComponent } from 'app/slides/base-slide-component';
 import { ItemListSlideData, SlideItem } from './item-list-slide-data';
-import { CollectionStringMapperService } from 'app/core/core-services/collectionStringMapper.service';
+import { CollectionStringMapperService } from 'app/core/core-services/collection-string-mapper.service';
 import { isBaseAgendaContentObjectRepository } from 'app/core/repositories/base-agenda-content-object-repository';
 
 @Component({

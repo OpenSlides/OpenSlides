@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { environment } from 'environments/environment';
-import { CollectionStringMapperService } from './collectionStringMapper.service';
+import { CollectionStringMapperService } from './collection-string-mapper.service';
 import { History } from 'app/shared/models/core/history';
 import { DataStoreService } from './data-store.service';
 import { WebsocketService } from './websocket.service';

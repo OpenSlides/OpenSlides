@@ -17,6 +17,12 @@ interface UnifiedConstructors {
  */
 type TypeIdentifier = UnifiedConstructors | BaseRepository<any, any> | string;
 
+type CollectionStringMappedTypes = [
+    ModelConstructor<BaseModel>,
+    ViewModelConstructor<BaseViewModel>,
+    BaseRepository<BaseViewModel, BaseModel>
+];
+
 /**
  * Registeres the mapping between collection strings, models constructors, view
  * model constructors and repositories.
@@ -30,11 +36,7 @@ export class CollectionStringMapperService {
      * Maps collection strings to mapping entries
      */
     private collectionStringMapping: {
-        [collectionString: string]: [
-            ModelConstructor<BaseModel>,
-            ViewModelConstructor<BaseViewModel>,
-            BaseRepository<BaseViewModel, BaseModel>
-        ];
+        [collectionString: string]: CollectionStringMappedTypes;
     } = {};
 
     public constructor() {}
@@ -65,6 +67,9 @@ export class CollectionStringMapperService {
         }
     }
 
+    /**
+     * @returns true, if the given collection is known by this service.
+     */
     public isCollectionRegistered(collectionString: string): boolean {
         return !!this.collectionStringMapping[collectionString];
     }
@@ -99,5 +104,12 @@ export class CollectionStringMapperService {
         if (this.isCollectionRegistered(this.getCollectionString(obj))) {
             return this.collectionStringMapping[this.getCollectionString(obj)][2] as BaseRepository<V, M>;
         }
+    }
+
+    /**
+     * @returns all registered repositories.
+     */
+    public getAllRepositories(): BaseRepository<any, any>[] {
+        return Object.values(this.collectionStringMapping).map((types: CollectionStringMappedTypes) => types[2]);
     }
 }

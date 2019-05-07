@@ -21,7 +21,7 @@ import { UserRepositoryService } from 'app/core/repositories/users/user-reposito
 import { DurationService } from 'app/core/ui-services/duration.service';
 import { CurrentAgendaItemService } from 'app/site/projector/services/current-agenda-item.service';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
-import { CollectionStringMapperService } from 'app/core/core-services/collectionStringMapper.service';
+import { CollectionStringMapperService } from 'app/core/core-services/collection-string-mapper.service';
 import { CurrentListOfSpeakersSlideService } from 'app/site/projector/services/current-list-of-of-speakers-slide.service';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 

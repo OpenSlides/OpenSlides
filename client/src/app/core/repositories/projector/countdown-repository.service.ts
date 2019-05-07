@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { BaseRepository } from '../base-repository';
-import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
+import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { ViewCountdown } from 'app/site/projector/models/view-countdown';
 import { Countdown } from 'app/shared/models/core/countdown';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';

@@ -12,7 +12,7 @@ import { OpenSlidesStatusService } from './openslides-status.service';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { OnAfterAppsLoaded } from '../onAfterAppsLoaded';
 import { UserRepositoryService } from '../repositories/users/user-repository.service';
-import { CollectionStringMapperService } from './collectionStringMapper.service';
+import { CollectionStringMapperService } from './collection-string-mapper.service';
 import { StorageService } from './storage.service';
 import { HttpService } from './http.service';
 import { filter, auditTime } from 'rxjs/operators';
@@ -139,23 +139,23 @@ export class OperatorService implements OnAfterAppsLoaded {
         private storageService: StorageService,
         private OSStatus: OpenSlidesStatusService
     ) {
-        this.DS.changeObservable.subscribe(newModel => {
-            if (this._user && newModel instanceof User && this._user.id === newModel.id) {
+        this.DS.getChangeObservable(User).subscribe(newModel => {
+            if (this._user && this._user.id === newModel.id) {
                 this._user = newModel;
                 this.updateUserInCurrentWhoAmI();
             }
         });
-        this.DS.changeObservable
+        this.DS.getChangeObservable(Group)
             .pipe(
                 filter(
                     model =>
                         // Any group has changed if we have an operator or
                         // group 1 (default) for anonymous changed
-                        model instanceof Group && (!!this._user || model.id === 1)
+                        !!this._user || model.id === 1
                 ),
                 auditTime(10)
             )
-            .subscribe(newModel => this.updatePermissions());
+            .subscribe(_ => this.updatePermissions());
     }
 
     /**

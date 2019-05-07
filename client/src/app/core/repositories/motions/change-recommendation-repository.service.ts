@@ -13,7 +13,7 @@ import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { MotionChangeRecommendation } from 'app/shared/models/motions/motion-change-reco';
 import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-change-recommendation';
 import { Identifiable } from 'app/shared/models/base/identifiable';
-import { CollectionStringMapperService } from 'app/core/core-services/collectionStringMapper.service';
+import { CollectionStringMapperService } from 'app/core/core-services/collection-string-mapper.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 
 /**

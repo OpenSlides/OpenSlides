@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { BaseViewModel } from '../../site/base/base-view-model';
 import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model';
-import { CollectionStringMapperService } from '../core-services/collectionStringMapper.service';
+import { CollectionStringMapperService } from '../core-services/collection-string-mapper.service';
 import { DataSendService } from '../core-services/data-send.service';
 import { DataStoreService } from '../core-services/data-store.service';
 import { Identifiable } from '../../shared/models/base/identifiable';
@@ -11,6 +11,7 @@ import { auditTime } from 'rxjs/operators';
 import { ViewModelStoreService } from '../core-services/view-model-store.service';
 import { OnAfterAppsLoaded } from '../onAfterAppsLoaded';
 import { Collection } from 'app/shared/models/base/collection';
+import { CollectionIds } from '../core-services/data-store-update-manager.service';
 
 export abstract class BaseRepository<V extends BaseViewModel, M extends BaseModel>
     implements OnAfterAppsLoaded, Collection {
@@ -107,6 +108,10 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
             this.updateViewModelListObservable();
         });
 
+        this.loadInitialFromDS();
+    }
+
+    protected loadInitialFromDS(): void {
         // Populate the local viewModelStore with ViewModel Objects.
         this.DS.getAll(this.baseModelCtor).forEach((model: M) => {
             this.viewModelStore[model.id] = this.createViewModel(model);
@@ -117,59 +122,70 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
         this.DS.getAll(this.baseModelCtor).forEach((model: M) => {
             this.updateViewModelObservable(model.id);
         });
-
-        // Could be raise in error if the root injector is not known
-        this.DS.primaryModelChangeSubject.subscribe(model => {
-            if (model instanceof this.baseModelCtor) {
-                // Add new and updated motions to the viewModelStore
-                this.viewModelStore[model.id] = this.createViewModel(model as M);
-                this.updateAllObservables(model.id);
-            }
-        });
-
-        this.setupDependencyObservation();
-
-        // Watch the Observables for deleting
-        // TODO: What happens, if some related object was deleted?
-        // My quess: This must trigger an autoupdate also for this model, because some IDs changed, so the
-        // affected models will be newly created by the primaryModelChangeSubject.
-        this.DS.deletedObservable.subscribe(model => {
-            if (model.collection === this.collectionStringMapperService.getCollectionString(this.baseModelCtor)) {
-                delete this.viewModelStore[model.id];
-                this.updateAllObservables(model.id);
-            }
-        });
     }
 
     /**
-     * Sets up the observation of dependency subjects.
-     */
-    protected setupDependencyObservation(): void {
-        if (this.depsModelCtors) {
-            this.DS.secondaryModelChangeSubject.subscribe(model => {
-                const dependencyChanged: boolean = this.depsModelCtors.some(ctor => {
-                    return model instanceof ctor;
-                });
-                if (dependencyChanged) {
-                    const viewModel = this.viewModelStoreService.get(model.collectionString, model.id);
-                    this.updateDependency(viewModel);
-                }
-            });
-        }
-    }
-
-    /**
-     * Updates all models with the provided `update` which is a dependency.
+     * Deletes all models from the repository (internally, no requests). Informs all subjects.
      *
-     * @param update The dependency to update.
+     * @param ids All model ids
      */
-    protected updateDependency(update: BaseViewModel): void {
-        // if an domain object we need was added or changed, update viewModelStore
-        this.getViewModelList().forEach(ownViewModel => {
-            ownViewModel.updateDependencies(update);
-            this.updateViewModelObservable(ownViewModel.id);
+    public deleteModels(ids: number[]): void {
+        ids.forEach(id => {
+            delete this.viewModelStore[id];
+            this.updateViewModelObservable(id);
         });
         this.updateViewModelListObservable();
+    }
+
+    /**
+     * Updates or creates all given models in the repository (internally, no requests).
+     * Informs all subjects.
+     *
+     * @param ids All model ids.
+     */
+    public changedModels(ids: number[]): void {
+        ids.forEach(id => {
+            this.viewModelStore[id] = this.createViewModel(this.DS.get(this.collectionString, id));
+            this.updateViewModelObservable(id);
+        });
+        this.updateViewModelListObservable();
+    }
+
+    /**
+     * Updates all models in this repository with all changed models.
+     *
+     * @param changedModels A mapping of collections to ids of all changed models.
+     */
+    public updateDependencies(changedModels: CollectionIds): void {
+        if (!this.depsModelCtors || this.depsModelCtors.length === 0) {
+            return;
+        }
+
+        // Get all viewModels from this repo once.
+        const viewModels = this.getViewModelList();
+        let somethingUpdated = false;
+        Object.keys(changedModels).forEach(collection => {
+            const dependencyChanged: boolean = this.depsModelCtors.some(ctor => {
+                return ctor.COLLECTIONSTRING === collection;
+            });
+            if (collection === this.collectionString || !dependencyChanged) {
+                return;
+            }
+
+            // Ok, we are affected by this collection. Update all viewModels from this repo.
+            viewModels.forEach(ownViewModel => {
+                changedModels[collection].forEach(id => {
+                    ownViewModel.updateDependencies(this.viewModelStoreService.get(collection, id));
+                });
+            });
+            somethingUpdated = true;
+        });
+        if (somethingUpdated) {
+            viewModels.forEach(ownViewModel => {
+                this.updateViewModelObservable(ownViewModel.id);
+            });
+            this.updateViewModelListObservable();
+        }
     }
 
     /**

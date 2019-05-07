@@ -10,7 +10,7 @@ import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { ConstantsService } from 'app/core/core-services/constants.service';
 import { HttpService } from 'app/core/core-services/http.service';
 import { Identifiable } from 'app/shared/models/base/identifiable';
-import { CollectionStringMapperService } from 'app/core/core-services/collectionStringMapper.service';
+import { CollectionStringMapperService } from 'app/core/core-services/collection-string-mapper.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { ViewConfig } from 'app/site/config/models/view-config';
 
@@ -89,6 +89,16 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
     protected configListSubject: BehaviorSubject<ConfigGroup[]> = new BehaviorSubject<ConfigGroup[]>(null);
 
     /**
+     * Saves, if we got config variables (the structure) from the server.
+     */
+    protected gotConfigsVariables = false;
+
+    /**
+     * Saves, if we got first configs via autoupdate or cache.
+     */
+    protected gotFirstUpdate = false;
+
+    /**
      * Constructor for ConfigRepositoryService. Requests the constants from the server and creates the config group structure.
      *
      * @param DS The DataStore
@@ -109,7 +119,9 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
 
         this.constantsService.get('ConfigVariables').subscribe(constant => {
             this.createConfigStructure(constant);
-            this.updateConfigStructure(true, ...Object.values(this.viewModelStore));
+            this.updateConfigStructure(false, ...Object.values(this.viewModelStore));
+            this.gotConfigsVariables = true;
+            this.checkConfigStructure();
             this.updateConfigListObservable();
         });
     }
@@ -146,30 +158,23 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
         throw new Error('Config variables cannot be created');
     }
 
-    /**
-     * Overwritten setup. Does only care about the custom list observable and inserts changed configs into the
-     * config group structure.
-     */
-    public onAfterAppsLoaded(): void {
-        if (!this.configListSubject) {
-            this.configListSubject = new BehaviorSubject<ConfigGroup[]>(null);
-        }
-
+    protected loadInitialFromDS(): void {
         this.DS.getAll(Config).forEach((config: Config) => {
             this.viewModelStore[config.id] = this.createViewModel(config);
             this.updateConfigStructure(false, this.viewModelStore[config.id]);
         });
         this.updateConfigListObservable();
+    }
 
-        // Could be raise in error if the root injector is not known
-        // TODO go over repo
-        this.DS.changeObservable.subscribe(model => {
-            if (model instanceof Config) {
-                this.viewModelStore[model.id] = this.createViewModel(model as Config);
-                this.updateConfigStructure(false, this.viewModelStore[model.id]);
-                this.updateConfigListObservable();
-            }
+    public changedModels(ids: number[]): void {
+        super.changedModels(ids);
+
+        ids.forEach(id => {
+            this.updateConfigStructure(false, this.viewModelStore[id]);
         });
+        this.gotFirstUpdate = true;
+        this.checkConfigStructure();
+        this.updateConfigListObservable();
     }
 
     /**
@@ -193,6 +198,16 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
      */
     public getConfigStructure(): ConfigGroup[] {
         return this.configs;
+    }
+
+    /**
+     * Checks the config structure, if we got configs (first data) and the
+     * structure (config variables)
+     */
+    protected checkConfigStructure(): void {
+        if (this.gotConfigsVariables && this.gotFirstUpdate) {
+            this.updateConfigStructure(true, ...Object.values(this.viewModelStore));
+        }
     }
 
     /**

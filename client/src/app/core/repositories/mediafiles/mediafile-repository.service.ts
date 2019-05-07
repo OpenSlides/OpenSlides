@@ -6,7 +6,7 @@ import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { User } from 'app/shared/models/users/user';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { Identifiable } from 'app/shared/models/base/identifiable';
-import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
+import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataSendService } from 'app/core/core-services/data-send.service';
 import { HttpService } from 'app/core/core-services/http.service';
 import { HttpHeaders } from '@angular/common/http';

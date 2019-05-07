@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
 import { BaseRepository } from '../base-repository';
-import { CollectionStringMapperService } from '../../core-services/collectionStringMapper.service';
+import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { DataSendService } from 'app/core/core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
@@ -17,6 +17,10 @@ import { BaseAgendaViewModel } from 'app/site/base/base-agenda-view-model';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { BaseAgendaContentObjectRepository } from '../base-agenda-content-object-repository';
+import { Motion } from 'app/shared/models/motions/motion';
+import { MotionBlock } from 'app/shared/models/motions/motion-block';
+import { Topic } from 'app/shared/models/topics/topic';
+import { Assignment } from 'app/shared/models/assignments/assignment';
 
 /**
  * Repository service for users
@@ -47,24 +51,17 @@ export class ItemRepositoryService extends BaseRepository<ViewItem, Item> {
         private config: ConfigService,
         private treeService: TreeService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, Item);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, Item, [
+            Topic,
+            Assignment,
+            Motion,
+            MotionBlock
+        ]);
     }
 
     public getVerboseName = (plural: boolean = false) => {
         return this.translate.instant(plural ? 'Items' : 'Item');
     };
-
-    protected setupDependencyObservation(): void {
-        this.DS.secondaryModelChangeSubject.subscribe(model => {
-            const viewModel = this.viewModelStoreService.get(model.collectionString, model.id);
-            const somethingChanged = this.getViewModelList().some(ownViewModel => {
-                return ownViewModel.updateDependencies(viewModel);
-            });
-            if (somethingChanged) {
-                this.updateAllObservables(model.id);
-            }
-        });
-    }
 
     /**
      * Creates the viewItem out of a given item
