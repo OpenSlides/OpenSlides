@@ -122,7 +122,7 @@
                 <div *ngIf="motionsInCategory(category).length > 0">
                     <span translate>Motions</span>:
                     <div>
-                        <ul *ngFor="let motion of motionsInCategory(category)">
+                        <ul *ngFor="let motion of getSortedMotionListInCategory(category)">
                             <li class="ellipsis-overflow">{{ motion.getListTitle() }}</li>
                         </ul>
                     </div>

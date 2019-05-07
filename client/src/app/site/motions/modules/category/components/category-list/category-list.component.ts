@@ -191,6 +191,18 @@ export class CategoryListComponent extends BaseViewComponent implements OnInit {
     }
 
     /**
+     * Function to get a sorted list of all motions in a specific category.
+     * Sorting by `category_weight`.
+     *
+     * @param category the target category in where the motions are.
+     *
+     * @returns all motions in the given category sorted by their category_weight.
+     */
+    public getSortedMotionListInCategory(category: Category): ViewMotion[] {
+        return this.motionsInCategory(category).sort((a, b) => a.category_weight - b.category_weight);
+    }
+
+    /**
      * Fetch the correct URL for a detail sort view
      *
      * @param viewCategory
