@@ -1,0 +1,30 @@
+div.indent {
+    margin-left: 24px;
+}
+
+mat-divider {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.mat-expansion-panel {
+    width: 400px;
+    max-width: 95vw;
+}
+
+.filter-subtitle {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    opacity: 0.9;
+    font-style: italic;
+}
+
+// adds breaks to mat-checkboxes with long labels
+::ng-deep .mat-checkbox-layout {
+    white-space: normal !important;
+}
+
+// rather than center the checkbox, put the checkbox in the first line
+::ng-deep .mat-checkbox-inner-container {
+    margin-top: 3px !important;
+}

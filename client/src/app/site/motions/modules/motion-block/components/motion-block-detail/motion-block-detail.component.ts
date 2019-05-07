@@ -15,6 +15,7 @@ import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
 import { StorageService } from 'app/core/core-services/storage.service';
+import { Motion } from 'app/shared/models/motions/motion';
 
 /**
  * Detail component to display one motion block
@@ -24,16 +25,12 @@ import { StorageService } from 'app/core/core-services/storage.service';
     templateUrl: './motion-block-detail.component.html',
     styleUrls: ['./motion-block-detail.component.scss']
 })
-export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion, MotionBlock> implements OnInit {
+export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion, Motion, MotionRepositoryService>
+    implements OnInit {
     /**
      * Determines the block id from the given URL
      */
     public block: ViewMotionBlock;
-
-    /**
-     * All motions in this block
-     */
-    public motions: ViewMotion[];
 
     /**
      * Determine the edit mode
@@ -67,11 +64,11 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
         storage: StorageService,
         private operator: OperatorService,
         private router: Router,
-        private repo: MotionBlockRepositoryService,
-        private motionRepo: MotionRepositoryService,
+        protected repo: MotionBlockRepositoryService,
+        protected motionRepo: MotionRepositoryService,
         private promptService: PromptService
     ) {
-        super(titleService, translate, matSnackBar, route, storage);
+        super(titleService, translate, matSnackBar, motionRepo, route, storage);
     }
 
     /**
@@ -81,28 +78,29 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
     public ngOnInit(): void {
         super.setTitle('Motion block');
         this.initTable();
+        const blockId = parseInt(this.route.snapshot.params.id, 10);
 
         this.blockEditForm = new FormGroup({
             title: new FormControl('', Validators.required)
         });
 
-        const blockId = +this.route.snapshot.params.id;
-        this.block = this.repo.getViewModel(blockId);
-
-        this.repo.getViewModelObservable(blockId).subscribe(newBlock => {
-            // necessary since the subscription can return undefined
-            if (newBlock) {
-                this.block = newBlock;
-
-                // set the blocks title in the form
-                this.blockEditForm.get('title').setValue(this.block.title);
-
-                this.repo.getViewMotionsByBlock(this.block.motionBlock).subscribe(newMotions => {
-                    this.motions = newMotions;
-                    this.dataSource.data = this.motions;
-                });
-            }
-        });
+        // pseudo filter
+        this.subscriptions.push(
+            this.repo.getViewModelObservable(blockId).subscribe(newBlock => {
+                if (newBlock) {
+                    this.block = newBlock;
+                    this.subscriptions.push(
+                        this.repo.getViewMotionsByBlock(this.block.motionBlock).subscribe(viewMotions => {
+                            if (viewMotions && viewMotions.length) {
+                                this.dataSource.data = viewMotions;
+                            } else {
+                                this.dataSource.data = [];
+                            }
+                        })
+                    );
+                }
+            })
+        );
     }
 
     /**
@@ -193,8 +191,8 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
      * Following a recommendation implies, that a valid recommendation exists.
      */
     public isFollowingProhibited(): boolean {
-        if (this.motions) {
-            return this.motions.every(motion => motion.isInFinalState() || !motion.recommendation_id);
+        if (this.dataSource.data) {
+            return this.dataSource.data.every(motion => motion.isInFinalState() || !motion.recommendation_id);
         } else {
             return false;
         }

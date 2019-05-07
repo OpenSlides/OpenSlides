@@ -25,7 +25,7 @@ import { ViewTag } from '../../models/view-tag';
     templateUrl: './tag-list.component.html',
     styleUrls: ['./tag-list.component.css']
 })
-export class TagListComponent extends ListViewBaseComponent<ViewTag, Tag> implements OnInit {
+export class TagListComponent extends ListViewBaseComponent<ViewTag, Tag, TagRepositoryService> implements OnInit {
     public editTag = false;
     public newTag = false;
     public selectedTag: ViewTag;
@@ -50,7 +50,7 @@ export class TagListComponent extends ListViewBaseComponent<ViewTag, Tag> implem
         private repo: TagRepositoryService,
         private promptService: PromptService
     ) {
-        super(titleService, translate, matSnackBar, route, storage);
+        super(titleService, translate, matSnackBar, repo, route, storage);
     }
 
     /**

@@ -68,9 +68,9 @@ import { PromptDialogComponent } from './components/prompt-dialog/prompt-dialog.
 import { SortingListComponent } from './components/sorting-list/sorting-list.component';
 import { SortingTreeComponent } from './components/sorting-tree/sorting-tree.component';
 import { ChoiceDialogComponent } from './components/choice-dialog/choice-dialog.component';
-import { OsSortFilterBarComponent } from './components/os-sort-filter-bar/os-sort-filter-bar.component';
-import { OsSortBottomSheetComponent } from './components/os-sort-filter-bar/os-sort-bottom-sheet/os-sort-bottom-sheet.component';
-import { FilterMenuComponent } from './components/os-sort-filter-bar/filter-menu/filter-menu.component';
+import { SortFilterBarComponent } from './components/sort-filter-bar/sort-filter-bar.component';
+import { SortBottomSheetComponent } from './components/sort-filter-bar/sort-bottom-sheet/sort-bottom-sheet.component';
+import { FilterMenuComponent } from './components/sort-filter-bar/filter-menu/filter-menu.component';
 import { LogoComponent } from './components/logo/logo.component';
 import { C4DialogComponent, CopyrightSignComponent } from './components/copyright-sign/copyright-sign.component';
 import { ProjectorButtonComponent } from './components/projector-button/projector-button.component';
@@ -191,7 +191,7 @@ import { PrecisionPipe } from './pipes/precision.pipe';
         SortingListComponent,
         EditorModule,
         SortingTreeComponent,
-        OsSortFilterBarComponent,
+        SortFilterBarComponent,
         LogoComponent,
         CopyrightSignComponent,
         C4DialogComponent,
@@ -220,8 +220,8 @@ import { PrecisionPipe } from './pipes/precision.pipe';
         SortingListComponent,
         SortingTreeComponent,
         ChoiceDialogComponent,
-        OsSortFilterBarComponent,
-        OsSortBottomSheetComponent,
+        SortFilterBarComponent,
+        SortBottomSheetComponent,
         FilterMenuComponent,
         LogoComponent,
         CopyrightSignComponent,
@@ -241,10 +241,10 @@ import { PrecisionPipe } from './pipes/precision.pipe';
         SearchValueSelectorComponent,
         SortingListComponent,
         SortingTreeComponent,
-        OsSortFilterBarComponent,
-        OsSortBottomSheetComponent,
+        SortFilterBarComponent,
+        SortBottomSheetComponent,
         DecimalPipe
     ],
-    entryComponents: [OsSortBottomSheetComponent, C4DialogComponent]
+    entryComponents: [SortBottomSheetComponent, C4DialogComponent]
 })
 export class SharedModule {}

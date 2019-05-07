@@ -4,9 +4,9 @@ import { MatBottomSheet } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 
 import { BaseViewModel } from 'app/site/base/base-view-model';
-import { OsSortBottomSheetComponent } from './os-sort-bottom-sheet/os-sort-bottom-sheet.component';
+import { SortBottomSheetComponent } from './sort-bottom-sheet/sort-bottom-sheet.component';
 import { FilterMenuComponent } from './filter-menu/filter-menu.component';
-import { OsSortingItem } from 'app/core/ui-services/base-sort-list.service';
+import { OsSortingOption } from 'app/core/ui-services/base-sort-list.service';
 import { BaseSortListService } from 'app/core/ui-services/base-sort-list.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { BaseFilterListService } from 'app/core/ui-services/base-filter-list.service';
@@ -27,10 +27,10 @@ import { BaseFilterListService } from 'app/core/ui-services/base-filter-list.ser
  */
 @Component({
     selector: 'os-sort-filter-bar',
-    templateUrl: './os-sort-filter-bar.component.html',
-    styleUrls: ['./os-sort-filter-bar.component.scss']
+    templateUrl: './sort-filter-bar.component.html',
+    styleUrls: ['./sort-filter-bar.component.scss']
 })
-export class OsSortFilterBarComponent<V extends BaseViewModel> {
+export class SortFilterBarComponent<V extends BaseViewModel> {
     /**
      * The currently active sorting service for the list view
      */
@@ -58,6 +58,7 @@ export class OsSortFilterBarComponent<V extends BaseViewModel> {
 
     @Output()
     public searchFieldChange = new EventEmitter<string>();
+
     /**
      * The filter side drawer
      */
@@ -68,7 +69,7 @@ export class OsSortFilterBarComponent<V extends BaseViewModel> {
      * The bottom sheet used to alter sorting in mobile view
      */
     @ViewChild('sortBottomSheet')
-    public sortBottomSheet: OsSortBottomSheetComponent<V>;
+    public sortBottomSheet: SortBottomSheetComponent<V>;
 
     /**
      * The 'opened/active' state of the fulltext filter input field
@@ -85,6 +86,21 @@ export class OsSortFilterBarComponent<V extends BaseViewModel> {
         } else {
             return this.filterCount;
         }
+    }
+
+    /**
+     * Return the total count of potential filters
+     */
+    public get totalCount(): number {
+        return this.filterService.unfilteredCount;
+    }
+
+    public get sortOptions(): any {
+        return this.sortService.sortOptions;
+    }
+
+    public set sortOption(option: OsSortingOption<V>) {
+        this.sortService.sortProperty = option.property;
     }
 
     /**
@@ -106,7 +122,7 @@ export class OsSortFilterBarComponent<V extends BaseViewModel> {
      */
     public openSortDropDown(): void {
         if (this.vp.isMobile) {
-            const bottomSheetRef = this.bottomSheet.open(OsSortBottomSheetComponent, { data: this.sortService });
+            const bottomSheetRef = this.bottomSheet.open(SortBottomSheetComponent, { data: this.sortService });
             bottomSheetRef.afterDismissed().subscribe(result => {
                 if (result) {
                     this.sortService.sortProperty = result;
@@ -136,23 +152,18 @@ export class OsSortFilterBarComponent<V extends BaseViewModel> {
 
     /**
      * Checks if there is an active FilterService present
+     * @returns wether the filters are present or not
      */
     public get hasFilters(): boolean {
-        if (this.filterService && this.filterService.hasFilterOptions) {
-            return true;
-        }
-        return false;
+        return this.filterService && this.filterService.hasFilterOptions;
     }
 
     /**
      * Retrieves the currently active icon for an option.
      * @param option
      */
-    public getSortIcon(option: OsSortingItem<V>): string {
-        if (this.sortService.sortProperty !== option.property) {
-            return '';
-        }
-        return this.sortService.ascending ? 'arrow_downward' : 'arrow_upward';
+    public getSortIcon(option: OsSortingOption<V>): string {
+        return this.sortService.getSortIcon(option);
     }
 
     /**
@@ -160,7 +171,7 @@ export class OsSortFilterBarComponent<V extends BaseViewModel> {
      * the property is used.
      * @param option
      */
-    public getSortLabel(option: OsSortingItem<V>): string {
+    public getSortLabel(option: OsSortingOption<V>): string {
         if (option.label) {
             return option.label;
         }

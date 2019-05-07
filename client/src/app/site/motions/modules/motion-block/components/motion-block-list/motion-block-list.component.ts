@@ -12,6 +12,7 @@ import { itemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { ListViewBaseComponent } from 'app/site/base/list-view-base';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
+import { MotionBlockSortService } from 'app/site/motions/services/motion-block-sort.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { StorageService } from 'app/core/core-services/storage.service';
@@ -26,7 +27,9 @@ import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
     templateUrl: './motion-block-list.component.html',
     styleUrls: ['./motion-block-list.component.scss']
 })
-export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBlock, MotionBlock> implements OnInit {
+export class MotionBlockListComponent
+    extends ListViewBaseComponent<ViewMotionBlock, MotionBlock, MotionBlockRepositoryService>
+    implements OnInit {
     /**
      * Holds the create form
      */
@@ -88,9 +91,10 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
         private formBuilder: FormBuilder,
         private promptService: PromptService,
         private itemRepo: ItemRepositoryService,
-        private operator: OperatorService
+        private operator: OperatorService,
+        sortService: MotionBlockSortService
     ) {
-        super(titleService, translate, matSnackBar, route, storage);
+        super(titleService, translate, matSnackBar, repo, route, storage, null, sortService);
 
         this.createBlockForm = this.formBuilder.group({
             title: ['', Validators.required],
@@ -105,14 +109,7 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
     public ngOnInit(): void {
         super.setTitle('Motion blocks');
         this.initTable();
-
         this.items = this.itemRepo.getViewModelListBehaviorSubject();
-
-        this.repo.getViewModelListObservable().subscribe(newMotionblocks => {
-            newMotionblocks.sort((a, b) => (a > b ? 1 : -1));
-            this.dataSource.data = newMotionblocks;
-        });
-
         this.agendaRepo.getDefaultAgendaVisibility().subscribe(visibility => (this.defaultVisibility = visibility));
     }
 

@@ -1,7 +1,7 @@
 <div class="custom-table-header flex-spaced on-transition-fade">
     <div class="filter-count" *ngIf="filterService">
         <span>{{ displayedCount }}&nbsp;</span><span translate>of</span>
-        <span>&nbsp;{{ filterService.totalCount }}</span>
+        <span>&nbsp;{{ totalCount }}</span>
         <span *ngIf="extraItemInfo">&nbsp;·&nbsp;{{ extraItemInfo }}</span>
     </div>
     <div class="current-filters" *ngIf="filterService && filterService.activeFilterCount">
@@ -61,12 +61,9 @@
 <!-- non-mobile sorting menu -->
 <mat-menu #menu>
     <div *ngIf="hasSorting">
-        <mat-list-item
-            *ngFor="let option of sortService.sortOptions.options"
-            (click)="sortService.sortProperty = option.property"
-        >
+        <mat-list-item *ngFor="let option of sortOptions" (click)="sortOption = option">
             <button mat-menu-item>
-                <mat-icon>{{ sortService.getSortIcon(option) }}</mat-icon>
+                <mat-icon>{{ getSortIcon(option) }}</mat-icon>
                 <span>{{ sortService.getSortLabel(option) | translate }}</span>
             </button>
         </mat-list-item>

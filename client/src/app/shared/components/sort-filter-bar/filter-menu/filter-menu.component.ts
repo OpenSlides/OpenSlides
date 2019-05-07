@@ -58,6 +58,7 @@ export class FilterMenuComponent implements OnInit {
             this.dismissed.next(true);
         }
     }
+
     public isFilter(option: OsFilterOption): boolean {
         return typeof option === 'string' ? false : true;
     }

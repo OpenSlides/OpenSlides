@@ -197,7 +197,7 @@ def get_config_variables():
         input_type="choice",
         label="Sort motions by",
         choices=(
-            {"value": "callListWeight", "display_name": "Call list"},
+            {"value": "weight", "display_name": "Call list"},
             {"value": "identifier", "display_name": "Identifier"},
         ),
         weight=335,

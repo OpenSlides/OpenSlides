@@ -1,10 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { E2EImportsModule } from 'e2e-imports.module';
-import { OsSortFilterBarComponent } from './os-sort-filter-bar.component';
+import { SortFilterBarComponent } from './sort-filter-bar.component';
 
 describe('OsSortFilterBarComponent', () => {
-    let component: OsSortFilterBarComponent<any>;
+    let component: SortFilterBarComponent<any>;
     let fixture: ComponentFixture<any>;
 
     beforeEach(async(() => {
@@ -14,7 +14,7 @@ describe('OsSortFilterBarComponent', () => {
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(OsSortFilterBarComponent);
+        fixture = TestBed.createComponent(SortFilterBarComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

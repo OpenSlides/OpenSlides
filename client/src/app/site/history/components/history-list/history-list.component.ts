@@ -25,7 +25,8 @@ import { langToLocale } from 'app/shared/utils/lang-to-locale';
     templateUrl: './history-list.component.html',
     styleUrls: ['./history-list.component.scss']
 })
-export class HistoryListComponent extends ListViewBaseComponent<ViewHistory, History> implements OnInit {
+export class HistoryListComponent extends ListViewBaseComponent<ViewHistory, History, HistoryRepositoryService>
+    implements OnInit {
     /**
      * Subject determine when the custom timestamp subject changes
      */
@@ -51,7 +52,7 @@ export class HistoryListComponent extends ListViewBaseComponent<ViewHistory, His
         private router: Router,
         private operator: OperatorService
     ) {
-        super(titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, repo);
     }
 
     /**

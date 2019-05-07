@@ -41,10 +41,10 @@
         <span translate>Follow recommendations for all motions</span>
     </button>
 
-    <table class="os-headed-listview-table on-transition-fade" mat-table [dataSource]="dataSource" matSort>
+    <table class="os-headed-listview-table on-transition-fade" mat-table [dataSource]="dataSource">
         <!-- title column -->
         <ng-container matColumnDef="title">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> <span translate>Motion</span> </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef> <span translate>Motion</span> </mat-header-cell>
             <mat-cell *matCellDef="let motion">
                 {{ motion.getTitle() }}
             </mat-cell>

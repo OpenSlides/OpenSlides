@@ -30,7 +30,8 @@ import { StorageService } from 'app/core/core-services/storage.service';
     templateUrl: './agenda-list.component.html',
     styleUrls: ['./agenda-list.component.scss']
 })
-export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item> implements OnInit {
+export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item, ItemRepositoryService>
+    implements OnInit {
     /**
      * Determine the display columns in desktop view
      */
@@ -106,7 +107,7 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item> i
         private agendaPdfService: AgendaPdfService,
         private pdfService: PdfDocumentService
     ) {
-        super(titleService, translate, matSnackBar, route, storage, filterService);
+        super(titleService, translate, matSnackBar, repo, route, storage, filterService);
 
         // activate multiSelect mode for this listview
         this.canMultiSelect = true;
@@ -123,14 +124,6 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item> i
             .get<boolean>('agenda_enable_numbering')
             .subscribe(autoNumbering => (this.isNumberingAllowed = autoNumbering));
         this.setFulltextFilter();
-    }
-
-    protected onFilter(): void {
-        this.filterService.filter().subscribe(newAgendaItems => {
-            newAgendaItems.sort((a, b) => a.weight - b.weight);
-            this.dataSource.data = newAgendaItems;
-            this.checkSelection();
-        });
     }
 
     /**
