@@ -118,6 +118,16 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
     }
 
     /**
+     * Function to prevent executing the click event of a checkbox.
+     * This prevents that the state of the checkbox is not changed by clicking it.
+     *
+     * @param event The `MouseEvent`
+     */
+    public checkboxClicked(event: MouseEvent): void {
+        event.preventDefault();
+    }
+
+    /**
      * Called by the template when a paragraph is clicked in single paragraph mode.
      * Behaves like a radio-button
      *
