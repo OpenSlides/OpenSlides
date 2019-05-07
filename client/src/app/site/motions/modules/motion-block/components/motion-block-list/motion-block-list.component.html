@@ -63,13 +63,13 @@
         <!-- title column -->
         <ng-container matColumnDef="title">
             <mat-header-cell *matHeaderCellDef mat-sort-header> <span translate>Title</span> </mat-header-cell>
-            <mat-cell *matCellDef="let block" (click)="openItem(block)"> {{ block.title }} </mat-cell>
+            <mat-cell *matCellDef="let block"> {{ block.title }} </mat-cell>
         </ng-container>
 
         <!-- amount column -->
         <ng-container matColumnDef="amount">
             <mat-header-cell *matHeaderCellDef> <span translate>Motions</span> </mat-header-cell>
-            <mat-cell *matCellDef="let block" (click)="openItem(block)">
+            <mat-cell *matCellDef="let block">
                 <span class="os-amount-chip">{{ getMotionAmount(block.motionBlock) }}</span>
             </mat-cell>
         </ng-container>
@@ -86,6 +86,14 @@
                 >
                     <mat-icon>more_vert</mat-icon>
                 </button>
+            </mat-cell>
+        </ng-container>
+
+        <!-- Anchor column to open the separate tab -->
+        <ng-container matColumnDef="anchor">
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell *matCellDef="let block">
+                <a [routerLink]="block.id"></a>
             </mat-cell>
         </ng-container>
 

@@ -122,7 +122,7 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
      * @returns an array of strings building the column definition
      */
     public getColumnDefinition(): string[] {
-        let columns = ['title', 'state', 'recommendation'];
+        let columns = ['title', 'state', 'recommendation', 'anchor'];
         if (this.operator.hasPerms('motions.can_manage_manage')) {
             columns = columns.concat('remove');
         }
@@ -143,13 +143,13 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
     }
 
     /**
-     * Click handler for the motion title cell in the table
-     * Navigate to the motion that was clicked on
+     * Return the URL to a selected motion
      *
      * @param motion the selected ViewMotion
+     * @returns a link as url
      */
-    public onClickMotionTitle(motion: ViewMotion): void {
-        this.router.navigate([`/motions/${motion.id}`]);
+    public getMotionLink(motion: ViewMotion): string {
+        return `/motions/${motion.id}`;
     }
 
     /**

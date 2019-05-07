@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material';
@@ -14,9 +14,9 @@ import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
+import { StorageService } from 'app/core/core-services/storage.service';
 import { ViewItem } from 'app/site/agenda/models/view-item';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
-import { StorageService } from 'app/core/core-services/storage.service';
 
 /**
  * Table for the motion blocks
@@ -83,7 +83,6 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
         matSnackBar: MatSnackBar,
         route: ActivatedRoute,
         storage: StorageService,
-        private router: Router,
         private repo: MotionBlockRepositoryService,
         private agendaRepo: ItemRepositoryService,
         private formBuilder: FormBuilder,
@@ -123,7 +122,7 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
      * @returns an array of strings building the column definition
      */
     public getColumnDefinition(): string[] {
-        let columns = ['title', 'amount'];
+        let columns = ['title', 'amount', 'anchor'];
         if (this.operator.hasPerms('core.can_manage_projector')) {
             columns = ['projector'].concat(columns);
         }
@@ -131,15 +130,6 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
             columns = columns.concat(['menu']);
         }
         return columns;
-    }
-
-    /**
-     * Action while clicking on a row. Navigate to the detail page of given block
-     *
-     * @param block the given motion block
-     */
-    public openItem(block: ViewMotionBlock): void {
-        this.router.navigate([`${block.id}`], { relativeTo: this.route });
     }
 
     /**
