@@ -7,7 +7,7 @@ import { AssignmentPollOption } from './assignment-poll-option';
  * @ignore
  */
 export class AssignmentPoll extends Deserializer {
-    private static DECIMAL_FIELDS = ['votesvalid', 'votesinvalid', 'votescast'];
+    private static DECIMAL_FIELDS = ['votesvalid', 'votesinvalid', 'votescast', 'votesno', 'votesabstain'];
 
     public id: number;
     public pollmethod: AssignmentPollMethod;
@@ -15,6 +15,8 @@ export class AssignmentPoll extends Deserializer {
     public published: boolean;
     public options: AssignmentPollOption[];
     public votesvalid: number;
+    public votesno: number;
+    public votesabstain: number;
     public votesinvalid: number;
     public votescast: number;
     public has_votes: boolean;

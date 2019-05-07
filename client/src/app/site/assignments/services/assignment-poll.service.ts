@@ -30,7 +30,7 @@ export class AssignmentPollService extends PollService {
     /**
      * list of poll keys that are numbers and can be part of a quorum calculation
      */
-    public pollValues: CalculablePollKey[] = ['votesvalid', 'votesinvalid', 'votescast'];
+    public pollValues: CalculablePollKey[] = ['votesno', 'votesabstain', 'votesvalid', 'votesinvalid', 'votescast'];
 
     /**
      * the method used for polls (as per config)
@@ -92,6 +92,7 @@ export class AssignmentPollService extends PollService {
                     if (Math.min(...yes) < 0) {
                         return null;
                     } else {
+                        // TODO: Counting 'No (and possibly 'Abstain') here?
                         return yes.reduce((a, b) => a + b);
                     }
                 } else {

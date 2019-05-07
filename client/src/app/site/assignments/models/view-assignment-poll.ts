@@ -35,10 +35,23 @@ export class ViewAssignmentPoll implements Identifiable, Updateable, Projectable
         return this.poll.published;
     }
 
+    public get votesno(): number {
+        return this.poll.votesno;
+    }
+    public set votesno(amount: number) {
+        this.poll.votesno = amount;
+    }
+
+    public get votesabstain(): number {
+        return this.poll.votesabstain;
+    }
+    public set votesabstain(amount: number) {
+        this.poll.votesabstain = amount;
+    }
+
     public get votesvalid(): number {
         return this.poll.votesvalid;
     }
-
     public set votesvalid(amount: number) {
         this.poll.votesvalid = amount;
     }
@@ -53,7 +66,6 @@ export class ViewAssignmentPoll implements Identifiable, Updateable, Projectable
     public get votescast(): number {
         return this.poll.votescast;
     }
-
     public set votescast(amount: number) {
         this.poll.votescast = amount;
     }

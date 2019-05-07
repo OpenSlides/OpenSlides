@@ -214,10 +214,10 @@ export class AssignmentRepositoryService extends BaseAgendaContentObjectReposito
         const data = {
             assignment_id: originalPoll.assignment_id,
             votes: votes,
-            votesabstain: null,
+            votesabstain: poll.votesabstain || null,
             votescast: poll.votescast || null,
             votesinvalid: poll.votesinvalid || null,
-            votesno: null,
+            votesno: poll.votesno || null,
             votesvalid: poll.votesvalid || null
         };
         await this.httpService.put(`${this.restPollPath}${originalPoll.id}/`, data);

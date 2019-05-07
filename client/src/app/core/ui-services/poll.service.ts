@@ -6,7 +6,15 @@ import { _ } from 'app/core/translate/translation-marker';
  * The possible keys of a poll object that represent numbers.
  * TODO Should be 'key of MotionPoll|AssinmentPoll if type of key is number'
  */
-export type CalculablePollKey = 'votesvalid' | 'votesinvalid' | 'votescast' | 'yes' | 'no' | 'abstain';
+export type CalculablePollKey =
+    | 'votesvalid'
+    | 'votesinvalid'
+    | 'votescast'
+    | 'yes'
+    | 'no'
+    | 'abstain'
+    | 'votesno'
+    | 'votesabstain';
 
 /**
  * TODO: may be obsolete if the server switches to lower case only
@@ -119,8 +127,10 @@ export abstract class PollService {
             case 'yes':
                 return 'thumb_up';
             case 'no':
+            case 'votesno':
                 return 'thumb_down';
             case 'abstain':
+            case 'votesabstain':
                 return 'not_interested';
             // TODO case 'votescast':
             // sum
@@ -144,8 +154,10 @@ export abstract class PollService {
             case 'yes':
                 return 'Yes';
             case 'no':
+            case 'votesno':
                 return 'No';
             case 'abstain':
+            case 'votesabstain':
                 return 'Abstain';
             case 'votescast':
                 return _('Total votes cast');
