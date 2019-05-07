@@ -13,6 +13,8 @@ import { ServertimeService } from './core/core-services/servertime.service';
 import { ThemeService } from './core/ui-services/theme.service';
 import { DataStoreUpgradeService } from './core/core-services/data-store-upgrade.service';
 import { UpdateService } from './core/ui-services/update.service';
+import { PrioritizeService } from './core/core-services/prioritize.service';
+import { PingService } from './core/core-services/ping.service';
 
 /**
  * Angular's global App Component
@@ -54,7 +56,9 @@ export class AppComponent {
         configService: ConfigService,
         loadFontService: LoadFontService,
         dataStoreUpgradeService: DataStoreUpgradeService, // to start it.
-        update: UpdateService
+        update: UpdateService,
+        prioritizeService: PrioritizeService,
+        pingService: PingService
     ) {
         // manually add the supported languages
         translate.addLangs(['en', 'de', 'cs']);

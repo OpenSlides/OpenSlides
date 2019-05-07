@@ -22,6 +22,8 @@ export class OpenSlidesStatusService {
         return !!this.history;
     }
 
+    public isPrioritizedClient = false;
+
     /**
      * Ctor, does nothing.
      */

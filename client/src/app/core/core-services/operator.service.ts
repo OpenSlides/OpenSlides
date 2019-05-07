@@ -308,12 +308,20 @@ export class OperatorService implements OnAfterAppsLoaded {
      * @param groups The group ids to check
      */
     public isInGroupIds(...groupIds: number[]): boolean {
+        if (!this.isInGroupIdsNonAdminCheck(...groupIds)) {
+            // An admin has all perms and is technically in every group.
+            return this.user.groups_id.includes(2);
+        }
+        return true;
+    }
+
+    /**
+     * Returns true, if the operator is in at least one group.
+     * @param groups The group ids to check
+     */
+    public isInGroupIdsNonAdminCheck(...groupIds: number[]): boolean {
         if (!this.user) {
             return groupIds.includes(1); // any anonymous is in the default group.
-        }
-        if (this.user.groups_id.includes(2)) {
-            // An admin has all perms and is technically in every group.
-            return true;
         }
         return groupIds.some(id => this.user.groups_id.includes(id));
     }

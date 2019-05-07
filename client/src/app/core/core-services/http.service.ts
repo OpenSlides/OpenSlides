@@ -78,7 +78,11 @@ export class HttpService {
             responseType = 'json';
         }
 
-        const url = path + formatQueryParams(queryParams);
+        let url = path + formatQueryParams(queryParams);
+        if (this.OSStatus.isPrioritizedClient) {
+            url = '/prioritize' + url;
+        }
+
         const options = {
             body: data,
             headers: customHeader ? customHeader : this.defaultHeaders,
