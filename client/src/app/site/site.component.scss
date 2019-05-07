@@ -51,7 +51,8 @@ mat-sidenav-container {
    It needs to always fit.*/
 .os-logo-container {
     margin: auto;
-    width: 250px !important;
+    width: 230px !important;
+    margin-left: 10px;
     max-height: 80px;
     display: flex;
 }
@@ -60,7 +61,7 @@ mat-sidenav-container {
    specified. It can only contain the standard logo */
 .os-footer-logo-container {
     width: 150px;
-    margin-left: 10px;
+    margin-left: 16px;
 }
 
 .os-logo-container:focus,
