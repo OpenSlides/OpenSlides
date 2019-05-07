@@ -1,5 +1,7 @@
+import random
 import re
-from typing import Dict, Generator, Tuple, Type, Union
+import string
+from typing import Dict, Generator, Optional, Tuple, Type, Union
 
 import roman
 from django.apps import apps
@@ -95,3 +97,20 @@ def get_model_from_collection_string(collection_string: str) -> Type[Model]:
             f"Invalid message. A valid collection_string is missing. Got {collection_string}"
         )
     return model
+
+
+_worker_id: Optional[str] = None
+"""
+The worker id. Accessable via `get_worker_id()`.
+"""
+
+
+def get_worker_id() -> str:
+    """
+    Returns a random string of length 4 that identifies this
+    instance of this worker
+    """
+    global _worker_id
+    if _worker_id is None:
+        _worker_id = "".join(random.sample(string.ascii_letters, 4))
+    return _worker_id
