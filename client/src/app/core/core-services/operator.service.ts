@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, Subscription } from 'rxjs';
 
 import { Group } from 'app/shared/models/users/group';
 import { User } from '../../shared/models/users/user';
@@ -124,6 +124,16 @@ export class OperatorService implements OnAfterAppsLoaded {
     }
 
     /**
+     * This is for the viewUser check, if the user id has changed, on a user update.
+     */
+    private lastUserId: number | null = null;
+
+    /**
+     * The subscription to the viewuser from the user repository.
+     */
+    private viewOperatorSubscription: Subscription;
+
+    /**
      * Sets up an observer for watching changes in the DS. If the operator user or groups are changed,
      * the operator's permissions are updated.
      *
@@ -156,6 +166,32 @@ export class OperatorService implements OnAfterAppsLoaded {
                 auditTime(10)
             )
             .subscribe(_ => this.updatePermissions());
+
+        // Watches the user observable to update the viewUser for the operator.
+        this.getUserObservable().subscribe(user => {
+            const userId = user ? user.id : null;
+            if ((!user && this.lastUserId === null) || userId === this.lastUserId) {
+                return; // The user didn't changed.
+            }
+            this.lastUserId = userId;
+
+            // User changed: clear subscription and subscribe to the new user (if there is one)
+            if (this.viewOperatorSubscription) {
+                this.viewOperatorSubscription.unsubscribe();
+            }
+
+            if (user && this.userRepository) {
+                this.viewOperatorSubscription = this.userRepository
+                    .getViewModelObservable(user.id)
+                    .subscribe(viewUser => {
+                        this._viewUser = viewUser;
+                        this.viewOperatorSubject.next(viewUser);
+                    });
+            } else {
+                // The operator is anonymous.
+                this.viewOperatorSubject.next(null);
+            }
+        });
     }
 
     /**
@@ -196,6 +232,7 @@ export class OperatorService implements OnAfterAppsLoaded {
         if (this.user) {
             this._viewUser = this.userRepository.getViewModel(this.user.id);
         }
+        this.viewOperatorSubject.next(this._viewUser);
     }
 
     /**
@@ -258,11 +295,6 @@ export class OperatorService implements OnAfterAppsLoaded {
         }
 
         this._user = whoami ? whoami.user : null;
-        if (this._user && this.userRepository) {
-            this._viewUser = this.userRepository.getViewModel(this._user.id);
-        } else {
-            this._viewUser = null;
-        }
         await this.updatePermissions();
     }
 
@@ -369,6 +401,5 @@ export class OperatorService implements OnAfterAppsLoaded {
 
         // publish changes in the operator.
         this.operatorSubject.next(this.user);
-        this.viewOperatorSubject.next(this.viewUser);
     }
 }
