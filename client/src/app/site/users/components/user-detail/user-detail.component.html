@@ -32,7 +32,7 @@
             <span translate>Change password</span>
         </button>
         <!-- invitation email -->
-        <button mat-menu-item *ngIf="isAllowed('manage')" (click)="sendInvitationEmail()">
+        <button mat-menu-item *ngIf="isAllowed('manage') && user.email" (click)="sendInvitationEmail()">
             <mat-icon>mail</mat-icon>
             <span translate>Send invitation email</span>
         </button>

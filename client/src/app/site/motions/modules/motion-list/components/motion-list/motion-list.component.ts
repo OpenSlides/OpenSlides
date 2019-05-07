@@ -169,9 +169,18 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
         this.configService.get<string>('motions_recommendations_by').subscribe(recommender => {
             this.recommendationEnabled = !!recommender;
         });
-        this.motionBlockRepo.getViewModelListObservable().subscribe(mBs => (this.motionBlocks = mBs));
-        this.categoryRepo.getViewModelListObservable().subscribe(cats => (this.categories = cats));
-        this.tagRepo.getViewModelListObservable().subscribe(tags => (this.tags = tags));
+        this.motionBlockRepo.getViewModelListObservable().subscribe(mBs => {
+            this.motionBlocks = mBs;
+            this.updateStateColumnVisibility();
+        });
+        this.categoryRepo.getViewModelListObservable().subscribe(cats => {
+            this.categories = cats;
+            this.updateStateColumnVisibility();
+        });
+        this.tagRepo.getViewModelListObservable().subscribe(tags => {
+            this.tags = tags;
+            this.updateStateColumnVisibility();
+        });
         this.workflowRepo.getViewModelListObservable().subscribe(wfs => (this.workflows = wfs));
         this.setFulltextFilter();
     }
@@ -435,5 +444,44 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
                 }
             }
         });
+    }
+
+    /**
+     * Checks if there are at least categories, motion-blocks or tags the user can select.
+     */
+    public updateStateColumnVisibility(): void {
+        const metaInfoAvailable = this.isCategoryAvailable() || this.isMotionBlockAvailable() || this.isTagAvailable();
+        if (!metaInfoAvailable && this.displayedColumnsDesktop.includes('state')) {
+            this.displayedColumnsDesktop.splice(this.displayedColumnsDesktop.indexOf('state'), 1);
+        } else if (metaInfoAvailable && !this.displayedColumnsDesktop.includes('state')) {
+            this.displayedColumnsDesktop = this.displayedColumnsDesktop.concat('state');
+        }
+    }
+
+    /**
+     * Checks motion-blocks are available.
+     *
+     * @returns A boolean if they are available.
+     */
+    public isMotionBlockAvailable(): boolean {
+        return !!this.motionBlocks && this.motionBlocks.length > 0;
+    }
+
+    /**
+     * Checks if tags are available.
+     *
+     * @returns A boolean if they are available.
+     */
+    public isTagAvailable(): boolean {
+        return !!this.tags && this.tags.length > 0;
+    }
+
+    /**
+     * Checks if categories are available.
+     *
+     * @returns A boolean if they are available.
+     */
+    public isCategoryAvailable(): boolean {
+        return !!this.categories && this.categories.length > 0;
     }
 }
