@@ -30,12 +30,15 @@
                         *ngIf="multipleParagraphsAllowed"
                         class="paragraph-select"
                         [checked]="isParagraphSelected(paragraph)"
-                    ></mat-checkbox>
+                        (click)="checkboxClicked($event)"
+                    >
+                    </mat-checkbox>
                     <mat-radio-button
                         *ngIf="!multipleParagraphsAllowed"
                         class="paragraph-select"
                         [checked]="isParagraphSelected(paragraph)"
-                    ></mat-radio-button>
+                        >
+                    </mat-radio-button>
                     <div class="paragraph-text motion-text" [innerHTML]="paragraph.safeHtml"></div>
                 </section>
             </div>
