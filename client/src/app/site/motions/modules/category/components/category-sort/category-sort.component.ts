@@ -177,9 +177,8 @@ export class CategorySortComponent extends BaseViewComponent implements OnInit, 
      * Only an array containing ids from the motions will be sent.
      */
     public async sendUpdate(): Promise<void> {
-        const title = this.translate.instant('Save changes');
-        const content = this.translate.instant('Do you really want to save your changes?');
-        if (await this.promptService.open(title, content)) {
+        const title = this.translate.instant('Do you really want to save your changes?');
+        if (await this.promptService.open(title, null)) {
             const ids = this.motionsCopy.map(motion => motion.id);
             this.repo.sortMotionsInCategory(this.category.category, ids);
             this.hasChanged = false;
@@ -226,8 +225,8 @@ export class CategorySortComponent extends BaseViewComponent implements OnInit, 
      */
     public async canDeactivate(): Promise<boolean> {
         if (this.hasChanged) {
-            const title = this.translate.instant('You made changes.');
-            const content = this.translate.instant('Do you really want to exit?');
+            const title = this.translate.instant('Do you really want to exit this page?');
+            const content = this.translate.instant('You made changes.');
             return await this.promptService.open(title, content);
         }
         return true;

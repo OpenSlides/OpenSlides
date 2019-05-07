@@ -32,7 +32,7 @@
                 [value]="getSumValue(sumValue)"
                 (change)="setSumValue(sumValue, $event.target.value)"
             />
-            <mat-label>{{ pollService.getLabel(sumValue) }}</mat-label>
+            <mat-label>{{ pollService.getLabel(sumValue) | translate }}</mat-label>
         </mat-form-field>
     </div>
 </div>

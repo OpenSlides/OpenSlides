@@ -47,7 +47,7 @@
             <p class="toggle-group-head" translate>Meta information</p>
             <mat-button-toggle-group class="smaller-buttons" multiple formControlName="metaInfo">
                 <mat-button-toggle *ngFor="let metaInfo of metaInfoExportOrder" [value]="metaInfo">
-                    <span translate>{{ getLabelForMetadata(metaInfo) }}</span>
+                    <span>{{ getLabelForMetadata(metaInfo) | translate }}</span>
                 </mat-button-toggle>
                 <mat-button-toggle value="polls" #votingResultButton>
                     <span translate>Voting result</span>

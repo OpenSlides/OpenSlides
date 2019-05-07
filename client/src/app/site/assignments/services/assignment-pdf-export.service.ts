@@ -31,7 +31,7 @@ export class AssignmentPdfExportService {
      */
     public exportSingleAssignment(assignment: ViewAssignment): void {
         const doc = this.assignmentPdfService.assignmentToDocDef(assignment);
-        const filename = `${this.translate.instant('Assignments')} ${assignment.title}`;
+        const filename = `${this.translate.instant('Election')}_${assignment.title}`;
         const metadata = {
             title: filename
         };

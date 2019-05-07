@@ -103,7 +103,7 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
      * Observe the agendaItems for changes.
      */
     public ngOnInit(): void {
-        super.setTitle('Motion Blocks');
+        super.setTitle('Motion blocks');
         this.initTable();
 
         this.items = this.itemRepo.getViewModelListBehaviorSubject();
