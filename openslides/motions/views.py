@@ -1224,7 +1224,7 @@ class CategoryViewSet(ModelViewSet):
         Send POST {'motions': [<list of motion ids>]} to sort the given
         motions in a special order. Ids of motions which do not belong to
         the category are just ignored. Send just POST {} to sort all
-        motions in the category by database id.
+        motions in the category ordered by their category weight.
 
         Amendments will get a new identifier prefix if the old prefix matches
         the old parent motion identifier.
@@ -1241,12 +1241,14 @@ class CategoryViewSet(ModelViewSet):
 
         # Prepare ordered list of motions.
         if not category.prefix:
-            prefix = ""
+            category_prefix = ""
         elif without_blank:
-            prefix = category.prefix
+            category_prefix = category.prefix
         else:
-            prefix = f"{category.prefix} "
-        motions = category.motion_set.all()
+            category_prefix = f"{category.prefix} "
+
+        # get motions
+        motions = category.motion_set.order_by("category_weight")
         motion_list = request.data.get("motions")
         if motion_list:
             motion_dict = {}
@@ -1261,13 +1263,17 @@ class CategoryViewSet(ModelViewSet):
                 # Collect old and new identifiers.
                 motions_to_be_sorted = []
                 for motion in motions:
+                    prefix = category_prefix
+
+                    # Change prefix for amendments
                     if motion.is_amendment():
                         parent_identifier = motion.parent.identifier or ""
                         if without_blank:
                             prefix = f"{parent_identifier}{config['motions_amendments_prefix']}"
                         else:
                             prefix = f"{parent_identifier} {config['motions_amendments_prefix']} "
-                    number += 1
+                    else:
+                        number += 1
                     new_identifier = (
                         f"{prefix}{motion.extend_identifier_number(number)}"
                     )
