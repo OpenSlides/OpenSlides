@@ -13,6 +13,7 @@ import { environment } from 'environments/environment';
 import { LoginDataService, LoginData } from 'app/core/ui-services/login-data.service';
 import { ParentErrorStateMatcher } from 'app/shared/parent-error-state-matcher';
 import { HttpService } from 'app/core/core-services/http.service';
+import { SpinnerService } from 'app/core/ui-services/spinner.service';
 
 interface LoginDataWithInfoText extends LoginData {
     info_text?: string;
@@ -54,11 +55,6 @@ export class LoginMaskComponent extends BaseComponent implements OnInit, OnDestr
      */
     public parentErrorStateMatcher = new ParentErrorStateMatcher();
 
-    /**
-     * Show the Spinner if validation is in process
-     */
-    public inProcess = false;
-
     public operatorSubscription: Subscription | null;
 
     /**
@@ -71,6 +67,7 @@ export class LoginMaskComponent extends BaseComponent implements OnInit, OnDestr
      * @param httpService used to get information before the login
      * @param OpenSlides The Service for OpenSlides
      * @param loginDataService provide information about the legal notice and privacy policy
+     * @param spinnerService Service to show the spinner when the user is signing in
      */
     public constructor(
         title: Title,
@@ -81,9 +78,12 @@ export class LoginMaskComponent extends BaseComponent implements OnInit, OnDestr
         private route: ActivatedRoute,
         private formBuilder: FormBuilder,
         private httpService: HttpService,
-        private loginDataService: LoginDataService
+        private loginDataService: LoginDataService,
+        private spinnerService: SpinnerService
     ) {
         super(title, translate);
+        // Hide the spinner if the user is at `login-mask`
+        spinnerService.setVisibility(false);
         this.createForm();
     }
 
@@ -149,8 +149,8 @@ export class LoginMaskComponent extends BaseComponent implements OnInit, OnDestr
      * Send username and password to the {@link AuthService}
      */
     public async formLogin(): Promise<void> {
+        this.spinnerService.setVisibility(true, this.translate.instant('Loading data. Please wait...'));
         this.loginErrorMsg = '';
-        this.inProcess = true;
         try {
             await this.authService.login(this.loginForm.value.username, this.loginForm.value.password, () => {
                 this.clearOperatorSubscription(); // We take control, not the subscription.
@@ -161,7 +161,7 @@ export class LoginMaskComponent extends BaseComponent implements OnInit, OnDestr
             });
             this.loginErrorMsg = e;
         }
-        this.inProcess = false;
+        this.spinnerService.setVisibility(false);
     }
 
     /**

@@ -3,9 +3,11 @@
 @include mat-core();
 
 /** Import brand theme */
+@import './assets/styles/openslides-general-theme.scss';
 @import './assets/styles/openslides-theme.scss';
 @import './assets/styles/openslides-dark-theme.scss';
 @import './assets/styles/openslides-green-theme.scss';
+@import './assets/styles/openslides-developer-theme.scss';
 
 /** Import the component-related style sheets here */
 @import './app/site/site.component.scss-theme.scss';
@@ -13,6 +15,7 @@
 @import './app/shared/components/projector-button/projector-button.component.scss';
 @import './app/site/agenda/components/list-of-speakers/list-of-speakers.component.scss-theme.scss';
 @import './app/shared/components/sorting-tree/sorting-tree.component.scss';
+@import './app/site/global-spinner/global-spinner.component.scss';
 
 /** fonts */
 @import './assets/styles/fonts.scss';
@@ -25,6 +28,7 @@
     @include os-projector-button-style($theme);
     @include os-list-of-speakers-style($theme);
     @include os-sorting-tree-style($theme);
+    @include os-global-spinner-theme($theme);
     /** More components are added here */
 }
 
@@ -34,10 +38,34 @@
 /** Load projector specific SCSS values */
 @import './assets/styles/projector.scss';
 
+.general-theme {
+    @include os-global-spinner-theme($openslides-general-theme);
+}
+
 /** Define the classes to switch between themes */
 .openslides-theme {
     @include angular-material-theme($openslides-theme);
     @include openslides-components-theme($openslides-theme);
+
+    .logo-container {
+        img.dark {
+            display: none;
+        }
+        img.default {
+            display: inherit;
+        }
+    }
+}
+
+.openslides-dark-theme, .openslides-developer-dark-theme {
+    .logo-container {
+        img.dark {
+            display: inherit;
+        }
+        img.default {
+            display: none;
+        }
+    }
 }
 
 .openslides-dark-theme {
@@ -50,17 +78,71 @@
     @include openslides-components-theme($openslides-green-theme);
 }
 
+.openslides-developer-dark-theme {
+    @include angular-material-theme($openslides-developer-theme);
+    @include openslides-components-theme($openslides-developer-theme);
+
+    * {
+        font-family: monospace !important;
+        color: mat-color(map-get($openslides-developer-theme, accent));
+    }
+
+    os-site {
+        .active mat-icon, .active span {
+            color: mat-color(map-get($openslides-developer-theme, accent));
+        }
+    }
+
+    .custom-table-header {
+        background: #000;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .mat-toolbar.sticky-toolbar {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .mat-drawer-inner-container {
+        background: #000;
+    }
+
+    .mat-drawer-inner-container > * {
+        background: #000 !important;
+        z-index: 3;
+
+        .os-site.nav-toolbar {
+            background: #000;
+        }
+    }
+
+    .mat-drawer-content > * {
+        background: #000;
+    }
+
+    mat-icon {
+        font-family: 'Material Icons' !important;
+    }
+
+    .mat-mini-fab.projector-active {
+        background-color: mat-color(map-get($openslides-developer-theme, warn));
+    }
+
+    .mce-ico {
+        font-family: 'tinymce', Arial !important;
+    }
+}
+
 /** Define the general style-rules */
 * {
     font-family: OSFont, Fira Sans, Roboto, Arial, Helvetica, sans-serif;
 }
 .mat-toolbar h2,
 .mat-dialog-title {
-    font-family: OSFont, Fira Sans, Roboto, Arial, Helvetica, sans-serif !important;
+    font-family: OSFont, Fira Sans, Roboto, Arial, Helvetica, sans-serif;
 }
 
 mat-icon {
-    font-family: 'Material Icons Baseline';
+    font-family: 'Material Icons' !important;
 }
 
 body {

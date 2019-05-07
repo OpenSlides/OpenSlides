@@ -17,6 +17,7 @@ import { OpenSlidesTranslateModule } from './core/translate/openslides-translate
 // PWA
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { GlobalSpinnerComponent } from './site/global-spinner/global-spinner.component';
 
 /**
  * Returns a function that returns a promis that will be resolved, if all apps are loaded.
@@ -30,7 +31,7 @@ export function AppLoaderFactory(appLoadService: AppLoadService): () => Promise<
  * Global App Module. Keep it as clean as possible.
  */
 @NgModule({
-    declarations: [AppComponent],
+    declarations: [AppComponent, GlobalSpinnerComponent],
     imports: [
         BrowserModule,
         HttpClientModule,

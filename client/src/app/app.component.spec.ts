@@ -25,7 +25,7 @@ describe('AppComponent', () => {
         const fixture = TestBed.createComponent(AppComponent);
         const app = fixture.debugElement.componentInstance;
         expect(app).toBeTruthy();
-        tick();
+        tick(1000);
         fixture.whenStable().then(() => {
             expect(servertimeService.startScheduler).toHaveBeenCalled();
         });

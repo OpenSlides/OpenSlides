@@ -18,6 +18,7 @@ import { TreeService } from 'app/core/ui-services/tree.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ViewMotion } from '../models/view-motion';
 import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
+import { SpinnerService } from 'app/core/ui-services/spinner.service';
 
 /**
  * Contains all multiselect actions for the motion list view.
@@ -26,6 +27,8 @@ import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflo
     providedIn: 'root'
 })
 export class MotionMultiselectService {
+    private messageForSpinner = 'Motions are in process. Please wait...';
+
     /**
      * Does nothing.
      *
@@ -42,6 +45,7 @@ export class MotionMultiselectService {
      * @param httpService
      * @param treeService
      * @param personalNoteService
+     * @param spinnerService to show a spinner when http-requests are made.
      */
     public constructor(
         private repo: MotionRepositoryService,
@@ -56,7 +60,8 @@ export class MotionMultiselectService {
         private motionBlockRepo: MotionBlockRepositoryService,
         private httpService: HttpService,
         private treeService: TreeService,
-        private personalNoteService: PersonalNoteService
+        private personalNoteService: PersonalNoteService,
+        private spinnerService: SpinnerService
     ) {}
 
     /**
@@ -67,9 +72,19 @@ export class MotionMultiselectService {
     public async delete(motions: ViewMotion[]): Promise<void> {
         const title = this.translate.instant('Are you sure you want to delete all selected motions?');
         if (await this.promptService.open(title, null)) {
+            let i = 0;
+
             for (const motion of motions) {
+                ++i;
+                const message =
+                    this.translate.instant(this.messageForSpinner) +
+                    `\n${i} ` +
+                    this.translate.instant('of') +
+                    ` ${motions.length}`;
+                this.spinnerService.setVisibility(true, message);
                 await this.repo.delete(motion);
             }
+            this.spinnerService.setVisibility(false);
         }
     }
 
@@ -102,7 +117,13 @@ export class MotionMultiselectService {
         }));
         const selectedChoice = await this.choiceService.open(title, choices);
         if (selectedChoice) {
-            await this.repo.setMultiState(motions, selectedChoice.items as number);
+            const message = `${motions.length} ` + this.translate.instant(this.messageForSpinner);
+            this.spinnerService.setVisibility(true, message);
+            await this.repo.setMultiState(motions, selectedChoice.items as number).catch(error => {
+                this.spinnerService.setVisibility(false);
+                throw error;
+            });
+            this.spinnerService.setVisibility(false);
         }
     }
 
@@ -127,9 +148,18 @@ export class MotionMultiselectService {
                 id: motion.id,
                 recommendation: selectedChoice.action ? 0 : (selectedChoice.items as number)
             }));
-            await this.httpService.post('/rest/motions/motion/manage_multiple_recommendation/', {
-                motions: requestData
-            });
+
+            const message = `${motions.length} ` + this.translate.instant(this.messageForSpinner);
+            this.spinnerService.setVisibility(true, message);
+            await this.httpService
+                .post('/rest/motions/motion/manage_multiple_recommendation/', {
+                    motions: requestData
+                })
+                .catch(error => {
+                    this.spinnerService.setVisibility(false);
+                    throw error;
+                });
+            this.spinnerService.setVisibility(false);
         }
     }
 
@@ -149,12 +179,21 @@ export class MotionMultiselectService {
             clearChoice
         );
         if (selectedChoice) {
+            let i = 0;
             for (const motion of motions) {
+                ++i;
+                const message =
+                    this.translate.instant(this.messageForSpinner) +
+                    `\n${i} ` +
+                    this.translate.instant('of') +
+                    ` ${motions.length}`;
+                this.spinnerService.setVisibility(true, message);
                 await this.repo.update(
                     { category_id: selectedChoice.action ? null : (selectedChoice.items as number) },
                     motion
                 );
             }
+            this.spinnerService.setVisibility(false);
         }
     }
 
@@ -174,26 +213,33 @@ export class MotionMultiselectService {
             true,
             choices
         );
-        if (selectedChoice && selectedChoice.action === choices[0]) {
-            const requestData = motions.map(motion => {
-                let submitterIds = [...motion.sorted_submitters_id, ...(selectedChoice.items as number[])];
-                submitterIds = submitterIds.filter((id, index, self) => self.indexOf(id) === index); // remove duplicates
-                return {
-                    id: motion.id,
-                    submitters: submitterIds
-                };
-            });
+        if (selectedChoice) {
+            let requestData = null;
+            if (selectedChoice.action === choices[0]) {
+                requestData = motions.map(motion => {
+                    let submitterIds = [...motion.sorted_submitters_id, ...(selectedChoice.items as number[])];
+                    submitterIds = submitterIds.filter((id, index, self) => self.indexOf(id) === index); // remove duplicates
+                    return {
+                        id: motion.id,
+                        submitters: submitterIds
+                    };
+                });
+                // await this.httpService.post('/rest/motions/motion/manage_multiple_submitters/', { motions: requestData });
+            } else if (selectedChoice.action === choices[1]) {
+                requestData = motions.map(motion => {
+                    const submitterIdsToRemove = selectedChoice.items as number[];
+                    const submitterIds = motion.sorted_submitters_id.filter(id => !submitterIdsToRemove.includes(id));
+                    return {
+                        id: motion.id,
+                        submitters: submitterIds
+                    };
+                });
+            }
+
+            const message = `${motions.length} ` + this.translate.instant(this.messageForSpinner);
+            this.spinnerService.setVisibility(true, message);
             await this.httpService.post('/rest/motions/motion/manage_multiple_submitters/', { motions: requestData });
-        } else if (selectedChoice && selectedChoice.action === choices[1]) {
-            const requestData = motions.map(motion => {
-                const submitterIdsToRemove = selectedChoice.items as number[];
-                const submitterIds = motion.sorted_submitters_id.filter(id => !submitterIdsToRemove.includes(id));
-                return {
-                    id: motion.id,
-                    submitters: submitterIds
-                };
-            });
-            await this.httpService.post('/rest/motions/motion/manage_multiple_submitters/', { motions: requestData });
+            this.spinnerService.setVisibility(false);
         }
     }
 
@@ -215,34 +261,41 @@ export class MotionMultiselectService {
             true,
             choices
         );
-        if (selectedChoice && selectedChoice.action === choices[0]) {
-            const requestData = motions.map(motion => {
-                let tagIds = [...motion.tags_id, ...(selectedChoice.items as number[])];
-                tagIds = tagIds.filter((id, index, self) => self.indexOf(id) === index); // remove duplicates
-                return {
-                    id: motion.id,
-                    tags: tagIds
-                };
-            });
+        if (selectedChoice) {
+            let requestData = null;
+            if (selectedChoice.action === choices[0]) {
+                requestData = motions.map(motion => {
+                    let tagIds = [...motion.tags_id, ...(selectedChoice.items as number[])];
+                    tagIds = tagIds.filter((id, index, self) => self.indexOf(id) === index); // remove duplicates
+                    return {
+                        id: motion.id,
+                        tags: tagIds
+                    };
+                });
+                // await this.httpService.post('/rest/motions/motion/manage_multiple_tags/', { motions: requestData });
+            } else if (selectedChoice.action === choices[1]) {
+                requestData = motions.map(motion => {
+                    const tagIdsToRemove = selectedChoice.items as number[];
+                    const tagIds = motion.tags_id.filter(id => !tagIdsToRemove.includes(id));
+                    return {
+                        id: motion.id,
+                        tags: tagIds
+                    };
+                });
+                // await this.httpService.post('/rest/motions/motion/manage_multiple_tags/', { motions: requestData });
+            } else if (selectedChoice.action === choices[2]) {
+                requestData = motions.map(motion => {
+                    return {
+                        id: motion.id,
+                        tags: []
+                    };
+                });
+            }
+
+            const message = `${motions.length} ` + this.translate.instant(this.messageForSpinner);
+            this.spinnerService.setVisibility(true, message);
             await this.httpService.post('/rest/motions/motion/manage_multiple_tags/', { motions: requestData });
-        } else if (selectedChoice && selectedChoice.action === choices[1]) {
-            const requestData = motions.map(motion => {
-                const tagIdsToRemove = selectedChoice.items as number[];
-                const tagIds = motion.tags_id.filter(id => !tagIdsToRemove.includes(id));
-                return {
-                    id: motion.id,
-                    tags: tagIds
-                };
-            });
-            await this.httpService.post('/rest/motions/motion/manage_multiple_tags/', { motions: requestData });
-        } else if (selectedChoice && selectedChoice.action === choices[2]) {
-            const requestData = motions.map(motion => {
-                return {
-                    id: motion.id,
-                    tags: []
-                };
-            });
-            await this.httpService.post('/rest/motions/motion/manage_multiple_tags/', { motions: requestData });
+            this.spinnerService.setVisibility(false);
         }
     }
 
@@ -262,10 +315,19 @@ export class MotionMultiselectService {
             clearChoice
         );
         if (selectedChoice) {
+            let i = 0;
             for (const motion of motions) {
+                ++i;
+                const message =
+                    this.translate.instant(this.messageForSpinner) +
+                    `\n${i} ` +
+                    this.translate.instant('of') +
+                    ` ${motions.length}`;
+                this.spinnerService.setVisibility(true, message);
                 const blockId = selectedChoice.action ? null : (selectedChoice.items as number);
                 await this.repo.update({ motion_block_id: blockId }, motion);
             }
+            this.spinnerService.setVisibility(false);
         }
     }
 
@@ -317,8 +379,11 @@ export class MotionMultiselectService {
         ];
         const selectedChoice = await this.choiceService.open(title, choices);
         if (selectedChoice && motions.length) {
+            const message = this.translate.instant(`I have ${motions.length} favorite motions. Please wait...`);
             const star = (selectedChoice.items as number) === choices[0].id;
+            this.spinnerService.setVisibility(true, message);
             await this.personalNoteService.bulkSetStar(motions, star);
+            this.spinnerService.setVisibility(false);
         }
     }
 }

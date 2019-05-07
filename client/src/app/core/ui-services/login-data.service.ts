@@ -13,6 +13,10 @@ export interface LoginData {
     privacy_policy: string;
     legal_notice: string;
     theme: string;
+    logo_web_header: {
+        path: string;
+        display_name: string;
+    };
 }
 
 const LOGIN_DATA_STORAGE_KEY = 'LoginData';
@@ -62,6 +66,21 @@ export class LoginDataService {
     }
 
     /**
+     * Holds the custom web header
+     */
+    private readonly _logo_web_header = new BehaviorSubject<{ path: string; display_name: string }>({
+        path: '',
+        display_name: ''
+    });
+
+    /**
+     * Returns an observable for the web header
+     */
+    public get logo_web_header(): Observable<{ path: string; display_name: string }> {
+        return this._logo_web_header.asObservable();
+    }
+
+    /**
      * Constructs this service. The config service is needed to update the privacy
      * policy and legal notice, when their config values change.
      * @param configService
@@ -81,6 +100,10 @@ export class LoginDataService {
         });
         configService.get<string>('openslides_theme').subscribe(value => {
             this._theme.next(value);
+            this.storeLoginData();
+        });
+        configService.get<{ path: string; display_name: string }>('logo_web_header').subscribe(value => {
+            this._logo_web_header.next(value);
             this.storeLoginData();
         });
 
@@ -120,7 +143,8 @@ export class LoginDataService {
             loginData = {
                 privacy_policy: this._privacy_policy.getValue(),
                 legal_notice: this._legal_notice.getValue(),
-                theme: this._theme.getValue()
+                theme: this._theme.getValue(),
+                logo_web_header: this._logo_web_header.getValue()
             };
         }
         if (!this.OSStatus.isInHistoryMode) {

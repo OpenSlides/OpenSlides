@@ -1,7 +1,7 @@
 import { Component, ApplicationRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
-import { take, filter } from 'rxjs/operators';
+import { take, filter, auditTime } from 'rxjs/operators';
 
 import { ConfigService } from './core/ui-services/config.service';
 import { ConstantsService } from './core/core-services/constants.service';
@@ -15,6 +15,8 @@ import { DataStoreUpgradeService } from './core/core-services/data-store-upgrade
 import { UpdateService } from './core/ui-services/update.service';
 import { PrioritizeService } from './core/core-services/prioritize.service';
 import { PingService } from './core/core-services/ping.service';
+import { SpinnerService } from './core/ui-services/spinner.service';
+import { Router } from '@angular/router';
 
 /**
  * Angular's global App Component
@@ -48,10 +50,12 @@ export class AppComponent {
         translate: TranslateService,
         appRef: ApplicationRef,
         servertimeService: ServertimeService,
+        router: Router,
         operator: OperatorService,
         loginDataService: LoginDataService,
         constantsService: ConstantsService, // Needs to be started, so it can register itself to the WebsocketService
         themeService: ThemeService,
+        spinnerService: SpinnerService,
         countUsersService: CountUsersService, // Needed to register itself.
         configService: ConfigService,
         loadFontService: LoadFontService,
@@ -70,13 +74,27 @@ export class AppComponent {
         translate.use(translate.getLangs().includes(browserLang) ? browserLang : 'en');
         // change default JS functions
         this.overloadArrayToString();
+        // Show the spinner initial
+        spinnerService.setVisibility(true, translate.instant('Loading data. Please wait...'));
 
         appRef.isStable
             .pipe(
+                // take only the stable state
                 filter(s => s),
                 take(1)
             )
             .subscribe(() => servertimeService.startScheduler());
+
+        // Subscribe to hide the spinner if the application has changed.
+        appRef.isStable
+            .pipe(
+                filter(s => s),
+                auditTime(1000)
+            )
+            .pipe(take(2))
+            .subscribe(() => {
+                spinnerService.setVisibility(false);
+            });
     }
 
     /**

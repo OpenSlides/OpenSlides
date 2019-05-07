@@ -1,0 +1,75 @@
+$openslides-developer-primary: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #000000,
+    400 : #000000,
+    500 : #000000,
+    600 : #000000,
+    700 : #000000,
+    800 : #000000,
+    900 : #000000,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #000000,
+    A700 : #000000,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #000000,
+        500 : #000000,
+        600 : #000000,
+        700 : #000000,
+        800 : #000000,
+        900 : #000000,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+
+$openslides-developer-accent: (
+    50 : #f4f9e1,
+    100 : #e5f0b3,
+    200 : #d3e781,
+    300 : #c1dd4e,
+    400 : #b4d528,
+    500 : #a7ce02,
+    600 : #9fc902,
+    700 : #96c201,
+    800 : #8cbc01,
+    900 : #7cb001,
+    A100 : #f2ffda,
+    A200 : #e1ffa7,
+    A400 : #cfff74,
+    A700 : #c6ff5a,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #000000,
+        500 : #000000,
+        600 : #000000,
+        700 : #000000,
+        800 : #000000,
+        900 : #000000,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+
+$openslides-primary: mat-palette($openslides-developer-primary);
+$openslides-accent: mat-palette($openslides-developer-accent);
+$openslides-warn: mat-palette($mat-pink);
+
+$openslides-developer-theme: mat-dark-theme(
+    $openslides-primary,
+    $openslides-accent,
+    $openslides-warn
+);
