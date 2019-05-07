@@ -99,6 +99,23 @@ export class SiteComponent extends BaseComponent implements OnInit {
         //      console.log('translation of motions in the target language: ' + res);
         //  });
 
+        // TODO: Remove this, when the ESR version of Firefox >= 64.
+        const agent = navigator.userAgent.toLowerCase();
+        if (agent.indexOf('firefox') > -1) {
+            const index = agent.indexOf('firefox') + 8;
+            const version = +agent.slice(index, index + 2);
+
+            if (version < 64) {
+                const sideNav = document.querySelector(
+                    'mat-sidenav.side-panel > div.mat-drawer-inner-container'
+                ) as HTMLElement;
+                sideNav.style.overflow = 'hidden';
+                sideNav.addEventListener('MozMousePixelScroll', (event: any) => {
+                    sideNav.scrollBy(0, event.detail);
+                });
+            }
+        }
+
         this.router.events.subscribe(event => {
             // Scroll to top if accessing a page, not via browser history stack
             if (event instanceof NavigationEnd) {
