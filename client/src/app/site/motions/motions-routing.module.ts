@@ -35,7 +35,7 @@ const routes: Routes = [
     {
         path: 'blocks',
         loadChildren: './modules/motion-block/motion-block.module#MotionBlockModule',
-        data: { basePerm: 'motions.can_manage' }
+        data: { basePerm: 'motions.can_see' }
     },
     {
         path: 'workflow',
