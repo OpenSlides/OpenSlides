@@ -7,14 +7,16 @@
     <table>
         <tr *ngFor="let i of rowsArray">
             <td *ngFor="let j of columnsArray">
-                <div class="ellipsis-overflow">
-                    {{ getMotionTitle(i, j) }}
-                </div>
-                <div class="white"><!-- ellipsis-overflow?? -->
-                    <mat-basic-chip *ngIf="hasRecommendation(i, j)" disableRipple [ngClass]="getStateCssColor(i, j)" class="block-recommendation">
-                        {{ getRecommendationLabel(i, j) }}
-                    </mat-basic-chip>
-                </div>
+                <ng-container *ngIf="getMotion(i, j)">
+                    <div class="ellipsis-overflow">
+                        {{ getMotionTitle(i, j) }}
+                    </div>
+                    <div class="white">
+                        <mat-basic-chip *ngIf="hasRecommendation(i, j)" disableRipple [ngClass]="getStateCssColor(i, j)" class="block-recommendation">
+                            {{ getRecommendationLabel(i, j) }}
+                        </mat-basic-chip>
+                    </div>
+                </ng-container>
             </td>
         </tr>
     </table>
