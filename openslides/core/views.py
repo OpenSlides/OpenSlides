@@ -288,12 +288,12 @@ class ProjectorViewSet(ModelViewSet):
         return Response({"detail": message})
 
 
-class ProjectionDefaultViewSet(ModelViewSet):
+class ProjectionDefaultViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     """
     API endpoint for projection defaults.
 
-    There are the following views: list, retrieve, create, update,
-    partial_update and destroy.
+    There are the following views: list, and retrieve. Assigning projection defaults
+    to projectors can be done by updating the projector.
     """
 
     access_permissions = ProjectionDefaultAccessPermissions()
@@ -305,8 +305,6 @@ class ProjectionDefaultViewSet(ModelViewSet):
         """
         if self.action in ("list", "retrieve"):
             result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action in ("create", "partial_update", "update", "destroy"):
-            result = has_perm(self.request.user, "core.can_manage_projector")
         else:
             result = False
         return result
