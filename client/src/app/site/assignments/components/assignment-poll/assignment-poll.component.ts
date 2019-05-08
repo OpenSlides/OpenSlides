@@ -201,7 +201,7 @@ export class AssignmentPollComponent extends BaseViewComponent implements OnInit
             // TODO deep copy of this.poll (JSON parse is ugly workaround) or sending just copy of the options
             data: this.poll.copy(),
             maxHeight: '90vh',
-            minWidth: '300px',
+            minWidth: '450px',
             maxWidth: '80vw',
             disableClose: true
         });

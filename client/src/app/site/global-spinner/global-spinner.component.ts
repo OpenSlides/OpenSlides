@@ -1,6 +1,7 @@
 // External imports
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 // Internal imports
 import { SpinnerService } from 'app/core/ui-services/spinner.service';
@@ -32,7 +33,7 @@ export class GlobalSpinnerComponent implements OnInit, OnDestroy {
     /**
      * Constant string as default message when the spinner is shown.
      */
-    private LOADING = 'Loading data. Please wait...';
+    private LOADING = this.translate.instant('Loading data. Please wait...');
 
     /**
      *
@@ -40,7 +41,11 @@ export class GlobalSpinnerComponent implements OnInit, OnDestroy {
      * @param translate Service to get translations for the messages.
      * @param detector Service to manual initiate a change of the UI.
      */
-    public constructor(private spinnerService: SpinnerService, private detector: ChangeDetectorRef) {}
+    public constructor(
+        private spinnerService: SpinnerService,
+        protected translate: TranslateService,
+        private detector: ChangeDetectorRef
+    ) {}
 
     /**
      * Init method
@@ -50,8 +55,7 @@ export class GlobalSpinnerComponent implements OnInit, OnDestroy {
             .getVisibility()
             .subscribe((value: { isVisible: boolean; text: string }) => {
                 this.isVisible = value.isVisible;
-                this.text = value.text;
-
+                this.text = this.translate.instant(value.text);
                 if (!this.text) {
                     this.text = this.LOADING;
                 }

@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GlobalSpinnerComponent } from './global-spinner.component';
+import { E2EImportsModule } from 'e2e-imports.module';
 
 describe('GlobalSpinnerComponent', () => {
     let component: GlobalSpinnerComponent;
@@ -8,7 +9,7 @@ describe('GlobalSpinnerComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [GlobalSpinnerComponent]
+            imports: [E2EImportsModule]
         }).compileComponents();
     }));
 

@@ -260,9 +260,15 @@ msgid "Are you sure you want to renumber all motions of this category?"
 msgstr ""
 "Sollen alle Anträge dieses Sachgebiets wirklich neu nummeriert werden?"
 
+msgid "Are you sure you want to send an invitation email to the user?"
+msgstr "Soll wirklich eine E-Mail den diesen Nutzer gesendet werden?"
+
 msgid "Are you sure you want to send emails to all selected participants?"
 msgstr ""
 "Sollen E-Mails wirklich an alle ausgewählten Teilnehmende gesendet werden?"
+
+msgid "Assignments"
+msgstr ""
 
 msgid ""
 "At least given name or surname have to be filled in. All other fields are "
@@ -455,6 +461,9 @@ msgstr "Geänderte Fassung"
 
 msgid "Changed version in line"
 msgstr "Geänderte Fassung in Zeile"
+
+msgid "Check for updates"
+msgstr "Auf Updates prüfen"
 
 msgid "Check in or check out participants based on their participant numbers:"
 msgstr ""
@@ -652,6 +661,9 @@ msgstr "Chronik löschen"
 msgid "Deletion"
 msgstr "Streichung"
 
+msgid "Description"
+msgstr "Beschreibung"
+
 msgid "Deselect all"
 msgstr "Alle abwählen"
 
@@ -685,6 +697,12 @@ msgstr "Nicht befassen"
 
 msgid "Do not decide"
 msgstr "Nicht entscheiden"
+
+msgid "Do you really want to exit this page?"
+msgstr "Wollen Sie diese Seite wirklich verlassen?"
+
+msgid "Do you really want to save your changes?"
+msgstr "Wollen Sie wirklich Ihre Änderungen speichern?"
 
 msgid "Does not have notes"
 msgstr "Hat keine Notizen"
@@ -739,6 +757,9 @@ msgstr "Gewählt"
 msgid "Election"
 msgstr "Wahl"
 
+msgid "Election documents"
+msgstr "Wahlunterlagen"
+
 msgid "Election method"
 msgstr "Wahlmethode"
 
@@ -759,6 +780,9 @@ msgstr "Nachrichtentext"
 
 msgid "Email sender"
 msgstr "Absender"
+
+msgid "Email sent"
+msgstr "E-Mail gesendet"
 
 msgid "Email subject"
 msgstr "Betreff"
@@ -799,6 +823,9 @@ msgstr ""
 
 msgid "Error"
 msgstr "Fehler"
+
+msgid "Error during PDF creation of motion:"
+msgstr "Fehler bei der PDF-Erstellung in Antrag"
 
 msgid "Error: The new passwords do not match."
 msgstr "Fehler: Die neuen Passwörter stimmen nicht überein."
@@ -1020,6 +1047,9 @@ msgstr "Laufende Nummer im PDF und DOCX anzeigen"
 msgid "Initial password"
 msgstr "Initiales Passwort"
 
+msgid "Initiate update check for all clients"
+msgstr "Update-Prüfung für alle Clients starten"
+
 msgid "Inline"
 msgstr "innerhalb"
 
@@ -1104,6 +1134,9 @@ msgstr "Beschriftungsfarbe"
 msgid "Last email send"
 msgstr "Letzte gesendet E-Mail"
 
+msgid "Last email sent"
+msgstr "Letzte gesendete E-Mail"
+
 msgid "Last modified"
 msgstr "Zuletzt geändert"
 
@@ -1139,6 +1172,9 @@ msgstr "Redeliste"
 
 msgid "List of speakers overlay"
 msgstr "Redelisten-Einblendung"
+
+msgid "Loading data. Please wait..."
+msgstr "Daten werden geladen. Bitte warten..."
 
 msgid "Login"
 msgstr "Anmelden"
@@ -1310,6 +1346,9 @@ msgstr "Keine Daten"
 
 msgid "No decision"
 msgstr "Keine Entscheidung"
+
+msgid "No email sent"
+msgstr "Keine E-Mail gesendet"
 
 msgid "No emails were send."
 msgstr "Es wurden keine E-Mails versandt."
@@ -1716,6 +1755,9 @@ msgstr "Erforderliche Mehrheit"
 msgid "Reset"
 msgstr "Zurücksetzen"
 
+msgid "Reset cache"
+msgstr "Cache leeren"
+
 msgid "Reset password"
 msgstr "Passwort zurücksetzen"
 
@@ -1792,6 +1834,9 @@ msgid "Selected values"
 msgstr "Ausgewählte Werte"
 
 msgid "Send invitation email"
+msgstr "Einladungs-E-Mail senden"
+
+msgid "Sending an invitation email"
 msgstr "Einladungs-E-Mail senden"
 
 msgid "Separator used for all csv exports and examples"
@@ -2135,6 +2180,10 @@ msgstr ""
 "Alle ausgewählten Anträge unter oder nach dem folgenden Antrag in der "
 "Aufrufliste verschieben:"
 
+msgid "This will send an update notification to all active clients"
+msgstr ""
+"Es wird eine Update-Benachrichtigung an alle aktiven Clients gesendet."
+
 msgid "This will set the favorite status for all selected motions:"
 msgstr "Favoriten-Markierung für alle ausgewählten Anträge setzen:"
 
@@ -2363,6 +2412,9 @@ msgstr "Sie können {event_name} und {username} als Platzhalter verwenden."
 msgid "You do not have the required permission to see that page!"
 msgstr "Sie haben leider keine Berechtigung diese Seite zu sehen."
 
+msgid "You made changes."
+msgstr "Sie haben Änderungen vorgenommen."
+
 msgid "You override the personally set password!"
 msgstr "Sie überschreiben hiermit das persönlich gesetzte Passwort!"
 
@@ -2447,6 +2499,9 @@ msgstr "inaktiv"
 
 msgid "inline"
 msgstr "innerhalb"
+
+msgid "is elected"
+msgstr "gewählt"
 
 msgid "is hidden"
 msgstr "ist versteckt"

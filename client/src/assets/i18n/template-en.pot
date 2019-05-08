@@ -242,7 +242,13 @@ msgstr ""
 msgid "Are you sure you want to renumber all motions of this category?"
 msgstr ""
 
+msgid "Are you sure you want to send an invitation email to the user?"
+msgstr ""
+
 msgid "Are you sure you want to send emails to all selected participants?"
+msgstr ""
+
+msgid "Assignments"
 msgstr ""
 
 msgid ""
@@ -433,6 +439,9 @@ msgstr ""
 msgid "Changed version in line"
 msgstr ""
 
+msgid "Check for updates"
+msgstr ""
+
 msgid "Check in or check out participants based on their participant numbers:"
 msgstr ""
 
@@ -612,6 +621,9 @@ msgstr ""
 msgid "Deletion"
 msgstr ""
 
+msgid "Description"
+msgstr ""
+
 msgid "Deselect all"
 msgstr ""
 
@@ -642,6 +654,12 @@ msgid "Do not concern"
 msgstr ""
 
 msgid "Do not decide"
+msgstr ""
+
+msgid "Do you really want to exit this page?"
+msgstr ""
+
+msgid "Do you really want to save your changes?"
 msgstr ""
 
 msgid "Does not have notes"
@@ -694,6 +712,9 @@ msgstr ""
 msgid "Election"
 msgstr ""
 
+msgid "Election documents"
+msgstr ""
+
 msgid "Election method"
 msgstr ""
 
@@ -713,6 +734,9 @@ msgid "Email body"
 msgstr ""
 
 msgid "Email sender"
+msgstr ""
+
+msgid "Email sent"
 msgstr ""
 
 msgid "Email subject"
@@ -749,6 +773,9 @@ msgid "Enter your email to send the password reset link"
 msgstr ""
 
 msgid "Error"
+msgstr ""
+
+msgid "Error during PDF creation of motion:"
 msgstr ""
 
 msgid "Error: The new passwords do not match."
@@ -969,6 +996,9 @@ msgstr ""
 msgid "Initial password"
 msgstr ""
 
+msgid "Initiate update check for all clients"
+msgstr ""
+
 msgid "Inline"
 msgstr ""
 
@@ -1053,6 +1083,9 @@ msgstr ""
 msgid "Last email send"
 msgstr ""
 
+msgid "Last email sent"
+msgstr ""
+
 msgid "Last modified"
 msgstr ""
 
@@ -1087,6 +1120,9 @@ msgid "List of speakers"
 msgstr ""
 
 msgid "List of speakers overlay"
+msgstr ""
+
+msgid "Loading data. Please wait..."
 msgstr ""
 
 msgid "Login"
@@ -1258,6 +1294,9 @@ msgid "No data"
 msgstr ""
 
 msgid "No decision"
+msgstr ""
+
+msgid "No email sent"
 msgstr ""
 
 msgid "No emails were send."
@@ -1656,6 +1695,9 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
+msgid "Reset cache"
+msgstr ""
+
 msgid "Reset password"
 msgstr ""
 
@@ -1732,6 +1774,9 @@ msgid "Selected values"
 msgstr ""
 
 msgid "Send invitation email"
+msgstr ""
+
+msgid "Sending an invitation email"
 msgstr ""
 
 msgid "Separator used for all csv exports and examples"
@@ -2047,6 +2092,9 @@ msgid ""
 "the call list:"
 msgstr ""
 
+msgid "This will send an update notification to all active clients"
+msgstr ""
+
 msgid "This will set the favorite status for all selected motions:"
 msgstr ""
 
@@ -2262,6 +2310,9 @@ msgstr ""
 msgid "You do not have the required permission to see that page!"
 msgstr ""
 
+msgid "You made changes."
+msgstr ""
+
 msgid "You override the personally set password!"
 msgstr ""
 
@@ -2344,6 +2395,9 @@ msgid "inactive"
 msgstr ""
 
 msgid "inline"
+msgstr ""
+
+msgid "is elected"
 msgstr ""
 
 msgid "is hidden"
