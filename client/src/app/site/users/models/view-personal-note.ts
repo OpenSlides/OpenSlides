@@ -1,5 +1,5 @@
 import { BaseViewModel } from 'app/site/base/base-view-model';
-import { PersonalNote, PersonalNotesFormat } from 'app/shared/models/users/personal-note';
+import { PersonalNote, PersonalNotesFormat, PersonalNoteContent } from 'app/shared/models/users/personal-note';
 
 export class ViewPersonalNote extends BaseViewModel {
     public static COLLECTIONSTRING = PersonalNote.COLLECTIONSTRING;
@@ -30,6 +30,14 @@ export class ViewPersonalNote extends BaseViewModel {
     public constructor(personalNote: PersonalNote) {
         super(PersonalNote.COLLECTIONSTRING);
         this._personalNote = personalNote;
+    }
+
+    public getNoteContent(collection: string, id: number): PersonalNoteContent | null {
+        if (this.notes[collection]) {
+            return this.notes[collection][id];
+        } else {
+            return null;
+        }
     }
 
     public getTitle = () => {

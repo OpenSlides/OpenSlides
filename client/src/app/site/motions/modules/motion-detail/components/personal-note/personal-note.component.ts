@@ -35,6 +35,10 @@ export class PersonalNoteComponent extends BaseComponent {
      */
     public isEditMode = false;
 
+    public get personalNoteText(): string {
+        return this.motion.personalNoteText;
+    }
+
     /**
      * Constructor. Creates form
      *
