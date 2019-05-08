@@ -1,42 +1,47 @@
 <os-meta-text-block showActionRow="true" icon="speaker_notes">
+    <!-- Title row -->
     <ng-container class="meta-text-block-title">
         <span translate>Personal note</span>
     </ng-container>
 
+    <!-- Actions -->
+    <ng-container class="meta-text-block-action-row">
+        <button mat-icon-button *ngIf="!isEditMode" (click)="editPersonalNote()" matTooltip="{{ 'Edit' | translate }}">
+            <mat-icon>edit</mat-icon>
+        </button>
+        <button
+            mat-icon-button
+            *ngIf="!isEditMode && motion && motion.personalNote && motion.personalNote.note"
+            (click)="printPersonalNote()"
+            matTooltip="{{ 'Export personal note only' | translate }}"
+        >
+            <mat-icon>picture_as_pdf</mat-icon>
+        </button>
+        <button mat-icon-button *ngIf="isEditMode" (click)="savePersonalNote()" matTooltip="{{ 'Save' | translate }}">
+            <mat-icon>save</mat-icon>
+        </button>
+        <button
+            mat-icon-button
+            *ngIf="isEditMode"
+            (click)="isEditMode = false"
+            matTooltip="{{ 'Cancel edit' | translate }}"
+        >
+            <mat-icon>close</mat-icon>
+        </button>
+    </ng-container>
+
+    <!-- Content -->
     <ng-container class="meta-text-block-content">
         <ng-container *ngIf="!isEditMode">
-            <div *ngIf="motion && motion.personalNote" [innerHTML]="sanitizeText(motion.personalNote.note)"></div>
-            <div class="no-content" *ngIf="!motion || !motion.personalNote || !motion.personalNote.note" translate>
+            <div *ngIf="motion && motion.personalNote" [innerHTML]="personalNoteText"></div>
+            <div class="no-content" *ngIf="!motion || !motion.hasNotes" translate>
                 No personal note
             </div>
         </ng-container>
         <form [formGroup]="personalNoteForm" *ngIf="isEditMode">
             <!-- The HTML Editor -->
             <h4 translate>Personal note</h4>
-            <editor
-                formControlName='note'
-                [init]="tinyMceSettings"
-            ></editor>
+            <editor formControlName="note" [init]="tinyMceSettings"></editor>
         </form>
-    </ng-container>
-
-    <ng-container class="meta-text-block-action-row">
-        <button mat-icon-button *ngIf="!isEditMode" (click)="editPersonalNote()"
-        matTooltip="{{ 'Edit' | translate }}">
-            <mat-icon>edit</mat-icon>
-        </button>
-        <button mat-icon-button *ngIf="!isEditMode && motion && motion.personalNote && motion.personalNote.note"
-        (click)="printPersonalNote()"
-        matTooltip="{{ 'Export personal note only' | translate }}">
-            <mat-icon>picture_as_pdf</mat-icon>
-        </button>
-        <button mat-icon-button *ngIf="isEditMode" (click)="savePersonalNote()"
-        matTooltip="{{ 'Save' | translate }}">
-            <mat-icon>save</mat-icon>
-        </button>
-        <button mat-icon-button *ngIf="isEditMode" (click)="isEditMode = false"
-        matTooltip="{{ 'Cancel edit' | translate }}">
-            <mat-icon>close</mat-icon>
-        </button>
     </ng-container>
 </os-meta-text-block>

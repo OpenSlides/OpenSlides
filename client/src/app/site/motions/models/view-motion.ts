@@ -16,6 +16,7 @@ import { ViewMotionBlock } from './view-motion-block';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { ViewMotionChangeRecommendation } from './view-change-recommendation';
+import { ViewPersonalNote } from 'app/site/users/models/view-personal-note';
 import { _ } from 'app/core/translate/translation-marker';
 
 /**
@@ -319,6 +320,13 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
     }
 
     /**
+     * @returns the text of a personal note
+     */
+    public get personalNoteText(): string {
+        return this.personalNote.note;
+    }
+
+    /**
      * Getter to query the 'favorite'/'star' status of the motions
      *
      * @returns the current state
@@ -477,6 +485,8 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
             this.updateMotion(update);
         } else if (update instanceof ViewMotionChangeRecommendation) {
             this.updateChangeRecommendation(update);
+        } else if (update instanceof ViewPersonalNote) {
+            this.updatePersonalNote(update);
         }
     }
 
@@ -597,6 +607,10 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
                 this.changeRecommendations[index] = cr;
             }
         }
+    }
+
+    private updatePersonalNote(personalNote: ViewPersonalNote): void {
+        this.personalNote = personalNote.getNoteContent(this.collectionString, this.id);
     }
 
     public hasSupporters(): boolean {

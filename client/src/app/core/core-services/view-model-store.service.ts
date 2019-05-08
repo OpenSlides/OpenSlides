@@ -66,7 +66,7 @@ export class ViewModelStoreService {
     }
 
     /**
-     * Get all view modles from a collection, that satisfy the callback
+     * Get all view models from a collection, that satisfy the callback
      *
      * @param collectionString The collection
      * @param callback The function to check
@@ -80,7 +80,7 @@ export class ViewModelStoreService {
     }
 
     /**
-     * Finds one view model from the collection, that satifies the callback
+     * Finds one view model from the collection, that satisfies the callback
      *
      * @param collectionString The collection
      * @param callback THe callback to satisfy
