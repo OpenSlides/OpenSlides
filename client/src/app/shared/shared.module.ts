@@ -28,7 +28,8 @@ import {
     MatStepperModule,
     MatTabsModule,
     MatBottomSheetModule,
-    MatSliderModule
+    MatSliderModule,
+    MatDividerModule
 } from '@angular/material';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material';
@@ -84,6 +85,9 @@ import { CountdownTimeComponent } from './components/contdown-time/countdown-tim
 import { MediaUploadContentComponent } from './components/media-upload-content/media-upload-content.component';
 import { PrecisionPipe } from './pipes/precision.pipe';
 import { SpeakerButtonComponent } from './components/speaker-button/speaker-button.component';
+import { GridLayoutComponent } from './components/grid-layout/grid-layout.component';
+import { TileComponent } from './components/tile/tile.component';
+import { BlockTileComponent } from './components/block-tile/block-tile.component';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -133,6 +137,7 @@ import { SpeakerButtonComponent } from './components/speaker-button/speaker-butt
         MatStepperModule,
         MatTabsModule,
         MatSliderModule,
+        MatDividerModule,
         OwlDateTimeModule,
         OwlNativeDateTimeModule,
         DragDropModule,
@@ -176,6 +181,7 @@ import { SpeakerButtonComponent } from './components/speaker-button/speaker-butt
         MatButtonToggleModule,
         MatStepperModule,
         MatSliderModule,
+        MatDividerModule,
         DragDropModule,
         NgxMatSelectSearchModule,
         FileDropModule,
@@ -207,8 +213,11 @@ import { SpeakerButtonComponent } from './components/speaker-button/speaker-butt
         CountdownTimeComponent,
         MediaUploadContentComponent,
         PrecisionPipe,
-        ScrollingModule,
-        SpeakerButtonComponent
+        SpeakerButtonComponent,
+        GridLayoutComponent,
+        TileComponent,
+        BlockTileComponent,
+        ScrollingModule
     ],
     declarations: [
         PermsDirective,
@@ -237,7 +246,10 @@ import { SpeakerButtonComponent } from './components/speaker-button/speaker-butt
         CountdownTimeComponent,
         MediaUploadContentComponent,
         PrecisionPipe,
-        SpeakerButtonComponent
+        SpeakerButtonComponent,
+        GridLayoutComponent,
+        TileComponent,
+        BlockTileComponent
     ],
     providers: [
         { provide: DateAdapter, useClass: OpenSlidesDateAdapter },

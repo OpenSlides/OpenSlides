@@ -7,6 +7,17 @@
     line-height: 150%;
 }
 
+.mat-button-toggle-group {
+    line-height: normal;
+    vertical-align: middle;
+    box-shadow: none;
+
+    mat-icon {
+        vertical-align: middle;
+        margin: 0;
+    }
+}
+
 .os-listview-table {
     /** identifier */
     .mat-column-identifier {
@@ -71,4 +82,16 @@
 
 .max-width {
     width: 100%;
+}
+
+os-grid-layout {
+    .tile-block-title {
+        font-size: 36px;
+
+        .mat-icon {
+            font-size: 36px;
+            width: 36px;
+            height: 36px;
+        }
+    }
 }

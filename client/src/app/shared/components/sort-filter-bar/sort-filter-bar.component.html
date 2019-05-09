@@ -20,6 +20,10 @@
         </div>
     </div>
     <div>
+        <span class="extra-controls-wrapper">
+            <ng-content select=".extra-controls-slot"></ng-content>
+        </span>
+
         <button mat-button *ngIf="hasFilters" (click)="filterMenu.opened ? filterMenu.close() : filterMenu.open()">
             <span *ngIf="!filterService.activeFilterCount" class="upper" translate> Filter </span>
             <span *ngIf="filterService.activeFilterCount">

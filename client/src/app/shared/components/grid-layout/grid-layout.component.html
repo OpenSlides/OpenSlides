@@ -1,0 +1,15 @@
+<div
+    *ngIf="title"
+    class="heading-container"
+    [ngClass]="{'no-space': noSpace}"
+    >
+    <h3>{{ title }}</h3>
+    <mat-divider></mat-divider>
+</div>
+
+<div
+    class="os-grid"
+    [ngClass]="{'no-space': noSpace}"
+>
+    <ng-content></ng-content>
+</div>
