@@ -77,8 +77,7 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
      * @param motionIds the list of motion ids on this category
      */
     public async numberMotionsInCategory(category: Category, motionIds: number[]): Promise<void> {
-        const collectionString = 'rest/motions/category/' + category.id + '/numbering/';
-        await this.httpService.post(collectionString, { motions: motionIds });
+        await this.httpService.post(`/rest/motions/category/${category.id}/numbering/`, { motions: motionIds });
     }
 
     /**
@@ -88,8 +87,7 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
      * @param motionIds the list of motion ids on this category
      */
     public async sortMotionsInCategory(category: Category, motionIds: number[]): Promise<void> {
-        const collectionString = 'rest/motions/category/' + category.id + '/sort/';
-        await this.httpService.post(collectionString, { motions: motionIds });
+        await this.httpService.post(`/rest/motions/category/${category.id}/sort/`, { motions: motionIds });
     }
 
     /**

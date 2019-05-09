@@ -94,9 +94,8 @@ export class TimeTravelService {
      * @returns the full history on the given date
      */
     private async getHistoryData(history: History): Promise<HistoryData[]> {
-        const historyUrl = '/core/history/';
         const queryParams = { timestamp: Math.ceil(+history.unixtime) };
-        return this.httpService.get<HistoryData[]>(environment.urlPrefix + historyUrl, null, queryParams);
+        return this.httpService.get<HistoryData[]>(`${environment.urlPrefix}/core/history/`, null, queryParams);
     }
 
     /**

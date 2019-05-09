@@ -90,7 +90,7 @@ export class MotionCommentSectionRepositoryService extends BaseRepository<
      * Updates the comment. Saves it on the server.
      */
     private async updateComment(motion: ViewMotion, section: ViewMotionCommentSection, comment: string): Promise<void> {
-        return await this.http.post(`rest/motions/motion/${motion.id}/manage_comments/`, {
+        return await this.http.post(`/rest/motions/motion/${motion.id}/manage_comments/`, {
             section_id: section.id,
             comment: comment
         });
@@ -100,6 +100,6 @@ export class MotionCommentSectionRepositoryService extends BaseRepository<
      * Deletes a comment from the server
      */
     private async deleteComment(motion: ViewMotion, section: ViewMotionCommentSection): Promise<void> {
-        return await this.http.delete(`rest/motions/motion/${motion.id}/manage_comments/`, { section_id: section.id });
+        return await this.http.delete(`/rest/motions/motion/${motion.id}/manage_comments/`, { section_id: section.id });
     }
 }

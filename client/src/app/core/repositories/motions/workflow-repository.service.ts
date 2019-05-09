@@ -29,7 +29,7 @@ export class WorkflowRepositoryService extends BaseRepository<ViewWorkflow, Work
     /**
      * The url to state on rest
      */
-    private restStateUrl = 'rest/motions/state/';
+    private restStateUrl = '/rest/motions/state/';
 
     /**
      * Creates a WorkflowRepository

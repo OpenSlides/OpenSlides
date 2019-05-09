@@ -60,7 +60,7 @@ export class MediaManageService {
      * @param action determines the action
      */
     public async setAs(file: ViewMediafile, action: string): Promise<void> {
-        const restPath = `rest/core/config/${action}/`;
+        const restPath = `/rest/core/config/${action}/`;
 
         const config = this.getMediaConfig(action);
         const path = config.path !== file.downloadUrl ? file.downloadUrl : '';

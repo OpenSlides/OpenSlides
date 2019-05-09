@@ -26,7 +26,7 @@ export class DataSendService {
      * @param model The model to create.
      */
     public async createModel(model: BaseModel): Promise<Identifiable> {
-        const restPath = `rest/${model.collectionString}/`;
+        const restPath = `/rest/${model.collectionString}/`;
         return await this.httpService.post<Identifiable>(restPath, model);
     }
 
@@ -36,7 +36,7 @@ export class DataSendService {
      * @param model The model that is meant to be changed.
      */
     public async updateModel(model: BaseModel): Promise<void> {
-        const restPath = `rest/${model.collectionString}/${model.id}/`;
+        const restPath = `/rest/${model.collectionString}/${model.id}/`;
         await this.httpService.put(restPath, model);
     }
 
@@ -46,7 +46,7 @@ export class DataSendService {
      * @param model The model to partially update.
      */
     public async partialUpdateModel(model: BaseModel): Promise<void> {
-        const restPath = `rest/${model.collectionString}/${model.id}/`;
+        const restPath = `/rest/${model.collectionString}/${model.id}/`;
         await this.httpService.patch(restPath, model);
     }
 
@@ -56,7 +56,7 @@ export class DataSendService {
      * @param model the model that shall be deleted.
      */
     public async deleteModel(model: BaseModel): Promise<void> {
-        const restPath = `rest/${model.collectionString}/${model.id}/`;
+        const restPath = `/rest/${model.collectionString}/${model.id}/`;
         await this.httpService.delete(restPath);
     }
 }

@@ -79,6 +79,10 @@ export class HttpService {
         }
 
         let url = path + formatQueryParams(queryParams);
+        if (url[0] !== '/') {
+            console.warn(`Please prefix the URL "${url}" with a slash.`);
+            url = '/' + url;
+        }
         if (this.OSStatus.isPrioritizedClient) {
             url = '/prioritize' + url;
         }

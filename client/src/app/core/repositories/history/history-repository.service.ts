@@ -109,7 +109,7 @@ export class HistoryRepositoryService extends BaseRepository<ViewHistory, Histor
      * Sends a post-request to delete history objects
      */
     public async delete(): Promise<void> {
-        const restPath = 'rest/core/history/clear_history/';
+        const restPath = '/rest/core/history/clear_history/';
         await this.httpService.post(restPath);
     }
 
