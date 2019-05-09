@@ -7,7 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
-import { DiffService, LineRange, ModificationType } from 'app/core/ui-services/diff.service';
+import { DiffService, LineRange } from 'app/core/ui-services/diff.service';
 import {
     MotionChangeRecommendationComponent,
     MotionChangeRecommendationComponentData
@@ -17,6 +17,7 @@ import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewMotion, LineNumberingMode } from 'app/site/motions/models/view-motion';
 import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/motions/view-unified-change';
 import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-change-recommendation';
+import { getRecommendationTypeName } from 'app/shared/utils/recommendation-type-names';
 
 /**
  * This component displays the original motion text with the change blocks inside.
@@ -45,6 +46,11 @@ import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-cha
     styleUrls: ['./motion-detail-diff.component.scss']
 })
 export class MotionDetailDiffComponent extends BaseViewComponent implements AfterViewInit {
+    /**
+     * Get the {@link getRecommendationTypeName}-Function from Utils
+     */
+    public getRecommendationTypeName = getRecommendationTypeName;
+
     @Input()
     public motion: ViewMotion;
     @Input()
@@ -217,24 +223,6 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
      */
     public isChangeRecommendation(change: ViewUnifiedChange): boolean {
         return change.getChangeType() === ViewUnifiedChangeType.TYPE_CHANGE_RECOMMENDATION;
-    }
-
-    /**
-     * Gets the name of the modification type
-     *
-     * @param change
-     */
-    public getRecommendationTypeName(change: ViewMotionChangeRecommendation): string {
-        switch (change.type) {
-            case ModificationType.TYPE_REPLACEMENT:
-                return 'Replacement';
-            case ModificationType.TYPE_INSERTION:
-                return 'Insertion';
-            case ModificationType.TYPE_DELETION:
-                return 'Deletion';
-            default:
-                return '@UNKNOWN@';
-        }
     }
 
     /**

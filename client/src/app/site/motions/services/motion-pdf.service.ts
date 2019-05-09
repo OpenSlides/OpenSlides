@@ -5,6 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { CalculablePollKey } from 'app/core/ui-services/poll.service';
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { getRecommendationTypeName } from 'app/shared/utils/recommendation-type-names';
 import { HtmlToPdfService } from 'app/core/ui-services/html-to-pdf.service';
 import { MotionPollService } from './motion-poll.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
@@ -12,8 +13,10 @@ import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions
 import { ViewMotion, LineNumberingMode, ChangeRecoMode } from '../models/view-motion';
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
 import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
-import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change';
 import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
+import { ViewMotionAmendedParagraph } from '../models/view-motion-amended-paragraph';
+import { ViewMotionChangeRecommendation } from '../models/view-change-recommendation';
+import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/motions/view-unified-change';
 
 /**
  * Type declaring which strings are valid options for metainfos to be exported into a pdf
@@ -45,6 +48,11 @@ export type InfoToExport =
     providedIn: 'root'
 })
 export class MotionPdfService {
+    /**
+     * Get the {@link getRecommendationTypeName}-Function from Utils
+     */
+    public getRecommendationTypeName = getRecommendationTypeName;
+
     /**
      * Constructor
      *
@@ -91,6 +99,8 @@ export class MotionPdfService {
         infoToExport?: InfoToExport[],
         commentsToExport?: number[]
     ): object {
+        // get the line length from the config
+        const lineLength = this.configService.instant<number>('motions_line_length');
         let motionPdfContent = [];
 
         // Enforces that statutes should always have Diff Mode and no line numbers
@@ -116,14 +126,14 @@ export class MotionPdfService {
         motionPdfContent = [title, subtitle];
 
         if ((infoToExport && infoToExport.length > 0) || !infoToExport) {
-            const metaInfo = this.createMetaInfoTable(motion, crMode, infoToExport);
+            const metaInfo = this.createMetaInfoTable(motion, lineLength, crMode, infoToExport);
             motionPdfContent.push(metaInfo);
         }
 
         if (!contentToExport || contentToExport.includes('text')) {
             const preamble = this.createPreamble(motion);
             motionPdfContent.push(preamble);
-            const text = this.createText(motion, lnMode, crMode);
+            const text = this.createText(motion, lineLength, lnMode, crMode);
             motionPdfContent.push(text);
         }
 
@@ -192,7 +202,12 @@ export class MotionPdfService {
      * @param motion the target motion
      * @returns doc def for the meta infos
      */
-    private createMetaInfoTable(motion: ViewMotion, crMode: ChangeRecoMode, infoToExport?: InfoToExport[]): object {
+    private createMetaInfoTable(
+        motion: ViewMotion,
+        lineLength: number,
+        crMode: ChangeRecoMode,
+        infoToExport?: InfoToExport[]
+    ): object {
         const metaTableBody = [];
 
         // submitters
@@ -367,23 +382,13 @@ export class MotionPdfService {
         }
 
         // summary of change recommendations (for motion diff version only)
-        const changeRecos = this.changeRecoRepo
-            .getChangeRecoOfMotion(motion.id)
-            .sort((a: ViewUnifiedChange, b: ViewUnifiedChange) => {
-                if (a.getLineFrom() < b.getLineFrom()) {
-                    return -1;
-                } else if (a.getLineFrom() > b.getLineFrom()) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            });
+        const changes = this.getUnifiedChanges(motion, lineLength);
 
-        if (crMode === ChangeRecoMode.Diff && changeRecos.length > 0) {
+        if (crMode === ChangeRecoMode.Diff && changes.length > 0) {
             const columnLineNumbers = [];
             const columnChangeType = [];
 
-            changeRecos.forEach(changeReco => {
+            changes.forEach(change => {
                 // TODO: the function isTitleRecommendation() does not exist anymore.
                 //       Not sure if required or not
                 // if (changeReco.isTitleRecommendation()) {
@@ -392,22 +397,30 @@ export class MotionPdfService {
 
                 // line numbers column
                 let line;
-                if (changeReco.line_from >= changeReco.line_to - 1) {
-                    line = changeReco.line_from;
+                if (change.getLineFrom() >= change.getLineTo() - 1) {
+                    line = change.getLineFrom();
                 } else {
-                    line = changeReco.line_from + ' - ' + (changeReco.line_to - 1);
+                    line = change.getLineFrom() + ' - ' + (change.getLineTo() - 1);
                 }
                 columnLineNumbers.push(`${this.translate.instant('Line')} ${line}: `);
 
                 // change type column
-                if (changeReco.type === 0) {
-                    columnChangeType.push(this.translate.instant('Replacement'));
-                } else if (changeReco.type === 1) {
-                    columnChangeType.push(this.translate.instant('Insertion'));
-                } else if (changeReco.type === 2) {
-                    columnChangeType.push(this.translate.instant('Deletion'));
-                } else if (changeReco.type === 3) {
-                    columnChangeType.push(changeReco.other_description);
+                if (change.getChangeType() === ViewUnifiedChangeType.TYPE_CHANGE_RECOMMENDATION) {
+                    const changeReco = change as ViewMotionChangeRecommendation;
+                    columnChangeType.push(
+                        `(${this.translate.instant('Change recommendation')}) - ${this.translate.instant(
+                            this.getRecommendationTypeName(changeReco)
+                        )}`
+                    );
+                } else if (change.getChangeType() === ViewUnifiedChangeType.TYPE_AMENDMENT) {
+                    const amendment = change as ViewMotionAmendedParagraph;
+                    let summaryText = `(${this.translate.instant('Amendment')} ${amendment.getIdentifier()}) -`;
+                    if (amendment.isRejected()) {
+                        summaryText += ` ${this.translate.instant('Rejected')}`;
+                    } else if (amendment.isAccepted()) {
+                        summaryText += ` ${this.translate.instant(amendment.stateName)}`;
+                    }
+                    columnChangeType.push(summaryText);
                 }
             });
 
@@ -479,10 +492,13 @@ export class MotionPdfService {
      * @param crMode determine the used change Recommendation mode
      * @returns doc def for the "the assembly may decide" preamble
      */
-    private createText(motion: ViewMotion, lnMode: LineNumberingMode, crMode: ChangeRecoMode): object {
+    private createText(
+        motion: ViewMotion,
+        lineLength: number,
+        lnMode: LineNumberingMode,
+        crMode: ChangeRecoMode
+    ): object {
         let motionText: string;
-        // get the line length from the config
-        const lineLength = this.configService.instant<number>('motions_line_length');
 
         if (motion.isParagraphBasedAmendment()) {
             motionText = '';
@@ -510,32 +526,38 @@ export class MotionPdfService {
         } else {
             // lead motion or normal amendments
             // TODO: Consider tile change recommendation
-            const changes: ViewUnifiedChange[] = Object.assign(
-                [],
-                this.changeRecoRepo.getChangeRecoOfMotion(motion.id)
-            );
 
-            // TODO: Cleanup, everything change reco and amendment based needs a unified structure.
-            const amendments = this.motionRepo.getAmendmentsInstantly(motion.id);
-            if (amendments) {
-                for (const amendment of amendments) {
-                    const changedParagraphs = this.motionRepo.getAmendmentAmendedParagraphs(amendment, lineLength);
-                    for (const change of changedParagraphs) {
-                        changes.push(change as ViewUnifiedChange);
-                    }
-                }
-            }
-
-            // changes need to be sorted, by "line from".
-            // otherwise, formatMotion will make unexpected results by messing up the
-            // order of changes applied to the motion
-            changes.sort((a, b) => a.getLineFrom() - b.getLineFrom());
+            const changes = this.getUnifiedChanges(motion, lineLength);
             motionText = this.motionRepo.formatMotion(motion.id, crMode, changes, lineLength);
             // reformat motion text to split long HTML elements to easier convert into PDF
             motionText = this.linenumberingService.splitInlineElementsAtLineBreaks(motionText);
         }
 
         return this.htmlToPdfService.convertHtml(motionText, lnMode);
+    }
+
+    /**
+     * changes need to be sorted, by "line from".
+     * otherwise, formatMotion will make unexpected results by messing up the
+     * order of changes applied to the motion
+     *
+     * TODO: Cleanup, everything change reco and amendment based needs a unified structure.
+     *
+     * @param motion
+     * @param lineLength
+     * @returns
+     */
+    private getUnifiedChanges(motion: ViewMotion, lineLength: number): ViewUnifiedChange[] {
+        return this.changeRecoRepo
+            .getChangeRecoOfMotion(motion.id)
+            .concat(
+                this.motionRepo
+                    .getAmendmentsInstantly(motion.id)
+                    .flatMap((amendment: ViewMotion) =>
+                        this.motionRepo.getAmendmentAmendedParagraphs(amendment, lineLength)
+                    )
+            )
+            .sort((a, b) => a.getLineFrom() - b.getLineFrom()) as ViewUnifiedChange[];
     }
 
     /**
@@ -688,6 +710,7 @@ export class MotionPdfService {
         const subtitle = this.createSubtitle(motion);
         const metaInfo = this.createMetaInfoTable(
             motion,
+            this.configService.instant<number>('motions_line_length'),
             this.configService.instant('motions_recommendation_text_mode'),
             ['submitters', 'state', 'category']
         );

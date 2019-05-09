@@ -18,8 +18,8 @@
                 </span>
                 <span *ngIf="isChangeRecommendation(change)"> ({{ 'Change recommendation' | translate }})</span>
                 <span *ngIf="isAmendment(change)"> ({{ 'Amendment' | translate }} {{ change.getIdentifier() }})</span>
-                <span class="operation" *ngIf="isChangeRecommendation(change)"
-                    > – {{ getRecommendationTypeName(change) | translate }}
+                <span class="operation" *ngIf="isChangeRecommendation(change)">
+                    – {{ getRecommendationTypeName(change) | translate }}
                     <!--
                         @TODO
                         <span ng-if="change.original.getType(motion.getVersion(version).text) == 3">
@@ -29,7 +29,9 @@
                 </span>
                 <span class="status">
                     <ng-container *ngIf="change.isRejected()"> – <span translate>Rejected</span></ng-container>
-                    <ng-container *ngIf="change.isAccepted() && isAmendment(change)"> – {{ change.amendment.state.name | translate }}</ng-container>
+                    <ng-container *ngIf="change.isAccepted() && isAmendment(change)">
+                        – {{ change.stateName | translate }}</ng-container
+                    >
                 </span>
             </a>
         </li>
@@ -41,10 +43,11 @@
 <!-- The actual diff view -->
 <div class="motion-text-with-diffs">
     <div *ngFor="let change of changes; let i = index">
-        <div class="motion-text"
-                [class.line-numbers-none]="isLineNumberingNone()"
-                [class.line-numbers-inline]="isLineNumberingInline()"
-                [class.line-numbers-outside]="isLineNumberingOutside()"
+        <div
+            class="motion-text"
+            [class.line-numbers-none]="isLineNumberingNone()"
+            [class.line-numbers-inline]="isLineNumberingInline()"
+            [class.line-numbers-outside]="isLineNumberingOutside()"
         >
             <os-motion-detail-original-change-recommendations
                 [html]="getTextBetweenChanges(changes[i - 1], change)"
@@ -95,10 +98,11 @@
         </div>
     </div>
 
-    <div class="motion-text"
-            [class.line-numbers-none]="isLineNumberingNone()"
-            [class.line-numbers-inline]="isLineNumberingInline()"
-            [class.line-numbers-outside]="isLineNumberingOutside()"
+    <div
+        class="motion-text"
+        [class.line-numbers-none]="isLineNumberingNone()"
+        [class.line-numbers-inline]="isLineNumberingInline()"
+        [class.line-numbers-outside]="isLineNumberingOutside()"
     >
         <os-motion-detail-original-change-recommendations
             [html]="getTextRemainderAfterLastChange()"

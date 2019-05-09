@@ -19,6 +19,16 @@ import { SpinnerService } from './core/ui-services/spinner.service';
 import { Router } from '@angular/router';
 
 /**
+ * Enhance array with own functions
+ * TODO: Remove once flatMap made its way into official JS/TS (ES 2019?)
+ */
+declare global {
+    interface Array<T> {
+        flatMap(o: any): Array<any>;
+    }
+}
+
+/**
  * Angular's global App Component
  */
 @Component({
@@ -74,6 +84,7 @@ export class AppComponent {
         translate.use(translate.getLangs().includes(browserLang) ? browserLang : 'en');
         // change default JS functions
         this.overloadArrayToString();
+        this.overloadFlatMap();
         // Show the spinner initial
         spinnerService.setVisibility(true, translate.instant('Loading data. Please wait...'));
 
@@ -123,6 +134,18 @@ export class AppComponent {
                 }
             }
             return string;
+        };
+    }
+
+    /**
+     * Adds an implementation of flatMap.
+     * TODO: Remove once flatMap made its way into official JS/TS (ES 2019?)
+     */
+    private overloadFlatMap(): void {
+        const concat = (x: any, y: any) => x.concat(y);
+        const flatMap = (f: any, xs: any) => xs.map(f).reduce(concat, []);
+        Array.prototype.flatMap = function(f: any): any[] {
+            return flatMap(f, this);
         };
     }
 }
