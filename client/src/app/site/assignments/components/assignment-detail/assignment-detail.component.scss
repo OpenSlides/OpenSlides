@@ -2,9 +2,85 @@
     width: 100%;
 }
 
-.candidates {
-    width: 60%;
+.meta-info-grid {
+    display: grid;
+    grid-column-gap: 30px;
+    grid-template-columns: 1fr 2fr;
+
+    .number-of-elected {
+        grid-column: 1;
+    }
+
+    .current-phase {
+        grid-column: 2;
+    }
+
+    // will display the container under the one declared above on small screen
+    @media only screen and (max-width: 960px) {
+        grid-template-columns: 1fr;
+        .current-phase {
+            grid-column: 1;
+        }
+    }
 }
+
+.election-document-list mat-list-item {
+    height: 20px;
+}
+
+.candidates-list {
+    padding-top: 10px;
+}
+
+.add-candidates {
+    .search-field {
+        padding-top: 15px;
+        width: auto;
+
+        .search-bar {
+            display: grid;
+            .mat-form-field {
+                width: 100%;
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 960px) {
+    .candidates-list {
+        // TODO: same as .waiting-list in list-of-speakers
+        padding: 10px 25px 0 25px;
+    }
+
+    .add-candidates {
+        .search-field {
+            padding: 15px 25px 0 25px;
+        }
+    }
+}
+
+.ballot-controls-grid {
+    display: grid;
+    grid-column-gap: 10px;
+    grid-template-columns: auto min-content;
+
+    .ballot-title {
+        grid-column: 1;
+        h3 {
+            margin: 0;
+        }
+    }
+
+    .ballot-button {
+        grid-column: 2;
+    }
+}
+
+.candidate-list-separator {
+    position: initial !important;
+    margin: 20px 0;
+}
+
 .candidate {
     display: flex;
     width: 100%;
@@ -20,25 +96,4 @@
     position: absolute;
     top: 0;
     left: 0;
-}
-
-// TODO: same as .waiting-list in list-of-speakers
-.candidates-list {
-    padding: 10px 25px 0 25px;
-}
-
-// TODO: duplicate in list-of-speakers
-.add-self-buttons {
-    padding: 15px 0 20px 25px;
-}
-
-.search-field {
-    margin: 20px 0;
-
-    .search-bar {
-        display: grid;
-        .mat-form-field {
-            width: 100%;
-        }
-    }
 }

@@ -1,5 +1,5 @@
-<mat-card class="os-card" *ngIf="poll">
-    <div class="flex-spaced poll-menu">
+<div class="poll-wrapper" *ngIf="poll">
+    <div class="poll-menu">
         <!-- Buttons -->
         <button
             mat-icon-button
@@ -7,7 +7,7 @@
             [matMenuTriggerFor]="pollItemMenu"
             (click)="$event.stopPropagation()"
         >
-            <mat-icon>more_vert</mat-icon>
+            <mat-icon>more_horiz</mat-icon>
         </button>
         <mat-menu #pollItemMenu="matMenu">
             <div *osPerms="'assignments.can_manage'">
@@ -39,23 +39,20 @@
             </div>
         </mat-menu>
     </div>
-    <div class="on-transition-fade" *ngIf="poll.options">
+
+    <div class="on-transition-fade poll-main-content" *ngIf="poll.options">
         <div *ngIf="pollData">
             <div class="poll-grid">
                 <div></div>
                 <div><span class="table-view-list-title" translate>Candidates</span></div>
                 <div><span class="table-view-list-title" translate>Votes</span></div>
-                <div *ngIf="pollService.majorityMethods && majorityChoice">
+                <div *ngIf="pollService.majorityMethods && majorityChoice && canManage">
                     <div>
                         <span class="table-view-list-title" translate>Quorum</span>
                     </div>
                     <div>
                         <!-- manager majority chip (menu trigger) -->
-                        <mat-basic-chip *ngIf="canManage" [matMenuTriggerFor]="majorityMenu" class="grey" disableRipple>
-                            {{ majorityChoice.display_name | translate }}
-                        </mat-basic-chip>
-                        <!-- non-manager (menuless) majority chip -->
-                        <mat-basic-chip *ngIf="!canManage" class="grey" disableRipple>
+                        <mat-basic-chip [matMenuTriggerFor]="majorityMenu" class="grey" disableRipple>
                             {{ majorityChoice.display_name | translate }}
                         </mat-basic-chip>
                         <!-- menu for selecting quorum choices -->
@@ -93,7 +90,7 @@
                             <mat-icon
                                 *ngIf="!option.is_elected && canManage && !assignment.isFinished"
                                 class="top-aligned primary"
-                                matTooltip="{{ 'Not elected' | translate }}"
+                                matTooltip="{{ 'Mark as elected' | translate }}"
                             >
                                 check_box_outline_blank</mat-icon
                             >
@@ -131,7 +128,7 @@
                         </div>
                     </div>
                 </div>
-                <div>
+                <div *ngIf="canManage">
                     <div
                         *ngIf="
                             poll.has_votes &&
@@ -177,26 +174,20 @@
         </div>
     </div>
 
-    <div class="spacer-bottom-10">
+    <!-- Election Method -->
+    <div *ngIf="canManage" class="spacer-bottom-10">
         <h4 translate>Election method</h4>
         <span>{{ pollMethodName | translate }}</span>
     </div>
-    <div>
-        <h4>
-            <span translate>Hint for ballot paper</span>
-        </h4>
-        <div [formGroup]="descriptionForm">
-            <mat-form-field class="wide">
-                <input matInput formControlName="description" [disabled]="!canManage" />
-            </mat-form-field>
-            <button
-                mat-icon-button
-                [disabled]="!dirtyDescription"
-                *ngIf="canManage"
-                (click)="onEditDescriptionButton()"
-            >
-                <mat-icon inline>check</mat-icon>
-            </button>
-        </div>
+
+    <!-- Poll paper hint -->
+    <div *ngIf="canManage" class="hint-form" [formGroup]="descriptionForm">
+        <mat-form-field class="wide">
+            <mat-label translate>Hint for ballot paper</mat-label>
+            <input matInput formControlName="description"/>
+        </mat-form-field>
+        <button mat-icon-button [disabled]="!dirtyDescription" (click)="onEditDescriptionButton()">
+            <mat-icon inline>check</mat-icon>
+        </button>
     </div>
-</mat-card>
+</div>
