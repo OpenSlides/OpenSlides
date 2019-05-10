@@ -54,15 +54,16 @@ export class WebsocketService {
     private connectionErrorNotice: MatSnackBarRef<SimpleSnackBar>;
 
     /**
-     * Subjects that will be called, if a reconnect was successful.
+     * Subjects that will be called, if a reconnect after a retry (e.g. with a previous
+     * connection loss) was successful.
      */
-    private _reconnectEvent: EventEmitter<void> = new EventEmitter<void>();
+    private _retryReconnectEvent: EventEmitter<void> = new EventEmitter<void>();
 
     /**
-     * Getter for the reconnect event.
+     * Getter for the retry reconnect event.
      */
-    public get reconnectEvent(): EventEmitter<void> {
-        return this._reconnectEvent;
+    public get retryReconnectEvent(): EventEmitter<void> {
+        return this._retryReconnectEvent;
     }
 
     /**
@@ -195,10 +196,10 @@ export class WebsocketService {
 
                 if (retry) {
                     this.dismissConnectionErrorNotice();
-                    this._reconnectEvent.emit();
+                    this._retryReconnectEvent.emit();
                 }
-                this._connectEvent.emit();
                 this._connectionOpen = true;
+                this._connectEvent.emit();
                 this.sendQueueWhileNotConnected.forEach(entry => {
                     this.websocket.send(entry);
                 });
