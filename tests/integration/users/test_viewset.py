@@ -580,10 +580,12 @@ class PersonalNoteTest(TestCase):
     Tests for PersonalNote model.
     """
 
+    def setUp(self):
+        self.admin = User.objects.get(username="admin")
+
     def test_anonymous_without_personal_notes(self):
-        admin = User.objects.get(username="admin")
         personal_note = PersonalNote.objects.create(
-            user=admin, notes='["admin_personal_note_OoGh8choro0oosh0roob"]'
+            user=self.admin, notes='["admin_personal_note_OoGh8choro0oosh0roob"]'
         )
         config["general_system_enable_anonymous"] = True
         guest_client = APIClient()
@@ -592,7 +594,7 @@ class PersonalNoteTest(TestCase):
         )
         self.assertEqual(response.status_code, 404)
 
-    def test_admin_send_JSON(self):
+    def test_create(self):
         admin_client = APIClient()
         admin_client.login(username="admin", password="admin")
         response = admin_client.post(
@@ -610,3 +612,56 @@ class PersonalNoteTest(TestCase):
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_anonymous_create(self):
+        guest_client = APIClient()
+        response = guest_client.post(
+            reverse("personalnote-list"), {"notes": {}}, format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertFalse(PersonalNote.objects.exists())
+
+    def test_create_twice(self):
+        admin_client = APIClient()
+        admin_client.login(username="admin", password="admin")
+        response = admin_client.post(
+            reverse("personalnote-list"), {"notes": {}}, format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        response = admin_client.post(
+            reverse("personalnote-list"), {"notes": {}}, format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_update(self):
+        admin_client = APIClient()
+        admin_client.login(username="admin", password="admin")
+        personal_note = PersonalNote.objects.create(
+            user=self.admin, notes="test_note_ld3mo1xjcnKNC(836qWe"
+        )
+        response = admin_client.put(
+            reverse("personalnote-detail", args=[personal_note.pk]),
+            {"notes": "test_note_do2ncoi7ci2fm93LjwlO"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            PersonalNote.objects.get().notes, "test_note_do2ncoi7ci2fm93LjwlO"
+        )
+
+    def test_update_other_user(self):
+        user = User.objects.create(username="user")
+        admin_client = APIClient()
+        admin_client.login(username="admin", password="admin")
+        personal_note = PersonalNote.objects.create(
+            user=user, notes="test_note_fof3joqmcufh32fn(/2f"
+        )
+        response = admin_client.put(
+            reverse("personalnote-detail", args=[personal_note.pk]),
+            {"notes": "test_note_1qowuddm3d8mF8h29fwI"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(
+            PersonalNote.objects.get().notes, "test_note_fof3joqmcufh32fn(/2f"
+        )

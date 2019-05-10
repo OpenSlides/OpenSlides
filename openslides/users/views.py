@@ -16,6 +16,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core import mail
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
+from django.db.utils import IntegrityError
 from django.http.request import QueryDict
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
@@ -447,7 +448,14 @@ class PersonalNoteViewSet(ModelViewSet):
         Customized method to inject the request.user into serializer's save
         method so that the request.user can be saved into the model field.
         """
-        serializer.save(user=self.request.user)
+        try:
+            serializer.save(user=self.request.user)
+        except IntegrityError:
+            raise ValidationError(
+                {
+                    "detail": f"The personal note for user {self.request.user.id} does already exist"
+                }
+            )
 
     def update(self, request, *args, **kwargs):
         """
