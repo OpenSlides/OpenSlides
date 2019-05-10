@@ -647,7 +647,9 @@ class PasswordResetView(APIView):
                     "protocol": "https" if self.use_https else "http",
                     "domain": current_site.domain,
                     "path": "/login/reset-password-confirm/",
-                    "user_id": urlsafe_base64_encode(force_bytes(user.pk)).decode(),
+                    "user_id": urlsafe_base64_encode(
+                        force_bytes(user.pk)
+                    ),  # urlsafe_base64_encode decodes to ascii
                     "token": default_token_generator.make_token(user),
                     "username": user.get_username(),
                 }

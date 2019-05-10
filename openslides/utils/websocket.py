@@ -25,8 +25,8 @@ class ProtocollAsyncJsonWebsocketConsumer(AsyncJsonWebsocketConsumer):
     ) -> None:
         """
         Sends the data with the type.
-        If silence_errors is True (default), all ConnectionClosed errors
-        during sending will be ignored.
+        If silence_errors is True (default), all ConnectionClosed
+        and runtime errors during sending will be ignored.
         """
         out = {"type": type, "content": content}
         if id:
@@ -35,7 +35,12 @@ class ProtocollAsyncJsonWebsocketConsumer(AsyncJsonWebsocketConsumer):
             out["in_response"] = in_response
         try:
             await super().send_json(out)
-        except ConnectionClosed as e:
+        except (ConnectionClosed, RuntimeError) as e:
+            # The ConnectionClosed error is thrown by the websocket lib: websocket/protocol.py in ensure_open
+            # `websockets.exceptions.ConnectionClosed: WebSocket connection is closed: code = 1005
+            #  (no status code [internal]), no reason` (Also with other codes)
+            # The RuntimeError is thrown by uvicorn: uvicorn/protocols/websockets/websockets_impl.py in asgi_send
+            # `RuntimeError: Unexpected ASGI message 'websocket.send', after sending 'websocket.close'`
             if not silence_errors:
                 raise e
 
