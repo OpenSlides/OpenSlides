@@ -202,7 +202,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User> imp
      * @param user is an instance of ViewUser. This is the given user, who will be modified.
      */
     public openEditInfo(user: ViewUser, ev: MouseEvent): void {
-        if (this.isMultiSelect) {
+        if (this.isMultiSelect || !this.operator.hasPerms('users.can_manage')) {
             return;
         }
         ev.stopPropagation();
