@@ -51,7 +51,7 @@ export class ProjectorDataService {
             });
         });
 
-        this.websocketService.reconnectEvent.subscribe(() => this.updateProjectorDataSubscription());
+        this.websocketService.connectEvent.subscribe(() => this.updateProjectorDataSubscription());
     }
 
     /**
