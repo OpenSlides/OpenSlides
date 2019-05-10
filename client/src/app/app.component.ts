@@ -12,7 +12,6 @@ import { OperatorService } from './core/core-services/operator.service';
 import { ServertimeService } from './core/core-services/servertime.service';
 import { ThemeService } from './core/ui-services/theme.service';
 import { DataStoreUpgradeService } from './core/core-services/data-store-upgrade.service';
-import { UpdateService } from './core/ui-services/update.service';
 import { PrioritizeService } from './core/core-services/prioritize.service';
 import { PingService } from './core/core-services/ping.service';
 import { SpinnerService } from './core/ui-services/spinner.service';
@@ -44,7 +43,6 @@ export class AppComponent {
      * @param configService to call the constructor of the ConfigService
      * @param loadFontService to call the constructor of the LoadFontService
      * @param dataStoreUpgradeService
-     * @param update Service Worker Updates
      */
     public constructor(
         translate: TranslateService,
@@ -60,7 +58,6 @@ export class AppComponent {
         configService: ConfigService,
         loadFontService: LoadFontService,
         dataStoreUpgradeService: DataStoreUpgradeService, // to start it.
-        update: UpdateService,
         prioritizeService: PrioritizeService,
         pingService: PingService
     ) {
