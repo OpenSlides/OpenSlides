@@ -22,7 +22,7 @@ const routes: Routes = [
     {
         path: 'password/:id',
         component: PasswordComponent,
-        data: { basePerm: 'can_manage' }
+        data: { basePerm: 'users.can_manage' }
     },
     {
         path: 'new',
