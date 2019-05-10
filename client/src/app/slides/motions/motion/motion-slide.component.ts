@@ -98,6 +98,10 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
      * @returns {MotionSlideObjAmendmentParagraph[]}
      */
     public getAmendmentAmendedParagraphs(amendment: MotionSlideDataAmendment): MotionSlideObjAmendmentParagraph[] {
+        if (!amendment.amendment_paragraphs) {
+            return [];
+        }
+
         let baseHtml = this.data.data.text;
         baseHtml = this.lineNumbering.insertLineNumbers(baseHtml, this.lineLength);
         const baseParagraphs = this.lineNumbering.splitToParagraphs(baseHtml);
