@@ -12,7 +12,7 @@ export class ViewProjector extends BaseViewModel {
     }
 
     public get referenceProjector(): ViewProjector {
-        if (!this.reference_projector_id) {
+        if (!this.reference_projector_id || this.reference_projector_id === this.id) {
             return this;
         } else {
             return this._referenceProjector;
