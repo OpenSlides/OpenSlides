@@ -209,7 +209,12 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
                         }
                         if (matchingStoreFilter && matchingStoreFilter.options) {
                             const storedOption = matchingStoreFilter.options.find(
-                                o => typeof o !== 'string' && o.condition === option.condition
+                                o =>
+                                    typeof o !== 'string' &&
+                                    (o.condition === option.condition ||
+                                        (Array.isArray(o.condition) &&
+                                            Array.isArray(option.condition) &&
+                                            o.label === option.label))
                             ) as OsFilterOption;
                             if (storedOption) {
                                 option.isActive = storedOption.isActive;
