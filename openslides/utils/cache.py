@@ -1,5 +1,6 @@
 import asyncio
 import json
+import logging
 from collections import defaultdict
 from datetime import datetime
 from time import sleep
@@ -17,6 +18,9 @@ from .cache_providers import (
 )
 from .redis import use_redis
 from .utils import get_element_id, split_element_id
+
+
+logger = logging.getLogger(__name__)
 
 
 class ElementCache:
@@ -99,6 +103,7 @@ class ElementCache:
             lock_name = "ensure_cache"
             # Set a lock so only one process builds the cache
             if async_to_sync(self.cache_provider.set_lock)(lock_name):
+                logger.info("Building up the cache data...")
                 try:
                     mapping = {}
                     for collection_string, cachable in self.cachables.items():
@@ -110,12 +115,17 @@ class ElementCache:
                                     ): json.dumps(element)
                                 }
                             )
+                    logger.info("Done building the cache data.")
+                    logger.info("Saving cache data into the cache...")
                     async_to_sync(self.cache_provider.reset_full_cache)(mapping)
+                    logger.info("Done saving the cache data.")
                 finally:
                     async_to_sync(self.cache_provider.del_lock)(lock_name)
             else:
+                logger.info("Wait for another process to build up the cache...")
                 while async_to_sync(self.cache_provider.get_lock)(lock_name):
                     sleep(0.01)
+                logger.info("Cache is ready (built by another process).")
 
         self.ensured = True
 

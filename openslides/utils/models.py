@@ -1,3 +1,5 @@
+import logging
+import time
 from typing import Any, Dict, List, Optional
 
 from django.core.exceptions import ImproperlyConfigured
@@ -7,6 +9,9 @@ from .access_permissions import BaseAccessPermissions
 from .autoupdate import Element, inform_changed_data, inform_changed_elements
 from .rest_api import model_serializer_classes
 from .utils import convert_camel_case_to_pseudo_snake_case
+
+
+logger = logging.getLogger(__name__)
 
 
 class MinMaxIntegerField(models.IntegerField):
@@ -120,6 +125,7 @@ class RESTModelMixin:
         """
         Returns all elements as full_data.
         """
+        logger.info(f"Loading {cls.get_collection_string()}")
         # Get the query to receive all data from the database.
         try:
             query = cls.objects.get_full_queryset()  # type: ignore
@@ -129,7 +135,21 @@ class RESTModelMixin:
             query = cls.objects  # type: ignore
 
         # Build a dict from the instance id to the full_data
-        return [instance.get_full_data() for instance in query.all()]
+        instances = query.all()
+        full_data = []
+
+        # For logging the progress
+        last_time = time.time()
+        instances_length = len(instances)
+        for i, instance in enumerate(instances):
+            # Append full data from this instance
+            full_data.append(instance.get_full_data())
+            # log progress every 5 seconds
+            current_time = time.time()
+            if current_time > last_time + 5:
+                last_time = current_time
+                logger.info(f"\t{i+1}/{instances_length}...")
+        return full_data
 
     @classmethod
     async def restrict_elements(
