@@ -636,8 +636,8 @@ class UpdateMotion(TestCase):
             json.dumps({"supporters_id": [1]}),
             content_type="application/json",
         )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertFalse(motion.supporters.exists())
+        # Forbidden because of changed workflow state.
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_removal_of_supporters(self):
         # No cache used here.
@@ -659,10 +659,8 @@ class UpdateMotion(TestCase):
             {"title": "new_title_ohph1aedie5Du8sai2ye"},
         )
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        motion = Motion.objects.get()
-        self.assertEqual(motion.title, "new_title_ohph1aedie5Du8sai2ye")
-        self.assertEqual(motion.supporters.count(), 0)
+        # Forbidden because of changed workflow state.
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
 class DeleteMotion(TestCase):

@@ -24,12 +24,12 @@ class ModelTest(TestCase):
         self.assertEqual(self.motion.state.name, "submitted")
 
         self.motion.state = State.objects.get(pk=5)
-        self.assertEqual(self.motion.state.name, "published")
+        self.assertEqual(self.motion.state.name, "in progress")
         with self.assertRaises(WorkflowError):
             self.motion.create_poll()
 
         self.motion.state = State.objects.get(pk=6)
-        self.assertEqual(self.motion.state.name, "permitted")
+        self.assertEqual(self.motion.state.name, "submitted")
 
     def test_new_states_or_workflows(self):
         workflow_1 = Workflow.objects.create(name="W1")

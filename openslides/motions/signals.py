@@ -20,7 +20,6 @@ def create_builtin_workflows(sender, **kwargs):
         workflow=workflow_1,
         allow_create_poll=True,
         allow_support=True,
-        allow_submitter_edit=True,
     )
     state_1_1.save(skip_autoupdate=True)
     state_1_2 = State(
@@ -53,11 +52,17 @@ def create_builtin_workflows(sender, **kwargs):
 
     workflow_2 = Workflow(name="Complex Workflow")
     workflow_2.save(skip_autoupdate=True)
+    state_2_0 = State(
+        name="in progress",
+        workflow=workflow_2,
+        allow_submitter_edit=True,
+        dont_set_identifier=True,
+    )
+    state_2_0.save(skip_autoupdate=True)
     state_2_1 = State(
-        name="published",
+        name="submitted",
         workflow=workflow_2,
         allow_support=True,
-        allow_submitter_edit=True,
         dont_set_identifier=True,
     )
     state_2_1.save(skip_autoupdate=True)
@@ -66,7 +71,6 @@ def create_builtin_workflows(sender, **kwargs):
         workflow=workflow_2,
         recommendation_label="Permission",
         allow_create_poll=True,
-        allow_submitter_edit=True,
     )
     state_2_2.save(skip_autoupdate=True)
     state_2_3 = State(
@@ -131,11 +135,12 @@ def create_builtin_workflows(sender, **kwargs):
         merge_amendment_into_final=-1,
     )
     state_2_10.save(skip_autoupdate=True)
+    state_2_0.next_states.add(state_2_1, state_2_5)
     state_2_1.next_states.add(state_2_2, state_2_5, state_2_10)
     state_2_2.next_states.add(
         state_2_3, state_2_4, state_2_5, state_2_6, state_2_7, state_2_8, state_2_9
     )
-    workflow_2.first_state = state_2_1
+    workflow_2.first_state = state_2_0
     workflow_2.save(skip_autoupdate=True)
 
 
