@@ -80,6 +80,8 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
             result = has_perm(self.request.user, "motions.can_see")
             # The rest of the check is done in the respective method. See below.
         elif self.action in (
+            "manage_multiple_category",
+            "manage_multiple_motion_block",
             "manage_multiple_state",
             "set_recommendation",
             "manage_multiple_recommendation",
@@ -522,6 +524,166 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
 
         # Initiate response.
         return Response({"detail": message})
+
+    @list_route(methods=["post"])
+    @transaction.atomic
+    def manage_multiple_category(self, request):
+        """
+        Set categories of multiple motions.
+
+        Send POST {"motions": [... see schema ...]} to changed the categories.
+        """
+        motions = request.data.get("motions")
+
+        schema = {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "title": "Motion manage multiple categories schema",
+            "description": "An array of motion ids with the respective category id that should be set as category.",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": {"description": "The id of the motion.", "type": "integer"},
+                    "category": {
+                        "description": "The id for the category that should become the new category.",
+                        "anyOf": [{"type": "number", "minimum": 1}, {"type": "null"}],
+                    },
+                },
+                "required": ["id", "category"],
+            },
+            "uniqueItems": True,
+        }
+
+        # Validate request data.
+        try:
+            jsonschema.validate(motions, schema)
+        except jsonschema.ValidationError as err:
+            raise ValidationError({"detail": str(err)})
+
+        motion_result = []
+        for item in motions:
+            # Get motion.
+            try:
+                motion = Motion.objects.get(pk=item["id"])
+            except Motion.DoesNotExist:
+                raise ValidationError({"detail": f"Motion {item['id']} does not exist"})
+
+            # Get category
+            category = None
+            if item["category"] is not None:
+                try:
+                    category = Category.objects.get(pk=item["category"])
+                except Category.DoesNotExist:
+                    raise ValidationError(
+                        {"detail": f"Category {item['category']} does not exist"}
+                    )
+
+            # Set category
+            motion.category = category
+
+            # Save motion.
+            motion.save(
+                update_fields=["category", "last_modified"], skip_autoupdate=True
+            )
+
+            # Fire autoupdate again to save information to OpenSlides history.
+            information = (
+                ["Category removed"]
+                if category is None
+                else ["Category set to {arg1}", category.name]
+            )
+            inform_changed_data(
+                motion, information=information, user_id=request.user.pk
+            )
+
+            # Finish motion.
+            motion_result.append(motion)
+
+        # Send response.
+        return Response(
+            {"detail": f"Category of {len(motion_result)} motions successfully set."}
+        )
+
+    @list_route(methods=["post"])
+    @transaction.atomic
+    def manage_multiple_motion_block(self, request):
+        """
+        Set motion blocks of multiple motions.
+
+        Send POST {"motions": [... see schema ...]} to changed the motion blocks.
+        """
+        motions = request.data.get("motions")
+
+        schema = {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "title": "Motion manage multiple motion blocks schema",
+            "description": "An array of motion ids with the respective motion block id that should be set as motion block.",
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": {"description": "The id of the motion.", "type": "integer"},
+                    "motion_block": {
+                        "description": "The id for the motion block that should become the new motion block.",
+                        "anyOf": [{"type": "number", "minimum": 1}, {"type": "null"}],
+                    },
+                },
+                "required": ["id", "motion_block"],
+            },
+            "uniqueItems": True,
+        }
+
+        # Validate request data.
+        try:
+            jsonschema.validate(motions, schema)
+        except jsonschema.ValidationError as err:
+            raise ValidationError({"detail": str(err)})
+
+        motion_result = []
+        for item in motions:
+            # Get motion.
+            try:
+                motion = Motion.objects.get(pk=item["id"])
+            except Motion.DoesNotExist:
+                raise ValidationError({"detail": f"Motion {item['id']} does not exist"})
+
+            # Get motion block
+            motion_block = None
+            if item["motion_block"] is not None:
+                try:
+                    motion_block = MotionBlock.objects.get(pk=item["motion_block"])
+                except MotionBlock.DoesNotExist:
+                    raise ValidationError(
+                        {"detail": f"MotionBlock {item['motion_block']} does not exist"}
+                    )
+
+            # Set motion bock
+            motion.motion_block = motion_block
+
+            # Save motion.
+            motion.save(
+                update_fields=["motion_block", "last_modified"], skip_autoupdate=True
+            )
+
+            # Fire autoupdate again to save information to OpenSlides history.
+            information = (
+                ["Motion block removed"]
+                if motion_block is None
+                else ["Motion block set to {arg1}", motion_block.title]
+            )
+            inform_changed_data(
+                motion, information=information, user_id=request.user.pk
+            )
+
+            # Finish motion.
+            motion_result.append(motion)
+
+        # Send response.
+        return Response(
+            {
+                "detail": f"Motion block of {len(motion_result)} motions successfully set."
+            }
+        )
 
     @detail_route(methods=["put"])
     def set_state(self, request, pk=None):

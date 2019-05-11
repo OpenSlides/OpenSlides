@@ -40,10 +40,10 @@ Motions:
    [#4235, #4518, #4521].
  - Allowed submitters to set state of new motions in complex and customized
    workflow [#4236].
- - Added multi select action to manage submitters, tags, states and
-   recommendations [#4037, #4132].
+ - Added multi select action to manage submitters, categories, motion blocks,
+   tags, states and recommendations [#4037, #4132, #4702].
  - Added timestampes for motions [#4134].
- - New config option to set reason as required field [#4232]
+ - New config option to set reason as required field [#4232].
 
 User:
  - Added new admin group which grants all permissions. Users of existing group

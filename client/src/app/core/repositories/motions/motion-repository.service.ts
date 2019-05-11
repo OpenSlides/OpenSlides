@@ -351,6 +351,34 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
     }
 
     /**
+     * Set the motion blocks of motions in bulk
+     *
+     * @param viewMotion target motion
+     * @param motionblockId the number that indicates the motion block
+     */
+    public async setMultiMotionBlock(viewMotions: ViewMotion[], motionblockId: number): Promise<void> {
+        const restPath = `/rest/motions/motion/manage_multiple_motion_block/`;
+        const motionsIdMap: { id: number; motion_block: number }[] = viewMotions.map(motion => {
+            return { id: motion.id, motion_block: motionblockId };
+        });
+        await this.httpService.post(restPath, { motions: motionsIdMap });
+    }
+
+    /**
+     * Set the category of motions in bulk
+     *
+     * @param viewMotion target motion
+     * @param categoryId the number that indicates the category
+     */
+    public async setMultiCategory(viewMotions: ViewMotion[], categoryId: number): Promise<void> {
+        const restPath = `/rest/motions/motion/manage_multiple_category/`;
+        const motionsIdMap: { id: number; category: number }[] = viewMotions.map(motion => {
+            return { id: motion.id, category: categoryId };
+        });
+        await this.httpService.post(restPath, { motions: motionsIdMap });
+    }
+
+    /**
      * Set the recommenders state of a motion
      *
      * @param viewMotion target motion
