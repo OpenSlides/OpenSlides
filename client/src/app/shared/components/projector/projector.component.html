@@ -7,7 +7,7 @@
         </div>
         <div id="header" [ngStyle]="headerFooterStyle" *ngIf="projector && projector.show_header_footer">
             <!-- projector logo -->
-            <img *ngIf="enableLogo && projectorLogo" src="{{ projectorLogo }}" class="projector-logo-main" />
+            <img *ngIf="projector.show_logo && projectorLogo" src="{{ projectorLogo }}" class="projector-logo-main" />
 
             <div *ngIf="projector.show_title" id="eventdata">
                 <div
