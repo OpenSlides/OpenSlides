@@ -68,7 +68,7 @@ export class CallListComponent extends BaseViewComponent implements CanComponent
         this.motionsObservable = this.motionRepo.getViewModelListObservable();
         this.motionsObservable.subscribe(motions => {
             // Sort motions and make a copy, so it will stay sorted.
-            this.motions = motions.map(x => x).sort((a, b) => a.callListWeight - b.callListWeight);
+            this.motions = motions.map(x => x).sort((a, b) => a.weight - b.weight);
         });
     }
 

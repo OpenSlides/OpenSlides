@@ -43,7 +43,7 @@
         <ng-container matColumnDef="title">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Topic</mat-header-cell>
             <mat-cell *matCellDef="let item">
-                <div [ngStyle]="{ 'margin-left': item.agendaListLevel * 25 + 'px' }">
+                <div [ngStyle]="{ 'margin-left': item.level * 25 + 'px' }">
                     <span *ngIf="item.closed"> <mat-icon class="done-check">check</mat-icon> </span>
                     <span class="table-view-list-title">{{ item.getListTitle() }}</span>
                 </div>

@@ -127,7 +127,7 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item> i
 
     protected onFilter(): void {
         this.filterService.filter().subscribe(newAgendaItems => {
-            newAgendaItems.sort((a, b) => a.agendaListWeight - b.agendaListWeight);
+            newAgendaItems.sort((a, b) => a.weight - b.weight);
             this.dataSource.data = newAgendaItems;
             this.checkSelection();
         });

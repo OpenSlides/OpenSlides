@@ -10,19 +10,6 @@ export class ViewItem extends BaseViewModel {
     private _item: Item;
     private _contentObject: BaseAgendaViewModel;
 
-    /**
-     * virtual weight defined by the order in the agenda tree, representing a shortcut to sorting by
-     * weight, parent_id and the parents' weight(s)
-     * TODO will be accurate if the viewMotion is observed via {@link getSortedViewModelListObservable}, else, it will be undefined
-     */
-    public agendaListWeight: number;
-
-    /**
-     * The amount of parents in the agenda list tree.
-     * TODO will be accurate if the viewMotion is observed via {@link getSortedViewModelListObservable}, else, it will be undefined
-     */
-    public agendaListLevel: number;
-
     public get item(): Item {
         return this._item;
     }
@@ -64,6 +51,10 @@ export class ViewItem extends BaseViewModel {
 
     public get comment(): string {
         return this.item.comment;
+    }
+
+    public get level(): number {
+        return this.item.level;
     }
 
     /**

@@ -3,13 +3,12 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
-import { tap, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 import { Category } from 'app/shared/models/motions/category';
 import { ChangeRecoMode, ViewMotion } from 'app/site/motions/models/view-motion';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
-
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { DiffLinesInParagraph, DiffService, LineRange, ModificationType } from '../../ui-services/diff.service';
@@ -21,7 +20,7 @@ import { Motion } from 'app/shared/models/motions/motion';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { MotionChangeRecommendation } from 'app/shared/models/motions/motion-change-reco';
 import { MotionPoll } from 'app/shared/models/motions/motion-poll';
-import { TreeService, TreeIdNode } from 'app/core/ui-services/tree.service';
+import { TreeIdNode } from 'app/core/ui-services/tree.service';
 import { User } from 'app/shared/models/users/user';
 import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-change-recommendation';
 import { ViewMotionAmendedParagraph } from 'app/site/motions/models/view-motion-amended-paragraph';
@@ -44,7 +43,7 @@ import { ViewPersonalNote } from 'app/site/users/models/view-personal-note';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { CollectionIds } from 'app/core/core-services/data-store-update-manager.service';
 
-type SortProperty = 'callListWeight' | 'identifier';
+type SortProperty = 'weight' | 'identifier';
 
 /**
  * Describes the single paragraphs from the base motion.
@@ -122,7 +121,6 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
         private readonly sanitizer: DomSanitizer,
         private readonly lineNumbering: LinenumberingService,
         private readonly diff: DiffService,
-        private treeService: TreeService,
         private operator: OperatorService
     ) {
         super(DS, dataSend, mapperService, viewModelStoreService, translate, Motion, [
@@ -304,25 +302,6 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
             });
             this.updateViewModelListObservable();
         }
-    }
-
-    /**
-     * Add custom hook into the observables. The motions get a virtual weight (a sequential number) for the
-     * call list order. One can just sort for this number instead of dealing with the sort parent id and weight.
-     *
-     * @override
-     */
-    public getViewModelListObservable(): Observable<ViewMotion[]> {
-        return super.getViewModelListObservable().pipe(
-            tap(motions => {
-                const iterator = this.treeService.traverseItems(motions, 'weight', 'sort_parent_id');
-                let m: IteratorResult<ViewMotion>;
-                let virtualWeightCounter = 0;
-                while (!(m = iterator.next()).done) {
-                    m.value.callListWeight = virtualWeightCounter++;
-                }
-            })
-        );
     }
 
     /**
@@ -934,9 +913,9 @@ export class MotionRepositoryService extends BaseAgendaContentObjectRepository<V
                 if (a[this.sortProperty] === b[this.sortProperty]) {
                     return this.languageCollator.compare(a.title, b.title);
                 } else {
-                    if (this.sortProperty === 'callListWeight') {
+                    if (this.sortProperty === 'weight') {
                         // handling numerical values
-                        return a.callListWeight - b.callListWeight;
+                        return a.weight - b.weight;
                     } else {
                         return this.languageCollator.compare(a[this.sortProperty], b[this.sortProperty]);
                     }

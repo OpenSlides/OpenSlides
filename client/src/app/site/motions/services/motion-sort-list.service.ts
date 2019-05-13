@@ -12,10 +12,10 @@ import { _ } from 'app/core/translate/translation-marker';
 })
 export class MotionSortListService extends BaseSortListService<ViewMotion> {
     public sortOptions: OsSortingDefinition<ViewMotion> = {
-        sortProperty: 'callListWeight',
+        sortProperty: 'weight',
         sortAscending: true,
         options: [
-            { property: 'callListWeight', label: 'Call list' },
+            { property: 'weight', label: 'Call list' },
             { property: 'identifier' },
             { property: 'title' },
             { property: 'submitters' },

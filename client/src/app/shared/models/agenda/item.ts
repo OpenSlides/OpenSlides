@@ -40,6 +40,7 @@ export class Item extends BaseModel<Item> {
     public content_object: ContentObject;
     public weight: number;
     public parent_id: number;
+    public level: number;
 
     public constructor(input?: any) {
         super(Item.COLLECTIONSTRING, input);

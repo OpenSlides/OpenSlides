@@ -65,12 +65,6 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
     protected _changeRecommendations: ViewMotionChangeRecommendation[];
     public personalNote?: PersonalNoteContent;
 
-    /**
-     * Is set by the repository; this is the order of the flat call list given by
-     * the properties weight and sort_parent_id
-     */
-    public callListWeight: number;
-
     public get motion(): Motion {
         return this._motion;
     }
