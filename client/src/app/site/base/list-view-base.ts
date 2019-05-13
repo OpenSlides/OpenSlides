@@ -2,13 +2,13 @@ import { MatTableDataSource, MatTable, MatSort, MatPaginator, MatSnackBar, PageE
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { ViewChild, Type, OnDestroy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 import { BaseViewComponent } from './base-view';
 import { BaseViewModel } from './base-view-model';
 import { BaseSortListService } from 'app/core/ui-services/base-sort-list.service';
 import { BaseFilterListService } from 'app/core/ui-services/base-filter-list.service';
 import { BaseModel } from 'app/shared/models/base/base-model';
-import { ActivatedRoute } from '@angular/router';
 import { StorageService } from 'app/core/core-services/storage.service';
 
 export abstract class ListViewBaseComponent<V extends BaseViewModel, M extends BaseModel> extends BaseViewComponent
