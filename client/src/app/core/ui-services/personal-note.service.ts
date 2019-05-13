@@ -95,9 +95,9 @@ export class PersonalNoteService {
      */
     private async savePersonalNoteObject(pnObject: Partial<PersonalNoteObject>): Promise<void> {
         if (!pnObject.id) {
-            await this.http.post('rest/users/personal-note/', pnObject);
+            await this.http.post('/rest/users/personal-note/', pnObject);
         } else {
-            await this.http.put(`rest/users/personal-note/${pnObject.id}/`, pnObject);
+            await this.http.put(`/rest/users/personal-note/${pnObject.id}/`, pnObject);
         }
     }
 }

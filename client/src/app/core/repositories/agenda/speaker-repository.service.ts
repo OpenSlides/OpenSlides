@@ -158,6 +158,6 @@ export class SpeakerRepositoryService {
      * @param suffix the desired speaker action
      */
     private getRestUrl(itemId: number, suffix: SpeakerAction): string {
-        return `rest/agenda/item/${itemId}/${suffix}/`;
+        return `/rest/agenda/item/${itemId}/${suffix}/`;
     }
 }

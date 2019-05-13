@@ -266,7 +266,7 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
         updatedConfig.patchValues(viewConfig.config);
         updatedConfig.patchValues(config);
         // TODO: Use datasendService, if it can switch correctly between put, post and patch
-        await this.http.put('rest/' + updatedConfig.collectionString + '/' + updatedConfig.key + '/', updatedConfig);
+        await this.http.put(`/rest/${updatedConfig.collectionString}/${updatedConfig.key}/`, updatedConfig);
     }
 
     /**
