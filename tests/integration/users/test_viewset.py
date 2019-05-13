@@ -10,6 +10,7 @@ from openslides.users.serializers import UserFullSerializer
 from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.test import TestCase
 
+from ...common_groups import GROUP_DEFAULT_PK, GROUP_DELEGATE_PK, GROUP_STAFF_PK
 from ..helpers import count_queries
 
 
@@ -93,8 +94,7 @@ class UserCreate(TestCase):
 
     def test_creation_with_group(self):
         self.client.login(username="admin", password="admin")
-        # These are the builtin groups 'Delegates' and 'Staff'. The pks are valid.
-        group_pks = (2, 3)
+        group_pks = (GROUP_DELEGATE_PK, GROUP_STAFF_PK)
 
         self.client.post(
             reverse("user-list"),
@@ -107,9 +107,7 @@ class UserCreate(TestCase):
 
     def test_creation_with_default_group(self):
         self.client.login(username="admin", password="admin")
-        # This is the builtin groups 'default'.
-        # The pk is valid. But this group can not be added to users.
-        group_pk = (1,)
+        group_pk = (GROUP_DEFAULT_PK,)
 
         response = self.client.post(
             reverse("user-list"),
@@ -382,7 +380,7 @@ class GroupReceive(TestCase):
         user = User(username="test")
         user.set_password("test")
         user.save()
-        default_group = Group.objects.get(pk=1)
+        default_group = Group.objects.get(pk=GROUP_DEFAULT_PK)
         default_group.permissions.all().delete()
         self.client.login(username="test", password="test")
 
@@ -463,8 +461,7 @@ class GroupUpdate(TestCase):
     def test_simple_update_via_patch(self):
         admin_client = APIClient()
         admin_client.login(username="admin", password="admin")
-        # This is the builtin group 'Delegates'. The pk is valid.
-        group_pk = 2
+        group_pk = GROUP_DELEGATE_PK
         # This contains one valid permission of the users app.
         permissions = ("users.can_see_name",)
 
@@ -485,13 +482,12 @@ class GroupUpdate(TestCase):
     def test_simple_update_via_put(self):
         admin_client = APIClient()
         admin_client.login(username="admin", password="admin")
-        # This is the builtin group 'Delegates'. The pk is valid.
-        group_pk = 2
         # This contains one valid permission of the users app.
         permissions = ("users.can_see_name",)
 
         response = admin_client.put(
-            reverse("group-detail", args=[group_pk]), {"permissions": permissions}
+            reverse("group-detail", args=[GROUP_DELEGATE_PK]),
+            {"permissions": permissions},
         )
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -547,6 +543,54 @@ class GroupUpdate(TestCase):
                 )
             )
 
+    def test_set_single_permission(self):
+        admin_client = APIClient()
+        admin_client.login(username="admin", password="admin")
+
+        response = admin_client.post(
+            reverse("group-set-permission", args=[GROUP_DEFAULT_PK]),
+            {"perm": "users.can_manage", "set": True},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        group = Group.objects.get(pk=GROUP_DEFAULT_PK)
+        self.assertTrue(
+            group.permissions.get(
+                content_type__app_label="users", codename="can_manage"
+            )
+        )
+
+    def test_add_single_permission_wrong_permission(self):
+        admin_client = APIClient()
+        admin_client.login(username="admin", password="admin")
+
+        response = admin_client.post(
+            reverse("group-set-permission", args=[GROUP_DEFAULT_PK]),
+            {"perm": "not_existing.permission", "set": True},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_remove_single_permission(self):
+        admin_client = APIClient()
+        admin_client.login(username="admin", password="admin")
+
+        response = admin_client.post(
+            reverse("group-set-permission", args=[GROUP_DEFAULT_PK]),
+            {"perm": "users.can_see_name", "set": False},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        group = Group.objects.get(pk=GROUP_DEFAULT_PK)
+        self.assertFalse(
+            group.permissions.filter(
+                content_type__app_label="users", codename="can_see"
+            ).exists()
+        )
+
 
 class GroupDelete(TestCase):
     """
@@ -568,10 +612,8 @@ class GroupDelete(TestCase):
     def test_delete_builtin_groups(self):
         admin_client = APIClient()
         admin_client.login(username="admin", password="admin")
-        # The pk of builtin group 'Default'
-        group_pk = 1
 
-        response = admin_client.delete(reverse("group-detail", args=[group_pk]))
+        response = admin_client.delete(reverse("group-detail", args=[GROUP_DEFAULT_PK]))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
