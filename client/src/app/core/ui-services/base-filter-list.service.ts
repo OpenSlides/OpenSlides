@@ -50,7 +50,7 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
     /**
      * stores the currently used raw data to be used for the filter
      */
-    private currentRawData: V[];
+    protected currentRawData: V[];
 
     /**
      * The currently used filters.
@@ -110,7 +110,7 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
     /**
      * Constructor.
      */
-    public constructor(private store: StorageService, private repo: BaseRepository<V, BaseModel>) {}
+    public constructor(protected store: StorageService, protected repo: BaseRepository<V, BaseModel>) {}
 
     /**
      * Initializes the filterService. Returns the filtered data as Observable
@@ -192,7 +192,7 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
      * check their match with current definitions and set the current filter
      * @param definitions: Currently defined Filter definitions
      */
-    private loadStorageDefinition(definitions: OsFilter[]): void {
+    protected loadStorageDefinition(definitions: OsFilter[]): void {
         if (!definitions || !definitions.length) {
             return;
         }
@@ -250,7 +250,7 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
     /**
      * Takes an array of data and applies current filters
      */
-    private filterData(data: V[]): V[] {
+    protected filterData(data: V[]): V[] {
         const filteredData = [];
         if (!data) {
             return filteredData;
