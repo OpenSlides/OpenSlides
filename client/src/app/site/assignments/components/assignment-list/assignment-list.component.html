@@ -112,6 +112,15 @@
             </button>
             <mat-divider></mat-divider>
             <button
+                *osPerms="'assignment.can_manage'"
+                mat-menu-item
+                [disabled]="!selectedRows.length"
+                (click)="downloadAssignmentButton(selectedRows)">
+                <mat-icon>archive</mat-icon>
+                <span>{{ 'Export selected elections' | translate }}</span>
+            </button>
+            <mat-divider></mat-divider>
+            <button
                 mat-menu-item
                 class="red-warning-text"
                 *osPerms="'assignment.can_manage'"

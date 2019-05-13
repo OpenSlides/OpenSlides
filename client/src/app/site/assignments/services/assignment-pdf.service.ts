@@ -102,7 +102,7 @@ export class AssignmentPdfService {
      */
     private createDescription(assignment: ViewAssignment): object {
         if (assignment.description) {
-            const assignmentHtml = this.htmlToPdfService.convertHtml(assignment.description);
+            const descriptionDocDef = this.htmlToPdfService.addPlainText(assignment.description);
 
             const descriptionText = `${this.translate.instant('Description')}: `;
             const description = [
@@ -111,11 +111,7 @@ export class AssignmentPdfService {
                     bold: true,
                     style: 'textItem'
                 },
-                {
-                    text: assignmentHtml,
-                    style: 'textItem',
-                    margin: [10, 0, 0, 0]
-                }
+                descriptionDocDef
             ];
             return description;
         } else {

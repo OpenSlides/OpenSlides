@@ -14,6 +14,7 @@ import { OperatorService } from 'app/core/core-services/operator.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { ViewAssignment, AssignmentPhases } from '../../models/view-assignment';
+import { AssignmentPdfExportService } from '../../services/assignment-pdf-export.service';
 
 /**
  * List view for the assignments
@@ -55,6 +56,7 @@ export class AssignmentListComponent
         private promptService: PromptService,
         public filterService: AssignmentFilterListService,
         public sortService: AssignmentSortListService,
+        private pdfService: AssignmentPdfExportService,
         protected route: ActivatedRoute,
         private router: Router,
         public operator: OperatorService
@@ -93,10 +95,12 @@ export class AssignmentListComponent
 
     /**
      * Function to download the assignment list
-     * TODO: Not yet implemented
+     *
+     * @param assignments Optional parameter: If given, the chosen list will be exported,
+     * otherwise the whole list of assignments is exported.
      */
-    public downloadAssignmentButton(): void {
-        this.raiseError('TODO: assignment download not yet implemented');
+    public downloadAssignmentButton(assignments?: ViewAssignment[]): void {
+        this.pdfService.exportMultipleAssignments(assignments ? assignments : this.repo.getSortedViewModelList());
     }
 
     /**

@@ -564,7 +564,7 @@ export class MotionPdfService {
             //     columnWidth = '100%';
             // }
 
-            reason.push(this.addHtml(motion.reason));
+            reason.push(this.htmlToPdfService.addPlainText(motion.reason));
 
             return reason;
         } else {
@@ -707,25 +707,9 @@ export class MotionPdfService {
             const section = motion.getCommentForSection(viewComment);
             if (section && section.comment) {
                 result.push({ text: viewComment.name, style: 'heading3', margin: [0, 25, 0, 10] });
-                result.push(this.addHtml(section.comment));
+                result.push(this.htmlToPdfService.addPlainText(section.comment));
             }
         }
         return result;
-    }
-
-    /**
-     * Helper function to add simple rendered HTML in a new column-stack object.
-     * Prevents all kinds of malformation
-     *
-     * @param content the HTML content
-     */
-    private addHtml(content: string): object {
-        return {
-            columns: [
-                {
-                    stack: this.htmlToPdfService.convertHtml(content, LineNumberingMode.None)
-                }
-            ]
-        };
     }
 }

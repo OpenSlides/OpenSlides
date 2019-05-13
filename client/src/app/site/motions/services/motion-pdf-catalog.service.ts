@@ -6,7 +6,7 @@ import { ViewMotion, LineNumberingMode, ChangeRecoMode } from '../models/view-mo
 import { MotionPdfService, InfoToExport } from './motion-pdf.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { ViewCategory } from '../models/view-category';
-import { PdfError } from 'app/core/ui-services/pdf-document.service';
+import { PdfError, PdfDocumentService, StyleType } from 'app/core/ui-services/pdf-document.service';
 
 /**
  * Service to export a list of motions.
@@ -21,14 +21,6 @@ import { PdfError } from 'app/core/ui-services/pdf-document.service';
 })
 export class MotionPdfCatalogService {
     /**
-     * Helper to add page breaks to documents
-     */
-    private pageBreak = {
-        text: '',
-        pageBreak: 'after'
-    };
-
-    /**
      * Constructor
      *
      * @param translate handle translations
@@ -38,7 +30,8 @@ export class MotionPdfCatalogService {
     public constructor(
         private translate: TranslateService,
         private configService: ConfigService,
-        private motionPdfService: MotionPdfService
+        private motionPdfService: MotionPdfService,
+        private pdfService: PdfDocumentService
     ) {}
 
     /**
@@ -81,7 +74,7 @@ export class MotionPdfCatalogService {
                 motionDocList.push(motionDocDef);
 
                 if (motionIndex < motions.length - 1) {
-                    motionDocList.push(this.pageBreak);
+                    motionDocList.push(this.pdfService.getPageBreak());
                 }
             } catch (err) {
                 const errorText = `${this.translate.instant('Error during PDF creation of motion:')} ${
@@ -94,43 +87,16 @@ export class MotionPdfCatalogService {
 
         // print extra data (title, preamble, categories, toc) only if there are more than 1 motion
         if (motions.length > 1) {
-            doc.push(this.createTitle(), this.createPreamble(), this.createToc(motions));
+            doc.push(
+                this.pdfService.createTitle('motions_export_title'),
+                this.pdfService.createPreamble('motions_export_preamble'),
+                this.createToc(motions)
+            );
         }
 
         doc = doc.concat(motionDocList);
 
         return doc;
-    }
-
-    /**
-     * Creates the title for the motion list as pdfmake doc definition
-     *
-     * @returns The motion list title for the PDF document
-     */
-    private createTitle(): object {
-        const titleText = this.translate.instant(this.configService.instant<string>('motions_export_title'));
-        return {
-            text: titleText,
-            style: 'title'
-        };
-    }
-
-    /**
-     * Creates the preamble for the motion list as pdfmake doc definition
-     *
-     * @returns The motion list preamble for the PDF document
-     */
-    private createPreamble(): object {
-        const preambleText = this.configService.instant<string>('motions_export_preamble');
-
-        if (preambleText) {
-            return {
-                text: preambleText,
-                style: 'preamble'
-            };
-        } else {
-            return {};
-        }
     }
 
     /**
@@ -177,71 +143,38 @@ export class MotionPdfCatalogService {
 
                 const tocBody = motions
                     .filter(motion => category === motion.category)
-                    .map(motion => this.createTocLine(motion, 'tocCategoryEntry'));
+                    .map(motion =>
+                        this.pdfService.createTocLine(
+                            `${motion.identifier}`,
+                            motion.title,
+                            `${motion.id}`,
+                            StyleType.CATEGORY_SECTION
+                        )
+                    );
 
-                catTocBody.push(this.createTocTableDef(tocBody));
+                catTocBody.push(this.pdfService.createTocTableDef(tocBody, StyleType.CATEGORY_SECTION));
             }
 
             // handle those without category
             const uncatTocBody = motions
                 .filter(motion => !motion.category)
-                .map(motion => this.createTocLine(motion, 'tocEntry'));
+                .map(motion => this.pdfService.createTocLine(`${motion.identifier}`, motion.title, `${motion.id}`));
 
             // only push this array if there is at least one entry
             if (uncatTocBody.length > 0) {
-                catTocBody.push(this.createTocTableDef(uncatTocBody));
+                catTocBody.push(this.pdfService.createTocTableDef(uncatTocBody, StyleType.CATEGORY_SECTION));
             }
 
             toc.push(catTocBody);
         } else {
             // all motions in the same table
-            const tocBody = motions.map(motion => this.createTocLine(motion, 'tocEntry'));
-            toc.push(this.createTocTableDef(tocBody));
+            const tocBody = motions.map(motion =>
+                this.pdfService.createTocLine(`${motion.identifier}`, motion.title, `${motion.id}`)
+            );
+            toc.push(this.pdfService.createTocTableDef(tocBody, StyleType.CATEGORY_SECTION));
         }
 
-        return [tocTitle, toc, this.pageBreak];
-    }
-
-    /**
-     * Generates the table definition for the TOC
-     *
-     * @param tocBody the body of the table
-     * @returns The table of contents as doc definition
-     */
-    private createTocTableDef(tocBody: object): object {
-        return {
-            table: {
-                widths: ['auto', '*', 'auto'],
-                body: tocBody
-            },
-            layout: 'noBorders',
-            style: 'tocCategorySection'
-        };
-    }
-
-    /**
-     * Generates a line in the TOC as list object
-     *
-     * @param motion motion to make a toc entry to
-     * @param style the desired style
-     */
-    private createTocLine(motion: ViewMotion, style: string): object {
-        const firstColumn = motion.identifier;
-        return [
-            {
-                text: firstColumn,
-                style: style
-            },
-            {
-                text: motion.title,
-                style: 'tocEntry'
-            },
-            {
-                pageReference: `${motion.id}`,
-                style: 'tocEntry',
-                alignment: 'right'
-            }
-        ];
+        return [tocTitle, toc, this.pdfService.getPageBreak()];
     }
 
     /**

@@ -9,6 +9,14 @@ import { ConfigService } from './config.service';
 import { HttpService } from '../core-services/http.service';
 
 /**
+ * Enumeration to define possible values for the styling.
+ */
+export enum StyleType {
+    DEFAULT = 'tocEntry',
+    CATEGORY_SECTION = 'tocCategorySection'
+}
+
+/**
  * Custom PDF error class to handle errors in a safer way
  */
 export class PdfError extends Error {
@@ -593,5 +601,93 @@ export class PdfDocumentService {
             const base64 = await this.convertUrlToBase64(url);
             pdfMake.vfs[url] = base64;
         }
+    }
+
+    /**
+     * Creates the title for the motion list as pdfmake doc definition
+     *
+     * @returns The motion list title for the PDF document
+     */
+    public createTitle(configVariable: string): object {
+        const titleText = this.translate.instant(this.configService.instant<string>(configVariable));
+        return {
+            text: titleText,
+            style: 'title'
+        };
+    }
+
+    /**
+     * Creates the preamble for the motion list as pdfmake doc definition
+     *
+     * @returns The motion list preamble for the PDF document
+     */
+    public createPreamble(configVariable: string): object {
+        const preambleText = this.configService.instant<string>(configVariable);
+
+        if (preambleText) {
+            return {
+                text: preambleText,
+                style: 'preamble'
+            };
+        } else {
+            return {};
+        }
+    }
+
+    public getPageBreak(): Object {
+        return {
+            text: '',
+            pageBreak: 'after'
+        };
+    }
+
+    /**
+     * Generates the table definition for the TOC
+     *
+     * @param tocBody the body of the table
+     * @returns The table of contents as doc definition
+     */
+    public createTocTableDef(tocBody: object, style: StyleType = StyleType.DEFAULT): object {
+        return {
+            table: {
+                widths: ['auto', '*', 'auto'],
+                body: tocBody
+            },
+            layout: 'noBorders',
+            style: style
+        };
+    }
+
+    /**
+     * Function, that creates a line for the 'Table of contents'
+     *
+     * @param identifier The identifier/prefix for the line
+     * @param title The name of the line
+     * @param pageReference Defaults to the page, where the object begins
+     * @param style Optional style. Defaults to `'tocEntry'`
+     *
+     * @returns A line for the toc
+     */
+    public createTocLine(
+        identifier: string,
+        title: string,
+        pageReference: string,
+        style: StyleType = StyleType.DEFAULT
+    ): Object {
+        return [
+            {
+                text: identifier,
+                style: style
+            },
+            {
+                text: title,
+                style: 'tocEntry'
+            },
+            {
+                pageReference: pageReference,
+                style: 'tocEntry',
+                alignment: 'right'
+            }
+        ];
     }
 }
