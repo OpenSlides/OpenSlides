@@ -3,13 +3,17 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 import {
-    CsvExportService,
+    CsvColumnDefinitionMap,
     CsvColumnDefinitionProperty,
-    CsvColumnDefinitionMap
+    CsvExportService
 } from 'app/core/ui-services/csv-export.service';
 import { sortMotionPropertyList } from '../motion-import-export-order';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
-import { ViewMotion } from '../models/view-motion';
+import { ChangeRecoMode, ViewMotion } from '../models/view-motion';
+import { ChangeRecommendationRepositoryService } from '../../../core/repositories/motions/change-recommendation-repository.service';
+import { ConfigService } from '../../../core/ui-services/config.service';
+import { ViewUnifiedChange } from '../../../shared/models/motions/view-unified-change';
+import { LinenumberingService } from '../../../core/ui-services/linenumbering.service';
 
 /**
  * Exports CSVs for motions. Collect all CSV types here to have them in one place.
@@ -23,20 +27,67 @@ export class MotionCsvExportService {
      *
      * @param csvExport CsvExportService
      * @param translate TranslateService
+     * @param configService ConfigService
+     * @param linenumberingService LinenumberingService
+     * @param changeRecoRepo ChangeRecommendationRepositoryService
+     * @param motionRepo MotionRepositoryService
      */
     public constructor(
         private csvExport: CsvExportService,
         private translate: TranslateService,
+        private configService: ConfigService,
+        private linenumberingService: LinenumberingService,
+        private changeRecoRepo: ChangeRecommendationRepositoryService,
         private motionRepo: MotionRepositoryService
     ) {}
+
+    /**
+     * Creates the motion text
+     *
+     * @param motion the motion to convert to pdf
+     * @param crMode determine the used change Recommendation mode
+     * @returns doc def for the "the assembly may decide" preamble
+     */
+    private createText(motion: ViewMotion, crMode: ChangeRecoMode): string {
+        // get the line length from the config
+        const lineLength = this.configService.instant<number>('motions_line_length');
+
+        // lead motion or normal amendments
+        // TODO: Consider title change recommendation
+        const changes: ViewUnifiedChange[] = Object.assign([], this.changeRecoRepo.getChangeRecoOfMotion(motion.id));
+
+        // TODO: Cleanup, everything change reco and amendment based needs a unified structure.
+        const amendments = this.motionRepo.getAmendmentsInstantly(motion.id);
+        if (amendments) {
+            for (const amendment of amendments) {
+                const changedParagraphs = this.motionRepo.getAmendmentAmendedParagraphs(amendment, lineLength);
+                for (const change of changedParagraphs) {
+                    changes.push(change as ViewUnifiedChange);
+                }
+            }
+        }
+
+        // changes need to be sorted, by "line from".
+        // otherwise, formatMotion will make unexpected results by messing up the
+        // order of changes applied to the motion
+        changes.sort((a, b) => a.getLineFrom() - b.getLineFrom());
+        const text = this.motionRepo.formatMotion(motion.id, crMode, changes, lineLength);
+
+        return this.linenumberingService.stripLineNumbers(text);
+    }
 
     /**
      * Export all motions as CSV
      *
      * @param motions Motions to export
      * @param contentToExport content properties to export
+     * @param crMode
      */
-    public exportMotionList(motions: ViewMotion[], contentToExport: string[]): void {
+    public exportMotionList(motions: ViewMotion[], contentToExport: string[], crMode?: ChangeRecoMode): void {
+        if (!crMode) {
+            crMode = this.configService.instant('motions_recommendation_text_mode');
+        }
+
         const properties = sortMotionPropertyList(['identifier', 'title'].concat(contentToExport));
         const exportProperties: (
             | CsvColumnDefinitionProperty<ViewMotion>
@@ -50,6 +101,11 @@ export class MotionCsvExportService {
                 return {
                     label: 'state',
                     map: motion => this.motionRepo.getExtendedStateLabel(motion)
+                };
+            } else if (option === 'text') {
+                return {
+                    label: 'Text',
+                    map: motion => this.createText(motion, crMode)
                 };
             } else if (option === 'motion_block') {
                 return {
