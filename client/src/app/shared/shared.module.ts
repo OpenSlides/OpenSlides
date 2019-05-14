@@ -92,6 +92,7 @@ import { IconContainerComponent } from './components/icon-container/icon-contain
 import { ListViewTableComponent } from './components/list-view-table/list-view-table.component';
 import { AgendaContentObjectFormComponent } from './components/agenda-content-object-form/agenda-content-object-form.component';
 import { ExtensionFieldComponent } from './components/extension-field/extension-field.component';
+import { AttachmentControlComponent } from './components/attachment-control/attachment-control.component';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -214,6 +215,7 @@ import { ExtensionFieldComponent } from './components/extension-field/extension-
         SlideContainerComponent,
         CountdownTimeComponent,
         MediaUploadContentComponent,
+        AttachmentControlComponent,
         PrecisionPipe,
         SpeakerButtonComponent,
         GridLayoutComponent,
@@ -262,7 +264,8 @@ import { ExtensionFieldComponent } from './components/extension-field/extension-
         IconContainerComponent,
         ListViewTableComponent,
         AgendaContentObjectFormComponent,
-        ExtensionFieldComponent
+        ExtensionFieldComponent,
+        AttachmentControlComponent
     ],
     providers: [
         { provide: DateAdapter, useClass: OpenSlidesDateAdapter },

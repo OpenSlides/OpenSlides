@@ -21,7 +21,6 @@
         <div *ngIf="itemObserver.value.length > 0">
             <os-search-value-selector
                 ngDefaultControl
-                [form]="form"
                 [formControl]="form.get('agenda_parent_id')"
                 [multiple]="false"
                 [includeNone]="true"

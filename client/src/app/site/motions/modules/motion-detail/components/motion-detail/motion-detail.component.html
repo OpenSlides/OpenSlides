@@ -581,7 +581,6 @@
             <div *ngIf="perms.isAllowed('change_metadata', motion)">
                 <os-search-value-selector
                     ngDefaultControl
-                    [form]="contentForm"
                     [formControl]="contentForm.get('submitters_id')"
                     [multiple]="true"
                     listname="{{ 'Submitters' | translate }}"
@@ -763,9 +762,7 @@
         <div class="content-field" *ngIf="newMotion && categoryObserver.value.length > 0">
             <os-search-value-selector
                 ngDefaultControl
-                [form]="contentForm"
                 [formControl]="contentForm.get('category_id')"
-                [multiple]="false"
                 [includeNone]="true"
                 listname="{{ 'Category' | translate }}"
                 [InputListValues]="categoryObserver"
@@ -783,24 +780,8 @@
                         </mat-list-item>
                     </mat-list>
                 </div>
-                <div *osPerms="'motions.can_manage'; and: editMotion" class="shortened-selector">
-                    <os-search-value-selector
-                        class="selector"
-                        ngDefaultControl
-                        [form]="contentForm"
-                        [formControl]="contentForm.get('attachments_id')"
-                        [multiple]="true"
-                        listname="{{ 'Attachments' | translate }}"
-                        [InputListValues]="mediafilesObserver"
-                    ></os-search-value-selector>
-                    <button
-                        type="button"
-                        mat-icon-button
-                        (click)="onUploadAttachmentsButton(uploadDialog)"
-                        *osPerms="'mediafiles.can_upload'"
-                    >
-                        <mat-icon>cloud_upload</mat-icon>
-                    </button>
+                <div *osPerms="'motions.can_manage'; and: editMotion">
+                    <os-attachment-control (errorHandler)="showUploadError($event)" [controlName]="contentForm.get('attachments_id')"></os-attachment-control>
                 </div>
             </div>
 
@@ -813,7 +794,6 @@
                 <div *ngIf="perms.isAllowed('change_metadata', motion)">
                     <os-search-value-selector
                         ngDefaultControl
-                        [form]="contentForm"
                         [formControl]="contentForm.get('supporters_id')"
                         [multiple]="true"
                         listname="{{ 'Supporters' | translate }}"
@@ -827,9 +807,7 @@
                 <div *ngIf="perms.isAllowed('change_metadata', motion)">
                     <os-search-value-selector
                         ngDefaultControl
-                        [form]="contentForm"
                         [formControl]="contentForm.get('workflow_id')"
-                        [multiple]="false"
                         listname="{{ 'Workflow' | translate }}"
                         [InputListValues]="workflowObserver"
                     ></os-search-value-selector>
@@ -966,14 +944,3 @@
         Final print template
     </button>
 </mat-menu>
-
-<!-- upload file dialog -->
-<ng-template #uploadDialog>
-    <h1 mat-dialog-title>
-        <span translate>Upload files</span>
-    </h1>
-    <os-media-upload-content
-        (uploadSuccessEvent)="uploadSuccess($event)"
-        (errorEvent)="showUploadError($event)"
-    ></os-media-upload-content>
-</ng-template>

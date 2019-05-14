@@ -45,7 +45,6 @@ describe('SearchValueSelectorComponent', () => {
         const formGroup = formBuilder.group({
             testArray: []
         });
-        hostComponent.searchValueSelectorComponent.form = formGroup;
         hostComponent.searchValueSelectorComponent.formControl = <FormControl>formGroup.get('testArray');
 
         hostFixture.detectChanges();
