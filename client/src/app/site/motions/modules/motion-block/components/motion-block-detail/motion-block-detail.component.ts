@@ -79,7 +79,7 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
      * Sets the title, observes the block and the motions belonging in this block
      */
     public ngOnInit(): void {
-        super.setTitle('Motion Block');
+        super.setTitle('Motion block');
         this.initTable();
 
         this.blockEditForm = new FormGroup({
