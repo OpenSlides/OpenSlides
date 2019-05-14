@@ -67,7 +67,7 @@ export class MediafileRepositoryService extends BaseRepository<ViewMediafile, Me
      */
     public async uploadFile(file: FormData): Promise<Identifiable> {
         const emptyHeader = new HttpHeaders();
-        return this.httpService.post<Identifiable>('`/rest/mediafiles/mediafile/', file, {}, emptyHeader);
+        return this.httpService.post<Identifiable>('/rest/mediafiles/mediafile/', file, {}, emptyHeader);
     }
 
     /**
