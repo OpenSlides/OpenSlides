@@ -743,28 +743,30 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
             }
 
             // Check if the neighbor below has a level equals to two or more higher than the moved node.
-            if (
-                (nextNeighborBelow && nextNeighborBelow.level >= nextLevel + 2) ||
-                (nextNeighborBelow.level === nextLevel + 1 && nextNeighborBelow.filtered)
-            ) {
-                let found = false;
-                for (let i = nextIndex + 1; i < this.osTreeData.length; ++i) {
-                    if (this.osTreeData[i].level <= nextLevel && node !== this.osTreeData[i]) {
-                        found = true;
-                        nextIndex = verticalMove === Direction.UPWARDS ? i : i - 1;
-                        break;
-                    } else if (node === this.osTreeData[i] && this.osTreeData[i + 1].level <= nextLevel + 1) {
-                        // Remain at the same position and change only the level if changed.
-                        nextIndex = previousIndex;
-                        found = true;
-                        break;
+            if (nextNeighborBelow) {
+                if (
+                    nextNeighborBelow.level >= nextLevel + 2 ||
+                    (nextNeighborBelow.level === nextLevel + 1 && nextNeighborBelow.filtered)
+                ) {
+                    let found = false;
+                    for (let i = nextIndex + 1; i < this.osTreeData.length; ++i) {
+                        if (this.osTreeData[i].level <= nextLevel && node !== this.osTreeData[i]) {
+                            found = true;
+                            nextIndex = verticalMove === Direction.UPWARDS ? i : i - 1;
+                            break;
+                        } else if (node === this.osTreeData[i] && this.osTreeData[i + 1].level <= nextLevel + 1) {
+                            // Remain at the same position and change only the level if changed.
+                            nextIndex = previousIndex;
+                            found = true;
+                            break;
+                        }
                     }
-                }
-                if (!found) {
-                    nextIndex = this.osTreeData.length - 1;
-                }
-                if (verticalMove === Direction.NOWAY || previousIndex < nextIndex) {
-                    verticalMove = Direction.DOWNWARDS;
+                    if (!found) {
+                        nextIndex = this.osTreeData.length - 1;
+                    }
+                    if (verticalMove === Direction.NOWAY || previousIndex < nextIndex) {
+                        verticalMove = Direction.DOWNWARDS;
+                    }
                 }
             }
 
