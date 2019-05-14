@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { WebsocketService } from './websocket.service';
+import { WebsocketService, WEBSOCKET_ERROR_CODES } from './websocket.service';
 import { CollectionStringMapperService } from './collection-string-mapper.service';
 import { DataStoreService } from './data-store.service';
 import { BaseModel } from '../../shared/models/base/base-model';
@@ -60,6 +60,13 @@ export class AutoupdateService {
     ) {
         this.websocketService.getOberservable<AutoupdateFormat>('autoupdate').subscribe(response => {
             this.storeResponse(response);
+        });
+
+        // Check for too high change id-errors. If this happens, reset the DS and get fresh data.
+        this.websocketService.errorResponseObservable.subscribe(error => {
+            if (error.code === WEBSOCKET_ERROR_CODES.CHANGE_ID_TOO_HIGH) {
+                this.doFullUpdate();
+            }
         });
     }
 
@@ -159,6 +166,7 @@ export class AutoupdateService {
     public async doFullUpdate(): Promise<void> {
         const response = await this.websocketService.sendAndGetResponse<{}, AutoupdateFormat>('getElements', {});
 
+        const updateSlot = await this.DSUpdateManager.getNewUpdateSlot(this.DS);
         let allModels: BaseModel[] = [];
         for (const collection of Object.keys(response.changed)) {
             if (this.modelMapper.isCollectionRegistered(collection)) {
@@ -169,5 +177,6 @@ export class AutoupdateService {
         }
 
         await this.DS.set(allModels, response.to_change_id);
+        this.DSUpdateManager.commit(updateSlot);
     }
 }

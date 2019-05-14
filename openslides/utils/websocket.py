@@ -10,6 +10,21 @@ from .cache import element_cache
 from .utils import split_element_id
 
 
+# Custom Websocket error codes (not to be confused with the websocket *connection*
+# status codes like 1000 or 1006. These are custom ones for OpenSlides to give a
+# machine parseable response, so the client can react on errors.
+
+WEBSOCKET_NOT_AUTHORIZED = 100
+# E.g. if a user does not have the right permission(s) for a message.
+
+WEBSOCKET_CHANGE_ID_TOO_HIGH = 101
+# If data is requested and the given change id is higher than the highest change id
+# from the element_cache.
+
+WEBSOCKET_WRONG_FORMAT = 10
+# If the recieved data has not the expected format.
+
+
 class ProtocollAsyncJsonWebsocketConsumer(AsyncJsonWebsocketConsumer):
     """
     Mixin for JSONWebsocketConsumers, that speaks the a special protocol.
@@ -44,6 +59,24 @@ class ProtocollAsyncJsonWebsocketConsumer(AsyncJsonWebsocketConsumer):
             if not silence_errors:
                 raise e
 
+    async def send_error(
+        self,
+        code: int,
+        message: str,
+        in_response: Optional[str] = None,
+        silence_errors: Optional[bool] = True,
+    ) -> None:
+        """
+        Send generic error messages with a custom status code (see above) and a text message.
+        """
+        await self.send_json(
+            "error",
+            {"code": code, "message": message},
+            None,
+            in_response=in_response,
+            silence_errors=silence_errors,
+        )
+
     async def receive_json(self, content: Any) -> None:
         """
         Receives the json data, parses it and calls receive_content.
@@ -57,8 +90,8 @@ class ProtocollAsyncJsonWebsocketConsumer(AsyncJsonWebsocketConsumer):
                 # content is not a dict (TypeError) or has not the key id (KeyError)
                 in_response = None
 
-            await self.send_json(
-                type="error", content=str(err), in_response=in_response
+            await self.send_error(
+                code=WEBSOCKET_WRONG_FORMAT, message=str(err), in_response=in_response
             )
             return
 
@@ -158,7 +191,9 @@ async def get_element_data(user_id: int, change_id: int = 0) -> AutoupdateFormat
     """
     current_change_id = await element_cache.get_current_change_id()
     if change_id > current_change_id:
-        raise ValueError("Requested change_id is higher this highest change_id.")
+        raise ValueError(
+            f"Requested change_id {change_id} is higher this highest change_id {current_change_id}."
+        )
     try:
         changed_elements, deleted_element_ids = await element_cache.get_restricted_data(
             user_id, change_id, current_change_id
