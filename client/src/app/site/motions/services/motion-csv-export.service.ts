@@ -56,6 +56,11 @@ export class MotionCsvExportService {
                     label: 'Motion block',
                     map: motion => (motion.motion_block ? motion.motion_block.getTitle() : '')
                 };
+            } else if (option === 'text') {
+                return {
+                    label: 'Final text',
+                    map: motion => (motion.modified_final_version ? motion.modified_final_version : motion.text)
+                };
             } else {
                 return { property: option } as CsvColumnDefinitionProperty<ViewMotion>;
             }
