@@ -243,10 +243,6 @@ export class UserPdfService {
                     style: 'tableHeader'
                 },
                 {
-                    text: this.translate.instant('Structure level'),
-                    style: 'tableHeader'
-                },
-                {
                     text: this.translate.instant('Groups'),
                     style: 'tableHeader'
                 }
@@ -254,7 +250,7 @@ export class UserPdfService {
         ];
         return {
             table: {
-                widths: ['auto', '*', 'auto', 'auto'],
+                widths: ['auto', '*', 'auto'],
                 headerRows: 1,
                 body: userTableBody.concat(this.getListUsers(users))
             },
@@ -274,12 +270,7 @@ export class UserPdfService {
         let counter = 1;
         users.forEach(user => {
             const groupList = user.groups.map(grp => this.translate.instant(grp.name));
-            result.push([
-                { text: '' + counter },
-                { text: user.short_name },
-                { text: user.structure_level },
-                { text: groupList.join(', ') }
-            ]);
+            result.push([{ text: '' + counter }, { text: user.full_name }, { text: groupList.join(', ') }]);
             counter += 1;
         });
         return result;

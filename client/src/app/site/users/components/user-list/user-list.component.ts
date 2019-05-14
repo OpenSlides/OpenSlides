@@ -253,7 +253,8 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User> imp
                 { property: 'is_present', label: 'Is present' },
                 { property: 'is_committee', label: 'Is a committee' },
                 { property: 'default_password', label: 'Initial password' },
-                { property: 'email' }
+                { property: 'email' },
+                { property: 'gender' }
             ],
             this.translate.instant('Participants') + '.csv'
         );
