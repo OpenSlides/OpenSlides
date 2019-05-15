@@ -1019,13 +1019,12 @@ class State(RESTModelMixin, models.Model):
     Contains a list of one or more of the following strings:
      * motions.can_see_internal
      * motions.can_manage_metadata
+     * motions.can_manage
      * is_submitter
-     * managers_only
 
     If the list is empty, everybody with the general permission to see motions
-    can see this motion. If the list contains 'managers_only', only managers with
-    motions.can_manage permission may see this motion. In all other cases the user
-    shall have one of the given permissions respectivly is submitter of the motion.
+    can see this motion. If the list contains at least one item, the user needs
+    the permission (or have the attribute) for at least one of the restrictions.
 
     Default: Empty list so everybody can see the motion.
     """

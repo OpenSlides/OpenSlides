@@ -131,8 +131,8 @@ class StateSerializer(ModelSerializer):
                 "enum": [
                     "motions.can_see_internal",
                     "motions.can_manage_metadata",
+                    "motions.can_manage",
                     "is_submitter",
-                    "managers_only",
                 ],
             },
         }

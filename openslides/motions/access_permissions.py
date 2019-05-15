@@ -48,21 +48,16 @@ class MotionAccessPermissions(BaseAccessPermissions):
                     # Parse values of restriction field.
                     # If at least one restriction is ok, permissions are granted.
                     for value in restriction:
-                        if value == "managers_only":
-                            # permission remains false, becuase the user does not
-                            # have this permission (see above); continue to check other fields
-                            continue
-                        elif value in (
+                        if value in (
                             "motions.can_see_internal",
                             "motions.can_manage_metadata",
-                        ):
-                            if await async_has_perm(user_id, value):
-                                permission = True
-                                break
-                        elif value == "is_submitter":
-                            if is_submitter:
-                                permission = True
-                                break
+                            "motions.can_manage",
+                        ) and await async_has_perm(user_id, value):
+                            permission = True
+                            break
+                        elif value == "is_submitter" and is_submitter:
+                            permission = True
+                            break
 
                 # Parse single motion.
                 if permission:
