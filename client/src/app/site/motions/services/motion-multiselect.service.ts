@@ -179,20 +179,12 @@ export class MotionMultiselectService {
             clearChoice
         );
         if (selectedChoice) {
-            let i = 0;
-            for (const motion of motions) {
-                ++i;
-                const message =
-                    this.translate.instant(this.messageForSpinner) +
-                    `\n${i} ` +
-                    this.translate.instant('of') +
-                    ` ${motions.length}`;
-                this.spinnerService.setVisibility(true, message);
-                await this.repo.update(
-                    { category_id: selectedChoice.action ? null : (selectedChoice.items as number) },
-                    motion
-                );
-            }
+            const message = this.translate.instant(this.messageForSpinner);
+            this.spinnerService.setVisibility(true, message);
+            await this.repo.setMultiCategory(motions, selectedChoice.items as number).catch(error => {
+                this.spinnerService.setVisibility(false);
+                throw error;
+            });
             this.spinnerService.setVisibility(false);
         }
     }
@@ -315,18 +307,13 @@ export class MotionMultiselectService {
             clearChoice
         );
         if (selectedChoice) {
-            let i = 0;
-            for (const motion of motions) {
-                ++i;
-                const message =
-                    this.translate.instant(this.messageForSpinner) +
-                    `\n${i} ` +
-                    this.translate.instant('of') +
-                    ` ${motions.length}`;
-                this.spinnerService.setVisibility(true, message);
-                const blockId = selectedChoice.action ? null : (selectedChoice.items as number);
-                await this.repo.update({ motion_block_id: blockId }, motion);
-            }
+            const message = this.translate.instant(this.messageForSpinner);
+            this.spinnerService.setVisibility(true, message);
+            const blockId = selectedChoice.action ? null : (selectedChoice.items as number);
+            await this.repo.setMultiMotionBlock(motions, blockId).catch(error => {
+                this.spinnerService.setVisibility(false);
+                throw error;
+            });
             this.spinnerService.setVisibility(false);
         }
     }
