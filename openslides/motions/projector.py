@@ -18,7 +18,7 @@ motion_placeholder_regex = re.compile(r"\[motion:(\d+)\]")
 
 
 async def get_state(
-    all_data: AllData, motion: Dict[str, Any], state_id: int
+    all_data: AllData, motion: Dict[str, Any], state_id_key: str
 ) -> Dict[str, Any]:
     """
     Returns a state element from one motion.
@@ -27,21 +27,21 @@ async def get_state(
     """
     states = all_data["motions/workflow"][motion["workflow_id"]]["states"]
     for state in states:
-        if state["id"] == state_id:
+        if state["id"] == motion[state_id_key]:
             return state
     raise ProjectorElementException(
-        f"motion {motion['id']} can not be on the state with id {state_id}"
+        f"motion {motion['id']} can not be on the state with id {motion[state_id_key]}"
     )
 
 
-async def get_amendment_merge_into_motion_diff(all_data, motion, amendment):
+async def get_amendment_merge_into_motion_diff(all_data, amendment):
     """
     HINT: This implementation should be consistent to showInDiffView() in ViewMotionAmendedParagraph.ts
     """
     if amendment["state_id"] is None:
         return 0
 
-    state = await get_state(all_data, motion, amendment["state_id"])
+    state = await get_state(all_data, amendment, "state_id")
     if state["merge_amendment_into_final"] == -1:
         return 0
     if state["merge_amendment_into_final"] == 1:
@@ -49,21 +49,21 @@ async def get_amendment_merge_into_motion_diff(all_data, motion, amendment):
 
     if amendment["recommendation_id"] is None:
         return 0
-    recommendation = await get_state(all_data, motion, amendment["recommendation_id"])
+    recommendation = await get_state(all_data, amendment, "recommendation_id")
     if recommendation["merge_amendment_into_final"] == 1:
         return 1
 
     return 0
 
 
-async def get_amendment_merge_into_motion_final(all_data, motion, amendment):
+async def get_amendment_merge_into_motion_final(all_data, amendment):
     """
     HINT: This implementation should be consistent to showInFinalView() in ViewMotionAmendedParagraph.ts
     """
     if amendment["state_id"] is None:
         return 0
 
-    state = await get_state(all_data, motion, amendment["state_id"])
+    state = await get_state(all_data, amendment, "state_id")
     if state["merge_amendment_into_final"] == 1:
         return 1
 
@@ -75,10 +75,10 @@ async def get_amendments_for_motion(motion, all_data):
     for amendment_id, amendment in all_data["motions/motion"].items():
         if amendment["parent_id"] == motion["id"]:
             merge_amendment_into_final = await get_amendment_merge_into_motion_final(
-                all_data, motion, amendment
+                all_data, amendment
             )
             merge_amendment_into_diff = await get_amendment_merge_into_motion_diff(
-                all_data, motion, amendment
+                all_data, amendment
             )
             amendment_data.append(
                 {
@@ -235,7 +235,7 @@ async def motion_slide(
             and motion["recommendation_id"]
         ):
             recommendation_state = await get_state(
-                all_data, motion, motion["recommendation_id"]
+                all_data, motion, "recommendation_id"
             )
             return_value["recommendation"] = recommendation_state[
                 "recommendation_label"
@@ -298,9 +298,7 @@ async def motion_block_slide(
 
             recommendation_id = motion["recommendation_id"]
             if recommendation_id is not None:
-                recommendation = await get_state(
-                    all_data, motion, motion["recommendation_id"]
-                )
+                recommendation = await get_state(all_data, motion, "recommendation_id")
                 motion_object["recommendation"] = {
                     "name": recommendation["recommendation_label"],
                     "css_class": recommendation["css_class"],
