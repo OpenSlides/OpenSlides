@@ -39,7 +39,7 @@ Motions:
    users. Added new permission to see motions in some internal state
    [#4235, #4518, #4521].
  - Allowed submitters to set state of new motions in complex and customized
-   workflow [#4236].
+   workflow. Changed default workflows. No migration provided [#4236, #4703].
  - Added multi select action to manage submitters, categories, motion blocks,
    tags, states and recommendations [#4037, #4132, #4702].
  - Added timestampes for motions [#4134].
