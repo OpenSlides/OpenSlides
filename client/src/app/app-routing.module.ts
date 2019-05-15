@@ -23,7 +23,11 @@ const routes: Routes = [
             { path: 'privacypolicy', component: LoginPrivacyPolicyComponent }
         ]
     },
-    { path: 'projector', loadChildren: './fullscreen-projector/fullscreen-projector.module#FullscreenProjectorModule' },
+    {
+        path: 'projector',
+        loadChildren: './fullscreen-projector/fullscreen-projector.module#FullscreenProjectorModule',
+        data: { noInterruption: true }
+    },
     { path: '', loadChildren: './site/site.module#SiteModule' },
     { path: '**', redirectTo: '' }
 ];

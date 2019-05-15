@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd, ActivationEnd } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
-import { MatDialog, MatSidenav } from '@angular/material';
+import { MatDialog, MatSidenav, MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -16,6 +16,16 @@ import { OpenSlidesStatusService } from '../core/core-services/openslides-status
 import { TimeTravelService } from '../core/core-services/time-travel.service';
 import { langToLocale } from 'app/shared/utils/lang-to-locale';
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { UpdateService } from 'app/core/ui-services/update.service';
+import { filter } from 'rxjs/operators';
+
+/**
+ * Interface to describe possible routing data
+ */
+interface RoutingData {
+    basePerm?: string;
+    noInterruption?: boolean;
+}
 
 @Component({
     selector: 'os-site',
@@ -46,6 +56,16 @@ export class SiteComponent extends BaseComponent implements OnInit {
     public searchform: FormGroup;
 
     /**
+     * Hold the current routing data to make certain checks
+     */
+    private routingData: RoutingData;
+
+    /**
+     * Set to true if an update was suppressed
+     */
+    private delayedUpdateAvailable = false;
+
+    /**
      * Constructor
      *
      * @param authService
@@ -62,6 +82,7 @@ export class SiteComponent extends BaseComponent implements OnInit {
         title: Title,
         translate: TranslateService,
         configService: ConfigService,
+        private updateService: UpdateService,
         private authService: AuthService,
         private router: Router,
         public operator: OperatorService,
@@ -69,7 +90,8 @@ export class SiteComponent extends BaseComponent implements OnInit {
         public dialog: MatDialog,
         public mainMenuService: MainMenuService,
         public OSStatus: OpenSlidesStatusService,
-        public timeTravel: TimeTravelService
+        public timeTravel: TimeTravelService,
+        private matSnackBar: MatSnackBar
     ) {
         super(title, translate);
 
@@ -83,6 +105,18 @@ export class SiteComponent extends BaseComponent implements OnInit {
         });
 
         this.searchform = new FormGroup({ query: new FormControl([]) });
+
+        // detect routing data such as base perm and noInterruption
+        this.router.events
+            .pipe(filter(event => event instanceof ActivationEnd && event.snapshot.children.length === 0))
+            .subscribe((event: ActivationEnd) => {
+                this.routingData = event.snapshot.data as RoutingData;
+
+                // if the current route has no "noInterruption" flag and an update is available, show the update
+                if (this.delayedUpdateAvailable && !this.routingData.noInterruption) {
+                    this.showUpdateNotification();
+                }
+            });
     }
 
     /**
@@ -124,6 +158,29 @@ export class SiteComponent extends BaseComponent implements OnInit {
                     contentContainer.scrollTo(0, 0);
                 }
             }
+        });
+
+        // check for updates
+        this.updateService.updateObservable.subscribe(() => {
+            if (this.routingData.noInterruption) {
+                this.delayedUpdateAvailable = true;
+            } else {
+                this.showUpdateNotification();
+            }
+        });
+    }
+
+    /**
+     * Shows the update notification
+     */
+    private showUpdateNotification(): void {
+        const ref = this.matSnackBar.open('A new update is available!', 'Refresh', {
+            duration: 0
+        });
+
+        // Enforces an update
+        ref.onAction().subscribe(() => {
+            this.updateService.applyUpdate();
         });
     }
 
