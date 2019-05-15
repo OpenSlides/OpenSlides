@@ -23,14 +23,6 @@ class TagAccessPermissions(BaseAccessPermissions):
     """
 
 
-class ChatMessageAccessPermissions(BaseAccessPermissions):
-    """
-    Access permissions container for ChatMessage and ChatMessageViewSet.
-    """
-
-    base_permission = "core.can_use_chat"
-
-
 class ProjectorMessageAccessPermissions(BaseAccessPermissions):
     """
     Access permissions for ProjectorMessage.

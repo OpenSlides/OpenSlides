@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from openslides.core.config import config
-from openslides.core.models import ChatMessage, Projector, Tag
+from openslides.core.models import Projector, Tag
 from openslides.users.models import User
 from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.test import TestCase
@@ -24,19 +24,6 @@ def test_projector_db_queries():
         Projector.objects.create(name=f"Projector{index}")
 
     assert count_queries(Projector.get_elements) == 2
-
-
-@pytest.mark.django_db(transaction=False)
-def test_chat_message_db_queries():
-    """
-    Tests that only the following db queries are done:
-    * 1 requests to get the list of all chatmessages.
-    """
-    user = User.objects.get(username="admin")
-    for index in range(10):
-        ChatMessage.objects.create(user=user)
-
-    assert count_queries(ChatMessage.get_elements) == 1
 
 
 @pytest.mark.django_db(transaction=False)
@@ -200,21 +187,3 @@ class Projection(TestCase):
         self.assertEqual(self.projector.elements, [])
         self.assertEqual(self.projector.elements_preview, elements)
         self.assertEqual(self.projector.elements_history, [])
-
-
-class ChatMessageViewSet(TestCase):
-    """
-    Tests requests to deal with chat messages.
-    """
-
-    def setUp(self):
-        admin = User.objects.get(username="admin")
-        self.client.force_login(admin)
-        ChatMessage.objects.create(
-            message="test_message_peechiel8IeZoohaem9e", user=admin
-        )
-
-    def test_clear_chat(self):
-        response = self.client.post(reverse("chatmessage-clear"))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(ChatMessage.objects.all().count(), 0)

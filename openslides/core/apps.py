@@ -2,7 +2,7 @@ import os
 import sys
 from collections import OrderedDict
 from operator import attrgetter
-from typing import Any, Dict, List, Set
+from typing import Any, Dict, List
 
 from django.apps import AppConfig
 from django.conf import settings
@@ -28,7 +28,6 @@ class CoreAppConfig(AppConfig):
             post_permission_creation,
         )
         from .views import (
-            ChatMessageViewSet,
             ConfigViewSet,
             CountdownViewSet,
             HistoryViewSet,
@@ -45,7 +44,6 @@ class CoreAppConfig(AppConfig):
             ListenToProjectors,
             PingPong,
         )
-        from ..utils.access_permissions import required_user
         from ..utils.rest_api import router
         from ..utils.websocket import register_client_message
 
@@ -81,9 +79,6 @@ class CoreAppConfig(AppConfig):
             self.get_model("Projectiondefault").get_collection_string(),
             ProjectionDefaultViewSet,
         )
-        router.register(
-            self.get_model("ChatMessage").get_collection_string(), ChatMessageViewSet
-        )
         router.register(self.get_model("Tag").get_collection_string(), TagViewSet)
         router.register(
             self.get_model("ConfigStore").get_collection_string(),
@@ -112,11 +107,6 @@ class CoreAppConfig(AppConfig):
         register_client_message(ListenToProjectors())
         register_client_message(PingPong())
 
-        # register required_users
-        required_user.add_collection_string(
-            self.get_model("ChatMessage").get_collection_string(), required_users
-        )
-
     def get_config_variables(self):
         from .config_variables import get_config_variables
 
@@ -130,7 +120,6 @@ class CoreAppConfig(AppConfig):
         for model_name in (
             "Projector",
             "ProjectionDefault",
-            "ChatMessage",
             "Tag",
             "ProjectorMessage",
             "Countdown",
@@ -203,13 +192,6 @@ def call_save_default_values(**kwargs):
     from .config import config
 
     config.save_default_values()
-
-
-def required_users(element: Dict[str, Any]) -> Set[int]:
-    """
-    Returns all user ids that are displayed as chatters.
-    """
-    return set((element["user_id"],))
 
 
 def startup():

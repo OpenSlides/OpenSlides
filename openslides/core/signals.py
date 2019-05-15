@@ -42,8 +42,6 @@ def get_permission_change_data(sender, permissions, **kwargs):
             elif permission.codename == "can_manage_projector":
                 yield core_app.get_model("ProjectorMessage")
                 yield core_app.get_model("Countdown")
-            elif permission.codename == "can_use_chat":
-                yield core_app.get_model("ChatMessage")
 
 
 def autoupdate_for_many_to_many_relations(sender, instance, **kwargs):
