@@ -32,6 +32,28 @@ interface IncommingWebsocketMessage extends BaseWebsocketMessage {
     in_response?: string;
 }
 
+/**
+ * The format of a messages content, if the message type is "error"
+ */
+interface WebsocketErrorContent {
+    code: number;
+    message: string;
+}
+
+function isWebsocketErrorContent(obj: any): obj is WebsocketErrorContent {
+    return !!obj && obj.code !== undefined && obj.message !== undefined;
+}
+
+/**
+ * All (custom) error codes that are used to pass error information
+ * from the server to the client
+ */
+export const WEBSOCKET_ERROR_CODES = {
+    NOT_AUTHORIZED: 100,
+    CHANGE_ID_TOO_HIGH: 101,
+    WRONG_FORMAT: 102
+};
+
 /*
  * Options for (re-)connecting.
  */
@@ -57,7 +79,7 @@ export class WebsocketService {
      * Subjects that will be called, if a reconnect after a retry (e.g. with a previous
      * connection loss) was successful.
      */
-    private _retryReconnectEvent: EventEmitter<void> = new EventEmitter<void>();
+    private readonly _retryReconnectEvent: EventEmitter<void> = new EventEmitter<void>();
 
     /**
      * Getter for the retry reconnect event.
@@ -69,7 +91,7 @@ export class WebsocketService {
     /**
      * Listeners will be nofitied, if the wesocket connection is establiched.
      */
-    private _connectEvent: EventEmitter<void> = new EventEmitter<void>();
+    private readonly _connectEvent: EventEmitter<void> = new EventEmitter<void>();
 
     /**
      * Getter for the connect event.
@@ -81,13 +103,25 @@ export class WebsocketService {
     /**
      * Listeners will be nofitied, if the wesocket connection is closed.
      */
-    private _closeEvent: EventEmitter<void> = new EventEmitter<void>();
+    private readonly _closeEvent: EventEmitter<void> = new EventEmitter<void>();
 
     /**
      * Getter for the close event.
      */
     public get closeEvent(): EventEmitter<void> {
         return this._closeEvent;
+    }
+
+    /**
+     * The subject for all websocket *message* errors (no connection errors).
+     */
+    private readonly _errorResponseSubject = new Subject<WebsocketErrorContent>();
+
+    /**
+     * The error response obersable for all websocket message errors.
+     */
+    public get errorResponseObservable(): Observable<WebsocketErrorContent> {
+        return this._errorResponseSubject.asObservable();
     }
 
     /**
@@ -115,9 +149,12 @@ export class WebsocketService {
     private subjects: { [type: string]: Subject<any> } = {};
 
     /**
-     * Callbacks for a waiting response
+     * Callbacks for a waiting response. If any callback returns true, the message/error will not be propagated with the
+     * responsible subjects for the message type.
      */
-    private responseCallbacks: { [id: string]: [(val: any) => boolean, (error: string) => void | null] } = {};
+    private responseCallbacks: {
+        [id: string]: [(val: any) => boolean, (error: WebsocketErrorContent) => boolean];
+    } = {};
 
     /**
      * Saves, if the WS Connection should be closed (e.g. after an explicit `close()`). Prohibits
@@ -243,10 +280,24 @@ export class WebsocketService {
         }
 
         if (type === 'error') {
-            console.error('Websocket error', message.content);
-            if (inResponse && callbacks && callbacks[1]) {
-                callbacks[1](message.content as string);
+            if (!isWebsocketErrorContent(message.content)) {
+                console.error('Websocket error without standard form!', message);
+                return;
             }
+
+            // Print this to the console.
+            const error = message.content;
+            const errorDescription =
+                Object.keys(WEBSOCKET_ERROR_CODES).find(key => WEBSOCKET_ERROR_CODES[key] === error.code) ||
+                'unknown code';
+            console.error(`Websocket error with code=${error.code} (${errorDescription}):`, error.message);
+
+            // call the error callback, if there is any. If it returns true (means "handled"),
+            // the errorResponseSubject will not be called
+            if (inResponse && callbacks && callbacks[1] && callbacks[1](error)) {
+                return;
+            }
+            this._errorResponseSubject.next(error);
             return;
         }
 
@@ -357,8 +408,10 @@ export class WebsocketService {
      *
      * @param type the message type
      * @param content the actual content
-     * @param success an optional success callback for a response
-     * @param error an optional error callback for a response
+     * @param success an optional success callback for a response. If it returns true, the message will not be
+     * propagated through the recieve subjects.
+     * @param error an optional error callback for a response. If it returns true, the error will not be propagated
+     * with the error subject.
      * @param id an optional id for the message. If not given, a random id will be generated and returned.
      * @returns the message id
      */
@@ -366,7 +419,7 @@ export class WebsocketService {
         type: string,
         content: T,
         success?: (val: R) => boolean,
-        error?: (error: string) => void,
+        error?: (error: WebsocketErrorContent) => boolean,
         id?: string
     ): string {
         if (!this.websocket) {
@@ -419,7 +472,10 @@ export class WebsocketService {
                     resolve(val);
                     return true;
                 },
-                reject,
+                val => {
+                    reject(val);
+                    return true;
+                },
                 id
             );
         });

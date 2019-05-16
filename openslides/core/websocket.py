@@ -5,6 +5,8 @@ from ..utils.constants import get_constants
 from ..utils.projector import get_projector_data
 from ..utils.stats import WebsocketLatencyLogger
 from ..utils.websocket import (
+    WEBSOCKET_CHANGE_ID_TOO_HIGH,
+    WEBSOCKET_NOT_AUTHORIZED,
     BaseWebsocketClientMessage,
     ProtocollAsyncJsonWebsocketConsumer,
     get_element_data,
@@ -58,9 +60,9 @@ class NotifyWebsocketClientMessage(BaseWebsocketClientMessage):
         if perm is not None and not await async_has_perm(
             consumer.scope["user"]["id"], perm
         ):
-            await consumer.send_json(
-                type="error",
-                content=f"You need '{perm}' to send this message.",
+            await consumer.send_error(
+                code=WEBSOCKET_NOT_AUTHORIZED,
+                message=f"You need '{perm}' to send this message.",
                 in_response=id,
             )
         else:
@@ -119,7 +121,9 @@ class GetElementsWebsocketClientMessage(BaseWebsocketClientMessage):
                 consumer.scope["user"]["id"], requested_change_id
             )
         except ValueError as error:
-            await consumer.send_json(type="error", content=str(error), in_response=id)
+            await consumer.send_error(
+                code=WEBSOCKET_CHANGE_ID_TOO_HIGH, message=str(error), in_response=id
+            )
         else:
             await consumer.send_json(
                 type="autoupdate", content=element_data, in_response=id

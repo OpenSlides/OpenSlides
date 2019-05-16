@@ -16,6 +16,7 @@ from openslides.utils.autoupdate import (
     inform_deleted_data,
 )
 from openslides.utils.cache import element_cache
+from openslides.utils.websocket import WEBSOCKET_CHANGE_ID_TOO_HIGH
 
 from ...unit.utils.cache_provider import Collection1, Collection2, get_cachable_provider
 from ..helpers import TConfig, TProjector, TUser
@@ -396,10 +397,10 @@ async def test_send_connect_twice_with_clear_change_id_cache(communicator, set_c
     response2 = await communicator.receive_json_from()
 
     assert response2["type"] == "error"
-    assert (
-        response2.get("content")
-        == "Requested change_id is higher this highest change_id."
-    )
+    assert response2.get("content") == {
+        "code": WEBSOCKET_CHANGE_ID_TOO_HIGH,
+        "message": "Requested change_id 2 is higher this highest change_id 1.",
+    }
 
 
 @pytest.mark.xfail  # This test is broken
