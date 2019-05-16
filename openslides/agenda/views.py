@@ -68,6 +68,8 @@ class ItemViewSet(
     def update(self, *args, **kwargs):
         """
         Customized view endpoint to update all children if the item type has changed.
+        We do not check the level (affected by changing the parent) in fact that this
+        change is currentl only done via the sort view.
         """
         old_type = self.get_object().type
 

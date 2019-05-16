@@ -318,6 +318,20 @@ class Item(RESTModelMixin, models.Model):
             self.parent is not None and self.parent.is_hidden()
         )
 
+    @property
+    def level(self):
+        """
+        Returns the level in agenda (=tree of all items). Level 0 means this
+        item is a root item in the agenda. Level 1 indicates that the parent is
+        a root item, level 2 that the parent's parent is a root item and so on.
+
+        Attention! This executes one query for each ancestor of the item.
+        """
+        if self.parent is None:
+            return 0
+        else:
+            return self.parent.level + 1
+
     def get_next_speaker(self):
         """
         Returns the speaker object of the speaker who is next.

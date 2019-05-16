@@ -123,7 +123,7 @@ export class MotionCsvExportService {
     /**
      * Exports the call list.
      *
-     * @param motions All motions in the CSV. They should be ordered by callListWeight correctly.
+     * @param motions All motions in the CSV. They should be ordered by weight correctly.
      */
     public exportCallList(motions: ViewMotion[]): void {
         this.csvExport.export(

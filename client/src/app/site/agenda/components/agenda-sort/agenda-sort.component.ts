@@ -70,7 +70,7 @@ export class AgendaSortComponent extends BaseViewComponent implements CanCompone
     public seenNodes: [number, number] = [0, 0];
 
     /**
-     * All agendaItems sorted by their virtual weight {@link ViewItem.agendaListWeight}
+     * All agendaItems sorted by their weight {@link ViewItem.weight}
      */
     public itemsObservable: Observable<ViewItem[]>;
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { tap, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -12,7 +12,7 @@ import { DataStoreService } from '../../core-services/data-store.service';
 import { HttpService } from 'app/core/core-services/http.service';
 import { Item } from 'app/shared/models/agenda/item';
 import { ViewItem } from 'app/site/agenda/models/view-item';
-import { TreeService, TreeIdNode } from 'app/core/ui-services/tree.service';
+import { TreeIdNode } from 'app/core/ui-services/tree.service';
 import { BaseAgendaViewModel } from 'app/site/base/base-agenda-view-model';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { BaseViewModel } from 'app/site/base/base-view-model';
@@ -48,8 +48,7 @@ export class ItemRepositoryService extends BaseRepository<ViewItem, Item> {
         viewModelStoreService: ViewModelStoreService,
         translate: TranslateService,
         private httpService: HttpService,
-        private config: ConfigService,
-        private treeService: TreeService
+        private config: ConfigService
     ) {
         super(DS, dataSend, mapperService, viewModelStoreService, translate, Item, [
             Topic,
@@ -150,29 +149,6 @@ export class ItemRepositoryService extends BaseRepository<ViewItem, Item> {
      */
     public async sortItems(data: TreeIdNode[]): Promise<void> {
         await this.httpService.post('/rest/agenda/item/sort/', data);
-    }
-
-    /**
-     * Add custom hook into the observables. The ViewItems get a virtual agendaListWeight (a sequential number)
-     * for the agenda topic order, and a virtual level for the hierarchy in the agenda list tree. Both values can be used
-     * for sorting and ordering instead of dealing with the sort parent id and weight.
-     *
-     * @override
-     */
-    public getViewModelListObservable(): Observable<ViewItem[]> {
-        return super.getViewModelListObservable().pipe(
-            tap(items => {
-                const iterator = this.treeService.traverseItems(items, 'weight', 'parent_id');
-                let m: IteratorResult<ViewItem>;
-                let virtualWeightCounter = 0;
-                while (!(m = iterator.next()).done) {
-                    m.value.agendaListWeight = virtualWeightCounter++;
-                    m.value.agendaListLevel = m.value.parent_id
-                        ? this.getViewModel(m.value.parent_id).agendaListLevel + 1
-                        : 0;
-                }
-            })
-        );
     }
 
     /**

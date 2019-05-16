@@ -581,7 +581,7 @@ export class MotionPdfService {
      * @returns definitions ready to be opened or exported via {@link PdfDocumentService}
      */
     public callListToDoc(motions: ViewMotion[]): object {
-        motions.sort((a, b) => a.callListWeight - b.callListWeight);
+        motions.sort((a, b) => a.weight - b.weight);
         const title = {
             text: this.translate.instant('Call list'),
             style: 'title'

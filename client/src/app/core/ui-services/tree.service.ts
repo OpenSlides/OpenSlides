@@ -180,25 +180,6 @@ export class TreeService {
     }
 
     /**
-     * Traverses the given tree in pre order.
-     *
-     * @param tree The tree to traverse
-     * @returns An iterator for all items in the right order.
-     */
-    public *traverseTree<T>(tree: OSTreeNode<T>[]): Iterator<T> {
-        const nodesToVisit = tree.reverse();
-        while (nodesToVisit.length > 0) {
-            const node = nodesToVisit.pop();
-            if (node.children) {
-                node.children.reverse().forEach(n => {
-                    nodesToVisit.push(n);
-                });
-            }
-            yield node.item;
-        }
-    }
-
-    /**
      * Removes `item` from the tree.
      *
      * @param tree The tree with items
@@ -215,25 +196,6 @@ export class TreeService {
             }
             return nodeWithoutItem;
         });
-    }
-
-    /**
-     * Traverses items in pre-order givem (implicit) by the weight and parentId.
-     *
-     * Just builds the tree with `makeTree` and get the iterator from `traverseTree`.
-     *
-     * @param items All items to traverse
-     * @param weightKey The key giving access to the weight property
-     * @param parentIdKey The key giving access to the parentId property
-     * @returns An iterator for all items in the right order.
-     */
-    public traverseItems<T extends Identifiable & Displayable>(
-        items: T[],
-        weightKey: keyof T,
-        parentIdKey: keyof T
-    ): Iterator<T> {
-        const tree = this.makeTree(items, weightKey, parentIdKey);
-        return this.traverseTree(tree);
     }
 
     /**

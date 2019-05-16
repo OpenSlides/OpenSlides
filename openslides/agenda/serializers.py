@@ -61,4 +61,5 @@ class ItemSerializer(ModelSerializer):
             "content_object",
             "weight",
             "parent",
+            "level",
         )
