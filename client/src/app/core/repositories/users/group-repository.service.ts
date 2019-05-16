@@ -9,6 +9,7 @@ import { Group } from 'app/shared/models/users/group';
 import { ViewGroup } from 'app/site/users/models/view-group';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { TranslateService } from '@ngx-translate/core';
+import { HttpService } from 'app/core/core-services/http.service';
 
 /**
  * Shape of a permission
@@ -53,7 +54,8 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group> {
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
         translate: TranslateService,
-        private constants: ConstantsService
+        private constants: ConstantsService,
+        private http: HttpService
     ) {
         super(DS, dataSend, mapperService, viewModelStoreService, translate, Group);
         this.sortPermsPerApp();
@@ -67,6 +69,20 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group> {
         const viewGroup = new ViewGroup(group);
         viewGroup.getVerboseName = this.getVerboseName;
         return viewGroup;
+    }
+
+    /**
+     * Toggles the given permisson.
+     *
+     * @param group The group
+     * @param perm The permission to toggle
+     */
+    public async togglePerm(group: ViewGroup, perm: string): Promise<void> {
+        const set = !group.permissions.includes(perm);
+        return await this.http.post(`rest/${group.collectionString}/${group.id}/set_permission/`, {
+            perm: perm,
+            set: set
+        });
     }
 
     /**

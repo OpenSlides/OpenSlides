@@ -10,6 +10,7 @@ from django.contrib.auth import (
     update_session_auth_hash,
 )
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.models import Permission
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
@@ -314,7 +315,13 @@ class GroupViewSet(ModelViewSet):
             # Every authenticated user can see the metadata.
             # Anonymous users can do so if they are enabled.
             result = self.request.user.is_authenticated or anonymous_is_enabled()
-        elif self.action in ("create", "partial_update", "update", "destroy"):
+        elif self.action in (
+            "create",
+            "partial_update",
+            "update",
+            "destroy",
+            "set_permission",
+        ):
             # Users with all app permissions can edit groups.
             result = (
                 has_perm(self.request.user, "users.can_see_name")
@@ -409,6 +416,42 @@ class GroupViewSet(ModelViewSet):
         affected_users = User.objects.filter(pk__in=affected_users_ids)
         inform_changed_data(affected_users)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @detail_route(methods=["post"])
+    @transaction.atomic
+    def set_permission(self, request, *args, **kwargs):
+        """
+        Send {perm: <permissionstring> set: <True/False>} to set or
+        remove the permission from a group
+        """
+        perm = request.data.get("perm")
+        if not isinstance(perm, str):
+            raise ValidationError("You have to give a permission as string.")
+        set = request.data.get("set")
+        if not isinstance(set, bool):
+            raise ValidationError("You have to give a set value.")
+
+        # check if perm is a valid permission
+        try:
+            app_label, codename = perm.split(".")
+        except ValueError:
+            raise ValidationError("Incorrect permission string")
+        try:
+            permission = Permission.objects.get(
+                content_type__app_label=app_label, codename=codename
+            )
+        except Permission.DoesNotExist:
+            raise ValidationError("Incorrect permission string")
+
+        # add/remove the permission
+        group = self.get_object()
+        if set:
+            group.permissions.add(permission)
+        else:
+            group.permissions.remove(permission)
+        inform_changed_data(group)
+
+        return Response()
 
 
 class PersonalNoteViewSet(ModelViewSet):

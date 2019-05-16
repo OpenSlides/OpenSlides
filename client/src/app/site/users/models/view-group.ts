@@ -41,33 +41,6 @@ export class ViewGroup extends BaseViewModel {
         this._group = group;
     }
 
-    /**
-     * Returns an array of permissions where the given perm is included
-     * or removed.
-     *
-     * Avoids touching the local DataStore.
-     *
-     * @param perm
-     */
-    public getAlteredPermissions(perm: string): string[] {
-        // clone the array, avoids altering the local dataStore
-        const currentPermissions = this.permissions.slice();
-
-        if (this.hasPermission(perm)) {
-            // remove the permission from currentPermissions-List
-            const indexOfPerm = currentPermissions.indexOf(perm);
-            if (indexOfPerm !== -1) {
-                currentPermissions.splice(indexOfPerm, 1);
-                return currentPermissions;
-            } else {
-                return currentPermissions;
-            }
-        } else {
-            currentPermissions.push(perm);
-            return currentPermissions;
-        }
-    }
-
     public hasPermission(perm: string): boolean {
         return this.permissions.includes(perm);
     }
@@ -80,7 +53,5 @@ export class ViewGroup extends BaseViewModel {
         return this.group;
     }
 
-    public updateDependencies(update: BaseViewModel): void {
-        console.log('ViewGroups wants to update Values with : ', update);
-    }
+    public updateDependencies(update: BaseViewModel): void {}
 }

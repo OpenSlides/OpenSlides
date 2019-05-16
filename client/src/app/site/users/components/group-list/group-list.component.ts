@@ -153,8 +153,7 @@ export class GroupListComponent extends BaseViewComponent implements OnInit {
      * @param perm
      */
     public togglePerm(viewGroup: ViewGroup, perm: string): void {
-        const updateData = new Group({ permissions: viewGroup.getAlteredPermissions(perm) });
-        this.repo.update(updateData, viewGroup).then(null, this.raiseError);
+        this.repo.togglePerm(viewGroup, perm);
     }
 
     /**
