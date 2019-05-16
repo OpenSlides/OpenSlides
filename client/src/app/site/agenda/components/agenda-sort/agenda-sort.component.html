@@ -31,8 +31,8 @@
                 <span class="sort-grid">
                     <div class="hint">{{ 'Visibility' | translate }}</div>
                     <div>
-                        <mat-checkbox *ngFor="let option of filterOptions" [(ngModel)]="option.state" (change)="onFilterChange(option.name)">
-                            <mat-icon matTooltip="{{ option.name | translate }}">{{ getIcon(option.name) }}</mat-icon> {{ option.name | translate }}
+                        <mat-checkbox *ngFor="let option of filterOptions" [(ngModel)]="option.state" (change)="onFilterChange(option.id)">
+                            <mat-icon matTooltip="{{ option.label | translate }}">{{ getIcon(option.label) }}</mat-icon> {{ option.label | translate }}
                         </mat-checkbox>
                     </div>
                 </span>
