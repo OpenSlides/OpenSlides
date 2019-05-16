@@ -25,6 +25,15 @@
     }
 }
 
+.poll-wrapper {
+    position: relative;
+    padding: 0 15px;
+}
+
+.poll-main-content {
+    padding-top: 10px;
+}
+
 .poll-result {
     .poll-progress-bar {
         height: 5px;
@@ -69,12 +78,13 @@
         word-wrap: break-word;
     }
 }
-.poll-border {
-    border: 1px solid lightgray;
-}
+
 .poll-menu {
-    justify-content: flex-end;
+    position: absolute;
+    top: 0;
+    right: 0;
 }
+
 .poll-quorum {
     text-align: right;
     margin-right: 10px;
@@ -83,6 +93,7 @@
         font-size: 100%;
     }
 }
+
 .top-aligned {
     position: absolute;
     top: 0;
@@ -91,4 +102,8 @@
 
 .wide {
     width: 90%;
+}
+
+.hint-form {
+    margin-top: 20px;
 }

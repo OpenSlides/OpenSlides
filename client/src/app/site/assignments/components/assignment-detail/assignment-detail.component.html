@@ -51,56 +51,50 @@
 </os-head-bar>
 
 <div class="content-container">
-    <ng-container *ngIf="vp.isMobile; then mobileView; else desktopView"></ng-container>
+    <div *ngIf="editAssignment">
+        <ng-container [ngTemplateOutlet]="assignmentFormTemplate"></ng-container>
+    </div>
+    <div *ngIf="!editAssignment">
+        <ng-container [ngTemplateOutlet]="metaInfoTemplate"></ng-container>
+        <ng-container [ngTemplateOutlet]="contentTemplate"></ng-container>
+    </div>
 </div>
 
-<ng-template #mobileView>
-    <div *ngIf="editAssignment">
-        <ng-container [ngTemplateOutlet]="assignmentFormTemplate"></ng-container>
-    </div>
-    <div *ngIf="!editAssignment">
-        <ng-container [ngTemplateOutlet]="metaInfoTemplate"></ng-container>
-        <ng-container [ngTemplateOutlet]="contentTemplate"></ng-container>
-    </div>
-</ng-template>
-
-<ng-template #desktopView>
-    <div *ngIf="editAssignment">
-        <ng-container [ngTemplateOutlet]="assignmentFormTemplate"></ng-container>
-    </div>
-    <div *ngIf="!editAssignment">
-        <ng-container [ngTemplateOutlet]="metaInfoTemplate"></ng-container>
-        <ng-container [ngTemplateOutlet]="contentTemplate"></ng-container>
-    </div>
-</ng-template>
-
 <ng-template #metaInfoTemplate>
-    <mat-card class="os-card" *ngIf="assignment">
+    <mat-card class="os-card " *ngIf="assignment">
         <h1>{{ assignment.getTitle() }}</h1>
         <div *ngIf="assignment">
             <div *ngIf="assignment.assignment.description" [innerHTML]="assignment.assignment.description"></div>
         </div>
-        <div>
-            <span translate>Number of persons to be elected</span>:&nbsp;
-            <span>{{ assignment.assignment.open_posts }}</span>
+        <div class="meta-info-grid">
+            <div class="number-of-elected">
+                <h4 translate>Number of persons to be elected</h4>
+                <span>{{ assignment.assignment.open_posts }}</span>
+            </div>
+            <div class="current-phase">
+                <h4 translate>Phase</h4>
+                <mat-basic-chip
+                    *ngIf="hasPerms('manage')"
+                    [matMenuTriggerFor]="phaseMenu"
+                    class="bluegrey"
+                    disableRipple
+                >
+                    {{ assignment.phaseString | translate }}
+                </mat-basic-chip>
+                <mat-basic-chip *ngIf="!hasPerms('manage')" class="bluegrey" disableRipple>
+                    {{ assignment.phaseString | translate }}
+                </mat-basic-chip>
+                <mat-menu #phaseMenu="matMenu">
+                    <button *ngFor="let option of phaseOptions" mat-menu-item (click)="onSetPhaseButton(option.value)">
+                        {{ option.display_name | translate }}
+                    </button>
+                </mat-menu>
+            </div>
         </div>
-        <div>
-            <span translate>Phase</span>:&nbsp;
-            <mat-basic-chip *ngIf="hasPerms('manage')" [matMenuTriggerFor]="phaseMenu" class="bluegrey" disableRipple>
-                {{ assignment.phaseString | translate }}
-            </mat-basic-chip>
-            <mat-basic-chip *ngIf="!hasPerms('manage')" class="bluegrey" disableRipple>
-                {{ assignment.phaseString | translate }}
-            </mat-basic-chip>
-            <mat-menu #phaseMenu="matMenu">
-                <button *ngFor="let option of phaseOptions" mat-menu-item (click)="onSetPhaseButton(option.value)">
-                    {{ option.display_name | translate }}
-                </button>
-            </mat-menu>
-        </div>
+
         <div *ngIf="assignment.attachments.length">
-            <span translate>Election documents</span>:
-            <mat-list dense>
+            <h4 translate>Election documents</h4>
+            <mat-list dense class="election-document-list">
                 <mat-list-item *ngFor="let file of assignment.attachments">
                     <a [routerLink]="file.downloadUrl" target="_blank">{{ file.getTitle() }}</a>
                 </mat-list-item>
@@ -120,7 +114,20 @@
 </ng-template>
 
 <!-- poll template -->
-<ng-template #pollTemplate>
+<ng-template #pollTemplate
+>
+    <div class="ballot-controls-grid">
+        <div class="ballot-title" *ngIf="assignment && assignment.polls && assignment.polls.length">
+            <h3 translate>Election result</h3>
+        </div>
+
+        <div class="ballot-button" *ngIf="assignment && hasPerms('createPoll')">
+            <button mat-button (click)="createPoll()">
+                <mat-icon color="primary">poll</mat-icon>
+                <span translate>New ballot</span>
+            </button>
+        </div>
+    </div>
     <mat-tab-group
         (selectedTabChange)="onTabChange()"
         *ngIf="assignment && assignment.polls && assignment.polls.length"
@@ -136,72 +143,75 @@
 </ng-template>
 
 <ng-template #candidatesTemplate>
-    <!-- candidates -->
-    <div
-        class="candidates-list"
-        *ngIf="assignment && assignment.assignmentRelatedUsers && assignment.assignmentRelatedUsers.length > 0"
-    >
-        <os-sorting-list
-            [input]="assignment.assignmentRelatedUsers"
-            [live]="true"
-            [count]="true"
-            [enable]="hasPerms('addOthers')"
-            (sortEvent)="onSortingChange($event)"
+    <!-- Candidates -->
+    <h3 translate>Candidates</h3>
+
+    <!-- Candidate List -->
+    <div>
+        <div
+            class="candidates-list"
+            *ngIf="assignment && assignment.assignmentRelatedUsers && assignment.assignmentRelatedUsers.length > 0"
         >
-            <!-- implicit item references into the component using ng-template slot -->
-            <ng-template let-item>
-                <span *ngIf="hasPerms('addOthers')">
-                    <button
-                        mat-icon-button
-                        matTooltip="{{ 'Remove candidate' | translate }}"
-                        (click)="removeUser(item)"
-                    >
-                        <mat-icon>clear</mat-icon>
+            <os-sorting-list
+                [input]="assignment.assignmentRelatedUsers"
+                [live]="true"
+                [count]="true"
+                [enable]="hasPerms('addOthers')"
+                (sortEvent)="onSortingChange($event)"
+            >
+                <!-- implicit item references into the component using ng-template slot -->
+                <ng-template let-item>
+                    <span *ngIf="hasPerms('addOthers')">
+                        <button
+                            mat-icon-button
+                            matTooltip="{{ 'Remove candidate' | translate }}"
+                            (click)="removeUser(item)"
+                        >
+                            <mat-icon>clear</mat-icon>
+                        </button>
+                    </span>
+                </ng-template>
+            </os-sorting-list>
+        </div>
+
+        <div class="add-candidates">
+            <!-- Search for candidates -->
+            <div class="search-field" *ngIf="hasPerms('addOthers')">
+                <form
+                    *ngIf="hasPerms('addOthers') && filteredCandidates && filteredCandidates.value.length > 0"
+                    [formGroup]="candidatesForm"
+                >
+                    <os-search-value-selector
+                        class="search-bar"
+                        ngDefaultControl
+                        [form]="candidatesForm"
+                        [formControl]="candidatesForm.get('userId')"
+                        [multiple]="false"
+                        listname="{{ 'Select a new candidate' | translate }}"
+                        [InputListValues]="filteredCandidates"
+                    ></os-search-value-selector>
+                </form>
+            </div>
+
+            <!-- Add me and remove me if OP has correct permission -->
+            <div *ngIf="assignment && hasPerms('addSelf') && assignment.candidates">
+                <div>
+                    <button mat-button color="accent" (click)="addSelf()" *ngIf="!isSelfCandidate">
+                        <mat-icon>add</mat-icon>
+                        <span translate>Add me</span>
                     </button>
-                </span>
-            </ng-template>
-        </os-sorting-list>
-    </div>
-
-    <!-- Search for candidates -->
-    <div class="search-field" *ngIf="hasPerms('addOthers')">
-        <form
-            *ngIf="hasPerms('addOthers') && filteredCandidates && filteredCandidates.value.length > 0"
-            [formGroup]="candidatesForm"
-        >
-            <os-search-value-selector
-                class="search-bar"
-                ngDefaultControl
-                [form]="candidatesForm"
-                [formControl]="candidatesForm.get('userId')"
-                [multiple]="false"
-                listname="{{ 'Select a new candidate' | translate }}"
-                [InputListValues]="filteredCandidates"
-            ></os-search-value-selector>
-        </form>
-    </div>
-
-    <!-- Add me and remove me if OP has correct permission -->
-    <div *ngIf="assignment && hasPerms('addSelf') && assignment.candidates" class="add-self-buttons">
-        <div>
-            <button mat-stroked-button (click)="addSelf()" *ngIf="!isSelfCandidate">
-                <mat-icon>add</mat-icon>
-                <span translate>Add me</span>
-            </button>
-            <button mat-stroked-button (click)="removeSelf()" *ngIf="isSelfCandidate">
-                <mat-icon>remove</mat-icon>
-                <span translate>Remove me</span>
-            </button>
+                    <button mat-button color="accent" (click)="removeSelf()" *ngIf="isSelfCandidate">
+                        <mat-icon>remove</mat-icon>
+                        <span translate>Remove me</span>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
-    <div *ngIf="assignment && hasPerms('createPoll')">
-        <button mat-button (click)="createPoll()">
-            <mat-icon color="primary">poll</mat-icon>
-            <span translate>New ballot</span>
-        </button>
-    </div>
+    <mat-divider *ngIf="assignment && assignment.polls && assignment.polls.length" class="candidate-list-separator"></mat-divider>
 </ng-template>
 
+<!-- Form -->
 <ng-template #assignmentFormTemplate>
     <mat-card class="os-form-card">
         <form

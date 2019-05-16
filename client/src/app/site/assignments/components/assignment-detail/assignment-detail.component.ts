@@ -22,7 +22,6 @@ import { UserRepositoryService } from 'app/core/repositories/users/user-reposito
 import { ViewAssignment, AssignmentPhases } from '../../models/view-assignment';
 import { ViewAssignmentRelatedUser } from '../../models/view-assignment-related-user';
 import { ViewItem } from 'app/site/agenda/models/view-item';
-import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
@@ -159,7 +158,6 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
      * @param title
      * @param translate
      * @param matSnackBar
-     * @param vp
      * @param operator
      * @param perms
      * @param router
@@ -176,7 +174,6 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
         title: Title,
         protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
-        public vp: ViewportService,
         private operator: OperatorService,
         public perms: LocalPermissionsService,
         private router: Router,

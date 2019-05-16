@@ -57,7 +57,8 @@
     }
 }
 
-.openslides-dark-theme, .openslides-developer-dark-theme {
+.openslides-dark-theme,
+.openslides-developer-dark-theme {
     .logo-container {
         img.dark {
             display: inherit;
@@ -88,7 +89,8 @@
     }
 
     os-site {
-        .active mat-icon, .active span {
+        .active mat-icon,
+        .active span {
             color: mat-color(map-get($openslides-developer-theme, accent));
         }
     }
@@ -249,6 +251,7 @@ mat-card {
 .os-card {
     max-width: 770px;
     margin-top: 20px !important;
+    margin-bottom: 20px !important;
     margin-left: auto !important;
     margin-right: auto !important;
     font-size: 16px;
