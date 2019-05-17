@@ -80,6 +80,11 @@
         color: mat-color($accent, default-contrast) !important;
     }
 
+    .backgroundColorSelected {
+        background-color: rgba(0, 0, 0, 0.155);
+        color: mat-color($foreground, text) !important;
+    }
+
     .backgroundColorLight {
         background-color: mat-color($background, hover);
         color: mat-color($foreground, text) !important;
