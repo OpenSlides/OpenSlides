@@ -10,8 +10,6 @@
         line-height: 1.5em;
     }
 }
-
-::ng-deep #slide {
-    z-index: 5;
+#slide {
     height: 100%;
 }

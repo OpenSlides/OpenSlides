@@ -137,22 +137,6 @@ export class PresentationControlComponent extends BaseViewComponent {
         this.updateElement(element);
     }
 
-    public rotate(element: MediafileProjectorElement): void {
-        let rotation: 0 | 90 | 180 | 270 = element.rotation || 0;
-        if (rotation === 0) {
-            rotation = 90;
-        } else if (rotation === 90) {
-            rotation = 180;
-        } else if (rotation === 180) {
-            rotation = 270;
-        } else {
-            // 270
-            rotation = 0;
-        }
-        element.rotation = rotation;
-        this.updateElement(element);
-    }
-
     private updateElement(element: MediafileProjectorElement): void {
         const idElement = this.slideManager.getIdentifialbeProjectorElement(element);
         this.projectorService.updateElement(this.projector.projector, idElement).then(null, this.raiseError);
