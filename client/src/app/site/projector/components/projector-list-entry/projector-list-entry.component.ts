@@ -106,6 +106,8 @@ export class ProjectorListEntryComponent extends BaseViewComponent implements On
             header_background_color: ['', Validators.required],
             header_font_color: ['', Validators.required],
             header_h1_color: ['', Validators.required],
+            chyron_background_color: ['', Validators.required],
+            chyron_font_color: ['', Validators.required],
             show_header_footer: [],
             show_title: [],
             show_logo: []
@@ -225,5 +227,14 @@ export class ProjectorListEntryComponent extends BaseViewComponent implements On
         };
         updateProjector.height = Math.round(event.value / aspectRatios[aspectRatio]);
         this.repo.update(updateProjector, this.projector).then(null, this.raiseError);
+    }
+
+    /**
+     * Resets the given form field to the given default.
+     */
+    public resetField(field: string, value: string): void {
+        const patchValue = {};
+        patchValue[field] = value;
+        this.updateForm.patchValue(patchValue);
     }
 }

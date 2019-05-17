@@ -111,6 +111,8 @@ class ProjectorSerializer(ModelSerializer):
             "header_background_color",
             "header_font_color",
             "header_h1_color",
+            "chyron_background_color",
+            "chyron_font_color",
             "show_header_footer",
             "show_title",
             "show_logo",

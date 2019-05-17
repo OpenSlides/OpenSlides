@@ -39,14 +39,17 @@
                         {{ ratio }}
                     </mat-radio-button>
                 </mat-radio-group>
-                <mat-slider
-                    [thumbLabel]="true"
-                    min="800"
-                    max="3840"
-                    step="10"
-                    (change)="widthSliderValueChanged($event)"
-                ></mat-slider>
-                {{ updateForm.value.width }}
+                <div class="spacer-top-20">
+                    <mat-slider
+                        [thumbLabel]="true"
+                        min="800"
+                        max="2000"
+                        step="10"
+                        value="{{ updateForm.value.width }}"
+                        (change)="widthSliderValueChanged($event)"
+                    ></mat-slider>
+                    {{ updateForm.value.width }}
+                </div>
 
                 <!-- projection defaults -->
                 <h3 translate>Projection defaults</h3>
@@ -57,34 +60,107 @@
                 </mat-select>
 
                 <!-- colors -->
-                <mat-form-field>
-                    <span translate>Background color</span>
-                    <input matInput formControlName="background_color" type="color" />
-                    <mat-hint *ngIf="!updateForm.controls.background_color.valid">
-                        <span translate>Required</span>
-                    </mat-hint>
-                </mat-form-field>
-                <mat-form-field>
-                    <span translate>Header background color</span>
-                    <input matInput formControlName="header_background_color" type="color" />
-                    <mat-hint *ngIf="!updateForm.controls.header_background_color.valid">
-                        <span translate>Required</span>
-                    </mat-hint>
-                </mat-form-field>
-                <mat-form-field>
-                    <span translate>Header font color</span>
-                    <input matInput formControlName="header_font_color" type="color" />
-                    <mat-hint *ngIf="!updateForm.controls.header_font_color.valid">
-                        <span translate>Required</span>
-                    </mat-hint>
-                </mat-form-field>
-                <mat-form-field>
-                    <span translate>Headline color</span>
-                    <input matInput formControlName="header_h1_color" type="color" />
-                    <mat-hint *ngIf="!updateForm.controls.header_h1_color.valid">
-                        <span translate>Required</span>
-                    </mat-hint>
-                </mat-form-field>
+                <div class="color-field-wrapper">
+                    <div class="form">
+                        <mat-form-field>
+                            <span translate>Background color</span>
+                            <input matInput formControlName="background_color" type="color" />
+                            <mat-hint *ngIf="!updateForm.controls.background_color.valid">
+                                <span translate>Required</span>
+                            </mat-hint>
+                        </mat-form-field>
+                    </div>
+                    <div class="reset-button">
+                        <button mat-icon-button matTooltip="{{ 'Reset' | translate }}" (click)="resetField('background_color', '#ffffff')">
+                            <mat-icon>replay</mat-icon>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="color-field-wrapper">
+                    <div class="form">
+                        <mat-form-field>
+                            <span translate>Header background color</span>
+                            <input matInput formControlName="header_background_color" type="color" />
+                            <mat-hint *ngIf="!updateForm.controls.header_background_color.valid">
+                                <span translate>Required</span>
+                            </mat-hint>
+                        </mat-form-field>
+                    </div>
+                    <div class="reset-button">
+                        <button mat-icon-button matTooltip="{{ 'Reset' | translate }}" (click)="resetField('header_background_color', '#317796')">
+                            <mat-icon>replay</mat-icon>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="color-field-wrapper">
+                    <div class="form">
+                        <mat-form-field>
+                            <span translate>Header font color</span>
+                            <input matInput formControlName="header_font_color" type="color" />
+                            <mat-hint *ngIf="!updateForm.controls.header_font_color.valid">
+                                <span translate>Required</span>
+                            </mat-hint>
+                        </mat-form-field>
+                    </div>
+                    <div class="reset-button">
+                        <button mat-icon-button matTooltip="{{ 'Reset' | translate }}" (click)="resetField('header_font_color', '#f5f5f5')">
+                            <mat-icon>replay</mat-icon>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="color-field-wrapper">
+                    <div class="form">
+                        <mat-form-field>
+                            <span translate>Headline color</span>
+                            <input matInput formControlName="header_h1_color" type="color" />
+                            <mat-hint *ngIf="!updateForm.controls.header_h1_color.valid">
+                                <span translate>Required</span>
+                            </mat-hint>
+                        </mat-form-field>
+                    </div>
+                    <div class="reset-button">
+                        <button mat-icon-button matTooltip="{{ 'Reset' | translate }}" (click)="resetField('header_h1_color', '#317796')">
+                            <mat-icon>replay</mat-icon>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="color-field-wrapper">
+                    <div class="form">
+                        <mat-form-field>
+                            <span translate>Chyron background color</span>
+                            <input matInput formControlName="chyron_background_color" type="color" />
+                            <mat-hint *ngIf="!updateForm.controls.chyron_background_color.valid">
+                                <span translate>Required</span>
+                            </mat-hint>
+                        </mat-form-field>
+                    </div>
+                    <div class="reset-button">
+                        <button mat-icon-button matTooltip="{{ 'Reset' | translate }}" (click)="resetField('chyron_background_color', '#317796')">
+                            <mat-icon>replay</mat-icon>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="color-field-wrapper">
+                    <div class="form">
+                        <mat-form-field>
+                            <span translate>Chyron font color</span>
+                            <input matInput formControlName="chyron_font_color" type="color" />
+                            <mat-hint *ngIf="!updateForm.controls.chyron_font_color.valid">
+                                <span translate>Required</span>
+                            </mat-hint>
+                        </mat-form-field>
+                    </div>
+                    <div class="reset-button">
+                        <button mat-icon-button matTooltip="{{ 'Reset' | translate }}" (click)="resetField('chyron_font_color', '#ffffff')">
+                            <mat-icon>replay</mat-icon>
+                        </button>
+                    </div>
+                </div>
 
                 <!-- checkboxes -->
                 <div>

@@ -71,10 +71,6 @@
     }
 
     /* projector components */
-    #chyron {
-        background-color: mat-color($primary);
-        color: white; // TODO
-    }
     .backgroundColorAccent {
         background-color: mat-color($accent);
         color: mat-color($accent, default-contrast) !important;

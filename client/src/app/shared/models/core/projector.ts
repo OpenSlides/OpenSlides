@@ -72,6 +72,8 @@ export class Projector extends BaseModel<Projector> {
     public header_background_color: string;
     public header_font_color: string;
     public header_h1_color: string;
+    public chyron_background_color: string;
+    public chyron_font_color: string;
     public show_header_footer: boolean;
     public show_title: boolean;
     public show_logo: boolean;

@@ -232,10 +232,18 @@ async def current_speaker_chyron_slide(
     """
     Returns the username for the current speaker.
     """
+    # get projector for color information
+    projector = all_data["core/projector"][projector_id]
+
+    slide_data = {
+        "background_color": projector["chyron_background_color"],
+        "font_color": projector["chyron_font_color"],
+    }
+
     reference_projector = await get_reference_projector(all_data, projector_id)
     item_id = await get_current_item_id_for_projector(all_data, reference_projector)
     if item_id is None:  # no element found
-        return {}
+        return slide_data
 
     # get item
     try:
@@ -249,7 +257,10 @@ async def current_speaker_chyron_slide(
         if speaker["begin_time"] is not None and speaker["end_time"] is None:
             current_speaker = await get_user_name(all_data, speaker["user_id"])
 
-    return {"current_speaker": current_speaker}
+    if current_speaker is not None:
+        slide_data["current_speaker"] = current_speaker
+
+    return slide_data
 
 
 def register_projector_slides() -> None:
