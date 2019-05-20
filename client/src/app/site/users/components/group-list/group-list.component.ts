@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { MatTableDataSource, MatSnackBar } from '@angular/material';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
-import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
+import { GroupRepositoryService, AppPermissions } from 'app/core/repositories/users/group-repository.service';
 import { ViewGroup } from '../../models/view-group';
 import { Group } from 'app/shared/models/users/group';
 import { BaseViewComponent } from '../../../base/base-view';
@@ -47,6 +47,10 @@ export class GroupListComponent extends BaseViewComponent implements OnInit {
     @ViewChild('groupForm')
     public groupForm: FormGroup;
 
+    public get appPermissions(): AppPermissions[] {
+        return this.repo.appPermissions;
+    }
+
     /**
      * Constructor
      *
@@ -60,7 +64,7 @@ export class GroupListComponent extends BaseViewComponent implements OnInit {
         titleService: Title,
         protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
-        public repo: GroupRepositoryService,
+        private repo: GroupRepositoryService,
         private promptService: PromptService
     ) {
         super(titleService, translate, matSnackBar);
