@@ -645,15 +645,14 @@
         <!-- The HTML Editor for paragraph-based amendments -->
         <ng-container *ngIf="motion && editMotion && motion.isParagraphBasedAmendment()">
             <section *ngFor="let paragraph of contentForm.value.selected_paragraphs">
-                <h4>
+                <h3>
                     <span *ngIf="paragraph.lineFrom >= paragraph.lineTo - 1" class="line-number">
-                        {{ 'Line' | translate }} {{ paragraph.lineFrom }}</span
-                    >
+                        {{ 'Line' | translate }} {{ paragraph.lineFrom }}
+                    </span>
                     <span *ngIf="paragraph.lineFrom < paragraph.lineTo - 1" class="line-number">
-                        {{ 'Line' | translate }} {{ paragraph.lineFrom }} - {{ paragraph.lineTo - 1 }}</span
-                    >&nbsp;
-                    <span>*</span>
-                </h4>
+                        {{ 'Line' | translate }} {{ paragraph.lineFrom }} - {{ paragraph.lineTo - 1 }}
+                    </span>
+                </h3>
                 <editor [formControlName]="'text_' + paragraph.paragraphNo" [init]="tinyMceSettings" required></editor>
                 <div
                     *ngIf="
@@ -840,13 +839,13 @@
                 *ngIf="paragraph.diffLineTo === paragraph.diffLineFrom + 1 && !showAmendmentContext"
                 class="amendment-line-header"
             >
-                <span translate>Line</span> {{ paragraph.diffLineFrom }}:
+                {{ 'Line' | translate }} {{ paragraph.diffLineFrom }}:
             </h3>
             <h3
                 *ngIf="paragraph.diffLineTo !== paragraph.diffLineFrom + 1 && !showAmendmentContext"
                 class="amendment-line-header"
             >
-                <span translate>Line</span> {{ paragraph.diffLineFrom }} - {{ paragraph.diffLineTo - 1 }}:
+                {{ 'Line' | translate }} {{ paragraph.diffLineFrom }} - {{ paragraph.diffLineTo - 1 }}:
             </h3>
 
             <div class="paragraphcontext" [innerHtml]="sanitizedText(paragraph.textPre)"></div>

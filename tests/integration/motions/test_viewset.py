@@ -266,9 +266,15 @@ class CreateMotion(TestCase):
     def test_without_data(self):
         response = self.client.post(reverse("motion-list"), {})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertTrue("title" in response.data)
+
+    def test_without_text(self):
+        response = self.client.post(
+            reverse("motion-list"), {"title": "test_title_dlofp23m9O(ZD2d1lwHG"}
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
-            response.data,
-            {"title": ["This field is required."], "text": ["This field is required."]},
+            str(response.data["detail"][0]), "The text field may not be blank."
         )
 
     def test_with_category(self):
@@ -568,6 +574,14 @@ class UpdateMotion(TestCase):
         motion = Motion.objects.get()
         self.assertEqual(motion.title, "test_title_aeng7ahChie3waiR8xoh")
         self.assertEqual(motion.identifier, "test_identifier_jieseghohj7OoSah1Ko9")
+
+    def test_patch_empty_text(self):
+        response = self.client.patch(
+            reverse("motion-detail", args=[self.motion.pk]), {"text": ""}, format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        motion = Motion.objects.get()
+        self.assertEqual(motion.text, "test_text_xeigheeha7thopubeu4U")
 
     def test_patch_workflow(self):
         """
