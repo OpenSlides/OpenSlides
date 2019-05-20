@@ -17,3 +17,19 @@ form {
     color: inherit;
     text-decoration: inherit;
 }
+
+.color-field-wrapper {
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto 30px;
+
+    .form {
+        grid-column-start: 1;
+        grid-column-end: 1;
+    }
+    .reset-button {
+        grid-column-start: 2;
+        grid-column-end: 2;
+        margin-top: 30px;
+    }
+}

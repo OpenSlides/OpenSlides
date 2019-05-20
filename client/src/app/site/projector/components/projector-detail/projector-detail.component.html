@@ -234,31 +234,31 @@
 
                     <!-- Slide-->
                     <mat-list *ngIf="projectorCount > 1">
-                        <mat-list-item [ngClass]="{ projected: isClosProjected(false) }">
-                            <button type="button" mat-icon-button (click)="toggleClos(false)">
+                        <mat-list-item>
+                            <button type="button" mat-mini-fab (click)="toggleClos(false)" [ngClass]="isClosProjected(false) ? 'projector-active' : 'projector-inactive'">
                                 <mat-icon>videocam</mat-icon>
                             </button>
-                            <span translate>Slide</span>
+                            <span class="spacer-left-10" translate>Slide</span>
                         </mat-list-item>
                     </mat-list>
 
                     <!-- Overlay -->
                     <mat-list>
-                        <mat-list-item [ngClass]="{ projected: isClosProjected(true) }">
-                            <button type="button" mat-icon-button (click)="toggleClos(true)">
+                        <mat-list-item>
+                            <button type="button" mat-mini-fab (click)="toggleClos(true)" [ngClass]="isClosProjected(true) ? 'projector-active' : 'projector-inactive'">
                                 <mat-icon>videocam</mat-icon>
                             </button>
-                            <span translate>Overlay</span>
+                            <span class="spacer-left-10" translate>Overlay</span>
                         </mat-list-item>
                     </mat-list>
 
                     <!-- Chyron -->
                     <mat-list>
-                        <mat-list-item [ngClass]="{ projected: isChyronProjected() }">
-                            <button type="button" mat-icon-button (click)="toggleChyron()">
+                        <mat-list-item>
+                            <button type="button" mat-mini-fab (click)="toggleChyron()" [ngClass]="isChyronProjected() ? 'projector-active' : 'projector-inactive'">
                                 <mat-icon>videocam</mat-icon>
                             </button>
-                            <span translate>Chyron</span>
+                            <span class="spacer-left-10" translate>Chyron</span>
                         </mat-list-item>
                     </mat-list>
                 </mat-expansion-panel>

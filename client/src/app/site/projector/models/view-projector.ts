@@ -83,6 +83,14 @@ export class ViewProjector extends BaseViewModel {
         return this.projector.header_h1_color;
     }
 
+    public get chyron_background_color(): string {
+        return this.projector.chyron_background_color;
+    }
+
+    public get chyron_font_color(): string {
+        return this.projector.chyron_font_color;
+    }
+
     public get show_header_footer(): boolean {
         return this.projector.show_header_footer;
     }
