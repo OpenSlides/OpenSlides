@@ -1972,6 +1972,15 @@ class DeleteWorkflow(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(Workflow.objects.count(), 2)
 
+    def test_delete_last_workflow(self):
+        self.workflow.delete()
+        other_workflow_pk = Workflow.objects.get().pk
+        response = self.client.delete(
+            reverse("workflow-detail", args=[other_workflow_pk])
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(Workflow.objects.count(), 1)  # Just the other default one
+
 
 class DeleteCategory(TestCase):
     """

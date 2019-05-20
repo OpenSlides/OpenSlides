@@ -1598,15 +1598,29 @@ class WorkflowViewSet(ModelViewSet, ProtectedErrorMessageMixin):
             result = False
         return result
 
+    @transaction.atomic
     def destroy(self, *args, **kwargs):
         """
         Customized view endpoint to delete a workflow.
         """
+        workflow_pk = self.get_object().pk
+        if not Workflow.objects.exclude(pk=workflow_pk).exists():
+            raise ValidationError({"detail": "You cannot delete the last workflow."})
+
         try:
             result = super().destroy(*args, **kwargs)
         except ProtectedError as err:
             msg = self.getProtectedErrorMessage("workflow", err)
             raise ValidationError({"detail": msg})
+
+        # Change motion default workflows in the config
+        if int(config["motions_workflow"]) == workflow_pk:
+            config["motions_workflow"] = str(Workflow.objects.first().pk)
+        if int(config["motions_statute_amendments_workflow"]) == workflow_pk:
+            config["motions_statute_amendments_workflow"] = str(
+                Workflow.objects.first().pk
+            )
+
         return result
 
 
