@@ -186,6 +186,20 @@ def get_config_variables():
         subgroup="Export",
     )
 
+    yield ConfigVariable(
+        name="general_export_pdf_pagesize",
+        default_value="A4",
+        input_type="choice",
+        label="Standard page size in PDF",
+        choices=(
+            {"value": "A4", "display_name": "A4"},
+            {"value": "A5", "display_name": "A5"},
+        ),
+        weight=147,
+        group="General",
+        subgroup="Export",
+    )
+
     # Projector
 
     yield ConfigVariable(
