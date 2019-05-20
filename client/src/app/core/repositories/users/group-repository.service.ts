@@ -22,7 +22,7 @@ interface Permission {
 /**
  * Set rules to define the shape of an app permission
  */
-interface AppPermission {
+export interface AppPermissions {
     name: string;
     permissions: Permission[];
 }
@@ -39,7 +39,7 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group> {
     /**
      * holds sorted permissions per app.
      */
-    public appPermissions: AppPermission[] = [];
+    public appPermissions: AppPermissions[] = [];
 
     /**
      * Constructor calls the parent constructor
@@ -107,6 +107,7 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group> {
      */
     private sortPermsPerApp(): void {
         this.constants.get<any>('permissions').subscribe(perms => {
+            let pluginCounter = 0;
             for (const perm of perms) {
                 // extract the apps name
                 const permApp = perm.value.split('.')[0];
@@ -135,12 +136,20 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group> {
                         break;
                     default:
                         // plugins
-                        const displayName = `${permApp.charAt(0).toUpperCase}${permApp.slice(1)}`;
-                        // check if the plugin exists as app
+                        const displayName = `${permApp.charAt(0).toUpperCase()}${permApp.slice(1)}`;
+                        // check if the plugin exists as app. The appPermissions array might have empty
+                        // entries, so pay attention in the findIndex below.
                         const result = this.appPermissions.findIndex(app => {
-                            return app.name === displayName;
+                            return app ? app.name === displayName : false;
                         });
-                        const pluginId = result === -1 ? this.appPermissions.length : result;
+                        let pluginId: number;
+                        if (result >= 0) {
+                            pluginId = result;
+                        } else {
+                            // Ensure plugins to be behind the 7 core apps.
+                            pluginId = pluginCounter + 7;
+                            pluginCounter++;
+                        }
                         this.addAppPerm(pluginId, perm, displayName);
                         break;
                 }
@@ -156,8 +165,8 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group> {
      * order, we could simply reverse the whole permissions.
      */
     private sortPermsByPower(): void {
-        this.appPermissions.forEach((app: AppPermission, index: number) => {
-            if (index === 5) {
+        this.appPermissions.forEach((app: AppPermissions) => {
+            if (app.name === 'Users') {
                 app.permissions.reverse();
             } else {
                 const see = [];
