@@ -136,7 +136,7 @@ export class DataStoreUpdateManagerService {
         if (this.currentUpdateSlot) {
             const request = new Deferred();
             this.updateSlotRequests.push(request);
-            await request.promise;
+            await request;
         }
         this.currentUpdateSlot = new UpdateSlot(DS);
         return this.currentUpdateSlot;

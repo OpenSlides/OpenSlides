@@ -55,14 +55,13 @@ interface InfoDialog {
 
 /**
  * Component for the user list view.
- *
  */
 @Component({
     selector: 'os-user-list',
     templateUrl: './user-list.component.html',
     styleUrls: ['./user-list.component.scss']
 })
-export class UserListComponent extends ListViewBaseComponent<ViewUser, User> implements OnInit {
+export class UserListComponent extends ListViewBaseComponent<ViewUser, User, UserRepositoryService> implements OnInit {
     /**
      * The reference to the template.
      */
@@ -154,7 +153,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User> imp
         private userPdf: UserPdfExportService,
         private dialog: MatDialog
     ) {
-        super(titleService, translate, matSnackBar, route, storage, filterService, sortService);
+        super(titleService, translate, matSnackBar, repo, route, storage, filterService, sortService);
 
         // enable multiSelect for this listView
         this.canMultiSelect = true;

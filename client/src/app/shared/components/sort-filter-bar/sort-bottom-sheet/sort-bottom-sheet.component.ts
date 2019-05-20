@@ -9,17 +9,17 @@ import { BaseViewModel } from 'app/site/base/base-view-model';
  * usage:
  * ```
  * @ViewChild('sortBottomSheet')
- * public sortBottomSheet: OsSortBottomSheetComponent<V>;
+ * public sortBottomSheet: SortBottomSheetComponent<V>;
  * ...
- * this.bottomSheet.open(OsSortBottomSheetComponent, { data: SortService });
+ * this.bottomSheet.open(SortBottomSheetComponent, { data: SortService });
  * ```
  */
 @Component({
     selector: 'os-sort-bottom-sheet',
-    templateUrl: './os-sort-bottom-sheet.component.html',
-    styleUrls: ['./os-sort-bottom-sheet.component.scss']
+    templateUrl: './sort-bottom-sheet.component.html',
+    styleUrls: ['./sort-bottom-sheet.component.scss']
 })
-export class OsSortBottomSheetComponent<V extends BaseViewModel> implements OnInit {
+export class SortBottomSheetComponent<V extends BaseViewModel> implements OnInit {
     /**
      * Constructor. Gets a reference to itself (for closing after interaction)
      * @param data
@@ -31,10 +31,10 @@ export class OsSortBottomSheetComponent<V extends BaseViewModel> implements OnIn
     ) {}
 
     /**
-     * init fucntion. Closes inmediately if no sorting is available.
+     * init function. Closes immediately if no sorting is available.
      */
     public ngOnInit(): void {
-        if (!this.data || !this.data.sortOptions || !this.data.sortOptions.options.length) {
+        if (!this.data || !this.data.sortOptions || !this.data.sortOptions.length) {
             throw new Error('No sorting available for a sorting list');
         }
     }

@@ -20,7 +20,8 @@ import { StorageService } from 'app/core/core-services/storage.service';
     templateUrl: './workflow-list.component.html',
     styleUrls: ['./workflow-list.component.scss']
 })
-export class WorkflowListComponent extends ListViewBaseComponent<ViewWorkflow, Workflow> implements OnInit {
+export class WorkflowListComponent extends ListViewBaseComponent<ViewWorkflow, Workflow, WorkflowRepositoryService>
+    implements OnInit {
     /**
      * Holds the new workflow title
      */
@@ -51,10 +52,10 @@ export class WorkflowListComponent extends ListViewBaseComponent<ViewWorkflow, W
         storage: StorageService,
         private dialog: MatDialog,
         private router: Router,
-        private workflowRepo: WorkflowRepositoryService,
+        protected workflowRepo: WorkflowRepositoryService,
         private promptService: PromptService
     ) {
-        super(titleService, translate, matSnackBar, route, storage);
+        super(titleService, translate, matSnackBar, workflowRepo, route, storage);
     }
 
     /**

@@ -120,7 +120,7 @@ export class OperatorService implements OnAfterAppsLoaded {
     private readonly _loaded: Deferred<void> = new Deferred();
 
     public get loaded(): Promise<void> {
-        return this._loaded.promise;
+        return this._loaded;
     }
 
     /**

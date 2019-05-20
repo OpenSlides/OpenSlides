@@ -26,7 +26,8 @@ import { StorageService } from 'app/core/core-services/storage.service';
     templateUrl: './mediafile-list.component.html',
     styleUrls: ['./mediafile-list.component.scss']
 })
-export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile, Mediafile> implements OnInit {
+export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile, Mediafile, MediafileRepositoryService>
+    implements OnInit {
     /**
      * Holds the actions for logos. Updated via an observable
      */
@@ -108,7 +109,7 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile,
         public sortService: MediafilesSortListService,
         private operator: OperatorService
     ) {
-        super(titleService, translate, matSnackBar, route, storage, filterService, sortService);
+        super(titleService, translate, matSnackBar, repo, route, storage, filterService, sortService);
 
         // enables multiSelection for this listView
         this.canMultiSelect = true;

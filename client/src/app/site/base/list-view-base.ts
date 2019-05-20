@@ -10,9 +10,14 @@ import { BaseSortListService } from 'app/core/ui-services/base-sort-list.service
 import { BaseFilterListService } from 'app/core/ui-services/base-filter-list.service';
 import { BaseModel } from 'app/shared/models/base/base-model';
 import { StorageService } from 'app/core/core-services/storage.service';
+import { BaseRepository } from 'app/core/repositories/base-repository';
+import { Observable } from 'rxjs';
 
-export abstract class ListViewBaseComponent<V extends BaseViewModel, M extends BaseModel> extends BaseViewComponent
-    implements OnDestroy {
+export abstract class ListViewBaseComponent<
+    V extends BaseViewModel,
+    M extends BaseModel,
+    R extends BaseRepository<V, M>
+> extends BaseViewComponent implements OnDestroy {
     /**
      * The data source for a table. Requires to be initialized with a BaseViewModel
      */
@@ -76,21 +81,24 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel, M extends B
     }
 
     /**
-     * Constructor for list view bases
      * @param titleService the title serivce
      * @param translate the translate service
      * @param matSnackBar showing errors
-     * @param filterService filter
-     * @param sortService sorting
+     * @param viewModelRepo Repository for the view Model. Do NOT rename to "repo"
+     * @param route Access the current route
+     * @param storage Access the store
+     * @param modelFilterListService filter do NOT rename to "filterListService"
+     * @param modelSortService sorting do NOT rename to "sortService"
      */
     public constructor(
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
+        protected viewModelRepo: R,
         protected route?: ActivatedRoute,
         protected storage?: StorageService,
-        public filterService?: BaseFilterListService<V>,
-        public sortService?: BaseSortListService<V>
+        protected modelFilterListService?: BaseFilterListService<V>,
+        protected modelSortService?: BaseSortListService<V>
     ) {
         super(titleService, translate, matSnackBar);
         this.selectedRows = [];
@@ -114,40 +122,41 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel, M extends B
             this.initializePagination();
             this.dataSource.paginator._intl.itemsPerPageLabel = this.translate.instant('items per page');
         }
-        if (this.filterService) {
-            this.onFilter();
-        }
-        if (this.sortService) {
-            this.onSort();
+
+        // TODO: Add subscription to this.subscriptions
+        if (this.modelFilterListService && this.modelSortService) {
+            // filtering and sorting
+            this.modelFilterListService.initFilters(this.getModelListObservable());
+            this.modelSortService.initSorting(this.modelFilterListService.outputObservable);
+            this.modelSortService.outputObservable.subscribe(data => this.setDataSource(data));
+        } else if (this.modelFilterListService) {
+            // only filter service
+            this.modelFilterListService.initFilters(this.getModelListObservable());
+            this.modelFilterListService.outputObservable.subscribe(data => this.setDataSource(data));
+        } else if (this.modelSortService) {
+            // only sorting
+            this.modelSortService.initSorting(this.getModelListObservable());
+            this.modelSortService.outputObservable.subscribe(data => this.setDataSource(data));
+        } else {
+            // none of both
+            this.getModelListObservable().subscribe(data => this.setDataSource(data));
         }
     }
 
     /**
      * Standard filtering function. Sufficient for most list views but can be overwritten
      */
-    protected onFilter(): void {
-        if (this.sortService) {
-            this.subscriptions.push(
-                this.filterService.filter().subscribe(filteredData => (this.sortService.data = filteredData))
-            );
-        } else {
-            this.filterService.filter().subscribe(filteredData => (this.dataSource.data = filteredData));
-        }
+    protected getModelListObservable(): Observable<V[]> {
+        return this.viewModelRepo.getViewModelListObservable();
     }
 
-    /**
-     * Standard sorting function. Sufficient for most list views but can be overwritten
-     */
-    protected onSort(): void {
-        this.subscriptions.push(
-            this.sortService.sort().subscribe(sortedData => {
-                // the dataArray needs to be cleared (since angular 7)
-                // changes are not detected properly anymore
-                this.dataSource.data = [];
-                this.dataSource.data = sortedData;
-                this.checkSelection();
-            })
-        );
+    private setDataSource(data: V[]): void {
+        // the dataArray needs to be cleared (since angular 7)
+        // changes are not detected properly anymore
+        this.dataSource.data = [];
+        this.dataSource.data = data;
+
+        this.checkSelection();
     }
 
     public onSortButton(itemProperty: string): void {

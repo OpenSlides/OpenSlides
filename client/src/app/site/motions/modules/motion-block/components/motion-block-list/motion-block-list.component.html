@@ -51,10 +51,10 @@
 
 <!-- Table -->
 <mat-card class="os-card">
-    <table class="os-headed-listview-table on-transition-fade" mat-table [dataSource]="dataSource" matSort>
+    <table class="os-headed-listview-table on-transition-fade" mat-table [dataSource]="dataSource">
         <!-- Projector column -->
         <ng-container matColumnDef="projector">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Projector</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
             <mat-cell *matCellDef="let block">
                 <os-projector-button [object]="block"></os-projector-button>
             </mat-cell>
@@ -62,13 +62,17 @@
 
         <!-- title column -->
         <ng-container matColumnDef="title">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> <span translate>Title</span> </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef>
+                <span translate>Title</span>
+            </mat-header-cell>
             <mat-cell *matCellDef="let block"> {{ block.title }} </mat-cell>
         </ng-container>
 
         <!-- amount column -->
         <ng-container matColumnDef="amount">
-            <mat-header-cell *matHeaderCellDef> <span translate>Motions</span> </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef>
+                <span translate>Motions</span>
+            </mat-header-cell>
             <mat-cell *matCellDef="let block">
                 <span class="os-amount-chip">{{ getMotionAmount(block.motionBlock) }}</span>
             </mat-cell>
@@ -76,7 +80,9 @@
 
         <!-- menu -->
         <ng-container matColumnDef="menu">
-            <mat-header-cell *matHeaderCellDef>Menu</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef>
+                <span translate>Menu</span>
+            </mat-header-cell>
             <mat-cell *matCellDef="let block">
                 <button
                     *ngIf="canEdit"

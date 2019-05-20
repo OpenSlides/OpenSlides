@@ -23,7 +23,9 @@ import { ViewAssignment, AssignmentPhases } from '../../models/view-assignment';
     templateUrl: './assignment-list.component.html',
     styleUrls: ['./assignment-list.component.scss']
 })
-export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignment, Assignment> implements OnInit {
+export class AssignmentListComponent
+    extends ListViewBaseComponent<ViewAssignment, Assignment, AssignmentRepositoryService>
+    implements OnInit {
     /**
      * The different phases of an assignment. Info is fetched from server
      */
@@ -57,7 +59,7 @@ export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignmen
         private router: Router,
         public operator: OperatorService
     ) {
-        super(titleService, translate, matSnackBar, route, storage, filterService, sortService);
+        super(titleService, translate, matSnackBar, repo, route, storage, filterService, sortService);
         // activate multiSelect mode for this list view
         this.canMultiSelect = true;
     }

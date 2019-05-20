@@ -66,7 +66,8 @@ interface InfoDialog {
     templateUrl: './motion-list.component.html',
     styleUrls: ['./motion-list.component.scss']
 })
-export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motion> implements OnInit {
+export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motion, MotionRepositoryService>
+    implements OnInit {
     /**
      * Reference to the dialog for quick editing meta information.
      */
@@ -130,15 +131,15 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
         matSnackBar: MatSnackBar,
         route: ActivatedRoute,
         storage: StorageService,
-        filterService: MotionFilterListService,
-        sortService: MotionSortListService,
+        public filterService: MotionFilterListService,
+        public sortService: MotionSortListService,
         private router: Router,
         private configService: ConfigService,
         private tagRepo: TagRepositoryService,
         private motionBlockRepo: MotionBlockRepositoryService,
         private categoryRepo: CategoryRepositoryService,
         private workflowRepo: WorkflowRepositoryService,
-        private motionRepo: MotionRepositoryService,
+        protected motionRepo: MotionRepositoryService,
         private motionCsvExport: MotionCsvExportService,
         private operator: OperatorService,
         private pdfExport: MotionPdfExportService,
@@ -148,7 +149,7 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
         public perms: LocalPermissionsService,
         private motionXlsxExport: MotionXlsxExportService
     ) {
-        super(titleService, translate, matSnackBar, route, storage, filterService, sortService);
+        super(titleService, translate, matSnackBar, motionRepo, route, storage, filterService, sortService);
 
         // enable multiSelect for this listView
         this.canMultiSelect = true;
@@ -357,23 +358,6 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
                 return false;
             }
             filter = filter ? filter.toLowerCase() : '';
-            if (
-                data.recommendation &&
-                this.translate
-                    .instant(data.recommendation.recommendation_label)
-                    .toLowerCase()
-                    .includes(filter)
-            ) {
-                return true;
-            }
-            if (
-                this.translate
-                    .instant(data.state.name)
-                    .toLowerCase()
-                    .includes(filter)
-            ) {
-                return true;
-            }
             if (data.submitters.length && data.submitters.find(user => user.full_name.toLowerCase().includes(filter))) {
                 return true;
             }
@@ -384,6 +368,24 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
                 return true;
             }
             if (data.identifier && data.identifier.toLowerCase().includes(filter)) {
+                return true;
+            }
+
+            if (
+                this.getStateLabel(data) &&
+                this.getStateLabel(data)
+                    .toLocaleLowerCase()
+                    .includes(filter)
+            ) {
+                return true;
+            }
+
+            if (
+                this.getRecommendationLabel(data) &&
+                this.getRecommendationLabel(data)
+                    .toLocaleLowerCase()
+                    .includes(filter)
+            ) {
                 return true;
             }
 

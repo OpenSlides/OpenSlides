@@ -1,19 +1,16 @@
-import { auditTime } from 'rxjs/operators';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 
-import { BaseRepository } from 'app/core/repositories/base-repository';
-import { BaseModel } from '../../shared/models/base/base-model';
+import { BaseModel } from 'app/shared/models/base/base-model';
+import { BaseRepository } from '../repositories/base-repository';
 import { BaseViewModel } from '../../site/base/base-view-model';
 import { StorageService } from '../core-services/storage.service';
 
 /**
  * Describes the available filters for a listView.
- * @param isActive: the current state of the filter
  * @param property: the ViewModel's property or method to filter by
  * @param label: An optional, different label (if not present, the property will be used)
- * @param condition: The conditions to be met for a successful display of data. These will
- * be updated by the {@link filterMenu}
  * @param options a list of available options for a filter
+ * @param count
  */
 export interface OsFilter {
     property: string;
@@ -37,20 +34,30 @@ export type OsFilterOptions = (OsFilterOption | string)[];
  */
 export interface OsFilterOption {
     label: string;
-    condition: string | boolean | number | number[];
+    condition: OsFilterOptionCondition;
     isActive?: boolean;
 }
+
+/**
+ * Define the type of a filter condition
+ */
+type OsFilterOptionCondition = string | boolean | number | number[];
 
 /**
  * Filter for the list view. List views can subscribe to its' dataService (providing filter definitions)
  * and will receive their filtered data as observable
  */
-
 export abstract class BaseFilterListService<V extends BaseViewModel> {
     /**
      * stores the currently used raw data to be used for the filter
      */
-    protected currentRawData: V[];
+    private inputData: V[];
+
+    /**
+     * Subscription for the inputData list.
+     * Acts as an semaphore for new filtered data
+     */
+    protected inputDataSubscription: Subscription;
 
     /**
      * The currently used filters.
@@ -58,227 +65,265 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
     public filterDefinitions: OsFilter[];
 
     /**
-     * The observable output for the filtered data
-     */
-    public filterDataOutput = new BehaviorSubject<V[]>([]);
-
-    protected filteredData: V[];
-
-    protected name: string;
-
-    /**
      * @returns the total count of items before the filter
      */
-    public get totalCount(): number {
-        return this.currentRawData ? this.currentRawData.length : 0;
+    public get unfilteredCount(): number {
+        return this.inputData ? this.inputData.length : 0;
+    }
+
+    /**
+     * The observable output for the filtered data
+     */
+    private readonly outputSubject = new BehaviorSubject<V[]>([]);
+
+    /**
+     * @return Observable data for the filtered output subject
+     */
+    public get outputObservable(): Observable<V[]> {
+        return this.outputSubject.asObservable();
     }
 
     /**
      * @returns the amount of items that pass the filter service's filters
      */
     public get filteredCount(): number {
-        return this.filteredData ? this.filteredData.length : 0;
+        return this.outputSubject.getValue().length;
     }
 
     /**
-     * Get the amount of filters currently in use by this filter Service
-     *
-     * @returns a number of filters
+     * @returns the amount of currently active filters
      */
     public get activeFilterCount(): number {
-        if (!this.filterDefinitions || !this.filterDefinitions.length) {
-            return 0;
-        }
-        let filters = 0;
-        for (const filter of this.filterDefinitions) {
-            if (filter.count) {
-                filters += 1;
-            }
-        }
-        return filters;
+        return this.filterDefinitions ? this.filterDefinitions.filter(filter => filter.count).length : 0;
     }
 
     /**
-     * Boolean indicationg if there are any filters described in this service
+     * Boolean indicating if there are any filters described in this service
      *
      * @returns true if there are defined filters (regardless of current state)
      */
     public get hasFilterOptions(): boolean {
-        return this.filterDefinitions && this.filterDefinitions.length ? true : false;
+        return !!this.filterDefinitions && this.filterDefinitions.length > 0;
     }
 
     /**
      * Constructor.
+     *
+     * @param name the name of the filter service
+     * @param store storage service, to read saved filter variables
      */
-    public constructor(protected store: StorageService, protected repo: BaseRepository<V, BaseModel>) {}
+    public constructor(protected name: string, private store: StorageService) {}
 
     /**
-     * Initializes the filterService. Returns the filtered data as Observable
+     * Initializes the filterService.
+     *
+     * @param inputData Observable array with ViewModels
      */
-    public filter(): Observable<V[]> {
-        this.repo
-            .getViewModelListObservable()
-            .pipe(auditTime(10))
-            .subscribe(data => {
-                this.currentRawData = data;
-                this.filteredData = this.filterData(data);
-                this.filterDataOutput.next(this.filteredData);
+    public async initFilters(inputData: Observable<V[]>): Promise<void> {
+        const storedFilter = await this.store.get<OsFilter[]>('filter_' + this.name);
+
+        if (storedFilter) {
+            this.filterDefinitions = storedFilter;
+        } else {
+            this.filterDefinitions = this.getFilterDefinitions();
+            this.storeActiveFilters();
+        }
+
+        if (this.inputDataSubscription) {
+            this.inputDataSubscription.unsubscribe();
+            this.inputDataSubscription = null;
+        }
+        this.inputDataSubscription = inputData.subscribe(data => {
+            this.inputData = data;
+            this.updateFilteredData();
+        });
+    }
+
+    /**
+     * Enforce children implement a method that returns actual filter definitions
+     */
+    protected abstract getFilterDefinitions(): OsFilter[];
+
+    /**
+     * Takes the filter definition from children and using {@link getFilterDefinitions}
+     * and sets/updates {@link filterDefinitions}
+     */
+    public setFilterDefinitions(): void {
+        if (this.filterDefinitions) {
+            const newDefinitions = this.getFilterDefinitions();
+            this.store.get('filter_' + this.name).then((storedDefinition: OsFilter[]) => {
+                for (const newDef of newDefinitions) {
+                    let count = 0;
+                    const matchingExistingFilter = storedDefinition.find(oldDef => oldDef.property === newDef.property);
+                    for (const option of newDef.options) {
+                        if (typeof option === 'object') {
+                            if (matchingExistingFilter && matchingExistingFilter.options) {
+                                const existingOption = matchingExistingFilter.options.find(
+                                    o =>
+                                        typeof o !== 'string' &&
+                                        JSON.stringify(o.condition) === JSON.stringify(option.condition)
+                                ) as OsFilterOption;
+                                if (existingOption) {
+                                    option.isActive = existingOption.isActive;
+                                }
+                                if (option.isActive) {
+                                    count++;
+                                }
+                            }
+                        }
+                    }
+                    newDef.count = count;
+                }
+
+                this.filterDefinitions = newDefinitions;
+                this.storeActiveFilters();
             });
-        this.loadStorageDefinition(this.filterDefinitions);
-        return this.filterDataOutput;
+        }
+    }
+
+    /**
+     * Helper function to get the `viewModelListObservable` of a given repository object and creates dynamic filters for them
+     *
+     * @param repo repository to create dynamic filters from
+     * @param filter the OSFilter for the filter property
+     * @param noneOptionLabel The label of the non option, if set
+     * @param exexcludeIds Set if certain ID's should be excluded from filtering
+     */
+    protected updateFilterForRepo(
+        repo: BaseRepository<BaseViewModel, BaseModel>,
+        filter: OsFilter,
+        noneOptionLabel?: string,
+        excludeIds?: number[]
+    ): void {
+        repo.getViewModelListObservable().subscribe(viewModel => {
+            if (viewModel && viewModel.length) {
+                let filterProperties: (OsFilterOption | string)[];
+
+                filterProperties = viewModel
+                    .filter(model => (excludeIds && excludeIds.length ? !excludeIds.includes(model.id) : true))
+                    .map(model => {
+                        return {
+                            condition: model.id,
+                            label: model.getTitle()
+                        };
+                    });
+
+                filterProperties.push('-');
+                filterProperties.push({
+                    condition: null,
+                    label: noneOptionLabel
+                });
+
+                filter.options = filterProperties;
+                this.setFilterDefinitions();
+            }
+        });
+    }
+
+    /**
+     * Update the filtered data and store the current filter options
+     */
+    public storeActiveFilters(): void {
+        this.updateFilteredData();
+        this.store.set('filter_' + this.name, this.filterDefinitions);
+    }
+
+    /**
+     * Applies current filters in {@link filterDefinitions} to the {@link inputData} list
+     * and publishes the filtered data to the observable {@link outputSubject}
+     */
+    private updateFilteredData(): void {
+        let filteredData: V[];
+        if (!this.inputData) {
+            filteredData = [];
+        } else {
+            const preFilteredList = this.preFilter(this.inputData);
+            if (preFilteredList) {
+                this.inputData = preFilteredList;
+            }
+
+            if (!this.filterDefinitions || !this.filterDefinitions.length) {
+                filteredData = this.inputData;
+            } else {
+                filteredData = this.inputData.filter(item =>
+                    this.filterDefinitions.every(filter => !filter.count || this.checkIncluded(item, filter))
+                );
+            }
+        }
+
+        this.outputSubject.next(filteredData);
+    }
+
+    /**
+     * Had to be overwritten by children if required
+     * Adds the possibility to filter the inputData before the user applied filter
+     *
+     * @param rawInputData will be set to {@link this.inputData}
+     * @returns should be a filtered version of `rawInputData`. Returns void if unused
+     */
+    protected preFilter(rawInputData: V[]): V[] | void {}
+
+    /**
+     * Toggles a filter option, to be called after a checkbox state has changed.
+     *
+     * @param filterName a filter name as string
+     * @param option filter option
+     */
+    public toggleFilterOption(filterName: string, option: OsFilterOption): void {
+        option.isActive ? this.removeFilterOption(filterName, option) : this.addFilterOption(filterName, option);
+        this.storeActiveFilters();
     }
 
     /**
      * Apply a newly created filter
-     * @param filter
+     *
+     * @param filterProperty new filter as string
+     * @param option filter option
      */
-    public addFilterOption(filterName: string, option: OsFilterOption): void {
-        const filter = this.filterDefinitions.find(f => f.property === filterName);
+    protected addFilterOption(filterProperty: string, option: OsFilterOption): void {
+        const filter = this.filterDefinitions.find(f => f.property === filterProperty);
         if (filter) {
             const filterOption = filter.options.find(
                 o => typeof o !== 'string' && o.condition === option.condition
             ) as OsFilterOption;
             if (filterOption && !filterOption.isActive) {
                 filterOption.isActive = true;
-                filter.count += 1;
+                if (!filter.count) {
+                    filter.count = 1;
+                } else {
+                    filter.count += 1;
+                }
             }
-            if (filter.count === 1) {
-                this.filteredData = this.filterData(this.filteredData);
-            } else {
-                this.filteredData = this.filterData(this.currentRawData);
-            }
-            this.filterDataOutput.next(this.filteredData);
-            this.setStorageDefinition();
         }
     }
 
     /**
      * Remove a filter option.
      *
-     * @param filterName: The property name of this filter
-     * @param option: The option to disable
+     * @param filterName The property name of this filter
+     * @param option The option to disable
      */
-    public removeFilterOption(filterName: string, option: OsFilterOption): void {
-        const filter = this.filterDefinitions.find(f => f.property === filterName);
+    protected removeFilterOption(filterProperty: string, option: OsFilterOption): void {
+        const filter = this.filterDefinitions.find(f => f.property === filterProperty);
         if (filter) {
             const filterOption = filter.options.find(
                 o => typeof o !== 'string' && o.condition === option.condition
             ) as OsFilterOption;
             if (filterOption && filterOption.isActive) {
                 filterOption.isActive = false;
-                filter.count -= 1;
-                this.filteredData = this.filterData(this.currentRawData);
-                this.filterDataOutput.next(this.filteredData);
-                this.setStorageDefinition();
-            }
-        }
-    }
-
-    /**
-     * Toggles a filter option, to be called after a checkbox state has changed.
-     * @param filterName
-     * @param option
-     */
-    public toggleFilterOption(filterName: string, option: OsFilterOption): void {
-        option.isActive ? this.removeFilterOption(filterName, option) : this.addFilterOption(filterName, option);
-    }
-
-    public updateFilterDefinitions(filters: OsFilter[]): void {
-        this.loadStorageDefinition(filters);
-    }
-
-    /**
-     * Retrieve the currently saved filter definition from the StorageService,
-     * check their match with current definitions and set the current filter
-     * @param definitions: Currently defined Filter definitions
-     */
-    protected loadStorageDefinition(definitions: OsFilter[]): void {
-        if (!definitions || !definitions.length) {
-            return;
-        }
-        const me = this;
-        this.store.get('filter_' + this.name).then(
-            function(storedData: { name: string; data: OsFilter[] }): void {
-                const storedFilters = storedData && storedData.data ? storedData.data : [];
-                definitions.forEach(definedFilter => {
-                    const matchingStoreFilter = storedFilters.find(f => f.property === definedFilter.property);
-                    let count = 0;
-                    definedFilter.options.forEach(option => {
-                        if (typeof option === 'string') {
-                            return;
-                        }
-                        if (matchingStoreFilter && matchingStoreFilter.options) {
-                            const storedOption = matchingStoreFilter.options.find(
-                                o =>
-                                    typeof o !== 'string' &&
-                                    (o.condition === option.condition ||
-                                        (Array.isArray(o.condition) &&
-                                            Array.isArray(option.condition) &&
-                                            o.label === option.label))
-                            ) as OsFilterOption;
-                            if (storedOption) {
-                                option.isActive = storedOption.isActive;
-                            }
-                        }
-                        if (option.isActive) {
-                            count += 1;
-                        }
-                    });
-                    definedFilter.count = count;
-                });
-                me.filterDefinitions = definitions;
-                me.filteredData = me.filterData(me.currentRawData);
-                me.filterDataOutput.next(me.filteredData);
-            },
-            function(error: any): void {
-                me.filteredData = me.filterData(me.currentRawData);
-                me.filterDataOutput.next(me.filteredData);
-            }
-        );
-    }
-
-    /**
-     * Save the current filter definitions via StorageService
-     */
-    private setStorageDefinition(): void {
-        this.store.set('filter_' + this.name, {
-            name: 'filter_' + this.name,
-            data: this.filterDefinitions
-        });
-    }
-
-    /**
-     * Takes an array of data and applies current filters
-     */
-    protected filterData(data: V[]): V[] {
-        const filteredData = [];
-        if (!data) {
-            return filteredData;
-        }
-        if (!this.filterDefinitions || !this.filterDefinitions.length) {
-            return data;
-        }
-        data.forEach(newItem => {
-            let excluded = false;
-            for (const filter of this.filterDefinitions) {
-                if (filter.count && !this.checkIncluded(newItem, filter)) {
-                    excluded = true;
-                    break;
+                if (filter.count) {
+                    filter.count -= 1;
                 }
             }
-            if (!excluded) {
-                filteredData.push(newItem);
-            }
-        });
-        return filteredData;
+        }
     }
 
     /**
      * Checks if a given ViewBaseModel passes the filter.
      *
-     * @param item
-     * @param filter
-     * @returns true if the item is to be dispalyed according to the filter
+     * @param item Usually a view model
+     * @param filter The filter to check
+     * @returns true if the item is to be displayed according to the filter
      */
     private checkIncluded(item: V, filter: OsFilter): boolean {
         const nullFilter = filter.options.find(
@@ -380,22 +425,30 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
 
     /**
      * Removes all active options of a given filter, clearing it
+     *
      * @param filter
+     * @param update
      */
-    public clearFilter(filter: OsFilter): void {
+    public clearFilter(filter: OsFilter, update: boolean = true): void {
         filter.options.forEach(option => {
             if (typeof option === 'object' && option.isActive) {
                 this.removeFilterOption(filter.property, option);
             }
         });
+        if (update) {
+            this.storeActiveFilters();
+        }
     }
 
     /**
      * Removes all filters currently in use from this filterService
      */
     public clearAllFilters(): void {
-        this.filterDefinitions.forEach(filter => {
-            this.clearFilter(filter);
-        });
+        if (this.filterDefinitions && this.filterDefinitions.length) {
+            this.filterDefinitions.forEach(filter => {
+                this.clearFilter(filter, false);
+            });
+            this.storeActiveFilters();
+        }
     }
 }

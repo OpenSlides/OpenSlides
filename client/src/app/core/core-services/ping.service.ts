@@ -51,7 +51,7 @@ export class PingService {
             isStable.resolve();
         });
 
-        await Promise.all([gotConstants.promise, isStable.promise]);
+        await Promise.all([gotConstants, isStable]);
 
         // Connects the ping-pong mechanism to the opening and closing of the connection.
         this.websocketService.closeEvent.subscribe(() => this.stopPing());

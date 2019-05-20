@@ -13,7 +13,7 @@
  * //
  * ```
  */
-export class Deferred<T = void> {
+export class Deferred<T = void> extends Promise<T> {
     /**
      * The promise to wait for
      */
@@ -28,9 +28,11 @@ export class Deferred<T = void> {
      * Creates the promise and overloads the resolve function
      */
     public constructor() {
-        this.promise = new Promise<T>(resolve => {
-            this.resolve = resolve;
+        let preResolve: (val?: T) => void;
+        super(resolve => {
+            preResolve = resolve;
         });
+        this._resolve = preResolve;
     }
 
     /**

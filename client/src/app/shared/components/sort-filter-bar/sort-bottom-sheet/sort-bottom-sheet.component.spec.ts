@@ -1,11 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { E2EImportsModule } from 'e2e-imports.module';
 
-import { OsSortBottomSheetComponent } from './os-sort-bottom-sheet.component';
+import { SortBottomSheetComponent } from './sort-bottom-sheet.component';
 
-describe('OsSortBottomSheetComponent', () => {
-    // let component: OsSortBottomSheetComponent<any>;
-    let fixture: ComponentFixture<OsSortBottomSheetComponent<any>>;
+describe('SortBottomSheetComponent', () => {
+    let fixture: ComponentFixture<SortBottomSheetComponent<any>>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -14,7 +13,7 @@ describe('OsSortBottomSheetComponent', () => {
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(OsSortBottomSheetComponent);
+        fixture = TestBed.createComponent(SortBottomSheetComponent);
         // component = fixture.componentInstance;
         fixture.detectChanges();
     });
