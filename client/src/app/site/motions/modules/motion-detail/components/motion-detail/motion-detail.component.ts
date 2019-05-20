@@ -656,7 +656,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
 
                 paragraphsToChoose.forEach(
                     (paragraph: ParagraphToChoose, paragraphNo: number): void => {
-                        if (formMotion.amendment_paragraphs[paragraphNo]) {
+                        if (formMotion.amendment_paragraphs[paragraphNo] !== null) {
                             this.contentForm.addControl(
                                 'text_' + paragraphNo,
                                 new FormControl('', Validators.required)

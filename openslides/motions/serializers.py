@@ -401,7 +401,8 @@ class MotionSerializer(ModelSerializer):
     modified_final_version = CharField(allow_blank=True, required=False)
     reason = CharField(allow_blank=True, required=False)
     state_restriction = SerializerMethodField()
-    text = CharField(allow_blank=True)
+    text = CharField(allow_blank=True, required=False)  # This will be checked
+    # during validation
     title = CharField(max_length=255)
     amendment_paragraphs = AmendmentParagraphsJSONSerializerField(required=False)
     workflow_id = IntegerField(
@@ -472,6 +473,7 @@ class MotionSerializer(ModelSerializer):
         if "reason" in data:
             data["reason"] = validate_html(data["reason"])
 
+        # The motion text is only needed, if it is not a paragraph based amendment.
         if "amendment_paragraphs" in data:
             data["amendment_paragraphs"] = list(
                 map(
@@ -483,7 +485,9 @@ class MotionSerializer(ModelSerializer):
             )
             data["text"] = ""
         else:
-            if "text" in data and not data["text"]:
+            if (self.partial and "text" in data and not data["text"]) or (
+                not self.partial and not data.get("text")
+            ):
                 raise ValidationError({"detail": "The text field may not be blank."})
         if config["motions_reason_required"]:
             if (self.partial and "reason" in data and not data["reason"]) or (
