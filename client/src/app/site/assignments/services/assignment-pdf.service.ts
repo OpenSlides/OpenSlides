@@ -243,8 +243,11 @@ export class AssignmentPdfService {
                     const conclusionLabel = this.translate.instant(this.pollService.getLabel(key));
                     const specialLabel = this.translate.instant(this.pollService.getSpecialLabel(poll[key]));
                     let percentLabel = '';
-                    if (!this.pollService.isAbstractValue(poll, key)) {
-                        percentLabel = ` (${this.pollService.getValuePercent(poll, key)}%)`;
+                    if (!this.pollService.isAbstractValue(this.pollService.calculationDataFromPoll(poll), key)) {
+                        percentLabel = ` (${this.pollService.getValuePercent(
+                            this.pollService.calculationDataFromPoll(poll),
+                            key
+                        )}%)`;
                     }
                     return [
                         {
@@ -302,10 +305,17 @@ export class AssignmentPdfService {
         let resultString = '';
         const label = this.translate.instant(this.pollService.getLabel(optionLabel));
         const valueString = this.pollService.getSpecialLabel(value);
-        const percentNr = this.pollService.getPercent(poll, pollOption, optionLabel);
+        const percentNr = this.pollService.getPercent(
+            this.pollService.calculationDataFromPoll(poll),
+            pollOption,
+            optionLabel
+        );
 
         resultString += `${label} ${valueString}`;
-        if (percentNr && !this.pollService.isAbstractOption(poll, pollOption, optionLabel)) {
+        if (
+            percentNr &&
+            !this.pollService.isAbstractOption(this.pollService.calculationDataFromPoll(poll), pollOption, optionLabel)
+        ) {
             resultString += ` (${percentNr}%)`;
         }
 

@@ -78,13 +78,6 @@ export class ViewAssignmentPoll implements Identifiable, Updateable, Projectable
         return this.poll.assignment_id;
     }
 
-    /**
-     * storing the base values for percentage calculations,
-     * to avoid recalculating pollBases too often
-     * (the calculation iterates through all pollOptions in some use cases)
-     */
-    public pollBase: number;
-
     public constructor(assignmentPoll: AssignmentPoll, assignmentPollOptions: ViewAssignmentPollOption[]) {
         this._assignmentPoll = assignmentPoll;
         this._assignmentPollOptions = assignmentPollOptions;
