@@ -165,12 +165,14 @@ export class PdfDocumentService {
         this.initFonts();
         this.imageUrls = imageUrls ? imageUrls : [];
         pdfMake.vfs = await this.initVfs();
+        const pageSize = this.configService.instant('general_export_pdf_pagesize');
+        const defaultMargins = pageSize === 'A5' ? [45, 30, 45, 45] : [75, 90, 75, 75];
         // needs to be done before, cause the footer is async
         this.loadFooterImages();
         const result = {
-            pageSize: 'A4',
+            pageSize: pageSize || 'A4',
             pageOrientation: landscape ? 'landscape' : 'portrait',
-            pageMargins: customMargins || [75, 90, 75, 75],
+            pageMargins: customMargins || defaultMargins,
             defaultStyle: {
                 font: 'PdfFont',
                 fontSize: this.configService.instant('general_export_pdf_fontsize')
