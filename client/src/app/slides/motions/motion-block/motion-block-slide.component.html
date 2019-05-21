@@ -4,17 +4,24 @@
         <h2><span translate>Motion block</span> – {{ data.data.motions.length }} <span translate>motions</span></h2>
     </div>
 
+    <div *ngIf="commonRecommendation" class="spacer-bottom-20">
+        <mat-basic-chip class="large" [ngClass]="getStateCssColor(0, 0)">
+            {{ commonRecommendation }}
+        </mat-basic-chip>
+    </div>
+
     <table>
         <tr *ngFor="let i of rowsArray">
             <td *ngFor="let j of columnsArray">
                 <ng-container *ngIf="getMotion(i, j)">
-                    <div class="ellipsis-overflow">
+                    <div class="ellipsis-overflow spacer-top-5">
                         {{ getMotionTitle(i, j) }}
-                    </div>
-                    <div class="white">
-                        <mat-basic-chip *ngIf="hasRecommendation(i, j)" disableRipple [ngClass]="getStateCssColor(i, j)" class="block-recommendation">
-                            {{ getRecommendationLabel(i, j) }}
-                        </mat-basic-chip>
+                        <br *ngIf="!shortDisplayStyle"/>
+                        <span class="white" *ngIf="!commonRecommendation && getMotion(i, j).recommendationLabel">
+                            <mat-basic-chip disableRipple [ngClass]="getStateCssColor(i, j)" class="block-recommendation">
+                                {{ getMotion(i, j).recommendationLabel }}
+                            </mat-basic-chip>
+                        </span>
                     </div>
                 </ng-container>
             </td>
