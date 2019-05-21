@@ -56,6 +56,8 @@ export class ItemRepositoryService extends BaseRepository<ViewItem, Item> {
             Motion,
             MotionBlock
         ]);
+
+        this.setSortFunction((a, b) => a.weight - b.weight);
     }
 
     public getVerboseName = (plural: boolean = false) => {
