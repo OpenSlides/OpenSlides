@@ -150,6 +150,20 @@ class MotionBlockAccessPermissions(BaseAccessPermissions):
 
     base_permission = "motions.can_see"
 
+    async def get_restricted_data(
+        self, full_data: List[Dict[str, Any]], user_id: int
+    ) -> List[Dict[str, Any]]:
+        """
+        Users without `motions.can_manage` cannot see internal blocks.
+        """
+        data: List[Dict[str, Any]] = []
+        if await async_has_perm(user_id, "motions.can_manage"):
+            data = full_data
+        else:
+            data = [full for full in full_data if not full["internal"]]
+
+        return data
+
 
 class WorkflowAccessPermissions(BaseAccessPermissions):
     """

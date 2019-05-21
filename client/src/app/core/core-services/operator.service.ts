@@ -342,7 +342,7 @@ export class OperatorService implements OnAfterAppsLoaded {
     public isInGroupIds(...groupIds: number[]): boolean {
         if (!this.isInGroupIdsNonAdminCheck(...groupIds)) {
             // An admin has all perms and is technically in every group.
-            return this.user.groups_id.includes(2);
+            return this.user && this.user.groups_id.includes(2);
         }
         return true;
     }

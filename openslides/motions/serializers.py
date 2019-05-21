@@ -82,6 +82,7 @@ class MotionBlockSerializer(ModelSerializer):
             "list_of_speakers_id",
             "agenda_type",
             "agenda_parent_id",
+            "internal",
         )
 
     def create(self, validated_data):

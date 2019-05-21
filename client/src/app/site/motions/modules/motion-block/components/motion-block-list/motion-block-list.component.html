@@ -4,7 +4,7 @@
 </os-head-bar>
 
 <!-- Creating a new motion block -->
-<mat-card class="os-card" *ngIf="blockToCreate">
+<mat-card class="os-card" *ngIf="isCreatingNewBlock">
     <mat-card-title translate>New motion block</mat-card-title>
     <mat-card-content>
         <form [formGroup]="createBlockForm" (keydown)="onKeyDown($event)">
@@ -16,6 +16,11 @@
                         A name is required
                     </mat-error>
                 </mat-form-field>
+            </p>
+
+            <!-- Internal -->
+            <p>
+                <mat-checkbox formControlName="internal"><span translate>Internal</span></mat-checkbox>
             </p>
 
             <!-- Parent item -->

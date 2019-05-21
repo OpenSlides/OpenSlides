@@ -1,7 +1,10 @@
 <os-head-bar [nav]="false">
     <!-- Title -->
     <div class="title-slot">
-        <h2 *ngIf="block && !editBlock">{{ block.title }}</h2>
+        <h2 *ngIf="block && !editBlock">
+            <mat-icon>lock</mat-icon>
+            {{ block.title }}
+        </h2>
 
         <form [formGroup]="blockEditForm" (ngSubmit)="saveBlock()" (keydown)="onKeyDown($event)" *ngIf="editBlock">
             <mat-form-field>
