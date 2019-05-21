@@ -35,6 +35,11 @@ export class ViewCsvCreateMotion extends ViewCreateMotion {
      */
     public csvSubmitters: CsvMapping[];
 
+    /**
+     * Mapping for new/existing tags.
+     */
+    public csvTags: CsvMapping[];
+
     public constructor(motion?: CreateMotion) {
         super(motion);
     }
@@ -114,6 +119,37 @@ export class ViewCsvCreateMotion extends ViewCreateMotion {
             }
         });
         this.motion.submitters_id = ids;
+        return open;
+    }
+
+    /**
+     * Function to iterate over the found tags.
+     *
+     * @param tags The mapping of the read tags.
+     *
+     * @returns {number} the number of open tags.
+     */
+    public solveTags(tags: CsvMapping[]): number {
+        let open = 0;
+        const ids: number[] = [];
+        for (const tag of this.csvTags) {
+            if (tag.id) {
+                ids.push(tag.id);
+                continue;
+            }
+            if (!tags.length) {
+                ++open;
+                continue;
+            }
+            const mapped = tags.find(_tag => _tag.name === tag.name);
+            if (mapped) {
+                tag.id = mapped.id;
+                ids.push(mapped.id);
+            } else {
+                ++open;
+            }
+        }
+        this.motion.tags_id = ids;
         return open;
     }
 }

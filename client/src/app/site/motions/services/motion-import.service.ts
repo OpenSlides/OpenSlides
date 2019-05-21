@@ -15,6 +15,8 @@ import { MotionRepositoryService } from 'app/core/repositories/motions/motion-re
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ViewCsvCreateMotion, CsvMapping } from '../models/view-csv-create-motion';
 import { ViewMotion } from '../models/view-motion';
+import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
+import { Tag } from 'app/shared/models/core/tag';
 
 /**
  * Service for motion imports
@@ -30,6 +32,7 @@ export class MotionImportService extends BaseImportService<ViewMotion> {
         MotionBlock: 'Could not resolve the motion block',
         Category: 'Could not resolve the category',
         Submitters: 'Could not resolve the submitters',
+        Tags: 'Could not resolve the tags',
         Title: 'A title is required',
         Text: "A content in the 'text' column is required",
         Duplicates: 'A motion with this identifier already exists.'
@@ -56,6 +59,11 @@ export class MotionImportService extends BaseImportService<ViewMotion> {
     public newMotionBlocks: CsvMapping[] = [];
 
     /**
+     * Mapping of the new tags for the imported motion.
+     */
+    public newTags: CsvMapping[] = [];
+
+    /**
      * Constructor. Defines the headers expected and calls the abstract class
      * @param repo: The repository for motions.
      * @param categoryRepo Repository to fetch pre-existing categories
@@ -70,6 +78,7 @@ export class MotionImportService extends BaseImportService<ViewMotion> {
         private categoryRepo: CategoryRepositoryService,
         private motionBlockRepo: MotionBlockRepositoryService,
         private userRepo: UserRepositoryService,
+        private tagRepo: TagRepositoryService,
         translate: TranslateService,
         papa: Papa,
         matSnackbar: MatSnackBar
@@ -85,6 +94,7 @@ export class MotionImportService extends BaseImportService<ViewMotion> {
         this.newSubmitters = [];
         this.newCategories = [];
         this.newMotionBlocks = [];
+        this.newTags = [];
     }
 
     /**
@@ -107,6 +117,9 @@ export class MotionImportService extends BaseImportService<ViewMotion> {
                     break;
                 case 'motion_block':
                     newEntry.csvMotionblock = this.getMotionBlock(line[idx]);
+                    break;
+                case 'tags':
+                    newEntry.csvTags = this.getTags(line[idx]);
                     break;
                 default:
                     newEntry.motion[this.expectedHeader[idx]] = line[idx];
@@ -138,6 +151,7 @@ export class MotionImportService extends BaseImportService<ViewMotion> {
         this.newMotionBlocks = await this.createNewMotionBlocks();
         this.newCategories = await this.createNewCategories();
         this.newSubmitters = await this.createNewUsers();
+        this.newTags = await this.createNewTags();
 
         for (const entry of this.entries) {
             if (entry.status !== 'new') {
@@ -158,6 +172,12 @@ export class MotionImportService extends BaseImportService<ViewMotion> {
             const openUsers = (entry.newEntry as ViewCsvCreateMotion).solveSubmitters(this.newSubmitters);
             if (openUsers) {
                 this.setError(entry, 'Submitters');
+                this.updatePreview();
+                continue;
+            }
+            const openTags = (entry.newEntry as ViewCsvCreateMotion).solveTags(this.newTags);
+            if (openTags) {
+                this.setError(entry, 'Tags');
                 this.updatePreview();
                 continue;
             }
@@ -277,6 +297,36 @@ export class MotionImportService extends BaseImportService<ViewMotion> {
     }
 
     /**
+     * Iterates over the given string separated by ','
+     * Creates for every found string a tag.
+     *
+     * @param tagList The list of tags as string.
+     *
+     * @returns {CsvMapping[]} The list of tags as csv-mapping.
+     */
+    public getTags(tagList: string): CsvMapping[] {
+        const result: CsvMapping[] = [];
+        if (!tagList) {
+            return result;
+        }
+
+        const tagArray = tagList.split(',');
+        for (let tag of tagArray) {
+            tag = tag.trim();
+            const existingTag = this.tagRepo.getViewModelList().find(tagInRepo => tagInRepo.name === tag);
+            if (existingTag) {
+                result.push({ id: existingTag.id, name: existingTag.name });
+            } else {
+                if (!this.newTags.find(entry => entry.name === tag)) {
+                    this.newTags.push({ name: tag });
+                }
+                result.push({ name: tag });
+            }
+        }
+        return result;
+    }
+
+    /**
      * Creates all new Users needed for the import.
      *
      * @returns a promise with list of new Submitters, updated with newly created ids
@@ -326,6 +376,23 @@ export class MotionImportService extends BaseImportService<ViewMotion> {
                     .then(identifiable => {
                         return { name: category.name, id: identifiable.id };
                     })
+            );
+        }
+        return await Promise.all(promises);
+    }
+
+    /**
+     * Combines all tags which are new created to one promise.
+     *
+     * @returns {Promise} One promise containing all promises to create a new tag.
+     */
+    private async createNewTags(): Promise<CsvMapping[]> {
+        const promises: Promise<CsvMapping>[] = [];
+        for (const tag of this.newTags) {
+            promises.push(
+                this.tagRepo
+                    .create(new Tag({ name: tag.name }))
+                    .then(identifiable => ({ name: tag.name, id: identifiable.id }))
             );
         }
         return await Promise.all(promises);

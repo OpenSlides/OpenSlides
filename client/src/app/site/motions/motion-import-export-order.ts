@@ -26,7 +26,7 @@ export const noMetaData: string[] = ['identifier', 'title', 'text', 'reason'];
  * Subset of {@link motionImportExportHeaderOrder} properties that are
  * restricted to export only due to database or workflow limitations
  */
-export const motionExportOnly: string[] = ['id', 'recommendation', 'state', 'tags'];
+export const motionExportOnly: string[] = ['id', 'recommendation', 'state'];
 
 /**
  * reorders the exported properties according to motionImportExportHeaderOrder
