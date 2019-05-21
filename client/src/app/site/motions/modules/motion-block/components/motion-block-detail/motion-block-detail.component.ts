@@ -1,7 +1,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { MatSnackBar, MatDialog } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -33,15 +33,16 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
     public block: ViewMotionBlock;
 
     /**
-     * Determine the edit mode
-     */
-    public editBlock = false;
-
-    /**
      * The form to edit blocks
      */
     @ViewChild('blockEditForm')
     public blockEditForm: FormGroup;
+
+    /**
+     * Reference to the template for edit-dialog
+     */
+    @ViewChild('editDialog')
+    private editDialog: TemplateRef<string>;
 
     /**
      * Constructor for motion block details
@@ -66,7 +67,9 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
         private router: Router,
         protected repo: MotionBlockRepositoryService,
         protected motionRepo: MotionRepositoryService,
-        private promptService: PromptService
+        private promptService: PromptService,
+        private fb: FormBuilder,
+        private dialog: MatDialog
     ) {
         super(titleService, translate, matSnackBar, motionRepo, route, storage);
     }
@@ -79,10 +82,6 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
         super.setTitle('Motion block');
         this.initTable();
         const blockId = parseInt(this.route.snapshot.params.id, 10);
-
-        this.blockEditForm = new FormGroup({
-            title: new FormControl('', Validators.required)
-        });
 
         // pseudo filter
         this.subscriptions.push(
@@ -171,7 +170,7 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
      */
     public onKeyDown(event: KeyboardEvent): void {
         if (event.key === 'Escape') {
-            this.editBlock = false;
+            this.dialog.closeAll();
         }
     }
 
@@ -191,15 +190,33 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
      * Save event handler
      */
     public saveBlock(): void {
-        this.editBlock = false;
-        this.repo.update(this.blockEditForm.value as MotionBlock, this.block);
+        this.repo
+            .update(this.blockEditForm.value as MotionBlock, this.block)
+            .then(() => this.dialog.closeAll())
+            .catch(this.raiseError);
     }
 
     /**
      * Click handler for the edit button
      */
     public toggleEditMode(): void {
-        this.editBlock = !this.editBlock;
+        this.blockEditForm = this.fb.group({
+            title: [this.block.title, Validators.required],
+            internal: [this.block.internal]
+        });
+
+        const dialogRef = this.dialog.open(this.editDialog, {
+            width: '400px',
+            maxWidth: '90vw',
+            maxHeight: '90vh',
+            disableClose: true
+        });
+
+        dialogRef.keydownEvents().subscribe((event: KeyboardEvent) => {
+            if (event.key === 'Enter' && event.shiftKey) {
+                this.saveBlock();
+            }
+        });
     }
 
     /**

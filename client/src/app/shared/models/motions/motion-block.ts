@@ -9,6 +9,7 @@ export class MotionBlock extends BaseModelWithAgendaItemAndListOfSpeakers<Motion
 
     public id: number;
     public title: string;
+    public internal: boolean;
 
     public constructor(input?: any) {
         super(MotionBlock.COLLECTIONSTRING, input);
