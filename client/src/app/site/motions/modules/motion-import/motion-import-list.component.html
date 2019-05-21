@@ -228,6 +228,26 @@
                 </mat-cell>
             </ng-container>
 
+            <!-- tag column -->
+            <ng-container matColumnDef="tags">
+                <mat-header-cell *matHeaderCellDef translate>Tags</mat-header-cell>
+                <mat-cell *matCellDef="let entry">
+                    <div *ngIf="entry.newEntry.csvTags">
+                        <mat-icon
+                            color="warn"
+                            *ngIf="hasError(entry, 'Tags')"
+                            matTooltip="{{ getVerboseError('Tags') | translate }}"
+                        >
+                        warning
+                        </mat-icon>
+                        <div *ngFor="let tag of entry.newEntry.csvTags">
+                            {{ tag.name }}
+                            <mat-icon class="newBadge" color="accent" inline *ngIf="!tag.id">add</mat-icon>
+                        </div>
+                    </div>
+                </mat-cell>
+            </ng-container>
+
             <!-- origin column -->
             <ng-container matColumnDef="origin">
                 <mat-header-cell *matHeaderCellDef translate>Origin</mat-header-cell>

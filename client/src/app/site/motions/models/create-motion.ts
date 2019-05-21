@@ -11,6 +11,8 @@ export class CreateMotion extends Motion {
 
     public motion_block_id: number;
 
+    public tags_id: number[];
+
     public constructor(input?: any) {
         super(input);
     }

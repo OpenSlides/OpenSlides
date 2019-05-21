@@ -145,11 +145,31 @@ export class MotionCsvExportService {
 
     // TODO does not reflect updated export order. any more. Hard coded for now
     public exportDummyMotion(): void {
-        const headerRow = ['Identifier', 'Title', 'Text', 'Reason', 'Submitters', 'Category', 'Origin', 'Motion block'];
+        const headerRow = [
+            'Identifier',
+            'Title',
+            'Text',
+            'Reason',
+            'Submitters',
+            'Category',
+            'Tags',
+            'Origin',
+            'Motion block'
+        ];
         const rows = [
-            ['A1', 'Title 1', 'Text 1', 'Reason 1', 'Submitter A', 'Category A', 'Last Year Conference A', 'Block A'],
-            ['B1', 'Title 2', 'Text 2', 'Reason 2', 'Submitter B', 'Category B', null, 'Block A'],
-            [null, 'Title 3', 'Text 3', null, null, null, null, null]
+            [
+                'A1',
+                'Title 1',
+                'Text 1',
+                'Reason 1',
+                'Submitter A',
+                'Category A',
+                'Tag 1, Tag 2',
+                'Last Year Conference A',
+                'Block A'
+            ],
+            ['B1', 'Title 2', 'Text 2', 'Reason 2', 'Submitter B', 'Category B', null, null, 'Block A'],
+            [null, 'Title 3', 'Text 3', null, null, null, null, null, null]
         ];
         this.csvExport.dummyCSVExport(headerRow, rows, `${this.translate.instant('motions-example')}.csv`);
     }
