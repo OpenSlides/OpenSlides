@@ -122,7 +122,7 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
     public async initFilters(inputData: Observable<V[]>): Promise<void> {
         const storedFilter = await this.store.get<OsFilter[]>('filter_' + this.name);
 
-        if (storedFilter) {
+        if (storedFilter && this.isOsFilter(storedFilter)) {
             this.filterDefinitions = storedFilter;
         } else {
             this.filterDefinitions = this.getFilterDefinitions();
@@ -137,6 +137,29 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
             this.inputData = data;
             this.updateFilteredData();
         });
+    }
+
+    /**
+     * Checks if the (stored) filter list matches the current definition of OsFilter
+     *
+     * @param storedFilter
+     * @returns boolean
+     */
+    private isOsFilter(storedFilter: OsFilter[]): boolean {
+        if (Array.isArray(storedFilter) && storedFilter.length) {
+            return storedFilter.every(filter => {
+                // Interfaces do not exist at runtime. Manually check if the
+                // Required information of the interface are present
+                return (
+                    filter.hasOwnProperty('options') &&
+                    filter.hasOwnProperty('property') &&
+                    filter.options.length &&
+                    !!filter.property
+                );
+            });
+        } else {
+            return false;
+        }
     }
 
     /**
