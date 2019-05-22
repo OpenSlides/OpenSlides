@@ -57,7 +57,15 @@ export class ItemRepositoryService extends BaseRepository<ViewItem, Item> {
             MotionBlock
         ]);
 
-        this.setSortFunction((a, b) => a.weight - b.weight);
+        this.setSortFunction((a, b) => {
+            // TODO: In some occasions weight will be undefined, if the user has not the correct set of permission.
+            //       That should not be the case here.
+            if (a.weight && b.weight) {
+                return a.weight - b.weight;
+            } else {
+                return -1;
+            }
+        });
     }
 
     public getVerboseName = (plural: boolean = false) => {
