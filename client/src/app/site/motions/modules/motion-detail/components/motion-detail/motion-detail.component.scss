@@ -156,6 +156,12 @@ span {
     }
 }
 
+.mobile-view {
+    .os-card {
+        padding: 27px;
+        max-width: calc(100% - 54px);
+    }
+}
 .title-line {
     display: flex;
 }

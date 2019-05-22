@@ -132,18 +132,15 @@
 </div>
 
 <ng-template #mobileView>
-    <div *ngIf="motion">
-        <!-- Meta info -->
-        <div class="hspacing"><ng-container *ngTemplateOutlet="metaInfoTemplate"></ng-container></div>
+    <div *ngIf="motion" class="mobile-view">
 
-        <mat-divider *ngIf="!editMotion" class="spacer-top-10 spacer-bottom-20"></mat-divider>
+        <!-- Meta info -->
+        <div class="on-transition-fade"><ng-container *ngTemplateOutlet="metaInfoTemplate"></ng-container></div>
 
         <!-- Content -->
-        <div class="hspacing" [ngClass]="editMotion ? 'os-form-card-mobile' : 'os-card-mobile'">
+        <mat-card [ngClass]="editMotion ? 'os-form-card-mobile' : 'os-card'">
             <ng-container *ngTemplateOutlet="contentTemplate"></ng-container>
-        </div>
-
-        <mat-divider *ngIf="!editMotion" class="spacer-top-10 spacer-bottom-20"></mat-divider>
+        </mat-card>
 
         <!-- Comments -->
         <os-motion-comments *ngIf="!editMotion" [motion]="motion"></os-motion-comments>
@@ -157,9 +154,7 @@
     <div class="desktop-view" *ngIf="motion">
         <div class="desktop-left on-transition-fade">
             <!-- Meta Info -->
-            <div class="meta-info-block meta-info-desktop">
-                <ng-container *ngTemplateOutlet="metaInfoTemplate"></ng-container>
-            </div>
+            <div><ng-container *ngTemplateOutlet="metaInfoTemplate"></ng-container></div>
 
             <os-motion-comments *ngIf="!editMotion" [motion]="motion"></os-motion-comments>
             <os-personal-note *ngIf="!editMotion && !operator.isAnonymous" [motion]="motion"></os-personal-note>
