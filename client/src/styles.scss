@@ -266,6 +266,7 @@ mat-card {
     margin-left: auto !important;
     margin-right: auto !important;
     font-size: 16px;
+    padding: 27px;
 
     .mat-form-field {
         width: 100%;
@@ -274,6 +275,9 @@ mat-card {
 }
 
 .os-form-card-mobile {
+    margin-top: 20px !important;
+    margin-bottom: 20px !important;
+
     .mat-form-field,
     .mat-select {
         width: 100%;
@@ -498,6 +502,9 @@ button.mat-menu-item.selected {
 }
 
 /** helper classes for margin/padding */
+.spacer-top-3 {
+    margin-top: 3px !important;
+}
 .spacer-top-10 {
     margin-top: 10px !important;
 }
