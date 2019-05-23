@@ -150,12 +150,7 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
             return storedFilter.every(filter => {
                 // Interfaces do not exist at runtime. Manually check if the
                 // Required information of the interface are present
-                return (
-                    filter.hasOwnProperty('options') &&
-                    filter.hasOwnProperty('property') &&
-                    filter.options.length &&
-                    !!filter.property
-                );
+                return filter.hasOwnProperty('options') && filter.hasOwnProperty('property') && !!filter.property;
             });
         } else {
             return false;
