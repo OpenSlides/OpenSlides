@@ -1,14 +1,5 @@
-import { Speaker } from './speaker';
-import { BaseModel } from '../base/base-model';
-
-/**
- * The representation of the content object for agenda items. The unique combination
- * of the collection and id is given.
- */
-interface ContentObject {
-    id: number;
-    collection: string;
-}
+import { ContentObject } from '../base/content-object';
+import { BaseModelWithContentObject } from '../base/base-model-with-content-object';
 
 /**
  * Determine visibility states for agenda items
@@ -24,19 +15,36 @@ export const itemVisibilityChoices = [
  * Representations of agenda Item
  * @ignore
  */
-export class Item extends BaseModel<Item> {
+export class Item extends BaseModelWithContentObject<Item> {
     public static COLLECTIONSTRING = 'agenda/item';
 
+    // TODO: remove this, if the server can properly include the agenda item number
+    // in the title information. See issue #4738
+    private _itemNumber: string;
+    private _titleInformation: any;
+
     public id: number;
-    public item_number: string;
-    public title_information: object;
+    public get item_number(): string {
+        return this._itemNumber;
+    }
+    public set item_number(val: string) {
+        this._itemNumber = val;
+        if (this._titleInformation) {
+            this._titleInformation.agenda_item_number = this.item_number;
+        }
+    }
+    public get title_information(): object {
+        return this._titleInformation;
+    }
+    public set title_information(val: object) {
+        this._titleInformation = val;
+        this._titleInformation.agenda_item_number = this.item_number;
+    }
     public comment: string;
     public closed: boolean;
     public type: number;
     public is_hidden: boolean;
     public duration: number; // minutes
-    public speakers: Speaker[];
-    public speaker_list_closed: boolean;
     public content_object: ContentObject;
     public weight: number;
     public parent_id: number;
@@ -44,15 +52,5 @@ export class Item extends BaseModel<Item> {
 
     public constructor(input?: any) {
         super(Item.COLLECTIONSTRING, input);
-    }
-
-    public deserialize(input: any): void {
-        Object.assign(this, input);
-
-        if (input.speakers instanceof Array) {
-            this.speakers = input.speakers.map(speakerData => {
-                return new Speaker(speakerData);
-            });
-        }
     }
 }

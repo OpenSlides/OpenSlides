@@ -1,6 +1,6 @@
 from openslides.utils.rest_api import JSONField, ModelSerializer, RelatedField
 
-from .models import Item, Speaker
+from .models import Item, ListOfSpeakers, Speaker
 
 
 class SpeakerSerializer(ModelSerializer):
@@ -10,15 +10,7 @@ class SpeakerSerializer(ModelSerializer):
 
     class Meta:
         model = Speaker
-        fields = (
-            "id",
-            "user",
-            "begin_time",
-            "end_time",
-            "weight",
-            "marked",
-            "item",  # js-data needs the item-id in the nested object to define relations.
-        )
+        fields = ("id", "user", "begin_time", "end_time", "weight", "marked")
 
 
 class RelatedItemRelatedField(RelatedField):
@@ -40,7 +32,6 @@ class ItemSerializer(ModelSerializer):
     """
 
     content_object = RelatedItemRelatedField(read_only=True)
-    speakers = SpeakerSerializer(many=True, read_only=True)
 
     title_information = JSONField(read_only=True)
 
@@ -56,10 +47,24 @@ class ItemSerializer(ModelSerializer):
             "is_internal",
             "is_hidden",
             "duration",
-            "speakers",
-            "speaker_list_closed",
             "content_object",
             "weight",
             "parent",
             "level",
         )
+
+
+class ListOfSpeakersSerializer(ModelSerializer):
+    """
+    Serializer for agenda.models.Item objects.
+    """
+
+    content_object = RelatedItemRelatedField(read_only=True)
+    speakers = SpeakerSerializer(many=True, read_only=True)
+
+    title_information = JSONField(read_only=True)
+
+    class Meta:
+        model = ListOfSpeakers
+        fields = ("id", "title_information", "speakers", "closed", "content_object")
+        read_only_fields = ("id", "title_information", "speakers", "content_object")

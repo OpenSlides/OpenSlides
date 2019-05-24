@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 
+import { TranslateService } from '@ngx-translate/core';
+
 import { BaseRepository } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { Identifiable } from 'app/shared/models/base/identifiable';
-import { ViewProjector } from 'app/site/projector/models/view-projector';
+import { ViewProjector, ProjectorTitleInformation } from 'app/site/projector/models/view-projector';
 import { Projector } from 'app/shared/models/core/projector';
 import { HttpService } from 'app/core/core-services/http.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
-import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Directions for scale and scroll requests.
@@ -26,7 +27,7 @@ export enum ScrollScaleDirection {
 @Injectable({
     providedIn: 'root'
 })
-export class ProjectorRepositoryService extends BaseRepository<ViewProjector, Projector> {
+export class ProjectorRepositoryService extends BaseRepository<ViewProjector, Projector, ProjectorTitleInformation> {
     /**
      * Constructor calls the parent constructor
      *
@@ -46,14 +47,16 @@ export class ProjectorRepositoryService extends BaseRepository<ViewProjector, Pr
         super(DS, dataSend, mapperService, viewModelStoreService, translate, Projector, [Projector]);
     }
 
+    public getTitle = (titleInformation: ProjectorTitleInformation) => {
+        return titleInformation.name;
+    };
+
     public getVerboseName = (plural: boolean = false) => {
         return this.translate.instant(plural ? 'Projectors' : 'Projector');
     };
 
     public createViewModel(projector: Projector): ViewProjector {
-        const viewProjector = new ViewProjector(projector);
-        viewProjector.getVerboseName = this.getVerboseName;
-        return viewProjector;
+        return new ViewProjector(projector);
     }
 
     /**

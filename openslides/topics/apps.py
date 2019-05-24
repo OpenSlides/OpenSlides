@@ -4,7 +4,6 @@ from django.apps import AppConfig
 class TopicsAppConfig(AppConfig):
     name = "openslides.topics"
     verbose_name = "OpenSlides Topics"
-    angular_site_module = True
 
     def ready(self):
         # Import all required stuff.

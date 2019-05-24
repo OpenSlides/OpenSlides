@@ -10,21 +10,19 @@ export const StateCssClassMapping = {
     warning: 'yellow'
 };
 
+export interface WorkflowTitleInformation {
+    name: string;
+}
+
 /**
  * class for the ViewWorkflow.
  * @ignore
  */
-export class ViewWorkflow extends BaseViewModel {
+export class ViewWorkflow extends BaseViewModel<Workflow> implements WorkflowTitleInformation {
     public static COLLECTIONSTRING = Workflow.COLLECTIONSTRING;
 
-    private _workflow: Workflow;
-
     public get workflow(): Workflow {
-        return this._workflow;
-    }
-
-    public get id(): number {
-        return this.workflow.id;
+        return this._model;
     }
 
     public get name(): string {
@@ -43,26 +41,12 @@ export class ViewWorkflow extends BaseViewModel {
         return this.getStateById(this.first_state_id);
     }
 
-    /**
-     * This is set by the repository
-     */
-    public getVerboseName;
-
     public constructor(workflow: Workflow) {
-        super(Workflow.COLLECTIONSTRING);
-        this._workflow = workflow;
+        super(Workflow.COLLECTIONSTRING, workflow);
     }
-
-    public getTitle = () => {
-        return this.name;
-    };
 
     public sortStates(): void {
         this.workflow.sortStates();
-    }
-
-    public getModel(): Workflow {
-        return this.workflow;
     }
 
     /**

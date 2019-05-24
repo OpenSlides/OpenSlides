@@ -2,6 +2,10 @@ import { BaseViewModel } from '../../base/base-view-model';
 import { MotionCommentSection } from 'app/shared/models/motions/motion-comment-section';
 import { ViewGroup } from 'app/site/users/models/view-group';
 
+export interface MotionCommentSectionTitleInformation {
+    name: string;
+}
+
 /**
  * Motion comment section class for the View
  *
@@ -9,16 +13,15 @@ import { ViewGroup } from 'app/site/users/models/view-group';
  * Provides "safe" access to variables and functions in {@link MotionCommentSection}
  * @ignore
  */
-export class ViewMotionCommentSection extends BaseViewModel {
+export class ViewMotionCommentSection extends BaseViewModel<MotionCommentSection>
+    implements MotionCommentSectionTitleInformation {
     public static COLLECTIONSTRING = MotionCommentSection.COLLECTIONSTRING;
-
-    private _section: MotionCommentSection;
 
     private _readGroups: ViewGroup[];
     private _writeGroups: ViewGroup[];
 
     public get section(): MotionCommentSection {
-        return this._section;
+        return this._model;
     }
 
     public get id(): number {
@@ -45,28 +48,17 @@ export class ViewMotionCommentSection extends BaseViewModel {
         return this._writeGroups;
     }
 
+    /**
+     * TODO: Where is this needed? Try to avoid this.
+     */
     public set name(name: string) {
-        this._section.name = name;
+        this._model.name = name;
     }
 
-    /**
-     * This is set by the repository
-     */
-    public getVerboseName;
-
-    public constructor(section: MotionCommentSection, readGroups: ViewGroup[], writeGroups: ViewGroup[]) {
-        super(MotionCommentSection.COLLECTIONSTRING);
-        this._section = section;
+    public constructor(motionCommentSection: MotionCommentSection, readGroups: ViewGroup[], writeGroups: ViewGroup[]) {
+        super(MotionCommentSection.COLLECTIONSTRING, motionCommentSection);
         this._readGroups = readGroups;
         this._writeGroups = writeGroups;
-    }
-
-    public getTitle = () => {
-        return this.name;
-    };
-
-    public getModel(): MotionCommentSection {
-        return this.section;
     }
 
     /**

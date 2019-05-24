@@ -12,11 +12,11 @@ import { Motion } from 'app/shared/models/motions/motion';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { MotionRepositoryService } from './motion-repository.service';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
-import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
+import { ViewMotionBlock, MotionBlockTitleInformation } from 'app/site/motions/models/view-motion-block';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
-import { Item } from 'app/shared/models/agenda/item';
 import { ViewItem } from 'app/site/agenda/models/view-item';
-import { BaseAgendaContentObjectRepository } from '../base-agenda-content-object-repository';
+import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
+import { BaseIsAgendaItemAndListOfSpeakersContentObjectRepository } from '../base-is-agenda-item-and-list-of-speakers-content-object-repository';
 
 /**
  * Repository service for motion blocks
@@ -24,7 +24,11 @@ import { BaseAgendaContentObjectRepository } from '../base-agenda-content-object
 @Injectable({
     providedIn: 'root'
 })
-export class MotionBlockRepositoryService extends BaseAgendaContentObjectRepository<ViewMotionBlock, MotionBlock> {
+export class MotionBlockRepositoryService extends BaseIsAgendaItemAndListOfSpeakersContentObjectRepository<
+    ViewMotionBlock,
+    MotionBlock,
+    MotionBlockTitleInformation
+> {
     /**
      * Constructor for the motion block repository
      *
@@ -43,16 +47,12 @@ export class MotionBlockRepositoryService extends BaseAgendaContentObjectReposit
         private motionRepo: MotionRepositoryService,
         private httpService: HttpService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, MotionBlock, [Item]);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, MotionBlock);
         this.initSorting();
     }
 
-    public getAgendaTitle = (motionBlock: Partial<MotionBlock> | Partial<ViewMotionBlock>) => {
-        return motionBlock.title;
-    };
-
-    public getAgendaTitleWithType = (motionBlock: Partial<MotionBlock> | Partial<ViewMotionBlock>) => {
-        return motionBlock.title + ' (' + this.getVerboseName() + ')';
+    public getTitle = (titleInformation: MotionBlockTitleInformation) => {
+        return titleInformation.title;
     };
 
     public getVerboseName = (plural: boolean = false) => {
@@ -67,11 +67,8 @@ export class MotionBlockRepositoryService extends BaseAgendaContentObjectReposit
      */
     protected createViewModel(block: MotionBlock): ViewMotionBlock {
         const item = this.viewModelStoreService.get(ViewItem, block.agenda_item_id);
-        const viewMotionBlock = new ViewMotionBlock(block, item);
-        viewMotionBlock.getVerboseName = this.getVerboseName;
-        viewMotionBlock.getAgendaTitle = () => this.getAgendaTitle(viewMotionBlock);
-        viewMotionBlock.getAgendaTitleWithType = () => this.getAgendaTitleWithType(viewMotionBlock);
-        return viewMotionBlock;
+        const listOfSpeakers = this.viewModelStoreService.get(ViewListOfSpeakers, block.list_of_speakers_id);
+        return new ViewMotionBlock(block, item, listOfSpeakers);
     }
 
     /**

@@ -7,7 +7,6 @@ from django.db.models.signals import post_migrate
 class MotionsAppConfig(AppConfig):
     name = "openslides.motions"
     verbose_name = "OpenSlides Motion"
-    angular_site_module = True
 
     def ready(self):
         # Import all required stuff.

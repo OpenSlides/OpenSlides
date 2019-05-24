@@ -28,12 +28,7 @@
                 <span translate>PDF</span>
             </button>
             <!-- List of speakers -->
-            <div *ngIf="assignment.agendaItem">
-                <button mat-menu-item [routerLink]="getSpeakerLink()" *osPerms="'agenda.can_see'">
-                    <mat-icon>mic</mat-icon>
-                    <span translate>List of speakers</span>
-                </button>
-            </div>
+            <os-speaker-button [object]="assignment" [menuItem]="true"></os-speaker-button>
         </div>
         <!-- Project -->
         <os-projector-button [object]="assignment" [menuItem]="true"></os-projector-button>
@@ -62,7 +57,9 @@
 
 <ng-template #metaInfoTemplate>
     <mat-card class="os-card " *ngIf="assignment">
-        <h1>{{ assignment.getTitle() }}</h1>
+        <div *ngIf="!editAssignment && assignment.getTitle">
+            <h1>{{ assignment.getTitle() }}</h1>
+        </div>
         <div *ngIf="assignment">
             <div *ngIf="assignment.assignment.description" [innerHTML]="assignment.assignment.description"></div>
         </div>
@@ -227,7 +224,7 @@
                         matInput
                         placeholder="{{ 'Title' | translate }}"
                         formControlName="title"
-                        [value]="assignmentCopy.getTitle() || ''"
+                        [value]="assignmentCopy.title || ''"
                     />
                 </mat-form-field>
             </div>

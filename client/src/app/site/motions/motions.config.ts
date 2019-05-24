@@ -15,7 +15,7 @@ import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
 import { ViewCategory } from './models/view-category';
 import { ViewMotionCommentSection } from './models/view-motion-comment-section';
-import { ViewMotionChangeRecommendation } from './models/view-change-recommendation';
+import { ViewMotionChangeRecommendation } from './models/view-motion-change-recommendation';
 import { ViewMotionBlock } from './models/view-motion-block';
 import { ViewStatuteParagraph } from './models/view-statute-paragraph';
 import { ViewMotion } from './models/view-motion';

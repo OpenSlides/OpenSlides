@@ -1,11 +1,13 @@
 import { Projectable, ProjectorElementBuildDeskriptor } from './projectable';
 import { BaseViewModel } from './base-view-model';
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { BaseModel } from 'app/shared/models/base/base-model';
 
 /**
  * Base view class for projectable models.
  */
-export abstract class BaseProjectableViewModel extends BaseViewModel implements Projectable {
+export abstract class BaseProjectableViewModel<M extends BaseModel = any> extends BaseViewModel<M>
+    implements Projectable {
     public abstract getSlide(configService?: ConfigService): ProjectorElementBuildDeskriptor;
 
     /**

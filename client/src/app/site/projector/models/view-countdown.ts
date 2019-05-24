@@ -3,17 +3,16 @@ import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-mo
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 
-export class ViewCountdown extends BaseProjectableViewModel {
+export interface CountdownTitleInformation {
+    title: string;
+    description?: string;
+}
+
+export class ViewCountdown extends BaseProjectableViewModel<Countdown> implements CountdownTitleInformation {
     public static COLLECTIONSTRING = Countdown.COLLECTIONSTRING;
 
-    private _countdown: Countdown;
-
     public get countdown(): Countdown {
-        return this._countdown;
-    }
-
-    public get id(): number {
-        return this.countdown.id;
+        return this._model;
     }
 
     public get running(): boolean {
@@ -36,26 +35,8 @@ export class ViewCountdown extends BaseProjectableViewModel {
         return this.countdown.title;
     }
 
-    /**
-     * This is set by the repository
-     */
-    public getVerboseName;
-
     public constructor(countdown: Countdown) {
-        super(Countdown.COLLECTIONSTRING);
-        this._countdown = countdown;
-    }
-
-    /**
-     * @returns a title for the countdown, consisting of the title and additional
-     * text info that may be displayed on the projector
-     */
-    public getTitle = () => {
-        return this.description ? `${this.title} (${this.description})` : this.title;
-    };
-
-    public getModel(): Countdown {
-        return this.countdown;
+        super(Countdown.COLLECTIONSTRING, countdown);
     }
 
     public updateDependencies(update: BaseViewModel): void {}

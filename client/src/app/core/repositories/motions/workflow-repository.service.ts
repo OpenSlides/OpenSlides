@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 
+import { TranslateService } from '@ngx-translate/core';
+
 import { Workflow } from 'app/shared/models/motions/workflow';
-import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
+import { ViewWorkflow, WorkflowTitleInformation } from 'app/site/motions/models/view-workflow';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { BaseRepository } from '../base-repository';
@@ -10,7 +12,6 @@ import { WorkflowState } from 'app/shared/models/motions/workflow-state';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { HttpService } from 'app/core/core-services/http.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
-import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Repository Services for Categories
@@ -25,7 +26,7 @@ import { TranslateService } from '@ngx-translate/core';
 @Injectable({
     providedIn: 'root'
 })
-export class WorkflowRepositoryService extends BaseRepository<ViewWorkflow, Workflow> {
+export class WorkflowRepositoryService extends BaseRepository<ViewWorkflow, Workflow, WorkflowTitleInformation> {
     /**
      * The url to state on rest
      */
@@ -57,6 +58,10 @@ export class WorkflowRepositoryService extends BaseRepository<ViewWorkflow, Work
         });
     }
 
+    public getTitle = (titleInformation: WorkflowTitleInformation) => {
+        return titleInformation.name;
+    };
+
     public getVerboseName = (plural: boolean = false) => {
         return this.translate.instant(plural ? 'Workflows' : 'Workflow');
     };
@@ -81,9 +86,7 @@ export class WorkflowRepositoryService extends BaseRepository<ViewWorkflow, Work
      * @param workflow the Workflow to convert
      */
     protected createViewModel(workflow: Workflow): ViewWorkflow {
-        const viewWorkflow = new ViewWorkflow(workflow);
-        viewWorkflow.getVerboseName = this.getVerboseName;
-        return viewWorkflow;
+        return new ViewWorkflow(workflow);
     }
 
     /**

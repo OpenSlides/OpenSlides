@@ -9,7 +9,7 @@ import { ConfigService } from 'app/core/ui-services/config.service';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { HttpService } from '../../core-services/http.service';
-import { ViewCategory } from 'app/site/motions/models/view-category';
+import { ViewCategory, CategoryTitleInformation } from 'app/site/motions/models/view-category';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 
 type SortProperty = 'prefix' | 'name';
@@ -27,7 +27,7 @@ type SortProperty = 'prefix' | 'name';
 @Injectable({
     providedIn: 'root'
 })
-export class CategoryRepositoryService extends BaseRepository<ViewCategory, Category> {
+export class CategoryRepositoryService extends BaseRepository<ViewCategory, Category, CategoryTitleInformation> {
     private sortProperty: SortProperty;
 
     /**
@@ -60,14 +60,18 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
         });
     }
 
+    public getTitle = (titleInformation: CategoryTitleInformation) => {
+        return titleInformation.prefix
+            ? titleInformation.prefix + ' - ' + titleInformation.name
+            : titleInformation.name;
+    };
+
     public getVerboseName = (plural: boolean = false) => {
         return this.translate.instant(plural ? 'Categories' : 'Category');
     };
 
     protected createViewModel(category: Category): ViewCategory {
-        const viewCategory = new ViewCategory(category);
-        viewCategory.getVerboseName = this.getVerboseName;
-        return viewCategory;
+        return new ViewCategory(category);
     }
 
     /**

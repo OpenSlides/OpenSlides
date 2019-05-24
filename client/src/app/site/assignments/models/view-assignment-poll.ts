@@ -95,6 +95,10 @@ export class ViewAssignmentPoll implements Identifiable, Updateable, Projectable
         return this.getTitle();
     }
 
+    public getProjectorTitle(): string {
+        return this.getTitle();
+    }
+
     /**
      * Creates a copy with deep-copy on all changing numerical values,
      * but intact uncopied references to the users

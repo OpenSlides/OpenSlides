@@ -9,7 +9,10 @@ import { DataStoreService } from '../../core-services/data-store.service';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { ProjectionDefault } from 'app/shared/models/core/projection-default';
-import { ViewProjectionDefault } from 'app/site/projector/models/view-projection-default';
+import {
+    ViewProjectionDefault,
+    ProjectionDefaultTitleInformation
+} from 'app/site/projector/models/view-projection-default';
 
 /**
  * Manages all projection default instances.
@@ -17,7 +20,11 @@ import { ViewProjectionDefault } from 'app/site/projector/models/view-projection
 @Injectable({
     providedIn: 'root'
 })
-export class ProjectionDefaultRepositoryService extends BaseRepository<ViewProjectionDefault, ProjectionDefault> {
+export class ProjectionDefaultRepositoryService extends BaseRepository<
+    ViewProjectionDefault,
+    ProjectionDefault,
+    ProjectionDefaultTitleInformation
+> {
     /**
      * Constructor calls the parent constructor
      *
@@ -41,15 +48,12 @@ export class ProjectionDefaultRepositoryService extends BaseRepository<ViewProje
         return this.translate.instant(plural ? 'Projectiondefaults' : 'Projectiondefault');
     };
 
-    public getTitle = (projectionDefault: Partial<ProjectionDefault> | Partial<ViewProjectionDefault>) => {
-        return this.translate.instant(projectionDefault.display_name);
+    public getTitle = (titleInformation: ProjectionDefaultTitleInformation) => {
+        return this.translate.instant(titleInformation.display_name);
     };
 
     public createViewModel(projectionDefault: ProjectionDefault): ViewProjectionDefault {
-        const viewProjectionDefault = new ViewProjectionDefault(projectionDefault);
-        viewProjectionDefault.getVerboseName = this.getVerboseName;
-        viewProjectionDefault.getTitle = () => this.getTitle(viewProjectionDefault);
-        return viewProjectionDefault;
+        return new ViewProjectionDefault(projectionDefault);
     }
 
     /**

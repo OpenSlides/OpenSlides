@@ -4,6 +4,8 @@ import { Collection } from 'app/shared/models/base/collection';
 import { BaseModel } from 'app/shared/models/base/base-model';
 import { Updateable } from './updateable';
 
+export type TitleInformation = object;
+
 export interface ViewModelConstructor<T extends BaseViewModel> {
     COLLECTIONSTRING: string;
     new (...args: any[]): T;
@@ -12,11 +14,13 @@ export interface ViewModelConstructor<T extends BaseViewModel> {
 /**
  * Base class for view models. alls view models should have titles.
  */
-export abstract class BaseViewModel implements Displayable, Identifiable, Collection, Updateable {
-    /**
-     * Force children to have an id.
-     */
-    public abstract id: number;
+export abstract class BaseViewModel<M extends BaseModel = any>
+    implements Displayable, Identifiable, Collection, Updateable {
+    protected _model: M;
+
+    public get id(): number {
+        return this._model.id;
+    }
 
     /**
      * force children of BaseModel to have a collectionString.
@@ -34,7 +38,8 @@ export abstract class BaseViewModel implements Displayable, Identifiable, Collec
         return this._collectionString;
     }
 
-    public abstract getTitle: () => string;
+    public getTitle: () => string;
+    public getListTitle: () => string;
 
     /**
      * Returns the verbose name.
@@ -42,24 +47,23 @@ export abstract class BaseViewModel implements Displayable, Identifiable, Collec
      * @param plural If the name should be plural
      * @returns the verbose name of the model
      */
-    public abstract getVerboseName: (plural?: boolean) => string;
+    public getVerboseName: (plural?: boolean) => string;
 
     /**
-     * TODO: Remove verboseName, this must be overwritten by repos..
-     *
-     * @param verboseName
      * @param collectionString
+     * @param model
      */
-    public constructor(collectionString: string) {
+    public constructor(collectionString: string, model: M) {
         this._collectionString = collectionString;
+        this._model = model;
     }
 
-    public getListTitle: () => string = () => {
-        return this.getTitle();
-    };
-
-    /** return the main model of a view model */
-    public abstract getModel(): BaseModel;
+    /**
+     * @returns the main underlying model of the view model
+     */
+    public getModel(): M {
+        return this._model;
+    }
 
     public abstract updateDependencies(update: BaseViewModel): void;
 

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { ModelConstructor, BaseModel } from '../../shared/models/base/base-model';
 import { BaseRepository } from 'app/core/repositories/base-repository';
-import { ViewModelConstructor, BaseViewModel } from 'app/site/base/base-view-model';
+import { ViewModelConstructor, BaseViewModel, TitleInformation } from 'app/site/base/base-view-model';
 
 /**
  * Unifies the ModelConstructor and ViewModelConstructor.
@@ -15,12 +15,12 @@ interface UnifiedConstructors {
 /**
  * Every types supported: (View)ModelConstructors, repos and collectionstrings.
  */
-type TypeIdentifier = UnifiedConstructors | BaseRepository<any, any> | string;
+type TypeIdentifier = UnifiedConstructors | BaseRepository<any, any, any> | string;
 
 type CollectionStringMappedTypes = [
     ModelConstructor<BaseModel>,
     ViewModelConstructor<BaseViewModel>,
-    BaseRepository<BaseViewModel, BaseModel>
+    BaseRepository<BaseViewModel, BaseModel, TitleInformation>
 ];
 
 /**
@@ -50,7 +50,7 @@ export class CollectionStringMapperService {
         collectionString: string,
         model: ModelConstructor<M>,
         viewModel: ViewModelConstructor<V>,
-        repository: BaseRepository<V, M>
+        repository: BaseRepository<V, M, TitleInformation>
     ): void {
         this.collectionStringMapping[collectionString] = [model, viewModel, repository];
     }
@@ -98,18 +98,18 @@ export class CollectionStringMapperService {
      * @param obj The object to get the repository from.
      * @returns the repository
      */
-    public getRepository<V extends BaseViewModel, M extends BaseModel>(
+    public getRepository<V extends BaseViewModel, M extends BaseModel, T extends TitleInformation>(
         obj: TypeIdentifier
-    ): BaseRepository<V, M> | null {
+    ): BaseRepository<V & T, M, T> | null {
         if (this.isCollectionRegistered(this.getCollectionString(obj))) {
-            return this.collectionStringMapping[this.getCollectionString(obj)][2] as BaseRepository<V, M>;
+            return this.collectionStringMapping[this.getCollectionString(obj)][2] as BaseRepository<V & T, M, T>;
         }
     }
 
     /**
      * @returns all registered repositories.
      */
-    public getAllRepositories(): BaseRepository<any, any>[] {
+    public getAllRepositories(): BaseRepository<any, any, any>[] {
         return Object.values(this.collectionStringMapping).map((types: CollectionStringMappedTypes) => types[2]);
     }
 }

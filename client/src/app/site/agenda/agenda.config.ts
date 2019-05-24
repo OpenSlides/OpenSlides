@@ -2,14 +2,23 @@ import { AppConfig } from '../../core/app-config';
 import { Item } from '../../shared/models/agenda/item';
 import { Topic } from '../../shared/models/topics/topic';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
-import { TopicRepositoryService } from 'app/core/repositories/agenda/topic-repository.service';
+import { TopicRepositoryService } from 'app/core/repositories/topics/topic-repository.service';
 import { ViewTopic } from './models/view-topic';
 import { ViewItem } from './models/view-item';
+import { ListOfSpeakers } from 'app/shared/models/agenda/list-of-speakers';
+import { ViewListOfSpeakers } from './models/view-list-of-speakers';
+import { ListOfSpeakersRepositoryService } from 'app/core/repositories/agenda/list-of-speakers-repository.service';
 
 export const AgendaAppConfig: AppConfig = {
     name: 'agenda',
     models: [
         { collectionString: 'agenda/item', model: Item, viewModel: ViewItem, repository: ItemRepositoryService },
+        {
+            collectionString: 'agenda/list-of-speakers',
+            model: ListOfSpeakers,
+            viewModel: ViewListOfSpeakers,
+            repository: ListOfSpeakersRepositoryService
+        },
         {
             collectionString: 'topics/topic',
             model: Topic,

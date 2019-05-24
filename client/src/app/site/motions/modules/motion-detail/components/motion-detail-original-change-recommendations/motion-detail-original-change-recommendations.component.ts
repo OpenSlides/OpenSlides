@@ -12,7 +12,7 @@ import {
 
 import { LineRange, ModificationType } from 'app/core/ui-services/diff.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
-import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-change-recommendation';
+import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
 
 /**
  * This component displays the original motion text with annotated change commendations

@@ -1,9 +1,6 @@
-from typing import Any, Dict
-
-from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
-from ..agenda.models import Item
+from ..agenda.mixins import AgendaItemWithListOfSpeakersMixin
 from ..mediafiles.models import Mediafile
 from ..utils.models import RESTModelMixin
 from .access_permissions import TopicAccessPermissions
@@ -20,10 +17,12 @@ class TopicManager(models.Manager):
         attachments and the related agenda item are prefetched from the
         database.
         """
-        return self.get_queryset().prefetch_related("attachments", "agenda_items")
+        return self.get_queryset().prefetch_related(
+            "attachments", "lists_of_speakers", "agenda_items"
+        )
 
 
-class Topic(RESTModelMixin, models.Model):
+class Topic(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model):
     """
     Model for slides with custom content. Used to be called custom slide.
     """
@@ -36,36 +35,11 @@ class Topic(RESTModelMixin, models.Model):
     text = models.TextField(blank=True)
     attachments = models.ManyToManyField(Mediafile, blank=True)
 
-    # In theory there could be one then more agenda_item. But we support only
-    # one. See the property agenda_item.
-    agenda_items = GenericRelation(Item, related_name="topics")
-
     class Meta:
         default_permissions = ()
 
     def __str__(self):
         return self.title
 
-    """
-    Container for runtime information for agenda app (on create or update of this instance).
-    """
-    agenda_item_update_information: Dict[str, Any] = {}
-
-    @property
-    def agenda_item(self):
-        """
-        Returns the related agenda item.
-        """
-        # We support only one agenda item so just return the first element of
-        # the queryset.
-        return self.agenda_items.all()[0]
-
-    @property
-    def agenda_item_id(self):
-        """
-        Returns the id of the agenda item object related to this object.
-        """
-        return self.agenda_item.pk
-
-    def get_agenda_title_information(self):
+    def get_title_information(self):
         return {"title": self.title}

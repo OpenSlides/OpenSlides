@@ -1,12 +1,12 @@
-import { BaseModel } from '../base/base-model';
 import { AssignmentRelatedUser } from './assignment-related-user';
 import { AssignmentPoll } from './assignment-poll';
+import { BaseModelWithAgendaItemAndListOfSpeakers } from '../base/base-model-with-agenda-item-and-list-of-speakers';
 
 /**
  * Representation of an assignment.
  * @ignore
  */
-export class Assignment extends BaseModel<Assignment> {
+export class Assignment extends BaseModelWithAgendaItemAndListOfSpeakers<Assignment> {
     public static COLLECTIONSTRING = 'assignments/assignment';
 
     public id: number;
@@ -17,7 +17,6 @@ export class Assignment extends BaseModel<Assignment> {
     public assignment_related_users: AssignmentRelatedUser[];
     public poll_description_default: number;
     public polls: AssignmentPoll[];
-    public agenda_item_id: number;
     public tags_id: number[];
     public attachments_id: number[];
 

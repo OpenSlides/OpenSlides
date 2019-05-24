@@ -26,6 +26,7 @@ class TopicSerializer(ModelSerializer):
             "text",
             "attachments",
             "agenda_item_id",
+            "list_of_speakers_id",
             "agenda_type",
             "agenda_parent_id",
             "agenda_comment",

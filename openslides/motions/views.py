@@ -1451,8 +1451,9 @@ class CategoryViewSet(ModelViewSet):
                 # Remove old identifiers
                 for motion in motions:
                     motion.identifier = None
-                    # This line is to skip agenda item autoupdate. See agenda/signals.py.
-                    motion.agenda_item_update_information["skip_autoupdate"] = True
+                    # This line is to skip agenda item and list of speakers autoupdate.
+                    # See agenda/signals.py.
+                    motion.set_skip_autoupdate_agenda_item_and_list_of_speakers()
                     motion.save(skip_autoupdate=True)
 
                 # Set new identifers and change identifiers of amendments.
@@ -1481,10 +1482,9 @@ class CategoryViewSet(ModelViewSet):
                                 child.identifier,
                                 count=1,
                             )
-                            # This line is to skip agenda item autoupdate. See agenda/signals.py.
-                            child.agenda_item_update_information[
-                                "skip_autoupdate"
-                            ] = True
+                            # This line is to skip agenda item and list of speakers autoupdate.
+                            # See agenda/signals.py.
+                            motion.set_skip_autoupdate_agenda_item_and_list_of_speakers()
                             child.save(skip_autoupdate=True)
                             instances.append(child)
                             instances.append(child.agenda_item)

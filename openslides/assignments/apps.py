@@ -6,7 +6,6 @@ from django.apps import AppConfig
 class AssignmentsAppConfig(AppConfig):
     name = "openslides.assignments"
     verbose_name = "OpenSlides Assignments"
-    angular_site_module = True
 
     def ready(self):
         # Import all required stuff.

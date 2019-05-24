@@ -4,16 +4,14 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { Assignment } from 'app/shared/models/assignments/assignment';
 import { AssignmentRelatedUser } from 'app/shared/models/assignments/assignment-related-user';
-import { BaseAgendaContentObjectRepository } from '../base-agenda-content-object-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataSendService } from 'app/core/core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { HttpService } from 'app/core/core-services/http.service';
-import { Item } from 'app/shared/models/agenda/item';
 import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
 import { Tag } from 'app/shared/models/core/tag';
 import { User } from 'app/shared/models/users/user';
-import { ViewAssignment } from 'app/site/assignments/models/view-assignment';
+import { ViewAssignment, AssignmentTitleInformation } from 'app/site/assignments/models/view-assignment';
 import { ViewItem } from 'app/site/agenda/models/view-item';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { ViewTag } from 'app/site/tags/models/view-tag';
@@ -23,6 +21,8 @@ import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-
 import { ViewAssignmentPollOption } from 'app/site/assignments/models/view-assignment-poll-option';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
+import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
+import { BaseIsAgendaItemAndListOfSpeakersContentObjectRepository } from '../base-is-agenda-item-and-list-of-speakers-content-object-repository';
 
 /**
  * Repository Service for Assignments.
@@ -32,7 +32,11 @@ import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 @Injectable({
     providedIn: 'root'
 })
-export class AssignmentRepositoryService extends BaseAgendaContentObjectRepository<ViewAssignment, Assignment> {
+export class AssignmentRepositoryService extends BaseIsAgendaItemAndListOfSpeakersContentObjectRepository<
+    ViewAssignment,
+    Assignment,
+    AssignmentTitleInformation
+> {
     private readonly restPath = '/rest/assignments/assignment/';
     private readonly restPollPath = '/rest/assignments/poll/';
     private readonly candidatureOtherPath = '/candidature_other/';
@@ -58,15 +62,11 @@ export class AssignmentRepositoryService extends BaseAgendaContentObjectReposito
         protected translate: TranslateService,
         private httpService: HttpService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, Assignment, [User, Item, Tag, Mediafile]);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, Assignment, [User, Tag, Mediafile]);
     }
 
-    public getAgendaTitle = (assignment: Partial<Assignment> | Partial<ViewAssignment>) => {
-        return assignment.title;
-    };
-
-    public getAgendaTitleWithType = (assignment: Partial<Assignment> | Partial<ViewAssignment>) => {
-        return assignment.title + ' (' + this.getVerboseName() + ')';
+    public getTitle = (titleInformation: AssignmentTitleInformation) => {
+        return titleInformation.title;
     };
 
     public getVerboseName = (plural: boolean = false) => {
@@ -74,24 +74,22 @@ export class AssignmentRepositoryService extends BaseAgendaContentObjectReposito
     };
 
     public createViewModel(assignment: Assignment): ViewAssignment {
-        const agendaItem = this.viewModelStoreService.get(ViewItem, assignment.agenda_item_id);
+        const item = this.viewModelStoreService.get(ViewItem, assignment.agenda_item_id);
+        const listOfSpeakers = this.viewModelStoreService.get(ViewListOfSpeakers, assignment.list_of_speakers_id);
         const tags = this.viewModelStoreService.getMany(ViewTag, assignment.tags_id);
         const attachments = this.viewModelStoreService.getMany(ViewMediafile, assignment.attachments_id);
         const assignmentRelatedUsers = this.createViewAssignmentRelatedUsers(assignment.assignment_related_users);
         const assignmentPolls = this.createViewAssignmentPolls(assignment.polls);
 
-        const viewAssignment = new ViewAssignment(
+        return new ViewAssignment(
             assignment,
             assignmentRelatedUsers,
             assignmentPolls,
-            agendaItem,
+            item,
+            listOfSpeakers,
             tags,
             attachments
         );
-        viewAssignment.getVerboseName = this.getVerboseName;
-        viewAssignment.getAgendaTitle = () => this.getAgendaTitle(viewAssignment);
-        viewAssignment.getAgendaTitleWithType = () => this.getAgendaTitleWithType(viewAssignment);
-        return viewAssignment;
     }
 
     private createViewAssignmentRelatedUsers(

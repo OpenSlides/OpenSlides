@@ -1,5 +1,4 @@
 import { Assignment } from 'app/shared/models/assignments/assignment';
-import { BaseAgendaViewModel } from 'app/site/base/base-agenda-view-model';
 import { SearchRepresentation } from 'app/core/ui-services/search.service';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { ViewUser } from 'app/site/users/models/view-user';
@@ -9,6 +8,13 @@ import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ViewAssignmentRelatedUser } from './view-assignment-related-user';
 import { ViewAssignmentPoll } from './view-assignment-poll';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
+import { BaseViewModelWithAgendaItemAndListOfSpeakers } from 'app/site/base/base-view-model-with-agenda-item-and-list-of-speakers';
+import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
+import { TitleInformationWithAgendaItem } from 'app/site/base/base-view-model-with-agenda-item';
+
+export interface AssignmentTitleInformation extends TitleInformationWithAgendaItem {
+    title: string;
+}
 
 /**
  * A constant containing all possible assignment phases and their different
@@ -33,22 +39,17 @@ export const AssignmentPhases: { name: string; value: number; display_name: stri
     }
 ];
 
-export class ViewAssignment extends BaseAgendaViewModel {
+export class ViewAssignment extends BaseViewModelWithAgendaItemAndListOfSpeakers<Assignment>
+    implements AssignmentTitleInformation {
     public static COLLECTIONSTRING = Assignment.COLLECTIONSTRING;
 
-    private _assignment: Assignment;
     private _assignmentRelatedUsers: ViewAssignmentRelatedUser[];
     private _assignmentPolls: ViewAssignmentPoll[];
-    private _agendaItem?: ViewItem;
     private _tags?: ViewTag[];
     private _attachments?: ViewMediafile[];
 
-    public get id(): number {
-        return this._assignment ? this._assignment.id : null;
-    }
-
     public get assignment(): Assignment {
-        return this._assignment;
+        return this._model;
     }
 
     public get polls(): ViewAssignmentPoll[] {
@@ -73,10 +74,6 @@ export class ViewAssignment extends BaseAgendaViewModel {
 
     public get assignmentRelatedUsers(): ViewAssignmentRelatedUser[] {
         return this._assignmentRelatedUsers;
-    }
-
-    public get agendaItem(): ViewItem | null {
-        return this._agendaItem;
     }
 
     public get tags(): ViewTag[] {
@@ -123,35 +120,26 @@ export class ViewAssignment extends BaseAgendaViewModel {
         return this._assignmentRelatedUsers ? this._assignmentRelatedUsers.length : 0;
     }
 
-    /**
-     * Constructor. Is set by the repository
-     */
-    public getVerboseName;
-    public getAgendaTitle;
-    public getAgendaTitleWithType;
-
     public constructor(
         assignment: Assignment,
         assignmentRelatedUsers: ViewAssignmentRelatedUser[],
         assignmentPolls: ViewAssignmentPoll[],
-        agendaItem?: ViewItem,
+        item?: ViewItem,
+        listOfSpeakers?: ViewListOfSpeakers,
         tags?: ViewTag[],
         attachments?: ViewMediafile[]
     ) {
-        super(Assignment.COLLECTIONSTRING);
+        super(Assignment.COLLECTIONSTRING, assignment, item, listOfSpeakers);
 
-        this._assignment = assignment;
         this._assignmentRelatedUsers = assignmentRelatedUsers;
         this._assignmentPolls = assignmentPolls;
-        this._agendaItem = agendaItem;
         this._tags = tags;
         this._attachments = attachments;
     }
 
     public updateDependencies(update: BaseViewModel): void {
-        if (update instanceof ViewItem && update.id === this.assignment.agenda_item_id) {
-            this._agendaItem = update;
-        } else if (update instanceof ViewTag && this.assignment.tags_id.includes(update.id)) {
+        super.updateDependencies(update);
+        if (update instanceof ViewTag && this.assignment.tags_id.includes(update.id)) {
             const tagIndex = this._tags.findIndex(_tag => _tag.id === update.id);
             if (tagIndex < 0) {
                 this._tags.push(update);
@@ -169,18 +157,6 @@ export class ViewAssignment extends BaseAgendaViewModel {
                 this._attachments[mediafileIndex] = update;
             }
         }
-    }
-
-    public getAgendaItem(): ViewItem {
-        return this.agendaItem;
-    }
-
-    public getTitle = () => {
-        return this.title;
-    };
-
-    public getModel(): Assignment {
-        return this.assignment;
     }
 
     public formatForSearch(): SearchRepresentation {

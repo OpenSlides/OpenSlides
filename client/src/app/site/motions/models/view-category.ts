@@ -3,6 +3,11 @@ import { BaseViewModel } from '../../base/base-view-model';
 import { SearchRepresentation } from 'app/core/ui-services/search.service';
 import { Searchable } from 'app/site/base/searchable';
 
+export interface CategoryTitleInformation {
+    prefix: string;
+    name: string;
+}
+
 /**
  * Category class for the View
  *
@@ -10,17 +15,11 @@ import { Searchable } from 'app/site/base/searchable';
  * Provides "safe" access to variables and functions in {@link Category}
  * @ignore
  */
-export class ViewCategory extends BaseViewModel implements Searchable {
+export class ViewCategory extends BaseViewModel<Category> implements CategoryTitleInformation, Searchable {
     public static COLLECTIONSTRING = Category.COLLECTIONSTRING;
 
-    private _category: Category;
-
     public get category(): Category {
-        return this._category;
-    }
-
-    public get id(): number {
-        return this.category.id;
+        return this._model;
     }
 
     public get name(): string {
@@ -31,31 +30,27 @@ export class ViewCategory extends BaseViewModel implements Searchable {
         return this.category.prefix;
     }
 
+    /**
+     * TODO: Where is this used? Try to avoid this.
+     */
     public set prefix(prefix: string) {
-        this._category.prefix = prefix;
+        this._model.prefix = prefix;
     }
 
+    /**
+     * TODO: Where is this used? Try to avoid this.
+     */
     public set name(name: string) {
-        this._category.name = name;
+        this._model.name = name;
     }
 
     public get prefixedName(): string {
         return this.prefix ? this.prefix + ' - ' + this.name : this.name;
     }
 
-    /**
-     * This is set by the repository
-     */
-    public getVerboseName;
-
     public constructor(category: Category) {
-        super(Category.COLLECTIONSTRING);
-        this._category = category;
+        super(Category.COLLECTIONSTRING, category);
     }
-
-    public getTitle = () => {
-        return this.prefixedName;
-    };
 
     public formatForSearch(): SearchRepresentation {
         return [this.name, this.prefix];
@@ -63,10 +58,6 @@ export class ViewCategory extends BaseViewModel implements Searchable {
 
     public getDetailStateURL(): string {
         return '/motions/category';
-    }
-
-    public getModel(): Category {
-        return this.category;
     }
 
     /**

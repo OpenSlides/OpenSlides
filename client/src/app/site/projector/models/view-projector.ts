@@ -1,14 +1,17 @@
 import { BaseViewModel } from '../../base/base-view-model';
 import { Projector, ProjectorElements } from 'app/shared/models/core/projector';
 
-export class ViewProjector extends BaseViewModel {
+export interface ProjectorTitleInformation {
+    name: string;
+}
+
+export class ViewProjector extends BaseViewModel<Projector> {
     public static COLLECTIONSTRING = Projector.COLLECTIONSTRING;
 
-    private _projector: Projector;
     private _referenceProjector: ViewProjector;
 
     public get projector(): Projector {
-        return this._projector;
+        return this._model;
     }
 
     public get referenceProjector(): ViewProjector {
@@ -17,10 +20,6 @@ export class ViewProjector extends BaseViewModel {
         } else {
             return this._referenceProjector;
         }
-    }
-
-    public get id(): number {
-        return this.projector.id;
     }
 
     public get name(): string {
@@ -103,23 +102,9 @@ export class ViewProjector extends BaseViewModel {
         return this.projector.show_logo;
     }
 
-    /**
-     * This is set by the repository
-     */
-    public getVerboseName;
-
     public constructor(projector: Projector, referenceProjector?: ViewProjector) {
-        super(Projector.COLLECTIONSTRING);
-        this._projector = projector;
+        super(Projector.COLLECTIONSTRING, projector);
         this._referenceProjector = referenceProjector;
-    }
-
-    public getTitle = () => {
-        return this.name;
-    };
-
-    public getModel(): Projector {
-        return this.projector;
     }
 
     public updateDependencies(update: BaseViewModel): void {

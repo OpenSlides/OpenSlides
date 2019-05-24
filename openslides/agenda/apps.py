@@ -6,7 +6,6 @@ from django.apps import AppConfig
 class AgendaAppConfig(AppConfig):
     name = "openslides.agenda"
     verbose_name = "OpenSlides Agenda"
-    angular_site_module = True
 
     def ready(self):
         # Import all required stuff.
@@ -19,7 +18,7 @@ class AgendaAppConfig(AppConfig):
             listen_to_related_object_post_delete,
             listen_to_related_object_post_save,
         )
-        from .views import ItemViewSet
+        from .views import ItemViewSet, ListOfSpeakersViewSet
         from . import serializers  # noqa
         from ..utils.access_permissions import required_user
 
@@ -41,10 +40,14 @@ class AgendaAppConfig(AppConfig):
 
         # Register viewsets.
         router.register(self.get_model("Item").get_collection_string(), ItemViewSet)
+        router.register(
+            self.get_model("ListOfSpeakers").get_collection_string(),
+            ListOfSpeakersViewSet,
+        )
 
         # register required_users
         required_user.add_collection_string(
-            self.get_model("Item").get_collection_string(), required_users
+            self.get_model("ListOfSpeakers").get_collection_string(), required_users
         )
 
     def get_config_variables(self):
@@ -58,6 +61,7 @@ class AgendaAppConfig(AppConfig):
         connection.
         """
         yield self.get_model("Item")
+        yield self.get_model("ListOfSpeakers")
 
 
 def required_users(element: Dict[str, Any]) -> Set[int]:

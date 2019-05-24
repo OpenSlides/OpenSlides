@@ -501,11 +501,4 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
             .sortCandidates(listInNewOrder.map(relatedUser => relatedUser.id), this.assignment)
             .then(null, this.raiseError);
     }
-
-    /**
-     * Gets the link to the list of speakers associated with the assignment
-     */
-    public getSpeakerLink(): string {
-        return `/agenda/${this.assignment.agendaItem.id}/speakers`;
-    }
 }

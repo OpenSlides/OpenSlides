@@ -62,6 +62,7 @@ class MediafileSerializer(ModelSerializer):
             "filesize",
             "hidden",
             "timestamp",
+            "list_of_speakers_id",
         )
 
     def get_filesize(self, mediafile):

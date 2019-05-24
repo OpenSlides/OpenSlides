@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 
+import { TranslateService } from '@ngx-translate/core';
+
 import { BaseRepository } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { ConstantsService } from '../../core-services/constants.service';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { Group } from 'app/shared/models/users/group';
-import { ViewGroup } from 'app/site/users/models/view-group';
+import { ViewGroup, GroupTitleInformation } from 'app/site/users/models/view-group';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
-import { TranslateService } from '@ngx-translate/core';
 import { HttpService } from 'app/core/core-services/http.service';
 
 /**
@@ -35,7 +36,7 @@ export interface AppPermissions {
 @Injectable({
     providedIn: 'root'
 })
-export class GroupRepositoryService extends BaseRepository<ViewGroup, Group> {
+export class GroupRepositoryService extends BaseRepository<ViewGroup, Group, GroupTitleInformation> {
     /**
      * holds sorted permissions per app.
      */
@@ -61,14 +62,16 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group> {
         this.sortPermsPerApp();
     }
 
+    public getTitle = (titleInformation: GroupTitleInformation) => {
+        return titleInformation.name;
+    };
+
     public getVerboseName = (plural: boolean = false) => {
         return this.translate.instant(plural ? 'Groups' : 'Group');
     };
 
     public createViewModel(group: Group): ViewGroup {
-        const viewGroup = new ViewGroup(group);
-        viewGroup.getVerboseName = this.getVerboseName;
-        return viewGroup;
+        return new ViewGroup(group);
     }
 
     /**

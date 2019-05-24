@@ -1,16 +1,20 @@
 import { Injectable } from '@angular/core';
 
+import { TranslateService } from '@ngx-translate/core';
+
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { BaseRepository } from '../base-repository';
-import { ViewMotionCommentSection } from 'app/site/motions/models/view-motion-comment-section';
+import {
+    ViewMotionCommentSection,
+    MotionCommentSectionTitleInformation
+} from 'app/site/motions/models/view-motion-comment-section';
 import { MotionCommentSection } from 'app/shared/models/motions/motion-comment-section';
 import { Group } from 'app/shared/models/users/group';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { HttpService } from 'app/core/core-services/http.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { ViewGroup } from 'app/site/users/models/view-group';
-import { TranslateService } from '@ngx-translate/core';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 
 /**
@@ -28,7 +32,8 @@ import { ViewMotion } from 'app/site/motions/models/view-motion';
 })
 export class MotionCommentSectionRepositoryService extends BaseRepository<
     ViewMotionCommentSection,
-    MotionCommentSection
+    MotionCommentSection,
+    MotionCommentSectionTitleInformation
 > {
     /**
      * Creates a CategoryRepository
@@ -51,6 +56,10 @@ export class MotionCommentSectionRepositoryService extends BaseRepository<
         super(DS, dataSend, mapperService, viewModelStoreService, translate, MotionCommentSection, [Group]);
     }
 
+    public getTitle = (titleInformation: MotionCommentSectionTitleInformation) => {
+        return titleInformation.name;
+    };
+
     public getVerboseName = (plural: boolean = false) => {
         return this.translate.instant(plural ? 'Comment sections' : 'Comment section');
     };
@@ -64,9 +73,7 @@ export class MotionCommentSectionRepositoryService extends BaseRepository<
     protected createViewModel(section: MotionCommentSection): ViewMotionCommentSection {
         const readGroups = this.viewModelStoreService.getMany(ViewGroup, section.read_groups_id);
         const writeGroups = this.viewModelStoreService.getMany(ViewGroup, section.write_groups_id);
-        const viewMotionCommentSection = new ViewMotionCommentSection(section, readGroups, writeGroups);
-        viewMotionCommentSection.getVerboseName = this.getVerboseName;
-        return viewMotionCommentSection;
+        return new ViewMotionCommentSection(section, readGroups, writeGroups);
     }
 
     /**

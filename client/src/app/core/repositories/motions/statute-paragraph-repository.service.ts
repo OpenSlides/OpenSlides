@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 
+import { TranslateService } from '@ngx-translate/core';
+
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { BaseRepository } from '../base-repository';
-import { ViewStatuteParagraph } from 'app/site/motions/models/view-statute-paragraph';
+import { ViewStatuteParagraph, StatuteParagraphTitleInformation } from 'app/site/motions/models/view-statute-paragraph';
 import { StatuteParagraph } from 'app/shared/models/motions/statute-paragraph';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
-import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Repository Services for statute paragraphs
@@ -19,7 +20,11 @@ import { TranslateService } from '@ngx-translate/core';
 @Injectable({
     providedIn: 'root'
 })
-export class StatuteParagraphRepositoryService extends BaseRepository<ViewStatuteParagraph, StatuteParagraph> {
+export class StatuteParagraphRepositoryService extends BaseRepository<
+    ViewStatuteParagraph,
+    StatuteParagraph,
+    StatuteParagraphTitleInformation
+> {
     /**
      * Creates a StatuteParagraphRepository
      * Converts existing and incoming statute paragraphs to ViewStatuteParagraphs
@@ -39,13 +44,15 @@ export class StatuteParagraphRepositoryService extends BaseRepository<ViewStatut
         super(DS, dataSend, mapperService, viewModelStoreService, translate, StatuteParagraph);
     }
 
+    public getTitle = (titleInformation: StatuteParagraphTitleInformation) => {
+        return titleInformation.title;
+    };
+
     public getVerboseName = (plural: boolean = false) => {
         return this.translate.instant(plural ? 'Statute paragraphs' : 'Statute paragraph');
     };
 
     protected createViewModel(statuteParagraph: StatuteParagraph): ViewStatuteParagraph {
-        const viewStatuteParagraph = new ViewStatuteParagraph(statuteParagraph);
-        viewStatuteParagraph.getVerboseName = this.getVerboseName;
-        return viewStatuteParagraph;
+        return new ViewStatuteParagraph(statuteParagraph);
     }
 }

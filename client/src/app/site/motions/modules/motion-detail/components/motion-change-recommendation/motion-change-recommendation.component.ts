@@ -8,7 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
 import { LineRange, ModificationType } from 'app/core/ui-services/diff.service';
-import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-change-recommendation';
+import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
 
 /**
  * Data that needs to be provided to the MotionChangeRecommendationComponent dialog

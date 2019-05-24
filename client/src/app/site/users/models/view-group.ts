@@ -1,17 +1,15 @@
 import { BaseViewModel } from '../../base/base-view-model';
 import { Group } from 'app/shared/models/users/group';
 
-export class ViewGroup extends BaseViewModel {
+export interface GroupTitleInformation {
+    name: string;
+}
+
+export class ViewGroup extends BaseViewModel<Group> implements GroupTitleInformation {
     public static COLLECTIONSTRING = Group.COLLECTIONSTRING;
 
-    private _group: Group;
-
     public get group(): Group {
-        return this._group;
-    }
-
-    public get id(): number {
-        return this.group.id;
+        return this._model;
     }
 
     public get name(): string {
@@ -31,26 +29,12 @@ export class ViewGroup extends BaseViewModel {
         return this.group.permissions;
     }
 
-    /**
-     * This is set by the repository
-     */
-    public getVerboseName;
-
     public constructor(group?: Group) {
-        super(Group.COLLECTIONSTRING);
-        this._group = group;
+        super(Group.COLLECTIONSTRING, group);
     }
 
     public hasPermission(perm: string): boolean {
         return this.permissions.includes(perm);
-    }
-
-    public getTitle = () => {
-        return this.name;
-    };
-
-    public getModel(): Group {
-        return this.group;
     }
 
     public updateDependencies(update: BaseViewModel): void {}

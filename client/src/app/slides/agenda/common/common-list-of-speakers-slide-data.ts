@@ -9,5 +9,4 @@ export interface CommonListOfSpeakersSlideData {
     finished?: SlideSpeaker[];
     title_information?: object;
     content_object_collection?: string;
-    item_number?: string;
 }

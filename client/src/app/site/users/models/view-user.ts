@@ -6,22 +6,26 @@ import { SearchRepresentation } from 'app/core/ui-services/search.service';
 import { ViewGroup } from './view-group';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 
-export class ViewUser extends BaseProjectableViewModel implements Searchable {
+export interface UserTitleInformation {
+    username: string;
+    title?: string;
+    first_name?: string;
+    last_name?: string;
+    structure_level?: string;
+    number?: string;
+}
+
+export class ViewUser extends BaseProjectableViewModel<User> implements UserTitleInformation, Searchable {
     public static COLLECTIONSTRING = User.COLLECTIONSTRING;
 
-    private _user: User;
     private _groups: ViewGroup[];
 
     public get user(): User {
-        return this._user;
+        return this._model;
     }
 
     public get groups(): ViewGroup[] {
         return this._groups;
-    }
-
-    public get id(): number {
-        return this.user.id;
     }
 
     public get username(): string {
@@ -97,79 +101,29 @@ export class ViewUser extends BaseProjectableViewModel implements Searchable {
         return this.user && !!this.user.last_email_send;
     }
 
-    /**
-     * Getter for the short name (Title, given name, surname)
-     *
-     * @returns a non-empty string
-     */
     public get short_name(): string {
-        if (!this.user) {
+        if (this.user && this.getShortName) {
+            return this.getShortName();
+        } else {
             return '';
         }
-
-        const title = this.title ? this.title.trim() : '';
-        const firstName = this.first_name ? this.first_name.trim() : '';
-        const lastName = this.last_name ? this.last_name.trim() : '';
-        let shortName = `${firstName} ${lastName}`;
-
-        if (shortName.length <= 1) {
-            // We have at least one space from the concatination of
-            // first- and lastname.
-            shortName = this.username;
-        }
-
-        if (title) {
-            shortName = `${title} ${shortName}`;
-        }
-
-        return shortName;
     }
 
     public get full_name(): string {
-        if (!this.user) {
+        if (this.user && this.getFullName) {
+            return this.getFullName();
+        } else {
             return '';
         }
-
-        let name = this.short_name;
-        const additions: string[] = [];
-
-        // addition: add number and structure level
-        const structure_level = this.structure_level ? this.structure_level.trim() : '';
-        if (structure_level) {
-            additions.push(structure_level);
-        }
-
-        const number = this.number ? this.number.trim() : '';
-        if (number) {
-            if (this.getNumberForName) {
-                additions.push(this.getNumberForName(number));
-            }
-        }
-
-        if (additions.length > 0) {
-            name += ' (' + additions.join(' · ') + ')';
-        }
-        return name.trim();
     }
 
-    /**
-     * This is set by the repository
-     */
-    public getVerboseName;
-
-    /**
-     * This is set by the repository. Translates the number string.
-     */
-    public getNumberForName;
+    // Will be set by the repository
+    public getFullName: () => string;
+    public getShortName: () => string;
 
     public constructor(user: User, groups?: ViewGroup[]) {
-        super(User.COLLECTIONSTRING);
-        this._user = user;
+        super(User.COLLECTIONSTRING, user);
         this._groups = groups;
-    }
-
-    public getModel(): User {
-        return this.user;
     }
 
     /**
@@ -197,13 +151,6 @@ export class ViewUser extends BaseProjectableViewModel implements Searchable {
             getDialogTitle: () => this.getTitle()
         };
     }
-
-    /**
-     * required by BaseViewModel. Don't confuse with the users title.
-     */
-    public getTitle = () => {
-        return this.full_name;
-    };
 
     public updateDependencies(update: BaseViewModel): void {
         if (update instanceof ViewGroup && this.user.groups_id.includes(update.id)) {

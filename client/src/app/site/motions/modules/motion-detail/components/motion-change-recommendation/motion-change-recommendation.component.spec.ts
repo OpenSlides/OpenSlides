@@ -8,7 +8,7 @@ import {
 import { E2EImportsModule } from 'e2e-imports.module';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { ModificationType } from 'app/core/ui-services/diff.service';
-import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-change-recommendation';
+import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
 
 describe('MotionChangeRecommendationComponent', () => {
     let component: MotionChangeRecommendationComponent;

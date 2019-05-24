@@ -47,15 +47,13 @@ async def get_flat_tree(all_data: AllData, parent_id: int = 0) -> List[Dict[str,
 
     async def get_children(item_ids: List[int], depth: int) -> None:
         for item_id in item_ids:
+            item = all_data["agenda/item"][item_id]
+            title_information = item["title_information"]
+            title_information["agenda_item_number"] = item["item_number"]
             tree.append(
                 {
-                    "item_number": all_data["agenda/item"][item_id]["item_number"],
-                    "title_information": all_data["agenda/item"][item_id][
-                        "title_information"
-                    ],
-                    "collection": all_data["agenda/item"][item_id]["content_object"][
-                        "collection"
-                    ],
+                    "title_information": title_information,
+                    "collection": item["content_object"]["collection"],
                     "depth": depth,
                 }
             )
@@ -79,10 +77,11 @@ async def item_list_slide(
         agenda_items = []
         for item in await get_sorted_agenda_items(all_data):
             if item["parent_id"] is None and item["type"] == 1:
+                title_information = item["title_information"]
+                title_information["agenda_item_number"] = item["item_number"]
                 agenda_items.append(
                     {
-                        "item_number": item["item_number"],
-                        "title_information": item["title_information"],
+                        "title_information": title_information,
                         "collection": item["content_object"]["collection"],
                     }
                 )
@@ -100,27 +99,39 @@ async def list_of_speakers_slide(
 
     Returns all usernames, that are on the list of speaker of a slide.
     """
-    item_id = element.get("id")
+    list_of_speakers_id = element.get("id")
 
-    if item_id is None:
+    if list_of_speakers_id is None:
         raise ProjectorElementException("id is required for list of speakers slide")
 
-    return await get_list_of_speakers_slide_data(all_data, item_id)
+    return await get_list_of_speakers_slide_data(all_data, list_of_speakers_id)
 
 
 async def get_list_of_speakers_slide_data(
-    all_data: AllData, item_id: int
+    all_data: AllData, list_of_speakers_id: int
 ) -> Dict[str, Any]:
     try:
-        item = all_data["agenda/item"][item_id]
+        list_of_speakers = all_data["agenda/list-of-speakers"][list_of_speakers_id]
     except KeyError:
-        raise ProjectorElementException(f"Item {item_id} does not exist")
+        raise ProjectorElementException(
+            f"List of speakers {list_of_speakers_id} does not exist"
+        )
+
+    title_information = list_of_speakers["title_information"]
+    # try to get the agenda item for the content object (which must not exist)
+    agenda_item_id = all_data[list_of_speakers["content_object"]["collection"]][
+        list_of_speakers["content_object"]["id"]
+    ].get("agenda_item_id")
+    if agenda_item_id:
+        title_information["agenda_item_number"] = all_data["agenda/item"][
+            agenda_item_id
+        ]["item_number"]
 
     # Partition speaker objects to waiting, current and finished
     speakers_waiting = []
     speakers_finished = []
     current_speaker = None
-    for speaker in item["speakers"]:
+    for speaker in list_of_speakers["speakers"]:
         user = await get_user_name(all_data, speaker["user_id"])
         formatted_speaker = {
             "user": user,
@@ -152,23 +163,22 @@ async def get_list_of_speakers_slide_data(
         "waiting": speakers_waiting,
         "current": current_speaker,
         "finished": speakers_finished,
-        "content_object_collection": item["content_object"]["collection"],
-        "title_information": item["title_information"],
-        "item_number": item["item_number"],
+        "content_object_collection": list_of_speakers["content_object"]["collection"],
+        "title_information": title_information,
     }
 
 
-async def get_current_item_id_for_projector(
+async def get_current_list_of_speakers_id_for_projector(
     all_data: AllData, projector: Dict[str, Any]
 ) -> Union[int, None]:
     """
-    Search for elements, that do have an agenda item:
+    Search for elements, that do have a list of speakers:
     Try to get a model by the collection and id in the element. This
-    model needs to have a 'agenda_item_id'. This item must exist. The first
-    matching element is taken.
+    model needs to have a 'list_of_speakers_id'. This list of speakers
+    must exist. The first matching element is taken.
     """
     elements = projector["elements"]
-    item_id = None
+    list_of_speakers_id = None
     for element in elements:
         if "id" not in element:
             continue
@@ -178,16 +188,16 @@ async def get_current_item_id_for_projector(
             continue
 
         model = all_data[collection][id]
-        if "agenda_item_id" not in model:
+        if "list_of_speakers_id" not in model:
             continue
 
-        if not model["agenda_item_id"] in all_data["agenda/item"]:
+        if not model["list_of_speakers_id"] in all_data["agenda/list-of-speakers"]:
             continue
 
-        item_id = model["agenda_item_id"]
+        list_of_speakers_id = model["list_of_speakers_id"]
         break
 
-    return item_id
+    return list_of_speakers_id
 
 
 async def get_reference_projector(
@@ -219,11 +229,13 @@ async def current_list_of_speakers_slide(
     The current list of speakers slide. Creates the data for the given projector.
     """
     reference_projector = await get_reference_projector(all_data, projector_id)
-    item_id = await get_current_item_id_for_projector(all_data, reference_projector)
-    if item_id is None:  # no element found
+    list_of_speakers_id = await get_current_list_of_speakers_id_for_projector(
+        all_data, reference_projector
+    )
+    if list_of_speakers_id is None:  # no element found
         return {}
 
-    return await get_list_of_speakers_slide_data(all_data, item_id)
+    return await get_list_of_speakers_slide_data(all_data, list_of_speakers_id)
 
 
 async def current_speaker_chyron_slide(
@@ -241,21 +253,26 @@ async def current_speaker_chyron_slide(
     }
 
     reference_projector = await get_reference_projector(all_data, projector_id)
-    item_id = await get_current_item_id_for_projector(all_data, reference_projector)
-    if item_id is None:  # no element found
+    list_of_speakers_id = await get_current_list_of_speakers_id_for_projector(
+        all_data, reference_projector
+    )
+    if list_of_speakers_id is None:  # no element found
         return slide_data
 
-    # get item
+    # get list of speakers to search current speaker
     try:
-        item = all_data["agenda/item"][item_id]
+        list_of_speakers = all_data["agenda/list-of-speakers"][list_of_speakers_id]
     except KeyError:
-        raise ProjectorElementException(f"Item {item_id} does not exist")
+        raise ProjectorElementException(
+            f"List of speakers {list_of_speakers_id} does not exist"
+        )
 
     # find current speaker
     current_speaker = None
-    for speaker in item["speakers"]:
+    for speaker in list_of_speakers["speakers"]:
         if speaker["begin_time"] is not None and speaker["end_time"] is None:
             current_speaker = await get_user_name(all_data, speaker["user_id"])
+            break
 
     if current_speaker is not None:
         slide_data["current_speaker"] = current_speaker

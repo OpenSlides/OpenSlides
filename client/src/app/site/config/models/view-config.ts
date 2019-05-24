@@ -32,16 +32,15 @@ interface ConfigConstant {
     choices?: ConfigChoice[];
 }
 
+export interface ConfigTitleInformation {
+    key: string;
+}
+
 /**
  * The view model for configs.
  */
-export class ViewConfig extends BaseViewModel {
+export class ViewConfig extends BaseViewModel<Config> implements ConfigTitleInformation {
     public static COLLECTIONSTRING = Config.COLLECTIONSTRING;
-
-    /**
-     * The underlying config.
-     */
-    private _config: Config;
 
     /* This private members are set by setConstantsInfo. */
     private _helpText: string;
@@ -60,11 +59,7 @@ export class ViewConfig extends BaseViewModel {
     }
 
     public get config(): Config {
-        return this._config;
-    }
-
-    public get id(): number {
-        return this.config.id;
+        return this._model;
     }
 
     public get key(): string {
@@ -95,25 +90,11 @@ export class ViewConfig extends BaseViewModel {
         return this._defaultValue;
     }
 
-    /**
-     * This is set by the repository
-     */
-    public getVerboseName;
-
     public constructor(config: Config) {
-        super(Config.COLLECTIONSTRING);
-        this._config = config;
+        super(Config.COLLECTIONSTRING, config);
     }
-
-    public getTitle = () => {
-        return this.label;
-    };
 
     public updateDependencies(update: BaseViewModel): void {}
-
-    public getModel(): Config {
-        return this.config;
-    }
 
     /**
      * Returns the time this config field needs to debounce before sending a request to the server.

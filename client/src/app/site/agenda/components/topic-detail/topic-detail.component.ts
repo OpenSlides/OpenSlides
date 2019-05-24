@@ -8,7 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { PromptService } from 'app/core/ui-services/prompt.service';
-import { TopicRepositoryService } from 'app/core/repositories/agenda/topic-repository.service';
+import { TopicRepositoryService } from 'app/core/repositories/topics/topic-repository.service';
 import { ViewTopic } from '../../models/view-topic';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { BehaviorSubject } from 'rxjs';
@@ -193,20 +193,6 @@ export class TopicDetailComponent extends BaseViewComponent {
                 }
             }
         });
-    }
-
-    /**
-     * Create the absolute path to the corresponding list of speakers
-     *
-     * @returns the link to the list of speakers as string
-     */
-    public getSpeakerLink(): string {
-        if (!this.newTopic && this.topic) {
-            const item = this.topic.getAgendaItem();
-            if (item) {
-                return `/agenda/${item.id}/speakers`;
-            }
-        }
     }
 
     /**

@@ -7,7 +7,6 @@
         [ngClass]="item.depth === 0 ? 'mainitem' : 'subitem'"
         class="item"
     >
-        <span *ngIf="item.item_number">{{ item.item_number }} &middot;</span>
         {{ getTitle(item) }}
     </div>
 </div>

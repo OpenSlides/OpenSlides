@@ -4,7 +4,6 @@ import { ViewMotionCommentSection } from './view-motion-comment-section';
 import { WorkflowState } from 'app/shared/models/motions/workflow-state';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { SearchRepresentation } from 'app/core/ui-services/search.service';
-import { BaseAgendaViewModel } from 'app/site/base/base-agenda-view-model';
 import { Searchable } from 'app/site/base/searchable';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { ViewTag } from 'app/site/tags/models/view-tag';
@@ -15,9 +14,12 @@ import { ViewCategory } from './view-category';
 import { ViewMotionBlock } from './view-motion-block';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { ViewMotionChangeRecommendation } from './view-change-recommendation';
 import { ViewPersonalNote } from 'app/site/users/models/view-personal-note';
+import { ViewMotionChangeRecommendation } from './view-motion-change-recommendation';
 import { _ } from 'app/core/translate/translation-marker';
+import { BaseViewModelWithAgendaItemAndListOfSpeakers } from 'app/site/base/base-view-model-with-agenda-item-and-list-of-speakers';
+import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
+import { TitleInformationWithAgendaItem } from 'app/site/base/base-view-model-with-agenda-item';
 
 /**
  * The line numbering mode for the motion detail view.
@@ -40,6 +42,11 @@ export enum ChangeRecoMode {
     ModifiedFinal = 'modified_final_version'
 }
 
+export interface MotionTitleInformation extends TitleInformationWithAgendaItem {
+    title: string;
+    identifier?: string;
+}
+
 /**
  * Motion class for the View
  *
@@ -47,30 +54,65 @@ export enum ChangeRecoMode {
  * Provides "safe" access to variables and functions in {@link Motion}
  * @ignore
  */
-export class ViewMotion extends BaseAgendaViewModel implements Searchable {
+export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Motion>
+    implements MotionTitleInformation, Searchable {
     public static COLLECTIONSTRING = Motion.COLLECTIONSTRING;
 
-    protected _motion: Motion;
-    protected _category: ViewCategory;
-    protected _submitters: ViewUser[];
-    protected _supporters: ViewUser[];
-    protected _workflow: ViewWorkflow;
-    protected _state: WorkflowState;
-    protected _item: ViewItem;
-    protected _block: ViewMotionBlock;
-    protected _attachments: ViewMediafile[];
-    protected _tags: ViewTag[];
-    protected _parent: ViewMotion;
-    protected _amendments: ViewMotion[];
-    protected _changeRecommendations: ViewMotionChangeRecommendation[];
+    protected _category?: ViewCategory;
+    protected _submitters?: ViewUser[];
+    protected _supporters?: ViewUser[];
+    protected _workflow?: ViewWorkflow;
+    protected _state?: WorkflowState;
+    protected _block?: ViewMotionBlock;
+    protected _attachments?: ViewMediafile[];
+    protected _tags?: ViewTag[];
+    protected _parent?: ViewMotion;
+    protected _amendments?: ViewMotion[];
+    protected _changeRecommendations?: ViewMotionChangeRecommendation[];
     public personalNote?: PersonalNoteContent;
 
     public get motion(): Motion {
-        return this._motion;
+        return this._model;
     }
 
-    public get id(): number {
-        return this.motion.id;
+    public get category(): ViewCategory | null {
+        return this._category;
+    }
+
+    public get submitters(): ViewUser[] {
+        return this._submitters || [];
+    }
+
+    public get supporters(): ViewUser[] {
+        return this._supporters || [];
+    }
+
+    /**
+     * TODO: Where is this needed. Try to avoid this..
+     */
+    public set supporters(users: ViewUser[]) {
+        this._supporters = users;
+        this._model.supporters_id = users.map(user => user.id);
+    }
+
+    public get motion_block(): ViewMotionBlock | null {
+        return this._block;
+    }
+
+    public get attachments(): ViewMediafile[] {
+        return this._attachments || [];
+    }
+
+    public get tags(): ViewTag[] {
+        return this._tags || [];
+    }
+
+    public get parent(): ViewMotion | null {
+        return this._parent;
+    }
+
+    public get amendments(): ViewMotion[] {
+        return this._amendments || [];
     }
 
     public get identifier(): string {
@@ -111,41 +153,20 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
         return this.motion.sort_parent_id;
     }
 
-    public get agenda_item_id(): number {
-        return this.motion.agenda_item_id;
-    }
-
     public get category_id(): number {
         return this.motion.category_id;
-    }
-
-    public get category(): ViewCategory {
-        return this._category;
     }
 
     public get category_weight(): number {
         return this.motion.category_weight;
     }
 
-    public get submitters(): ViewUser[] {
-        return this._submitters;
-    }
-
     public get sorted_submitters_id(): number[] {
         return this.motion.sorted_submitters_id;
     }
 
-    public get supporters(): ViewUser[] {
-        return this._supporters;
-    }
-
     public get supporters_id(): number[] {
         return this.motion.supporters_id;
-    }
-
-    public set supporters(users: ViewUser[]) {
-        this._supporters = users;
-        this._motion.supporters_id = users.map(user => user.id);
     }
 
     public get workflow(): ViewWorkflow {
@@ -207,24 +228,16 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
         return this.state && this.workflow ? this.state.getPreviousStates(this.workflow.workflow) : [];
     }
 
-    public get item(): ViewItem {
-        return this._item;
-    }
-
     public get agenda_type(): number {
-        return this.item ? this.item.type : null;
+        return this.agendaItem ? this.agendaItem.type : null;
     }
 
     public get motion_block_id(): number {
         return this.motion.motion_block_id;
     }
 
-    public get motion_block(): ViewMotionBlock {
-        return this._block;
-    }
-
-    public get agendaSpeakerAmount(): number {
-        return this.item ? this.item.waitingSpeakerAmount : null;
+    public get speakerAmount(): number {
+        return this.listOfSpeakers ? this.listOfSpeakers.waitingSpeakerAmount : null;
     }
 
     public get parent_id(): number {
@@ -241,22 +254,6 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
 
     public get attachments_id(): number[] {
         return this.motion.attachments_id;
-    }
-
-    public get attachments(): ViewMediafile[] {
-        return this._attachments;
-    }
-
-    public get tags(): ViewTag[] {
-        return this._tags;
-    }
-
-    public get parent(): ViewMotion {
-        return this._parent;
-    }
-
-    public get amendments(): ViewMotion[] {
-        return this._amendments;
     }
 
     /**
@@ -347,30 +344,8 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
         return StateCssClassMapping[this.state.css_class] || '';
     }
 
-    /**
-     * This is set by the repository
-     */
-    public getTitle: () => string;
-
-    /**
-     * This is set by the repository
-     */
+    // This is set by the repository
     public getIdentifierOrTitle: () => string;
-
-    /**
-     * This is set by the repository
-     */
-    public getAgendaTitle: () => string;
-
-    /**
-     * This is set by the repository
-     */
-    public getAgendaTitleWithType: () => string;
-
-    /**
-     * This is set by the repository
-     */
-    public getVerboseName: () => string;
 
     public constructor(
         motion: Motion,
@@ -380,6 +355,7 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
         workflow?: ViewWorkflow,
         state?: WorkflowState,
         item?: ViewItem,
+        listOfSpeakers?: ViewListOfSpeakers,
         block?: ViewMotionBlock,
         attachments?: ViewMediafile[],
         tags?: ViewTag[],
@@ -388,14 +364,12 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
         amendments?: ViewMotion[],
         personalNote?: PersonalNoteContent
     ) {
-        super(Motion.COLLECTIONSTRING);
-        this._motion = motion;
+        super(Motion.COLLECTIONSTRING, motion, item, listOfSpeakers);
         this._category = category;
         this._submitters = submitters;
         this._supporters = supporters;
         this._workflow = workflow;
         this._state = state;
-        this._item = item;
         this._block = block;
         this._attachments = attachments;
         this._tags = tags;
@@ -403,14 +377,6 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
         this._amendments = amendments;
         this._changeRecommendations = changeRecommendations;
         this.personalNote = personalNote;
-    }
-
-    public getAgendaItem(): ViewItem {
-        return this.item;
-    }
-
-    public getModel(): Motion {
-        return this.motion;
     }
 
     /**
@@ -461,12 +427,11 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
      * @param update
      */
     public updateDependencies(update: BaseViewModel): void {
+        super.updateDependencies(update);
         if (update instanceof ViewWorkflow) {
             this.updateWorkflow(update);
         } else if (update instanceof ViewCategory) {
             this.updateCategory(update);
-        } else if (update instanceof ViewItem) {
-            this.updateItem(update);
         } else if (update instanceof ViewMotionBlock) {
             this.updateMotionBlock(update);
         } else if (update instanceof ViewUser) {
@@ -508,17 +473,6 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
     }
 
     /**
-     * Update routine for the agenda Item
-     *
-     * @param item potentially the changed agenda Item. Needs manual verification
-     */
-    private updateItem(item: ViewItem): void {
-        if (item.id === this.motion.agenda_item_id) {
-            this._item = item;
-        }
-    }
-
-    /**
      * Update routine for the motion block
      *
      * @param block potentially the changed motion block. Needs manual verification
@@ -532,7 +486,7 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
     /**
      * Update routine for supporters and submitters
      *
-     * @param update potentially the changed agenda Item. Needs manual verification
+     * @param update potentially the changed user. Needs manual verification
      */
     private updateUser(update: ViewUser): void {
         if (this.motion.submitters && this.motion.submitters.find(user => user.user_id === update.id)) {
@@ -665,7 +619,7 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
             }),
             slideOptions: slideOptions,
             projectionDefaultName: 'motions',
-            getDialogTitle: this.getAgendaTitle
+            getDialogTitle: this.getAgendaSlideTitle
         };
     }
 
@@ -674,13 +628,14 @@ export class ViewMotion extends BaseAgendaViewModel implements Searchable {
      */
     public copy(): ViewMotion {
         return new ViewMotion(
-            this._motion,
+            this._model,
             this._category,
             this._submitters,
             this._supporters,
             this._workflow,
             this._state,
             this._item,
+            this._listOfSpeakers,
             this._block,
             this._attachments,
             this._tags,

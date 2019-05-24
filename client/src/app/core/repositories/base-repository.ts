@@ -1,19 +1,19 @@
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { auditTime } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseViewModel } from '../../site/base/base-view-model';
+import { BaseViewModel, TitleInformation } from '../../site/base/base-view-model';
 import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model';
 import { CollectionStringMapperService } from '../core-services/collection-string-mapper.service';
 import { DataSendService } from '../core-services/data-send.service';
 import { DataStoreService } from '../core-services/data-store.service';
 import { Identifiable } from '../../shared/models/base/identifiable';
-import { auditTime } from 'rxjs/operators';
 import { ViewModelStoreService } from '../core-services/view-model-store.service';
 import { OnAfterAppsLoaded } from '../onAfterAppsLoaded';
 import { Collection } from 'app/shared/models/base/collection';
 import { CollectionIds } from '../core-services/data-store-update-manager.service';
 
-export abstract class BaseRepository<V extends BaseViewModel, M extends BaseModel>
+export abstract class BaseRepository<V extends BaseViewModel & T, M extends BaseModel, T extends TitleInformation>
     implements OnAfterAppsLoaded, Collection {
     /**
      * Stores all the viewModel in an object
@@ -70,6 +70,7 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
     }
 
     public abstract getVerboseName: (plural?: boolean) => string;
+    public abstract getTitle: (titleInformation: T) => string;
 
     /**
      * Construction routine for the base repository
@@ -114,7 +115,7 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
     protected loadInitialFromDS(): void {
         // Populate the local viewModelStore with ViewModel Objects.
         this.DS.getAll(this.baseModelCtor).forEach((model: M) => {
-            this.viewModelStore[model.id] = this.createViewModel(model);
+            this.viewModelStore[model.id] = this.createViewModelWithTitles(model);
         });
 
         // Update the list and then all models on their own
@@ -145,7 +146,7 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
      */
     public changedModels(ids: number[]): void {
         ids.forEach(id => {
-            this.viewModelStore[id] = this.createViewModel(this.DS.get(this.collectionString, id));
+            this.viewModelStore[id] = this.createViewModelWithTitles(this.DS.get(this.collectionString, id));
             this.updateViewModelObservable(id);
         });
         this.updateViewModelListObservable();
@@ -187,6 +188,10 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
             this.updateViewModelListObservable();
         }
     }
+
+    public getListTitle: (titleInformation: T) => string = (titleInformation: T) => {
+        return this.getTitle(titleInformation);
+    };
 
     /**
      * Saves the (full) update to an existing model. So called "update"-function
@@ -257,6 +262,18 @@ export abstract class BaseRepository<V extends BaseViewModel, M extends BaseMode
      * @param model
      */
     protected abstract createViewModel(model: M): V;
+
+    /**
+     * After creating a view model, all functions for models form the repo
+     * are assigned to the new view model.
+     */
+    protected createViewModelWithTitles(model: M): V {
+        const viewModel = this.createViewModel(model);
+        viewModel.getTitle = () => this.getTitle(viewModel);
+        viewModel.getListTitle = () => this.getListTitle(viewModel);
+        viewModel.getVerboseName = this.getVerboseName;
+        return viewModel;
+    }
 
     /**
      * Clears the repository.

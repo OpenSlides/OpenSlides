@@ -6,7 +6,6 @@ from django.apps import AppConfig
 class MediafilesAppConfig(AppConfig):
     name = "openslides.mediafiles"
     verbose_name = "OpenSlides Mediafiles"
-    angular_site_module = True
 
     def ready(self):
         # Import all required stuff.

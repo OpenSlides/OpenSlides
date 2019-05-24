@@ -18,9 +18,9 @@ const routes: Routes = [
         canDeactivate: [WatchSortingTreeGuard],
         data: { basePerm: 'agenda.can_manage' }
     },
-    { path: 'speakers', component: ListOfSpeakersComponent, data: { basePerm: 'agenda.can_see' } },
-    { path: 'topics/:id', component: TopicDetailComponent, data: { basePerm: 'agenda.can_see' } },
-    { path: ':id/speakers', component: ListOfSpeakersComponent, data: { basePerm: 'agenda.can_see' } }
+    { path: 'speakers', component: ListOfSpeakersComponent, data: { basePerm: 'agenda.can_see_list_of_speakers' } },
+    { path: 'speakers/:id', component: ListOfSpeakersComponent, data: { basePerm: 'agenda.can_see_list_of_speakers' } },
+    { path: 'topics/:id', component: TopicDetailComponent, data: { basePerm: 'agenda.can_see' } }
 ];
 
 @NgModule({

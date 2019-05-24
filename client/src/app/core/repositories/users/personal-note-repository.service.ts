@@ -8,7 +8,7 @@ import { BaseRepository } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { PersonalNote } from 'app/shared/models/users/personal-note';
-import { ViewPersonalNote } from 'app/site/users/models/view-personal-note';
+import { ViewPersonalNote, PersonalNoteTitleInformation } from 'app/site/users/models/view-personal-note';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 
 /**
@@ -16,7 +16,11 @@ import { ViewModelStoreService } from 'app/core/core-services/view-model-store.s
 @Injectable({
     providedIn: 'root'
 })
-export class PersonalNoteRepositoryService extends BaseRepository<ViewPersonalNote, PersonalNote> {
+export class PersonalNoteRepositoryService extends BaseRepository<
+    ViewPersonalNote,
+    PersonalNote,
+    PersonalNoteTitleInformation
+> {
     /**
      * @param DS The DataStore
      * @param mapperService Maps collection strings to classes
@@ -31,14 +35,16 @@ export class PersonalNoteRepositoryService extends BaseRepository<ViewPersonalNo
         super(DS, dataSend, mapperService, viewModelStoreService, translate, PersonalNote);
     }
 
+    public getTitle = (titleInformation: PersonalNoteTitleInformation) => {
+        return this.getVerboseName();
+    };
+
     public getVerboseName = (plural: boolean = false) => {
         return this.translate.instant(plural ? 'Personal notes' : 'Personal note');
     };
 
     protected createViewModel(personalNote: PersonalNote): ViewPersonalNote {
-        const viewPersonalNote = new ViewPersonalNote(personalNote);
-        viewPersonalNote.getVerboseName = this.getVerboseName;
-        return viewPersonalNote;
+        return new ViewPersonalNote(personalNote);
     }
 
     /**

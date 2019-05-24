@@ -12,7 +12,7 @@ import { HttpService } from 'app/core/core-services/http.service';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from 'app/core/core-services/collection-string-mapper.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
-import { ViewConfig } from 'app/site/config/models/view-config';
+import { ViewConfig, ConfigTitleInformation } from 'app/site/config/models/view-config';
 
 /**
  * Holds a single config item.
@@ -77,7 +77,7 @@ export interface ConfigGroup {
 @Injectable({
     providedIn: 'root'
 })
-export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> {
+export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config, ConfigTitleInformation> {
     /**
      * Own store for config groups.
      */
@@ -130,14 +130,16 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config> 
         return this.translate.instant(plural ? 'Configs' : 'Config');
     };
 
+    public getTitle = (titleInformation: ConfigTitleInformation) => {
+        return titleInformation.key;
+    };
+
     /**
      * Creates a new ViewConfig of a given Config object
      * @param config
      */
     public createViewModel(config: Config): ViewConfig {
-        const viewConfig = new ViewConfig(config);
-        viewConfig.getVerboseName = this.getVerboseName;
-        return viewConfig;
+        return new ViewConfig(config);
     }
 
     /**

@@ -1,22 +1,23 @@
 import { MatTableDataSource, MatTable, MatSort, MatPaginator, MatSnackBar, PageEvent } from '@angular/material';
 import { Title } from '@angular/platform-browser';
-import { TranslateService } from '@ngx-translate/core';
 import { ViewChild, Type, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
+import { TranslateService } from '@ngx-translate/core';
+import { Observable } from 'rxjs';
+
 import { BaseViewComponent } from './base-view';
-import { BaseViewModel } from './base-view-model';
+import { BaseViewModel, TitleInformation } from './base-view-model';
 import { BaseSortListService } from 'app/core/ui-services/base-sort-list.service';
 import { BaseFilterListService } from 'app/core/ui-services/base-filter-list.service';
 import { BaseModel } from 'app/shared/models/base/base-model';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { BaseRepository } from 'app/core/repositories/base-repository';
-import { Observable } from 'rxjs';
 
 export abstract class ListViewBaseComponent<
     V extends BaseViewModel,
     M extends BaseModel,
-    R extends BaseRepository<V, M>
+    R extends BaseRepository<V, M, TitleInformation>
 > extends BaseViewComponent implements OnDestroy {
     /**
      * The data source for a table. Requires to be initialized with a BaseViewModel

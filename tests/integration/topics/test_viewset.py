@@ -16,11 +16,12 @@ def test_topic_item_db_queries():
     * 1 requests to get the list of all topics,
     * 1 request to get attachments,
     * 1 request to get the agenda item
+    * 1 request to get the list of speakers
     """
     for index in range(10):
         Topic.objects.create(title=f"topic-{index}")
 
-    assert count_queries(Topic.get_elements) == 3
+    assert count_queries(Topic.get_elements) == 4
 
 
 class TopicCreate(TestCase):

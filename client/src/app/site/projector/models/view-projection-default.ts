@@ -1,13 +1,16 @@
 import { BaseViewModel } from '../../base/base-view-model';
 import { ProjectionDefault } from 'app/shared/models/core/projection-default';
 
-export class ViewProjectionDefault extends BaseViewModel {
+export interface ProjectionDefaultTitleInformation {
+    display_name: string;
+}
+
+export class ViewProjectionDefault extends BaseViewModel<ProjectionDefault>
+    implements ProjectionDefaultTitleInformation {
     public static COLLECTIONSTRING = ProjectionDefault.COLLECTIONSTRING;
 
-    private _projectionDefault: ProjectionDefault;
-
     public get projectionDefault(): ProjectionDefault {
-        return this._projectionDefault;
+        return this._model;
     }
 
     public get id(): number {
@@ -22,19 +25,8 @@ export class ViewProjectionDefault extends BaseViewModel {
         return this.projectionDefault.display_name;
     }
 
-    /**
-     * This is set by the repository
-     */
-    public getVerboseName: () => string;
-    public getTitle: () => string;
-
     public constructor(projectionDefault: ProjectionDefault) {
-        super(ProjectionDefault.COLLECTIONSTRING);
-        this._projectionDefault = projectionDefault;
-    }
-
-    public getModel(): ProjectionDefault {
-        return this.projectionDefault;
+        super(ProjectionDefault.COLLECTIONSTRING, projectionDefault);
     }
 
     public updateDependencies(update: BaseViewModel): void {}

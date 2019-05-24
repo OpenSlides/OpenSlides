@@ -3,6 +3,8 @@ import { ModificationType } from 'app/core/ui-services/diff.service';
 import { MotionChangeRecommendation } from 'app/shared/models/motions/motion-change-reco';
 import { ViewUnifiedChange, ViewUnifiedChangeType } from '../../../shared/models/motions/view-unified-change';
 
+export type MotionChangeRecommendationTitleInformation = object;
+
 /**
  * Change recommendation class for the View
  *
@@ -10,76 +12,57 @@ import { ViewUnifiedChange, ViewUnifiedChangeType } from '../../../shared/models
  * Provides "safe" access to variables and functions in {@link MotionChangeRecommendation}
  * @ignore
  */
-export class ViewMotionChangeRecommendation extends BaseViewModel implements ViewUnifiedChange {
+export class ViewMotionChangeRecommendation extends BaseViewModel<MotionChangeRecommendation>
+    implements MotionChangeRecommendationTitleInformation, ViewUnifiedChange {
     public static COLLECTIONSTRING = MotionChangeRecommendation.COLLECTIONSTRING;
 
-    private _changeRecommendation: MotionChangeRecommendation;
-
-    public get id(): number {
-        return this._changeRecommendation.id;
-    }
-
     public get changeRecommendation(): MotionChangeRecommendation {
-        return this._changeRecommendation;
+        return this._model;
     }
 
-    /**
-     * This is set by the repository
-     */
-    public getVerboseName;
-
-    public constructor(changeReco: MotionChangeRecommendation) {
-        super(MotionChangeRecommendation.COLLECTIONSTRING);
-        this._changeRecommendation = changeReco;
+    public constructor(motionChangeRecommendation: MotionChangeRecommendation) {
+        super(MotionChangeRecommendation.COLLECTIONSTRING, motionChangeRecommendation);
     }
-
-    public getTitle = () => {
-        return 'Change recommendation';
-    };
 
     public updateDependencies(update: BaseViewModel): void {}
 
-    public getModel(): MotionChangeRecommendation {
-        return this.changeRecommendation;
-    }
-
     public updateChangeReco(type: number, text: string, internal: boolean): void {
         // @TODO HTML sanitazion
-        this._changeRecommendation.type = type;
-        this._changeRecommendation.text = text;
-        this._changeRecommendation.internal = internal;
+        this.changeRecommendation.type = type;
+        this.changeRecommendation.text = text;
+        this.changeRecommendation.internal = internal;
     }
 
     public get rejected(): boolean {
-        return this._changeRecommendation.rejected;
+        return this.changeRecommendation.rejected;
     }
 
     public get internal(): boolean {
-        return this._changeRecommendation.internal;
+        return this.changeRecommendation.internal;
     }
 
     public get type(): number {
-        return this._changeRecommendation.type || ModificationType.TYPE_REPLACEMENT;
+        return this.changeRecommendation.type || ModificationType.TYPE_REPLACEMENT;
     }
 
     public get other_description(): string {
-        return this._changeRecommendation.other_description;
+        return this.changeRecommendation.other_description;
     }
 
     public get line_from(): number {
-        return this._changeRecommendation.line_from;
+        return this.changeRecommendation.line_from;
     }
 
     public get line_to(): number {
-        return this._changeRecommendation.line_to;
+        return this.changeRecommendation.line_to;
     }
 
     public get text(): string {
-        return this._changeRecommendation.text;
+        return this.changeRecommendation.text;
     }
 
     public get motion_id(): number {
-        return this._changeRecommendation.motion_id;
+        return this.changeRecommendation.motion_id;
     }
 
     public getChangeId(): string {

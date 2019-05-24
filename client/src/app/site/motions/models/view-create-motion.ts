@@ -6,6 +6,11 @@ import { ViewMotionBlock } from './view-motion-block';
 import { ViewItem } from 'app/site/agenda/models/view-item';
 import { ViewCategory } from './view-category';
 import { ViewWorkflow } from './view-workflow';
+import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
+import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
+import { ViewTag } from 'app/site/tags/models/view-tag';
+import { ViewMotionChangeRecommendation } from './view-motion-change-recommendation';
+import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
 
 /**
  * Create motion class for the View. Its different to ViewMotion in fact that the submitter handling is different
@@ -14,10 +19,10 @@ import { ViewWorkflow } from './view-workflow';
  * @ignore
  */
 export class ViewCreateMotion extends ViewMotion {
-    protected _motion: CreateMotion;
+    protected _model: CreateMotion;
 
     public get motion(): CreateMotion {
-        return this._motion;
+        return this._model;
     }
 
     public get submitters(): ViewUser[] {
@@ -30,20 +35,43 @@ export class ViewCreateMotion extends ViewMotion {
 
     public set submitters(users: ViewUser[]) {
         this._submitters = users;
-        this._motion.submitters_id = users.map(user => user.id);
+        this._model.submitters_id = users.map(user => user.id);
     }
 
     public constructor(
-        motion?: CreateMotion,
+        motion: CreateMotion,
         category?: ViewCategory,
         submitters?: ViewUser[],
         supporters?: ViewUser[],
         workflow?: ViewWorkflow,
         state?: WorkflowState,
         item?: ViewItem,
-        block?: ViewMotionBlock
+        listOfSpeakers?: ViewListOfSpeakers,
+        block?: ViewMotionBlock,
+        attachments?: ViewMediafile[],
+        tags?: ViewTag[],
+        parent?: ViewMotion,
+        changeRecommendations?: ViewMotionChangeRecommendation[],
+        amendments?: ViewMotion[],
+        personalNote?: PersonalNoteContent
     ) {
-        super(motion, category, submitters, supporters, workflow, state, item, block, null);
+        super(
+            motion,
+            category,
+            submitters,
+            supporters,
+            workflow,
+            state,
+            item,
+            listOfSpeakers,
+            block,
+            attachments,
+            tags,
+            parent,
+            changeRecommendations,
+            amendments,
+            personalNote
+        );
     }
 
     public getVerboseName = () => {
@@ -55,7 +83,7 @@ export class ViewCreateMotion extends ViewMotion {
      */
     public copy(): ViewCreateMotion {
         return new ViewCreateMotion(
-            this._motion,
+            this._model,
             this._category,
             this._submitters,
             this._supporters,

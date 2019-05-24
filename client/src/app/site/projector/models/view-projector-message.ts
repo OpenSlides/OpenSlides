@@ -4,39 +4,22 @@ import { ProjectorMessage } from 'app/shared/models/core/projector-message';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { stripHtmlTags } from 'app/shared/utils/strip-html-tags';
 
-export class ViewProjectorMessage extends BaseProjectableViewModel {
+export type ProjectorMessageTitleInformation = object;
+
+export class ViewProjectorMessage extends BaseProjectableViewModel<ProjectorMessage>
+    implements ProjectorMessageTitleInformation {
     public static COLLECTIONSTRING = ProjectorMessage.COLLECTIONSTRING;
 
-    private _message: ProjectorMessage;
-
     public get projectormessage(): ProjectorMessage {
-        return this._message;
-    }
-
-    public get id(): number {
-        return this.projectormessage.id;
+        return this._model;
     }
 
     public get message(): string {
         return this.projectormessage.message;
     }
 
-    /**
-     * This is set by the repository
-     */
-    public getVerboseName;
-
-    public constructor(message: ProjectorMessage) {
-        super(ProjectorMessage.COLLECTIONSTRING);
-        this._message = message;
-    }
-
-    public getTitle = () => {
-        return 'Message';
-    };
-
-    public getModel(): ProjectorMessage {
-        return this.projectormessage;
+    public constructor(projectorMessage: ProjectorMessage) {
+        super(ProjectorMessage.COLLECTIONSTRING, projectorMessage);
     }
 
     public updateDependencies(update: BaseViewModel): void {}

@@ -6,7 +6,7 @@ import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { BaseRepository } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
-import { ViewCountdown } from 'app/site/projector/models/view-countdown';
+import { ViewCountdown, CountdownTitleInformation } from 'app/site/projector/models/view-countdown';
 import { Countdown } from 'app/shared/models/core/countdown';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { ServertimeService } from 'app/core/core-services/servertime.service';
@@ -14,7 +14,7 @@ import { ServertimeService } from 'app/core/core-services/servertime.service';
 @Injectable({
     providedIn: 'root'
 })
-export class CountdownRepositoryService extends BaseRepository<ViewCountdown, Countdown> {
+export class CountdownRepositoryService extends BaseRepository<ViewCountdown, Countdown, CountdownTitleInformation> {
     public constructor(
         DS: DataStoreService,
         dataSend: DataSendService,
@@ -26,14 +26,18 @@ export class CountdownRepositoryService extends BaseRepository<ViewCountdown, Co
         super(DS, dataSend, mapperService, viewModelStoreService, translate, Countdown);
     }
 
+    public getTitle = (titleInformation: CountdownTitleInformation) => {
+        return titleInformation.description
+            ? `${titleInformation.title} (${titleInformation.description})`
+            : titleInformation.title;
+    };
+
     public getVerboseName = (plural: boolean = false) => {
         return this.translate.instant(plural ? 'Countdowns' : 'Countdown');
     };
 
     protected createViewModel(countdown: Countdown): ViewCountdown {
-        const viewCountdown = new ViewCountdown(countdown);
-        viewCountdown.getVerboseName = this.getVerboseName;
-        return viewCountdown;
+        return new ViewCountdown(countdown);
     }
 
     /**

@@ -7,7 +7,7 @@ import { BaseImportService, NewEntry } from 'app/core/ui-services/base-import.se
 import { CreateTopic } from './models/create-topic';
 import { DurationService } from 'app/core/ui-services/duration.service';
 import { itemVisibilityChoices } from 'app/shared/models/agenda/item';
-import { TopicRepositoryService } from '../../core/repositories/agenda/topic-repository.service';
+import { TopicRepositoryService } from '../../core/repositories/topics/topic-repository.service';
 import { ViewCreateTopic } from './models/view-create-topic';
 
 @Injectable({

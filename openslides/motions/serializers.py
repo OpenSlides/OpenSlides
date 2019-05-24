@@ -75,7 +75,14 @@ class MotionBlockSerializer(ModelSerializer):
 
     class Meta:
         model = MotionBlock
-        fields = ("id", "title", "agenda_item_id", "agenda_type", "agenda_parent_id")
+        fields = (
+            "id",
+            "title",
+            "agenda_item_id",
+            "list_of_speakers_id",
+            "agenda_type",
+            "agenda_parent_id",
+        )
 
     def create(self, validated_data):
         """
@@ -446,6 +453,7 @@ class MotionSerializer(ModelSerializer):
             "attachments",
             "polls",
             "agenda_item_id",
+            "list_of_speakers_id",
             "agenda_type",
             "agenda_parent_id",
             "sort_parent",

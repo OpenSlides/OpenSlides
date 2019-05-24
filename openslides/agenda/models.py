@@ -16,7 +16,7 @@ from openslides.utils.models import RESTModelMixin
 from openslides.utils.utils import to_roman
 
 from ..utils.models import CASCADE_AND_AUTOUODATE, SET_NULL_AND_AUTOUPDATE
-from .access_permissions import ItemAccessPermissions
+from .access_permissions import ItemAccessPermissions, ListOfSpeakersAccessPermissions
 
 
 class ItemManager(models.Manager):
@@ -28,10 +28,13 @@ class ItemManager(models.Manager):
     def get_full_queryset(self):
         """
         Returns the normal queryset with all items. In the background all
-        speakers and related items (topics, motions, assignments) are
-        prefetched from the database.
+        related items (topics, motions, assignments) are prefetched from the database.
         """
-        return self.get_queryset().prefetch_related("speakers", "content_object")
+        # TODO: Fix the django bug: we cannot include "content_object__agenda_items" here,
+        # because this is some kind of cyclic lookup. The _prefetched_objects_cache of every
+        # content object will hold wrong values for the agenda item.
+        # See issue #4738
+        return self.get_queryset().prefetch_related("content_object")
 
     def get_only_non_public_items(self):
         """
@@ -212,7 +215,7 @@ class Item(RESTModelMixin, models.Model):
 
     comment = models.TextField(null=True, blank=True)
     """
-    Optional comment to the agenda item. Will not be shoun to normal users.
+    Optional comment to the agenda item. Will not be shown to normal users.
     """
 
     closed = models.BooleanField(default=False)
@@ -265,17 +268,11 @@ class Item(RESTModelMixin, models.Model):
     Field for generic relation to a related object. General field to the related object.
     """
 
-    speaker_list_closed = models.BooleanField(default=False)
-    """
-    True, if the list of speakers is closed.
-    """
-
     class Meta:
         default_permissions = ()
         permissions = (
             ("can_see", "Can see agenda"),
             ("can_manage", "Can manage agenda"),
-            ("can_manage_list_of_speakers", "Can manage list of speakers"),
             (
                 "can_see_internal_items",
                 "Can see internal items and time scheduling of agenda",
@@ -332,6 +329,71 @@ class Item(RESTModelMixin, models.Model):
         else:
             return self.parent.level + 1
 
+
+class ListOfSpeakersManager(models.Manager):
+    """
+    """
+
+    def get_full_queryset(self):
+        """
+        Returns the normal queryset with all items. In the background all
+        speakers and related items (topics, motions, assignments) are
+        prefetched from the database.
+        """
+        return self.get_queryset().prefetch_related("speakers", "content_object")
+
+
+class ListOfSpeakers(RESTModelMixin, models.Model):
+    """
+    """
+
+    access_permissions = ListOfSpeakersAccessPermissions()
+    objects = ListOfSpeakersManager()
+    can_see_permission = "agenda.can_see_list_of_speakers"
+
+    content_type = models.ForeignKey(
+        ContentType, on_delete=models.SET_NULL, null=True, blank=True
+    )
+    """
+    Field for generic relation to a related object. Type of the object.
+    """
+
+    object_id = models.PositiveIntegerField(null=True, blank=True)
+    """
+    Field for generic relation to a related object. Id of the object.
+    """
+
+    content_object = GenericForeignKey()
+    """
+    Field for generic relation to a related object. General field to the related object.
+    """
+
+    closed = models.BooleanField(default=False)
+    """
+    True, if the list of speakers is closed.
+    """
+
+    class Meta:
+        default_permissions = ()
+        permissions = (
+            ("can_see_list_of_speakers", "Can see list of speakers"),
+            ("can_manage_list_of_speakers", "Can manage list of speakers"),
+        )
+        unique_together = ("content_type", "object_id")
+
+    @property
+    def title_information(self):
+        """
+        Return get_list_of_speakers_title_information() from the content_object.
+        """
+        try:
+            return self.content_object.get_list_of_speakers_title_information()
+        except AttributeError:
+            raise NotImplementedError(
+                "You have to provide a get_list_of_speakers_title_information "
+                "method on your related model."
+            )
+
     def get_next_speaker(self):
         """
         Returns the speaker object of the speaker who is next.
@@ -348,20 +410,27 @@ class SpeakerManager(models.Manager):
     Manager for Speaker model. Provides a customized add method.
     """
 
-    def add(self, user, item, skip_autoupdate=False):
+    def add(self, user, list_of_speakers, skip_autoupdate=False):
         """
         Customized manager method to prevent anonymous users to be on the
         list of speakers and that someone is twice on one list (off coming
         speakers). Cares also initial sorting of the coming speakers.
         """
-        if self.filter(user=user, item=item, begin_time=None).exists():
+        if self.filter(
+            user=user, list_of_speakers=list_of_speakers, begin_time=None
+        ).exists():
             raise OpenSlidesError(f"{user} is already on the list of speakers.")
         if isinstance(user, AnonymousUser):
             raise OpenSlidesError("An anonymous user can not be on lists of speakers.")
         weight = (
-            self.filter(item=item).aggregate(models.Max("weight"))["weight__max"] or 0
+            self.filter(list_of_speakers=list_of_speakers).aggregate(
+                models.Max("weight")
+            )["weight__max"]
+            or 0
         )
-        speaker = self.model(item=item, user=user, weight=weight + 1)
+        speaker = self.model(
+            list_of_speakers=list_of_speakers, user=user, weight=weight + 1
+        )
         speaker.save(force_insert=True, skip_autoupdate=skip_autoupdate)
         return speaker
 
@@ -378,9 +447,11 @@ class Speaker(RESTModelMixin, models.Model):
     ForeinKey to the user who speaks.
     """
 
-    item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name="speakers")
+    list_of_speakers = models.ForeignKey(
+        ListOfSpeakers, on_delete=models.CASCADE, related_name="speakers"
+    )
     """
-    ForeinKey to the agenda item to which the user want to speak.
+    ForeinKey to the list of speakers to which the user want to speak.
     """
 
     begin_time = models.DateTimeField(null=True)
@@ -419,19 +490,21 @@ class Speaker(RESTModelMixin, models.Model):
         """
         try:
             current_speaker = (
-                Speaker.objects.filter(item=self.item, end_time=None)
+                Speaker.objects.filter(
+                    list_of_speakers=self.list_of_speakers, end_time=None
+                )
                 .exclude(begin_time=None)
                 .get()
             )
         except Speaker.DoesNotExist:
             pass
         else:
-            # Do not send an autoupdate for the countdown and the item. This is done
-            # by saving the item and countdown later.
+            # Do not send an autoupdate for the countdown and the list_of_speakers. This is done
+            # by saving the list_of_speakers and countdown later.
             current_speaker.end_speech(skip_autoupdate=True)
         self.weight = None
         self.begin_time = timezone.now()
-        self.save()  # Here, the item is saved and causes an autoupdate.
+        self.save()  # Here, the list_of_speakers is saved and causes an autoupdate.
         if config["agenda_couple_countdown_and_speakers"]:
             countdown, created = Countdown.objects.get_or_create(
                 pk=1,
@@ -465,6 +538,6 @@ class Speaker(RESTModelMixin, models.Model):
 
     def get_root_rest_element(self):
         """
-        Returns the item to this instance which is the root REST element.
+        Returns the list_of_speakers to this instance which is the root REST element.
         """
-        return self.item
+        return self.list_of_speakers

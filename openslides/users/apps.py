@@ -6,7 +6,6 @@ from django.contrib.auth.signals import user_logged_in
 class UsersAppConfig(AppConfig):
     name = "openslides.users"
     verbose_name = "OpenSlides Users"
-    angular_site_module = True
 
     def ready(self):
         # Import all required stuff.
