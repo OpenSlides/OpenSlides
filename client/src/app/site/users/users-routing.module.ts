@@ -12,7 +12,8 @@ const routes: Routes = [
     {
         path: '',
         component: UserListComponent,
-        pathMatch: 'full'
+        pathMatch: 'full',
+        data: { basePerm: 'users.can_see_name' }
     },
     {
         path: 'password',
@@ -47,8 +48,9 @@ const routes: Routes = [
     },
     {
         path: ':id',
-        component: UserDetailComponent,
-        data: { basePerm: 'users.can_see_name' }
+        component: UserDetailComponent
+        // No basePerm, because user is allowed to see the own profile page.
+        // Other user detail pages are empty if user does not have user.can_see_name.
     }
 ];
 

@@ -45,8 +45,9 @@ const routes: Routes = [
             },
             {
                 path: 'users',
-                loadChildren: './users/users.module#UsersModule',
-                data: { basePerm: 'users.can_see_name' }
+                loadChildren: './users/users.module#UsersModule'
+                // No baseperm, because change own password is ok, even if the
+                // user does not have users.can_see_name
             },
             {
                 path: 'tags',
