@@ -1,6 +1,6 @@
 import smtplib
 import textwrap
-from typing import List, Set
+from typing import Iterable, List, Set, Union
 
 from asgiref.sync import async_to_sync
 from django.conf import settings
@@ -357,45 +357,10 @@ class GroupViewSet(ModelViewSet):
 
         # Check status code and send 'permission_change' signal.
         if response.status_code == 200:
-
-            # Delete the user chaches of all affected users
-            for user in group.user_set.all():
-                async_to_sync(element_cache.del_user)(user.pk)
-
-            def diff(full, part):
-                """
-                This helper function calculates the difference of two lists:
-                The result is a list of all elements of 'full' that are
-                not in 'part'.
-                """
-                part = set(part)
-                return [item for item in full if item not in part]
-
-            new_permissions = diff(given_permissions, old_permissions)
-
-            # Some permissions are added.
-            if new_permissions:
-                elements: List[Element] = []
-                signal_results = permission_change.send(
-                    None, permissions=new_permissions, action="added"
-                )
-                all_full_data = async_to_sync(element_cache.get_all_full_data)()
-                for __, signal_collections in signal_results:
-                    for cachable in signal_collections:
-                        for full_data in all_full_data.get(
-                            cachable.get_collection_string(), {}
-                        ):
-                            elements.append(
-                                Element(
-                                    id=full_data["id"],
-                                    collection_string=cachable.get_collection_string(),
-                                    full_data=full_data,
-                                    disable_history=True,
-                                )
-                            )
-                inform_changed_elements(elements)
-
-            # TODO: Some permissions are deleted.
+            changed_permissions = list(
+                set(old_permissions).symmetric_difference(set(given_permissions))
+            )
+            self.inform_permission_change(group, changed_permissions)
 
         return response
 
@@ -449,9 +414,49 @@ class GroupViewSet(ModelViewSet):
             group.permissions.add(permission)
         else:
             group.permissions.remove(permission)
+        self.inform_permission_change(group, permission)
         inform_changed_data(group)
 
         return Response()
+
+    def inform_permission_change(
+        self,
+        group: Group,
+        changed_permissions: Union[None, Permission, Iterable[Permission]],
+    ) -> None:
+        """
+        Updates every users, if some permission changes. For this, every affected collection
+        is fetched via the permission_change signal and every object of the collection passed
+        into the cache/autoupdate system. Also the personal (restrcited) cache of every affected
+        user (all users of the group) will be deleted, so it is rebuild after this permission change.
+        """
+        if isinstance(changed_permissions, Permission):
+            changed_permissions = [changed_permissions]
+
+        if not changed_permissions:
+            return  # either None or empty list.
+
+        # Delete the user chaches of all affected users
+        for user in group.user_set.all():
+            async_to_sync(element_cache.del_user)(user.pk)
+
+        elements: List[Element] = []
+        signal_results = permission_change.send(None, permissions=changed_permissions)
+        all_full_data = async_to_sync(element_cache.get_all_full_data)()
+        for _, signal_collections in signal_results:
+            for cachable in signal_collections:
+                for full_data in all_full_data.get(
+                    cachable.get_collection_string(), {}
+                ):
+                    elements.append(
+                        Element(
+                            id=full_data["id"],
+                            collection_string=cachable.get_collection_string(),
+                            full_data=full_data,
+                            disable_history=True,
+                        )
+                    )
+        inform_changed_elements(elements)
 
 
 class PersonalNoteViewSet(ModelViewSet):

@@ -82,7 +82,7 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group, Gro
      */
     public async togglePerm(group: ViewGroup, perm: string): Promise<void> {
         const set = !group.permissions.includes(perm);
-        return await this.http.post(`rest/${group.collectionString}/${group.id}/set_permission/`, {
+        return await this.http.post(`/rest/${group.collectionString}/${group.id}/set_permission/`, {
             perm: perm,
             set: set
         });
