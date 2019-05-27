@@ -8,6 +8,7 @@ import { BaseSlideComponent } from 'app/slides/base-slide-component';
 import { SlideData } from 'app/core/core-services/projector-data.service';
 import { ProjectorElement } from 'app/shared/models/core/projector';
 import { ViewProjector } from 'app/site/projector/models/view-projector';
+import { isBaseScaleScrollSlideComponent } from 'app/slides/base-scale-scroll-slide-component';
 
 function hasError(obj: object): obj is { error: string } {
     return (<{ error: string }>obj).error !== undefined;
@@ -27,6 +28,13 @@ export class SlideContainerComponent extends BaseComponent {
     @ViewChild('slide', { read: ViewContainerRef })
     private slide: ViewContainerRef;
     private slideRef: ComponentRef<BaseSlideComponent<object>>;
+
+    /**
+     * A slide is autonomic, if it takes care of scaling and scrolling by itself.
+     */
+    private get slideIsAutonomic(): boolean {
+        return !!this.slideRef && !!this.slideRef.instance && isBaseScaleScrollSlideComponent(this.slideRef.instance);
+    }
 
     /**
      * The data for this slide. Will be accessed below.
@@ -59,8 +67,9 @@ export class SlideContainerComponent extends BaseComponent {
         if (this.previousSlideName !== slideData.element.name) {
             this.slideChanged(slideData.element);
             this.previousSlideName = slideData.element.name;
+        } else {
+            this.setDataForComponent();
         }
-        this.setDataForComponent();
     }
 
     public get slideData(): SlideData<object> {
@@ -77,6 +86,7 @@ export class SlideContainerComponent extends BaseComponent {
         this._projector = projector;
         this.setProjectorForComponent();
         this.updateScroll();
+        this.updateScale();
     }
 
     public get projector(): ViewProjector {
@@ -101,18 +111,19 @@ export class SlideContainerComponent extends BaseComponent {
         return this._scroll;
     }
 
+    private _scale: number;
+
     /**
      * Update the slideStyle, when the scale changes.
      */
     @Input()
     public set scale(value: number) {
-        if (this.slideOptions.scaleable) {
-            value *= 10;
-            value += 100;
-            this.slideStyle['font-size'] = `${value}%`;
-        } else {
-            this.slideStyle['font-size'] = '100%';
-        }
+        this._scale = value;
+        this.updateScale();
+    }
+
+    public get scale(): number {
+        return this._scale;
     }
 
     /**
@@ -133,10 +144,11 @@ export class SlideContainerComponent extends BaseComponent {
     }
 
     /**
-     * Updates the 'margin-top' attribute in the slide styles.
+     * Updates the 'margin-top' attribute in the slide styles. Propages the sroll to
+     * autonomic slides.
      */
     private updateScroll(): void {
-        if (this.slideOptions.scrollable) {
+        if (this.slideOptions.scrollable && !this.slideIsAutonomic) {
             let value = this.scroll;
             value *= -100;
             if (this.projector.show_header_footer) {
@@ -145,6 +157,28 @@ export class SlideContainerComponent extends BaseComponent {
             this.slideStyle['margin-top'] = `${value}px`;
         } else {
             this.slideStyle['margin-top'] = '0px';
+
+            if (this.slideIsAutonomic && isBaseScaleScrollSlideComponent(this.slideRef.instance)) {
+                this.slideRef.instance.scroll = this.scroll;
+            }
+        }
+    }
+
+    /**
+     * Updates the 'font-size' style attributes. Propagates the scale to autonomic slides.
+     */
+    private updateScale(): void {
+        if (this.slideOptions.scaleable && !this.slideIsAutonomic) {
+            let scale = this.scale;
+            scale *= 10;
+            scale += 100;
+            this.slideStyle['font-size'] = `${scale}%`;
+        } else {
+            this.slideStyle['font-size'] = '100%';
+
+            if (this.slideIsAutonomic && isBaseScaleScrollSlideComponent(this.slideRef.instance)) {
+                this.slideRef.instance.scale = this.scale;
+            }
         }
     }
 
@@ -170,6 +204,8 @@ export class SlideContainerComponent extends BaseComponent {
             this.slideRef = this.slide.createComponent(slideFactory);
             this.setDataForComponent();
             this.setProjectorForComponent();
+            this.updateScale();
+            this.updateScroll();
         });
     }
 

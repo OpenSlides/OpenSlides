@@ -4,10 +4,22 @@
     opacity: 0.5;
 }
 
+/**
+ * Override some special values which will be set dynamically
+ */
+.slidetitle {
+    /* Original: 40px: This is done in the `scroll()` method, so the
+     * motion text will be cut (to be taken by word) on the grey line */
+    margin-bottom: 0px !important;
+
+    h1 {
+        margin: 0 !important;
+    }
+}
+
 #sidebox {
     width: 260px;
     right: 0;
-    margin-top: 94px;
     background: #d3d3d3;
     border-radius: 7px 0 0 7px;
     padding: 3px 7px 10px 10px;
@@ -21,13 +33,25 @@
     }
 }
 
+.spacer {
+    min-width: 1px;
+}
+
+#text-wrapper {
+    overflow: hidden;
+}
+
+#text {
+    position: relative;
+}
+
 /* override the absolute position of outside linenumbers on motion slide */
 :host ::ng-deep .motion-text {
     &.line-numbers-outside {
         .os-line-number {
             &:after {
                 top: 19px;
-                font-size: 13px;
+                font-size: 15px;
             }
         }
     }
