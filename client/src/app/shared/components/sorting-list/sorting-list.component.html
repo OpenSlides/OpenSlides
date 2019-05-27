@@ -2,18 +2,29 @@
     <div class="line" *ngIf="!array.length">
         <span translate>No data</span>
     </div>
-    <div class="line" *ngFor="let item of array; let i = index" cdkDrag>
-        <div class="section-one backgroundColorLight" cdkDragHandle *ngIf="enable">
+    <div
+        [ngClass]="isSelectedRow(i) ? 'backgroundColorSelected line' : 'backgroundColorLight line'"
+        *ngFor="let item of array; let i = index"
+        cdkDrag
+        (click)="onItemClick($event, i)"
+        (cdkDragStarted)="dragStarted(i)"
+    >
+        <div class="section-one " cdkDragHandle *ngIf="enable">
             <mat-icon>drag_indicator</mat-icon>
         </div>
-        <div class="section-two backgroundColorLight">
+        <div class="section-two">
             <!-- {number}. {item.getTitle()} -->
             <span *ngIf="count">{{ i + 1 }}.&nbsp;</span>
             <span>{{ item.getTitle() }}</span>
         </div>
-        <div class="section-three backgroundColorLight">
+        <div class="section-three">
             <!-- Extra controls slot using implicit template references -->
             <ng-template [ngTemplateOutlet]="templateRef" [ngTemplateOutletContext]="{ $implicit: item }"></ng-template>
+        </div>
+        <div class="line" *cdkDragPreview>
+            <div class="spacer.left-10" *ngIf="multiSelectedIndex.length > 0">
+                {{ multiSelectedIndex.length }}&nbsp;<span translate>items selected</span>
+            </div>
         </div>
     </div>
 </div>

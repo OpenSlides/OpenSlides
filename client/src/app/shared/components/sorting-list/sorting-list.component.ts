@@ -37,6 +37,12 @@ export class SortingListComponent implements OnInit, OnDestroy {
     public array: Selectable[];
 
     /**
+     * The index of multiple selected elements. Allows for multiple items to be
+     * selected and then moved
+     */
+    public multiSelectedIndex: number[] = [];
+
+    /**
      * Declare the templateRef to coexist between parent in child
      */
     @ContentChild(TemplateRef)
@@ -144,11 +150,78 @@ export class SortingListComponent implements OnInit, OnDestroy {
     }
 
     /**
+     * Handles the start of a dragDrop event and clears multiSelect if the ittem dragged
+     * is not part of the selected items
+     */
+    public dragStarted(index: number): void {
+        if (this.multiSelectedIndex.length && !this.multiSelectedIndex.includes(index)) {
+            this.multiSelectedIndex = [];
+        }
+    }
+
+    /**
      * drop event
      * @param event the event
      */
     public drop(event: CdkDragDrop<Selectable[]>): void {
-        moveItemInArray(this.array, event.previousIndex, event.currentIndex);
+        if (this.multiSelectedIndex.length < 2) {
+            moveItemInArray(this.array, event.previousIndex, event.currentIndex);
+        } else {
+            const before: Selectable[] = [];
+            const insertions: Selectable[] = [];
+            const behind: Selectable[] = [];
+            for (let i = 0; i < this.array.length; i++) {
+                if (!this.multiSelectedIndex.includes(i)) {
+                    if (i < event.currentIndex) {
+                        before.push(this.array[i]);
+                    } else if (i > event.currentIndex) {
+                        behind.push(this.array[i]);
+                    } else {
+                        event.currentIndex < 1 ? behind.push(this.array[i]) : before.push(this.array[i]);
+                    }
+                } else {
+                    insertions.push(this.array[i]);
+                }
+            }
+            this.array = [...before, ...insertions, ...behind];
+        }
         this.sortEvent.emit(this.array);
+        this.multiSelectedIndex = [];
+    }
+
+    /**
+     * Handles a click on a row. If the control key is clicked, the element is
+     * added/removed from a multiselect list /(which will be handled on
+     * dropping)
+     *
+     * @param event MouseEvent.
+     * @param indx The index of the row clicked.
+     */
+    public onItemClick(event: MouseEvent, indx: number): void {
+        if (event.ctrlKey) {
+            const ind = this.multiSelectedIndex.findIndex(i => i === indx);
+            if (ind === -1) {
+                this.multiSelectedIndex.push(indx);
+            } else {
+                this.multiSelectedIndex = this.multiSelectedIndex
+                    .slice(0, ind)
+                    .concat(this.multiSelectedIndex.slice(ind + 1));
+            }
+        } else {
+            // deselect all when clicking on an non-selected item
+            if (this.multiSelectedIndex.length && !this.multiSelectedIndex.includes(indx)) {
+                this.multiSelectedIndex = [];
+            }
+        }
+    }
+
+    /**
+     * Checks if the row at the given index is currently selected
+     *
+     * @param index
+     * @returns true if the item is currently selected
+     */
+    public isSelectedRow(index: number): boolean {
+        return this.multiSelectedIndex.includes(index);
     }
 }
