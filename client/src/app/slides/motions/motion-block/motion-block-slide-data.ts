@@ -7,6 +7,9 @@ export interface MotionBlockSlideMotionRepresentation extends MotionTitleInforma
         css_class: string;
     };
     recommendation_extension?: string;
+
+    // This property will be calculated and saved here.
+    recommendationLabel?: string;
 }
 
 export interface MotionBlockSlideData {

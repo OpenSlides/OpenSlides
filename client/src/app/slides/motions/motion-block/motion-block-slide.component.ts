@@ -8,10 +8,20 @@ import { StateCssClassMapping } from 'app/site/motions/models/view-workflow';
 import { BaseMotionSlideComponent } from '../base/base-motion-slide';
 import { SlideData } from 'app/core/core-services/projector-data.service';
 
-/**
- * The row threshold to switch from one to a two column layout
- */
-const TWO_COLUMNS_THRESHOLD = 8;
+// Layout:
+// 1) Long layout: Motion title is shown and the motions are
+//    displayed in two lines: title and recommendation. This
+//    mode is used until #motions<=SHORT_LAYOUT_THRESHOLD. There
+//    are ROWS_PER_COLUMN_SHORT rows per column, is MAX_COLUMNS
+//    is reached. If so, thhe rows per columns will be ignored.
+// 2) Short Layout: Just motion identifier and the recommendation
+//    in one line. This mode is used if #motions>SHORT_LAYOUT_THRESHOLD.
+//    The same as in the log layout holds, just with ROWS_PER_COLUMN_SHORT.
+
+const ROWS_PER_COLUMN_SHORT = 8;
+const ROWS_PER_COLUMN_LONG = 16;
+const SHORT_LAYOUT_THRESHOLD = 8;
+const MAX_COLUMNS = 3;
 
 @Component({
     selector: 'os-motion-block-slide',
@@ -38,6 +48,36 @@ export class MotionBlockSlideComponent extends BaseMotionSlideComponent<MotionBl
                     this.motionRepo.getIdentifierOrTitle(b)
                 )
             );
+
+            // Populate the motion with the recommendation_label
+            data.data.motions.forEach(motion => {
+                if (motion.recommendation) {
+                    let recommendation = this.translate.instant(motion.recommendation.name);
+                    if (motion.recommendation_extension) {
+                        recommendation +=
+                            ' ' +
+                            this.replaceReferencedMotions(
+                                motion.recommendation_extension,
+                                data.data.referenced_motions
+                            );
+                    }
+                    motion.recommendationLabel = recommendation;
+                } else {
+                    motion.recommendationLabel = null;
+                }
+            });
+
+            // Check, if all motions have the same recommendation label
+            if (data.data.motions.length > 0) {
+                const recommendationLabel = data.data.motions[0].recommendationLabel;
+                if (data.data.motions.every(motion => motion.recommendationLabel === recommendationLabel)) {
+                    this.commonRecommendation = recommendationLabel;
+                }
+            } else {
+                this.commonRecommendation = null;
+            }
+        } else {
+            this.commonRecommendation = null;
         }
         this._data = data;
     }
@@ -45,6 +85,11 @@ export class MotionBlockSlideComponent extends BaseMotionSlideComponent<MotionBl
     public get data(): SlideData<MotionBlockSlideData> {
         return this._data;
     }
+
+    /**
+     * If this is set, all motions have the same recommendation, saved in this variable.
+     */
+    public commonRecommendation: string | null = null;
 
     /**
      * @returns the amount of motions in this block
@@ -57,43 +102,55 @@ export class MotionBlockSlideComponent extends BaseMotionSlideComponent<MotionBl
         }
     }
 
+    public get shortDisplayStyle(): boolean {
+        return this.motionsAmount > SHORT_LAYOUT_THRESHOLD;
+    }
+
     /**
      * @returns the amount of rows to display.
      */
     public get rows(): number {
-        let rows = this.motionsAmount;
-        if (this.motionsAmount > TWO_COLUMNS_THRESHOLD) {
-            rows = Math.ceil(rows / 2);
-        }
-        return rows;
+        return Math.ceil(this.motionsAmount / this.columns);
     }
 
     /**
-     * @returns an aray with [1, ..., this.rows]
+     * @returns an aray with [0, ..., this.rows-1]
      */
     public get rowsArray(): number[] {
-        const indices = [];
-        const rows = this.rows;
-        for (let i = 0; i < rows; i++) {
-            indices.push(i);
+        return this.makeIndicesArray(this.rows);
+    }
+
+    public get columns(): number {
+        const rowsPerColumn = this.shortDisplayStyle ? ROWS_PER_COLUMN_SHORT : ROWS_PER_COLUMN_LONG;
+        const columns = Math.ceil(this.motionsAmount / rowsPerColumn);
+        if (columns > MAX_COLUMNS) {
+            return MAX_COLUMNS;
+        } else {
+            return columns;
         }
-        return indices;
     }
 
     /**
-     * @returns [0] or [0, 1] if one or two columns are used
+     * @returns an aray with [0, ..., this.columns-1]
      */
     public get columnsArray(): number[] {
-        if (this.motionsAmount > TWO_COLUMNS_THRESHOLD) {
-            return [0, 1];
-        } else {
-            return [0];
-        }
+        return this.makeIndicesArray(this.columns);
     }
 
     public constructor(translate: TranslateService, motionRepo: MotionRepositoryService) {
         super(translate, motionRepo);
         this.languageCollator = new Intl.Collator(this.translate.currentLang);
+    }
+
+    /**
+     * @returns an array [0, ..., n-1]
+     */
+    public makeIndicesArray(n: number): number[] {
+        const indices = [];
+        for (let i = 0; i < n; i++) {
+            indices.push(i);
+        }
+        return indices;
     }
 
     /**
@@ -108,10 +165,15 @@ export class MotionBlockSlideComponent extends BaseMotionSlideComponent<MotionBl
     }
 
     /**
-     * @returns the title of the given motion.
+     * @returns the title of the given motion. If no title should be shown, just the
+     * identifier is returned.
      */
     public getMotionTitle(i: number, j: number): string {
-        return this.motionRepo.getTitle(this.getMotion(i, j));
+        if (this.shortDisplayStyle) {
+            return this.motionRepo.getIdentifierOrTitle(this.getMotion(i, j));
+        } else {
+            return this.motionRepo.getTitle(this.getMotion(i, j));
+        }
     }
 
     /**
@@ -122,29 +184,9 @@ export class MotionBlockSlideComponent extends BaseMotionSlideComponent<MotionBl
     }
 
     /**
-     * @returns true if the motion in cell i and j has a recommendation
-     */
-    public hasRecommendation(i: number, j: number): boolean {
-        return !!this.getMotion(i, j).recommendation;
-    }
-
-    /**
      * @returns the css color for the state of the motion in cell i and j
      */
     public getStateCssColor(i: number, j: number): string {
         return StateCssClassMapping[this.getMotion(i, j).recommendation.css_class] || '';
-    }
-
-    /**
-     * @returns the recommendation label for motion in cell i and j
-     */
-    public getRecommendationLabel(i: number, j: number): string {
-        const motion = this.getMotion(i, j);
-        let recommendation = this.translate.instant(motion.recommendation.name);
-        if (motion.recommendation_extension) {
-            recommendation +=
-                ' ' + this.replaceReferencedMotions(motion.recommendation_extension, this.data.data.referenced_motions);
-        }
-        return recommendation;
     }
 }
