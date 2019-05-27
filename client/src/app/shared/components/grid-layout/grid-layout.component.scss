@@ -1,0 +1,17 @@
+.heading-container {
+    padding: 0 16px;
+}
+
+.heading-container.no-space {
+    padding: 0;
+}
+
+.os-grid {
+    padding: 8px;
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.os-grid.no-space {
+    padding: 0;
+}

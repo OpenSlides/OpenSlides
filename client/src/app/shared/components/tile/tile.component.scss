@@ -1,0 +1,94 @@
+@import '~@angular/material/theming';
+@import '../../../../assets/styles/media-queries.scss';
+
+@mixin os-tile-style($theme) {
+    $primary: map-get($theme, primary);
+
+    @include set-breakpoint-lower(xs) {
+        @for $i from 1 through 4 {
+            .os-tile--xs-#{$i} {
+                width: get-width('xs', $i, true);
+            }
+            .os-grid.no-space > .os-tile--xs-#{$i} {
+                width: get-width('xs', $i, false);
+            }
+        }
+    }
+
+    @include set-breakpoint-between(xs, sm) {
+        @for $i from 1 through 8 {
+            .os-tile--sm-#{$i} {
+                width: get-width('sm', $i, true);
+            }
+            .os-grid.no-space > .os-tile--sm-#{$i} {
+                width: get-width('sm', $i, false);
+            }
+        }
+    }
+
+    @include set-breakpoint-between(sm, lg) {
+        @for $i from 1 through 12 {
+            .os-tile--md-#{$i} {
+                width: get-width('md', $i, true);
+            }
+            .os-grid.no-space > .os-tile--md-#{$i} {
+                width: get-width('md', $i, false);
+            }
+        }
+    }
+
+    @include set-breakpoint-upper(lg) {
+        @for $i from 1 through 16 {
+            .os-tile--lg-#{$i} {
+                width: get-width('lg', $i, true);
+            }
+            .os-grid.no-space > .os-tile--lg-#{$i} {
+                width: get-width('md', $i, false);
+            }
+        }
+    }
+
+    .os-tile {
+        height: calc(100% - 16px);
+        margin: 8px;
+    }
+    .os-grid.no-space > .os-tile {
+        height: 100%;
+        margin: 0;
+    }
+}
+
+/* This function calculates the width to the given device-size */
+@function get-width($property, $size, $space) {
+    @if $property == 'xs' {
+        @if $space == true {
+            @return calc(#{$size} / 4 * 100% - 16px);
+        } @else {
+            @return $size / 4 * 100%;
+        }
+    }
+
+    @if $property == 'sm' {
+        @if $space == true {
+            @return calc(#{$size} / 8 * 100% - 16px);
+        } @else {
+            @return $size / 8 * 100%;
+        }
+    }
+
+    @if $property == 'md' {
+        @if $space == true {
+            @return calc(#{$size} / 12 * 100% - 16px);
+        } @else {
+            @return $size / 12 * 100%;
+        }
+    }
+
+    @if $property == 'lg' {
+        @if $space == true {
+            @return calc(#{$size} / 16 * 100% - 16px);
+        } @else {
+            @return $size / 16 * 100%;
+        }
+    }
+}

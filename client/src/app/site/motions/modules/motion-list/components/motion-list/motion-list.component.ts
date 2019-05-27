@@ -31,6 +31,16 @@ import { MotionXlsxExportService } from 'app/site/motions/services/motion-xlsx-e
 import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { PdfError } from 'app/core/ui-services/pdf-document.service';
+import { tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+
+interface TileCategoryInformation {
+    filter: string;
+    name: string;
+    prefix?: string;
+    condition: number | boolean | null;
+    amountOfMotions: number;
+}
 
 /**
  * Interface to describe possible values and changes for
@@ -80,6 +90,11 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
     public infoDialog: InfoDialog;
 
     /**
+     * String to define the current selected view.
+     */
+    public selectedView: string;
+
+    /**
      * Columns to display in table when desktop view is available
      */
     public displayedColumnsDesktop: string[] = ['identifier', 'title', 'state', 'anchor'];
@@ -100,6 +115,17 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
     public workflows: ViewWorkflow[] = [];
     public categories: ViewCategory[] = [];
     public motionBlocks: ViewMotionBlock[] = [];
+
+    /**
+     * List of `TileCategoryInformation`.
+     * Necessary to not iterate over the values of the map below.
+     */
+    public tileCategories: TileCategoryInformation[] = [];
+
+    /**
+     * Map of information about the categories relating to their id.
+     */
+    public informationOfMotionsInTileCategories: { [id: number]: TileCategoryInformation } = {};
 
     /**
      * Constructor implements title and translation Module.
@@ -161,9 +187,10 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
      * Sets the title, inits the table, defines the filter/sorting options and
      * subscribes to filter and sorting services
      */
-    public ngOnInit(): void {
+    public async ngOnInit(): Promise<void> {
         super.setTitle('Motions');
         this.initTable();
+        const storedView = await this.storage.get<string>('motionListView');
         this.configService
             .get<boolean>('motions_statutes_enabled')
             .subscribe(enabled => (this.statutesEnabled = enabled));
@@ -176,6 +203,11 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
         });
         this.categoryRepo.getViewModelListObservable().subscribe(cats => {
             this.categories = cats;
+            if (cats.length > 0) {
+                this.selectedView = storedView || 'tiles';
+            } else {
+                this.selectedView = 'list';
+            }
             this.updateStateColumnVisibility();
         });
         this.tagRepo.getViewModelListObservable().subscribe(tags => {
@@ -192,6 +224,70 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
      */
     public singleSelectAction(motion: ViewMotion): void {
         this.router.navigate(['./' + motion.id], { relativeTo: this.route });
+    }
+
+    /**
+     * Overwriting method of base-class.
+     * Every time this method is called, all motions are counted in their related categories.
+     *
+     * @returns {Observable<ViewMotion[]>} An observable containing the list of motions.
+     */
+    protected getModelListObservable(): Observable<ViewMotion[]> {
+        return super.getModelListObservable().pipe(
+            tap(motions => {
+                this.informationOfMotionsInTileCategories = {};
+                for (const motion of motions) {
+                    if (motion.star) {
+                        this.countMotions(-1, true, 'star', 'Favorites');
+                    }
+
+                    if (motion.category_id) {
+                        this.countMotions(
+                            motion.category_id,
+                            motion.category_id,
+                            'category',
+                            motion.category.name,
+                            motion.category.prefix
+                        );
+                    } else {
+                        this.countMotions(-2, null, 'category', 'No category');
+                    }
+                }
+
+                this.tileCategories = Object.values(this.informationOfMotionsInTileCategories);
+            })
+        );
+    }
+
+    /**
+     * Function to count the motions in their related categories.
+     *
+     * @param id The key of TileCategory in `informationOfMotionsInTileCategories` object
+     * @param condition The condition, if the tile is selected
+     * @param filter The filter, if the tile is selected
+     * @param name The title of the tile
+     * @param prefix The prefix of the category
+     */
+    private countMotions(
+        id: number,
+        condition: number | boolean | null,
+        filter: string,
+        name: string,
+        prefix?: string
+    ): void {
+        let info = this.informationOfMotionsInTileCategories[id];
+        if (info) {
+            ++info.amountOfMotions;
+        } else {
+            info = {
+                filter,
+                name,
+                condition,
+                prefix,
+                amountOfMotions: 1
+            };
+        }
+        this.informationOfMotionsInTileCategories[id] = info;
     }
 
     /**
@@ -386,6 +482,31 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
 
             return false;
         };
+    }
+
+    /**
+     * This function saves the selected view by changes.
+     *
+     * @param value is the new view the user has selected.
+     */
+    public onChangeView(value: string): void {
+        this.selectedView = value;
+        this.storage.set('motionListView', value);
+    }
+
+    /**
+     * This function changes the view to the list of motions where the selected category becomes the active filter.
+     *
+     * @param tileCategory information about filter and condition.
+     */
+    public changeToViewWithTileCategory(tileCategory: TileCategoryInformation): void {
+        this.filterService.clearAllFilters();
+        this.filterService.toggleFilterOption(tileCategory.filter, {
+            label: tileCategory.name,
+            condition: tileCategory.condition,
+            isActive: false
+        });
+        this.onChangeView('list');
     }
 
     /**

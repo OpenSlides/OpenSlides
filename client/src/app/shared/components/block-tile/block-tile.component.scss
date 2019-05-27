@@ -1,0 +1,60 @@
+@import '~@angular/material/theming';
+
+@mixin os-block-tile-style($theme) {
+    $primary: map-get(
+        $map: $theme,
+        $key: primary
+    );
+
+    .block-tile {
+        padding: 0;
+
+        .block-node-container {
+            position: relative;
+            padding-bottom: 50%;
+            min-width: 30%;
+
+            .tile-text {
+                padding: 8px 16px;
+                background-color: mat-color($primary, lighter);
+
+                table {
+                    height: 100%;
+                    width: 100%;
+                    text-align: center;
+                    font-size: 24px;
+                    font-weight: 500;
+                }
+            }
+        }
+
+        .tile-content-node-container {
+            position: relative;
+            width: 100%;
+            margin: 8px 16px !important;
+
+            .tile-content {
+                margin-bottom: 0;
+                height: 100%;
+
+                .tile-content-title {
+                    font-size: 20px;
+                    font-weight: unset;
+                    margin-bottom: 0;
+                    overflow: hidden;
+                }
+            }
+
+            .tile-content-extra {
+                padding-top: 8px;
+            }
+        }
+
+        &:hover {
+            cursor: pointer;
+
+            box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 5px 8px 0px rgba(0, 0, 0, 0.14),
+                0px 1px 14px 0px rgba(0, 0, 0, 0.12) !important;
+        }
+    }
+}

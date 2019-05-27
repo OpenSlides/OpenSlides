@@ -1,0 +1,26 @@
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { GridLayoutComponent } from './grid-layout.component';
+import { E2EImportsModule } from 'e2e-imports.module';
+
+describe('GridLayoutComponent', () => {
+    let component: GridLayoutComponent;
+    let fixture: ComponentFixture<GridLayoutComponent>;
+
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            imports: [E2EImportsModule]
+            // declarations: [GridLayoutComponent]
+        }).compileComponents();
+    }));
+
+    beforeEach(() => {
+        fixture = TestBed.createComponent(GridLayoutComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
+});
