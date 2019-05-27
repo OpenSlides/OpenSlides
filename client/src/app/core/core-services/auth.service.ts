@@ -90,9 +90,9 @@ export class AuthService {
         } catch (e) {
             // We do nothing on failures. Reboot OpenSlides anyway.
         }
+        this.router.navigate(['/']);
         await this.DS.clear();
         await this.operator.setWhoAmI(response);
         await this.OpenSlides.reboot();
-        this.router.navigate(['/']);
     }
 }
