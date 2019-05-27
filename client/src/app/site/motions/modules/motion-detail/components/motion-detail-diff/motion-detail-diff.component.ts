@@ -64,6 +64,8 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
      */
     public lineLength: number;
 
+    public preamble: string;
+
     /**
      * @param title
      * @param translate
@@ -92,6 +94,7 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
     ) {
         super(title, translate, matSnackBar);
         this.configService.get<number>('motions_line_length').subscribe(lineLength => (this.lineLength = lineLength));
+        this.configService.get<string>('motions_preamble').subscribe(preamble => (this.preamble = preamble));
     }
 
     /**

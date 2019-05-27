@@ -45,7 +45,12 @@ import {
     ViewMotionNotificationEditMotion,
     TypeOfNotificationViewMotion
 } from 'app/site/motions/models/view-motion-notify';
-import { ViewMotion, ChangeRecoMode, LineNumberingMode } from 'app/site/motions/models/view-motion';
+import {
+    ViewMotion,
+    ChangeRecoMode,
+    LineNumberingMode,
+    verboseChangeRecoMode
+} from 'app/site/motions/models/view-motion';
 import { ViewStatuteParagraph } from 'app/site/motions/models/view-statute-paragraph';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change';
@@ -121,6 +126,30 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      */
     public get stateLabel(): string {
         return this.repo.getExtendedStateLabel(this.motion);
+    }
+
+    private finalEditMode = false;
+
+    /**
+     * check if the 'final version edit mode' is active
+     *
+     * @returns true if active
+     */
+    public get isFinalEdit(): boolean {
+        return this.finalEditMode;
+    }
+
+    /**
+     * Helper to check the current state of the final version edit
+     *
+     * @returns true if the local edit of the modified_final_version differs
+     * from the submitted version
+     */
+    public get finalVersionEdited(): boolean {
+        return (
+            this.crMode === ChangeRecoMode.ModifiedFinal &&
+            this.contentForm.get('modified_final_version').value !== this.motion.modified_final_version
+        );
     }
 
     /**
@@ -274,6 +303,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * For using the enum constants from the template
      */
     public ChangeRecoMode = ChangeRecoMode;
+
+    public verboseChangeRecoMode = verboseChangeRecoMode;
 
     /**
      * For using the enum constants from the template
@@ -704,8 +735,9 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
             selected_paragraphs: [],
             statute_amendment: [''], // Internal value for the checkbox, not saved to the model
             statute_paragraph_id: [''],
-            motion_block_id: [], // TODO: Can be removed if this is not required
-            parent_id: []
+            motion_block_id: [],
+            parent_id: [],
+            modified_final_version: ['']
         });
         this.updateWorkflowIdForCreateForm();
 
@@ -1062,7 +1094,10 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
                     'Are you sure you want to copy the final version to the print template?'
                 );
                 if (await this.promptService.open(title, null)) {
-                    await this.updateMotion({ modified_final_version: finalVersion }, this.motion);
+                    this.updateMotion({ modified_final_version: finalVersion }, this.motion).then(
+                        () => this.setChangeRecoMode(ChangeRecoMode.ModifiedFinal),
+                        this.raiseError
+                    );
                 }
             } else {
                 await this.updateMotion({ modified_final_version: finalVersion }, this.motion);
@@ -1070,7 +1105,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         } catch (e) {
             this.raiseError(e);
         }
-        this.setChangeRecoMode(ChangeRecoMode.ModifiedFinal);
     }
 
     /**
@@ -1079,6 +1113,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     public async deleteModifiedFinalVersion(): Promise<void> {
         const title = this.translate.instant('Are you sure you want to delete the print template?');
         if (await this.promptService.open(title, null)) {
+            this.finalEditMode = false;
             this.updateMotion({ modified_final_version: '' }, this.motion).then(
                 () => this.setChangeRecoMode(ChangeRecoMode.Final),
                 this.raiseError
@@ -1445,6 +1480,27 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     }
 
     /**
+     * Submits the modified final version of the motion
+     */
+    public onSubmitFinalVersion(): void {
+        const val = this.contentForm.get('modified_final_version').value;
+        this.updateMotion({ modified_final_version: val }, this.motion).then(() => {
+            this.finalEditMode = false;
+            this.contentForm.get('modified_final_version').markAsPristine();
+        }, this.raiseError);
+    }
+
+    /**
+     * Cancels the final version edit and resets the form value
+     *
+     * TODO: the tinyMCE editor content should reset, too
+     */
+    public cancelFinalVersionEdit(): void {
+        this.finalEditMode = false;
+        this.contentForm.patchValue({ modified_final_version: this.motion.modified_final_version });
+    }
+
+    /**
      * Toggles the favorite status
      */
     public toggleFavorite(): void {
@@ -1547,5 +1603,12 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
                 }
             }
         }
+    }
+
+    /**
+     * Activates the 'edit final version' mode
+     */
+    public editModifiedFinal(): void {
+        this.finalEditMode = true;
     }
 }

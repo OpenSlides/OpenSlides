@@ -38,6 +38,8 @@
     <div *ngIf="changes.length === 0" class="no-changes">{{ 'No change recommendations yet' | translate }}</div>
 </section>
 
+<span class="text-prefix-label">{{ preamble | translate }}</span>
+
 <!-- The actual diff view -->
 <div class="motion-text-with-diffs">
     <div *ngFor="let change of changes; let i = index">

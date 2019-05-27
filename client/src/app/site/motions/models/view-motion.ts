@@ -42,6 +42,14 @@ export enum ChangeRecoMode {
     ModifiedFinal = 'modified_final_version'
 }
 
+export const verboseChangeRecoMode = {
+    original: 'Original version',
+    changed: 'Changed version',
+    diff: 'Diff version',
+    agreed: 'Final version',
+    modified_final_version: 'Final print template'
+};
+
 export interface MotionTitleInformation extends TitleInformationWithAgendaItem {
     title: string;
     identifier?: string;

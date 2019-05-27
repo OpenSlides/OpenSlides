@@ -23,30 +23,36 @@ span {
     display: flow-root;
 }
 
-.motion-text-controls {
-    float: right;
-    margin-left: 5px;
-    margin-top: -15px;
-    height: 50px;
+.motion-text-toolbar-wrapper {
+    display: flex;
+    justify-content: flex-end;
 
     button {
-        font-size: 115%;
+        font-weight: 400;
+        margin-top: 7px;
     }
+
+    height: 50px;
+    margin: -16px -16px 5px -16px;
+    padding: 0 16px;
 
     > button {
         // Prevent moving the buttons when the "go to line"-input is shown
         margin-top: 7px;
     }
-    .motion-goto-line {
-        width: 150px;
-    }
-    input[type='number']::-webkit-inner-spin-button,
-    input[type='number']::-webkit-outer-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-    input[type='number'] {
-        -moz-appearance: textfield;
+
+    .motion-text-controls {
+        .motion-goto-line {
+            width: 150px;
+        }
+        input[type='number']::-webkit-inner-spin-button,
+        input[type='number']::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type='number'] {
+            -moz-appearance: textfield;
+        }
     }
 }
 
