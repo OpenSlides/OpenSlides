@@ -54,8 +54,8 @@ export class SlideManager {
         return this.loadedSlideConfigurations[slideName];
     }
 
-    public getIdentifialbeProjectorElement(element: ProjectorElement): IdentifiableProjectorElement {
-        const identifiableElement: IdentifiableProjectorElement = element as IdentifiableProjectorElement;
+    public getIdentifialbeProjectorElement<P extends ProjectorElement>(element: P): IdentifiableProjectorElement & P {
+        const identifiableElement: IdentifiableProjectorElement & P = element as IdentifiableProjectorElement & P;
         const identifiers = this.getManifest(element.name).elementIdentifiers.map(x => x); // map to copy.
         identifiableElement.getIdentifiers = () => identifiers;
         return identifiableElement;

@@ -1,0 +1,30 @@
+.fullscreen img,
+.nofullscreen img {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+.fullscreen {
+    z-index: 100; /* TODO: find solution to overlap header/footer */
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    img {
+        width: 100%;
+        height: auto; /* TODO: use dynamic auto width/height for landscape/portrait format */
+    }
+}
+
+.nofullscreen {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+}

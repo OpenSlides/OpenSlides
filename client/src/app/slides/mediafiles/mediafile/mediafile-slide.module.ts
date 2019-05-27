@@ -1,7 +1,16 @@
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
-import { makeSlideModule } from 'app/slides/base-slide-module';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
+
 import { MediafileSlideComponent } from './mediafile-slide.component';
+import { SharedModule } from 'app/shared/shared.module';
+import { SLIDE } from 'app/slides/slide-token';
 
-@NgModule(makeSlideModule(MediafileSlideComponent))
+@NgModule({
+    imports: [CommonModule, SharedModule, PdfViewerModule],
+    declarations: [MediafileSlideComponent],
+    providers: [{ provide: SLIDE, useValue: MediafileSlideComponent }],
+    entryComponents: [MediafileSlideComponent]
+})
 export class MediafileSlideModule {}

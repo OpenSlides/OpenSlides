@@ -51,6 +51,7 @@
         "ng-pick-datetime": "^7.0.0",
         "ngx-file-drop": "^6.0.0",
         "ngx-mat-select-search": "^1.7.2",
+        "ng2-pdf-viewer": "^5.2.3",
         "ngx-papaparse": "^3.0.2",
         "pdfmake": "^0.1.53",
         "po2json": "^1.0.0-alpha",

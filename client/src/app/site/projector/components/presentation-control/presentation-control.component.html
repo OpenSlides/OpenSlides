@@ -1,0 +1,37 @@
+<mat-expansion-panel *ngIf="elements.length">
+    <mat-expansion-panel-header>
+        <span translate>Media file</span>
+    </mat-expansion-panel-header>
+    <div *ngFor="let element of elements">
+        <i>{{ getMediafile(element).getTitle() }}</i>
+        <div *ngIf="getMediafile(element).isImage()">
+            <button type="button" *ngIf="!element.fullscreen" mat-icon-button (click)="fullscreen(element)">
+                <mat-icon>check_box_outline_blank</mat-icon>
+            </button>
+            <button type="button" *ngIf="!!element.fullscreen" mat-icon-button (click)="fullscreen(element)">
+                <mat-icon>check_box</mat-icon>
+            </button>
+            <span translate>fullscreen</span>
+        </div>
+        <div *ngIf="getMediafile(element).isPdf()">
+            <button type="button" mat-icon-button (click)="pdfBackward(element)" [disabled]="getPage(element) <= 1">
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+            <button type="button" mat-icon-button (click)="pdfForward(element)" [disabled]="getPage(element) >= getMediafile(element).pages">
+                <mat-icon>arrow_forward</mat-icon>
+            </button>
+            <!-- TODO: Use form for page number; use pdfSetPage then. -->
+            <span translate>Page</span> {{ getPage(element) }}/{{ getMediafile(element).pages }}
+            <br>
+            <button type="button" mat-icon-button (click)="zoom(element, 'in')">
+                <mat-icon>zoom_in</mat-icon>
+            </button>
+            <button type="button" mat-icon-button (click)="zoom(element, 'reset')">
+                <mat-icon>replay</mat-icon>
+            </button>
+            <button type="button" mat-icon-button (click)="zoom(element, 'out')">
+                <mat-icon>zoom_out</mat-icon>
+            </button>
+        </div>
+    </div>
+</mat-expansion-panel>

@@ -71,7 +71,7 @@
         <ng-container matColumnDef="projector">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Projector</mat-header-cell>
             <mat-cell *matCellDef="let file">
-                <os-projector-button [object]="file"></os-projector-button>
+                <os-projector-button *ngIf="file.isProjectable()" [object]="file"></os-projector-button>
             </mat-cell>
         </ng-container>
 

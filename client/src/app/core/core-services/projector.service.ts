@@ -186,6 +186,15 @@ export class ProjectorService {
         }
     }
 
+    public async updateElement(
+        projector: Projector,
+        obj: Projectable | ProjectorElementBuildDeskriptor | IdentifiableProjectorElement
+    ): Promise<void> {
+        const element = this.getProjectorElement(obj);
+        projector.replaceElements(element);
+        await this.projectRequest(projector, projector.elements, projector.elements_preview);
+    }
+
     /**
      * Executes the request to change projector elements.
      *

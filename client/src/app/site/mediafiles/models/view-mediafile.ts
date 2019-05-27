@@ -7,6 +7,10 @@ import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { BaseViewModelWithListOfSpeakers } from 'app/site/base/base-view-model-with-list-of-speakers';
 import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
 
+export const IMAGE_MIMETYPES = ['image/png', 'image/jpeg', 'image/gif'];
+export const FONT_MIMETYPES = ['font/ttf', 'font/woff', 'application/font-woff', 'application/font-sfnt'];
+export const PDF_MIMETYPES = ['application/pdf'];
+
 export interface MediafileTitleInformation {
     title: string;
 }
@@ -57,6 +61,10 @@ export class ViewMediafile extends BaseViewModelWithListOfSpeakers<Mediafile>
         return this.mediafile.downloadUrl;
     }
 
+    public get pages(): number | null {
+        return this.mediafile.mediafile.pages;
+    }
+
     /**
      * Determines if the file has the 'hidden' attribute
      * @returns the hidden attribute, also 'hidden' if there is no file
@@ -96,13 +104,17 @@ export class ViewMediafile extends BaseViewModelWithListOfSpeakers<Mediafile>
         };
     }
 
+    public isProjectable(): boolean {
+        return this.isImage() || this.isPdf();
+    }
+
     /**
      * Determine if the file is an image
      *
      * @returns true or false
      */
     public isImage(): boolean {
-        return ['image/png', 'image/jpeg', 'image/gif'].includes(this.type);
+        return IMAGE_MIMETYPES.includes(this.type);
     }
 
     /**
@@ -111,7 +123,7 @@ export class ViewMediafile extends BaseViewModelWithListOfSpeakers<Mediafile>
      * @returns true or false
      */
     public isFont(): boolean {
-        return ['font/ttf', 'font/woff', 'application/font-woff', 'application/font-sfnt'].includes(this.type);
+        return FONT_MIMETYPES.includes(this.type);
     }
 
     /**
@@ -120,7 +132,7 @@ export class ViewMediafile extends BaseViewModelWithListOfSpeakers<Mediafile>
      * @returns true or false
      */
     public isPdf(): boolean {
-        return ['application/pdf'].includes(this.type);
+        return PDF_MIMETYPES.includes(this.type);
     }
 
     /**
