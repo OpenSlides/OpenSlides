@@ -115,3 +115,14 @@ def get_config_variables():
         group="Agenda",
         subgroup="List of speakers",
     )
+
+    yield ConfigVariable(
+        name="agenda_present_speakers_only",
+        default_value=False,
+        input_type="boolean",
+        label="Only present users can be on the list of speakers",
+        help_text="Users without the status 'present' will not be available for any list of speakers.",
+        weight=250,
+        group="Agenda",
+        subgroup="List of speakers",
+    )
