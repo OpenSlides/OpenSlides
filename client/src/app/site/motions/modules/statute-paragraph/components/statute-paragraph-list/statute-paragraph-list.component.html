@@ -1,4 +1,4 @@
-<os-head-bar prevUrl="../.." [nav]="false" [mainButton]="true" (mainEvent)="openDialog()">
+<os-head-bar prevUrl="../.." [nav]="false" [hasMainButton]="true" (mainEvent)="openDialog()">
     <!-- Title -->
     <div class="title-slot">
         <h2 translate>Statute</h2>
@@ -54,7 +54,7 @@
     </button>
     <button mat-menu-item *osPerms="'motions.can_manage'" routerLink="import">
         <mat-icon>cloud_upload</mat-icon>
-        <span translate>Import</span><span>&nbsp;...</span>
+        <span translate>Import</span>
     </button>
 </mat-menu>
 

@@ -1,4 +1,4 @@
-<os-head-bar [mainButton]="canManage" (mainEvent)="onPlusButton()" [multiSelectMode]="isMultiSelect">
+<os-head-bar [hasMainButton]="canManage" (mainEvent)="onPlusButton()" [multiSelectMode]="isMultiSelect">
     <!-- Title -->
     <div class="title-slot"><h2 translate>Agenda</h2></div>
     <!-- Menu -->
@@ -119,7 +119,13 @@
         <!-- Import -->
         <button mat-menu-item *osPerms="'agenda.can_manage'" routerLink="import">
             <mat-icon>cloud_upload</mat-icon>
-            <span translate>Import</span><span>&nbsp;...</span>
+            <span translate>Import</span>
+        </button>
+        <mat-divider></mat-divider>
+        <!-- Settings -->
+        <button mat-menu-item *osPerms="'core.can_manage_config'" routerLink="/settings/agenda">
+            <mat-icon>settings</mat-icon>
+            <span translate>Settings</span>
         </button>
     </div>
 

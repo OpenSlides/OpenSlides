@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { CollectionStringMapperService } from 'app/core/core-services/collection-string-mapper.service';
-import { ConstantsService } from 'app/core/core-services/constants.service';
 import { DataSendService } from 'app/core/core-services/data-send.service';
 import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { HttpService } from 'app/core/core-services/http.service';
@@ -13,28 +13,8 @@ import { ViewModelStoreService } from 'app/core/core-services/view-model-store.s
 import { BaseRepository } from 'app/core/repositories/base-repository';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { Config } from 'app/shared/models/core/config';
+import { ConfigItem } from 'app/site/config/components/config-list/config-list.component';
 import { ConfigTitleInformation, ViewConfig } from 'app/site/config/models/view-config';
-
-/**
- * Holds a single config item.
- */
-interface ConfigItem {
-    /**
-     * The key of this config variable.
-     */
-    key: string;
-
-    /**
-     * The actual view config for this variable.
-     */
-    config: ViewConfig;
-
-    /**
-     * The config variable data given in the constants. This is hold here, so the view
-     * config can be updated with this data.
-     */
-    data: any;
-}
 
 /**
  * Represents a config subgroup. It can only holds items and no further groups.
@@ -48,7 +28,7 @@ interface ConfigSubgroup {
     /**
      * All items in this sub group.
      */
-    items: ConfigItem[];
+    configs: ViewConfig[];
 }
 
 /**
@@ -64,11 +44,6 @@ export interface ConfigGroup {
      * A list of subgroups.
      */
     subgroups: ConfigSubgroup[];
-
-    /**
-     * A list of config items that are not in any subgroup.
-     */
-    items: ConfigItem[];
 }
 
 /**
@@ -82,22 +57,27 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config, 
     /**
      * Own store for config groups.
      */
-    private configs: ConfigGroup[] = null;
+    private configs: ConfigGroup[] | null = null;
 
     /**
      * Own subject for config groups.
      */
-    protected configListSubject: BehaviorSubject<ConfigGroup[]> = new BehaviorSubject<ConfigGroup[]>(null);
+    private readonly configsSubject: BehaviorSubject<ConfigGroup[]> = new BehaviorSubject<ConfigGroup[]>(null);
 
     /**
-     * Saves, if we got config variables (the structure) from the server.
+     * Custom observer for the config
      */
-    protected gotConfigsVariables = false;
+    public get configsObservable(): Observable<ConfigGroup[]> {
+        return this.configsSubject.asObservable();
+    }
 
     /**
-     * Saves, if we got first configs via autoupdate or cache.
+     * Gets an observalble for all existing (main) config groups. Just the group names
+     * are given with this observable.
      */
-    protected gotFirstUpdate = false;
+    public get availableGroupsOberservable(): Observable<string[]> {
+        return this.configsSubject.pipe(map((groups: ConfigGroup[]) => groups.map(group => group.name)));
+    }
 
     /**
      * Constructor for ConfigRepositoryService. Requests the constants from the server and creates the config group structure.
@@ -114,18 +94,15 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config, 
         viewModelStoreService: ViewModelStoreService,
         translate: TranslateService,
         relationManager: RelationManagerService,
-        private constantsService: ConstantsService,
         private http: HttpService
     ) {
         super(DS, dataSend, mapperService, viewModelStoreService, translate, relationManager, Config);
 
-        this.constantsService.get('ConfigVariables').subscribe(constant => {
-            this.createConfigStructure(constant);
-            this.updateConfigStructure(false, ...Object.values(this.viewModelStore));
-            this.gotConfigsVariables = true;
-            this.checkConfigStructure();
-            this.updateConfigListObservable();
-        });
+        this.setSortFunction((a, b) => a.weight - b.weight);
+
+        this.getViewModelListObservable().subscribe(configs =>
+            this.updateConfigStructure(configs.filter(config => !config.hidden))
+        );
     }
 
     public getVerboseName = (plural: boolean = false) => {
@@ -154,96 +131,50 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config, 
         throw new Error('Config variables cannot be created');
     }
 
-    public changedModels(ids: number[]): void {
-        super.changedModels(ids);
-
-        ids.forEach(id => {
-            this.updateConfigStructure(false, this.viewModelStore[id]);
-        });
-        this.gotFirstUpdate = true;
-        this.checkConfigStructure();
-        this.updateConfigListObservable();
-    }
-
-    /**
-     * Custom observer for the config
-     */
-    public getConfigListObservable(): Observable<ConfigGroup[]> {
-        return this.configListSubject.asObservable();
-    }
-
     /**
      * Custom notification for the observers.
      */
     protected updateConfigListObservable(): void {
         if (this.configs) {
-            this.configListSubject.next(this.configs);
+            this.configsSubject.next(this.configs);
         }
     }
 
-    /**
-     * Getter for the config structure
-     */
-    public getConfigStructure(): ConfigGroup[] {
-        return this.configs;
+    public getConfigGroupOberservable(name: string): Observable<ConfigGroup> {
+        return this.configsSubject.pipe(
+            map((groups: ConfigGroup[]) => groups.find(group => group.name.toLowerCase() === name))
+        );
     }
 
-    /**
-     * Checks the config structure, if we got configs (first data) and the
-     * structure (config variables)
-     */
-    protected checkConfigStructure(): void {
-        if (this.gotConfigsVariables && this.gotFirstUpdate) {
-            this.updateConfigStructure(true, ...Object.values(this.viewModelStore));
-        }
-    }
+    protected updateConfigStructure(configs: ViewConfig[]): void {
+        const groups: ConfigGroup[] = [];
 
-    /**
-     * With a given (and maybe partially filled) config structure, all given view configs are put into it.
-     * @param check Whether to check, if all given configs are there (according to the config structure).
-     * If check is true and one viewConfig is missing, the user will get an error message.
-     * @param viewConfigs All view configs to put into the structure
-     */
-    protected updateConfigStructure(check: boolean, ...viewConfigs: ViewConfig[]): void {
-        if (!this.configs) {
-            return;
-        }
+        configs.forEach(config => {
+            if (groups.length === 0 || groups[groups.length - 1].name !== config.group) {
+                groups.push({
+                    name: config.group,
+                    subgroups: []
+                });
+            }
 
-        // Map the viewConfigs to their keys.
-        const keyConfigMap: { [key: string]: ViewConfig } = {};
-        viewConfigs.forEach(viewConfig => {
-            keyConfigMap[viewConfig.key] = viewConfig;
+            const subgroupsLength = groups[groups.length - 1].subgroups.length;
+            if (
+                subgroupsLength === 0 ||
+                groups[groups.length - 1].subgroups[subgroupsLength - 1].name !== config.subgroup
+            ) {
+                groups[groups.length - 1].subgroups.push({
+                    name: config.subgroup,
+                    configs: []
+                });
+            }
+            groups[groups.length - 1].subgroups[groups[groups.length - 1].subgroups.length - 1].configs.push(config);
         });
 
-        // traverse through configs structure and replace all given viewConfigs
-        for (const group of this.configs) {
-            for (const subgroup of group.subgroups) {
-                for (const item of subgroup.items) {
-                    if (keyConfigMap[item.key]) {
-                        keyConfigMap[item.key].setConstantsInfo(item.data);
-                        item.config = keyConfigMap[item.key];
-                    } else if (check) {
-                        throw new Error(
-                            `No config variable found for "${item.key}". Please migrate the database or rebuild the servercache.`
-                        );
-                    }
-                }
-            }
-            for (const item of group.items) {
-                if (keyConfigMap[item.key]) {
-                    keyConfigMap[item.key].setConstantsInfo(item.data);
-                    item.config = keyConfigMap[item.key];
-                } else if (check) {
-                    throw new Error(
-                        `No config variable found for "${item.key}". Please migrate the database or rebuild the servercache.`
-                    );
-                }
-            }
-        }
+        this.configsSubject.next(groups);
     }
 
     /**
-     * Saves a config value.
+     * Saves a config value. The server needs the key instead of the id to fetch the config variable.
      */
     public async update(config: Partial<Config>, viewConfig: ViewConfig): Promise<void> {
         const updatedConfig = viewConfig.getUpdatedModel(config);
@@ -251,43 +182,24 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config, 
     }
 
     /**
-     * initially create the config structure from the given constant.
-     * @param constant
+     * Function to update multiple settings.
+     *
+     * @param configItems An array of `ConfigItem` with the key of the changed setting and the value for that setting.
+     *
+     * @returns Either a promise containing errors or null, if there are no errors.
      */
-    private createConfigStructure(constant: any): void {
-        this.configs = [];
-        for (const group of constant) {
-            const _group: ConfigGroup = {
-                name: group.name,
-                subgroups: [],
-                items: []
-            };
-            // The server always sends subgroups. But if it has an empty name, there is no subgroup..
-            for (const subgroup of group.subgroups) {
-                if (subgroup.name) {
-                    const _subgroup: ConfigSubgroup = {
-                        name: subgroup.name,
-                        items: []
-                    };
-                    for (const item of subgroup.items) {
-                        _subgroup.items.push({
-                            key: item.key,
-                            config: null,
-                            data: item
-                        });
-                    }
-                    _group.subgroups.push(_subgroup);
-                } else {
-                    for (const item of subgroup.items) {
-                        _group.items.push({
-                            key: item.key,
-                            config: null,
-                            data: item
-                        });
-                    }
-                }
-            }
-            this.configs.push(_group);
-        }
+    public async bulkUpdate(configItems: ConfigItem[]): Promise<{ errors: { [key: string]: string } } | null> {
+        return await this.http.post(`/rest/core/config/bulk_update/`, configItems);
+    }
+
+    /**
+     * Function to send a `reset`-poll for every group to the server.
+     *
+     * @param groups The names of the groups, that should be updated.
+     *
+     * @returns The answer of the server.
+     */
+    public async resetGroups(groups: string[]): Promise<void> {
+        return await this.http.post(`/rest/core/config/reset_groups/`, groups);
     }
 }

@@ -1,11 +1,13 @@
 from typing import Any
 
+from ..core.config import config
 from ..utils.projector import projector_slides
 from ..utils.rest_api import (
     Field,
     IdPrimaryKeyRelatedField,
     IntegerField,
     ModelSerializer,
+    SerializerMethodField,
     ValidationError,
 )
 from ..utils.validate import validate_html
@@ -136,10 +138,14 @@ class ConfigSerializer(ModelSerializer):
     """
 
     value = JSONSerializerField()
+    data = SerializerMethodField()
 
     class Meta:
         model = ConfigStore
-        fields = ("id", "key", "value")
+        fields = ("id", "key", "value", "data")
+
+    def get_data(self, db_config):
+        return config.config_variables[db_config.key].data
 
 
 class ProjectorMessageSerializer(ModelSerializer):

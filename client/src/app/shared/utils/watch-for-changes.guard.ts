@@ -11,7 +11,7 @@ export interface CanComponentDeactivate {
 @Injectable({
     providedIn: 'root'
 })
-export class WatchSortingTreeGuard implements CanDeactivate<CanComponentDeactivate> {
+export class WatchForChangesGuard implements CanDeactivate<CanComponentDeactivate> {
     /**
      * Function to determine whether the route will change or not.
      *

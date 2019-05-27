@@ -11,7 +11,7 @@ import { MotionRepositoryService } from 'app/core/repositories/motions/motion-re
 import { ChoiceService } from 'app/core/ui-services/choice.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { SortingListComponent } from 'app/shared/components/sorting-list/sorting-list.component';
-import { CanComponentDeactivate } from 'app/shared/utils/watch-sorting-tree.guard';
+import { CanComponentDeactivate } from 'app/shared/utils/watch-for-changes.guard';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewCategory } from 'app/site/motions/models/view-category';
 import { ViewMotion } from 'app/site/motions/models/view-motion';

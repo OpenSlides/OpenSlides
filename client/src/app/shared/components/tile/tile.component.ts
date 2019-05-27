@@ -149,7 +149,7 @@ export class TileComponent implements OnInit {
      *
      * @param size how great the tile should be
      */
-    private setTabletSize(size: number): void {
+    private setTabletSize(size: number = 4): void {
         if (size <= 8 && size >= 0) {
             this.tabletSize = size;
         } else {
@@ -162,7 +162,7 @@ export class TileComponent implements OnInit {
      *
      * @param size how great the tile should be
      */
-    private setMediumSize(size: number): void {
+    private setMediumSize(size: number = 4): void {
         if (size <= 12 && size >= 0) {
             this.mediumSize = size;
         } else {
@@ -175,7 +175,7 @@ export class TileComponent implements OnInit {
      *
      * @param size how great the tile should be
      */
-    private setLargeSize(size: number): void {
+    private setLargeSize(size: number = 4): void {
         if (size <= 16 && size >= 0) {
             this.largeSize = size;
         } else {

@@ -35,7 +35,6 @@ def get_config_variables():
         choices=get_workflow_choices,
         weight=310,
         group="Motions",
-        subgroup="General",
     )
 
     yield ConfigVariable(
@@ -46,7 +45,6 @@ def get_config_variables():
         choices=get_workflow_choices,
         weight=312,
         group="Motions",
-        subgroup="General",
     )
 
     yield ConfigVariable(
@@ -55,7 +53,6 @@ def get_config_variables():
         label="Motion preamble",
         weight=320,
         group="Motions",
-        subgroup="General",
     )
 
     yield ConfigVariable(
@@ -70,7 +67,6 @@ def get_config_variables():
         ),
         weight=322,
         group="Motions",
-        subgroup="General",
     )
 
     yield ConfigVariable(
@@ -81,7 +77,6 @@ def get_config_variables():
         help_text="The maximum number of characters per line. Relevant when line numbering is enabled. Min: 40",
         weight=323,
         group="Motions",
-        subgroup="General",
         validators=(MinValueValidator(40),),
     )
 
@@ -92,7 +87,6 @@ def get_config_variables():
         label="Reason required for creating new motion",
         weight=324,
         group="Motions",
-        subgroup="General",
     )
 
     yield ConfigVariable(
@@ -102,7 +96,6 @@ def get_config_variables():
         label="Hide motion text on projector",
         weight=325,
         group="Motions",
-        subgroup="General",
     )
 
     yield ConfigVariable(
@@ -112,7 +105,6 @@ def get_config_variables():
         label="Hide reason on projector",
         weight=326,
         group="Motions",
-        subgroup="General",
     )
 
     yield ConfigVariable(
@@ -122,7 +114,6 @@ def get_config_variables():
         label="Hide meta information box on projector",
         weight=327,
         group="Motions",
-        subgroup="General",
     )
 
     yield ConfigVariable(
@@ -132,7 +123,6 @@ def get_config_variables():
         label="Hide recommendation on projector",
         weight=328,
         group="Motions",
-        subgroup="General",
     )
 
     yield ConfigVariable(
@@ -142,7 +132,6 @@ def get_config_variables():
         label="Hide referring motions",
         weight=329,
         group="Motions",
-        subgroup="General",
     )
 
     yield ConfigVariable(
@@ -153,7 +142,6 @@ def get_config_variables():
         help_text="In motion list, motion detail and PDF.",
         weight=330,
         group="Motions",
-        subgroup="General",
     )
 
     yield ConfigVariable(
@@ -163,7 +151,6 @@ def get_config_variables():
         help_text="Will be displayed as label before selected recommendation. Use an empty value to disable the recommendation system.",
         weight=332,
         group="Motions",
-        subgroup="General",
     )
 
     yield ConfigVariable(
@@ -173,7 +160,6 @@ def get_config_variables():
         help_text="Will be displayed as label before selected recommendation in statute amendments.",
         weight=333,
         group="Motions",
-        subgroup="General",
     )
 
     yield ConfigVariable(
@@ -189,7 +175,6 @@ def get_config_variables():
         ),
         weight=334,
         group="Motions",
-        subgroup="General",
     )
 
     yield ConfigVariable(
@@ -203,7 +188,6 @@ def get_config_variables():
         ),
         weight=335,
         group="Motions",
-        subgroup="General",
     )
 
     # Numbering

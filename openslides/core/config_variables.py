@@ -18,7 +18,6 @@ def get_config_variables():
         default_value="OpenSlides",
         label="Event name",
         weight=110,
-        group="General",
         subgroup="Event",
         validators=(MaxLengthValidator(100),),
     )
@@ -28,7 +27,6 @@ def get_config_variables():
         default_value="Presentation and assembly system",
         label="Short description of event",
         weight=115,
-        group="General",
         subgroup="Event",
         validators=(MaxLengthValidator(100),),
     )
@@ -38,7 +36,6 @@ def get_config_variables():
         default_value="",
         label="Event date",
         weight=120,
-        group="General",
         subgroup="Event",
     )
 
@@ -47,7 +44,6 @@ def get_config_variables():
         default_value="",
         label="Event location",
         weight=125,
-        group="General",
         subgroup="Event",
     )
 
@@ -60,7 +56,6 @@ def get_config_variables():
         input_type="markupText",
         label="Legal notice",
         weight=132,
-        group="General",
         subgroup="Event",
     )
 
@@ -70,7 +65,6 @@ def get_config_variables():
         input_type="markupText",
         label="Privacy policy",
         weight=132,
-        group="General",
         subgroup="Event",
     )
 
@@ -79,7 +73,6 @@ def get_config_variables():
         default_value="Welcome to OpenSlides",
         label="Front page title",
         weight=134,
-        group="General",
         subgroup="Event",
     )
 
@@ -89,7 +82,6 @@ def get_config_variables():
         input_type="markupText",
         label="Front page text",
         weight=136,
-        group="General",
         subgroup="Event",
     )
 
@@ -101,7 +93,6 @@ def get_config_variables():
         input_type="boolean",
         label="Allow access for anonymous guest users",
         weight=138,
-        group="General",
         subgroup="System",
     )
 
@@ -110,7 +101,6 @@ def get_config_variables():
         default_value="",
         label="Show this text on the login page",
         weight=140,
-        group="General",
         subgroup="System",
     )
 
@@ -129,7 +119,6 @@ def get_config_variables():
             },
         ),
         weight=141,
-        group="General",
         subgroup="System",
     )
 
@@ -140,7 +129,6 @@ def get_config_variables():
         default_value=",",
         label="Separator used for all csv exports and examples",
         weight=160,
-        group="General",
         subgroup="Export",
     )
 
@@ -154,7 +142,6 @@ def get_config_variables():
             {"value": "iso-8859-15", "display_name": "ISO-8859-15"},
         ),
         weight=162,
-        group="General",
         subgroup="Export",
     )
 
@@ -169,7 +156,6 @@ def get_config_variables():
             {"value": "right", "display_name": "Right"},
         ),
         weight=164,
-        group="General",
         subgroup="Export",
     )
 
@@ -184,7 +170,6 @@ def get_config_variables():
             {"value": "12", "display_name": "12"},
         ),
         weight=166,
-        group="General",
         subgroup="Export",
     )
 
@@ -198,7 +183,6 @@ def get_config_variables():
             {"value": "A5", "display_name": "DIN A5"},
         ),
         weight=168,
-        group="General",
         subgroup="Export",
     )
 

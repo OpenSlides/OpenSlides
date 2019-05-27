@@ -23,7 +23,6 @@ def get_config_variables():
         ),
         weight=510,
         group="Participants",
-        subgroup="General",
     )
 
     yield ConfigVariable(
@@ -33,7 +32,6 @@ def get_config_variables():
         label="Enable participant presence view",
         weight=511,
         group="Participants",
-        subgroup="General",
     )
 
     # PDF

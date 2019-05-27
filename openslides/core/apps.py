@@ -1,8 +1,6 @@
 import os
 import sys
-from collections import OrderedDict
-from operator import attrgetter
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 from django.apps import AppConfig
 from django.conf import settings
@@ -127,8 +125,6 @@ class CoreAppConfig(AppConfig):
             yield self.get_model(model_name)
 
     def get_angular_constants(self):
-        from .config import config
-
         constants: Dict[str, Any] = {}
 
         # Client settings
@@ -147,34 +143,7 @@ class CoreAppConfig(AppConfig):
                 pass
         constants["Settings"] = client_settings_dict
 
-        # Config variables
-        config_groups: List[Any] = []
-        for config_variable in sorted(
-            config.config_variables.values(), key=attrgetter("weight")
-        ):
-            if config_variable.is_hidden():
-                # Skip hidden config variables. Do not even check groups and subgroups.
-                continue
-            if not config_groups or config_groups[-1]["name"] != config_variable.group:
-                # Add new group.
-                config_groups.append(
-                    OrderedDict(name=config_variable.group, subgroups=[])
-                )
-            if (
-                not config_groups[-1]["subgroups"]
-                or config_groups[-1]["subgroups"][-1]["name"]
-                != config_variable.subgroup
-            ):
-                # Add new subgroup.
-                config_groups[-1]["subgroups"].append(
-                    OrderedDict(name=config_variable.subgroup, items=[])
-                )
-            # Add the config variable to the current group and subgroup.
-            config_groups[-1]["subgroups"][-1]["items"].append(config_variable.data)
-        constants["ConfigVariables"] = config_groups
-
         constants["SchemaVersion"] = schema_version_handler.get()
-
         return constants
 
 

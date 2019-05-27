@@ -2,9 +2,11 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
+    EventEmitter,
     Input,
     OnDestroy,
     OnInit,
+    Output,
     ViewEncapsulation
 } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -18,6 +20,7 @@ import { distinctUntilChanged } from 'rxjs/operators';
 import { BaseComponent } from 'app/base.component';
 import { ConfigRepositoryService } from 'app/core/repositories/config/config-repository.service';
 import { ParentErrorStateMatcher } from 'app/shared/parent-error-state-matcher';
+import { ConfigItem } from '../config-list/config-list.component';
 import { ViewConfig } from '../../models/view-config';
 
 /**
@@ -26,7 +29,7 @@ import { ViewConfig } from '../../models/view-config';
  *
  * @example
  * ```ts
- * <os-config-field [item]="item.config"></os-config-field>
+ * <os-config-field [config]="<ViewConfig>"></os-config-field>
  * ```
  */
 @Component({
@@ -45,16 +48,6 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit, OnDes
     public updateSuccessIcon = false;
 
     /**
-     * The timeout for the success icon to hide.
-     */
-    private updateSuccessIconTimeout: number | null = null;
-
-    /**
-     * The debounce timeout for inputs request delay.
-     */
-    private debounceTimeout: number | null = null;
-
-    /**
      * A possible error send by the server.
      */
     public error: string | null = null;
@@ -69,8 +62,8 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit, OnDes
      * populated constants-info.
      */
     @Input()
-    public set item(value: ViewConfig) {
-        if (value && value.hasConstantsInfo) {
+    public set config(value: ViewConfig) {
+        if (value) {
             this.configItem = value;
 
             if (this.form) {
@@ -91,6 +84,25 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit, OnDes
     }
 
     /**
+     * Passes the list of errors as object.
+     *
+     * The function looks, if the key of this config-item is contained in the list.
+     *
+     * @param errorList The object containing all errors.
+     */
+    @Input()
+    public set errorList(errorList: { [key: string]: any }) {
+        const hasError = Object.keys(errorList).find(errorKey => errorKey === this.configItem.key);
+        if (hasError) {
+            this.error = errorList[hasError];
+            this.updateError(true);
+        } else {
+            this.error = null;
+            this.updateError(null);
+        }
+    }
+
+    /**
      * The form for this configItem.
      */
     public form: FormGroup;
@@ -99,6 +111,9 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit, OnDes
      * The matcher for custom (request) errors.
      */
     public matcher = new ParentErrorStateMatcher();
+
+    @Output()
+    public update = new EventEmitter<ConfigItem>();
 
     /**
      * The usual component constructor. datetime pickers will set their locale
@@ -172,7 +187,7 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit, OnDes
     private unixToDateAndTime(unix: number): { date: Moment; time: string } {
         const date = moment.unix(unix);
         const time = date.hours() + ':' + date.minutes();
-        return { date: date, time: time };
+        return { date, time };
     }
 
     /**
@@ -211,12 +226,7 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit, OnDes
             const time = this.form.get('time').value;
             value = this.dateAndTimeToUnix(date, time);
         }
-        if (this.debounceTimeout !== null) {
-            clearTimeout(<any>this.debounceTimeout);
-        }
-        this.debounceTimeout = <any>setTimeout(() => {
-            this.update(value);
-        }, this.configItem.getDebouncingTimeout());
+        this.sendUpdate(value);
         this.cd.detectChanges();
     }
 
@@ -233,51 +243,20 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit, OnDes
      * Sends an update request for the config item to the server.
      * @param value The new value to set.
      */
-    private update(value: any): void {
-        this.debounceTimeout = null;
-        this.repo.update({ value: value }, this.configItem).then(() => {
-            this.error = null;
-            this.showSuccessIcon();
-        }, this.setError.bind(this));
+    private sendUpdate(value: any): void {
+        this.update.emit({ key: this.configItem.key, value });
     }
 
     /**
-     * Show the green success icon on the component. The icon gets automatically cleared.
+     * Function to update the form-control to display or hide an error.
+     *
+     * @param error `true | false`, if an error should be shown. `null`, if there is no error.
      */
-    private showSuccessIcon(): void {
-        if (this.updateSuccessIconTimeout !== null) {
-            clearTimeout(<any>this.updateSuccessIconTimeout);
-        }
-        this.updateSuccessIconTimeout = <any>setTimeout(() => {
-            this.updateSuccessIcon = false;
-            if (!this.wasViewDestroyed()) {
-                this.cd.detectChanges();
-            }
-        }, 2000);
-        this.updateSuccessIcon = true;
-        if (!this.wasViewDestroyed()) {
+    private updateError(error: boolean | null): void {
+        if (this.form) {
+            this.form.setErrors(error ? { error } : null);
             this.cd.detectChanges();
         }
-    }
-
-    /**
-     * @returns true, if the view was destroyed. Note: This
-     * needs to access internal attributes from the change detection
-     * reference.
-     */
-    private wasViewDestroyed(): boolean {
-        return (<any>this.cd).destroyed;
-    }
-
-    /**
-     * Sets the error on this field.
-     *
-     * @param error The error as string.
-     */
-    private setError(error: string): void {
-        this.error = error;
-        this.form.setErrors({ error: true });
-        this.cd.detectChanges();
     }
 
     /**
@@ -312,16 +291,6 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit, OnDes
     }
 
     /**
-     * Determines if a reset buton should be offered.
-     * TODO: is 'null' a valid default in some cases?
-     *
-     * @returns true if any default exists
-     */
-    public hasDefault(): boolean {
-        return this.configItem.defaultValue !== undefined && this.configItem.defaultValue !== null;
-    }
-
-    /**
      * Amends the application-wide tinyMCE settings with update triggers that
      * send updated values only after leaving focus (Blur) or closing the editor (Remove)
      *
@@ -333,7 +302,7 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit, OnDes
             setup: editor => {
                 editor.on('Blur', ev => {
                     if (ev.target.getContent() !== this.translatedValue) {
-                        this.update(ev.target.getContent());
+                        this.sendUpdate(ev.target.getContent());
                     }
                 });
                 editor.on('Remove', ev => {
@@ -341,7 +310,7 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit, OnDes
                     // fast navigation, when the editor is not fully loaded. Then the content is empty
                     // and would trigger an update with empty data.
                     if (ev.target.getContent() && ev.target.getContent() !== this.translatedValue) {
-                        this.update(ev.target.getContent());
+                        this.sendUpdate(ev.target.getContent());
                     }
                 });
             }

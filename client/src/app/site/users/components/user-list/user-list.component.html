@@ -1,4 +1,4 @@
-<os-head-bar [mainButton]="canAddUser" (mainEvent)="onPlusButton()" [multiSelectMode]="isMultiSelect">
+<os-head-bar [hasMainButton]="canAddUser" (mainEvent)="onPlusButton()" [multiSelectMode]="isMultiSelect">
     <!-- Title -->
     <div class="title-slot"><h2 translate>Participants</h2></div>
 
@@ -124,9 +124,9 @@
 
         <!-- Presence -->
         <button mat-menu-item (click)="setPresent(user)">
-                <mat-icon color="accent"> {{ user.is_present ? 'check_box' : 'check_box_outline_blank' }} </mat-icon>
-                <span translate>Present</span>
-            </button>
+            <mat-icon color="accent"> {{ user.is_present ? 'check_box' : 'check_box_outline_blank' }} </mat-icon>
+            <span translate>Present</span>
+        </button>
     </ng-template>
 </mat-menu>
 
@@ -166,7 +166,15 @@
 
         <button mat-menu-item *osPerms="'users.can_manage'" routerLink="import">
             <mat-icon>cloud_upload</mat-icon>
-            <span translate>Import</span><span>&nbsp;...</span>
+            <span translate>Import</span>
+        </button>
+
+        <mat-divider></mat-divider>
+
+        <!-- Settings -->
+        <button mat-menu-item *osPerms="'core.can_manage_config'" routerLink="/settings/participants">
+            <mat-icon>settings</mat-icon>
+            <span translate>Settings</span>
         </button>
     </div>
     <div *ngIf="isMultiSelect">
@@ -198,11 +206,6 @@
                     <span translate>Presence</span>
                 </button>
             </div>
-
-            <button mat-menu-item *osPerms="'users.can_manage'" routerLink="import">
-                <mat-icon>save_alt</mat-icon>
-                <span translate>Import</span><span>&nbsp;...</span>
-            </button>
 
             <div *osPerms="'users.can_manage'">
                 <mat-divider></mat-divider>

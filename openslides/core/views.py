@@ -37,6 +37,7 @@ from ..utils.rest_api import (
     RetrieveModelMixin,
     ValidationError,
     detail_route,
+    list_route,
 )
 from .access_permissions import (
     ConfigAccessPermissions,
@@ -390,29 +391,45 @@ class ConfigViewSet(ModelViewSet):
     access_permissions = ConfigAccessPermissions()
     queryset = ConfigStore.objects.all()
 
+    can_manage_config = None
+    can_manage_logos_and_fonts = None
+
     def check_view_permissions(self):
         """
         Returns True if the user has required permissions.
         """
         if self.action in ("list", "retrieve"):
             result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action == "metadata":
-            # Every authenticated user can see the metadata and list or
-            # retrieve the config. Anonymous users can do so if they are
-            # enabled.
-            result = self.request.user.is_authenticated or anonymous_is_enabled()
         elif self.action in ("partial_update", "update"):
-            # The user needs 'core.can_manage_logos_and_fonts' for all config values
-            # starting with 'logo' and 'font'. For all other config values th euser needs
-            # the default permissions 'core.can_manage_config'.
-            pk = self.kwargs["pk"]
-            if pk.startswith("logo") or pk.startswith("font"):
-                result = has_perm(self.request.user, "core.can_manage_logos_and_fonts")
-            else:
-                result = has_perm(self.request.user, "core.can_manage_config")
+            result = self.check_config_permission(self.kwargs["pk"])
+        elif self.action == "reset_groups":
+            result = has_perm(self.request.user, "core.can_manage_config")
+        elif self.action == "bulk_update":
+            result = True  # will be checked in the view
         else:
             result = False
         return result
+
+    def check_config_permission(self, key):
+        """
+        Checks the permissions for one config key.
+        Users needs 'core.can_manage_logos_and_fonts' for all config values starting
+        with 'logo' and 'font'. For all other config values the user needs the default
+        permissions 'core.can_manage_config'.
+        The result is cached for one request to reduce has_perm queries in e.g. bulk updates.
+        """
+        if key.startswith("logo") or key.startswith("font"):
+            if self.can_manage_logos_and_fonts is None:
+                self.can_manage_logos_and_fonts = has_perm(
+                    self.request.user, "core.can_manage_logos_and_fonts"
+                )
+            return self.can_manage_logos_and_fonts
+        else:
+            if self.can_manage_config is None:
+                self.can_manage_config = has_perm(
+                    self.request.user, "core.can_manage_config"
+                )
+            return self.can_manage_config
 
     def update(self, request, *args, **kwargs):
         """
@@ -422,8 +439,6 @@ class ConfigViewSet(ModelViewSet):
         """
         key = kwargs["pk"]
         value = request.data.get("value")
-        if value is None:
-            raise ValidationError({"detail": "Invalid input. Config value is missing."})
 
         # Validate and change value.
         try:
@@ -435,6 +450,60 @@ class ConfigViewSet(ModelViewSet):
 
         # Return response.
         return Response({"key": key, "value": value})
+
+    @list_route(methods=["post"])
+    def bulk_update(self, request):
+        """
+        Updates many config variables:
+        [{key: <key>, value: <value>}, ...]
+        """
+        if not isinstance(request.data, list):
+            raise ValidationError({"detail": "The data needs to be a list"})
+
+        for entry in request.data:
+            key = entry.get("key")
+            if not isinstance(key, str):
+                raise ValidationError({"detail": "The key must be a string."})
+            if not config.exists(key):
+                raise ValidationError(
+                    {"detail": "The key {0} does not exist.", "args": [key]}
+                )
+            if not self.check_config_permission(key):
+                self.permission_denied(request, message=key)
+            if "value" not in entry:
+                raise ValidationError(
+                    {"detail": "Invalid input. Config value is missing."}
+                )
+
+        errors = {}
+        for entry in request.data:
+            try:
+                config[entry["key"]] = entry["value"]
+            except ConfigError as err:
+                errors[entry["key"]] = str(err)
+
+        return Response({"errors": errors})
+
+    @list_route(methods=["post"])
+    def reset_groups(self, request):
+        """
+        Resets multiple groups. The request data contains all
+        (main) group names: [<group1>, ...]
+        """
+        if not isinstance(request.data, list):
+            raise ValidationError("The data must be a list")
+        for group in request.data:
+            if not isinstance(group, str):
+                raise ValidationError("Every group must be a string")
+
+        for key, config_variable in config.config_variables.items():
+            if (
+                config_variable.group in request.data
+                and config[key] != config_variable.default_value
+            ):
+                config[key] = config_variable.default_value
+
+        return Response()
 
 
 class ProjectorMessageViewSet(ModelViewSet):

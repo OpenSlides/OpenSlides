@@ -1,28 +1,45 @@
-<os-head-bar>
+<os-head-bar [nav]="false" [hasMainButton]="false" [isSearchEnabled]="false">
     <!-- Title -->
     <div class="title-slot">
-        <h2 translate>Settings</h2>
+        <h2 *ngIf="configGroup">
+            {{ configGroup.name | translate }}
+        </h2>
+    </div>
+
+    <!-- Menu -->
+    <div class="menu-slot">
+        <button
+            mat-button
+            [disabled]="!hasChanges()"
+            (click)="saveAll()"
+            matTooltip="{{ 'Save all changes' | translate }}"
+        >
+            <strong class="upper">{{ 'Save' | translate }}</strong>
+        </button>
+        <button type="button" mat-icon-button [matMenuTriggerFor]="settingsMenu"><mat-icon>more_vert</mat-icon></button>
     </div>
 </os-head-bar>
 
 <div class="spacer-top-20"></div>
-<mat-accordion>
-    <ng-container *ngFor="let group of this.configs">
-        <mat-expansion-panel displayMode="flat">
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    {{ group.name | translate }}
-                </mat-panel-title>
-            </mat-expansion-panel-header>
-            <div *ngFor="let subgroup of group.subgroups">
-                <h3 class="accent">{{ subgroup.name | translate }}</h3>
-                <div *ngFor="let item of subgroup.items">
-                    <os-config-field [item]="item.config"></os-config-field>
-                </div>
-            </div>
-            <div *ngFor="let item of group.items">
-                <os-config-field [item]="item.config"></os-config-field>
-            </div>
-        </mat-expansion-panel>
-    </ng-container>
-</mat-accordion>
+
+<mat-card class="os-card" *ngIf="configGroup">
+    <div id="wrapper">
+        <ng-container *ngFor="let subgroup of configGroup.subgroups; trackBy: trackByIndex">
+            <h3 class="accent" *ngIf="configGroup.subgroups.length > 1">{{ subgroup.name | translate }}</h3>
+            <ng-container *ngFor="let config of subgroup.configs">
+                <os-config-field
+                    (update)="updateConfigGroup($event)"
+                    [config]="config"
+                    [errorList]="errors"
+                ></os-config-field>
+            </ng-container>
+        </ng-container>
+    </div>
+</mat-card>
+
+<mat-menu #settingsMenu="matMenu">
+    <button mat-menu-item (click)="resetAll()">
+        <mat-icon>undo</mat-icon>
+        <span translate>Reset all to default</span>
+    </button>
+</mat-menu>

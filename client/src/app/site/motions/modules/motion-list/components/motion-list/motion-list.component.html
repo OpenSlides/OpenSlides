@@ -1,4 +1,4 @@
-<os-head-bar [mainButton]="perms.isAllowed('create')" (mainEvent)="onPlusButton()" [multiSelectMode]="isMultiSelect">
+<os-head-bar [hasMainButton]="perms.isAllowed('create')" (mainEvent)="onPlusButton()" [multiSelectMode]="isMultiSelect">
     <!-- Title -->
     <div class="title-slot"><h2 translate>Motions</h2></div>
 
@@ -315,6 +315,14 @@
                 <span translate>Import</span>
             </button>
         </div>
+
+        <mat-divider></mat-divider>
+
+        <!-- Settings -->
+        <button mat-menu-item *osPerms="'core.can_manage_config'" routerLink="/settings/motions">
+            <mat-icon>settings</mat-icon>
+            <span translate>Settings</span>
+        </button>
     </div>
     <div *ngIf="isMultiSelect">
         <button mat-menu-item (click)="selectAll()">
