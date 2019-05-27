@@ -13,13 +13,15 @@ import { SlideData } from '../../../core/core-services/projector-data.service';
 import { MotionSlideObjAmendmentParagraph } from './motion-slide-obj-amendment-paragraph';
 import { BaseMotionSlideComponent } from '../base/base-motion-slide';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
+import { IBaseScaleScrollSlideComponent } from 'app/slides/base-scale-scroll-slide-component';
 
 @Component({
     selector: 'os-motion-slide',
     templateUrl: './motion-slide.component.html',
     styleUrls: ['./motion-slide.component.scss']
 })
-export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideData> {
+export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideData>
+    implements IBaseScaleScrollSlideComponent<MotionSlideData> {
     /**
      * Indicates the LineNumberingMode Mode.
      */
@@ -61,12 +63,50 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
         this.preamble = value.data.preamble;
         this.crMode = value.element.mode || 'original';
 
+        this.textDivStyles.width = value.data.show_meta_box ? 'calc(100% - 250px)' : '100%';
+
         this.recalcUnifiedChanges();
     }
 
     public get data(): SlideData<MotionSlideData> {
         return this._data;
     }
+
+    private _scroll = 0;
+
+    @Input()
+    public set scroll(value: number) {
+        this._scroll = value;
+
+        value *= -100;
+        value += 40;
+        this.textDivStyles['margin-top'] = `${value}px`;
+    }
+
+    public get scroll(): number {
+        return this._scroll;
+    }
+
+    private _scale = 0;
+
+    @Input()
+    public set scale(value: number) {
+        this._scale = value;
+
+        value *= 10;
+        value += 100;
+        this.textDivStyles['font-size'] = `${value}%`;
+    }
+
+    public get scale(): number {
+        return this._scale;
+    }
+
+    public textDivStyles: {
+        width?: string;
+        'margin-top'?: string;
+        'font-size'?: string;
+    } = {};
 
     public constructor(
         translate: TranslateService,

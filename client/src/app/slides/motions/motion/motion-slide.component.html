@@ -1,5 +1,5 @@
 <div *ngIf="data">
-    <div id="sidebox" *ngIf="data.data.show_meta_box">
+    <div id="sidebox" *ngIf="data.data.show_meta_box" [ngStyle]="{'margin-top': projector.show_header_footer ? '144px' : '94px'}">
         <!-- Submitters -->
         <h3 translate>Submitters</h3>
         <span *ngFor="let submitter of data.data.submitter; let last = last">
@@ -13,13 +13,17 @@
         </div>
     </div>
 
-    <div [ngStyle]="{'width': data.data.show_meta_box ? 'calc(100% - 250px)' : '100%'}">
+    <div [ngStyle]="{width: data.data.show_meta_box ? 'calc(100% - 250px)' : '100%'}">
         <!-- Title -->
+        <div class="spacer" [ngStyle]="{height: projector.show_header_footer ? '50px' : '0'}"></div>
         <div class="slidetitle">
             <h1>{{ data.data.title }}</h1>
             <h2><span translate>Motion</span> {{ data.data.identifier }}</h2>
         </div>
+    </div>
 
+    <div id="text-wrapper">
+    <div id="text" [ngStyle]="textDivStyles">
         <!-- Text -->
         <span class="text-prefix-label">{{ preamble | translate }}</span>
 
@@ -72,5 +76,6 @@
             <h3 translate>Reason</h3>
             <div [innerHTML]="data.data.reason"></div>
         </div>
+    </div>
     </div>
 </div>
