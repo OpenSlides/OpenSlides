@@ -137,6 +137,19 @@ export class HtmlToPdfService {
     }
 
     /**
+     * Function to convert plain html text without linenumbering.
+     *
+     * @param text The html text that should be converted to PDF.
+     *
+     * @returns {object} The converted html as DocDef.
+     */
+    public addPlainText(text: string): object {
+        return {
+            columns: [{ stack: this.convertHtml(text, LineNumberingMode.None) }]
+        };
+    }
+
+    /**
      * Takes an HTML string, converts to HTML using a DOM parser and recursivly parses
      * the content into pdfmake compatible doc definition
      *

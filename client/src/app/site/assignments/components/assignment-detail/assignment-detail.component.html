@@ -61,7 +61,7 @@
             <h1>{{ assignment.getTitle() }}</h1>
         </div>
         <div *ngIf="assignment">
-            <div *ngIf="assignment.assignment.description" [innerHTML]="assignment.assignment.description"></div>
+            <div *ngIf="assignment.assignment.description" [innerHTML]="getSanitizedText(assignment.assignment.description)"></div>
         </div>
         <div class="meta-info-grid">
             <div class="number-of-elected">

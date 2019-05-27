@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Title } from '@angular/platform-browser';
+import { Title, DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
@@ -181,7 +181,8 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
         private tagRepo: TagRepositoryService,
         private promptService: PromptService,
         private pdfService: AssignmentPdfExportService,
-        private mediafileRepo: MediafileRepositoryService
+        private mediafileRepo: MediafileRepositoryService,
+        private sanitizer: DomSanitizer
     ) {
         super(title, translate, matSnackBar);
         this.subscriptions.push(
@@ -500,5 +501,16 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
         this.repo
             .sortCandidates(listInNewOrder.map(relatedUser => relatedUser.id), this.assignment)
             .then(null, this.raiseError);
+    }
+
+    /**
+     * Sanitize the text.
+     *
+     * @param text {string} The text to display.
+     *
+     * @returns {SafeHtml} the sanitized text.
+     */
+    public getSanitizedText(text: string): SafeHtml {
+        return this.sanitizer.bypassSecurityTrustHtml(text);
     }
 }
