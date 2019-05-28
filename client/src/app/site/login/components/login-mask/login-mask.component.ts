@@ -149,10 +149,10 @@ export class LoginMaskComponent extends BaseComponent implements OnInit, OnDestr
      * Send username and password to the {@link AuthService}
      */
     public async formLogin(): Promise<void> {
-        this.spinnerService.setVisibility(true, this.translate.instant('Loading data. Please wait...'));
         this.loginErrorMsg = '';
         try {
             await this.authService.login(this.loginForm.value.username, this.loginForm.value.password, () => {
+                this.spinnerService.setVisibility(true, this.translate.instant('Loading data. Please wait...'));
                 this.clearOperatorSubscription(); // We take control, not the subscription.
             });
         } catch (e) {
@@ -161,7 +161,6 @@ export class LoginMaskComponent extends BaseComponent implements OnInit, OnDestr
             });
             this.loginErrorMsg = e;
         }
-        this.spinnerService.setVisibility(false);
     }
 
     /**

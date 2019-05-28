@@ -16,6 +16,7 @@ import { PrioritizeService } from './core/core-services/prioritize.service';
 import { PingService } from './core/core-services/ping.service';
 import { SpinnerService } from './core/ui-services/spinner.service';
 import { Router } from '@angular/router';
+import { ViewUser } from './site/users/models/view-user';
 
 /**
  * Angular's global App Component
@@ -26,6 +27,16 @@ import { Router } from '@angular/router';
     styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+    /**
+     * Member to hold the state of `stable`.
+     */
+    private isStable: boolean;
+
+    /**
+     * Member to hold the user.
+     */
+    private user: ViewUser;
+
     /**
      * Master-component of all apps.
      *
@@ -49,11 +60,11 @@ export class AppComponent {
         appRef: ApplicationRef,
         servertimeService: ServertimeService,
         router: Router,
-        operator: OperatorService,
+        private operator: OperatorService,
         loginDataService: LoginDataService,
         constantsService: ConstantsService, // Needs to be started, so it can register itself to the WebsocketService
         themeService: ThemeService,
-        spinnerService: SpinnerService,
+        private spinnerService: SpinnerService,
         countUsersService: CountUsersService, // Needed to register itself.
         configService: ConfigService,
         loadFontService: LoadFontService,
@@ -88,10 +99,24 @@ export class AppComponent {
                 filter(s => s),
                 auditTime(1000)
             )
-            .pipe(take(2))
-            .subscribe(() => {
-                spinnerService.setVisibility(false);
+            .subscribe(stable => {
+                // check the stable state only once.
+                if (!this.isStable && stable) {
+                    this.isStable = true;
+                    this.checkConnectionProgress();
+                }
             });
+        // subscribe, to get the user.
+        operator.getViewUserObservable().subscribe(user => {
+            // check the user only once
+            if ((!this.user && user) || operator.isAnonymous) {
+                this.user = user;
+                this.checkConnectionProgress();
+                // if the user is logging out, remove this user.
+            } else if (user === null) {
+                this.user = user;
+            }
+        });
     }
 
     /**
@@ -121,5 +146,15 @@ export class AppComponent {
             }
             return string;
         };
+    }
+
+    /**
+     * Function to check if the user is existing and the app is already stable.
+     * If both conditions true, hide the spinner.
+     */
+    private checkConnectionProgress(): void {
+        if ((this.user || this.operator.isAnonymous) && this.isStable) {
+            this.spinnerService.setVisibility(false);
+        }
     }
 }
