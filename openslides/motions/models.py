@@ -833,6 +833,12 @@ class MotionBlock(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Mode
 
     title = models.CharField(max_length=255)
 
+    internal = models.BooleanField(default=False)
+    """
+    If a motion block is internal, only users with `motions.can_manage` can see and
+    manage these blocks.
+    """
+
     class Meta:
         verbose_name = "Motion block"
         default_permissions = ()

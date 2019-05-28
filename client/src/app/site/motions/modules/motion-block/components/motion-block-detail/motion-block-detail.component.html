@@ -1,20 +1,10 @@
 <os-head-bar [nav]="false">
     <!-- Title -->
     <div class="title-slot">
-        <h2 *ngIf="block && !editBlock">{{ block.title }}</h2>
-
-        <form [formGroup]="blockEditForm" (ngSubmit)="saveBlock()" (keydown)="onKeyDown($event)" *ngIf="editBlock">
-            <mat-form-field>
-                <input
-                    type="text"
-                    matInput
-                    osAutofocus
-                    required
-                    formControlName="title"
-                    placeholder="{{ 'Title' | translate }}"
-                />
-            </mat-form-field>
-        </form>
+        <h2 *ngIf="block">
+            <mat-icon *ngIf="block.internal">lock</mat-icon>
+            {{ block.title }}
+        </h2>
     </div>
 
     <!-- Menu -->
@@ -22,10 +12,6 @@
         <button type="button" mat-icon-button [matMenuTriggerFor]="motionBlockMenu">
             <mat-icon>more_vert</mat-icon>
         </button>
-    </div>
-    <!-- Save button -->
-    <div *ngIf="editBlock" class="extra-controls-slot on-transition-fade">
-        <button mat-button (click)="saveBlock()"><strong translate class="upper">Save</strong></button>
     </div>
 </os-head-bar>
 
@@ -111,7 +97,7 @@
     <div *osPerms="['motions.can_manage', 'motions.can_manage_metadata']">
         <button mat-menu-item (click)="toggleEditMode()">
             <mat-icon>edit</mat-icon>
-            <span translate>Edit title</span>
+            <span translate>Edit</span>
         </button>
         <mat-divider></mat-divider>
 
@@ -121,3 +107,31 @@
         </button>
     </div>
 </mat-menu>
+
+<ng-template #editDialog>
+    <h1 mat-dialog-title>
+        <span>{{ 'Edit details for' | translate }} {{ block.title }}</span>
+    </h1>
+    <div class="os-form-card-mobile" mat-dialog-content>
+        <form class="edit-form" [formGroup]="blockEditForm" (ngSubmit)="saveBlock()" (keydown)="onKeyDown($event)">
+            <mat-form-field>
+                <input matInput osAutofocus placeholder="{{ 'Title' | translate }}" formControlName="title" required/>
+            </mat-form-field>
+            <mat-checkbox formControlName="internal">Internal</mat-checkbox>
+        </form>
+    </div>
+    <div mat-dialog-actions>
+            <button
+                type="submit"
+                mat-button
+                [disabled]="!blockEditForm.valid"
+                color="primary"
+                (click)="saveBlock()"
+            >
+                <span translate>Save</span>
+            </button>
+            <button type="button" mat-button [mat-dialog-close]="null">
+                <span translate>Cancel</span>
+            </button>
+        </div>
+</ng-template>

@@ -36,9 +36,9 @@ export class MotionBlockListComponent
     public createBlockForm: FormGroup;
 
     /**
-     * The new motion block to create
+     * Flag, if the creation panel is open
      */
-    public blockToCreate: MotionBlock | null;
+    public isCreatingNewBlock = false;
 
     /**
      * Holds the agenda items to select the parent item
@@ -99,7 +99,8 @@ export class MotionBlockListComponent
         this.createBlockForm = this.formBuilder.group({
             title: ['', Validators.required],
             agenda_type: ['', Validators.required],
-            agenda_parent_id: []
+            agenda_parent_id: [],
+            internal: [false]
         });
     }
 
@@ -164,9 +165,9 @@ export class MotionBlockListComponent
      * Click handler for the plus button
      */
     public onPlusButton(): void {
-        if (!this.blockToCreate) {
+        if (!this.isCreatingNewBlock) {
             this.resetForm();
-            this.blockToCreate = new MotionBlock();
+            this.isCreatingNewBlock = true;
         }
     }
 
@@ -176,15 +177,18 @@ export class MotionBlockListComponent
      */
     public onSaveNewButton(): void {
         if (this.createBlockForm.valid) {
-            const blockPatch = this.createBlockForm.value;
-            if (!blockPatch.agenda_parent_id) {
-                delete blockPatch.agenda_parent_id;
+            const block = this.createBlockForm.value;
+            if (!block.agenda_parent_id) {
+                delete block.agenda_parent_id;
             }
 
-            this.blockToCreate.patchValues(blockPatch);
-            this.repo.create(this.blockToCreate);
-            this.resetForm();
-            this.blockToCreate = null;
+            try {
+                this.repo.create(block);
+                this.resetForm();
+                this.isCreatingNewBlock = false;
+            } catch (e) {
+                this.raiseError(e);
+            }
         }
         // set a form control as "touched" to trigger potential error messages
         this.createBlockForm.get('title').markAsTouched();
@@ -209,6 +213,6 @@ export class MotionBlockListComponent
      * Cancels the current form action
      */
     public onCancel(): void {
-        this.blockToCreate = null;
+        this.isCreatingNewBlock = false;
     }
 }

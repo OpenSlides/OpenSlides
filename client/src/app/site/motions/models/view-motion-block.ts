@@ -27,6 +27,10 @@ export class ViewMotionBlock extends BaseViewModelWithAgendaItemAndListOfSpeaker
         return this.motionBlock.title;
     }
 
+    public get internal(): boolean {
+        return this.motionBlock.internal;
+    }
+
     public constructor(motionBlock: MotionBlock, agendaItem?: ViewItem, listOfSpeakers?: ViewListOfSpeakers) {
         super(MotionBlock.COLLECTIONSTRING, motionBlock, agendaItem, listOfSpeakers);
     }

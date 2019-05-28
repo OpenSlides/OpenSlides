@@ -1867,6 +1867,66 @@ class NumberMotionsInCategory(TestCase):
         )
 
 
+class TestMotionBlock(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.client.login(username="admin", password="admin")
+
+    def make_admin_delegate(self):
+        admin = get_user_model().objects.get(username="admin")
+        admin.groups.add(GROUP_DELEGATE_PK)
+        admin.groups.remove(GROUP_ADMIN_PK)
+        inform_changed_data(admin)
+
+    def test_creation(self):
+        response = self.client.post(
+            reverse("motionblock-list"), {"title": "test_title_r23098OMFwoqof3if3kO"}
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(MotionBlock.objects.exists())
+        self.assertEqual(
+            MotionBlock.objects.get().title, "test_title_r23098OMFwoqof3if3kO"
+        )
+
+    def test_creation_no_data(self):
+        response = self.client.post(reverse("motionblock-list"), {})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertFalse(MotionBlock.objects.exists())
+
+    def test_creation_not_authenticated(self):
+        self.make_admin_delegate()
+        response = self.client.post(
+            reverse("motionblock-list"), {"title": "test_title_2PFjpf39ap,38fuMPO§8"}
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertFalse(MotionBlock.objects.exists())
+
+    def test_retrieve_simple(self):
+        motion_block = MotionBlock(title="test_title")
+        motion_block.save()
+
+        response = self.client.get(
+            reverse("motionblock-detail", args=[motion_block.pk])
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            sorted(response.data.keys()),
+            sorted(
+                ("agenda_item_id", "id", "internal", "list_of_speakers_id", "title")
+            ),
+        )
+
+    def test_retrieve_internal_non_admin(self):
+        self.make_admin_delegate()
+        motion_block = MotionBlock(title="test_title", internal=True)
+        motion_block.save()
+
+        response = self.client.get(
+            reverse("motionblock-detail", args=[motion_block.pk])
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
 class FollowRecommendationsForMotionBlock(TestCase):
     """
     Tests following the recommendations of motions in an motion block.
