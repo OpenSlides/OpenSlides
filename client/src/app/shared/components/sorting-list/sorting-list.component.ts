@@ -162,9 +162,15 @@ export class SortingListComponent implements OnInit, OnDestroy {
     /**
      * drop event
      * @param event the event
+     * @param dropBehind (optional) toggle explicit 'insert behind'(true) or
+     * 'insert before' (false) behavior instead of relying on a
+     * 'natural drop logic'
      */
-    public drop(event: CdkDragDrop<Selectable[]>): void {
-        if (this.multiSelectedIndex.length < 2) {
+    public drop(
+        event: CdkDragDrop<Selectable[]> | { currentIndex: number; previousIndex: number },
+        dropBehind?: boolean
+    ): void {
+        if (!this.multiSelectedIndex.length) {
             moveItemInArray(this.array, event.previousIndex, event.currentIndex);
         } else {
             const before: Selectable[] = [];
@@ -177,7 +183,13 @@ export class SortingListComponent implements OnInit, OnDestroy {
                     } else if (i > event.currentIndex) {
                         behind.push(this.array[i]);
                     } else {
-                        event.currentIndex < 1 ? behind.push(this.array[i]) : before.push(this.array[i]);
+                        if (dropBehind === false) {
+                            behind.push(this.array[i]);
+                        } else if (dropBehind === true) {
+                            before.push(this.array[i]);
+                        } else {
+                            event.currentIndex < 1 ? behind.push(this.array[i]) : before.push(this.array[i]);
+                        }
                     }
                 } else {
                     insertions.push(this.array[i]);

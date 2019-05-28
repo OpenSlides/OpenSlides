@@ -24,7 +24,12 @@
     >
         <span translate>Number motions</span>
     </button>
-
+    <div *ngIf="isMultiSelect">
+        <span> {{ sortSelector.multiSelectedIndex.length }}&nbsp;</span>
+        <span translate>selected</span>
+        <button mat-button (click)="moveToPosition()"><span translate>move ...</span>
+        </button>
+    </div>
     <os-sorting-list
         (sortEvent)="onListUpdate($event)"
         [input]="motionObservable"
