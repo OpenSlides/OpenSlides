@@ -17,9 +17,10 @@ export class AssignmentSortListService extends BaseSortListService<ViewAssignmen
      * Define the sort options
      */
     public sortOptions: OsSortingOption<ViewAssignment>[] = [
-        { property: 'assignment', label: 'Name' },
+        { property: 'title', label: 'Name' },
         { property: 'phase', label: 'Phase' },
-        { property: 'candidateAmount', label: 'Number of candidates' }
+        { property: 'candidateAmount', label: 'Number of candidates' },
+        { property: 'id', label: 'Creation date' }
     ];
 
     /**
@@ -39,7 +40,7 @@ export class AssignmentSortListService extends BaseSortListService<ViewAssignmen
      */
     public async getDefaultDefinition(): Promise<OsSortingDefinition<ViewAssignment>> {
         return {
-            sortProperty: 'assignment',
+            sortProperty: 'title',
             sortAscending: true
         };
     }
