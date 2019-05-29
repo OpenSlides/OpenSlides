@@ -192,8 +192,8 @@ def get_config_variables():
         input_type="choice",
         label="Standard page size in PDF",
         choices=(
-            {"value": "A4", "display_name": "A4"},
-            {"value": "A5", "display_name": "A5"},
+            {"value": "A4", "display_name": "DIN A4"},
+            {"value": "A5", "display_name": "DIN A5"},
         ),
         weight=147,
         group="General",

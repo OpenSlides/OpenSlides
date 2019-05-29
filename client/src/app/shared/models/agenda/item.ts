@@ -6,9 +6,9 @@ import { BaseModelWithContentObject } from '../base/base-model-with-content-obje
  * Coming from "ConfigVariables" property "agenda_hide_internal_items_on_projector"
  */
 export const itemVisibilityChoices = [
-    { key: 1, name: 'Public item', csvName: '' },
-    { key: 2, name: 'Internal item', csvName: 'internal' },
-    { key: 3, name: 'Hidden item', csvName: 'hidden' }
+    { key: 1, name: 'public', csvName: '' },
+    { key: 2, name: 'internal', csvName: 'internal' },
+    { key: 3, name: 'hidden', csvName: 'hidden' }
 ];
 
 /**

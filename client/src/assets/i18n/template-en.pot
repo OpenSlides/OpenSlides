@@ -7,10 +7,19 @@ msgstr ""
 msgid "%num% emails were send sucessfully."
 msgstr ""
 
+msgid ""
+"<a href=\"http://www.openslides.org\">OpenSlides</a> is a free web based "
+"presentation and assembly system for visualizing and controlling agenda, "
+"motions and elections of an assembly."
+msgstr ""
+
 msgid "<unknown motion>"
 msgstr ""
 
 msgid "A name is required"
+msgstr ""
+
+msgid "A new update is available!"
 msgstr ""
 
 msgid "A password is required"
@@ -248,9 +257,6 @@ msgstr ""
 msgid "Are you sure you want to send emails to all selected participants?"
 msgstr ""
 
-msgid "Assignments"
-msgstr ""
-
 msgid ""
 "At least given name or surname have to be filled in. All other fields are "
 "optional and may be empty."
@@ -449,6 +455,12 @@ msgid "Choose 0 to disable the supporting system."
 msgstr ""
 
 msgid "Chyron"
+msgstr ""
+
+msgid "Chyron background color"
+msgstr ""
+
+msgid "Chyron font color"
 msgstr ""
 
 msgid "Clear all"
@@ -700,9 +712,6 @@ msgstr ""
 msgid "Edit the whole motion text"
 msgstr ""
 
-msgid "Edit title"
-msgstr ""
-
 msgid "Edit topic"
 msgstr ""
 
@@ -775,6 +784,9 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
+msgid "Error during PDF creation of election:"
+msgstr ""
+
 msgid "Error during PDF creation of motion:"
 msgstr ""
 
@@ -826,6 +838,9 @@ msgstr ""
 msgid "Export personal note only"
 msgstr ""
 
+msgid "Export selected elections"
+msgstr ""
+
 msgid "Export selected motions"
 msgstr ""
 
@@ -872,6 +887,13 @@ msgid "Follow recommendations for all motions"
 msgstr ""
 
 msgid "Following users are currently editing this motion:"
+msgstr ""
+
+msgid ""
+"For Yes/No/Abstain per candidate and Yes/No per candidate the 100-%-base "
+"depends on the election method: If there is only one option per candidate, "
+"the sum of all votes of all candidates is 100 %. Otherwise for each "
+"candidate the sum of all votes is 100 %."
 msgstr ""
 
 msgid "Forgot Password?"
@@ -1020,6 +1042,9 @@ msgstr ""
 msgid "Installed plugins"
 msgstr ""
 
+msgid "Internal"
+msgstr ""
+
 msgid "Internal item"
 msgstr ""
 
@@ -1122,6 +1147,9 @@ msgstr ""
 msgid "List of speakers overlay"
 msgstr ""
 
+msgid "List view"
+msgstr ""
+
 msgid "Loading data. Please wait..."
 msgstr ""
 
@@ -1134,7 +1162,16 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
+msgid "Mark as elected"
+msgstr ""
+
 msgid "Mark speaker"
+msgstr ""
+
+msgid "Media file"
+msgstr ""
+
+msgid "Menu"
 msgstr ""
 
 msgid "Message"
@@ -1335,9 +1372,6 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-msgid "Not elected"
-msgstr ""
-
 msgid ""
 "Note: Your own password was not changed. Please use the password change "
 "dialog instead."
@@ -1406,6 +1440,9 @@ msgstr ""
 msgid "Only main agenda items"
 msgstr ""
 
+msgid "Only present participants can be added to the list of speakers"
+msgstr ""
+
 msgid "Open"
 msgstr ""
 
@@ -1416,6 +1453,9 @@ msgid "Open list of speakers"
 msgstr ""
 
 msgid "Open projection dialog"
+msgstr ""
+
+msgid "OpenSlides Theme"
 msgstr ""
 
 msgid "OpenSlides access data"
@@ -1452,6 +1492,9 @@ msgid "PDF header logo (left)"
 msgstr ""
 
 msgid "PDF header logo (right)"
+msgstr ""
+
+msgid "Page"
 msgstr ""
 
 msgid "Page number alignment in PDF"
@@ -1641,6 +1684,9 @@ msgid "Reference projector for current list of speakers:"
 msgstr ""
 
 msgid "Referral to committee"
+msgstr ""
+
+msgid "Refresh"
 msgstr ""
 
 msgid "Reject"
@@ -1851,7 +1897,7 @@ msgstr ""
 msgid "Show all"
 msgstr ""
 
-msgid "Show amendment in parent motoin"
+msgid "Show amendment in parent motion"
 msgstr ""
 
 msgid "Show amendments together with motions"
@@ -1920,6 +1966,9 @@ msgstr ""
 msgid "Sort motions"
 msgstr ""
 
+msgid "Sort motions by"
+msgstr ""
+
 msgid "Sort name of participants by"
 msgstr ""
 
@@ -1933,6 +1982,9 @@ msgid "Staff"
 msgstr ""
 
 msgid "Standard font size in PDF"
+msgstr ""
+
+msgid "Standard page size in PDF"
 msgstr ""
 
 msgid "Start time"
@@ -2045,6 +2097,11 @@ msgstr ""
 msgid "The reason field may not be blank."
 msgstr ""
 
+msgid ""
+"The requested method is not allowed. Please contact your system "
+"administrator."
+msgstr ""
+
 msgid "The server could not be reached."
 msgstr ""
 
@@ -2111,6 +2168,9 @@ msgid "This will set the following state for all selected motions:"
 msgstr ""
 
 msgid "Three-quarters majority"
+msgstr ""
+
+msgid "Tile view"
 msgstr ""
 
 msgid "Timestamp"
@@ -2259,8 +2319,8 @@ msgid "Which version?"
 msgstr ""
 
 msgid ""
-"Will be displayed as label before selected recommendation for statute "
-"amendments. Use an empty value to disable the recommendation system."
+"Will be displayed as label before selected recommendation in statute "
+"amendments."
 msgstr ""
 
 msgid ""
@@ -2388,13 +2448,22 @@ msgstr ""
 msgid "female"
 msgstr ""
 
+msgid "fullscreen"
+msgstr ""
+
 msgid "has saved his work on this motion."
+msgstr ""
+
+msgid "hidden"
 msgstr ""
 
 msgid "inactive"
 msgstr ""
 
 msgid "inline"
+msgstr ""
+
+msgid "internal"
 msgstr ""
 
 msgid "is elected"
@@ -2413,6 +2482,9 @@ msgid "items"
 msgstr ""
 
 msgid "items per page"
+msgstr ""
+
+msgid "items selected"
 msgstr ""
 
 msgid "majority"
@@ -2461,6 +2533,9 @@ msgid "permitted"
 msgstr ""
 
 msgid "present"
+msgstr ""
+
+msgid "public"
 msgstr ""
 
 msgid "published"

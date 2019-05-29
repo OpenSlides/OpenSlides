@@ -14,11 +14,23 @@ msgstr ""
 msgid "%num% emails were send sucessfully."
 msgstr "%num% E-Mails wurden erfolgreich versandt."
 
+msgid ""
+"<a href=\"http://www.openslides.org\">OpenSlides</a> is a free web based "
+"presentation and assembly system for visualizing and controlling agenda, "
+"motions and elections of an assembly."
+msgstr ""
+"<a href=\"http://www.openslides.org\">OpenSlides</a> ist ein freies, "
+"webbasiertes Präsentations- und Versammlungssystem zur Darstellung und "
+"Steuerung von Tagesordnung, Anträgen und Wahlen einer Versammlung."
+
 msgid "<unknown motion>"
 msgstr "<unbekannter Antrag>"
 
 msgid "A name is required"
 msgstr "Ein Name ist erforderlich"
+
+msgid "A new update is available!"
+msgstr "Ein neues Update ist verfügbar!"
 
 msgid "A password is required"
 msgstr "Ein Passwort ist erforderlich"
@@ -267,9 +279,6 @@ msgid "Are you sure you want to send emails to all selected participants?"
 msgstr ""
 "Sollen E-Mails wirklich an alle ausgewählten Teilnehmende gesendet werden?"
 
-msgid "Assignments"
-msgstr ""
-
 msgid ""
 "At least given name or surname have to be filled in. All other fields are "
 "optional and may be empty."
@@ -474,6 +483,12 @@ msgstr "Zum Deaktivieren des Unterstützersystems '0' eingeben."
 
 msgid "Chyron"
 msgstr "Bauchbinde"
+
+msgid "Chyron background color"
+msgstr "Hintergrundfarbe Bauchbinde"
+
+msgid "Chyron font color"
+msgstr "Schriftfarbe Bauchbinde"
 
 msgid "Clear all"
 msgstr "Alle löschen"
@@ -745,9 +760,6 @@ msgstr "Satzungsabschnitt bearbeiten:"
 msgid "Edit the whole motion text"
 msgstr "Vollständigen Antragstext bearbeiten"
 
-msgid "Edit title"
-msgstr "Titel bearbeiten"
-
 msgid "Edit topic"
 msgstr "Thema bearbeiten"
 
@@ -824,6 +836,9 @@ msgstr ""
 msgid "Error"
 msgstr "Fehler"
 
+msgid "Error during PDF creation of election:"
+msgstr "Fehler bei der PDF-Erstellung der Wahl:"
+
 msgid "Error during PDF creation of motion:"
 msgstr "Fehler bei der PDF-Erstellung in Antrag"
 
@@ -875,6 +890,9 @@ msgstr "Anträge exportieren"
 msgid "Export personal note only"
 msgstr "Nur persönliche Notiz exportieren"
 
+msgid "Export selected elections"
+msgstr "Ausgewählte Wahlen exportieren"
+
 msgid "Export selected motions"
 msgstr "Ausgewählte Anträge exportieren"
 
@@ -922,6 +940,17 @@ msgstr "Empfehlungen für alle Anträge folgen"
 
 msgid "Following users are currently editing this motion:"
 msgstr "Folgende Nutzer bearbeiten aktuell diesen Antrag:"
+
+msgid ""
+"For Yes/No/Abstain per candidate and Yes/No per candidate the 100-%-base "
+"depends on the election method: If there is only one option per candidate, "
+"the sum of all votes of all candidates is 100 %. Otherwise for each "
+"candidate the sum of all votes is 100 %."
+msgstr ""
+"Für Ja/Nein/Enthaltung pro Kandidat und Ja/Nein pro Kandidat hängt die "
+"100%-Basis von der Wahlmethode ab: Wenn es nur eine Option pro Kandidat "
+"gibt, ist 100% die Summe aller Stimmen von allen Kandidaten. Andernfalls ist"
+" 100% die Summe aller Stimmen pro Kandidat."
 
 msgid "Forgot Password?"
 msgstr "Passwort vergessen?"
@@ -1071,6 +1100,9 @@ msgstr "Ergänzung"
 msgid "Installed plugins"
 msgstr "Installierte Plugins"
 
+msgid "Internal"
+msgstr "Intern"
+
 msgid "Internal item"
 msgstr "Interner Eintrag"
 
@@ -1173,6 +1205,9 @@ msgstr "Redeliste"
 msgid "List of speakers overlay"
 msgstr "Redelisten-Einblendung"
 
+msgid "List view"
+msgstr "Listenansicht"
+
 msgid "Loading data. Please wait..."
 msgstr "Daten werden geladen. Bitte warten..."
 
@@ -1185,8 +1220,17 @@ msgstr "Als Gast anmelden"
 msgid "Logout"
 msgstr "Abmelden"
 
+msgid "Mark as elected"
+msgstr "Als gewählt markieren"
+
 msgid "Mark speaker"
 msgstr "Redner/in markieren"
+
+msgid "Media file"
+msgstr "Mediendatei"
+
+msgid "Menu"
+msgstr "Menü"
 
 msgid "Message"
 msgstr "Mitteilung"
@@ -1386,9 +1430,6 @@ msgstr "Nr."
 msgid "None"
 msgstr "aus"
 
-msgid "Not elected"
-msgstr "nicht gewählt"
-
 msgid ""
 "Note: Your own password was not changed. Please use the password change "
 "dialog instead."
@@ -1461,6 +1502,9 @@ msgstr "Nur für interne Notizen."
 msgid "Only main agenda items"
 msgstr "Nur Haupt-Tagesordnungspunkte"
 
+msgid "Only present participants can be added to the list of speakers"
+msgstr "Nur anwesende Teilnehmende können zur Redeliste hinzugefügt werden"
+
 msgid "Open"
 msgstr "Öffnen"
 
@@ -1472,6 +1516,9 @@ msgstr "Redeliste öffnen"
 
 msgid "Open projection dialog"
 msgstr "Projektionsdialog öffnen"
+
+msgid "OpenSlides Theme"
+msgstr "OpenSlides-Design-Theme"
 
 msgid "OpenSlides access data"
 msgstr "OpenSlides-Zugangsdaten"
@@ -1508,6 +1555,9 @@ msgstr "PDF-Logo Kopfzeile (links)"
 
 msgid "PDF header logo (right)"
 msgstr "PDF-Logo Kopfzeile (rechts)"
+
+msgid "Page"
+msgstr "Seite"
 
 msgid "Page number alignment in PDF"
 msgstr "Seitenzahl-Ausrichtung im PDF"
@@ -1699,6 +1749,9 @@ msgstr "Referenzprojektor für die aktuelle Redeliste:"
 msgid "Referral to committee"
 msgstr "Verweisung in Ausschuss"
 
+msgid "Refresh"
+msgstr "Aktualisieren"
+
 msgid "Reject"
 msgstr "Ablehnen"
 
@@ -1724,8 +1777,8 @@ msgid ""
 "Remove all supporters of a motion if a submitter edits his motion in early "
 "state"
 msgstr ""
-"Entferne alle Unterstützer/innen eines Antrags, wenn ein Antragsteller/in "
-"den Antrag im Anfangsstadium bearbeitet"
+"Entferne alle Unterstützer/innen, wenn ein Antragsteller/in den Antrag im "
+"Anfangsstadium bearbeitet"
 
 msgid "Remove candidate"
 msgstr "Kandidate/in entfernen"
@@ -1911,7 +1964,7 @@ msgstr "Kurzbeschreibung der Veranstaltung"
 msgid "Show all"
 msgstr "Alle anzeigen"
 
-msgid "Show amendment in parent motoin"
+msgid "Show amendment in parent motion"
 msgstr "Änderungsantrag im Hauptantrag anzeigen"
 
 msgid "Show amendments together with motions"
@@ -1980,6 +2033,9 @@ msgstr "Sachgebiete sortieren nach"
 msgid "Sort motions"
 msgstr "Anträge sortieren"
 
+msgid "Sort motions by"
+msgstr "Anträge sortieren nach"
+
 msgid "Sort name of participants by"
 msgstr "Namen der Teilnehmenden sortieren nach"
 
@@ -1994,6 +2050,9 @@ msgstr "Mitarbeitende"
 
 msgid "Standard font size in PDF"
 msgstr "Standard-Schriftgröße im PDF"
+
+msgid "Standard page size in PDF"
+msgstr "Standard-PDF-Papierformat"
 
 msgid "Start time"
 msgstr "Startzeit"
@@ -2113,6 +2172,13 @@ msgstr ""
 msgid "The reason field may not be blank."
 msgstr "Die Begründung darf nicht leer sein."
 
+msgid ""
+"The requested method is not allowed. Please contact your system "
+"administrator."
+msgstr ""
+"Die gewünschte Methode ist nicht erlaubt. Bitte kontaktieren Sie den "
+"zuständigen Administrator."
+
 msgid "The server could not be reached."
 msgstr "Der Server konnte nicht erreicht werden."
 
@@ -2201,6 +2267,9 @@ msgstr "Folgender Status wird für alle ausgewählten Anträge gesetzt:"
 
 msgid "Three-quarters majority"
 msgstr "Dreiviertelmehrheit"
+
+msgid "Tile view"
+msgstr "Kachelansicht"
 
 msgid "Timestamp"
 msgstr "Zeitstempel"
@@ -2355,19 +2424,18 @@ msgid "Which version?"
 msgstr "Welche Fassung?"
 
 msgid ""
-"Will be displayed as label before selected recommendation for statute "
-"amendments. Use an empty value to disable the recommendation system."
+"Will be displayed as label before selected recommendation in statute "
+"amendments."
 msgstr ""
-"Wird als Beschriftung vor der ausgewählten Empfehlung von "
-"Satzungsänderungsanträgen angezeigt. Verwenden Sie eine leere Eingabe, um "
-"das Empfehlungssystem zu deaktivieren."
+"Wird als Beschriftung vor der Beschlussempfehlung in "
+"Satzungsänderungsanträgen angezeigt."
 
 msgid ""
 "Will be displayed as label before selected recommendation. Use an empty "
 "value to disable the recommendation system."
 msgstr ""
-"Wird als Beschriftung vor der ausgewählten Empfehlung angezeigt. Verwenden "
-"Sie eine leere Eingabe, um das Empfehlungssystem zu deaktivieren."
+"Wird als Beschriftung vor der Beschlussempfehlung angezeigt. Leere Eingabe "
+"deaktiviert das Empfehlungssystem."
 
 msgid "Withdraw"
 msgstr "Zurückziehen"
@@ -2491,14 +2559,23 @@ msgstr "Beispiel"
 msgid "female"
 msgstr "weiblich"
 
+msgid "fullscreen"
+msgstr "Vollbild"
+
 msgid "has saved his work on this motion."
 msgstr "hat die Arbeit an diesem Antrag gespeichert."
+
+msgid "hidden"
+msgstr "versteckt"
 
 msgid "inactive"
 msgstr "inaktiv"
 
 msgid "inline"
 msgstr "innerhalb"
+
+msgid "internal"
+msgstr "intern"
 
 msgid "is elected"
 msgstr "gewählt"
@@ -2517,6 +2594,9 @@ msgstr "Einträge"
 
 msgid "items per page"
 msgstr "Einträge pro Seite"
+
+msgid "items selected"
+msgstr "Einträge ausgewählt"
 
 msgid "majority"
 msgstr "Mehrheit"
@@ -2565,6 +2645,9 @@ msgstr "zugelassen"
 
 msgid "present"
 msgstr "anwesend"
+
+msgid "public"
+msgstr "öffentlich"
 
 msgid "published"
 msgstr "veröffentlicht"
