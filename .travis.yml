@@ -65,7 +65,7 @@ matrix:
         directories:
           - node_modules
       before_install:
-        - npm install -g @angular/cli
+        - npm install -g @angular/cli@~7.3.8
         - ng --version
         - cd client
       install:
@@ -81,7 +81,7 @@ matrix:
         directories:
           - node_modules
       before_install:
-        - npm install -g @angular/cli
+        - npm install -g @angular/cli@~7.3.8
         - ng --version
         - cd client
       install:
@@ -107,7 +107,7 @@ matrix:
       before_install:
         - export CHROME_BIN=/usr/bin/google-chrome
         - export DISPLAY=:99.0
-        - npm install -g @angular/cli
+        - npm install -g @angular/cli@~7.3.8
         - ng --version
         - cd client
       install:
@@ -123,7 +123,7 @@ matrix:
         directories:
           - node_modules
       before_install:
-        - npm install -g @angular/cli
+        - npm install -g @angular/cli@~7.3.8
         - ng --version
         - cd client
       install:
@@ -139,7 +139,7 @@ matrix:
         directories:
           - node_modules
       before_install:
-        - npm install -g @angular/cli
+        - npm install -g @angular/cli@~7.3.8
         - ng --version
         - cd client
       install:
