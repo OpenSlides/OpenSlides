@@ -1,40 +1,11 @@
 <os-head-bar
     [mainButton]="canUploadFiles"
-    [editMode]="editFile"
     [multiSelectMode]="isMultiSelect"
     (mainEvent)="onMainEvent()"
-    (saveEvent)="onSaveEditedFile()"
 >
     <!-- Title -->
     <div class="title-slot">
-        <h2 *ngIf="!editFile" translate>Files</h2>
-
-        <form
-            class="edit-file-form"
-            *ngIf="editFile"
-            [formGroup]="fileEditForm"
-            (ngSubmit)="onSaveEditedFile()"
-            (keydown)="keyDownFunction($event)"
-        >
-            <mat-form-field>
-                <input
-                    type="text"
-                    matInput
-                    osAutofocus
-                    required
-                    formControlName="title"
-                    placeholder="{{ 'New file name' | translate }}"
-                />
-                <mat-error *ngIf="fileEditForm.invalid" translate>Required</mat-error>
-            </mat-form-field>
-
-            <mat-form-field>
-                <mat-select formControlName="hidden" placeholder="{{ 'Visibility' | translate }}">
-                    <mat-option [value]="true"> <span translate>Hidden</span> </mat-option>
-                    <mat-option [value]="false"><span translate>Visible</span></mat-option>
-                </mat-select>
-            </mat-form-field>
-        </form>
+        <h2 translate>Files</h2>
     </div>
 
     <!-- Menu -->
@@ -214,3 +185,47 @@
         </button>
     </div>
 </mat-menu>
+
+<ng-template #fileEditDialog>
+    <h1 mat-dialog-title>{{ 'Edit details for' | translate }}</h1>
+    <div class="os-form-card-mobile" mat-dialog-content>
+        <form
+            class="edit-file-form"
+            [formGroup]="fileEditForm"
+            (keydown)="keyDownFunction($event)"
+        >
+            <mat-form-field>
+                <input
+                    type="text"
+                    matInput
+                    osAutofocus
+                    required
+                    formControlName="title"
+                    placeholder="{{ 'New file name' | translate }}"
+                />
+                <mat-error *ngIf="fileEditForm.invalid" translate>Required</mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-select formControlName="hidden" placeholder="{{ 'Visibility' | translate }}">
+                    <mat-option [value]="true"> <span translate>Hidden</span> </mat-option>
+                    <mat-option [value]="false"><span translate>Visible</span></mat-option>
+                </mat-select>
+            </mat-form-field>
+        </form>
+    </div>
+    <div mat-dialog-actions>
+        <button
+            type="submit"
+            mat-button
+            [disabled]="!fileEditForm.valid"
+            color="primary"
+            (click)="onSaveEditedFile(fileEditForm.value)"
+        >
+            <span translate>Save</span>
+        </button>
+        <button type="button" mat-button [mat-dialog-close]="null">
+            <span translate>Cancel</span>
+        </button>
+    </div>
+</ng-template>

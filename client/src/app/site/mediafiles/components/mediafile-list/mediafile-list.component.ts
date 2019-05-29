@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatDialog } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
 
@@ -79,6 +79,12 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile,
     public fileEditForm: FormGroup;
 
     /**
+     * Reference to the template
+     */
+    @ViewChild('fileEditDialog')
+    public fileEditDialog: TemplateRef<string>;
+
+    /**
      * Constructs the component
      *
      * @param titleService sets the browser title
@@ -107,7 +113,9 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile,
         public vp: ViewportService,
         public filterService: MediafileFilterListService,
         public sortService: MediafilesSortListService,
-        private operator: OperatorService
+        private operator: OperatorService,
+        private dialog: MatDialog,
+        private fb: FormBuilder
     ) {
         super(titleService, translate, matSnackBar, repo, route, storage, filterService, sortService);
 
@@ -122,11 +130,6 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile,
     public ngOnInit(): void {
         super.setTitle('Files');
         this.initTable();
-
-        this.fileEditForm = new FormGroup({
-            title: new FormControl('', Validators.required),
-            hidden: new FormControl()
-        });
 
         // Observe the logo actions
         this.mediaManage.getLogoActions().subscribe(action => {
@@ -161,24 +164,31 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile,
     public onEditFile(file: ViewMediafile): void {
         this.fileToEdit = file;
 
-        this.editFile = true;
-        this.fileEditForm.setValue({ title: this.fileToEdit.title, hidden: this.fileToEdit.hidden });
+        this.fileEditForm = this.fb.group({
+            title: [file.title, Validators.required],
+            hidden: [file.hidden]
+        });
+
+        const dialogRef = this.dialog.open(this.fileEditDialog, {
+            width: '400px',
+            maxWidth: '90vw',
+            maxHeight: '90vh',
+            disableClose: true
+        });
+
+        dialogRef.keydownEvents().subscribe((event: KeyboardEvent) => {
+            if (event.key === 'Enter' && event.shiftKey && this.fileEditForm.valid) {
+                this.onSaveEditedFile(this.fileEditForm.value);
+            }
+        });
     }
 
     /**
      * Click on the save button in edit mode
      */
-    public onSaveEditedFile(): void {
-        if (!this.fileEditForm.value || !this.fileEditForm.valid) {
-            return;
-        }
-        const updateData = new Mediafile({
-            title: this.fileEditForm.value.title,
-            hidden: this.fileEditForm.value.hidden
-        });
-
-        this.repo.update(updateData, this.fileToEdit).then(() => {
-            this.editFile = false;
+    public onSaveEditedFile(value: { title: string; hidden: any }): void {
+        this.repo.update(value, this.fileToEdit).then(() => {
+            this.dialog.closeAll();
         }, this.raiseError);
     }
 

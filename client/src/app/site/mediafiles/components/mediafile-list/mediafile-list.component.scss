@@ -33,12 +33,6 @@
     white-space: pre-line !important;
 }
 
-.edit-file-form {
-    mat-form-field + mat-form-field {
-        margin: 1em;
-    }
-}
-
 // duplicate. Put into own file
 .file-info-cell {
     display: grid;
