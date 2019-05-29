@@ -76,7 +76,6 @@
         <mat-nav-list class="main-nav">
             <span *ngFor="let entry of mainMenuService.entries">
                 <a
-                    [@navItemAnim]
                     *osPerms="entry.permission"
                     mat-list-item
                     (click)="mobileAutoCloseNav()"
@@ -90,7 +89,6 @@
             </span>
             <mat-divider></mat-divider>
             <a
-                [@navItemAnim]
                 mat-list-item
                 routerLink="/search"
                 routerLinkActive="active"
@@ -100,7 +98,6 @@
                 <span translate>Search</span>
             </a>
             <a
-                [@navItemAnim]
                 mat-list-item
                 routerLink="/legalnotice"
                 routerLinkActive="active"
@@ -110,7 +107,6 @@
                 <span translate>Legal notice</span>
             </a>
             <a
-                [@navItemAnim]
                 mat-list-item
                 routerLink="/privacypolicy"
                 routerLinkActive="active"
@@ -120,7 +116,6 @@
                 <span translate>Privacy policy</span>
             </a>
             <a
-                [@navItemAnim]
                 mat-list-item
                 href="https://openslides.org"
                 target="_blank"
@@ -137,7 +132,7 @@
     </mat-sidenav>
     <mat-sidenav-content>
         <div (touchstart)="swipe($event, 'start')" (touchend)="swipe($event, 'end')" class="content">
-            <main [@pageTransition]="o.isActivated ? o.activatedRoute : ''">
+            <main>
                 <router-outlet #o="outlet"></router-outlet>
             </main>
         </div>

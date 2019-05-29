@@ -1,6 +1,6 @@
 // angular modules
 import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
 import { PapaParseModule } from 'ngx-papaparse';
@@ -39,7 +39,7 @@ export function AppLoaderFactory(appLoadService: AppLoadService): () => Promise<
             cookieName: 'OpenSlidesCsrfToken',
             headerName: 'X-CSRFToken'
         }),
-        BrowserAnimationsModule,
+        NoopAnimationsModule,
         OpenSlidesTranslateModule.forRoot(),
         AppRoutingModule,
         CoreModule,

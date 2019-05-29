@@ -9,7 +9,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../core/core-services/auth.service';
 import { OperatorService } from '../core/core-services/operator.service';
 import { BaseComponent } from '../base.component';
-import { pageTransition, navItemAnim } from '../shared/animations';
 import { ViewportService } from '../core/ui-services/viewport.service';
 import { MainMenuService } from '../core/core-services/main-menu.service';
 import { OpenSlidesStatusService } from '../core/core-services/openslides-status.service';
@@ -29,7 +28,6 @@ interface RoutingData {
 
 @Component({
     selector: 'os-site',
-    animations: [pageTransition, navItemAnim],
     templateUrl: './site.component.html',
     styleUrls: ['./site.component.scss']
 })
