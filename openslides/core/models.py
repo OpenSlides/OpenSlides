@@ -10,7 +10,6 @@ from ..utils.models import SET_NULL_AND_AUTOUPDATE, RESTModelMixin
 from .access_permissions import (
     ConfigAccessPermissions,
     CountdownAccessPermissions,
-    HistoryAccessPermissions,
     ProjectionDefaultAccessPermissions,
     ProjectorAccessPermissions,
     ProjectorMessageAccessPermissions,
@@ -260,12 +259,8 @@ class HistoryManager(models.Manager):
             instances = []
             history_time = now()
             for element in elements:
-                if (
-                    element.get("disable_history")
-                    or element["collection_string"]
-                    == self.model.get_collection_string()
-                ):
-                    # Do not update history for history elements itself or if history is disabled.
+                if element.get("disable_history"):
+                    # Do not update history if history is disabled.
                     continue
                 # HistoryData is not a root rest element so there is no autoupdate and not history saving here.
                 data = HistoryData.objects.create(full_data=element["full_data"])
@@ -279,9 +274,7 @@ class HistoryManager(models.Manager):
                     user_id=element.get("user_id"),
                     full_data=data,
                 )
-                instance.save(
-                    skip_autoupdate=True
-                )  # Skip autoupdate and of course history saving.
+                instance.save()
                 instances.append(instance)
         return instances
 
@@ -307,15 +300,13 @@ class HistoryManager(models.Manager):
         return instances
 
 
-class History(RESTModelMixin, models.Model):
+class History(models.Model):
     """
     Django model to save the history of OpenSlides.
 
     This model itself is not part of the history. This means that if you
     delete a user you may lose the information of the user field here.
     """
-
-    access_permissions = HistoryAccessPermissions()
 
     objects = HistoryManager()
 
@@ -328,7 +319,7 @@ class History(RESTModelMixin, models.Model):
     restricted = models.BooleanField(default=False)
 
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, null=True, on_delete=SET_NULL_AND_AUTOUPDATE
+        settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL
     )
 
     full_data = models.OneToOneField(HistoryData, on_delete=models.CASCADE)
