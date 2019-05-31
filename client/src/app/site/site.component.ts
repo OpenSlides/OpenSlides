@@ -80,7 +80,7 @@ export class SiteComponent extends BaseComponent implements OnInit {
      */
     public constructor(
         title: Title,
-        translate: TranslateService,
+        protected translate: TranslateService,
         configService: ConfigService,
         private updateService: UpdateService,
         private authService: AuthService,
@@ -174,9 +174,13 @@ export class SiteComponent extends BaseComponent implements OnInit {
      * Shows the update notification
      */
     private showUpdateNotification(): void {
-        const ref = this.matSnackBar.open('A new update is available!', 'Refresh', {
-            duration: 0
-        });
+        const ref = this.matSnackBar.open(
+            this.translate.instant('A new update is available!'),
+            this.translate.instant('Refresh'),
+            {
+                duration: 0
+            }
+        );
 
         // Enforces an update
         ref.onAction().subscribe(() => {

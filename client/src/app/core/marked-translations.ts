@@ -16,10 +16,7 @@ import { _ } from 'app/core/translate/translation-marker';
 _('Presentation and assembly system');
 _('Event name');
 _(
-    '<a href="http://www.openslides.org">OpenSlides</a> is a free ' +
-        'web based presentation and assembly system for visualizing ' +
-        'and controlling agenda, motions and elections of an ' +
-        'assembly.'
+    '<a href="http://www.openslides.org">OpenSlides</a> is a free web based presentation and assembly system for visualizing and controlling agenda, motions and elections of an assembly.'
 );
 _('General');
 _('Event');
@@ -34,6 +31,7 @@ _('[Space for your welcome text.]');
 _('System');
 _('Allow access for anonymous guest users');
 _('Show this text on the login page');
+_('OpenSlides Theme');
 _('Export');
 _('Separator used for all csv exports and examples');
 _('Default encoding for all csv exports');
@@ -42,6 +40,7 @@ _('Left');
 _('Center');
 _('Right');
 _('Standard font size in PDF');
+_('Standard page size in PDF');
 
 // Projector config strings
 _('Projector');
@@ -78,8 +77,11 @@ _('Show orange countdown in the last x seconds of speaking time');
 _('Enter duration in seconds. Choose 0 to disable warning color.');
 _('Couple countdown with the list of speakers');
 _('[Begin speech] starts the countdown, [End speech] stops the countdown.');
-_('Agenda visibility');
+_('Only present participants can be added to the list of speakers'), _('Agenda visibility');
 _('Default visibility for new agenda items (except topics)');
+_('public');
+_('internal');
+_('hidden');
 _('Public item');
 _('Internal item');
 _('Hidden item');
@@ -111,9 +113,7 @@ _(
     'Will be displayed as label before selected recommendation. Use an empty value to disable the recommendation system.'
 );
 _('Name of recommender for statute amendments');
-_(
-    'Will be displayed as label before selected recommendation for statute amendments. Use an empty value to disable the recommendation system.'
-);
+_('Will be displayed as label before selected recommendation in statute amendments.');
 _('Default text version for change recommendations');
 // subgroup Amendments
 _('Amendments');
@@ -155,6 +155,7 @@ _('Custom number of ballot papers');
 _('Title for PDF and DOCX documents (all motions)');
 _('Preamble text for PDF and DOCX documents (all motions)');
 _('Sort categories by');
+_('Sort motions by');
 _('Include the sequential number in PDF and DOCX');
 // misc motion strings
 _('Amendment');
@@ -218,10 +219,7 @@ _('Elections');
 _('Ballot and ballot papers');
 _('The 100-%-base of an election result consists of');
 _(
-    'For Yes/No/Abstain per candidate and Yes/No per candidate the 100-%-base ' +
-        'depends on the election method: If there is only one option per candidate, ' +
-        'the sum of all votes of all candidates is 100 %. Otherwise for each ' +
-        'candidate the sum of all votes is 100 %.'
+    'For Yes/No/Abstain per candidate and Yes/No per candidate the 100-%-base depends on the election method: If there is only one option per candidate, the sum of all votes of all candidates is 100 %. Otherwise for each candidate the sum of all votes is 100 %.'
 );
 _('Yes/No/Abstain per candidate');
 _('Yes/No per candidate');
@@ -250,7 +248,7 @@ _('Allow submitter edit');
 _('Set identifier');
 _('Show state extension field');
 _('Show recommendation extension field');
-_('Show amendment in parent motoin');
+_('Show amendment in parent motion');
 _('Restrictions');
 _('Label color');
 _('Next states');

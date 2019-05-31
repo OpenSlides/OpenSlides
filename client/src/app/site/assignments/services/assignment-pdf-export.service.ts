@@ -70,7 +70,7 @@ export class AssignmentPdfExportService {
                     ? [assignmentDocDef, this.pdfDocumentService.getPageBreak()]
                     : [assignmentDocDef];
             } catch (error) {
-                const errorText = `${this.translate.instant('Error during PDF creation of assignment:')} ${
+                const errorText = `${this.translate.instant('Error during PDF creation of election:')} ${
                     assignment.title
                 }`;
                 console.error(`${errorText}\nDebugInfo:\n`, error);
