@@ -438,9 +438,9 @@
     <form class="motion-content" [formGroup]="contentForm" (keydown)="onKeyDown($event)">
 
         <!-- Toolbar with text controls and buttonf for managing the (modified) final version-->
-        <div class="motion-text-toolbar-wrapper outline-border-bottom">
+        <div class="motion-text-toolbar-wrapper outline-border-bottom" *ngIf="!editMotion && !motion.isStatuteAmendment()">
             <!-- Line Number and Diff buttons -->
-            <div *ngIf="!editMotion && !motion.isStatuteAmendment()" class="motion-text-controls">
+            <div class="motion-text-controls">
                 <mat-form-field class="motion-goto-line" *ngIf="highlightedLineOpened">
                     <input
                         type="number"
