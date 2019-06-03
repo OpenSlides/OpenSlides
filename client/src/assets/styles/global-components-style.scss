@@ -57,6 +57,13 @@
         border-color: mat-color($background, selected-button);
     }
 
+    .tile-text {
+        color: mat-color($foreground, text);
+    }
+    .tile-color {
+        background-color: mat-color($background, selected-button);
+    }
+
     .main-nav-color {
         color: mat-color($foreground, secondary-text);
     }

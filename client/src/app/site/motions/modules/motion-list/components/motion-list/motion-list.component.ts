@@ -128,6 +128,16 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
     public informationOfMotionsInTileCategories: { [id: number]: TileCategoryInformation } = {};
 
     /**
+     * The verbose name for the motions.
+     */
+    public motionsVerboseName: string;
+
+    /**
+     * Store the view as member - if the user changes the view, this member is as well changed.
+     */
+    private storedView: string;
+
+    /**
      * Constructor implements title and translation Module.
      *
      * @param titleService Title
@@ -190,31 +200,33 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
     public async ngOnInit(): Promise<void> {
         super.setTitle('Motions');
         this.initTable();
-        const storedView = await this.storage.get<string>('motionListView');
-        this.configService
-            .get<boolean>('motions_statutes_enabled')
-            .subscribe(enabled => (this.statutesEnabled = enabled));
-        this.configService.get<string>('motions_recommendations_by').subscribe(recommender => {
-            this.recommendationEnabled = !!recommender;
-        });
-        this.motionBlockRepo.getViewModelListObservable().subscribe(mBs => {
-            this.motionBlocks = mBs;
-            this.updateStateColumnVisibility();
-        });
-        this.categoryRepo.getViewModelListObservable().subscribe(cats => {
-            this.categories = cats;
-            if (cats.length > 0) {
-                this.selectedView = storedView || 'tiles';
-            } else {
-                this.selectedView = 'list';
-            }
-            this.updateStateColumnVisibility();
-        });
-        this.tagRepo.getViewModelListObservable().subscribe(tags => {
-            this.tags = tags;
-            this.updateStateColumnVisibility();
-        });
-        this.workflowRepo.getViewModelListObservable().subscribe(wfs => (this.workflows = wfs));
+        this.storedView = await this.storage.get<string>('motionListView');
+        this.subscriptions.push(
+            this.configService
+                .get<boolean>('motions_statutes_enabled')
+                .subscribe(enabled => (this.statutesEnabled = enabled)),
+            this.configService.get<string>('motions_recommendations_by').subscribe(recommender => {
+                this.recommendationEnabled = !!recommender;
+            }),
+            this.motionBlockRepo.getViewModelListObservable().subscribe(mBs => {
+                this.motionBlocks = mBs;
+                this.updateStateColumnVisibility();
+            }),
+            this.categoryRepo.getViewModelListObservable().subscribe(cats => {
+                this.categories = cats;
+                if (cats.length > 0) {
+                    this.selectedView = this.storedView || 'tiles';
+                } else {
+                    this.selectedView = 'list';
+                }
+                this.updateStateColumnVisibility();
+            }),
+            this.tagRepo.getViewModelListObservable().subscribe(tags => {
+                this.tags = tags;
+                this.updateStateColumnVisibility();
+            }),
+            this.workflowRepo.getViewModelListObservable().subscribe(wfs => (this.workflows = wfs))
+        );
         this.setFulltextFilter();
     }
 
@@ -255,6 +267,7 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
                 }
 
                 this.tileCategories = Object.values(this.informationOfMotionsInTileCategories);
+                this.motionsVerboseName = this.motionRepo.getVerboseName(motions.length > 1);
             })
         );
     }
@@ -491,6 +504,7 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
      */
     public onChangeView(value: string): void {
         this.selectedView = value;
+        this.storedView = value;
         this.storage.set('motionListView', value);
         if (value === 'list') {
             this.initTable();
