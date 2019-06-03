@@ -1,0 +1,22 @@
+// TODO: partial duplicate of sorting-list
+.line {
+    display: table;
+    width: 100%;
+    font-size: 14px;
+    min-height: 50px;
+    margin-bottom: 5px;
+
+    .left {
+        display: table-cell;
+        vertical-align: middle;
+        max-width: 100%;
+    }
+
+    .right {
+        display: table-cell;
+        padding-right: 10px;
+        vertical-align: middle;
+        width: auto;
+        white-space: nowrap;
+    }
+}

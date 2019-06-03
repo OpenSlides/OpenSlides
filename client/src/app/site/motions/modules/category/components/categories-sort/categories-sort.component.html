@@ -1,0 +1,23 @@
+<os-head-bar
+    [editMode]="hasChanged"
+    (saveEvent)="onSave()"
+    (mainEvent)="onCancel()"
+    [nav]="false">
+    <!-- Title -->
+    <div class="title-slot">
+        <h2 translate>Sort categories</h2>
+    </div>
+</os-head-bar>
+
+<mat-card>
+    <os-sorting-tree
+        #osSortedTree
+        parentKey="parent_id"
+        weightKey="weight"
+        (hasChanged)="receiveChanges($event)"
+        [model]="categoriesObservable">
+        <ng-template #innerNode let-item="item">
+            {{ item.getTitle() }}
+        </ng-template>
+    </os-sorting-tree>
+</mat-card>

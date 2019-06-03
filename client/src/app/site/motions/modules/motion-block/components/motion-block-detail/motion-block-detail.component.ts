@@ -129,16 +129,6 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
     }
 
     /**
-     * Return the URL to a selected motion
-     *
-     * @param motion the selected ViewMotion
-     * @returns a link as url
-     */
-    public getMotionLink(motion: ViewMotion): string {
-        return `/motions/${motion.id}`;
-    }
-
-    /**
      * Click handler to delete motion blocks
      */
     public async onDeleteBlockButton(): Promise<void> {

@@ -1,0 +1,27 @@
+<os-head-bar
+    [editMode]="hasChanged"
+    (saveEvent)="sendUpdate()"
+    (mainEvent)="onCancel()"
+    [nav]="false">
+    <!-- Title -->
+    <div class="title-slot">
+        <h2 *ngIf="category" translate>Sort motions in {{ category.prefixedName }}</h2>
+    </div>
+</os-head-bar>
+
+<mat-card class="os-form-card">
+    <div translate>
+        Drag and drop motions to reorder the category. Then click the button to renumber.
+    </div>
+    <div *ngIf="isMultiSelect">
+        <span> {{ sortSelector.multiSelectedIndex.length }}&nbsp;</span>
+        <span translate>selected</span>
+        <button mat-button (click)="moveToPosition()"><span translate>move ...</span>
+        </button>
+    </div>
+    <os-sorting-list
+        (sortEvent)="onListUpdate($event)"
+        [input]="motionObservable"
+        #sorter
+    ></os-sorting-list>
+</mat-card>

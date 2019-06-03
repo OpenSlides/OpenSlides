@@ -1,0 +1,117 @@
+<os-head-bar [nav]="false">
+    <!-- Title -->
+    <div class="title-slot">
+        <h2 *ngIf="selectedCategory">
+            {{ selectedCategory.prefixedName }}
+        </h2>
+    </div>
+
+    <!-- Menu -->
+    <div class="menu-slot">
+        <div *osPerms="'motions.can_manage'">
+            <button type="button" mat-icon-button [matMenuTriggerFor]="categoryMenu">
+                <mat-icon>more_vert</mat-icon>
+            </button>
+        </div>
+    </div>
+</os-head-bar>
+
+<mat-card>
+    <div *ngFor="let category of categories">
+        <h2>
+            <span>{{ getLevelDashes(category) }}</span>
+            {{ category.prefixedName }}
+        </h2>
+        <table class="os-headed-listview-table on-transition-fade" mat-table [dataSource]="dataSources[category.id]">
+            <!-- title column -->
+            <ng-container matColumnDef="title">
+                <mat-header-cell *matHeaderCellDef> <span translate>Motion</span> </mat-header-cell>
+                <mat-cell *matCellDef="let motion">
+                    {{ motion.getTitle() }}
+                </mat-cell>
+            </ng-container>
+
+            <!-- state column -->
+            <ng-container matColumnDef="state">
+                <mat-header-cell *matHeaderCellDef> <span translate>State</span> </mat-header-cell>
+                <mat-cell class="chip-container" *matCellDef="let motion">
+                    <mat-basic-chip disableRipple [ngClass]="motion.stateCssColor">
+                        {{ getStateLabel(motion) }}
+                    </mat-basic-chip>
+                </mat-cell>
+            </ng-container>
+
+            <!-- Recommendation column -->
+            <ng-container matColumnDef="recommendation">
+                <mat-header-cell *matHeaderCellDef> <span translate>Recommendation</span> </mat-header-cell>
+                <mat-cell class="chip-container" *matCellDef="let motion">
+                    <mat-basic-chip *ngIf="motion.recommendation" disableRipple class="bluegrey">
+                        {{ getRecommendationLabel(motion) }}
+                    </mat-basic-chip>
+                </mat-cell>
+            </ng-container>
+
+            <!-- Anchor column to open the separate tab -->
+            <ng-container matColumnDef="anchor">
+                <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                <mat-cell *matCellDef="let motion">
+                    <a [routerLink]="motion.getDetailStateURL()"></a>
+                </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: getColumnDefinition()"> </mat-row>
+        </table>
+    </div>
+</mat-card>
+
+<!-- The menu content -->
+<mat-menu #categoryMenu="matMenu">
+    <button mat-menu-item (click)="toggleEditMode()">
+        <mat-icon>edit</mat-icon>
+        <span translate>Edit</span>
+    </button>
+    <button mat-menu-item [routerLink]="'./sort'">
+        <mat-icon>sort</mat-icon>
+        <span translate>Sort motions</span>
+    </button>
+    <button mat-menu-item (click)="numberMotions()">
+        <mat-icon>format_list_numbered</mat-icon>
+        <span translate>Number motions</span>
+    </button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item class="red-warning-text" (click)="onDeleteButton()">
+        <mat-icon>delete</mat-icon>
+        <span translate>Delete</span>
+    </button>
+</mat-menu>
+
+<ng-template #editDialog>
+    <h1 mat-dialog-title>
+        <span>{{ 'Edit details for' | translate }} {{ selectedCategory.prefixedName }}</span>
+    </h1>
+    <div class="os-form-card-mobile" mat-dialog-content>
+        <form class="edit-form" [formGroup]="editForm" (ngSubmit)="save()" (keydown)="onKeyDown($event)">
+            <mat-form-field>
+                <input matInput osAutofocus placeholder="{{ 'Prefix' | translate }}" formControlName="prefix"/>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput osAutofocus placeholder="{{ 'Name' | translate }}" formControlName="name" required/>
+            </mat-form-field>
+        </form>
+    </div>
+    <div mat-dialog-actions>
+            <button
+                type="submit"
+                mat-button
+                [disabled]="!editForm.valid"
+                color="primary"
+                (click)="save()"
+            >
+                <span translate>Save</span>
+            </button>
+            <button type="button" mat-button [mat-dialog-close]="null">
+                <span translate>Cancel</span>
+            </button>
+        </div>
+</ng-template>

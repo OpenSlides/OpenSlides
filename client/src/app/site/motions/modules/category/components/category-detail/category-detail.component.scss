@@ -1,0 +1,57 @@
+@import '~assets/styles/tables.scss';
+
+.block-title {
+    padding: 40px;
+    padding-left: 25px;
+    line-height: 180%;
+    font-size: 120%;
+    color: #317796; // TODO: put in theme as $primary
+
+    h2 {
+        margin: 0;
+        font-weight: normal;
+    }
+}
+
+.block-card {
+    margin: 0 20px 0 20px;
+    padding: 25px;
+
+    button {
+        .mat-icon {
+            margin-right: 5px;
+        }
+    }
+}
+
+.chip-container {
+    display: block;
+    min-height: 0; // default is inherit, will appear on the top edge of the cell
+}
+
+.os-headed-listview-table {
+    // Title
+    .mat-column-title {
+        flex: 4 0 0;
+    }
+
+    // State
+    .mat-column-state {
+        flex: 2 0 0;
+    }
+
+    // Recommendation
+    .mat-column-recommendation {
+        flex: 2 0 0;
+    }
+
+    // Remove
+    .mat-column-remove {
+        flex: 1 0 0;
+        justify-content: flex-end !important;
+    }
+}
+
+.edit-form {
+    overflow: hidden;
+}

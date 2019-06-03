@@ -76,7 +76,7 @@
         <ng-container matColumnDef="anchor">
             <mat-header-cell *matHeaderCellDef></mat-header-cell>
             <mat-cell *matCellDef="let motion">
-                <a [routerLink]="getMotionLink(motion)"></a>
+                <a [routerLink]="motion.getDetailStateURL()"></a>
             </mat-cell>
         </ng-container>
 

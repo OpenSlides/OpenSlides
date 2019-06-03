@@ -1,21 +1,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CategorySortComponent } from './category-sort.component';
+import { CategoryDetailComponent } from './category-detail.component';
 import { E2EImportsModule } from 'e2e-imports.module';
 
-describe('CategorySortComponent', () => {
-    let component: CategorySortComponent;
-    let fixture: ComponentFixture<CategorySortComponent>;
+describe('CategoryDetailComponent', () => {
+    let component: CategoryDetailComponent;
+    let fixture: ComponentFixture<CategoryDetailComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [E2EImportsModule],
-            declarations: [CategorySortComponent]
+            declarations: [CategoryDetailComponent]
         }).compileComponents();
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(CategorySortComponent);
+        fixture = TestBed.createComponent(CategoryDetailComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

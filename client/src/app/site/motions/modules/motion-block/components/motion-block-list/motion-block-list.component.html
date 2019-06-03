@@ -13,7 +13,7 @@
                 <mat-form-field>
                     <input formControlName="title" matInput placeholder="{{ 'Title' | translate }}" required />
                     <mat-error *ngIf="createBlockForm.get('title').hasError('required')" translate>
-                        A name is required
+                        A title is required
                     </mat-error>
                 </mat-form-field>
             </p>
@@ -86,23 +86,6 @@
             </mat-cell>
         </ng-container>
 
-        <!-- menu -->
-        <ng-container matColumnDef="menu">
-            <mat-header-cell *matHeaderCellDef>
-                <span translate>Menu</span>
-            </mat-header-cell>
-            <mat-cell *matCellDef="let block">
-                <button
-                    *ngIf="canEdit"
-                    mat-icon-button
-                    [matMenuTriggerFor]="singleItemMenu"
-                    [matMenuTriggerData]="{ item: block }"
-                >
-                    <mat-icon>more_vert</mat-icon>
-                </button>
-            </mat-cell>
-        </ng-container>
-
         <!-- Anchor column to open the separate tab -->
         <ng-container matColumnDef="anchor">
             <mat-header-cell *matHeaderCellDef></mat-header-cell>
@@ -115,13 +98,3 @@
         <mat-row *matRowDef="let row; columns: getColumnDefinition()"> </mat-row>
     </table>
 </mat-card>
-
-<mat-menu #singleItemMenu="matMenu">
-    <ng-template matMenuContent let-item="item">
-        <!-- Delete Button -->
-        <button mat-menu-item class="red-warning-text" (click)="onDelete(item)">
-            <mat-icon>delete</mat-icon>
-            <span translate>Delete</span>
-        </button>
-    </ng-template>
-</mat-menu>

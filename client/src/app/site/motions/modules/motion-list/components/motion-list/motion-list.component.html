@@ -206,6 +206,8 @@
                 <mat-icon>sort</mat-icon>
                 <span translate>Call list</span>
             </button>
+        </div>
+        <div *ngIf="perms.isAllowed('manage') || categories.length">
             <button mat-menu-item routerLink="category">
                 <mat-icon>device_hub</mat-icon>
                 <span translate>Categories</span>

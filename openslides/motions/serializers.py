@@ -60,7 +60,8 @@ class CategorySerializer(ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ("id", "name", "prefix")
+        fields = ("id", "name", "prefix", "parent", "weight", "level")
+        read_only_fields = ("parent", "weight")
 
 
 class MotionBlockSerializer(ModelSerializer):

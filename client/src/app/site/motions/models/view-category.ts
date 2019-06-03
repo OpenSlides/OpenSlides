@@ -18,8 +18,14 @@ export interface CategoryTitleInformation {
 export class ViewCategory extends BaseViewModel<Category> implements CategoryTitleInformation, Searchable {
     public static COLLECTIONSTRING = Category.COLLECTIONSTRING;
 
+    private _parent?: ViewCategory;
+
     public get category(): Category {
         return this._model;
+    }
+
+    public get parent(): ViewCategory | null {
+        return this._parent;
     }
 
     public get name(): string {
@@ -30,26 +36,39 @@ export class ViewCategory extends BaseViewModel<Category> implements CategoryTit
         return this.category.prefix;
     }
 
-    /**
-     * TODO: Where is this used? Try to avoid this.
-     */
-    public set prefix(prefix: string) {
-        this._model.prefix = prefix;
+    public get weight(): number {
+        return this.category.weight;
+    }
+
+    public get parent_id(): number {
+        return this.category.parent_id;
+    }
+
+    public get level(): number {
+        return this.category.level;
     }
 
     /**
      * TODO: Where is this used? Try to avoid this.
      */
-    public set name(name: string) {
+    /*public set prefix(prefix: string) {
+        this._model.prefix = prefix;
+    }*/
+
+    /**
+     * TODO: Where is this used? Try to avoid this.
+     */
+    /*public set name(name: string) {
         this._model.name = name;
-    }
+    }*/
 
     public get prefixedName(): string {
         return this.prefix ? this.prefix + ' - ' + this.name : this.name;
     }
 
-    public constructor(category: Category) {
+    public constructor(category: Category, parent?: ViewCategory) {
         super(Category.COLLECTIONSTRING, category);
+        this._parent = parent;
     }
 
     public formatForSearch(): SearchRepresentation {
@@ -64,5 +83,9 @@ export class ViewCategory extends BaseViewModel<Category> implements CategoryTit
      * Updates the local objects if required
      * @param update
      */
-    public updateDependencies(update: BaseViewModel): void {}
+    public updateDependencies(update: BaseViewModel): void {
+        if (update instanceof ViewCategory && update.id === this.parent_id) {
+            this._parent = update;
+        }
+    }
 }

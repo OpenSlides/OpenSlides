@@ -177,20 +177,6 @@ def get_config_variables():
     )
 
     yield ConfigVariable(
-        name="motions_category_sorting",
-        default_value="prefix",
-        input_type="choice",
-        label="Sort categories by",
-        choices=(
-            {"value": "prefix", "display_name": "Prefix"},
-            {"value": "name", "display_name": "Name"},
-        ),
-        weight=335,
-        group="Motions",
-        subgroup="General",
-    )
-
-    yield ConfigVariable(
         name="motions_motions_sorting",
         default_value="identifier",
         input_type="choice",

@@ -5,14 +5,13 @@ import { TranslateService } from '@ngx-translate/core';
 import { BaseRepository } from '../base-repository';
 import { Category } from 'app/shared/models/motions/category';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
-import { ConfigService } from 'app/core/ui-services/config.service';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { HttpService } from '../../core-services/http.service';
 import { ViewCategory, CategoryTitleInformation } from 'app/site/motions/models/view-category';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
-
-type SortProperty = 'prefix' | 'name';
+import { Motion } from 'app/shared/models/motions/motion';
+import { TreeIdNode } from 'app/core/ui-services/tree.service';
 
 /**
  * Repository Services for Categories
@@ -28,8 +27,6 @@ type SortProperty = 'prefix' | 'name';
     providedIn: 'root'
 })
 export class CategoryRepositoryService extends BaseRepository<ViewCategory, Category, CategoryTitleInformation> {
-    private sortProperty: SortProperty;
-
     /**
      * Creates a CategoryRepository
      * Converts existing and incoming category to ViewCategories
@@ -48,16 +45,11 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
         translate: TranslateService,
-        private httpService: HttpService,
-        private configService: ConfigService
+        private httpService: HttpService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, Category);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, Category, [Category]);
 
-        this.sortProperty = this.configService.instant('motions_category_sorting');
-        this.configService.get<SortProperty>('motions_category_sorting').subscribe(conf => {
-            this.sortProperty = conf;
-            this.setConfigSortFn();
-        });
+        this.setSortFunction((a, b) => a.weight - b.weight);
     }
 
     public getTitle = (titleInformation: CategoryTitleInformation) => {
@@ -78,10 +70,9 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
      * Updates a categories numbering.
      *
      * @param category the category it should be updated in
-     * @param motionIds the list of motion ids on this category
      */
-    public async numberMotionsInCategory(category: Category, motionIds: number[]): Promise<void> {
-        await this.httpService.post(`/rest/motions/category/${category.id}/numbering/`, { motions: motionIds });
+    public async numberMotionsInCategory(category: ViewCategory): Promise<void> {
+        await this.httpService.post(`/rest/motions/category/${category.id}/numbering/`);
     }
 
     /**
@@ -91,25 +82,25 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
      * @param motionIds the list of motion ids on this category
      */
     public async sortMotionsInCategory(category: Category, motionIds: number[]): Promise<void> {
-        await this.httpService.post(`/rest/motions/category/${category.id}/sort/`, { motions: motionIds });
+        await this.httpService.post(`/rest/motions/category/${category.id}/sort_motions/`, { motions: motionIds });
     }
 
     /**
-     * Triggers an update for the sort function responsible for the default sorting of data items
+     * Sends the changed nodes to the server.
+     *
+     * @param data The reordered data from the sorting
      */
-    public setConfigSortFn(): void {
-        this.setSortFunction((a: ViewCategory, b: ViewCategory) => {
-            if (a[this.sortProperty] && b[this.sortProperty]) {
-                return this.languageCollator.compare(a[this.sortProperty], b[this.sortProperty]);
-            } else if (this.sortProperty === 'prefix') {
-                if (a.prefix) {
-                    return 1;
-                } else if (b.prefix) {
-                    return -1;
-                } else {
-                    return this.languageCollator.compare(a.name, b.name);
-                }
-            }
-        });
+    public async sortCategories(data: TreeIdNode[]): Promise<void> {
+        await this.httpService.post('/rest/motions/category/sort_categories/', data);
+    }
+
+    /**
+     * Filter the DataStore by Motions and returns the amount of motions in the given category
+     *
+     * @param category the category
+     * @returns the number of motions inside the category
+     */
+    public getMotionAmountByCategory(category: ViewCategory): number {
+        return this.DS.filter(Motion, motion => motion.category_id === category.id).length;
     }
 }
