@@ -58,10 +58,15 @@ export abstract class BaseViewComponent extends BaseComponent implements OnDestr
      * Opens an error snack bar with the given error message.
      * This is implemented as an arrow function to capture the called `this`. You can use this function
      * as callback (`.then(..., this.raiseError)`) instead of doing `this.raiseError.bind(this)`.
-     * @param message The message to show.
+     *
+     * @param message The message to show or an "real" error, which will be passed to the console.
      */
-    protected raiseError = (message: string): void => {
-        this.messageSnackBar = this.matSnackBar.open(message, this.translate.instant('OK'), {
+    protected raiseError = (message: string | Error): void => {
+        if (message instanceof Error) {
+            console.error(message);
+            message = this.translate.instant('A client error occured. Please contact your system administrator.');
+        }
+        this.messageSnackBar = this.matSnackBar.open(message as string, this.translate.instant('OK'), {
             duration: 0
         });
     };
