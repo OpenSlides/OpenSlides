@@ -13,8 +13,6 @@ import { ChangeRecommendationRepositoryService } from 'app/core/repositories/mot
 import { CreateMotion } from 'app/site/motions/models/create-motion';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { DiffLinesInParagraph, LineRange } from 'app/core/ui-services/diff.service';
-import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
-import { itemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
 import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
@@ -37,7 +35,6 @@ import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { ViewCategory } from 'app/site/motions/models/view-category';
 import { ViewCreateMotion } from 'app/site/motions/models/view-create-motion';
-import { ViewItem } from 'app/site/agenda/models/view-item';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
@@ -58,6 +55,7 @@ import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.
 import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
 import { MotionSortListService } from 'app/site/motions/services/motion-sort-list.service';
+import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 
 /**
  * Component for the motion detail view
@@ -255,11 +253,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     public mediafilesObserver: BehaviorSubject<ViewMediafile[]>;
 
     /**
-     * Subject for agenda items
-     */
-    public agendaItemObserver: BehaviorSubject<ViewItem[]>;
-
-    /**
      * Subject for tags
      */
     public tagObserver: BehaviorSubject<ViewTag[]>;
@@ -293,16 +286,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * If this is a paragraph-based amendment, this indicates if the non-affected paragraphs should be shown as well
      */
     public showAmendmentContext = false;
-
-    /**
-     * Determines the default agenda item visibility
-     */
-    public defaultVisibility: number;
-
-    /**
-     * Determine visibility states for the agenda that will be created implicitly
-     */
-    public itemVisibility = itemVisibilityChoices;
 
     /**
      * For using the enum constants from the template
@@ -395,7 +378,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * @param dialogService For opening dialogs
      * @param el The native element
      * @param repo Motion Repository
-     * @param agendaRepo Read out agenda variables
      * @param changeRecoRepo Change Recommendation Repository
      * @param statuteRepo: Statute Paragraph Repository
      * @param mediafileRepo Mediafile Repository
@@ -431,7 +413,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         private dialogService: MatDialog,
         private el: ElementRef,
         public repo: MotionRepositoryService,
-        private agendaRepo: ItemRepositoryService,
         private changeRecoRepo: ChangeRecommendationRepositoryService,
         private statuteRepo: StatuteParagraphRepositoryService,
         private configService: ConfigService,
@@ -447,8 +428,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         private mediaFilerepo: MediafileRepositoryService,
         private workflowRepo: WorkflowRepositoryService,
         private blockRepo: MotionBlockRepositoryService,
-        private itemRepo: ItemRepositoryService,
-        private motionSortService: MotionSortListService
+        private motionSortService: MotionSortListService,
+        private itemRepo: ItemRepositoryService
     ) {
         super(title, translate, matSnackBar);
     }
@@ -463,7 +444,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         this.mediafilesObserver = this.mediaFilerepo.getViewModelListBehaviorSubject();
         this.workflowObserver = this.workflowRepo.getViewModelListBehaviorSubject();
         this.blockObserver = this.blockRepo.getViewModelListBehaviorSubject();
-        this.agendaItemObserver = this.itemRepo.getViewModelListBehaviorSubject();
         this.motionObserver = this.repo.getViewModelListBehaviorSubject();
         this.submitterObserver = this.userRepo.getViewModelListBehaviorSubject();
         this.supporterObserver = this.userRepo.getViewModelListBehaviorSubject();
@@ -510,13 +490,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
                 } else {
                     attachmentsCtrl.enable();
                 }
-            }
-        });
-
-        // Set the default visibility using observers
-        this.agendaRepo.getDefaultAgendaVisibility().subscribe(visibility => {
-            if (visibility && this.newMotion) {
-                this.contentForm.get('agenda_type').setValue(visibility);
             }
         });
 
@@ -724,6 +697,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
             reason: reason,
             category_id: [''],
             attachments_id: [[]],
+            agenda_create: [''],
             agenda_parent_id: [],
             agenda_type: [''],
             submitters_id: [],
@@ -1092,7 +1066,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
                 const title = this.translate.instant(
                     'Are you sure you want to copy the final version to the print template?'
                 );
-                if (await this.promptService.open(title, null)) {
+                if (await this.promptService.open(title)) {
                     this.updateMotion({ modified_final_version: finalVersion }, this.motion).then(
                         () => this.setChangeRecoMode(ChangeRecoMode.ModifiedFinal),
                         this.raiseError
@@ -1111,7 +1085,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      */
     public async deleteModifiedFinalVersion(): Promise<void> {
         const title = this.translate.instant('Are you sure you want to delete the print template?');
-        if (await this.promptService.open(title, null)) {
+        if (await this.promptService.open(title)) {
             this.finalEditMode = false;
             this.updateMotion({ modified_final_version: '' }, this.motion).then(
                 () => this.setChangeRecoMode(ChangeRecoMode.Final),
@@ -1609,5 +1583,13 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      */
     public editModifiedFinal(): void {
         this.finalEditMode = true;
+    }
+
+    public addToAgenda(): void {
+        this.itemRepo.addItemToAgenda(this.motion).then(null, this.raiseError);
+    }
+
+    public removeFromAgenda(): void {
+        this.itemRepo.removeFromAgenda(this.motion.agendaItem).then(null, this.raiseError);
     }
 }

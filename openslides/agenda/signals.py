@@ -4,7 +4,9 @@ from django.apps import apps
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
+from ..core.config import config
 from ..utils.autoupdate import inform_changed_data
+from ..utils.rest_api import ValidationError
 from .models import Item, ListOfSpeakers
 
 
@@ -33,16 +35,51 @@ def listen_to_related_object_post_save(sender, instance, created, **kwargs):
 
     if is_agenda_item_content_object:
         if created:
-            attrs = {}
-            for attr in ("type", "parent_id", "comment", "duration", "weight"):
-                if instance.agenda_item_update_information.get(attr):
-                    attrs[attr] = instance.agenda_item_update_information.get(attr)
-            Item.objects.create(content_object=instance, **attrs)
 
-            if not instance.agenda_item_skip_autoupdate:
-                instance_inform_changed_data = True
+            if instance.get_collection_string() == "topics/topic":
+                should_create_item = True
+            elif config["agenda_item_creation"] == "always":
+                should_create_item = True
+            elif config["agenda_item_creation"] == "never":
+                should_create_item = False
+            else:
+                should_create_item = instance.agenda_item_update_information.get(
+                    "create"
+                )
+                if should_create_item is None:
+                    should_create_item = config["agenda_item_creation"] == "default_yes"
 
-        elif not instance.agenda_item_skip_autoupdate:
+            if should_create_item:
+                attrs = {}
+                for attr in ("type", "parent_id", "comment", "duration", "weight"):
+                    if instance.agenda_item_update_information.get(attr):
+                        attrs[attr] = instance.agenda_item_update_information.get(attr)
+                # Validation: The type is validated in the serializers (to be between 1 and 3).
+                # If the parent id is given, set the weight to the parent's weight +1 to
+                # ensure the right placement in the tree. Also validate the parent_id!
+                parent_id = attrs.get("parent_id")
+                if parent_id is not None:
+                    try:
+                        parent = Item.objects.get(pk=parent_id)
+                    except Item.DoesNotExist:
+                        raise ValidationError(
+                            {
+                                "detail": f"The parent item with id {parent_id} does not exist"
+                            }
+                        )
+                    attrs["weight"] = parent.weight + 1
+                Item.objects.create(content_object=instance, **attrs)
+
+                if not instance.agenda_item_skip_autoupdate:
+                    instance_inform_changed_data = True
+            else:
+                is_agenda_item_content_object = False
+                # important for the check for item and list of speakers together.
+
+        elif (
+            not instance.agenda_item_skip_autoupdate
+            and instance.agenda_item is not None
+        ):
             # If the object has changed, then also the agenda item has to be sent.
             inform_changed_data(instance.agenda_item)
 

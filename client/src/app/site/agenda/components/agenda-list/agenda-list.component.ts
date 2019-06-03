@@ -24,6 +24,8 @@ import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { ViewItem } from '../../models/view-item';
 import { ViewListOfSpeakers } from '../../models/view-list-of-speakers';
 import { _ } from 'app/core/translate/translation-marker';
+import { TopicRepositoryService } from 'app/core/repositories/topics/topic-repository.service';
+import { ViewTopic } from '../../models/view-topic';
 
 /**
  * List view for the agenda.
@@ -123,7 +125,8 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
         public filterService: AgendaFilterListService,
         private agendaPdfService: AgendaPdfService,
         private pdfService: PdfDocumentService,
-        private listOfSpeakersRepo: ListOfSpeakersRepositoryService
+        private listOfSpeakersRepo: ListOfSpeakersRepositoryService,
+        private topicRepo: TopicRepositoryService
     ) {
         super(titleService, translate, matSnackBar, storage);
         this.canMultiSelect = true;
@@ -194,7 +197,7 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
      */
     public async onAutoNumbering(): Promise<void> {
         const title = this.translate.instant('Are you sure you want to number all agenda items?');
-        if (await this.promptService.open(title, null)) {
+        if (await this.promptService.open(title)) {
             await this.repo.autoNumbering().then(null, this.raiseError);
         }
     }
@@ -215,15 +218,26 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
     }
 
     /**
-     * Delete handler for a single item
+     * Remove handler for a single item
      *
-     * @param item The item to delete
+     * @param item The item to remove from the agenda
      */
-    public async onDelete(item: ViewItem): Promise<void> {
-        const title = this.translate.instant('Are you sure you want to delete this entry?');
+    public async removeFromAgenda(item: ViewItem): Promise<void> {
+        const title = this.translate.instant('Are you sure you want to remove this entry from the agenda?');
         const content = item.contentObject.getTitle();
         if (await this.promptService.open(title, content)) {
-            await this.repo.delete(item).then(null, this.raiseError);
+            await this.repo.removeFromAgenda(item).then(null, this.raiseError);
+        }
+    }
+
+    public async deleteTopic(item: ViewItem): Promise<void> {
+        if (!(item.contentObject instanceof ViewTopic)) {
+            return;
+        }
+        const title = this.translate.instant('Are you sure you want to delete this topic?');
+        const content = item.contentObject.getTitle();
+        if (await this.promptService.open(title, content)) {
+            await this.topicRepo.delete(item.contentObject).then(null, this.raiseError);
         }
     }
 
@@ -231,11 +245,16 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
      * Handler for deleting multiple entries. Needs items in selectedRows, which
      * is only filled with any data in multiSelect mode
      */
-    public async deleteSelected(): Promise<void> {
-        const title = this.translate.instant('Are you sure you want to delete all selected items?');
-        if (await this.promptService.open(title, null)) {
-            for (const agenda of this.selectedRows) {
-                await this.repo.delete(agenda);
+    public async removeSelected(): Promise<void> {
+        const title = this.translate.instant('Are you sure you want to remove all selected items from the agenda?');
+        const content = this.translate.instant("All topics will be deleted and won't be accessible afterwards.");
+        if (await this.promptService.open(title, content)) {
+            for (const item of this.selectedRows) {
+                if (item.contentObject instanceof ViewTopic) {
+                    await this.topicRepo.delete(item.contentObject);
+                } else {
+                    await this.repo.removeFromAgenda(item);
+                }
             }
         }
     }
@@ -247,8 +266,8 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
      * @param closed true if the item is to be considered done
      */
     public async setClosedSelected(closed: boolean): Promise<void> {
-        for (const agenda of this.selectedRows) {
-            await this.repo.update({ closed: closed }, agenda);
+        for (const item of this.selectedRows) {
+            await this.repo.update({ closed: closed }, item);
         }
     }
 
@@ -259,8 +278,8 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
      * @param visible true if the item is to be shown
      */
     public async setAgendaType(agendaType: number): Promise<void> {
-        for (const agenda of this.selectedRows) {
-            await this.repo.update({ type: agendaType }, agenda).then(null, this.raiseError);
+        for (const item of this.selectedRows) {
+            await this.repo.update({ type: agendaType }, item).then(null, this.raiseError);
         }
     }
 

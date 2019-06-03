@@ -5,11 +5,11 @@ import { MatSnackBar } from '@angular/material';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
-import { itemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { SortTreeViewComponent, SortTreeFilterOption } from 'app/site/base/sort-tree.component';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewItem } from '../../models/view-item';
+import { ItemVisibilityChoices } from 'app/shared/models/agenda/item';
 
 /**
  * Sort view for the agenda.
@@ -30,7 +30,7 @@ export class AgendaSortComponent extends SortTreeViewComponent<ViewItem> impleme
      * Adds the property `state` to identify if the option is marked as active.
      * When reset the filters, the option `state` will be set to `false`.
      */
-    public filterOptions: SortTreeFilterOption[] = itemVisibilityChoices.map(item => {
+    public filterOptions: SortTreeFilterOption[] = ItemVisibilityChoices.map(item => {
         return { label: item.name, id: item.key, state: false };
     });
 

@@ -71,7 +71,7 @@ export class MotionMultiselectService {
      */
     public async delete(motions: ViewMotion[]): Promise<void> {
         const title = this.translate.instant('Are you sure you want to delete all selected motions?');
-        if (await this.promptService.open(title, null)) {
+        if (await this.promptService.open(title)) {
             let i = 0;
 
             for (const motion of motions) {

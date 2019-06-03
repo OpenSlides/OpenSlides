@@ -77,14 +77,20 @@ class TreeSortMixin:
         # layer) and a weight.
         nodes_to_check = [fake_root]
         # Traverse and check, if every id is given, valid and there are no duplicate ids.
-        weight = 1
+
+        # The weight values are 2, 4, 6, 8,... to "make space" between entries. This is
+        # some work around for the agenda: If one creates a content object with an item
+        # and gives the item's parent, than the weight can be set to the parent's one +1.
+        # If multiple content objects witht he same parent are created, the ordering is not
+        # guaranteed.
+        weight = 2
         while len(nodes_to_check) > 0:
             node = nodes_to_check.pop()
             id = node["id"]
 
             if id is not None:  # exclude the fake_root
                 node[weight_key] = weight
-                weight += 1
+                weight += 2
                 if id in ids_found:
                     raise ValidationError(f"Duplicate id: {id}")
                 if id not in all_model_ids:

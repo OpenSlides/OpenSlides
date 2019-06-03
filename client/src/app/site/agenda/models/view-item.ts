@@ -1,4 +1,4 @@
-import { Item, itemVisibilityChoices } from 'app/shared/models/agenda/item';
+import { Item, ItemVisibilityChoices } from 'app/shared/models/agenda/item';
 import {
     BaseViewModelWithAgendaItem,
     isBaseViewModelWithAgendaItem
@@ -56,7 +56,7 @@ export class ViewItem extends BaseViewModelWithContentObject<Item, BaseViewModel
         if (!this.type) {
             return '';
         }
-        const type = itemVisibilityChoices.find(choice => choice.key === this.type);
+        const type = ItemVisibilityChoices.find(choice => choice.key === this.type);
         return type ? type.name : '';
     }
 
@@ -68,7 +68,7 @@ export class ViewItem extends BaseViewModelWithContentObject<Item, BaseViewModel
         if (!this.type) {
             return '';
         }
-        const type = itemVisibilityChoices.find(choice => choice.key === this.type);
+        const type = ItemVisibilityChoices.find(choice => choice.key === this.type);
         return type ? type.csvName : '';
     }
 

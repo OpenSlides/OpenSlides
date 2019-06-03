@@ -23,6 +23,9 @@ class AgendaItemMixin(models.Model):
 
     """
     Container for runtime information for agenda app (on create or update of this instance).
+    Can be an attribute of an item, e.g. "type", "parent_id", "comment", "duration", "weight",
+    or "create", which determinates, if the items should be created. If not given, the
+    config value is used.
     """
     agenda_item_update_information: Dict[str, Any] = {}
 
@@ -31,17 +34,20 @@ class AgendaItemMixin(models.Model):
     @property
     def agenda_item(self):
         """
-        Returns the related agenda item.
+        Returns the related agenda item, if it exists.
         """
-        # We support only one agenda item so just return the first element of
-        # the queryset.
-        return self.agenda_items.all()[0]
+        try:
+            return self.agenda_items.all()[0]
+        except IndexError:
+            return None
 
     @property
     def agenda_item_id(self):
         """
         Returns the id of the agenda item object related to this object.
         """
+        if self.agenda_item is None:
+            return None
         return self.agenda_item.pk
 
     def get_agenda_title_information(self):

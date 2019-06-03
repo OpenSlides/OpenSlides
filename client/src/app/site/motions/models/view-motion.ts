@@ -185,7 +185,7 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
         return this.motion.workflow_id;
     }
 
-    public get state(): WorkflowState {
+    public get state(): WorkflowState | null {
         return this._state;
     }
 
@@ -349,7 +349,7 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
      * @returns a string representing a color
      */
     public get stateCssColor(): string {
-        return StateCssClassMapping[this.state.css_class] || '';
+        return this.state ? StateCssClassMapping[this.state.css_class] : '';
     }
 
     // This is set by the repository

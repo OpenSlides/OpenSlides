@@ -402,7 +402,7 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
         const title = this.translate.instant(
             'Are you sure you want to delete all speakers from this list of speakers?'
         );
-        if (await this.promptService.open(title, null)) {
+        if (await this.promptService.open(title)) {
             this.listOfSpeakersRepo.deleteAllSpeakers(this.viewListOfSpeakers);
         }
     }

@@ -23,27 +23,7 @@
                 <mat-checkbox formControlName="internal"><span translate>Internal</span></mat-checkbox>
             </p>
 
-            <!-- Parent item -->
-            <p>
-                <os-search-value-selector
-                    ngDefaultControl
-                    listname="{{ 'Parent agenda item' | translate }}"
-                    [form]="createBlockForm"
-                    [formControl]="createBlockForm.get('agenda_parent_id')"
-                    [multiple]="false"
-                    [includeNone]="true"
-                    [InputListValues]="items"
-                ></os-search-value-selector>
-            </p>
-
-            <!-- Visibility -->
-            <mat-form-field>
-                <mat-select formControlName="agenda_type" placeholder="{{ 'Agenda visibility' | translate }}">
-                    <mat-option *ngFor="let type of itemVisibility" [value]="type.key">
-                        <span>{{ type.name | translate }}</span>
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
+            <os-agenda-content-object-form [form]="createBlockForm"></os-agenda-content-object-form>
         </form>
     </mat-card-content>
 

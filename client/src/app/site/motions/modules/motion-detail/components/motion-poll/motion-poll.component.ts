@@ -119,7 +119,7 @@ export class MotionPollComponent implements OnInit {
      */
     public async deletePoll(): Promise<void> {
         const title = this.translate.instant('Are you sure you want to delete this vote?');
-        if (await this.promptService.open(title, null)) {
+        if (await this.promptService.open(title)) {
             this.motionRepo.deletePoll(this.poll);
         }
     }

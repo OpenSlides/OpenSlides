@@ -75,6 +75,17 @@
                 [menuItem]="true"
                 *osPerms="'core.can_manage_projector'"
             ></os-projector-button>
+            <!-- Add/remove to/from agenda -->
+            <div *osPerms="'agenda.can_manage'">
+                <button mat-menu-item (click)="addToAgenda()" *ngIf="motion && !motion.agendaItem">
+                    <mat-icon>add</mat-icon>
+                    <span translate>Add to agenda</span>
+                </button>
+                <button mat-menu-item (click)="removeFromAgenda()" *ngIf="motion && motion.agendaItem">
+                    <mat-icon>remove</mat-icon>
+                    <span translate>Remove from agenda</span>
+                </button>
+            </div>
             <!-- New amendment -->
             <button mat-menu-item (click)="createAmendment()" *ngIf="perms.isAllowed('can_create_amendments', motion)">
                 <mat-icon>add</mat-icon>
@@ -89,6 +100,7 @@
                 <mat-icon>{{ !showAmendmentContext ? 'check_box_outline_blank' : 'check_box' }}</mat-icon>
                 <span translate>Show entire motion text</span>
             </button>
+
             <div *ngIf="perms.isAllowed('manage')">
                 <mat-divider></mat-divider>
                 <!-- Delete -->
@@ -791,28 +803,8 @@
                 </div>
             </div>
 
-            <!-- Visibility -->
-            <div class="content-field" *ngIf="newMotion">
-                <mat-form-field>
-                    <mat-select formControlName="agenda_type" placeholder="{{ 'Agenda visibility' | translate }}">
-                        <mat-option *ngFor="let type of itemVisibility" [value]="type.key">
-                            <span>{{ type.name | translate }}</span>
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-
-            <!-- Parent item -->
-            <div class="content-field" *ngIf="newMotion && agendaItemObserver.value.length > 0">
-                <os-search-value-selector
-                    ngDefaultControl
-                    [form]="contentForm"
-                    [formControl]="contentForm.get('agenda_parent_id')"
-                    [multiple]="false"
-                    [includeNone]="true"
-                    listname="{{ 'Parent agenda item' | translate }}"
-                    [InputListValues]="agendaItemObserver"
-                ></os-search-value-selector>
+            <div *ngIf="newMotion">
+                <os-agenda-content-object-form [form]="contentForm"></os-agenda-content-object-form>
             </div>
 
             <!-- Supporter form -->

@@ -8,6 +8,7 @@ from ..poll.serializers import default_votes_validator
 from ..utils.auth import get_group_model
 from ..utils.autoupdate import inform_changed_data
 from ..utils.rest_api import (
+    BooleanField,
     CharField,
     DecimalField,
     DictField,
@@ -69,6 +70,7 @@ class MotionBlockSerializer(ModelSerializer):
     Serializer for motion.models.Category objects.
     """
 
+    agenda_create = BooleanField(write_only=True, required=False, allow_null=True)
     agenda_type = IntegerField(
         write_only=True, required=False, min_value=1, max_value=3, allow_null=True
     )
@@ -81,6 +83,7 @@ class MotionBlockSerializer(ModelSerializer):
             "title",
             "agenda_item_id",
             "list_of_speakers_id",
+            "agenda_create",
             "agenda_type",
             "agenda_parent_id",
             "internal",
@@ -91,9 +94,11 @@ class MotionBlockSerializer(ModelSerializer):
         Customized create method. Set information about related agenda item
         into agenda_item_update_information container.
         """
+        agenda_create = validated_data.pop("agenda_create", None)
         agenda_type = validated_data.pop("agenda_type", None)
         agenda_parent_id = validated_data.pop("agenda_parent_id", None)
         motion_block = MotionBlock(**validated_data)
+        motion_block.agenda_item_update_information["create"] = agenda_create
         motion_block.agenda_item_update_information["type"] = agenda_type
         motion_block.agenda_item_update_information["parent_id"] = agenda_parent_id
         motion_block.save()
@@ -417,6 +422,7 @@ class MotionSerializer(ModelSerializer):
     workflow_id = IntegerField(
         min_value=1, required=False, validators=[validate_workflow_field]
     )
+    agenda_create = BooleanField(write_only=True, required=False, allow_null=True)
     agenda_type = IntegerField(
         write_only=True, required=False, min_value=1, max_value=3, allow_null=True
     )
@@ -456,6 +462,7 @@ class MotionSerializer(ModelSerializer):
             "polls",
             "agenda_item_id",
             "list_of_speakers_id",
+            "agenda_create",
             "agenda_type",
             "agenda_parent_id",
             "sort_parent",
@@ -528,6 +535,9 @@ class MotionSerializer(ModelSerializer):
         motion.parent = validated_data.get("parent")
         motion.statute_paragraph = validated_data.get("statute_paragraph")
         motion.reset_state(validated_data.get("workflow_id"))
+        motion.agenda_item_update_information["create"] = validated_data.get(
+            "agenda_create"
+        )
         motion.agenda_item_update_information["type"] = validated_data.get(
             "agenda_type"
         )

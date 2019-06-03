@@ -12,7 +12,7 @@ import { TopicRepositoryService } from 'app/core/repositories/topics/topic-repos
 import { ViewTopic } from '../../models/view-topic';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { BehaviorSubject } from 'rxjs';
-import { itemVisibilityChoices } from 'app/shared/models/agenda/item';
+import { ItemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { CreateTopic } from '../../models/create-topic';
 import { Topic } from 'app/shared/models/topics/topic';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
@@ -62,7 +62,7 @@ export class TopicDetailComponent extends BaseViewComponent {
     /**
      * Determine visibility states for the agenda that will be created implicitly
      */
-    public itemVisibility = itemVisibilityChoices;
+    public itemVisibility = ItemVisibilityChoices;
 
     /**
      * Constructor for the topic detail page.

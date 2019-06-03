@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 
-import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
@@ -14,7 +12,8 @@ import { TreeIdNode } from 'app/core/ui-services/tree.service';
 import { ViewItem, ItemTitleInformation } from 'app/site/agenda/models/view-item';
 import {
     BaseViewModelWithAgendaItem,
-    isBaseViewModelWithAgendaItem
+    isBaseViewModelWithAgendaItem,
+    IBaseViewModelWithAgendaItem
 } from 'app/site/base/base-view-model-with-agenda-item';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { BaseViewModel } from 'app/site/base/base-view-model';
@@ -24,6 +23,7 @@ import { Topic } from 'app/shared/models/topics/topic';
 import { Assignment } from 'app/shared/models/assignments/assignment';
 import { BaseIsAgendaItemContentObjectRepository } from '../base-is-agenda-item-content-object-repository';
 import { BaseHasContentObjectRepository } from '../base-has-content-object-repository';
+import { Identifiable } from 'app/shared/models/base/identifiable';
 
 /**
  * Repository service for items
@@ -105,16 +105,10 @@ export class ItemRepositoryService extends BaseHasContentObjectRepository<
             agendaItem.content_object.collection,
             agendaItem.content_object.id
         );
-        if (!contentObject) {
+        if (!contentObject || !isBaseViewModelWithAgendaItem(contentObject)) {
             return null;
         }
-        if (isBaseViewModelWithAgendaItem(contentObject)) {
-            return contentObject;
-        } else {
-            throw new Error(
-                `The content object (${agendaItem.content_object.collection}, ${agendaItem.content_object.id}) of item ${agendaItem.id} is not a BaseAgendaItemViewModel.`
-            );
-        }
+        return contentObject;
     }
 
     /**
@@ -122,19 +116,6 @@ export class ItemRepositoryService extends BaseHasContentObjectRepository<
      */
     public async autoNumbering(): Promise<void> {
         await this.httpService.post('/rest/agenda/item/numbering/');
-    }
-
-    /**
-     * @ignore
-     *
-     * TODO: Usually, agenda items are deleted with their corresponding content object
-     *       However, deleting an agenda item might be interpretet with "removing an item
-     *       from the agenda" permanently. Usually, items might juse be hidden but not
-     *       deleted (right now)
-     */
-    public async delete(item: ViewItem): Promise<void> {
-        const restUrl = `/rest/${item.contentObject.collectionString}/${item.contentObject.id}/`;
-        await this.httpService.delete(restUrl);
     }
 
     /**
@@ -158,13 +139,23 @@ export class ItemRepositoryService extends BaseHasContentObjectRepository<
         return await this.httpService.put(restPath, clone);
     }
 
-    /**
-     * Get agenda visibility from the config
-     *
-     * @return An observable to the default agenda visibility
-     */
-    public getDefaultAgendaVisibility(): Observable<number> {
-        return this.config.get('agenda_new_items_default_visibility').pipe(map(key => +key));
+    public async addItemToAgenda(contentObject: IBaseViewModelWithAgendaItem<any>): Promise<Identifiable> {
+        return await this.httpService.post('/rest/agenda/item/', {
+            collection: contentObject.collectionString,
+            id: contentObject.id
+        });
+    }
+
+    public async removeFromAgenda(item: ViewItem): Promise<void> {
+        return await this.httpService.delete(`/rest/agenda/item/${item.id}/`);
+    }
+
+    public async create(item: Item): Promise<Identifiable> {
+        throw new Error('Use `addItemToAgenda` for creations');
+    }
+
+    public async delete(item: ViewItem): Promise<void> {
+        throw new Error('Use `removeFromAgenda` for deletions');
     }
 
     /**
