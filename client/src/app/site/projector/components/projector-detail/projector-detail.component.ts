@@ -88,10 +88,15 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
      * Gets the projector and subscribes to it.
      */
     public ngOnInit(): void {
-        super.setTitle('Projector');
         this.route.params.subscribe(params => {
             const projectorId = parseInt(params.id, 10) || 1;
-            this.repo.getViewModelObservable(projectorId).subscribe(projector => (this.projector = projector));
+            this.repo.getViewModelObservable(projectorId).subscribe(projector => {
+                if (projector) {
+                    const title = projector.name;
+                    super.setTitle(title);
+                    this.projector = projector;
+                }
+            });
         });
     }
 

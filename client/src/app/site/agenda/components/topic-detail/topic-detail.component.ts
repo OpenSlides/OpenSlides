@@ -168,6 +168,7 @@ export class TopicDetailComponent extends BaseViewComponent {
             this.newTopic = true;
             this.editTopic = true;
             this.topic = new ViewTopic(new Topic());
+            super.setTitle('New topic');
         } else {
             // load existing topic
             this.route.params.subscribe(params => {
@@ -186,6 +187,8 @@ export class TopicDetailComponent extends BaseViewComponent {
             // repo sometimes delivers undefined values
             // also ensures edition cannot be interrupted by autoupdate
             if (newViewTopic && !this.editTopic) {
+                const title = newViewTopic.getTitle();
+                super.setTitle(title);
                 this.topic = newViewTopic;
                 // personalInfoForm is undefined during 'new' and directly after reloading
                 if (this.topicForm && !this.editTopic) {

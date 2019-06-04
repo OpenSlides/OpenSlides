@@ -121,6 +121,7 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
         });
         this.user = new ViewUser(new User(defaultUser));
         if (route.snapshot.url[0] && route.snapshot.url[0].path === 'new') {
+            super.setTitle('New participant');
             this.newUser = true;
             this.setEditMode(true);
         } else {
@@ -214,6 +215,8 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
             // repo sometimes delivers undefined values
             // also ensures edition cannot be interrupted by autoupdate
             if (newViewUser && !this.editUser) {
+                const title = newViewUser.getTitle();
+                super.setTitle(title);
                 this.user = newViewUser;
                 // personalInfoForm is undefined during 'new' and directly after reloading
                 if (this.personalInfoForm) {
