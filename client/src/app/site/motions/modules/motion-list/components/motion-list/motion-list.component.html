@@ -157,8 +157,6 @@
                 >
                 </mat-row>
             </mat-table>
-
-            <mat-paginator class="on-transition-fade" [pageSizeOptions]="pageSize"></mat-paginator>
         </span>
         <span *ngSwitchCase="'tiles'">
             <os-grid-layout>
@@ -182,6 +180,8 @@
             </os-grid-layout>
         </span>
     </div>
+
+    <mat-paginator [style.display]="selectedView === 'list' ? 'block' : 'none'" class="on-transition-fade" [pageSizeOptions]="pageSize"></mat-paginator>
 </mat-drawer-container>
 
 <mat-menu #motionListMenu="matMenu">

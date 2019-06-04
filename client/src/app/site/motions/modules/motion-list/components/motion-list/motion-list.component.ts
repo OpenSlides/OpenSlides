@@ -492,6 +492,9 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion, Motio
     public onChangeView(value: string): void {
         this.selectedView = value;
         this.storage.set('motionListView', value);
+        if (value === 'list') {
+            this.initTable();
+        }
     }
 
     /**

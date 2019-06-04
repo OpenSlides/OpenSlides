@@ -124,23 +124,24 @@ export abstract class ListViewBaseComponent<
             this.dataSource.paginator._intl.itemsPerPageLabel = this.translate.instant('items per page');
         }
 
-        // TODO: Add subscription to this.subscriptions
         if (this.modelFilterListService && this.modelSortService) {
             // filtering and sorting
             this.modelFilterListService.initFilters(this.getModelListObservable());
             this.modelSortService.initSorting(this.modelFilterListService.outputObservable);
-            this.modelSortService.outputObservable.subscribe(data => this.setDataSource(data));
+            this.subscriptions.push(this.modelSortService.outputObservable.subscribe(data => this.setDataSource(data)));
         } else if (this.modelFilterListService) {
             // only filter service
             this.modelFilterListService.initFilters(this.getModelListObservable());
-            this.modelFilterListService.outputObservable.subscribe(data => this.setDataSource(data));
+            this.subscriptions.push(
+                this.modelFilterListService.outputObservable.subscribe(data => this.setDataSource(data))
+            );
         } else if (this.modelSortService) {
             // only sorting
             this.modelSortService.initSorting(this.getModelListObservable());
-            this.modelSortService.outputObservable.subscribe(data => this.setDataSource(data));
+            this.subscriptions.push(this.modelSortService.outputObservable.subscribe(data => this.setDataSource(data)));
         } else {
             // none of both
-            this.getModelListObservable().subscribe(data => this.setDataSource(data));
+            this.subscriptions.push(this.getModelListObservable().subscribe(data => this.setDataSource(data)));
         }
     }
 
