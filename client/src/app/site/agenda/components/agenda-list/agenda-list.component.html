@@ -44,8 +44,7 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header>Topic</mat-header-cell>
             <mat-cell *matCellDef="let item">
                 <div [ngStyle]="{ 'margin-left': item.level * 25 + 'px' }">
-                    <span *ngIf="item.closed"> <mat-icon class="done-check">check</mat-icon> </span>
-                    <span class="table-view-list-title">{{ item.getListTitle() }}</span>
+                    <os-icon-container [icon]="item.closed ? 'check' : null" size="large">{{ item.getListTitle() }}</os-icon-container>
                 </div>
             </mat-cell>
         </ng-container>
@@ -57,16 +56,13 @@
                 <div class="fill">
                     <div class="info-col-items">
                         <div *osPerms="'agenda.can_manage'; and: item.verboseType">
-                            <mat-icon>visibility</mat-icon>
-                            {{ item.verboseType | translate }}
+                            <os-icon-container icon="visibility">{{ item.verboseType | translate }}</os-icon-container>
                         </div>
-                        <div *ngIf="item.duration">
-                            <mat-icon>access_time</mat-icon>
-                            {{ durationService.durationToString(item.duration, 'h') }}
+                        <div *ngIf="item.duration" class="spacer-top-5">
+                            <os-icon-container icon="access_time">{{ durationService.durationToString(item.duration, 'h') }}</os-icon-container>
                         </div>
-                        <div *ngIf="item.comment">
-                            <mat-icon>comment</mat-icon>
-                            {{ item.comment }}
+                        <div *ngIf="item.comment" class="spacer-top-5">
+                            <os-icon-container icon="comment">{{ item.comment }}</os-icon-container>
                         </div>
                     </div>
                 </div>
