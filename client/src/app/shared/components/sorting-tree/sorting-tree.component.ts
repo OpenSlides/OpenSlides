@@ -103,6 +103,8 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
 
     /**
      * Function that will be used for filtering the nodes.
+     * Should return false for an item is to be visible
+     * TODO this inverts all other 'sorting' conventions elsewhere!
      */
     private activeFilter: (node: T) => boolean;
 
