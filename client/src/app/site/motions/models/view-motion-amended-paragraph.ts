@@ -10,6 +10,10 @@ import { MergeAmendment } from 'app/shared/models/motions/workflow-state';
  * Amendments <-> ViewMotionAmendedParagraph is potentially a 1:n-relation
  */
 export class ViewMotionAmendedParagraph implements ViewUnifiedChange {
+    public get stateName(): string {
+        return this.amendment.state.name;
+    }
+
     public constructor(
         private amendment: ViewMotion,
         private paragraphNo: number,
