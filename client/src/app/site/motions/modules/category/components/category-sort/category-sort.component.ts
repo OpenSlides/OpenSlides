@@ -6,13 +6,14 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
+import { CanComponentDeactivate } from 'app/shared/utils/watch-sorting-tree.guard';
+import { ChoiceService } from 'app/core/ui-services/choice.service';
 import { MatSnackBar } from '@angular/material';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { SortingListComponent } from 'app/shared/components/sorting-list/sorting-list.component';
 import { ViewCategory } from 'app/site/motions/models/view-category';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
-import { CanComponentDeactivate } from 'app/shared/utils/watch-sorting-tree.guard';
 
 /**
  * View for rearranging and renumbering the motions of a category. The {@link onNumberMotions}
@@ -56,6 +57,10 @@ export class CategorySortComponent extends BaseViewComponent implements OnInit, 
      */
     private motionsBackup: ViewMotion[] = [];
 
+    public get isMultiSelect(): boolean {
+        return this.sortSelector.multiSelectedIndex.length > 0;
+    }
+
     /**
      * @returns an observable for the {@link motionsSubject}
      */
@@ -89,6 +94,7 @@ export class CategorySortComponent extends BaseViewComponent implements OnInit, 
      * @param repo
      * @param route
      * @param motionRepo
+     * @param choiceService
      */
     public constructor(
         title: Title,
@@ -97,7 +103,8 @@ export class CategorySortComponent extends BaseViewComponent implements OnInit, 
         private promptService: PromptService,
         private repo: CategoryRepositoryService,
         private route: ActivatedRoute,
-        private motionRepo: MotionRepositoryService
+        private motionRepo: MotionRepositoryService,
+        private choiceService: ChoiceService
     ) {
         super(title, translate, matSnackBar);
     }
@@ -230,5 +237,29 @@ export class CategorySortComponent extends BaseViewComponent implements OnInit, 
             return await this.promptService.open(title, content);
         }
         return true;
+    }
+
+    public async moveToPosition(): Promise<void> {
+        if (this.sortSelector.multiSelectedIndex.length) {
+        }
+        const content = this.translate.instant('Move the selected items behind');
+        const choices = this.sortSelector.array
+            .map((item, index) => {
+                return { id: index, label: item.getTitle() };
+            })
+            .filter(f => !this.sortSelector.multiSelectedIndex.includes(f.id));
+        const actions = [this.translate.instant('Insert before'), this.translate.instant('Insert behind')];
+        const selectedChoice = await this.choiceService.open(content, choices, false, actions);
+        if (selectedChoice) {
+            const newIndex = selectedChoice.items as number;
+
+            this.sortSelector.drop(
+                {
+                    currentIndex: newIndex,
+                    previousIndex: null
+                },
+                selectedChoice.action === actions[1] // true if 'insert behind'
+            );
+        }
     }
 }
