@@ -344,22 +344,32 @@ def get_config_variables():
         validators=(MinValueValidator(1),),
     )
 
-    # PDF and DOCX export
+    # PDF export
 
     yield ConfigVariable(
         name="motions_export_title",
         default_value="Motions",
-        label="Title for PDF and DOCX documents (all motions)",
+        label="Title for PDF document of motions",
         weight=370,
         group="Motions",
-        subgroup="Export",
+        subgroup="PDF export",
     )
 
     yield ConfigVariable(
         name="motions_export_preamble",
         default_value="",
-        label="Preamble text for PDF and DOCX documents (all motions)",
+        label="Preamble text for PDF documents of motions",
         weight=375,
         group="Motions",
-        subgroup="Export",
+        subgroup="PDF export",
+    )
+
+    yield ConfigVariable(
+        name="motions_export_submitter_recommendation",
+        default_value=False,
+        label="Show submitters and recommendation in table of contents",
+        input_type="boolean",
+        weight=378,
+        group="Motions",
+        subgroup="PDF export",
     )

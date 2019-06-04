@@ -6,7 +6,8 @@ import { ViewMotion, LineNumberingMode, ChangeRecoMode } from '../models/view-mo
 import { MotionPdfService, InfoToExport } from './motion-pdf.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { ViewCategory } from '../models/view-category';
-import { PdfError, PdfDocumentService, StyleType } from 'app/core/ui-services/pdf-document.service';
+import { PdfError, PdfDocumentService, StyleType, BorderType } from 'app/core/ui-services/pdf-document.service';
+import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 
 /**
  * Service to export a list of motions.
@@ -31,7 +32,8 @@ export class MotionPdfCatalogService {
         private translate: TranslateService,
         private configService: ConfigService,
         private motionPdfService: MotionPdfService,
-        private pdfService: PdfDocumentService
+        private pdfService: PdfDocumentService,
+        private motionRepo: MotionRepositoryService
     ) {}
 
     /**
@@ -116,13 +118,15 @@ export class MotionPdfCatalogService {
             text: this.translate.instant('Table of contents'),
             style: 'heading2'
         };
+        const exportSubmitterRecommendation = this.configService.instant<boolean>(
+            'motions_export_submitter_recommendation'
+        );
 
-        if (!sorting) {
-            sorting = this.configService.instant<string>('motions_export_category_sorting');
-        }
-        const exportCategory = sorting === 'identifier' || sorting === 'prefix';
+        // Initialize the header and the layout for border-style.
+        const header = exportSubmitterRecommendation ? this.getTocHeaderDefinition() : undefined;
+        const layout = exportSubmitterRecommendation ? BorderType.LIGHT_HORIZONTAL_LINES : BorderType.DEFAULT;
 
-        if (exportCategory && categories) {
+        if (categories && categories.length) {
             const catTocBody = [];
             for (const category of categories) {
                 // push the name of the category
@@ -138,27 +142,38 @@ export class MotionPdfCatalogService {
                             ]
                         ]
                     },
-                    layout: 'noBorders'
+                    layout: exportSubmitterRecommendation ? 'lightHorizontalLines' : 'noBorders'
                 });
 
-                const tocBody = motions
-                    .filter(motion => category === motion.category)
-                    .map(motion =>
-                        this.pdfService.createTocLine(
-                            `${motion.identifier}`,
-                            motion.title,
-                            `${motion.id}`,
-                            StyleType.CATEGORY_SECTION
-                        )
-                    );
+                const tocBody = [];
+                for (const motion of motions.filter(motionIn => category === motionIn.category)) {
+                    if (exportSubmitterRecommendation) {
+                        tocBody.push(this.appendSubmittersAndRecommendation(motion, StyleType.CATEGORY_SECTION));
+                    } else {
+                        tocBody.push(
+                            this.pdfService.createTocLine(
+                                `${motion.identifier ? motion.identifier : ''}`,
+                                motion.title,
+                                `${motion.id}`,
+                                StyleType.CATEGORY_SECTION
+                            )
+                        );
+                    }
+                }
 
-                catTocBody.push(this.pdfService.createTocTableDef(tocBody, StyleType.CATEGORY_SECTION));
+                catTocBody.push(this.pdfService.createTocTableDef(tocBody, StyleType.CATEGORY_SECTION, layout, header));
             }
 
             // handle those without category
             const uncatTocBody = motions
                 .filter(motion => !motion.category)
-                .map(motion => this.pdfService.createTocLine(`${motion.identifier}`, motion.title, `${motion.id}`));
+                .map(motion =>
+                    this.pdfService.createTocLine(
+                        `${motion.identifier ? motion.identifier : ''}`,
+                        motion.title,
+                        `${motion.id}`
+                    )
+                );
 
             // only push this array if there is at least one entry
             if (uncatTocBody.length > 0) {
@@ -168,13 +183,44 @@ export class MotionPdfCatalogService {
             toc.push(catTocBody);
         } else {
             // all motions in the same table
-            const tocBody = motions.map(motion =>
-                this.pdfService.createTocLine(`${motion.identifier}`, motion.title, `${motion.id}`)
-            );
-            toc.push(this.pdfService.createTocTableDef(tocBody, StyleType.CATEGORY_SECTION));
+            const tocBody = [];
+            for (const motion of motions) {
+                if (exportSubmitterRecommendation) {
+                    tocBody.push(this.appendSubmittersAndRecommendation(motion));
+                } else {
+                    tocBody.push(
+                        this.pdfService.createTocLine(
+                            `${motion.identifier ? motion.identifier : ''}`,
+                            motion.title,
+                            `${motion.id}`
+                        )
+                    );
+                }
+            }
+            toc.push(this.pdfService.createTocTableDef(tocBody, StyleType.CATEGORY_SECTION, layout, header));
         }
 
         return [tocTitle, toc, this.pdfService.getPageBreak()];
+    }
+
+    /**
+     * Function to get the definition for the header
+     * for exporting motion-list as PDF. Needed, if submitters
+     * and recommendation should also be exported to the `Table of Contents`.
+     *
+     * @returns {object} The DocDefinition for `pdfmake.js`.
+     */
+    private getTocHeaderDefinition(): object {
+        return [
+            { text: this.translate.instant('Identifier'), style: 'tocHeaderRow' },
+            {
+                text: `${this.translate.instant('Title')} · ${this.translate.instant(
+                    'Submitters'
+                )} · ${this.translate.instant('Recommendation')}`,
+                style: 'tocHeaderRow'
+            },
+            { text: this.translate.instant('Page'), style: 'tocHeaderRow', alignment: 'right' }
+        ];
     }
 
     /**
@@ -197,5 +243,32 @@ export class MotionPdfCatalogService {
             );
 
         return categories;
+    }
+
+    /**
+     * Creates lines for the `Table of contents` containing submitters and recommendation.
+     *
+     * @param motion The motion containing the information
+     * @param style Optional `StyleType`. Defaults to `tocEntry`.
+     *
+     * @returns {Array<Object>} An array containing the `DocDefinitions` for `pdf-make`.
+     */
+    private appendSubmittersAndRecommendation(motion: ViewMotion, style: StyleType = StyleType.DEFAULT): Array<Object> {
+        const recommendation = this.motionRepo.getExtendedRecommendationLabel(motion);
+        let submitterList = '';
+        for (let i = 0; i < motion.submitters.length; ++i) {
+            submitterList +=
+                i !== motion.submitters.length - 1
+                    ? motion.submitters[i].getTitle() + ', '
+                    : motion.submitters[i].getTitle();
+        }
+        return this.pdfService.createTocLine(
+            `${motion.identifier ? motion.identifier : ''}`,
+            motion.title,
+            `${motion.id}`,
+            style,
+            this.pdfService.createTocLineInline(submitterList),
+            this.pdfService.createTocLineInline(recommendation)
+        );
     }
 }

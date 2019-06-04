@@ -151,9 +151,11 @@ _('Number of all delegates');
 _('Number of all participants');
 _('Use the following custom number');
 _('Custom number of ballot papers');
-// subgroup export
-_('Title for PDF and DOCX documents (all motions)');
-_('Preamble text for PDF and DOCX documents (all motions)');
+// subgroup PDF export
+_('PDF export');
+_('Title for PDF documents of motions');
+_('Preamble text for PDF documents of motions');
+_('Show submitters and recommendation in table of contents');
 _('Sort categories by');
 _('Sort motions by');
 _('Include the sequential number in PDF and DOCX');
