@@ -92,7 +92,7 @@ export class MotionChangeRecommendationComponent extends BaseViewComponent {
     public constructor(
         @Inject(MAT_DIALOG_DATA) public data: MotionChangeRecommendationComponentData,
         title: Title,
-        translate: TranslateService,
+        protected translate: TranslateService,
         matSnackBar: MatSnackBar,
         private formBuilder: FormBuilder,
         private repo: ChangeRecommendationRepositoryService,

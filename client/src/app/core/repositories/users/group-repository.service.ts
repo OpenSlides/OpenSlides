@@ -132,10 +132,10 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group, Gro
                         this.addAppPerm(3, perm, 'Elections');
                         break;
                     case 'mediafiles':
-                        this.addAppPerm(4, perm, 'Mediafiles');
+                        this.addAppPerm(4, perm, 'Files');
                         break;
                     case 'users':
-                        this.addAppPerm(5, perm, 'Users');
+                        this.addAppPerm(5, perm, 'Participants');
                         break;
                     default:
                         // plugins

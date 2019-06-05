@@ -5,7 +5,7 @@
         <span *ngIf="extraItemInfo">&nbsp;·&nbsp;{{ extraItemInfo }}</span>
     </div>
     <div class="filter-count" *ngIf="!showFilterSort && itemsVerboseName">
-        <span>{{ totalCount }}&nbsp;</span><span translate>{{ itemsVerboseName }}</span>
+        <span>{{ totalCount }}&nbsp;</span><span>{{ itemsVerboseName | translate }}</span>
     </div>
     <div class="current-filters" *ngIf="filterService && filterService.activeFilterCount">
         <div><span translate>Active filters</span>:&nbsp;</div>

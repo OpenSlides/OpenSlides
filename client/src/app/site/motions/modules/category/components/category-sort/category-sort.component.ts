@@ -242,7 +242,7 @@ export class CategorySortComponent extends BaseViewComponent implements OnInit, 
     public async moveToPosition(): Promise<void> {
         if (this.sortSelector.multiSelectedIndex.length) {
         }
-        const content = this.translate.instant('Move the selected items behind');
+        const content = this.translate.instant('Move selected items ...');
         const choices = this.sortSelector.array
             .map((item, index) => {
                 return { id: index, label: item.getTitle() };

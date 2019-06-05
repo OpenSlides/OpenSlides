@@ -402,6 +402,9 @@ msgstr "Darf die Chronik sehen"
 msgid "Can see internal items and time scheduling of agenda"
 msgstr "Darf interne Einträge und Zeitplan der Tagesordnung sehen"
 
+msgid "Can see list of speakers"
+msgstr "Darf Redelisten sehen"
+
 msgid "Can see motions"
 msgstr "Darf Anträge sehen"
 
@@ -1088,6 +1091,12 @@ msgstr "Eingabeformat: TT.MM.JJJJ HH:MM"
 msgid "Insert after"
 msgstr "Danach einfügen"
 
+msgid "Insert before"
+msgstr "Davor einfügen"
+
+msgid "Insert behind"
+msgstr "Dahinter einfügen"
+
 msgid "Insert participants here"
 msgstr "Teilnehmende hier importieren"
 
@@ -1292,6 +1301,9 @@ msgstr "Anträge wurden importiert."
 msgid "Move in call list"
 msgstr "In Aufrufliste verschieben"
 
+msgid "Move selected items ..."
+msgstr "Ausgewählte Einträge verschieben ..."
+
 msgid "Move to agenda item"
 msgstr "Zu TOP verschieben"
 
@@ -1405,6 +1417,9 @@ msgstr "Keine Gruppen ausgewählt"
 
 msgid "No information available"
 msgstr "Keine Informationen verfügbar"
+
+msgid "No items selected"
+msgstr "Keine Einträge ausgewählte"
 
 msgid "No motion block set"
 msgstr "kein Antragsblock gesetzt"
@@ -2203,6 +2218,9 @@ msgstr ""
 "%user% besitzen keine E-Mail-Adressen; E-Mails konnte daher nicht gesendet "
 "werden."
 
+msgid "There are no items left to chose from"
+msgstr "Es sind keine Einträge ausgewählt."
+
 msgid "This change collides with another one."
 msgstr "Diese Änderung kollidiert mit einer anderen."
 
@@ -2568,6 +2586,9 @@ msgstr "hat die Arbeit an diesem Antrag gespeichert."
 msgid "hidden"
 msgstr "versteckt"
 
+msgid "in progress"
+msgstr "in Bearbeitung"
+
 msgid "inactive"
 msgstr "inaktiv"
 
@@ -2609,6 +2630,9 @@ msgstr "Anträge"
 
 msgid "motions-example"
 msgstr "Anträge-Beispiel"
+
+msgid "move ..."
+msgstr "verschieben ..."
 
 msgid "needs review"
 msgstr "benötigt Überprüfung"
