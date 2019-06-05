@@ -386,7 +386,7 @@ class GroupViewSet(ModelViewSet):
     @transaction.atomic
     def set_permission(self, request, *args, **kwargs):
         """
-        Send {perm: <permissionstring> set: <True/False>} to set or
+        Send {perm: <permissionstring>, set: <True/False>} to set or
         remove the permission from a group
         """
         perm = request.data.get("perm")
@@ -417,7 +417,9 @@ class GroupViewSet(ModelViewSet):
         self.inform_permission_change(group, permission)
         inform_changed_data(group)
 
-        return Response()
+        return Response(
+            {"detail": f"Permissions of group {group.pk} successfully changed."}
+        )
 
     def inform_permission_change(
         self,
