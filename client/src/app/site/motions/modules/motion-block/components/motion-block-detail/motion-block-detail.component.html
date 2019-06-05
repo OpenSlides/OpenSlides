@@ -87,10 +87,7 @@
 
 <!-- The menu content -->
 <mat-menu #motionBlockMenu="matMenu">
-    <button *ngIf="block" mat-menu-item [routerLink]="block.listOfSpeakersUrl">
-        <mat-icon>mic</mat-icon>
-        <span translate>List of speakers</span>
-    </button>
+    <os-speaker-button [menuItem]=true [object]="block"></os-speaker-button>
 
     <os-projector-button *ngIf="block" [object]="block" [menuItem]="true"></os-projector-button>
 
