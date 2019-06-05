@@ -175,6 +175,7 @@ _('Do not decide');
 _('No decision');
 // motion workflow 2
 _('Complex Workflow');
+_('in progress');
 _('published');
 _('permitted');
 _('Permit');
@@ -263,6 +264,7 @@ _('Finished');
 // agenda
 _('Can see agenda');
 _('Can manage agenda');
+_('Can see list of speakers');
 _('Can manage list of speakers');
 _('Can see internal items and time scheduling of agenda');
 _('Can put oneself on the list of speakers');

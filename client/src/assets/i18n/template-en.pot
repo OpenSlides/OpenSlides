@@ -376,6 +376,9 @@ msgstr ""
 msgid "Can see internal items and time scheduling of agenda"
 msgstr ""
 
+msgid "Can see list of speakers"
+msgstr ""
+
 msgid "Can see motions"
 msgstr ""
 
@@ -1030,6 +1033,12 @@ msgstr ""
 msgid "Insert after"
 msgstr ""
 
+msgid "Insert before"
+msgstr ""
+
+msgid "Insert behind"
+msgstr ""
+
 msgid "Insert participants here"
 msgstr ""
 
@@ -1234,6 +1243,9 @@ msgstr ""
 msgid "Move in call list"
 msgstr ""
 
+msgid "Move selected items ..."
+msgstr ""
+
 msgid "Move to agenda item"
 msgstr ""
 
@@ -1346,6 +1358,9 @@ msgid "No groups selected"
 msgstr ""
 
 msgid "No information available"
+msgstr ""
+
+msgid "No items selected"
 msgstr ""
 
 msgid "No motion block set"
@@ -2120,6 +2135,9 @@ msgstr ""
 msgid "The users %user% have no email, so the invitation emails could not be send."
 msgstr ""
 
+msgid "There are no items left to chose from"
+msgstr ""
+
 msgid "This change collides with another one."
 msgstr ""
 
@@ -2457,6 +2475,9 @@ msgstr ""
 msgid "hidden"
 msgstr ""
 
+msgid "in progress"
+msgstr ""
+
 msgid "inactive"
 msgstr ""
 
@@ -2497,6 +2518,9 @@ msgid "motions"
 msgstr ""
 
 msgid "motions-example"
+msgstr ""
+
+msgid "move ..."
 msgstr ""
 
 msgid "needs review"
