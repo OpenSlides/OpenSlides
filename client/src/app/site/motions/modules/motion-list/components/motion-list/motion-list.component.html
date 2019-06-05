@@ -98,7 +98,7 @@
                             <!-- recommendation line -->
                             <div
                                 *ngIf="motion.recommendation && motion.state.next_states_id.length > 0"
-                                class="ellipsis-overflow white"
+                                class="ellipsis-overflow white spacer-top-3"
                             >
                                 <mat-basic-chip class="bluegrey" [disabled]="true">
                                     {{ getRecommendationLabel(motion) }}

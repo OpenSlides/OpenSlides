@@ -461,9 +461,10 @@ mat-expansion-panel {
     font-size: 12px;
     min-height: 22px !important;
     border-radius: 5px !important;
-    padding: 4px 8px !important;
-    margin: 8px 8px 8px 0;
+    padding: 0px 8px !important;
+    margin: 0;
     line-height: 2;
+    display: inline-flex;
 }
 
 .mat-chip-list.user .mat-chip {
