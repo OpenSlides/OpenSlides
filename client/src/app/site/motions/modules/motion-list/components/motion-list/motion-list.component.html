@@ -21,6 +21,8 @@
         [filterCount]="filteredCount"
         [filterService]="filterService"
         [sortService]="sortService"
+        [showFilterSort]="selectedView === 'list'"
+        [itemsVerboseName]="motionsVerboseName"
         (searchFieldChange)="searchFilter($event)"
     >
         <mat-button-toggle-group *ngIf="isCategoryAvailable()" #group="matButtonToggleGroup" [value]="selectedView" (change)="onChangeView(group.value)" appearance="legacy" aria-label="Select view" class="extra-controls-slot select-view-wrapper">
@@ -160,7 +162,14 @@
         </span>
         <span *ngSwitchCase="'tiles'">
             <os-grid-layout>
-                <os-block-tile *ngFor="let tileCategory of tileCategories" (clicked)="changeToViewWithTileCategory(tileCategory)" [orientation]="'horizontal'" [only]="'title'" [blockType]="'node'" [data]="tileCategory" title="{{ tileCategory.name | translate }}">
+                <os-block-tile
+                    *ngFor="let tileCategory of tileCategories"
+                    (clicked)="changeToViewWithTileCategory(tileCategory)"
+                    [orientation]="'horizontal'"
+                    [only]="'title'"
+                    [blockType]="'node'"
+                    [data]="tileCategory"
+                    title="{{ tileCategory.name | translate }}">
                     <ng-container class="block-node">
                         <table matTooltip="{{ tileCategory.amountOfMotions }} {{ 'Motions' | translate }} – {{ tileCategory.name | translate }}">
                             <tbody>

@@ -32,7 +32,6 @@
     @include os-sorting-tree-style($theme);
     @include os-global-spinner-theme($theme);
     @include os-tile-style($theme);
-    @include os-block-tile-style($theme);
     /** More components are added here */
 }
 

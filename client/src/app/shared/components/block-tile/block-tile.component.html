@@ -4,7 +4,7 @@
     (click)="onClick($event)"
     >
     <div [ngSwitch]="blockType" class="block-node-container">
-        <div *ngSwitchCase="'text'" class="tile-text stretch-to-fill-parent" [style.border-radius]="orientation === 'horizontal' ? '4px 0 0 4px' : '4px 4px 0 0'">
+        <div *ngSwitchCase="'text'" class="tile-text stretch-to-fill-parent tile-color" [style.border-radius]="orientation === 'horizontal' ? '4px 0 0 4px' : '4px 4px 0 0'">
             <table>
                 <tbody>
                     <tr>
@@ -18,7 +18,7 @@
         <div *ngSwitchCase="'image'">
             <img mat-card-image [src]="block" alt="" />
         </div>
-        <div *ngSwitchCase="'node'" class="tile-text stretch-to-fill-parent" [style.border-radius]="orientation === 'horizontal' ? '4px 0 0 4px' : '4px 4px 0 0'">
+        <div *ngSwitchCase="'node'" class="tile-text stretch-to-fill-parent tile-color" [style.border-radius]="orientation === 'horizontal' ? '4px 0 0 4px' : '4px 4px 0 0'">
             <ng-container
                 [ngTemplateOutlet]="blockNode"
                 [ngTemplateOutletContext]="data"></ng-container>

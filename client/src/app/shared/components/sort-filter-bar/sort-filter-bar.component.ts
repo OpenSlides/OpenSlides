@@ -56,6 +56,12 @@ export class SortFilterBarComponent<V extends BaseViewModel> {
     @Input()
     public extraItemInfo: string;
 
+    /**
+     * Optional string to tell the verbose name of the filtered items. This string is displayed, if no filter service is given.
+     */
+    @Input()
+    public itemsVerboseName: string;
+
     @Output()
     public searchFieldChange = new EventEmitter<string>();
 
@@ -72,6 +78,11 @@ export class SortFilterBarComponent<V extends BaseViewModel> {
     public sortBottomSheet: SortBottomSheetComponent<V>;
 
     /**
+     * Optional boolean, whether the filter and sort service should be shown.
+     */
+    private _showFilterSort = true;
+
+    /**
      * The 'opened/active' state of the fulltext filter input field
      */
     public isSearchBar = false;
@@ -86,6 +97,21 @@ export class SortFilterBarComponent<V extends BaseViewModel> {
         } else {
             return this.filterCount;
         }
+    }
+
+    /**
+     * Setter for `showFilterSort`
+     */
+    @Input()
+    public set showFilterSort(show: boolean) {
+        this._showFilterSort = show;
+    }
+
+    /**
+     * Getter for `showFilterSort`
+     */
+    public get showFilterSort(): boolean {
+        return this._showFilterSort;
     }
 
     /**
