@@ -366,6 +366,8 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
             this.subscriptions.push(
                 this.repo.getViewModelObservable(assignmentId).subscribe(assignment => {
                     if (assignment) {
+                        const title = assignment.getTitle();
+                        super.setTitle(title);
                         this.assignment = assignment;
                         if (!this.editAssignment) {
                             this.patchForm(this.assignment);
@@ -382,6 +384,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
                 })
             );
         } else {
+            super.setTitle('New election');
             this.newAssignment = true;
             // TODO set defaults?
             this.assignment = new ViewAssignment(new Assignment(), [], []);

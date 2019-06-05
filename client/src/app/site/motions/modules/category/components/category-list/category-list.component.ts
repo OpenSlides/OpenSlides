@@ -100,7 +100,7 @@ export class CategoryListComponent extends BaseViewComponent implements OnInit {
      * Sets the title and gets/observes categories from DataStore
      */
     public ngOnInit(): void {
-        super.setTitle('Category');
+        super.setTitle('Categories');
         this.repo.getViewModelListObservable().subscribe(newViewCategories => {
             this.categories = newViewCategories;
         });

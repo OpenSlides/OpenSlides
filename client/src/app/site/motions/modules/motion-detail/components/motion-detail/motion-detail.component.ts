@@ -609,6 +609,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
             this.subscriptions.push(
                 this.repo.getViewModelObservable(motionId).subscribe(motion => {
                     if (motion) {
+                        const title = motion.getTitle();
+                        super.setTitle(title);
                         this.motion = motion;
                         this.newStateExtension = this.motion.stateExtension;
                         if (!this.editMotion) {
@@ -630,6 +632,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
                     })
             );
         } else {
+            super.setTitle('New motion');
             // new motion
             this.newMotion = true;
             this.editMotion = true;
