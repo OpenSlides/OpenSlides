@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
-import { MatTableDataSource, MatSnackBar } from '@angular/material';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { MatTableDataSource, MatSnackBar, MatDialog } from '@angular/material';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 
 import { GroupRepositoryService, AppPermissions } from 'app/core/repositories/users/group-repository.service';
 import { ViewGroup } from '../../models/view-group';
@@ -47,6 +47,12 @@ export class GroupListComponent extends BaseViewComponent implements OnInit {
     @ViewChild('groupForm')
     public groupForm: FormGroup;
 
+    /**
+     * Reference to the template
+     */
+    @ViewChild('groupEditDialog')
+    public groupEditDialog: TemplateRef<string>;
+
     public get appPermissions(): AppPermissions[] {
         return this.repo.appPermissions;
     }
@@ -64,8 +70,10 @@ export class GroupListComponent extends BaseViewComponent implements OnInit {
         titleService: Title,
         protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
+        private dialog: MatDialog,
         private repo: GroupRepositoryService,
-        private promptService: PromptService
+        private promptService: PromptService,
+        private fb: FormBuilder
     ) {
         super(titleService, translate, matSnackBar);
     }
@@ -79,19 +87,34 @@ export class GroupListComponent extends BaseViewComponent implements OnInit {
         this.editGroup = editMode;
         this.newGroup = newGroup;
 
-        if (!editMode) {
-            this.cancelEditing();
-        }
+        const name = this.selectedGroup ? this.selectedGroup.name : '';
+
+        this.groupForm = this.fb.group({
+            name: [name, Validators.required]
+        });
+
+        const dialogRef = this.dialog.open(this.groupEditDialog, {
+            width: '400px',
+            maxWidth: '90vw',
+            maxHeight: '90vh',
+            disableClose: true
+        });
+
+        dialogRef.keydownEvents().subscribe((event: KeyboardEvent) => {
+            if (event.key === 'Enter' && event.shiftKey && this.groupForm.valid) {
+                this.saveGroup(this.groupForm.value);
+            }
+        });
     }
 
     /**
      * Creates or updates a group.
      */
-    public saveGroup(): void {
+    public saveGroup(value: { name: string }): void {
         if (this.editGroup && this.newGroup) {
-            this.submitNewGroup();
+            this.repo.create(value as Group).then(() => this.cancelEditing(), this.raiseError);
         } else if (this.editGroup && !this.newGroup) {
-            this.submitEditedGroup();
+            this.repo.update(value, this.selectedGroup).then(() => this.cancelEditing(), this.raiseError);
         }
     }
 
@@ -101,34 +124,6 @@ export class GroupListComponent extends BaseViewComponent implements OnInit {
     public selectGroup(group: ViewGroup): void {
         this.selectedGroup = group;
         this.setEditMode(true, false);
-        this.groupForm.setValue({ name: this.selectedGroup.name });
-    }
-
-    /**
-     * Saves a newly created group.
-     */
-    public submitNewGroup(): void {
-        if (!this.groupForm.value || !this.groupForm.valid) {
-            return;
-        }
-        this.repo.create(this.groupForm.value as Group).then(() => {
-            this.groupForm.reset();
-            this.cancelEditing();
-        }, this.raiseError);
-    }
-
-    /**
-     * Saves an edited group.
-     */
-    public submitEditedGroup(): void {
-        if (!this.groupForm.value || !this.groupForm.valid) {
-            return;
-        }
-        const updateData = new Group({ name: this.groupForm.value.name });
-
-        this.repo.update(updateData, this.selectedGroup).then(() => {
-            this.cancelEditing();
-        }, this.raiseError);
     }
 
     /**
@@ -146,9 +141,10 @@ export class GroupListComponent extends BaseViewComponent implements OnInit {
      * Cancel the editing
      */
     public cancelEditing(): void {
+        this.dialog.closeAll();
         this.newGroup = false;
         this.editGroup = false;
-        this.groupForm.reset();
+        this.selectedGroup = null;
     }
 
     /**
@@ -214,7 +210,6 @@ export class GroupListComponent extends BaseViewComponent implements OnInit {
      */
     public ngOnInit(): void {
         super.setTitle('Groups');
-        this.groupForm = new FormGroup({ name: new FormControl('', Validators.required) });
         this.repo.getViewModelListObservable().subscribe(newViewGroups => {
             if (newViewGroups) {
                 this.groups = newViewGroups;

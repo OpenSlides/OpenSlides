@@ -1,26 +1,9 @@
-<os-head-bar [mainButton]="true" [nav]="false" [editMode]="editGroup"
-    (mainEvent)="setEditMode(!editGroup)" (saveEvent)="saveGroup()">
+<os-head-bar [mainButton]="true" [nav]="false"
+    (mainEvent)="setEditMode(!editGroup)">
     <!-- Title -->
     <div class="title-slot">
-        <h2 *ngIf="!editGroup && !newGroup" translate>Groups</h2>
-
-        <form *ngIf="editGroup" [formGroup]="groupForm" (ngSubmit)="saveGroup()" (keydown)="keyDownFunction($event)">
-            <mat-form-field>
-                <input type="text" matInput osAutofocus required formControlName="name"
-                    placeholder="{{ 'New group name' | translate}}">
-                <mat-error *ngIf="groupForm.invalid" translate>Required</mat-error>
-            </mat-form-field>
-        </form>
+        <h2 translate>Groups</h2>
     </div>
-
-    <!-- remove button button -->
-    <div class="extra-controls-slot on-transition-fade">
-        <button *ngIf="editGroup && !newGroup" type="button" mat-button (click)="deleteSelectedGroup()">
-            <mat-icon>delete</mat-icon>
-            <span translate>Delete</span>
-        </button>
-    </div>
-
 </os-head-bar>
 
 <div class="hint-text on-transition-fade">
@@ -67,3 +50,35 @@
         </div>
     </mat-expansion-panel>
 </mat-accordion>
+
+<ng-template #groupEditDialog>
+    <h1 mat-dialog-title>
+        <span>{{ 'New group name' | translate }}</span>
+    </h1>
+    <div class="os-form-card-mobile" mat-dialog-content>
+        <form class="edit-form" [formGroup]="groupForm" (keydown)="keyDownFunction($event)">
+            <mat-form-field>
+                <input type="text" matInput osAutofocus required formControlName="name"
+                    placeholder="{{ 'New group name' | translate}}">
+                <mat-error *ngIf="groupForm.invalid" translate>Required</mat-error>
+            </mat-form-field>
+        </form>
+    </div>
+    <div mat-dialog-actions>
+        <button
+            type="submit"
+            mat-button
+            [disabled]="!groupForm.valid"
+            color="primary"
+            (click)="saveGroup(groupForm.value)"
+        >
+            <span translate>Save</span>
+        </button>
+        <button type="button" mat-button (click)="cancelEditing()">
+            <span translate>Cancel</span>
+        </button>
+        <button *ngIf="selectedGroup" type="button" mat-icon-button color="warn" (click)="deleteSelectedGroup()">
+            <mat-icon>delete</mat-icon>
+        </button>
+    </div>
+</ng-template>
