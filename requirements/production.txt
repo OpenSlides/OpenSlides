@@ -1,3 +1,6 @@
+# Hotfix see https://github.com/crossbario/autobahn-python/issues/1205
+autobahn==19.5.1
+
 # Requirements for OpenSlides in production in alphabetical order
 bleach>=1.5.0,<3.2
 channels>=2.1.2,<2.2
