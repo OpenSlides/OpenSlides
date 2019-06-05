@@ -17,7 +17,6 @@
             <mat-radio-button *ngIf="data.clearChoice" [value]="null">
                 {{ data.clearChoice | translate }}
             </mat-radio-button>
-
         </mat-radio-group>
 
         <mat-list *ngIf="data.multiSelect && data.choices">
@@ -30,12 +29,22 @@
     </div>
     <mat-dialog-actions>
         <div *ngIf="data.actionButtons">
-            <button *ngFor="let button of data.actionButtons" mat-button (click)="closeDialog(true, button)">
+            <button
+                *ngFor="let button of data.actionButtons"
+                mat-button
+                (click)="closeDialog(true, button)"
+                [disabled]="isSelectionEmpty"
+            >
                 <span>{{ button | translate }}</span>
             </button>
         </div>
         <div *ngIf="!data.actionButtons">
-            <button *ngIf="!data.multiSelect || data.choices.length" mat-button (click)="closeDialog(true)">
+            <button
+                *ngIf="!data.multiSelect || data.choices.length"
+                mat-button
+                (click)="closeDialog(true)"
+                [disabled]="isSelectionEmpty"
+            >
                 <span>OK</span>
             </button>
         </div>

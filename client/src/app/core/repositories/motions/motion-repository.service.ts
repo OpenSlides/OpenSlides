@@ -439,19 +439,6 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
     }
 
     /**
-     * Sends the changed nodes to the server, with only the top nodes being submitted.
-     *
-     * @param data The reordered data from the sorting, as list of ViewMotions
-     * @param parent a parent id
-     */
-    public async sortMotionBranches(data: ViewMotion[], parent?: number): Promise<void> {
-        const url = '/rest/motions/motion/sort/';
-        const nodes = data.map(motion => ({ id: motion.id }));
-        const params = parent ? { nodes: nodes, parent_id: parent } : { nodes: nodes };
-        await this.httpService.post(url, params);
-    }
-
-    /**
      * Supports the motion
      *
      * @param viewMotion target motion

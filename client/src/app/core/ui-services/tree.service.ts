@@ -218,40 +218,134 @@ export class TreeService {
     }
 
     /**
-     * Reduce a list of items to nodes independent from each other in a given tree
+     * Searches a tree for a list of given items and fetches all branches that include
+     * these items and their dependants
      *
-     * @param tree the tree to traverse
-     * @param items the items to check
-     * @returns the selection of items that belong to different branches
+     * @param tree an array of OsTreeNode branches
+     * @param items the items that need to be included
+     *
+     * @returns an array of OsTreeNodes with the top-most item being included
+     * in the input list
      */
-    public getTopItemsFromTree<T extends Identifiable & Displayable>(tree: OSTreeNode<T>[], items: T[]): T[] {
-        let results: T[] = [];
+    public getBranchesFromTree<T extends Identifiable & Displayable>(
+        tree: OSTreeNode<T>[],
+        items: T[]
+    ): OSTreeNode<T>[] {
+        let results: OSTreeNode<T>[] = [];
         tree.forEach(branch => {
-            const i = this.getTopItemsFromBranch(branch, items);
-            if (i.length) {
-                results = results.concat(i);
+            if (items.some(item => item.id === branch.item.id)) {
+                results.push(branch);
+            } else if (branch.children && branch.children.length) {
+                results = results.concat(this.getBranchesFromTree(branch.children, items));
             }
         });
         return results;
     }
 
     /**
-     * Return all items not being hierarchically dependant on the items in the input arrray
+     * Inserts OSTreeNode branches into another tree at the position specified
+     *
+     * @param tree A (partial) tree the branches need to be inserted into. It
+     * is assumed that this tree does not contain the branches to be inserted.
+     * See also {@link getTreeWithoutSelection}
+     * @param branches OsTreeNodes to be inserted. See also {@link getBranchesFromTree}
+     * @param parentId the id of a parent node under which the branches should be inserted
+     * @param olderSibling (optional) the id of the item on the same level
+     * the tree is to be inserted behind
+     * @returns the re-arranged tree containing the branches
+     */
+    public insertBranchesIntoTree<T extends Identifiable & Displayable>(
+        tree: OSTreeNode<T>[],
+        branches: OSTreeNode<T>[],
+        parentId: number,
+        olderSibling?: number
+    ): OSTreeNode<T>[] {
+        if (!parentId && olderSibling) {
+            const older = tree.findIndex(branch => branch.id === olderSibling);
+            if (older >= 0) {
+                return [...tree.slice(0, older + 1), ...branches, ...tree.slice(older + 1)];
+            } else {
+                for (const branch of tree) {
+                    if (branch.children && branch.children.length) {
+                        branch.children = this.insertBranchesIntoTree(branch.children, branches, null, olderSibling);
+                    }
+                }
+                return tree;
+            }
+        } else if (parentId) {
+            for (const branch of tree) {
+                if (branch.id !== parentId) {
+                    if (branch.children && branch.children.length) {
+                        branch.children = this.insertBranchesIntoTree(
+                            branch.children,
+                            branches,
+                            parentId,
+                            olderSibling
+                        );
+                    }
+                } else {
+                    if (!branch.children) {
+                        branch.children = branches;
+                    } else {
+                        if (olderSibling) {
+                            const older = branch.children.findIndex(child => child.id === olderSibling);
+                            if (older >= 0) {
+                                branch.children = [
+                                    ...branch.children.slice(0, older + 1),
+                                    ...branches,
+                                    ...branch.children.slice(older + 1)
+                                ];
+                            }
+                        } else {
+                            branch.children = [...branch.children, ...branches];
+                        }
+                    }
+                }
+            }
+            return tree;
+        } else {
+            throw new Error('This should not happen. Invalid sorting items given');
+        }
+    }
+
+    /**
+     * Return the part of a tree not including or being hierarchically dependant
+     * on the items in the input arrray
      *
      * @param tree
      * @param items
-     * @returns all items that are neither in the input nor dependants of  items in the input
+     * @returns all the branch without the given items or their dependants
      */
-    public getTreeWithoutSelection<T extends Identifiable & Displayable>(tree: OSTreeNode<T>[], items: T[]): T[] {
-        let result: T[] = [];
+    public getTreeWithoutSelection<T extends Identifiable & Displayable>(
+        tree: OSTreeNode<T>[],
+        items: T[]
+    ): OSTreeNode<T>[] {
+        const result: OSTreeNode<T>[] = [];
         tree.forEach(branch => {
             if (!items.find(i => i.id === branch.item.id)) {
-                result.push(branch.item);
                 if (branch.children) {
-                    result = result.concat(this.getTreeWithoutSelection(branch.children, items));
+                    branch.children = this.getTreeWithoutSelection(branch.children, items);
                 }
+                result.push(branch);
             }
         });
+        return result;
+    }
+
+    /**
+     * Helper to turn a tree into an array of items
+     *
+     * @param tree
+     * @returns the items contained in the tree.
+     */
+    public getFlatItemsFromTree<T extends Identifiable & Displayable>(tree: OSTreeNode<T>[]): T[] {
+        let result = [];
+        for (const branch of tree) {
+            result.push(branch.item);
+            if (branch.children && branch.children.length) {
+                result = result.concat(this.getFlatItemsFromTree(branch.children));
+            }
+        }
         return result;
     }
 

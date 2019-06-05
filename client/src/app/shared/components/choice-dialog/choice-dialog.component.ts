@@ -70,6 +70,20 @@ export class ChoiceDialogComponent {
     public selectedChoice: number;
 
     /**
+     * Checks if there is nothing selected
+     *
+     * @returns true if there is no selection chosen (and the dialog should not
+     * be closed 'successfully')
+     */
+    public get isSelectionEmpty(): boolean {
+        if (this.data.multiSelect) {
+            return this.selectedMultiChoices.length === 0;
+        } else {
+            return this.selectedChoice === undefined;
+        }
+    }
+
+    /**
      * All selected ids, if this is a multiselect choice
      */
     public selectedMultiChoices: number[] = [];
