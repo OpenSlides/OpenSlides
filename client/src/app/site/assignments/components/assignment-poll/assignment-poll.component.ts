@@ -5,8 +5,8 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
 import { AssignmentPollDialogComponent } from '../assignment-poll-dialog/assignment-poll-dialog.component';
+import { AssignmentPollPdfService } from '../../services/assignment-poll-pdf.service';
 import { AssignmentPollService } from '../../services/assignment-poll.service';
 import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
 import { BaseViewComponent } from 'app/site/base/base-view';
@@ -121,6 +121,7 @@ export class AssignmentPollComponent extends BaseViewComponent implements OnInit
      * @param translate Translation service
      * @param dialog MatDialog for the vote entering dialog
      * @param promptService Prompts for confirmation dialogs
+     * @param pdfService pdf service
      */
     public constructor(
         titleService: Title,
@@ -131,7 +132,8 @@ export class AssignmentPollComponent extends BaseViewComponent implements OnInit
         public translate: TranslateService,
         public dialog: MatDialog,
         private promptService: PromptService,
-        private formBuilder: FormBuilder
+        private formBuilder: FormBuilder,
+        private pdfService: AssignmentPollPdfService
     ) {
         super(titleService, translate, matSnackBar);
     }
@@ -163,10 +165,9 @@ export class AssignmentPollComponent extends BaseViewComponent implements OnInit
     /**
      * Print the PDF of this poll with the corresponding options and numbers
      *
-     * TODO Print the ballots for this poll.
      */
-    public printBallot(poll: AssignmentPoll): void {
-        this.raiseError('Not yet implemented');
+    public printBallot(): void {
+        this.pdfService.printBallots(this.poll);
     }
 
     /**
