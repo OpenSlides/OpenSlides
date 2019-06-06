@@ -440,7 +440,7 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
         if (!this.speakers || !this.speakers.length) {
             this.filteredUsers.next(users);
         } else {
-            this.filteredUsers.next(users.filter(u => !this.speakers.some(speaker => speaker.user.id === u.id)));
+            this.filteredUsers.next(users.filter(u => !this.speakers.some(speaker => speaker.userId === u.id)));
         }
     }
 }

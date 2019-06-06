@@ -140,6 +140,27 @@ export class ItemRepositoryService extends BaseHasContentObjectRepository<
     }
 
     /**
+     * TODO: Copied from BaseRepository and added the cloned model to write back the
+     * item_number correctly. This must be reversed with #4738 (indroduced with #4639)
+     *
+     * Saves the (full) update to an existing model. So called "update"-function
+     * Provides a default procedure, but can be overwritten if required
+     *
+     * @param update the update that should be created
+     * @param viewModel the view model that the update is based on
+     */
+    public async update(update: Partial<Item>, viewModel: ViewItem): Promise<void> {
+        const sendUpdate = new this.baseModelCtor();
+        sendUpdate.patchValues(viewModel.getModel());
+        sendUpdate.patchValues(update);
+
+        const clone = JSON.parse(JSON.stringify(sendUpdate));
+        clone.item_number = clone._itemNumber;
+        const restPath = `/rest/${sendUpdate.collectionString}/${sendUpdate.id}/`;
+        return await this.httpService.put(restPath, clone);
+    }
+
+    /**
      * Get agenda visibility from the config
      *
      * @return An observable to the default agenda visibility
