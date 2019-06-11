@@ -383,3 +383,13 @@ def get_config_variables():
         group="Motions",
         subgroup="PDF export",
     )
+
+    yield ConfigVariable(
+        name="motions_export_follow_recommendation",
+        default_value=False,
+        label="Show checkbox to record decision",
+        input_type="boolean",
+        weight=379,
+        group="Motions",
+        subgroup="Export",
+    )

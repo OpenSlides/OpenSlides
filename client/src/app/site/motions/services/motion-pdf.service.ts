@@ -101,6 +101,11 @@ export class MotionPdfService {
     ): object {
         // get the line length from the config
         const lineLength = this.configService.instant<number>('motions_line_length');
+        // whether to append checkboxes to follow the recommendation or not
+        const optionToFollowRecommendation = this.configService.instant<boolean>(
+            'motions_export_follow_recommendation'
+        );
+
         let motionPdfContent = [];
 
         // Enforces that statutes should always have Diff Mode and no line numbers
@@ -126,7 +131,13 @@ export class MotionPdfService {
         motionPdfContent = [title, subtitle];
 
         if ((infoToExport && infoToExport.length > 0) || !infoToExport) {
-            const metaInfo = this.createMetaInfoTable(motion, lineLength, crMode, infoToExport);
+            const metaInfo = this.createMetaInfoTable(
+                motion,
+                lineLength,
+                crMode,
+                infoToExport,
+                optionToFollowRecommendation
+            );
             motionPdfContent.push(metaInfo);
         }
 
@@ -206,7 +217,8 @@ export class MotionPdfService {
         motion: ViewMotion,
         lineLength: number,
         crMode: ChangeRecoMode,
-        infoToExport?: InfoToExport[]
+        infoToExport?: InfoToExport[],
+        optionToFollowRecommendation?: boolean
     ): object {
         const metaTableBody = [];
 
@@ -427,7 +439,7 @@ export class MotionPdfService {
             if (columnChangeType.length > 0) {
                 metaTableBody.push([
                     {
-                        text: this.translate.instant('Summary of changes'),
+                        text: this.translate.instant('Summary of changes:'),
                         style: 'boldText'
                     },
                     {
@@ -445,6 +457,41 @@ export class MotionPdfService {
                     }
                 ]);
             }
+        }
+
+        // Checkboxes for resolution
+        if (optionToFollowRecommendation) {
+            metaTableBody.push([
+                {
+                    text: `${this.translate.instant('Decision')}:`,
+                    style: 'boldText'
+                },
+                {
+                    margin: [5, 2, 0, 2],
+                    columns: [
+                        {
+                            width: 8,
+                            canvas: this.pdfDocumentService.drawCircle(6.5, 4)
+                        },
+                        {
+                            width: 'auto',
+                            text: this.translate.instant('As recommendation')
+                        },
+                        {
+                            width: 20,
+                            text: ''
+                        },
+                        {
+                            width: 8,
+                            canvas: this.pdfDocumentService.drawCircle(6.5, 4)
+                        },
+                        {
+                            width: 'auto',
+                            text: this.translate.instant('Divergent:')
+                        }
+                    ]
+                }
+            ]);
         }
 
         if (metaTableBody.length > 0) {
