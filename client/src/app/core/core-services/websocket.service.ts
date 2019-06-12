@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { decompress } from 'lz4js';
+import { compress, decompress } from 'lz4js';
 
 import { formatQueryParams, QueryParams } from '../query-params';
 import { OpenSlidesStatusService } from './openslides-status.service';
@@ -282,12 +282,10 @@ export class WebsocketService {
             );
             const textDecoder = new TextDecoder();
             data = textDecoder.decode(decompressedBuffer);
-        } else {
-            const recvSize = new TextEncoder().encode(data).byteLength;
-            console.log(`Received ${recvSize} KB uncompressed`);
         }
 
         const message: IncommingWebsocketMessage = JSON.parse(data);
+        console.log('Received', message);
         const type = message.type;
         const inResponse = message.in_response;
         const callbacks = this.responseCallbacks[inResponse];
@@ -464,10 +462,17 @@ export class WebsocketService {
         // Either send directly or add to queue, if not connected.
         const jsonMessage = JSON.stringify(message);
 
+        const textEncoder = new TextEncoder();
+        const bytesMessage = textEncoder.encode(jsonMessage);
+        const compressedMessage: ArrayBuffer = compress(bytesMessage);
+        const ratio = bytesMessage.byteLength / compressedMessage.byteLength;
+
+        const toSend = ratio > 1 ? compressedMessage : jsonMessage;
+
         if (this.isConnected) {
-            this.websocket.send(jsonMessage);
+            this.websocket.send(toSend);
         } else {
-            this.sendQueueWhileNotConnected.push(jsonMessage);
+            this.sendQueueWhileNotConnected.push(toSend);
         }
 
         return message.id;

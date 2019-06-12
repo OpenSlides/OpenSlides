@@ -1,10 +1,10 @@
 import asyncio
 from importlib import import_module
+from typing import Optional
 from unittest.mock import patch
 
 import pytest
 from asgiref.sync import sync_to_async
-from channels.testing import WebsocketCommunicator
 from django.conf import settings
 from django.contrib.auth import BACKEND_SESSION_KEY, HASH_SESSION_KEY, SESSION_KEY
 
@@ -20,6 +20,7 @@ from openslides.utils.websocket import WEBSOCKET_CHANGE_ID_TOO_HIGH
 
 from ...unit.utils.cache_provider import Collection1, Collection2, get_cachable_provider
 from ..helpers import TConfig, TProjector, TUser
+from ..websocket import WebsocketCommunicator
 
 
 @pytest.fixture(autouse=True)
@@ -45,7 +46,7 @@ async def prepare_element_cache(settings):
 
 @pytest.fixture
 async def get_communicator():
-    communicator: WebsocketCommunicator = None
+    communicator: Optional[WebsocketCommunicator] = None
 
     def get_communicator(query_string=""):
         nonlocal communicator  # use the outer communicator variable

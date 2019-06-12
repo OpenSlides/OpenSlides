@@ -52,12 +52,23 @@ class AsyncCompressedJsonWebsocketConsumer(AsyncWebsocketConsumer):
 
     async def send_json(self, content: Any, close: bool = False) -> None:
         text_data = json.dumps(content)
+        bytes_data = None  # type: ignore
 
         b_text_data = text_data.encode("utf-8")
         uncompressed_len = len(b_text_data)
-        await WebsocketThroughputLogger.send(uncompressed_len)
 
-        await self.send(text_data=text_data, close=close)
+        if getattr(settings, "COMPRESSION", True):
+            compressed_data = lz4.frame.compress(b_text_data)
+            ratio = len(b_text_data) / len(compressed_data)
+            if ratio > 1:
+                bytes_data = compressed_data
+                text_data = None  # type: ignore
+                await WebsocketThroughputLogger.send(uncompressed_len, len(bytes_data))
+
+        if not bytes_data:
+            await WebsocketThroughputLogger.send(uncompressed_len)
+
+        await self.send(text_data=text_data, bytes_data=bytes_data, close=close)
 
     async def receive_json(self, content: str, **kwargs: Dict[str, Any]) -> None:
         pass
