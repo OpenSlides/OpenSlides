@@ -112,9 +112,7 @@ export class ItemRepositoryService extends BaseHasContentObjectRepository<
             return contentObject;
         } else {
             throw new Error(
-                `The content object (${agendaItem.content_object.collection}, ${
-                    agendaItem.content_object.id
-                }) of item ${agendaItem.id} is not a BaseAgendaItemViewModel.`
+                `The content object (${agendaItem.content_object.collection}, ${agendaItem.content_object.id}) of item ${agendaItem.id} is not a BaseAgendaItemViewModel.`
             );
         }
     }

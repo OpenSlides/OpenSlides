@@ -111,9 +111,7 @@ export class AppLoadService {
             // to check if the result of the contructor (the model instance) is really a searchable.
             if (!isSearchable(new entry.viewModel())) {
                 throw Error(
-                    `Wrong configuration for ${
-                        entry.collectionString
-                    }: you gave a searchOrder, but the model is not searchable.`
+                    `Wrong configuration for ${entry.collectionString}: you gave a searchOrder, but the model is not searchable.`
                 );
             }
             return true;

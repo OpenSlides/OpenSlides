@@ -130,9 +130,7 @@ export class ListOfSpeakersRepositoryService extends BaseHasContentObjectReposit
             return contentObject;
         } else {
             throw new Error(
-                `The content object (${listOfSpeakers.content_object.collection}, ${
-                    listOfSpeakers.content_object.id
-                }) of list of speakers ${listOfSpeakers.id} is not a BaseListOfSpeakersViewModel.`
+                `The content object (${listOfSpeakers.content_object.collection}, ${listOfSpeakers.content_object.id}) of list of speakers ${listOfSpeakers.id} is not a BaseListOfSpeakersViewModel.`
             );
         }
     }

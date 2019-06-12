@@ -568,22 +568,18 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
 
         this.allChangingObjects = [];
         if (this.changeRecommendations) {
-            this.changeRecommendations.forEach(
-                (change: ViewUnifiedChange): void => {
-                    this.allChangingObjects.push(change);
-                }
-            );
+            this.changeRecommendations.forEach((change: ViewUnifiedChange): void => {
+                this.allChangingObjects.push(change);
+            });
         }
         if (this.amendments) {
-            this.amendments.forEach(
-                (amendment: ViewMotion): void => {
-                    this.repo.getAmendmentAmendedParagraphs(amendment, this.lineLength).forEach(
-                        (change: ViewUnifiedChange): void => {
-                            this.allChangingObjects.push(change);
-                        }
-                    );
-                }
-            );
+            this.amendments.forEach((amendment: ViewMotion): void => {
+                this.repo
+                    .getAmendmentAmendedParagraphs(amendment, this.lineLength)
+                    .forEach((change: ViewUnifiedChange): void => {
+                        this.allChangingObjects.push(change);
+                    });
+            });
         }
         this.allChangingObjects.sort((a: ViewUnifiedChange, b: ViewUnifiedChange) => {
             if (a.getLineFrom() < b.getLineFrom()) {
@@ -618,12 +614,10 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
                         }
                     }
                 }),
-                this.repo.amendmentsTo(motionId).subscribe(
-                    (amendments: ViewMotion[]): void => {
-                        this.amendments = amendments;
-                        this.recalcUnifiedChanges();
-                    }
-                ),
+                this.repo.amendmentsTo(motionId).subscribe((amendments: ViewMotion[]): void => {
+                    this.amendments = amendments;
+                    this.recalcUnifiedChanges();
+                }),
                 this.changeRecoRepo
                     .getChangeRecosOfMotionObservable(motionId)
                     .subscribe((recos: ViewMotionChangeRecommendation[]) => {
@@ -688,20 +682,15 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
             if (parentMotion && this.lineLength) {
                 const paragraphsToChoose = this.repo.getParagraphsToChoose(parentMotion, this.lineLength);
 
-                paragraphsToChoose.forEach(
-                    (paragraph: ParagraphToChoose, paragraphNo: number): void => {
-                        if (formMotion.amendment_paragraphs[paragraphNo] !== null) {
-                            this.contentForm.addControl(
-                                'text_' + paragraphNo,
-                                new FormControl('', Validators.required)
-                            );
+                paragraphsToChoose.forEach((paragraph: ParagraphToChoose, paragraphNo: number): void => {
+                    if (formMotion.amendment_paragraphs[paragraphNo] !== null) {
+                        this.contentForm.addControl('text_' + paragraphNo, new FormControl('', Validators.required));
 
-                            contentPatch.selected_paragraphs.push(paragraph);
-                            contentPatch.text = formMotion.amendment_paragraphs[paragraphNo]; // Workaround as 'text' is required from the backend
-                            contentPatch['text_' + paragraphNo] = formMotion.amendment_paragraphs[paragraphNo];
-                        }
+                        contentPatch.selected_paragraphs.push(paragraph);
+                        contentPatch.text = formMotion.amendment_paragraphs[paragraphNo]; // Workaround as 'text' is required from the backend
+                        contentPatch['text_' + paragraphNo] = formMotion.amendment_paragraphs[paragraphNo];
                     }
-                );
+                });
             }
         }
 

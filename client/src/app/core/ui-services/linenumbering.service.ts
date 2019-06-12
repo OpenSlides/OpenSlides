@@ -409,17 +409,15 @@ export class LinenumberingService {
                 });
             }
         }
-        return headings.sort(
-            (heading1: SectionHeading, heading2: SectionHeading): number => {
-                if (heading1.lineNumber < heading2.lineNumber) {
-                    return 0;
-                } else if (heading1.lineNumber > heading2.lineNumber) {
-                    return 1;
-                } else {
-                    return 0;
-                }
+        return headings.sort((heading1: SectionHeading, heading2: SectionHeading): number => {
+            if (heading1.lineNumber < heading2.lineNumber) {
+                return 0;
+            } else if (heading1.lineNumber > heading2.lineNumber) {
+                return 1;
+            } else {
+                return 0;
             }
-        );
+        });
     }
 
     /**
@@ -476,11 +474,9 @@ export class LinenumberingService {
      */
     public splitToParagraphs(html: string): string[] {
         const fragment = this.htmlToFragment(html);
-        return this.splitNodeToParagraphs(fragment).map(
-            (node: Element): string => {
-                return node.outerHTML;
-            }
-        );
+        return this.splitNodeToParagraphs(fragment).map((node: Element): string => {
+            return node.outerHTML;
+        });
     }
 
     /**

@@ -85,11 +85,9 @@ export class AgendaSortComponent extends SortTreeViewComponent<ViewItem> impleme
          */
         const filter = this.activeFilters.subscribe((value: number[]) => {
             this.hasActiveFilter = value.length === 0 ? false : true;
-            this.changeFilter.emit(
-                (item: ViewItem): boolean => {
-                    return !(value.includes(item.type) || value.length === 0);
-                }
-            );
+            this.changeFilter.emit((item: ViewItem): boolean => {
+                return !(value.includes(item.type) || value.length === 0);
+            });
         });
         this.subscriptions.push(filter);
     }

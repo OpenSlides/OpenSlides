@@ -967,21 +967,18 @@ export class DiffService {
      * @returns {string}
      */
     public addCSSClassToFirstTag(html: string, className: string): string {
-        return html.replace(
-            /<[a-z][^>]*>/i,
-            (match: string): string => {
-                if (match.match(/class=["'][a-z0-9 _-]*["']/i)) {
-                    return match.replace(
-                        /class=["']([a-z0-9 _-]*)["']/i,
-                        (match2: string, previousClasses: string): string => {
-                            return 'class="' + previousClasses + ' ' + className + '"';
-                        }
-                    );
-                } else {
-                    return match.substring(0, match.length - 1) + ' class="' + className + '">';
-                }
+        return html.replace(/<[a-z][^>]*>/i, (match: string): string => {
+            if (match.match(/class=["'][a-z0-9 _-]*["']/i)) {
+                return match.replace(
+                    /class=["']([a-z0-9 _-]*)["']/i,
+                    (match2: string, previousClasses: string): string => {
+                        return 'class="' + previousClasses + ' ' + className + '"';
+                    }
+                );
+            } else {
+                return match.substring(0, match.length - 1) + ' class="' + className + '">';
             }
-        );
+        });
     }
 
     /**
@@ -1031,13 +1028,11 @@ export class DiffService {
         const styles = node.getAttribute('style');
         if (styles && styles.indexOf('color') > -1) {
             const stylesNew = [];
-            styles.split(';').forEach(
-                (style: string): void => {
-                    if (!style.match(/^\s*color\s*:/i)) {
-                        stylesNew.push(style);
-                    }
+            styles.split(';').forEach((style: string): void => {
+                if (!style.match(/^\s*color\s*:/i)) {
+                    stylesNew.push(style);
                 }
-            );
+            });
             if (stylesNew.join(';') === '') {
                 node.removeAttribute('style');
             } else {
@@ -1060,24 +1055,21 @@ export class DiffService {
      * @returns {string}
      */
     private addClassToHtmlTag(tagStr: string, className: string): string {
-        return tagStr.replace(
-            /<(\w+)( [^>]*)?>/gi,
-            (whole: string, tag: string, tagArguments: string): string => {
-                tagArguments = tagArguments ? tagArguments : '';
-                if (tagArguments.match(/class="/gi)) {
-                    // class="someclass" => class="someclass insert"
-                    tagArguments = tagArguments.replace(
-                        /(class\s*=\s*)(["'])([^\2]*)\2/gi,
-                        (classWhole: string, attr: string, para: string, content: string): string => {
-                            return attr + para + content + ' ' + className + para;
-                        }
-                    );
-                } else {
-                    tagArguments += ' class="' + className + '"';
-                }
-                return '<' + tag + tagArguments + '>';
+        return tagStr.replace(/<(\w+)( [^>]*)?>/gi, (whole: string, tag: string, tagArguments: string): string => {
+            tagArguments = tagArguments ? tagArguments : '';
+            if (tagArguments.match(/class="/gi)) {
+                // class="someclass" => class="someclass insert"
+                tagArguments = tagArguments.replace(
+                    /(class\s*=\s*)(["'])([^\2]*)\2/gi,
+                    (classWhole: string, attr: string, para: string, content: string): string => {
+                        return attr + para + content + ' ' + className + para;
+                    }
+                );
+            } else {
+                tagArguments += ' class="' + className + '"';
             }
-        );
+            return '<' + tag + tagArguments + '>';
+        });
     }
 
     /**
