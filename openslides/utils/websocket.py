@@ -1,12 +1,16 @@
+import json
 from collections import defaultdict
 from typing import Any, Dict, List, Optional
 
 import jsonschema
-from channels.generic.websocket import AsyncJsonWebsocketConsumer
+import lz4.frame
+from channels.generic.websocket import AsyncWebsocketConsumer
+from django.conf import settings
 from websockets.exceptions import ConnectionClosed
 
 from .autoupdate import AutoupdateFormat
 from .cache import element_cache
+from .stats import WebsocketThroughputLogger
 from .utils import split_element_id
 
 
@@ -25,12 +29,46 @@ WEBSOCKET_WRONG_FORMAT = 10
 # If the recieved data has not the expected format.
 
 
-class ProtocollAsyncJsonWebsocketConsumer(AsyncJsonWebsocketConsumer):
+class AsyncCompressedJsonWebsocketConsumer(AsyncWebsocketConsumer):
+    async def receive(
+        self,
+        text_data: Optional[str] = None,
+        bytes_data: Optional[bytes] = None,
+        **kwargs: Dict[str, Any],
+    ) -> None:
+        if bytes_data:
+            uncompressed_data = lz4.frame.decompress(bytes_data)
+            text_data = uncompressed_data.decode("utf-8")
+
+            recv_len = len(bytes_data)
+            uncompressed_len = len(uncompressed_data)
+            await WebsocketThroughputLogger.receive(uncompressed_len, recv_len)
+        elif text_data:
+            uncompressed_len = len(text_data.encode("utf-8"))
+            await WebsocketThroughputLogger.receive(uncompressed_len)
+
+        if text_data:
+            await self.receive_json(json.loads(text_data), **kwargs)
+
+    async def send_json(self, content: Any, close: bool = False) -> None:
+        text_data = json.dumps(content)
+
+        b_text_data = text_data.encode("utf-8")
+        uncompressed_len = len(b_text_data)
+        await WebsocketThroughputLogger.send(uncompressed_len)
+
+        await self.send(text_data=text_data, close=close)
+
+    async def receive_json(self, content: str, **kwargs: Dict[str, Any]) -> None:
+        pass
+
+
+class ProtocollAsyncJsonWebsocketConsumer(AsyncCompressedJsonWebsocketConsumer):
     """
     Mixin for JSONWebsocketConsumers, that speaks the a special protocol.
     """
 
-    async def send_json(
+    async def send_json(  # type: ignore
         self,
         type: str,
         content: Any,
@@ -77,7 +115,7 @@ class ProtocollAsyncJsonWebsocketConsumer(AsyncJsonWebsocketConsumer):
             silence_errors=silence_errors,
         )
 
-    async def receive_json(self, content: Any) -> None:
+    async def receive_json(self, content: Any) -> None:  # type: ignore
         """
         Receives the json data, parses it and calls receive_content.
         """
