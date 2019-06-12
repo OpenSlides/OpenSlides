@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { compress, decompress } from 'lz4js';
 
 import { formatQueryParams, QueryParams } from '../query-params';
 import { OpenSlidesStatusService } from './openslides-status.service';
@@ -136,7 +137,7 @@ export class WebsocketService {
         return this._connectionOpen;
     }
 
-    private sendQueueWhileNotConnected: string[] = [];
+    private sendQueueWhileNotConnected: (string | ArrayBuffer)[] = [];
 
     /**
      * The websocket.
@@ -219,6 +220,7 @@ export class WebsocketService {
         socketPath += formatQueryParams(queryParams);
 
         this.websocket = new WebSocket(socketPath);
+        this.websocket.binaryType = 'arraybuffer';
 
         // connection established. If this connect attept was a retry,
         // The error notice will be removed and the reconnectSubject is published.
@@ -270,8 +272,20 @@ export class WebsocketService {
      *
      * @param data The message
      */
-    private handleMessage(data: string): void {
+    private handleMessage(data: string | ArrayBuffer): void {
+        if (data instanceof ArrayBuffer) {
+            const compressedSize = data.byteLength;
+            const decompressedBuffer: Uint8Array = decompress(new Uint8Array(data));
+            console.log(
+                `Recieved ${compressedSize / 1024} KB (${decompressedBuffer.byteLength /
+                    1024} KB uncompressed), ratio ${decompressedBuffer.byteLength / compressedSize}`
+            );
+            const textDecoder = new TextDecoder();
+            data = textDecoder.decode(decompressedBuffer);
+        }
+
         const message: IncommingWebsocketMessage = JSON.parse(data);
+        console.log('Received', message);
         const type = message.type;
         const inResponse = message.in_response;
         const callbacks = this.responseCallbacks[inResponse];
@@ -447,10 +461,18 @@ export class WebsocketService {
 
         // Either send directly or add to queue, if not connected.
         const jsonMessage = JSON.stringify(message);
+
+        const textEncoder = new TextEncoder();
+        const bytesMessage = textEncoder.encode(jsonMessage);
+        const compressedMessage: ArrayBuffer = compress(bytesMessage);
+        const ratio = bytesMessage.byteLength / compressedMessage.byteLength;
+
+        const toSend = ratio > 1 ? compressedMessage : jsonMessage;
+
         if (this.isConnected) {
-            this.websocket.send(jsonMessage);
+            this.websocket.send(toSend);
         } else {
-            this.sendQueueWhileNotConnected.push(jsonMessage);
+            this.sendQueueWhileNotConnected.push(toSend);
         }
 
         return message.id;
