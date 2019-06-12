@@ -9,6 +9,7 @@ import { BaseModel } from 'app/shared/models/base/base-model';
 import { OpenSlidesStatusService } from './openslides-status.service';
 import { OpenSlidesService } from './openslides.service';
 import { HttpService } from './http.service';
+import { DataStoreUpdateManagerService } from './data-store-update-manager.service';
 
 /**
  * Interface for full history data objects.
@@ -51,7 +52,8 @@ export class TimeTravelService {
         private modelMapperService: CollectionStringMapperService,
         private DS: DataStoreService,
         private OSStatus: OpenSlidesStatusService,
-        private OpenSlides: OpenSlidesService
+        private OpenSlides: OpenSlidesService,
+        private DSUpdateManager: DataStoreUpdateManagerService
     ) {}
 
     /**
@@ -60,6 +62,8 @@ export class TimeTravelService {
      * @param history the desired point in the history of OpenSlides
      */
     public async loadHistoryPoint(history: History): Promise<void> {
+        const updateSlot = await this.DSUpdateManager.getNewUpdateSlot(this.DS);
+
         await this.stopTime(history);
         const fullDataHistory: HistoryData[] = await this.getHistoryData(history);
         for (const historyObject of fullDataHistory) {
@@ -74,6 +78,8 @@ export class TimeTravelService {
                 await this.DS.remove(collectionString, [+id]);
             }
         }
+
+        this.DSUpdateManager.commit(updateSlot);
     }
 
     /**
@@ -94,25 +100,16 @@ export class TimeTravelService {
      * @returns the full history on the given date
      */
     private async getHistoryData(history: History): Promise<HistoryData[]> {
-        const queryParams = { timestamp: Math.ceil(+history.unixtime) };
-        return this.httpService.get<HistoryData[]>(`${environment.urlPrefix}/core/history/`, null, queryParams);
+        const queryParams = { timestamp: Math.ceil(history.timestamp) };
+        return this.httpService.get<HistoryData[]>(`${environment.urlPrefix}/core/history/data/`, null, queryParams);
     }
 
     /**
      * Clears the DataStore and stops the WebSocket connection
      */
     private async stopTime(history: History): Promise<void> {
-        this.webSocketService.close();
-        await this.cleanDataStore();
+        await this.webSocketService.close();
+        await this.DS.set(); // Same as clear, but not persistent.
         this.OSStatus.enterHistoryMode(history);
-    }
-
-    /**
-     * Clean the DataStore to inject old Data.
-     * Remove everything "but" the history.
-     */
-    private async cleanDataStore(): Promise<void> {
-        const historyArchive = this.DS.getAll(History);
-        await this.DS.set(historyArchive);
     }
 }

@@ -1,16 +1,15 @@
-import { BaseModel } from '../base/base-model';
+import { Deserializable } from '../base/deserializable';
 
 /**
  * Representation of a history object.
  *
  * @ignore
  */
-export class History extends BaseModel {
-    public static COLLECTIONSTRING = 'core/history';
-    public id: number;
+export class History implements Deserializable {
     public element_id: string;
-    public now: string;
+    public timestamp: number;
     public information: string;
+    public restricted: boolean;
     public user_id: number;
 
     /**
@@ -19,18 +18,21 @@ export class History extends BaseModel {
      * @returns a Data object
      */
     public get date(): Date {
-        return new Date(this.now);
+        return new Date(this.timestamp * 1000);
     }
 
-    /**
-     * Converts the timestamp to unix time
-     */
-    public get unixtime(): number {
-        return Date.parse(this.now) / 1000;
+    public get collectionString(): string {
+        return this.element_id.split(':')[0];
     }
 
-    public constructor(input?: any) {
-        super(History.COLLECTIONSTRING, input);
+    public get modelId(): number {
+        return +this.element_id.split(':')[1];
+    }
+
+    public constructor(input: History) {
+        if (input) {
+            this.deserialize(input);
+        }
     }
 
     /**
@@ -41,5 +43,9 @@ export class History extends BaseModel {
      */
     public getLocaleString(locale: string): string {
         return this.date.toLocaleString(locale);
+    }
+
+    public deserialize(input: any): void {
+        Object.assign(this, input);
     }
 }

@@ -276,7 +276,7 @@ export class WebsocketService {
         if (data instanceof ArrayBuffer) {
             const compressedSize = data.byteLength;
             const decompressedBuffer: Uint8Array = decompress(new Uint8Array(data));
-            console.log(
+            console.debug(
                 `Recieved ${compressedSize / 1024} KB (${decompressedBuffer.byteLength /
                     1024} KB uncompressed), ratio ${decompressedBuffer.byteLength / compressedSize}`
             );
@@ -285,7 +285,7 @@ export class WebsocketService {
         }
 
         const message: IncommingWebsocketMessage = JSON.parse(data);
-        console.log('Received', message);
+        console.debug('Received', message);
         const type = message.type;
         const inResponse = message.in_response;
         const callbacks = this.responseCallbacks[inResponse];

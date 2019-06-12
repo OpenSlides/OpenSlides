@@ -494,7 +494,6 @@ class HistoryInformationView(utils_views.APIView):
     Examples:
 
         /?type=element&value=motions%2Fmotion%3A42 if your search for motion 42
-        /?type=text&value=my%20question
 
     Use DELETE to clear the history.
     """
@@ -509,15 +508,12 @@ class HistoryInformationView(utils_views.APIView):
             self.permission_denied(self.request)
         type = self.request.query_params.get("type")
         value = self.request.query_params.get("value")
-        if type not in ("element", "text"):
+        if type not in ("element"):
             raise ValidationError(
                 {"detail": "Invalid input. Type should be 'element' or 'text'."}
             )
-        if type == "element":
-            data = self.get_data_element_search(value)
-        else:
-            # type == "text"
-            data = self.get_data_text_search(value)
+        # We currently just support searching by element id.
+        data = self.get_data_element_search(value)
         return data
 
     def get_data_element_search(self, value):
@@ -525,7 +521,7 @@ class HistoryInformationView(utils_views.APIView):
         Retrieves history information for element search.
         """
         data = []
-        for instance in History.objects.filter(element_id=value):
+        for instance in History.objects.filter(element_id=value).order_by("-now"):
             data.append(
                 {
                     "element_id": instance.element_id,
@@ -536,13 +532,6 @@ class HistoryInformationView(utils_views.APIView):
                 }
             )
         return data
-
-    def get_data_text_search(self, value):
-        """
-        Retrieves history information for text search.
-        """
-        # TODO: Add results here.
-        return []
 
     def delete(self, request, *args, **kwargs):
         """
