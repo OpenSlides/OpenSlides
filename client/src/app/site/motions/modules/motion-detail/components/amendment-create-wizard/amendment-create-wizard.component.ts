@@ -164,17 +164,15 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
         } else {
             newParagraphs = Object.assign([], oldSelected);
             newParagraphs.push(paragraph);
-            newParagraphs.sort(
-                (para1: ParagraphToChoose, para2: ParagraphToChoose): number => {
-                    if (para1.paragraphNo < para2.paragraphNo) {
-                        return -1;
-                    } else if (para1.paragraphNo > para2.paragraphNo) {
-                        return 1;
-                    } else {
-                        return 0;
-                    }
+            newParagraphs.sort((para1: ParagraphToChoose, para2: ParagraphToChoose): number => {
+                if (para1.paragraphNo < para2.paragraphNo) {
+                    return -1;
+                } else if (para1.paragraphNo > para2.paragraphNo) {
+                    return 1;
+                } else {
+                    return 0;
                 }
-            );
+            });
 
             this.contentForm.addControl(
                 'text_' + paragraph.paragraphNo,
@@ -206,16 +204,14 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
      */
     public async saveAmendment(): Promise<void> {
         let text = '';
-        const amendedParagraphs = this.paragraphs.map(
-            (paragraph: ParagraphToChoose, index: number): string => {
-                if (this.contentForm.value.selectedParagraphs.find(para => para.paragraphNo === index)) {
-                    text = this.contentForm.value['text_' + index];
-                    return this.contentForm.value['text_' + index];
-                } else {
-                    return null;
-                }
+        const amendedParagraphs = this.paragraphs.map((paragraph: ParagraphToChoose, index: number): string => {
+            if (this.contentForm.value.selectedParagraphs.find(para => para.paragraphNo === index)) {
+                text = this.contentForm.value['text_' + index];
+                return this.contentForm.value['text_' + index];
+            } else {
+                return null;
             }
-        );
+        });
         const newMotionValues = {
             ...this.contentForm.value,
             title: this.translate.instant('Amendment to') + ' ' + this.motion.identifier,

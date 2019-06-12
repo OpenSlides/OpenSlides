@@ -465,15 +465,11 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
      */
     public amendmentsTo(motionId: number): Observable<ViewMotion[]> {
         return this.getViewModelListObservable().pipe(
-            map(
-                (motions: ViewMotion[]): ViewMotion[] => {
-                    return motions.filter(
-                        (motion: ViewMotion): boolean => {
-                            return motion.parent_id === motionId;
-                        }
-                    );
-                }
-            )
+            map((motions: ViewMotion[]): ViewMotion[] => {
+                return motions.filter((motion: ViewMotion): boolean => {
+                    return motion.parent_id === motionId;
+                });
+            })
         );
     }
 

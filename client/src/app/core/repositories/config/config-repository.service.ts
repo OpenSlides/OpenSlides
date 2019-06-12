@@ -238,9 +238,7 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config, 
                         item.config = keyConfigMap[item.key];
                     } else if (check) {
                         throw new Error(
-                            `No config variable found for "${
-                                item.key
-                            }". Please migrate the database or rebuild the servercache.`
+                            `No config variable found for "${item.key}". Please migrate the database or rebuild the servercache.`
                         );
                     }
                 }
@@ -251,9 +249,7 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config, 
                     item.config = keyConfigMap[item.key];
                 } else if (check) {
                     throw new Error(
-                        `No config variable found for "${
-                            item.key
-                        }". Please migrate the database or rebuild the servercache.`
+                        `No config variable found for "${item.key}". Please migrate the database or rebuild the servercache.`
                     );
                 }
             }
