@@ -1,6 +1,7 @@
 import json
 
 import pytest
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework import status
@@ -1764,107 +1765,168 @@ class UpdateMotionPoll(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-class NumberMotionsInCategory(TestCase):
+class NumberMotionsInCategories(TestCase):
     """
-    Tests numbering motions in a category.
+    Tests numbering motions in categories.
+
+    Testdata. All names (and prefixes) are prefixed with "test_". The
+    ordering is ensured with "category_weight".
+    Category tree (with motions M and amendments A):
+    A-A
+      <M1>
+      <M2-A2>
+      B
+        <M2-A1>
+        <M3>
+      C-C
+        <M2>
+        <M2-A1-A1>
     """
 
     def setUp(self):
         self.client = APIClient()
         self.client.login(username="admin", password="admin")
-        self.category = Category.objects.create(
-            name="test_cateogory_name_zah6Ahd4Ifofaeree6ai",
-            prefix="test_prefix_ahz6tho2mooH8",
-        )
-        self.motion = Motion(
+        self.A = Category.objects.create(name="test_A", prefix="test_A")
+        self.B = Category.objects.create(name="test_B", parent=self.A)
+        self.C = Category.objects.create(name="test_C", prefix="test_C", parent=self.A)
+
+        self.M1 = Motion(
             title="test_title_Eeha8Haf6peulu8ooc0z",
             text="test_text_faghaZoov9ooV4Acaquk",
-            category=self.category,
+            category=self.A,
+            category_weight=1,
         )
-        self.motion.save()
-        self.motion.identifier = ""
-        self.motion.save()
-        self.motion_2 = Motion(
+        self.M1.save()
+        self.M1.identifier = ""
+        self.M1.save()
+
+        self.M2 = Motion(
             title="test_title_kuheih2eja2Saeshusha",
             text="test_text_Ha5ShaeraeSuthooP2Bu",
-            category=self.category,
+            category=self.C,
+            category_weight=1,
         )
-        self.motion_2.save()
-        self.motion_2.identifier = ""
-        self.motion_2.save()
+        self.M2.save()
+        self.M2.identifier = ""
+        self.M2.save()
+
+        self.M2_A1 = Motion(
+            title="test_title_av3ejIJvwon3jvnNVaie",
+            text="test_text_FJPiejfwdcoiwjvijao1",
+            category=self.B,
+            category_weight=1,
+            parent=self.M2,
+        )
+        self.M2_A1.save()
+        self.M2_A1.identifier = ""
+        self.M2_A1.save()
+
+        self.M2_A1_A1 = Motion(
+            title="test_title_ejvhwoxngixoqkxy.qfi",
+            text="test_text_euh2gfaiaqfu3.f(3hgf",
+            category=self.C,
+            category_weight=2,
+            parent=self.M2_A1,
+        )
+        self.M2_A1_A1.save()
+        self.M2_A1_A1.identifier = ""
+        self.M2_A1_A1.save()
+
+        self.M2_A2 = Motion(
+            title="test_title_xoerFiwebbpiUEeuvxMa",
+            text="test_text_zbwZWPefiisdISfwLKqN",
+            category=self.A,
+            category_weight=2,
+            parent=self.M2,
+        )
+        self.M2_A2.save()
+        self.M2_A2.identifier = ""
+        self.M2_A2.save()
+
+        self.M3 = Motion(
+            title="test_title_VWIVeiNVenudn(23J92§",
+            text="test_text_VEDno328hn8/TBbScVEb",
+            category=self.B,
+            category_weight=2,
+        )
+        self.M3.save()
+        self.M3.identifier = ""
+        self.M3.save()
 
     def test_numbering(self):
-        response = self.client.post(
-            reverse("category-numbering", args=[self.category.pk])
-        )
+        response = self.client.post(reverse("category-numbering", args=[self.A.pk]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Motion.objects.get(pk=self.M1.pk).identifier, "test_A 1")
+        self.assertEqual(Motion.objects.get(pk=self.M3.pk).identifier, "test_A 2")
+        self.assertEqual(Motion.objects.get(pk=self.M2.pk).identifier, "test_C 3")
         self.assertEqual(
-            response.data,
-            {
-                "detail": "All motions in category test_cateogory_name_zah6Ahd4Ifofaeree6ai numbered successfully."
-            },
+            Motion.objects.get(pk=self.M2_A1.pk).identifier, "test_C 3 - 2"
         )
         self.assertEqual(
-            Motion.objects.get(pk=self.motion.pk).identifier,
-            "test_prefix_ahz6tho2mooH8 1",
+            Motion.objects.get(pk=self.M2_A1_A1.pk).identifier, "test_C 3 - 2 - 1"
         )
         self.assertEqual(
-            Motion.objects.get(pk=self.motion_2.pk).identifier,
-            "test_prefix_ahz6tho2mooH8 2",
+            Motion.objects.get(pk=self.M2_A2.pk).identifier, "test_C 3 - 1"
         )
 
-    def test_numbering_existing_identifier(self):
-        self.motion_2.identifier = "test_prefix_ahz6tho2mooH8 1"
-        self.motion_2.save()
-        response = self.client.post(
-            reverse("category-numbering", args=[self.category.pk])
-        )
+    def test_with_blanks(self):
+        config["motions_amendments_prefix"] = "-X"
+        settings.MOTION_IDENTIFIER_WITHOUT_BLANKS = True
+        settings.MOTION_IDENTIFIER_MIN_DIGITS = 3
+        response = self.client.post(reverse("category-numbering", args=[self.A.pk]))
+        settings.MOTION_IDENTIFIER_WITHOUT_BLANKS = False
+        settings.MOTION_IDENTIFIER_MIN_DIGITS = 1
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Motion.objects.get(pk=self.M1.pk).identifier, "test_A001")
+        self.assertEqual(Motion.objects.get(pk=self.M3.pk).identifier, "test_A002")
+        self.assertEqual(Motion.objects.get(pk=self.M2.pk).identifier, "test_C003")
         self.assertEqual(
-            response.data,
-            {
-                "detail": "All motions in category test_cateogory_name_zah6Ahd4Ifofaeree6ai numbered successfully."
-            },
+            Motion.objects.get(pk=self.M2_A1.pk).identifier, "test_C003-X002"
         )
         self.assertEqual(
-            Motion.objects.get(pk=self.motion.pk).identifier,
-            "test_prefix_ahz6tho2mooH8 1",
+            Motion.objects.get(pk=self.M2_A1_A1.pk).identifier, "test_C003-X002-X001"
         )
         self.assertEqual(
-            Motion.objects.get(pk=self.motion_2.pk).identifier,
-            "test_prefix_ahz6tho2mooH8 2",
+            Motion.objects.get(pk=self.M2_A2.pk).identifier, "test_C003-X001"
         )
 
-    def test_numbering_with_given_order(self):
-        self.motion_3 = Motion(
-            title="test_title_eeb0kua5ciike4su2auJ",
-            text="test_text_ahshuGhaew3eim8yoht7",
-            category=self.category,
+    def test_existing_identifier_no_category(self):
+        conflicting_motion = Motion(
+            title="test_title_al2=2k21fjv1lsck3ehlWExg",
+            text="test_text_3omvpEhnfg082ejplk1m",
         )
-        self.motion_3.save()
-        self.motion_3.identifier = ""
-        self.motion_3.save()
-        response = self.client.post(
-            reverse("category-numbering", args=[self.category.pk]),
-            {"motions": [3, 2]},
-            format="json",
+        conflicting_motion.save()
+        conflicting_motion.identifier = "test_C 3 - 2 - 1"
+        conflicting_motion.save()
+        response = self.client.post(reverse("category-numbering", args=[self.A.pk]))
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertTrue("test_C 3 - 2 - 1" in response.data["detail"])
+
+    def test_existing_identifier_with_category(self):
+        conflicting_category = Category.objects.create(
+            name="test_name_hpsodhakvjdbvkblwfjr"
         )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(
-            response.data,
-            {
-                "detail": "All motions in category test_cateogory_name_zah6Ahd4Ifofaeree6ai numbered successfully."
-            },
+        conflicting_motion = Motion(
+            title="test_title_al2=2k21fjv1lsck3ehlWExg",
+            text="test_text_3omvpEhnfg082ejplk1m",
+            category=conflicting_category,
         )
-        self.assertEqual(Motion.objects.get(pk=self.motion.pk).identifier, None)
-        self.assertEqual(
-            Motion.objects.get(pk=self.motion_2.pk).identifier,
-            "test_prefix_ahz6tho2mooH8 2",
-        )
-        self.assertEqual(
-            Motion.objects.get(pk=self.motion_3.pk).identifier,
-            "test_prefix_ahz6tho2mooH8 1",
-        )
+        conflicting_motion.save()
+        conflicting_motion.identifier = "test_C 3 - 2 - 1"
+        conflicting_motion.save()
+        response = self.client.post(reverse("category-numbering", args=[self.A.pk]))
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertTrue("test_C 3 - 2 - 1" in response.data["detail"])
+        self.assertTrue(conflicting_category.name in response.data["detail"])
+
+    def test_incomplete_amendment_tree(self):
+        self.M2_A1.category = None
+        self.M2_A1.save()
+        response = self.client.post(reverse("category-numbering", args=[self.A.pk]))
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertTrue(self.M2_A1_A1.title in response.data["detail"])
+        self.assertTrue(self.M2_A1.title in response.data["detail"])
 
 
 class TestMotionBlock(TestCase):

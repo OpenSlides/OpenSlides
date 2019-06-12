@@ -21,11 +21,11 @@ import { ViewMotion } from 'app/site/motions/models/view-motion';
  * as displayed in this view
  */
 @Component({
-    selector: 'os-category-sort',
-    templateUrl: './category-sort.component.html',
-    styleUrls: ['./category-sort.component.scss']
+    selector: 'os-category-motions-sort',
+    templateUrl: './category-motions-sort.component.html',
+    styleUrls: ['./category-motions-sort.component.scss']
 })
-export class CategorySortComponent extends BaseViewComponent implements OnInit, CanComponentDeactivate {
+export class CategoryMotionsSortComponent extends BaseViewComponent implements OnInit, CanComponentDeactivate {
     /**
      * The current category. Determined by the route
      */
@@ -66,16 +66,6 @@ export class CategorySortComponent extends BaseViewComponent implements OnInit, 
      */
     public get motionObservable(): Observable<ViewMotion[]> {
         return this.motionsSubject.asObservable();
-    }
-
-    /**
-     * @returns the name and (if present) prefix of the category
-     */
-    public get categoryName(): string {
-        if (!this.category) {
-            return '';
-        }
-        return this.category.prefix ? `${this.category.name} (${this.category.prefix})` : this.category.name;
     }
 
     /**
@@ -138,24 +128,6 @@ export class CategorySortComponent extends BaseViewComponent implements OnInit, 
         motions.sort((a, b) => a.category_weight - b.category_weight);
         this.motionsSubject.next(motions);
         this.motionsCopy = motions;
-    }
-
-    /**
-     * Triggers a (re-)numbering of the motions after a configmarion dialog
-     *
-     * @param category
-     */
-    public async onNumberMotions(): Promise<void> {
-        if (this.sortSelector) {
-            const title = this.translate.instant('Are you sure you want to renumber all motions of this category?');
-            const content = this.category.getTitle();
-            if (await this.promptService.open(title, content)) {
-                const sortedMotionIds = this.sortSelector.array.map(selectable => selectable.id);
-                await this.repo
-                    .numberMotionsInCategory(this.category.category, sortedMotionIds)
-                    .then(null, this.raiseError);
-            }
-        }
     }
 
     /**

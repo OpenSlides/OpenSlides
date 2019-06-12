@@ -14,7 +14,6 @@ import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
 import { MotionBlockSortService } from 'app/site/motions/services/motion-block-sort.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
-import { PromptService } from 'app/core/ui-services/prompt.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { ViewItem } from 'app/site/agenda/models/view-item';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
@@ -89,7 +88,6 @@ export class MotionBlockListComponent
         private repo: MotionBlockRepositoryService,
         private agendaRepo: ItemRepositoryService,
         private formBuilder: FormBuilder,
-        private promptService: PromptService,
         private itemRepo: ItemRepositoryService,
         private operator: OperatorService,
         sortService: MotionBlockSortService
@@ -124,9 +122,6 @@ export class MotionBlockListComponent
         if (this.operator.hasPerms('core.can_manage_projector')) {
             columns = ['projector'].concat(columns);
         }
-        if (this.operator.hasPerms('motions.can_manage')) {
-            columns = columns.concat(['menu']);
-        }
         return columns;
     }
 
@@ -138,19 +133,6 @@ export class MotionBlockListComponent
      */
     public getMotionAmount(motionBlock: MotionBlock): number {
         return this.repo.getMotionAmountByBlock(motionBlock);
-    }
-
-    /**
-     * Click handler to delete motion blocks
-     *
-     * @param motionBlock the block to delete
-     */
-    public async onDelete(motionBlock: ViewMotionBlock): Promise<void> {
-        const title = this.translate.instant('Are you sure you want to delete this motion block?');
-        const content = motionBlock.title;
-        if (await this.promptService.open(title, content)) {
-            await this.repo.delete(motionBlock);
-        }
     }
 
     /**

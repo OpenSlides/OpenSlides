@@ -391,13 +391,14 @@ class Motion(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model):
         """
         if initial_increment:
             number += 1
-        identifier = f"{prefix}{self.extend_identifier_number(number)}"
+        identifier = f"{prefix}{Motion.extend_identifier_number(number)}"
         while Motion.objects.filter(identifier=identifier).exists():
             number += 1
-            identifier = f"{prefix}{self.extend_identifier_number(number)}"
+            identifier = f"{prefix}{Motion.extend_identifier_number(number)}"
         return number, identifier
 
-    def extend_identifier_number(self, number):
+    @classmethod
+    def extend_identifier_number(cls, number):
         """
         Returns the number used in the set_identifier method with leading
         zero charaters according to the settings value
@@ -533,15 +534,6 @@ class Motion(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model):
         """
         return self.is_amendment() and self.amendment_paragraphs
 
-    def get_amendments_deep(self):
-        """
-        Generator that yields all amendments of this motion including all
-        amendment decendents.
-.       """
-        for amendment in self.amendments.all():
-            yield amendment
-            yield from amendment.get_amendments_deep()
-
     def get_paragraph_based_amendments(self):
         """
         Returns a list of all paragraph-based amendments to this motion
@@ -552,6 +544,16 @@ class Motion(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model):
                 self.amendments.all(),
             )
         )
+
+    @property
+    def amendment_level(self):
+        """
+        Returns the amount of parent motions.
+        """
+        if self.parent is None:
+            return 0
+        else:
+            return self.parent.amendment_level + 1
 
 
 class MotionCommentSection(RESTModelMixin, models.Model):
@@ -801,12 +803,39 @@ class Category(RESTModelMixin, models.Model):
     Used to build the identifier of a motion.
     """
 
+    parent = models.ForeignKey(
+        "self",
+        on_delete=SET_NULL_AND_AUTOUPDATE,
+        null=True,
+        blank=True,
+        related_name="children",
+    )
+
+    weight = models.IntegerField(default=10000)
+
     class Meta:
         default_permissions = ()
-        ordering = ["prefix"]
+        ordering = ["weight"]
 
     def __str__(self):
-        return self.name
+        if self.prefix:
+            return f"{self.prefix} - {self.name}"
+        else:
+            return self.name
+
+    @property
+    def level(self):
+        """
+        Returns the level in the tree of categories. Level 0 means this
+        item is a root item in the tree. Level 1 indicates that the parent is
+        a root item, level 2 that the parent's parent is a root item and so on.
+
+        Attention! This executes one query for each ancestor of the category.
+        """
+        if self.parent is None:
+            return 0
+        else:
+            return self.parent.level + 1
 
 
 class MotionBlockManager(models.Manager):

@@ -1,11 +1,9 @@
-import re
 from typing import List, Set
 
 import jsonschema
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError as DjangoValidationError
-from django.db import IntegrityError, transaction
+from django.db import transaction
 from django.db.models.deletion import ProtectedError
 from django.http.request import QueryDict
 from rest_framework import status
@@ -50,6 +48,7 @@ from .models import (
     Submitter,
     Workflow,
 )
+from .numbering import numbering
 from .serializers import MotionPollSerializer, StateSerializer
 
 
@@ -323,7 +322,7 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
     def sort(self, request):
         """
         Sorts all motions represented in a tree of ids. The request data should be a list (the root)
-        of all main agenda items. Each node is a dict with an id and optional children:
+        of all motions. Each node is a dict with an id and optional children:
         {
             id: <the id>
             children: [
@@ -1296,7 +1295,7 @@ class StatuteParagraphViewSet(ModelViewSet):
         return result
 
 
-class CategoryViewSet(ModelViewSet):
+class CategoryViewSet(TreeSortMixin, ModelViewSet):
     """
     API endpoint for categories.
 
@@ -1311,16 +1310,15 @@ class CategoryViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ("list", "retrieve"):
+        if self.action in ("list", "retrieve", "metadata"):
             result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action == "metadata":
-            result = has_perm(self.request.user, "motions.can_see")
         elif self.action in (
             "create",
             "partial_update",
             "update",
             "destroy",
-            "sort",
+            "sort_categories",
+            "sort_motions",
             "numbering",
         ):
             result = has_perm(self.request.user, "motions.can_see") and has_perm(
@@ -1330,9 +1328,25 @@ class CategoryViewSet(ModelViewSet):
             result = False
         return result
 
+    @list_route(methods=["post"])
+    def sort_categories(self, request):
+        """
+        Sorts all categoreis represented in a tree of ids. The request data should be
+        a list (the root) of all categories. Each node is a dict with an id and optional
+        children:
+        {
+            id: <the id>
+            children: [
+                <children, optional>
+            ]
+        }
+        Every id has to be given.
+        """
+        return self.sort_tree(request, Category, "weight", "parent_id")
+
     @detail_route(methods=["post"])
     @transaction.atomic
-    def sort(self, request, pk=None):
+    def sort_motions(self, request, pk=None):
         """
         Endpoint to sort all motions in the category.
 
@@ -1379,126 +1393,22 @@ class CategoryViewSet(ModelViewSet):
     @detail_route(methods=["post"])
     def numbering(self, request, pk=None):
         """
-        Special view endpoint to number all motions in this category.
+        Special view endpoint to number all motions in this category and all
+        subcategories. Only managers can use this view. For the actual numbering,
+        see `numbering.py`.
 
-        Only managers can use this view.
-
-        Send POST {'motions': [<list of motion ids>]} to sort the given
-        motions in a special order. Ids of motions which do not belong to
-        the category are just ignored. Send just POST {} to sort all
-        motions in the category ordered by their category weight.
-
-        Amendments will get a new identifier prefix if the old prefix matches
-        the old parent motion identifier.
+        Request args: None (implicit: the main category via URL)
         """
-        category = self.get_object()
-        number = 0
-        instances = []
-
-        # If MOTION_IDENTIFIER_WITHOUT_BLANKS is set, don't use blanks when building identifier.
-        without_blank = (
-            hasattr(settings, "MOTION_IDENTIFIER_WITHOUT_BLANKS")
-            and settings.MOTION_IDENTIFIER_WITHOUT_BLANKS
+        main_category = self.get_object()
+        changed_instances = numbering(main_category)
+        inform_changed_data(
+            changed_instances, information=["Number set"], user_id=request.user.pk
         )
-
-        # Prepare ordered list of motions.
-        if not category.prefix:
-            category_prefix = ""
-        elif without_blank:
-            category_prefix = category.prefix
-        else:
-            category_prefix = f"{category.prefix} "
-
-        # get motions
-        motions = category.motion_set.order_by("category_weight")
-        motion_list = request.data.get("motions")
-        if motion_list:
-            motion_dict = {}
-            for motion in motions.filter(id__in=motion_list):
-                motion_dict[motion.pk] = motion
-            motions = [motion_dict[pk] for pk in motion_list]
-
-        # Change identifiers.
-        error_message = None
-        try:
-            with transaction.atomic():
-                # Collect old and new identifiers.
-                motions_to_be_sorted = []
-                for motion in motions:
-                    prefix = category_prefix
-
-                    # Change prefix for amendments
-                    if motion.is_amendment():
-                        parent_identifier = motion.parent.identifier or ""
-                        if without_blank:
-                            prefix = f"{parent_identifier}{config['motions_amendments_prefix']}"
-                        else:
-                            prefix = f"{parent_identifier} {config['motions_amendments_prefix']} "
-                    else:
-                        number += 1
-                    new_identifier = (
-                        f"{prefix}{motion.extend_identifier_number(number)}"
-                    )
-                    motions_to_be_sorted.append(
-                        {
-                            "motion": motion,
-                            "old_identifier": motion.identifier,
-                            "new_identifier": new_identifier,
-                            "number": number,
-                        }
-                    )
-
-                # Remove old identifiers
-                for motion in motions:
-                    motion.identifier = None
-                    # This line is to skip agenda item and list of speakers autoupdate.
-                    # See agenda/signals.py.
-                    motion.set_skip_autoupdate_agenda_item_and_list_of_speakers()
-                    motion.save(skip_autoupdate=True)
-
-                # Set new identifers and change identifiers of amendments.
-                for obj in motions_to_be_sorted:
-                    if Motion.objects.filter(identifier=obj["new_identifier"]).exists():
-                        # Set the error message and let the code run into an IntegrityError
-                        new_identifier = obj["new_identifier"]
-                        error_message = (
-                            f'Numbering aborted because the motion identifier "{new_identifier}" '
-                            "already exists outside of this category."
-                        )
-                    motion = obj["motion"]
-                    motion.identifier = obj["new_identifier"]
-                    motion.identifier_number = obj["number"]
-                    motion.save(skip_autoupdate=True)
-                    instances.append(motion)
-                    instances.append(motion.agenda_item)
-                    # Change identifiers of amendments.
-                    for child in motion.get_amendments_deep():
-                        if child.identifier and child.identifier.startswith(
-                            obj["old_identifier"]
-                        ):
-                            child.identifier = re.sub(
-                                obj["old_identifier"],
-                                obj["new_identifier"],
-                                child.identifier,
-                                count=1,
-                            )
-                            # This line is to skip agenda item and list of speakers autoupdate.
-                            # See agenda/signals.py.
-                            motion.set_skip_autoupdate_agenda_item_and_list_of_speakers()
-                            child.save(skip_autoupdate=True)
-                            instances.append(child)
-                            instances.append(child.agenda_item)
-        except IntegrityError:
-            if error_message is None:
-                error_message = "Error: At least one identifier of this category does already exist in another category."
-            response = Response({"detail": error_message}, status=400)
-        else:
-            inform_changed_data(
-                instances, information=["Number set"], user_id=request.user.pk
-            )
-            message = f"All motions in category {category} numbered " "successfully."
-            response = Response({"detail": message})
-        return response
+        return Response(
+            {
+                "detail": f"All motions in category {main_category} numbered successfully."
+            }
+        )
 
 
 class MotionBlockViewSet(ModelViewSet):

@@ -1,45 +1,26 @@
-.header-container {
-    display: grid;
-    grid-template-rows: auto;
-    grid-template-columns: 75% 25%;
-    width: 100%;
+@import '~assets/styles/tables.scss';
 
-    > div {
-        grid-row-start: 1;
-        grid-row-end: span 1;
-        grid-column-end: span 2;
+.os-headed-listview-table {
+    // Title
+    .mat-column-title {
+        flex: 9 0 0;
     }
 
-    .header-name {
-        grid-column-start: 1;
-        color: lightslategray;
+    // Amount
+    .mat-column-amount {
+        flex: 1 0 60px;
     }
 
-    .header-size {
-        grid-column-start: 2;
+    // Menu
+    .mat-column-menu {
+        flex: 0 0 40px;
     }
 }
 
-mat-expansion-panel {
-    max-width: 770px;
-    margin: auto;
+::ng-deep .mat-form-field {
+    width: 50%;
 }
 
-.full-width-form {
-    display: flex;
-    width: 100%;
-    align-content: space-between;
-    flex: 2;
-}
-
-.short-input {
-    width: 20%;
-}
-.long-input {
-    width: 75%;
-}
-.inline-form-submit {
-    justify-content: end;
-    display: block;
-    flex: 1;
+.mat-cell > div {
+    z-index: 1 !important;
 }

@@ -279,6 +279,7 @@ class Item(RESTModelMixin, models.Model):
             ),
         )
         unique_together = ("content_type", "object_id")
+        ordering = ["weight"]
 
     @property
     def title_information(self):

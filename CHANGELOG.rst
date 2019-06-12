@@ -44,6 +44,9 @@ Motions:
    tags, states and recommendations [#4037, #4132, #4702].
  - Added timestampes for motions [#4134].
  - New config option to set reason as required field [#4232].
+ - Added subcategories and altered behaviour of motion numbering in
+   categories: Motions of subcategories are also numbered, and parents of
+   amendments needs to be in the numbered category or any subcategory [#4756].
 
 User:
  - Added new admin group which grants all permissions. Users of existing group
