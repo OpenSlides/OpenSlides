@@ -114,20 +114,19 @@
                     <mat-cell (click)="openEditInfo(motion, $event)" *matCellDef="let motion">
                         <div class="fill">
                             <div class="innerTable state-column">
-                                <div class="small ellipsis-overflow" *ngIf="motion.category">
-                                    <mat-icon>device_hub</mat-icon>
-                                    {{ motion.category }}
+                                <div class="ellipsis-overflow" *ngIf="motion.category">
+                                    <os-icon-container icon="device_hub">{{ motion.category }}</os-icon-container>
                                 </div>
-                                <div class="small ellipsis-overflow" *ngIf="motion.motion_block">
-                                    <mat-icon>widgets</mat-icon>
-                                    {{ motion.motion_block.title }}
+                                <div class="ellipsis-overflow spacer-top-5" *ngIf="motion.motion_block">
+                                    <os-icon-container icon="widgets">{{ motion.motion_block.title }}</os-icon-container>
                                 </div>
-                                <div class="small ellipsis-overflow" *ngIf="motion.tags && motion.tags.length">
-                                    <mat-icon>local_offer</mat-icon>
-                                    <span *ngFor="let tag of motion.tags; let last = last">
-                                        {{ tag.getTitle() }}
-                                        <span *ngIf="!last">,&nbsp;</span>
-                                    </span>
+                                <div class="ellipsis-overflow spacer-top-5" *ngIf="motion.tags && motion.tags.length">
+                                    <os-icon-container icon="local_offer">
+                                        <span *ngFor="let tag of motion.tags; let last = last">
+                                            {{ tag.getTitle() }}
+                                            <span *ngIf="!last">,&nbsp;</span>
+                                        </span>
+                                    </os-icon-container>
                                 </div>
                             </div>
                         </div>

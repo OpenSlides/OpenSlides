@@ -54,16 +54,19 @@
             <mat-cell (click)="openEditInfo(user, $event)" *matCellDef="let user">
                 <div class="fill">
                     <div class="groupsCell">
-                        <span *ngIf="user.groups && user.groups.length">
-                            <mat-icon>people</mat-icon>
-                            <span *ngFor="let group of user.groups; let last = last"
-                                >{{ group.getTitle() | translate }}<span *ngIf="!last">,&nbsp;</span>
-                            </span>
-                        </span>
-                        <br *ngIf="user.groups && user.structure_level" />
-                        <span *ngIf="user.structure_level"> <mat-icon>flag</mat-icon>{{ user.structure_level }}</span>
-                        <br *ngIf="user.number" />
-                        <span *ngIf="user.number"> <mat-icon>perm_identity</mat-icon>{{ user.number }}</span>
+                        <div *ngIf="user.groups && user.groups.length">
+                            <os-icon-container icon="people">
+                                <span *ngFor="let group of user.groups; let last = last">
+                                    {{ group.getTitle() | translate }} <span *ngIf="!last">,&nbsp;</span>
+                                </span>
+                            </os-icon-container>
+                        </div>
+                        <div *ngIf="user.structure_level" class="spacer-top-5">
+                            <os-icon-container icon="flag">{{ user.structure_level }}</os-icon-container>
+                        </div>
+                        <div *ngIf="user.number" class="spacer-top-5">
+                            <os-icon-container icon="perm_identity">{{ user.number }}</os-icon-container>
+                        </div>
                     </div>
                 </div>
             </mat-cell>

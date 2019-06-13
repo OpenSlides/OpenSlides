@@ -88,6 +88,7 @@ import { SpeakerButtonComponent } from './components/speaker-button/speaker-butt
 import { GridLayoutComponent } from './components/grid-layout/grid-layout.component';
 import { TileComponent } from './components/tile/tile.component';
 import { BlockTileComponent } from './components/block-tile/block-tile.component';
+import { IconContainerComponent } from './components/icon-container/icon-container.component';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -217,7 +218,8 @@ import { BlockTileComponent } from './components/block-tile/block-tile.component
         GridLayoutComponent,
         TileComponent,
         BlockTileComponent,
-        ScrollingModule
+        ScrollingModule,
+        IconContainerComponent
     ],
     declarations: [
         PermsDirective,
@@ -249,7 +251,8 @@ import { BlockTileComponent } from './components/block-tile/block-tile.component
         SpeakerButtonComponent,
         GridLayoutComponent,
         TileComponent,
-        BlockTileComponent
+        BlockTileComponent,
+        IconContainerComponent
     ],
     providers: [
         { provide: DateAdapter, useClass: OpenSlidesDateAdapter },

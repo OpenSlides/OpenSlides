@@ -63,8 +63,8 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header>Group</mat-header-cell>
             <mat-cell *matCellDef="let file">
                 <div class="file-info-cell">
-                    <span> <mat-icon [inline]="true">insert_drive_file</mat-icon> {{ file.type }} </span>
-                    <span> <mat-icon [inline]="true">data_usage</mat-icon> {{ file.size }} </span>
+                    <os-icon-container icon="insert_drive_file">{{ file.type }}</os-icon-container>
+                    <os-icon-container icon="data_usage">{{ file.size }}</os-icon-container>
                 </div>
             </mat-cell>
         </ng-container>

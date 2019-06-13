@@ -1,0 +1,39 @@
+os-icon-container {
+    display: flex;
+    align-items: center;
+
+    & + & {
+        margin-top: 5px;
+    }
+
+    &.medium-container {
+        $size: 18px;
+        line-height: $size;
+
+        mat-icon {
+            font-size: $size;
+            height: $size;
+            width: $size;
+        }
+    }
+
+    &.large-container {
+        $size: 24px;
+        line-height: $size;
+
+        mat-icon {
+            font-size: $size;
+            width: $size;
+            height: $size;
+        }
+
+        .content-node {
+            font-size: 16px;
+            font-weight: 500;
+        }
+    }
+
+    .content-node {
+        margin: auto 5px;
+    }
+}
