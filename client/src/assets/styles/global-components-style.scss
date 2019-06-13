@@ -57,9 +57,15 @@
         border-color: mat-color($background, selected-button);
     }
 
+    .os-amount-chip {
+        background: mat-color($background, selected-button);
+        color: mat-color($foreground, text);
+    }
+
     .tile-text {
         color: mat-color($foreground, text);
     }
+
     .tile-color {
         background-color: mat-color($background, selected-button);
     }

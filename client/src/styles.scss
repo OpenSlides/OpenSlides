@@ -478,12 +478,10 @@ mat-expansion-panel {
 // to display quantities. Use in span or div
 .os-amount-chip {
     border-radius: 50%;
-    width: 20px;
+    min-width: 20px;
     height: 20px;
     line-height: 20px;
     padding: 3px;
-    background: lightgray;
-    color: #000;
     text-align: center;
 }
 

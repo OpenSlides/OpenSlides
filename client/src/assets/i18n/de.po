@@ -39,6 +39,9 @@ msgid "A server error occured. Please contact your system administrator."
 msgstr ""
 "Ein Serverfehler ist aufgetreten. Bitte kontaktieren Sie den Administrator."
 
+msgid "A title is required"
+msgstr "Ein Titel ist erforderlich"
+
 msgid "About me"
 msgstr "Über mich"
 
@@ -578,9 +581,6 @@ msgstr "Erstellen"
 msgid "Create final print template"
 msgstr "Beschluss-Druckvorlage erstellen"
 
-msgid "Create new category"
-msgstr "Neues Sachgebiet erstellen"
-
 msgid "Create new state"
 msgstr "Neuen Status erstellen"
 
@@ -730,13 +730,6 @@ msgstr "erledigt"
 
 msgid "Download CSV example file"
 msgstr "CSV-Beispiel-Datei herunterladen"
-
-msgid ""
-"Drag and drop motions to reorder the category. Then click the button to "
-"renumber."
-msgstr ""
-"Verschieben Sie die Anträge um das Sachgebiet neu zu ordnen. Klicken Sie "
-"anschließend auf die Schaltfläche um neu zu nummerieren."
 
 msgid "Drop files into this area OR click here to select files"
 msgstr ""
@@ -1237,9 +1230,6 @@ msgstr "Redner/in markieren"
 
 msgid "Media file"
 msgstr "Mediendatei"
-
-msgid "Menu"
-msgstr "Menü"
 
 msgid "Message"
 msgstr "Mitteilung"
@@ -2041,6 +2031,9 @@ msgstr "Sortieren"
 
 msgid "Sort agenda"
 msgstr "Tagesordnung sortieren"
+
+msgid "Sort categories"
+msgstr "Sachgebiete sortieren"
 
 msgid "Sort categories by"
 msgstr "Sachgebiete sortieren nach"
