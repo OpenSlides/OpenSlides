@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Title } from '@angular/platform-browser';
+import { Title, DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core'; // showcase
 
@@ -11,11 +11,12 @@ import { ConfigService } from 'app/core/ui-services/config.service';
  */
 @Component({
     selector: 'os-start',
-    templateUrl: './start.component.html'
+    templateUrl: './start.component.html',
+    styleUrls: ['./start.component.scss']
 })
 export class StartComponent extends BaseComponent implements OnInit {
     public welcomeTitle: string;
-    public welcomeText: string;
+    public welcomeText: SafeHtml;
 
     /**
      * Constructor of the StartComponent
@@ -23,8 +24,14 @@ export class StartComponent extends BaseComponent implements OnInit {
      * @param titleService the title serve
      * @param translate to translation module
      * @param configService read out config values
+     * @param sanitizer
      */
-    public constructor(titleService: Title, translate: TranslateService, private configService: ConfigService) {
+    public constructor(
+        titleService: Title,
+        translate: TranslateService,
+        private configService: ConfigService,
+        private sanitizer: DomSanitizer
+    ) {
         super(titleService, translate);
     }
 
@@ -42,8 +49,19 @@ export class StartComponent extends BaseComponent implements OnInit {
             .subscribe(welcomeTitle => (this.welcomeTitle = welcomeTitle));
 
         // set the welcome text
-        this.configService
-            .get<string>('general_event_welcome_text')
-            .subscribe(welcomeText => (this.welcomeText = welcomeText as string));
+        this.configService.get<string>('general_event_welcome_text').subscribe(welcomeText => {
+            this.welcomeText = this.sanitizeText(this.translate.instant(welcomeText));
+        });
+    }
+
+    /**
+     * Sanitizes the value from database.
+     *
+     * @param text The plain text to sanitize.
+     *
+     * @returns {SafeHtml} Html, that will be rendered with styles and so on...
+     */
+    public sanitizeText(text: string): SafeHtml {
+        return this.sanitizer.bypassSecurityTrustHtml(text);
     }
 }
