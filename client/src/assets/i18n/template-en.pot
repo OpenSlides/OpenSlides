@@ -28,6 +28,9 @@ msgstr ""
 msgid "A server error occured. Please contact your system administrator."
 msgstr ""
 
+msgid "A title is required"
+msgstr ""
+
 msgid "About me"
 msgstr ""
 
@@ -550,9 +553,6 @@ msgstr ""
 msgid "Create final print template"
 msgstr ""
 
-msgid "Create new category"
-msgstr ""
-
 msgid "Create new state"
 msgstr ""
 
@@ -684,11 +684,6 @@ msgid "Done"
 msgstr ""
 
 msgid "Download CSV example file"
-msgstr ""
-
-msgid ""
-"Drag and drop motions to reorder the category. Then click the button to "
-"renumber."
 msgstr ""
 
 msgid "Drop files into this area OR click here to select files"
@@ -1178,9 +1173,6 @@ msgid "Mark speaker"
 msgstr ""
 
 msgid "Media file"
-msgstr ""
-
-msgid "Menu"
 msgstr ""
 
 msgid "Message"
@@ -1973,6 +1965,9 @@ msgid "Sort"
 msgstr ""
 
 msgid "Sort agenda"
+msgstr ""
+
+msgid "Sort categories"
 msgstr ""
 
 msgid "Sort categories by"

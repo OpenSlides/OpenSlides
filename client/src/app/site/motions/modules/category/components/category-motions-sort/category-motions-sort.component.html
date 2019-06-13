@@ -5,16 +5,13 @@
     [nav]="false">
     <!-- Title -->
     <div class="title-slot">
-        <h2 *ngIf="category" translate>Sort motions in {{ category.prefixedName }}</h2>
+        <h2 *ngIf="category">{{ 'Sort motions' | translate }} ({{ category.prefixedName }})</h2>
     </div>
 </os-head-bar>
 
 <mat-card class="os-form-card">
-    <div translate>
-        Drag and drop motions to reorder the category. Then click the button to renumber.
-    </div>
     <div *ngIf="isMultiSelect">
-        <span> {{ sortSelector.multiSelectedIndex.length }}&nbsp;</span>
+        <span>{{ sortSelector.multiSelectedIndex.length }}&nbsp;</span>
         <span translate>selected</span>
         <button mat-button (click)="moveToPosition()"><span translate>move ...</span>
         </button>
