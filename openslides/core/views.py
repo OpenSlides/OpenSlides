@@ -16,7 +16,7 @@ from ..users.models import User
 from ..utils import views as utils_views
 from ..utils.arguments import arguments
 from ..utils.auth import GROUP_ADMIN_PK, anonymous_is_enabled, has_perm, in_some_groups
-from ..utils.autoupdate import inform_changed_data, inform_deleted_data
+from ..utils.autoupdate import inform_changed_data
 from ..utils.plugins import (
     get_plugin_description,
     get_plugin_license,
@@ -32,12 +32,10 @@ from ..utils.rest_api import (
     RetrieveModelMixin,
     ValidationError,
     detail_route,
-    list_route,
 )
 from .access_permissions import (
     ConfigAccessPermissions,
     CountdownAccessPermissions,
-    HistoryAccessPermissions,
     ProjectionDefaultAccessPermissions,
     ProjectorAccessPermissions,
     ProjectorMessageAccessPermissions,
@@ -442,53 +440,6 @@ class CountdownViewSet(ModelViewSet):
         return result
 
 
-class HistoryViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
-    """
-    API endpoint for History.
-
-    There are the following views: list, retrieve, clear_history.
-    """
-
-    access_permissions = HistoryAccessPermissions()
-    queryset = History.objects.all()
-
-    def check_view_permissions(self):
-        """
-        Returns True if the user has required permissions.
-        """
-        if self.action in ("list", "retrieve"):
-            result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action == "clear_history":
-            result = in_some_groups(self.request.user.pk or 0, [GROUP_ADMIN_PK])
-        else:
-            result = False
-        return result
-
-    @list_route(methods=["post"])
-    def clear_history(self, request):
-        """
-        Deletes and rebuilds the history.
-        """
-        # Collect all history objects with their collection_string and id.
-        args = []
-        for history_obj in History.objects.all():
-            args.append((history_obj.get_collection_string(), history_obj.pk))
-
-        # Delete history data and history (via CASCADE)
-        HistoryData.objects.all().delete()
-
-        # Trigger autoupdate.
-        if args:
-            inform_deleted_data(args)
-
-        # Rebuild history.
-        history_instances = History.objects.build_history()
-        inform_changed_data(history_instances)
-
-        # Setup response.
-        return Response({"detail": "History was deleted successfully."})
-
-
 # Special API views
 
 
@@ -533,7 +484,73 @@ class VersionView(utils_views.APIView):
         return result
 
 
-class HistoryView(utils_views.APIView):
+class HistoryInformationView(utils_views.APIView):
+    """
+    View to retrieve information about OpenSlides history.
+
+    Use GET to search history information. The query parameter 'type' determines
+    the type of your search:
+
+    Examples:
+
+        /?type=element&value=motions%2Fmotion%3A42 if your search for motion 42
+
+    Use DELETE to clear the history.
+    """
+
+    http_method_names = ["get", "delete"]
+
+    def get_context_data(self, **context):
+        """
+        Checks permission and parses query parameters.
+        """
+        if not has_perm(self.request.user, "users.can_see_history"):
+            self.permission_denied(self.request)
+        type = self.request.query_params.get("type")
+        value = self.request.query_params.get("value")
+        if type not in ("element"):
+            raise ValidationError(
+                {"detail": "Invalid input. Type should be 'element' or 'text'."}
+            )
+        # We currently just support searching by element id.
+        data = self.get_data_element_search(value)
+        return data
+
+    def get_data_element_search(self, value):
+        """
+        Retrieves history information for element search.
+        """
+        data = []
+        for instance in History.objects.filter(element_id=value).order_by("-now"):
+            data.append(
+                {
+                    "element_id": instance.element_id,
+                    "timestamp": instance.now.timestamp(),
+                    "information": instance.information,
+                    "resticted": instance.restricted,
+                    "user_id": instance.user.pk if instance.user else None,
+                }
+            )
+        return data
+
+    def delete(self, request, *args, **kwargs):
+        """
+        Deletes and rebuilds the history.
+        """
+        # Check permission
+        if not in_some_groups(request.user.pk or 0, [GROUP_ADMIN_PK]):
+            self.permission_denied(request)
+
+        # Delete history data and history (via CASCADE)
+        HistoryData.objects.all().delete()
+
+        # Rebuild history.
+        History.objects.build_history()
+
+        return Response({"detail": "History was deleted and rebuild successfully."})
+
+
+class HistoryDataView(utils_views.APIView):
     """
     View to retrieve the history data of OpenSlides.
 

@@ -1,4 +1,4 @@
-.os-listview-table {
+.mat-table {
     /** Time */
     .mat-column-time {
         flex: 1 0 50px;
@@ -23,4 +23,13 @@
 .no-info {
     font-style: italic;
     color: slategray; // TODO: Colors per theme
+}
+
+.custom-table-header {
+    justify-content: space-between;
+    text-align: left;
+
+    & > div {
+        padding: 0 20px;
+    }
 }

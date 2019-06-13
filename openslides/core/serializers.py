@@ -12,7 +12,6 @@ from ..utils.validate import validate_html
 from .models import (
     ConfigStore,
     Countdown,
-    History,
     ProjectionDefault,
     Projector,
     ProjectorMessage,
@@ -173,18 +172,3 @@ class CountdownSerializer(ModelSerializer):
             "running",
         )
         unique_together = ("title",)
-
-
-class HistorySerializer(ModelSerializer):
-    """
-    Serializer for core.models.Countdown objects.
-
-    Does not contain full data of history object.
-    """
-
-    information = JSONSerializerField()
-
-    class Meta:
-        model = History
-        fields = ("id", "element_id", "now", "information", "restricted", "user")
-        read_only_fields = ("now",)

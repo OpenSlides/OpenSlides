@@ -44,11 +44,3 @@ class ConfigAccessPermissions(BaseAccessPermissions):
     Access permissions container for the config (ConfigStore and
     ConfigViewSet).
     """
-
-
-class HistoryAccessPermissions(BaseAccessPermissions):
-    """
-    Access permissions container for the Histroy.
-    """
-
-    base_permission = "core.can_see_history"

@@ -29,7 +29,6 @@ class CoreAppConfig(AppConfig):
         from .views import (
             ConfigViewSet,
             CountdownViewSet,
-            HistoryViewSet,
             ProjectorMessageViewSet,
             ProjectorViewSet,
             ProjectionDefaultViewSet,
@@ -91,9 +90,6 @@ class CoreAppConfig(AppConfig):
         router.register(
             self.get_model("Countdown").get_collection_string(), CountdownViewSet
         )
-        router.register(
-            self.get_model("History").get_collection_string(), HistoryViewSet
-        )
 
         if "runserver" in sys.argv or "changeconfig" in sys.argv:
             startup()
@@ -123,7 +119,6 @@ class CoreAppConfig(AppConfig):
             "ProjectorMessage",
             "Countdown",
             "ConfigStore",
-            "History",
         ):
             yield self.get_model(model_name)
 

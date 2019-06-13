@@ -1,19 +1,26 @@
 import { Component, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatTableDataSource } from '@angular/material';
 import { Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
-import { Subject } from 'rxjs';
+import { Subject, BehaviorSubject } from 'rxjs';
 
-import { History } from 'app/shared/models/core/history';
-import { HistoryRepositoryService } from 'app/core/repositories/history/history-repository.service';
+import { environment } from 'environments/environment';
 import { isDetailNavigable } from 'app/shared/models/base/detail-navigable';
-import { ListViewBaseComponent } from 'app/site/base/list-view-base';
 import { OperatorService } from 'app/core/core-services/operator.service';
-import { ViewHistory } from '../../models/view-history';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { langToLocale } from 'app/shared/utils/lang-to-locale';
+import { TimeTravelService } from 'app/core/core-services/time-travel.service';
+import { HttpService } from 'app/core/core-services/http.service';
+import { BaseViewComponent } from 'app/site/base/base-view';
+import { History } from 'app/shared/models/core/history';
+import { ViewUser } from 'app/site/users/models/view-user';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
+import { BaseViewModel } from 'app/site/base/base-view-model';
+import { Motion } from 'app/shared/models/motions/motion';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 
 /**
  * A list view for the history.
@@ -25,12 +32,40 @@ import { langToLocale } from 'app/shared/utils/lang-to-locale';
     templateUrl: './history-list.component.html',
     styleUrls: ['./history-list.component.scss']
 })
-export class HistoryListComponent extends ListViewBaseComponent<ViewHistory, History, HistoryRepositoryService>
-    implements OnInit {
+export class HistoryListComponent extends BaseViewComponent implements OnInit {
     /**
      * Subject determine when the custom timestamp subject changes
      */
     public customTimestampChanged: Subject<number> = new Subject<number>();
+
+    public dataSource: MatTableDataSource<History> = new MatTableDataSource<History>();
+
+    public get isSuperAdmin(): boolean {
+        return this.operator.isSuperAdmin();
+    }
+
+    public pageSizes = [50, 100, 150, 200, 250];
+
+    /**
+     * The form for the selection of the model
+     * When more models are supproted, add a "collection"-dropdown
+     */
+    public modelSelectForm: FormGroup;
+
+    /**
+     * The observer for the selected collection, which is currently hardcoded
+     * to motions.
+     */
+    public collectionObserver: BehaviorSubject<BaseViewModel[]>;
+
+    /**
+     * The current selected collection. THis may move to `modelSelectForm`, if this can be choosen.
+     */
+    private currentCollection = Motion.COLLECTIONSTRING;
+
+    public get currentModelId(): number | null {
+        return this.modelSelectForm.controls.model.value;
+    }
 
     /**
      * Constructor for the history list component
@@ -47,12 +82,25 @@ export class HistoryListComponent extends ListViewBaseComponent<ViewHistory, His
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
-        private repo: HistoryRepositoryService,
         private viewModelStore: ViewModelStoreService,
         private router: Router,
-        private operator: OperatorService
+        private operator: OperatorService,
+        private timeTravelService: TimeTravelService,
+        private http: HttpService,
+        private formBuilder: FormBuilder,
+        private motionRepo: MotionRepositoryService,
+        private promptService: PromptService
     ) {
-        super(titleService, translate, matSnackBar, repo);
+        super(titleService, translate, matSnackBar);
+
+        this.modelSelectForm = this.formBuilder.group({
+            model: []
+        });
+        this.collectionObserver = this.motionRepo.getViewModelListBehaviorSubject();
+
+        this.modelSelectForm.controls.model.valueChanges.subscribe((id: number) => {
+            this.queryElementId(this.currentCollection, id);
+        });
     }
 
     /**
@@ -60,23 +108,34 @@ export class HistoryListComponent extends ListViewBaseComponent<ViewHistory, His
      */
     public ngOnInit(): void {
         super.setTitle('History');
-        this.initTable();
-        this.setFilters();
 
-        this.repo.getViewModelListObservable().subscribe(history => {
-            this.sortAndPublish(history);
-        });
-    }
+        this.dataSource.filterPredicate = (history: History, filter: string) => {
+            filter = filter ? filter.toLowerCase() : '';
 
-    /**
-     * Sorts the given ViewHistory array and sets it in the table data source
-     *
-     * @param unsortedHistoryList
-     */
-    private sortAndPublish(unsortedHistoryList: ViewHistory[]): void {
-        const sortedList = unsortedHistoryList.map(history => history).filter(item => item.information.length > 0);
-        sortedList.sort((a, b) => b.history.unixtime - a.history.unixtime);
-        this.dataSource.data = sortedList;
+            if (!history) {
+                return false;
+            }
+
+            const userfullname = this.getUserName(history);
+            if (userfullname.toLowerCase().indexOf(filter) >= 0) {
+                return true;
+            }
+
+            if (
+                this.getElementInfo(history) &&
+                this.getElementInfo(history)
+                    .toLowerCase()
+                    .indexOf(filter) >= 0
+            ) {
+                return true;
+            }
+
+            return (
+                this.parseInformation(history)
+                    .toLowerCase()
+                    .indexOf(filter) >= 0
+            );
+        };
     }
 
     /**
@@ -92,17 +151,12 @@ export class HistoryListComponent extends ListViewBaseComponent<ViewHistory, His
      * Tries get the title of the BaseModel element corresponding to
      * a history object.
      *
-     * @param history the history
-     * @returns the title of an old element or null if it could not be found
+     * @param history a history object
+     * @returns the title of the history element or null if it could not be found
      */
-    public getElementInfo(history: ViewHistory): string {
-        const oldElementTitle = this.repo.getOldModelInfo(history.getCollectionString(), history.getModelId());
-
-        if (oldElementTitle) {
-            return oldElementTitle;
-        } else {
-            return null;
-        }
+    public getElementInfo(history: History): string {
+        const model = this.viewModelStore.get(history.collectionString, history.modelId);
+        return model ? model.getListTitle() : null;
     }
 
     /**
@@ -111,46 +165,67 @@ export class HistoryListComponent extends ListViewBaseComponent<ViewHistory, His
      *
      * @param history Represents the selected element
      */
-    public async onClickRow(history: ViewHistory): Promise<void> {
-        if (this.operator.isInGroupIds(2)) {
-            await this.repo.browseHistory(history);
-            const element = this.viewModelStore.get(history.getCollectionString(), history.getModelId());
-            if (element && isDetailNavigable(element)) {
-                this.router.navigate([element.getDetailStateURL()]);
-            } else {
-                const message = this.translate.instant('Cannot navigate to the selected history element.');
-                this.raiseError(message);
+    public async onClickRow(history: History): Promise<void> {
+        if (!this.isSuperAdmin) {
+            return;
+        }
+
+        await this.timeTravelService.loadHistoryPoint(history);
+        const element = this.viewModelStore.get(history.collectionString, history.modelId);
+        if (element && isDetailNavigable(element)) {
+            this.router.navigate([element.getDetailStateURL()]);
+        } else {
+            const message = this.translate.instant('Cannot navigate to the selected history element.');
+            this.raiseError(message);
+        }
+    }
+
+    public getTimestamp(history: History): string {
+        return history.getLocaleString(langToLocale(this.translate.currentLang));
+    }
+
+    /**
+     * clears the whole history.
+     */
+    public async clearHistory(): Promise<void> {
+        const title = this.translate.instant('Are you sure you want delete the whole history?');
+        if (await this.promptService.open(title)) {
+            try {
+                await this.http.delete(`${environment.urlPrefix}/core/history/information/`);
+                this.refresh();
+            } catch (e) {
+                this.raiseError(e);
             }
         }
     }
 
-    public getTimestamp(viewHistory: ViewHistory): string {
-        return viewHistory.history.getLocaleString(langToLocale(this.translate.currentLang));
-    }
-
-    /**
-     * Handler for the delete all button
-     */
-    public onDeleteAllButton(): void {
-        if (this.operator.isInGroupIds(2)) {
-            this.repo.delete();
+    public refresh(): void {
+        if (this.currentCollection && this.currentModelId) {
+            this.queryElementId(this.currentCollection, this.currentModelId);
         }
     }
 
     /**
      * Returns a translated history information string which contains optional (translated) arguments.
      *
-     * @param information history information string
+     * @param history the history
      */
-    public parseInformation(information: string): string {
-        if (information.length) {
-            const base_string = this.translate.instant(information[0]);
-            let argument_string;
-            if (information.length > 1) {
-                argument_string = this.translate.instant(information[1]);
-            }
-            return base_string.replace(/{arg1}/g, argument_string);
+    public parseInformation(history: History): string {
+        if (!history.information || !history.information.length) {
+            return '';
         }
+
+        const baseString = this.translate.instant(history.information[0]);
+        let argumentString;
+        if (history.information.length > 1) {
+            argumentString = this.translate.instant(history.information[1]);
+        }
+        return baseString.replace(/{arg1}/g, argumentString);
+    }
+
+    public getUserName(history: History): string {
+        const user = this.viewModelStore.get(ViewUser, history.user_id);
+        return user ? user.full_name : '';
     }
 
     /**
@@ -163,31 +238,13 @@ export class HistoryListComponent extends ListViewBaseComponent<ViewHistory, His
     }
 
     /**
-     * Overwrites the dataSource's string filter with a more advanced option
-     * using the display methods of this class.
+     * Sets the data source to the request element id given by the collection string and the id.
      */
-    private setFilters(): void {
-        this.dataSource.filterPredicate = (data, filter) => {
-            if (!data || !data.information) {
-                return false;
-            }
-            filter = filter ? filter.toLowerCase() : '';
-            if (
-                this.getElementInfo(data) &&
-                this.getElementInfo(data)
-                    .toLowerCase()
-                    .indexOf(filter) >= 0
-            ) {
-                return true;
-            }
-            if (data.user && data.user.full_name.toLowerCase().indexOf(filter) >= 0) {
-                return true;
-            }
-            return (
-                this.parseInformation(data.information)
-                    .toLowerCase()
-                    .indexOf(filter) >= 0
-            );
-        };
+    private async queryElementId(collectionString: string, id: number): Promise<void> {
+        const historyData = await this.http.get<History[]>(`${environment.urlPrefix}/core/history/information/`, null, {
+            type: 'element',
+            value: `${collectionString}:${id}`
+        });
+        this.dataSource.data = historyData.map(data => new History(data));
     }
 }

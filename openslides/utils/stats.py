@@ -111,7 +111,7 @@ class WebsocketThroughputLogger:
     async def check_and_flush(self) -> None:
         # If we waited longer then 60 seconds, flush the data.
         current_time = time.time()
-        if current_time > (self.time + 20):
+        if current_time > (self.time + 60):
 
             send_ratio = receive_ratio = 1.0
             if self.send_compressed > 0:

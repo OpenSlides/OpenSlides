@@ -1,4 +1,3 @@
-import itertools
 import threading
 from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
 
@@ -234,27 +233,10 @@ def handle_changed_elements(elements: Iterable[Element]) -> None:
                     element["full_data"] = instance.get_full_data()
 
         # Save histroy here using sync code.
-        history_instances = save_history(elements)
-
-        # Convert history instances to Elements.
-        history_elements: List[Element] = []
-        for history_instance in history_instances:
-            history_elements.append(
-                Element(
-                    id=history_instance.get_rest_pk(),
-                    collection_string=history_instance.get_collection_string(),
-                    full_data=history_instance.get_full_data(),
-                    disable_history=True,  # This does not matter because history elements can never be part of the history itself.
-                )
-            )
-
-        # Chain elements and history elements.
-        itertools.chain(elements, history_elements)
+        save_history(elements)
 
         # Update cache and send autoupdate using async code.
-        async_to_sync(async_handle_collection_elements)(
-            itertools.chain(elements, history_elements)
-        )
+        async_to_sync(async_handle_collection_elements)(elements)
 
 
 def save_history(elements: Iterable[Element]) -> Iterable:

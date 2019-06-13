@@ -5,20 +5,41 @@
     <!-- Menu -->
     <div class="menu-slot">
         <!-- Hidden for everyone but the superadmin -->
-        <button *osPerms="'superadmin'" type="button" mat-icon-button [matMenuTriggerFor]="historyMenu">
+        <button *ngIf="isSuperAdmin" type="button" mat-icon-button [matMenuTriggerFor]="historyMenu">
             <mat-icon>more_vert</mat-icon>
         </button>
     </div>
 </os-head-bar>
 
 <div class="custom-table-header">
-    <mat-form-field>
-        <input matInput (keyup)="applySearch($event.target.value)" placeholder="{{ 'Search' | translate }}" />
-        <mat-icon matSuffix>search</mat-icon>
-    </mat-form-field>
+    <div>
+        <span>
+            <os-search-value-selector
+                ngDefaultControl
+                [form]="modelSelectForm"
+                [formControl]="modelSelectForm.get('model')"
+                [multiple]="false"
+                [includeNone]="false"
+                listname="{{ 'Motion' | translate }}"
+                [InputListValues]="collectionObserver"
+            ></os-search-value-selector>
+        </span>
+        <span class="spacer-left-20">
+            <button mat-button (click)="refresh()" *ngIf="currentModelId">
+                <mat-icon>refresh</mat-icon>
+                <span translate>Refresh</span>
+            </button>
+        </span>
+    </div>
+    <div>
+        <mat-form-field>
+            <input matInput (keyup)="applySearch($event.target.value)" placeholder="{{ 'Search' | translate }}" />
+            <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+    </div>
 </div>
 
-<mat-table class="os-headed-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
+<mat-table class="on-transition-fade" [dataSource]="dataSource" matSort>
     <!-- Timestamp -->
     <ng-container matColumnDef="time">
         <mat-header-cell *matHeaderCellDef translate>Timestamp</mat-header-cell>
@@ -43,23 +64,23 @@
     <!-- Info -->
     <ng-container matColumnDef="info">
         <mat-header-cell *matHeaderCellDef translate>Comment</mat-header-cell>
-        <mat-cell *matCellDef="let history">{{ parseInformation(history.information) }}</mat-cell>
+        <mat-cell *matCellDef="let history">{{ parseInformation(history) }}</mat-cell>
     </ng-container>
 
     <!-- User -->
     <ng-container matColumnDef="user">
         <mat-header-cell *matHeaderCellDef translate>Changed by</mat-header-cell>
-        <mat-cell *matCellDef="let history">{{ history.user_full_name }}</mat-cell>
+        <mat-cell *matCellDef="let history">{{ getUserName(history) }}</mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="getRowDef()"></mat-header-row>
     <mat-row *matRowDef="let row; columns: getRowDef()" (click)="onClickRow(row)"></mat-row>
 </mat-table>
 
-<mat-paginator class="on-transition-fade" [pageSizeOptions]="pageSize"></mat-paginator>
+<mat-paginator class="on-transition-fade" [pageSizeOptions]="pageSizes"></mat-paginator>
 
 <mat-menu #historyMenu="matMenu">
-    <button mat-menu-item class="red-warning-text" (click)="onDeleteAllButton()">
+    <button mat-menu-item class="red-warning-text" (click)="clearHistory()">
         <mat-icon>delete</mat-icon>
         <span translate>Delete whole history</span>
     </button>
