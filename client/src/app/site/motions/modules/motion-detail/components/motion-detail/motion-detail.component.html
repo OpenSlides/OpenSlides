@@ -113,9 +113,12 @@
 
         <!-- Sequential number -->
         <span class="main-nav-color title-font">
-            <span translate>Sequential number</span>&nbsp;{{ motion.id }}
+            <span *ngIf="showSequential">
+                <span translate>Sequential number</span>
+                &nbsp;{{ motion.id }}
+            </span>
+            <span *ngIf="showSequential && motion.parent_id">&#xb7;&nbsp;</span>
             <span *ngIf="motion.parent_id">
-                &#xb7;
                 <span>
                     <span translate>Amendment to</span>&nbsp;<a [routerLink]="motion.parent.getDetailStateURL()">{{
                         motion.parent.identifier || motion.parent.title

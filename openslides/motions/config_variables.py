@@ -190,6 +190,16 @@ def get_config_variables():
         subgroup="General",
     )
 
+    yield ConfigVariable(
+        name="motions_show_sequential_numbers",
+        default_value=True,
+        input_type="boolean",
+        label="Show the sequential number for a motion",
+        weight=336,
+        group="Motions",
+        subgroup="General",
+    )
+
     # Amendments
 
     yield ConfigVariable(

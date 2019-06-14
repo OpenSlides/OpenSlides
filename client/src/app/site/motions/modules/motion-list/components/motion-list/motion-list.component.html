@@ -90,7 +90,7 @@
                 <!-- Submitters -->
                 <div class="submitters-line ellipsis-overflow" *ngIf="motion.submitters.length">
                     <span translate>by</span> {{ motion.submitters }}
-                    <span *osPerms="'motions.can_manage'">
+                    <span *ngIf="showSequential">
                         &middot;
                         <span translate>Sequential number</span>
                         {{ motion.id }}
