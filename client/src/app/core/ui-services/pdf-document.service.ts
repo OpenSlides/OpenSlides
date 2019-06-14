@@ -13,7 +13,18 @@ import { HttpService } from '../core-services/http.service';
  */
 export enum StyleType {
     DEFAULT = 'tocEntry',
+    SUBTITLE = 'subtitle',
+    SUB_ENTRY = 'tocSubEntry',
     CATEGORY_SECTION = 'tocCategorySection'
+}
+
+/**
+ * Enumeration to describe the type of borders.
+ */
+export enum BorderType {
+    DEFAULT = 'noBorders',
+    LIGHT_HORIZONTAL_LINES = 'lightHorizontalLines',
+    HEADER_ONLY = 'headerLineOnly'
 }
 
 /**
@@ -445,9 +456,10 @@ export class PdfDocumentService {
      * @returns an object that contains all pdf styles
      */
     private getStandardPaperStyles(): object {
+        const pageSize = this.configService.instant('general_export_pdf_pagesize');
         return {
             title: {
-                fontSize: 18,
+                fontSize: pageSize === 'A5' ? 14 : 16,
                 margin: [0, 0, 0, 20],
                 bold: true
             },
@@ -475,12 +487,12 @@ export class PdfDocumentService {
                 fontSize: 8
             },
             heading2: {
-                fontSize: 14,
+                fontSize: pageSize === 'A5' ? 12 : 14,
                 margin: [0, 0, 0, 10],
                 bold: true
             },
             heading3: {
-                fontSize: 12,
+                fontSize: pageSize === 'A5' ? 10 : 12,
                 margin: [0, 10, 0, 0],
                 bold: true
             },
@@ -498,17 +510,25 @@ export class PdfDocumentService {
                 margin: [15, 5]
             },
             tocEntry: {
-                fontSize: 12,
+                fontSize: pageSize === 'A5' ? 10 : 11,
                 margin: [0, 0, 0, 0],
                 bold: false
             },
+            tocHeaderRow: {
+                fontSize: 8,
+                italics: true
+            },
+            tocSubEntry: {
+                fontSize: pageSize === 'A5' ? 9 : 10,
+                color: '#404040'
+            },
             tocCategoryEntry: {
-                fontSize: 12,
+                fontSize: pageSize === 'A5' ? 10 : 11,
                 margin: [10, 0, 0, 0],
                 bold: false
             },
             tocCategoryTitle: {
-                fontSize: 12,
+                fontSize: pageSize === 'A5' ? 10 : 11,
                 margin: [0, 0, 0, 4],
                 bold: true
             },
@@ -610,6 +630,7 @@ export class PdfDocumentService {
      */
     public createTitle(configVariable: string): object {
         const titleText = this.translate.instant(this.configService.instant<string>(configVariable));
+
         return {
             text: titleText,
             style: 'title'
@@ -647,13 +668,21 @@ export class PdfDocumentService {
      * @param tocBody the body of the table
      * @returns The table of contents as doc definition
      */
-    public createTocTableDef(tocBody: object, style: StyleType = StyleType.DEFAULT): object {
+    public createTocTableDef(
+        tocBody: object[],
+        style: StyleType = StyleType.DEFAULT,
+        borderStyle: BorderType = BorderType.DEFAULT,
+        ...header: object[]
+    ): object {
         return {
             table: {
+                headerRows: header[0] ? header.length : 0,
+                keepWithHeaderRows: header[0] ? header.length : 0,
+                dontBreakRows: true,
                 widths: ['auto', '*', 'auto'],
-                body: tocBody
+                body: header[0] ? [...header, ...tocBody] : tocBody
             },
-            layout: 'noBorders',
+            layout: borderStyle,
             style: style
         };
     }
@@ -672,15 +701,16 @@ export class PdfDocumentService {
         identifier: string,
         title: string,
         pageReference: string,
-        style: StyleType = StyleType.DEFAULT
-    ): Object {
+        style: StyleType = StyleType.DEFAULT,
+        ...subTitle: object[]
+    ): Array<Object> {
         return [
             {
                 text: identifier,
                 style: style
             },
             {
-                text: title,
+                text: [title, ...subTitle],
                 style: 'tocEntry'
             },
             {
@@ -689,5 +719,20 @@ export class PdfDocumentService {
                 alignment: 'right'
             }
         ];
+    }
+
+    /**
+     * Function to create an inline line in the toc.
+     *
+     * @param text The text for the line.
+     * @param bold Optional boolean, if the text should be bold - defaults to `false`.
+     *
+     * @returns {Object} An object for `DocDefinition` for `pdf-make`.
+     */
+    public createTocLineInline(text: string): Object {
+        return {
+            text: '\n' + text,
+            style: StyleType.SUB_ENTRY
+        };
     }
 }
