@@ -115,6 +115,7 @@ _(
 _('Name of recommender for statute amendments');
 _('Will be displayed as label before selected recommendation in statute amendments.');
 _('Default text version for change recommendations');
+_('Show the sequential number for a motion');
 // subgroup Amendments
 _('Amendments');
 _('Activate statute amendments');
@@ -158,6 +159,7 @@ _('Preamble text for PDF documents of motions');
 _('Show submitters and recommendation in table of contents');
 _('Sort categories by');
 _('Sort motions by');
+_('Show submitters and recommendation in table of contents');
 _('Include the sequential number in PDF and DOCX');
 // misc motion strings
 _('Amendment');

@@ -1549,6 +1549,9 @@ msgstr "PDF"
 msgid "PDF ballot paper logo"
 msgstr "PDF-Stimmzettel-Logo"
 
+msgid "PDF export"
+msgstr "PDF-Export"
+
 msgid "PDF footer logo (left)"
 msgstr "PDF-Logo Fußzeile (links)"
 
@@ -1643,11 +1646,11 @@ msgstr "Bitte füllen Sie alle erforderlichen Felder aus."
 msgid "Please fill in the values for each candidate"
 msgstr "Bitte füllen Sie die Werte aller Kandidat/innen aus."
 
-msgid "Preamble text for PDF and DOCX documents (all motions)"
-msgstr "Einleitungstext für PDF- und DOCX-Dokumente (alle Anträge) "
-
 msgid "Preamble text for PDF document (all elections)"
 msgstr "Einleitungstext für PDF-Dokument (alle Wahlen) "
+
+msgid "Preamble text for PDF documents of motions"
+msgstr "Einleitungstext für PDF-Dokumente von Anträgen"
 
 msgid "Predefined seconds of new countdowns"
 msgstr "Vorgegebene Sekunden für neue Countdowns"
@@ -2011,6 +2014,13 @@ msgstr "Ergänzungsfeld für Empfehlung anzeigen"
 msgid "Show state extension field"
 msgstr "Ergänzungsfeld für Status anzeigen"
 
+msgid "Show submitters and recommendation in table of contents"
+msgstr ""
+"Antragsteller/in und Beschlussempfehlung im PDF-Inhaltsverzeichnis anzeigen"
+
+msgid "Show the sequential number for a motion"
+msgstr "Laufende Nummer von Anträgen anzeigen"
+
 msgid "Show this text on the login page"
 msgstr "Diesen Text auf der Login-Seite anzeigen"
 
@@ -2288,11 +2298,11 @@ msgstr "Zeitstempel"
 msgid "Title"
 msgstr "Titel"
 
-msgid "Title for PDF and DOCX documents (all motions)"
-msgstr "Titel für PDF- und DOCX-Dokumente (alle Anträge) "
-
 msgid "Title for PDF document (all elections)"
 msgstr "Titel für PDF-Dokument (alle Wahlen)"
+
+msgid "Title for PDF documents of motions"
+msgstr "Titel für PDF-Dokumente von Anträgen"
 
 msgid "Title for access data and welcome PDF"
 msgstr "Titel für das Zugangsdaten- und Begrüßungs-PDF"
