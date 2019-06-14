@@ -1489,6 +1489,9 @@ msgstr ""
 msgid "PDF ballot paper logo"
 msgstr ""
 
+msgid "PDF export"
+msgstr ""
+
 msgid "PDF footer logo (left)"
 msgstr ""
 
@@ -1582,10 +1585,10 @@ msgstr ""
 msgid "Please fill in the values for each candidate"
 msgstr ""
 
-msgid "Preamble text for PDF and DOCX documents (all motions)"
+msgid "Preamble text for PDF document (all elections)"
 msgstr ""
 
-msgid "Preamble text for PDF document (all elections)"
+msgid "Preamble text for PDF documents of motions"
 msgstr ""
 
 msgid "Predefined seconds of new countdowns"
@@ -1946,6 +1949,12 @@ msgstr ""
 msgid "Show state extension field"
 msgstr ""
 
+msgid "Show submitters and recommendation in table of contents"
+msgstr ""
+
+msgid "Show the sequential number for a motion"
+msgstr ""
+
 msgid "Show this text on the login page"
 msgstr ""
 
@@ -2192,10 +2201,10 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
-msgid "Title for PDF and DOCX documents (all motions)"
+msgid "Title for PDF document (all elections)"
 msgstr ""
 
-msgid "Title for PDF document (all elections)"
+msgid "Title for PDF documents of motions"
 msgstr ""
 
 msgid "Title for access data and welcome PDF"
