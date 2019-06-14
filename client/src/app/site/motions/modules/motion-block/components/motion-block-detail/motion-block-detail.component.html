@@ -27,67 +27,57 @@
         <span translate>Follow recommendations for all motions</span>
     </button>
 
-    <table class="os-headed-listview-table on-transition-fade" mat-table [dataSource]="dataSource">
-        <!-- title column -->
-        <ng-container matColumnDef="title">
-            <mat-header-cell *matHeaderCellDef> <span translate>Motion</span> </mat-header-cell>
-            <mat-cell *matCellDef="let motion">
-                {{ motion.getTitle() }}
-            </mat-cell>
-        </ng-container>
+    <pbl-ngrid
+        class="block-detail-table"
+        cellTooltip
+        showHeader="true"
+        vScrollFixed="80"
+        [dataSource]="dataSource"
+        [columns]="columnSet"
+    >
+        <!-- Title column -->
+        <div
+            *pblNgridCellDef="'title'; row as motion; rowContext as rowContext"
+            class="cell-slot fill motion-block-title"
+        >
+            <a class="detail-link" [routerLink]="motion.getDetailStateURL()" *ngIf="!isMultiSelect"></a>
+            <span>{{ motion.getTitle() }}</span>
+        </div>
 
-        <!-- state column -->
-        <ng-container matColumnDef="state">
-            <mat-header-cell *matHeaderCellDef> <span translate>State</span> </mat-header-cell>
-            <mat-cell class="chip-container" *matCellDef="let motion">
+        <!-- State column -->
+        <div *pblNgridCellDef="'state'; row as motion" class="cell-slot fill">
+            <div class="chip-container">
                 <mat-basic-chip disableRipple [ngClass]="motion.stateCssColor">
                     {{ getStateLabel(motion) }}
                 </mat-basic-chip>
-            </mat-cell>
-        </ng-container>
+            </div>
+        </div>
 
         <!-- Recommendation column -->
-        <ng-container matColumnDef="recommendation">
-            <mat-header-cell *matHeaderCellDef> <span translate>Recommendation</span> </mat-header-cell>
-            <mat-cell class="chip-container" *matCellDef="let motion">
-                <mat-basic-chip *ngIf="motion.recommendation" disableRipple class="bluegrey">
-                    {{ getRecommendationLabel(motion) }}
-                </mat-basic-chip>
-            </mat-cell>
-        </ng-container>
+        <div *pblNgridCellDef="'recommendation'; row as motion" class="cell-slot fill">
+            <mat-basic-chip *ngIf="!!motion.recommendation" disableRipple class="bluegrey">
+                {{ getRecommendationLabel(motion) }}
+            </mat-basic-chip>
+        </div>
 
-        <!-- Remove motion column -->
-        <ng-container matColumnDef="remove">
-            <mat-header-cell *matHeaderCellDef></mat-header-cell>
-            <mat-cell *matCellDef="let motion">
-                <button
-                    type="button"
-                    mat-icon-button
-                    color="warn"
-                    matTooltip="{{ 'Remove from motion block' | translate }}"
-                    (click)="onRemoveMotionButton(motion)"
-                >
-                    <mat-icon>close</mat-icon>
-                </button>
-            </mat-cell>
-        </ng-container>
-
-        <!-- Anchor column to open the separate tab -->
-        <ng-container matColumnDef="anchor">
-            <mat-header-cell *matHeaderCellDef></mat-header-cell>
-            <mat-cell *matCellDef="let motion">
-                <a [routerLink]="motion.getDetailStateURL()"></a>
-            </mat-cell>
-        </ng-container>
-
-        <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: getColumnDefinition()"> </mat-row>
-    </table>
+        <!-- Remove from block column -->
+        <div *pblNgridCellDef="'remove'; row as motion" class="cell-slot fill">
+            <button
+                type="button"
+                mat-icon-button
+                color="warn"
+                matTooltip="{{ 'Remove from motion block' | translate }}"
+                (click)="onRemoveMotionButton(motion)"
+            >
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+    </pbl-ngrid>
 </mat-card>
 
 <!-- The menu content -->
 <mat-menu #motionBlockMenu="matMenu">
-    <os-speaker-button [menuItem]=true [object]="block"></os-speaker-button>
+    <os-speaker-button [menuItem]="true" [object]="block"></os-speaker-button>
 
     <os-projector-button *ngIf="block" [object]="block" [menuItem]="true"></os-projector-button>
 
@@ -112,23 +102,17 @@
     <div class="os-form-card-mobile" mat-dialog-content>
         <form class="edit-form" [formGroup]="blockEditForm" (ngSubmit)="saveBlock()" (keydown)="onKeyDown($event)">
             <mat-form-field>
-                <input matInput osAutofocus placeholder="{{ 'Title' | translate }}" formControlName="title" required/>
+                <input matInput osAutofocus placeholder="{{ 'Title' | translate }}" formControlName="title" required />
             </mat-form-field>
             <mat-checkbox formControlName="internal">Internal</mat-checkbox>
         </form>
     </div>
     <div mat-dialog-actions>
-            <button
-                type="submit"
-                mat-button
-                [disabled]="!blockEditForm.valid"
-                color="primary"
-                (click)="saveBlock()"
-            >
-                <span translate>Save</span>
-            </button>
-            <button type="button" mat-button [mat-dialog-close]="null">
-                <span translate>Cancel</span>
-            </button>
-        </div>
+        <button type="submit" mat-button [disabled]="!blockEditForm.valid" color="primary" (click)="saveBlock()">
+            <span translate>Save</span>
+        </button>
+        <button type="button" mat-button [mat-dialog-close]="null">
+            <span translate>Cancel</span>
+        </button>
+    </div>
 </ng-template>

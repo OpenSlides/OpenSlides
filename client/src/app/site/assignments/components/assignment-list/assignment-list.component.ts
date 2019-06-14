@@ -4,8 +4,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
+import { PblColumnDefinition } from '@pebula/ngrid';
 
-import { Assignment } from 'app/shared/models/assignments/assignment';
 import { AssignmentFilterListService } from '../../services/assignment-filter.service';
 import { AssignmentSortListService } from '../../services/assignment-sort-list.service';
 import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
@@ -24,13 +24,30 @@ import { AssignmentPdfExportService } from '../../services/assignment-pdf-export
     templateUrl: './assignment-list.component.html',
     styleUrls: ['./assignment-list.component.scss']
 })
-export class AssignmentListComponent
-    extends ListViewBaseComponent<ViewAssignment, Assignment, AssignmentRepositoryService>
-    implements OnInit {
+export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignment> implements OnInit {
     /**
      * The different phases of an assignment. Info is fetched from server
      */
     public phaseOptions = AssignmentPhases;
+
+    /**
+     * Define the columns to show
+     */
+    public tableColumnDefinition: PblColumnDefinition[] = [
+        {
+            prop: 'title',
+            width: 'auto'
+        },
+        {
+            prop: 'phase',
+            width: '20%',
+            minWidth: 180
+        },
+        {
+            prop: 'candidates',
+            width: this.singleButtonWidth
+        }
+    ];
 
     /**
      * Constructor.
@@ -61,8 +78,7 @@ export class AssignmentListComponent
         private router: Router,
         public operator: OperatorService
     ) {
-        super(titleService, translate, matSnackBar, repo, route, storage, filterService, sortService);
-        // activate multiSelect mode for this list view
+        super(titleService, translate, matSnackBar, storage);
         this.canMultiSelect = true;
     }
 
@@ -72,7 +88,6 @@ export class AssignmentListComponent
      */
     public ngOnInit(): void {
         super.setTitle('Elections');
-        this.initTable();
     }
 
     /**
@@ -81,16 +96,6 @@ export class AssignmentListComponent
      */
     public onPlusButton(): void {
         this.router.navigate(['./new'], { relativeTo: this.route });
-    }
-
-    /**
-     * Action to be performed after a click on a row in the table, if in single select mode.
-     * Navigates to the corresponding assignment
-     *
-     * @param assignment The entry of row clicked
-     */
-    public singleSelectAction(assignment: ViewAssignment): void {
-        this.router.navigate([assignment.getDetailStateURL()], { relativeTo: this.route });
     }
 
     /**
@@ -114,21 +119,5 @@ export class AssignmentListComponent
                 await this.repo.delete(assignment);
             }
         }
-    }
-
-    /**
-     * Fetch the column definitions for the data table
-     *
-     * @returns a list of string matching the columns
-     */
-    public getColumnDefintion(): string[] {
-        let list = ['title', 'phase', 'candidates'];
-        if (this.operator.hasPerms('core.can_manage_projector')) {
-            list = ['projector'].concat(list);
-        }
-        if (this.isMultiSelect) {
-            list = ['selector'].concat(list);
-        }
-        return list;
     }
 }

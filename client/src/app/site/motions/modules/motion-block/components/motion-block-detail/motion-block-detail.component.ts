@@ -5,17 +5,15 @@ import { MatSnackBar, MatDialog } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
+import { PblColumnDefinition, PblDataSource, createDS, columnFactory } from '@pebula/ngrid';
 
-import { ListViewBaseComponent } from 'app/site/base/list-view-base';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
-import { OperatorService } from 'app/core/core-services/operator.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
-import { StorageService } from 'app/core/core-services/storage.service';
-import { Motion } from 'app/shared/models/motions/motion';
+import { BaseViewComponent } from 'app/site/base/base-view';
 
 /**
  * Detail component to display one motion block
@@ -25,12 +23,52 @@ import { Motion } from 'app/shared/models/motions/motion';
     templateUrl: './motion-block-detail.component.html',
     styleUrls: ['./motion-block-detail.component.scss']
 })
-export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion, Motion, MotionRepositoryService>
-    implements OnInit {
+export class MotionBlockDetailComponent extends BaseViewComponent implements OnInit {
     /**
      * Determines the block id from the given URL
      */
     public block: ViewMotionBlock;
+
+    /**
+     * Data source for the motions in the block
+     */
+    public dataSource: PblDataSource<ViewMotion>;
+
+    /**
+     * Define the columns to show
+     */
+    public tableColumnDefinition: PblColumnDefinition[] = [];
+
+    /**
+     * Define the columns to show
+     * TODO: The translation will not update when the
+     */
+    public columnSet = columnFactory()
+        .table(
+            {
+                prop: 'title',
+                label: this.translate.instant('Title'),
+                width: 'auto'
+            },
+            {
+                prop: 'state',
+                label: this.translate.instant('State'),
+                width: '30%',
+                minWidth: 60
+            },
+            {
+                prop: 'recommendation',
+                label: this.translate.instant('Recommendation'),
+                width: '30%',
+                minWidth: 60
+            },
+            {
+                prop: 'remove',
+                label: '',
+                width: '40px'
+            }
+        )
+        .build();
 
     /**
      * The form to edit blocks
@@ -61,9 +99,7 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
         titleService: Title,
         protected translate: TranslateService,
         matSnackBar: MatSnackBar,
-        route: ActivatedRoute,
-        storage: StorageService,
-        private operator: OperatorService,
+        private route: ActivatedRoute,
         private router: Router,
         protected repo: MotionBlockRepositoryService,
         protected motionRepo: MotionRepositoryService,
@@ -71,7 +107,7 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
         private fb: FormBuilder,
         private dialog: MatDialog
     ) {
-        super(titleService, translate, matSnackBar, motionRepo, route, storage);
+        super(titleService, translate, matSnackBar);
     }
 
     /**
@@ -80,7 +116,7 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
      */
     public ngOnInit(): void {
         super.setTitle('Motion block');
-        this.initTable();
+
         const blockId = parseInt(this.route.snapshot.params.id, 10);
 
         // pseudo filter
@@ -88,31 +124,15 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
             this.repo.getViewModelObservable(blockId).subscribe(newBlock => {
                 if (newBlock) {
                     this.block = newBlock;
-                    this.subscriptions.push(
-                        this.repo.getViewMotionsByBlock(this.block.motionBlock).subscribe(viewMotions => {
-                            if (viewMotions && viewMotions.length) {
-                                this.dataSource.data = viewMotions;
-                            } else {
-                                this.dataSource.data = [];
-                            }
+
+                    this.dataSource = createDS<ViewMotion>()
+                        .onTrigger(() => {
+                            return this.repo.getViewMotionsByBlock(this.block.motionBlock);
                         })
-                    );
+                        .create();
                 }
             })
         );
-    }
-
-    /**
-     * Returns the columns that should be shown in the table
-     *
-     * @returns an array of strings building the column definition
-     */
-    public getColumnDefinition(): string[] {
-        let columns = ['title', 'state', 'recommendation', 'anchor'];
-        if (this.operator.hasPerms('motions.can_manage_manage')) {
-            columns = columns.concat('remove');
-        }
-        return columns;
     }
 
     /**
@@ -169,8 +189,8 @@ export class MotionBlockDetailComponent extends ListViewBaseComponent<ViewMotion
      * Following a recommendation implies, that a valid recommendation exists.
      */
     public isFollowingProhibited(): boolean {
-        if (this.dataSource.data) {
-            return this.dataSource.data.every(motion => motion.isInFinalState() || !motion.recommendation_id);
+        if (this.dataSource && this.dataSource.source) {
+            return this.dataSource.source.every(motion => motion.isInFinalState() || !motion.recommendation_id);
         } else {
             return false;
         }

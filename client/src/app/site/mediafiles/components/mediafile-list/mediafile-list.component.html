@@ -1,8 +1,4 @@
-<os-head-bar
-    [mainButton]="canUploadFiles"
-    [multiSelectMode]="isMultiSelect"
-    (mainEvent)="onMainEvent()"
->
+<os-head-bar [mainButton]="canUploadFiles" [multiSelectMode]="isMultiSelect" (mainEvent)="onMainEvent()">
     <!-- Title -->
     <div class="title-slot">
         <h2 translate>Files</h2>
@@ -14,6 +10,7 @@
             <mat-icon>more_vert</mat-icon>
         </button>
     </div>
+
     <!-- Multiselect info -->
     <div *ngIf="this.isMultiSelect" class="central-info-slot">
         <button mat-icon-button (click)="toggleMultiSelect()"><mat-icon>arrow_back</mat-icon></button>
@@ -21,99 +18,61 @@
     </div>
 </os-head-bar>
 
-<mat-drawer-container class="on-transition-fade">
-    <os-sort-filter-bar
-        [filterCount]="filteredCount"
-        [sortService]="sortService"
-        [filterService]="filterService"
-        (searchFieldChange)="searchFilter($event)"
-    >
-    </os-sort-filter-bar>
-    <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
-        <!-- Selector Column -->
-        <ng-container matColumnDef="selector">
-            <mat-header-cell *matHeaderCellDef mat-sort-header class="icon-cell"></mat-header-cell>
-            <mat-cell *matCellDef="let item" class="icon-cell" (click)="selectItem(item, $event)">
-                <mat-icon>{{ isSelected(item) ? 'check_circle' : '' }}</mat-icon>
-            </mat-cell>
-        </ng-container>
+<os-list-view-table
+    [repo]="repo"
+    [filterService]="filterService"
+    [sortService]="sortService"
+    [columns]="tableColumnDefinition"
+    [multiSelect]="isMultiSelect"
+    scrollKey="user"
+    [(selectedRows)]="selectedRows"
+    (dataSourceChange)="onDataSourceChange($event)"
+>
+    <!-- File title column -->
+    <div *pblNgridCellDef="'title'; row as file" class="cell-slot fill">
+        <a class="detail-link" [routerLink]="file.downloadUrl" target="_blank" *ngIf="!isMultiSelect"></a>
+        <span *ngIf="file.is_hidden">
+            <mat-icon matTooltip="{{ 'is hidden' | translate }}">lock</mat-icon>
+            &nbsp;
+        </span>
+        <div>
+            {{ file.title }}
+        </div>
+    </div>
 
-        <!-- Projector column -->
-        <ng-container matColumnDef="projector">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Projector</mat-header-cell>
-            <mat-cell *matCellDef="let file">
-                <os-projector-button *ngIf="file.isProjectable()" [object]="file"></os-projector-button>
-            </mat-cell>
-        </ng-container>
+    <!-- Info column -->
+    <div *pblNgridCellDef="'info'; row as file" class="cell-slot fill">
+        <div class="file-info-cell">
+            <os-icon-container icon="insert_drive_file">{{ file.type }}</os-icon-container>
+            <os-icon-container icon="data_usage">{{ file.size }}</os-icon-container>
+        </div>
+    </div>
 
-        <!-- Filename -->
-        <ng-container matColumnDef="title">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
-            <mat-cell *matCellDef="let file">
-                <span *ngIf="file.is_hidden">
-                    <mat-icon matTooltip="{{ 'is hidden' | translate }}">lock</mat-icon>
-                    &nbsp;
-                </span>
-                {{ file.title }}</mat-cell
-            >
-        </ng-container>
+    <!-- Indicator column -->
+    <div *pblNgridCellDef="'indicator'; row as file" class="cell-slot fill">
+        <div
+            *ngIf="getFileSettings(file).length > 0"
+            [matMenuTriggerFor]="singleFileMenu"
+            [matMenuTriggerData]="{ file: file }"
+            [matTooltip]="formatIndicatorTooltip(file)"
+        >
+            <mat-icon *ngIf="file.isFont()">text_fields</mat-icon>
+            <mat-icon *ngIf="file.isImage()">insert_photo</mat-icon>
+        </div>
+    </div>
 
-        <!-- Info -->
-        <ng-container matColumnDef="info">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Group</mat-header-cell>
-            <mat-cell *matCellDef="let file">
-                <div class="file-info-cell">
-                    <os-icon-container icon="insert_drive_file">{{ file.type }}</os-icon-container>
-                    <os-icon-container icon="data_usage">{{ file.size }}</os-icon-container>
-                </div>
-            </mat-cell>
-        </ng-container>
-
-        <!-- indicator -->
-        <ng-container matColumnDef="indicator">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Indicator</mat-header-cell>
-            <mat-cell *matCellDef="let file">
-                <!-- check if the file is managed -->
-
-                <div
-                    *ngIf="getFileSettings(file).length > 0"
-                    [matMenuTriggerFor]="singleFileMenu"
-                    (click)="$event.stopPropagation()"
-                    [matMenuTriggerData]="{ file: file }"
-                    [matTooltip]="formatIndicatorTooltip(file)"
-                >
-                    <mat-icon *ngIf="file.isFont()">text_fields</mat-icon>
-                    <mat-icon *ngIf="file.isImage()">insert_photo</mat-icon>
-                </div>
-            </mat-cell>
-        </ng-container>
-
-        <!-- menu -->
-        <ng-container matColumnDef="menu">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Menu</mat-header-cell>
-            <mat-cell *matCellDef="let file">
-                <button
-                    mat-icon-button
-                    [matMenuTriggerFor]="singleFileMenu"
-                    (click)="$event.stopPropagation()"
-                    [matMenuTriggerData]="{ file: file }"
-                    [disabled]="isMultiSelect"
-                >
-                    <mat-icon>more_vert</mat-icon>
-                </button>
-            </mat-cell>
-        </ng-container>
-
-        <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
-        <mat-row
-            *matRowDef="let row; columns: getColumnDefinition()"
-            (click)="selectItem(row, $event)"
-            [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected' : ''"
-        ></mat-row>
-    </mat-table>
-
-    <mat-paginator class="on-transition-fade" [pageSizeOptions]="pageSize"></mat-paginator>
-</mat-drawer-container>
+    <!-- Menu column -->
+    <div *pblNgridCellDef="'menu'; row as file" class="cell-slot fill">
+        <button
+            mat-icon-button
+            [matMenuTriggerFor]="singleFileMenu"
+            [matMenuTriggerData]="{ file: file }"
+            [disabled]="isMultiSelect"
+        >
+            <mat-icon>more_vert</mat-icon>
+        </button>
+    </div>
+</os-list-view-table>
 
 <!-- Template for the managing buttons -->
 <ng-template #manageButton let-file="file" let-action="action">
@@ -189,11 +148,7 @@
 <ng-template #fileEditDialog>
     <h1 mat-dialog-title>{{ 'Edit details for' | translate }}</h1>
     <div class="os-form-card-mobile" mat-dialog-content>
-        <form
-            class="edit-file-form"
-            [formGroup]="fileEditForm"
-            (keydown)="keyDownFunction($event)"
-        >
+        <form class="edit-file-form" [formGroup]="fileEditForm" (keydown)="keyDownFunction($event)">
             <mat-form-field>
                 <input
                     type="text"

@@ -1,25 +1,3 @@
-.mat-table {
-    /** Time */
-    .mat-column-time {
-        flex: 1 0 50px;
-    }
-
-    /** Element */
-    .mat-column-element {
-        flex: 3 0 50px;
-    }
-
-    /** Info */
-    .mat-column-info {
-        flex: 1 0 50px;
-    }
-
-    /** User */
-    .mat-column-user {
-        flex: 1 0 50px;
-    }
-}
-
 .no-info {
     font-style: italic;
     color: slategray; // TODO: Colors per theme

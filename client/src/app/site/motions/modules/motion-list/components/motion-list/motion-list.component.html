@@ -14,99 +14,88 @@
         <button mat-icon-button (click)="toggleMultiSelect()"><mat-icon>arrow_back</mat-icon></button>
         <span>{{ selectedRows.length }}&nbsp;</span><span translate>selected</span>
     </div>
+
+    <div class="extra-controls-slot">
+        <div *ngIf="isCategoryAvailable()">
+            <button
+                mat-button
+                *ngIf="selectedView !== 'tiles'"
+                (click)="onChangeView('tiles')"
+                matTooltip="{{ 'Tile view' | translate }}"
+            >
+                <mat-icon>view_module</mat-icon>
+            </button>
+
+            <button
+                mat-button
+                *ngIf="selectedView !== 'list'"
+                (click)="onChangeView('list')"
+                matTooltip="{{ 'List view' | translate }}"
+            >
+                <mat-icon>view_headline</mat-icon>
+            </button>
+        </div>
+    </div>
 </os-head-bar>
 
-<mat-drawer-container class="on-transition-fade">
-    <os-sort-filter-bar
-        [filterCount]="filteredCount"
+<ng-container *ngIf="selectedView === 'tiles'; then tiles; else list"></ng-container>
+
+<ng-template #list>
+    <os-list-view-table
+        [repo]="motionRepo"
         [filterService]="filterService"
         [sortService]="sortService"
-        [showFilterSort]="selectedView === 'list'"
-        [itemsVerboseName]="motionsVerboseName"
-        (searchFieldChange)="searchFilter($event)"
+        [columns]="tableColumnDefinition"
+        [multiSelect]="isMultiSelect"
+        [restricted]="restrictedColumns"
+        [hiddenInMobile]="['state']"
+        scrollKey="motion"
+        [(selectedRows)]="selectedRows"
+        (dataSourceChange)="onDataSourceChange($event)"
     >
-        <mat-button-toggle-group *ngIf="isCategoryAvailable()" #group="matButtonToggleGroup" [value]="selectedView" (change)="onChangeView(group.value)" appearance="legacy" aria-label="Select view" class="extra-controls-slot select-view-wrapper">
-            <mat-button-toggle value="tiles" matTooltip="{{ 'Tile view' | translate }}"><mat-icon>view_module</mat-icon></mat-button-toggle>
-            <mat-button-toggle value="list" matTooltip="{{ 'List view' | translate }}"><mat-icon>view_headline</mat-icon></mat-button-toggle>
-        </mat-button-toggle-group>
-    </os-sort-filter-bar>
+        <!-- Identifier -->
+        <div *pblNgridCellDef="'identifier'; row as motion" class="cell-slot fill">
+            <a class="detail-link" [routerLink]="motion.id" *ngIf="!isMultiSelect"></a>
+            <div class="column-identifier innerTable">
+                {{ motion.identifier }}
+            </div>
+        </div>
 
-    <div [ngSwitch]="selectedView">
-        <span *ngSwitchCase="'list'">
-            <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
-                <!-- Selector column -->
-                <ng-container matColumnDef="selector">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header></mat-header-cell>
-                    <mat-cell *matCellDef="let motion">
-                        <mat-icon>{{ isSelected(motion) ? 'check_circle' : '' }}</mat-icon>
-                    </mat-cell>
-                </ng-container>
+        <!-- Title -->
+        <div *pblNgridCellDef="'title'; row as motion; rowContext as rowContext" class="cell-slot fill">
+            <a
+                class="detail-link"
+                (click)="saveScrollIndex('motion', rowContext.identity)"
+                [routerLink]="motion.id"
+                *ngIf="!isMultiSelect"
+            ></a>
+            <div class="column-title innerTable">
+                <div class="title-line ellipsis-overflow">
+                    <!-- Is Favorite -->
+                    <span *ngIf="motion.star" class="favorite-star">
+                        <mat-icon inline>star</mat-icon>
+                    </span>
 
-                <!-- Projector column -->
-                <ng-container matColumnDef="projector">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>Projector</mat-header-cell>
-                    <mat-cell *matCellDef="let motion">
-                        <os-projector-button [object]="motion"></os-projector-button>
-                    </mat-cell>
-                </ng-container>
+                    <!-- Has File -->
+                    <span class="attached-files" *ngIf="motion.hasAttachments()">
+                        <mat-icon>attach_file</mat-icon>
+                    </span>
 
-                <!-- identifier column -->
-                <ng-container matColumnDef="identifier">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>Identifier</mat-header-cell>
-                    <mat-cell *matCellDef="let motion">
-                        <div class="innerTable">
-                            {{ motion.identifier }}
-                        </div>
-                    </mat-cell>
-                </ng-container>
+                    <!-- The title -->
+                    <span class="motion-list-title">
+                        {{ motion.title }}
+                    </span>
+                </div>
 
-                <!-- title column -->
-                <ng-container matColumnDef="title">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>Title</mat-header-cell>
-                    <mat-cell *matCellDef="let motion">
-                        <div class="innerTable max-width">
-                            <!-- title line -->
-                            <div class="title-line ellipsis-overflow">
-                                <!-- favorite icon -->
-                                <span *ngIf="motion.star" class="favorite-star">
-                                    <mat-icon inline>star</mat-icon>
-                                </span>
-                                <!-- attachment icon -->
-                                <span class="attached-files" *ngIf="motion.hasAttachments()">
-                                    <mat-icon>attach_file</mat-icon>
-                                </span>
-                                <!-- title -->
-                                <span class="motion-list-title">
-                                    {{ motion.title }}
-                                </span>
-                            </div>
-                            <!-- submitters line -->
-                            <div class="submitters-line ellipsis-overflow" *ngIf="motion.submitters.length">
-                                <span translate>by</span> {{ motion.submitters }}
-                                <span *osPerms="'motions.can_manage'">
-                                    &middot;
-                                    <span translate>Sequential number</span>
-                                    {{ motion.id }}
-                                </span>
-                            </div>
-                            <!-- state line-->
-                            <div class="ellipsis-overflow white">
-                                <mat-basic-chip *ngIf="motion.state" [ngClass]="motion.stateCssColor" [disabled]="true">
-                                    {{ getStateLabel(motion) }}
-                                </mat-basic-chip>
-                            </div>
-                            <!-- recommendation line -->
-                            <div
-                                *ngIf="motion.recommendation && motion.state.next_states_id.length > 0"
-                                class="ellipsis-overflow white spacer-top-3"
-                            >
-                                <mat-basic-chip class="bluegrey" [disabled]="true">
-                                    {{ getRecommendationLabel(motion) }}
-                                </mat-basic-chip>
-                            </div>
-                        </div>
-                    </mat-cell>
-                </ng-container>
+                <!-- Submitters -->
+                <div class="submitters-line ellipsis-overflow" *ngIf="motion.submitters.length">
+                    <span translate>by</span> {{ motion.submitters }}
+                    <span *osPerms="'motions.can_manage'">
+                        &middot;
+                        <span translate>Sequential number</span>
+                        {{ motion.id }}
+                    </span>
+                </div>
 
                 <!-- state column -->
                 <ng-container matColumnDef="state">
@@ -118,7 +107,9 @@
                                     <os-icon-container icon="device_hub">{{ motion.category }}</os-icon-container>
                                 </div>
                                 <div class="ellipsis-overflow spacer-top-5" *ngIf="motion.motion_block">
-                                    <os-icon-container icon="widgets">{{ motion.motion_block.title }}</os-icon-container>
+                                    <os-icon-container icon="widgets">{{
+                                        motion.motion_block.title
+                                    }}</os-icon-container>
                                 </div>
                                 <div class="ellipsis-overflow spacer-top-5" *ngIf="motion.tags && motion.tags.length">
                                     <os-icon-container icon="local_offer">
@@ -133,64 +124,104 @@
                     </mat-cell>
                 </ng-container>
 
-                <!-- Anchor column to open the separate tab -->
-                <ng-container matColumnDef="anchor">
-                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
-                    <mat-cell *matCellDef="let motion">
-                        <a [routerLink]="motion.id" *ngIf="!isMultiSelect"></a>
-                    </mat-cell>
-                </ng-container>
+                <!-- Workflow state -->
+                <div class="ellipsis-overflow white">
+                    <mat-basic-chip *ngIf="motion.state" [ngClass]="motion.stateCssColor" [disabled]="true">
+                        {{ getStateLabel(motion) }}
+                    </mat-basic-chip>
+                </div>
 
-        <!-- Speakers column -->
-        <ng-container matColumnDef="speakers">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Speakers</mat-header-cell>
-            <mat-cell *matCellDef="let motion">
-                <os-speaker-button [object]="motion" [disabled]="isMultiSelect"></os-speaker-button>
-            </mat-cell>
-        </ng-container>
-
-                <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
-                <mat-row
-                    [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected' : ''"
-                    (click)="selectItem(row, $event)"
-                    *matRowDef="let row; columns: getColumnDefinition()"
-                    class="lg"
+                <!-- Recommendation -->
+                <div
+                    *ngIf="motion.recommendation && motion.state.next_states_id.length > 0"
+                    class="ellipsis-overflow white spacer-top-3"
                 >
-                </mat-row>
-            </mat-table>
-        </span>
-        <span *ngSwitchCase="'tiles'">
-            <os-grid-layout>
-                <os-block-tile
-                    *ngFor="let tileCategory of tileCategories"
-                    (clicked)="changeToViewWithTileCategory(tileCategory)"
-                    [orientation]="'horizontal'"
-                    [only]="'title'"
-                    [blockType]="'node'"
-                    [data]="tileCategory"
-                    title="{{ tileCategory.name | translate }}">
-                    <ng-container class="block-node">
-                        <table matTooltip="{{ tileCategory.amountOfMotions }} {{ 'Motions' | translate }} – {{ tileCategory.name | translate }}">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <span class="tile-block-title" [matBadge]="tileCategory.amountOfMotions" [matBadgeColor]="'accent'" [ngSwitch]="tileCategory.name">
-                                            <span *ngSwitchCase="'Favorites'"><mat-icon>star</mat-icon></span>
-                                            <span *ngSwitchCase="'No category'"><mat-icon>block</mat-icon></span>
-                                            <span *ngSwitchDefault>{{ tileCategory.prefix }}</span>
-                                        </span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </ng-container>
-                </os-block-tile>
-            </os-grid-layout>
-        </span>
-    </div>
+                    <mat-basic-chip class="bluegrey" [disabled]="true">
+                        {{ getRecommendationLabel(motion) }}
+                    </mat-basic-chip>
+                </div>
+            </div>
+        </div>
 
-    <mat-paginator [style.display]="selectedView === 'list' ? 'block' : 'none'" class="on-transition-fade" [pageSizeOptions]="pageSize"></mat-paginator>
-</mat-drawer-container>
+        <!-- Category, blocks and tags -->
+        <div
+            *pblNgridCellDef="'state'; row as motion"
+            class="cell-slot fill"
+            [ngClass]="isMultiSelect ? '' : 'clickable'"
+            (click)="openEditInfo(motion)"
+        >
+            <div class="column-state innerTable">
+                <!-- Category -->
+                <div class="ellipsis-overflow" *ngIf="motion.category">
+                    <os-icon-container icon="device_hub">{{ motion.category }}</os-icon-container>
+                </div>
+
+                <!-- Motion Block -->
+                <div class="ellipsis-overflow spacer-top-5" *ngIf="motion.motion_block">
+                    <os-icon-container icon="widgets">{{ motion.motion_block.title }}</os-icon-container>
+                </div>
+
+                <!-- Tags -->
+                <div class="ellipsis-overflow spacer-top-5" *ngIf="motion.tags && motion.tags.length">
+                    <os-icon-container icon="local_offer">
+                        <span *ngFor="let tag of motion.tags; let last = last">
+                            {{ tag.getTitle() }}
+                            <span *ngIf="!last">,&nbsp;</span>
+                        </span>
+                    </os-icon-container>
+                </div>
+            </div>
+        </div>
+
+        <!-- Speaker column-->
+        <div *pblNgridCellDef="'speaker'; row as motion; rowContext as rowContext" class="fill">
+            <os-speaker-button
+                [object]="motion"
+                [disabled]="isMultiSelect"
+                (click)="saveScrollIndex('motion', rowContext.identity)"
+            ></os-speaker-button>
+        </div>
+    </os-list-view-table>
+</ng-template>
+
+<ng-template #tiles>
+    <os-grid-layout>
+        <os-block-tile
+            *ngFor="let tileCategory of tileCategories"
+            (clicked)="changeToViewWithTileCategory(tileCategory)"
+            [orientation]="'horizontal'"
+            [only]="'title'"
+            [blockType]="'node'"
+            [data]="tileCategory"
+            title="{{ tileCategory.name | translate }}"
+        >
+            <ng-container class="block-node">
+                <table
+                    matTooltip="{{ tileCategory.amountOfMotions }} {{ 'Motions' | translate }} – {{
+                        tileCategory.name | translate
+                    }}"
+                >
+                    <tbody>
+                        <tr>
+                            <td>
+                                <span
+                                    class="tile-block-title"
+                                    [matBadge]="tileCategory.amountOfMotions"
+                                    [matBadgeColor]="'accent'"
+                                    [ngSwitch]="tileCategory.name"
+                                >
+                                    <span *ngSwitchCase="'Favorites'"><mat-icon>star</mat-icon></span>
+                                    <span *ngSwitchCase="'No category'"><mat-icon>block</mat-icon></span>
+                                    <span *ngSwitchDefault>{{ tileCategory.prefix }}</span>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </ng-container>
+        </os-block-tile>
+    </os-grid-layout>
+</ng-template>
 
 <mat-menu #motionListMenu="matMenu">
     <div *ngIf="!isMultiSelect">

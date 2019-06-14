@@ -1,0 +1,36 @@
+<mat-drawer-container class="on-transition-fade" *ngIf="columns && columnSet">
+    <os-sort-filter-bar
+        *ngIf="showFilterBar"
+        [filterCount]="countFilter"
+        [filterService]="filterService"
+        [sortService]="sortService"
+        (searchFieldChange)="searchFilter($event)"
+    >
+    </os-sort-filter-bar>
+
+    <!-- vScrollFixed="110" -->
+    <!-- vScrollAuto () -->
+    <pbl-ngrid
+        class="pbl-ngrid-cell-ellipsis"
+        [ngClass]="showFilterBar ? 'virtual-scroll-with-head-bar' : 'virtual-scroll-full-page'"
+        cellTooltip
+        showHeader="!showFilterBar"
+        matCheckboxSelection="selection"
+        vScrollFixed="110"
+        [dataSource]="dataSource"
+        [columns]="columnSet"
+        [hideColumns]="hiddenColumns"
+    >
+        <!-- "row" has the view model -->
+        <!-- "value" has the property, that was defined in the columnDefinition -->
+        <!-- "col" has a column reference -->
+
+        <!-- Projector column -->
+        <div *pblNgridCellDef="'projector'; row as viewModel" class="fill">
+            <os-projector-button class="projector-button" [object]="viewModel"></os-projector-button>
+        </div>
+
+        <!-- Slot transclusion for the individual cells -->
+        <ng-content select=".cell-slot"></ng-content>
+    </pbl-ngrid>
+</mat-drawer-container>

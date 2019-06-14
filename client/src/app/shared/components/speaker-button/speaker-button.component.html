@@ -1,13 +1,16 @@
 <ng-container *osPerms="'agenda.can_see_list_of_speakers'">
     <ng-container *ngIf="listOfSpeakers">
-        <button type="button" *ngIf="!menuItem" mat-icon-button [routerLink]="listOfSpeakers.listOfSpeakersUrl" [disabled]="disabled">
-            <mat-icon
-                [matBadge]="listOfSpeakers.waitingSpeakerAmount > 0 ? listOfSpeakers.waitingSpeakerAmount : null"
-                matBadgeColor="accent"
-            >
-                mic
-            </mat-icon>
-        </button>
+        <a class="anchor-button" *ngIf="!menuItem" [routerLink]="listOfSpeakersUrl">
+            <button type="button" mat-icon-button [disabled]="disabled">
+                <mat-icon
+                    [matBadge]="listOfSpeakers.waitingSpeakerAmount > 0 ? listOfSpeakers.waitingSpeakerAmount : null"
+                    matBadgeColor="accent"
+                >
+                    mic
+                </mat-icon>
+            </button>
+        </a>
+
         <button type="button" *ngIf="menuItem" mat-menu-item [routerLink]="listOfSpeakers.listOfSpeakersUrl">
             <mat-icon>mic</mat-icon>
             <span translate>List of speakers</span>

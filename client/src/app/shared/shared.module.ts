@@ -59,6 +59,10 @@ import { PermsDirective } from './directives/perms.directive';
 import { DomChangeDirective } from './directives/dom-change.directive';
 import { AutofocusDirective } from './directives/autofocus.directive';
 
+// PblNgrid. Cleanup Required.
+import { PblNgridModule } from '@pebula/ngrid';
+import { PblNgridMaterialModule } from '@pebula/ngrid-material';
+
 // components
 import { HeadBarComponent } from './components/head-bar/head-bar.component';
 import { LegalNoticeContentComponent } from './components/legal-notice-content/legal-notice-content.component';
@@ -89,6 +93,7 @@ import { GridLayoutComponent } from './components/grid-layout/grid-layout.compon
 import { TileComponent } from './components/tile/tile.component';
 import { BlockTileComponent } from './components/block-tile/block-tile.component';
 import { IconContainerComponent } from './components/icon-container/icon-container.component';
+import { ListViewTableComponent } from './components/list-view-table/list-view-table.component';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -148,7 +153,9 @@ import { IconContainerComponent } from './components/icon-container/icon-contain
         FileDropModule,
         EditorModule,
         CdkTreeModule,
-        ScrollingModule
+        ScrollingModule,
+        PblNgridModule,
+        PblNgridMaterialModule
     ],
     exports: [
         FormsModule,
@@ -219,7 +226,11 @@ import { IconContainerComponent } from './components/icon-container/icon-contain
         TileComponent,
         BlockTileComponent,
         ScrollingModule,
-        IconContainerComponent
+        IconContainerComponent,
+        SpeakerButtonComponent,
+        PblNgridModule,
+        PblNgridMaterialModule,
+        ListViewTableComponent
     ],
     declarations: [
         PermsDirective,
@@ -252,7 +263,8 @@ import { IconContainerComponent } from './components/icon-container/icon-contain
         GridLayoutComponent,
         TileComponent,
         BlockTileComponent,
-        IconContainerComponent
+        IconContainerComponent,
+        ListViewTableComponent
     ],
     providers: [
         { provide: DateAdapter, useClass: OpenSlidesDateAdapter },

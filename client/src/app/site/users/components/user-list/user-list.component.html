@@ -14,114 +14,76 @@
     </div>
 </os-head-bar>
 
-<mat-drawer-container class="on-transition-fade">
-    <os-sort-filter-bar
-        [filterCount]="filteredCount"
-        [sortService]="sortService"
-        [filterService]="filterService"
-        (searchFieldChange)="searchFilter($event)"
+<os-list-view-table
+    [repo]="repo"
+    [filterService]="filterService"
+    [sortService]="sortService"
+    [columns]="tableColumnDefinition"
+    [multiSelect]="isMultiSelect"
+    [hiddenInMobile]="['group']"
+    scrollKey="user"
+    [(selectedRows)]="selectedRows"
+    (dataSourceChange)="onDataSourceChange($event)"
+>
+    <!-- Name column -->
+    <div *pblNgridCellDef="'short_name'; value as name; row as user; rowContext as rowContext" class="cell-slot fill">
+        <a
+            class="detail-link"
+            (click)="saveScrollIndex('user', rowContext.identity)"
+            [routerLink]="user.id"
+            *ngIf="!isMultiSelect"
+        ></a>
+        <div>
+            {{ name }}
+        </div>
+    </div>
+
+    <!-- group column -->
+    <div
+        *pblNgridCellDef="'group'; row as user"
+        class="cell-slot fill"
+        [ngClass]="isMultiSelect ? '' : 'clickable'"
+        (click)="openEditInfo(user, $event)"
     >
-    </os-sort-filter-bar>
+        <div class="groupsCell">
+            <div *ngIf="user.groups && user.groups.length">
+                <os-icon-container icon="people">
+                    <span *ngFor="let group of user.groups; let last = last">
+                        {{ group.getTitle() | translate }} <span *ngIf="!last">,&nbsp;</span>
+                    </span>
+                </os-icon-container>
+            </div>
+            <div *ngIf="user.structure_level" class="spacer-top-5">
+                <os-icon-container icon="flag">{{ user.structure_level }}</os-icon-container>
+            </div>
+            <div *ngIf="user.number" class="spacer-top-5">
+                <os-icon-container icon="perm_identity">{{ user.number }}</os-icon-container>
+            </div>
+        </div>
+    </div>
 
-    <mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
-        <!-- Selector column -->
-        <ng-container matColumnDef="selector">
-            <mat-header-cell *matHeaderCellDef mat-sort-header></mat-header-cell>
-            <mat-cell *matCellDef="let user">
-                <mat-icon>{{ isSelected(user) ? 'check_circle' : '' }}</mat-icon>
-            </mat-cell>
-        </ng-container>
+    <!-- Info column -->
+    <div *pblNgridCellDef="'infos'; row as user" class="cell-slot fill">
+        <div class="infoCell">
+            <mat-icon
+                inline
+                *ngIf="user.is_last_email_send"
+                matTooltip="{{ 'Email sent' | translate }} ({{ getEmailSentTime(user) }})"
+            >
+                mail
+            </mat-icon>
+        </div>
+    </div>
 
-        <!-- Projector column -->
-        <ng-container matColumnDef="projector">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Projector</mat-header-cell>
-            <mat-cell *matCellDef="let user">
-                <os-projector-button [object]="user"></os-projector-button>
-            </mat-cell>
-        </ng-container>
-
-        <!-- name column -->
-        <ng-container matColumnDef="name">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
-            <mat-cell *matCellDef="let user">
-                {{ user.short_name }}
-            </mat-cell>
-        </ng-container>
-
-        <!-- group column -->
-        <ng-container matColumnDef="group">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Group</mat-header-cell>
-            <mat-cell (click)="openEditInfo(user, $event)" *matCellDef="let user">
-                <div class="fill">
-                    <div class="groupsCell">
-                        <div *ngIf="user.groups && user.groups.length">
-                            <os-icon-container icon="people">
-                                <span *ngFor="let group of user.groups; let last = last">
-                                    {{ group.getTitle() | translate }} <span *ngIf="!last">,&nbsp;</span>
-                                </span>
-                            </os-icon-container>
-                        </div>
-                        <div *ngIf="user.structure_level" class="spacer-top-5">
-                            <os-icon-container icon="flag">{{ user.structure_level }}</os-icon-container>
-                        </div>
-                        <div *ngIf="user.number" class="spacer-top-5">
-                            <os-icon-container icon="perm_identity">{{ user.number }}</os-icon-container>
-                        </div>
-                    </div>
-                </div>
-            </mat-cell>
-        </ng-container>
-
-        <!-- Anchor column to open separate tab -->
-        <ng-container matColumnDef="anchor">
-            <mat-header-cell *matHeaderCellDef></mat-header-cell>
-            <mat-cell *matCellDef="let user">
-                <a [routerLink]="user.id" *ngIf="!isMultiSelect"></a>
-            </mat-cell>
-        </ng-container>
-
-        <!-- Infos column -->
-        <ng-container matColumnDef="infos">
-            <mat-header-cell *matHeaderCellDef mat-sort-header></mat-header-cell>
-            <mat-cell *matCellDef="let user" class="infoCell">
-                <div>
-                    <mat-icon inline *ngIf="user.is_last_email_send"
-                        matTooltip="{{ 'Email sent' | translate }} ({{ getEmailSentTime(user) }})">
-                        mail
-                    </mat-icon>
-                </div>
-            </mat-cell>
-        </ng-container>
-
-        <!-- Presence column -->
-        <ng-container matColumnDef="presence">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Presence</mat-header-cell>
-            <mat-cell (click)="ignoreClick($event)" *matCellDef="let user" class="presentCell">
-                <div class="fill" *ngIf="user.is_active">
-                    <mat-checkbox
-                        class="checkboxPresent"
-                        (change)="setPresent(user)"
-                        [checked]="user.is_present"
-                        [disabled]="isMultiSelect"
-                    >
-                        <span translate>Present</span>
-                    </mat-checkbox>
-                </div>
-            </mat-cell>
-        </ng-container>
-
-        <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
-        <mat-row
-            [ngClass]="selectedRows.indexOf(row) >= 0 ? 'selected' : ''"
-            *matRowDef="let row; columns: getColumnDefinition()"
-            (click)="selectItem(row, $event)"
-            class="lg"
-        >
-        </mat-row>
-    </mat-table>
-
-    <mat-paginator class="on-transition-fade" [pageSizeOptions]="pageSize"></mat-paginator>
-</mat-drawer-container>
+    <!-- Presence column -->
+    <div *pblNgridCellDef="'presence'; row as user" class="cell-slot fill">
+        <div *ngIf="user.is_active">
+            <mat-checkbox (change)="setPresent(user)" [checked]="user.is_present" [disabled]="isMultiSelect">
+                <span translate>Present</span>
+            </mat-checkbox>
+        </div>
+    </div>
+</os-list-view-table>
 
 <mat-menu #userMenu="matMenu">
     <div *ngIf="!isMultiSelect">

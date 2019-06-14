@@ -1,44 +1,20 @@
 @import '~assets/styles/tables.scss';
 
-.os-listview-table {
-    /** Title */
-    .mat-column-title {
-        padding-left: 26px;
-        flex: 2 0 0;
+.info-col-items {
+    display: inline-block;
+    white-space: nowrap;
 
-        .done-check {
-            margin-right: 10px;
-        }
+    font-size: 14px;
+    .mat-icon {
+        display: inline-flex;
+        vertical-align: middle;
+        $icon-size: 18px;
+        font-size: $icon-size;
+        height: $icon-size;
+        width: $icon-size;
     }
+}
 
-    /** Duration */
-    .mat-column-info {
-        flex: 2 0 0;
-
-        .info-col-items {
-            display: inline-block;
-            white-space: nowrap;
-
-            font-size: 14px;
-            .mat-icon {
-                display: inline-flex;
-                vertical-align: middle;
-                $icon-size: 18px;
-                font-size: $icon-size;
-                height: $icon-size;
-                width: $icon-size;
-            }
-        }
-    }
-
-    /** Speakers indicator */
-    .mat-column-speakers {
-        flex: 0 0 50px;
-    }
-
-    /** menu indicator */
-    .mat-column-menu {
-        flex: 0 0 50px;
-        justify-content: flex-end !important;
-    }
+.done-check {
+    margin-right: 10px;
 }

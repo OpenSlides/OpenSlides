@@ -2,7 +2,9 @@ import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
+
 import { TranslateService } from '@ngx-translate/core';
+import { PblColumnDefinition } from '@pebula/ngrid';
 
 import { ChoiceService } from 'app/core/ui-services/choice.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
@@ -14,11 +16,10 @@ import { UserFilterListService } from '../../services/user-filter-list.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { UserPdfExportService } from '../../services/user-pdf-export.service';
 import { UserSortListService } from '../../services/user-sort-list.service';
-import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { ViewUser } from '../../models/view-user';
 import { ViewGroup } from '../../models/view-group';
-import { genders, User } from 'app/shared/models/users/user';
+import { genders } from 'app/shared/models/users/user';
 import { _ } from 'app/core/translate/translation-marker';
 import { StorageService } from 'app/core/core-services/storage.service';
 
@@ -61,7 +62,7 @@ interface InfoDialog {
     templateUrl: './user-list.component.html',
     styleUrls: ['./user-list.component.scss']
 })
-export class UserListComponent extends ListViewBaseComponent<ViewUser, User, UserRepositoryService> implements OnInit {
+export class UserListComponent extends ListViewBaseComponent<ViewUser> implements OnInit {
     /**
      * The reference to the template.
      */
@@ -82,16 +83,6 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User, Use
      * The list of all genders.
      */
     public genderList = genders;
-
-    /**
-     * Columns to display in table when desktop view is available
-     */
-    public displayedColumnsDesktop: string[] = ['name', 'group', 'anchor'];
-
-    /**
-     * Columns to display in table when mobile view is available
-     */
-    public displayedColumnsMobile = ['name', 'anchor'];
 
     /**
      * Stores the observed configuration if the presence view is available to administrators
@@ -115,6 +106,27 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User, Use
     }
 
     /**
+     * Define the columns to show
+     */
+    public tableColumnDefinition: PblColumnDefinition[] = [
+        {
+            prop: 'short_name',
+            width: 'auto'
+        },
+        {
+            prop: 'group',
+            width: '15%'
+        },
+        {
+            prop: 'infos'
+        },
+        {
+            prop: 'presence',
+            width: '100px'
+        }
+    ];
+
+    /**
      * The usual constructor for components
      * @param titleService Serivce for setting the title
      * @param translate Service for translation handling
@@ -124,7 +136,6 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User, Use
      * @param router the router service
      * @param route the local route
      * @param operator
-     * @param vp
      * @param csvExport CSV export Service,
      * @param promptService
      * @param groupRepo
@@ -137,14 +148,13 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User, Use
         titleService: Title,
         protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
-        route: ActivatedRoute,
+        private route: ActivatedRoute,
         storage: StorageService,
-        private repo: UserRepositoryService,
+        public repo: UserRepositoryService,
         private groupRepo: GroupRepositoryService,
         private choiceService: ChoiceService,
         private router: Router,
         private operator: OperatorService,
-        private vp: ViewportService,
         protected csvExport: CsvExportService,
         private promptService: PromptService,
         public filterService: UserFilterListService,
@@ -153,7 +163,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User, Use
         private userPdf: UserPdfExportService,
         private dialog: MatDialog
     ) {
-        super(titleService, translate, matSnackBar, repo, route, storage, filterService, sortService);
+        super(titleService, translate, matSnackBar, storage);
 
         // enable multiSelect for this listView
         this.canMultiSelect = true;
@@ -168,22 +178,12 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User, Use
      */
     public ngOnInit(): void {
         super.setTitle('Participants');
-        this.initTable();
-        this.setFulltextFilter();
 
         // Initialize the groups
         this.groups = this.groupRepo.getSortedViewModelList().filter(group => group.id !== 1);
         this.groupRepo
             .getViewModelListObservable()
             .subscribe(groups => (this.groups = groups.filter(group => group.id !== 1)));
-    }
-
-    /**
-     * Handles the click on a user row if not in multiSelect modus
-     * @param row selected row
-     */
-    public singleSelectAction(row: ViewUser): void {
-        this.router.navigate([`./${row.id}`], { relativeTo: this.route });
     }
 
     /**
@@ -239,7 +239,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User, Use
      */
     public csvExportUserList(): void {
         this.csvExport.export(
-            this.dataSource.filteredData,
+            this.dataSource.source,
             [
                 { property: 'title' },
                 { property: 'first_name', label: 'Given name' },
@@ -264,7 +264,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User, Use
      * (access information, including personal information such as initial passwords)
      */
     public onDownloadAccessPdf(): void {
-        this.userPdf.exportMultipleUserAccessPDF(this.dataSource.data);
+        this.userPdf.exportMultipleUserAccessPDF(this.dataSource.source);
     }
 
     /**
@@ -272,7 +272,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User, Use
      * with all users currently matching the filter
      */
     public pdfExportUserList(): void {
-        this.userPdf.exportUserList(this.dataSource.data);
+        this.userPdf.exportUserList(this.dataSource.source);
     }
 
     /**
@@ -404,25 +404,6 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User, Use
     }
 
     /**
-     * returns the column definition
-     *
-     * @returns column definition
-     */
-    public getColumnDefinition(): string[] {
-        let columns = this.vp.isMobile ? this.displayedColumnsMobile : this.displayedColumnsDesktop;
-        if (this.operator.hasPerms('core.can_manage_projector') && !this.isMultiSelect) {
-            columns = ['projector'].concat(columns);
-        }
-        if (this.operator.hasPerms('users.can_manage')) {
-            columns = columns.concat(['infos', 'presence']);
-        }
-        if (this.isMultiSelect) {
-            columns = ['selector'].concat(columns);
-        }
-        return columns;
-    }
-
-    /**
      * Sets the user present
      *
      * @param viewUser the viewUser Object
@@ -436,14 +417,16 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser, User, Use
     /**
      * Overwrites the dataSource's string filter with a case-insensitive search
      * in the full_name property
+     *
+     * TODO: Filter predicates will be missed :(
      */
-    private setFulltextFilter(): void {
-        this.dataSource.filterPredicate = (data, filter) => {
-            if (!data || !data.full_name) {
-                return false;
-            }
-            filter = filter ? filter.toLowerCase() : '';
-            return data.full_name.toLowerCase().indexOf(filter) >= 0;
-        };
-    }
+    // private setFulltextFilter(): void {
+    //     this.dataSource.filterPredicate = (data, filter) => {
+    //         if (!data || !data.full_name) {
+    //             return false;
+    //         }
+    //         filter = filter ? filter.toLowerCase() : '';
+    //         return data.full_name.toLowerCase().indexOf(filter) >= 0;
+    //     };
+    // }
 }

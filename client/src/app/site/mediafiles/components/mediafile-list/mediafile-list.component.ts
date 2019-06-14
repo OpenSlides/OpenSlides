@@ -5,13 +5,13 @@ import { Title } from '@angular/platform-browser';
 import { MatSnackBar, MatDialog } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
+import { PblColumnDefinition } from '@pebula/ngrid';
 
 import { ListViewBaseComponent } from '../../../base/list-view-base';
 import { ViewMediafile } from '../../models/view-mediafile';
 import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
 import { MediaManageService } from 'app/core/ui-services/media-manage.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
-import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { MediafileFilterListService } from '../../services/mediafile-filter.service';
 import { MediafilesSortListService } from '../../services/mediafiles-sort-list.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
@@ -26,8 +26,7 @@ import { StorageService } from 'app/core/core-services/storage.service';
     templateUrl: './mediafile-list.component.html',
     styleUrls: ['./mediafile-list.component.scss']
 })
-export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile, Mediafile, MediafileRepositoryService>
-    implements OnInit {
+export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile> implements OnInit {
     /**
      * Holds the actions for logos. Updated via an observable
      */
@@ -37,16 +36,6 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile,
      * Holds the actions for fonts. Update via an observable
      */
     public fontActions: string[];
-
-    /**
-     * Columns to display in Mediafile table when desktop view is available
-     */
-    public displayedColumnsDesktop: string[] = ['title', 'info', 'indicator'];
-
-    /**
-     * Columns to display in Mediafile table when mobile view is available
-     */
-    public displayedColumnsMobile: string[] = ['title'];
 
     /**
      * Show or hide the edit mode
@@ -85,6 +74,28 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile,
     public fileEditDialog: TemplateRef<string>;
 
     /**
+     * Define the columns to show
+     */
+    public tableColumnDefinition: PblColumnDefinition[] = [
+        {
+            prop: 'title',
+            width: 'auto'
+        },
+        {
+            prop: 'info',
+            width: '20%'
+        },
+        {
+            prop: 'indicator',
+            width: this.singleButtonWidth
+        },
+        {
+            prop: 'menu',
+            width: this.singleButtonWidth
+        }
+    ];
+
+    /**
      * Constructs the component
      *
      * @param titleService sets the browser title
@@ -104,10 +115,10 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile,
         titleService: Title,
         protected translate: TranslateService,
         matSnackBar: MatSnackBar,
-        route: ActivatedRoute,
+        private route: ActivatedRoute,
         storage: StorageService,
         private router: Router,
-        private repo: MediafileRepositoryService,
+        public repo: MediafileRepositoryService,
         private mediaManage: MediaManageService,
         private promptService: PromptService,
         public vp: ViewportService,
@@ -117,9 +128,7 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile,
         private dialog: MatDialog,
         private fb: FormBuilder
     ) {
-        super(titleService, translate, matSnackBar, repo, route, storage, filterService, sortService);
-
-        // enables multiSelection for this listView
+        super(titleService, translate, matSnackBar, storage);
         this.canMultiSelect = true;
     }
 
@@ -129,7 +138,6 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile,
      */
     public ngOnInit(): void {
         super.setTitle('Files');
-        this.initTable();
 
         // Observe the logo actions
         this.mediaManage.getLogoActions().subscribe(action => {
@@ -140,7 +148,6 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile,
         this.mediaManage.getFontActions().subscribe(action => {
             this.fontActions = action;
         });
-        this.setFulltextFilter();
     }
 
     /**
@@ -285,34 +292,6 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile,
     }
 
     /**
-     * Uses the ViewportService to determine which column definition to use
-     *
-     * @returns the column definition for the screen size
-     */
-    public getColumnDefinition(): string[] {
-        let columns = this.vp.isMobile ? this.displayedColumnsMobile : this.displayedColumnsDesktop;
-        if (this.operator.hasPerms('core.can_manage_projector') && !this.isMultiSelect) {
-            columns = ['projector'].concat(columns);
-        }
-        if (this.isMultiSelect) {
-            columns = ['selector'].concat(columns);
-        }
-        if (this.canEdit) {
-            columns = columns.concat(['menu']);
-        }
-        return columns;
-    }
-
-    /**
-     * Directly downloads a mediafile
-     *
-     * @param file the select file to download
-     */
-    public singleSelectAction(file: ViewMediafile): void {
-        window.open(file.downloadUrl);
-    }
-
-    /**
      * Clicking escape while in editFileForm should deactivate edit mode.
      *
      * @param event The key that was pressed
@@ -326,14 +305,16 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile,
     /**
      * Overwrites the dataSource's string filter with a case-insensitive search
      * in the file name property
+     *
+     * TODO: Filter predicates will be missed :(
      */
-    private setFulltextFilter(): void {
-        this.dataSource.filterPredicate = (data, filter) => {
-            if (!data || !data.title) {
-                return false;
-            }
-            filter = filter ? filter.toLowerCase() : '';
-            return data.title.toLowerCase().indexOf(filter) >= 0;
-        };
-    }
+    // private setFulltextFilter(): void {
+    //     this.dataSource.filterPredicate = (data, filter) => {
+    //         if (!data || !data.title) {
+    //             return false;
+    //         }
+    //         filter = filter ? filter.toLowerCase() : '';
+    //         return data.title.toLowerCase().indexOf(filter) >= 0;
+    //     };
+    // }
 }

@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material';
 
 import { BehaviorSubject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { PblColumnDefinition } from '@pebula/ngrid';
 
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { itemVisibilityChoices } from 'app/shared/models/agenda/item';
@@ -26,9 +26,7 @@ import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
     templateUrl: './motion-block-list.component.html',
     styleUrls: ['./motion-block-list.component.scss']
 })
-export class MotionBlockListComponent
-    extends ListViewBaseComponent<ViewMotionBlock, MotionBlock, MotionBlockRepositoryService>
-    implements OnInit {
+export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBlock> implements OnInit {
     /**
      * Holds the create form
      */
@@ -64,6 +62,21 @@ export class MotionBlockListComponent
     }
 
     /**
+     * Define the columns to show
+     */
+    public tableColumnDefinition: PblColumnDefinition[] = [
+        {
+            prop: 'title',
+            label: this.translate.instant('Title'),
+            width: 'auto'
+        },
+        {
+            prop: 'amount',
+            label: this.translate.instant('Motions')
+        }
+    ];
+
+    /**
      * Constructor for the motion block list view
      *
      * @param titleService sets the title
@@ -83,16 +96,15 @@ export class MotionBlockListComponent
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
-        route: ActivatedRoute,
         storage: StorageService,
-        private repo: MotionBlockRepositoryService,
+        public repo: MotionBlockRepositoryService,
         private agendaRepo: ItemRepositoryService,
         private formBuilder: FormBuilder,
         private itemRepo: ItemRepositoryService,
         private operator: OperatorService,
-        sortService: MotionBlockSortService
+        public sortService: MotionBlockSortService
     ) {
-        super(titleService, translate, matSnackBar, repo, route, storage, null, sortService);
+        super(titleService, translate, matSnackBar, storage);
 
         this.createBlockForm = this.formBuilder.group({
             title: ['', Validators.required],
@@ -107,22 +119,8 @@ export class MotionBlockListComponent
      */
     public ngOnInit(): void {
         super.setTitle('Motion blocks');
-        this.initTable();
         this.items = this.itemRepo.getViewModelListBehaviorSubject();
         this.agendaRepo.getDefaultAgendaVisibility().subscribe(visibility => (this.defaultVisibility = visibility));
-    }
-
-    /**
-     * Returns the columns that should be shown in the table
-     *
-     * @returns an array of strings building the column definition
-     */
-    public getColumnDefinition(): string[] {
-        let columns = ['title', 'amount', 'anchor'];
-        if (this.operator.hasPerms('core.can_manage_projector')) {
-            columns = ['projector'].concat(columns);
-        }
-        return columns;
     }
 
     /**

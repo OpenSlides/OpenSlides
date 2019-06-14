@@ -35,5 +35,7 @@ os-icon-container {
 
     .content-node {
         margin: auto 5px;
+        text-overflow: ellipsis;
+        overflow: hidden;
     }
 }

@@ -1,9 +1,11 @@
 @import '~assets/styles/tables.scss';
 
+// Determine the distance between the top edge to the start of the table content
+$text-margin-top: 10px;
+
 /** css hacks https://codepen.io/edge0703/pen/iHJuA */
 .innerTable {
     display: inline-block;
-    vertical-align: top;
     line-height: 150%;
 }
 
@@ -18,70 +20,49 @@
     }
 }
 
-.os-listview-table {
-    /** identifier */
-    .mat-column-identifier {
-        padding-left: 10px;
-        flex: 0 0 50px;
-        line-height: 60px; // set the text in the vertical middle, since vertical-align will not work
-        display: initial; // reset display
-        text-align: center; // center text
-    }
+.projector-button {
+    margin: auto;
+}
 
-    /** Title */
-    .mat-column-title {
-        width: 100%;
-        flex: 1 0 200px;
-        display: block;
-        padding-left: 10px;
+.column-identifier {
+    margin-top: $text-margin-top;
+}
 
-        .title-line {
-            font-weight: 500;
-            font-size: 16px;
+.column-title {
+    margin-top: $text-margin-top;
 
-            .attached-files {
-                .mat-icon {
-                    display: inline-flex;
-                    vertical-align: middle;
-                    $icon-size: 16px;
-                    font-size: $icon-size;
-                    height: $icon-size;
-                    width: $icon-size;
-                }
-            }
+    .title-line {
+        font-weight: 500;
+        font-size: 16px;
 
-            .favorite-star {
-                padding-right: 3px;
+        .attached-files {
+            .mat-icon {
+                display: inline-flex;
+                vertical-align: middle;
+                $icon-size: 16px;
+                font-size: $icon-size;
+                height: $icon-size;
+                width: $icon-size;
             }
         }
 
-        .submitters-line {
-            font-size: 90%;
+        .favorite-star {
+            padding-right: 3px;
         }
     }
 
-    /** State */
-    .mat-column-state {
-        flex: 0 0 160px;
-
-        .state-column {
-            width: 160px;
-        }
-
-        mat-icon {
-            font-size: 150%;
-        }
-    }
-
-    /** Speakers indicator */
-    .mat-column-speakers {
-        flex: 0 0 100px;
-        justify-content: flex-end !important;
+    .submitters-line {
+        font-size: 90%;
     }
 }
 
-.max-width {
-    width: 100%;
+.column-state {
+    margin-top: $text-margin-top;
+    width: inherit;
+
+    .mat-icon {
+        font-size: 150%;
+    }
 }
 
 os-grid-layout {
