@@ -107,7 +107,7 @@
         </mat-select>
     </div>
     <div class="table-container">
-        <table mat-table class="on-transition-fade" [dataSource]="dataSource" matSort>
+        <table mat-table [dataSource]="dataSource" matSort>
             <!-- Status column -->
             <ng-container matColumnDef="status" sticky>
                 <mat-header-cell *matHeaderCellDef class="first-column"></mat-header-cell>
@@ -238,7 +238,7 @@
                             *ngIf="hasError(entry, 'Tags')"
                             matTooltip="{{ getVerboseError('Tags') | translate }}"
                         >
-                        warning
+                            warning
                         </mat-icon>
                         <div *ngFor="let tag of entry.newEntry.csvTags">
                             {{ tag.name }}

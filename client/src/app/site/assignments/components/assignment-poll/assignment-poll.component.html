@@ -40,7 +40,7 @@
         </mat-menu>
     </div>
 
-    <div class="on-transition-fade poll-main-content" *ngIf="poll.options">
+    <div class="poll-main-content" *ngIf="poll.options">
         <div *ngIf="pollData">
             <div class="poll-grid">
                 <div></div>
@@ -105,7 +105,7 @@
                 <div>
                     <div *ngIf="poll.has_votes">
                         <div *ngFor="let vote of option.votes" class="spacer-bottom-10">
-                            <div class="poll-progress on-transition-fade">
+                            <div class="poll-progress">
                                 <span *ngIf="vote.value !== 'Votes'"
                                     >{{ pollService.getLabel(vote.value) | translate }}:</span
                                 >
@@ -184,7 +184,7 @@
     <div *ngIf="canManage" class="hint-form" [formGroup]="descriptionForm">
         <mat-form-field class="wide">
             <mat-label translate>Hint for ballot paper</mat-label>
-            <input matInput formControlName="description"/>
+            <input matInput formControlName="description" />
         </mat-form-field>
         <button mat-icon-button [disabled]="!dirtyDescription" (click)="onEditDescriptionButton()">
             <mat-icon inline>check</mat-icon>

@@ -1,37 +1,27 @@
 <mat-toolbar color="primary" [ngClass]="multiSelectMode ? 'multi-select' : ''" *ngIf="!vp.isMobile">
     <!-- Nav menu -->
-    <button mat-icon-button class="on-transition-fade" *ngIf="!multiSelectMode" (click)="clickHamburgerMenu()">
+    <button mat-icon-button *ngIf="!multiSelectMode" (click)="clickHamburgerMenu()">
         <mat-icon>menu</mat-icon>
     </button>
 </mat-toolbar>
 <mat-toolbar color="primary" [ngClass]="multiSelectMode ? 'multi-select' : ''" class="sticky-toolbar">
     <div class="toolbar-left">
         <!-- Nav menu -->
-        <button
-            mat-icon-button
-            class="on-transition-fade"
-            *ngIf="vp.isMobile && nav && !multiSelectMode"
-            (click)="clickHamburgerMenu()"
-        >
+        <button mat-icon-button *ngIf="vp.isMobile && nav && !multiSelectMode" (click)="clickHamburgerMenu()">
             <mat-icon>menu</mat-icon>
         </button>
 
         <!-- Exit / Back button -->
-        <button
-            mat-icon-button
-            class="on-transition-fade"
-            *ngIf="!nav && !editMode && !multiSelectMode"
-            (click)="onBackButton()"
-        >
+        <button mat-icon-button *ngIf="!nav && !editMode && !multiSelectMode" (click)="onBackButton()">
             <mat-icon>arrow_back</mat-icon>
         </button>
 
         <!-- Cancel edit button -->
-        <button mat-icon-button class="on-transition-fade" *ngIf="editMode" (click)="sendMainEvent()">
+        <button mat-icon-button *ngIf="editMode" (click)="sendMainEvent()">
             <mat-icon>close</mat-icon>
         </button>
 
-        <div class="toolbar-left-text on-transition-fade" *ngIf="!multiSelectMode">
+        <div class="toolbar-left-text" *ngIf="!multiSelectMode">
             <!-- Title slot -->
             <ng-content select=".title-slot"></ng-content>
         </div>
@@ -39,21 +29,20 @@
 
     <!-- centered information slot -->
     <div *ngIf="!multiSelectMode" class="spacer"></div>
-    <div class="toolbar-centered on-transition-fade" *ngIf="multiSelectMode">
+    <div class="toolbar-centered" *ngIf="multiSelectMode">
         <ng-content select=".central-info-slot"></ng-content>
     </div>
     <div class="spacer"></div>
 
     <div class="toolbar-right">
         <!-- Extra controls slot -->
-        <div class="extra-controls-wrapper on-transition-fade">
+        <div class="extra-controls-wrapper">
             <ng-content select=".extra-controls-slot"></ng-content>
         </div>
 
         <!-- Main action button - desktop -->
         <button
             mat-icon-button
-            class="on-transition-fade"
             *ngIf="mainButtonIcon == 'add' && mainButton && !editMode && !vp.isMobile && !multiSelectMode"
             (click)="sendMainEvent()"
         >
@@ -61,7 +50,6 @@
         </button>
         <button
             mat-icon-button
-            class="on-transition-fade"
             *ngIf="mainButtonIcon == 'edit' && mainButton && !editMode && !vp.isMobile && !multiSelectMode"
             (click)="sendMainEvent()"
         >
@@ -72,7 +60,7 @@
         <button mat-button *ngIf="editMode" (click)="save()"><strong translate class="upper">Save</strong></button>
 
         <!-- Menu button slot -->
-        <ng-content class="on-transition-fade" *ngIf="!editMode" select=".menu-slot"></ng-content>
+        <ng-content *ngIf="!editMode" select=".menu-slot"></ng-content>
     </div>
 </mat-toolbar>
 
@@ -80,7 +68,7 @@
 
 <button
     mat-fab
-    class="head-button on-transition-fade"
+    class="head-button "
     *ngIf="mainButton && !editMode && vp.isMobile && !multiSelectMode"
     (click)="sendMainEvent()"
 >

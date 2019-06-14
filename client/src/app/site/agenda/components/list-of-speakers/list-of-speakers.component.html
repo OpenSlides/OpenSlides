@@ -13,7 +13,7 @@
 
 <mat-card class="os-card speaker-card" *ngIf="viewListOfSpeakers">
     <!-- Title -->
-    <h1 class="los-title on-transition-fade">{{ viewListOfSpeakers.getTitle() }}</h1>
+    <h1 class="los-title">{{ viewListOfSpeakers.getTitle() }}</h1>
 
     <!-- List of finished speakers -->
     <mat-expansion-panel *ngIf="finishedSpeakers && finishedSpeakers.length > 0" class="finished-list">
@@ -89,12 +89,20 @@
                 <!-- Start, start and delete buttons -->
                 <span *osPerms="'agenda.can_manage_list_of_speakers'">
                     <!-- start button -->
-                    <button mat-icon-button matTooltip="{{ 'Begin speech' | translate }}" (click)="onStartButton(speaker)">
+                    <button
+                        mat-icon-button
+                        matTooltip="{{ 'Begin speech' | translate }}"
+                        (click)="onStartButton(speaker)"
+                    >
                         <mat-icon>play_arrow</mat-icon>
                     </button>
 
                     <!-- star button -->
-                    <button mat-icon-button matTooltip="{{ 'Mark speaker' | translate }}" (click)="onMarkButton(speaker)">
+                    <button
+                        mat-icon-button
+                        matTooltip="{{ 'Mark speaker' | translate }}"
+                        (click)="onMarkButton(speaker)"
+                    >
                         <mat-icon>{{ speaker.marked ? 'star' : 'star_border' }}</mat-icon>
                     </button>
 
