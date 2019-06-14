@@ -49,52 +49,40 @@
 
     <!-- Save and Cancel buttons -->
     <mat-card-actions>
-        <button mat-button [disabled]="!createBlockForm.valid" (click)="onSaveNewButton()"><span translate>Save</span></button>
+        <button mat-button [disabled]="!createBlockForm.valid" (click)="onSaveNewButton()">
+            <span translate>Save</span>
+        </button>
         <button mat-button (click)="onCancel()"><span translate>Cancel</span></button>
     </mat-card-actions>
 </mat-card>
 
-<!-- Table -->
 <mat-card class="os-card">
-    <table class="os-headed-listview-table on-transition-fade" mat-table [dataSource]="dataSource">
-        <!-- Projector column -->
-        <ng-container matColumnDef="projector">
-            <mat-header-cell *matHeaderCellDef></mat-header-cell>
-            <mat-cell *matCellDef="let block">
-                <os-projector-button [object]="block"></os-projector-button>
-            </mat-cell>
-        </ng-container>
-
-        <!-- title column -->
-        <ng-container matColumnDef="title">
-            <mat-header-cell *matHeaderCellDef>
-                <span translate>Title</span>
-            </mat-header-cell>
-            <mat-cell *matCellDef="let block">
+    <os-list-view-table
+        [repo]="repo"
+        [showFilterBar]="false"
+        [columns]="tableColumnDefinition"
+        [multiSelect]="isMultiSelect"
+        scrollKey="motionBlock"
+        [(selectedRows)]="selectedRows"
+        (dataSourceChange)="onDataSourceChange($event)"
+    >
+        <!-- Title column -->
+        <div *pblNgridCellDef="'title'; value as title; row as block; rowContext as rowContext" class="cell-slot fill">
+            <a
+                class="detail-link"
+                (click)="saveScrollIndex('motionBlock', rowContext.identity)"
+                [routerLink]="block.id"
+                *ngIf="!isMultiSelect"
+            ></a>
+            <div>
                 <mat-icon matTooltip="Internal" *ngIf="block.internal">lock</mat-icon>
-                {{ block.title }}
-            </mat-cell>
-        </ng-container>
+                {{ title }}
+            </div>
+        </div>
 
-        <!-- amount column -->
-        <ng-container matColumnDef="amount">
-            <mat-header-cell *matHeaderCellDef>
-                <span translate>Motions</span>
-            </mat-header-cell>
-            <mat-cell *matCellDef="let block">
-                <span class="os-amount-chip">{{ getMotionAmount(block.motionBlock) }}</span>
-            </mat-cell>
-        </ng-container>
-
-        <!-- Anchor column to open the separate tab -->
-        <ng-container matColumnDef="anchor">
-            <mat-header-cell *matHeaderCellDef></mat-header-cell>
-            <mat-cell *matCellDef="let block">
-                <a [routerLink]="block.id"></a>
-            </mat-cell>
-        </ng-container>
-
-        <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: getColumnDefinition()"> </mat-row>
-    </table>
+        <!-- Amount -->
+        <div *pblNgridCellDef="'amount'; row as block" class="cell-slot fill">
+            <span class="os-amount-chip">{{ getMotionAmount(block.motionBlock) }}</span>
+        </div>
+    </os-list-view-table>
 </mat-card>

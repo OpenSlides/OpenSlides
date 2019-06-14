@@ -1,17 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatTableDataSource } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { ListViewBaseComponent } from 'app/site/base/list-view-base';
 import { OperatorService } from 'app/core/core-services/operator.service';
-import { StorageService } from 'app/core/core-services/storage.service';
-import { Category } from 'app/shared/models/motions/category';
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 import { ViewCategory } from 'app/site/motions/models/view-category';
+import { BaseViewComponent } from 'app/site/base/base-view';
 
 /**
  * Table for categories
@@ -21,12 +18,16 @@ import { ViewCategory } from 'app/site/motions/models/view-category';
     templateUrl: './category-list.component.html',
     styleUrls: ['./category-list.component.scss']
 })
-export class CategoryListComponent extends ListViewBaseComponent<ViewCategory, Category, CategoryRepositoryService>
-    implements OnInit {
+export class CategoryListComponent extends BaseViewComponent implements OnInit {
     /**
      * Holds the create form
      */
     public createForm: FormGroup;
+
+    /**
+     * Table data Source
+     */
+    public dataSource: MatTableDataSource<ViewCategory>;
 
     /**
      * Flag, if the creation panel is open
@@ -51,20 +52,17 @@ export class CategoryListComponent extends ListViewBaseComponent<ViewCategory, C
      * @param storage
      * @param repo
      * @param formBuilder
-     * @param promptService
      * @param operator
      */
     public constructor(
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
-        route: ActivatedRoute,
-        storage: StorageService,
         private repo: CategoryRepositoryService,
         private formBuilder: FormBuilder,
         private operator: OperatorService
     ) {
-        super(titleService, translate, matSnackBar, repo, route, storage);
+        super(titleService, translate, matSnackBar);
 
         this.createForm = this.formBuilder.group({
             prefix: [''],
@@ -78,7 +76,13 @@ export class CategoryListComponent extends ListViewBaseComponent<ViewCategory, C
      */
     public ngOnInit(): void {
         super.setTitle('Categories');
-        this.initTable();
+
+        this.dataSource = new MatTableDataSource();
+        this.repo.getViewModelListObservable().subscribe(viewCategories => {
+            if (viewCategories && viewCategories.length && this.dataSource) {
+                this.dataSource.data = viewCategories;
+            }
+        });
     }
 
     /**

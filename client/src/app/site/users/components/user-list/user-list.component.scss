@@ -1,51 +1,11 @@
 @import '~assets/styles/tables.scss';
 
-.os-listview-table {
-    .mat-column-projector {
-        padding-right: 15px;
+.groupsCell {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+
+    mat-icon {
+        font-size: 80%;
     }
-
-    .mat-column-name {
-        flex: 1 0 200px;
-    }
-
-    .mat-column-group {
-        flex: 2 0 60px;
-
-        .groupsCell {
-            text-overflow: ellipsis;
-            overflow: hidden;
-            white-space: nowrap;
-
-            mat-icon {
-                font-size: 80%;
-            }
-        }
-    }
-
-    .mat-column-presence {
-        flex: 0 0 60px;
-
-        mat-icon {
-            font-size: 100%;
-            margin-right: 5px;
-        }
-
-        div {
-            display: inherit;
-        }
-    }
-}
-
-.infoCell {
-    max-width: 25px;
-}
-
-.presentCell {
-    align-content: left;
-    padding-right: 50px;
-}
-
-.checkboxPresent {
-    margin-left: 15px;
 }

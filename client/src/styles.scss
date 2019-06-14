@@ -25,6 +25,9 @@
 @import './assets/styles/fonts.scss';
 @import '~material-icon-font/dist/Material-Icons.css';
 
+/** NGrid */
+@import '~@pebula/ngrid/theming';
+
 /** Mix the component-related style-rules */
 @mixin openslides-components-theme($theme) {
     @include os-site-theme($theme);
@@ -34,7 +37,6 @@
     @include os-sorting-tree-style($theme);
     @include os-global-spinner-theme($theme);
     @include os-tile-style($theme);
-    /** More components are added here */
 }
 
 /** date-time-picker */
@@ -51,6 +53,13 @@
 .openslides-theme {
     @include angular-material-theme($openslides-theme);
     @include openslides-components-theme($openslides-theme);
+
+    /** NGrid OS Theme */
+    $ngrid-material-theme: pbl-light-theme($openslides-theme);
+    $narrow-spacing: (
+        spacing: $pbl-spacing-theme-narrow
+    );
+    @include pbl-ngrid-theme(map-merge($ngrid-material-theme, $narrow-spacing));
 
     .logo-container {
         img.dark {
@@ -137,6 +146,46 @@
     .mce-ico {
         font-family: 'tinymce', Arial !important;
     }
+}
+
+/**
+ * Patches to NGrid Classes
+ */
+.pbl-ngrid-row:hover {
+    background-color: rgba(0, 0, 0, 0.025);
+}
+
+.pbl-ngrid-cell {
+    position: relative;
+
+    .fill {
+        display: inherit;
+        height: 100%;
+        width: 100%;
+
+        // try to put all children in the in the vertical middle
+        * {
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+    }
+
+    .clickable {
+        cursor: pointer;
+    }
+
+    .detail-link {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+}
+
+.ngrid-lg {
+    height: 110px;
+    min-height: 90px;
 }
 
 /** Define the general style-rules */
@@ -578,6 +627,17 @@ button.mat-menu-item.selected {
  */
 .virtual-scroll-full-page {
     height: calc(100vh - 128px);
+}
+
+.virtual-scroll-with-head-bar {
+    height: calc(100vh - 189px);
+
+    // For some reason, hiding the table header adds an empty meta bar.
+    .pbl-ngrid-container {
+        > div {
+            display: none;
+        }
+    }
 }
 
 /** media queries */

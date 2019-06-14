@@ -33,13 +33,17 @@
     </div>
 </os-head-bar>
 
-<mat-table class="os-listview-table on-transition-fade" [dataSource]="dataSource" matSort>
-    <ng-container matColumnDef="name">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
-        <mat-cell *matCellDef="let tag">{{ tag.getTitle() }}</mat-cell>
-    </ng-container>
-    <mat-header-row *matHeaderRowDef="['name']"></mat-header-row>
-    <mat-row (click)="selectItem(row, $event)" *matRowDef="let row; columns: ['name']"></mat-row>
-</mat-table>
-
-<mat-paginator class="on-transition-fade" [pageSizeOptions]="pageSize"></mat-paginator>
+<os-list-view-table
+    [repo]="repo"
+    [columns]="tableColumnDefinition"
+    [allowProjector]="false"
+    [(selectedRows)]="selectedRows"
+    (dataSourceChange)="onDataSourceChange($event)"
+>
+    <!-- Name column -->
+    <div *pblNgridCellDef="'name'; value as name; row as tag" class="cell-slot fill clickable" (click)="selectTag(tag)">
+        <div>
+            {{ name }}
+        </div>
+    </div>
+</os-list-view-table>

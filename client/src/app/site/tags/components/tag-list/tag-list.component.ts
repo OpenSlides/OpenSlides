@@ -1,16 +1,15 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Title } from '@angular/platform-browser';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { Title } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
+import { PblColumnDefinition } from '@pebula/ngrid';
 
+import { ListViewBaseComponent } from '../../../base/list-view-base';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 import { Tag } from 'app/shared/models/core/tag';
 import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
-import { PromptService } from 'app/core/ui-services/prompt.service';
-import { StorageService } from 'app/core/core-services/storage.service';
-import { ListViewBaseComponent } from '../../../base/list-view-base';
 import { ViewTag } from '../../models/view-tag';
 
 /**
@@ -23,15 +22,25 @@ import { ViewTag } from '../../models/view-tag';
 @Component({
     selector: 'os-tag-list',
     templateUrl: './tag-list.component.html',
-    styleUrls: ['./tag-list.component.css']
+    styleUrls: ['./tag-list.component.scss']
 })
-export class TagListComponent extends ListViewBaseComponent<ViewTag, Tag, TagRepositoryService> implements OnInit {
+export class TagListComponent extends ListViewBaseComponent<ViewTag> implements OnInit {
     public editTag = false;
     public newTag = false;
     public selectedTag: ViewTag;
 
     @ViewChild('tagForm')
     public tagForm: FormGroup;
+
+    /**
+     * Define the columns to show
+     */
+    public tableColumnDefinition: PblColumnDefinition[] = [
+        {
+            prop: 'name',
+            width: 'auto'
+        }
+    ];
 
     /**
      * Constructor.
@@ -43,14 +52,12 @@ export class TagListComponent extends ListViewBaseComponent<ViewTag, Tag, TagRep
      */
     public constructor(
         titleService: Title,
-        protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
-        route: ActivatedRoute,
-        storage: StorageService,
-        private repo: TagRepositoryService,
+        public repo: TagRepositoryService,
+        protected translate: TranslateService, // protected required for ng-translate-extract
         private promptService: PromptService
     ) {
-        super(titleService, translate, matSnackBar, repo, route, storage);
+        super(titleService, translate, matSnackBar);
     }
 
     /**
@@ -59,13 +66,7 @@ export class TagListComponent extends ListViewBaseComponent<ViewTag, Tag, TagRep
      */
     public ngOnInit(): void {
         super.setTitle('Tags');
-        this.initTable();
         this.tagForm = new FormGroup({ name: new FormControl('', Validators.required) });
-        // TODO Tag has not yet sort or filtering functions
-        this.repo.getViewModelListObservable().subscribe(newTags => {
-            this.dataSource.data = [];
-            this.dataSource.data = newTags;
-        });
     }
 
     /**
@@ -116,7 +117,7 @@ export class TagListComponent extends ListViewBaseComponent<ViewTag, Tag, TagRep
     }
 
     /**
-     * Canceles the editing
+     * Cancels the editing
      */
     public cancelEditing(): void {
         this.newTag = false;
@@ -128,7 +129,7 @@ export class TagListComponent extends ListViewBaseComponent<ViewTag, Tag, TagRep
      * Handler for a click on a row in the table
      * @param viewTag
      */
-    public singleSelectAction(viewTag: ViewTag): void {
+    public selectTag(viewTag: ViewTag): void {
         this.selectedTag = viewTag;
         this.setEditMode(true, false);
         this.tagForm.setValue({ name: this.selectedTag.name });

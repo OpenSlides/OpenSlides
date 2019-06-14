@@ -1,33 +1,32 @@
-<!-- <os-head-bar [mainButton]=true (mainEvent)="onPlusButton()" [multiSelectMode]="isMultiSelect"> -->
 <os-head-bar prevUrl="../.." [nav]="false" [mainButton]="true" (mainEvent)="onNewButton(newWorkflowDialog)">
     <!-- Title -->
     <div class="title-slot"><h2 translate>Workflows</h2></div>
 </os-head-bar>
 
-<mat-table class="os-headed-listview-table on-transition-fade" [dataSource]="dataSource">
-    <!-- Name Column -->
-    <ng-container matColumnDef="name">
-        <mat-header-cell *matHeaderCellDef>
-            <span translate>Name</span>
-        </mat-header-cell>
-        <mat-cell *matCellDef="let workflow" (click)="onClickWorkflow(workflow)">
-            {{ workflow.name | translate }}
-        </mat-cell>
-    </ng-container>
+<os-list-view-table
+    [repo]="workflowRepo"
+    [columns]="tableColumnDefinition"
+    scrollKey="workflow"
+    (dataSourceChange)="onDataSourceChange($event)"
+>
+    <!-- Name column -->
+    <div *pblNgridCellDef="'name'; value as name; row as workflow; rowContext as rowContext" class="cell-slot fill">
+        <a
+            class="detail-link"
+            (click)="saveScrollIndex('workflow', rowContext.identity)"
+            [routerLink]="workflow.id"
+            *ngIf="!isMultiSelect"
+        ></a>
+        <div translate>{{ name }}</div>
+    </div>
 
-    <!-- Delete Column -->
-    <ng-container matColumnDef="delete">
-        <mat-header-cell *matHeaderCellDef> </mat-header-cell>
-        <mat-cell *matCellDef="let workflow">
-            <button type="button" mat-icon-button (click)="onDeleteWorkflow(workflow)">
-                <mat-icon color="warn">delete</mat-icon>
-            </button>
-        </mat-cell>
-    </ng-container>
-
-    <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: getColumnDefinition()"></mat-row>
-</mat-table>
+    <!-- Delete column -->
+    <div *pblNgridCellDef="'delete'; row as workflow" class="cell-slot fill">
+        <button type="button" mat-icon-button (click)="onDeleteWorkflow(workflow)">
+            <mat-icon color="warn">delete</mat-icon>
+        </button>
+    </div>
+</os-list-view-table>
 
 <!-- New workflow dialog -->
 <ng-template #newWorkflowDialog>

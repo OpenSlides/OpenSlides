@@ -38,6 +38,12 @@ export class SpeakerButtonComponent {
     @Input()
     public menuItem = false;
 
+    public get listOfSpeakersUrl(): string {
+        if (!this.disabled) {
+            return this.listOfSpeakers.listOfSpeakersUrl;
+        }
+    }
+
     /**
      * The constructor
      */

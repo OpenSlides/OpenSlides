@@ -2,11 +2,11 @@ import { Component, OnInit, TemplateRef } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
+import { PblColumnDefinition } from '@pebula/ngrid';
 
 import { ListViewBaseComponent } from 'app/site/base/list-view-base';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import { PromptService } from 'app/core/ui-services/prompt.service';
-import { Router, ActivatedRoute } from '@angular/router';
 import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
 import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
 import { Workflow } from 'app/shared/models/motions/workflow';
@@ -20,17 +20,24 @@ import { StorageService } from 'app/core/core-services/storage.service';
     templateUrl: './workflow-list.component.html',
     styleUrls: ['./workflow-list.component.scss']
 })
-export class WorkflowListComponent extends ListViewBaseComponent<ViewWorkflow, Workflow, WorkflowRepositoryService>
-    implements OnInit {
+export class WorkflowListComponent extends ListViewBaseComponent<ViewWorkflow> implements OnInit {
     /**
      * Holds the new workflow title
      */
     public newWorkflowTitle: string;
 
     /**
-     * Determine the coloms in the table
+     * Define the columns to show
      */
-    private columns: string[] = ['name', 'delete'];
+    public tableColumnDefinition: PblColumnDefinition[] = [
+        {
+            prop: 'name',
+            width: 'auto'
+        },
+        {
+            prop: 'delete'
+        }
+    ];
 
     /**
      * Constructor
@@ -39,8 +46,6 @@ export class WorkflowListComponent extends ListViewBaseComponent<ViewWorkflow, W
      * @param matSnackBar Showing errors
      * @param translate handle trandlations
      * @param dialog Dialog options
-     * @param router navigating back and forth
-     * @param route Information about the current router
      * @param workflowRepo Repository for Workflows
      * @param promptService Before delete, ask
      */
@@ -48,14 +53,12 @@ export class WorkflowListComponent extends ListViewBaseComponent<ViewWorkflow, W
         titleService: Title,
         protected translate: TranslateService,
         matSnackBar: MatSnackBar,
-        route: ActivatedRoute,
         storage: StorageService,
         private dialog: MatDialog,
-        private router: Router,
-        protected workflowRepo: WorkflowRepositoryService,
+        public workflowRepo: WorkflowRepositoryService,
         private promptService: PromptService
     ) {
-        super(titleService, translate, matSnackBar, workflowRepo, route, storage);
+        super(titleService, translate, matSnackBar, storage);
     }
 
     /**
@@ -63,17 +66,6 @@ export class WorkflowListComponent extends ListViewBaseComponent<ViewWorkflow, W
      */
     public ngOnInit(): void {
         super.setTitle('Workflows');
-        this.initTable();
-        this.workflowRepo.getViewModelListObservable().subscribe(newWorkflows => (this.dataSource.data = newWorkflows));
-    }
-
-    /**
-     * Click a workflow in the table
-     *
-     * @param selected the selected workflow
-     */
-    public onClickWorkflow(selected: ViewWorkflow): void {
-        this.router.navigate([`${selected.id}`], { relativeTo: this.route });
     }
 
     /**
@@ -105,14 +97,5 @@ export class WorkflowListComponent extends ListViewBaseComponent<ViewWorkflow, W
         if (await this.promptService.open(title, content)) {
             this.workflowRepo.delete(selected).then(() => {}, this.raiseError);
         }
-    }
-
-    /**
-     * Get the column definition for the current workflow table
-     *
-     * @returns The column definition for the table
-     */
-    public getColumnDefinition(): string[] {
-        return this.columns;
     }
 }

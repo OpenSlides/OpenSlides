@@ -1,12 +1,12 @@
 <div class="custom-table-header flex-spaced on-transition-fade">
-    <div class="filter-count" *ngIf="filterService && showFilterSort">
+    <!-- Amount of filters -->
+    <div class="filter-count" *ngIf="filterService">
         <span>{{ displayedCount }}&nbsp;</span><span translate>of</span>
         <span>&nbsp;{{ totalCount }}</span>
         <span *ngIf="extraItemInfo">&nbsp;·&nbsp;{{ extraItemInfo }}</span>
     </div>
-    <div class="filter-count" *ngIf="!showFilterSort && itemsVerboseName">
-        <span>{{ totalCount }}&nbsp;</span><span>{{ itemsVerboseName | translate }}</span>
-    </div>
+
+    <!-- Current filters -->
     <div class="current-filters" *ngIf="filterService && filterService.activeFilterCount">
         <div><span translate>Active filters</span>:&nbsp;</div>
         <div>
@@ -22,12 +22,11 @@
             </button>
         </div>
     </div>
-    <div>
-        <span class="extra-controls-wrapper">
-            <ng-content select=".extra-controls-slot"></ng-content>
-        </span>
 
-        <button mat-button *ngIf="hasFilters && showFilterSort" (click)="filterMenu.opened ? filterMenu.close() : filterMenu.open()">
+    <!-- Actions -->
+    <div class="action-buttons">
+        <!-- Filter button -->
+        <button mat-button *ngIf="hasFilters" (click)="filterMenu.opened ? filterMenu.close() : filterMenu.open()">
             <span *ngIf="!filterService.activeFilterCount" class="upper" translate> Filter </span>
             <span *ngIf="filterService.activeFilterCount">
                 {{ filterService.activeFilterCount }}&nbsp;
@@ -35,12 +34,16 @@
                 <span *ngIf="filterService.activeFilterCount > 1" class="upper" translate>Filters</span>
             </span>
         </button>
-        <button mat-button *ngIf="vp.isMobile && hasSorting && showFilterSort" (click)="openSortDropDown()">
+
+        <!-- Sort Button -->
+        <button mat-button *ngIf="vp.isMobile && hasSorting" (click)="openSortDropDown()">
             <span class="upper" translate>Sort</span>
         </button>
-        <button mat-button *ngIf="!vp.isMobile && hasSorting && showFilterSort" [matMenuTriggerFor]="menu">
+        <button mat-button *ngIf="!vp.isMobile && hasSorting" [matMenuTriggerFor]="menu">
             <span class="upper" translate>Sort</span>
         </button>
+
+        <!-- Search bar -->
         <mat-form-field *ngIf="isSearchBar">
             <input
                 osAutofocus

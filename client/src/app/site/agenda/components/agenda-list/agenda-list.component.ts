@@ -2,27 +2,28 @@ import { Component, OnInit } from '@angular/core';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
+
 import { TranslateService } from '@ngx-translate/core';
+import { PblColumnDefinition } from '@pebula/ngrid';
 
 import { AgendaCsvExportService } from '../../services/agenda-csv-export.service';
 import { AgendaFilterListService } from '../../services/agenda-filter-list.service';
 import { AgendaPdfService } from '../../services/agenda-pdf.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { DurationService } from 'app/core/ui-services/duration.service';
-import { Item } from 'app/shared/models/agenda/item';
 import { ItemInfoDialogComponent } from '../item-info-dialog/item-info-dialog.component';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
+import { ListOfSpeakersRepositoryService } from 'app/core/repositories/agenda/list-of-speakers-repository.service';
 import { ListViewBaseComponent } from 'app/site/base/list-view-base';
 import { OperatorService } from 'app/core/core-services/operator.service';
+import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
+import { StorageService } from 'app/core/core-services/storage.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { ViewItem } from '../../models/view-item';
-import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
-import { _ } from 'app/core/translate/translation-marker';
-import { StorageService } from 'app/core/core-services/storage.service';
-import { ListOfSpeakersRepositoryService } from 'app/core/repositories/agenda/list-of-speakers-repository.service';
 import { ViewListOfSpeakers } from '../../models/view-list-of-speakers';
+import { _ } from 'app/core/translate/translation-marker';
 
 /**
  * List view for the agenda.
@@ -32,18 +33,10 @@ import { ViewListOfSpeakers } from '../../models/view-list-of-speakers';
     templateUrl: './agenda-list.component.html',
     styleUrls: ['./agenda-list.component.scss']
 })
-export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item, ItemRepositoryService>
-    implements OnInit {
+export class AgendaListComponent extends ListViewBaseComponent<ViewItem> implements OnInit {
     /**
-     * Determine the display columns in desktop view
+     * Show or hide the numbering button
      */
-    public displayedColumnsDesktop: string[] = ['title', 'info'];
-
-    /**
-     * Determine the display columns in mobile view
-     */
-    public displayedColumnsMobile: string[] = ['title'];
-
     public isNumberingAllowed: boolean;
 
     /**
@@ -72,6 +65,28 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item, I
     };
 
     /**
+     * Define the columns to show
+     */
+    public tableColumnDefinition: PblColumnDefinition[] = [
+        {
+            prop: 'title',
+            width: 'auto'
+        },
+        {
+            prop: 'info',
+            width: '15%'
+        },
+        {
+            prop: 'speaker',
+            width: this.singleButtonWidth
+        },
+        {
+            prop: 'menu',
+            width: this.singleButtonWidth
+        }
+    ];
+
+    /**
      * The usual constructor for components
      * @param titleService Setting the browser tab title
      * @param translate translations
@@ -98,7 +113,7 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item, I
         private operator: OperatorService,
         protected route: ActivatedRoute,
         private router: Router,
-        private repo: ItemRepositoryService,
+        public repo: ItemRepositoryService,
         private promptService: PromptService,
         private dialog: MatDialog,
         private config: ConfigService,
@@ -110,9 +125,7 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item, I
         private pdfService: PdfDocumentService,
         private listOfSpeakersRepo: ListOfSpeakersRepositoryService
     ) {
-        super(titleService, translate, matSnackBar, repo, route, storage, filterService);
-
-        // activate multiSelect mode for this listview
+        super(titleService, translate, matSnackBar, storage);
         this.canMultiSelect = true;
     }
 
@@ -122,11 +135,9 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item, I
      */
     public ngOnInit(): void {
         super.setTitle('Agenda');
-        this.initTable();
         this.config
             .get<boolean>('agenda_enable_numbering')
             .subscribe(autoNumbering => (this.isNumberingAllowed = autoNumbering));
-        this.setFulltextFilter();
     }
 
     /**
@@ -144,9 +155,9 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item, I
      *
      * @param item the item that was selected from the list view
      */
-    public singleSelectAction(item: ViewItem): void {
-        if (item.contentObject) {
-            this.router.navigate([item.contentObject.getDetailStateURL()]);
+    public getDetailUrl(item: ViewItem): string {
+        if (item.contentObject && !this.isMultiSelect) {
+            return item.contentObject.getDetailStateURL();
         }
     }
 
@@ -156,11 +167,10 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item, I
      *
      * @param item The view item that was clicked
      */
-    public openEditInfo(item: ViewItem, event: MouseEvent): void {
+    public openEditInfo(item: ViewItem): void {
         if (this.isMultiSelect || !this.canManage) {
             return;
         }
-        event.stopPropagation();
         const dialogRef = this.dialog.open(ItemInfoDialogComponent, {
             width: '400px',
             data: item,
@@ -255,32 +265,10 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item, I
     }
 
     /**
-     * Determine what columns to show
-     *
-     * @returns an array of strings with the dialogs to show
-     */
-    public getColumnDefinition(): string[] {
-        let columns = this.vp.isMobile ? this.displayedColumnsMobile : this.displayedColumnsDesktop;
-        if (this.operator.hasPerms('agenda.can_see_list_of_speakers')) {
-            columns = columns.concat(['speakers']);
-        }
-        if (this.operator.hasPerms('agenda.can_manage')) {
-            columns = columns.concat(['menu']);
-        }
-        if (this.operator.hasPerms('core.can_manage_projector') && !this.isMultiSelect) {
-            columns = ['projector'].concat(columns);
-        }
-        if (this.isMultiSelect) {
-            columns = ['selector'].concat(columns);
-        }
-        return columns;
-    }
-
-    /**
      * Export all items as CSV
      */
     public csvExportItemList(): void {
-        this.csvExport.exportItemList(this.dataSource.filteredData);
+        this.csvExport.exportItemList(this.dataSource.source);
     }
 
     /**
@@ -289,7 +277,7 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item, I
      */
     public onDownloadPdf(): void {
         const filename = this.translate.instant('Agenda');
-        this.pdfService.download(this.agendaPdfService.agendaListToDocDef(this.dataSource.filteredData), filename);
+        this.pdfService.download(this.agendaPdfService.agendaListToDocDef(this.dataSource.source), filename);
     }
 
     /**
@@ -319,20 +307,22 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem, Item, I
     /**
      * Overwrites the dataSource's string filter with a case-insensitive search
      * in the item number and title
+     *
+     * TODO: Filter predicates will be missed :(
      */
-    private setFulltextFilter(): void {
-        this.dataSource.filterPredicate = (data, filter) => {
-            if (!data) {
-                return false;
-            }
-            filter = filter ? filter.toLowerCase() : '';
-            return (
-                data.itemNumber.toLowerCase().includes(filter) ||
-                data
-                    .getListTitle()
-                    .toLowerCase()
-                    .includes(filter)
-            );
-        };
-    }
+    // private setFulltextFilter(): void {
+    //     this.dataSource.filterPredicate = (data, filter) => {
+    //         if (!data) {
+    //             return false;
+    //         }
+    //         filter = filter ? filter.toLowerCase() : '';
+    //         return (
+    //             data.itemNumber.toLowerCase().includes(filter) ||
+    //             data
+    //                 .getListTitle()
+    //                 .toLowerCase()
+    //                 .includes(filter)
+    //         );
+    //     };
+    // }
 }
