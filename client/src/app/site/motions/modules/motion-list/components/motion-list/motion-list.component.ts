@@ -116,6 +116,12 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
      * @TODO replace by direct access to config variable, once it's available from the templates
      */
     public statutesEnabled: boolean;
+
+    /**
+     * Value of the config variable `motions_show_sequential_numbers`
+     */
+    public showSequential: boolean;
+
     public recommendationEnabled: boolean;
 
     public tags: ViewTag[] = [];
@@ -212,6 +218,9 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
         this.configService.get<string>('motions_recommendations_by').subscribe(recommender => {
             this.recommendationEnabled = !!recommender;
         });
+        this.configService
+            .get<boolean>('motions_show_sequential_numbers')
+            .subscribe(show => (this.showSequential = show));
         this.motionBlockRepo.getViewModelListObservable().subscribe(mBs => {
             this.motionBlocks = mBs;
         });

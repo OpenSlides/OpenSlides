@@ -164,6 +164,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     public statutesEnabled: boolean;
 
     /**
+     * Value of the config variable `motions_show_sequential_numbers`
+     */
+    public showSequential: boolean;
+
+    /**
      * Value of the config variable `motions_reason_required`
      */
     public reasonRequired: boolean;
@@ -493,7 +498,9 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         this.configService
             .get<ChangeRecoMode>('motions_recommendation_text_mode')
             .subscribe(mode => (this.crMode = mode));
-
+        this.configService
+            .get<boolean>('motions_show_sequential_numbers')
+            .subscribe(shown => (this.showSequential = shown));
         // disable the selector for attachments if there are none
         this.mediafilesObserver.subscribe(() => {
             if (this.contentForm) {
