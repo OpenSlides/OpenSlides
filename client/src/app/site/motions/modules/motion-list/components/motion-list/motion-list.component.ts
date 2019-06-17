@@ -264,7 +264,9 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
             }
         }
 
-        this.tileCategories = Object.values(this.informationOfMotionsInTileCategories);
+        this.tileCategories = Object.values(this.informationOfMotionsInTileCategories).sort((a, b) =>
+            ('' + a.prefix).localeCompare(b.prefix)
+        );
     }
 
     /**
