@@ -1,4 +1,5 @@
-<mat-icon>{{ icon }}</mat-icon>
+<mat-icon *ngIf="!swap">{{ icon }}</mat-icon>
 <span class="content-node">
     <ng-content></ng-content>
 </span>
+<mat-icon *ngIf="swap">{{ icon }}</mat-icon>

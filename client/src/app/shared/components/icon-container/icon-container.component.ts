@@ -30,4 +30,11 @@ export class IconContainerComponent {
      */
     @Input()
     public size: 'medium' | 'large' = 'medium';
+
+    /**
+     * Reverse text and icon.
+     * Show the icon behind the text
+     */
+    @Input()
+    public swap = false;
 }

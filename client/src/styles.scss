@@ -170,6 +170,10 @@
         }
     }
 
+    .checkbox-ripple-padding {
+        padding-left: 12px;
+    }
+
     .clickable {
         cursor: pointer;
     }
@@ -342,6 +346,7 @@ mat-card {
 }
 
 // Shared table definitions
+// TODO: Might be deprecated since we now have Virtual Scrolling Tables
 %os-table {
     width: 100%;
 

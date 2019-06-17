@@ -32,9 +32,18 @@
             (click)="saveScrollIndex('user', rowContext.identity)"
             [routerLink]="user.id"
             *ngIf="!isMultiSelect"
+            matTooltip="{{ getUserTooltip(user) | translate }}"
         ></a>
         <div>
-            {{ name }}
+            <span *ngIf="user.is_active">
+                {{ name }}
+            </span>
+
+            <span *ngIf="!user.is_active">
+                <os-icon-container icon="block" swap="true">
+                    {{ name }}
+                </os-icon-container>
+            </span>
         </div>
     </div>
 
@@ -65,6 +74,7 @@
     <!-- Info column -->
     <div *pblNgridCellDef="'infos'; row as user" class="cell-slot fill">
         <div class="infoCell">
+            <!-- Email-sent indicator -->
             <mat-icon
                 inline
                 *ngIf="user.is_last_email_send"
@@ -72,16 +82,24 @@
             >
                 mail
             </mat-icon>
+
+            <!-- Has comment indicator -->
+            <mat-icon inline *ngIf="!!user.comment" matTooltip="{{ user.comment }}">
+                comment
+            </mat-icon>
         </div>
     </div>
 
     <!-- Presence column -->
     <div *pblNgridCellDef="'presence'; row as user" class="cell-slot fill">
-        <div *ngIf="user.is_active">
-            <mat-checkbox (change)="setPresent(user)" [checked]="user.is_present" [disabled]="isMultiSelect">
-                <span translate>Present</span>
-            </mat-checkbox>
-        </div>
+        <mat-checkbox
+            class="checkbox-ripple-padding"
+            (change)="setPresent(user)"
+            [checked]="user.is_present"
+            [disabled]="isMultiSelect"
+        >
+            <span translate>Present</span>
+        </mat-checkbox>
     </div>
 </os-list-view-table>
 
