@@ -48,22 +48,20 @@ export class ViewCategory extends BaseViewModel<Category> implements CategoryTit
         return this.category.level;
     }
 
-    /**
-     * TODO: Where is this used? Try to avoid this.
-     */
-    /*public set prefix(prefix: string) {
-        this._model.prefix = prefix;
-    }*/
-
-    /**
-     * TODO: Where is this used? Try to avoid this.
-     */
-    /*public set name(name: string) {
-        this._model.name = name;
-    }*/
-
     public get prefixedName(): string {
         return this.prefix ? this.prefix + ' - ' + this.name : this.name;
+    }
+
+    /**
+     * @returns the name with all parents in brackets: "<Cat> (<CatParent>, <CatParentParent>)"
+     */
+    public get prefixedNameWithParents(): string {
+        const parents = this.collectParents();
+        let name = this.prefixedName;
+        if (parents.length) {
+            name += ' (' + parents.map(parent => parent.prefixedName).join(', ') + ')';
+        }
+        return name;
     }
 
     public constructor(category: Category, parent?: ViewCategory) {
@@ -77,6 +75,21 @@ export class ViewCategory extends BaseViewModel<Category> implements CategoryTit
 
     public getDetailStateURL(): string {
         return '/motions/category';
+    }
+
+    /**
+     * @returns an array with all parents. The ordering is the direct parent
+     * is in front of the array and the "highest" parent the last entry. Returns
+     * an empty array if the category does not have any parents.
+     */
+    public collectParents(): ViewCategory[] {
+        if (this.parent) {
+            const parents = this.parent.collectParents();
+            parents.unshift(this.parent);
+            return parents;
+        } else {
+            return [];
+        }
     }
 
     /**

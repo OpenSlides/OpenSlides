@@ -322,7 +322,7 @@
                     (click)="setCategory(category.id)"
                 >
                     <mat-icon *ngIf="motion.category_id === category.id">check</mat-icon>
-                    {{ category }}
+                    {{ category.prefixedNameWithParents }}
                 </button>
             </mat-menu>
             <mat-basic-chip
@@ -331,14 +331,14 @@
                 class="grey"
                 disableRipple
             >
-                {{ motion.category || '–' }}
+                {{ motion.category.prefixedNameWithParents || '–' }}
             </mat-basic-chip>
             <mat-basic-chip
                 *ngIf="!perms.isAllowed('change_metadata', motion) && motion.category"
                 class="grey"
                 disableRipple
             >
-                {{ motion.category }}
+                {{ motion.category.prefixedNameWithParents }}
             </mat-basic-chip>
         </div>
 

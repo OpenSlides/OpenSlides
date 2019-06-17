@@ -63,7 +63,8 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
     };
 
     protected createViewModel(category: Category): ViewCategory {
-        return new ViewCategory(category);
+        const parent = this.viewModelStoreService.get(ViewCategory, category.parent_id);
+        return new ViewCategory(category, parent);
     }
 
     /**
