@@ -101,6 +101,13 @@
                 <span translate>Show entire motion text</span>
             </button>
 
+            <button mat-menu-item *osPerms="'core.can_see_history'" [routerLink]="['/history']" [queryParams]="{element: motion.elementId}">
+                <mat-icon>history</mat-icon>
+                <span translate>
+                    History
+                </span>
+            </button>
+
             <div *ngIf="perms.isAllowed('manage')">
                 <mat-divider></mat-divider>
                 <!-- Delete -->

@@ -38,6 +38,13 @@ export abstract class BaseViewModel<M extends BaseModel = any>
         return this._collectionString;
     }
 
+    /**
+     * @returns the element id of the model
+     */
+    public get elementId(): string {
+        return `${this.collectionString}:${this.id}`;
+    }
+
     public getTitle: () => string;
     public getListTitle: () => string;
 

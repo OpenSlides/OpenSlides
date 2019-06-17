@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar, MatTableDataSource } from '@angular/material';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -21,6 +21,7 @@ import { MotionRepositoryService } from 'app/core/repositories/motions/motion-re
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { Motion } from 'app/shared/models/motions/motion';
 import { PromptService } from 'app/core/ui-services/prompt.service';
+import { CollectionStringMapperService } from 'app/core/core-services/collection-string-mapper.service';
 
 /**
  * A list view for the history.
@@ -39,10 +40,6 @@ export class HistoryListComponent extends BaseViewComponent implements OnInit {
     public customTimestampChanged: Subject<number> = new Subject<number>();
 
     public dataSource: MatTableDataSource<History> = new MatTableDataSource<History>();
-
-    public get isSuperAdmin(): boolean {
-        return this.operator.isSuperAdmin();
-    }
 
     public pageSizes = [50, 100, 150, 200, 250];
 
@@ -67,6 +64,10 @@ export class HistoryListComponent extends BaseViewComponent implements OnInit {
         return this.modelSelectForm.controls.model.value;
     }
 
+    public get isSuperAdmin(): boolean {
+        return this.operator.isSuperAdmin();
+    }
+
     /**
      * Constructor for the history list component
      *
@@ -89,7 +90,9 @@ export class HistoryListComponent extends BaseViewComponent implements OnInit {
         private http: HttpService,
         private formBuilder: FormBuilder,
         private motionRepo: MotionRepositoryService,
-        private promptService: PromptService
+        private promptService: PromptService,
+        private activatedRoute: ActivatedRoute,
+        private collectionMapper: CollectionStringMapperService
     ) {
         super(titleService, translate, matSnackBar);
 
@@ -99,7 +102,15 @@ export class HistoryListComponent extends BaseViewComponent implements OnInit {
         this.collectionObserver = this.motionRepo.getViewModelListBehaviorSubject();
 
         this.modelSelectForm.controls.model.valueChanges.subscribe((id: number) => {
-            this.queryElementId(this.currentCollection, id);
+            const elementId = `${this.currentCollection}:${id}`;
+            this.queryByElementId(elementId);
+
+            // Update the URL.
+            this.router.navigate([], {
+                relativeTo: this.activatedRoute,
+                queryParams: { element: elementId },
+                replaceUrl: true
+            });
         });
     }
 
@@ -136,6 +147,18 @@ export class HistoryListComponent extends BaseViewComponent implements OnInit {
                     .indexOf(filter) >= 0
             );
         };
+
+        // If an element id is given, validate it and update the view.
+        const params = this.activatedRoute.snapshot.queryParams;
+        if (this.collectionMapper.isElementIdValid(params.element)) {
+            this.queryByElementId(params.element);
+            this.modelSelectForm.patchValue(
+                {
+                    model: parseInt(params.element.split(':')[1], 10)
+                },
+                { emitEvent: false }
+            );
+        }
     }
 
     /**
@@ -201,7 +224,7 @@ export class HistoryListComponent extends BaseViewComponent implements OnInit {
 
     public refresh(): void {
         if (this.currentCollection && this.currentModelId) {
-            this.queryElementId(this.currentCollection, this.currentModelId);
+            this.queryByElementId(`${this.currentCollection}:${this.currentModelId}`);
         }
     }
 
@@ -238,12 +261,12 @@ export class HistoryListComponent extends BaseViewComponent implements OnInit {
     }
 
     /**
-     * Sets the data source to the request element id given by the collection string and the id.
+     * Sets the data source to the requested element id.
      */
-    private async queryElementId(collectionString: string, id: number): Promise<void> {
+    private async queryByElementId(elementId: string): Promise<void> {
         const historyData = await this.http.get<History[]>(`${environment.urlPrefix}/core/history/information/`, null, {
             type: 'element',
-            value: `${collectionString}:${id}`
+            value: elementId
         });
         this.dataSource.data = historyData.map(data => new History(data));
     }

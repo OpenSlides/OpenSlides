@@ -504,7 +504,7 @@ class HistoryInformationView(utils_views.APIView):
         """
         Checks permission and parses query parameters.
         """
-        if not has_perm(self.request.user, "users.can_see_history"):
+        if not has_perm(self.request.user, "core.can_see_history"):
             self.permission_denied(self.request)
         type = self.request.query_params.get("type")
         value = self.request.query_params.get("value")
