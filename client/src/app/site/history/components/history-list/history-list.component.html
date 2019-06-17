@@ -39,7 +39,7 @@
     </div>
 </div>
 
-<mat-table class="on-transition-fade" [dataSource]="dataSource" matSort>
+<mat-table [dataSource]="dataSource" matSort>
     <!-- Timestamp -->
     <ng-container matColumnDef="time">
         <mat-header-cell *matHeaderCellDef translate>Timestamp</mat-header-cell>
@@ -77,7 +77,7 @@
     <mat-row *matRowDef="let row; columns: getRowDef()" (click)="onClickRow(row)"></mat-row>
 </mat-table>
 
-<mat-paginator class="on-transition-fade" [pageSizeOptions]="pageSizes"></mat-paginator>
+<mat-paginator [pageSizeOptions]="pageSizes"></mat-paginator>
 
 <mat-menu #historyMenu="matMenu">
     <button mat-menu-item class="red-warning-text" (click)="clearHistory()">

@@ -79,7 +79,7 @@
                 </mat-form-field>
                 <mat-form-field>
                     <mat-label translate>Text separator</mat-label>
-                    <mat-select class="selection" (selectionChange)="selectTextSep($event)" value="&quot;">
+                    <mat-select class="selection" (selectionChange)="selectTextSep($event)" value='"'>
                         <mat-option *ngFor="let option of textSeparators" [value]="option.value">
                             {{ option.label | translate }}
                         </mat-option>
@@ -139,7 +139,7 @@
         </mat-select>
     </div>
     <div class="table-container">
-        <table mat-table class="on-transition-fade" [dataSource]="dataSource" matSort>
+        <table mat-table [dataSource]="dataSource" matSort>
             <!-- Status column -->
             <ng-container matColumnDef="status" class="first-column" sticky>
                 <mat-header-cell *matHeaderCellDef></mat-header-cell>

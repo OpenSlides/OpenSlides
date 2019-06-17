@@ -22,7 +22,7 @@
             <span>{{ getLevelDashes(category) }}</span>
             {{ category.prefixedName }}
         </h2>
-        <table class="os-headed-listview-table on-transition-fade" mat-table [dataSource]="dataSources[category.id]">
+        <table class="os-headed-listview-table" mat-table [dataSource]="dataSources[category.id]">
             <!-- title column -->
             <ng-container matColumnDef="title">
                 <mat-header-cell *matHeaderCellDef> <span translate>Motion</span> </mat-header-cell>
@@ -93,25 +93,19 @@
     <div class="os-form-card-mobile" mat-dialog-content>
         <form class="edit-form" [formGroup]="editForm" (ngSubmit)="save()" (keydown)="onKeyDown($event)">
             <mat-form-field>
-                <input matInput osAutofocus placeholder="{{ 'Prefix' | translate }}" formControlName="prefix"/>
+                <input matInput osAutofocus placeholder="{{ 'Prefix' | translate }}" formControlName="prefix" />
             </mat-form-field>
             <mat-form-field>
-                <input matInput osAutofocus placeholder="{{ 'Name' | translate }}" formControlName="name" required/>
+                <input matInput osAutofocus placeholder="{{ 'Name' | translate }}" formControlName="name" required />
             </mat-form-field>
         </form>
     </div>
     <div mat-dialog-actions>
-            <button
-                type="submit"
-                mat-button
-                [disabled]="!editForm.valid"
-                color="primary"
-                (click)="save()"
-            >
-                <span translate>Save</span>
-            </button>
-            <button type="button" mat-button [mat-dialog-close]="null">
-                <span translate>Cancel</span>
-            </button>
-        </div>
+        <button type="submit" mat-button [disabled]="!editForm.valid" color="primary" (click)="save()">
+            <span translate>Save</span>
+        </button>
+        <button type="button" mat-button [mat-dialog-close]="null">
+            <span translate>Cancel</span>
+        </button>
+    </div>
 </ng-template>

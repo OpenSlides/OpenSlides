@@ -1,17 +1,16 @@
-<os-head-bar [mainButton]="true" [nav]="false"
-    (mainEvent)="setEditMode(!editGroup)">
+<os-head-bar [mainButton]="true" [nav]="false" (mainEvent)="setEditMode(!editGroup)">
     <!-- Title -->
     <div class="title-slot">
         <h2 translate>Groups</h2>
     </div>
 </os-head-bar>
 
-<div class="hint-text on-transition-fade">
+<div class="hint-text">
     <span translate>All your changes are saved immediately.</span>
 </div>
 
 <mat-accordion *ngFor="let app of appPermissions">
-    <mat-expansion-panel class="mat-elevation-z0" [expanded]=true>
+    <mat-expansion-panel class="mat-elevation-z0" [expanded]="true">
         <mat-expansion-panel-header>
             <mat-panel-title>
                 {{ app.name | translate }}
@@ -19,7 +18,7 @@
         </mat-expansion-panel-header>
 
         <div class="scrollable-perm-matrix">
-            <table mat-table class="on-transition-fade" [dataSource]="getTableDataSource(app.permissions)">
+            <table mat-table [dataSource]="getTableDataSource(app.permissions)">
                 <ng-container matColumnDef="perm" sticky>
                     <mat-header-cell *matHeaderCellDef translate>Permissions</mat-header-cell>
                     <mat-cell *matCellDef="let perm">
@@ -36,8 +35,11 @@
                         </mat-header-cell>
                         <mat-cell *matCellDef="let perm">
                             <div class="inner-table">
-                                <mat-checkbox *ngIf="group.id !== 2" [checked]="group.hasPermission(perm.value)"
-                                    (change)="togglePerm(group, perm.value)"></mat-checkbox>
+                                <mat-checkbox
+                                    *ngIf="group.id !== 2"
+                                    [checked]="group.hasPermission(perm.value)"
+                                    (change)="togglePerm(group, perm.value)"
+                                ></mat-checkbox>
                                 <mat-checkbox *ngIf="group.id === 2" [checked]="true" [disabled]="true"></mat-checkbox>
                             </div>
                         </mat-cell>
@@ -58,8 +60,14 @@
     <div class="os-form-card-mobile" mat-dialog-content>
         <form class="edit-form" [formGroup]="groupForm" (keydown)="keyDownFunction($event)">
             <mat-form-field>
-                <input type="text" matInput osAutofocus required formControlName="name"
-                    placeholder="{{ 'New group name' | translate}}">
+                <input
+                    type="text"
+                    matInput
+                    osAutofocus
+                    required
+                    formControlName="name"
+                    placeholder="{{ 'New group name' | translate }}"
+                />
                 <mat-error *ngIf="groupForm.invalid" translate>Required</mat-error>
             </mat-form-field>
         </form>

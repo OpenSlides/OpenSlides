@@ -20,7 +20,7 @@
     </div>
 
     <!-- Back and forth buttons -->
-    <div *ngIf="!editMotion && !vp.isMobile" class="extra-controls-slot on-transition-fade">
+    <div *ngIf="!editMotion && !vp.isMobile" class="extra-controls-slot">
         <div *ngIf="previousMotion">
             <button mat-button (click)="navigateToMotion(previousMotion)">
                 <!-- possible icons:
@@ -103,7 +103,7 @@
 
 <div class="content-container" (touchstart)="swipe($event, 'start')" (touchend)="swipe($event, 'end')">
     <!-- Title -->
-    <div class="title on-transition-fade" *ngIf="motion && !editMotion">
+    <div class="title" *ngIf="motion && !editMotion">
         <div class="title-line">
             <h1>{{ motion.title }}</h1>
             <button mat-icon-button color="primary" (click)="toggleFavorite()">
@@ -133,9 +133,8 @@
 
 <ng-template #mobileView>
     <div *ngIf="motion" class="mobile-view">
-
         <!-- Meta info -->
-        <div class="on-transition-fade"><ng-container *ngTemplateOutlet="metaInfoTemplate"></ng-container></div>
+        <div><ng-container *ngTemplateOutlet="metaInfoTemplate"></ng-container></div>
 
         <!-- Content -->
         <mat-card [ngClass]="editMotion ? 'os-form-card-mobile' : 'os-card'">
@@ -152,7 +151,7 @@
 
 <ng-template #desktopView>
     <div class="desktop-view" *ngIf="motion">
-        <div class="desktop-left on-transition-fade">
+        <div class="desktop-left">
             <!-- Meta Info -->
             <div><ng-container *ngTemplateOutlet="metaInfoTemplate"></ng-container></div>
 
@@ -439,9 +438,11 @@
 
 <ng-template #contentTemplate>
     <form class="motion-content" [formGroup]="contentForm" (keydown)="onKeyDown($event)">
-
         <!-- Toolbar with text controls and buttonf for managing the (modified) final version-->
-        <div class="motion-text-toolbar-wrapper outline-border-bottom" *ngIf="!editMotion && !motion.isStatuteAmendment()">
+        <div
+            class="motion-text-toolbar-wrapper outline-border-bottom"
+            *ngIf="!editMotion && !motion.isStatuteAmendment()"
+        >
             <!-- Line Number and Diff buttons -->
             <div class="motion-text-controls">
                 <mat-form-field class="motion-goto-line" *ngIf="highlightedLineOpened">
@@ -472,23 +473,20 @@
                     <mat-icon>cancel</mat-icon>
                 </button>
 
-                <button
-                    type="button"
-                    mat-button
-                    [matMenuTriggerFor]="lineNumberingMenu"
-                >
+                <button type="button" mat-button [matMenuTriggerFor]="lineNumberingMenu">
                     <mat-icon>format_list_numbered</mat-icon>
                     &nbsp;<span translate>Line numbering</span>
-                    <span *ngIf="lnMode === LineNumberingMode.None">
-                        &nbsp;(<span translate>none</span>)
-                    </span>
+                    <span *ngIf="lnMode === LineNumberingMode.None"> &nbsp;(<span translate>none</span>) </span>
                 </button>
                 <button
                     type="button"
                     mat-button
                     [matMenuTriggerFor]="changeRecoMenu"
                     *ngIf="
-                        motion && !motion.isParagraphBasedAmendment() && allChangingObjects && allChangingObjects.length > 0
+                        motion &&
+                        !motion.isParagraphBasedAmendment() &&
+                        allChangingObjects &&
+                        allChangingObjects.length > 0
                     "
                 >
                     <mat-icon>rate_review</mat-icon>
@@ -546,7 +544,7 @@
                     (click)="deleteModifiedFinalVersion()"
                 >
                     <mat-icon>delete</mat-icon>
-            </button>
+                </button>
             </div>
         </div>
 
@@ -649,11 +647,17 @@
             ></os-motion-detail-diff>
 
             <div *ngIf="isFinalEdit">
-                <editor [hidden]="!isFinalEdit" formControlName="modified_final_version" [init]="tinyMceSettings" required></editor>
+                <editor
+                    [hidden]="!isFinalEdit"
+                    formControlName="modified_final_version"
+                    [init]="tinyMceSettings"
+                    required
+                ></editor>
                 <div
                     *ngIf="
                         contentForm.get('modified_final_version').invalid &&
-                        (contentForm.get('modified_final_version').dirty || contentForm.get('modified_final_version').touched)
+                        (contentForm.get('modified_final_version').dirty ||
+                            contentForm.get('modified_final_version').touched)
                     "
                     class="red-warning-text"
                     translate
@@ -930,11 +934,7 @@
             outside
         </button>
         <mat-divider></mat-divider>
-        <button
-            mat-menu-item
-            *ngIf="!highlightedLineOpened"
-            (click)="highlightedLineOpened = true"
-        >
+        <button mat-menu-item *ngIf="!highlightedLineOpened" (click)="highlightedLineOpened = true">
             <mat-icon>redo</mat-icon>
             <span translate>Go to line</span>
         </button>

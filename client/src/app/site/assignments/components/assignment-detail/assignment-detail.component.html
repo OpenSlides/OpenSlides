@@ -56,12 +56,15 @@
 </div>
 
 <ng-template #metaInfoTemplate>
-    <mat-card class="os-card " *ngIf="assignment">
+    <mat-card class="os-card" *ngIf="assignment">
         <div *ngIf="!editAssignment && assignment.getTitle">
             <h1>{{ assignment.getTitle() }}</h1>
         </div>
         <div *ngIf="assignment">
-            <div *ngIf="assignment.assignment.description" [innerHTML]="getSanitizedText(assignment.assignment.description)"></div>
+            <div
+                *ngIf="assignment.assignment.description"
+                [innerHTML]="getSanitizedText(assignment.assignment.description)"
+            ></div>
         </div>
         <div class="meta-info-grid">
             <div class="number-of-elected">
@@ -111,8 +114,7 @@
 </ng-template>
 
 <!-- poll template -->
-<ng-template #pollTemplate
->
+<ng-template #pollTemplate>
     <div class="ballot-controls-grid">
         <div class="ballot-title" *ngIf="assignment && assignment.polls && assignment.polls.length">
             <h3 translate>Election result</h3>
@@ -205,7 +207,10 @@
             </div>
         </div>
     </div>
-    <mat-divider *ngIf="assignment && assignment.polls && assignment.polls.length" class="candidate-list-separator"></mat-divider>
+    <mat-divider
+        *ngIf="assignment && assignment.polls && assignment.polls.length"
+        class="candidate-list-separator"
+    ></mat-divider>
 </ng-template>
 
 <!-- Form -->

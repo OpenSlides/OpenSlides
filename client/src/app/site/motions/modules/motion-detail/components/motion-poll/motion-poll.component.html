@@ -4,9 +4,9 @@
         <span *ngIf="pollIndex">&nbsp;({{ pollIndex + 1 }})</span>
     </ng-container>
     <ng-container class="meta-text-block-content">
-        <div *ngIf="poll.has_votes" class="on-transition-fade poll-result">
+        <div *ngIf="poll.has_votes" class="poll-result">
             <div *ngFor="let key of pollValues">
-                <div class="poll-progress on-transition-fade" *ngIf="poll[key] !== undefined">
+                <div class="poll-progress" *ngIf="poll[key] !== undefined">
                     <mat-icon class="main-nav-color" matTooltip="{{ getLabel(key) | translate }}">
                         {{ getIcon(key) }}
                     </mat-icon>
@@ -55,18 +55,10 @@
         <button mat-icon-button matTooltip="{{ 'Edit' | translate }}" (click)="editPoll()">
             <mat-icon inline>edit</mat-icon>
         </button>
-        <button
-            mat-icon-button
-            matTooltip="{{ 'Print ballot papers' | translate }}"
-            (click)="printBallots()"
-        >
+        <button mat-icon-button matTooltip="{{ 'Print ballot papers' | translate }}" (click)="printBallots()">
             <mat-icon inline>local_printshop</mat-icon>
         </button>
-        <button
-            mat-icon-button
-            matTooltip="{{ 'Delete' | translate }}"
-            (click)="deletePoll()"
-        >
+        <button mat-icon-button matTooltip="{{ 'Delete' | translate }}" (click)="deletePoll()">
             <mat-icon inline>delete</mat-icon>
         </button>
     </ng-container>

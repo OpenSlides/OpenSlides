@@ -7,7 +7,7 @@
     </div>
 
     <!-- Edit button -->
-    <div class="extra-controls-slot on-transition-fade">
+    <div class="extra-controls-slot">
         <button mat-icon-button (click)="onEditWorkflowButton()">
             <mat-icon>edit</mat-icon>
         </button>
@@ -24,7 +24,7 @@
     </div>
 
     <div class="scrollable-matrix">
-        <table mat-table class="on-transition-fade" [dataSource]="getTableDataSource()">
+        <table mat-table [dataSource]="getTableDataSource()">
             <ng-container matColumnDef="perm" sticky>
                 <mat-header-cell class="group-head-table-cell" *matHeaderCellDef translate>Permissions</mat-header-cell>
                 <mat-cell *matCellDef="let perm">
@@ -112,13 +112,9 @@
                                     -
                                 </div>
                                 <div *ngIf="state.restriction.length">
-                                    <span
-                                        *ngFor="
-                                            let restriction of state.restriction;
-                                            let last = last
-                                        "
-                                    >
-                                        {{ getRestrictionLabel(restriction) | translate }}<span *ngIf="!last">,&nbsp;</span>
+                                    <span *ngFor="let restriction of state.restriction; let last = last">
+                                        {{ getRestrictionLabel(restriction) | translate
+                                        }}<span *ngIf="!last">,&nbsp;</span>
                                     </span>
                                 </div>
                             </div>
@@ -193,7 +189,11 @@
 <!-- Select restriction menu -->
 <mat-menu matMenuContent #restrictionMenu="matMenu">
     <ng-template let-state="state" matMenuContent>
-        <button mat-menu-item *ngFor="let restriction of restrictions" (click)="onSetRestriction(restriction.key, state)">
+        <button
+            mat-menu-item
+            *ngFor="let restriction of restrictions"
+            (click)="onSetRestriction(restriction.key, state)"
+        >
             <mat-icon *ngIf="state.restriction.includes(restriction.key)">check</mat-icon>
             <span>{{ restriction.label | translate }}</span>
         </button>
