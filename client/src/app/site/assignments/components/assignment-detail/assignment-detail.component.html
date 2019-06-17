@@ -3,6 +3,7 @@
     mainButtonIcon="edit"
     [nav]="false"
     [editMode]="editAssignment"
+    [isSaveButtonEnabled]="assignmentForm.valid"
     (mainEvent)="setEditMode(!editAssignment)"
     (saveEvent)="saveAssignment()"
 >
@@ -242,16 +243,16 @@
                         formControlName="title"
                         [value]="assignmentCopy.title || ''"
                     />
+                    <mat-error>{{ 'The title is required' | translate }}</mat-error>
                 </mat-form-field>
             </div>
-            <h4>{{ 'Description' | translate }}:</h4>
 
             <!-- description: HTML Editor -->
+            <h4>{{ 'Description' | translate }}:</h4>
             <editor
                 formControlName="description"
                 [init]="tinyMceSettings"
                 *ngIf="assignment && editAssignment"
-                required
             ></editor>
 
             <!-- searchValueSelector: tags -->
@@ -292,8 +293,11 @@
                         matInput
                         placeholder="{{ 'Number of persons to be elected' | translate }}"
                         formControlName="open_posts"
-                        [value]="assignmentCopy.assignment.open_posts || null"
+                        type="number"
+                        required
                     />
+                    <mat-error *ngIf="assignmentForm.get('open_posts').hasError('required')">{{ 'This field is required' | translate }}</mat-error>
+                    <mat-error *ngIf="assignmentForm.get('open_posts').hasError('min')">{{ 'The number has to be greater than "0" ' | translate }}</mat-error>
                 </mat-form-field>
             </div>
             <!-- TODO searchValueSelector: Parent -->

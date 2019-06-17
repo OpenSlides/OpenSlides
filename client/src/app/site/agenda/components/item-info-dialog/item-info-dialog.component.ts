@@ -5,6 +5,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ViewItem } from '../../models/view-item';
 import { ItemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { DurationService } from 'app/core/ui-services/duration.service';
+import { durationValidator } from 'app/shared/validators/custom-validators';
 
 /**
  * Dialog component to change agenda item details
@@ -42,7 +43,7 @@ export class ItemInfoDialogComponent {
     ) {
         this.agendaInfoForm = this.formBuilder.group({
             type: [''],
-            durationText: [''],
+            durationText: ['', durationValidator],
             item_number: [''],
             comment: ['']
         });

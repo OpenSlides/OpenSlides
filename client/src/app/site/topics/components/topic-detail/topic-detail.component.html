@@ -4,6 +4,7 @@
     [nav]="false"
     [goBack]="true"
     [editMode]="editTopic"
+    [isSaveButtonEnabled]="topicForm.valid"
     (mainEvent)="setEditMode(!editTopic)"
     (saveEvent)="saveTopic()"
 >

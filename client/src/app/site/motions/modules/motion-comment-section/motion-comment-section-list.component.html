@@ -13,9 +13,9 @@
             <p>
                 <mat-form-field>
                     <input formControlName="name" matInput placeholder="{{ 'Name' | translate }}" required />
-                    <mat-hint *ngIf="!createForm.controls.name.valid">
+                    <mat-error *ngIf="!createForm.controls.name.valid">
                         <span translate>Required</span>
-                    </mat-hint>
+                    </mat-error>
                 </mat-form-field>
             </p>
             <p>
@@ -39,7 +39,7 @@
         </form>
     </mat-card-content>
     <mat-card-actions>
-        <button mat-button (click)="create()">
+        <button [disabled]="createForm.invalid" mat-button (click)="create()">
             <span translate>Create</span>
         </button>
         <button mat-button (click)="commentSectionToCreate = null">
@@ -62,18 +62,20 @@
                         {{ section.name }}
                     </div>
                     <div class="read">
-                        <mat-icon>visibility</mat-icon>
-                        {{ section.read_groups }}
-                        <ng-container *ngIf="section.read_groups.length === 0">
-                            &ndash;
-                        </ng-container>
+                        <os-icon-container icon="visibility">
+                            {{ section.read_groups }}
+                            <ng-container *ngIf="section.read_groups.length === 0">
+                                &ndash;
+                            </ng-container>
+                        </os-icon-container>
                     </div>
                     <div class="write">
-                        <mat-icon>edit</mat-icon>
-                        {{ section.write_groups }}
-                        <ng-container *ngIf="section.write_groups.length === 0">
-                            &ndash;
-                        </ng-container>
+                        <os-icon-container icon="edit">
+                            {{ section.write_groups }}
+                            <ng-container *ngIf="section.write_groups.length === 0">
+                                &ndash;
+                            </ng-container>
+                        </os-icon-container>
                     </div>
                 </div>
             </mat-panel-title>
@@ -83,9 +85,9 @@
             <p>
                 <mat-form-field>
                     <input formControlName="name" matInput placeholder="{{ 'Name' | translate }}" required />
-                    <mat-hint *ngIf="!updateForm.controls.name.valid">
+                    <mat-error *ngIf="!updateForm.controls.name.valid">
                         <span translate>Required</span>
-                    </mat-hint>
+                    </mat-error>
                 </mat-form-field>
             </p>
             <p>
@@ -128,7 +130,7 @@
             <button *ngIf="editId === section.id" mat-button (click)="editId = null" mat-icon-button>
                 <mat-icon>cancel</mat-icon>
             </button>
-            <button *ngIf="editId === section.id" mat-button (click)="onSaveButton(section)" mat-icon-button>
+            <button *ngIf="editId === section.id" [disabled]="updateForm.invalid" mat-button (click)="onSaveButton(section)" mat-icon-button>
                 <mat-icon>save</mat-icon>
             </button>
             <button mat-button (click)="onDeleteButton(section)" mat-icon-button>
