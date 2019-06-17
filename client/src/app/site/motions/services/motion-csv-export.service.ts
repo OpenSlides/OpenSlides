@@ -10,10 +10,10 @@ import {
 import { sortMotionPropertyList } from '../motion-import-export-order';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { ChangeRecoMode, ViewMotion } from '../models/view-motion';
-import { ChangeRecommendationRepositoryService } from '../../../core/repositories/motions/change-recommendation-repository.service';
-import { ConfigService } from '../../../core/ui-services/config.service';
-import { ViewUnifiedChange } from '../../../shared/models/motions/view-unified-change';
-import { LinenumberingService } from '../../../core/ui-services/linenumbering.service';
+import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
+import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change';
+import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
 
 /**
  * Exports CSVs for motions. Collect all CSV types here to have them in one place.

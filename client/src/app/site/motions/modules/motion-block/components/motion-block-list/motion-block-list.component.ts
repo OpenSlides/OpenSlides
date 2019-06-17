@@ -8,7 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition } from '@pebula/ngrid';
 
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
-import { ListViewBaseComponent } from 'app/site/base/list-view-base';
+import { BaseListViewComponent } from 'app/site/base/base-list-view';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
 import { MotionBlockSortService } from 'app/site/motions/services/motion-block-sort.service';
@@ -25,7 +25,7 @@ import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
     templateUrl: './motion-block-list.component.html',
     styleUrls: ['./motion-block-list.component.scss']
 })
-export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBlock> implements OnInit {
+export class MotionBlockListComponent extends BaseListViewComponent<ViewMotionBlock> implements OnInit {
     /**
      * Holds the create form
      */

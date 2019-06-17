@@ -10,7 +10,7 @@ import { BaseViewModel } from './base-view-model';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { ViewUser } from '../users/models/view-user';
 
-export abstract class ListViewBaseComponent<V extends BaseViewModel> extends BaseViewComponent implements OnDestroy {
+export abstract class BaseListViewComponent<V extends BaseViewModel> extends BaseViewComponent implements OnDestroy {
     /**
      * The source of the table data, will be filled by an event emitter
      */

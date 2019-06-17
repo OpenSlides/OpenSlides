@@ -17,7 +17,7 @@ import { OpenSlidesTranslateModule } from './core/translate/openslides-translate
 // PWA
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
-import { GlobalSpinnerComponent } from './site/global-spinner/global-spinner.component';
+import { GlobalSpinnerComponent } from './site/common/components/global-spinner/global-spinner.component';
 
 /**
  * Returns a function that returns a promis that will be resolved, if all apps are loaded.

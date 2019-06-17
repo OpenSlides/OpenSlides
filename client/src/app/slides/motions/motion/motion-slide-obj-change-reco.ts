@@ -1,4 +1,4 @@
-import { ViewUnifiedChange, ViewUnifiedChangeType } from '../../../shared/models/motions/view-unified-change';
+import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/motions/view-unified-change';
 import { MotionSlideDataChangeReco } from './motion-slide-data';
 
 /**

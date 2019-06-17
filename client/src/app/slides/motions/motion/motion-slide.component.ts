@@ -4,12 +4,12 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
 import { MotionSlideData, MotionSlideDataAmendment } from './motion-slide-data';
-import { ChangeRecoMode, LineNumberingMode } from '../../../site/motions/models/view-motion';
-import { DiffLinesInParagraph, DiffService, LineRange } from '../../../core/ui-services/diff.service';
-import { LinenumberingService } from '../../../core/ui-services/linenumbering.service';
-import { ViewUnifiedChange } from '../../../shared/models/motions/view-unified-change';
+import { ChangeRecoMode, LineNumberingMode } from 'app/site/motions/models/view-motion';
+import { DiffLinesInParagraph, DiffService, LineRange } from 'app/core/ui-services/diff.service';
+import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
+import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change';
 import { MotionSlideObjChangeReco } from './motion-slide-obj-change-reco';
-import { SlideData } from '../../../core/core-services/projector-data.service';
+import { SlideData } from 'app/core/core-services/projector-data.service';
 import { MotionSlideObjAmendmentParagraph } from './motion-slide-obj-amendment-paragraph';
 import { BaseMotionSlideComponent } from '../base/base-motion-slide';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';

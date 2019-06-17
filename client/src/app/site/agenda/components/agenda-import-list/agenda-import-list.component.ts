@@ -4,12 +4,12 @@ import { MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
-import { AgendaImportService } from '../../agenda-import.service';
+import { AgendaImportService } from '../../services/agenda-import.service';
 import { BaseImportListComponent } from 'app/site/base/base-import-list';
 import { CsvExportService } from 'app/core/ui-services/csv-export.service';
 import { DurationService } from 'app/core/ui-services/duration.service';
 import { ItemVisibilityChoices } from 'app/shared/models/agenda/item';
-import { ViewCreateTopic } from '../../models/view-create-topic';
+import { ViewCreateTopic } from 'app/site/topics/models/view-create-topic';
 
 /**
  * Component for the agenda import list view.

@@ -2,9 +2,9 @@ import { Topic } from 'app/shared/models/topics/topic';
 import { SearchRepresentation } from 'app/core/ui-services/search.service';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
-import { ViewItem } from './view-item';
+import { ViewItem } from '../../agenda/models/view-item';
 import { BaseViewModel } from 'app/site/base/base-view-model';
-import { ViewListOfSpeakers } from './view-list-of-speakers';
+import { ViewListOfSpeakers } from '../../agenda/models/view-list-of-speakers';
 import { BaseViewModelWithAgendaItemAndListOfSpeakers } from 'app/site/base/base-view-model-with-agenda-item-and-list-of-speakers';
 import { TitleInformationWithAgendaItem } from 'app/site/base/base-view-model-with-agenda-item';
 
@@ -62,7 +62,7 @@ export class ViewTopic extends BaseViewModelWithAgendaItemAndListOfSpeakers impl
     }
 
     public getDetailStateURL(): string {
-        return `/agenda/topics/${this.id}`;
+        return `/topics/${this.id}`;
     }
 
     /**

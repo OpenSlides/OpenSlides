@@ -6,7 +6,7 @@ import { Title, SafeHtml, DomSanitizer } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseViewComponent } from '../../../base/base-view';
+import { BaseViewComponent } from 'app/site/base/base-view';
 import { genders, User } from 'app/shared/models/users/user';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';

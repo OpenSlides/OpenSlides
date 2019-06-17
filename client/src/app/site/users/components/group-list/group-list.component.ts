@@ -7,7 +7,7 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { GroupRepositoryService, AppPermissions } from 'app/core/repositories/users/group-repository.service';
 import { ViewGroup } from '../../models/view-group';
 import { Group } from 'app/shared/models/users/group';
-import { BaseViewComponent } from '../../../base/base-view';
+import { BaseViewComponent } from 'app/site/base/base-view';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 
 /**

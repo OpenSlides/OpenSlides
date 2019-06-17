@@ -1,9 +1,6 @@
 import { AppConfig } from '../../core/app-config';
 import { Item } from '../../shared/models/agenda/item';
-import { Topic } from '../../shared/models/topics/topic';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
-import { TopicRepositoryService } from 'app/core/repositories/topics/topic-repository.service';
-import { ViewTopic } from './models/view-topic';
 import { ViewItem } from './models/view-item';
 import { ListOfSpeakers } from 'app/shared/models/agenda/list-of-speakers';
 import { ViewListOfSpeakers } from './models/view-list-of-speakers';
@@ -18,13 +15,6 @@ export const AgendaAppConfig: AppConfig = {
             model: ListOfSpeakers,
             viewModel: ViewListOfSpeakers,
             repository: ListOfSpeakersRepositoryService
-        },
-        {
-            collectionString: 'topics/topic',
-            model: Topic,
-            viewModel: ViewTopic,
-            searchOrder: 1,
-            repository: TopicRepositoryService
         }
     ],
     mainMenuEntries: [

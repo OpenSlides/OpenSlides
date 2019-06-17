@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar, MatDialog } from '@angular/material';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -16,7 +16,7 @@ import { DurationService } from 'app/core/ui-services/duration.service';
 import { ItemInfoDialogComponent } from '../item-info-dialog/item-info-dialog.component';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { ListOfSpeakersRepositoryService } from 'app/core/repositories/agenda/list-of-speakers-repository.service';
-import { ListViewBaseComponent } from 'app/site/base/list-view-base';
+import { BaseListViewComponent } from 'app/site/base/base-list-view';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { PromptService } from 'app/core/ui-services/prompt.service';
@@ -26,7 +26,7 @@ import { TopicRepositoryService } from 'app/core/repositories/topics/topic-repos
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { ViewItem } from '../../models/view-item';
 import { ViewListOfSpeakers } from '../../models/view-list-of-speakers';
-import { ViewTopic } from '../../models/view-topic';
+import { ViewTopic } from 'app/site/topics/models/view-topic';
 
 /**
  * List view for the agenda.
@@ -36,7 +36,7 @@ import { ViewTopic } from '../../models/view-topic';
     templateUrl: './agenda-list.component.html',
     styleUrls: ['./agenda-list.component.scss']
 })
-export class AgendaListComponent extends ListViewBaseComponent<ViewItem> implements OnInit {
+export class AgendaListComponent extends BaseListViewComponent<ViewItem> implements OnInit {
     /**
      * Show or hide the numbering button
      */
@@ -111,7 +111,6 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
      * @param translate translations
      * @param matSnackBar Shows errors and messages
      * @param operator The current user
-     * @param route Angulars ActivatedRoute
      * @param router Angulars router
      * @param repo the agenda repository,
      * @param promptService the delete prompt
@@ -130,7 +129,6 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
         matSnackBar: MatSnackBar,
         storage: StorageService,
         private operator: OperatorService,
-        protected route: ActivatedRoute,
         private router: Router,
         public repo: ItemRepositoryService,
         private promptService: PromptService,
@@ -231,7 +229,7 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
      * Comes from the HeadBar Component
      */
     public onPlusButton(): void {
-        this.router.navigate(['topics/new'], { relativeTo: this.route });
+        this.router.navigate(['/topics/new']);
     }
 
     /**

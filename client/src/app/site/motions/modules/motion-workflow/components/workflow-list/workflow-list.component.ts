@@ -4,7 +4,7 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition } from '@pebula/ngrid';
 
-import { ListViewBaseComponent } from 'app/site/base/list-view-base';
+import { BaseListViewComponent } from 'app/site/base/base-list-view';
 import { MatSnackBar, MatDialog } from '@angular/material';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
@@ -20,7 +20,7 @@ import { StorageService } from 'app/core/core-services/storage.service';
     templateUrl: './workflow-list.component.html',
     styleUrls: ['./workflow-list.component.scss']
 })
-export class WorkflowListComponent extends ListViewBaseComponent<ViewWorkflow> implements OnInit {
+export class WorkflowListComponent extends BaseListViewComponent<ViewWorkflow> implements OnInit {
     /**
      * Holds the new workflow title
      */

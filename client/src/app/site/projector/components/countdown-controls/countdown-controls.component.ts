@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseViewComponent } from '../../../base/base-view';
+import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewCountdown } from '../../models/view-countdown';
 import { CountdownRepositoryService } from 'app/core/repositories/projector/countdown-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
