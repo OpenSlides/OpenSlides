@@ -93,7 +93,6 @@ export class CategoryDetailComponent extends BaseViewComponent implements OnInit
      * Sets the title, observes the block and the motions belonging in this block
      */
     public ngOnInit(): void {
-        super.setTitle('Category');
         const selectedCategoryId = parseInt(this.route.snapshot.params.id, 10);
 
         this.subscriptions.push(
@@ -108,6 +107,8 @@ export class CategoryDetailComponent extends BaseViewComponent implements OnInit
                 // Find index of last child. THis can be easily done by searching, becuase this
                 // is the flat sorted tree
                 this.selectedCategory = categories[selectedCategoryIndex];
+                super.setTitle(this.selectedCategory.prefixedName);
+
                 let lastChildIndex: number;
                 for (
                     lastChildIndex = selectedCategoryIndex + 1;

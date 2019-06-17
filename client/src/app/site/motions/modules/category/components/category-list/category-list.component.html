@@ -12,9 +12,9 @@
     </div>
 </os-head-bar>
 
-<!-- Creating a new motion block -->
+<!-- Creating a new category -->
 <mat-card class="os-card" *ngIf="isCreatingNewCategory">
-    <mat-card-title translate>New motion block</mat-card-title>
+    <mat-card-title>New category</mat-card-title>
     <mat-card-content>
         <form [formGroup]="createForm" (keydown)="onKeyDown($event)">
             <!-- Prefix -->

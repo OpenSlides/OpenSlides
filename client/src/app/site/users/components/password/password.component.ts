@@ -81,6 +81,7 @@ export class PasswordComponent extends BaseViewComponent implements OnInit {
      * Initializes the forms and some of the frontend options
      */
     public ngOnInit(): void {
+        super.setTitle(this.translate.instant('Change password'));
         this.route.params.subscribe(params => {
             if (params.id) {
                 this.urlUserId = +params.id;
