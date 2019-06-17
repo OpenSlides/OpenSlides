@@ -128,7 +128,7 @@ export class MotionPdfCatalogService {
 
         if (categories && categories.length) {
             const catTocBody = [];
-            for (const category of categories) {
+            for (const category of categories.sort((a, b) => a.weight - b.weight)) {
                 // push the name of the category
                 // make a table for correct alignment
                 catTocBody.push({
@@ -136,7 +136,7 @@ export class MotionPdfCatalogService {
                         body: [
                             [
                                 {
-                                    text: category.prefix ? category.prefix + ' - ' + category.name : category.name,
+                                    text: category.prefixedNameWithParents,
                                     style: 'tocCategoryTitle'
                                 }
                             ]
