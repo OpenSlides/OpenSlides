@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'os-privacy-policy',
@@ -6,7 +8,9 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./privacy-policy.component.scss']
 })
 export class PrivacyPolicyComponent implements OnInit {
-    public constructor() {}
+    public constructor(private titleService: Title, private translate: TranslateService) {}
 
-    public ngOnInit(): void {}
+    public ngOnInit(): void {
+        this.titleService.setTitle(this.translate.instant('Privacy policy'));
+    }
 }

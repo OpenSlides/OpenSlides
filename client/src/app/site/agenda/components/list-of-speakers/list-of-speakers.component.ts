@@ -248,6 +248,7 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
 
         this.closSubscription = this.listOfSpeakersRepo.getViewModelObservable(id).subscribe(listOfSpeakers => {
             if (listOfSpeakers) {
+                super.setTitle(listOfSpeakers.getTitle() + ` - ${this.translate.instant('List of speakers')}`);
                 this.viewListOfSpeakers = listOfSpeakers;
                 const allSpeakers = this.viewListOfSpeakers.speakers.sort((a, b) => a.weight - b.weight);
                 this.speakers = allSpeakers.filter(speaker => speaker.state === SpeakerState.WAITING);

@@ -123,6 +123,7 @@ export class MotionBlockDetailComponent extends BaseViewComponent implements OnI
         this.subscriptions.push(
             this.repo.getViewModelObservable(blockId).subscribe(newBlock => {
                 if (newBlock) {
+                    super.setTitle(newBlock.getTitle());
                     this.block = newBlock;
 
                     this.dataSource = createDS<ViewMotion>()
