@@ -11,7 +11,6 @@
     <!-- vScrollFixed="110" -->
     <!-- vScrollAuto () -->
     <pbl-ngrid
-        class="pbl-ngrid-cell-ellipsis"
         [ngClass]="showFilterBar ? 'virtual-scroll-with-head-bar' : 'virtual-scroll-full-page'"
         cellTooltip
         showHeader="!showFilterBar"
@@ -27,7 +26,7 @@
 
         <!-- Projector column -->
         <div *pblNgridCellDef="'projector'; row as viewModel" class="fill">
-            <os-projector-button class="projector-button" [object]="viewModel"></os-projector-button>
+            <os-projector-button class="projector-button" [object]="getProjectable(viewModel)"></os-projector-button>
         </div>
 
         <!-- Slot transclusion for the individual cells -->

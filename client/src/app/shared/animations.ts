@@ -43,7 +43,7 @@ export const pageTransition = trigger('pageTransition', [
         group([
             /** Staggered appearing = "one after another" */
             query(':enter mat-card', stagger(50, fadeMoveIn), { optional: true }),
-            query(':enter mat-row', stagger(30, fadeMoveIn), { optional: true })
+            query(':enter mat-row', fadeMoveIn, { optional: true })
         ])
     ])
 ]);

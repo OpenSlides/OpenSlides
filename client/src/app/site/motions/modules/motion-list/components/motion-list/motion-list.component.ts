@@ -210,7 +210,6 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
      */
     public async ngOnInit(): Promise<void> {
         super.setTitle('Motions');
-        const storedView = await this.storage.get<string>('motionListView');
 
         this.configService
             .get<boolean>('motions_statutes_enabled')
@@ -227,7 +226,9 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
         this.categoryRepo.getViewModelListObservable().subscribe(cats => {
             this.categories = cats;
             if (cats.length > 0) {
-                this.selectedView = storedView || 'tiles';
+                this.storage.get<string>('motionListView').then(savedView => {
+                    this.selectedView = savedView ? savedView : 'tiles';
+                });
             } else {
                 this.selectedView = 'list';
             }

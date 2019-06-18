@@ -69,6 +69,11 @@
             display: inherit;
         }
     }
+
+    /** Custom themes for NGrid. Could be an own file if it gets more */
+    .pbl-ngrid-container {
+        background: mat-color($background, card);
+    }
 }
 
 .openslides-dark-theme,
@@ -646,6 +651,10 @@ button.mat-menu-item.selected {
 @media only screen and (max-width: 960px) {
     .virtual-scroll-full-page {
         height: calc(100vh - 64px);
+    }
+
+    .virtual-scroll-with-head-bar {
+        height: calc(100vh - 125px);
     }
 }
 
