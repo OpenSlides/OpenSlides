@@ -9,6 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { environment } from 'environments/environment';
 import { BaseComponent } from '../../../../base.component';
 import { HttpService } from 'app/core/core-services/http.service';
+import { ThemeService } from 'app/core/ui-services/theme.service';
 
 /**
  * Reset password component.
@@ -34,7 +35,8 @@ export class ResetPasswordComponent extends BaseComponent implements OnInit {
         private http: HttpService,
         formBuilder: FormBuilder,
         private matSnackBar: MatSnackBar,
-        private router: Router
+        private router: Router,
+        private themeService: ThemeService
     ) {
         super(titleService, translate);
         this.resetPasswordForm = formBuilder.group({
@@ -47,6 +49,7 @@ export class ResetPasswordComponent extends BaseComponent implements OnInit {
      */
     public ngOnInit(): void {
         super.setTitle('Reset password');
+        this.themeService.checkTheme();
     }
 
     /**

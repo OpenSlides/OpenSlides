@@ -41,15 +41,24 @@ export class ThemeService {
             if (!newTheme) {
                 return;
             }
-            this.currentTheme = newTheme;
-
-            const classList = document.getElementsByTagName('body')[0].classList; // Get the classlist of the body.
-            const toRemove = Array.from(classList).filter((item: string) => item.includes('theme'));
-            if (toRemove.length) {
-                classList.remove(...toRemove); // Remove all old themes.
-            }
-            classList.add(newTheme, ThemeService.DEFAULT_THEME); // Add the new theme.
+            this.changeTheme(newTheme);
         });
+    }
+
+    /**
+     * Function to change the theme and ensures, that old themes are removed.
+     *
+     * @param theme The theme which is applied.
+     */
+    private changeTheme(theme: string): void {
+        this.currentTheme = theme;
+
+        const classList = document.getElementsByTagName('body')[0].classList; // Get the classlist of the body.
+        const toRemove = Array.from(classList).filter((item: string) => item.includes('theme'));
+        if (toRemove.length) {
+            classList.remove(...toRemove); // Remove all old themes.
+        }
+        classList.add(theme, ThemeService.DEFAULT_THEME); // Add the new theme.
     }
 
     /**
@@ -66,6 +75,19 @@ export class ThemeService {
                 : ThemeService.STANDARD_LOGO;
         } else {
             return null;
+        }
+    }
+
+    /**
+     * Function to ensure, that there is at least one theme set to define
+     * the colors of the components.
+     *
+     * If a theme is already set, nothing happens, otherwise the
+     * `DEFAULT_THEME` will be set.
+     */
+    public checkTheme(): void {
+        if (!this.currentTheme || this.currentTheme === '') {
+            this.changeTheme(ThemeService.DEFAULT_THEME);
         }
     }
 }
