@@ -169,7 +169,7 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
             const dependencyChanged: boolean = this.depsModelCtors.some(ctor => {
                 return ctor.COLLECTIONSTRING === collection;
             });
-            if (collection === this.collectionString || !dependencyChanged) {
+            if (!dependencyChanged) {
                 return;
             }
 
