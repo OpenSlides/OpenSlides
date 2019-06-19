@@ -275,7 +275,7 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
             const dependencyChanged: boolean = this.depsModelCtors.some(ctor => {
                 return ctor.COLLECTIONSTRING === collection;
             });
-            if (collection === this.collectionString || !dependencyChanged) {
+            if (!dependencyChanged) {
                 return;
             }
 
