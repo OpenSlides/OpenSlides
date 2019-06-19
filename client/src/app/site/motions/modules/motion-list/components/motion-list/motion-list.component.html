@@ -88,10 +88,16 @@
                 </div>
 
                 <!-- Submitters -->
-                <div class="submitters-line ellipsis-overflow" *ngIf="motion.submitters.length">
-                    <span translate>by</span> {{ motion.submitters }}
+                <div class="submitters-line ellipsis-overflow">
+                    <span *ngIf="motion.submitters.length">
+                        <span translate>by</span>
+                        {{ motion.submitters }}
+                    </span>
+
                     <span *ngIf="showSequential">
-                        &middot;
+                        <span *ngIf="motion.submitters.length">
+                            &middot;
+                        </span>
                         <span translate>Sequential number</span>
                         {{ motion.id }}
                     </span>
@@ -104,12 +110,14 @@
                         <div class="fill">
                             <div class="innerTable state-column">
                                 <div class="ellipsis-overflow" *ngIf="motion.category">
-                                    <os-icon-container icon="device_hub">{{ motion.category.prefixedNameWithParents }}</os-icon-container>
+                                    <os-icon-container icon="device_hub">
+                                        {{ motion.category.prefixedNameWithParents }}
+                                    </os-icon-container>
                                 </div>
                                 <div class="ellipsis-overflow spacer-top-5" *ngIf="motion.motion_block">
-                                    <os-icon-container icon="widgets">{{
-                                        motion.motion_block.title
-                                    }}</os-icon-container>
+                                    <os-icon-container icon="widgets">
+                                        {{ motion.motion_block.title }}
+                                    </os-icon-container>
                                 </div>
                                 <div class="ellipsis-overflow spacer-top-5" *ngIf="motion.tags && motion.tags.length">
                                     <os-icon-container icon="local_offer">
@@ -153,7 +161,9 @@
             <div class="column-state innerTable">
                 <!-- Category -->
                 <div class="ellipsis-overflow" *ngIf="motion.category">
-                    <os-icon-container icon="device_hub">{{ motion.category.prefixedNameWithParents }}</os-icon-container>
+                    <os-icon-container icon="device_hub">
+                        {{ motion.category.prefixedNameWithParents }}
+                    </os-icon-container>
                 </div>
 
                 <!-- Motion Block -->

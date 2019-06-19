@@ -187,6 +187,11 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
     private isMobile: boolean;
 
     /**
+     * Search input value
+     */
+    public inputValue: string;
+
+    /**
      * Most, of not all list views require these
      */
     private get defaultColumns(): PblColumnDefinition[] {
@@ -294,6 +299,45 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
             })
             .create();
 
+        const filterPredicate = (item: any): boolean => {
+            if (!this.inputValue) {
+                return true;
+            }
+
+            if (this.inputValue) {
+                const trimmedInput = this.inputValue.trim().toLowerCase();
+                const idString = '' + item.id;
+                const foundId =
+                    idString
+                        .trim()
+                        .toLowerCase()
+                        .indexOf(trimmedInput) !== -1;
+                if (foundId) {
+                    return true;
+                }
+
+                for (const column of this.columns) {
+                    const col = this.dataSource.hostGrid.columnApi.findColumn(column.prop);
+                    const value = col.getValue(item);
+
+                    if (!!value) {
+                        const valueAsString = '' + value;
+                        const foundValue =
+                            valueAsString
+                                .trim()
+                                .toLocaleLowerCase()
+                                .indexOf(trimmedInput) !== -1;
+
+                        if (foundValue) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        };
+
+        this.dataSource.setFilter(filterPredicate);
+
         // inform listening components about changes in the data source
         this.dataSource.onSourceChanged.subscribe(() => {
             this.dataSourceChange.next(this.dataSource);
@@ -341,8 +385,9 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
      *
      * @param event the string to search for
      */
-    public searchFilter(event: string): void {
-        this.dataSource.setFilter(event, this.ngrid.columnApi.columns);
+    public searchFilter(filterValue: string): void {
+        this.inputValue = filterValue;
+        this.dataSource.syncFilter();
     }
 
     /**
