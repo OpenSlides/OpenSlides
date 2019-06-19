@@ -7,7 +7,7 @@ import { ViewProjector } from '../models/view-projector';
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
 import { SlideManager } from 'app/slides/services/slide-manager.service';
 import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
-import { BaseViewModelWithListOfSpeakers } from 'app/site/base/base-view-model-with-list-of-speakers';
+import { isBaseViewModelWithListOfSpeakers } from 'app/site/base/base-view-model-with-list-of-speakers';
 
 /**
  * Observes the projector config for a given projector and returns a observable of the
@@ -62,7 +62,7 @@ export class CurrentListOfSpeakersService {
             const nonStableElement = this.slideManager.getIdentifialbeProjectorElement(nonStableElements[0]); // The normal case is just one non stable slide
             try {
                 const viewModel = this.projectorService.getViewModelFromProjectorElement(nonStableElement);
-                if (viewModel instanceof BaseViewModelWithListOfSpeakers) {
+                if (isBaseViewModelWithListOfSpeakers(viewModel)) {
                     return viewModel.listOfSpeakers;
                 }
             } catch (e) {
