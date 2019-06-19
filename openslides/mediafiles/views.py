@@ -1,6 +1,19 @@
-from django.http import HttpResponseForbidden, HttpResponseNotFound
+import mimetypes
+import stat
+
+from django.conf import settings
+from django.http import (
+    FileResponse,
+    Http404,
+    HttpResponse,
+    HttpResponseForbidden,
+    HttpResponseNotFound,
+    HttpResponseNotModified,
+)
 from django.http.request import QueryDict
-from django.views.static import serve
+from django.utils.http import http_date
+from django.utils.translation import gettext as _
+from django.views.static import serve, was_modified_since
 
 from openslides.core.models import Projector
 
@@ -247,6 +260,19 @@ def get_mediafile(request, path):
     return mediafile
 
 
+def check_serve(request, path):
+    """
+    Checks, if the mediafile could be delivered: Responds with a 403 if the access is
+    forbidden *or* the file was not found. Responds 200, if the access is granted.
+    """
+    try:
+        if not get_mediafile(request, path):
+            raise Mediafile.DoesNotExist()
+    except Mediafile.DoesNotExist:
+        return HttpResponseForbidden()
+    return HttpResponse()
+
+
 def protected_serve(request, path, document_root=None, show_indexes=False):
     try:
         mediafile = get_mediafile(request, path)
@@ -254,6 +280,49 @@ def protected_serve(request, path, document_root=None, show_indexes=False):
         return HttpResponseNotFound(content="Not found.")
 
     if mediafile:
-        return serve(request, mediafile.mediafile.name, document_root, show_indexes)
+        if settings.DEFAULT_FILE_STORAGE == "storages.backends.sftpstorage.SFTPStorage":
+            return sftp_serve(request, mediafile.mediafile.name, mediafile)
+        else:
+            return serve(request, mediafile.mediafile.name, document_root, show_indexes)
     else:
         return HttpResponseForbidden(content="Forbidden.")
+
+
+def sftp_serve(request, path, mediafile):
+    """
+    Serves files from the sftp storage from "django-storages"
+    The API does not give access to most features of paramiko, the sftp
+    library used, so we can access the SFTPClient with storage.sftp. This heavily
+    depends on not changing code in django-storages.
+    The code is adapted from django's serve.
+    """
+    storage = mediafile.mediafile.storage
+
+    # Check if file exists
+    if not storage.exists(path):
+        raise Http404(_('"%(path)s" does not exist') % {"path": path})
+
+    # For getting stats and open the file, we must directly use storage.sftp (SFTPClient)
+    # We do need the remote_path for this (the fullpath in the sftp world)
+    remote_path = storage._remote_path(path)
+    file_stats = storage.sftp.stat(remote_path)
+
+    if stat.S_IFMT(file_stats.st_mode) == stat.S_IFDIR:
+        raise Http404(_("Directory indexes are not allowed here."))
+    if not was_modified_since(
+        request.META.get("HTTP_IF_MODIFIED_SINCE"),
+        file_stats.st_mtime,
+        file_stats.st_size,
+    ):
+        return HttpResponseNotModified()
+
+    # Deliver file
+    content_type, encoding = mimetypes.guess_type(str(remote_path))
+    content_type = content_type or "application/octet-stream"
+    response = FileResponse(
+        storage.sftp.open(remote_path, mode="rb"), content_type=content_type
+    )
+    response["Last-Modified"] = http_date(file_stats.st_mtime)
+    if encoding:
+        response["Content-Encoding"] = encoding
+    return response

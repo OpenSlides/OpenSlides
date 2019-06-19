@@ -212,3 +212,28 @@ class TestUpdate(TestCase):
         mediafile = Mediafile.objects.get(pk=self.mediafileA.pk)
         self.assertTrue(mediafile.parent)
         self.assertEqual(mediafile.parent.pk, self.dir.pk)
+
+
+class TestCheckServe(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.client.login(username="admin", password="admin")
+        self.filename = "some_file.ext"
+        self.file = SimpleUploadedFile(self.filename, b"some content.")
+        self.mediafile = Mediafile.objects.create(title="the_file", mediafile=self.file)
+
+    def test_check_ok(self):
+        response = self.client.get(f"/check-media/{self.filename}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.content, b"")
+
+    def test_check_guest(self):
+        guest_client = APIClient()
+        response = guest_client.get(f"/check-media/{self.filename}")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.content, b"")
+
+    def test_check_not_found(self):
+        guest_client = APIClient()
+        response = guest_client.get(f"/check-media/not-existing/path")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
