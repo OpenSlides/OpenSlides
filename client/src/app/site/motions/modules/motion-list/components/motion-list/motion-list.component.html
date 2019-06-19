@@ -104,7 +104,7 @@
                         <div class="fill">
                             <div class="innerTable state-column">
                                 <div class="ellipsis-overflow" *ngIf="motion.category">
-                                    <os-icon-container icon="device_hub">{{ motion.category }}</os-icon-container>
+                                    <os-icon-container icon="device_hub">{{ motion.category.prefixedNameWithParents }}</os-icon-container>
                                 </div>
                                 <div class="ellipsis-overflow spacer-top-5" *ngIf="motion.motion_block">
                                     <os-icon-container icon="widgets">{{
@@ -153,7 +153,7 @@
             <div class="column-state innerTable">
                 <!-- Category -->
                 <div class="ellipsis-overflow" *ngIf="motion.category">
-                    <os-icon-container icon="device_hub">{{ motion.category }}</os-icon-container>
+                    <os-icon-container icon="device_hub">{{ motion.category.prefixedNameWithParents }}</os-icon-container>
                 </div>
 
                 <!-- Motion Block -->
