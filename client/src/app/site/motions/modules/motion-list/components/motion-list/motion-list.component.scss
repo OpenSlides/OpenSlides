@@ -26,6 +26,7 @@ $text-margin-top: 10px;
 
 .column-identifier {
     margin-top: $text-margin-top;
+    word-break: break-all;
 }
 
 .column-title {

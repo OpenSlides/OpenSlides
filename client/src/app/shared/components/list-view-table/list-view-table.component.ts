@@ -11,7 +11,9 @@ import {
 } from '@angular/core';
 
 import { BaseViewModel } from 'app/site/base/base-view-model';
+import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
 import { BaseSortListService } from 'app/core/ui-services/base-sort-list.service';
+import { BaseViewModelWithContentObject } from 'app/site/base/base-view-model-with-content-object';
 import { PblDataSource, columnFactory, PblNgridComponent, createDS } from '@pebula/ngrid';
 import { BaseFilterListService } from 'app/core/ui-services/base-filter-list.service';
 import { Observable } from 'rxjs';
@@ -196,7 +198,7 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
             }
         ];
 
-        if (this.allowProjector && this.operator.hasPerms('projector.can_manage_projector')) {
+        if (this.allowProjector && this.operator.hasPerms('core.can_manage_projector')) {
             columns.push({
                 prop: 'projector',
                 label: '',
@@ -315,6 +317,22 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
         if (this.scrollKey) {
             this.scrollToPreviousPosition(this.scrollKey);
         }
+    }
+
+    /**
+     * Depending on the view, the view model in the row can either be a
+     * `BaseViewModelWithContentObject` or a `BaseViewModelWithContentObject`.
+     * In the first case, we want to get the content object rather than
+     * the object itself for the projection button.
+     *
+     * @param viewModel The model of the table
+     * @returns a view model that can be projected
+     */
+    public getProjectable(
+        viewModel: BaseViewModelWithContentObject | BaseProjectableViewModel
+    ): BaseProjectableViewModel {
+        const withContent = viewModel as BaseViewModelWithContentObject;
+        return !!withContent.contentObject ? withContent.contentObject : viewModel;
     }
 
     /**
