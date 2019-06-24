@@ -145,4 +145,4 @@ matrix:
       install:
         - npm install
       script:
-        - npm run ng-high-memory build --prod
+        - npm run ng-high-memory -- build --prod --aot

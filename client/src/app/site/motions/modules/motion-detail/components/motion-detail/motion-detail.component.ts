@@ -13,6 +13,7 @@ import { ChangeRecommendationRepositoryService } from 'app/core/repositories/mot
 import { CreateMotion } from 'app/site/motions/models/create-motion';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { DiffLinesInParagraph, LineRange } from 'app/core/ui-services/diff.service';
+import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
 import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
@@ -23,39 +24,39 @@ import {
     MotionChangeRecommendationComponent
 } from '../motion-change-recommendation/motion-change-recommendation.component';
 import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-export.service';
+import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
+import { MotionFilterListService } from 'app/site/motions/services/motion-filter-list.service';
 import { MotionRepositoryService, ParagraphToChoose } from 'app/core/repositories/motions/motion-repository.service';
+import { MotionSortListService } from 'app/site/motions/services/motion-sort-list.service';
 import { NotifyService } from 'app/core/core-services/notify.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { PersonalNoteService } from 'app/core/ui-services/personal-note.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions/statute-paragraph-repository.service';
+import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
-import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
-import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
-import { ViewUser } from 'app/site/users/models/view-user';
-import { ViewCategory } from 'app/site/motions/models/view-category';
-import { ViewCreateMotion } from 'app/site/motions/models/view-create-motion';
-import { ViewportService } from 'app/core/ui-services/viewport.service';
-import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
-import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
-import {
-    ViewMotionNotificationEditMotion,
-    TypeOfNotificationViewMotion
-} from 'app/site/motions/models/view-motion-notify';
 import {
     ViewMotion,
     ChangeRecoMode,
     LineNumberingMode,
     verboseChangeRecoMode
 } from 'app/site/motions/models/view-motion';
+import {
+    ViewMotionNotificationEditMotion,
+    TypeOfNotificationViewMotion
+} from 'app/site/motions/models/view-motion-notify';
+import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
+import { ViewCategory } from 'app/site/motions/models/view-category';
+import { ViewCreateMotion } from 'app/site/motions/models/view-create-motion';
+import { ViewportService } from 'app/core/ui-services/viewport.service';
+import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
+import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
 import { ViewStatuteParagraph } from 'app/site/motions/models/view-statute-paragraph';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change';
-import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
+import { ViewUser } from 'app/site/users/models/view-user';
+import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
 import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
-import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
-import { MotionSortListService } from 'app/site/motions/services/motion-sort-list.service';
-import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 
 /**
  * Component for the motion detail view
@@ -263,6 +264,13 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     public motionObserver: BehaviorSubject<ViewMotion[]>;
 
     /**
+     * List of presorted motions. Filles by sort service
+     * and filter service.
+     * To navigate back and forth
+     */
+    private sortedMotions: ViewMotion[];
+
+    /**
      * Determine if the name of supporters are visible
      */
     public showSupporters = false;
@@ -399,6 +407,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * @param blockRepo
      * @param itemRepo
      * @param motionSortService
+     * @param motionFilterListService
      */
     public constructor(
         title: Title,
@@ -428,8 +437,9 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         private mediaFilerepo: MediafileRepositoryService,
         private workflowRepo: WorkflowRepositoryService,
         private blockRepo: MotionBlockRepositoryService,
+        private itemRepo: ItemRepositoryService,
         private motionSortService: MotionSortListService,
-        private itemRepo: ItemRepositoryService
+        private motionFilterService: MotionFilterListService
     ) {
         super(title, translate, matSnackBar);
     }
@@ -452,7 +462,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         this.createForm();
         this.observeRoute();
         this.getMotionByUrl();
-        this.setSurroundingMotions();
 
         // load config variables
         this.configService
@@ -498,12 +507,18 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
             this.statuteParagraphs = newViewStatuteParagraphs;
         });
 
-        // Observe motion changes to trigger surrounding motions
-        this.motionObserver.subscribe(motionChanges => {
-            if (motionChanges) {
-                this.setSurroundingMotions();
-            }
-        });
+        // use the filter and the search service to get the current sorting
+        this.motionFilterService.initFilters(this.motionObserver);
+        this.motionSortService.initSorting(this.motionFilterService.outputObservable);
+
+        this.subscriptions.push(
+            this.motionSortService.outputObservable.subscribe(motions => {
+                if (motions) {
+                    this.sortedMotions = motions;
+                    this.setSurroundingMotions();
+                }
+            })
+        );
     }
 
     /**
@@ -515,6 +530,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         if (this.navigationSubscription) {
             this.navigationSubscription.unsubscribe();
         }
+        super.ngOnDestroy();
     }
 
     /**
@@ -1172,19 +1188,17 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * in the {@link MotionSortListService}
      */
     public setSurroundingMotions(): void {
-        const sortedMotions = this.motionSortService.sortSync(this.motionObserver.value);
-        const indexOfCurrent = sortedMotions.findIndex(motion => {
+        const indexOfCurrent = this.sortedMotions.findIndex(motion => {
             return motion === this.motion;
         });
         if (indexOfCurrent > -1) {
             if (indexOfCurrent > 0) {
-                this.previousMotion = sortedMotions[indexOfCurrent - 1];
+                this.previousMotion = this.sortedMotions[indexOfCurrent - 1];
             } else {
                 this.previousMotion = null;
             }
-
-            if (indexOfCurrent < sortedMotions.length - 1) {
-                this.nextMotion = sortedMotions[indexOfCurrent + 1];
+            if (indexOfCurrent < this.sortedMotions.length - 1) {
+                this.nextMotion = this.sortedMotions[indexOfCurrent + 1];
             } else {
                 this.nextMotion = null;
             }
