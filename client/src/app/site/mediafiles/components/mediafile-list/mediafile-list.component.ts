@@ -1,22 +1,23 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { Title } from '@angular/platform-browser';
 import { MatSnackBar, MatDialog } from '@angular/material';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition } from '@pebula/ngrid';
 
-import { ListViewBaseComponent } from '../../../base/list-view-base';
-import { ViewMediafile } from '../../models/view-mediafile';
+import { ColumnRestriction } from 'app/shared/components/list-view-table/list-view-table.component';
+import { ListViewBaseComponent } from 'app/site/base/list-view-base';
 import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
 import { MediaManageService } from 'app/core/ui-services/media-manage.service';
-import { PromptService } from 'app/core/ui-services/prompt.service';
 import { MediafileFilterListService } from '../../services/mediafile-filter.service';
 import { MediafilesSortListService } from '../../services/mediafiles-sort-list.service';
-import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 import { StorageService } from 'app/core/core-services/storage.service';
+import { ViewportService } from 'app/core/ui-services/viewport.service';
+import { ViewMediafile } from '../../models/view-mediafile';
 
 /**
  * Lists all the uploaded files.
@@ -94,6 +95,25 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile>
             width: this.singleButtonWidth
         }
     ];
+
+    /**
+     * Restricted Columns
+     */
+    public restrictedColumns: ColumnRestriction[] = [
+        {
+            columnName: 'indicator',
+            permission: 'mediafiles.can_manage'
+        },
+        {
+            columnName: 'menu',
+            permission: 'mediafiles.can_manage'
+        }
+    ];
+
+    /**
+     * Define extra filter properties
+     */
+    public filterProps = ['title', 'type'];
 
     /**
      * Constructs the component
@@ -301,20 +321,4 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile>
             this.editFile = false;
         }
     }
-
-    /**
-     * Overwrites the dataSource's string filter with a case-insensitive search
-     * in the file name property
-     *
-     * TODO: Filter predicates will be missed :(
-     */
-    // private setFulltextFilter(): void {
-    //     this.dataSource.filterPredicate = (data, filter) => {
-    //         if (!data || !data.title) {
-    //             return false;
-    //         }
-    //         filter = filter ? filter.toLowerCase() : '';
-    //         return data.title.toLowerCase().indexOf(filter) >= 0;
-    //     };
-    // }
 }

@@ -107,7 +107,8 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
             minWidth: 160
         },
         {
-            prop: 'speaker'
+            prop: 'speaker',
+            width: this.badgeButtonWidth
         }
     ];
 
@@ -129,12 +130,22 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
     public categories: ViewCategory[] = [];
     public motionBlocks: ViewMotionBlock[] = [];
 
+    /**
+     * Columns that demand certain permissions
+     */
     public restrictedColumns: ColumnRestriction[] = [
         {
             columnName: 'speaker',
-            permission: 'agenda.can_see'
+            permission: 'agenda.can_see_list_of_speakers'
         }
     ];
+
+    /**
+     * Define extra filter properties
+     *
+     * TODO: repo.getExtendedStateLabel(), repo.getExtendedRecommendationLabel()
+     */
+    public filterProps = ['submitters', 'motion_block', 'title', 'identifier'];
 
     /**
      * List of `TileCategoryInformation`.
@@ -395,58 +406,6 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
     }
 
     /**
-     * Overwrites the dataSource's string filter with a case-insensitive search
-     * in the identifier, title, state, recommendations, submitters, motion blocks and id
-     *
-     * TODO: Does currently not work with virtual scrolling tables. Filter predicates will be missed :(
-     */
-    // private setFulltextFilter(): void {
-    //     this.dataSource.filterPredicate = (data, filter) => {
-    //         if (!data) {
-    //             return false;
-    //         }
-    //         filter = filter ? filter.toLowerCase() : '';
-    //         if (data.submitters.length && data.submitters.find(user => user.full_name.toLowerCase().includes(filter))) {
-    //             return true;
-    //         }
-    //         if (data.motion_block && data.motion_block.title.toLowerCase().includes(filter)) {
-    //             return true;
-    //         }
-    //         if (data.title.toLowerCase().includes(filter)) {
-    //             return true;
-    //         }
-    //         if (data.identifier && data.identifier.toLowerCase().includes(filter)) {
-    //             return true;
-    //         }
-
-    //         if (
-    //             this.getStateLabel(data) &&
-    //             this.getStateLabel(data)
-    //                 .toLocaleLowerCase()
-    //                 .includes(filter)
-    //         ) {
-    //             return true;
-    //         }
-
-    //         if (
-    //             this.getRecommendationLabel(data) &&
-    //             this.getRecommendationLabel(data)
-    //                 .toLocaleLowerCase()
-    //                 .includes(filter)
-    //         ) {
-    //             return true;
-    //         }
-
-    //         const dataid = '' + data.id;
-    //         if (dataid.includes(filter)) {
-    //             return true;
-    //         }
-
-    //         return false;
-    //     };
-    // }
-
-    /**
      * This function saves the selected view by changes.
      *
      * @param value is the new view the user has selected.
@@ -478,7 +437,7 @@ export class MotionListComponent extends ListViewBaseComponent<ViewMotion> imple
      * @param ev a MouseEvent.
      */
     public async openEditInfo(motion: ViewMotion): Promise<void> {
-        if (!this.isMultiSelect) {
+        if (!this.isMultiSelect && this.perms.isAllowed('change_metadata')) {
             // The interface holding the current information from motion.
             this.infoDialog = {
                 title: motion.title,

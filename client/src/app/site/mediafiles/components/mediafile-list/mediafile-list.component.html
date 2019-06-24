@@ -24,6 +24,8 @@
     [sortService]="sortService"
     [columns]="tableColumnDefinition"
     [multiSelect]="isMultiSelect"
+    [restricted]="restrictedColumns"
+    [filterProps]="filterProps"
     scrollKey="user"
     [(selectedRows)]="selectedRows"
     (dataSourceChange)="onDataSourceChange($event)"

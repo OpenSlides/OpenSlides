@@ -127,6 +127,11 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
     ];
 
     /**
+     * Define extra filter properties
+     */
+    public filterProps = ['full_name', 'groups', 'structure_level', 'number'];
+
+    /**
      * The usual constructor for components
      * @param titleService Serivce for setting the title
      * @param translate Service for translation handling
@@ -413,20 +418,4 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
         viewUser.user.is_present = !viewUser.user.is_present;
         await this.repo.update(viewUser.user, viewUser);
     }
-
-    /**
-     * Overwrites the dataSource's string filter with a case-insensitive search
-     * in the full_name property
-     *
-     * TODO: Filter predicates will be missed :(
-     */
-    // private setFulltextFilter(): void {
-    //     this.dataSource.filterPredicate = (data, filter) => {
-    //         if (!data || !data.full_name) {
-    //             return false;
-    //         }
-    //         filter = filter ? filter.toLowerCase() : '';
-    //         return data.full_name.toLowerCase().indexOf(filter) >= 0;
-    //     };
-    // }
 }

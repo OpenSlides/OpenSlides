@@ -44,6 +44,11 @@ export abstract class ListViewBaseComponent<V extends BaseViewModel> extends Bas
     public singleButtonWidth = '40px';
 
     /**
+     * NGrid column width for single buttons with badge
+     */
+    public badgeButtonWidth = '45px';
+
+    /**
      * @param titleService the title service
      * @param translate the translate service
      * @param matSnackBar showing errors
