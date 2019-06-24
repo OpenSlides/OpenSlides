@@ -94,6 +94,7 @@ import { TileComponent } from './components/tile/tile.component';
 import { BlockTileComponent } from './components/block-tile/block-tile.component';
 import { IconContainerComponent } from './components/icon-container/icon-container.component';
 import { ListViewTableComponent } from './components/list-view-table/list-view-table.component';
+import { AgendaContentObjectFormComponent } from './components/agenda-content-object-form/agenda-content-object-form.component';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -230,7 +231,8 @@ import { ListViewTableComponent } from './components/list-view-table/list-view-t
         SpeakerButtonComponent,
         PblNgridModule,
         PblNgridMaterialModule,
-        ListViewTableComponent
+        ListViewTableComponent,
+        AgendaContentObjectFormComponent
     ],
     declarations: [
         PermsDirective,
@@ -264,7 +266,8 @@ import { ListViewTableComponent } from './components/list-view-table/list-view-t
         TileComponent,
         BlockTileComponent,
         IconContainerComponent,
-        ListViewTableComponent
+        ListViewTableComponent,
+        AgendaContentObjectFormComponent
     ],
     providers: [
         { provide: DateAdapter, useClass: OpenSlidesDateAdapter },

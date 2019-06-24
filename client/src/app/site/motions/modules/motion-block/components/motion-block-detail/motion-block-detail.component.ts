@@ -14,6 +14,7 @@ import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
 import { BaseViewComponent } from 'app/site/base/base-view';
+import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 
 /**
  * Detail component to display one motion block
@@ -105,7 +106,8 @@ export class MotionBlockDetailComponent extends BaseViewComponent implements OnI
         protected motionRepo: MotionRepositoryService,
         private promptService: PromptService,
         private fb: FormBuilder,
-        private dialog: MatDialog
+        private dialog: MatDialog,
+        private itemRepo: ItemRepositoryService
     ) {
         super(titleService, translate, matSnackBar);
     }
@@ -248,5 +250,13 @@ export class MotionBlockDetailComponent extends BaseViewComponent implements OnI
      */
     public getStateLabel(motion: ViewMotion): string {
         return this.motionRepo.getExtendedStateLabel(motion);
+    }
+
+    public addToAgenda(): void {
+        this.itemRepo.addItemToAgenda(this.block).then(null, this.raiseError);
+    }
+
+    public removeFromAgenda(): void {
+        this.itemRepo.removeFromAgenda(this.block.agendaItem).then(null, this.raiseError);
     }
 }

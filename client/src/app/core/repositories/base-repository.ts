@@ -243,10 +243,10 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
         const sendModel = new this.baseModelCtor();
         sendModel.patchValues(model);
 
-        // Strips empty fields from the sending mode data.
+        // Strips empty fields from the sending mode data (except false)
         // required for i.e. users, since group list is mandatory
         Object.keys(sendModel).forEach(key => {
-            if (!sendModel[key]) {
+            if (!sendModel[key] && sendModel[key] !== false) {
                 delete sendModel[key];
             }
         });

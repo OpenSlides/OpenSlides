@@ -27,6 +27,8 @@ class ContentObjects(TestCase):
     lists of speakers. Asserts, that it is recognizes as a content
     object and tests creation and deletion of it and the related item
     and list of speaker.
+    Tests optional agenda items with motions, e.g. motion as a content
+    object without an item.
     """
 
     def setUp(self):
@@ -39,7 +41,15 @@ class ContentObjects(TestCase):
     def test_topic_is_list_of_speakers_content_object(self):
         assert hasattr(Topic(), "get_list_of_speakers_title_information")
 
-    def test_create_content_object(self):
+    def test_motion_is_agenda_item_content_object(self):
+        assert hasattr(Motion(), "get_agenda_title_information")
+
+    def test_motion_is_list_of_speakers_content_object(self):
+        assert hasattr(Motion(), "get_list_of_speakers_title_information")
+
+    def test_create_topic(self):
+        # Disable autocreation. Topics should create agenda items anyways.
+        config["agenda_item_creation"] = "never"
         topic = Topic.objects.create(title="test_title_fk3Oc209JDiunw2!wwoH")
 
         assert topic.agenda_item is not None
@@ -51,7 +61,7 @@ class ContentObjects(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_delete_content_object(self):
+    def test_delete_topic(self):
         topic = Topic.objects.create(title="test_title_lwOCK32jZGFb37DpmoP(")
         item_id = topic.agenda_item_id
         list_of_speakers_id = topic.list_of_speakers_id
@@ -62,6 +72,65 @@ class ContentObjects(TestCase):
             reverse("listofspeakers-detail", args=[list_of_speakers_id])
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_prevent_removing_topic_from_agenda(self):
+        topic = Topic.objects.create(title="test_title_lwOCK32jZGFb37DpmoP(")
+        item_id = topic.agenda_item_id
+        response = self.client.delete(reverse("item-detail", args=[item_id]))
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_adding_topic_twice(self):
+        topic = Topic.objects.create(title="test_title_lwOCK32jZGFb37DpmoP(")
+        response = self.client.post(
+            reverse("item-list"),
+            {"collection": topic.get_collection_string(), "id": topic.id},
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_enabled_auto_adding_item_for_motion(self):
+        config["agenda_item_creation"] = "always"
+        response = self.client.post(
+            reverse("motion-list"),
+            {
+                "title": "test_title_F3pApc3em9zIGCie2iwf",
+                "text": "test_text_wcnLVzezeLcnqlqlC(31",
+                "agenda_create": False,
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        motion = Motion.objects.get()
+        self.assertTrue(motion.agenda_item is not None)
+        self.assertEqual(motion.agenda_item_id, motion.agenda_item.id)
+
+    def test_disabled_auto_adding_item_for_motion(self):
+        config["agenda_item_creation"] = "never"
+        response = self.client.post(
+            reverse("motion-list"),
+            {
+                "title": "test_title_OoCoo3MeiT9li5Iengu9",
+                "text": "test_text_thuoz0iecheiheereiCi",
+                "agenda_create": True,
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        motion = Motion.objects.get()
+        self.assertTrue(motion.agenda_item is None)
+        self.assertTrue(motion.agenda_item_id is None)
+
+    def test_ask_auto_adding_item_for_motion(self):
+        config["agenda_item_creation"] = "default_no"
+        response = self.client.post(
+            reverse("motion-list"),
+            {
+                "title": "test_title_wvlvowievgbpypoOV332",
+                "text": "test_text_tvewpxxcw9r72qNVV3uq",
+                "agenda_create": True,
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        motion = Motion.objects.get()
+        self.assertTrue(motion.agenda_item is not None)
+        self.assertEqual(motion.agenda_item_id, motion.agenda_item.id)
 
 
 class RetrieveItem(TestCase):

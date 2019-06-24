@@ -8,7 +8,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition } from '@pebula/ngrid';
 
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
-import { itemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { ListViewBaseComponent } from 'app/site/base/list-view-base';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
@@ -48,11 +47,6 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
     public defaultVisibility: number;
 
     /**
-     * Determine visibility states for the agenda that will be created implicitly
-     */
-    public itemVisibility = itemVisibilityChoices;
-
-    /**
      * helper for permission checks
      *
      * @returns true if the user may alter motions or their metadata
@@ -82,23 +76,21 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
      * @param titleService sets the title
      * @param translate translpations
      * @param matSnackBar display errors in the snack bar
-     * @param router routing to children
      * @param route determine the local route
+     * @param storage
      * @param repo the motion block repository
-     * @param agendaRepo the agenda repository service
-     * @param DS the dataStore
      * @param formBuilder creates forms
      * @param promptService the delete prompt
      * @param itemRepo
      * @param operator permission checks
+     * @param sortService
      */
     public constructor(
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
         storage: StorageService,
-        public repo: MotionBlockRepositoryService,
-        private agendaRepo: ItemRepositoryService,
+        private repo: MotionBlockRepositoryService,
         private formBuilder: FormBuilder,
         private itemRepo: ItemRepositoryService,
         private operator: OperatorService,
@@ -108,8 +100,9 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
 
         this.createBlockForm = this.formBuilder.group({
             title: ['', Validators.required],
-            agenda_type: ['', Validators.required],
+            agenda_create: [''],
             agenda_parent_id: [],
+            agenda_type: [''],
             internal: [false]
         });
     }
@@ -120,7 +113,6 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
     public ngOnInit(): void {
         super.setTitle('Motion blocks');
         this.items = this.itemRepo.getViewModelListBehaviorSubject();
-        this.agendaRepo.getDefaultAgendaVisibility().subscribe(visibility => (this.defaultVisibility = visibility));
     }
 
     /**
@@ -155,7 +147,7 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
      * Click handler for the save button.
      * Sends the block to create to the repository and resets the form.
      */
-    public onSaveNewButton(): void {
+    public async onSaveNewButton(): Promise<void> {
         if (this.createBlockForm.valid) {
             const block = this.createBlockForm.value;
             if (!block.agenda_parent_id) {
@@ -163,7 +155,7 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
             }
 
             try {
-                this.repo.create(block);
+                await this.repo.create(block);
                 this.resetForm();
                 this.isCreatingNewBlock = false;
             } catch (e) {

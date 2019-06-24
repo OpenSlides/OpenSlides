@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 import { BaseFilterListService, OsFilter, OsFilterOption } from 'app/core/ui-services/base-filter-list.service';
-import { itemVisibilityChoices } from 'app/shared/models/agenda/item';
+import { ItemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { ViewItem } from '../models/view-item';
 import { StorageService } from 'app/core/core-services/storage.service';
 
@@ -60,7 +60,7 @@ export class AgendaFilterListService extends BaseFilterListService<ViewItem> {
      * @returns a list of choices to filter from
      */
     private createVisibilityFilterOptions(): OsFilterOption[] {
-        return itemVisibilityChoices.map(choice => ({
+        return ItemVisibilityChoices.map(choice => ({
             condition: choice.key as number,
             label: choice.name
         }));

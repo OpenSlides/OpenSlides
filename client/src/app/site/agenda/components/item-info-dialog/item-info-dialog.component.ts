@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 
 import { ViewItem } from '../../models/view-item';
-import { itemVisibilityChoices } from 'app/shared/models/agenda/item';
+import { ItemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { DurationService } from 'app/core/ui-services/duration.service';
 
 /**
@@ -23,7 +23,7 @@ export class ItemInfoDialogComponent {
     /**
      * Hold item visibility
      */
-    public itemVisibility = itemVisibilityChoices;
+    public itemVisibility = ItemVisibilityChoices;
 
     /**
      * Constructor

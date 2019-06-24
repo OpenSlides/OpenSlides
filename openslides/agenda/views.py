@@ -1,6 +1,7 @@
 import jsonschema
 from django.contrib.auth import get_user_model
 from django.db import transaction
+from django.db.utils import IntegrityError
 
 from openslides.core.config import config
 from openslides.utils.autoupdate import inform_changed_data
@@ -15,10 +16,12 @@ from openslides.utils.rest_api import (
     ValidationError,
     detail_route,
     list_route,
+    status,
 )
 from openslides.utils.views import TreeSortMixin
 
 from ..utils.auth import has_perm
+from ..utils.utils import get_model_from_collection_string
 from .access_permissions import ItemAccessPermissions
 from .models import Item, ListOfSpeakers, Speaker
 
@@ -42,7 +45,14 @@ class ItemViewSet(ModelViewSet, TreeSortMixin):
         """
         if self.action in ("list", "retrieve", "metadata"):
             result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action in ("partial_update", "update", "destroy", "sort", "assign"):
+        elif self.action in (
+            "partial_update",
+            "update",
+            "destroy",
+            "sort",
+            "assign",
+            "create",
+        ):
             result = (
                 has_perm(self.request.user, "agenda.can_see")
                 and has_perm(self.request.user, "agenda.can_see_internal_items")
@@ -55,6 +65,62 @@ class ItemViewSet(ModelViewSet, TreeSortMixin):
         else:
             result = False
         return result
+
+    def create(self, request, *args, **kwargs):
+        """
+        Creates an agenda item and adds the content object to the agenda.
+        Request args should specify the content object:
+        {
+            "collection": <The collection string>,
+            "id": <The content object id>
+        }
+        """
+        collection = request.data.get("collection")
+        id = request.data.get("id")
+
+        if not isinstance(collection, str):
+            raise ValidationError({"detail": "The collection needs to be a string"})
+        if not isinstance(id, int):
+            raise ValidationError({"detail": "The id needs to be an int"})
+
+        try:
+            model = get_model_from_collection_string(collection)
+        except ValueError:
+            raise ValidationError("Invalid collection")
+
+        try:
+            content_object = model.objects.get(pk=id)
+        except model.DoesNotExist:
+            raise ValidationError({"detail": "The id is invalid"})
+
+        if not hasattr(content_object, "get_agenda_title_information"):
+            raise ValidationError(
+                {"detail": "The collection does not have agenda items"}
+            )
+
+        try:
+            item = Item.objects.create(content_object=content_object)
+        except IntegrityError:
+            raise ValidationError({"detail": "The item is already in the agenda"})
+
+        inform_changed_data(content_object)
+        return Response({id: item.id})
+
+    def destroy(self, request, *args, **kwargs):
+        """
+        Removes the item from the agenda. This does not delete the content
+        object. Also, the deletion is denied for items with topics as content objects.
+        """
+        item = self.get_object()
+        content_object = item.content_object
+        if content_object.get_collection_string() == "topics/topic":
+            raise ValidationError(
+                {"detail": "You cannot delete the agenda item to a topic"}
+            )
+
+        item.delete()
+        inform_changed_data(content_object)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     def update(self, *args, **kwargs):
         """

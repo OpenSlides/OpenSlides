@@ -5,7 +5,7 @@ import { BaseModelWithContentObject } from '../base/base-model-with-content-obje
  * Determine visibility states for agenda items
  * Coming from "ConfigVariables" property "agenda_hide_internal_items_on_projector"
  */
-export const itemVisibilityChoices = [
+export const ItemVisibilityChoices = [
     { key: 1, name: 'public', csvName: '' },
     { key: 2, name: 'internal', csvName: 'internal' },
     { key: 3, name: 'hidden', csvName: 'hidden' }

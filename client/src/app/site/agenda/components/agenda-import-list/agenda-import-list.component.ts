@@ -8,7 +8,7 @@ import { AgendaImportService } from '../../agenda-import.service';
 import { BaseImportListComponent } from 'app/site/base/base-import-list';
 import { CsvExportService } from 'app/core/ui-services/csv-export.service';
 import { DurationService } from 'app/core/ui-services/duration.service';
-import { itemVisibilityChoices } from 'app/shared/models/agenda/item';
+import { ItemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { ViewCreateTopic } from '../../models/view-create-topic';
 
 /**
@@ -72,7 +72,7 @@ export class AgendaImportListComponent extends BaseImportListComponent<ViewCreat
      * @returns A string, which may be empty if the type is not found in the visibilityChoices
      */
     public getTypeString(type: number): string {
-        const visibility = itemVisibilityChoices.find(choice => choice.key === type);
+        const visibility = ItemVisibilityChoices.find(choice => choice.key === type);
         return visibility ? visibility.name : '';
     }
 

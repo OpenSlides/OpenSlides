@@ -157,7 +157,7 @@ export class AssignmentPollComponent extends BaseViewComponent implements OnInit
      */
     public async onDeletePoll(): Promise<void> {
         const title = this.translate.instant('Are you sure you want to delete this ballot?');
-        if (await this.promptService.open(title, null)) {
+        if (await this.promptService.open(title)) {
             await this.assignmentRepo.deletePoll(this.poll).then(null, this.raiseError);
         }
     }

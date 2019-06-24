@@ -161,7 +161,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
      * @param repo
      * @param userRepo
      * @param pollService
-     * @param agendaRepo
+     * @param itemRepo
      * @param tagRepo
      * @param promptService
      */
@@ -177,7 +177,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
         public repo: AssignmentRepositoryService,
         private userRepo: UserRepositoryService,
         public pollService: AssignmentPollService,
-        private agendaRepo: ItemRepositoryService,
+        private itemRepo: ItemRepositoryService,
         private tagRepo: TagRepositoryService,
         private promptService: PromptService,
         private pdfService: AssignmentPdfExportService,
@@ -200,7 +200,9 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
             description: '',
             poll_description_default: '',
             open_posts: 0,
-            agenda_item_id: '' // create agenda item
+            agenda_create: [''],
+            agenda_parent_id: [],
+            agenda_type: ['']
         });
         this.candidatesForm = formBuilder.group({
             userId: null
@@ -212,7 +214,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
      */
     public ngOnInit(): void {
         this.getAssignmentByUrl();
-        this.agendaObserver = this.agendaRepo.getViewModelListBehaviorSubject();
+        this.agendaObserver = this.itemRepo.getViewModelListBehaviorSubject();
         this.tagsObserver = this.tagRepo.getViewModelListBehaviorSubject();
         this.mediafilesObserver = this.mediafileRepo.getViewModelListBehaviorSubject();
     }
@@ -292,7 +294,6 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
             title: assignment.title || '',
             tags_id: assignment.assignment.tags_id || [],
             attachments_id: assignment.assignment.attachments_id || [],
-            agendaItem: assignment.assignment.agenda_item_id || null,
             phase: assignment.phase, // todo default: 0?
             description: assignment.assignment.description || '',
             poll_description_default: assignment.assignment.poll_description_default,
@@ -515,5 +516,13 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
      */
     public getSanitizedText(text: string): SafeHtml {
         return this.sanitizer.bypassSecurityTrustHtml(text);
+    }
+
+    public addToAgenda(): void {
+        this.itemRepo.addItemToAgenda(this.assignment).then(null, this.raiseError);
+    }
+
+    public removeFromAgenda(): void {
+        this.itemRepo.removeFromAgenda(this.assignment.agendaItem).then(null, this.raiseError);
     }
 }

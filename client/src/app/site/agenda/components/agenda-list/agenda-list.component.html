@@ -175,9 +175,9 @@
             <mat-divider></mat-divider>
 
             <!-- Delete selected -->
-            <button mat-menu-item [disabled]="!selectedRows.length" class="red-warning-text" (click)="deleteSelected()">
-                <mat-icon>delete</mat-icon>
-                <span translate>Delete</span>
+            <button mat-menu-item [disabled]="!selectedRows.length" (click)="removeSelected()">
+                <mat-icon>remove</mat-icon>
+                <span translate>Remove from agenda</span>
             </button>
         </div>
     </div>
@@ -198,7 +198,12 @@
         </button>
 
         <!-- Delete Button -->
-        <button mat-menu-item class="red-warning-text" (click)="onDelete(item)">
+        <button mat-menu-item (click)="removeFromAgenda(item)" *ngIf="item.contentObjectData.collection !== 'topics/topic'">
+            <mat-icon>remove</mat-icon>
+            <span translate>Remove from agenda</span>
+        </button>
+
+        <button mat-menu-item class="red-warning-text" (click)="deleteTopic(item)" *ngIf="item.contentObjectData.collection === 'topics/topic'">
             <mat-icon>delete</mat-icon>
             <span translate>Delete</span>
         </button>

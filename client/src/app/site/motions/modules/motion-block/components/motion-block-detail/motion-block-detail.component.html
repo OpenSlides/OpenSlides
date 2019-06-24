@@ -81,6 +81,17 @@
 
     <os-projector-button *ngIf="block" [object]="block" [menuItem]="true"></os-projector-button>
 
+    <div *osPerms="'agenda.can_manage'">
+        <button mat-menu-item (click)="addToAgenda()" *ngIf="block && !block.agendaItem">
+            <mat-icon>add</mat-icon>
+            <span translate>Add to agenda</span>
+        </button>
+        <button mat-menu-item (click)="removeFromAgenda()" *ngIf="block && block.agendaItem">
+            <mat-icon>remove</mat-icon>
+            <span translate>Remove from agenda</span>
+        </button>
+    </div>
+
     <div *osPerms="['motions.can_manage', 'motions.can_manage_metadata']">
         <button mat-menu-item (click)="toggleEditMode()">
             <mat-icon>edit</mat-icon>

@@ -269,7 +269,7 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
         $event.stopPropagation();
         $event.preventDefault();
         const title = this.translate.instant('Are you sure you want to delete this change recommendation?');
-        if (await this.promptService.open(title, null)) {
+        if (await this.promptService.open(title)) {
             this.recoRepo.delete(reco).then(null, this.raiseError);
         }
     }

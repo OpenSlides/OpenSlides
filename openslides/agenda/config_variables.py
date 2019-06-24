@@ -31,6 +31,22 @@ def get_config_variables():
     )
 
     yield ConfigVariable(
+        name="agenda_item_creation",
+        label="Auto add to agenda",
+        default_value="always",
+        input_type="choice",
+        choices=(
+            {"value": "always", "display_name": "Always"},
+            {"value": "never", "display_name": "Never"},
+            {"value": "default_yes", "display_name": "Ask, default yes"},
+            {"value": "default_no", "display_name": "Ask, default no"},
+        ),
+        weight=212,
+        group="Agenda",
+        subgroup="General",
+    )
+
+    yield ConfigVariable(
         name="agenda_numeral_system",
         default_value="arabic",
         input_type="choice",

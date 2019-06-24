@@ -280,7 +280,7 @@ export class UserListComponent extends ListViewBaseComponent<ViewUser> implement
      */
     public async deleteSelected(): Promise<void> {
         const title = this.translate.instant('Are you sure you want to delete all selected participants?');
-        if (await this.promptService.open(title, null)) {
+        if (await this.promptService.open(title)) {
             for (const user of this.selectedRows) {
                 await this.repo.delete(user);
             }

@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { BaseImportService, NewEntry } from 'app/core/ui-services/base-import.service';
 import { CreateTopic } from './models/create-topic';
 import { DurationService } from 'app/core/ui-services/duration.service';
-import { itemVisibilityChoices } from 'app/shared/models/agenda/item';
+import { ItemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { TopicRepositoryService } from '../../core/repositories/topics/topic-repository.service';
 import { ViewCreateTopic } from './models/view-create-topic';
 
@@ -162,13 +162,13 @@ export class AgendaImportService extends BaseImportService<ViewCreateTopic> {
         if (!input) {
             return 1; // default, public item
         } else if (typeof input === 'string') {
-            const visibility = itemVisibilityChoices.find(choice => choice.csvName === input);
+            const visibility = ItemVisibilityChoices.find(choice => choice.csvName === input);
             if (visibility) {
                 return visibility.key;
             }
         } else if (input === 1) {
             // Compatibility with the old client's isInternal column
-            const visibility = itemVisibilityChoices.find(choice => choice.name === 'Internal item');
+            const visibility = ItemVisibilityChoices.find(choice => choice.name === 'Internal item');
             if (visibility) {
                 return visibility.key;
             }

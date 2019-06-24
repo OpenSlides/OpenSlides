@@ -33,6 +33,18 @@
         <!-- Project -->
         <os-projector-button [object]="assignment" [menuItem]="true"></os-projector-button>
 
+        <!-- Add/remove to/from agenda -->
+        <div *osPerms="'agenda.can_manage'">
+            <button mat-menu-item (click)="addToAgenda()" *ngIf="assignment && !assignment.agendaItem">
+                <mat-icon>add</mat-icon>
+                <span translate>Add to agenda</span>
+            </button>
+            <button mat-menu-item (click)="removeFromAgenda()" *ngIf="assignment && assignment.agendaItem">
+                <mat-icon>remove</mat-icon>
+                <span translate>Remove from agenda</span>
+            </button>
+        </div>
+
         <!-- Delete -->
         <div *ngIf="assignment && hasPerms('manage')">
             <!-- Delete -->
@@ -268,18 +280,7 @@
                 ></os-search-value-selector>
             </div>
 
-            <!-- searchValueSelector: agendaItem -->
-            <div class="content-field" *ngIf="parentsAvailable">
-                <os-search-value-selector
-                    ngDefaultControl
-                    [form]="assignmentForm"
-                    [formControl]="assignmentForm.get('agenda_item_id')"
-                    [multiple]="false"
-                    [includeNone]="false"
-                    listname="{{ 'Parent agenda item' | translate }}"
-                    [InputListValues]="agendaObserver"
-                ></os-search-value-selector>
-            </div>
+            <os-agenda-content-object-form *ngIf="newAssignment" [form]="assignmentForm"></os-agenda-content-object-form>
 
             <!-- poll_description_default -->
             <div>

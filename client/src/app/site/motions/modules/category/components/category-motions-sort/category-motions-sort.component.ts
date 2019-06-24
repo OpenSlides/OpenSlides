@@ -157,7 +157,7 @@ export class CategoryMotionsSortComponent extends BaseViewComponent implements O
      */
     public async sendUpdate(): Promise<void> {
         const title = this.translate.instant('Do you really want to save your changes?');
-        if (await this.promptService.open(title, null)) {
+        if (await this.promptService.open(title)) {
             const ids = this.motionsCopy.map(motion => motion.id);
             this.repo.sortMotionsInCategory(this.category.category, ids);
             this.hasChanged = false;

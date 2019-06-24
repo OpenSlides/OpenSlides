@@ -218,7 +218,7 @@ export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile>
      */
     public async deleteSelected(): Promise<void> {
         const title = this.translate.instant('Are you sure you want to delete all selected files?');
-        if (await this.promptService.open(title, null)) {
+        if (await this.promptService.open(title)) {
             for (const mediafile of this.selectedRows) {
                 await this.repo.delete(mediafile);
             }

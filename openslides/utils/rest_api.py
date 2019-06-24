@@ -19,6 +19,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.routers import DefaultRouter
 from rest_framework.serializers import (
+    BooleanField,
     CharField,
     DecimalField,
     DictField,
@@ -55,6 +56,7 @@ __all__ = [
     "DestroyModelMixin",
     "CharField",
     "DictField",
+    "BooleanField",
     "FileField",
     "IntegerField",
     "JSONField",
