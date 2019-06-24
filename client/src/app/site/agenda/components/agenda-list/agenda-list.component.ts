@@ -6,10 +6,12 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition } from '@pebula/ngrid';
 
+import { _ } from 'app/core/translate/translation-marker';
 import { AgendaCsvExportService } from '../../services/agenda-csv-export.service';
 import { AgendaFilterListService } from '../../services/agenda-filter-list.service';
 import { AgendaPdfService } from '../../services/agenda-pdf.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { ColumnRestriction } from 'app/shared/components/list-view-table/list-view-table.component';
 import { DurationService } from 'app/core/ui-services/duration.service';
 import { ItemInfoDialogComponent } from '../item-info-dialog/item-info-dialog.component';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
@@ -20,11 +22,10 @@ import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
 import { StorageService } from 'app/core/core-services/storage.service';
+import { TopicRepositoryService } from 'app/core/repositories/topics/topic-repository.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { ViewItem } from '../../models/view-item';
 import { ViewListOfSpeakers } from '../../models/view-list-of-speakers';
-import { _ } from 'app/core/translate/translation-marker';
-import { TopicRepositoryService } from 'app/core/repositories/topics/topic-repository.service';
 import { ViewTopic } from '../../models/view-topic';
 
 /**
@@ -80,13 +81,29 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
         },
         {
             prop: 'speaker',
-            width: this.singleButtonWidth
+            width: this.badgeButtonWidth
         },
         {
             prop: 'menu',
             width: this.singleButtonWidth
         }
     ];
+
+    public restrictedColumns: ColumnRestriction[] = [
+        {
+            columnName: 'menu',
+            permission: 'agenda.can_manage'
+        },
+        {
+            columnName: 'speaker',
+            permission: 'agenda.can_see_list_of_speakers'
+        }
+    ];
+
+    /**
+     * Define extra filter properties
+     */
+    public filterProps = ['itemNumber', 'comment'];
 
     /**
      * The usual constructor for components
@@ -322,26 +339,4 @@ export class AgendaListComponent extends ListViewBaseComponent<ViewItem> impleme
             return result;
         }
     }
-
-    /**
-     * Overwrites the dataSource's string filter with a case-insensitive search
-     * in the item number and title
-     *
-     * TODO: Filter predicates will be missed :(
-     */
-    // private setFulltextFilter(): void {
-    //     this.dataSource.filterPredicate = (data, filter) => {
-    //         if (!data) {
-    //             return false;
-    //         }
-    //         filter = filter ? filter.toLowerCase() : '';
-    //         return (
-    //             data.itemNumber.toLowerCase().includes(filter) ||
-    //             data
-    //                 .getListTitle()
-    //                 .toLowerCase()
-    //                 .includes(filter)
-    //         );
-    //     };
-    // }
 }

@@ -19,6 +19,7 @@
     [filterService]="filterService"
     [sortService]="sortService"
     [columns]="tableColumnDefinition"
+    [filterProps]="filterProps"
     [multiSelect]="isMultiSelect"
     [hiddenInMobile]="['group']"
     scrollKey="user"
@@ -35,11 +36,11 @@
             matTooltip="{{ getUserTooltip(user) | translate }}"
         ></a>
         <div>
-            <span *ngIf="user.is_active">
+            <span *ngIf="user.is_active !== false">
                 {{ name }}
             </span>
 
-            <span *ngIf="!user.is_active">
+            <span *ngIf="user.is_active === false">
                 <os-icon-container icon="block" swap="true">
                     {{ name }}
                 </os-icon-container>
@@ -96,7 +97,7 @@
             class="checkbox-ripple-padding"
             (change)="setPresent(user)"
             [checked]="user.is_present"
-            [disabled]="isMultiSelect"
+            [disabled]="isMultiSelect || !this.operator.hasPerms('users.can_manage')"
         >
             <span translate>Present</span>
         </mat-checkbox>

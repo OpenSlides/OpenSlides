@@ -148,6 +148,9 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
     @Input()
     public columns: PblColumnDefinition[] = [];
 
+    @Input()
+    public filterProps: string[];
+
     /**
      * Key to restore scroll position after navigating
      */
@@ -299,12 +302,13 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
             })
             .create();
 
-        const filterPredicate = (item: any): boolean => {
+        const filterPredicate = (item: V): boolean => {
             if (!this.inputValue) {
                 return true;
             }
 
             if (this.inputValue) {
+                // filter by ID
                 const trimmedInput = this.inputValue.trim().toLowerCase();
                 const idString = '' + item.id;
                 const foundId =
@@ -316,20 +320,21 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
                     return true;
                 }
 
-                for (const column of this.columns) {
-                    const col = this.dataSource.hostGrid.columnApi.findColumn(column.prop);
-                    const value = col.getValue(item);
+                // custom filter predicates
+                if (this.filterProps && this.filterProps.length) {
+                    for (const prop of this.filterProps) {
+                        const propertyAsString = '' + item[prop];
 
-                    if (!!value) {
-                        const valueAsString = '' + value;
-                        const foundValue =
-                            valueAsString
-                                .trim()
-                                .toLocaleLowerCase()
-                                .indexOf(trimmedInput) !== -1;
+                        if (!!propertyAsString) {
+                            const foundProp =
+                                propertyAsString
+                                    .trim()
+                                    .toLowerCase()
+                                    .indexOf(trimmedInput) !== -1;
 
-                        if (foundValue) {
-                            return true;
+                            if (foundProp) {
+                                return true;
+                            }
                         }
                     }
                 }
