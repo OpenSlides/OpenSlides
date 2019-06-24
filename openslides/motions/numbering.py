@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Tuple
 
 from django.conf import settings
 from django.db import transaction
-from django.db.models import Model, Prefetch
+from django.db.models import Model
 
 from ..core.config import config
 from ..utils.rest_api import ValidationError
@@ -91,16 +91,7 @@ def numbering(main_category: Category) -> List[Model]:
 def get_child_categories(main_category: Category) -> List[Category]:
     # -> generate a mapping from a category id to all it's children with respect to `weight`:
     category_children_mapping: Dict[int, List[Category]] = defaultdict(list)
-    # Optimize lookupqueries by prefetching all relations for motions
-    prefetched_queryset = Category.objects.prefetch_related(
-        Prefetch(
-            "motion_set",
-            queryset=Motion.objects.get_full_queryset()
-            .prefetch_related("parent")
-            .order_by("category_weight", "id"),
-        )
-    )
-    for category in prefetched_queryset.exclude(parent=None).order_by("weight").all():
+    for category in Category.objects.exclude(parent=None).order_by("weight").all():
         category_children_mapping[category.parent_id].append(category)
 
     # - collect child categories
@@ -156,9 +147,14 @@ def get_affected_motions(affected_categories) -> List[Motion]:
     # and sorted with `category_weight` per category.
     affected_motions = []
     for category in affected_categories:
-        affected_motions.extend(
-            list(category.motion_set.all())
-        )  # The motions should be ordered correctly by the prefetch statement in `get_child_categories`
+        motions = (
+            Motion.objects.prefetch_related(
+                "agenda_items", "lists_of_speakers", "parent"
+            )
+            .filter(category=category)
+            .order_by("category_weight", "id")
+        )
+        affected_motions.extend(list(motions))
     return affected_motions
 
 
