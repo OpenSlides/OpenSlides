@@ -90,7 +90,7 @@ export class MotionBlockListComponent extends ListViewBaseComponent<ViewMotionBl
         translate: TranslateService,
         matSnackBar: MatSnackBar,
         storage: StorageService,
-        private repo: MotionBlockRepositoryService,
+        public repo: MotionBlockRepositoryService,
         private formBuilder: FormBuilder,
         private itemRepo: ItemRepositoryService,
         private operator: OperatorService,

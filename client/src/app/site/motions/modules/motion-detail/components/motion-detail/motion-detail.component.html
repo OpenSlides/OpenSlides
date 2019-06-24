@@ -324,7 +324,7 @@
 
         <!-- Category -->
         <!-- Disabled during "new motion" since changing has no effect -->
-        <div *ngIf="!editMotion && categoryObserver.value.length > 0">
+        <div *ngIf="!editMotion && categoryObserver.value.length">
             <h4 *ngIf="perms.isAllowed('change_metadata', motion) || motion.category" translate>Category</h4>
             <mat-menu #categoryMenu="matMenu">
                 <button
@@ -342,7 +342,7 @@
                 class="grey"
                 disableRipple
             >
-                {{ motion.category.prefixedNameWithParents || '–' }}
+                {{ motion.category ? motion.category.prefixedNameWithParents : '–' }}
             </mat-basic-chip>
             <mat-basic-chip
                 *ngIf="!perms.isAllowed('change_metadata', motion) && motion.category"
