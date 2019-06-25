@@ -45,7 +45,6 @@ export class RoutingStateService {
             )
             .subscribe((event: any[]) => {
                 this._previousUrl = event[0].urlAfterRedirects;
-                console.log('prev URL: ', this._previousUrl);
             });
     }
 }

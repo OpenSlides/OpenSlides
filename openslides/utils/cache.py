@@ -396,7 +396,15 @@ class ElementCache:
             for collection_string, full_data in changed_elements.items():
                 restricter = self.cachables[collection_string].restrict_elements
                 elements = await restricter(user_id, full_data)
-                restricted_data[collection_string] = elements
+
+                # Add removed objects (through restricter) to deleted elements.
+                full_data_ids = set([data["id"] for data in full_data])
+                restricted_data_ids = set([data["id"] for data in elements])
+                for id in full_data_ids - restricted_data_ids:
+                    deleted_elements.append(get_element_id(collection_string, id))
+
+                if elements:
+                    restricted_data[collection_string] = elements
             return restricted_data, deleted_elements
 
         lowest_change_id = await self.get_lowest_change_id()
