@@ -61,6 +61,7 @@
         "pdfmake": "^0.1.53",
         "po2json": "^1.0.0-alpha",
         "rxjs": "^6.5.1",
+        "text-encoding": "^0.7.0",
         "tinymce": "^4.9.2",
         "uuid": "^3.3.2",
         "zone.js": "~0.8.26"

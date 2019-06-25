@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable, Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { compress, decompress } from 'lz4js';
+import { TextDecoder, TextEncoder } from 'text-encoding';
 
 import { formatQueryParams, QueryParams } from '../query-params';
 import { OpenSlidesStatusService } from './openslides-status.service';
@@ -281,7 +282,7 @@ export class WebsocketService {
                     1024} KB uncompressed), ratio ${decompressedBuffer.byteLength / compressedSize}`
             );
             const textDecoder = new TextDecoder();
-            data = textDecoder.decode(decompressedBuffer);
+            data = textDecoder.decode(decompressedBuffer) as string;
         }
 
         const message: IncommingWebsocketMessage = JSON.parse(data);
