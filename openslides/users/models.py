@@ -1,6 +1,7 @@
 import smtplib
 from random import choice
 
+from django.conf import settings
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import (
     AbstractBaseUser,
@@ -247,7 +248,11 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
 
         # Create an email and send it.
         email = mail.EmailMessage(
-            subject, message, config["users_email_sender"], [self.email]
+            subject,
+            message,
+            config["users_email_sender"] + " <" + settings.DEFAULT_FROM_EMAIL + ">",
+            [self.email],
+            reply_to=[config["users_email_replyto"]],
         )
         try:
             count = connection.send_messages([email])

@@ -47,6 +47,7 @@ EMAIL_HOST = 'localhost'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
+DEFAULT_FROM_EMAIL = 'noreply@example.com'
 
 # Increasing Upload size to 100mb (default is 2.5mb)
 DATA_UPLOAD_MAX_MEMORY_SIZE = 104857600

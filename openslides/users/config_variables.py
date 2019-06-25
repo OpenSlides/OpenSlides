@@ -108,10 +108,21 @@ def get_config_variables():
 
     yield ConfigVariable(
         name="users_email_sender",
-        default_value="noreply@example.com",
+        default_value="",
         input_type="string",
-        label="Email sender",
+        label="Sender name",
+        help_text="The sender address is defined in the OpenSlides server settings and should modified by administrator only.",
         weight=600,
+        group="Participants",
+        subgroup="Email",
+    )
+
+    yield ConfigVariable(
+        name="users_email_replyto",
+        default_value="",
+        input_type="string",
+        label="Reply address",
+        weight=601,
         group="Participants",
         subgroup="Email",
     )
