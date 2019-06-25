@@ -1,9 +1,9 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { MainMenuService } from 'app/core/core-services/main-menu.service';
+import { RoutingStateService } from 'app/core/ui-services/routing-state.service';
 
 /**
  * Reusable head bar component for Apps.
@@ -111,6 +111,10 @@ export class HeadBarComponent {
     @Output()
     public saveEvent = new EventEmitter<boolean>();
 
+    public get showBackButton(): boolean {
+        return !this.nav && !this.editMode && !this.multiSelectMode && this.routingState.isSafePrevUrl;
+    }
+
     /**
      * Empty constructor
      */
@@ -119,7 +123,7 @@ export class HeadBarComponent {
         private menu: MainMenuService,
         private router: Router,
         private route: ActivatedRoute,
-        private location: Location
+        private routingState: RoutingStateService
     ) {}
 
     /**
@@ -149,7 +153,7 @@ export class HeadBarComponent {
      */
     public onBackButton(): void {
         if (this.goBack) {
-            this.location.back();
+            this.router.navigateByUrl(this.routingState.previousUrl);
         } else {
             this.router.navigate([this.prevUrl], { relativeTo: this.route });
         }
