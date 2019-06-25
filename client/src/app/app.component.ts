@@ -17,6 +17,7 @@ import { PingService } from './core/core-services/ping.service';
 import { SpinnerService } from './core/ui-services/spinner.service';
 import { Router } from '@angular/router';
 import { ViewUser } from './site/users/models/view-user';
+import { RoutingStateService } from './core/ui-services/routing-state.service';
 
 /**
  * Enhance array with own functions
@@ -80,7 +81,8 @@ export class AppComponent {
         loadFontService: LoadFontService,
         dataStoreUpgradeService: DataStoreUpgradeService, // to start it.
         prioritizeService: PrioritizeService,
-        pingService: PingService
+        pingService: PingService,
+        routingState: RoutingStateService
     ) {
         // manually add the supported languages
         translate.addLangs(['en', 'de', 'cs']);
