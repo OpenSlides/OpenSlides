@@ -296,7 +296,7 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
     }
 
     /**
-     * @returns the current recommendation extension if the workwlof allows for extenstion fields
+     * @returns the current recommendation extension if the workflow allows for extenstion fields
      */
     public get recommendationExtension(): string {
         if (this.recommendation && this.recommendation.show_recommendation_extension_field) {

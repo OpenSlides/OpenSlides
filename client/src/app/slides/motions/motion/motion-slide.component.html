@@ -11,6 +11,14 @@
             <h3>{{ data.data.recommender }}</h3>
             {{ getRecommendationLabel() }}
         </div>
+
+        <!-- recommendation referencing motions -->
+        <div *ngIf="data.data.recommendation_referencing_motions">
+            <h3 translate>Recommendation-referencing motions</h3>
+            <div *ngFor="let titleInformation of data.data.recommendation_referencing_motions">
+                {{ getIdentifierOrTitle(titleInformation) }}
+            </div>
+        </div>
     </div>
 
     <div [ngStyle]="{width: data.data.show_meta_box ? 'calc(100% - 250px)' : '100%'}">

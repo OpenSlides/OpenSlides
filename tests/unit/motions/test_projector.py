@@ -297,6 +297,7 @@ async def test_motion_slide(all_data):
         "line_length": 90,
         "line_numbering_mode": "none",
         "preamble": "The assembly may decide:",
+        "recommendation_referencing_motions": None,
     }
 
 
@@ -322,6 +323,7 @@ async def test_amendment_slide(all_data):
         "line_length": 90,
         "line_numbering_mode": "none",
         "preamble": "The assembly may decide:",
+        "recommendation_referencing_motions": None,
     }
 
 
@@ -347,4 +349,5 @@ async def test_statute_amendment_slide(all_data):
         "line_length": 90,
         "line_numbering_mode": "none",
         "preamble": "The assembly may decide:",
+        "recommendation_referencing_motions": None,
     }
