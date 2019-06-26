@@ -5,7 +5,14 @@
             "name": "app",
             "installMode": "prefetch",
             "resources": {
-                "files": ["/favicon.png", "/index.html", "/*.css", "/*.js"]
+                "files": [
+                    "/favicon.png",
+                    "/index.html",
+                    "/*.css",
+                    "/*.js",
+                    "/fira-sans*",
+                    "/Material-Icons-Baseline.*"
+                ]
             }
         },
         {
@@ -13,7 +20,9 @@
             "installMode": "lazy",
             "updateMode": "prefetch",
             "resources": {
-                "files": ["/assets/**"]
+                "files": [
+                    "/assets/**"
+                ]
             }
         }
     ]
