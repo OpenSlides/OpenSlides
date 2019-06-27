@@ -1,13 +1,17 @@
-.filter-menu {
-    margin-left: 5px;
-    justify-content: space-between;
-    :hover {
-        cursor: pointer;
+.filter-menu-head {
+    padding-left: 5px;
+
+    .mat-button {
+        margin: 0 auto;
     }
 }
 
+.filter-menu-head:hover {
+    cursor: pointer;
+}
+
 .action-buttons {
-    margin-left: auto;
+    display: flex;
 }
 
 span.right-with-margin {
@@ -16,21 +20,52 @@ span.right-with-margin {
 
 .filter-count {
     font-style: italic;
-    margin-right: 10px;
     margin-left: 10px;
-    min-width: 50px;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
+    margin-right: 10px;
 }
 
 .current-filters {
+    width: 100%;
     display: flex;
-    justify-content: flex-start;
-    margin: 0 5px;
-    button {
-        padding: 3px;
-        font-size: 80%;
-        margin: 5px;
+
+    > div {
+        display: inherit;
     }
+
+    button {
+        padding: 5px;
+        margin: auto 5px;
+        font-size: 75%;
+    }
+
+    .mat-icon {
+        $size: 12px;
+        font-size: $size;
+        height: $size;
+        width: $size;
+    }
+
+    overflow-x: auto;
+
+    // firefox scrollbar
+    scrollbar-width: 5px;
+    scrollbar-color: #666666;
+}
+
+// custom scrollbar. If required on more components, move to style.scss
+.current-filters::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+.current-filters::-webkit-scrollbar-thumb {
+    background: #666666;
+    height: 5px;
+    border-radius: 5px;
+}
+
+.current-filters::-webkit-scrollbar-corner {
+    display: none;
+    height: 0px;
+    width: 0px;
 }

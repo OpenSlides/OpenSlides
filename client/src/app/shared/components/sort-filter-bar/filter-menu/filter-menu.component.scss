@@ -7,9 +7,18 @@ mat-divider {
     margin-bottom: 5px;
 }
 
+.filter-menu {
+    overflow-y: scroll;
+    height: 100%;
+}
+
 .mat-expansion-panel {
     width: 400px;
     max-width: 95vw;
+}
+
+.filter-count {
+    margin-left: 10px;
 }
 
 .filter-subtitle {

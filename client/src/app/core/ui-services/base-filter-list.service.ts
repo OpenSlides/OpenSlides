@@ -39,6 +39,14 @@ export interface OsFilterOption {
 }
 
 /**
+ * Unique indicated filter with a label and a filter option
+ */
+export interface OsFilterIndicator {
+    property: string;
+    option: OsFilterOption;
+}
+
+/**
  * Define the type of a filter condition
  */
 type OsFilterOptionCondition = string | boolean | number | number[];
@@ -72,6 +80,28 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
     }
 
     /**
+     * @returns the amount of items that pass the filter service's filters
+     */
+    public get filteredCount(): number {
+        return this.outputSubject.getValue().length;
+    }
+
+    /**
+     * Returns all OsFilters containing active filters
+     */
+    public get activeFilters(): OsFilter[] {
+        return this.filterDefinitions.filter(def => def.options.find((option: OsFilterOption) => option.isActive));
+    }
+
+    public get filterCount(): number {
+        if (this.filterDefinitions) {
+            return this.filterDefinitions.reduce((a, b) => a + (b.count || 0), 0);
+        } else {
+            return 0;
+        }
+    }
+
+    /**
      * The observable output for the filtered data
      */
     private readonly outputSubject = new BehaviorSubject<V[]>([]);
@@ -84,26 +114,24 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
     }
 
     /**
-     * @returns the amount of items that pass the filter service's filters
-     */
-    public get filteredCount(): number {
-        return this.outputSubject.getValue().length;
-    }
-
-    /**
-     * @returns the amount of currently active filters
-     */
-    public get activeFilterCount(): number {
-        return this.filterDefinitions ? this.filterDefinitions.filter(filter => filter.count).length : 0;
-    }
-
-    /**
      * Boolean indicating if there are any filters described in this service
      *
      * @returns true if there are defined filters (regardless of current state)
      */
     public get hasFilterOptions(): boolean {
         return !!this.filterDefinitions && this.filterDefinitions.length > 0;
+    }
+
+    /**
+     * Stack OsFilters
+     */
+    private _filterStack: OsFilterIndicator[] = [];
+
+    /**
+     * get stacked filters
+     */
+    public get filterStack(): OsFilterIndicator[] {
+        return this._filterStack;
     }
 
     /**
@@ -124,6 +152,7 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
 
         if (storedFilter && this.isOsFilter(storedFilter)) {
             this.filterDefinitions = storedFilter;
+            this.activeFiltersToStack();
         } else {
             this.filterDefinitions = this.getFilterDefinitions();
             this.storeActiveFilters();
@@ -137,6 +166,23 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
             this.inputData = data;
             this.updateFilteredData();
         });
+    }
+
+    /**
+     * Recreates the filter stack out of active filter definitions
+     */
+    private activeFiltersToStack(): void {
+        const stack: OsFilterIndicator[] = [];
+        for (const activeFilter of this.activeFilters) {
+            const activeOptions = activeFilter.options.filter((option: OsFilterOption) => option.isActive);
+            for (const option of activeOptions) {
+                stack.push({
+                    property: activeFilter.property,
+                    option: option as OsFilterOption
+                });
+            }
+        }
+        this._filterStack = stack;
     }
 
     /**
@@ -169,10 +215,11 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
     public setFilterDefinitions(): void {
         if (this.filterDefinitions) {
             const newDefinitions = this.getFilterDefinitions();
-            this.store.get('filter_' + this.name).then((storedDefinition: OsFilter[]) => {
+
+            this.store.get<OsFilter[]>('filter_' + this.name).then(storedFilter => {
                 for (const newDef of newDefinitions) {
                     let count = 0;
-                    const matchingExistingFilter = storedDefinition.find(oldDef => oldDef.property === newDef.property);
+                    const matchingExistingFilter = storedFilter.find(oldDef => oldDef.property === newDef.property);
                     for (const option of newDef.options) {
                         if (typeof option === 'object') {
                             if (matchingExistingFilter && matchingExistingFilter.options) {
@@ -270,6 +317,7 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
         }
 
         this.outputSubject.next(filteredData);
+        this.activeFiltersToStack();
     }
 
     /**
@@ -304,8 +352,11 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
             const filterOption = filter.options.find(
                 o => typeof o !== 'string' && o.condition === option.condition
             ) as OsFilterOption;
+
             if (filterOption && !filterOption.isActive) {
                 filterOption.isActive = true;
+                this._filterStack.push({ property: filterProperty, option: option });
+
                 if (!filter.count) {
                     filter.count = 1;
                 } else {
@@ -329,6 +380,18 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
             ) as OsFilterOption;
             if (filterOption && filterOption.isActive) {
                 filterOption.isActive = false;
+
+                // remove filter from stack
+                const removeIndex = this._filterStack
+                    .map(stacked => stacked.option)
+                    .findIndex(mappedOption => {
+                        return mappedOption.condition === option.condition;
+                    });
+
+                if (removeIndex > -1) {
+                    this._filterStack.splice(removeIndex, 1);
+                }
+
                 if (filter.count) {
                     filter.count -= 1;
                 }
