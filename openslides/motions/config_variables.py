@@ -359,7 +359,7 @@ def get_config_variables():
     yield ConfigVariable(
         name="motions_export_title",
         default_value="Motions",
-        label="Title for PDF document of motions",
+        label="Title for PDF documents of motions",
         weight=370,
         group="Motions",
         subgroup="PDF export",
@@ -391,5 +391,5 @@ def get_config_variables():
         input_type="boolean",
         weight=379,
         group="Motions",
-        subgroup="Export",
+        subgroup="PDF export",
     )
