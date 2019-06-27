@@ -735,4 +735,24 @@ export class PdfDocumentService {
             style: StyleType.SUB_ENTRY
         };
     }
+
+    /**
+     * Draw a circle on its position on the paper
+     *
+     * @param y vertical offset
+     * @param size the size of the circle
+     * @returns an array containing one circle definition for pdfMake
+     */
+    public drawCircle(y: number, size: number): object[] {
+        return [
+            {
+                type: 'ellipse',
+                x: 0,
+                y: y,
+                lineColor: 'black',
+                r1: size,
+                r2: size
+            }
+        ];
+    }
 }
