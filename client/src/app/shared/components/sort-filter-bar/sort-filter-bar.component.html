@@ -7,18 +7,12 @@
     </div>
 
     <!-- Current filters -->
-    <div class="current-filters" *ngIf="filterService && filterService.activeFilterCount">
-        <div><span translate>Active filters</span>:&nbsp;</div>
-        <div>
-            <button mat-button (click)="filterService.clearAllFilters()">
-                <mat-icon inline>cancel</mat-icon>
-                <span translate>Clear all</span>
-            </button>
-        </div>
-        <div *ngFor="let filter of filterService.filterDefinitions">
-            <button mat-button *ngIf="filter.count" (click)="filterService.clearFilter(filter)">
-                <mat-icon inline>close</mat-icon>
-                <span>{{ filterService.getFilterName(filter) | translate }}</span>
+    <div class="current-filters" *ngIf="filterService">
+        <div *ngFor="let filter of filterService.filterStack">
+            <button mat-stroked-button (click)="removeFilterFromStack(filter)">
+                <os-icon-container icon="close">
+                    {{ filter.option.label | translate }}
+                </os-icon-container>
             </button>
         </div>
     </div>
@@ -27,11 +21,8 @@
     <div class="action-buttons">
         <!-- Filter button -->
         <button mat-button *ngIf="hasFilters" (click)="filterMenu.opened ? filterMenu.close() : filterMenu.open()">
-            <span *ngIf="!filterService.activeFilterCount" class="upper" translate> Filter </span>
-            <span *ngIf="filterService.activeFilterCount">
-                {{ filterService.activeFilterCount }}&nbsp;
-                <span *ngIf="filterService.activeFilterCount === 1" class="upper" translate>Filter</span>
-                <span *ngIf="filterService.activeFilterCount > 1" class="upper" translate>Filters</span>
+            <span class="upper" [matBadge]="filterAmount" matBadgeColor="accent" [matBadgeOverlap]="false" translate>
+                Filter
             </span>
         </button>
 
@@ -59,10 +50,17 @@
 </div>
 
 <!-- Header for the filter side bar -->
-<mat-drawer #filterMenu mode="push" position="end">
-    <div class="custom-table-header filter-menu" (click)="this.filterMenu.toggle()">
-        <span><mat-icon>keyboard_arrow_right</mat-icon></span>
-        <span class="right-with-margin" translate>Filter options</span>
+<mat-drawer autoFocus=false #filterMenu mode="push" position="end">
+    <div class="custom-table-header filter-menu-head" (click)="this.filterMenu.toggle()">
+        <span>
+            <mat-icon>keyboard_arrow_right</mat-icon>
+        </span>
+
+        <button mat-button (click)="onClearAllButton($event)" *ngIf="filterAmount">
+            <os-icon-container icon="clear">
+                <span translate>Clear all filters</span>
+            </os-icon-container>
+        </button>
     </div>
     <os-filter-menu *ngIf="filterService" (dismissed)="this.filterMenu.close()" [service]="filterService">
     </os-filter-menu>

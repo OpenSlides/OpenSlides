@@ -1,4 +1,4 @@
-import { Input, Output, Component, ViewChild, EventEmitter } from '@angular/core';
+import { Input, Output, Component, ViewChild, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { MatBottomSheet } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -9,7 +9,7 @@ import { FilterMenuComponent } from './filter-menu/filter-menu.component';
 import { OsSortingOption } from 'app/core/ui-services/base-sort-list.service';
 import { BaseSortListService } from 'app/core/ui-services/base-sort-list.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
-import { BaseFilterListService } from 'app/core/ui-services/base-filter-list.service';
+import { BaseFilterListService, OsFilterIndicator } from 'app/core/ui-services/base-filter-list.service';
 
 /**
  * Reusable bar for list views, offering sorting and filter options.
@@ -28,7 +28,8 @@ import { BaseFilterListService } from 'app/core/ui-services/base-filter-list.ser
 @Component({
     selector: 'os-sort-filter-bar',
     templateUrl: './sort-filter-bar.component.html',
-    styleUrls: ['./sort-filter-bar.component.scss']
+    styleUrls: ['./sort-filter-bar.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class SortFilterBarComponent<V extends BaseViewModel> {
     /**
@@ -125,6 +126,13 @@ export class SortFilterBarComponent<V extends BaseViewModel> {
         return this.sortService.sortOptions;
     }
 
+    public get filterAmount(): number {
+        if (this.filterService) {
+            const filterCount = this.filterService.filterCount;
+            return !!filterCount ? filterCount : null;
+        }
+    }
+
     public set sortOption(option: OsSortingOption<V>) {
         this.sortService.sortProperty = option.property;
     }
@@ -141,6 +149,22 @@ export class SortFilterBarComponent<V extends BaseViewModel> {
         private bottomSheet: MatBottomSheet
     ) {
         this.filterMenu = new FilterMenuComponent();
+    }
+
+    /**
+     * on Click, remove Filter
+     * @param filter
+     */
+    public removeFilterFromStack(filter: OsFilterIndicator): void {
+        this.filterService.toggleFilterOption(filter.property, filter.option);
+    }
+
+    /**
+     * Clear all filters
+     */
+    public onClearAllButton(event: MouseEvent): void {
+        event.stopPropagation();
+        this.filterService.clearAllFilters();
     }
 
     /**
