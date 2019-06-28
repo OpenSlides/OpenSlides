@@ -112,4 +112,29 @@ export class CollectionStringMapperService {
     public getAllRepositories(): BaseRepository<any, any, any>[] {
         return Object.values(this.collectionStringMapping).map((types: CollectionStringMappedTypes) => types[2]);
     }
+
+    /**
+     * Validates the given element id. It must have the form `<collection>:<id>`, with
+     * <collection> being a registered collection and the id a valid integer greater then 0.
+     *
+     * @param elementId The element id.
+     * @returns true, if the element id is valid.
+     */
+    public isElementIdValid(elementId: any): boolean {
+        if (!elementId || typeof elementId !== 'string') {
+            return false;
+        }
+
+        const splitted = elementId.split(':');
+        if (splitted.length !== 2) {
+            return false;
+        }
+
+        const id = parseInt(splitted[1], 10);
+        if (isNaN(id) || id <= 0) {
+            return false;
+        }
+
+        return Object.keys(this.collectionStringMapping).some(collection => collection === splitted[0]);
+    }
 }
