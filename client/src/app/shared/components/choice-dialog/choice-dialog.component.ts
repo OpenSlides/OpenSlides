@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ViewEncapsulation } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 
 import { Displayable } from 'app/site/base/displayable';
@@ -61,11 +61,13 @@ export type ChoiceAnswer = undefined | { action?: string; items: number | number
 @Component({
     selector: 'os-choice-dialog',
     templateUrl: './choice-dialog.component.html',
-    styleUrls: ['./choice-dialog.component.scss']
+    styleUrls: ['./choice-dialog.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class ChoiceDialogComponent {
     /**
      * One number selected, if this is a single select choice
+     * User over template
      */
     public selectedChoice: number;
 
@@ -78,6 +80,8 @@ export class ChoiceDialogComponent {
     public get isSelectionEmpty(): boolean {
         if (this.data.multiSelect) {
             return this.selectedMultiChoices.length === 0;
+        } else if (!this.data.choices) {
+            return false;
         } else {
             return this.selectedChoice === undefined;
         }
