@@ -17,15 +17,24 @@ export class Mediafile extends BaseModelWithListOfSpeakers<Mediafile> {
     public static COLLECTIONSTRING = 'mediafiles/mediafile';
     public id: number;
     public title: string;
-    public mediafile: FileMetadata;
+    public mediafile?: FileMetadata;
     public media_url_prefix: string;
-    public uploader_id: number;
     public filesize: string;
-    public hidden: boolean;
-    public timestamp: string;
+    public access_groups_id: number[];
+    public create_timestamp: string;
+    public parent_id: number | null;
+    public is_directory: boolean;
+    public path: string;
+    public inherited_access_groups_id: boolean | number[];
+
+    public get has_inherited_access_groups(): boolean {
+        return typeof this.inherited_access_groups_id !== 'boolean';
+    }
 
     public constructor(input?: any) {
-        super(Mediafile.COLLECTIONSTRING, input);
+        super(Mediafile.COLLECTIONSTRING);
+        // Do not change null to undefined...
+        this.deserialize(input);
     }
 
     /**
@@ -33,7 +42,7 @@ export class Mediafile extends BaseModelWithListOfSpeakers<Mediafile> {
      *
      * @returns the download URL for the specific file as string
      */
-    public get downloadUrl(): string {
-        return `${this.media_url_prefix}${this.mediafile.name}`;
+    public get url(): string {
+        return `${this.media_url_prefix}${this.path}`;
     }
 }

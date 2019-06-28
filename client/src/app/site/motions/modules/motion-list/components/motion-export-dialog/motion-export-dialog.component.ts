@@ -82,7 +82,7 @@ export class MotionExportDialogComponent implements OnInit {
      * @returns a list of availavble commentSections
      */
     public get commentsToExport(): ViewMotionCommentSection[] {
-        return this.commentRepo.getSortedViewModelList();
+        return this.commentRepo.getViewModelList();
     }
 
     /**

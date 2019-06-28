@@ -13,6 +13,7 @@
 <mat-card class="os-card">
     <os-media-upload-content
         [parallel]="parallel"
+        [directoryId]="directoryId"
         (uploadSuccessEvent)="uploadSuccess()"
         (errorEvent)="showError($event)"
     ></os-media-upload-content>

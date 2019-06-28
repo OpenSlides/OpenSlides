@@ -30,7 +30,7 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
      *
      * It's used to debounce messages on the sortedViewModelListSubject
      */
-    private readonly viewModelListSubject: BehaviorSubject<V[]> = new BehaviorSubject<V[]>([]);
+    protected readonly unsafeViewModelListSubject: BehaviorSubject<V[]> = new BehaviorSubject<V[]>(null);
 
     /**
      * Observable subject for the sorted view model list.
@@ -39,7 +39,7 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
      * updates, if e.g. an autoupdate with a lot motions come in. The result is just one
      * update of the new list instead of many unnecessary updates.
      */
-    protected readonly sortedViewModelListSubject: BehaviorSubject<V[]> = new BehaviorSubject<V[]>([]);
+    protected readonly viewModelListSubject: BehaviorSubject<V[]> = new BehaviorSubject<V[]>([]);
 
     /**
      * Observable subject for any changes of view models.
@@ -94,8 +94,10 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
         // All data is piped through an auditTime of 1ms. This is to prevent massive
         // updates, if e.g. an autoupdate with a lot motions come in. The result is just one
         // update of the new list instead of many unnecessary updates.
-        this.viewModelListSubject.pipe(auditTime(1)).subscribe(models => {
-            this.sortedViewModelListSubject.next(models.sort(this.viewModelSortFn));
+        this.unsafeViewModelListSubject.pipe(auditTime(1)).subscribe(models => {
+            if (models) {
+                this.viewModelListSubject.next(models.sort(this.viewModelSortFn));
+            }
         });
 
         this.languageCollator = new Intl.Collator(this.translate.currentLang);
@@ -105,27 +107,15 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
         this.DS.clearObservable.subscribe(() => this.clear());
         this.translate.onLangChange.subscribe(change => {
             this.languageCollator = new Intl.Collator(change.lang);
-            this.updateViewModelListObservable();
-        });
-
-        this.loadInitialFromDS();
-    }
-
-    protected loadInitialFromDS(): void {
-        // Populate the local viewModelStore with ViewModel Objects.
-        this.DS.getAll(this.baseModelCtor).forEach((model: M) => {
-            this.viewModelStore[model.id] = this.createViewModelWithTitles(model);
-        });
-
-        // Update the list and then all models on their own
-        this.updateViewModelListObservable();
-        this.DS.getAll(this.baseModelCtor).forEach((model: M) => {
-            this.updateViewModelObservable(model.id);
+            if (this.unsafeViewModelListSubject.value) {
+                this.viewModelListSubject.next(this.unsafeViewModelListSubject.value.sort(this.viewModelSortFn));
+            }
         });
     }
 
     /**
-     * Deletes all models from the repository (internally, no requests). Informs all subjects.
+     * Deletes all models from the repository (internally, no requests). Changes need
+     * to be committed via `commitUpdate()`.
      *
      * @param ids All model ids
      */
@@ -134,12 +124,11 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
             delete this.viewModelStore[id];
             this.updateViewModelObservable(id);
         });
-        this.updateViewModelListObservable();
     }
 
     /**
      * Updates or creates all given models in the repository (internally, no requests).
-     * Informs all subjects.
+     * Changes need to be committed via `commitUpdate()`.
      *
      * @param ids All model ids.
      */
@@ -148,15 +137,15 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
             this.viewModelStore[id] = this.createViewModelWithTitles(this.DS.get(this.collectionString, id));
             this.updateViewModelObservable(id);
         });
-        this.updateViewModelListObservable();
     }
 
     /**
      * Updates all models in this repository with all changed models.
      *
      * @param changedModels A mapping of collections to ids of all changed models.
+     * @returns if at least one model was affected.
      */
-    public updateDependencies(changedModels: CollectionIds): void {
+    public updateDependencies(changedModels: CollectionIds): boolean {
         if (!this.depsModelCtors || this.depsModelCtors.length === 0) {
             return;
         }
@@ -184,8 +173,8 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
             viewModels.forEach(ownViewModel => {
                 this.updateViewModelObservable(ownViewModel.id);
             });
-            this.updateViewModelListObservable();
         }
+        return somethingUpdated;
     }
 
     public getListTitle: (titleInformation: T) => string = (titleInformation: T) => {
@@ -292,7 +281,7 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
      */
     public setSortFunction(fn: (a: V, b: V) => number): void {
         this.viewModelSortFn = fn;
-        this.updateViewModelListObservable();
+        this.commitUpdate();
     }
 
     /**
@@ -316,7 +305,7 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
      * @returns all sorted view models stored in this repository.
      */
     public getSortedViewModelList(): V[] {
-        return this.sortedViewModelListSubject.getValue();
+        return this.viewModelListSubject.getValue();
     }
 
     /**
@@ -333,7 +322,7 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
      * @returns the (sorted) Observable of the whole store.
      */
     public getViewModelListObservable(): Observable<V[]> {
-        return this.sortedViewModelListSubject.asObservable();
+        return this.viewModelListSubject.asObservable();
     }
 
     /**
@@ -343,7 +332,7 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
      * @returns A subject that holds the model list
      */
     public getViewModelListBehaviorSubject(): BehaviorSubject<V[]> {
-        return this.sortedViewModelListSubject;
+        return this.viewModelListSubject;
     }
 
     /**
@@ -366,15 +355,7 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
     /**
      * update the observable of the list. Also updates the sorting of the view model list.
      */
-    protected updateViewModelListObservable(): void {
-        this.viewModelListSubject.next(this.getViewModelList());
-    }
-
-    /**
-     * Triggers both the observable update routines
-     */
-    protected updateAllObservables(id: number): void {
-        this.updateViewModelListObservable();
-        this.updateViewModelObservable(id);
+    public commitUpdate(): void {
+        this.unsafeViewModelListSubject.next(this.getViewModelList());
     }
 }

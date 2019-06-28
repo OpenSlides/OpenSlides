@@ -51,7 +51,7 @@ export class WorkflowRepositoryService extends BaseRepository<ViewWorkflow, Work
     ) {
         super(DS, dataSend, mapperService, viewModelStoreService, translate, Workflow);
 
-        this.sortedViewModelListSubject.subscribe(models => {
+        this.viewModelListSubject.subscribe(models => {
             if (models && models.length > 0) {
                 this.initSorting(models);
             }

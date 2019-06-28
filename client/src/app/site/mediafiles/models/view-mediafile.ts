@@ -2,10 +2,10 @@ import { BaseViewModel } from '../../base/base-view-model';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { Searchable } from 'app/site/base/searchable';
 import { SearchRepresentation } from 'app/core/ui-services/search.service';
-import { ViewUser } from 'app/site/users/models/view-user';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { BaseViewModelWithListOfSpeakers } from 'app/site/base/base-view-model-with-list-of-speakers';
 import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
+import { ViewGroup } from 'app/site/users/models/view-group';
 
 export const IMAGE_MIMETYPES = ['image/png', 'image/jpeg', 'image/gif'];
 export const FONT_MIMETYPES = ['font/ttf', 'font/woff', 'application/font-woff', 'application/font-sfnt'];
@@ -19,76 +19,97 @@ export class ViewMediafile extends BaseViewModelWithListOfSpeakers<Mediafile>
     implements MediafileTitleInformation, Searchable {
     public static COLLECTIONSTRING = Mediafile.COLLECTIONSTRING;
 
-    private _uploader: ViewUser;
+    private _parent?: ViewMediafile;
+    private _access_groups?: ViewGroup[];
+    private _inherited_access_groups?: ViewGroup[];
 
     public get mediafile(): Mediafile {
         return this._model;
     }
 
-    public get uploader(): ViewUser {
-        return this._uploader;
+    public get parent(): ViewMediafile | null {
+        return this._parent;
     }
 
-    public get uploader_id(): number {
-        return this.mediafile.uploader_id;
+    public get access_groups(): ViewGroup[] {
+        return this._access_groups || [];
+    }
+
+    public get access_groups_id(): number[] {
+        return this.mediafile.access_groups_id;
+    }
+
+    public get inherited_access_groups(): ViewGroup[] | null {
+        return this._inherited_access_groups;
+    }
+
+    public get inherited_access_groups_id(): boolean | number[] {
+        return this.mediafile.inherited_access_groups_id;
+    }
+
+    public get has_inherited_access_groups(): boolean {
+        return this.mediafile.has_inherited_access_groups;
     }
 
     public get title(): string {
         return this.mediafile.title;
     }
 
-    public get size(): string {
-        return this.mediafile.filesize;
+    public get path(): string {
+        return this.mediafile.path;
     }
 
-    public get type(): string {
-        return this.mediafile.mediafile.type;
+    public get parent_id(): number {
+        return this.mediafile.parent_id;
+    }
+
+    public get is_directory(): boolean {
+        return this.mediafile.is_directory;
+    }
+
+    public get is_file(): boolean {
+        return !this.is_directory;
+    }
+
+    public get size(): string {
+        return this.mediafile.filesize;
     }
 
     public get prefix(): string {
         return this.mediafile.media_url_prefix;
     }
 
-    public get hidden(): boolean {
-        return this.mediafile.hidden;
+    public get url(): string {
+        return this.mediafile.url;
     }
 
-    public get fileName(): string {
-        return this.mediafile.mediafile.name;
-    }
-
-    public get downloadUrl(): string {
-        return this.mediafile.downloadUrl;
+    public get type(): string {
+        return this.mediafile.mediafile ? this.mediafile.mediafile.type : '';
     }
 
     public get pages(): number | null {
-        return this.mediafile.mediafile.pages;
+        return this.mediafile.mediafile ? this.mediafile.mediafile.pages : null;
     }
 
-    /**
-     * Determines if the file has the 'hidden' attribute
-     * @returns the hidden attribute, also 'hidden' if there is no file
-     * TODO Which is the expected behavior for 'no file'?
-     */
-    public get is_hidden(): boolean {
-        return this.mediafile.hidden;
-    }
-
-    public constructor(mediafile: Mediafile, listOfSpeakers?: ViewListOfSpeakers, uploader?: ViewUser) {
+    public constructor(
+        mediafile: Mediafile,
+        listOfSpeakers?: ViewListOfSpeakers,
+        parent?: ViewMediafile,
+        access_groups?: ViewGroup[],
+        inherited_access_groups?: ViewGroup[]
+    ) {
         super(Mediafile.COLLECTIONSTRING, mediafile, listOfSpeakers);
-        this._uploader = uploader;
+        this._parent = parent;
+        this._access_groups = access_groups;
+        this._inherited_access_groups = inherited_access_groups;
     }
 
     public formatForSearch(): SearchRepresentation {
-        const searchValues = [this.title];
-        if (this.uploader) {
-            searchValues.push(this.uploader.full_name);
-        }
-        return searchValues;
+        return [this.title, this.path];
     }
 
     public getDetailStateURL(): string {
-        return this.downloadUrl;
+        return this.url;
     }
 
     public getSlide(): ProjectorElementBuildDeskriptor {
@@ -102,6 +123,12 @@ export class ViewMediafile extends BaseViewModelWithListOfSpeakers<Mediafile>
             projectionDefaultName: 'mediafiles',
             getDialogTitle: () => this.getTitle()
         };
+    }
+
+    public getDirectoryChain(): ViewMediafile[] {
+        const parentChain = this.parent ? this.parent.getDirectoryChain() : [];
+        parentChain.push(this);
+        return parentChain;
     }
 
     public isProjectable(): boolean {
@@ -156,19 +183,44 @@ export class ViewMediafile extends BaseViewModelWithListOfSpeakers<Mediafile>
         ].includes(this.type);
     }
 
-    /**
-     * Determine if the file is presentable
-     *
-     * @returns true or false
-     */
-    public isPresentable(): boolean {
-        return this.isPdf() || this.isImage() || this.isVideo();
+    public getIcon(): string {
+        if (this.is_directory) {
+            return 'folder';
+        } else if (this.isPdf()) {
+            return 'picture_as_pdf';
+        } else if (this.isImage()) {
+            return 'insert_photo';
+        } else if (this.isFont()) {
+            return 'text_fields';
+        } else if (this.isVideo()) {
+            return 'movie';
+        } else {
+            return 'insert_drive_file';
+        }
     }
 
     public updateDependencies(update: BaseViewModel): void {
         super.updateDependencies(update);
-        if (update instanceof ViewUser && this.uploader_id === update.id) {
-            this._uploader = update;
+        if (update instanceof ViewMediafile && update.id === this.parent_id) {
+            this._parent = update;
+        } else if (update instanceof ViewGroup) {
+            if (this.access_groups_id.includes(update.id)) {
+                const groupIndex = this.access_groups.findIndex(group => group.id === update.id);
+                if (groupIndex < 0) {
+                    this.access_groups.push(update);
+                } else {
+                    this.access_groups[groupIndex] = update;
+                }
+            }
+
+            if (this.has_inherited_access_groups && (<number[]>this.inherited_access_groups_id).includes(update.id)) {
+                const groupIndex = this.inherited_access_groups.findIndex(group => group.id === update.id);
+                if (groupIndex < 0) {
+                    this.inherited_access_groups.push(update);
+                } else {
+                    this.inherited_access_groups[groupIndex] = update;
+                }
+            }
         }
     }
 }

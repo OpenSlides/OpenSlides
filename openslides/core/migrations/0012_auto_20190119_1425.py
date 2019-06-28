@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             model_name="chatmessage",
             name="user",
             field=models.ForeignKey(
-                on_delete=openslides.utils.models.CASCADE_AND_AUTOUODATE,
+                on_delete=openslides.utils.models.CASCADE_AND_AUTOUPDATE,
                 to=settings.AUTH_USER_MODEL,
             ),
         ),

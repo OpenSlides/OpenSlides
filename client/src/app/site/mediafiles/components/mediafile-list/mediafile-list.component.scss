@@ -4,15 +4,3 @@
 ::ng-deep .mat-tooltip {
     white-space: pre-line !important;
 }
-
-// duplicate. Put into own file
-.file-info-cell {
-    display: grid;
-    margin: 0;
-
-    span {
-        .mat-icon {
-            font-size: 130%;
-        }
-    }
-}

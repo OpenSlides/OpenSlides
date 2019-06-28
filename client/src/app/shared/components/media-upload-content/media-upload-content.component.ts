@@ -1,10 +1,14 @@
 import { Component, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 import { FileSystemFileEntry, NgxFileDropEntry } from 'ngx-file-drop';
+import { BehaviorSubject } from 'rxjs';
 
-import { OperatorService } from 'app/core/core-services/operator.service';
 import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
+import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
+import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
+import { ViewGroup } from 'app/site/users/models/view-group';
 
 /**
  * To hold the structure of files to upload
@@ -13,8 +17,7 @@ interface FileData {
     mediafile: File;
     filename: string;
     title: string;
-    uploader_id: number;
-    hidden: boolean;
+    form: FormGroup;
 }
 
 @Component({
@@ -26,7 +29,7 @@ export class MediaUploadContentComponent implements OnInit {
     /**
      * Columns to display in the upload-table
      */
-    public displayedColumns: string[] = ['title', 'filename', 'information', 'hidden', 'remove'];
+    public displayedColumns: string[] = ['title', 'filename', 'information', 'access_groups', 'remove'];
 
     /**
      * Determine wether to show the progress bar
@@ -49,6 +52,9 @@ export class MediaUploadContentComponent implements OnInit {
      */
     @Input()
     public parallel = true;
+
+    @Input()
+    public directoryId: number | null | undefined;
 
     /**
      * Set if an error was detected to prevent automatic navigation
@@ -73,13 +79,40 @@ export class MediaUploadContentComponent implements OnInit {
     @Output()
     public errorEvent = new EventEmitter<string>();
 
+    public directoryBehaviorSubject: BehaviorSubject<ViewMediafile[]>;
+    public groupsBehaviorSubject: BehaviorSubject<ViewGroup[]>;
+
+    public directorySelectionForm: FormGroup;
+
+    public get showDirectorySelector(): boolean {
+        return this.directoryId === undefined;
+    }
+
+    public get selectedDirectoryId(): number | null {
+        if (this.showDirectorySelector) {
+            return this.directorySelectionForm.controls.parent_id.value;
+        } else {
+            return this.directoryId;
+        }
+    }
+
     /**
      * Constructor for the media upload page
      *
      * @param repo the mediafile repository
      * @param op the operator, to check who was the uploader
      */
-    public constructor(private repo: MediafileRepositoryService, private op: OperatorService) {}
+    public constructor(
+        private repo: MediafileRepositoryService,
+        private formBuilder: FormBuilder,
+        private groupRepo: GroupRepositoryService
+    ) {
+        this.directoryBehaviorSubject = this.repo.getDirectoryBehaviorSubject();
+        this.groupsBehaviorSubject = this.groupRepo.getViewModelListBehaviorSubject();
+        this.directorySelectionForm = this.formBuilder.group({
+            parent_id: []
+        });
+    }
 
     /**
      * Init
@@ -87,6 +120,10 @@ export class MediaUploadContentComponent implements OnInit {
      */
     public ngOnInit(): void {
         this.uploadList = new MatTableDataSource<FileData>();
+    }
+
+    public getDirectory(directoryId: number): ViewMediafile {
+        return this.repo.getViewModel(directoryId);
     }
 
     /**
@@ -99,8 +136,13 @@ export class MediaUploadContentComponent implements OnInit {
         const input = new FormData();
         input.set('mediafile', fileData.mediafile);
         input.set('title', fileData.title);
-        input.set('uploader_id', '' + fileData.uploader_id);
-        input.set('hidden', '' + fileData.hidden);
+        const access_groups_id = fileData.form.value.access_groups_id || [];
+        if (access_groups_id.length > 0) {
+            input.set('access_groups_id', '' + access_groups_id);
+        }
+        if (this.selectedDirectoryId) {
+            input.set('parent_id', '' + this.selectedDirectoryId);
+        }
 
         // raiseError will automatically ignore existing files
         await this.repo.uploadFile(input).then(
@@ -128,16 +170,6 @@ export class MediaUploadContentComponent implements OnInit {
     }
 
     /**
-     * Change event to set a file to hidden or not
-     *
-     * @param hidden whether the file should be hidden
-     * @param file the given file
-     */
-    public onChangeHidden(hidden: boolean, file: FileData): void {
-        file.hidden = hidden;
-    }
-
-    /**
      * Change event to adjust the title
      *
      * @param newTitle the new title
@@ -157,8 +189,9 @@ export class MediaUploadContentComponent implements OnInit {
             mediafile: file,
             filename: file.name,
             title: file.name,
-            uploader_id: this.op.user.id,
-            hidden: false
+            form: this.formBuilder.group({
+                access_groups_id: [[]]
+            })
         };
         this.uploadList.data.push(newFile);
 

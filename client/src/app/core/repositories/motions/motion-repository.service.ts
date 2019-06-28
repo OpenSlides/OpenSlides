@@ -264,7 +264,7 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
      * Special handling of updating personal notes.
      * @override
      */
-    public updateDependencies(changedModels: CollectionIds): void {
+    public updateDependencies(changedModels: CollectionIds): boolean {
         if (!this.depsModelCtors || this.depsModelCtors.length === 0) {
             return;
         }
@@ -302,8 +302,8 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
             viewModels.forEach(ownViewModel => {
                 this.updateViewModelObservable(ownViewModel.id);
             });
-            this.updateViewModelListObservable();
         }
+        return somethingUpdated;
     }
 
     /**

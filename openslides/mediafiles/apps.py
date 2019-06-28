@@ -1,6 +1,8 @@
 from typing import Any, Dict, Set
 
 from django.apps import AppConfig
+from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 
 
 class MediafilesAppConfig(AppConfig):
@@ -16,6 +18,14 @@ class MediafilesAppConfig(AppConfig):
         from .views import MediafileViewSet
         from . import serializers  # noqa
         from ..utils.access_permissions import required_user
+
+        # Validate, that the media_url is correct formatted:
+        # Must begin and end with a slash. It has to be at least "/".
+        media_url = settings.MEDIA_URL
+        if not media_url.startswith("/") or not media_url.endswith("/"):
+            raise ImproperlyConfigured(
+                "The MEDIA_URL setting must start and end with a slash"
+            )
 
         # Define projector elements.
         register_projector_slides()

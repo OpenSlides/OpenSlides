@@ -191,7 +191,7 @@ def SET_NULL_AND_AUTOUPDATE(
     models.SET_NULL(collector, field, sub_objs, using)
 
 
-def CASCADE_AND_AUTOUODATE(
+def CASCADE_AND_AUTOUPDATE(
     collector: Any, field: Any, sub_objs: Any, using: Any
 ) -> None:
     """

@@ -12,6 +12,25 @@
         </ngx-file-drop>
     </div>
 
+    <!-- Directory selector, if no external directory is provided -->
+    <div *ngIf="showDirectorySelector">
+        <os-search-value-selector
+            ngDefaultControl
+            [formControl]="directorySelectionForm.get('parent_id')"
+            [multiple]="false"
+            [includeNone]="true"
+            [noneTitle]="'Base folder'"
+            listname="{{ 'Parent directory' | translate }}"
+            [InputListValues]="directoryBehaviorSubject"
+        ></os-search-value-selector>
+    </div>
+
+    <div>
+        Upload to:
+        <span *ngIf="selectedDirectoryId === null" translate>Base folder</span>
+        <span *ngIf="selectedDirectoryId !== null">{{ getDirectory(selectedDirectoryId).title }}</span>
+    </div>
+
     <div class="table-container" *ngIf="uploadList.data.length > 0">
         <table mat-table [dataSource]="uploadList" class="mat-elevation-z8">
             <!-- Title -->
@@ -44,14 +63,17 @@
                 </td>
             </ng-container>
 
-            <!-- Hidden -->
-            <ng-container matColumnDef="hidden">
-                <th mat-header-cell *matHeaderCellDef><span translate>Hidden</span></th>
+            <!-- Access groups -->
+            <ng-container matColumnDef="access_groups">
+                <th mat-header-cell *matHeaderCellDef><span translate>Access permissions</span></th>
                 <td mat-cell *matCellDef="let file">
-                    <mat-checkbox
-                        [checked]="file.hidden"
-                        (change)="onChangeHidden($event.checked, file)"
-                    ></mat-checkbox>
+                    <os-search-value-selector
+                        ngDefaultControl
+                        [formControl]="file.form.get('access_groups_id')"
+                        [multiple]="true"
+                        listname="{{ 'Access groups' | translate }}"
+                        [InputListValues]="groupsBehaviorSubject"
+                    ></os-search-value-selector>
                 </td>
             </ng-container>
 

@@ -40,7 +40,7 @@
             <span translate>Attachments</span>:
             <mat-list dense>
                 <mat-list-item *ngFor="let file of topic.attachments">
-                    <a [routerLink]="file.downloadUrl" target="_blank">{{ file.getTitle() }}</a>
+                    <a [routerLink]="file.url" target="_blank">{{ file.getTitle() }}</a>
                 </mat-list-item>
             </mat-list>
         </h3>

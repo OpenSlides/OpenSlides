@@ -186,7 +186,7 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
         super.setTitle('Participants');
 
         // Initialize the groups
-        this.groups = this.groupRepo.getSortedViewModelList().filter(group => group.id !== 1);
+        this.groups = this.groupRepo.getViewModelList().filter(group => group.id !== 1);
         this.groupRepo
             .getViewModelListObservable()
             .subscribe(groups => (this.groups = groups.filter(group => group.id !== 1)));

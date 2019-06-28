@@ -63,7 +63,7 @@ export class MediaManageService {
         const restPath = `/rest/core/config/${action}/`;
 
         const config = this.getMediaConfig(action);
-        const path = config.path !== file.downloadUrl ? file.downloadUrl : '';
+        const path = config.path !== file.url ? file.url : '';
 
         // Create the payload that the server requires to manage a mediafile
         const payload: ManagementPayload = {

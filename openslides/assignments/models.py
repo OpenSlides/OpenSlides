@@ -22,7 +22,7 @@ from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import RESTModelMixin
 
-from ..utils.models import CASCADE_AND_AUTOUODATE, SET_NULL_AND_AUTOUPDATE
+from ..utils.models import CASCADE_AND_AUTOUPDATE, SET_NULL_AND_AUTOUPDATE
 from .access_permissions import AssignmentAccessPermissions
 
 
@@ -38,7 +38,7 @@ class AssignmentRelatedUser(RESTModelMixin, models.Model):
     ForeinKey to the assignment.
     """
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=CASCADE_AND_AUTOUODATE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=CASCADE_AND_AUTOUPDATE)
     """
     ForeinKey to the user who is related to the assignment.
     """
