@@ -1,4 +1,4 @@
-import { ChangeRecoMode, LineNumberingMode } from '../../../site/motions/models/view-motion';
+import { ChangeRecoMode, LineNumberingMode } from 'app/site/motions/models/view-motion';
 import { ReferencedMotions } from '../base/base-motion-slide';
 
 /**

@@ -16,7 +16,7 @@ import { ItemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { CreateTopic } from '../../models/create-topic';
 import { Topic } from 'app/shared/models/topics/topic';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
-import { ViewItem } from '../../models/view-item';
+import { ViewItem } from 'app/site/agenda/models/view-item';
 import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 
@@ -163,7 +163,7 @@ export class TopicDetailComponent extends BaseViewComponent {
      * be loaded using the ID from the URL
      */
     public getTopicByUrl(): void {
-        if (this.route.snapshot.url[1] && this.route.snapshot.url[1].path === 'new') {
+        if (this.route.snapshot.url[0] && this.route.snapshot.url[0].path === 'new') {
             // creates a new topic
             this.newTopic = true;
             this.editTopic = true;

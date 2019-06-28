@@ -10,7 +10,7 @@ import { ChoiceService } from 'app/core/ui-services/choice.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { CsvExportService } from 'app/core/ui-services/csv-export.service';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
-import { ListViewBaseComponent } from '../../../base/list-view-base';
+import { BaseListViewComponent } from 'app/site/base/base-list-view';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { UserFilterListService } from '../../services/user-filter-list.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
@@ -62,7 +62,7 @@ interface InfoDialog {
     templateUrl: './user-list.component.html',
     styleUrls: ['./user-list.component.scss']
 })
-export class UserListComponent extends ListViewBaseComponent<ViewUser> implements OnInit {
+export class UserListComponent extends BaseListViewComponent<ViewUser> implements OnInit {
     /**
      * The reference to the template.
      */

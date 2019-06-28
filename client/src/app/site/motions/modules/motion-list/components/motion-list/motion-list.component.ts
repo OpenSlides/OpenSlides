@@ -8,7 +8,7 @@ import { PblColumnDefinition } from '@pebula/ngrid';
 
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { ListViewBaseComponent } from 'app/site/base/list-view-base';
+import { BaseListViewComponent } from 'app/site/base/base-list-view';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
@@ -72,7 +72,7 @@ interface InfoDialog {
     templateUrl: './motion-list.component.html',
     styleUrls: ['./motion-list.component.scss']
 })
-export class MotionListComponent extends ListViewBaseComponent<ViewMotion> implements OnInit {
+export class MotionListComponent extends BaseListViewComponent<ViewMotion> implements OnInit {
     /**
      * Reference to the dialog for quick editing meta information.
      */

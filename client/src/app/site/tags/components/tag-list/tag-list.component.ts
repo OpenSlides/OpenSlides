@@ -6,7 +6,7 @@ import { MatSnackBar } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition } from '@pebula/ngrid';
 
-import { ListViewBaseComponent } from '../../../base/list-view-base';
+import { BaseListViewComponent } from 'app/site/base/base-list-view';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { Tag } from 'app/shared/models/core/tag';
 import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
@@ -24,7 +24,7 @@ import { ViewTag } from '../../models/view-tag';
     templateUrl: './tag-list.component.html',
     styleUrls: ['./tag-list.component.scss']
 })
-export class TagListComponent extends ListViewBaseComponent<ViewTag> implements OnInit {
+export class TagListComponent extends BaseListViewComponent<ViewTag> implements OnInit {
     public editTag = false;
     public newTag = false;
     public selectedTag: ViewTag;

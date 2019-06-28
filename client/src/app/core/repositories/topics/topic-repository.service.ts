@@ -7,7 +7,7 @@ import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { DataSendService } from 'app/core/core-services/data-send.service';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { Topic } from 'app/shared/models/topics/topic';
-import { ViewTopic, TopicTitleInformation } from 'app/site/agenda/models/view-topic';
+import { ViewTopic, TopicTitleInformation } from 'app/site/topics/models/view-topic';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewItem } from 'app/site/agenda/models/view-item';

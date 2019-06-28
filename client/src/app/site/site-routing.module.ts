@@ -24,6 +24,11 @@ const routes: Routes = [
                 data: { basePerm: 'agenda.can_see' }
             },
             {
+                path: 'topics',
+                loadChildren: './topics/topics.module#TopicsModule',
+                data: { basePerm: 'agenda.can_see' }
+            },
+            {
                 path: 'assignments',
                 loadChildren: './assignments/assignments.module#AssignmentsModule',
                 data: { basePerm: 'assignments.can_see' }

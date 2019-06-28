@@ -6,7 +6,6 @@ import { AgendaListComponent } from './components/agenda-list/agenda-list.compon
 import { ItemInfoDialogComponent } from './components/item-info-dialog/item-info-dialog.component';
 import { AgendaRoutingModule } from './agenda-routing.module';
 import { SharedModule } from '../../shared/shared.module';
-import { TopicDetailComponent } from './components/topic-detail/topic-detail.component';
 import { AgendaSortComponent } from './components/agenda-sort/agenda-sort.component';
 import { ListOfSpeakersComponent } from './components/list-of-speakers/list-of-speakers.component';
 
@@ -18,7 +17,6 @@ import { ListOfSpeakersComponent } from './components/list-of-speakers/list-of-s
     entryComponents: [ItemInfoDialogComponent],
     declarations: [
         AgendaListComponent,
-        TopicDetailComponent,
         ItemInfoDialogComponent,
         AgendaImportListComponent,
         AgendaSortComponent,

@@ -1,6 +1,6 @@
-import { ViewUnifiedChange, ViewUnifiedChangeType } from '../../../shared/models/motions/view-unified-change';
+import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/motions/view-unified-change';
 import { MotionSlideDataAmendment } from './motion-slide-data';
-import { LineRange } from '../../../core/ui-services/diff.service';
+import { LineRange } from 'app/core/ui-services/diff.service';
 
 /**
  * This class adds methods to the MotionsMotionSlideDataChangeReco data object

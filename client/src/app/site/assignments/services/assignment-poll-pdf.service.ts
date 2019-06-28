@@ -8,7 +8,7 @@ import { UserRepositoryService } from 'app/core/repositories/users/user-reposito
 import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
 import { ViewAssignmentPoll } from '../models/view-assignment-poll';
 import { AssignmentPollMethod } from './assignment-poll.service';
-import { PollPdfService, BallotCountChoices, AbstractPollData } from 'app/core/core-services/poll-pdf-service';
+import { PollPdfService, BallotCountChoices, AbstractPollData } from 'app/core/ui-services/poll-pdf-service';
 
 /**
  * Creates a pdf for a motion poll. Takes as input any motionPoll

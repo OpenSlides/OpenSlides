@@ -19,6 +19,7 @@ import { ProjectorAppConfig } from 'app/site/projector/projector.config';
 import { BaseRepository } from 'app/core/repositories/base-repository';
 import { OnAfterAppsLoaded } from '../onAfterAppsLoaded';
 import { ServicesToLoadOnAppsLoaded } from '../core.module';
+import { TopicsAppConfig } from 'app/site/topics/topics.config';
 
 /**
  * A list of all app configurations of all delivered apps.
@@ -33,7 +34,8 @@ const appConfigs: AppConfig[] = [
     TagAppConfig,
     UsersAppConfig,
     HistoryAppConfig,
-    ProjectorAppConfig
+    ProjectorAppConfig,
+    TopicsAppConfig
 ];
 
 /**

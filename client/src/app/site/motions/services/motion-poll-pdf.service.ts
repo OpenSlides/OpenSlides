@@ -6,7 +6,7 @@ import { ConfigService } from 'app/core/ui-services/config.service';
 import { MotionPoll } from 'app/shared/models/motions/motion-poll';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
-import { PollPdfService, AbstractPollData } from 'app/core/core-services/poll-pdf-service';
+import { PollPdfService, AbstractPollData } from 'app/core/ui-services/poll-pdf-service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 
 type BallotCountChoices = 'NUMBER_OF_DELEGATES' | 'NUMBER_OF_ALL_PARTICIPANTS' | 'CUSTOM_NUMBER';

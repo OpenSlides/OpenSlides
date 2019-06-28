@@ -8,7 +8,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition } from '@pebula/ngrid';
 
 import { ColumnRestriction } from 'app/shared/components/list-view-table/list-view-table.component';
-import { ListViewBaseComponent } from 'app/site/base/list-view-base';
+import { BaseListViewComponent } from 'app/site/base/base-list-view';
+import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
 import { MediaManageService } from 'app/core/ui-services/media-manage.service';
 import { MediafileFilterListService } from '../../services/mediafile-filter.service';
@@ -17,7 +18,6 @@ import { OperatorService } from 'app/core/core-services/operator.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
-import { ViewMediafile } from '../../models/view-mediafile';
 
 /**
  * Lists all the uploaded files.
@@ -27,7 +27,7 @@ import { ViewMediafile } from '../../models/view-mediafile';
     templateUrl: './mediafile-list.component.html',
     styleUrls: ['./mediafile-list.component.scss']
 })
-export class MediafileListComponent extends ListViewBaseComponent<ViewMediafile> implements OnInit {
+export class MediafileListComponent extends BaseListViewComponent<ViewMediafile> implements OnInit {
     /**
      * Holds the actions for logos. Updated via an observable
      */

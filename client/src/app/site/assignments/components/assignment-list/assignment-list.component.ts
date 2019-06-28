@@ -9,7 +9,7 @@ import { PblColumnDefinition } from '@pebula/ngrid';
 import { AssignmentFilterListService } from '../../services/assignment-filter.service';
 import { AssignmentSortListService } from '../../services/assignment-sort-list.service';
 import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
-import { ListViewBaseComponent } from 'app/site/base/list-view-base';
+import { BaseListViewComponent } from 'app/site/base/base-list-view';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { StorageService } from 'app/core/core-services/storage.service';
@@ -24,7 +24,7 @@ import { AssignmentPdfExportService } from '../../services/assignment-pdf-export
     templateUrl: './assignment-list.component.html',
     styleUrls: ['./assignment-list.component.scss']
 })
-export class AssignmentListComponent extends ListViewBaseComponent<ViewAssignment> implements OnInit {
+export class AssignmentListComponent extends BaseListViewComponent<ViewAssignment> implements OnInit {
     /**
      * The different phases of an assignment. Info is fetched from server
      */
