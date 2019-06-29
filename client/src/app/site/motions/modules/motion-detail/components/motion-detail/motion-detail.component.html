@@ -865,11 +865,11 @@
 
 <ng-template #paragraphBasedAmendment>
     <section class="text-holder">
-        <div class="alert alert-info" *ngIf="this.getAmendedParagraphs().length === 0">
+        <div class="alert alert-info" *ngIf="this.getAmendmentParagraphs(showAmendmentContext).length === 0">
             <span translate>No changes at the text.</span>
         </div>
         <div
-            *ngFor="let paragraph of this.getAmendedParagraphs()"
+            *ngFor="let paragraph of this.getAmendmentParagraphs(showAmendmentContext)"
             class="motion-text motion-text-diff amendment-view"
             [class.line-numbers-none]="isLineNumberingNone()"
             [class.line-numbers-inline]="isLineNumberingInline()"
@@ -877,10 +877,6 @@
             [class.amendment-context]="showAmendmentContext"
         >
             <!-- TODO: everything here is required for PDF as well. Should be in a service -->
-            <div class="amendment-context" *ngIf="showAmendmentContext">
-                <div [innerHTML]="getParentMotionRange(1, paragraph.paragraphLineFrom)" class="context"></div>
-            </div>
-
             <h3
                 *ngIf="paragraph.diffLineTo === paragraph.diffLineFrom + 1 && !showAmendmentContext"
                 class="amendment-line-header"
@@ -897,10 +893,6 @@
             <div class="paragraphcontext" [innerHtml]="sanitizedText(paragraph.textPre)"></div>
             <div [innerHtml]="sanitizedText(paragraph.text)"></div>
             <div class="paragraphcontext" [innerHtml]="sanitizedText(paragraph.textPost)"></div>
-
-            <div class="amendment-context" *ngIf="showAmendmentContext">
-                <div [innerHtml]="getParentMotionRange(paragraph.paragraphLineTo, null)"></div>
-            </div>
         </div>
     </section>
 </ng-template>
