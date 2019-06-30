@@ -58,4 +58,8 @@ export class MotionSlideObjAmendmentParagraph implements ViewUnifiedChange {
     public showInFinalView(): boolean {
         return this.merge_amendment_into_final === 1;
     }
+
+    public isTitleChange(): boolean {
+        return false; // Not implemented for amendments
+    }
 }

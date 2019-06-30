@@ -10,7 +10,7 @@ import { HtmlToPdfService } from 'app/core/ui-services/html-to-pdf.service';
 import { MotionPollService } from './motion-poll.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions/statute-paragraph-repository.service';
-import { ViewMotion, LineNumberingMode, ChangeRecoMode } from '../models/view-motion';
+import { ChangeRecoMode, LineNumberingMode, ViewMotion } from '../models/view-motion';
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
 import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
 import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
@@ -124,7 +124,7 @@ export class MotionPdfService {
             crMode = this.configService.instant('motions_recommendation_text_mode');
         }
 
-        const title = this.createTitle(motion);
+        const title = this.createTitle(motion, crMode, lineLength);
         const sequential = !infoToExport || infoToExport.includes('id');
         const subtitle = this.createSubtitle(motion, sequential);
 
@@ -167,11 +167,18 @@ export class MotionPdfService {
      * Create the motion title part of the doc definition
      *
      * @param motion the target motion
+     * @param crMode the change recommendation mode
+     * @param lineLength the line length
      * @returns doc def for the document title
      */
-    private createTitle(motion: ViewMotion): object {
+    private createTitle(motion: ViewMotion, crMode: ChangeRecoMode, lineLength: number): object {
+        // summary of change recommendations (for motion diff version only)
+        const changes = this.getUnifiedChanges(motion, lineLength);
+        const titleChange = changes.find(change => change.isTitleChange());
+        const changedTitle = this.changeRecoRepo.getTitleWithChanges(motion.title, titleChange, crMode);
+
         const identifier = motion.identifier ? ' ' + motion.identifier : '';
-        const title = `${this.translate.instant('Motion')} ${identifier}: ${motion.title}`;
+        const title = `${this.translate.instant('Motion')} ${identifier}: ${changedTitle}`;
 
         return {
             text: title,
@@ -399,39 +406,44 @@ export class MotionPdfService {
             const columnChangeType = [];
 
             changes.forEach(change => {
-                // TODO: the function isTitleRecommendation() does not exist anymore.
-                //       Not sure if required or not
-                // if (changeReco.isTitleRecommendation()) {
-                //     columnLineNumbers.push(gettextCatalog.getString('Title') + ': ');
-                // } else { ... }
-
-                // line numbers column
-                let line;
-                if (change.getLineFrom() >= change.getLineTo() - 1) {
-                    line = change.getLineFrom();
-                } else {
-                    line = change.getLineFrom() + ' - ' + (change.getLineTo() - 1);
-                }
-
-                // change type column
-                if (change.getChangeType() === ViewUnifiedChangeType.TYPE_CHANGE_RECOMMENDATION) {
+                if (change.isTitleChange()) {
+                    // Is always a change recommendation
                     const changeReco = change as ViewMotionChangeRecommendation;
-                    columnLineNumbers.push(`${this.translate.instant('Line')} ${line}: `);
+                    columnLineNumbers.push(`${this.translate.instant('Title')}: `);
                     columnChangeType.push(
                         `(${this.translate.instant('Change recommendation')}) - ${this.translate.instant(
                             this.getRecommendationTypeName(changeReco)
                         )}`
                     );
-                } else if (change.getChangeType() === ViewUnifiedChangeType.TYPE_AMENDMENT) {
-                    const amendment = change as ViewMotionAmendedParagraph;
-                    let summaryText = `(${this.translate.instant('Amendment')} ${amendment.getIdentifier()}) -`;
-                    if (amendment.isRejected()) {
-                        summaryText += ` ${this.translate.instant('Rejected')}`;
-                    } else if (amendment.isAccepted()) {
-                        summaryText += ` ${this.translate.instant(amendment.stateName)}`;
-                        // only append line and change, if the merge of the state of the amendment is accepted.
+                } else {
+                    // line numbers column
+                    let line;
+                    if (change.getLineFrom() >= change.getLineTo() - 1) {
+                        line = change.getLineFrom();
+                    } else {
+                        line = change.getLineFrom() + ' - ' + (change.getLineTo() - 1);
+                    }
+
+                    // change type column
+                    if (change.getChangeType() === ViewUnifiedChangeType.TYPE_CHANGE_RECOMMENDATION) {
+                        const changeReco = change as ViewMotionChangeRecommendation;
                         columnLineNumbers.push(`${this.translate.instant('Line')} ${line}: `);
-                        columnChangeType.push(summaryText);
+                        columnChangeType.push(
+                            `(${this.translate.instant('Change recommendation')}) - ${this.translate.instant(
+                                this.getRecommendationTypeName(changeReco)
+                            )}`
+                        );
+                    } else if (change.getChangeType() === ViewUnifiedChangeType.TYPE_AMENDMENT) {
+                        const amendment = change as ViewMotionAmendedParagraph;
+                        let summaryText = `(${this.translate.instant('Amendment')} ${amendment.getIdentifier()}) -`;
+                        if (amendment.isRejected()) {
+                            summaryText += ` ${this.translate.instant('Rejected')}`;
+                        } else if (amendment.isAccepted()) {
+                            summaryText += ` ${this.translate.instant(amendment.stateName)}`;
+                            // only append line and change, if the merge of the state of the amendment is accepted.
+                            columnLineNumbers.push(`${this.translate.instant('Line')} ${line}: `);
+                            columnChangeType.push(summaryText);
+                        }
                     }
                 }
             });
@@ -537,6 +549,7 @@ export class MotionPdfService {
      * Creates the motion text - uses HTML to PDF
      *
      * @param motion the motion to convert to pdf
+     * @param lineLength the current line length
      * @param lnMode determine the used line mode
      * @param crMode determine the used change Recommendation mode
      * @returns doc def for the "the assembly may decide" preamble
@@ -547,10 +560,9 @@ export class MotionPdfService {
         lnMode: LineNumberingMode,
         crMode: ChangeRecoMode
     ): object {
-        let motionText: string;
+        let motionText = '';
 
         if (motion.isParagraphBasedAmendment()) {
-            motionText = '';
             // this is logically redundant with the formation of amendments in the motion-detail html.
             // Should be refactored in a way that a service returns the correct html for both cases
             for (const paragraph of this.motionRepo.getAmendmentParagraphs(motion, lineLength, false)) {
@@ -577,9 +589,21 @@ export class MotionPdfService {
             // TODO: Consider tile change recommendation
 
             const changes = this.getUnifiedChanges(motion, lineLength);
-            motionText = this.motionRepo.formatMotion(motion.id, crMode, changes, lineLength);
+            const textChanges = changes.filter(change => !change.isTitleChange());
+            const titleChange = changes.find(change => change.isTitleChange());
+
+            if (crMode === ChangeRecoMode.Diff && titleChange) {
+                const changedTitle = this.changeRecoRepo.getTitleChangesAsDiff(motion.title, titleChange);
+                motionText +=
+                    '<span><strong>' +
+                    this.translate.instant('Changed title') +
+                    ':</strong><br>' +
+                    changedTitle +
+                    '</span><br>';
+            }
+            const formattedText = this.motionRepo.formatMotion(motion.id, crMode, textChanges, lineLength);
             // reformat motion text to split long HTML elements to easier convert into PDF
-            motionText = this.linenumberingService.splitInlineElementsAtLineBreaks(motionText);
+            motionText += this.linenumberingService.splitInlineElementsAtLineBreaks(formattedText);
         }
 
         return this.htmlToPdfService.convertHtml(motionText, lnMode);
@@ -755,14 +779,11 @@ export class MotionPdfService {
      * @returns pdfMake definitions
      */
     public textToDocDef(note: string, motion: ViewMotion, noteTitle: string): object {
-        const title = this.createTitle(motion);
+        const lineLength = this.configService.instant<number>('motions_line_length');
+        const crMode = this.configService.instant<ChangeRecoMode>('motions_recommendation_text_mode');
+        const title = this.createTitle(motion, crMode, lineLength);
         const subtitle = this.createSubtitle(motion);
-        const metaInfo = this.createMetaInfoTable(
-            motion,
-            this.configService.instant<number>('motions_line_length'),
-            this.configService.instant('motions_recommendation_text_mode'),
-            ['submitters', 'state', 'category']
-        );
+        const metaInfo = this.createMetaInfoTable(motion, lineLength, crMode, ['submitters', 'state', 'category']);
         const noteContent = this.htmlToPdfService.convertHtml(note, LineNumberingMode.None);
 
         const subHeading = {

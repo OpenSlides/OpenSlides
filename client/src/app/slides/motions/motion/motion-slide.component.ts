@@ -13,6 +13,7 @@ import { SlideData } from 'app/core/core-services/projector-data.service';
 import { MotionSlideObjAmendmentParagraph } from './motion-slide-obj-amendment-paragraph';
 import { BaseMotionSlideComponent } from '../base/base-motion-slide';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
+import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
 import { IBaseScaleScrollSlideComponent } from 'app/slides/base-scale-scroll-slide-component';
 
 @Component({
@@ -111,6 +112,7 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
     public constructor(
         translate: TranslateService,
         motionRepo: MotionRepositoryService,
+        private changeRepo: ChangeRecommendationRepositoryService,
         private sanitizer: DomSanitizer,
         private lineNumbering: LinenumberingService,
         private diff: DiffService
@@ -293,6 +295,24 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
         return html;
     }
 
+    public getAllTextChangingObjects(): ViewUnifiedChange[] {
+        return this.allChangingObjects.filter((obj: ViewUnifiedChange) => !obj.isTitleChange());
+    }
+
+    public getTitleChangingObject(): ViewUnifiedChange {
+        return this.allChangingObjects.find((obj: ViewUnifiedChange) => obj.isTitleChange());
+    }
+
+    public getTitleWithChanges(): string {
+        return this.changeRepo.getTitleWithChanges(this.data.data.title, this.getTitleChangingObject(), this.crMode);
+    }
+
+    public getFormattedTitleDiff(): SafeHtml {
+        const change = this.getTitleChangingObject();
+        const diff = this.changeRepo.getTitleChangesAsDiff(this.data.data.title, change);
+        return this.sanitizer.bypassSecurityTrustHtml(diff);
+    }
+
     /**
      * get the formated motion text from the repository.
      *
@@ -309,13 +329,13 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
             case ChangeRecoMode.Changed:
                 return this.diff.getTextWithChanges(
                     motion.text,
-                    this.allChangingObjects,
+                    this.getAllTextChangingObjects(),
                     this.lineLength,
                     this.highlightedLine
                 );
             case ChangeRecoMode.Diff:
                 let text = '';
-                const changes = this.allChangingObjects.filter(change => {
+                const changes = this.getAllTextChangingObjects().filter(change => {
                     return change.showInDiffView();
                 });
                 changes.forEach((change: ViewUnifiedChange, idx: number) => {
@@ -339,7 +359,7 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
                 );
                 return text;
             case ChangeRecoMode.Final:
-                const appliedChanges: ViewUnifiedChange[] = this.allChangingObjects.filter(change =>
+                const appliedChanges: ViewUnifiedChange[] = this.getAllTextChangingObjects().filter(change =>
                     change.showInFinalView()
                 );
                 return this.diff.getTextWithChanges(motion.text, appliedChanges, this.lineLength, this.highlightedLine);
@@ -354,7 +374,7 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
                     );
                 } else {
                     // Use the final version as fallback, if the modified does not exist.
-                    const appliedChangeObjects: ViewUnifiedChange[] = this.allChangingObjects.filter(change =>
+                    const appliedChangeObjects: ViewUnifiedChange[] = this.getAllTextChangingObjects().filter(change =>
                         change.showInFinalView()
                     );
                     return this.diff.getTextWithChanges(

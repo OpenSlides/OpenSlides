@@ -6,12 +6,12 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { Category } from 'app/shared/models/motions/category';
-import { ChangeRecoMode, ViewMotion, MotionTitleInformation } from 'app/site/motions/models/view-motion';
+import { ChangeRecoMode, MotionTitleInformation, ViewMotion } from 'app/site/motions/models/view-motion';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { DataSendService } from '../../core-services/data-send.service';
-import { DataStoreService, CollectionIds } from '../../core-services/data-store.service';
-import { DiffLinesInParagraph, DiffService, LineRange, ModificationType } from '../../ui-services/diff.service';
+import { DataStoreService, CollectionIds } from 'app/core/core-services/data-store.service';
+import { DiffService, DiffLinesInParagraph } from 'app/core/ui-services/diff.service';
 import { HttpService } from 'app/core/core-services/http.service';
 import { LinenumberingService, LineNumberRange } from '../../ui-services/linenumbering.service';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
@@ -543,8 +543,8 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
                         })
                         .forEach((change: ViewUnifiedChange, idx: number) => {
                             if (idx === 0) {
-                                text += this.extractMotionLineRange(
-                                    id,
+                                text += this.diff.extractMotionLineRange(
+                                    targetMotion.text,
                                     {
                                         from: 1,
                                         to: change.getLineFrom()
@@ -554,8 +554,8 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
                                     highlightLine
                                 );
                             } else if (changes[idx - 1].getLineTo() < change.getLineFrom()) {
-                                text += this.extractMotionLineRange(
-                                    id,
+                                text += this.diff.extractMotionLineRange(
+                                    targetMotion.text,
                                     {
                                         from: changes[idx - 1].getLineTo(),
                                         to: change.getLineFrom()
@@ -613,36 +613,6 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
     }
 
     /**
-     * Extracts a renderable HTML string representing the given line number range of this motion
-     *
-     * @param {number} id
-     * @param {LineRange} lineRange
-     * @param {boolean} lineNumbers - weather to add line numbers to the returned HTML string
-     * @param {number} lineLength
-     * @param {number|null} highlightedLine
-     */
-    public extractMotionLineRange(
-        id: number,
-        lineRange: LineRange,
-        lineNumbers: boolean,
-        lineLength: number,
-        highlightedLine: number
-    ): string {
-        const origHtml = this.formatMotion(id, ChangeRecoMode.Original, [], lineLength);
-        const extracted = this.diff.extractRangeByLineNumbers(origHtml, lineRange.from, lineRange.to);
-        let html =
-            extracted.outerContextStart +
-            extracted.innerContextStart +
-            extracted.html +
-            extracted.innerContextEnd +
-            extracted.outerContextEnd;
-        if (lineNumbers) {
-            html = this.lineNumbering.insertLineNumbers(html, lineLength, highlightedLine, null, lineRange.from);
-        }
-        return html;
-    }
-
-    /**
      * Returns the last line number of a motion
      *
      * @param {ViewMotion} motion
@@ -653,30 +623,6 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
         const numberedHtml = this.lineNumbering.insertLineNumbers(motion.text, lineLength);
         const range = this.lineNumbering.getLineNumberRange(numberedHtml);
         return range.to;
-    }
-
-    /**
-     * Creates a {@link ViewMotionChangeRecommendation} object based on the motion ID and the given lange range.
-     * This object is not saved yet and does not yet have any changed HTML. It's meant to populate the UI form.
-     *
-     * @param {number} motionId
-     * @param {LineRange} lineRange
-     * @param {number} lineLength
-     */
-    public createChangeRecommendationTemplate(
-        motionId: number,
-        lineRange: LineRange,
-        lineLength: number
-    ): ViewMotionChangeRecommendation {
-        const changeReco = new MotionChangeRecommendation();
-        changeReco.line_from = lineRange.from;
-        changeReco.line_to = lineRange.to;
-        changeReco.type = ModificationType.TYPE_REPLACEMENT;
-        changeReco.text = this.extractMotionLineRange(motionId, lineRange, false, lineLength, null);
-        changeReco.rejected = false;
-        changeReco.motion_id = motionId;
-
-        return new ViewMotionChangeRecommendation(changeReco);
     }
 
     /**

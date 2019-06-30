@@ -56,4 +56,8 @@ export class MotionSlideObjChangeReco implements MotionSlideDataChangeReco, View
     public showInFinalView(): boolean {
         return !this.rejected;
     }
+
+    public isTitleChange(): boolean {
+        return this.line_from === 0 && this.line_to === 0;
+    }
 }

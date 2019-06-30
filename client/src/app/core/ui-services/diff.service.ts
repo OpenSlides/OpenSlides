@@ -2317,4 +2317,34 @@ export class DiffService {
         }
         return html;
     }
+
+    /**
+     * Extracts a renderable HTML string representing the given line number range of this motion text
+     *
+     * @param {string} motionText
+     * @param {LineRange} lineRange
+     * @param {boolean} lineNumbers - weather to add line numbers to the returned HTML string
+     * @param {number} lineLength
+     * @param {number|null} highlightedLine
+     */
+    public extractMotionLineRange(
+        motionText: string,
+        lineRange: LineRange,
+        lineNumbers: boolean,
+        lineLength: number,
+        highlightedLine: number
+    ): string {
+        const origHtml = this.lineNumberingService.insertLineNumbers(motionText, lineLength, highlightedLine);
+        const extracted = this.extractRangeByLineNumbers(origHtml, lineRange.from, lineRange.to);
+        let html =
+            extracted.outerContextStart +
+            extracted.innerContextStart +
+            extracted.html +
+            extracted.innerContextEnd +
+            extracted.outerContextEnd;
+        if (lineNumbers) {
+            html = this.lineNumberingService.insertLineNumbers(html, lineLength, highlightedLine, null, lineRange.from);
+        }
+        return html;
+    }
 }

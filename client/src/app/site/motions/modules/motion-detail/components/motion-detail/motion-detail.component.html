@@ -124,7 +124,16 @@
     <!-- Title -->
     <div class="title" *ngIf="motion && !editMotion">
         <div class="title-line">
-            <h1>{{ motion.title }}</h1>
+            <h1 class="motion-title">
+                <span *ngIf="titleCanBeChanged()">
+                    <span class="title-change-indicator" *ngIf="getTitleChangingObject()"
+                          (click)="gotoChangeRecommendation(getTitleChangingObject())"></span>
+                    <span class="change-title" *osPerms="'motions.can_manage'; and: !getTitleChangingObject()"
+                          (click)="createTitleChangeRecommendation()"></span>
+                </span>
+
+                {{ getTitleWithChanges() }}
+            </h1>
             <button mat-icon-button color="primary" (click)="toggleFavorite()">
                 <mat-icon>{{ motion.star ? 'star' : 'star_border' }}</mat-icon>
             </button>
