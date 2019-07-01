@@ -28,7 +28,7 @@ describe('SortingTreeComponent', () => {
         template: '<os-sorting-tree><os-sorting-tree>'
     })
     class TestHostComponent {
-        @ViewChild(SortingTreeComponent)
+        @ViewChild(SortingTreeComponent, { static: true })
         public sortingTreeCompononent: SortingTreeComponent<TestModel>;
     }
 

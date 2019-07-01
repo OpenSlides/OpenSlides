@@ -56,7 +56,7 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
     /**
      * Declare the templateRef to coexist between parent in child
      */
-    @ContentChild(TemplateRef)
+    @ContentChild(TemplateRef, { static: true })
     public templateRef: TemplateRef<T>;
 
     /**
@@ -190,7 +190,7 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
     /**
      * Reference to the template content.
      */
-    @ContentChild(TemplateRef)
+    @ContentChild(TemplateRef, { static: true })
     public innerNode: TemplateRef<any>;
 
     /**

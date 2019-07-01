@@ -80,6 +80,7 @@ export class SlideManager {
      * the slide component.
      *
      * @param slideName The slide to search.
+     * @deprecated NgModuleFactoryLoader is deprecated and should be removed before version 9
      */
     public async getSlideFactory<T extends BaseSlideComponent<object>>(
         slideName: string

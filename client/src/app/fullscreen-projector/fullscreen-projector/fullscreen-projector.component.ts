@@ -56,7 +56,7 @@ export class FullscreenProjectorComponent implements OnInit {
     /**
      * The container to get the window size.
      */
-    @ViewChild('container')
+    @ViewChild('container', { static: true })
     private containerElement: ElementRef;
 
     /**

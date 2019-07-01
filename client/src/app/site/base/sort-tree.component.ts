@@ -1,5 +1,5 @@
 import { ViewChild, EventEmitter } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -25,7 +25,7 @@ export abstract class SortTreeViewComponent<V extends BaseViewModel> extends Bas
     /**
      * Reference to the view child
      */
-    @ViewChild('osSortedTree')
+    @ViewChild('osSortedTree', { static: true })
     public osSortTree: SortingTreeComponent<V>;
 
     /**

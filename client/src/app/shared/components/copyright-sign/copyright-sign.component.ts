@@ -3,7 +3,7 @@
  */
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MatDialogRef, MatDialog } from '@angular/material';
+import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { NotifyService, NotifyResponse } from 'app/core/core-services/notify.service';
 import { Subscription } from 'rxjs';

@@ -8,7 +8,7 @@ import { BaseViewComponent } from 'app/site/base/base-view';
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 import { CanComponentDeactivate } from 'app/shared/utils/watch-sorting-tree.guard';
 import { ChoiceService } from 'app/core/ui-services/choice.service';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { SortingListComponent } from 'app/shared/components/sorting-list/sorting-list.component';
@@ -71,7 +71,7 @@ export class CategoryMotionsSortComponent extends BaseViewComponent implements O
     /**
      * The Sort Component
      */
-    @ViewChild('sorter')
+    @ViewChild('sorter', { static: true })
     public sortSelector: SortingListComponent;
 
     /**

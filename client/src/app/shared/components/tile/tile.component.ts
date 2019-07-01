@@ -49,7 +49,7 @@ export class TileComponent implements OnInit {
     /**
      * Reference to the dynamic content.
      */
-    @ContentChild(TemplateRef)
+    @ContentChild(TemplateRef, { static: true })
     public tileContext: TemplateRef<any>;
 
     /**

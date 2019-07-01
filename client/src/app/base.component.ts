@@ -31,9 +31,11 @@ export abstract class BaseComponent {
      * Settings for the TinyMCE editor selector
      */
     public tinyMceSettings = {
+        base_url: '/tinymce', // Root for resources
+        suffix: '.min', // Suffix to use when loading resources
+        theme: 'silver',
         language: null,
         language_url: null,
-        skin_url: '/assets/tinymce/skins/lightgray',
         inline: false,
         statusbar: false,
         browser_spellcheck: true,
@@ -41,13 +43,17 @@ export abstract class BaseComponent {
         image_description: false,
         link_title: false,
         height: 320,
-        // TODO: image_list: images,
-        plugins: `autolink charmap code colorpicker fullscreen image imagetools
-            lists link paste searchreplace textcolor`,
-        menubar: '',
+        plugins: `autolink charmap code fullscreen image imagetools
+            lists link paste searchreplace`,
+        menubar: false,
+        contextmenu: false,
         toolbar: `styleselect | bold italic underline strikethrough |
             forecolor backcolor removeformat | bullist numlist |
-            link image charmap | code fullscreen`
+            link image charmap | code fullscreen`,
+        mobile: {
+            theme: 'mobile',
+            plugins: ['autosave', 'lists', 'autolink']
+        }
     };
 
     public constructor(protected titleService: Title, protected translate: TranslateService) {

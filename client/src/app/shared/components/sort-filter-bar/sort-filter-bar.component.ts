@@ -1,5 +1,5 @@
 import { Input, Output, Component, ViewChild, EventEmitter, ViewEncapsulation } from '@angular/core';
-import { MatBottomSheet } from '@angular/material';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
 
 import { TranslateService } from '@ngx-translate/core';
 
@@ -69,13 +69,13 @@ export class SortFilterBarComponent<V extends BaseViewModel> {
     /**
      * The filter side drawer
      */
-    @ViewChild('filterMenu')
+    @ViewChild('filterMenu', { static: true })
     public filterMenu: FilterMenuComponent;
 
     /**
      * The bottom sheet used to alter sorting in mobile view
      */
-    @ViewChild('sortBottomSheet')
+    @ViewChild('sortBottomSheet', { static: false })
     public sortBottomSheet: SortBottomSheetComponent<V>;
 
     /**

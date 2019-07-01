@@ -2,7 +2,10 @@ import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { Component, OnInit, OnDestroy, ElementRef, HostListener, TemplateRef } from '@angular/core';
 import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { MatDialog, MatSnackBar, MatCheckboxChange, ErrorStateMatcher } from '@angular/material';
+import { MatCheckboxChange } from '@angular/material/checkbox';
+import { ErrorStateMatcher } from '@angular/material/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -1029,8 +1032,10 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
             )
         };
         this.dialogService.open(MotionChangeRecommendationComponent, {
-            height: '400px',
-            width: '600px',
+            height: '600px',
+            width: '800px',
+            maxHeight: '90vh',
+            maxWidth: '90vw',
             data: data,
             disableClose: true
         });

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { NativeDateAdapter } from '@angular/material';
+import { NativeDateAdapter } from '@angular/material/core';
 
 /**
  * A custom DateAdapter for the datetimepicker in the config. This is still not fully working and needs to be done later.

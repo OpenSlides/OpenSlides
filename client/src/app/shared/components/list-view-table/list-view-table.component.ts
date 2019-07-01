@@ -83,7 +83,7 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
     /**
      * Declare the table
      */
-    @ViewChild(PblNgridComponent)
+    @ViewChild(PblNgridComponent, { static: false })
     private ngrid: PblNgridComponent;
 
     /**

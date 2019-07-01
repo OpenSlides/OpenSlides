@@ -1,5 +1,5 @@
 import { Inject, Component, OnInit } from '@angular/core';
-import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material';
+import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 
 import { BaseSortListService } from 'app/core/ui-services/base-sort-list.service';
 import { BaseViewModel } from 'app/site/base/base-view-model';

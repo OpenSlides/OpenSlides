@@ -10,7 +10,7 @@ import { ChangeRecoMode, ViewMotion, MotionTitleInformation } from 'app/site/mot
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { DataSendService } from '../../core-services/data-send.service';
-import { DataStoreService } from '../../core-services/data-store.service';
+import { DataStoreService, CollectionIds } from '../../core-services/data-store.service';
 import { DiffLinesInParagraph, DiffService, LineRange, ModificationType } from '../../ui-services/diff.service';
 import { HttpService } from 'app/core/core-services/http.service';
 import { LinenumberingService, LineNumberRange } from '../../ui-services/linenumbering.service';
@@ -38,7 +38,6 @@ import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewPersonalNote } from 'app/site/users/models/view-personal-note';
 import { OperatorService } from 'app/core/core-services/operator.service';
-import { CollectionIds } from 'app/core/core-services/data-store-update-manager.service';
 import { PersonalNote, PersonalNoteContent } from 'app/shared/models/users/personal-note';
 import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
 import { BaseIsAgendaItemAndListOfSpeakersContentObjectRepository } from '../base-is-agenda-item-and-list-of-speakers-content-object-repository';

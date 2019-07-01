@@ -13,7 +13,7 @@ describe('ManageSubmittersComponent', () => {
         template: '<os-manage-submitters></os-manage-submitters>'
     })
     class TestHostComponent {
-        @ViewChild(ManageSubmittersComponent)
+        @ViewChild(ManageSubmittersComponent, { static: true })
         public manageSubmitterComponent: ManageSubmittersComponent;
     }
 

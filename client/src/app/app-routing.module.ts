@@ -25,10 +25,11 @@ const routes: Routes = [
     },
     {
         path: 'projector',
-        loadChildren: './fullscreen-projector/fullscreen-projector.module#FullscreenProjectorModule',
+        loadChildren: () =>
+            import('./fullscreen-projector/fullscreen-projector.module').then(m => m.FullscreenProjectorModule),
         data: { noInterruption: true }
     },
-    { path: '', loadChildren: './site/site.module#SiteModule' },
+    { path: '', loadChildren: () => import('./site/site.module').then(m => m.SiteModule) },
     { path: '**', redirectTo: '' }
 ];
 

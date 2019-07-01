@@ -1,6 +1,6 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Injectable, EventEmitter } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Papa, PapaParseConfig } from 'ngx-papaparse';
 import { TranslateService } from '@ngx-translate/core';
 

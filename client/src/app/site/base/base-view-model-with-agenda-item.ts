@@ -1,6 +1,5 @@
 import { BaseProjectableViewModel } from './base-projectable-view-model';
 import { SearchRepresentation } from 'app/core/ui-services/search.service';
-import { ViewItem } from '../agenda/models/view-item';
 import { isDetailNavigable, DetailNavigable } from 'app/shared/models/base/detail-navigable';
 import { isSearchable, Searchable } from './searchable';
 import { BaseModelWithAgendaItem } from 'app/shared/models/base/base-model-with-agenda-item';
@@ -32,7 +31,7 @@ export interface IBaseViewModelWithAgendaItem<M extends BaseModelWithAgendaItem 
     extends BaseProjectableViewModel<M>,
         DetailNavigable,
         Searchable {
-    agendaItem: ViewItem | null;
+    agendaItem: any | null;
 
     agenda_item_id: number;
 
@@ -57,13 +56,15 @@ export interface IBaseViewModelWithAgendaItem<M extends BaseModelWithAgendaItem 
 
 /**
  * Base view model class for view models with an agenda item.
+ *
+ * TODO: Resolve circular dependencies with `ViewItem` to avoid `any`.
  */
 export abstract class BaseViewModelWithAgendaItem<M extends BaseModelWithAgendaItem = any>
     extends BaseProjectableViewModel<M>
     implements IBaseViewModelWithAgendaItem<M> {
-    protected _item?: ViewItem;
+    protected _item?: any;
 
-    public get agendaItem(): ViewItem | null {
+    public get agendaItem(): any | null {
         return this._item;
     }
 
@@ -85,7 +86,7 @@ export abstract class BaseViewModelWithAgendaItem<M extends BaseModelWithAgendaI
      */
     public getAgendaListTitle: () => string;
 
-    public constructor(collecitonString: string, model: M, item?: ViewItem) {
+    public constructor(collecitonString: string, model: M, item?: any) {
         super(collecitonString, model);
         this._item = item || null; // Explicit set to null instead of undefined, if not given
     }
@@ -108,7 +109,7 @@ export abstract class BaseViewModelWithAgendaItem<M extends BaseModelWithAgendaI
     public updateDependencies(update: BaseViewModel): void {
         // We cannot check with instanceof, because this gives circular dependency issues...
         if (update.collectionString === Item.COLLECTIONSTRING && update.id === this.agenda_item_id) {
-            this._item = update as ViewItem;
+            this._item = update;
         }
     }
 }

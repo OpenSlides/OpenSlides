@@ -609,6 +609,7 @@
                 <mat-form-field *ngIf="editMotion">
                     <input
                         matInput
+                        autofocus
                         placeholder="{{ 'Identifier' | translate }}"
                         formControlName="identifier"
                         [value]="motionCopy.identifier || ''"
@@ -621,7 +622,6 @@
                 <mat-form-field *ngIf="editMotion">
                     <input
                         matInput
-                        osAutofocus
                         placeholder="{{ 'Title' | translate }}"
                         formControlName="title"
                         [value]="motionCopy.title"

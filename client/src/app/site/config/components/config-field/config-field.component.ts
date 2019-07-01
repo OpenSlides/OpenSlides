@@ -3,7 +3,6 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 
 import { distinctUntilChanged } from 'rxjs/operators';
-import { DateTimeAdapter } from 'ng-pick-datetime';
 import { TranslateService } from '@ngx-translate/core';
 
 import { BaseComponent } from 'app/base.component';
@@ -107,11 +106,9 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
         protected translate: TranslateService,
         private formBuilder: FormBuilder,
         private cdRef: ChangeDetectorRef,
-        public repo: ConfigRepositoryService,
-        dateTimeAdapter: DateTimeAdapter<any>
+        public repo: ConfigRepositoryService
     ) {
         super(titleService, translate);
-        dateTimeAdapter.setLocale(this.translate.currentLang);
     }
 
     /**

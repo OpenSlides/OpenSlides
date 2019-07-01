@@ -68,7 +68,7 @@
                     formControlName="name"
                     placeholder="{{ 'New group name' | translate }}"
                 />
-                <mat-error *ngIf="groupForm.invalid" translate>Required</mat-error>
+                <mat-error *ngIf="!groupForm.valid" translate>Required</mat-error>
             </mat-form-field>
         </form>
     </div>

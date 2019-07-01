@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Papa } from 'ngx-papaparse';
 
 import { BaseImportService, NewEntry } from 'app/core/ui-services/base-import.service';

@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output } from '@angular/core';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -295,8 +296,10 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
             changeRecommendation: reco
         };
         this.dialogService.open(MotionChangeRecommendationComponent, {
-            height: '400px',
-            width: '600px',
+            height: '600px',
+            width: '800px',
+            maxHeight: '90vh',
+            maxWidth: '90vw',
             data: data,
             disableClose: true
         });

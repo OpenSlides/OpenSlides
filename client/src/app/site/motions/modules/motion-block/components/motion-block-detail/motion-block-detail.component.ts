@@ -1,7 +1,8 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { MatSnackBar, MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -74,13 +75,13 @@ export class MotionBlockDetailComponent extends BaseViewComponent implements OnI
     /**
      * The form to edit blocks
      */
-    @ViewChild('blockEditForm')
+    @ViewChild('blockEditForm', { static: true })
     public blockEditForm: FormGroup;
 
     /**
      * Reference to the template for edit-dialog
      */
-    @ViewChild('editDialog')
+    @ViewChild('editDialog', { static: true })
     private editDialog: TemplateRef<string>;
 
     /**

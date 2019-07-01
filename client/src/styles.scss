@@ -39,9 +39,6 @@
     @include os-tile-style($theme);
 }
 
-/** date-time-picker */
-@import '~ng-pick-datetime/assets/style/picker.min.css';
-
 /** Load projector specific SCSS values */
 @import './assets/styles/projector.scss';
 

@@ -14,7 +14,7 @@ describe('SearchValueSelectorComponent', () => {
         template: '<os-search-value-selector></os-search-value-selector>'
     })
     class TestHostComponent {
-        @ViewChild(SearchValueSelectorComponent)
+        @ViewChild(SearchValueSelectorComponent, { static: true })
         public searchValueSelectorComponent: SearchValueSelectorComponent;
     }
 

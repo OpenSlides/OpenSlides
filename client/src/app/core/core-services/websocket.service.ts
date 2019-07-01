@@ -1,5 +1,5 @@
 import { Injectable, NgZone, EventEmitter } from '@angular/core';
-import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material';
+import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';

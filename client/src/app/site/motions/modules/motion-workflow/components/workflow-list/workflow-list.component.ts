@@ -5,7 +5,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition } from '@pebula/ngrid';
 
 import { BaseListViewComponent } from 'app/site/base/base-list-view';
-import { MatSnackBar, MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
 import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';

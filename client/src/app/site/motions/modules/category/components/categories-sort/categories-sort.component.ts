@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
@@ -24,7 +24,7 @@ export class CategoriesSortComponent extends BaseViewComponent implements CanCom
     /**
      * Reference to the sorting tree.
      */
-    @ViewChild('osSortedTree')
+    @ViewChild('osSortedTree', { static: true })
     private osSortTree: SortingTreeComponent<ViewCategory>;
 
     /**

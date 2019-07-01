@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ViewChild, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatSelect } from '@angular/material';
+import { MatSelect } from '@angular/material/select';
 
 import { Subject, ReplaySubject, BehaviorSubject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -122,7 +122,7 @@ export class SearchValueSelectorComponent implements OnInit, OnDestroy {
     /**
      * The MultiSelect Component
      */
-    @ViewChild('thisSelector')
+    @ViewChild('thisSelector', { static: true })
     public thisSelector: MatSelect;
 
     /**
