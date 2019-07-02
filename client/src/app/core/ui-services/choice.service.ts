@@ -42,7 +42,7 @@ export class ChoiceService {
         clearChoice?: string
     ): Promise<ChoiceAnswer> {
         const dialogRef = this.dialog.open(ChoiceDialogComponent, {
-            minWidth: '250px',
+            maxWidth: '90vw',
             maxHeight: '90vh',
             disableClose: true,
             data: {

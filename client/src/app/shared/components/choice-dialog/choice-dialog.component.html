@@ -1,53 +1,56 @@
-<div class="scrollmenu-outer">
-    <h2 mat-dialog-title>{{ data.title | translate }}</h2>
-    <div class="scrollmenu">
-        <mat-radio-group
-            #radio
-            name="choice"
-            *ngIf="!data.multiSelect && data.choices"
-            class="choice-radio-group"
-            [(ngModel)]="selectedChoice"
-        >
-            <mat-radio-button class="choice-button" *ngFor="let choice of data.choices" [value]="choice.id">
+<!-- Title -->
+<h2 mat-dialog-title>{{ data.title | translate }}</h2>
+
+<!-- Content -->
+<mat-dialog-content>
+    <mat-radio-group
+        #radio
+        name="choice"
+        *ngIf="!data.multiSelect && data.choices"
+        class="choice-radio-group"
+        [(ngModel)]="selectedChoice"
+    >
+        <mat-radio-button class="choice-button" *ngFor="let choice of data.choices" [value]="choice.id">
+            {{ getChoiceTitle(choice) | translate }}
+        </mat-radio-button>
+
+        <mat-divider *ngIf="data.clearChoice"></mat-divider>
+
+        <mat-radio-button *ngIf="data.clearChoice" [value]="null">
+            {{ data.clearChoice | translate }}
+        </mat-radio-button>
+    </mat-radio-group>
+
+    <mat-list *ngIf="data.multiSelect && data.choices">
+        <mat-list-item *ngFor="let choice of data.choices">
+            <mat-checkbox [checked]="isChosen(choice)" (change)="toggleChoice(choice)">
                 {{ getChoiceTitle(choice) | translate }}
-            </mat-radio-button>
+            </mat-checkbox>
+        </mat-list-item>
+    </mat-list>
+</mat-dialog-content>
 
-            <mat-divider *ngIf="data.clearChoice"></mat-divider>
-
-            <mat-radio-button *ngIf="data.clearChoice" [value]="null">
-                {{ data.clearChoice | translate }}
-            </mat-radio-button>
-        </mat-radio-group>
-
-        <mat-list *ngIf="data.multiSelect && data.choices">
-            <mat-list-item *ngFor="let choice of data.choices">
-                <mat-checkbox [checked]="isChosen(choice)" (change)="toggleChoice(choice)">
-                    {{ getChoiceTitle(choice) | translate }}
-                </mat-checkbox>
-            </mat-list-item>
-        </mat-list>
+<!-- Actions -->
+<mat-dialog-actions>
+    <div *ngIf="data.actionButtons">
+        <button
+            *ngFor="let button of data.actionButtons"
+            mat-button
+            (click)="closeDialog(true, button)"
+            [disabled]="isSelectionEmpty"
+        >
+            <span>{{ button | translate }}</span>
+        </button>
     </div>
-    <mat-dialog-actions>
-        <div *ngIf="data.actionButtons">
-            <button
-                *ngFor="let button of data.actionButtons"
-                mat-button
-                (click)="closeDialog(true, button)"
-                [disabled]="isSelectionEmpty"
-            >
-                <span>{{ button | translate }}</span>
-            </button>
-        </div>
-        <div *ngIf="!data.actionButtons">
-            <button
-                *ngIf="!data.multiSelect || data.choices.length"
-                mat-button
-                (click)="closeDialog(true)"
-                [disabled]="isSelectionEmpty"
-            >
-                <span>OK</span>
-            </button>
-        </div>
-        <button mat-button (click)="closeDialog(false)"><span translate>Cancel</span></button>
-    </mat-dialog-actions>
-</div>
+    <div *ngIf="!data.actionButtons">
+        <button
+            *ngIf="!data.multiSelect || data.choices.length"
+            mat-button
+            (click)="closeDialog(true)"
+            [disabled]="isSelectionEmpty"
+        >
+            <span>OK</span>
+        </button>
+    </div>
+    <button mat-button (click)="closeDialog(false)"><span translate>Cancel</span></button>
+</mat-dialog-actions>

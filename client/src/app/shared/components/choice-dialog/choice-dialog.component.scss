@@ -1,21 +1,17 @@
-mat-radio-group {
+.mat-dialog-content {
+    display: block;
+}
+
+.mat-radio-group {
     display: inline-flex;
     flex-direction: column;
 
-    mat-radio-button {
+    .mat-radio-button {
         margin: 5px;
     }
 }
 
-.scrollmenu {
-    padding: 5px;
-    display: block;
-}
-
-.scrollmenu-outer {
-    max-height: inherit;
-}
-mat-divider {
+.mat-divider {
     margin-top: 10px;
     margin-bottom: 10px;
 }
