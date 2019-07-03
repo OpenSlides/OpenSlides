@@ -864,10 +864,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     /**
      * If `this.motion` is an amendment, this returns the list of all changed paragraphs.
      *
+     * @param {boolean} includeUnchanged
      * @returns {DiffLinesInParagraph[]}
      */
-    public getAmendedParagraphs(): DiffLinesInParagraph[] {
-        return this.repo.getAmendedParagraphs(this.motion, this.lineLength);
+    public getAmendmentParagraphs(includeUnchanged: boolean): DiffLinesInParagraph[] {
+        return this.repo.getAmendmentParagraphs(this.motion, this.lineLength, includeUnchanged);
     }
 
     /**

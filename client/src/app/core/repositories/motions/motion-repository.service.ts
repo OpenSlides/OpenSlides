@@ -705,25 +705,45 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
      *
      * @param {ViewMotion} amendment
      * @param {number} lineLength
+     * @param {boolean} includeUnchanged
      * @returns {DiffLinesInParagraph}
      */
-    public getAmendedParagraphs(amendment: ViewMotion, lineLength: number): DiffLinesInParagraph[] {
+    public getAmendmentParagraphs(
+        amendment: ViewMotion,
+        lineLength: number,
+        includeUnchanged: boolean
+    ): DiffLinesInParagraph[] {
         const motion = this.getAmendmentBaseMotion(amendment);
         const baseParagraphs = this.getTextParagraphs(motion, true, lineLength);
 
         return amendment.amendment_paragraphs
             .map(
                 (newText: string, paraNo: number): DiffLinesInParagraph => {
-                    if (newText === null) {
-                        return null;
+                    if (newText !== null) {
+                        return this.diff.getAmendmentParagraphsLinesByMode(
+                            paraNo,
+                            baseParagraphs[paraNo],
+                            newText,
+                            lineLength
+                        );
+                    } else {
+                        // Nothing has changed in this paragraph
+                        if (includeUnchanged) {
+                            const paragraph_line_range = this.lineNumbering.getLineNumberRange(baseParagraphs[paraNo]);
+                            return {
+                                paragraphNo: paraNo,
+                                paragraphLineFrom: paragraph_line_range.from,
+                                paragraphLineTo: paragraph_line_range.to,
+                                diffLineFrom: paragraph_line_range.to,
+                                diffLineTo: paragraph_line_range.to,
+                                textPre: baseParagraphs[paraNo],
+                                text: '',
+                                textPost: ''
+                            } as DiffLinesInParagraph;
+                        } else {
+                            return null; // null will make this paragraph filtered out
+                        }
                     }
-                    // Hint: can be either DiffLinesInParagraph or null, if no changes are made
-                    return this.diff.getAmendmentParagraphsLinesByMode(
-                        paraNo,
-                        baseParagraphs[paraNo],
-                        newText,
-                        lineLength
-                    );
                 }
             )
             .filter((para: DiffLinesInParagraph) => para !== null);
