@@ -27,8 +27,8 @@ def pytest_collection_modifyitems(items):
         return None
 
     def has_fixture(test, fixture):
-        funcargnames = getattr(test, "funcargnames", None)
-        return funcargnames and fixture in funcargnames
+        fixturenames = getattr(test, "fixturenames", None)
+        return fixturenames and fixture in fixturenames
 
     def weight_test_case(test):
         """

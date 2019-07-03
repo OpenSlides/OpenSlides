@@ -16,8 +16,8 @@ matrix:
         - pip install --upgrade .[big_mode]
         - pip freeze
       script:
-        - python -m mypy openslides/ tests/
-        - python -W ignore -m pytest --cov --cov-fail-under=70
+        - mypy openslides/ tests/
+        - pytest --cov --cov-fail-under=76
 
     - language: python
       name: "Server: Tests Python 3.7"
@@ -35,8 +35,8 @@ matrix:
         - flake8 openslides tests
         - isort --check-only --diff --recursive openslides tests
         - black --check --diff --target-version py36 openslides tests
-        - python -m mypy openslides/ tests/
-        - python -W ignore -m pytest --cov --cov-fail-under=70
+        - mypy openslides/ tests/
+        - pytest --cov --cov-fail-under=76
 
     - language: python
       name: "Server: Tests Startup Routine Python 3.7"
