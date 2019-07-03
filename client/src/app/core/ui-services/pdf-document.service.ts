@@ -532,6 +532,11 @@ export class PdfDocumentService {
                 margin: [0, 0, 0, 4],
                 bold: true
             },
+            tocSubcategoryTitle: {
+                fontSize: pageSize === 'A5' ? 9 : 10,
+                margin: [0, 0, 0, 4],
+                bold: true
+            },
             tocCategorySection: {
                 margin: [0, 0, 0, 10]
             },

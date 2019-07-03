@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { ViewMotion, LineNumberingMode, ChangeRecoMode } from '../models/view-motion';
-import { MotionPdfService, InfoToExport } from './motion-pdf.service';
+import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { ViewCategory } from '../models/view-category';
-import { PdfError, PdfDocumentService, StyleType, BorderType } from 'app/core/ui-services/pdf-document.service';
+import { MotionPdfService, InfoToExport } from './motion-pdf.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
+import { PdfError, PdfDocumentService, StyleType, BorderType } from 'app/core/ui-services/pdf-document.service';
+import { ViewCategory } from '../models/view-category';
+import { ViewMotion, LineNumberingMode, ChangeRecoMode } from '../models/view-motion';
 
 /**
  * Service to export a list of motions.
@@ -21,6 +23,8 @@ import { MotionRepositoryService } from 'app/core/repositories/motions/motion-re
     providedIn: 'root'
 })
 export class MotionPdfCatalogService {
+    private categoryObserver: BehaviorSubject<ViewCategory[]>;
+
     /**
      * Constructor
      *
@@ -33,8 +37,11 @@ export class MotionPdfCatalogService {
         private configService: ConfigService,
         private motionPdfService: MotionPdfService,
         private pdfService: PdfDocumentService,
-        private motionRepo: MotionRepositoryService
-    ) {}
+        private motionRepo: MotionRepositoryService,
+        private categoryRepo: CategoryRepositoryService
+    ) {
+        this.categoryObserver = this.categoryRepo.getViewModelListBehaviorSubject();
+    }
 
     /**
      * Converts the list of motions to pdfmake doc definition.
@@ -111,7 +118,7 @@ export class MotionPdfCatalogService {
      */
     private createToc(motions: ViewMotion[], sorting?: string): object {
         const toc = [];
-        const categories: ViewCategory[] = this.getUniqueCategories(motions);
+        const categories = this.categoryObserver.value;
 
         // Create the toc title
         const tocTitle = {
@@ -129,15 +136,13 @@ export class MotionPdfCatalogService {
         if (categories && categories.length) {
             const catTocBody = [];
             for (const category of categories.sort((a, b) => a.weight - b.weight)) {
-                // push the name of the category
-                // make a table for correct alignment
                 catTocBody.push({
                     table: {
                         body: [
                             [
                                 {
-                                    text: category.prefixedNameWithParents,
-                                    style: 'tocCategoryTitle'
+                                    text: category.getTitle(),
+                                    style: !!category.parent ? 'tocSubcategoryTitle' : 'tocCategoryTitle'
                                 }
                             ]
                         ]
@@ -145,23 +150,31 @@ export class MotionPdfCatalogService {
                     layout: exportSubmitterRecommendation ? 'lightHorizontalLines' : 'noBorders'
                 });
 
-                const tocBody = [];
-                for (const motion of motions.filter(motionIn => category === motionIn.category)) {
-                    if (exportSubmitterRecommendation) {
-                        tocBody.push(this.appendSubmittersAndRecommendation(motion, StyleType.CATEGORY_SECTION));
-                    } else {
-                        tocBody.push(
-                            this.pdfService.createTocLine(
-                                `${motion.identifier ? motion.identifier : ''}`,
-                                motion.title,
-                                `${motion.id}`,
-                                StyleType.CATEGORY_SECTION
-                            )
-                        );
-                    }
-                }
+                // find out if the category has any motions
+                const motionToCurrentCat = motions.filter(motionIn => category === motionIn.category);
 
-                catTocBody.push(this.pdfService.createTocTableDef(tocBody, StyleType.CATEGORY_SECTION, layout, header));
+                if (motionToCurrentCat && motionToCurrentCat.length) {
+                    const tocBody = [];
+
+                    for (const motion of motionToCurrentCat) {
+                        if (exportSubmitterRecommendation) {
+                            tocBody.push(this.appendSubmittersAndRecommendation(motion, StyleType.CATEGORY_SECTION));
+                        } else {
+                            tocBody.push(
+                                this.pdfService.createTocLine(
+                                    `${motion.identifier ? motion.identifier : ''}`,
+                                    motion.title,
+                                    `${motion.id}`,
+                                    StyleType.CATEGORY_SECTION
+                                )
+                            );
+                        }
+                    }
+
+                    catTocBody.push(
+                        this.pdfService.createTocTableDef(tocBody, StyleType.CATEGORY_SECTION, layout, header)
+                    );
+                }
             }
 
             // handle those without category
@@ -221,28 +234,6 @@ export class MotionPdfCatalogService {
             },
             { text: this.translate.instant('Page'), style: 'tocHeaderRow', alignment: 'right' }
         ];
-    }
-
-    /**
-     * Extract the used categories from the given motion list.
-     *
-     * @param motions the list of motions
-     * @returns Unique list of categories
-     */
-    private getUniqueCategories(motions: ViewMotion[]): ViewCategory[] {
-        const categories: ViewCategory[] = motions
-            // remove motions without category
-            .filter(motion => !!motion.category)
-            // map motions their categories
-            .map(motion => motion.category)
-            // remove redundancies
-            .filter(
-                (category, index, self) =>
-                    index ===
-                    self.findIndex(compare => compare.prefix === category.prefix && compare.name === category.name)
-            );
-
-        return categories;
     }
 
     /**
