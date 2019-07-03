@@ -5,11 +5,12 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { MotionPdfService, InfoToExport } from './motion-pdf.service';
+import { MotionPdfService } from './motion-pdf.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { PdfError, PdfDocumentService, StyleType, BorderType } from 'app/core/ui-services/pdf-document.service';
 import { ViewCategory } from '../models/view-category';
-import { ViewMotion, LineNumberingMode, ChangeRecoMode } from '../models/view-motion';
+import { ViewMotion } from '../models/view-motion';
+import { ExportFormData } from '../modules/motion-list/components/motion-export-dialog/motion-export-dialog.component';
 
 /**
  * Service to export a list of motions.
@@ -55,27 +56,13 @@ export class MotionPdfCatalogService {
      * @param commentsToExport
      * @returns pdfmake doc definition as object
      */
-    public motionListToDocDef(
-        motions: ViewMotion[],
-        lnMode?: LineNumberingMode,
-        crMode?: ChangeRecoMode,
-        contentToExport?: string[],
-        infoToExport?: InfoToExport[],
-        commentsToExport?: number[]
-    ): object {
+    public motionListToDocDef(motions: ViewMotion[], exportInfo: ExportFormData): object {
         let doc = [];
         const motionDocList = [];
 
         for (let motionIndex = 0; motionIndex < motions.length; ++motionIndex) {
             try {
-                const motionDocDef: any = this.motionPdfService.motionToDocDef(
-                    motions[motionIndex],
-                    lnMode,
-                    crMode,
-                    contentToExport,
-                    infoToExport,
-                    commentsToExport
-                );
+                const motionDocDef: any = this.motionPdfService.motionToDocDef(motions[motionIndex], exportInfo);
 
                 // add id field to the first page of a motion to make it findable over TOC
                 motionDocDef[0].id = `${motions[motionIndex].id}`;
@@ -95,7 +82,7 @@ export class MotionPdfCatalogService {
         }
 
         // print extra data (title, preamble, categories, toc) only if there are more than 1 motion
-        if (motions.length > 1) {
+        if (motions.length > 1 && (!exportInfo.pdfOptions || exportInfo.pdfOptions.includes('toc'))) {
             doc.push(
                 this.pdfService.createTitle('motions_export_title'),
                 this.pdfService.createPreamble('motions_export_preamble'),

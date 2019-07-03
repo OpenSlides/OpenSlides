@@ -9,6 +9,30 @@ import { LineNumberingMode, ChangeRecoMode } from 'app/site/motions/models/view-
 import { InfoToExport } from 'app/site/motions/services/motion-pdf.service';
 import { ViewMotionCommentSection } from 'app/site/motions/models/view-motion-comment-section';
 import { motionImportExportHeaderOrder, noMetaData } from 'app/site/motions/motion-import-export-order';
+import { StorageService } from 'app/core/core-services/storage.service';
+import { auditTime } from 'rxjs/operators';
+
+/**
+ * Determine the possible file format
+ */
+export enum FileFormat {
+    PDF = 1,
+    CSV,
+    XLSX
+}
+
+/**
+ * Shape the structure of the dialog data
+ */
+export interface ExportFormData {
+    format?: FileFormat;
+    lnMode?: LineNumberingMode;
+    crMode?: ChangeRecoMode;
+    content?: string[];
+    metaInfo?: InfoToExport[];
+    pdfOptions?: string[];
+    comments?: number[];
+}
 
 /**
  * Dialog component to determine exporting.
@@ -30,19 +54,24 @@ export class MotionExportDialogComponent implements OnInit {
     public crMode = ChangeRecoMode;
 
     /**
+     * to use the format in the template
+     */
+    public fileFormat = FileFormat;
+
+    /**
      * The form that contains the export information.
      */
     public exportForm: FormGroup;
 
     /**
-     * determine the default format to export
+     * The default export values in contrast to the restored values
      */
-    private defaultExportFormat = 'pdf';
-
-    /**
-     * Determine the default content to export.
-     */
-    private defaultContentToExport = ['text', 'reason'];
+    private defaults: ExportFormData = {
+        format: FileFormat.PDF,
+        content: ['text', 'reason'],
+        pdfOptions: ['toc', 'page'],
+        metaInfo: ['submitters', 'state', 'recommendation', 'category', 'origin', 'tags', 'motion_block', 'polls', 'id']
+    };
 
     /**
      * Determine the export order of the meta data
@@ -50,35 +79,11 @@ export class MotionExportDialogComponent implements OnInit {
     public metaInfoExportOrder: string[];
 
     /**
-     * Determine the default meta info to export.
-     */
-    private defaultInfoToExport: InfoToExport[] = [
-        'submitters',
-        'state',
-        'recommendation',
-        'category',
-        'origin',
-        'tags',
-        'motion_block',
-        'polls',
-        'id'
-    ];
-
-    /**
      * @returns a list of availavble commentSections
      */
     public get commentsToExport(): ViewMotionCommentSection[] {
         return this.commentRepo.getSortedViewModelList();
     }
-    /**
-     * Hold the default lnMode. Will be set by the constructor.
-     */
-    private defaultLnMode: LineNumberingMode;
-
-    /**
-     * Hold the default crMode. Will be set by the constructor.
-     */
-    private defaultCrMode: ChangeRecoMode;
 
     /**
      * To deactivate the export-as-diff button
@@ -87,7 +92,7 @@ export class MotionExportDialogComponent implements OnInit {
     public diffVersionButton: MatButtonToggle;
 
     /**
-     * To deactivate the export-as-diff button
+     * To deactivate the voting result button
      */
     @ViewChild('votingResultButton', { static: true })
     public votingResultButton: MatButtonToggle;
@@ -107,10 +112,11 @@ export class MotionExportDialogComponent implements OnInit {
         public formBuilder: FormBuilder,
         public dialogRef: MatDialogRef<MotionExportDialogComponent>,
         public configService: ConfigService,
-        public commentRepo: MotionCommentSectionRepositoryService
+        public commentRepo: MotionCommentSectionRepositoryService,
+        private store: StorageService
     ) {
-        this.defaultLnMode = this.configService.instant('motions_default_line_numbering');
-        this.defaultCrMode = this.configService.instant('motions_recommendation_text_mode');
+        this.defaults.lnMode = this.configService.instant('motions_default_line_numbering');
+        this.defaults.crMode = this.configService.instant('motions_recommendation_text_mode');
         // Get the export order, exclude everything that does not count as meta-data
         this.metaInfoExportOrder = motionImportExportHeaderOrder.filter(metaData => {
             return !noMetaData.some(noMeta => metaData === noMeta);
@@ -123,67 +129,83 @@ export class MotionExportDialogComponent implements OnInit {
      * Observes the form for changes to react dynamically
      */
     public ngOnInit(): void {
-        this.exportForm.get('format').valueChanges.subscribe((value: string) => {
-            // disable content for xslx
-            if (value === 'xlsx') {
-                // disable the content selection
-                this.exportForm.get('content').disable();
-                // remove the selection of "content"
-                this.exportForm.get('content').setValue(null);
-            } else {
-                this.exportForm.get('content').enable();
-            }
+        this.exportForm.valueChanges.pipe(auditTime(500)).subscribe((value: ExportFormData) => {
+            this.store.set('motion_export_selection', value);
+        });
 
-            if (value === 'csv' || value === 'xlsx') {
-                // disable and deselect "lnMode"
-                this.exportForm.get('lnMode').setValue(this.lnMode.None);
-                this.exportForm.get('lnMode').disable();
+        this.exportForm.get('format').valueChanges.subscribe((value: FileFormat) => this.onFormatChange(value));
+    }
 
-                // disable and deselect "Change Reco Mode"
-                // TODO: The current implementation of the motion csv export does not consider anything else than
-                //       the "normal" motion.text, therefore this is disabled for now
-                this.exportForm.get('crMode').setValue(this.crMode.Original);
-                this.exportForm.get('crMode').disable();
+    /**
+     * React to changes on the file format
+     * @param format
+     */
+    private onFormatChange(format: FileFormat): void {
+        // XLSX cannot have "content"
+        if (format === FileFormat.XLSX) {
+            this.disableControl('content');
+        } else {
+            this.enableControl('content');
+        }
 
-                this.exportForm.get('comments').disable();
+        if (format === FileFormat.CSV || format === FileFormat.XLSX) {
+            this.disableControl('lnMode');
+            this.disableControl('crMode');
+            this.disableControl('comments');
+            this.disableControl('pdfOptions');
 
-                // remove the selection of "Diff Version" and set it to default or original
-                // TODO: Use this over the disable block logic above when the export service supports more than
-                //       just the normal motion text
-                // if (this.exportForm.get('crMode').value === this.crMode.Diff) {
-                //     if (this.defaultCrMode === this.crMode.Diff) {
-                //         this.exportForm.get('crMode').setValue(this.crMode.Original);
-                //     } else {
-                //         this.exportForm.get('crMode').setValue(this.defaultCrMode);
-                //     }
-                // }
-
-                // remove the selection of "votingResult"
-                let metaInfoVal: string[] = this.exportForm.get('metaInfo').value;
+            // remove the selection of "votingResult"
+            let metaInfoVal: string[] = this.exportForm.get('metaInfo').value;
+            if (metaInfoVal) {
                 metaInfoVal = metaInfoVal.filter(info => {
                     return info !== 'polls';
                 });
                 this.exportForm.get('metaInfo').setValue(metaInfoVal);
-
-                // disable "Diff Version" and "Voting Result"
-                this.votingResultButton.disabled = true;
-                // TODO: CSV Issues
-                // this.diffVersionButton.disabled = true;
-            } else if (value === 'pdf') {
-                this.exportForm.get('comments').enable();
-                this.exportForm.get('lnMode').enable();
-                this.exportForm.get('lnMode').setValue(this.defaultLnMode);
-
-                // TODO: Temporarily necessary until CSV has been fixed
-                this.exportForm.get('crMode').enable();
-                this.exportForm.get('crMode').setValue(this.defaultCrMode);
-
-                // enable "Diff Version" and "Voting Result"
-                this.votingResultButton.disabled = false;
-                // TODO: Temporarily disabled. Will be required after CSV fixes
-                // this.diffVersionButton.disabled = false;
             }
-        });
+            this.votingResultButton.disabled = true;
+        }
+
+        if (format === FileFormat.PDF) {
+            this.enableControl('lnMode');
+            this.enableControl('crMode');
+            this.enableControl('comments');
+            this.enableControl('pdfOptions');
+            this.votingResultButton.disabled = false;
+        }
+    }
+
+    /**
+     * Helper function to easier enable a control
+     * @param name
+     */
+    private enableControl(name: string): void {
+        this.exportForm.get(name).enable();
+    }
+
+    /**
+     * Helper function to easier disable a control
+     *
+     * @param name
+     */
+    private disableControl(name: string): void {
+        this.exportForm.get(name).disable();
+        this.exportForm.get(name).setValue(this.getOffState(name));
+    }
+
+    /**
+     * Determine what "off means in certain states"
+     *
+     * @param control
+     */
+    private getOffState(control: string): string | null {
+        switch (control) {
+            case 'lnMode':
+                return this.lnMode.None;
+            case 'crMode':
+                return this.crMode.Original;
+            default:
+                return null;
+        }
     }
 
     /**
@@ -191,12 +213,22 @@ export class MotionExportDialogComponent implements OnInit {
      */
     public createForm(): void {
         this.exportForm = this.formBuilder.group({
-            format: [this.defaultExportFormat],
-            lnMode: [this.defaultLnMode],
-            crMode: [this.defaultCrMode],
-            content: [this.defaultContentToExport],
-            metaInfo: [this.defaultInfoToExport],
+            format: [],
+            lnMode: [],
+            crMode: [],
+            content: [],
+            metaInfo: [],
+            pdfOptions: [],
             comments: []
+        });
+
+        // restore selection or set default
+        this.store.get<ExportFormData>('motion_export_selection').then(restored => {
+            if (!!restored) {
+                this.exportForm.patchValue(restored);
+            } else {
+                this.exportForm.patchValue(this.defaults);
+            }
         });
     }
 

@@ -17,6 +17,7 @@ import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
 import { ViewMotionAmendedParagraph } from '../models/view-motion-amended-paragraph';
 import { ViewMotionChangeRecommendation } from '../models/view-motion-change-recommendation';
 import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/motions/view-unified-change';
+import { ExportFormData } from '../modules/motion-list/components/motion-export-dialog/motion-export-dialog.component';
 
 /**
  * Type declaring which strings are valid options for metainfos to be exported into a pdf
@@ -91,14 +92,13 @@ export class MotionPdfService {
      * @param commentsToExport comments to chose for export. If 'allcomments' is set in infoToExport, this selection will be ignored and all comments exported
      * @returns doc def for the motion
      */
-    public motionToDocDef(
-        motion: ViewMotion,
-        lnMode?: LineNumberingMode,
-        crMode?: ChangeRecoMode,
-        contentToExport?: string[],
-        infoToExport?: InfoToExport[],
-        commentsToExport?: number[]
-    ): object {
+    public motionToDocDef(motion: ViewMotion, exportInfo?: ExportFormData): object {
+        let lnMode = exportInfo && exportInfo.lnMode ? exportInfo.lnMode : null;
+        let crMode = exportInfo && exportInfo.crMode ? exportInfo.crMode : null;
+        const infoToExport = exportInfo ? exportInfo.metaInfo : null;
+        const contentToExport = exportInfo ? exportInfo.content : null;
+        let commentsToExport = exportInfo ? exportInfo.comments : null;
+
         // get the line length from the config
         const lineLength = this.configService.instant<number>('motions_line_length');
         // whether to append checkboxes to follow the recommendation or not
@@ -178,7 +178,13 @@ export class MotionPdfService {
         const changedTitle = this.changeRecoRepo.getTitleWithChanges(motion.title, titleChange, crMode);
 
         const identifier = motion.identifier ? ' ' + motion.identifier : '';
-        const title = `${this.translate.instant('Motion')} ${identifier}: ${changedTitle}`;
+        const pageSize = this.configService.instant('general_export_pdf_pagesize');
+        let title = '';
+        if (pageSize === 'A4') {
+            title += `${this.translate.instant('Motion')} `;
+        }
+
+        title += `${identifier}: ${changedTitle}`;
 
         return {
             text: title,

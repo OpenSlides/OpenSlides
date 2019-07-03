@@ -15,7 +15,11 @@ import { MotionRepositoryService } from 'app/core/repositories/motions/motion-re
 import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
-import { MotionExportDialogComponent } from '../motion-export-dialog/motion-export-dialog.component';
+import {
+    MotionExportDialogComponent,
+    FileFormat,
+    ExportFormData
+} from '../motion-export-dialog/motion-export-dialog.component';
 import { ViewMotion, LineNumberingMode, ChangeRecoMode } from 'app/site/motions/models/view-motion';
 import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
 import { ViewCategory } from 'app/site/motions/models/view-category';
@@ -302,19 +306,12 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
             data: this.dataSource
         });
 
-        exportDialogRef.afterClosed().subscribe((result: any) => {
-            if (result && result.format) {
+        exportDialogRef.afterClosed().subscribe((exportInfo: ExportFormData) => {
+            if (exportInfo && exportInfo.format) {
                 const data = this.isMultiSelect ? this.selectedRows : this.dataSource.source;
-                if (result.format === 'pdf') {
+                if (exportInfo.format === FileFormat.PDF) {
                     try {
-                        this.pdfExport.exportMotionCatalog(
-                            data,
-                            result.lnMode,
-                            result.crMode,
-                            result.content,
-                            result.metaInfo,
-                            result.comments
-                        );
+                        this.pdfExport.exportMotionCatalog(data, exportInfo);
                     } catch (err) {
                         if (err instanceof PdfError) {
                             this.raiseError(err.message);
@@ -322,10 +319,14 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
                             throw err;
                         }
                     }
-                } else if (result.format === 'csv') {
-                    this.motionCsvExport.exportMotionList(data, [...result.content, ...result.metaInfo], result.crMode);
-                } else if (result.format === 'xlsx') {
-                    this.motionXlsxExport.exportMotionList(data, result.metaInfo);
+                } else if (exportInfo.format === FileFormat.CSV) {
+                    this.motionCsvExport.exportMotionList(
+                        data,
+                        [...exportInfo.content, ...exportInfo.metaInfo],
+                        exportInfo.crMode
+                    );
+                } else if (exportInfo.format === FileFormat.XLSX) {
+                    this.motionXlsxExport.exportMotionList(data, exportInfo.metaInfo);
                 }
             }
         });
@@ -399,11 +400,12 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
      * Directly export all motions as pdf, using the current default config settings
      */
     public directPdfExport(): void {
-        this.pdfExport.exportMotionCatalog(
-            this.dataSource.source,
-            this.configService.instant<string>('motions_default_line_numbering') as LineNumberingMode,
-            this.configService.instant<string>('motions_recommendation_text_mode') as ChangeRecoMode
-        );
+        const lnMode = this.configService.instant<string>('motions_default_line_numbering') as LineNumberingMode;
+        const crMode = this.configService.instant<string>('motions_recommendation_text_mode') as ChangeRecoMode;
+        this.pdfExport.exportMotionCatalog(this.dataSource.source, {
+            lnMode: lnMode,
+            crMode: crMode
+        });
     }
 
     /**
