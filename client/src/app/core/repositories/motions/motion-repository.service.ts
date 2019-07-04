@@ -458,7 +458,8 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
         await this.httpService.delete(url);
     }
 
-    /** Returns an observable returning the amendments to a given motion
+    /**
+     * Returns an observable returning the amendments to a given motion
      *
      * @param {number} motionId
      * @returns {Observable<ViewMotion[]>}
@@ -468,6 +469,33 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
             map((motions: ViewMotion[]): ViewMotion[] => {
                 return motions.filter((motion: ViewMotion): boolean => {
                     return motion.parent_id === motionId;
+                });
+            })
+        );
+    }
+
+    /**
+     * Returns an observable for all motions, that referencing the given motion (via id)
+     * in the recommendation.
+     */
+    public getRecommendationReferencingMotions(motionId: number): Observable<ViewMotion[]> {
+        return this.getViewModelListObservable().pipe(
+            map((motions: ViewMotion[]): ViewMotion[] => {
+                return motions.filter((motion: ViewMotion): boolean => {
+                    if (!motion.recommendationExtension) {
+                        return false;
+                    }
+
+                    // Check, if this motion has the motionId in it's recommendation
+                    const placeholderRegex = /\[motion:(\d+)\]/g;
+                    let match;
+                    while ((match = placeholderRegex.exec(motion.recommendationExtension))) {
+                        if (parseInt(match[1], 10) === motionId) {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 });
             })
         );

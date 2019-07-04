@@ -4,7 +4,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
 import { MotionSlideData, MotionSlideDataAmendment } from './motion-slide-data';
-import { ChangeRecoMode, LineNumberingMode } from 'app/site/motions/models/view-motion';
+import { ChangeRecoMode, LineNumberingMode, MotionTitleInformation } from 'app/site/motions/models/view-motion';
 import { DiffLinesInParagraph, DiffService, LineRange } from 'app/core/ui-services/diff.service';
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
 import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change';
@@ -116,6 +116,10 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
         private diff: DiffService
     ) {
         super(translate, motionRepo);
+    }
+
+    public getIdentifierOrTitle(titleInformation: MotionTitleInformation): string {
+        return this.motionRepo.getIdentifierOrTitle(titleInformation);
     }
 
     public getRecommendationLabel(): string {

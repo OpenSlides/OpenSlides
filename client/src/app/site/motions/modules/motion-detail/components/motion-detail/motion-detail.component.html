@@ -329,6 +329,14 @@
             </button>
         </div>
 
+        <!-- recommendation referencing motions -->
+        <div *ngIf="!editMotion && recommendationReferencingMotions.length > 0">
+            <h4 translate>Recommendation-referencing motions</h4>
+            <div *ngFor="let motion of recommendationReferencingMotions">
+                <a [routerLink]="motion.getDetailStateURL()">{{ motion.identifierOrTitle }}</a>
+            </div>
+        </div>
+
         <!-- Category -->
         <!-- Disabled during "new motion" since changing has no effect -->
         <div *ngIf="!editMotion && categoryObserver.value.length">

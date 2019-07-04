@@ -371,6 +371,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      */
     private navigationSubscription: Subscription;
 
+    public recommendationReferencingMotions: ViewMotion[] = [];
+
     /**
      * Constructs the detail view.
      *
@@ -614,6 +616,9 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
                     this.amendments = amendments;
                     this.recalcUnifiedChanges();
                 }),
+                this.repo
+                    .getRecommendationReferencingMotions(motionId)
+                    .subscribe(motions => (this.recommendationReferencingMotions = motions)),
                 this.changeRecoRepo
                     .getChangeRecosOfMotionObservable(motionId)
                     .subscribe((recos: ViewMotionChangeRecommendation[]) => {

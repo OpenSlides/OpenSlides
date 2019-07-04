@@ -1,5 +1,5 @@
 import re
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from ..users.projector import get_user_name
 from ..utils.projector import (
@@ -228,6 +228,7 @@ async def motion_slide(
         return_value["modified_final_version"] = motion["modified_final_version"]
 
     if show_meta_box:
+        # Add recommendation, if enabled in config (and the motion has one)
         if (
             not await get_config(
                 all_data, "motions_disable_recommendation_on_projector"
@@ -254,6 +255,7 @@ async def motion_slide(
                 all_data, "motions_recommendations_by"
             )
 
+        # Add submitters
         return_value["submitter"] = [
             await get_user_name(all_data, submitter["user_id"])
             for submitter in sorted(
@@ -261,7 +263,48 @@ async def motion_slide(
             )
         ]
 
+        # Add recommendation-referencing motions
+        return_value[
+            "recommendation_referencing_motions"
+        ] = await get_recommendation_referencing_motions(all_data, motion_id)
+
     return return_value
+
+
+async def get_recommendation_referencing_motions(
+    all_data: AllData, motion_id: int
+) -> Optional[List[Dict[str, Any]]]:
+    """
+    Returns all title information for motions, that are referencing
+    the given motion (by id) in their recommendation. If there are no
+    motions, None is returned (instead of []).
+    """
+    recommendation_referencing_motions = []
+    for motion in all_data["motions/motion"].values():
+        # Motion must have a recommendation and a recommendaiton extension
+        if not motion["recommendation_id"] or not motion["recommendation_extension"]:
+            continue
+
+        # The recommendation must allow the extension field (there might be left-overs
+        # in a motions recommendation extension..)
+        recommendation = await get_state(all_data, motion, "recommendation_id")
+        if not recommendation["show_recommendation_extension_field"]:
+            continue
+
+        # Find referenced motion ids
+        referenced_ids = [
+            int(id)
+            for id in motion_placeholder_regex.findall(
+                motion["recommendation_extension"]
+            )
+        ]
+
+        # if one of the referenced ids is the given motion, add the current motion.
+        if motion_id in referenced_ids:
+            recommendation_referencing_motions.append(
+                {"title": motion["title"], "identifier": motion["identifier"]}
+            )
+    return recommendation_referencing_motions or None
 
 
 async def motion_block_slide(
