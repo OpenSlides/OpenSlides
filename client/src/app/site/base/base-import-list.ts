@@ -1,4 +1,6 @@
-import { MatTableDataSource, MatTable, MatSnackBar, MatSelectChange } from '@angular/material';
+import { MatSelectChange } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { ViewChild, OnInit } from '@angular/core';
 
 import { BaseViewComponent } from './base-view';
@@ -44,7 +46,7 @@ export abstract class BaseImportListComponent<V extends BaseViewModel> extends B
     /**
      * The table itself
      */
-    @ViewChild(MatTable)
+    @ViewChild(MatTable, { static: false })
     protected table: MatTable<NewEntry<V>>;
 
     /**

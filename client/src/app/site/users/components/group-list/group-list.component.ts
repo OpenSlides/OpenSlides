@@ -1,7 +1,9 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
-import { MatTableDataSource, MatSnackBar, MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTableDataSource } from '@angular/material/table';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 
 import { GroupRepositoryService, AppPermissions } from 'app/core/repositories/users/group-repository.service';
@@ -44,13 +46,13 @@ export class GroupListComponent extends BaseViewComponent implements OnInit {
      */
     public selectedGroup: ViewGroup;
 
-    @ViewChild('groupForm')
+    @ViewChild('groupForm', { static: true })
     public groupForm: FormGroup;
 
     /**
      * Reference to the template
      */
-    @ViewChild('groupEditDialog')
+    @ViewChild('groupEditDialog', { static: true })
     public groupEditDialog: TemplateRef<string>;
 
     public get appPermissions(): AppPermissions[] {

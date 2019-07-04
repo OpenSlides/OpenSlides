@@ -60,12 +60,12 @@ matrix:
     - language: node_js
       name: "Client: Linting"
       node_js:
-        - "10.5"
+        - "10.9"
       cache:
         directories:
           - node_modules
       before_install:
-        - npm install -g @angular/cli@~7.3.8
+        - npm install -g @angular/cli@~8.0.6
         - ng --version
         - cd client
       install:
@@ -76,12 +76,12 @@ matrix:
     - language: node_js
       name: "Client: Code Formatting Check"
       node_js:
-        - "10.5"
+        - "10.9"
       cache:
         directories:
           - node_modules
       before_install:
-        - npm install -g @angular/cli@~7.3.8
+        - npm install -g @angular/cli@~8.0.6
         - ng --version
         - cd client
       install:
@@ -93,7 +93,7 @@ matrix:
     - language: node_js
       name: "Client: Testing"
       node_js:
-        - "10.5"
+        - "10.9"
       apt:
         sources:
           - google-chrome
@@ -107,7 +107,7 @@ matrix:
       before_install:
         - export CHROME_BIN=/usr/bin/google-chrome
         - export DISPLAY=:99.0
-        - npm install -g @angular/cli@~7.3.8
+        - npm install -g @angular/cli@~8.0.6
         - ng --version
         - cd client
       install:
@@ -118,12 +118,12 @@ matrix:
     - language: node_js
       name: "Client: Build"
       node_js:
-        - "10.5"
+        - "10.9"
       cache:
         directories:
           - node_modules
       before_install:
-        - npm install -g @angular/cli@~7.3.8
+        - npm install -g @angular/cli@~8.0.6
         - ng --version
         - cd client
       install:
@@ -134,12 +134,12 @@ matrix:
     - language: node_js
       name: "Client: Production Build"
       node_js:
-        - "10.5"
+        - "10.9"
       cache:
         directories:
           - node_modules
       before_install:
-        - npm install -g @angular/cli@~7.3.8
+        - npm install -g @angular/cli@~8.0.6
         - ng --version
         - cd client
       install:

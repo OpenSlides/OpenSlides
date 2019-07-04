@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title, DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { FormGroup, FormBuilder } from '@angular/forms';
 

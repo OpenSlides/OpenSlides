@@ -4,7 +4,6 @@ import { LocalStorage } from '@ngx-pwa/local-storage';
 import { Observable } from 'rxjs';
 
 import { OpenSlidesStatusService } from './openslides-status.service';
-import { StoragelockService } from '../local-storage/storagelock.service';
 
 /**
  * Provides an async API to an key-value store using ngx-pwa which is internally
@@ -18,11 +17,7 @@ export class StorageService {
      * Constructor to create the StorageService. Needs the localStorage service.
      * @param localStorage
      */
-    public constructor(
-        private localStorage: LocalStorage,
-        private OSStatus: OpenSlidesStatusService,
-        private lock: StoragelockService
-    ) {}
+    public constructor(private localStorage: LocalStorage, private OSStatus: OpenSlidesStatusService) {}
 
     /**
      * Sets the item into the store asynchronously.
@@ -30,8 +25,6 @@ export class StorageService {
      * @param item
      */
     public async set(key: string, item: any): Promise<void> {
-        await this.lock.promise;
-
         this.assertNotHistoryMode();
         if (item === null || item === undefined) {
             await this.remove(key); // You cannot do a setItem with null or undefined...
@@ -49,8 +42,6 @@ export class StorageService {
      * @returns The requested value to the key
      */
     public async get<T>(key: string): Promise<T> {
-        await this.lock.promise;
-
         return ((await this.localStorage.getItem<T>(key)) as Observable<T>).toPromise();
     }
 
@@ -59,8 +50,6 @@ export class StorageService {
      * @param key The key to remove the value from
      */
     public async remove(key: string): Promise<void> {
-        await this.lock.promise;
-
         this.assertNotHistoryMode();
         if (!(await this.localStorage.removeItem(key).toPromise())) {
             throw new Error('Could not delete the item.');
@@ -71,8 +60,6 @@ export class StorageService {
      * Clear the whole cache
      */
     public async clear(): Promise<void> {
-        await this.lock.promise;
-
         this.assertNotHistoryMode();
         if (!(await this.localStorage.clear().toPromise())) {
             throw new Error('Could not clear the storage.');

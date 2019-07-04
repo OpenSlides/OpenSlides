@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
-import { MatSnackBar, MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 
@@ -66,7 +67,7 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
     /**
      * The reference to the template.
      */
-    @ViewChild('userInfoDialog')
+    @ViewChild('userInfoDialog', { static: true })
     private userInfoDialog: TemplateRef<string>;
 
     /**

@@ -11,7 +11,7 @@ describe('SortingListComponent', () => {
         template: '<os-sorting-list><os-sorting-list>'
     })
     class TestHostComponent {
-        @ViewChild(SortingListComponent)
+        @ViewChild(SortingListComponent, { static: true })
         public sortingListCompononent: SortingListComponent;
     }
 

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition } from '@pebula/ngrid';
@@ -29,7 +29,7 @@ export class TagListComponent extends BaseListViewComponent<ViewTag> implements 
     public newTag = false;
     public selectedTag: ViewTag;
 
-    @ViewChild('tagForm')
+    @ViewChild('tagForm', { static: true })
     public tagForm: FormGroup;
 
     /**

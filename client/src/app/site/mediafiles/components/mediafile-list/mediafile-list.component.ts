@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { MatSnackBar, MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 
@@ -65,13 +66,13 @@ export class MediafileListComponent extends BaseListViewComponent<ViewMediafile>
     /**
      * The form to edit Files
      */
-    @ViewChild('fileEditForm')
+    @ViewChild('fileEditForm', { static: true })
     public fileEditForm: FormGroup;
 
     /**
      * Reference to the template
      */
-    @ViewChild('fileEditDialog')
+    @ViewChild('fileEditDialog', { static: true })
     public fileEditDialog: TemplateRef<string>;
 
     /**

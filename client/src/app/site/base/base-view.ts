@@ -1,6 +1,6 @@
 import { OnDestroy } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material';
+import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material/snack-bar';
 
 import { TranslateService } from '@ngx-translate/core';
 

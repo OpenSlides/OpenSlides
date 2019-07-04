@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed, tick, fakeAsync, flush, flushMicrotas
 
 import { ResetPasswordConfirmComponent } from './reset-password-confirm.component';
 import { E2EImportsModule } from 'e2e-imports.module';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 let matSnackBarSpy: jasmine.SpyObj<MatSnackBar>;
 

@@ -45,7 +45,7 @@ export class SortingListComponent implements OnInit, OnDestroy {
     /**
      * Declare the templateRef to coexist between parent in child
      */
-    @ContentChild(TemplateRef)
+    @ContentChild(TemplateRef, { static: true })
     public templateRef: TemplateRef<Selectable>;
 
     /**

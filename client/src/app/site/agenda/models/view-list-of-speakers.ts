@@ -17,6 +17,9 @@ export interface ListOfSpeakersTitleInformation {
     title_information: object;
 }
 
+/**
+ * TODO: Resolve potential circular dependencies with {@link BaseViewModelWithListOfSpeakers}.
+ */
 export class ViewListOfSpeakers extends BaseViewModelWithContentObject<ListOfSpeakers, BaseViewModelWithListOfSpeakers>
     implements ListOfSpeakersTitleInformation, Projectable {
     public static COLLECTIONSTRING = ListOfSpeakers.COLLECTIONSTRING;

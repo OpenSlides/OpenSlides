@@ -2,9 +2,8 @@ import { Injectable } from '@angular/core';
 
 import { WebsocketService, WEBSOCKET_ERROR_CODES } from './websocket.service';
 import { CollectionStringMapperService } from './collection-string-mapper.service';
-import { DataStoreService } from './data-store.service';
+import { DataStoreService, DataStoreUpdateManagerService } from './data-store.service';
 import { BaseModel } from '../../shared/models/base/base-model';
-import { DataStoreUpdateManagerService } from './data-store-update-manager.service';
 
 interface AutoupdateFormat {
     /**

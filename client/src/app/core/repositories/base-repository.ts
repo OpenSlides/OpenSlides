@@ -6,12 +6,11 @@ import { BaseViewModel, TitleInformation } from '../../site/base/base-view-model
 import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model';
 import { CollectionStringMapperService } from '../core-services/collection-string-mapper.service';
 import { DataSendService } from '../core-services/data-send.service';
-import { DataStoreService } from '../core-services/data-store.service';
+import { DataStoreService, CollectionIds } from '../core-services/data-store.service';
 import { Identifiable } from '../../shared/models/base/identifiable';
 import { ViewModelStoreService } from '../core-services/view-model-store.service';
 import { OnAfterAppsLoaded } from '../onAfterAppsLoaded';
 import { Collection } from 'app/shared/models/base/collection';
-import { CollectionIds } from '../core-services/data-store-update-manager.service';
 
 export abstract class BaseRepository<V extends BaseViewModel & T, M extends BaseModel, T extends TitleInformation>
     implements OnAfterAppsLoaded, Collection {

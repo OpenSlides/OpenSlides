@@ -1,7 +1,9 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { MatSnackBar, MatDialog, MatTableDataSource } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTableDataSource } from '@angular/material/table';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -41,13 +43,13 @@ export class CategoryDetailComponent extends BaseViewComponent implements OnInit
     /**
      * The form to edit the selected category
      */
-    @ViewChild('editForm')
+    @ViewChild('editForm', { static: true })
     public editForm: FormGroup;
 
     /**
      * Reference to the template for edit-dialog
      */
-    @ViewChild('editDialog')
+    @ViewChild('editDialog', { static: true })
     private editDialog: TemplateRef<string>;
 
     /**

@@ -1,6 +1,9 @@
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { MatDialog, MatSnackBar, MatTableDataSource, MatCheckboxChange } from '@angular/material';
+import { MatCheckboxChange } from '@angular/material/checkbox';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTableDataSource } from '@angular/material/table';
 import { Observable } from 'rxjs';
 import { Title } from '@angular/platform-browser';
 
@@ -68,7 +71,7 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
     /**
      * Reference to the workflow dialog
      */
-    @ViewChild('workflowDialog')
+    @ViewChild('workflowDialog', { static: true })
     private workflowDialog: TemplateRef<string>;
 
     /**

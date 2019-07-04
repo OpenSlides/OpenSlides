@@ -1,7 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, NavigationEnd, ActivationEnd } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
-import { MatDialog, MatSidenav, MatSnackBar } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSidenav } from '@angular/material/sidenav';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -37,7 +39,7 @@ export class SiteComponent extends BaseComponent implements OnInit {
     /**
      * HTML element of the side panel
      */
-    @ViewChild('sideNav')
+    @ViewChild('sideNav', { static: true })
     public sideNav: MatSidenav;
 
     /**

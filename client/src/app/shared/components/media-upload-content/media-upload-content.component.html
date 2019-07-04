@@ -2,14 +2,14 @@
     <input hidden type="file" #fileInput (change)="onSelectFile($event)" multiple />
 
     <div class="selection-area">
-        <file-drop
+        <ngx-file-drop
             (onFileDrop)="onDropFile($event)"
             (click)="fileInput.click()"
             dropZoneLabel="{{ 'Drop files into this area OR click here to select files' | translate }}"
             contentClassName="file-drop-content-style"
             dropZoneClassName="file-drop-zone-style"
         >
-        </file-drop>
+        </ngx-file-drop>
     </div>
 
     <div class="table-container" *ngIf="uploadList.data.length > 0">

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
-import { MatTableDataSource, MatTable } from '@angular/material';
+import { MatTableDataSource, MatTable } from '@angular/material/table';
 
-import { UploadEvent, FileSystemFileEntry } from 'ngx-file-drop';
+import { FileSystemFileEntry, NgxFileDropEntry } from 'ngx-file-drop';
 
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
@@ -58,7 +58,7 @@ export class MediaUploadContentComponent implements OnInit {
     /**
      * Hold the mat table to manually render new rows
      */
-    @ViewChild(MatTable)
+    @ViewChild(MatTable, { static: false })
     public table: MatTable<any>;
 
     /**
@@ -186,8 +186,8 @@ export class MediaUploadContentComponent implements OnInit {
      *
      * @param event holds the file. Triggered by dropping in the area
      */
-    public onDropFile(event: UploadEvent): void {
-        for (const droppedFile of event.files) {
+    public onDropFile(event: NgxFileDropEntry[]): void {
+        for (const droppedFile of event) {
             // Check if the dropped element is a file. "Else" would be a dir.
             if (droppedFile.fileEntry.isFile) {
                 const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;

@@ -48,19 +48,19 @@ export class BlockTileComponent extends TileComponent {
     /**
      * Reference to the content of the content part.
      */
-    @ContentChild(TemplateRef)
+    @ContentChild(TemplateRef, { static: true })
     public contentNode: TemplateRef<any>;
 
     /**
      * Reference to the block part, if it is a node.
      */
-    @ContentChild(TemplateRef)
+    @ContentChild(TemplateRef, { static: true })
     public blockNode: TemplateRef<any>;
 
     /**
      * Reference to the action buttons in the content part, if used.
      */
-    @ContentChild(TemplateRef)
+    @ContentChild(TemplateRef, { static: true })
     public actionNode: TemplateRef<any>;
 
     /**

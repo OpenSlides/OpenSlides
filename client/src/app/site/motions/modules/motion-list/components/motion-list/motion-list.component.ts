@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { MatSnackBar, MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition } from '@pebula/ngrid';
@@ -76,7 +77,7 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
     /**
      * Reference to the dialog for quick editing meta information.
      */
-    @ViewChild('motionInfoDialog')
+    @ViewChild('motionInfoDialog', { static: true })
     private motionInfoDialog: TemplateRef<string>;
 
     /**

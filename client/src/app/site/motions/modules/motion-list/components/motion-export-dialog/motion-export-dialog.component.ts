@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { MatDialogRef, MatButtonToggle } from '@angular/material';
+import { MatButtonToggle } from '@angular/material/button-toggle';
+import { MatDialogRef } from '@angular/material/dialog';
 
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
@@ -82,13 +83,13 @@ export class MotionExportDialogComponent implements OnInit {
     /**
      * To deactivate the export-as-diff button
      */
-    @ViewChild('diffVersionButton')
+    @ViewChild('diffVersionButton', { static: true })
     public diffVersionButton: MatButtonToggle;
 
     /**
      * To deactivate the export-as-diff button
      */
-    @ViewChild('votingResultButton')
+    @ViewChild('votingResultButton', { static: true })
     public votingResultButton: MatButtonToggle;
 
     /**

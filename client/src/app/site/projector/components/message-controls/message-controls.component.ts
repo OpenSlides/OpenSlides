@@ -3,7 +3,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { Projector } from 'app/shared/models/core/projector';
 import { ProjectorMessageRepositoryService } from 'app/core/repositories/projector/projector-message-repository.service';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ViewProjectorMessage } from '../../models/view-projector-message';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { TranslateService } from '@ngx-translate/core';

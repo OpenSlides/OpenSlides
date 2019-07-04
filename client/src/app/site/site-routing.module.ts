@@ -16,57 +16,57 @@ const routes: Routes = [
         children: [
             {
                 path: '',
-                loadChildren: './common/os-common.module#OsCommonModule'
+                loadChildren: () => import('./common/os-common.module').then(m => m.OsCommonModule)
             },
             {
                 path: 'agenda',
-                loadChildren: './agenda/agenda.module#AgendaModule',
+                loadChildren: () => import('./agenda/agenda.module').then(m => m.AgendaModule),
                 data: { basePerm: 'agenda.can_see' }
             },
             {
                 path: 'topics',
-                loadChildren: './topics/topics.module#TopicsModule',
+                loadChildren: () => import('./topics/topics.module').then(m => m.TopicsModule),
                 data: { basePerm: 'agenda.can_see' }
             },
             {
                 path: 'assignments',
-                loadChildren: './assignments/assignments.module#AssignmentsModule',
+                loadChildren: () => import('./assignments/assignments.module').then(m => m.AssignmentsModule),
                 data: { basePerm: 'assignments.can_see' }
             },
             {
                 path: 'mediafiles',
-                loadChildren: './mediafiles/mediafiles.module#MediafilesModule',
+                loadChildren: () => import('./mediafiles/mediafiles.module').then(m => m.MediafilesModule),
                 data: { basePerm: 'mediafiles.can_see' }
             },
             {
                 path: 'motions',
-                loadChildren: './motions/motions.module#MotionsModule',
+                loadChildren: () => import('./motions/motions.module').then(m => m.MotionsModule),
                 data: { basePerm: 'motions.can_see' }
             },
             {
                 path: 'settings',
-                loadChildren: './config/config.module#ConfigModule',
+                loadChildren: () => import('./config/config.module').then(m => m.ConfigModule),
                 data: { basePerm: 'core.can_manage_config' }
             },
             {
                 path: 'users',
-                loadChildren: './users/users.module#UsersModule'
+                loadChildren: () => import('./users/users.module').then(m => m.UsersModule)
                 // No baseperm, because change own password is ok, even if the
                 // user does not have users.can_see_name
             },
             {
                 path: 'tags',
-                loadChildren: './tags/tag.module#TagModule',
+                loadChildren: () => import('./tags/tag.module').then(m => m.TagModule),
                 data: { basePerm: 'core.can_manage_tags' }
             },
             {
                 path: 'history',
-                loadChildren: './history/history.module#HistoryModule',
+                loadChildren: () => import('./history/history.module').then(m => m.HistoryModule),
                 data: { basePerm: 'core.can_see_history' }
             },
             {
                 path: 'projectors',
-                loadChildren: './projector/projector.module#ProjectorModule',
+                loadChildren: () => import('./projector/projector.module').then(m => m.ProjectorModule),
                 data: { basePerm: 'core.can_see_projector' }
             }
         ],

@@ -4,7 +4,6 @@ import { Observable, Subject } from 'rxjs';
 
 import { NotifyService } from '../core-services/notify.service';
 import { OperatorService } from '../core-services/operator.service';
-import { StoragelockService } from '../local-storage/storagelock.service';
 
 interface CountUserRequest {
     token: string;
@@ -41,11 +40,7 @@ export class CountUsersService {
      * @param notifyService
      * @param operator
      */
-    public constructor(
-        private notifyService: NotifyService,
-        operator: OperatorService,
-        storageLockService: StoragelockService
-    ) {
+    public constructor(private notifyService: NotifyService, operator: OperatorService) {
         // Listen for requests to send an answer.
         this.notifyService.getMessageObservable<CountUserRequest>(REQUEST_NAME).subscribe(request => {
             if (request.content.token) {
@@ -55,7 +50,7 @@ export class CountUsersService {
                         token: request.content.token,
                         data: {
                             userId: this.currentUserId,
-                            usesIndexedDB: storageLockService.indexedDBUsed
+                            usesIndexedDB: true
                         }
                     },
                     request.senderChannelName

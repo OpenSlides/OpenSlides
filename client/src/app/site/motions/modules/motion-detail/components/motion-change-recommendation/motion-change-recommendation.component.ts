@@ -1,5 +1,6 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 
@@ -105,7 +106,6 @@ export class MotionChangeRecommendationComponent extends BaseViewComponent {
         this.changeReco = data.changeRecommendation;
         this.lineRange = data.lineRange;
 
-        this.tinyMceSettings.height = 50;
         this.tinyMceSettings.toolbar = `undo redo | bold italic underline strikethrough
             | removeformat | bullist numlist | outdent indent | link charmap code`;
 

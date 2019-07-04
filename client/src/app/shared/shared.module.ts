@@ -2,38 +2,34 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 
 // MaterialUI modules
-import {
-    MatButtonModule,
-    MatCheckboxModule,
-    MatToolbarModule,
-    MatCardModule,
-    MatInputModule,
-    MatProgressBarModule,
-    MatProgressSpinnerModule,
-    MatSidenavModule,
-    MatSnackBarModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatTooltipModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    DateAdapter,
-    MatIconModule,
-    MatButtonToggleModule,
-    MatBadgeModule,
-    MatStepperModule,
-    MatTabsModule,
-    MatBottomSheetModule,
-    MatSliderModule,
-    MatDividerModule
-} from '@angular/material';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatNativeDateModule, DateAdapter } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSortModule } from '@angular/material/sort';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatTableModule } from '@angular/material/table';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatChipsModule } from '@angular/material';
-import { MatRadioModule } from '@angular/material';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatRadioModule } from '@angular/material/radio';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatListModule } from '@angular/material/list';
@@ -49,7 +45,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { TranslateModule } from '@ngx-translate/core';
 
 // ngx-file-drop
-import { FileDropModule } from 'ngx-file-drop';
+import { NgxFileDropModule } from 'ngx-file-drop';
 
 // TinyMCE
 import { EditorModule } from '@tinymce/tinymce-angular';
@@ -145,13 +141,11 @@ import { AgendaContentObjectFormComponent } from './components/agenda-content-ob
         MatTabsModule,
         MatSliderModule,
         MatDividerModule,
-        OwlDateTimeModule,
-        OwlNativeDateTimeModule,
         DragDropModule,
         OpenSlidesTranslateModule.forChild(),
         RouterModule,
         NgxMatSelectSearchModule,
-        FileDropModule,
+        NgxFileDropModule,
         EditorModule,
         CdkTreeModule,
         ScrollingModule,
@@ -193,7 +187,7 @@ import { AgendaContentObjectFormComponent } from './components/agenda-content-ob
         MatDividerModule,
         DragDropModule,
         NgxMatSelectSearchModule,
-        FileDropModule,
+        NgxFileDropModule,
         TranslateModule,
         OpenSlidesTranslateModule,
         PermsDirective,
@@ -217,8 +211,6 @@ import { AgendaContentObjectFormComponent } from './components/agenda-content-ob
         MetaTextBlockComponent,
         ProjectorComponent,
         SlideContainerComponent,
-        OwlDateTimeModule,
-        OwlNativeDateTimeModule,
         CountdownTimeComponent,
         MediaUploadContentComponent,
         PrecisionPipe,
@@ -278,6 +270,12 @@ import { AgendaContentObjectFormComponent } from './components/agenda-content-ob
         SortBottomSheetComponent,
         DecimalPipe
     ],
-    entryComponents: [SortBottomSheetComponent, C4DialogComponent]
+    entryComponents: [
+        SortBottomSheetComponent,
+        C4DialogComponent,
+        PromptDialogComponent,
+        ChoiceDialogComponent,
+        ProjectionDialogComponent
+    ]
 })
 export class SharedModule {}

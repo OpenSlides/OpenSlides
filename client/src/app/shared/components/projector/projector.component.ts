@@ -81,7 +81,7 @@ export class ProjectorComponent extends BaseComponent implements OnDestroy {
      * The container element. THis is neede to get the size of the element,
      * in which the projector must fit and be scaled to.
      */
-    @ViewChild('container')
+    @ViewChild('container', { static: true })
     private containerElement: ElementRef;
 
     /**

@@ -25,7 +25,7 @@ function hasError(obj: object): obj is { error: string } {
 export class SlideContainerComponent extends BaseComponent {
     private previousSlideName: string;
 
-    @ViewChild('slide', { read: ViewContainerRef })
+    @ViewChild('slide', { read: ViewContainerRef, static: true })
     private slide: ViewContainerRef;
     private slideRef: ComponentRef<BaseSlideComponent<object>>;
 
