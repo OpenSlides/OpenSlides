@@ -1,4 +1,4 @@
-import { Component, Input, HostBinding } from '@angular/core';
+import { Component, Input, HostBinding, Output, EventEmitter } from '@angular/core';
 
 @Component({
     selector: 'os-icon-container',
@@ -37,4 +37,29 @@ export class IconContainerComponent {
      */
     @Input()
     public swap = false;
+
+    /**
+     * Boolean to decide, when to show the icon.
+     */
+    @Input()
+    public showIcon = true;
+
+    /**
+     * Optional string as tooltip for icon.
+     */
+    @Input()
+    public iconTooltip: string;
+
+    /**
+     * Optional action for clicking on the icon.
+     */
+    @Output()
+    public iconAction: EventEmitter<any> = new EventEmitter();
+
+    /**
+     * Function executed, when the icon is clicked.
+     */
+    public iconClick(): void {
+        this.iconAction.emit();
+    }
 }

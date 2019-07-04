@@ -242,92 +242,65 @@
 
         <!-- Set State -->
         <div *ngIf="!editMotion">
-            <h4 translate>State</h4>
-            <mat-menu #stateMenu="matMenu">
-                <button *ngFor="let state of motion.nextStates" mat-menu-item (click)="setState(state.id)">
-                    {{ state.name | translate }} <span *ngIf="state.show_state_extension_field">&nbsp;...</span>
-                </button>
-                <div *ngIf="perms.isAllowed('change_metadata', motion)">
-                    <mat-divider *ngIf="motion.nextStates.length > 0"></mat-divider>
-                    <button *ngFor="let state of motion.previousStates" mat-menu-item (click)="setState(state.id)">
-                        <mat-icon>arrow_back</mat-icon> {{ state.name | translate }}
-                        <span *ngIf="state.show_state_extension_field">&nbsp;...</span>
+            <os-extension-field
+                title="{{ 'State' | translate }}"
+                [canBeEdited]="perms.isAllowed('change_state', motion)"
+                [hasExtension]="motion.state && motion.state.show_state_extension_field"
+                [chipValue]="stateLabel"
+                [inputValue]="newStateExtension"
+                [classes]="motion.stateCssColor"
+                extensionLabel="{{ 'Extension' | translate }}"
+                (success)="setStateExtension($event)">
+                <span class="trigger-menu">
+                    <button *ngFor="let state of motion.nextStates" mat-menu-item (click)="setState(state.id)">
+                        {{ state.name | translate }} <span *ngIf="state.show_state_extension_field">&nbsp;...</span>
                     </button>
-                    <button mat-menu-item (click)="setState(null)">
-                        <mat-icon>replay</mat-icon> {{ 'Reset state' | translate }}
-                    </button>
-                </div>
-            </mat-menu>
-            <div *ngIf="perms.isAllowed('change_state', motion)">
-                <mat-basic-chip [matMenuTriggerFor]="stateMenu" [ngClass]="motion.stateCssColor" disableRipple>
-                    {{ stateLabel }}
-                </mat-basic-chip>
-                <div *ngIf="motion.state && motion.state.show_state_extension_field" class="spacer-top-10">
-                    <mat-form-field>
-                        <input matInput placeholder="{{ 'Extension' | translate }}" [(ngModel)]="newStateExtension" />
-                    </mat-form-field>
-                    <button mat-icon-button (click)="setStateExtension()"><mat-icon>check</mat-icon></button>
-                </div>
-            </div>
-            <div *ngIf="!perms.isAllowed('change_state', motion)">
-                <mat-basic-chip [ngClass]="motion.stateCssColor" disableRipple> {{ stateLabel }} </mat-basic-chip>
-            </div>
+                    <div>
+                        <mat-divider *ngIf="motion.nextStates.length > 0"></mat-divider>
+                        <button *ngFor="let state of motion.previousStates" mat-menu-item (click)="setState(state.id)">
+                            <mat-icon>arrow_back</mat-icon> {{ state.name | translate }}
+                            <span *ngIf="state.show_state_extension_field">&nbsp;...</span>
+                        </button>
+                        <button mat-menu-item (click)="setState(null)">
+                            <mat-icon>replay</mat-icon> {{ 'Reset state' | translate }}
+                        </button>
+                    </div>
+                </span>
+            </os-extension-field>
         </div>
 
         <!-- Recommendation -->
         <div *ngIf="recommender && !editMotion">
-            <h4 *ngIf="perms.isAllowed('change_metadata', motion) || recommendationLabel">{{ recommender }}</h4>
-            <mat-menu #recommendationMenu="matMenu">
-                <button
-                    *ngFor="let recommendation of motion.possibleRecommendations"
-                    mat-menu-item
-                    (click)="setRecommendation(recommendation.id)"
-                >
-                    {{ recommendation.recommendation_label | translate }}
-                    <span *ngIf="recommendation.show_recommendation_extension_field">&nbsp;...</span>
-                </button>
-                <mat-divider></mat-divider>
-                <button
-                    mat-menu-item
-                    *ngIf="perms.isAllowed('change_metadata', motion)"
-                    (click)="setRecommendation(null)"
-                >
-                    <mat-icon>replay</mat-icon> {{ 'Reset recommendation' | translate }}
-                </button>
-            </mat-menu>
-            <div *ngIf="perms.isAllowed('change_metadata', motion)">
-                <mat-basic-chip [matMenuTriggerFor]="recommendationMenu" class="bluegrey" disableRipple>
-                    {{ recommendationLabel || '–' }}
-                </mat-basic-chip>
-                <div
-                    *ngIf="motion.recommendation && motion.recommendation.show_recommendation_extension_field"
-                    class="spacer-top-10"
-                >
-                    <form [formGroup]="recommendationExtensionForm">
-                        <mat-form-field>
-                            <input
-                                matInput
-                                [formControl]="recommendationExtensionForm.get('recoExtension')"
-                                placeholder="{{ 'Extension' | translate }}"
-                            />
-                        </mat-form-field>
-                        <button mat-icon-button (click)="setRecommendationExtension()">
-                            <mat-icon>check</mat-icon>
-                        </button>
-                        <os-search-value-selector
-                            ngDefaultControl
-                            [form]="recommendationExtensionForm"
-                            [formControl]="recommendationExtensionForm.get('motion_id')"
-                            [multiple]="false"
-                            listname="{{ 'Motions' | translate }}"
-                            [InputListValues]="motionObserver"
-                        ></os-search-value-selector>
-                    </form>
-                </div>
-            </div>
-            <div *ngIf="!perms.isAllowed('change_metadata', motion) && recommendationLabel">
-                <mat-basic-chip class="bluegrey" disableRipple> {{ recommendationLabel }} </mat-basic-chip>
-            </div>
+            <os-extension-field
+                title="{{ recommender }}"
+                [inputValue]="recommendationStateExtension"
+                [canBeEdited]="perms.isAllowed('change_metadata', motion)"
+                [chipValue]="recommendationLabel"
+                [hasExtension]="motion.recommendation && motion.recommendation.show_recommendation_extension_field"
+                extensionLabel="{{ 'Extension' | translate }}"
+                [searchList]="motionObserver"
+                searchListLabel="{{ 'Motions' | translate }}"
+                listValuePrefix="motion:"
+                (success)="setRecommendationExtension($event)">
+                <span class="trigger-menu">
+                    <button
+                        *ngFor="let recommendation of motion.possibleRecommendations"
+                        mat-menu-item
+                        (click)="setRecommendation(recommendation.id)"
+                    >
+                        {{ recommendation.recommendation_label | translate }}
+                        <span *ngIf="recommendation.show_recommendation_extension_field">&nbsp;...</span>
+                    </button>
+                    <mat-divider></mat-divider>
+                    <button
+                        mat-menu-item
+                        (click)="setRecommendation(null)"
+                    >
+                        <mat-icon>replay</mat-icon> {{ 'Reset recommendation' | translate }}
+                    </button>
+                </span>
+            </os-extension-field>
+
             <button
                 mat-stroked-button
                 *ngIf="canFollowRecommendation()"
