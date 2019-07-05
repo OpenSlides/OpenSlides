@@ -122,6 +122,16 @@ def get_config_variables():
     )
 
     yield ConfigVariable(
+        name="agenda_hide_amount_of_speakers",
+        default_value=False,
+        input_type="boolean",
+        label="Hide the amount of speakers in subtitle of list of speakers slide",
+        weight=236,
+        group="Agenda",
+        subgroup="List of speakers",
+    )
+
+    yield ConfigVariable(
         name="agenda_couple_countdown_and_speakers",
         default_value=False,
         input_type="boolean",
