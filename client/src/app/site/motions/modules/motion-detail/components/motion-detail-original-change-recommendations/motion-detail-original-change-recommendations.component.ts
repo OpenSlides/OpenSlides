@@ -105,6 +105,10 @@ export class MotionDetailOriginalChangeRecommendationsComponent implements OnIni
         }
     }
 
+    public getTextChangeRecommendations(): ViewMotionChangeRecommendation[] {
+        return this.changeRecommendations.filter(reco => !reco.isTitleChange());
+    }
+
     /**
      * Returns an array with all line numbers that are currently affected by a change recommendation
      * and therefor not subject to further changes
@@ -112,6 +116,9 @@ export class MotionDetailOriginalChangeRecommendationsComponent implements OnIni
     private getAffectedLineNumbers(): number[] {
         const affectedLines = [];
         this.changeRecommendations.forEach((change: ViewMotionChangeRecommendation) => {
+            if (change.isTitleChange()) {
+                return;
+            }
             for (let j = change.line_from; j < change.line_to; j++) {
                 affectedLines.push(j);
             }

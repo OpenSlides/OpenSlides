@@ -111,4 +111,8 @@ export class ViewMotionAmendedParagraph implements ViewUnifiedChange {
     public showInFinalView(): boolean {
         return this.amendment.state && this.amendment.state.merge_amendment_into_final === MergeAmendment.YES;
     }
+
+    public isTitleChange(): boolean {
+        return false; // Not implemented for amendments
+    }
 }

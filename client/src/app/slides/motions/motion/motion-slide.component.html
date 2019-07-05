@@ -25,7 +25,7 @@
         <!-- Title -->
         <div class="spacer" [ngStyle]="{height: projector.show_header_footer ? '50px' : '0'}"></div>
         <div class="slidetitle">
-            <h1>{{ data.data.title }}</h1>
+            <h1>{{ getTitleWithChanges() }}</h1>
             <h2><span translate>Motion</span> {{ data.data.identifier }}</h2>
         </div>
     </div>
@@ -43,6 +43,12 @@
                 [class.line-numbers-inline]="isLineNumberingInline()"
                 [class.line-numbers-outside]="isLineNumberingOutside()"
             >
+                <div *ngIf="getTitleChangingObject() && crMode === 'diff'">
+                    <div class="bold">
+                        {{ 'Changed title' | translate }}:
+                    </div>
+                    <div [innerHTML]="getFormattedTitleDiff()"></div>
+                </div>
                 <div [innerHTML]="sanitizedText(getFormattedText())"></div>
             </div>
         </ng-container>

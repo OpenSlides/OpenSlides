@@ -14,6 +14,11 @@ export interface ViewUnifiedChange {
     getChangeType(): ViewUnifiedChangeType;
 
     /**
+     * If this is a title-related change (only implemented for change recommendations)
+     */
+    isTitleChange(): boolean;
+
+    /**
      * An id that is unique considering both change recommendations and amendments, therefore needs to be
      * "namespaced" (e.g. "amendment.23" or "recommendation.42")
      */

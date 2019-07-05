@@ -10,10 +10,13 @@ import { ConfigService } from 'app/core/ui-services/config.service';
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
 import { DiffService, LineRange } from 'app/core/ui-services/diff.service';
 import {
-    MotionChangeRecommendationComponent,
-    MotionChangeRecommendationComponentData
-} from '../motion-change-recommendation/motion-change-recommendation.component';
-import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
+    MotionChangeRecommendationDialogComponent,
+    MotionChangeRecommendationDialogComponentData
+} from '../motion-change-recommendation-dialog/motion-change-recommendation-dialog.component';
+import {
+    MotionTitleChangeRecommendationDialogComponent,
+    MotionTitleChangeRecommendationDialogComponentData
+} from '../motion-title-change-recommendation-dialog/motion-title-change-recommendation-dialog.component';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewMotion, LineNumberingMode } from 'app/site/motions/models/view-motion';
 import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/motions/view-unified-change';
@@ -78,7 +81,6 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
      * @param translate
      * @param matSnackBar
      * @param sanitizer
-     * @param motionRepo
      * @param diff
      * @param recoRepo
      * @param dialogService
@@ -91,7 +93,6 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
         protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
         private sanitizer: DomSanitizer,
-        private motionRepo: MotionRepositoryService,
         private diff: DiffService,
         private recoRepo: ChangeRecommendationRepositoryService,
         private dialogService: MatDialog,
@@ -121,8 +122,8 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
             return '';
         }
 
-        return this.motionRepo.extractMotionLineRange(
-            this.motion.id,
+        return this.diff.extractMotionLineRange(
+            this.motion.text,
             lineRange,
             true,
             this.lineLength,
@@ -173,6 +174,20 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
             this.lineLength,
             this.highlightedLine
         );
+    }
+
+    /**
+     * If only one line is affected, the line number is returned; otherwise, a string like [line] "1 - 5"
+     *
+     * @param {ViewUnifiedChange} change
+     * @returns string
+     */
+    public formatLineRange(change: ViewUnifiedChange): string {
+        if (change.getLineFrom() < change.getLineTo() - 1) {
+            return change.getLineFrom().toString(10) + ' - ' + (change.getLineTo() - 1).toString(10);
+        } else {
+            return change.getLineFrom().toString(10);
+        }
     }
 
     /**
@@ -227,6 +242,19 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
      */
     public isChangeRecommendation(change: ViewUnifiedChange): boolean {
         return change.getChangeType() === ViewUnifiedChangeType.TYPE_CHANGE_RECOMMENDATION;
+    }
+
+    public getAllTextChangingObjects(): ViewUnifiedChange[] {
+        return this.changes.filter((obj: ViewUnifiedChange) => !obj.isTitleChange());
+    }
+
+    public getTitleChangingObject(): ViewUnifiedChange {
+        return this.changes.find((obj: ViewUnifiedChange) => obj.isTitleChange());
+    }
+
+    public getFormattedTitleDiff(): SafeHtml {
+        const change = this.getTitleChangingObject();
+        return this.sanitizer.bypassSecurityTrustHtml(this.recoRepo.getTitleChangesAsDiff(this.motion.title, change));
     }
 
     /**
@@ -286,7 +314,7 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
         $event.stopPropagation();
         $event.preventDefault();
 
-        const data: MotionChangeRecommendationComponentData = {
+        const data: MotionChangeRecommendationDialogComponentData = {
             editChangeRecommendation: true,
             newChangeRecommendation: false,
             lineRange: {
@@ -295,7 +323,26 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
             },
             changeRecommendation: reco
         };
-        this.dialogService.open(MotionChangeRecommendationComponent, {
+        this.dialogService.open(MotionChangeRecommendationDialogComponent, {
+            height: '600px',
+            width: '800px',
+            maxHeight: '90vh',
+            maxWidth: '90vw',
+            data: data,
+            disableClose: true
+        });
+    }
+
+    public editTitleChangeRecommendation(reco: ViewMotionChangeRecommendation, $event: MouseEvent): void {
+        $event.stopPropagation();
+        $event.preventDefault();
+
+        const data: MotionTitleChangeRecommendationDialogComponentData = {
+            editChangeRecommendation: true,
+            newChangeRecommendation: false,
+            changeRecommendation: reco
+        };
+        this.dialogService.open(MotionTitleChangeRecommendationDialogComponent, {
             height: '600px',
             width: '800px',
             maxHeight: '90vh',

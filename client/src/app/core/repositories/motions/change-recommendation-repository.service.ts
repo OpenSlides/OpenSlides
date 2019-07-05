@@ -18,6 +18,9 @@ import {
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { CollectionStringMapperService } from 'app/core/core-services/collection-string-mapper.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { ChangeRecoMode, ViewMotion } from '../../../site/motions/models/view-motion';
+import { ViewUnifiedChange } from '../../../shared/models/motions/view-unified-change';
+import { DiffService, LineRange, ModificationType } from '../../ui-services/diff.service';
 
 /**
  * Repository Services for change recommendations
@@ -43,16 +46,20 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<
      * Converts existing and incoming motions to ViewMotions
      * Handles CRUD using an observer to the DataStore
      *
-     * @param DS The DataStore
-     * @param mapperService Maps collection strings to classes
-     * @param dataSend sending changed objects
+     * @param {DataStoreService} DS The DataStore
+     * @param {DataSendService} dataSend sending changed objects
+     * @param {CollectionStringMapperService} mapperService Maps collection strings to classes
+     * @param {ViewModelStoreService} viewModelStoreService
+     * @param {TranslateService} translate
+     * @param {DiffService} diffService
      */
     public constructor(
         DS: DataStoreService,
         dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        translate: TranslateService
+        translate: TranslateService,
+        private diffService: DiffService
     ) {
         super(DS, dataSend, mapperService, viewModelStoreService, translate, MotionChangeRecommendation, [
             Category,
@@ -146,5 +153,76 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<
             internal: internal
         });
         await this.dataSend.partialUpdateModel(changeReco);
+    }
+
+    public getTitleWithChanges = (originalTitle: string, change: ViewUnifiedChange, crMode: ChangeRecoMode): string => {
+        if (change) {
+            if (crMode === ChangeRecoMode.Changed) {
+                return change.getChangeNewText();
+            } else if (
+                (crMode === ChangeRecoMode.Final || crMode === ChangeRecoMode.ModifiedFinal) &&
+                !change.isRejected()
+            ) {
+                return change.getChangeNewText();
+            } else {
+                return originalTitle;
+            }
+        } else {
+            return originalTitle;
+        }
+    };
+
+    public getTitleChangesAsDiff = (originalTitle: string, change: ViewUnifiedChange): string => {
+        if (change) {
+            return this.diffService.diff(originalTitle, change.getChangeNewText());
+        } else {
+            return '';
+        }
+    };
+
+    /**
+     * Creates a {@link ViewMotionChangeRecommendation} object based on the motion ID and the given lange range.
+     * This object is not saved yet and does not yet have any changed HTML. It's meant to populate the UI form.
+     *
+     * @param {ViewMotion} motion
+     * @param {LineRange} lineRange
+     * @param {number} lineLength
+     */
+    public createChangeRecommendationTemplate(
+        motion: ViewMotion,
+        lineRange: LineRange,
+        lineLength: number
+    ): ViewMotionChangeRecommendation {
+        const changeReco = new MotionChangeRecommendation();
+        changeReco.line_from = lineRange.from;
+        changeReco.line_to = lineRange.to;
+        changeReco.type = ModificationType.TYPE_REPLACEMENT;
+        changeReco.text = this.diffService.extractMotionLineRange(motion.text, lineRange, false, lineLength, null);
+        changeReco.rejected = false;
+        changeReco.motion_id = motion.id;
+
+        return new ViewMotionChangeRecommendation(changeReco);
+    }
+
+    /**
+     * Creates a {@link ViewMotionChangeRecommendation} object to change the title, based on the motion ID.
+     * This object is not saved yet and does not yet have any changed title. It's meant to populate the UI form.
+     *
+     * @param {ViewMotion} motion
+     * @param {number} lineLength
+     */
+    public createTitleChangeRecommendationTemplate(
+        motion: ViewMotion,
+        lineLength: number
+    ): ViewMotionChangeRecommendation {
+        const changeReco = new MotionChangeRecommendation();
+        changeReco.line_from = 0;
+        changeReco.line_to = 0;
+        changeReco.type = ModificationType.TYPE_REPLACEMENT;
+        changeReco.text = motion.title;
+        changeReco.rejected = false;
+        changeReco.motion_id = motion.id;
+
+        return new ViewMotionChangeRecommendation(changeReco);
     }
 }

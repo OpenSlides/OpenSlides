@@ -1,9 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import {
-    MotionChangeRecommendationComponent,
-    MotionChangeRecommendationComponentData
-} from './motion-change-recommendation.component';
+    MotionChangeRecommendationDialogComponent,
+    MotionChangeRecommendationDialogComponentData
+} from './motion-change-recommendation-dialog.component';
 
 import { E2EImportsModule } from 'e2e-imports.module';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -11,8 +11,8 @@ import { ModificationType } from 'app/core/ui-services/diff.service';
 import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
 
 describe('MotionChangeRecommendationComponent', () => {
-    let component: MotionChangeRecommendationComponent;
-    let fixture: ComponentFixture<MotionChangeRecommendationComponent>;
+    let component: MotionChangeRecommendationDialogComponent;
+    let fixture: ComponentFixture<MotionChangeRecommendationDialogComponent>;
 
     const changeReco = <ViewMotionChangeRecommendation>{
         line_from: 1,
@@ -22,7 +22,7 @@ describe('MotionChangeRecommendationComponent', () => {
         rejected: false,
         motion_id: 1
     };
-    const dialogData: MotionChangeRecommendationComponentData = {
+    const dialogData: MotionChangeRecommendationDialogComponentData = {
         newChangeRecommendation: true,
         editChangeRecommendation: false,
         changeRecommendation: changeReco,
@@ -32,7 +32,7 @@ describe('MotionChangeRecommendationComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [E2EImportsModule],
-            declarations: [MotionChangeRecommendationComponent],
+            declarations: [MotionChangeRecommendationDialogComponent],
             providers: [
                 { provide: MatDialogRef, useValue: {} },
                 {
@@ -44,7 +44,7 @@ describe('MotionChangeRecommendationComponent', () => {
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(MotionChangeRecommendationComponent);
+        fixture = TestBed.createComponent(MotionChangeRecommendationDialogComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

@@ -15,7 +15,7 @@ import { CategoryRepositoryService } from 'app/core/repositories/motions/categor
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
 import { CreateMotion } from 'app/site/motions/models/create-motion';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { DiffLinesInParagraph, LineRange } from 'app/core/ui-services/diff.service';
+import { DiffLinesInParagraph, DiffService, LineRange } from 'app/core/ui-services/diff.service';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
 import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
@@ -23,9 +23,13 @@ import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
 import { Motion } from 'app/shared/models/motions/motion';
 import {
-    MotionChangeRecommendationComponentData,
-    MotionChangeRecommendationComponent
-} from '../motion-change-recommendation/motion-change-recommendation.component';
+    MotionChangeRecommendationDialogComponentData,
+    MotionChangeRecommendationDialogComponent
+} from '../motion-change-recommendation-dialog/motion-change-recommendation-dialog.component';
+import {
+    MotionTitleChangeRecommendationDialogComponentData,
+    MotionTitleChangeRecommendationDialogComponent
+} from '../motion-title-change-recommendation-dialog/motion-title-change-recommendation-dialog.component';
 import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-export.service';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
 import { MotionFilterListService } from 'app/site/motions/services/motion-filter-list.service';
@@ -401,6 +405,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * @param pdfExport export the motion to pdf
      * @param personalNoteService: personal comments and favorite marker
      * @param linenumberingService The line numbering service
+     * @param diffService The diff service
      * @param categoryRepo Repository for categories
      * @param viewModelStore accessing view models
      * @param categoryRepo access the category repository
@@ -435,6 +440,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         private pdfExport: MotionPdfExportService,
         private personalNoteService: PersonalNoteService,
         private linenumberingService: LinenumberingService,
+        private diffService: DiffService,
         private categoryRepo: CategoryRepositoryService,
         private userRepo: UserRepositoryService,
         private notifyService: NotifyService,
@@ -569,7 +575,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
 
         this.allChangingObjects = [];
         if (this.changeRecommendations) {
-            this.changeRecommendations.forEach((change: ViewUnifiedChange): void => {
+            this.changeRecommendations.forEach((change: ViewMotionChangeRecommendation): void => {
                 this.allChangingObjects.push(change);
             });
         }
@@ -854,7 +860,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      */
     public getFormattedTextPlain(): string {
         // Prevent this.allChangingObjects to be reordered from within formatMotion
-        const changes: ViewUnifiedChange[] = Object.assign([], this.allChangingObjects);
+        const changes: ViewUnifiedChange[] = Object.assign([], this.getAllTextChangingObjects());
         return this.repo.formatMotion(this.motion.id, this.crMode, changes, this.lineLength, this.highlightedLine);
     }
 
@@ -888,8 +894,9 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * @returns safe html strings
      */
     public getParentMotionRange(from: number, to: number): SafeHtml {
-        const str = this.repo.extractMotionLineRange(
-            this.motion.parent_id,
+        const parentMotion = this.repo.getViewModel(this.motion.parent_id);
+        const str = this.diffService.extractMotionLineRange(
+            parentMotion.text,
             { from, to },
             true,
             this.lineLength,
@@ -918,6 +925,18 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         return this.allChangingObjects.filter(change => {
             return change.showInFinalView();
         });
+    }
+
+    public getAllTextChangingObjects(): ViewUnifiedChange[] {
+        return this.allChangingObjects.filter((obj: ViewUnifiedChange) => !obj.isTitleChange());
+    }
+
+    public getTitleChangingObject(): ViewUnifiedChange {
+        return this.allChangingObjects.find((obj: ViewUnifiedChange) => obj.isTitleChange());
+    }
+
+    public getTitleWithChanges(): string {
+        return this.changeRecoRepo.getTitleWithChanges(this.motion.title, this.getTitleChangingObject(), this.crMode);
     }
 
     /**
@@ -1027,17 +1046,17 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * @param lineRange
      */
     public createChangeRecommendation(lineRange: LineRange): void {
-        const data: MotionChangeRecommendationComponentData = {
+        const data: MotionChangeRecommendationDialogComponentData = {
             editChangeRecommendation: false,
             newChangeRecommendation: true,
             lineRange: lineRange,
-            changeRecommendation: this.repo.createChangeRecommendationTemplate(
-                this.motion.id,
+            changeRecommendation: this.changeRecoRepo.createChangeRecommendationTemplate(
+                this.motion,
                 lineRange,
                 this.lineLength
             )
         };
-        this.dialogService.open(MotionChangeRecommendationComponent, {
+        this.dialogService.open(MotionChangeRecommendationDialogComponent, {
             height: '600px',
             width: '800px',
             maxHeight: '90vh',
@@ -1045,6 +1064,37 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
             data: data,
             disableClose: true
         });
+    }
+
+    /**
+     * In the original version, the title has been clicked to create a new change recommendation
+     */
+    public createTitleChangeRecommendation(): void {
+        const data: MotionTitleChangeRecommendationDialogComponentData = {
+            editChangeRecommendation: false,
+            newChangeRecommendation: true,
+            changeRecommendation: this.changeRecoRepo.createTitleChangeRecommendationTemplate(
+                this.motion,
+                this.lineLength
+            )
+        };
+        this.dialogService.open(MotionTitleChangeRecommendationDialogComponent, {
+            width: '400px',
+            maxHeight: '90vh',
+            maxWidth: '90vw',
+            data: data,
+            disableClose: true
+        });
+    }
+
+    public titleCanBeChanged(): boolean {
+        if (this.editMotion) {
+            return false;
+        }
+        if (this.motion.isStatuteAmendment() || this.motion.isParagraphBasedAmendment()) {
+            return false;
+        }
+        return this.isRecoMode(ChangeRecoMode.Original) || this.isRecoMode(ChangeRecoMode.Diff);
     }
 
     /**
