@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { MotionPdfService, InfoToExport } from './motion-pdf.service';
+import { MotionPdfService } from './motion-pdf.service';
 import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
-import { ViewMotion, LineNumberingMode, ChangeRecoMode } from '../models/view-motion';
+import { ViewMotion } from '../models/view-motion';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { MotionPdfCatalogService } from './motion-pdf-catalog.service';
 import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
 import { ViewMotionCommentSection } from '../models/view-motion-comment-section';
+import { ExportFormData } from '../modules/motion-list/components/motion-export-dialog/motion-export-dialog.component';
 
 /**
  * Export service to handle various kind of exporting necessities.
@@ -40,8 +41,8 @@ export class MotionPdfExportService {
      * @param lnMode the desired line numbering mode
      * @param crMode the desired change recomendation mode
      */
-    public exportSingleMotion(motion: ViewMotion, lnMode?: LineNumberingMode, crMode?: ChangeRecoMode): void {
-        const doc = this.motionPdfService.motionToDocDef(motion, lnMode, crMode);
+    public exportSingleMotion(motion: ViewMotion, exportInfo?: ExportFormData): void {
+        const doc = this.motionPdfService.motionToDocDef(motion, exportInfo);
         const filename = `${this.translate.instant('Motion')} ${motion.identifierOrTitle}`;
         const metadata = {
             title: filename
@@ -59,27 +60,13 @@ export class MotionPdfExportService {
      * @param infoToExport Determine the meta info to export
      * @param commentsToExport Comments (by id) to export
      */
-    public exportMotionCatalog(
-        motions: ViewMotion[],
-        lnMode?: LineNumberingMode,
-        crMode?: ChangeRecoMode,
-        contentToExport?: string[],
-        infoToExport?: InfoToExport[],
-        commentsToExport?: number[]
-    ): void {
-        const doc = this.pdfCatalogService.motionListToDocDef(
-            motions,
-            lnMode,
-            crMode,
-            contentToExport,
-            infoToExport,
-            commentsToExport
-        );
+    public exportMotionCatalog(motions: ViewMotion[], exportInfo: ExportFormData): void {
+        const doc = this.pdfCatalogService.motionListToDocDef(motions, exportInfo);
         const filename = this.translate.instant(this.configService.instant<string>('motions_export_title'));
         const metadata = {
             title: filename
         };
-        this.pdfDocumentService.download(doc, filename, metadata);
+        this.pdfDocumentService.download(doc, filename, metadata, exportInfo);
     }
 
     /**

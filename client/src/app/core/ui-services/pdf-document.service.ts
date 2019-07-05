@@ -7,6 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { ConfigService } from './config.service';
 import { HttpService } from '../core-services/http.service';
+import { ExportFormData } from 'app/site/motions/modules/motion-list/components/motion-export-dialog/motion-export-dialog.component';
 
 /**
  * Enumeration to define possible values for the styling.
@@ -177,6 +178,7 @@ export class PdfDocumentService {
     private async getStandardPaper(
         documentContent: object,
         metadata?: object,
+        exportInfo?: ExportFormData,
         imageUrls?: string[],
         customMargins?: [number, number, number, number],
         landscape?: boolean
@@ -197,12 +199,14 @@ export class PdfDocumentService {
                 fontSize: this.configService.instant('general_export_pdf_fontsize')
             },
             header: this.getHeader(customMargins ? [customMargins[0], customMargins[2]] : null),
+
             // TODO: option for no footer, wherever this can be defined
             footer: (currentPage, pageCount) => {
                 return this.getFooter(
                     currentPage,
                     pageCount,
-                    customMargins ? [customMargins[0], customMargins[2]] : null
+                    customMargins ? [customMargins[0], customMargins[2]] : null,
+                    exportInfo
                 );
             },
             info: metadata,
@@ -337,13 +341,34 @@ export class PdfDocumentService {
      * @param lrMargin optionally overriding the margins
      * @returns the footer doc definition
      */
-    private getFooter(currentPage: number, pageCount: number, lrMargin?: [number, number]): object {
+    private getFooter(
+        currentPage: number,
+        pageCount: number,
+        lrMargin?: [number, number],
+        exportInfo?: ExportFormData
+    ): object {
         const columns = [];
+        const showPage = exportInfo && exportInfo.pdfOptions ? exportInfo.pdfOptions.includes('page') : true;
+        const showDate = exportInfo && exportInfo.pdfOptions ? exportInfo.pdfOptions.includes('date') : false;
         let logoContainerWidth: string;
         let pageNumberPosition: string;
         let logoContainerSize: number[];
         const logoFooterLeftUrl = this.configService.instant<any>('logo_pdf_footer_L').path;
         const logoFooterRightUrl = this.configService.instant<any>('logo_pdf_footer_R').path;
+
+        let footerText = '';
+        if (showPage) {
+            footerText += `${currentPage} / ${pageCount}`;
+            if (showDate) {
+                footerText += '\n';
+            }
+        }
+
+        if (showDate) {
+            footerText += `(${this.translate.instant('Created on')}: ${new Date().toLocaleDateString(
+                this.translate.currentLang
+            )})`;
+        }
 
         // if there is a single logo, give it a lot of space
         if (logoFooterLeftUrl && logoFooterRightUrl) {
@@ -377,7 +402,7 @@ export class PdfDocumentService {
 
         // add the page number
         columns.push({
-            text: `${currentPage} / ${pageCount}`,
+            text: footerText,
             style: 'footerPageNumber',
             alignment: pageNumberPosition
         });
@@ -407,8 +432,8 @@ export class PdfDocumentService {
      * @param filename the name of the file to use
      * @param metadata
      */
-    public download(docDefinition: object, filename: string, metadata?: object): void {
-        this.getStandardPaper(docDefinition, metadata).then(doc => {
+    public download(docDefinition: object, filename: string, metadata?: object, exportInfo?: ExportFormData): void {
+        this.getStandardPaper(docDefinition, metadata, exportInfo).then(doc => {
             this.createPdf(doc, filename);
         });
     }
@@ -421,7 +446,7 @@ export class PdfDocumentService {
      * @param metadata
      */
     public downloadLandscape(docDefinition: object, filename: string, metadata?: object): void {
-        this.getStandardPaper(docDefinition, metadata, null, [50, 80, 50, 75], true).then(doc => {
+        this.getStandardPaper(docDefinition, metadata, null, null, [50, 80, 50, 75], true).then(doc => {
             this.createPdf(doc, filename);
         });
     }

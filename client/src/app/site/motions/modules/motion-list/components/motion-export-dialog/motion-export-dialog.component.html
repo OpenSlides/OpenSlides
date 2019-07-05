@@ -6,9 +6,9 @@
         <div>
             <p class="toggle-group-head" translate>Format</p>
             <mat-button-toggle-group class="smaller-buttons" formControlName="format">
-                <mat-button-toggle value="pdf">PDF</mat-button-toggle>
-                <mat-button-toggle value="csv">CSV</mat-button-toggle>
-                <mat-button-toggle value="xlsx">XLSX</mat-button-toggle>
+                <mat-button-toggle [value]="fileFormat.PDF">PDF</mat-button-toggle>
+                <mat-button-toggle [value]="fileFormat.CSV">CSV</mat-button-toggle>
+                <mat-button-toggle [value]="fileFormat.XLSX">XLSX</mat-button-toggle>
             </mat-button-toggle-group>
         </div>
 
@@ -54,7 +54,16 @@
                 </mat-button-toggle>
             </mat-button-toggle-group>
         </div>
-        <div *ngIf="commentsToExport.length && exportForm.get('format').value === 'pdf'">
+        <div>
+            <p class="toggle-group-head" translate>PDF options</p>
+            <mat-button-toggle-group class="smaller-buttons" multiple formControlName="pdfOptions">
+                <mat-button-toggle value="toc"> <span translate>Table of Contents</span> </mat-button-toggle>
+                <mat-button-toggle value="page"> <span translate>Page number</span> </mat-button-toggle>
+                <mat-button-toggle value="date"> <span translate>Current date</span> </mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
+
+        <div *ngIf="commentsToExport.length">
             <p class="toggle-group-head" translate>Comments</p>
             <mat-button-toggle-group class="smaller-buttons" multiple formControlName="comments">
                 <mat-button-toggle *ngFor="let comment of commentsToExport" [value]="comment.id">

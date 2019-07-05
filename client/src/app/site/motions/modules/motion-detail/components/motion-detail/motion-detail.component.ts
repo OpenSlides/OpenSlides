@@ -1389,7 +1389,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * Click handler for the pdf button
      */
     public onDownloadPdf(): void {
-        this.pdfExport.exportSingleMotion(this.motion, this.lnMode, this.crMode);
+        this.pdfExport.exportSingleMotion(this.motion, {
+            lnMode: this.lnMode,
+            crMode: this.crMode,
+            comments: this.motion.commentSectionIds
+        });
     }
 
     /**
