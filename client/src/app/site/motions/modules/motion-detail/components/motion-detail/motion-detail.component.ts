@@ -1,5 +1,5 @@
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
-import { Component, OnInit, OnDestroy, ElementRef, HostListener, TemplateRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, HostListener } from '@angular/core';
 import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
@@ -20,7 +20,6 @@ import { ItemRepositoryService } from 'app/core/repositories/agenda/item-reposit
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
 import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
-import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
 import { Motion } from 'app/shared/models/motions/motion';
 import {
     MotionChangeRecommendationDialogComponentData,
@@ -56,7 +55,6 @@ import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
 import { ViewCategory } from 'app/site/motions/models/view-category';
 import { ViewCreateMotion } from 'app/site/motions/models/view-create-motion';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
-import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
 import { ViewStatuteParagraph } from 'app/site/motions/models/view-statute-paragraph';
 import { ViewTag } from 'app/site/tags/models/view-tag';
@@ -251,11 +249,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     public blockObserver: BehaviorSubject<ViewMotionBlock[]>;
 
     /**
-     * Subject for mediafiles
-     */
-    public mediafilesObserver: BehaviorSubject<ViewMediafile[]>;
-
-    /**
      * Subject for tags
      */
     public tagObserver: BehaviorSubject<ViewTag[]>;
@@ -445,7 +438,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         private userRepo: UserRepositoryService,
         private notifyService: NotifyService,
         private tagRepo: TagRepositoryService,
-        private mediaFilerepo: MediafileRepositoryService,
         private workflowRepo: WorkflowRepositoryService,
         private blockRepo: MotionBlockRepositoryService,
         private itemRepo: ItemRepositoryService,
@@ -462,7 +454,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     public ngOnInit(): void {
         // get required information from the repositories
         this.tagObserver = this.tagRepo.getViewModelListBehaviorSubject();
-        this.mediafilesObserver = this.mediaFilerepo.getViewModelListBehaviorSubject();
         this.workflowObserver = this.workflowRepo.getViewModelListBehaviorSubject();
         this.blockObserver = this.blockRepo.getViewModelListBehaviorSubject();
         this.motionObserver = this.repo.getViewModelListBehaviorSubject();
@@ -501,17 +492,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         this.configService
             .get<boolean>('motions_show_sequential_numbers')
             .subscribe(shown => (this.showSequential = shown));
-        // disable the selector for attachments if there are none
-        this.mediafilesObserver.subscribe(() => {
-            if (this.contentForm) {
-                const attachmentsCtrl = this.contentForm.get('attachments_id');
-                if (this.mediafilesObserver.value.length === 0) {
-                    attachmentsCtrl.disable();
-                } else {
-                    attachmentsCtrl.enable();
-                }
-            }
-        });
 
         // Update statute paragraphs
         this.statuteRepo.getViewModelListObservable().subscribe(newViewStatuteParagraphs => {
@@ -1544,30 +1524,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
             this.motion.personalNote.star = !this.motion.personalNote.star;
         }
         this.personalNoteService.savePersonalNote(this.motion, this.motion.personalNote).then(null, this.raiseError);
-    }
-
-    /**
-     * Handler for the upload attachments button
-     */
-    public onUploadAttachmentsButton(templateRef: TemplateRef<string>): void {
-        this.dialogService.open(templateRef, {
-            maxHeight: '90vh',
-            width: '750px',
-            maxWidth: '90vw'
-        });
-    }
-
-    /**
-     * Handler for successful uploads.
-     * Adds the IDs of the upload process to the mediafile selector
-     *
-     * @param fileIds the ids of the uploads if they were successful
-     */
-    public uploadSuccess(fileIds: number[]): void {
-        const currentAttachments = this.contentForm.get('attachments_id').value as number[];
-        const newAttachments = [...currentAttachments, ...fileIds];
-        this.contentForm.get('attachments_id').setValue(newAttachments);
-        this.dialogService.closeAll();
     }
 
     /**

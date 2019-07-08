@@ -15,10 +15,8 @@ import { BehaviorSubject } from 'rxjs';
 import { ItemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { CreateTopic } from '../../models/create-topic';
 import { Topic } from 'app/shared/models/topics/topic';
-import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
-import { ViewItem } from 'app/site/agenda/models/view-item';
-import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
+import { ViewItem } from 'app/site/agenda/models/view-item';
 
 /**
  * Detail page for topics.
@@ -48,11 +46,6 @@ export class TopicDetailComponent extends BaseViewComponent {
      * Topic form
      */
     public topicForm: FormGroup;
-
-    /**
-     * Subject for mediafiles
-     */
-    public mediafilesObserver: BehaviorSubject<ViewMediafile[]>;
 
     /**
      * Subject for agenda items
@@ -88,7 +81,6 @@ export class TopicDetailComponent extends BaseViewComponent {
         private repo: TopicRepositoryService,
         private promptService: PromptService,
         private operator: OperatorService,
-        private mediafileRepo: MediafileRepositoryService,
         private itemRepo: ItemRepositoryService,
         private sanitizer: DomSanitizer
     ) {
@@ -96,7 +88,6 @@ export class TopicDetailComponent extends BaseViewComponent {
         this.getTopicByUrl();
         this.createForm();
 
-        this.mediafilesObserver = this.mediafileRepo.getViewModelListBehaviorSubject();
         this.itemObserver = this.itemRepo.getViewModelListBehaviorSubject();
     }
 

@@ -37,9 +37,7 @@
         <os-search-value-selector
             class="search-users"
             ngDefaultControl
-            [form]="addSubmitterForm"
             [formControl]="addSubmitterForm.get('userId')"
-            [multiple]="false"
             listname="{{ 'Select or search new submitter ...' | translate }}"
             [InputListValues]="users"
         ></os-search-value-selector>

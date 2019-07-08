@@ -1,25 +1,14 @@
-<mat-form-field [formGroup]="form" [style.display]="fullWidth ? 'block' : 'inline-block'">
+<mat-form-field [style.display]="fullWidth ? 'block' : 'inline-block'">
     <mat-select [formControl]="formControl" placeholder="{{ listname | translate }}" [multiple]="multiple" #thisSelector>
-        <ngx-mat-select-search [formControl]="filterControl"></ngx-mat-select-search>
+        <ngx-mat-select-search ngModel (ngModelChange)="onSearch($event)"></ngx-mat-select-search>
         <div *ngIf="!multiple && includeNone">
             <mat-option [value]="null">
                 <span>–</span>
             </mat-option>
             <mat-divider></mat-divider>
         </div>
-        <mat-option *ngFor="let selectedItem of filteredItems | async" [value]="selectedItem.id">
+        <mat-option *ngFor="let selectedItem of getFilteredItems()" [value]="selectedItem.id">
             {{ selectedItem.getTitle() | translate }}
         </mat-option>
     </mat-select>
 </mat-form-field>
-<div *ngIf="dispSelected">
-    <p>
-        <span translate>Selected values</span>:
-    </p>
-    <mat-chip-list #chipList>
-        <mat-chip *ngFor="let selectedItem of thisSelector?.value" (removed)="remove(selectedItem)">
-            {{ selectedItem.name }}
-            <mat-icon (click)="remove(selectedItem)">cancel</mat-icon>
-        </mat-chip>
-    </mat-chip-list>
-</div>

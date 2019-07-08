@@ -21,7 +21,6 @@
             <p>
                 <os-search-value-selector
                     ngDefaultControl
-                    [form]="createForm"
                     [formControl]="this.createForm.get('read_groups_id')"
                     [multiple]="true"
                     listname="Groups with read permissions"
@@ -31,7 +30,6 @@
             <p>
                 <os-search-value-selector
                     ngDefaultControl
-                    [form]="createForm"
                     [formControl]="this.createForm.get('write_groups_id')"
                     [multiple]="true"
                     listname="Groups with write permissions"
@@ -93,7 +91,6 @@
             <p>
                 <os-search-value-selector
                     ngDefaultControl
-                    [form]="updateForm"
                     [formControl]="this.updateForm.get('read_groups_id')"
                     [multiple]="true"
                     listname="Groups with read permissions"
@@ -103,7 +100,6 @@
             <p>
                 <os-search-value-selector
                     ngDefaultControl
-                    [form]="updateForm"
                     [formControl]="this.updateForm.get('write_groups_id')"
                     [multiple]="true"
                     listname="Groups with write permissions"

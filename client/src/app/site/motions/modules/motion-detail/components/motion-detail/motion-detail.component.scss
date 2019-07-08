@@ -231,14 +231,3 @@ span {
     font-size: 12px;
     margin-top: 4px;
 }
-
-.shortened-selector {
-    justify-content: space-between;
-    display: flex;
-    .selector {
-        width: 95%;
-    }
-    .mat-icon-button {
-        top: 20px;
-    }
-}

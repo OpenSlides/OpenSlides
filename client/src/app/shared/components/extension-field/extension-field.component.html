@@ -36,10 +36,8 @@
     <os-search-value-selector
         *ngIf="searchList"
         ngDefaultControl
-        [form]="extensionFieldForm"
         [formControl]="extensionFieldForm.get('list')"
         [fullWidth]="true"
-        [multiple]="false"
         [InputListValues]="searchList"
         [listname]="searchListLabel"
     ></os-search-value-selector>

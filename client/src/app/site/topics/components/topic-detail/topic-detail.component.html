@@ -68,14 +68,7 @@
         </div>
 
         <!-- Attachments -->
-        <os-search-value-selector
-            ngDefaultControl
-            [form]="topicForm"
-            [formControl]="topicForm.get('attachments_id')"
-            [multiple]="true"
-            listname="{{ 'Attachments' | translate }}"
-            [InputListValues]="mediafilesObserver"
-        ></os-search-value-selector>
+        <os-attachment-control [controlName]="topicForm.get('attachments_id')" (errorHandler)="raiseError($event)"></os-attachment-control>
 
         <div *ngIf="newTopic">
             <!-- Visibility -->
@@ -93,9 +86,7 @@
             <div>
                 <os-search-value-selector
                     ngDefaultControl
-                    [form]="topicForm"
                     [formControl]="topicForm.get('agenda_parent_id')"
-                    [multiple]="false"
                     [includeNone]="true"
                     listname="{{ 'Parent agenda item' | translate }}"
                     [InputListValues]="itemObserver"

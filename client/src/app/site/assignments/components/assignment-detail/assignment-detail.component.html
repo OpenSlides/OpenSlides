@@ -195,7 +195,6 @@
                     <os-search-value-selector
                         class="search-bar"
                         ngDefaultControl
-                        [form]="candidatesForm"
                         [formControl]="candidatesForm.get('userId')"
                         [multiple]="false"
                         listname="{{ 'Select a new candidate' | translate }}"
@@ -259,7 +258,6 @@
             <div class="content-field" *ngIf="tagsAvailable">
                 <os-search-value-selector
                     ngDefaultControl
-                    [form]="assignmentForm"
                     [formControl]="assignmentForm.get('tags_id')"
                     [multiple]="true"
                     [includeNone]="true"
@@ -269,15 +267,8 @@
             </div>
 
             <!-- Attachments -->
-            <div class="content-field" *ngIf="mediafilesAvailable">
-                <os-search-value-selector
-                    ngDefaultControl
-                    [form]="assignmentForm"
-                    [formControl]="assignmentForm.get('attachments_id')"
-                    [multiple]="true"
-                    listname="{{ 'Election documents' | translate }}"
-                    [InputListValues]="mediafilesObserver"
-                ></os-search-value-selector>
+            <div class="content-field">
+                <os-attachment-control (errorHandler)="raiseError($event)" [controlName]="assignmentForm.get('attachments_id')"></os-attachment-control>
             </div>
 
             <os-agenda-content-object-form *ngIf="newAssignment" [form]="assignmentForm"></os-agenda-content-object-form>
