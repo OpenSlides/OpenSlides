@@ -12,7 +12,7 @@
         "ng": "ng",
         "ng-high-memory": "node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng",
         "start": "ng serve --proxy-config proxy.conf.json --host=0.0.0.0",
-        "build": "ng build --prod --aot",
+        "build": "ng build --prod",
         "test": "ng test",
         "lint": "ng lint",
         "e2e": "ng e2e",
