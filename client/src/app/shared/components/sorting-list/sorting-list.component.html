@@ -19,7 +19,7 @@
         </div>
         <div class="section-three">
             <!-- Extra controls slot using implicit template references -->
-            <mat-basic-chip class="bluegrey" disableRipple matTooltip="{{ 'Sequantial number' | translate }}">
+            <mat-basic-chip class="bluegrey" disableRipple matTooltip="{{ 'Sequential number' | translate }}">
                 {{ item.id }}
             </mat-basic-chip>
             <ng-template [ngTemplateOutlet]="templateRef" [ngTemplateOutletContext]="{ $implicit: item }"></ng-template>
