@@ -313,7 +313,7 @@
 
         <!-- recommendation referencing motions -->
         <div *ngIf="!editMotion && recommendationReferencingMotions.length > 0">
-            <h4 translate>Recommendation-referencing motions</h4>
+            <h4 translate>Referring motions</h4>
             <div *ngFor="let motion of recommendationReferencingMotions">
                 <a [routerLink]="motion.getDetailStateURL()">{{ motion.identifierOrTitle }}</a>
             </div>

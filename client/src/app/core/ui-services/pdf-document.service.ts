@@ -365,9 +365,9 @@ export class PdfDocumentService {
         }
 
         if (showDate) {
-            footerText += `(${this.translate.instant('Created on')}: ${new Date().toLocaleDateString(
+            footerText += `${this.translate.instant('As of')}: ${new Date().toLocaleDateString(
                 this.translate.currentLang
-            )})`;
+            )}`;
         }
 
         // if there is a single logo, give it a lot of space

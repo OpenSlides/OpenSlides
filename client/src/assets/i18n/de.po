@@ -155,6 +155,9 @@ msgstr "Unterstützung möglich"
 msgid "Allow to disable versioning"
 msgstr "Erlaubt Versionierung zu deaktiveren"
 
+msgid "Always"
+msgstr "Immer"
+
 msgid "Always Yes-No-Abstain per candidate"
 msgstr "Ja/Nein/Enthaltung pro Kandidat/in"
 
@@ -296,8 +299,17 @@ msgid "Are you sure you want to send emails to all selected participants?"
 msgstr ""
 "Sollen E-Mails wirklich an alle ausgewählten Teilnehmende gesendet werden?"
 
+msgid "As of"
+msgstr "Stand"
+
 msgid "As recommendation"
 msgstr "wie Empfehlung"
+
+msgid "Ask, default no"
+msgstr "Nachfragen, voreingestellt nein"
+
+msgid "Ask, default yes"
+msgstr "Nachfragen, voreingestellt ja"
 
 msgid ""
 "At least given name or surname have to be filled in. All other fields are "
@@ -488,6 +500,9 @@ msgstr "Änderungsempfehlungen"
 msgid "Changed by"
 msgstr "Bearbeitet von"
 
+msgid "Changed title"
+msgstr "Geänderter Titel"
+
 msgid "Changed version"
 msgstr "Geänderte Fassung"
 
@@ -612,6 +627,9 @@ msgstr "Erstellungsdatum"
 
 msgid "Current browser language"
 msgstr "Aktuelle Browsersprache"
+
+msgid "Current date"
+msgstr "Aktuelles Datum"
 
 msgid "Current list of speakers"
 msgstr "Aktuelle Redeliste"
@@ -1046,6 +1064,10 @@ msgstr "Begründung auf dem Projektor ausblenden"
 msgid "Hide recommendation on projector"
 msgstr "Empfehlung auf dem Projektor ausblenden"
 
+msgid "Hide the amount of speakers in subtitle of list of speakers slide"
+msgstr ""
+"Anzahl der Redner/innen im Untertitel der Redelistenprojektion ausblenden"
+
 msgid "Hint for ballot paper"
 msgstr "Hinweis auf dem Stimmzettel"
 
@@ -1326,6 +1348,9 @@ msgstr "Name des Empfehlungsgebers für Satzungsänderungsanträge"
 msgid "Needs review"
 msgstr "Benötigt Review"
 
+msgid "Never"
+msgstr "Nie"
+
 msgid "New Projector"
 msgstr "Neuer Projektor"
 
@@ -1578,11 +1603,17 @@ msgstr "PDF-Logo Kopfzeile (links)"
 msgid "PDF header logo (right)"
 msgstr "PDF-Logo Kopfzeile (rechts)"
 
+msgid "PDF options"
+msgstr "PDF-Optionen"
+
 msgid "Page"
 msgstr "Seite"
 
 msgid "Page number alignment in PDF"
 msgstr "Seitenzahl-Ausrichtung im PDF"
+
+msgid "Page numbers"
+msgstr "Seitenzahlen"
 
 msgid "Paragraph-based, Diff-enabled"
 msgstr "Absatzbasiert mit Änderungsdarstellung"
@@ -1770,6 +1801,9 @@ msgstr "Referenzprojektor für die aktuelle Redeliste:"
 
 msgid "Referral to committee"
 msgstr "Verweisung in Ausschuss"
+
+msgid "Referring motions"
+msgstr "Auf diesen Antrag verweisende Anträge"
 
 msgid "Refresh"
 msgstr "Aktualisieren"

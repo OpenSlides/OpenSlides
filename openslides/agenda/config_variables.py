@@ -32,7 +32,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name="agenda_item_creation",
-        label="Auto add to agenda",
+        label="Add to agenda",
         default_value="always",
         input_type="choice",
         choices=(

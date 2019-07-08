@@ -14,7 +14,7 @@
 
         <!-- recommendation referencing motions -->
         <div *ngIf="data.data.recommendation_referencing_motions">
-            <h3 translate>Recommendation-referencing motions</h3>
+            <h3 translate>Referring motions</h3>
             <div *ngFor="let titleInformation of data.data.recommendation_referencing_motions">
                 {{ getIdentifierOrTitle(titleInformation) }}
             </div>
