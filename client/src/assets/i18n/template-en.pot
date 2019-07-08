@@ -141,6 +141,9 @@ msgstr ""
 msgid "Allow to disable versioning"
 msgstr ""
 
+msgid "Always"
+msgstr ""
+
 msgid "Always Yes-No-Abstain per candidate"
 msgstr ""
 
@@ -272,7 +275,16 @@ msgstr ""
 msgid "Are you sure you want to send emails to all selected participants?"
 msgstr ""
 
+msgid "As of"
+msgstr ""
+
 msgid "As recommendation"
+msgstr ""
+
+msgid "Ask, default no"
+msgstr ""
+
+msgid "Ask, default yes"
 msgstr ""
 
 msgid ""
@@ -460,6 +472,9 @@ msgstr ""
 msgid "Changed by"
 msgstr ""
 
+msgid "Changed title"
+msgstr ""
+
 msgid "Changed version"
 msgstr ""
 
@@ -581,6 +596,9 @@ msgid "Creation date"
 msgstr ""
 
 msgid "Current browser language"
+msgstr ""
+
+msgid "Current date"
 msgstr ""
 
 msgid "Current list of speakers"
@@ -990,6 +1008,9 @@ msgstr ""
 msgid "Hide recommendation on projector"
 msgstr ""
 
+msgid "Hide the amount of speakers in subtitle of list of speakers slide"
+msgstr ""
+
 msgid "Hint for ballot paper"
 msgstr ""
 
@@ -1268,6 +1289,9 @@ msgstr ""
 msgid "Needs review"
 msgstr ""
 
+msgid "Never"
+msgstr ""
+
 msgid "New Projector"
 msgstr ""
 
@@ -1516,10 +1540,16 @@ msgstr ""
 msgid "PDF header logo (right)"
 msgstr ""
 
+msgid "PDF options"
+msgstr ""
+
 msgid "Page"
 msgstr ""
 
 msgid "Page number alignment in PDF"
+msgstr ""
+
+msgid "Page numbers"
 msgstr ""
 
 msgid "Paragraph-based, Diff-enabled"
@@ -1706,6 +1736,9 @@ msgid "Reference projector for current list of speakers:"
 msgstr ""
 
 msgid "Referral to committee"
+msgstr ""
+
+msgid "Referring motions"
 msgstr ""
 
 msgid "Refresh"

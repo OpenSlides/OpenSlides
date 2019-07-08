@@ -206,7 +206,7 @@ export class MotionPdfCatalogService {
     /**
      * Function to get the definition for the header
      * for exporting motion-list as PDF. Needed, if submitters
-     * and recommendation should also be exported to the `Table of Contents`.
+     * and recommendation should also be exported to the `Table of contents`.
      *
      * @returns {object} The DocDefinition for `pdfmake.js`.
      */
