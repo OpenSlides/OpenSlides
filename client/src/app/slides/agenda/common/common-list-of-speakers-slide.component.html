@@ -3,7 +3,7 @@
         <h1 translate>List of speakers</h1>
         <h2>
             {{ getTitle() }}
-            <span *ngIf="getSpeakersCount() > 0">
+            <span *ngIf="getSpeakersCount() > 0 && !hideAmountOfSpeakers">
                 &ndash; {{ getSpeakersCount() }} <span translate>Speakers</span>
             </span>
         </h2>

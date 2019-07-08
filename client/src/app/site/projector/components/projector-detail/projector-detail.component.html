@@ -13,7 +13,7 @@
             </div>
         </a>
         <!-- Controls under the projector preview -->
-        <div class="control-group projector-controls">
+        <div *osPerms="'core.can_manage_projector'" class="control-group projector-controls">
             <!-- scale up -->
             <button type="button" mat-icon-button (click)="scale(scrollScaleDirection.Up)">
                 <mat-icon>zoom_in</mat-icon>

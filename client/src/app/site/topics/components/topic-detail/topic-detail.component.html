@@ -17,7 +17,7 @@
     </div>
 
     <!-- Menu -->
-    <div class="menu-slot">
+    <div class="menu-slot" *osPerms="'agenda.can_manage'">
         <button type="button" mat-icon-button [matMenuTriggerFor]="topicExtraMenu">
             <mat-icon>more_vert</mat-icon>
         </button>
@@ -107,7 +107,7 @@
 
 <mat-menu #topicExtraMenu="matMenu">
     <os-speaker-button [object]="topic" [menuItem]="true"></os-speaker-button>
-    <div *osPerms="'agenda.can_manage'">
+    <div>
         <mat-divider></mat-divider>
         <button mat-menu-item class="red-warning-text" (click)="onDeleteButton()">
             <mat-icon>delete</mat-icon>
