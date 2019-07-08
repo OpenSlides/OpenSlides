@@ -1,13 +1,14 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { Router, NavigationEnd } from '@angular/router';
 
 @Component({
     selector: 'os-extension-field',
     templateUrl: './extension-field.component.html',
     styleUrls: ['./extension-field.component.scss']
 })
-export class ExtensionFieldComponent implements OnInit {
+export class ExtensionFieldComponent implements OnInit, OnDestroy {
     /**
      * Optional additional classes for the `mat-chip`.
      */
@@ -114,17 +115,30 @@ export class ExtensionFieldComponent implements OnInit {
     public editMode = false;
 
     /**
+     * Hold the nav subscription
+     */
+    private navigationSubscription: Subscription;
+
+    /**
      * Constructor
      *
      * @param fb The FormBuilder
      */
-    public constructor(private fb: FormBuilder) {}
+    public constructor(private fb: FormBuilder, private router: Router) {}
 
     /**
      * OnInit-method.
      */
     public ngOnInit(): void {
+        this.navigationSubscription = this.router.events.subscribe(navEvent => {
+            if (navEvent instanceof NavigationEnd) {
+                this.editMode = false;
+                this.extensionFieldForm.reset();
+            }
+        });
+
         this.initInput();
+
         this.extensionFieldForm = this.fb.group({
             list: this.searchList ? [[]] : undefined
         });
@@ -133,12 +147,19 @@ export class ExtensionFieldComponent implements OnInit {
             if (this.listSubmitOnChange) {
                 this.listChange.emit(value);
             }
-            if (this.appendValueToInput) {
+            if (this.appendValueToInput && this.inputControl.length) {
                 this.inputControl = this.inputControl.concat(
                     `[${this.listValuePrefix}${value}${this.listValueSuffix}]`
                 );
             }
         });
+    }
+
+    /**
+     * On destroy unsubscribe from the nav subscription
+     */
+    public ngOnDestroy(): void {
+        this.navigationSubscription.unsubscribe();
     }
 
     /**
