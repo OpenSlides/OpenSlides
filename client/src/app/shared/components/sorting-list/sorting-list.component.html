@@ -19,6 +19,9 @@
         </div>
         <div class="section-three">
             <!-- Extra controls slot using implicit template references -->
+            <mat-basic-chip class="bluegrey" disableRipple matTooltip="{{ 'Sequantial number' | translate }}">
+                {{ item.id }}
+            </mat-basic-chip>
             <ng-template [ngTemplateOutlet]="templateRef" [ngTemplateOutletContext]="{ $implicit: item }"></ng-template>
         </div>
         <div class="line" *cdkDragPreview>
