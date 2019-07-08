@@ -133,13 +133,25 @@ export class SearchValueSelectorComponent implements OnDestroy {
      */
     public getFilteredItems(): Selectable[] {
         if (this.selectableItems) {
-            return this.selectableItems.filter(
-                item =>
+            return this.selectableItems.filter(item => {
+                const idString = '' + item.id;
+                const foundId =
+                    idString
+                        .trim()
+                        .toLowerCase()
+                        .indexOf(this.searchValue) !== -1;
+
+                if (foundId) {
+                    return true;
+                }
+
+                return (
                     item
                         .toString()
                         .toLowerCase()
                         .indexOf(this.searchValue) > -1
-            );
+                );
+            });
         }
     }
 
