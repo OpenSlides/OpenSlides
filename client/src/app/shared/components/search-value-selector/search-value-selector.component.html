@@ -1,4 +1,4 @@
-<mat-form-field [formGroup]="form">
+<mat-form-field [formGroup]="form" [style.display]="fullWidth ? 'block' : 'inline-block'">
     <mat-select [formControl]="formControl" placeholder="{{ listname | translate }}" [multiple]="multiple" #thisSelector>
         <ngx-mat-select-search [formControl]="filterControl"></ngx-mat-select-search>
         <div *ngIf="!multiple && includeNone">

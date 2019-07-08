@@ -77,11 +77,20 @@ export class SearchValueSelectorComponent implements OnInit, OnDestroy {
     public includeNone = false;
 
     /**
+     * Boolean, whether the component should be rendered with full width.
+     */
+    @Input()
+    public fullWidth = false;
+
+    /**
      * The inputlist subject. Subscribes to it and updates the selector, if the subject
      * changes its values.
      */
     @Input()
     public set InputListValues(value: BehaviorSubject<Selectable[]>) {
+        if (!value) {
+            return;
+        }
         // unsubscribe to old subscription.
         if (this._inputListSubscription) {
             this._inputListSubscription.unsubscribe();
