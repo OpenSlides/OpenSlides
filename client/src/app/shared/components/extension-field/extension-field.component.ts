@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, AfterViewInit } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Router, NavigationEnd } from '@angular/router';
@@ -8,7 +8,7 @@ import { Router, NavigationEnd } from '@angular/router';
     templateUrl: './extension-field.component.html',
     styleUrls: ['./extension-field.component.scss']
 })
-export class ExtensionFieldComponent implements OnInit, OnDestroy {
+export class ExtensionFieldComponent implements OnInit, OnDestroy, AfterViewInit {
     /**
      * Optional additional classes for the `mat-chip`.
      */
@@ -28,10 +28,32 @@ export class ExtensionFieldComponent implements OnInit, OnDestroy {
     public chipValue: string;
 
     /**
+     * Allow automatically jump into autoEdit
+     */
+    private allowAutoEdit = false;
+
+    /**
      * Boolean, whether the extension should be shown.
      */
-    @Input()
-    public hasExtension = false;
+    private _hasExtension = false;
+
+    /**
+     * Setter for the extension condition
+     */
+    @Input() public set hasExtension(extension: boolean) {
+        this._hasExtension = extension;
+
+        if (this.hasExtension && this.allowAutoEdit) {
+            this.editMode = true;
+        }
+    }
+
+    /**
+     * Getter for the extension condition
+     */
+    public get hasExtension(): boolean {
+        return this._hasExtension;
+    }
 
     /**
      * Optional label for the input.
@@ -120,6 +142,11 @@ export class ExtensionFieldComponent implements OnInit, OnDestroy {
     private navigationSubscription: Subscription;
 
     /**
+     * Subscription for the search value selector
+     */
+    private searchValueSubscription: Subscription;
+
+    /**
      * Constructor
      *
      * @param fb The FormBuilder
@@ -133,33 +160,63 @@ export class ExtensionFieldComponent implements OnInit, OnDestroy {
         this.navigationSubscription = this.router.events.subscribe(navEvent => {
             if (navEvent instanceof NavigationEnd) {
                 this.editMode = false;
-                this.extensionFieldForm.reset();
+
+                if (this.extensionFieldForm) {
+                    this.extensionFieldForm.reset();
+                }
             }
         });
 
         this.initInput();
 
-        this.extensionFieldForm = this.fb.group({
-            list: this.searchList ? [[]] : undefined
-        });
+        if (this.searchList) {
+            this.extensionFieldForm = this.fb.group({
+                list: [[]]
+            });
 
-        this.extensionFieldForm.get('list').valueChanges.subscribe((value: number) => {
-            if (this.listSubmitOnChange) {
-                this.listChange.emit(value);
-            }
-            if (this.appendValueToInput && this.inputControl.length) {
-                this.inputControl = this.inputControl.concat(
-                    `[${this.listValuePrefix}${value}${this.listValueSuffix}]`
-                );
-            }
-        });
+            this.searchValueSubscription = this.extensionFieldForm
+                .get('list')
+                .valueChanges.subscribe((value: number) => {
+                    if (!!value) {
+                        if (this.listSubmitOnChange) {
+                            this.listChange.emit(value);
+                        }
+                        if (this.appendValueToInput) {
+                            if (!this.inputControl) {
+                                this.inputControl = '';
+                            }
+                            this.inputControl += `[${this.listValuePrefix}${value}${this.listValueSuffix}]`;
+                        }
+                        this.extensionFieldForm.reset();
+                    }
+                });
+        }
     }
 
     /**
-     * On destroy unsubscribe from the nav subscription
+     * After view inits, allow to automatically open the edit view
+     */
+    public ngAfterViewInit(): void {
+        this.allowAutoEdit = true;
+    }
+
+    /**
+     * On destroy unsubscribe from the subscriptions
      */
     public ngOnDestroy(): void {
         this.navigationSubscription.unsubscribe();
+        if (this.searchValueSubscription) {
+            this.searchValueSubscription.unsubscribe();
+        }
+    }
+
+    /**
+     * Hitting enter on the input field should save the content
+     */
+    public keyDownFunction(event: any): void {
+        if (event.key === 'Enter') {
+            this.changeEditMode(true);
+        }
     }
 
     /**
