@@ -48,7 +48,7 @@
         "acorn": "^6.1.1",
         "core-js": "^3.0.1",
         "css-element-queries": "^1.1.1",
-        "exceljs": "1.13.0",
+        "exceljs": "1.10.0",
         "file-saver": "^2.0.1",
         "hammerjs": "^2.0.8",
         "lz4js": "^0.2.0",
