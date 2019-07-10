@@ -112,7 +112,7 @@ export class HeadBarComponent {
     public saveEvent = new EventEmitter<boolean>();
 
     public get showBackButton(): boolean {
-        return !this.nav && !this.editMode && !this.multiSelectMode && this.routingState.isSafePrevUrl;
+        return !this.nav && !this.multiSelectMode && (this.routingState.isSafePrevUrl || !this.goBack);
     }
 
     /**

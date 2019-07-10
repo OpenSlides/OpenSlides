@@ -7,12 +7,12 @@
 <mat-toolbar color="primary" [ngClass]="multiSelectMode ? 'multi-select' : ''" class="sticky-toolbar">
     <div class="toolbar-left">
         <!-- Nav menu -->
-        <button mat-icon-button *ngIf="vp.isMobile && !showBackButton" (click)="clickHamburgerMenu()">
+        <button mat-icon-button *ngIf="vp.isMobile && !showBackButton && !editMode" (click)="clickHamburgerMenu()">
             <mat-icon>menu</mat-icon>
         </button>
 
         <!-- Exit / Back button -->
-        <button mat-icon-button *ngIf="showBackButton" (click)="onBackButton()">
+        <button mat-icon-button *ngIf="showBackButton && !editMode" (click)="onBackButton()">
             <mat-icon>arrow_back</mat-icon>
         </button>
 
