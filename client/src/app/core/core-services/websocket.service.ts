@@ -91,15 +91,28 @@ export class WebsocketService {
     }
 
     /**
+     * Subjects that will be called, if connect took place, but not a retry reconnect.
+     * THis is the complement from the generalConnectEvent to the retryReconnectEvent.
+     */
+    private readonly _noRetryConnectEvent: EventEmitter<void> = new EventEmitter<void>();
+
+    /**
+     * Getter for the no-retry connect event.
+     */
+    public get noRetryConnectEvent(): EventEmitter<void> {
+        return this._noRetryConnectEvent;
+    }
+
+    /**
      * Listeners will be nofitied, if the wesocket connection is establiched.
      */
-    private readonly _connectEvent: EventEmitter<void> = new EventEmitter<void>();
+    private readonly _generalConnectEvent: EventEmitter<void> = new EventEmitter<void>();
 
     /**
      * Getter for the connect event.
      */
-    public get connectEvent(): EventEmitter<void> {
-        return this._connectEvent;
+    public get generalConnectEvent(): EventEmitter<void> {
+        return this._generalConnectEvent;
     }
 
     /**
@@ -234,12 +247,14 @@ export class WebsocketService {
                     return;
                 }
 
+                this._connectionOpen = true;
                 if (retry) {
                     this.dismissConnectionErrorNotice();
                     this._retryReconnectEvent.emit();
+                } else {
+                    this._noRetryConnectEvent.emit();
                 }
-                this._connectionOpen = true;
-                this._connectEvent.emit();
+                this._generalConnectEvent.emit();
                 this.sendQueueWhileNotConnected.forEach(entry => {
                     this.websocket.send(entry);
                 });

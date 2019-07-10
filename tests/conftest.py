@@ -55,9 +55,10 @@ def pytest_collection_modifyitems(items):
 
 
 @pytest.fixture(autouse=True)
-def constants(request):
+def constants(request, reset_cache):
     """
-    Resets the constants on every test.
+    Resets the constants on every test. The filled cache is needed to
+    build the constants, because some of them depends on the config.
 
     Uses fake constants, if the db is not in use.
     """

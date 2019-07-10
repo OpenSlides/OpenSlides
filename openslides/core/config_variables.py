@@ -401,3 +401,12 @@ def get_config_variables():
         weight=1000,
         group="Custom translations",
     )
+
+    # Config version
+    yield ConfigVariable(
+        name="config_version",
+        input_type="integer",
+        default_value=1,
+        group="Version",
+        hidden=True,
+    )
