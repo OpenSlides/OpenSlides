@@ -746,15 +746,15 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     }
 
     /**
-     * Using Meta, Alt + the arrow keys will navigate between the motions
+     * Using Shift, Alt + the arrow keys will navigate between the motions
      *
      * @param event has the key code
      */
-    public onKeyNavigation(event: KeyboardEvent): void {
-        if (event.key === 'ArrowLeft' && event.altKey && event.metaKey) {
+    @HostListener('document:keydown', ['$event']) public onKeyNavigation(event: KeyboardEvent): void {
+        if (event.key === 'ArrowLeft' && event.altKey && event.shiftKey) {
             this.navigateToMotion(this.previousMotion);
         }
-        if (event.key === 'ArrowRight' && event.altKey && event.metaKey) {
+        if (event.key === 'ArrowRight' && event.altKey && event.shiftKey) {
             this.navigateToMotion(this.nextMotion);
         }
     }
