@@ -5,7 +5,7 @@ from django.db import transaction
 
 from ..core.config import config
 from ..poll.serializers import default_votes_validator
-from ..utils.auth import get_group_model
+from ..utils.auth import get_group_model, has_perm
 from ..utils.autoupdate import inform_changed_data
 from ..utils.rest_api import (
     BooleanField,
@@ -97,10 +97,12 @@ class MotionBlockSerializer(ModelSerializer):
         agenda_create = validated_data.pop("agenda_create", None)
         agenda_type = validated_data.pop("agenda_type", None)
         agenda_parent_id = validated_data.pop("agenda_parent_id", None)
+        request_user = validated_data.pop("request_user")  # this should always be there
         motion_block = MotionBlock(**validated_data)
-        motion_block.agenda_item_update_information["create"] = agenda_create
-        motion_block.agenda_item_update_information["type"] = agenda_type
-        motion_block.agenda_item_update_information["parent_id"] = agenda_parent_id
+        if has_perm(request_user, "agenda.can_manage"):
+            motion_block.agenda_item_update_information["create"] = agenda_create
+            motion_block.agenda_item_update_information["type"] = agenda_type
+            motion_block.agenda_item_update_information["parent_id"] = agenda_parent_id
         motion_block.save()
         return motion_block
 
@@ -535,15 +537,16 @@ class MotionSerializer(ModelSerializer):
         motion.parent = validated_data.get("parent")
         motion.statute_paragraph = validated_data.get("statute_paragraph")
         motion.reset_state(validated_data.get("workflow_id"))
-        motion.agenda_item_update_information["create"] = validated_data.get(
-            "agenda_create"
-        )
-        motion.agenda_item_update_information["type"] = validated_data.get(
-            "agenda_type"
-        )
-        motion.agenda_item_update_information["parent_id"] = validated_data.get(
-            "agenda_parent_id"
-        )
+        if has_perm(validated_data["request_user"], "agenda.can_manage"):
+            motion.agenda_item_update_information["create"] = validated_data.get(
+                "agenda_create"
+            )
+            motion.agenda_item_update_information["type"] = validated_data.get(
+                "agenda_type"
+            )
+            motion.agenda_item_update_information["parent_id"] = validated_data.get(
+                "agenda_parent_id"
+            )
         motion.save()
         motion.supporters.add(*validated_data.get("supporters", []))
         motion.attachments.add(*validated_data.get("attachments", []))

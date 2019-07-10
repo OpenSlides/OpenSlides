@@ -1444,6 +1444,9 @@ class MotionBlockViewSet(ModelViewSet):
             result = False
         return result
 
+    def perform_create(self, serializer):
+        serializer.save(request_user=self.request.user)
+
     @detail_route(methods=["post"])
     def follow_recommendations(self, request, pk=None):
         """

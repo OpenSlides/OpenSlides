@@ -2,6 +2,7 @@ from django.db import transaction
 
 from openslides.poll.serializers import default_votes_validator
 from openslides.utils.rest_api import (
+    BooleanField,
     DecimalField,
     DictField,
     IntegerField,
@@ -11,6 +12,7 @@ from openslides.utils.rest_api import (
     ValidationError,
 )
 
+from ..utils.auth import has_perm
 from ..utils.autoupdate import inform_changed_data
 from ..utils.validate import validate_html
 from .models import (
@@ -186,8 +188,9 @@ class AssignmentFullSerializer(ModelSerializer):
         many=True, read_only=True
     )
     polls = AssignmentAllPollSerializer(many=True, read_only=True)
+    agenda_create = BooleanField(write_only=True, required=False, allow_null=True)
     agenda_type = IntegerField(
-        write_only=True, required=False, min_value=1, max_value=3
+        write_only=True, required=False, min_value=1, max_value=3, allow_null=True
     )
     agenda_parent_id = IntegerField(write_only=True, required=False, min_value=1)
 
@@ -204,6 +207,7 @@ class AssignmentFullSerializer(ModelSerializer):
             "polls",
             "agenda_item_id",
             "list_of_speakers_id",
+            "agenda_create",
             "agenda_type",
             "agenda_parent_id",
             "tags",
@@ -221,13 +225,19 @@ class AssignmentFullSerializer(ModelSerializer):
         Customized create method. Set information about related agenda item
         into agenda_item_update_information container.
         """
-        agenda_type = validated_data.pop("agenda_type", None)
-        agenda_parent_id = validated_data.pop("agenda_parent_id", None)
         tags = validated_data.pop("tags", [])
         attachments = validated_data.pop("attachments", [])
+        request_user = validated_data.pop("request_user")  # this should always be there
+        agenda_create = validated_data.pop("agenda_create", None)
+        agenda_type = validated_data.pop("agenda_type", None)
+        agenda_parent_id = validated_data.pop("agenda_parent_id", None)
+
         assignment = Assignment(**validated_data)
-        assignment.agenda_item_update_information["type"] = agenda_type
-        assignment.agenda_item_update_information["parent_id"] = agenda_parent_id
+        if has_perm(request_user, "agenda.can_manage"):
+            assignment.agenda_item_update_information["create"] = agenda_create
+            assignment.agenda_item_update_information["type"] = agenda_type
+            assignment.agenda_item_update_information["parent_id"] = agenda_parent_id
+
         assignment.save()
         assignment.tags.add(*tags)
         assignment.attachments.add(*attachments)
