@@ -106,6 +106,7 @@ class ProjectorSerializer(ModelSerializer):
             "height",
             "reference_projector",
             "projectiondefaults",
+            "color",
             "background_color",
             "header_background_color",
             "header_font_color",

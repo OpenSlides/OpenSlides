@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, Subject } from 'rxjs';
 
 import { WebsocketService } from 'app/core/core-services/websocket.service';
 import { ProjectorElement, Projector } from 'app/shared/models/core/projector';
+import { auditTime } from 'rxjs/operators';
 
 export interface SlideData<T = { error?: string }, P extends ProjectorElement = ProjectorElement> {
     data: T;
@@ -37,11 +38,18 @@ export class ProjectorDataService {
     private currentProjectorData: { [id: number]: BehaviorSubject<ProjectorData | null> } = {};
 
     /**
+     * When multiple projectory are requested, debounce these requests to just issue
+     * one request, with all the needed projectors.
+     */
+    private readonly updateProjectorDataDebounceSubject = new Subject<void>();
+
+    /**
      * Constructor.
      *
      * @param websocketService
      */
     public constructor(private websocketService: WebsocketService) {
+        // Dispatch projector data.
         this.websocketService.getOberservable('projector').subscribe((update: AllProjectorData) => {
             Object.keys(update).forEach(_id => {
                 const id = parseInt(_id, 10);
@@ -51,7 +59,16 @@ export class ProjectorDataService {
             });
         });
 
+        // The service need to re-register, if the websocket connection was lost.
         this.websocketService.generalConnectEvent.subscribe(() => this.updateProjectorDataSubscription());
+
+        // With a bit of debounce, update the needed projectors.
+        this.updateProjectorDataDebounceSubject.pipe(auditTime(10)).subscribe(() => {
+            const allActiveProjectorIds = Object.keys(this.openProjectorInstances)
+                .map(id => parseInt(id, 10))
+                .filter(id => this.openProjectorInstances[id] > 0);
+            this.websocketService.send('listenToProjectors', { projector_ids: allActiveProjectorIds });
+        });
     }
 
     /**
@@ -94,13 +111,10 @@ export class ProjectorDataService {
     }
 
     /**
-     * Gets initial data and keeps reuesting data.
+     * Requests to update the data subscription to the server.
      */
     private updateProjectorDataSubscription(): void {
-        const allActiveProjectorIds = Object.keys(this.openProjectorInstances)
-            .map(id => parseInt(id, 10))
-            .filter(id => this.openProjectorInstances[id] > 0);
-        this.websocketService.send('listenToProjectors', { projector_ids: allActiveProjectorIds });
+        this.updateProjectorDataDebounceSubject.next();
     }
 
     /**

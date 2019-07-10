@@ -66,6 +66,10 @@ export class ViewProjector extends BaseViewModel<Projector> {
         return this.projector.reference_projector_id;
     }
 
+    public get color(): string {
+        return this.projector.color;
+    }
+
     public get background_color(): string {
         return this.projector.background_color;
     }
