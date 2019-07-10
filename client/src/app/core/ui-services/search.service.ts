@@ -1,4 +1,7 @@
 import { Injectable } from '@angular/core';
+
+import { TranslateService } from '@ngx-translate/core';
+
 import { Searchable } from '../../site/base/searchable';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { BaseRepository } from '../repositories/base-repository';
@@ -55,7 +58,7 @@ export interface SearchResult {
     openInNewTab: boolean;
 
     /**
-     * All matched models.
+     * All matched models sorted by their title.
      */
     models: (BaseViewModel & Searchable)[];
 }
@@ -79,9 +82,19 @@ export class SearchService {
     }[] = [];
 
     /**
+     * For sorting the results.
+     */
+    private languageCollator: Intl.Collator;
+
+    /**
      * @param viewModelStore The store to search in.
      */
-    public constructor(private viewModelStore: ViewModelStoreService) {}
+    public constructor(private viewModelStore: ViewModelStoreService, private translate: TranslateService) {
+        this.languageCollator = new Intl.Collator(this.translate.currentLang);
+        this.translate.onLangChange.subscribe(params => {
+            this.languageCollator = new Intl.Collator(params.lang);
+        });
+    }
 
     /**
      * Registers a model by the given attributes.
@@ -96,7 +109,6 @@ export class SearchService {
         displayOrder: number,
         openInNewTab: boolean = false
     ): void {
-        // const instance = new ctor();
         this.searchModels.push({
             collectionString: collectionString,
             verboseNameSingular: repo.getVerboseName(),
@@ -124,7 +136,7 @@ export class SearchService {
      *
      * @param query The search query
      * @param inCollectionStrings All connection strings which should be used for searching.
-     * @returns All search results.
+     * @returns All search results sorted by the model's title (via `getTItle()`).
      */
     public search(query: string, inCollectionStrings: string[]): SearchResult[] {
         query = query.toLowerCase();
@@ -134,7 +146,10 @@ export class SearchService {
                 const results = this.viewModelStore
                     .getAll(searchModel.collectionString)
                     .map(x => x as (BaseViewModel & Searchable))
-                    .filter(model => model.formatForSearch().some(text => text.toLowerCase().includes(query)));
+                    .filter(model => model.formatForSearch().some(text => text.toLowerCase().includes(query)))
+                    .sort((a, b) => {
+                        return this.languageCollator.compare(a.getTitle(), b.getTitle());
+                    });
                 return {
                     collectionString: searchModel.collectionString,
                     verboseName: results.length === 1 ? searchModel.verboseNameSingular : searchModel.verboseNamePlural,
