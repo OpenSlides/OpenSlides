@@ -1,3 +1,4 @@
+<div (window:keydown)="onKeyNavigation($event)"></div>
 <os-head-bar
     [mainButton]="perms.isAllowed('update', motion)"
     mainButtonIcon="edit"
@@ -101,7 +102,12 @@
                 <span translate>Show entire motion text</span>
             </button>
 
-            <button mat-menu-item *osPerms="'core.can_see_history'" [routerLink]="['/history']" [queryParams]="{element: motion.elementId}">
+            <button
+                mat-menu-item
+                *osPerms="'core.can_see_history'"
+                [routerLink]="['/history']"
+                [queryParams]="{ element: motion.elementId }"
+            >
                 <mat-icon>history</mat-icon>
                 <span translate>
                     History
@@ -126,10 +132,16 @@
         <div class="title-line">
             <h1 class="motion-title">
                 <span *ngIf="titleCanBeChanged()">
-                    <span class="title-change-indicator" *ngIf="getTitleChangingObject()"
-                          (click)="gotoChangeRecommendation(getTitleChangingObject())"></span>
-                    <span class="change-title" *osPerms="'motions.can_manage'; and: !getTitleChangingObject()"
-                          (click)="createTitleChangeRecommendation()"></span>
+                    <span
+                        class="title-change-indicator"
+                        *ngIf="getTitleChangingObject()"
+                        (click)="gotoChangeRecommendation(getTitleChangingObject())"
+                    ></span>
+                    <span
+                        class="change-title"
+                        *osPerms="'motions.can_manage'; and: !getTitleChangingObject()"
+                        (click)="createTitleChangeRecommendation()"
+                    ></span>
                 </span>
 
                 {{ getTitleWithChanges() }}
@@ -250,7 +262,8 @@
                 [inputValue]="newStateExtension"
                 [classes]="motion.stateCssColor"
                 extensionLabel="{{ 'Extension' | translate }}"
-                (success)="setStateExtension($event)">
+                (success)="setStateExtension($event)"
+            >
                 <span class="trigger-menu">
                     <button *ngFor="let state of motion.nextStates" mat-menu-item (click)="setState(state.id)">
                         {{ state.name | translate }} <span *ngIf="state.show_state_extension_field">&nbsp;...</span>
@@ -281,7 +294,8 @@
                 [searchList]="motionObserver"
                 searchListLabel="{{ 'Motions' | translate }}"
                 listValuePrefix="motion:"
-                (success)="setRecommendationExtension($event)">
+                (success)="setRecommendationExtension($event)"
+            >
                 <span class="trigger-menu">
                     <button
                         *ngFor="let recommendation of motion.possibleRecommendations"
@@ -292,10 +306,7 @@
                         <span *ngIf="recommendation.show_recommendation_extension_field">&nbsp;...</span>
                     </button>
                     <mat-divider></mat-divider>
-                    <button
-                        mat-menu-item
-                        (click)="setRecommendation(null)"
-                    >
+                    <button mat-menu-item (click)="setRecommendation(null)">
                         <mat-icon>replay</mat-icon> {{ 'Reset recommendation' | translate }}
                     </button>
                 </span>
@@ -781,7 +792,10 @@
                     </mat-list>
                 </div>
                 <div *osPerms="'motions.can_manage'; and: editMotion">
-                    <os-attachment-control (errorHandler)="showUploadError($event)" [controlName]="contentForm.get('attachments_id')"></os-attachment-control>
+                    <os-attachment-control
+                        (errorHandler)="showUploadError($event)"
+                        [controlName]="contentForm.get('attachments_id')"
+                    ></os-attachment-control>
                 </div>
             </div>
 

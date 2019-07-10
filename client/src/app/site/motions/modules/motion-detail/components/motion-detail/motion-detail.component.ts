@@ -746,6 +746,20 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     }
 
     /**
+     * Using Meta, Alt + the arrow keys will navigate between the motions
+     *
+     * @param event has the key code
+     */
+    public onKeyNavigation(event: KeyboardEvent): void {
+        if (event.key === 'ArrowLeft' && event.altKey && event.metaKey) {
+            this.navigateToMotion(this.previousMotion);
+        }
+        if (event.key === 'ArrowRight' && event.altKey && event.metaKey) {
+            this.navigateToMotion(this.nextMotion);
+        }
+    }
+
+    /**
      * Before updating or creating, the motions needs to be prepared for paragraph based amendments.
      * A motion of type T is created, prepared and deserialized from the given motionValues
      *

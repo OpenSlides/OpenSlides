@@ -2,17 +2,22 @@
 <div>
     <h4 *ngIf="title">{{ title }}</h4>
     <mat-menu #triggerMenu="matMenu">
-        <ng-container
-            [ngTemplateOutlet]="triggerTemplate">
-        </ng-container>
+        <ng-container [ngTemplateOutlet]="triggerTemplate"> </ng-container>
     </mat-menu>
     <os-icon-container
         iconTooltip="{{ 'Edit' | translate }}"
         icon="create"
         [swap]="true"
         [showIcon]="!editMode && canBeEdited && hasExtension"
-        (iconAction)="changeEditMode()">
-        <mat-basic-chip *ngIf="canBeEdited" [matMenuTriggerFor]="triggerMenu" [ngClass]="classes" class="pointer" disableRipple>
+        (iconAction)="changeEditMode()"
+    >
+        <mat-basic-chip
+            *ngIf="canBeEdited"
+            [matMenuTriggerFor]="triggerMenu"
+            [ngClass]="classes"
+            class="pointer"
+            disableRipple
+        >
             {{ chipValue || '–' }}
         </mat-basic-chip>
         <mat-basic-chip *ngIf="!canBeEdited" [ngClass]="classes" disableRipple>
@@ -22,15 +27,14 @@
 </div>
 
 <!-- Extension field -->
-<div
-    *ngIf="hasExtension && editMode"
-    class="spacer-top-10 extension-container"
->
+<div *ngIf="hasExtension && editMode" class="spacer-top-10 extension-container">
     <mat-form-field>
         <input
             matInput
+            osAutofocus
             [(ngModel)]="inputControl"
             placeholder="{{ extensionLabel }}"
+            (keydown)="keyDownFunction($event)"
         />
     </mat-form-field>
     <os-search-value-selector
