@@ -82,7 +82,7 @@ OpenSlides uses the following software or parts of them:
 - [acorn@6.1.1](https://github.com/acornjs/acorn), License: MIT
 - [core-js@3.1.4](https://github.com/zloirock/core-js), License: MIT
 - [css-element-queries@1.2.0](https://github.com/marcj/css-element-queries), License: MIT
-- [exceljs@1.13.0](https://github.com/exceljs/exceljs), License: MIT
+- [exceljs@1.10.0](https://github.com/exceljs/exceljs), License: MIT
 - [file-saver@2.0.2](https://github.com/eligrey/FileSaver.js), License: MIT
 - [hammerjs@2.0.8](https://github.com/hammerjs/hammer.js), License: MIT
 - [lz4js@0.2.0](https://github.com/Benzinga/lz4js), License: ISC
