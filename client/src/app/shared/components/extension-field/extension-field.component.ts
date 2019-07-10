@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Router, NavigationEnd } from '@angular/router';
@@ -8,7 +8,7 @@ import { Router, NavigationEnd } from '@angular/router';
     templateUrl: './extension-field.component.html',
     styleUrls: ['./extension-field.component.scss']
 })
-export class ExtensionFieldComponent implements OnInit, OnDestroy, AfterViewInit {
+export class ExtensionFieldComponent implements OnInit, OnDestroy {
     /**
      * Optional additional classes for the `mat-chip`.
      */
@@ -28,32 +28,10 @@ export class ExtensionFieldComponent implements OnInit, OnDestroy, AfterViewInit
     public chipValue: string;
 
     /**
-     * Allow automatically jump into autoEdit
-     */
-    private allowAutoEdit = false;
-
-    /**
      * Boolean, whether the extension should be shown.
      */
-    private _hasExtension = false;
-
-    /**
-     * Setter for the extension condition
-     */
-    @Input() public set hasExtension(extension: boolean) {
-        this._hasExtension = extension;
-
-        if (this.hasExtension && this.allowAutoEdit) {
-            this.editMode = true;
-        }
-    }
-
-    /**
-     * Getter for the extension condition
-     */
-    public get hasExtension(): boolean {
-        return this._hasExtension;
-    }
+    @Input()
+    public hasExtension = false;
 
     /**
      * Optional label for the input.
@@ -191,13 +169,6 @@ export class ExtensionFieldComponent implements OnInit, OnDestroy, AfterViewInit
                     }
                 });
         }
-    }
-
-    /**
-     * After view inits, allow to automatically open the edit view
-     */
-    public ngAfterViewInit(): void {
-        this.allowAutoEdit = true;
     }
 
     /**
