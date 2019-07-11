@@ -1,5 +1,5 @@
 <div *ngIf="data">
-    <div *ngIf="isImage" [ngClass]="data.element.fullscreen ? 'fullscreen' : 'nofullscreen'" >
+    <div *ngIf="isImage" [ngClass]="data.element.fullscreen ? 'fullscreen' : 'nofullscreen'">
         <img [src]="url" alt="" />
     </div>
     <div *ngIf="isPdf" class="fullscreen">
@@ -11,6 +11,7 @@
             [page]="data.element.page || 1"
             [zoom]="zoom"
             [src]="url"
-            style="display: block;"></pdf-viewer>
+            style="display: block;"
+        ></pdf-viewer>
     </div>
 </div>

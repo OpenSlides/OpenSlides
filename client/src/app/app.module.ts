@@ -11,7 +11,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
 import { environment } from '../environments/environment';
-import { GlobalSpinnerComponent } from './site/common/components/global-spinner/global-spinner.component';
 import { LoginModule } from './site/login/login.module';
 import { OpenSlidesTranslateModule } from './core/translate/openslides-translate-module';
 import { SlidesModule } from './slides/slides.module';
@@ -28,7 +27,7 @@ export function AppLoaderFactory(appLoadService: AppLoadService): () => Promise<
  * Global App Module. Keep it as clean as possible.
  */
 @NgModule({
-    declarations: [AppComponent, GlobalSpinnerComponent],
+    declarations: [AppComponent],
     imports: [
         BrowserModule,
         HttpClientModule,

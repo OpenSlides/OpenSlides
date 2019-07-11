@@ -28,6 +28,11 @@
     </div>
     <div class="spacer"></div>
 
+    <!-- Button to open the global search -->
+    <button *ngIf="!vp.isMobile" mat-icon-button (click)="openSearch()">
+        <mat-icon>search</mat-icon>
+    </button>
+
     <div class="toolbar-right">
         <!-- Extra controls slot -->
         <ng-content select=".extra-controls-slot"></ng-content>

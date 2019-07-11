@@ -36,7 +36,7 @@ export class ViewStatuteParagraph extends BaseViewModel<StatuteParagraph>
     }
 
     public formatForSearch(): SearchRepresentation {
-        return [this.title];
+        return { properties: [{ key: 'Title', value: this.getTitle() }], searchValue: [this.getTitle()] };
     }
 
     public getDetailStateURL(): string {

@@ -51,11 +51,7 @@ export class ViewMediafile extends BaseViewModelWithListOfSpeakers<Mediafile>
     }
 
     public get title(): string {
-        if (this.is_directory) {
-            return this.mediafile.path;
-        } else {
-            return this.mediafile.title;
-        }
+        return this.filename;
     }
 
     public get filename(): string {
@@ -78,7 +74,7 @@ export class ViewMediafile extends BaseViewModelWithListOfSpeakers<Mediafile>
         return !this.is_directory;
     }
 
-    public get size(): string {
+    public get size(): string | null {
         return this.mediafile.filesize;
     }
 
@@ -90,7 +86,7 @@ export class ViewMediafile extends BaseViewModelWithListOfSpeakers<Mediafile>
         return this.mediafile.url;
     }
 
-    public get type(): string {
+    public get type(): string | null {
         return this.mediafile.mediafile ? this.mediafile.mediafile.type : '';
     }
 
@@ -103,11 +99,23 @@ export class ViewMediafile extends BaseViewModelWithListOfSpeakers<Mediafile>
     }
 
     public formatForSearch(): SearchRepresentation {
-        return [this.title, this.path];
+        const type = this.is_directory ? 'directory' : this.type;
+        const properties = [
+            { key: 'Title', value: this.getTitle() },
+            { key: 'Path', value: this.path },
+            { key: 'Type', value: type },
+            { key: 'Timestamp', value: this.timestamp },
+            { key: 'Size', value: this.size ? this.size : '0' }
+        ];
+        return {
+            properties,
+            searchValue: properties.map(property => property.value),
+            type: type
+        };
     }
 
     public getDetailStateURL(): string {
-        return this.url;
+        return this.is_directory ? ('/mediafiles/files/' + this.path).slice(0, -1) : this.url;
     }
 
     public getSlide(): ProjectorElementBuildDeskriptor {

@@ -42,7 +42,7 @@ export class ViewMotionBlock extends BaseViewModelWithAgendaItemAndListOfSpeaker
      * @override
      */
     public formatForSearch(): SearchRepresentation {
-        return [this.title];
+        return { properties: [{ key: 'Title', value: this.getTitle() }], searchValue: [this.getTitle()] };
     }
 
     /**

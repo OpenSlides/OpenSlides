@@ -1,8 +1,23 @@
-import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    EventEmitter,
+    HostBinding,
+    Input,
+    OnDestroy,
+    OnInit,
+    Output,
+    ViewChild
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+
+/**
+ * Type declared to see, which values are possible for some inputs.
+ */
+export type Size = 'small' | 'medium' | 'large';
 
 @Component({
     selector: 'os-rounded-input',
@@ -10,6 +25,14 @@ import { debounceTime } from 'rxjs/operators';
     styleUrls: ['./rounded-input.component.scss']
 })
 export class RoundedInputComponent implements OnInit, OnDestroy {
+    /**
+     * Binds the class to the parent-element.
+     */
+    @HostBinding('class')
+    public get classes(): string {
+        return this.fullWidth ? 'full-width' : '';
+    }
+
     /**
      * Reference to the `<input />`-element.
      */
@@ -45,7 +68,13 @@ export class RoundedInputComponent implements OnInit, OnDestroy {
      * Defaults to `'medium'`.
      */
     @Input()
-    public size: 'small' | 'medium' | 'large' = 'medium';
+    public size: Size = 'medium';
+
+    /**
+     * Whether this component should render over the full width.
+     */
+    @Input()
+    public fullWidth = true;
 
     /**
      * Custom `FormControl`.
@@ -58,6 +87,12 @@ export class RoundedInputComponent implements OnInit, OnDestroy {
      */
     @Input()
     public autofocus = false;
+
+    /**
+     * Boolean, whether the input should keep the focus, even if it loses the focus.
+     */
+    @Input()
+    public keepFocus = false;
 
     /**
      * Boolean, whether the input should fire the value-change-event after a specific time.
@@ -78,6 +113,20 @@ export class RoundedInputComponent implements OnInit, OnDestroy {
     public clearOnEscape = true;
 
     /**
+     * Boolean to indicate, whether the input should have rounded borders at the bottom or not.
+     */
+    @Input()
+    public hasChildren = false;
+
+    /**
+     * Boolean to indicate, whether the borders should be rounded with a smaller size.
+     */
+    @Input()
+    public set typeBorderRadius(radius: Size) {
+        this._borderRadius = radius + '-border-radius';
+    }
+
+    /**
      * EventHandler for the input-changes.
      */
     @Output()
@@ -90,9 +139,22 @@ export class RoundedInputComponent implements OnInit, OnDestroy {
     public onkeyup: EventEmitter<KeyboardEvent> = new EventEmitter();
 
     /**
+     * Getter to get the border-radius as a string.
+     *
+     * @returns {string} The border-radius as class.
+     */
+    public get borderRadius(): string {
+        return this._borderRadius;
+    }
+    /**
      * Subscription, that will handle the value-changes of the input.
      */
     private subscription: Subscription;
+
+    /**
+     * Variable for the border-radius as class.
+     */
+    private _borderRadius = 'large-border-radius';
 
     /**
      * Default constructor
@@ -107,6 +169,9 @@ export class RoundedInputComponent implements OnInit, OnDestroy {
      * Overwrites `OnInit` - initializes the subscription.
      */
     public ngOnInit(): void {
+        if (this.autofocus) {
+            this.focus();
+        }
         this.subscription = this.modelForm.valueChanges
             .pipe(debounceTime(this.lazyInput ? 250 : 0))
             .subscribe(nextValue => {
@@ -128,8 +193,24 @@ export class RoundedInputComponent implements OnInit, OnDestroy {
      * Function to clear the input and refocus it.
      */
     public clear(): void {
-        this.osInput.nativeElement.focus();
+        this.focus();
         this.modelForm.setValue('');
+    }
+
+    /**
+     * Function to programmatically focus the input.
+     */
+    public focus(): void {
+        this.osInput.nativeElement.focus();
+    }
+
+    /**
+     * Function called, if the input loses its focus.
+     */
+    public blur(): void {
+        if (this.keepFocus) {
+            this.focus();
+        }
     }
 
     /**

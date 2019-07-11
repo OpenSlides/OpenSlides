@@ -16,6 +16,14 @@ export function isSearchable(object: any): object is Searchable {
 export interface Searchable extends DetailNavigable {
     /**
      * Should return strings that represents the object.
+     *
+     * The result contains two properties: The `searchValue`, `properties` and optional `type`.
+     *
+     * `searchValue` is an array as summary of the properties.
+     *
+     * `properties` is an array of key-value pair.
+     *
+     * `type` - in case of mediafiles - describes, which type the mediafile has.
      */
     formatForSearch: () => SearchRepresentation;
 }

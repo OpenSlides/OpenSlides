@@ -1,0 +1,33 @@
+.overlay-component {
+    z-index: 999;
+}
+
+.overlay-component {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .overlay-content {
+        z-index: 900;
+        position: absolute;
+        transition: all 0.25s ease;
+
+        &.top {
+            top: 20%;
+        }
+        &.right {
+            right: 32px;
+        }
+        &.left {
+            left: 32px;
+        }
+        &.bottom {
+            bottom: 20%;
+        }
+    }
+    .overlay-backdrop {
+        z-index: 899;
+        background-color: #303030;
+        opacity: 0.8;
+    }
+}

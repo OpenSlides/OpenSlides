@@ -12,6 +12,9 @@
 
 .action-buttons {
     display: flex;
+    os-rounded-input {
+        margin: 0 10px;
+    }
 }
 
 .active-filter {
@@ -73,8 +76,4 @@ span.right-with-margin {
     display: none;
     height: 0px;
     width: 0px;
-}
-
-os-rounded-input {
-    margin: 0 10px;
 }

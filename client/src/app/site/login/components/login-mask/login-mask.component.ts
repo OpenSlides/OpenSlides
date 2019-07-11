@@ -10,7 +10,7 @@ import { Subscription } from 'rxjs';
 import { AuthService } from 'app/core/core-services/auth.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { LoginDataService } from 'app/core/ui-services/login-data.service';
-import { SpinnerService } from 'app/core/ui-services/spinner.service';
+import { OverlayService } from 'app/core/ui-services/overlay.service';
 import { ParentErrorStateMatcher } from 'app/shared/parent-error-state-matcher';
 import { BaseViewComponent } from 'app/site/base/base-view';
 
@@ -62,7 +62,7 @@ export class LoginMaskComponent extends BaseViewComponent implements OnInit, OnD
      * @param httpService used to get information before the login
      * @param OpenSlides The Service for OpenSlides
      * @param loginDataService provide information about the legal notice and privacy policy
-     * @param spinnerService Service to show the spinner when the user is signing in
+     * @param overlayService Service to show the spinner when the user is signing in
      */
     public constructor(
         title: Title,
@@ -74,11 +74,10 @@ export class LoginMaskComponent extends BaseViewComponent implements OnInit, OnD
         private route: ActivatedRoute,
         private formBuilder: FormBuilder,
         private loginDataService: LoginDataService,
-        private spinnerService: SpinnerService
+        private overlayService: OverlayService
     ) {
         super(title, translate, matSnackBar);
         // Hide the spinner if the user is at `login-mask`
-        spinnerService.setVisibility(false);
         this.createForm();
     }
 
@@ -138,7 +137,7 @@ export class LoginMaskComponent extends BaseViewComponent implements OnInit, OnD
         this.loginErrorMsg = '';
         try {
             await this.authService.login(this.loginForm.value.username, this.loginForm.value.password, () => {
-                this.spinnerService.setVisibility(true, this.translate.instant('Loading data. Please wait ...'));
+                this.overlayService.setSpinner(true, this.translate.instant('Loading data. Please wait...'));
                 this.clearOperatorSubscription(); // We take control, not the subscription.
             });
         } catch (e) {

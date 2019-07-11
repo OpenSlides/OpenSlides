@@ -97,6 +97,11 @@ import { ExtensionFieldComponent } from './components/extension-field/extension-
 import { AttachmentControlComponent } from './components/attachment-control/attachment-control.component';
 import { RoundedInputComponent } from './components/rounded-input/rounded-input.component';
 import { ProgressSnackBarComponent } from './components/progress-snack-bar/progress-snack-bar.component';
+import { SuperSearchComponent } from 'app/site/common/components/super-search/super-search.component';
+import { OverlayComponent } from 'app/site/common/components/overlay/overlay.component';
+import { PreviewComponent } from './components/preview/preview.component';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { GlobalSpinnerComponent } from 'app/site/common/components/global-spinner/global-spinner.component';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -157,7 +162,8 @@ import { ProgressSnackBarComponent } from './components/progress-snack-bar/progr
         ScrollingModule,
         PblNgridModule,
         PblNgridMaterialModule,
-        PblNgridTargetEventsModule
+        PblNgridTargetEventsModule,
+        PdfViewerModule
     ],
     exports: [
         FormsModule,
@@ -197,6 +203,7 @@ import { ProgressSnackBarComponent } from './components/progress-snack-bar/progr
         NgxFileDropModule,
         TranslateModule,
         OpenSlidesTranslateModule,
+        PdfViewerModule,
         PermsDirective,
         IsSuperAdminDirective,
         DomChangeDirective,
@@ -236,7 +243,10 @@ import { ProgressSnackBarComponent } from './components/progress-snack-bar/progr
         ListViewTableComponent,
         AgendaContentObjectFormComponent,
         ExtensionFieldComponent,
-        RoundedInputComponent
+        RoundedInputComponent,
+        GlobalSpinnerComponent,
+        OverlayComponent,
+        PreviewComponent
     ],
     declarations: [
         PermsDirective,
@@ -276,7 +286,11 @@ import { ProgressSnackBarComponent } from './components/progress-snack-bar/progr
         ExtensionFieldComponent,
         AttachmentControlComponent,
         RoundedInputComponent,
-        ProgressSnackBarComponent
+        ProgressSnackBarComponent,
+        GlobalSpinnerComponent,
+        SuperSearchComponent,
+        OverlayComponent,
+        PreviewComponent
     ],
     providers: [
         { provide: DateAdapter, useClass: OpenSlidesDateAdapter },
@@ -294,7 +308,8 @@ import { ProgressSnackBarComponent } from './components/progress-snack-bar/progr
         PromptDialogComponent,
         ChoiceDialogComponent,
         ProjectionDialogComponent,
-        ProgressSnackBarComponent
+        ProgressSnackBarComponent,
+        SuperSearchComponent
     ]
 })
 export class SharedModule {}

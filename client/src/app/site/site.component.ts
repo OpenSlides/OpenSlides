@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSidenav } from '@angular/material/sidenav';
@@ -12,6 +12,7 @@ import { filter } from 'rxjs/operators';
 import { navItemAnim, pageTransition } from '../shared/animations';
 import { OfflineService } from 'app/core/core-services/offline.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { OverlayService } from 'app/core/ui-services/overlay.service';
 import { UpdateService } from 'app/core/ui-services/update.service';
 import { langToLocale } from 'app/shared/utils/lang-to-locale';
 import { AuthService } from '../core/core-services/auth.service';
@@ -100,9 +101,11 @@ export class SiteComponent extends BaseComponent implements OnInit {
         public mainMenuService: MainMenuService,
         public OSStatus: OpenSlidesStatusService,
         public timeTravel: TimeTravelService,
-        private matSnackBar: MatSnackBar
+        private matSnackBar: MatSnackBar,
+        private overlayService: OverlayService
     ) {
         super(title, translate);
+        overlayService.setSpinner(true, translate.instant('Loading data. Please wait...'));
 
         this.operator.getViewUserObservable().subscribe(user => {
             if (user) {
@@ -209,6 +212,15 @@ export class SiteComponent extends BaseComponent implements OnInit {
     }
 
     /**
+     * Shows the `super-search.component`,
+     * only if the user is on a mobile device.
+     */
+    public toggleSearch(): void {
+        this.overlayService.showSearch();
+        this.mobileAutoCloseNav();
+    }
+
+    /**
      * Automatically close the navigation in while navigating in mobile mode
      */
     public mobileAutoCloseNav(): void {
@@ -250,6 +262,7 @@ export class SiteComponent extends BaseComponent implements OnInit {
      */
     public logout(): void {
         this.authService.logout();
+        this.overlayService.logout();
     }
 
     /**
@@ -293,15 +306,6 @@ export class SiteComponent extends BaseComponent implements OnInit {
     }
 
     /**
-     * Handler for the search bar
-     */
-    public search(): void {
-        const query = this.searchform.get('query').value;
-        this.searchform.reset();
-        this.router.navigate(['/search'], { queryParams: { query: query } });
-    }
-
-    /**
      * Get the timestamp for the current point in history mode.
      * Tries to detect the ideal timestamp format using the translation service
      *
@@ -309,5 +313,16 @@ export class SiteComponent extends BaseComponent implements OnInit {
      */
     public getHistoryTimestamp(): string {
         return this.OSStatus.getHistoryTimeStamp(langToLocale(this.translate.currentLang));
+    }
+
+    /**
+     * Function to open the global `super-search.component`.
+     *
+     * @param event KeyboardEvent to listen to keyboard-inputs.
+     */
+    @HostListener('document:keydown', ['$event']) public onKeyNavigation(event: KeyboardEvent): void {
+        if (event.altKey && event.shiftKey && event.code === 'KeyF') {
+            this.overlayService.showSearch();
+        }
     }
 }

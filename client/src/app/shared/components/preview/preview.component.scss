@@ -1,0 +1,18 @@
+.preview-container {
+    padding: 0 8px;
+
+    .key-part {
+        font-size: 11px;
+        color: #666666;
+
+        & + div {
+            margin-bottom: 5px;
+        }
+    }
+
+    img {
+        padding: 8px 0;
+        max-width: 100%;
+        height: auto;
+    }
+}

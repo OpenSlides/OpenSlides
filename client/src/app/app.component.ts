@@ -11,21 +11,29 @@ import { DataStoreUpgradeService } from './core/core-services/data-store-upgrade
 import { LoadFontService } from './core/ui-services/load-font.service';
 import { LoginDataService } from './core/ui-services/login-data.service';
 import { OperatorService } from './core/core-services/operator.service';
+import { OverlayService } from './core/ui-services/overlay.service';
 import { PingService } from './core/core-services/ping.service';
 import { PrioritizeService } from './core/core-services/prioritize.service';
 import { RoutingStateService } from './core/ui-services/routing-state.service';
 import { ServertimeService } from './core/core-services/servertime.service';
-import { SpinnerService } from './core/ui-services/spinner.service';
 import { ThemeService } from './core/ui-services/theme.service';
 import { ViewUser } from './site/users/models/view-user';
 
-/**
- * Enhance array with own functions
- * TODO: Remove once flatMap made its way into official JS/TS (ES 2019?)
- */
 declare global {
+    /**
+     * Enhance array with own functions
+     * TODO: Remove once flatMap made its way into official JS/TS (ES 2019?)
+     */
     interface Array<T> {
         flatMap(o: any): any[];
+    }
+
+    /**
+     * Enhances the number object to calculate real modulo operations.
+     * (not remainder)
+     */
+    interface Number {
+        modulo(n: number): number;
     }
 }
 
@@ -75,7 +83,7 @@ export class AppComponent {
         loginDataService: LoginDataService,
         constantsService: ConstantsService, // Needs to be started, so it can register itself to the WebsocketService
         themeService: ThemeService,
-        private spinnerService: SpinnerService,
+        private overlayService: OverlayService,
         countUsersService: CountUsersService, // Needed to register itself.
         configService: ConfigService,
         loadFontService: LoadFontService,
@@ -95,8 +103,9 @@ export class AppComponent {
         // change default JS functions
         this.overloadArrayToString();
         this.overloadFlatMap();
+        this.overloadModulo();
+
         // Show the spinner initial
-        spinnerService.setVisibility(true, translate.instant('Loading data. Please wait ...'));
 
         appRef.isStable
             .pipe(
@@ -174,12 +183,22 @@ export class AppComponent {
     }
 
     /**
+     * Enhances the number object with a real modulo operation (not remainder).
+     * TODO: Remove this, if the remainder operation is changed to modulo.
+     */
+    private overloadModulo(): void {
+        Number.prototype.modulo = function(n: number): number {
+            return ((this % n) + n) % n;
+        };
+    }
+
+    /**
      * Function to check if the user is existing and the app is already stable.
      * If both conditions true, hide the spinner.
      */
     private checkConnectionProgress(): void {
         if ((this.user || this.operator.isAnonymous) && this.isStable) {
-            this.spinnerService.setVisibility(false);
+            this.overlayService.setSpinner(false, null, true);
         }
     }
 }

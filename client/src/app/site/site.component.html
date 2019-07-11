@@ -90,13 +90,7 @@
                 </a>
             </span>
             <mat-divider></mat-divider>
-            <a
-                [@navItemAnim]
-                mat-list-item
-                routerLink="/search"
-                routerLinkActive="active"
-                (click)="mobileAutoCloseNav()"
-            >
+            <a [@navItemAnim] *ngIf="vp.isMobile" mat-list-item routerLinkActive="active" (click)="toggleSearch()">
                 <mat-icon>search</mat-icon>
                 <span translate>Search</span>
             </a>
@@ -156,3 +150,5 @@
         </div>
     </mat-sidenav-content>
 </mat-sidenav-container>
+
+<os-global-spinner></os-global-spinner>

@@ -7,11 +7,12 @@
         [autofocus]="autofocus"
         [placeholder]="placeholder"
         class="rounded-input"
-        [ngClass]="[size]"
+        [ngClass]="[size, borderRadius, hasChildren ? 'children-bottom' : '']"
         [formControl]="modelForm"
         (keyup)="keyPressed($event)"
+        (blur)="blur()"
     />
     <div *ngIf="modelForm.value !== ''" class="input-suffix">
-        <mat-icon (mouseup)="clear()">close</mat-icon>
+        <mat-icon (click)="clear()">close</mat-icon>
     </div>
 </div>

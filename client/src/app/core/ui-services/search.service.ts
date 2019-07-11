@@ -8,9 +8,50 @@ import { Searchable } from '../../site/base/searchable';
 import { ViewModelStoreService } from '../core-services/view-model-store.service';
 
 /**
- * The representation every searchable model should use to represent their data.
+ * Defines, how the properties look like
  */
-export type SearchRepresentation = string[];
+export interface SearchProperty {
+    /**
+     * A string, that contains the specific value.
+     */
+    key: string | null;
+
+    /**
+     * The value of the property as string.
+     */
+    value: string | null;
+
+    /**
+     * If some properties should be grouped into one card (for the preview),
+     * they can be unified to `blockProperties`.
+     */
+    blockProperties?: SearchProperty[];
+
+    /**
+     * A flag to specify, if a value could be rendered `innerHTML`.
+     */
+    trusted?: boolean;
+}
+
+/**
+ * SearchRepresentation the system looks by.
+ */
+export interface SearchRepresentation {
+    /**
+     * The representation every searchable model should use to represent their data.
+     */
+    searchValue: string[];
+
+    /**
+     * The properties the representation contains.
+     */
+    properties: SearchProperty[];
+
+    /**
+     * An optional type. This is useful for mediafiles to decide which type they have.
+     */
+    type?: string;
+}
 
 /**
  * Our representation of a searchable model for external use.
@@ -47,7 +88,7 @@ export interface SearchResult {
     collectionString: string;
 
     /**
-     * This verbodeName must have the right cardianlity. If there is exactly one model in `models`,
+     * This verboseName must have the right cardianlity. If there is exactly one model in `models`,
      * it should have a singular value, else a plural name.
      */
     verboseName: string;
@@ -61,6 +102,21 @@ export interface SearchResult {
      * All matched models sorted by their title.
      */
     models: (BaseViewModel & Searchable)[];
+}
+
+/**
+ * Interface, that describes a pair of a (translated) value and a relating collection.
+ */
+export interface TranslatedCollection {
+    /**
+     * The value
+     */
+    value: string;
+
+    /**
+     * The collectionString, the value relates to.
+     */
+    collection: string;
 }
 
 /**
@@ -137,18 +193,28 @@ export class SearchService {
      * @param query The search query
      * @param inCollectionStrings All connection strings which should be used for searching.
      * @param sortingProperty Sorting by `id` or `title`.
+     * @param dedicatedId Optional parameter. Useful to look for a specific id in the given collectionStrings.
      *
      * @returns All search results sorted by the model's title (via `getTitle()`).
      */
-    public search(query: string, inCollectionStrings: string[], sortingProperty: 'id' | 'title'): SearchResult[] {
+    public search(
+        query: string,
+        inCollectionStrings: string[],
+        sortingProperty: 'title' | 'id' = 'title',
+        dedicatedId?: number
+    ): SearchResult[] {
         query = query.toLowerCase();
         return this.searchModels
-            .filter(s => inCollectionStrings.includes(s.collectionString))
+            .filter(s => inCollectionStrings.indexOf(s.collectionString) !== -1)
             .map(searchModel => {
                 const results = this.viewModelStore
                     .getAll(searchModel.collectionString)
                     .map(x => x as (BaseViewModel & Searchable))
-                    .filter(model => model.formatForSearch().some(text => text.toLowerCase().includes(query)))
+                    .filter(model =>
+                        dedicatedId
+                            ? model.id === dedicatedId
+                            : model.formatForSearch().searchValue.some(text => text.toLowerCase().indexOf(query) !== -1)
+                    )
                     .sort((a, b) => {
                         switch (sortingProperty) {
                             case 'id':
@@ -164,5 +230,33 @@ export class SearchService {
                     models: results
                 };
             });
+    }
+
+    /**
+     * Splits the given collections and translates the single values.
+     *
+     * @param collections All the collections, that should be translated.
+     *
+     * @returns {Array} An array containing the single values of the collections and the translated ones.
+     * These values point to the `collectionString` the user can search for.
+     */
+    public getTranslatedCollectionStrings(): TranslatedCollection[] {
+        const nextCollections: TranslatedCollection[] = this.searchModels.flatMap((model: SearchModel) => [
+            { value: model.verboseNamePlural, collection: model.collectionString },
+            { value: model.verboseNameSingular, collection: model.collectionString }
+        ]);
+        const tmpCollections = [...nextCollections];
+        for (const entry of tmpCollections) {
+            const translatedValue = this.translate.instant(entry.value);
+            if (!nextCollections.find(item => item.value === translatedValue)) {
+                nextCollections.push({ value: translatedValue, collection: entry.collection });
+            }
+        }
+        const sequentialNumber = 'Sequential number';
+        nextCollections.push(
+            { value: sequentialNumber, collection: 'motions/motion' },
+            { value: this.translate.instant(sequentialNumber), collection: 'motions/motion' }
+        );
+        return nextCollections;
     }
 }

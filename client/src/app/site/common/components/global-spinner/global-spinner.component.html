@@ -1,11 +1,12 @@
-<div
-    *ngIf="isVisible"
-    class="global-spinner-component">
-    <div class="spinner-container">
-        <div>
-            <div class="spinner"></div>
-            <div class="text">{{ text }}</div>
-        </div>
+<os-overlay *ngIf="isVisible">
+    <div>
+        <mat-progress-spinner
+            [mode]="mode"
+            [diameter]="diameter"
+            [strokeWidth]="stroke"
+            [value]="value"
+            class="spinner"
+        ></mat-progress-spinner>
+        <div class="text">{{ text }}</div>
     </div>
-    <div class="backdrop"></div>
-</div>
+</os-overlay>

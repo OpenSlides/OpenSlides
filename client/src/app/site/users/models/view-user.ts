@@ -127,7 +127,14 @@ export class ViewUser extends BaseProjectableViewModel<User> implements UserTitl
      * @override
      */
     public formatForSearch(): SearchRepresentation {
-        return [this.title, this.first_name, this.last_name, this.structure_level, this.number];
+        const properties = [
+            { key: 'Title', value: this.getTitle() },
+            { key: 'First name', value: this.first_name },
+            { key: 'Last name', value: this.last_name },
+            { key: 'Structure level', value: this.structure_level },
+            { key: 'Number', value: this.number }
+        ];
+        return { properties, searchValue: properties.map(property => property.value) };
     }
 
     public getDetailStateURL(): string {

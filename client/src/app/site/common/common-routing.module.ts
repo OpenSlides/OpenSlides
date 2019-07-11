@@ -4,7 +4,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { ErrorComponent } from './components/error/error.component';
 import { LegalNoticeComponent } from './components/legal-notice/legal-notice.component';
 import { PrivacyPolicyComponent } from './components/privacy-policy/privacy-policy.component';
-import { SearchComponent } from './components/search/search.component';
 import { StartComponent } from './components/start/start.component';
 
 const routes: Routes = [
@@ -21,10 +20,6 @@ const routes: Routes = [
     {
         path: 'privacypolicy',
         component: PrivacyPolicyComponent
-    },
-    {
-        path: 'search',
-        component: SearchComponent
     },
     {
         path: 'error',

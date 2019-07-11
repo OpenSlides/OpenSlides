@@ -11,9 +11,9 @@ import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflo
 import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ChoiceService } from 'app/core/ui-services/choice.service';
+import { OverlayService } from 'app/core/ui-services/overlay.service';
 import { PersonalNoteService } from 'app/core/ui-services/personal-note.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
-import { SpinnerService } from 'app/core/ui-services/spinner.service';
 import { TreeService } from 'app/core/ui-services/tree.service';
 import { ChoiceDialogOptions } from 'app/shared/components/choice-dialog/choice-dialog.component';
 import { Identifiable } from 'app/shared/models/base/identifiable';
@@ -45,7 +45,7 @@ export class MotionMultiselectService {
      * @param httpService
      * @param treeService
      * @param personalNoteService
-     * @param spinnerService to show a spinner when http-requests are made.
+     * @param overlayService to show a spinner when http-requests are made.
      */
     public constructor(
         private repo: MotionRepositoryService,
@@ -61,7 +61,7 @@ export class MotionMultiselectService {
         private httpService: HttpService,
         private treeService: TreeService,
         private personalNoteService: PersonalNoteService,
-        private spinnerService: SpinnerService
+        private overlayService: OverlayService
     ) {}
 
     /**
@@ -81,10 +81,10 @@ export class MotionMultiselectService {
                     `\n${i} ` +
                     this.translate.instant('of') +
                     ` ${motions.length}`;
-                this.spinnerService.setVisibility(true, message);
+                this.overlayService.setSpinner(true, message);
                 await this.repo.delete(motion);
             }
-            this.spinnerService.setVisibility(false);
+            this.overlayService.setSpinner(false);
         }
     }
 
@@ -118,8 +118,13 @@ export class MotionMultiselectService {
         const selectedChoice = await this.choiceService.open(title, choices);
         if (selectedChoice) {
             const message = `${motions.length} ` + this.translate.instant(this.messageForSpinner);
-            this.spinnerService.setVisibility(true, message);
+            this.overlayService.setSpinner(true, message);
             await this.repo.setMultiState(motions, selectedChoice.items as number);
+            // .catch(error => {
+            //     this.overlayService.setSpinner(false);
+            //     throw error;
+            // });
+            // this.overlayService.setSpinner(false);
         }
     }
 
@@ -146,10 +151,15 @@ export class MotionMultiselectService {
             }));
 
             const message = `${motions.length} ` + this.translate.instant(this.messageForSpinner);
-            this.spinnerService.setVisibility(true, message);
+            this.overlayService.setSpinner(true, message);
             await this.httpService.post('/rest/motions/motion/manage_multiple_recommendation/', {
                 motions: requestData
             });
+            //     .catch(error => {
+            //         this.overlayService.setSpinner(false);
+            //         throw error;
+            //     });
+            // this.overlayService.setSpinner(false);
         }
     }
 
@@ -170,8 +180,13 @@ export class MotionMultiselectService {
         );
         if (selectedChoice) {
             const message = this.translate.instant(this.messageForSpinner);
-            this.spinnerService.setVisibility(true, message);
+            this.overlayService.setSpinner(true, message);
             await this.repo.setMultiCategory(motions, selectedChoice.items as number);
+            // .catch(error => {
+            //     this.overlayService.setSpinner(false);
+            //     throw error;
+            // });
+            // this.overlayService.setSpinner(false);
         }
     }
 
@@ -210,8 +225,9 @@ export class MotionMultiselectService {
             }
 
             const message = `${motions.length} ` + this.translate.instant(this.messageForSpinner);
-            this.spinnerService.setVisibility(true, message);
+            this.overlayService.setSpinner(true, message);
             await this.httpService.post('/rest/motions/motion/manage_multiple_submitters/', { motions: requestData });
+            // this.overlayService.setSpinner(false);
         }
     }
 
@@ -260,8 +276,9 @@ export class MotionMultiselectService {
             }
 
             const message = `${motions.length} ` + this.translate.instant(this.messageForSpinner);
-            this.spinnerService.setVisibility(true, message);
+            this.overlayService.setSpinner(true, message);
             await this.httpService.post('/rest/motions/motion/manage_multiple_tags/', { motions: requestData });
+            // this.overlayService.setSpinner(false);
         }
     }
 
@@ -282,9 +299,14 @@ export class MotionMultiselectService {
         );
         if (selectedChoice) {
             const message = this.translate.instant(this.messageForSpinner);
-            this.spinnerService.setVisibility(true, message);
+            this.overlayService.setSpinner(true, message);
             const blockId = selectedChoice.action ? null : (selectedChoice.items as number);
             await this.repo.setMultiMotionBlock(motions, blockId);
+            // .catch(error => {
+            //     this.overlayService.setSpinner(false);
+            //     throw error;
+            // });
+            // this.overlayService.setSpinner(false);
         }
     }
 
@@ -347,8 +369,9 @@ export class MotionMultiselectService {
         if (selectedChoice && motions.length) {
             const message = this.translate.instant(`I have ${motions.length} favorite motions. Please wait ...`);
             const star = (selectedChoice.items as number) === choices[0].id;
-            this.spinnerService.setVisibility(true, message);
+            this.overlayService.setSpinner(true, message);
             await this.personalNoteService.bulkSetStar(motions, star);
+            // this.overlayService.setSpinner(false);
         }
     }
 }
