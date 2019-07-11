@@ -133,9 +133,22 @@
             <div class="os-footer-logo-container">
                 <os-logo [footer]="true"></os-logo>
             </div>
+
         </mat-nav-list>
+        <!-- Toggle-button -->
+        <div class="nav-toggle-button-container" *ngIf="!vp.isMobile">
+            <button *ngIf="sideNav.opened" mat-raised-button (click)="toggleSideNav()" class="nav-toggle-button left">
+                <mat-icon>arrow_back_ios</mat-icon>
+            </button>
+        </div>
     </mat-sidenav>
     <mat-sidenav-content>
+        <!-- Toggle-button -->
+        <div class="nav-toggle-button-container" *ngIf="!vp.isMobile">
+            <button *ngIf="!sideNav.opened" mat-raised-button (click)="toggleSideNav()" class="nav-toggle-button right">
+                <mat-icon>arrow_forward_ios</mat-icon>
+            </button>
+        </div>
         <div (touchstart)="swipe($event, 'start')" (touchend)="swipe($event, 'end')" class="content">
             <main [@pageTransition]="o.isActivated ? o.activatedRoute : ''">
                 <router-outlet #o="outlet"></router-outlet>

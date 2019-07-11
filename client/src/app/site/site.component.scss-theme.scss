@@ -17,6 +17,11 @@
             background-color: mat-color($background, card); //TODO
         }
 
+        .nav-toggle-button {
+            background: mat-color($background, background);
+            color: mat-color($foreground, icon);
+        }
+
         /* seperator */
         mat-nav-list.main-nav,
         mat-divider {

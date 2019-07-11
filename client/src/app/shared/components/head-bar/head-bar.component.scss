@@ -6,17 +6,16 @@
 }
 
 .sticky-toolbar {
-    position: -webkit-sticky;
-    position: -moz-sticky;
-    position: -ms-sticky;
-    position: -o-sticky;
-    position: sticky;
-    top: 0px;
+    top: 0;
     z-index: 5;
+    position: sticky;
 }
 
 .toolbar-left {
-    display: contents;
+    display: flex;
+    button {
+        margin: 12px 0;
+    }
     .toolbar-left-text {
         margin-left: 10px;
         width: 100%;
@@ -24,6 +23,7 @@
 
         ::ng-deep .title-slot {
             h2 {
+                margin: 16px 0;
                 display: block;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -38,11 +38,7 @@
 }
 
 .toolbar-right {
-    display: contents;
-}
-
-.extra-controls-wrapper {
-    display: contents;
+    display: flex;
     ::ng-deep .extra-controls-slot {
         display: flex;
     }
