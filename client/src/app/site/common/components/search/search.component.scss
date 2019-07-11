@@ -1,18 +1,40 @@
+// Variables
+$border: 1px solid rgba(0, 0, 0, 0.125);
+
+// Definitions
 .search-field {
-    width: 100%;
+    display: flex;
+    max-width: 50%;
+    margin: 15px auto;
 
-    form {
-        width: 80%;
-        margin: 8px auto;
-    }
-
-    mat-form-field {
+    mat-form-field.search-component {
         width: 100%;
     }
 }
 
-.noSearchResults {
-    text-align: center;
+@media screen and (max-width: 400px) {
+    .search-container {
+        padding: 0 8px;
+    }
+    .search-field {
+        display: block;
+
+        mat-form-field.search-sort {
+            width: 100%;
+            margin: 0;
+        }
+    }
+}
+
+mat-list-item {
+    height: auto !important;
+
+    &:not(:first-child) {
+        margin-top: 8px;
+    }
+    &:not(:last-child) {
+        margin-bottom: 8px;
+    }
 }
 
 mat-card {

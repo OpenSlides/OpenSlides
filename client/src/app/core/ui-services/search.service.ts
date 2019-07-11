@@ -136,9 +136,11 @@ export class SearchService {
      *
      * @param query The search query
      * @param inCollectionStrings All connection strings which should be used for searching.
-     * @returns All search results sorted by the model's title (via `getTItle()`).
+     * @param sortingProperty Sorting by `id` or `title`.
+     *
+     * @returns All search results sorted by the model's title (via `getTitle()`).
      */
-    public search(query: string, inCollectionStrings: string[]): SearchResult[] {
+    public search(query: string, inCollectionStrings: string[], sortingProperty: 'id' | 'title'): SearchResult[] {
         query = query.toLowerCase();
         return this.searchModels
             .filter(s => inCollectionStrings.includes(s.collectionString))
@@ -148,7 +150,12 @@ export class SearchService {
                     .map(x => x as (BaseViewModel & Searchable))
                     .filter(model => model.formatForSearch().some(text => text.toLowerCase().includes(query)))
                     .sort((a, b) => {
-                        return this.languageCollator.compare(a.getTitle(), b.getTitle());
+                        switch (sortingProperty) {
+                            case 'id':
+                                return a.id - b.id;
+                            case 'title':
+                                return this.languageCollator.compare(a.getTitle(), b.getTitle());
+                        }
                     });
                 return {
                     collectionString: searchModel.collectionString,

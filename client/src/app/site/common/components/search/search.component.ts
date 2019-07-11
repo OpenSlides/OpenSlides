@@ -1,16 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { FormGroup, FormControl } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { Subject } from 'rxjs';
 import { auditTime, debounceTime } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 
 import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { SearchService, SearchModel, SearchResult } from 'app/core/ui-services/search.service';
 import { BaseViewComponent } from '../../../base/base-view';
+import { FormControl } from '@angular/forms';
 
 type SearchModelEnabled = SearchModel & { enabled: boolean };
 
@@ -24,14 +22,14 @@ type SearchModelEnabled = SearchModel & { enabled: boolean };
 })
 export class SearchComponent extends BaseViewComponent implements OnInit {
     /**
-     * the search term
+     * List with all options for sorting by.
      */
-    public query: string;
+    public sortingOptionsList = [{ option: 'title', label: 'Title' }, { option: 'id', label: 'ID' }];
 
     /**
-     * Holds the typed search query.
+     * the search term
      */
-    public quickSearchform: FormGroup;
+    public query = '';
 
     /**
      * The amout of search results.
@@ -41,7 +39,7 @@ export class SearchComponent extends BaseViewComponent implements OnInit {
     /**
      * The search results for the ui
      */
-    public searchResults: SearchResult[];
+    public searchResults: SearchResult[] = [];
 
     /**
      * A list of models, that are registered to be searched. Used for
@@ -50,9 +48,14 @@ export class SearchComponent extends BaseViewComponent implements OnInit {
     public registeredModels: (SearchModelEnabled)[];
 
     /**
-     * This subject is used for the quicksearch input. It is used to debounce the input.
+     * Property to decide what to sort by.
      */
-    private quickSearchSubject = new Subject<string>();
+    public sortingProperty: 'id' | 'title' = 'title';
+
+    /**
+     * Form-control for the input-field.
+     */
+    public searchForm = new FormControl('');
 
     /**
      * Inits the quickSearchForm, gets the registered models from the search service
@@ -62,8 +65,6 @@ export class SearchComponent extends BaseViewComponent implements OnInit {
      * @param translate
      * @param matSnackBar
      * @param DS DataStorService
-     * @param activatedRoute determine the search term from the URL
-     * @param router To change the query in the url
      * @param searchService For searching in the models
      */
     public constructor(
@@ -71,17 +72,17 @@ export class SearchComponent extends BaseViewComponent implements OnInit {
         translate: TranslateService,
         matSnackBar: MatSnackBar,
         private DS: DataStoreService,
-        private activatedRoute: ActivatedRoute,
-        private router: Router,
         private searchService: SearchService
     ) {
         super(title, translate, matSnackBar);
-        this.quickSearchform = new FormGroup({ query: new FormControl([]) });
 
         this.registeredModels = this.searchService.getRegisteredModels().map(rm => ({ ...rm, enabled: true }));
 
         this.DS.modifiedObservable.pipe(auditTime(100)).subscribe(() => this.search());
-        this.quickSearchSubject.pipe(debounceTime(250)).subscribe(query => this.search(query));
+        this.searchForm.valueChanges.pipe(debounceTime(250)).subscribe(query => {
+            this.query = query;
+            this.search();
+        });
     }
 
     /**
@@ -89,48 +90,26 @@ export class SearchComponent extends BaseViewComponent implements OnInit {
      */
     public ngOnInit(): void {
         super.setTitle('Search');
-        this.query = this.activatedRoute.snapshot.queryParams.query;
-        this.quickSearchform.get('query').setValue(this.query);
-        this.search();
     }
 
     /**
      * Searches for the query in `this.query` or the query given.
-     *
-     * @param query optional, if given, `this.query` will be set to this value
      */
-    public search(query?: string): void {
-        if (query) {
-            this.query = query;
+    public search(): void {
+        if (!this.query || this.query === '') {
+            this.searchResults = [];
+        } else {
+            // Just search for enabled models.
+            const collectionStrings = this.registeredModels.filter(rm => rm.enabled).map(rm => rm.collectionString);
+
+            // Get all results
+            this.searchResults = this.searchService.search(this.query, collectionStrings, this.sortingProperty);
+
+            // Because the results are per model, we need to accumulate the total number of all search results.
+            this.searchResultCount = this.searchResults
+                .map(sr => sr.models.length)
+                .reduce((acc, current) => acc + current, 0);
         }
-        if (!this.query) {
-            return;
-        }
-
-        // Just search for enabled models.
-        const collectionStrings = this.registeredModels.filter(rm => rm.enabled).map(rm => rm.collectionString);
-
-        // Get all results
-        this.searchResults = this.searchService.search(this.query, collectionStrings);
-
-        // Because the results are per model, we need to accumulate the total number of all search results.
-        this.searchResultCount = this.searchResults
-            .map(sr => sr.models.length)
-            .reduce((acc, current) => acc + current, 0);
-
-        // Update the URL.
-        this.router.navigate([], {
-            relativeTo: this.activatedRoute,
-            queryParams: { query: this.query },
-            replaceUrl: true
-        });
-    }
-
-    /**
-     * Handler for the quick search input. Emits the typed value to the `quickSearchSubject`.
-     */
-    public quickSearch(): void {
-        this.quickSearchSubject.next(this.quickSearchform.get('query').value);
     }
 
     /**
@@ -138,8 +117,21 @@ export class SearchComponent extends BaseViewComponent implements OnInit {
      *
      * @param registeredModel The model to toggle
      */
-    public toggleModel(registeredModel: SearchModelEnabled): void {
+    public toggleModel(event: MouseEvent, registeredModel: SearchModelEnabled): void {
+        event.stopPropagation();
         registeredModel.enabled = !registeredModel.enabled;
+        this.search();
+    }
+
+    /**
+     * Function to switch between sorting-options.
+     *
+     * @param event The `MouseEvent`
+     * @param option The sorting-option
+     */
+    public toggleSorting(event: MouseEvent, option: 'id' | 'title'): void {
+        event.stopPropagation();
+        this.sortingProperty = option;
         this.search();
     }
 }
