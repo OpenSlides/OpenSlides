@@ -277,19 +277,17 @@
                 <mat-icon>local_offer</mat-icon>
                 <span translate>Tags</span>
             </button>
-            <button mat-menu-item (click)="openExportDialog()">
-                <mat-icon>archive</mat-icon>
-                <span translate>Export</span>
-            </button>
+        </div>
+
+        <button mat-menu-item (click)="openExportDialog()">
+            <mat-icon>archive</mat-icon>
+            <span translate>Export</span>
+        </button>
+
+        <div *ngIf="perms.isAllowed('manage')">
             <button mat-menu-item routerLink="import">
                 <mat-icon>cloud_upload</mat-icon>
                 <span translate>Import</span>
-            </button>
-        </div>
-        <div *ngIf="!perms.isAllowed('manage')">
-            <button mat-menu-item (click)="directPdfExport()">
-                <mat-icon>archive</mat-icon>
-                <span translate>Export as PDF</span>
             </button>
         </div>
     </div>

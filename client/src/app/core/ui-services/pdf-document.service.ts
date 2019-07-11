@@ -356,18 +356,22 @@ export class PdfDocumentService {
         const logoFooterLeftUrl = this.configService.instant<any>('logo_pdf_footer_L').path;
         const logoFooterRightUrl = this.configService.instant<any>('logo_pdf_footer_R').path;
 
-        let footerText = '';
+        let footerPageNumber = '';
         if (showPage) {
-            footerText += `${currentPage} / ${pageCount}`;
+            footerPageNumber += `${currentPage} / ${pageCount}`;
             if (showDate) {
-                footerText += '\n';
+                footerPageNumber += '\n';
             }
         }
 
+        let footerDate = {};
         if (showDate) {
-            footerText += `${this.translate.instant('As of')}: ${new Date().toLocaleDateString(
-                this.translate.currentLang
-            )}`;
+            footerDate = {
+                text: `${this.translate.instant('As of')}: ${new Date().toLocaleDateString(
+                    this.translate.currentLang
+                )}`,
+                fontSize: 6
+            };
         }
 
         // if there is a single logo, give it a lot of space
@@ -402,7 +406,7 @@ export class PdfDocumentService {
 
         // add the page number
         columns.push({
-            text: footerText,
+            text: [footerPageNumber, footerDate],
             style: 'footerPageNumber',
             alignment: pageNumberPosition
         });
@@ -501,7 +505,7 @@ export class PdfDocumentService {
                 margin: [0, 10, 0, 0]
             },
             footerPageNumber: {
-                fontSize: 9,
+                fontSize: 8,
                 margin: [0, 15, 0, 0],
                 color: '#555'
             },
@@ -540,8 +544,7 @@ export class PdfDocumentService {
                 bold: false
             },
             tocHeaderRow: {
-                fontSize: 8,
-                italics: true
+                fontSize: 7
             },
             tocSubEntry: {
                 fontSize: pageSize === 'A5' ? 9 : 10,
@@ -759,10 +762,11 @@ export class PdfDocumentService {
      *
      * @returns {Object} An object for `DocDefinition` for `pdf-make`.
      */
-    public createTocLineInline(text: string): Object {
+    public createTocLineInline(text: string, italics: boolean = false): Object {
         return {
             text: '\n' + text,
-            style: StyleType.SUB_ENTRY
+            style: StyleType.SUB_ENTRY,
+            italics: italics
         };
     }
 
