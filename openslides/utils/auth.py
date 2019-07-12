@@ -35,6 +35,16 @@ def get_group_model() -> Model:
         )
 
 
+async def async_is_superadmin(user_id: int) -> bool:
+    """
+    Checks, if the user is a superadmin (in the admin group).
+
+    This is done by querying a non existing permission, becuase has_perm
+    should always return true, if the user is in the admin group.
+    """
+    return await async_has_perm(user_id, "superadmin")
+
+
 def has_perm(user_id: int, perm: str) -> bool:
     """
     Checks that user has a specific permission.
