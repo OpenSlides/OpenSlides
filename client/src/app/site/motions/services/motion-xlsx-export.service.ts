@@ -8,6 +8,9 @@ import { MotionRepositoryService } from 'app/core/repositories/motions/motion-re
 import { TranslateService } from '@ngx-translate/core';
 import { ViewMotion } from '../models/view-motion';
 import { XlsxExportServiceService, CellFillingDefinition } from 'app/core/ui-services/xlsx-export-service.service';
+import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
+import { stripHtmlTags } from 'app/shared/utils/strip-html-tags';
+import { reconvertChars } from 'app/shared/utils/reconvert-chars';
 
 /**
  * Service to export motion elements to XLSX
@@ -64,7 +67,8 @@ export class MotionXlsxExportService {
     public constructor(
         private xlsx: XlsxExportServiceService,
         private translate: TranslateService,
-        private motionRepo: MotionRepositoryService
+        private motionRepo: MotionRepositoryService,
+        private commentRepo: MotionCommentSectionRepositoryService
     ) {}
 
     /**
@@ -73,8 +77,9 @@ export class MotionXlsxExportService {
      * @param motions
      * @param contentToExport
      * @param infoToExport
+     * @param comments The ids of the comments, that will be exported, too.
      */
-    public exportMotionList(motions: ViewMotion[], infoToExport: InfoToExport[]): void {
+    public exportMotionList(motions: ViewMotion[], infoToExport: InfoToExport[], comments: number[]): void {
         const workbook = new Workbook();
         const properties = sortMotionPropertyList(['identifier', 'title'].concat(infoToExport));
 
@@ -97,15 +102,21 @@ export class MotionXlsxExportService {
             }
         });
 
-        worksheet.columns = properties.map(property => {
-            const propertyHeader =
-                property === 'motion_block'
-                    ? 'Motion block'
-                    : property.charAt(0).toLocaleUpperCase() + property.slice(1);
-            return {
-                header: this.translate.instant(propertyHeader)
-            };
-        });
+        const columns = [];
+        columns.push(
+            ...properties.map(property => {
+                const propertyHeader =
+                    property === 'motion_block'
+                        ? 'Motion block'
+                        : property.charAt(0).toLocaleUpperCase() + property.slice(1);
+                return {
+                    header: this.translate.instant(propertyHeader)
+                };
+            })
+        );
+        columns.push(...comments.map(commentId => ({ header: this.commentRepo.getViewModel(commentId).getTitle() })));
+
+        worksheet.columns = columns;
 
         worksheet.getRow(1).eachCell(cell => {
             cell.font = {
@@ -118,23 +129,36 @@ export class MotionXlsxExportService {
         });
 
         // map motion data to properties
-        const motionData = motions.map(motion =>
-            properties.map(property => {
-                const motionProp = motion[property];
-                if (motionProp) {
-                    switch (property) {
-                        case 'state':
-                            return this.motionRepo.getExtendedStateLabel(motion);
-                        case 'recommendation':
-                            return this.motionRepo.getExtendedRecommendationLabel(motion);
-                        default:
-                            return this.translate.instant(motionProp.toString());
+        const motionData = motions.map(motion => {
+            const data = [];
+            data.push(
+                ...properties.map(property => {
+                    const motionProp = motion[property];
+                    if (motionProp) {
+                        switch (property) {
+                            case 'state':
+                                return this.motionRepo.getExtendedStateLabel(motion);
+                            case 'recommendation':
+                                return this.motionRepo.getExtendedRecommendationLabel(motion);
+                            default:
+                                return this.translate.instant(motionProp.toString());
+                        }
+                    } else {
+                        return '';
                     }
-                } else {
-                    return '';
-                }
-            })
-        );
+                })
+            );
+            data.push(
+                ...comments.map(commentId => {
+                    const section = this.commentRepo.getViewModel(commentId);
+                    const motionComment = motion.getCommentForSection(section);
+                    return motionComment && motionComment.comment
+                        ? reconvertChars(stripHtmlTags(motionComment.comment))
+                        : '';
+                })
+            );
+            return data;
+        });
 
         // add to sheet
         for (let i = 0; i < motionData.length; i++) {

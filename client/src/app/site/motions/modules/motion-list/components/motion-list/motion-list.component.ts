@@ -326,7 +326,7 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
                         exportInfo.crMode
                     );
                 } else if (exportInfo.format === FileFormat.XLSX) {
-                    this.motionXlsxExport.exportMotionList(data, exportInfo.metaInfo);
+                    this.motionXlsxExport.exportMotionList(data, exportInfo.metaInfo, exportInfo.comments);
                 }
             }
         });
