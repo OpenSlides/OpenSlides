@@ -66,6 +66,9 @@ class AssignmentViewSet(ModelViewSet):
             result = False
         return result
 
+    def perform_create(self, serializer):
+        serializer.save(request_user=self.request.user)
+
     @detail_route(methods=["post", "delete"])
     def candidature_self(self, request, pk=None):
         """
