@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { Title } from '@angular/platform-browser';
+import { Location } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
 import { BaseViewComponent } from 'app/site/base/base-view';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
 
 /**
@@ -38,7 +39,7 @@ export class MediaUploadComponent extends BaseViewComponent implements OnInit {
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
-        private router: Router,
+        private location: Location,
         private route: ActivatedRoute,
         private repo: MediafileRepositoryService
     ) {
@@ -55,7 +56,7 @@ export class MediaUploadComponent extends BaseViewComponent implements OnInit {
      * Handler for successful uploads
      */
     public uploadSuccess(): void {
-        this.router.navigate(['../'], { relativeTo: this.route });
+        this.location.back();
     }
 
     /**

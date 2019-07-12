@@ -20,6 +20,7 @@
 @import './app/shared/components/block-tile/block-tile.component.scss';
 @import './app/shared/components/icon-container/icon-container.component.scss';
 @import './app/site/common/components/start/start.component.scss';
+@import './app/site/mediafiles/components/mediafile-list/mediafile-list.component.scss-theme.scss';
 
 /** fonts */
 @import './assets/styles/fonts.scss';
@@ -37,6 +38,7 @@
     @include os-sorting-tree-style($theme);
     @include os-global-spinner-theme($theme);
     @include os-tile-style($theme);
+    @include os-mediafile-list-theme($theme);
 }
 
 /** Load projector specific SCSS values */
@@ -629,6 +631,12 @@ button.mat-menu-item.selected {
  */
 .virtual-scroll-full-page {
     height: calc(100vh - 128px);
+}
+
+/** css hacks https://codepen.io/edge0703/pen/iHJuA */
+.innerTable {
+    display: inline-block;
+    line-height: 150%;
 }
 
 .virtual-scroll-with-head-bar {

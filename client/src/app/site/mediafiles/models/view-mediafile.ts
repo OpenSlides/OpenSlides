@@ -91,6 +91,10 @@ export class ViewMediafile extends BaseViewModelWithListOfSpeakers<Mediafile>
         return this.mediafile.mediafile ? this.mediafile.mediafile.pages : null;
     }
 
+    public get timestamp(): string {
+        return this.mediafile.create_timestamp ? this.mediafile.create_timestamp : null;
+    }
+
     public constructor(
         mediafile: Mediafile,
         listOfSpeakers?: ViewListOfSpeakers,

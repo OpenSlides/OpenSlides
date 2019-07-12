@@ -1,13 +1,13 @@
-import { Component, OnInit, ViewChild, TemplateRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTableDataSource } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { PblDataSource, columnFactory, createDS } from '@pebula/ngrid';
 
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
@@ -27,10 +27,14 @@ import { BaseViewComponent } from 'app/site/base/base-view';
 @Component({
     selector: 'os-mediafile-list',
     templateUrl: './mediafile-list.component.html',
-    styleUrls: ['./mediafile-list.component.scss']
+    styleUrls: ['./mediafile-list.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class MediafileListComponent extends BaseViewComponent implements OnInit, OnDestroy {
-    public readonly dataSource: MatTableDataSource<ViewMediafile> = new MatTableDataSource<ViewMediafile>();
+    /**
+     * Data source for the files
+     */
+    public dataSource: PblDataSource<ViewMediafile>;
 
     /**
      * Holds the actions for logos. Updated via an observable
@@ -48,9 +52,7 @@ export class MediafileListComponent extends BaseViewComponent implements OnInit,
     public fileToEdit: ViewMediafile;
 
     public newDirectoryForm: FormGroup;
-
     public moveForm: FormGroup;
-
     public directoryBehaviorSubject: BehaviorSubject<ViewMediafile[]>;
     public groupsBehaviorSubject: BehaviorSubject<ViewGroup[]>;
 
@@ -80,10 +82,42 @@ export class MediafileListComponent extends BaseViewComponent implements OnInit,
     @ViewChild('fileEditDialog', { static: true })
     public fileEditDialog: TemplateRef<string>;
 
-    public displayedColumns = ['projector', 'icon', 'title', 'info', 'indicator', 'menu'];
+    /**
+     * Create the column set
+     */
+    public columnSet = columnFactory()
+        .table(
+            {
+                prop: 'icon',
+                label: '',
+                width: '40px'
+            },
+            {
+                prop: 'title',
+                label: this.translate.instant('Title'),
+                width: 'auto',
+                minWidth: 60
+            },
+            {
+                prop: 'info',
+                label: this.translate.instant('Info'),
+                width: '20%',
+                minWidth: 60
+            },
+            {
+                prop: 'indicator',
+                label: '',
+                width: '40px'
+            },
+            {
+                prop: 'menu',
+                label: '',
+                width: '40px'
+            }
+        )
+        .build();
 
     public isMultiselect = false; // TODO
-
     private folderSubscription: Subscription;
     private directorySubscription: Subscription;
     public directory: ViewMediafile | null;
@@ -157,12 +191,24 @@ export class MediafileListComponent extends BaseViewComponent implements OnInit,
         });
     }
 
+    public ngOnDestroy(): void {
+        super.ngOnDestroy();
+        this.clearSubscriptions();
+    }
+
+    public getDateFromTimestamp(timestamp: string): string {
+        return new Date(timestamp).toLocaleString(this.translate.currentLang);
+    }
+
     public changeDirectory(directoryId: number | null): void {
         this.clearSubscriptions();
 
         this.folderSubscription = this.repo.getListObservableDirectory(directoryId).subscribe(mediafiles => {
-            this.dataSource.data = [];
-            this.dataSource.data = mediafiles;
+            if (mediafiles) {
+                this.dataSource = createDS<ViewMediafile>()
+                    .onTrigger(() => mediafiles)
+                    .create();
+            }
         });
 
         if (directoryId) {
@@ -352,10 +398,5 @@ export class MediafileListComponent extends BaseViewComponent implements OnInit,
             this.directorySubscription.unsubscribe();
             this.directorySubscription = null;
         }
-    }
-
-    public ngOnDestroy(): void {
-        super.ngOnDestroy();
-        this.clearSubscriptions();
     }
 }

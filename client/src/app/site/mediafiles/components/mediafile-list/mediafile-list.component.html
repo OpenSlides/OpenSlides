@@ -21,102 +21,108 @@
     </div>-->
 </os-head-bar>
 
-<!-- TODO: Sort bar -->
-
+<!-- Folder navigation bar -->
 <div>
-    <button mat-button (click)="changeDirectory(null)">
-        <span translate>Base folder</span>
-    </button>
-    <span *ngFor="let directory of directoryChain; let last=last">
-        <mat-icon>chevron_right</mat-icon>
-        <button *ngIf="!last" mat-button (click)="changeDirectory(directory.id)">
-            {{ directory.title }}
+    <div class="folder-nav-bar">
+        <button class="folder" mat-button (click)="changeDirectory(null)">
+            <mat-icon class="file-icon">home</mat-icon>
         </button>
-        <button *ngIf="last" mat-button (click)="onEditFile(directory)">
-            {{ directory.title }}
-            <mat-icon>edit</mat-icon>
-        </button>
-    </span>
-
-    <button mat-icon-button *ngIf="directory" (click)="changeDirectory(directory.parent_id)">
-        <mat-icon>arrow_upward</mat-icon>
-    </button>
-</div>
-
-<div *ngIf="directory && directory.inherited_access_groups_id !== true">
-    <span translate>Visibility of this directory:</span>
-    <span *ngIf="directory.inherited_access_groups_id === false" translate>No one</span>
-    <span *ngIf="directory.has_inherited_access_groups" translate>
-        <os-icon-container icon="group">{{ directory.inherited_access_groups }}</os-icon-container>
-    </span>
-</div>
-
-<mat-table [dataSource]="dataSource" class="os-listview-table">
-    <!-- Projector button -->
-    <ng-container matColumnDef="projector">
-        <td mat-cell *matCellDef="let mediafile">
-            <os-projector-button *ngIf="mediafile.isProjectable()" class="projector-button" [object]="mediafile"></os-projector-button>
-        </td>
-    </ng-container>
-
-    <ng-container matColumnDef="icon">
-        <td mat-cell *matCellDef="let mediafile">
-            <mat-icon>{{ mediafile.getIcon() }}</mat-icon>
-        </td>
-    </ng-container>
-
-    <ng-container matColumnDef="title">
-        <td mat-cell *matCellDef="let mediafile">
-            <a target="_blank" [routerLink]="mediafile.url" *ngIf="mediafile.is_file">
-                {{ mediafile.title }}
-            </a>
-            <a (click)="changeDirectory(mediafile.id)" *ngIf="mediafile.is_directory">
-                {{ mediafile.title }}
-            </a>
-        </td>
-    </ng-container>
-
-    <ng-container matColumnDef="info">
-        <td mat-cell *matCellDef="let mediafile">
-            <os-icon-container *ngIf="mediafile.is_file" icon="data_usage">{{ mediafile.size }}</os-icon-container>
-            <os-icon-container *ngIf="mediafile.access_groups.length" icon="group">{{ mediafile.access_groups }}</os-icon-container>
-        </td>
-    </ng-container>
-
-    <ng-container matColumnDef="indicator">
-        <td mat-cell *matCellDef="let mediafile">
-            <div
-                *ngIf="getFileSettings(mediafile).length > 0"
-                [matMenuTriggerFor]="singleMediafileMenu"
-                [matMenuTriggerData]="{ file: file }"
-                [matTooltip]="formatIndicatorTooltip(mediafile)"
-            >
-                <mat-icon *ngIf="mediafile.isFont()">text_fields</mat-icon>
-                <mat-icon *ngIf="mediafile.isImage()">insert_photo</mat-icon>
+        <span *ngFor="let directory of directoryChain; let last = last">
+            <div class="arrow">
+                <mat-icon>chevron_right</mat-icon>
             </div>
-        </td>
-    </ng-container>
 
-    <ng-container matColumnDef="menu">
-        <td mat-cell *matCellDef="let mediafile">
-            <button
-                mat-icon-button
-                [matMenuTriggerFor]="singleMediafileMenu"
-                [matMenuTriggerData]="{ mediafile: mediafile }"
-            >
-                <!-- TODO: [disabled]="isMultiSelect" -->
-                <mat-icon>more_vert</mat-icon>
+            <button class="folder" mat-button (click)="changeDirectory(directory.id)" *ngIf="!last">
+                <span class="folder-text">
+                    {{ directory.title }}
+                </span>
             </button>
-        </td>
-    </ng-container>
+            <button
+                class="folder"
+                mat-button
+                [matMenuTriggerFor]="singleMediafileMenu"
+                [matMenuTriggerData]="{ mediafile: directory }"
+                *ngIf="last"
+            >
+                <os-icon-container icon="arrow_drop_down" swap="true" size="large">
+                    {{ directory.title }}
+                </os-icon-container>
+            </button>
+        </span>
+        <span class="visibility" *ngIf="directory && directory.inherited_access_groups_id !== true">
+            <span translate>Visibility of this directory:</span>
+            <span class="visible-for" *ngIf="directory.inherited_access_groups_id === false" translate>No one</span>
+            <span class="visible-for" *ngIf="directory.has_inherited_access_groups" translate>
+                <os-icon-container icon="group">{{ directory.inherited_access_groups }}</os-icon-container>
+            </span>
+        </span>
+    </div>
+    <mat-divider></mat-divider>
+</div>
 
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</mat-table>
+<!-- the actual file manager -->
+<pbl-ngrid class="file-manager-table" showHeader="false" vScrollAuto [dataSource]="dataSource" [columns]="columnSet">
+    <!-- Icon column -->
+    <div *pblNgridCellDef="'icon'; row as mediafile" class="fill clickable">
+        <a class="detail-link" target="_blank" [routerLink]="mediafile.url" *ngIf="mediafile.is_file"> </a>
+        <a class="detail-link" (click)="changeDirectory(mediafile.id)" *ngIf="mediafile.is_directory"> </a>
+        <mat-icon class="file-icon">{{ mediafile.getIcon() }}</mat-icon>
+    </div>
+
+    <!-- Title column -->
+    <div *pblNgridCellDef="'title'; row as mediafile" class="fill clickable">
+        <a class="detail-link" target="_blank" [routerLink]="mediafile.url" *ngIf="mediafile.is_file"> </a>
+        <a class="detail-link" (click)="changeDirectory(mediafile.id)" *ngIf="mediafile.is_directory"> </a>
+        <div class="innerTable">
+            <div class="file-title ellipsis-overflow">
+                {{ mediafile.title }}
+            </div>
+            <div class="info-text" *ngIf="mediafile.is_file">
+                <span> {{ getDateFromTimestamp(mediafile.timestamp) }} · {{ mediafile.size }} </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info column -->
+    <div *pblNgridCellDef="'info'; row as mediafile" class="fill clickable" (click)="onEditFile(mediafile)">
+        <os-icon-container *ngIf="mediafile.access_groups.length" icon="group">
+            <span translate>
+                {{ mediafile.access_groups }}
+            </span>
+        </os-icon-container>
+    </div>
+
+    <!-- Indicator column -->
+    <div *pblNgridCellDef="'indicator'; row as mediafile" class="fill">
+        <div
+            *ngIf="getFileSettings(mediafile).length > 0"
+            [matMenuTriggerFor]="singleMediafileMenu"
+            [matMenuTriggerData]="{ mediafile: mediafile }"
+            [matTooltip]="formatIndicatorTooltip(mediafile)"
+        >
+            <mat-icon class="file-icon" *ngIf="mediafile.isFont()">text_fields</mat-icon>
+            <mat-icon class="file-icon" *ngIf="mediafile.isImage()">insert_photo</mat-icon>
+        </div>
+    </div>
+
+    <!-- Indicator column -->
+    <div *pblNgridCellDef="'menu'; row as mediafile" class="fill">
+        <button
+            mat-icon-button
+            [matMenuTriggerFor]="singleMediafileMenu"
+            [matMenuTriggerData]="{ mediafile: mediafile }"
+        >
+            <mat-icon>more_vert</mat-icon>
+        </button>
+    </div>
+</pbl-ngrid>
 
 <!-- Template for the managing buttons -->
 <ng-template #manageButton let-mediafile="mediafile" let-action="action">
     <button mat-menu-item (click)="onManageButton($event, mediafile, action)">
-        <mat-icon color="accent"> {{ isUsedAs(mediafile, action) ? 'check_box' : 'check_box_outline_blank' }} </mat-icon>
+        <mat-icon color="accent">
+            {{ isUsedAs(mediafile, action) ? 'check_box' : 'check_box_outline_blank' }}
+        </mat-icon>
         <span>{{ getNameOfAction(action) }}</span>
     </button>
 </ng-template>
@@ -127,20 +133,28 @@
         <!-- Exclusive for images -->
         <div *ngIf="mediafile.isImage()">
             <div *ngFor="let action of logoActions">
-                <ng-container *ngTemplateOutlet="manageButton; context: { mediafile: mediafile, action: action }"></ng-container>
+                <ng-container
+                    *ngTemplateOutlet="manageButton; context: { mediafile: mediafile, action: action }"
+                ></ng-container>
             </div>
         </div>
 
         <!-- Exclusive for fonts -->
         <div *ngIf="mediafile.isFont()">
             <div *ngFor="let action of fontActions">
-                <ng-container *ngTemplateOutlet="manageButton; context: { mediafile: mediafile, action: action }"></ng-container>
+                <ng-container
+                    *ngTemplateOutlet="manageButton; context: { mediafile: mediafile, action: action }"
+                ></ng-container>
             </div>
         </div>
 
         <!-- Edit and delete for all images -->
         <mat-divider *ngIf="mediafile.isFont() || mediafile.isImage()"></mat-divider>
-
+        <os-projector-button
+            *ngIf="mediafile.isProjectable()"
+            [object]="mediafile"
+            [menuItem]="true"
+        ></os-projector-button>
         <os-speaker-button [object]="mediafile" [menuItem]="true"></os-speaker-button>
         <button mat-menu-item (click)="onEditFile(mediafile)">
             <mat-icon>edit</mat-icon>
@@ -188,10 +202,11 @@
     </div>
 </mat-menu>-->
 
+<!-- File edit dialog -->
 <ng-template #fileEditDialog>
     <h1 mat-dialog-title>{{ 'Edit details for' | translate }}</h1>
     <div class="os-form-card-mobile" mat-dialog-content>
-        <form class="edit-file-form" [formGroup]="fileEditForm" (keydown)="keyDownFunction($event)">
+        <form class="edit-file-form" [formGroup]="fileEditForm">
             <mat-form-field>
                 <input
                     type="text"
@@ -231,24 +246,25 @@
 
 <!-- New folder dialog -->
 <ng-template #newFolderDialog>
-    <h1 mat-dialog-title>
-        <span translate>Create new directory</span>
-    </h1>
-    <div mat-dialog-content>
-        <p translate>Please enter a name for the new directory:</p>
-        <mat-form-field [formGroup]="newDirectoryForm">
-            <input matInput osAutofocus formControlName="title" required/>
-        </mat-form-field>
-        <os-search-value-selector
-            ngDefaultControl
-            [formControl]="newDirectoryForm.get('access_groups_id')"
-            [multiple]="true"
-            listname="{{ 'Access groups' | translate }}"
-            [InputListValues]="groupsBehaviorSubject"
-        ></os-search-value-selector>
+    <h1 mat-dialog-title>{{ 'Create new directory' | translate }}</h1>
+    <div class="os-form-card-mobile" mat-dialog-content>
+        <form class="edit-file-form" [formGroup]="newDirectoryForm">
+            <p translate>Please enter a name for the new directory:</p>
+            <mat-form-field>
+                <input matInput osAutofocus formControlName="title" required />
+            </mat-form-field>
+
+            <os-search-value-selector
+                ngDefaultControl
+                [formControl]="newDirectoryForm.get('access_groups_id')"
+                [multiple]="true"
+                listname="{{ 'Access groups' | translate }}"
+                [InputListValues]="groupsBehaviorSubject"
+            ></os-search-value-selector>
+        </form>
     </div>
     <div mat-dialog-actions>
-        <button type="submit" mat-button color="primary" [mat-dialog-close]="true">
+        <button type="submit" mat-button [disabled]="!newDirectoryForm.valid" color="primary" [mat-dialog-close]="true">
             <span translate>Save</span>
         </button>
         <button type="button" mat-button [mat-dialog-close]="null">
@@ -267,7 +283,6 @@
         <os-search-value-selector
             ngDefaultControl
             [formControl]="moveForm.get('directory_id')"
-            [multiple]="false"
             [includeNone]="true"
             [noneTitle]="'Base folder'"
             listname="{{ 'Parent directory' | translate }}"

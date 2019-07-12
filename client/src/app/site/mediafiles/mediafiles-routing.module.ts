@@ -5,6 +5,11 @@ import { MediaUploadComponent } from './components/media-upload/media-upload.com
 
 const routes: Routes = [
     {
+        path: '',
+        redirectTo: 'files',
+        pathMatch: 'full'
+    },
+    {
         path: 'files',
         children: [{ path: '**', component: MediafileListComponent }],
         pathMatch: 'prefix'
