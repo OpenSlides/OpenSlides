@@ -26,105 +26,111 @@
     <div class="scrollable-matrix">
         <table mat-table [dataSource]="getTableDataSource()">
             <ng-container matColumnDef="perm" sticky>
-                <mat-header-cell class="group-head-table-cell" *matHeaderCellDef translate>Permissions</mat-header-cell>
-                <mat-cell *matCellDef="let perm">
+                <th mat-header-cell class="group-head-table-cell" *matHeaderCellDef translate>Permissions</th>
+                <td mat-cell *matCellDef="let perm">
                     <div class="permission-name">
                         {{ perm.name | translate }}
                     </div>
-                </mat-cell>
+                </td>
             </ng-container>
 
-            <div *ngFor="let state of workflow.states; trackBy: trackByIndex">
-                <ng-container [matColumnDef]="getColumnDef(state)">
-                    <mat-header-cell *matHeaderCellDef (click)="onClickStateName(state)">
-                        <div class="clickable-cell">
-                            <div class="inner-table">
-                                {{ state.name | translate }}
-                            </div>
+            <ng-container [matColumnDef]="getColumnDef(state)" *ngFor="let state of workflow.states; trackBy: trackByIndex">
+                <th mat-header-cell *matHeaderCellDef (click)="onClickStateName(state)">
+                    <div class="clickable-cell stretch-to-fill-parent">
+                        <div class="inner-table">
+                            {{ state.name | translate }}
                         </div>
-                    </mat-header-cell>
-                    <mat-cell *matCellDef="let perm">
-                        <div class="inner-table" *ngIf="perm.type === 'check'">
-                            <mat-checkbox
-                                [checked]="state[perm.selector]"
-                                (change)="onToggleStatePerm(state, perm.selector, $event)"
-                            ></mat-checkbox>
+                    </div>
+                </th>
+                <td mat-cell *matCellDef="let perm">
+                    <div class="inner-table" *ngIf="perm.type === 'check'">
+                        <mat-checkbox
+                            [checked]="state[perm.selector]"
+                            (change)="onToggleStatePerm(state, perm.selector, $event)"
+                        ></mat-checkbox>
+                    </div>
+                    <div
+                        *ngIf="perm.type === 'input'"
+                    >
+                        <div class="inner-table">
+                            {{ (state[perm.selector] | translate) || '–' }}
                         </div>
                         <div
-                            class="clickable-cell"
-                            *ngIf="perm.type === 'input'"
+                            class="clickable-cell stretch-to-fill-parent"
                             (click)="onClickInputPerm(perm, state)"
+                            ></div>
+                    </div>
+                    <div class="inner-table" *ngIf="perm.type === 'color'">
+                        <mat-basic-chip
+                            [matMenuTriggerFor]="colorMenu"
+                            [matMenuTriggerData]="{ state: state }"
+                            [disableRipple]="true"
+                            [ngClass]="state[perm.selector]"
                         >
-                            <div class="inner-table">
-                                {{ (state[perm.selector] | translate) || '–' }}
+                            {{ state[perm.selector] | translate }}
+                        </mat-basic-chip>
+                    </div>
+                    <div
+                        *ngIf="perm.type === 'state'"
+                    >
+                        <div class="inner-table">
+                            <div *ngIf="!state.next_states_id.length">
+                                -
+                            </div>
+                            <div *ngIf="state.next_states_id.length">
+                                <div
+                                    *ngFor="
+                                        let nextstate of state.getNextStates(workflow.workflow);
+                                        let last = last
+                                    "
+                                >
+                                    {{ nextstate.name | translate }}<span *ngIf="!last">,&nbsp;</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="inner-table" *ngIf="perm.type === 'color'">
-                            <mat-basic-chip
-                                [matMenuTriggerFor]="colorMenu"
-                                [matMenuTriggerData]="{ state: state }"
-                                [disableRipple]="true"
-                                [ngClass]="getStateCssColor(state[perm.selector])"
-                            >
-                                {{ state[perm.selector] | translate }}
-                            </mat-basic-chip>
-                        </div>
                         <div
-                            class="clickable-cell"
-                            *ngIf="perm.type === 'state'"
+                            class="clickable-cell stretch-to-fill-parent"
                             [matMenuTriggerFor]="nextStatesMenu"
                             [matMenuTriggerData]="{ state: state }"
-                        >
-                            <div class="inner-table">
-                                <div *ngIf="!state.next_states_id.length">
-                                    -
-                                </div>
-                                <div *ngIf="state.next_states_id.length">
-                                    <span
-                                        *ngFor="
-                                            let nextstate of state.getNextStates(workflow.workflow);
-                                            let last = last
-                                        "
-                                    >
-                                        {{ nextstate.name | translate }}<span *ngIf="!last">,&nbsp;</span>
-                                    </span>
-                                </div>
-                            </div>
+                            ></div>
+                    </div>
+                    <div
+                        *ngIf="perm.type === 'amendment'"
+                    >
+                        <div class="inner-table">
+                            {{ getMergeAmendmentLabel(state.merge_amendment_into_final) | translate }}
                         </div>
                         <div
-                            class="clickable-cell"
-                            *ngIf="perm.type === 'amendment'"
+                            class="clickable-cell stretch-to-fill-parent"
                             [matMenuTriggerFor]="mergeAmendmentMenu"
                             [matMenuTriggerData]="{ state: state }"
-                        >
-                            <div class="inner-table">
-                                {{ getMergeAmendmentLabel(state.merge_amendment_into_final) | translate }}
+                        ></div>
+                    </div>
+                    <div
+                        *ngIf="perm.type === 'restriction'"
+                    >
+                        <div class="inner-table">
+                            <div *ngIf="!state.restriction.length">
+                                -
+                            </div>
+                            <div *ngIf="state.restriction.length">
+                                <div *ngFor="let restriction of state.restriction; let last = last">
+                                    {{ getRestrictionLabel(restriction) | translate
+                                    }}<span *ngIf="!last">,&nbsp;</span>
+                                </div>
                             </div>
                         </div>
                         <div
-                            class="clickable-cell"
-                            *ngIf="perm.type === 'restriction'"
+                            class="clickable-cell stretch-to-fill-parent"
                             [matMenuTriggerFor]="restrictionMenu"
                             [matMenuTriggerData]="{ state: state }"
-                        >
-                            <div class="inner-table">
-                                <div *ngIf="!state.restriction.length">
-                                    -
-                                </div>
-                                <div *ngIf="state.restriction.length">
-                                    <span *ngFor="let restriction of state.restriction; let last = last">
-                                        {{ getRestrictionLabel(restriction) | translate
-                                        }}<span *ngIf="!last">,&nbsp;</span>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </mat-cell>
-                </ng-container>
-            </div>
+                        ></div>
+                    </div>
+                </td>
+            </ng-container>
 
-            <mat-header-row *matHeaderRowDef="headerRowDef"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: headerRowDef"></mat-row>
+            <tr mat-header-row *matHeaderRowDef="headerRowDef"></tr>
+            <tr mat-row *matRowDef="let row; columns: headerRowDef"></tr>
         </table>
     </div>
 </div>

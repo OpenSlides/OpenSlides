@@ -16,7 +16,7 @@
     </div>
 
     <div class="extra-controls-slot">
-        <div *ngIf="isCategoryAvailable()">
+        <div *ngIf="isCategoryAvailable() && !isMultiSelect">
             <button
                 mat-button
                 *ngIf="selectedView !== 'tiles'"

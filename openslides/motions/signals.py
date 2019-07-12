@@ -26,7 +26,7 @@ def create_builtin_workflows(sender, **kwargs):
         name="accepted",
         workflow=workflow_1,
         recommendation_label="Acceptance",
-        css_class="success",
+        css_class="green",
         merge_amendment_into_final=1,
     )
     state_1_2.save(skip_autoupdate=True)
@@ -34,7 +34,7 @@ def create_builtin_workflows(sender, **kwargs):
         name="rejected",
         workflow=workflow_1,
         recommendation_label="Rejection",
-        css_class="danger",
+        css_class="red",
         merge_amendment_into_final=-1,
     )
     state_1_3.save(skip_autoupdate=True)
@@ -42,7 +42,7 @@ def create_builtin_workflows(sender, **kwargs):
         name="not decided",
         workflow=workflow_1,
         recommendation_label="No decision",
-        css_class="default",
+        css_class="grey",
         merge_amendment_into_final=-1,
     )
     state_1_4.save(skip_autoupdate=True)
@@ -77,7 +77,7 @@ def create_builtin_workflows(sender, **kwargs):
         name="accepted",
         workflow=workflow_2,
         recommendation_label="Acceptance",
-        css_class="success",
+        css_class="green",
         merge_amendment_into_final=1,
     )
     state_2_3.save(skip_autoupdate=True)
@@ -85,14 +85,14 @@ def create_builtin_workflows(sender, **kwargs):
         name="rejected",
         workflow=workflow_2,
         recommendation_label="Rejection",
-        css_class="danger",
+        css_class="red",
         merge_amendment_into_final=-1,
     )
     state_2_4.save(skip_autoupdate=True)
     state_2_5 = State(
         name="withdrawed",
         workflow=workflow_2,
-        css_class="default",
+        css_class="grey",
         merge_amendment_into_final=-1,
     )
     state_2_5.save(skip_autoupdate=True)
@@ -100,7 +100,7 @@ def create_builtin_workflows(sender, **kwargs):
         name="adjourned",
         workflow=workflow_2,
         recommendation_label="Adjournment",
-        css_class="default",
+        css_class="grey",
         merge_amendment_into_final=-1,
     )
     state_2_6.save(skip_autoupdate=True)
@@ -108,7 +108,7 @@ def create_builtin_workflows(sender, **kwargs):
         name="not concerned",
         workflow=workflow_2,
         recommendation_label="No concernment",
-        css_class="default",
+        css_class="grey",
         merge_amendment_into_final=-1,
     )
     state_2_7.save(skip_autoupdate=True)
@@ -116,14 +116,14 @@ def create_builtin_workflows(sender, **kwargs):
         name="refered to committee",
         workflow=workflow_2,
         recommendation_label="Referral to committee",
-        css_class="default",
+        css_class="grey",
         merge_amendment_into_final=-1,
     )
     state_2_8.save(skip_autoupdate=True)
     state_2_9 = State(
         name="needs review",
         workflow=workflow_2,
-        css_class="default",
+        css_class="grey",
         merge_amendment_into_final=-1,
     )
     state_2_9.save(skip_autoupdate=True)
@@ -131,7 +131,7 @@ def create_builtin_workflows(sender, **kwargs):
         name="rejected (not authorized)",
         workflow=workflow_2,
         recommendation_label="Rejection (not authorized)",
-        css_class="default",
+        css_class="grey",
         merge_amendment_into_final=-1,
     )
     state_2_10.save(skip_autoupdate=True)

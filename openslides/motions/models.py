@@ -993,11 +993,10 @@ class State(RESTModelMixin, models.Model):
     next_states = models.ManyToManyField("self", symmetrical=False, blank=True)
     """A many-to-many relation to all states, that can be choosen from this state."""
 
-    css_class = models.CharField(max_length=255, default="primary")
+    css_class = models.CharField(max_length=255, default="lightblue")
     """
-    A css class string for showing the state name in a coloured label based on bootstrap,
-    e.g. 'danger' (red), 'success' (green), 'warning' (yellow), 'default' (grey).
-    Default value is 'primary' (blue).
+    A css class string for showing the state name in a coloured label. Currently supported
+    values are grey, red, green, lightblue and yellow. The default is lightblue.
     """
 
     restriction = JSONField(default=list)

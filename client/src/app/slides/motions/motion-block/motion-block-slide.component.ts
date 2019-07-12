@@ -4,7 +4,6 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { MotionBlockSlideData, MotionBlockSlideMotionRepresentation } from './motion-block-slide-data';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
-import { StateCssClassMapping } from 'app/site/motions/models/view-workflow';
 import { BaseMotionSlideComponent } from '../base/base-motion-slide';
 import { SlideData } from 'app/core/core-services/projector-data.service';
 
@@ -187,6 +186,6 @@ export class MotionBlockSlideComponent extends BaseMotionSlideComponent<MotionBl
      * @returns the css color for the state of the motion in cell i and j
      */
     public getStateCssColor(i: number, j: number): string {
-        return StateCssClassMapping[this.getMotion(i, j).recommendation.css_class] || '';
+        return this.getMotion(i, j).recommendation.css_class || '';
     }
 }

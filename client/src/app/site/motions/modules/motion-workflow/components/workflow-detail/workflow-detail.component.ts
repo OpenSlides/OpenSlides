@@ -10,7 +10,7 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
 import { BaseViewComponent } from 'app/site/base/base-view';
-import { ViewWorkflow, StateCssClassMapping } from 'app/site/motions/models/view-workflow';
+import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
 import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
 import { WorkflowState, MergeAmendment } from 'app/shared/models/motions/workflow-state';
 import { PromptService } from 'app/core/ui-services/prompt.service';
@@ -93,7 +93,7 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
     /**
      * Determine label colors. Where they should come from is currently now know
      */
-    public labelColors = ['default', 'primary', 'success', 'danger', 'warning'];
+    public labelColors: string[] = ['grey', 'red', 'green', 'lightblue', 'yellow'];
 
     /**
      * Holds state permissions
@@ -395,15 +395,5 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
      */
     public trackElement(index: number): number {
         return index;
-    }
-
-    /**
-     * Translate the state's css class into a color
-     *
-     * @param colorLabel the default color label of a selected workflow
-     * @returns a string representing a color
-     */
-    public getStateCssColor(colorLabel: string): string {
-        return StateCssClassMapping[colorLabel] || '';
     }
 }
