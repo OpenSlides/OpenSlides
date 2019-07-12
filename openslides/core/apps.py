@@ -1,3 +1,5 @@
+import hashlib
+import logging
 import os
 import sys
 from collections import OrderedDict
@@ -8,6 +10,9 @@ from django.apps import AppConfig
 from django.conf import settings
 from django.db.models import Max
 from django.db.models.signals import post_migrate, pre_delete
+
+
+logger = logging.getLogger("openslides.core")
 
 
 class CoreAppConfig(AppConfig):
@@ -60,9 +65,7 @@ class CoreAppConfig(AppConfig):
         )
 
         post_migrate.connect(
-            call_save_default_values,
-            sender=self,
-            dispatch_uid="core_save_config_default_values",
+            manage_config, sender=self, dispatch_uid="core_manage_config"
         )
         pre_delete.connect(
             autoupdate_for_many_to_many_relations,
@@ -175,17 +178,33 @@ class CoreAppConfig(AppConfig):
         # get max migration id -> the "version" of the DB
         from django.db.migrations.recorder import MigrationRecorder
 
-        constants["MigrationVersion"] = MigrationRecorder.Migration.objects.aggregate(
-            Max("id")
-        )["id__max"]
+        migration_version = MigrationRecorder.Migration.objects.aggregate(Max("id"))[
+            "id__max"
+        ]
+        config_version = config["config_version"]
+        hash = hashlib.sha1(
+            f"{migration_version}#{config_version}".encode()
+        ).hexdigest()
+        constants["DbSchemaVersion"] = hash
+        logger.info(f"DbSchemaVersion={hash}")
 
         return constants
 
 
-def call_save_default_values(**kwargs):
+def manage_config(**kwargs):
+    """
+    Should be run after every migration. Saves default values
+    of all non db-existing config objects into the db. Deletes all
+    unnecessary old config values, e.g. all db entries, that does
+    not have a config_variable anymore. Increments the config version,
+    if at least one of the operations altered some data.
+    """
     from .config import config
 
-    config.save_default_values()
+    altered = config.save_default_values()
+    altered = config.cleanup_old_config_values() or altered
+    if altered:
+        config.increment_version()
 
 
 def startup():
@@ -201,6 +220,6 @@ def startup():
     from openslides.utils.cache import element_cache
     from openslides.core.models import History
 
-    set_constants(get_constants_from_apps())
     element_cache.ensure_cache()
+    set_constants(get_constants_from_apps())
     History.objects.build_history()

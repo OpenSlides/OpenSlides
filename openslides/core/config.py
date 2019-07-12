@@ -205,13 +205,14 @@ class ConfigHandler:
 
         self.config_variables.update(item_index)
 
-    def save_default_values(self) -> None:
+    def save_default_values(self) -> bool:
         """
-        Saves the default values to the database.
+        Saves the default values to the database. Does also build the dictonary key_to_id.
 
-        Does also build the dictonary key_to_id.
+        Returns True, if something in the DB was changed.
         """
         self.key_to_id = {}
+        altered_config = False
         for item in self.config_variables.values():
             try:
                 db_value = ConfigStore.objects.get(key=item.name)
@@ -220,7 +221,29 @@ class ConfigHandler:
                 db_value.key = item.name
                 db_value.value = item.default_value
                 db_value.save(skip_autoupdate=True)
+                altered_config = True
             self.key_to_id[db_value.key] = db_value.id
+        return altered_config
+
+    def increment_version(self) -> None:
+        """
+        Increments the config key "config_version"
+        """
+        db_value = ConfigStore.objects.get(key="config_version")
+        db_value.value = db_value.value + 1
+        db_value.save(skip_autoupdate=True)
+
+    def cleanup_old_config_values(self) -> bool:
+        """
+        Deletes all config variable in the database, if the keys are not
+        in key_to_id. This required a fully build key_to_id!
+        Returns True, if something in the DB was changed.
+        """
+        key_to_id = key_to_id = cast(Dict[str, int], self.key_to_id)
+        queryset = ConfigStore.objects.exclude(key__in=key_to_id.keys())
+        altered_config = queryset.exists()
+        queryset.delete()
+        return altered_config
 
     def get_collection_string(self) -> str:
         """

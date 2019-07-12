@@ -55,7 +55,7 @@ export class PingService {
 
         // Connects the ping-pong mechanism to the opening and closing of the connection.
         this.websocketService.closeEvent.subscribe(() => this.stopPing());
-        this.websocketService.connectEvent.subscribe(() => this.startPing());
+        this.websocketService.generalConnectEvent.subscribe(() => this.startPing());
         if (this.websocketService.isConnected) {
             this.startPing();
         }

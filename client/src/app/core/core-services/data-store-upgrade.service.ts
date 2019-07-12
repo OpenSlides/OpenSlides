@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 
+import { take } from 'rxjs/operators';
+
 import { ConstantsService } from './constants.service';
 import { AutoupdateService } from './autoupdate.service';
 import { StorageService } from './storage.service';
 
-const MIGRATIONVERSION = 'MigrationVersion';
+const DB_SCHEMA_VERSION = 'DbSchemaVersion';
 
 /**
  * Manages upgrading the DataStore, if the migration version from the server is higher than the current one.
@@ -19,16 +21,28 @@ export class DataStoreUpgradeService {
      * @param storageService
      */
     public constructor(
-        autoupdateService: AutoupdateService,
-        constantsService: ConstantsService,
-        storageService: StorageService
+        private autoupdateService: AutoupdateService,
+        private constantsService: ConstantsService,
+        private storageService: StorageService
     ) {
-        constantsService.get<number>(MIGRATIONVERSION).subscribe(async version => {
-            const currentVersion = await storageService.get<number>(MIGRATIONVERSION);
-            await storageService.set(MIGRATIONVERSION, version);
-            if (currentVersion && currentVersion !== version) {
-                autoupdateService.doFullUpdate();
-            }
-        });
+        this.checkForUpgrade();
+    }
+
+    public async checkForUpgrade(): Promise<boolean> {
+        const version = await this.constantsService
+            .get<string | number>(DB_SCHEMA_VERSION)
+            .pipe(take(1))
+            .toPromise();
+        console.log('DB schema version:', version);
+        const currentVersion = await this.storageService.get<string>(DB_SCHEMA_VERSION);
+        await this.storageService.set(DB_SCHEMA_VERSION, version);
+        const doUpgrade = version !== currentVersion;
+
+        if (doUpgrade) {
+            console.log(`DB schema version changed from ${currentVersion} to ${version}`);
+            await this.autoupdateService.doFullUpdate();
+        }
+
+        return doUpgrade;
     }
 }

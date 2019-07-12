@@ -166,6 +166,7 @@ export class AutoupdateService {
      * Does a full update: Requests all data from the server and sets the DS to the fresh data.
      */
     public async doFullUpdate(): Promise<void> {
+        const oldChangeId = this.DS.maxChangeId;
         const response = await this.websocketService.sendAndGetResponse<{}, AutoupdateFormat>('getElements', {});
 
         const updateSlot = await this.DSUpdateManager.getNewUpdateSlot(this.DS);
@@ -180,5 +181,7 @@ export class AutoupdateService {
 
         await this.DS.set(allModels, response.to_change_id);
         this.DSUpdateManager.commit(updateSlot);
+
+        console.log(`Full update done from ${oldChangeId} to ${response.to_change_id}`);
     }
 }
