@@ -201,7 +201,7 @@ export class MotionImportService extends BaseImportService<ViewMotion> {
         }
         const submitterArray = submitterlist.split(','); // TODO fails with 'full name'
         for (const submitter of submitterArray) {
-            const existingSubmitters = this.userRepo.getUsersByName(submitter);
+            const existingSubmitters = this.userRepo.getUsersByName(submitter.trim());
             if (!existingSubmitters.length) {
                 if (!this.newSubmitters.find(listedSubmitter => listedSubmitter.name === submitter)) {
                     this.newSubmitters.push({ name: submitter });

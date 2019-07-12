@@ -14,6 +14,9 @@ import { ChangeRecommendationRepositoryService } from 'app/core/repositories/mot
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change';
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
+import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
+import { reconvertChars } from 'app/shared/utils/reconvert-chars';
+import { stripHtmlTags } from 'app/shared/utils/strip-html-tags';
 
 /**
  * Exports CSVs for motions. Collect all CSV types here to have them in one place.
@@ -38,7 +41,8 @@ export class MotionCsvExportService {
         private configService: ConfigService,
         private linenumberingService: LinenumberingService,
         private changeRecoRepo: ChangeRecommendationRepositoryService,
-        private motionRepo: MotionRepositoryService
+        private motionRepo: MotionRepositoryService,
+        private commentRepo: MotionCommentSectionRepositoryService
     ) {}
 
     /**
@@ -83,7 +87,12 @@ export class MotionCsvExportService {
      * @param contentToExport content properties to export
      * @param crMode
      */
-    public exportMotionList(motions: ViewMotion[], contentToExport: string[], crMode?: ChangeRecoMode): void {
+    public exportMotionList(
+        motions: ViewMotion[],
+        contentToExport: string[],
+        comments: number[],
+        crMode?: ChangeRecoMode
+    ): void {
         if (!crMode) {
             crMode = this.configService.instant('motions_recommendation_text_mode');
         }
@@ -116,6 +125,18 @@ export class MotionCsvExportService {
                 return { property: option } as CsvColumnDefinitionProperty<ViewMotion>;
             }
         });
+        exportProperties.push(
+            ...comments.map(commentId => ({
+                label: this.commentRepo.getViewModel(commentId).getTitle(),
+                map: (motion: ViewMotion) => {
+                    const viewComment = this.commentRepo.getViewModel(commentId);
+                    const motionComment = motion.getCommentForSection(viewComment);
+                    return motionComment && motionComment.comment
+                        ? reconvertChars(stripHtmlTags(motionComment.comment))
+                        : '';
+                }
+            }))
+        );
 
         this.csvExport.export(motions, exportProperties, this.translate.instant('Motions') + '.csv');
     }
@@ -147,29 +168,29 @@ export class MotionCsvExportService {
     public exportDummyMotion(): void {
         const headerRow = [
             'Identifier',
+            'Submitters',
             'Title',
             'Text',
             'Reason',
-            'Submitters',
             'Category',
             'Tags',
-            'Origin',
-            'Motion block'
+            'Motion block',
+            'Origin'
         ];
         const rows = [
             [
                 'A1',
+                'Submitter A',
                 'Title 1',
                 'Text 1',
                 'Reason 1',
-                'Submitter A',
                 'Category A',
                 'Tag 1, Tag 2',
-                'Last Year Conference A',
-                'Block A'
+                'Block A',
+                'Last Year Conference A'
             ],
-            ['B1', 'Title 2', 'Text 2', 'Reason 2', 'Submitter B', 'Category B', null, null, 'Block A'],
-            [null, 'Title 3', 'Text 3', null, null, null, null, null, null]
+            ['B1', 'Submitter B', 'Title 2', 'Text 2', 'Reason 2', 'Category B', null, 'Block A', 'Origin B'],
+            ['C2', null, 'Title 3', 'Text 3', null, null, null, null, null]
         ];
         this.csvExport.dummyCSVExport(headerRow, rows, `${this.translate.instant('motions-example')}.csv`);
     }

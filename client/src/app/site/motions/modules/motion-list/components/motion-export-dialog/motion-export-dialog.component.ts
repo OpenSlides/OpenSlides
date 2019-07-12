@@ -148,13 +148,6 @@ export class MotionExportDialogComponent implements OnInit {
             this.enableControl('content');
         }
 
-        // At the moment the csv can't export comments.
-        if (format === FileFormat.CSV) {
-            this.disableControl('comments');
-        } else {
-            this.enableControl('comments');
-        }
-
         if (format === FileFormat.CSV || format === FileFormat.XLSX) {
             this.disableControl('lnMode');
             this.disableControl('crMode');

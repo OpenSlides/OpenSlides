@@ -14,5 +14,6 @@ export function reconvertChars(text: string): string {
         .replace(/&uuml;/g, 'ü')
         .replace(/&Uuml;/g, 'Ü')
         .replace(/&aring;|&#229;/g, 'å')
-        .replace(/&Aring;|&#197;/g, 'Å');
+        .replace(/&Aring;|&#197;/g, 'Å')
+        .replace(/&szlig;|&#223;/g, 'ß');
 }

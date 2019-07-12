@@ -320,11 +320,18 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
                         }
                     }
                 } else if (exportInfo.format === FileFormat.CSV) {
-                    this.motionCsvExport.exportMotionList(
-                        data,
-                        [...exportInfo.content, ...exportInfo.metaInfo],
-                        exportInfo.crMode
-                    );
+                    const content = [];
+                    const comments = [];
+                    if (exportInfo.content) {
+                        content.push(...exportInfo.content);
+                    }
+                    if (exportInfo.metaInfo) {
+                        content.push(...exportInfo.metaInfo);
+                    }
+                    if (exportInfo.comments) {
+                        comments.push(...exportInfo.comments);
+                    }
+                    this.motionCsvExport.exportMotionList(data, content, comments, exportInfo.crMode);
                 } else if (exportInfo.format === FileFormat.XLSX) {
                     this.motionXlsxExport.exportMotionList(data, exportInfo.metaInfo, exportInfo.comments);
                 }

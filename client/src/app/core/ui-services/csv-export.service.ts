@@ -94,14 +94,10 @@ export class CsvExportService {
         let csvContent = []; // Holds all lines as arrays with each column-value
         // initial array of usable text separators. The first character not used
         // in any text data or as column separator will be used as text separator
-        let tsList = ['"', "'", '`', '/', '\\', ';', '.'];
 
         if (lineSeparator === columnSeparator) {
             throw new Error('lineseparator and columnseparator must differ from each other');
         }
-
-        tsList = this.checkCsvTextSafety(lineSeparator, tsList);
-        tsList = this.checkCsvTextSafety(columnSeparator, tsList);
 
         // create header data
         const header = columns.map(column => {
@@ -112,15 +108,14 @@ export class CsvExportService {
                 label = column.label;
             }
             label = this.capitalizeTranslate(label);
-            tsList = this.checkCsvTextSafety(label, tsList);
             return label;
         });
         csvContent.push(header);
 
         // create lines
         csvContent = csvContent.concat(
-            models.map(model => {
-                return columns.map(column => {
+            models.map(model =>
+                columns.map(column => {
                     let value: string;
 
                     if (isPropertyDefinition(column)) {
@@ -139,21 +134,13 @@ export class CsvExportService {
                     } else if (isMapDefinition(column)) {
                         value = column.map(model);
                     }
-                    tsList = this.checkCsvTextSafety(value, tsList);
-
-                    return value;
-                });
-            })
+                    return this.checkCsvTextSafety(value);
+                })
+            )
         );
 
-        // assemble lines, putting text separator in place
-        if (!tsList.length) {
-            throw new Error('no usable text separator left for valid csv text');
-        }
         const csvContentAsString: string = csvContent
-            .map(line => {
-                return line.map(entry => tsList[0] + entry + tsList[0]).join(columnSeparator);
-            })
+            .map((line: string[]) => line.join(columnSeparator))
             .join(lineSeparator);
         const filetype = `text/csv;charset=${encoding}`;
         if (encoding === 'iso-8859-15') {
@@ -164,20 +151,17 @@ export class CsvExportService {
     }
 
     /**
-     * Checks if a given input contains any of the characters defined in a list
-     * used for textseparators. The list is then returned without the 'special'
-     * characters, as they may not be used as text separator in this csv.
+     * Ensures, that the given string has escaped double quotes
+     * and no linebreak. The string itself will also be escaped by `double quotes`.
      *
-     * @param input any input to be sent to CSV
-     * @param tsList The list of special characters to check.
-     * @returns the cleaned CSV String list
+     * @param {string} input any input to be sent to CSV
+     * @returns {string} the cleaned string.
      */
-    public checkCsvTextSafety(input: string, tsList: string[]): string[] {
-        if (input === null || input === undefined) {
-            return tsList;
+    public checkCsvTextSafety(input: string): string {
+        if (!input) {
+            return '';
         }
-
-        return tsList.filter(char => input.indexOf(char) < 0);
+        return '"' + input.replace(/"/g, '""').replace(/(\r\n\t|\n|\r\t)/gm, '') + '"';
     }
 
     /**
@@ -193,21 +177,22 @@ export class CsvExportService {
 
     public dummyCSVExport(header: string[], rows: (string | number | boolean | null)[][], filename: string): void {
         const separator = this.config.instant<string>('general_csv_separator');
-        const tsList = this.checkCsvTextSafety(separator, ['"', "'", '`', '/', '\\', ';', '.']);
         const headerRow = [header.map(item => this.translate.instant(item)).join(separator)];
         const content = rows.map(row =>
             row
                 .map(item => {
-                    if (item === null) {
-                        return '';
+                    let value = '';
+                    if (!item) {
+                        value = '';
                     }
-                    if (typeof item === 'string') {
-                        return `${tsList[0]}${item}${tsList[0]}`;
+                    if (typeof item === 'number') {
+                        value = item.toString(10);
                     } else if (typeof item === 'boolean') {
-                        return item ? '1' : '0';
+                        value = item ? '1' : '0';
                     } else {
-                        return `${item}`;
+                        value = item;
                     }
+                    return this.checkCsvTextSafety(value);
                 })
                 .join(separator)
         );
