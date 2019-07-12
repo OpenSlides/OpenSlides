@@ -31,7 +31,7 @@ async def mediafile_slide(
         )
 
     return {
-        "path": mediafile["mediafile"]["name"],
+        "path": mediafile["path"],
         "type": mediafile["mediafile"]["type"],
         "media_url_prefix": mediafile["media_url_prefix"],
     }

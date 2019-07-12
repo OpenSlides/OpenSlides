@@ -3,7 +3,7 @@
         <ngx-mat-select-search ngModel (ngModelChange)="onSearch($event)"></ngx-mat-select-search>
         <div *ngIf="!multiple && includeNone">
             <mat-option [value]="null">
-                <span>–</span>
+                {{ noneTitle | translate }}
             </mat-option>
             <mat-divider></mat-divider>
         </div>

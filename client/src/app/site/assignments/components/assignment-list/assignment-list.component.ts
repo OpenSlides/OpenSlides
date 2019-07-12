@@ -110,7 +110,7 @@ export class AssignmentListComponent extends BaseListViewComponent<ViewAssignmen
      * otherwise the whole list of assignments is exported.
      */
     public downloadAssignmentButton(assignments?: ViewAssignment[]): void {
-        this.pdfService.exportMultipleAssignments(assignments ? assignments : this.repo.getSortedViewModelList());
+        this.pdfService.exportMultipleAssignments(assignments ? assignments : this.repo.getViewModelList());
     }
 
     /**

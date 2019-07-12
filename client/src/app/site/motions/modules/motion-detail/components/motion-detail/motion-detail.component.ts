@@ -1375,7 +1375,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * @param attachment the selected file
      */
     public onClickAttachment(attachment: Mediafile): void {
-        window.open(attachment.downloadUrl);
+        window.open(attachment.url);
     }
 
     /**

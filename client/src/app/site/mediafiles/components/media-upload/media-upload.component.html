@@ -1,4 +1,4 @@
-<os-head-bar [nav]="false">
+<os-head-bar [nav]="false" [goBack]="true">
     <!-- Title -->
     <div class="title-slot"><h2 translate>Upload files</h2></div>
 
@@ -13,6 +13,7 @@
 <mat-card class="os-card">
     <os-media-upload-content
         [parallel]="parallel"
+        [directoryId]="directoryId"
         (uploadSuccessEvent)="uploadSuccess()"
         (errorEvent)="showError($event)"
     ></os-media-upload-content>

@@ -11,7 +11,7 @@ import { Selectable } from '../selectable';
 /**
  * Reusable Searchable Value Selector
  *
- * Use `multiple="true"`, `[InputListValues]=myValues`,`[formControl]="myformcontrol"`, `[form]="myform_name"` and `placeholder={{listname}}` to pass the Values and Listname
+ * Use `multiple="true"`, `[InputListValues]=myValues`,`[formControl]="myformcontrol"` and `placeholder={{listname}}` to pass the Values and Listname
  *
  * ## Examples:
  *
@@ -63,6 +63,9 @@ export class SearchValueSelectorComponent implements OnDestroy {
      */
     @Input()
     public includeNone = false;
+
+    @Input()
+    public noneTitle = '–';
 
     /**
      * Boolean, whether the component should be rendered with full width.

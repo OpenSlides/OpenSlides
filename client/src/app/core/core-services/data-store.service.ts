@@ -5,6 +5,7 @@ import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model
 import { CollectionStringMapperService } from './collection-string-mapper.service';
 import { Deferred } from '../deferred';
 import { StorageService } from './storage.service';
+import { BaseRepository } from '../repositories/base-repository';
 
 /**
  * Represents information about a deleted model.
@@ -187,7 +188,7 @@ export class DataStoreUpdateManagerService {
     }
 
     /**
-     * Commits the given update slot. THis slot must be the current one. If there are requests
+     * Commits the given update slot. This slot must be the current one. If there are requests
      * for update slots queued, the next one will be served.
      *
      * Note: I added this param to make sure, that only the user of the slot
@@ -203,17 +204,32 @@ export class DataStoreUpdateManagerService {
 
         // notify repositories in two phases
         const repositories = this.mapperService.getAllRepositories();
+        // just commit the update in a repository, if something was changed. Save
+        // this information in this mapping. the boolean is not evaluated; if there is an
+        const affectedRepos: { [collection: string]: BaseRepository<any, any, any> } = {};
 
         // Phase 1: deleting and creating of view models (in this order)
         repositories.forEach(repo => {
-            repo.deleteModels(slot.getDeletedModelIdsForCollection(repo.collectionString));
-            repo.changedModels(slot.getChangedModelIdsForCollection(repo.collectionString));
+            const deletedModelIds = slot.getDeletedModelIdsForCollection(repo.collectionString);
+            repo.deleteModels(deletedModelIds);
+            const changedModelIds = slot.getChangedModelIdsForCollection(repo.collectionString);
+            repo.changedModels(changedModelIds);
+
+            if (deletedModelIds.length || changedModelIds.length) {
+                affectedRepos[repo.collectionString] = repo;
+            }
         });
 
         // Phase 2: updating dependencies
         repositories.forEach(repo => {
-            repo.updateDependencies(slot.getChangedModels());
+            if (repo.updateDependencies(slot.getChangedModels())) {
+                affectedRepos[repo.collectionString] = repo;
+            }
         });
+
+        // Phase 3: committing the update to all affected repos. This will trigger all
+        // list observables/subjects to emit the new list.
+        Object.values(affectedRepos).forEach(repo => repo.commitUpdate());
 
         slot.DS.triggerModifiedObservable();
 

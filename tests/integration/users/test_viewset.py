@@ -514,8 +514,6 @@ class GroupUpdate(TestCase):
             "core.can_see_projector",
             "mediafiles.can_manage",
             "mediafiles.can_see",
-            "mediafiles.can_see_hidden",
-            "mediafiles.can_upload",
             "motions.can_create",
             "motions.can_manage",
             "motions.can_see",

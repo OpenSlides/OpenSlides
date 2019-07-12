@@ -5,14 +5,69 @@
     white-space: pre-line !important;
 }
 
-// duplicate. Put into own file
-.file-info-cell {
-    display: grid;
-    margin: 0;
+.folder-nav-bar {
+    $size: 40px;
+    position: relative;
+    display: flex;
+    line-height: $size;
+    background-color: white; // TODO: theme
 
-    span {
+    .arrow {
+        height: $size;
+        float: left;
         .mat-icon {
-            font-size: 130%;
+            line-height: $size;
+        }
+    }
+
+    .folder {
+        height: $size;
+    }
+
+    .folder-text {
+        font-size: 16px;
+        font-weight: 500;
+        margin: auto 5px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .visibility {
+        display: flex;
+        position: absolute;
+        right: 10px;
+        .visible-for {
+            margin-left: 10px;
+            display: inherit;
+        }
+    }
+}
+
+.file-manager-table {
+    .file-title {
+        font-weight: 500;
+        font-size: 16px;
+    }
+
+    .info-text {
+        font-size: 90%;
+    }
+
+    height: calc(100vh - 170px);
+
+    .pbl-ngrid-row {
+        $size: 60px;
+        height: $size !important;
+
+        .pbl-ngrid-cell {
+            height: $size !important;
+        }
+    }
+
+    // For some reason, hiding the table header adds an empty meta bar.
+    .pbl-ngrid-container {
+        > div {
+            display: none;
         }
     }
 }

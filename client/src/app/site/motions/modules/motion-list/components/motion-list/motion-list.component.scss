@@ -3,12 +3,6 @@
 // Determine the distance between the top edge to the start of the table content
 $text-margin-top: 10px;
 
-/** css hacks https://codepen.io/edge0703/pen/iHJuA */
-.innerTable {
-    display: inline-block;
-    line-height: 150%;
-}
-
 .mat-button-toggle-group {
     line-height: normal;
     vertical-align: middle;

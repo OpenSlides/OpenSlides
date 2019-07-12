@@ -154,7 +154,7 @@ export class MotionPdfService {
         }
 
         if (infoToExport && infoToExport.includes('allcomments')) {
-            commentsToExport = this.commentRepo.getSortedViewModelList().map(vm => vm.id);
+            commentsToExport = this.commentRepo.getViewModelList().map(vm => vm.id);
         }
         if (commentsToExport) {
             motionPdfContent.push(this.createComments(motion, commentsToExport));

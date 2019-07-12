@@ -52,7 +52,6 @@ export abstract class BaseHasContentObjectRepository<
             this.contentObjectMapping[contentObject.collection][contentObject.id] = v;
             this.updateViewModelObservable(id);
         });
-        this.updateViewModelListObservable();
     }
 
     /**
@@ -70,6 +69,5 @@ export abstract class BaseHasContentObjectRepository<
             delete this.viewModelStore[id];
             this.updateViewModelObservable(id);
         });
-        this.updateViewModelListObservable();
     }
 }

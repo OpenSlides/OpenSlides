@@ -1,7 +1,7 @@
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
 
 from ..utils.access_permissions import BaseAccessPermissions
-from ..utils.auth import async_has_perm
+from ..utils.auth import async_has_perm, async_in_some_groups
 
 
 class MediafileAccessPermissions(BaseAccessPermissions):
@@ -18,15 +18,15 @@ class MediafileAccessPermissions(BaseAccessPermissions):
         Returns the restricted serialized data for the instance prepared
         for the user. Removes hidden mediafiles for some users.
         """
-        # Parse data.
-        if await async_has_perm(user_id, "mediafiles.can_see") and await async_has_perm(
-            user_id, "mediafiles.can_see_hidden"
-        ):
-            data = full_data
-        elif await async_has_perm(user_id, "mediafiles.can_see"):
-            # Exclude hidden mediafiles.
-            data = [full for full in full_data if not full["hidden"]]
-        else:
-            data = []
+        if not await async_has_perm(user_id, "mediafiles.can_see"):
+            return []
+
+        data = []
+        for full in full_data:
+            access_groups = full["inherited_access_groups_id"]
+            if (
+                isinstance(access_groups, bool) and access_groups
+            ) or await async_in_some_groups(user_id, cast(List[int], access_groups)):
+                data.append(full)
 
         return data

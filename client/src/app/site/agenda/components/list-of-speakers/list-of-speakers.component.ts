@@ -163,7 +163,7 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
                 : true;
 
         if (this.isCurrentListOfSpeakers) {
-            this.projectors = this.projectorRepo.getSortedViewModelList();
+            this.projectors = this.projectorRepo.getViewModelList();
             this.updateClosProjector();
             this.projectorRepo.getViewModelListObservable().subscribe(newProjectors => {
                 this.projectors = newProjectors;

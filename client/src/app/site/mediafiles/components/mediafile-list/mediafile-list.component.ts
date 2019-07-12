@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -6,19 +7,19 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
-import { PblColumnDefinition } from '@pebula/ngrid';
+import { PblDataSource, columnFactory, createDS } from '@pebula/ngrid';
 
-import { ColumnRestriction } from 'app/shared/components/list-view-table/list-view-table.component';
-import { BaseListViewComponent } from 'app/site/base/base-list-view';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
 import { MediaManageService } from 'app/core/ui-services/media-manage.service';
-import { MediafileFilterListService } from '../../services/mediafile-filter.service';
 import { MediafilesSortListService } from '../../services/mediafiles-sort-list.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
-import { StorageService } from 'app/core/core-services/storage.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
+import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
+import { ViewGroup } from 'app/site/users/models/view-group';
+import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
+import { BaseViewComponent } from 'app/site/base/base-view';
 
 /**
  * Lists all the uploaded files.
@@ -26,9 +27,15 @@ import { ViewportService } from 'app/core/ui-services/viewport.service';
 @Component({
     selector: 'os-mediafile-list',
     templateUrl: './mediafile-list.component.html',
-    styleUrls: ['./mediafile-list.component.scss']
+    styleUrls: ['./mediafile-list.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
-export class MediafileListComponent extends BaseListViewComponent<ViewMediafile> implements OnInit {
+export class MediafileListComponent extends BaseViewComponent implements OnInit, OnDestroy {
+    /**
+     * Data source for the files
+     */
+    public dataSource: PblDataSource<ViewMediafile>;
+
     /**
      * Holds the actions for logos. Updated via an observable
      */
@@ -40,14 +47,14 @@ export class MediafileListComponent extends BaseListViewComponent<ViewMediafile>
     public fontActions: string[];
 
     /**
-     * Show or hide the edit mode
-     */
-    public editFile = false;
-
-    /**
      * Holds the file to edit
      */
     public fileToEdit: ViewMediafile;
+
+    public newDirectoryForm: FormGroup;
+    public moveForm: FormGroup;
+    public directoryBehaviorSubject: BehaviorSubject<ViewMediafile[]>;
+    public groupsBehaviorSubject: BehaviorSubject<ViewGroup[]>;
 
     /**
      * @returns true if the user can manage media files
@@ -76,45 +83,45 @@ export class MediafileListComponent extends BaseListViewComponent<ViewMediafile>
     public fileEditDialog: TemplateRef<string>;
 
     /**
-     * Define the columns to show
+     * Create the column set
      */
-    public tableColumnDefinition: PblColumnDefinition[] = [
-        {
-            prop: 'title',
-            width: 'auto'
-        },
-        {
-            prop: 'info',
-            width: '20%'
-        },
-        {
-            prop: 'indicator',
-            width: this.singleButtonWidth
-        },
-        {
-            prop: 'menu',
-            width: this.singleButtonWidth
-        }
-    ];
+    public columnSet = columnFactory()
+        .table(
+            {
+                prop: 'icon',
+                label: '',
+                width: '40px'
+            },
+            {
+                prop: 'title',
+                label: this.translate.instant('Title'),
+                width: 'auto',
+                minWidth: 60
+            },
+            {
+                prop: 'info',
+                label: this.translate.instant('Info'),
+                width: '20%',
+                minWidth: 60
+            },
+            {
+                prop: 'indicator',
+                label: '',
+                width: '40px'
+            },
+            {
+                prop: 'menu',
+                label: '',
+                width: '40px'
+            }
+        )
+        .build();
 
-    /**
-     * Restricted Columns
-     */
-    public restrictedColumns: ColumnRestriction[] = [
-        {
-            columnName: 'indicator',
-            permission: 'mediafiles.can_manage'
-        },
-        {
-            columnName: 'menu',
-            permission: 'mediafiles.can_manage'
-        }
-    ];
-
-    /**
-     * Define extra filter properties
-     */
-    public filterProps = ['title', 'type'];
+    public isMultiselect = false; // TODO
+    private folderSubscription: Subscription;
+    private directorySubscription: Subscription;
+    public directory: ViewMediafile | null;
+    public directoryChain: ViewMediafile[];
 
     /**
      * Constructs the component
@@ -137,20 +144,29 @@ export class MediafileListComponent extends BaseListViewComponent<ViewMediafile>
         protected translate: TranslateService,
         matSnackBar: MatSnackBar,
         private route: ActivatedRoute,
-        storage: StorageService,
         private router: Router,
         public repo: MediafileRepositoryService,
         private mediaManage: MediaManageService,
         private promptService: PromptService,
         public vp: ViewportService,
-        public filterService: MediafileFilterListService,
         public sortService: MediafilesSortListService,
         private operator: OperatorService,
         private dialog: MatDialog,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private formBuilder: FormBuilder,
+        private groupRepo: GroupRepositoryService
     ) {
-        super(titleService, translate, matSnackBar, storage);
-        this.canMultiSelect = true;
+        super(titleService, translate, matSnackBar);
+
+        this.newDirectoryForm = this.formBuilder.group({
+            title: ['', Validators.required],
+            access_groups_id: []
+        });
+        this.moveForm = this.formBuilder.group({
+            directory_id: []
+        });
+        this.directoryBehaviorSubject = this.repo.getDirectoryBehaviorSubject();
+        this.groupsBehaviorSubject = this.groupRepo.getViewModelListBehaviorSubject();
     }
 
     /**
@@ -159,6 +175,10 @@ export class MediafileListComponent extends BaseListViewComponent<ViewMediafile>
      */
     public ngOnInit(): void {
         super.setTitle('Files');
+
+        this.repo.getDirectoryIdByPath(this.route.snapshot.url.map(x => x.path)).then(directoryId => {
+            this.changeDirectory(directoryId);
+        });
 
         // Observe the logo actions
         this.mediaManage.getLogoActions().subscribe(action => {
@@ -171,17 +191,56 @@ export class MediafileListComponent extends BaseListViewComponent<ViewMediafile>
         });
     }
 
+    public ngOnDestroy(): void {
+        super.ngOnDestroy();
+        this.clearSubscriptions();
+    }
+
+    public getDateFromTimestamp(timestamp: string): string {
+        return new Date(timestamp).toLocaleString(this.translate.currentLang);
+    }
+
+    public changeDirectory(directoryId: number | null): void {
+        this.clearSubscriptions();
+
+        this.folderSubscription = this.repo.getListObservableDirectory(directoryId).subscribe(mediafiles => {
+            if (mediafiles) {
+                this.dataSource = createDS<ViewMediafile>()
+                    .onTrigger(() => mediafiles)
+                    .create();
+            }
+        });
+
+        if (directoryId) {
+            this.directorySubscription = this.repo.getViewModelObservable(directoryId).subscribe(d => {
+                this.directory = d;
+                if (d) {
+                    this.directoryChain = d.getDirectoryChain();
+                    // Update the URL.
+                    this.router.navigate(['/mediafiles/files/' + d.path], {
+                        replaceUrl: true
+                    });
+                } else {
+                    this.directoryChain = [];
+                    this.router.navigate(['/mediafiles/files/'], {
+                        replaceUrl: true
+                    });
+                }
+            });
+        } else {
+            this.directory = null;
+            this.directoryChain = [];
+            this.router.navigate(['/mediafiles/files/'], {
+                replaceUrl: true
+            });
+        }
+    }
+
     /**
-     * Handler for the main Event.
-     * In edit mode, this abandons the changes
-     * Without edit mode, this will navigate to the upload page
      */
     public onMainEvent(): void {
-        if (!this.editFile) {
-            this.router.navigate(['./upload'], { relativeTo: this.route });
-        } else {
-            this.editFile = false;
-        }
+        const path = '/mediafiles/upload/' + (this.directory ? this.directory.path : '');
+        this.router.navigate([path]);
     }
 
     /**
@@ -194,7 +253,7 @@ export class MediafileListComponent extends BaseListViewComponent<ViewMediafile>
 
         this.fileEditForm = this.fb.group({
             title: [file.title, Validators.required],
-            hidden: [file.hidden]
+            access_groups_id: [file.access_groups_id]
         });
 
         const dialogRef = this.dialog.open(this.fileEditDialog, {
@@ -214,7 +273,7 @@ export class MediafileListComponent extends BaseListViewComponent<ViewMediafile>
     /**
      * Click on the save button in edit mode
      */
-    public onSaveEditedFile(value: { title: string; hidden: any }): void {
+    public onSaveEditedFile(value: Partial<Mediafile>): void {
         this.repo.update(value, this.fileToEdit).then(() => {
             this.dialog.closeAll();
         }, this.raiseError);
@@ -230,19 +289,6 @@ export class MediafileListComponent extends BaseListViewComponent<ViewMediafile>
         const content = file.getTitle();
         if (await this.promptService.open(title, content)) {
             this.repo.delete(file);
-        }
-    }
-
-    /**
-     * Handler to delete several files at once. Requires data in selectedRows, which
-     * will be made available in multiSelect mode
-     */
-    public async deleteSelected(): Promise<void> {
-        const title = this.translate.instant('Are you sure you want to delete all selected files?');
-        if (await this.promptService.open(title)) {
-            for (const mediafile of this.selectedRows) {
-                await this.repo.delete(mediafile);
-            }
         }
     }
 
@@ -278,7 +324,7 @@ export class MediafileListComponent extends BaseListViewComponent<ViewMediafile>
      */
     public isUsedAs(file: ViewMediafile, mediaFileAction: string): boolean {
         const config = this.mediaManage.getMediaConfig(mediaFileAction);
-        return config ? config.path === file.downloadUrl : false;
+        return config ? config.path === file.url : false;
     }
 
     /**
@@ -312,14 +358,45 @@ export class MediafileListComponent extends BaseListViewComponent<ViewMediafile>
         this.mediaManage.setAs(file, action);
     }
 
-    /**
-     * Clicking escape while in editFileForm should deactivate edit mode.
-     *
-     * @param event The key that was pressed
-     */
-    public keyDownFunction(event: KeyboardEvent): void {
-        if (event.key === 'Escape') {
-            this.editFile = false;
+    public createNewFolder(templateRef: TemplateRef<string>): void {
+        this.newDirectoryForm.reset();
+        const dialogRef = this.dialog.open(templateRef, {
+            width: '400px'
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                const mediafile = new Mediafile({
+                    ...this.newDirectoryForm.value,
+                    parent_id: this.directory ? this.directory.id : null,
+                    is_directory: true
+                });
+                this.repo.create(mediafile).then(null, this.raiseError);
+            }
+        });
+    }
+
+    public move(templateRef: TemplateRef<string>, mediafile: ViewMediafile): void {
+        this.newDirectoryForm.reset();
+        const dialogRef = this.dialog.open(templateRef, {
+            width: '400px'
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.repo.move([mediafile], this.moveForm.value.directory_id).then(null, this.raiseError);
+            }
+        });
+    }
+
+    private clearSubscriptions(): void {
+        if (this.folderSubscription) {
+            this.folderSubscription.unsubscribe();
+            this.folderSubscription = null;
+        }
+        if (this.directorySubscription) {
+            this.directorySubscription.unsubscribe();
+            this.directorySubscription = null;
         }
     }
 }
