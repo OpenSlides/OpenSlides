@@ -114,7 +114,11 @@ export class MotionXlsxExportService {
                 };
             })
         );
-        columns.push(...comments.map(commentId => ({ header: this.commentRepo.getViewModel(commentId).getTitle() })));
+        if (comments) {
+            columns.push(
+                ...comments.map(commentId => ({ header: this.commentRepo.getViewModel(commentId).getTitle() }))
+            );
+        }
 
         worksheet.columns = columns;
 
@@ -148,15 +152,17 @@ export class MotionXlsxExportService {
                     }
                 })
             );
-            data.push(
-                ...comments.map(commentId => {
-                    const section = this.commentRepo.getViewModel(commentId);
-                    const motionComment = motion.getCommentForSection(section);
-                    return motionComment && motionComment.comment
-                        ? reconvertChars(stripHtmlTags(motionComment.comment))
-                        : '';
-                })
-            );
+            if (comments) {
+                data.push(
+                    ...comments.map(commentId => {
+                        const section = this.commentRepo.getViewModel(commentId);
+                        const motionComment = motion.getCommentForSection(section);
+                        return motionComment && motionComment.comment
+                            ? reconvertChars(stripHtmlTags(motionComment.comment))
+                            : '';
+                    })
+                );
+            }
             return data;
         });
 
