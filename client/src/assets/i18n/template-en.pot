@@ -46,6 +46,9 @@ msgstr ""
 msgid "Access data (PDF)"
 msgstr ""
 
+msgid "Access groups"
+msgstr ""
+
 msgid "Access-data"
 msgstr ""
 
@@ -141,6 +144,9 @@ msgstr ""
 msgid "Allow to disable versioning"
 msgstr ""
 
+msgid "Allowed access groups for this directory"
+msgstr ""
+
 msgid "Always"
 msgstr ""
 
@@ -181,9 +187,6 @@ msgid "Are you sure you want to copy the final version to the print template?"
 msgstr ""
 
 msgid "Are you sure you want to delete all selected elections?"
-msgstr ""
-
-msgid "Are you sure you want to delete all selected files?"
 msgstr ""
 
 msgid "Are you sure you want to delete all selected motions?"
@@ -311,6 +314,9 @@ msgid "Ballot"
 msgstr ""
 
 msgid "Ballot and ballot papers"
+msgstr ""
+
+msgid "Base folder"
 msgstr ""
 
 msgid "Begin of event"
@@ -584,12 +590,6 @@ msgid "Create"
 msgstr ""
 
 msgid "Create final print template"
-msgstr ""
-
-msgid "Create new state"
-msgstr ""
-
-msgid "Create new workflow"
 msgstr ""
 
 msgid "Creation date"
@@ -987,9 +987,6 @@ msgstr ""
 msgid "Help text for access data and welcome PDF"
 msgstr ""
 
-msgid "Hidden"
-msgstr ""
-
 msgid "Hidden item"
 msgstr ""
 
@@ -1094,9 +1091,6 @@ msgstr ""
 msgid "Invalid votes"
 msgstr ""
 
-msgid "Is PDF file"
-msgstr ""
-
 msgid "Is a committee"
 msgstr ""
 
@@ -1110,9 +1104,6 @@ msgid "Is committee"
 msgstr ""
 
 msgid "Is favorite"
-msgstr ""
-
-msgid "Is no PDF file"
 msgstr ""
 
 msgid "Is not a committee"
@@ -1265,7 +1256,13 @@ msgstr ""
 msgid "Motions have been imported."
 msgstr ""
 
+msgid "Move"
+msgstr ""
+
 msgid "Move in call list"
+msgstr ""
+
+msgid "Move into directory"
 msgstr ""
 
 msgid "Move selected items ..."
@@ -1307,6 +1304,9 @@ msgstr ""
 msgid "New comment field"
 msgstr ""
 
+msgid "New directory"
+msgstr ""
+
 msgid "New election"
 msgstr ""
 
@@ -1328,6 +1328,9 @@ msgstr ""
 msgid "New password"
 msgstr ""
 
+msgid "New state"
+msgstr ""
+
 msgid "New statute paragraph"
 msgstr ""
 
@@ -1338,6 +1341,9 @@ msgid "New topic"
 msgstr ""
 
 msgid "New vote"
+msgstr ""
+
+msgid "New workflow"
 msgstr ""
 
 msgid "Next"
@@ -1561,6 +1567,9 @@ msgstr ""
 msgid "Parent agenda item"
 msgstr ""
 
+msgid "Parent directory"
+msgstr ""
+
 msgid "Participant cannot be found"
 msgstr ""
 
@@ -1609,6 +1618,9 @@ msgstr ""
 msgid "Phase"
 msgstr ""
 
+msgid "Please enter a name for the new directory:"
+msgstr ""
+
 msgid "Please enter a name for the new workflow:"
 msgstr ""
 
@@ -1625,6 +1637,9 @@ msgid "Please fill in all required values"
 msgstr ""
 
 msgid "Please fill in the values for each candidate"
+msgstr ""
+
+msgid "Please select the directory:"
 msgstr ""
 
 msgid "Preamble text for PDF document (all elections)"
@@ -1875,9 +1890,6 @@ msgid "Select or search new submitter ..."
 msgstr ""
 
 msgid "Select paragraphs"
-msgstr ""
-
-msgid "Selected values"
 msgstr ""
 
 msgid "Send invitation email"
@@ -2314,6 +2326,9 @@ msgstr ""
 msgid "Upload files"
 msgstr ""
 
+msgid "Upload to:"
+msgstr ""
+
 msgid ""
 "Use <strong>admin</strong> and <strong>admin</strong> for your first "
 "login.<br>Please change your password to hide this message!"
@@ -2343,9 +2358,6 @@ msgid "Valid votes"
 msgstr ""
 
 msgid "Visibility"
-msgstr ""
-
-msgid "Visible"
 msgstr ""
 
 msgid "Vote"
@@ -2554,12 +2566,6 @@ msgid "internal"
 msgstr ""
 
 msgid "is elected"
-msgstr ""
-
-msgid "is hidden"
-msgstr ""
-
-msgid "is not hidden"
 msgstr ""
 
 msgid "is now"

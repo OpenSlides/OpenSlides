@@ -57,6 +57,9 @@ msgstr "Annahme"
 msgid "Access data (PDF)"
 msgstr "Zugangsdaten (PDF)"
 
+msgid "Access groups"
+msgstr "Zugriffsgruppen"
+
 msgid "Access-data"
 msgstr "Zugangsdaten"
 
@@ -155,6 +158,9 @@ msgstr "Unterstützung möglich"
 msgid "Allow to disable versioning"
 msgstr "Erlaubt Versionierung zu deaktiveren"
 
+msgid "Allowed access groups for this directory"
+msgstr "Zulässige Zugriffsgruppen für dieses Verzeichnis"
+
 msgid "Always"
 msgstr "Immer"
 
@@ -199,9 +205,6 @@ msgstr ""
 
 msgid "Are you sure you want to delete all selected elections?"
 msgstr "Sollen alle ausgewählten Wahlen wirklich gelöscht werden?"
-
-msgid "Are you sure you want to delete all selected files?"
-msgstr "Sollen alle ausgewählten Dateien wirklich gelöscht werden?"
 
 msgid "Are you sure you want to delete all selected motions?"
 msgstr "Sollen alle ausgewählten Anträge wirklich gelöscht werden?"
@@ -338,6 +341,9 @@ msgstr "Wahlgang"
 
 msgid "Ballot and ballot papers"
 msgstr "Wahlgang und Stimmzettel"
+
+msgid "Base folder"
+msgstr "Basisverzeichnis"
 
 msgid "Begin of event"
 msgstr "Beginn der Veranstaltung"
@@ -615,12 +621,6 @@ msgstr "Erstellen"
 
 msgid "Create final print template"
 msgstr "Beschluss-Druckvorlage erstellen"
-
-msgid "Create new state"
-msgstr "Neuen Status erstellen"
-
-msgid "Create new workflow"
-msgstr "Neuen Arbeitsablauf erstellen"
 
 msgid "Creation date"
 msgstr "Erstellungsdatum"
@@ -1043,9 +1043,6 @@ msgstr "Überschriftenfarbe"
 msgid "Help text for access data and welcome PDF"
 msgstr "Hilfetext für das Zugangsdaten- und Willkommens-PDF"
 
-msgid "Hidden"
-msgstr "Versteckt"
-
 msgid "Hidden item"
 msgstr "Versteckter Eintrag"
 
@@ -1153,9 +1150,6 @@ msgstr "Ungültige Zeilennummer"
 msgid "Invalid votes"
 msgstr "Ungültige Stimmen"
 
-msgid "Is PDF file"
-msgstr "Ist eine PDF-Datei"
-
 msgid "Is a committee"
 msgstr "Ist ein Gremium"
 
@@ -1170,9 +1164,6 @@ msgstr "Ist Gremium"
 
 msgid "Is favorite"
 msgstr "Ist Favorit"
-
-msgid "Is no PDF file"
-msgstr "Ist keine PDF-Datei"
 
 msgid "Is not a committee"
 msgstr "Ist kein Gremium"
@@ -1324,8 +1315,14 @@ msgstr "Anträge"
 msgid "Motions have been imported."
 msgstr "Anträge wurden importiert."
 
+msgid "Move"
+msgstr "Verschieben"
+
 msgid "Move in call list"
 msgstr "In Aufrufliste verschieben"
+
+msgid "Move into directory"
+msgstr "In Verzeichnis verschieben"
 
 msgid "Move selected items ..."
 msgstr "Ausgewählte Einträge verschieben ..."
@@ -1366,6 +1363,9 @@ msgstr "Neue Änderungsempfehlung"
 msgid "New comment field"
 msgstr "Neues Kommentarfeld"
 
+msgid "New directory"
+msgstr "Neues Verzeichnis"
+
 msgid "New election"
 msgstr "Neue Wahl"
 
@@ -1387,6 +1387,9 @@ msgstr "Neue/r Teilnehmer/in"
 msgid "New password"
 msgstr "Neues Passwort"
 
+msgid "New state"
+msgstr "Neuer Status"
+
 msgid "New statute paragraph"
 msgstr "Neuer Satzungsabschnitt"
 
@@ -1398,6 +1401,9 @@ msgstr "Neues Thema"
 
 msgid "New vote"
 msgstr "Neue Abstimmung"
+
+msgid "New workflow"
+msgstr "Neuer Arbeitsablauf"
 
 msgid "Next"
 msgstr "Weiter"
@@ -1624,6 +1630,9 @@ msgstr "Parallel hochladen"
 msgid "Parent agenda item"
 msgstr "Elternelement in der Tagesordnung"
 
+msgid "Parent directory"
+msgstr "Elternverzeichnis"
+
 msgid "Participant cannot be found"
 msgstr "Teilnehmende wurde nicht gefunden"
 
@@ -1673,6 +1682,9 @@ msgstr "Persönliche Notizen"
 msgid "Phase"
 msgstr "Phase"
 
+msgid "Please enter a name for the new directory:"
+msgstr "Bitte geben Sie einen Namen für das neue Verzeichnis ein:"
+
 msgid "Please enter a name for the new workflow:"
 msgstr "Bitte geben Sie einen Namen für den neuen Arbeitsablauf ein:"
 
@@ -1690,6 +1702,9 @@ msgstr "Bitte füllen Sie alle erforderlichen Felder aus."
 
 msgid "Please fill in the values for each candidate"
 msgstr "Bitte füllen Sie die Werte aller Kandidat/innen aus."
+
+msgid "Please select the directory:"
+msgstr "Bitte wählen Sie das Verzeichnis aus:"
 
 msgid "Preamble text for PDF document (all elections)"
 msgstr "Einleitungstext für PDF-Dokument (alle Wahlen) "
@@ -1944,9 +1959,6 @@ msgstr "Antragsteller/in auswählen oder suchen ..."
 
 msgid "Select paragraphs"
 msgstr "Absätze auswählen"
-
-msgid "Selected values"
-msgstr "Ausgewählte Werte"
 
 msgid "Send invitation email"
 msgstr "Einladungs-E-Mail senden"
@@ -2418,6 +2430,9 @@ msgstr "Hochladen"
 msgid "Upload files"
 msgstr "Dateien hochladen"
 
+msgid "Upload to:"
+msgstr "Hochladen in:"
+
 msgid ""
 "Use <strong>admin</strong> and <strong>admin</strong> for your first "
 "login.<br>Please change your password to hide this message!"
@@ -2453,9 +2468,6 @@ msgstr "Gültige Stimmen"
 
 msgid "Visibility"
 msgstr "Sichtbarkeit"
-
-msgid "Visible"
-msgstr "Sichtbar"
 
 msgid "Vote"
 msgstr "Abstimmung"
@@ -2670,12 +2682,6 @@ msgstr "intern"
 
 msgid "is elected"
 msgstr "gewählt"
-
-msgid "is hidden"
-msgstr "ist versteckt"
-
-msgid "is not hidden"
-msgstr "ist nicht versteckt"
 
 msgid "is now"
 msgstr "ist jetzt"

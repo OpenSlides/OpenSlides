@@ -26,9 +26,9 @@
     </div>
 
     <div>
-        Upload to:
-        <span *ngIf="selectedDirectoryId === null" translate>Base folder</span>
-        <span *ngIf="selectedDirectoryId !== null">{{ getDirectory(selectedDirectoryId).title }}</span>
+        <span translate>Upload to:</span>&nbsp;
+        <i *ngIf="selectedDirectoryId === null" translate>Base folder</i>
+        <i *ngIf="selectedDirectoryId !== null">{{ getDirectory(selectedDirectoryId).title }}</i>
     </div>
 
     <div class="table-container" *ngIf="uploadList.data.length > 0">
@@ -65,7 +65,7 @@
 
             <!-- Access groups -->
             <ng-container matColumnDef="access_groups">
-                <th mat-header-cell *matHeaderCellDef><span translate>Access permissions</span></th>
+                <th mat-header-cell *matHeaderCellDef><span translate>Access groups</span></th>
                 <td mat-cell *matCellDef="let file">
                     <os-search-value-selector
                         ngDefaultControl

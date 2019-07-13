@@ -203,7 +203,7 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
      * Opens a dialog to enter the workflow name
      */
     public onNewStateButton(): void {
-        this.openEditDialog('', this.translate.instant('Create new state'), this.translate.instant('Name')).subscribe(
+        this.openEditDialog('', this.translate.instant('New state'), this.translate.instant('Name')).subscribe(
             result => {
                 if (result && result.action === 'update') {
                     this.workflowRepo.addState(result.value, this.workflow).then(() => {}, this.raiseError);
