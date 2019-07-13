@@ -20,7 +20,7 @@ import {
     FileFormat,
     ExportFormData
 } from '../motion-export-dialog/motion-export-dialog.component';
-import { ViewMotion, LineNumberingMode, ChangeRecoMode } from 'app/site/motions/models/view-motion';
+import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
 import { ViewCategory } from 'app/site/motions/models/view-category';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
@@ -394,18 +394,6 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
      */
     public getStateLabel(motion: ViewMotion): string {
         return this.motionRepo.getExtendedStateLabel(motion);
-    }
-
-    /**
-     * Directly export all motions as pdf, using the current default config settings
-     */
-    public directPdfExport(): void {
-        const lnMode = this.configService.instant<string>('motions_default_line_numbering') as LineNumberingMode;
-        const crMode = this.configService.instant<string>('motions_recommendation_text_mode') as ChangeRecoMode;
-        this.pdfExport.exportMotionCatalog(this.dataSource.source, {
-            lnMode: lnMode,
-            crMode: crMode
-        });
     }
 
     /**

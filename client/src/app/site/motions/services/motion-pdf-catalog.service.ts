@@ -123,26 +123,25 @@ export class MotionPdfCatalogService {
         if (categories && categories.length) {
             const catTocBody = [];
             for (const category of categories.sort((a, b) => a.weight - b.weight)) {
-                catTocBody.push({
-                    table: {
-                        body: [
-                            [
-                                {
-                                    text: category.getTitle(),
-                                    style: !!category.parent ? 'tocSubcategoryTitle' : 'tocCategoryTitle'
-                                }
-                            ]
-                        ]
-                    },
-                    layout: exportSubmitterRecommendation ? 'lightHorizontalLines' : 'noBorders'
-                });
-
                 // find out if the category has any motions
                 const motionToCurrentCat = motions.filter(motionIn => category === motionIn.category);
 
                 if (motionToCurrentCat && motionToCurrentCat.length) {
-                    const tocBody = [];
+                    catTocBody.push({
+                        table: {
+                            body: [
+                                [
+                                    {
+                                        text: category.getTitle(),
+                                        style: !!category.parent ? 'tocSubcategoryTitle' : 'tocCategoryTitle'
+                                    }
+                                ]
+                            ]
+                        },
+                        layout: exportSubmitterRecommendation ? 'lightHorizontalLines' : 'noBorders'
+                    });
 
+                    const tocBody = [];
                     for (const motion of motionToCurrentCat) {
                         if (exportSubmitterRecommendation) {
                             tocBody.push(this.appendSubmittersAndRecommendation(motion, StyleType.CATEGORY_SECTION));
@@ -161,6 +160,8 @@ export class MotionPdfCatalogService {
                     catTocBody.push(
                         this.pdfService.createTocTableDef(tocBody, StyleType.CATEGORY_SECTION, layout, header)
                     );
+
+                    catTocBody.push(this.pdfService.getPageBreak());
                 }
             }
 
@@ -214,10 +215,11 @@ export class MotionPdfCatalogService {
         return [
             { text: this.translate.instant('Identifier'), style: 'tocHeaderRow' },
             {
-                text: `${this.translate.instant('Title')} · ${this.translate.instant(
-                    'Submitters'
-                )} · ${this.translate.instant('Recommendation')}`,
-                style: 'tocHeaderRow'
+                style: 'tocHeaderRow',
+                text: [
+                    `${this.translate.instant('Title')} · ${this.translate.instant('Submitters')} · `,
+                    { text: `${this.translate.instant('Recommendation')}`, italics: true }
+                ]
             },
             { text: this.translate.instant('Page'), style: 'tocHeaderRow', alignment: 'right' }
         ];
@@ -246,7 +248,7 @@ export class MotionPdfCatalogService {
             `${motion.id}`,
             style,
             this.pdfService.createTocLineInline(submitterList),
-            this.pdfService.createTocLineInline(recommendation)
+            this.pdfService.createTocLineInline(recommendation, true)
         );
     }
 }
