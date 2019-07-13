@@ -153,8 +153,7 @@
         <!-- Sequential number -->
         <span class="main-nav-color title-font">
             <span *ngIf="showSequential">
-                <span translate>Sequential number</span>
-                &nbsp;{{ motion.id }}
+                <span translate>Sequential number</span>&nbsp;{{ motion.id }}
             </span>
             <span *ngIf="showSequential && motion.parent_id">&#xb7;&nbsp;</span>
             <span *ngIf="motion.parent_id">

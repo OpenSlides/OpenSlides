@@ -50,10 +50,8 @@
             </button>
         </span>
         <span class="visibility" *ngIf="directory && directory.inherited_access_groups_id !== true">
-            <span translate>Visibility of this directory:</span>
-            <span class="visible-for" *ngIf="directory.inherited_access_groups_id === false" translate>No one</span>
             <span class="visible-for" *ngIf="directory.has_inherited_access_groups" translate>
-                <os-icon-container icon="group">{{ directory.inherited_access_groups }}</os-icon-container>
+                <os-icon-container icon="visibility" matTooltip="{{ 'Allowed access groups for this directory' | translate }}">{{ directory.inherited_access_groups }}</os-icon-container>
             </span>
         </span>
     </div>
@@ -86,8 +84,10 @@
     <!-- Info column -->
     <div *pblNgridCellDef="'info'; row as mediafile" class="fill clickable" (click)="onEditFile(mediafile)">
         <os-icon-container *ngIf="mediafile.access_groups.length" icon="group">
-            <span translate>
-                {{ mediafile.access_groups }}
+            <span>
+                <span *ngFor="let group of mediafile.access_groups; let last = last">
+                    {{ group.getTitle() | translate }}<span *ngIf="!last">,</span>
+                </span>
             </span>
         </os-icon-container>
     </div>
@@ -246,7 +246,7 @@
 
 <!-- New folder dialog -->
 <ng-template #newFolderDialog>
-    <h1 mat-dialog-title>{{ 'Create new directory' | translate }}</h1>
+    <h1 mat-dialog-title>{{ 'New directory' | translate }}</h1>
     <div class="os-form-card-mobile" mat-dialog-content>
         <form class="edit-file-form" [formGroup]="newDirectoryForm">
             <p translate>Please enter a name for the new directory:</p>
@@ -276,10 +276,10 @@
 <!-- Move dialog -->
 <ng-template #moveDialog>
     <h1 mat-dialog-title>
-        <span translate>Move to directory</span>
+        <span translate>Move into directory</span>
     </h1>
     <div mat-dialog-content>
-        <p translate>Please select the directory to move to:</p>
+        <p translate>Please select the directory:</p>
         <os-search-value-selector
             ngDefaultControl
             [formControl]="moveForm.get('directory_id')"

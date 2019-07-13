@@ -36,9 +36,13 @@
         display: flex;
         position: absolute;
         right: 10px;
+        top: 12px;
         .visible-for {
             margin-left: 10px;
             display: inherit;
+        }
+        mat-icon {
+            cursor: auto;
         }
     }
 }

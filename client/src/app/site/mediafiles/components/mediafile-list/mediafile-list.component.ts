@@ -94,13 +94,11 @@ export class MediafileListComponent extends BaseViewComponent implements OnInit,
             },
             {
                 prop: 'title',
-                label: this.translate.instant('Title'),
                 width: 'auto',
                 minWidth: 60
             },
             {
                 prop: 'info',
-                label: this.translate.instant('Info'),
                 width: '20%',
                 minWidth: 60
             },
