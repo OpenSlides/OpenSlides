@@ -537,39 +537,38 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
                     return this.diff.getTextWithChanges(targetMotion.text, changes, lineLength, highlightLine);
                 case ChangeRecoMode.Diff:
                     let text = '';
-                    changes
-                        .filter(change => {
-                            return change.showInDiffView();
-                        })
-                        .forEach((change: ViewUnifiedChange, idx: number) => {
-                            if (idx === 0) {
-                                text += this.diff.extractMotionLineRange(
-                                    targetMotion.text,
-                                    {
-                                        from: 1,
-                                        to: change.getLineFrom()
-                                    },
-                                    true,
-                                    lineLength,
-                                    highlightLine
-                                );
-                            } else if (changes[idx - 1].getLineTo() < change.getLineFrom()) {
-                                text += this.diff.extractMotionLineRange(
-                                    targetMotion.text,
-                                    {
-                                        from: changes[idx - 1].getLineTo(),
-                                        to: change.getLineFrom()
-                                    },
-                                    true,
-                                    lineLength,
-                                    highlightLine
-                                );
-                            }
-                            text += this.diff.getChangeDiff(targetMotion.text, change, lineLength, highlightLine);
-                        });
+                    const changesToShow = changes.filter(change => {
+                        return change.showInDiffView();
+                    });
+                    changesToShow.forEach((change: ViewUnifiedChange, idx: number) => {
+                        if (idx === 0) {
+                            text += this.diff.extractMotionLineRange(
+                                targetMotion.text,
+                                {
+                                    from: 1,
+                                    to: change.getLineFrom()
+                                },
+                                true,
+                                lineLength,
+                                highlightLine
+                            );
+                        } else if (changes[idx - 1].getLineTo() < change.getLineFrom()) {
+                            text += this.diff.extractMotionLineRange(
+                                targetMotion.text,
+                                {
+                                    from: changes[idx - 1].getLineTo(),
+                                    to: change.getLineFrom()
+                                },
+                                true,
+                                lineLength,
+                                highlightLine
+                            );
+                        }
+                        text += this.diff.getChangeDiff(targetMotion.text, change, lineLength, highlightLine);
+                    });
                     text += this.diff.getTextRemainderAfterLastChange(
                         targetMotion.text,
-                        changes,
+                        changesToShow,
                         lineLength,
                         highlightLine
                     );
