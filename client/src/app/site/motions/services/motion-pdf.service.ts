@@ -612,7 +612,6 @@ export class MotionPdfService {
             motionText = this.motionRepo.formatStatuteAmendment(statutes, motion, lineLength);
         } else {
             // lead motion or normal amendments
-            // TODO: Consider tile change recommendation
 
             const changes = this.getUnifiedChanges(motion, lineLength);
             const textChanges = changes.filter(change => !change.isTitleChange());
