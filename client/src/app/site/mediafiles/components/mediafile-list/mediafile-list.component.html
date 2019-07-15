@@ -51,7 +51,14 @@
         </span>
         <span class="visibility" *ngIf="directory && directory.inherited_access_groups_id !== true">
             <span class="visible-for" *ngIf="directory.has_inherited_access_groups" translate>
-                <os-icon-container icon="visibility" matTooltip="{{ 'Allowed access groups for this directory' | translate }}">{{ directory.inherited_access_groups }}</os-icon-container>
+                <os-icon-container
+                    icon="visibility"
+                    matTooltip="{{ 'Allowed access groups for this directory' | translate }}"
+                >
+                    <span *ngFor="let group of directory.inherited_access_groups; let last = last">
+                        {{ translateSync(group.getTitle()) }}<span *ngIf="!last">,</span>
+                    </span>
+                </os-icon-container>
             </span>
         </span>
     </div>
@@ -84,10 +91,8 @@
     <!-- Info column -->
     <div *pblNgridCellDef="'info'; row as mediafile" class="fill clickable" (click)="onEditFile(mediafile)">
         <os-icon-container *ngIf="mediafile.access_groups.length" icon="group">
-            <span>
-                <span *ngFor="let group of mediafile.access_groups; let last = last">
-                    {{ group.getTitle() | translate }}<span *ngIf="!last">,</span>
-                </span>
+            <span *ngFor="let group of mediafile.access_groups; let last = last">
+                {{ translateSync(group.getTitle()) }}<span *ngIf="!last">,</span>
             </span>
         </os-icon-container>
     </div>
