@@ -199,11 +199,11 @@
                         >
                             warning
                         </mat-icon>
-                        <span *ngFor="let submitter of entry.newEntry.csvSubmitters">
+                        <div *ngFor="let submitter of entry.newEntry.csvSubmitters">
                             {{ submitter.name }}
                             <mat-icon class="newBadge" color="accent" inline *ngIf="!submitter.id">add</mat-icon>
                             &nbsp;
-                        </span>
+                        </div>
                     </div>
                 </mat-cell>
             </ng-container>
