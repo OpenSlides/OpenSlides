@@ -188,7 +188,9 @@ export class SortingListComponent implements OnInit, OnDestroy {
                         } else if (dropBehind === true) {
                             before.push(this.array[i]);
                         } else {
-                            event.currentIndex < 1 ? behind.push(this.array[i]) : before.push(this.array[i]);
+                            Math.min(...this.multiSelectedIndex) < i
+                                ? before.push(this.array[i])
+                                : behind.push(this.array[i]);
                         }
                     }
                 } else {
