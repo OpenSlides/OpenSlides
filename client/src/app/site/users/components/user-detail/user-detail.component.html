@@ -105,6 +105,7 @@
                 <input
                     type="email"
                     matInput
+                    autocomplete="off"
                     placeholder="{{ 'Email' | translate }}"
                     name="email"
                     formControlName="email"
@@ -164,6 +165,7 @@
             <mat-form-field>
                 <input
                     matInput
+                    autocomplete="off"
                     placeholder="{{ 'Initial password' | translate }}"
                     formControlName="default_password"
                     [value]="user.default_password || ''"
