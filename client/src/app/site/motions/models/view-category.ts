@@ -64,6 +64,17 @@ export class ViewCategory extends BaseViewModel<Category> implements CategoryTit
         return name;
     }
 
+    /**
+     * Shows the (direct) parent above the current category
+     */
+    public get nameWithParentAbove(): string {
+        if (this.parent) {
+            return `${this.parent.toString()}\n${this.toString()}`;
+        } else {
+            return this.toString();
+        }
+    }
+
     public constructor(category: Category, parent?: ViewCategory) {
         super(Category.COLLECTIONSTRING, category);
         this._parent = parent;

@@ -36,6 +36,7 @@ export interface OsFilterOption {
     label: string;
     condition: OsFilterOptionCondition;
     isActive?: boolean;
+    isChild?: boolean;
 }
 
 /**
@@ -44,6 +45,14 @@ export interface OsFilterOption {
 export interface OsFilterIndicator {
     property: string;
     option: OsFilterOption;
+}
+
+/**
+ * Extends the BaseViewModel with a parent
+ * Required to represent parent-child relationships in the filter
+ */
+interface HierarchyModel extends BaseViewModel {
+    parent: BaseViewModel;
 }
 
 /**
@@ -266,10 +275,11 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
 
                 filterProperties = viewModel
                     .filter(model => (excludeIds && excludeIds.length ? !excludeIds.includes(model.id) : true))
-                    .map(model => {
+                    .map((model: HierarchyModel) => {
                         return {
                             condition: model.id,
-                            label: model.getTitle()
+                            label: model.getTitle(),
+                            isChild: !!model.parent
                         };
                     });
 

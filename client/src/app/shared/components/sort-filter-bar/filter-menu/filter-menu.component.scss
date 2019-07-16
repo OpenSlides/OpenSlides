@@ -28,6 +28,10 @@ mat-divider {
     font-style: italic;
 }
 
+.filter-child {
+    margin-left: 20px;
+}
+
 // adds breaks to mat-checkboxes with long labels
 ::ng-deep .mat-checkbox-layout {
     white-space: normal !important;

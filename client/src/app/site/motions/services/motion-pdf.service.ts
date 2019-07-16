@@ -310,13 +310,21 @@ export class MotionPdfService {
 
         // category
         if (motion.category && (!infoToExport || infoToExport.includes('category'))) {
+            let categoryText = '';
+            if (!!motion.category.parent) {
+                categoryText = `${motion.category.parent.toString()}\n${this.translate.instant(
+                    'Subcategory'
+                )}: ${motion.category.toString()}`;
+            } else {
+                categoryText = motion.category.toString();
+            }
             metaTableBody.push([
                 {
                     text: `${this.translate.instant('Category')}:`,
                     style: 'boldText'
                 },
                 {
-                    text: motion.category.prefixedNameWithParents
+                    text: categoryText
                 }
             ]);
         }
