@@ -1,9 +1,3 @@
-<mat-toolbar color="primary" [ngClass]="multiSelectMode ? 'multi-select' : ''" *ngIf="!vp.isMobile">
-    <!-- Nav menu -->
-    <button mat-icon-button *ngIf="!multiSelectMode" (click)="clickHamburgerMenu()">
-        <mat-icon>menu</mat-icon>
-    </button>
-</mat-toolbar>
 <mat-toolbar color="primary" [ngClass]="multiSelectMode ? 'multi-select' : ''" class="sticky-toolbar">
     <div class="toolbar-left">
         <!-- Nav menu -->
@@ -36,9 +30,7 @@
 
     <div class="toolbar-right">
         <!-- Extra controls slot -->
-        <div class="extra-controls-wrapper">
-            <ng-content select=".extra-controls-slot"></ng-content>
-        </div>
+        <ng-content select=".extra-controls-slot"></ng-content>
 
         <!-- Main action button - desktop -->
         <button

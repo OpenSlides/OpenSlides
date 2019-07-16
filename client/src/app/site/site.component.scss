@@ -7,6 +7,7 @@ mat-sidenav-container {
         border: 0;
         box-shadow: 3px 0px 10px 0px rgba(0, 0, 0, 0.2);
         width: 260px;
+        overflow-x: hidden;
 
         mat-toolbar,
         mat-toolbar-row {
@@ -47,6 +48,48 @@ mat-sidenav-container {
     height: 80px;
     align-items: center;
 }
+
+// CSS for the toggle button
+.nav-toggle-button-container {
+    position: fixed;
+    z-index: 99;
+    bottom: 24px;
+    & > div {
+        position: relative;
+    }
+
+    .nav-toggle-button {
+        bottom: 0;
+
+        position: absolute;
+        visibility: visible;
+        transform: none;
+        width: 24px;
+        min-width: 24px;
+        height: 48px;
+        padding: 0 0 2px;
+
+        &.left {
+            left: 236px;
+            padding-left: 8px;
+            border-radius: 50px 0 0 50px;
+        }
+
+        &.right {
+            left: 0;
+            padding-right: 8px;
+            border-radius: 0 50px 50px 0;
+        }
+
+        mat-icon {
+            $size: 18px;
+            height: $size;
+            width: $size;
+            font-size: $size;
+        }
+    }
+}
+
 /* The top logo container can contain any logo with any size.
    It needs to always fit.*/
 .os-logo-container {
