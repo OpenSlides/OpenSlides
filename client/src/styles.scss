@@ -732,6 +732,10 @@ button.mat-menu-item.selected {
     color: rgba(0, 0, 0, 0.87) !important;
 }
 
+.multi-line-chip {
+    white-space: pre-line
+}
+
 /* TODO: move to site.component.scss-theme.scss (does not work currently) */
 
 /* make the .user-menu expansion panel look like the nav-toolbar above */

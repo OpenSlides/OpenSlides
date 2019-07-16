@@ -152,9 +152,7 @@
 
         <!-- Sequential number -->
         <span class="main-nav-color title-font">
-            <span *ngIf="showSequential">
-                <span translate>Sequential number</span>&nbsp;{{ motion.id }}
-            </span>
+            <span *ngIf="showSequential"> <span translate>Sequential number</span>&nbsp;{{ motion.id }} </span>
             <span *ngIf="showSequential && motion.parent_id">&#xb7;&nbsp;</span>
             <span *ngIf="motion.parent_id">
                 <span>
@@ -345,10 +343,18 @@
             <mat-basic-chip
                 *ngIf="perms.isAllowed('change_metadata', motion)"
                 [matMenuTriggerFor]="categoryMenu"
-                class="grey"
+                class="grey multi-line-chip"
                 disableRipple
             >
-                {{ motion.category ? motion.category.prefixedNameWithParents : '–' }}
+                <div *ngIf="motion.category">
+                    <div *ngIf="motion.category.parent">
+                        {{ motion.category.parent }}
+                    </div>
+                    <span *ngIf="motion.category.parent">{{ 'Subcategory' | translate }}:</span>
+                    {{ motion.category }}
+                </div>
+
+                <span *ngIf="!motion.category">-</span>
             </mat-basic-chip>
             <mat-basic-chip
                 *ngIf="!perms.isAllowed('change_metadata', motion) && motion.category"

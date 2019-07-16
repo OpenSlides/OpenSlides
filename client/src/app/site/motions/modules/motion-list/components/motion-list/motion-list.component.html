@@ -104,35 +104,6 @@
                     </span>
                 </div>
 
-                <!-- state column -->
-                <ng-container matColumnDef="state">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>State</mat-header-cell>
-                    <mat-cell (click)="openEditInfo(motion, $event)" *matCellDef="let motion">
-                        <div class="fill">
-                            <div class="innerTable state-column">
-                                <div class="ellipsis-overflow" *ngIf="motion.category">
-                                    <os-icon-container icon="device_hub">
-                                        {{ motion.category.prefixedNameWithParents }}
-                                    </os-icon-container>
-                                </div>
-                                <div class="ellipsis-overflow spacer-top-5" *ngIf="motion.motion_block">
-                                    <os-icon-container icon="widgets">
-                                        {{ motion.motion_block.title }}
-                                    </os-icon-container>
-                                </div>
-                                <div class="ellipsis-overflow spacer-top-5" *ngIf="motion.tags && motion.tags.length">
-                                    <os-icon-container icon="local_offer">
-                                        <span *ngFor="let tag of motion.tags; let last = last">
-                                            {{ tag.getTitle() }}
-                                            <span *ngIf="!last">,&nbsp;</span>
-                                        </span>
-                                    </os-icon-container>
-                                </div>
-                            </div>
-                        </div>
-                    </mat-cell>
-                </ng-container>
-
                 <!-- Workflow state -->
                 <div class="ellipsis-overflow white">
                     <mat-basic-chip *ngIf="motion.state" [ngClass]="motion.stateCssColor" [disabled]="true">
@@ -163,7 +134,7 @@
                 <!-- Category -->
                 <div class="ellipsis-overflow" *ngIf="motion.category">
                     <os-icon-container icon="device_hub">
-                        {{ motion.category.prefixedNameWithParents }}
+                        {{ motion.category.nameWithParentAbove }}
                     </os-icon-container>
                 </div>
 
