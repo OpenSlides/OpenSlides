@@ -92,6 +92,14 @@ export abstract class BaseViewComponent extends BaseComponent implements OnDestr
     }
 
     /**
+     * Translate alternative  avoid endless loops during change detection
+     * @param original the original string to translate
+     */
+    public translateSync(original: string): string {
+        return this.translate.instant(original);
+    }
+
+    /**
      * To catch swipe gestures.
      * Should be overwritten by children which need swipe gestures
      */

@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, OnDestroy } from '@angular/core';
+import { Component, Input, ViewChild, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatSelect } from '@angular/material';
 
@@ -34,7 +34,8 @@ import { Selectable } from '../selectable';
 @Component({
     selector: 'os-search-value-selector',
     templateUrl: './search-value-selector.component.html',
-    styleUrls: ['./search-value-selector.component.scss']
+    styleUrls: ['./search-value-selector.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchValueSelectorComponent implements OnDestroy {
     /**
