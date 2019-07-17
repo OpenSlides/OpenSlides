@@ -1,5 +1,5 @@
 from unittest import TestCase
-from unittest.mock import MagicMock, call, patch
+from unittest.mock import MagicMock, patch
 
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -112,24 +112,6 @@ class UserManagerGenerateUsername(TestCase):
             self.manager.generate_username("äöü", "ßüäö"),
             "äöü ßüäö",
             "The method gen_username has also to work with umlauts.",
-        )
-
-
-@patch("openslides.users.models.choice")
-class UserManagerGeneratePassword(TestCase):
-    def test_normal(self, mock_choice):
-        """
-        Test normal run of the method.
-        """
-        mock_choice.side_effect = tuple("test_password")
-
-        self.assertEqual(UserManager().generate_password(), "test_pas")
-        # choice has to be called 8 times
-        mock_choice.assert_has_calls(
-            [
-                call("abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789")
-                for _ in range(8)
-            ]
         )
 
 

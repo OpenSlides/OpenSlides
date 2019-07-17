@@ -97,7 +97,7 @@ class UserFullSerializer(ModelSerializer):
         """
         # Prepare setup password.
         if not validated_data.get("default_password"):
-            validated_data["default_password"] = User.objects.generate_password()
+            validated_data["default_password"] = User.objects.make_random_password()
         validated_data["password"] = make_password(validated_data["default_password"])
         return validated_data
 

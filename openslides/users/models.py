@@ -1,5 +1,4 @@
 import smtplib
-from random import choice
 
 from django.conf import settings
 from django.contrib.auth.hashers import make_password
@@ -107,14 +106,6 @@ class UserManager(BaseUserManager):
                     break
 
         return generated_username
-
-    def generate_password(self):
-        """
-        Generates a random passwort. Do not use l, o, I, O, 1 or 0.
-        """
-        chars = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789"
-        size = 8
-        return "".join([choice(chars) for i in range(size)])
 
 
 class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):

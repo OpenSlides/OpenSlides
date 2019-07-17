@@ -118,6 +118,21 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
         return this.translate.instant(plural ? 'Participants' : 'Participant');
     };
 
+    /**
+     * Generates a random password
+     *
+     * @param length The length of the password to generate
+     * @returns a random password
+     */
+    public getRandomPassword(length: number = 10): string {
+        let pw = '';
+        const characters = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        for (let i = 0; i < length; i++) {
+            pw += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        return pw;
+    }
+
     public createViewModel(user: User): ViewUser {
         const groups = this.viewModelStoreService.getMany(ViewGroup, user.groups_id);
         const viewUser = new ViewUser(user, groups);
@@ -155,37 +170,6 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
     }
 
     /**
-     * Creates and saves a list of users in a bulk operation.
-     *
-     * @param newEntries
-     */
-    public async bulkCreate(newEntries: NewEntry<ViewUser>[]): Promise<number[]> {
-        const data = newEntries.map(entry => {
-            return { ...entry.newEntry.user, importTrackId: entry.importTrackId };
-        });
-        const response = (await this.httpService.post(`/rest/users/user/mass_import/`, { users: data })) as {
-            detail: string;
-            importedTrackIds: number[];
-        };
-        return response.importedTrackIds;
-    }
-
-    /**
-     * Generates a random password
-     *
-     * @param length THe length of the password to generate
-     * @returns a random password
-     */
-    public getRandomPassword(length: number = 8): string {
-        let pw = '';
-        const characters = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-        for (let i = 0; i < length; i++) {
-            pw += characters.charAt(Math.floor(Math.random() * characters.length));
-        }
-        return pw;
-    }
-
-    /**
      * Updates the password and sets the password without checking for the old one.
      * Also resets the 'default password' to the newly created one.
      *
@@ -193,13 +177,9 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
      * @param password The password to set
      * @param updateDefaultPassword Control, if the default password should be updated.
      */
-    public async resetPassword(
-        user: ViewUser,
-        password: string,
-        updateDefaultPassword: boolean = false
-    ): Promise<void> {
+    public async resetPassword(user: ViewUser, password: string): Promise<void> {
         const path = `/rest/users/user/${user.id}/reset_password/`;
-        await this.httpService.post(path, { password: password, update_default_password: updateDefaultPassword });
+        await this.httpService.post(path, { password: password });
     }
 
     /**
@@ -216,13 +196,81 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
     }
 
     /**
+     * Resets the passwords of all given users to their default ones. The operator will
+     * not be changed (if provided in `users`).
+     *
+     * @param users The users to reset the passwords from
+     */
+    public async bulkResetPasswordsToDefault(users: ViewUser[]): Promise<void> {
+        await this.httpService.post('/rest/users/user/bulk_reset_passwords_to_default/', {
+            user_ids: users.map(user => user.id)
+        });
+    }
+
+    /**
+     * Generates new random passwords for many users. The default password will be set to these. The
+     * operator will not be changed (if provided in `users`).
+     *
+     * @param users The users to generate new passwords for
+     */
+    public async bulkGenerateNewPasswords(users: ViewUser[]): Promise<void> {
+        await this.httpService.post('/rest/users/user/bulk_generate_passwords/', {
+            user_ids: users.map(user => user.id)
+        });
+    }
+
+    /**
+     * Creates and saves a list of users in a bulk operation.
+     *
+     * @param newEntries
+     */
+    public async bulkCreate(newEntries: NewEntry<ViewUser>[]): Promise<number[]> {
+        const data = newEntries.map(entry => {
+            return { ...entry.newEntry.user, importTrackId: entry.importTrackId };
+        });
+        const response = (await this.httpService.post(`/rest/users/user/mass_import/`, { users: data })) as {
+            detail: string;
+            importedTrackIds: number[];
+        };
+        return response.importedTrackIds;
+    }
+
+    /**
+     * Deletes many users. The operator will not be deleted (if included in `uisers`)
+     *
+     * @param users The users to delete
+     */
+    public async bulkDelete(users: ViewUser[]): Promise<void> {
+        await this.httpService.post('/rest/users/user/bulk_delete/', { user_ids: users.map(user => user.id) });
+    }
+
+    /**
+     * Sets the state of many users. The "state" means any boolean attribute of a user like active or committee.
+     *
+     * @param users The users to set the state
+     * @param field The boolean field to set
+     * @param value The value to set this field to.
+     */
+    public async bulkSetState(
+        users: ViewUser[],
+        field: 'is_active' | 'is_present' | 'is_committee',
+        value: boolean
+    ): Promise<void> {
+        await this.httpService.post('/rest/users/user/bulk_set_state/', {
+            user_ids: users.map(user => user.id),
+            field: field,
+            value: value
+        });
+    }
+
+    /**
      * Sends invitation emails to all given users. Returns a prepared string to show the user.
      * This string should always be shown, becuase even in success cases, some users may not get
      * an email and the user should be notified about this.
      *
      * @param users All affected users
      */
-    public async sendInvitationEmail(users: ViewUser[]): Promise<string> {
+    public async bulkSendInvitationEmail(users: ViewUser[]): Promise<string> {
         const user_ids = users.map(user => user.id);
         const subject = this.translate.instant(this.configService.instant('users_email_subject'));
         const message = this.translate.instant(this.configService.instant('users_email_body'));
