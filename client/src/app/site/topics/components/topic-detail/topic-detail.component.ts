@@ -5,13 +5,13 @@ import { Title, DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { TranslateService } from '@ngx-translate/core';
+import { BehaviorSubject } from 'rxjs';
 
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { TopicRepositoryService } from 'app/core/repositories/topics/topic-repository.service';
 import { ViewTopic } from '../../models/view-topic';
 import { OperatorService } from 'app/core/core-services/operator.service';
-import { BehaviorSubject } from 'rxjs';
 import { ItemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { CreateTopic } from '../../models/create-topic';
 import { Topic } from 'app/shared/models/topics/topic';
@@ -110,7 +110,11 @@ export class TopicDetailComponent extends BaseViewComponent {
      * Save a new topic as agenda item
      */
     public async saveTopic(): Promise<void> {
-        if (this.newTopic && this.topicForm.valid) {
+        if (!this.topicForm.valid) {
+            return;
+        }
+
+        if (this.newTopic) {
             if (!this.topicForm.value.agenda_parent_id) {
                 delete this.topicForm.value.agenda_parent_id;
             }

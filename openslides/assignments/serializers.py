@@ -76,7 +76,10 @@ class AssignmentOptionSerializer(ModelSerializer):
     def get_is_elected(self, obj):
         """
         Returns the election status of the candidate of this option.
+        If the candidate is None (e.g. deleted) the result is False.
         """
+        if not obj.candidate:
+            return False
         return obj.poll.assignment.is_elected(obj.candidate)
 
 

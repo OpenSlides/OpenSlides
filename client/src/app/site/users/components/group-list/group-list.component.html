@@ -85,8 +85,8 @@
         <button type="button" mat-button (click)="cancelEditing()">
             <span translate>Cancel</span>
         </button>
-        <button *ngIf="selectedGroup" type="button" mat-icon-button color="warn" (click)="deleteSelectedGroup()">
-            <mat-icon>delete</mat-icon>
+        <button *ngIf="selectedGroup" [disabled]="!canDeleteGroup(selectedGroup)" type="button" mat-button color="warn" (click)="deleteSelectedGroup()">
+            <span translate>Delete</span>
         </button>
     </div>
 </ng-template>
