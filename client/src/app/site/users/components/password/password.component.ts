@@ -50,6 +50,11 @@ export class PasswordComponent extends BaseViewComponent implements OnInit {
      */
     public hidePassword = true;
 
+    /**
+     * if the old password should be shown
+     */
+    public hideOldPassword = true;
+
     private urlUserId: number | null;
 
     /**
