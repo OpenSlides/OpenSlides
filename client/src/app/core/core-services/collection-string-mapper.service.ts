@@ -20,7 +20,7 @@ type TypeIdentifier = UnifiedConstructors | BaseRepository<any, any, any> | stri
 type CollectionStringMappedTypes = [
     ModelConstructor<BaseModel>,
     ViewModelConstructor<BaseViewModel>,
-    BaseRepository<BaseViewModel, BaseModel, TitleInformation>
+    BaseRepository<BaseViewModel<any>, BaseModel<any>, TitleInformation>
 ];
 
 /**
@@ -46,7 +46,7 @@ export class CollectionStringMapperService {
      * @param collectionString
      * @param model
      */
-    public registerCollectionElement<V extends BaseViewModel, M extends BaseModel>(
+    public registerCollectionElement<V extends BaseViewModel<M>, M extends BaseModel>(
         collectionString: string,
         model: ModelConstructor<M>,
         viewModel: ViewModelConstructor<V>,

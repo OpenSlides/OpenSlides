@@ -70,10 +70,6 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group, Gro
         return this.translate.instant(plural ? 'Groups' : 'Group');
     };
 
-    public createViewModel(group: Group): ViewGroup {
-        return new ViewGroup(group);
-    }
-
     /**
      * Toggles the given permisson.
      *

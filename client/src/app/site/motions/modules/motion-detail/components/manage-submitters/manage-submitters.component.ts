@@ -93,7 +93,7 @@ export class ManageSubmittersComponent extends BaseViewComponent {
      */
     public onEdit(): void {
         this.isEditMode = true;
-        this.editSubmitterSubject.next(this.motion.submitters.map(x => x));
+        this.editSubmitterSubject.next(this.motion.submittersAsUsers);
         this.addSubmitterForm.reset();
 
         // get all users for the submitter add form

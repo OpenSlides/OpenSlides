@@ -52,10 +52,6 @@ export class TagRepositoryService extends BaseRepository<ViewTag, Tag, TagTitleI
         return this.translate.instant(plural ? 'Tags' : 'Tag');
     };
 
-    protected createViewModel(tag: Tag): ViewTag {
-        return new ViewTag(tag);
-    }
-
     /**
      * Sets the default sorting (e.g. in dropdowns and for new users) to 'name'
      */

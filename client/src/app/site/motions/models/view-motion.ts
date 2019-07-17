@@ -1,25 +1,22 @@
 import { Motion, MotionComment } from 'app/shared/models/motions/motion';
 import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
 import { ViewMotionCommentSection } from './view-motion-comment-section';
-import { WorkflowState } from 'app/shared/models/motions/workflow-state';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { SearchRepresentation } from 'app/core/ui-services/search.service';
 import { Searchable } from 'app/site/base/searchable';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
-import { ViewItem } from 'app/site/agenda/models/view-item';
 import { ViewWorkflow } from './view-workflow';
 import { ViewCategory } from './view-category';
 import { ViewMotionBlock } from './view-motion-block';
-import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { ViewPersonalNote } from 'app/site/users/models/view-personal-note';
 import { ViewMotionChangeRecommendation } from './view-motion-change-recommendation';
 import { _ } from 'app/core/translate/translation-marker';
 import { BaseViewModelWithAgendaItemAndListOfSpeakers } from 'app/site/base/base-view-model-with-agenda-item-and-list-of-speakers';
-import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
 import { TitleInformationWithAgendaItem } from 'app/site/base/base-view-model-with-agenda-item';
+import { ViewState } from './view-state';
+import { ViewSubmitter } from './view-submitter';
 
 /**
  * The line numbering mode for the motion detail view.
@@ -67,11 +64,12 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
     public static COLLECTIONSTRING = Motion.COLLECTIONSTRING;
 
     protected _category?: ViewCategory;
-    protected _submitters?: ViewUser[];
+    protected _submitters?: ViewSubmitter[];
     protected _supporters?: ViewUser[];
     protected _workflow?: ViewWorkflow;
-    protected _state?: WorkflowState;
-    protected _block?: ViewMotionBlock;
+    protected _state?: ViewState;
+    protected _recommendation?: ViewState;
+    protected _motion_block?: ViewMotionBlock;
     protected _attachments?: ViewMediafile[];
     protected _tags?: ViewTag[];
     protected _parent?: ViewMotion;
@@ -87,8 +85,20 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
         return this._category;
     }
 
-    public get submitters(): ViewUser[] {
+    public get state(): ViewState | null {
+        return this._state;
+    }
+
+    public get recommendation(): ViewState | null {
+        return this._recommendation;
+    }
+
+    public get submitters(): ViewSubmitter[] {
         return this._submitters || [];
+    }
+
+    public get submittersAsUsers(): ViewUser[] {
+        return this.submitters.map(submitter => submitter.user);
     }
 
     public get supporters(): ViewUser[] {
@@ -104,7 +114,7 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
     }
 
     public get motion_block(): ViewMotionBlock | null {
-        return this._block;
+        return this._motion_block;
     }
 
     public get attachments(): ViewMediafile[] {
@@ -185,21 +195,12 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
         return this.motion.workflow_id;
     }
 
-    public get state(): WorkflowState | null {
-        return this._state;
-    }
-
     public get changeRecommendations(): ViewMotionChangeRecommendation[] {
         return this._changeRecommendations;
     }
 
-    /**
-     * Checks if the current state of thw workflow is final
-     *
-     * @returns true if it is final
-     */
-    public get isFinalState(): boolean {
-        return this._state.isFinalState;
+    public get change_recommendations_id(): number[] {
+        return this.motion.change_recommendations_id;
     }
 
     public get state_id(): number {
@@ -214,26 +215,12 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
         return this.motion.statute_paragraph_id;
     }
 
-    public get recommendation(): WorkflowState {
-        return this.workflow ? this.workflow.getStateById(this.recommendation_id) : null;
-    }
-
-    public get possibleRecommendations(): WorkflowState[] {
-        return this.workflow
-            ? this.workflow.states.filter(recommendation => recommendation.recommendation_label !== undefined)
-            : null;
+    public get possibleRecommendations(): ViewState[] {
+        return this.workflow ? this.workflow.states.filter(state => state.recommendation_label !== undefined) : null;
     }
 
     public get origin(): string {
         return this.motion.origin;
-    }
-
-    public get nextStates(): WorkflowState[] {
-        return this.state && this.workflow ? this.state.getNextStates(this.workflow.workflow) : [];
-    }
-
-    public get previousStates(): WorkflowState[] {
-        return this.state && this.workflow ? this.state.getPreviousStates(this.workflow.workflow) : [];
     }
 
     public get agenda_type(): number {
@@ -327,8 +314,6 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
 
     /**
      * Getter to query the 'favorite'/'star' status of the motions
-     *
-     * @returns the current state
      */
     public get star(): boolean {
         return !!this.personalNote && !!this.personalNote.star;
@@ -355,36 +340,8 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
     // This is set by the repository
     public getIdentifierOrTitle: () => string;
 
-    public constructor(
-        motion: Motion,
-        category?: ViewCategory,
-        submitters?: ViewUser[],
-        supporters?: ViewUser[],
-        workflow?: ViewWorkflow,
-        state?: WorkflowState,
-        item?: ViewItem,
-        listOfSpeakers?: ViewListOfSpeakers,
-        block?: ViewMotionBlock,
-        attachments?: ViewMediafile[],
-        tags?: ViewTag[],
-        parent?: ViewMotion,
-        changeRecommendations?: ViewMotionChangeRecommendation[],
-        amendments?: ViewMotion[],
-        personalNote?: PersonalNoteContent
-    ) {
-        super(Motion.COLLECTIONSTRING, motion, item, listOfSpeakers);
-        this._category = category;
-        this._submitters = submitters;
-        this._supporters = supporters;
-        this._workflow = workflow;
-        this._state = state;
-        this._block = block;
-        this._attachments = attachments;
-        this._tags = tags;
-        this._parent = parent;
-        this._amendments = amendments;
-        this._changeRecommendations = changeRecommendations;
-        this.personalNote = personalNote;
+    public constructor(motion: Motion) {
+        super(Motion.COLLECTIONSTRING, motion);
     }
 
     /**
@@ -397,7 +354,7 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
         if (this.amendment_paragraphs) {
             searchValues = searchValues.concat(this.amendment_paragraphs.filter(x => !!x));
         }
-        searchValues = searchValues.concat(this.submitters.map(user => user.full_name));
+        searchValues = searchValues.concat(this.submittersAsUsers.map(user => user.full_name));
         searchValues = searchValues.concat(this.supporters.map(user => user.full_name));
         searchValues = searchValues.concat(this.tags.map(tag => tag.getTitle()));
         searchValues = searchValues.concat(this.motion.comments.map(comment => comment.comment));
@@ -429,146 +386,6 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
         return this.motion.comments.find(comment => comment.section_id === section.id);
     }
 
-    /**
-     * Updates the local objects if required
-     *
-     * @param update
-     */
-    public updateDependencies(update: BaseViewModel): void {
-        super.updateDependencies(update);
-        if (update instanceof ViewWorkflow) {
-            this.updateWorkflow(update);
-        } else if (update instanceof ViewCategory) {
-            this.updateCategory(update);
-        } else if (update instanceof ViewMotionBlock) {
-            this.updateMotionBlock(update);
-        } else if (update instanceof ViewUser) {
-            this.updateUser(update);
-        } else if (update instanceof ViewMediafile) {
-            this.updateAttachments(update);
-        } else if (update instanceof ViewTag) {
-            this.updateTags(update);
-        } else if (update instanceof ViewMotion && update.id !== this.id) {
-            this.updateMotion(update);
-        } else if (update instanceof ViewMotionChangeRecommendation) {
-            this.updateChangeRecommendation(update);
-        } else if (update instanceof ViewPersonalNote) {
-            this.updatePersonalNote(update);
-        }
-    }
-
-    /**
-     * Update routine for the workflow
-     *
-     * @param workflow potentially the (changed workflow (state). Needs manual verification
-     */
-    private updateWorkflow(workflow: ViewWorkflow): void {
-        if (workflow.id === this.motion.workflow_id) {
-            this._workflow = workflow;
-            this._state = workflow.getStateById(this.state_id);
-        }
-    }
-
-    /**
-     * Update routine for the category
-     *
-     * @param category potentially the changed category. Needs manual verification
-     */
-    private updateCategory(category: ViewCategory): void {
-        if (this.category_id && category.id === this.motion.category_id) {
-            this._category = category;
-        }
-    }
-
-    /**
-     * Update routine for the motion block
-     *
-     * @param block potentially the changed motion block. Needs manual verification
-     */
-    private updateMotionBlock(block: ViewMotionBlock): void {
-        if (this.motion_block_id && block.id === this.motion.motion_block_id) {
-            this._block = block;
-        }
-    }
-
-    /**
-     * Update routine for supporters and submitters
-     *
-     * @param update potentially the changed user. Needs manual verification
-     */
-    private updateUser(update: ViewUser): void {
-        if (this.motion.submitters && this.motion.submitters.find(user => user.user_id === update.id)) {
-            const userIndex = this.motion.submitters.findIndex(submitter => submitter.user_id === update.id);
-            this.submitters[userIndex] = update;
-        }
-        if (this.motion.supporters_id && this.motion.supporters_id.includes(update.id)) {
-            const userIndex = this.supporters.findIndex(user => user.id === update.id);
-            if (userIndex < 0) {
-                this.supporters.push(update);
-            } else {
-                this.supporters[userIndex] = update;
-            }
-        }
-    }
-
-    /**
-     * Update routine for attachments
-     *
-     * @param mediafile
-     */
-    private updateAttachments(mediafile: ViewMediafile): void {
-        if (this.attachments_id && this.attachments_id.includes(mediafile.id)) {
-            const attachmentIndex = this.attachments.findIndex(_mediafile => _mediafile.id === mediafile.id);
-            if (attachmentIndex < 0) {
-                this.attachments.push(mediafile);
-            } else {
-                this.attachments[attachmentIndex] = mediafile;
-            }
-        }
-    }
-
-    private updateTags(tag: ViewTag): void {
-        if (this.tags_id && this.tags_id.includes(tag.id)) {
-            const tagIndex = this.tags.findIndex(_tag => _tag.id === tag.id);
-            if (tagIndex < 0) {
-                this.tags.push(tag);
-            } else {
-                this.tags[tagIndex] = tag;
-            }
-        }
-    }
-
-    /**
-     * The update cen be the parent or a child motion (=amendment).
-     */
-    private updateMotion(update: ViewMotion): void {
-        if (this.parent_id && this.parent_id === update.id) {
-            this._parent = update;
-        } else if (update.parent_id && update.parent_id === this.id) {
-            const index = this._amendments.findIndex(m => m.id === update.id);
-            if (index >= 0) {
-                this._amendments[index] = update;
-            } else {
-                this._amendments.push(update);
-            }
-        }
-    }
-
-    private updateChangeRecommendation(cr: ViewMotionChangeRecommendation): void {
-        if (cr.motion_id === this.id) {
-            const index = this.changeRecommendations.findIndex(_cr => _cr.id === cr.id);
-            if (index < 0) {
-                this.changeRecommendations.push(cr);
-            } else {
-                this.changeRecommendations[index] = cr;
-            }
-        }
-    }
-
-    private updatePersonalNote(personalNote: ViewPersonalNote): void {
-        this.personalNote = personalNote.getNoteContent(this.collectionString, this.id);
-    }
-
     public hasSupporters(): boolean {
         return !!(this.supporters && this.supporters.length > 0);
     }
@@ -589,7 +406,7 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
      * Determine if the motion is in its final workflow state
      */
     public isInFinalState(): boolean {
-        return this.nextStates.length === 0;
+        return this.state ? this.state.isFinalState : false;
     }
 
     /**
@@ -635,19 +452,6 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
      * Duplicate this motion into a copy of itself
      */
     public copy(): ViewMotion {
-        return new ViewMotion(
-            this._model,
-            this._category,
-            this._submitters,
-            this._supporters,
-            this._workflow,
-            this._state,
-            this._item,
-            this._listOfSpeakers,
-            this._block,
-            this._attachments,
-            this._tags,
-            this._parent
-        );
+        return new ViewMotion(this._model);
     }
 }

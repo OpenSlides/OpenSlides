@@ -26,6 +26,7 @@ from .access_permissions import (
     MotionBlockAccessPermissions,
     MotionChangeRecommendationAccessPermissions,
     MotionCommentSectionAccessPermissions,
+    StateAccessPermissions,
     StatuteParagraphAccessPermissions,
     WorkflowAccessPermissions,
 )
@@ -979,6 +980,8 @@ class State(RESTModelMixin, models.Model):
     state.
     """
 
+    access_permissions = StateAccessPermissions()
+
     name = models.CharField(max_length=255)
     """A string representing the state."""
 
@@ -1100,12 +1103,6 @@ class State(RESTModelMixin, models.Model):
             item.id for item in State.objects.filter(next_states__in=[self.id])
         ]
         return state_id in next_state_ids or state_id in previous_state_ids
-
-    def get_root_rest_element(self):
-        """
-        Returns the workflow to this instance which is the root REST element.
-        """
-        return self.workflow
 
 
 class WorkflowManager(models.Manager):

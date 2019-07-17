@@ -1,16 +1,14 @@
 import { AssignmentRelatedUser } from 'app/shared/models/assignments/assignment-related-user';
 import { BaseViewModel } from 'app/site/base/base-view-model';
-import { Displayable } from 'app/site/base/displayable';
-import { Identifiable } from 'app/shared/models/base/identifiable';
-import { Updateable } from 'app/site/base/updateable';
 import { ViewUser } from 'app/site/users/models/view-user';
 
-export class ViewAssignmentRelatedUser implements Updateable, Identifiable, Displayable {
-    private _assignmentRelatedUser: AssignmentRelatedUser;
+export class ViewAssignmentRelatedUser extends BaseViewModel<AssignmentRelatedUser> {
+    public static COLLECTIONSTRING = AssignmentRelatedUser.COLLECTIONSTRING;
+
     private _user?: ViewUser;
 
     public get assignmentRelatedUser(): AssignmentRelatedUser {
-        return this._assignmentRelatedUser;
+        return this._model;
     }
 
     public get user(): ViewUser {
@@ -37,22 +35,13 @@ export class ViewAssignmentRelatedUser implements Updateable, Identifiable, Disp
         return this.assignmentRelatedUser.weight;
     }
 
-    public constructor(assignmentRelatedUser: AssignmentRelatedUser, user?: ViewUser) {
-        this._assignmentRelatedUser = assignmentRelatedUser;
-        this._user = user;
+    public getListTitle: () => string = this.getTitle;
+
+    public constructor(assignmentRelatedUser: AssignmentRelatedUser) {
+        super(AssignmentRelatedUser.COLLECTIONSTRING, assignmentRelatedUser);
     }
 
-    public updateDependencies(update: BaseViewModel): void {
-        if (update instanceof ViewUser && update.id === this.user_id) {
-            this._user = update;
-        }
-    }
-
-    public getTitle(): string {
-        return this.user ? this.user.getTitle() : '';
-    }
-
-    public getListTitle(): string {
-        return this.getTitle();
-    }
+    public getTitle: () => string = () => {
+        return this.user ? this.user.getFullName() : '';
+    };
 }

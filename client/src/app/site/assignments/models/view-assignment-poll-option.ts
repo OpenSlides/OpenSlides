@@ -1,8 +1,6 @@
 import { AssignmentPollOption, AssignmentOptionVote } from 'app/shared/models/assignments/assignment-poll-option';
 import { BaseViewModel } from 'app/site/base/base-view-model';
-import { Identifiable } from 'app/shared/models/base/identifiable';
 import { PollVoteValue } from 'app/core/ui-services/poll.service';
-import { Updateable } from 'app/site/base/updateable';
 import { ViewUser } from 'app/site/users/models/view-user';
 
 /**
@@ -10,12 +8,12 @@ import { ViewUser } from 'app/site/users/models/view-user';
  */
 const votesOrder: PollVoteValue[] = ['Votes', 'Yes', 'No', 'Abstain'];
 
-export class ViewAssignmentPollOption implements Identifiable, Updateable {
-    private _assignmentPollOption: AssignmentPollOption;
-    private _user: ViewUser; // This is the "candidate". We'll stay consistent wich user here...
+export class ViewAssignmentPollOption extends BaseViewModel<AssignmentPollOption> {
+    public static COLLECTIONSTRING = AssignmentPollOption.COLLECTIONSTRING;
+    private _user?: ViewUser; // This is the "candidate". We'll stay consistent wich user here...
 
     public get option(): AssignmentPollOption {
-        return this._assignmentPollOption;
+        return this._model;
     }
 
     /**
@@ -52,14 +50,7 @@ export class ViewAssignmentPollOption implements Identifiable, Updateable {
         return this.option.weight;
     }
 
-    public constructor(assignmentPollOption: AssignmentPollOption, user?: ViewUser) {
-        this._assignmentPollOption = assignmentPollOption;
-        this._user = user;
-    }
-
-    public updateDependencies(update: BaseViewModel): void {
-        if (update instanceof ViewUser && update.id === this.user_id) {
-            this._user = update;
-        }
+    public constructor(assignmentPollOption: AssignmentPollOption) {
+        super(AssignmentPollOption.COLLECTIONSTRING, assignmentPollOption);
     }
 }

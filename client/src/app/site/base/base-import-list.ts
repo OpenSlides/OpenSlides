@@ -191,10 +191,7 @@ export abstract class BaseImportListComponent<V extends BaseViewModel> extends B
             };
         } else if (this.shown === 'error') {
             this.dataSource.filterPredicate = (data, filter) => {
-                if (data.errors.length || data.duplicates.length) {
-                    return true;
-                }
-                return false;
+                return !!data.errors.length || data.hasDuplicates;
             };
         }
         this.dataSource.filter = 'X'; // TODO: This is just a bogus non-null string to trigger the filter

@@ -1,5 +1,5 @@
-import { Deserializer } from '../base/deserializer';
 import { PollVoteValue } from 'app/core/ui-services/poll.service';
+import { BaseModel } from '../base/base-model';
 
 export interface AssignmentOptionVote {
     weight: number;
@@ -12,7 +12,9 @@ export interface AssignmentOptionVote {
  * part of the 'polls-options'-array in poll
  * @ignore
  */
-export class AssignmentPollOption extends Deserializer {
+export class AssignmentPollOption extends BaseModel<AssignmentPollOption> {
+    public static COLLECTIONSTRING = 'assignments/assignment-poll-option';
+
     public id: number; // The AssignmentUser id of the candidate
     public candidate_id: number; // the User id of the candidate
     public is_elected: boolean;
@@ -21,8 +23,6 @@ export class AssignmentPollOption extends Deserializer {
     public weight: number; // weight to order the display
 
     /**
-     * Needs to be completely optional because poll has (yet) the optional parameter 'poll-options'
-     *
      * @param input
      */
     public constructor(input?: any) {
@@ -33,6 +33,6 @@ export class AssignmentPollOption extends Deserializer {
                 }
             });
         }
-        super(input);
+        super(AssignmentPollOption.COLLECTIONSTRING, input);
     }
 }

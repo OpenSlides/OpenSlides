@@ -94,8 +94,6 @@ export class ViewConfig extends BaseViewModel<Config> implements ConfigTitleInfo
         super(Config.COLLECTIONSTRING, config);
     }
 
-    public updateDependencies(update: BaseViewModel): void {}
-
     /**
      * Returns the time this config field needs to debounce before sending a request to the server.
      * A little debounce time for all inputs is given here and is usefull, if inputs sends multiple onChange-events,

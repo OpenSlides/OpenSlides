@@ -1,13 +1,8 @@
-import { BaseViewModel } from '../../base/base-view-model';
 import { Item } from 'app/shared/models/agenda/item';
 import { ProjectorElementBuildDeskriptor, Projectable } from 'app/site/base/projectable';
 import { ListOfSpeakers } from 'app/shared/models/agenda/list-of-speakers';
 import { ViewSpeaker, SpeakerState } from './view-speaker';
-import {
-    BaseViewModelWithListOfSpeakers,
-    isBaseViewModelWithListOfSpeakers
-} from 'app/site/base/base-view-model-with-list-of-speakers';
-import { ViewUser } from 'app/site/users/models/view-user';
+import { BaseViewModelWithListOfSpeakers } from 'app/site/base/base-view-model-with-list-of-speakers';
 import { BaseViewModelWithContentObject } from 'app/site/base/base-view-model-with-content-object';
 import { ContentObject } from 'app/shared/models/base/content-object';
 
@@ -31,7 +26,7 @@ export class ViewListOfSpeakers extends BaseViewModelWithContentObject<ListOfSpe
     }
 
     public get speakers(): ViewSpeaker[] {
-        return this._speakers;
+        return this._speakers || [];
     }
 
     public get title_information(): object {
@@ -53,19 +48,8 @@ export class ViewListOfSpeakers extends BaseViewModelWithContentObject<ListOfSpe
         return `/agenda/speakers/${this.id}`;
     }
 
-    public constructor(
-        listOfSpeakers: ListOfSpeakers,
-        speakers: ViewSpeaker[],
-        contentObject?: BaseViewModelWithListOfSpeakers
-    ) {
-        super(
-            Item.COLLECTIONSTRING,
-            listOfSpeakers,
-            isBaseViewModelWithListOfSpeakers,
-            'BaseViewModelWithListOfSpeakers',
-            contentObject
-        );
-        this._speakers = speakers;
+    public constructor(listOfSpeakers: ListOfSpeakers) {
+        super(Item.COLLECTIONSTRING, listOfSpeakers);
     }
 
     public getProjectorTitle(): string {
@@ -83,13 +67,5 @@ export class ViewListOfSpeakers extends BaseViewModelWithContentObject<ListOfSpe
             projectionDefaultName: 'agenda_list_of_speakers',
             getDialogTitle: () => this.getTitle()
         };
-    }
-
-    public updateDependencies(update: BaseViewModel): boolean {
-        const updated = super.updateDependencies(update);
-        if (!updated && update instanceof ViewUser) {
-            return this.speakers.map(speaker => speaker.updateDependencies(update)).some(x => x);
-        }
-        return updated;
     }
 }

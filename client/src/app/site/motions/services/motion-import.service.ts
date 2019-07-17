@@ -125,12 +125,12 @@ export class MotionImportService extends BaseImportService<ViewMotion> {
                     newEntry.motion[this.expectedHeader[idx]] = line[idx];
             }
         }
-        const updateModels = this.repo.getMotionDuplicates(newEntry);
+        const hasDuplicates = this.repo.getViewModelList().some(motion => motion.identifier === newEntry.identifier);
         const entry: NewEntry<ViewMotion> = {
             newEntry: newEntry,
-            duplicates: updateModels,
-            status: updateModels.length ? 'error' : 'new',
-            errors: updateModels.length ? ['Duplicates'] : []
+            hasDuplicates: hasDuplicates,
+            status: hasDuplicates ? 'error' : 'new',
+            errors: hasDuplicates ? ['Duplicates'] : []
         };
         if (!entry.newEntry.title) {
             this.setError(entry, 'Title');

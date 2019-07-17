@@ -75,9 +75,8 @@ export class ViewCategory extends BaseViewModel<Category> implements CategoryTit
         }
     }
 
-    public constructor(category: Category, parent?: ViewCategory) {
+    public constructor(category: Category) {
         super(Category.COLLECTIONSTRING, category);
-        this._parent = parent;
     }
 
     public formatForSearch(): SearchRepresentation {
@@ -100,16 +99,6 @@ export class ViewCategory extends BaseViewModel<Category> implements CategoryTit
             return parents;
         } else {
             return [];
-        }
-    }
-
-    /**
-     * Updates the local objects if required
-     * @param update
-     */
-    public updateDependencies(update: BaseViewModel): void {
-        if (update instanceof ViewCategory && update.id === this.parent_id) {
-            this._parent = update;
         }
     }
 }

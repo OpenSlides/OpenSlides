@@ -51,8 +51,4 @@ export class StatuteParagraphRepositoryService extends BaseRepository<
     public getVerboseName = (plural: boolean = false) => {
         return this.translate.instant(plural ? 'Statute paragraphs' : 'Statute paragraph');
     };
-
-    protected createViewModel(statuteParagraph: StatuteParagraph): ViewStatuteParagraph {
-        return new ViewStatuteParagraph(statuteParagraph);
-    }
 }

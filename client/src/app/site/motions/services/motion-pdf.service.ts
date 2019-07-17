@@ -237,9 +237,9 @@ export class MotionPdfService {
 
         // submitters
         if (!infoToExport || infoToExport.includes('submitters')) {
-            const submitters = motion.submitters
-                .map(submitter => {
-                    return submitter.full_name;
+            const submitters = motion.submittersAsUsers
+                .map(user => {
+                    return user.full_name;
                 })
                 .join(', ');
 
@@ -793,7 +793,7 @@ export class MotionPdfService {
                 text: motion.sort_parent_id ? '' : motion.identifierOrTitle
             },
             { text: motion.sort_parent_id ? motion.identifierOrTitle : '' },
-            { text: motion.submitters.length ? motion.submitters.map(s => s.short_name).join(', ') : '' },
+            { text: motion.submitters.length ? motion.submittersAsUsers.map(s => s.short_name).join(', ') : '' },
             { text: motion.title },
             {
                 text: motion.recommendation ? this.motionRepo.getExtendedRecommendationLabel(motion) : ''

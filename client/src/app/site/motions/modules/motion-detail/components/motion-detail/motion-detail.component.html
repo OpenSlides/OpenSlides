@@ -261,13 +261,13 @@
                 extensionLabel="{{ 'Extension' | translate }}"
                 (success)="setStateExtension($event)"
             >
-                <span class="trigger-menu">
-                    <button *ngFor="let state of motion.nextStates" mat-menu-item (click)="setState(state.id)">
+                <span class="trigger-menu" *ngIf="motion.state">
+                    <button *ngFor="let state of motion.state.next_states" mat-menu-item (click)="setState(state.id)">
                         {{ state.name | translate }} <span *ngIf="state.show_state_extension_field">&nbsp;...</span>
                     </button>
                     <div>
-                        <mat-divider *ngIf="motion.nextStates.length > 0"></mat-divider>
-                        <button *ngFor="let state of motion.previousStates" mat-menu-item (click)="setState(state.id)">
+                        <mat-divider *ngIf="motion.state.next_states.length > 0"></mat-divider>
+                        <button *ngFor="let state of motion.state.previous_states" mat-menu-item (click)="setState(state.id)">
                             <mat-icon>arrow_back</mat-icon> {{ state.name | translate }}
                             <span *ngIf="state.show_state_extension_field">&nbsp;...</span>
                         </button>

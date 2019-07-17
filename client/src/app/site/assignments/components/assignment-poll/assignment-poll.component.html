@@ -169,7 +169,8 @@
         <div *ngIf="!pollData">
             <h4 translate>Candidates</h4>
             <div *ngFor="let option of poll.options">
-                <span class="accent"> {{ option.user.full_name }}</span>
+                <span class="accent" *ngIf="option.user">{{ option.user.getFullName() }}</span>
+                <span *ngIf="!option.user">No user {{ option.user_id }}</span>
             </div>
         </div>
     </div>

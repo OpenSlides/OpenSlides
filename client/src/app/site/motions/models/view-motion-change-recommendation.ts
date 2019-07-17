@@ -24,8 +24,6 @@ export class ViewMotionChangeRecommendation extends BaseViewModel<MotionChangeRe
         super(MotionChangeRecommendation.COLLECTIONSTRING, motionChangeRecommendation);
     }
 
-    public updateDependencies(update: BaseViewModel): void {}
-
     public updateChangeReco(type: number, text: string, internal: boolean): void {
         // @TODO HTML sanitazion
         this.changeRecommendation.type = type;

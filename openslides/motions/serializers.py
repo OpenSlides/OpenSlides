@@ -166,7 +166,8 @@ class WorkflowSerializer(ModelSerializer):
     Serializer for motion.models.Workflow objects.
     """
 
-    states = StateSerializer(many=True, read_only=True)
+    # states = StateSerializer(many=True, read_only=True)
+    states = IdPrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
         model = Workflow
@@ -431,9 +432,7 @@ class MotionSerializer(ModelSerializer):
     )
     agenda_parent_id = IntegerField(write_only=True, required=False, min_value=1)
     submitters = SubmitterSerializer(many=True, read_only=True)
-    change_recommendations = MotionChangeRecommendationSerializer(
-        many=True, read_only=True
-    )
+    change_recommendations = IdPrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
         model = Motion

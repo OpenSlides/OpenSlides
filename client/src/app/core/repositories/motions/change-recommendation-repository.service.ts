@@ -5,9 +5,6 @@ import { map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 
 import { DataSendService } from 'app/core/core-services/data-send.service';
-import { User } from 'app/shared/models/users/user';
-import { Category } from 'app/shared/models/motions/category';
-import { Workflow } from 'app/shared/models/motions/workflow';
 import { BaseRepository } from '../base-repository';
 import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { MotionChangeRecommendation } from 'app/shared/models/motions/motion-change-reco';
@@ -61,11 +58,7 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<
         translate: TranslateService,
         private diffService: DiffService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, MotionChangeRecommendation, [
-            Category,
-            User,
-            Workflow
-        ]);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, MotionChangeRecommendation);
     }
 
     public getTitle = (titleInformation: MotionChangeRecommendationTitleInformation) => {
@@ -75,15 +68,6 @@ export class ChangeRecommendationRepositoryService extends BaseRepository<
     public getVerboseName = (plural: boolean = false) => {
         return this.translate.instant(plural ? 'Change recommendations' : 'Change recommendation');
     };
-
-    /**
-     * Creates this view wrapper based on an actual Change Recommendation model
-     *
-     * @param {MotionChangeRecommendation} model
-     */
-    protected createViewModel(model: MotionChangeRecommendation): ViewMotionChangeRecommendation {
-        return new ViewMotionChangeRecommendation(model);
-    }
 
     /**
      * Given a change recommendation view object, a entry in the backend is created.

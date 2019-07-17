@@ -2,13 +2,13 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { TitleInformation } from '../../site/base/base-view-model';
 import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model';
-import { BaseRepository } from './base-repository';
+import { BaseRepository, RelationDefinition } from './base-repository';
 import { DataStoreService } from '../core-services/data-store.service';
 import { DataSendService } from '../core-services/data-send.service';
 import { CollectionStringMapperService } from '../core-services/collection-string-mapper.service';
 import { ViewModelStoreService } from '../core-services/view-model-store.service';
-import { ListOfSpeakers } from 'app/shared/models/agenda/list-of-speakers';
 import { BaseViewModelWithListOfSpeakers } from 'app/site/base/base-view-model-with-list-of-speakers';
+import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
 
 export function isBaseIsListOfSpeakersContentObjectRepository(
     obj: any
@@ -44,7 +44,7 @@ export abstract class BaseIsListOfSpeakersContentObjectRepository<
         viewModelStoreService: ViewModelStoreService,
         translate: TranslateService,
         baseModelCtor: ModelConstructor<M>,
-        depsModelCtors?: ModelConstructor<BaseModel>[]
+        relationDefinitions?: RelationDefinition[]
     ) {
         super(
             DS,
@@ -53,12 +53,18 @@ export abstract class BaseIsListOfSpeakersContentObjectRepository<
             viewModelStoreService,
             translate,
             baseModelCtor,
-            depsModelCtors
+            relationDefinitions
         );
-        if (!this.depsModelCtors) {
-            this.depsModelCtors = [];
-        }
-        this.depsModelCtors.push(ListOfSpeakers);
+    }
+
+    protected groupRelationsByCollections(): void {
+        this.relationDefinitions.push({
+            type: 'O2M',
+            ownIdKey: 'list_of_speakers_id',
+            ownKey: 'list_of_speakers',
+            foreignModel: ViewListOfSpeakers
+        });
+        super.groupRelationsByCollections();
     }
 
     public getListOfSpeakersTitle(titleInformation: T): string {

@@ -36,10 +36,4 @@ export class ViewTag extends BaseViewModel<Tag> implements TagTitleInformation, 
     public getDetailStateURL(): string {
         return `/tags`;
     }
-
-    /**
-     * Updates the local objects if required
-     * @param update
-     */
-    public updateDependencies(update: BaseViewModel): void {}
 }

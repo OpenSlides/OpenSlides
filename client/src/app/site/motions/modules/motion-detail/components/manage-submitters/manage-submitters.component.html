@@ -13,8 +13,8 @@
 </h4>
 
 <div *ngIf="!isEditMode || !perms.isAllowed('change_metadata')">
-    <mat-chip-list *ngFor="let submitter of motion.submitters" class="user">
-        <mat-chip disableRipple>{{ submitter.full_name }}</mat-chip>
+    <mat-chip-list *ngFor="let user of motion.submittersAsUsers" class="user">
+        <mat-chip disableRipple *ngIf="user">{{ user.getTitle() }}</mat-chip>
     </mat-chip-list>
 </div>
 

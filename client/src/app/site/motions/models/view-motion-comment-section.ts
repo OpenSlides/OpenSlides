@@ -17,8 +17,8 @@ export class ViewMotionCommentSection extends BaseViewModel<MotionCommentSection
     implements MotionCommentSectionTitleInformation {
     public static COLLECTIONSTRING = MotionCommentSection.COLLECTIONSTRING;
 
-    private _readGroups: ViewGroup[];
-    private _writeGroups: ViewGroup[];
+    private _read_groups: ViewGroup[];
+    private _write_groups: ViewGroup[];
 
     public get section(): MotionCommentSection {
         return this._model;
@@ -41,11 +41,11 @@ export class ViewMotionCommentSection extends BaseViewModel<MotionCommentSection
     }
 
     public get read_groups(): ViewGroup[] {
-        return this._readGroups;
+        return this._read_groups;
     }
 
     public get write_groups(): ViewGroup[] {
-        return this._writeGroups;
+        return this._write_groups;
     }
 
     public get weight(): number {
@@ -59,10 +59,8 @@ export class ViewMotionCommentSection extends BaseViewModel<MotionCommentSection
         this._model.name = name;
     }
 
-    public constructor(motionCommentSection: MotionCommentSection, readGroups: ViewGroup[], writeGroups: ViewGroup[]) {
+    public constructor(motionCommentSection: MotionCommentSection) {
         super(MotionCommentSection.COLLECTIONSTRING, motionCommentSection);
-        this._readGroups = readGroups;
-        this._writeGroups = writeGroups;
     }
 
     /**

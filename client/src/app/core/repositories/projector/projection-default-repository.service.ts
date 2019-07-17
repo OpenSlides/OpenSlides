@@ -52,10 +52,6 @@ export class ProjectionDefaultRepositoryService extends BaseRepository<
         return this.translate.instant(titleInformation.display_name);
     };
 
-    public createViewModel(projectionDefault: ProjectionDefault): ViewProjectionDefault {
-        return new ViewProjectionDefault(projectionDefault);
-    }
-
     /**
      * Creation of projection defaults is not supported.
      */

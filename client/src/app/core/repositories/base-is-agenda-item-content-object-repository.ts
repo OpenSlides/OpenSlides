@@ -3,14 +3,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model';
 import { CollectionStringMapperService } from '../core-services/collection-string-mapper.service';
 import { DataSendService } from '../core-services/data-send.service';
-import { BaseRepository } from './base-repository';
-import { Item } from 'app/shared/models/agenda/item';
+import { BaseRepository, RelationDefinition } from './base-repository';
 import { DataStoreService } from '../core-services/data-store.service';
 import { ViewModelStoreService } from '../core-services/view-model-store.service';
 import {
     TitleInformationWithAgendaItem,
     BaseViewModelWithAgendaItem
 } from 'app/site/base/base-view-model-with-agenda-item';
+import { ViewItem } from 'app/site/agenda/models/view-item';
 
 export function isBaseIsAgendaItemContentObjectRepository(
     obj: any
@@ -46,7 +46,7 @@ export abstract class BaseIsAgendaItemContentObjectRepository<
         viewModelStoreService: ViewModelStoreService,
         translate: TranslateService,
         baseModelCtor: ModelConstructor<M>,
-        depsModelCtors?: ModelConstructor<BaseModel>[]
+        relationDefinitions?: RelationDefinition[]
     ) {
         super(
             DS,
@@ -55,12 +55,18 @@ export abstract class BaseIsAgendaItemContentObjectRepository<
             viewModelStoreService,
             translate,
             baseModelCtor,
-            depsModelCtors
+            relationDefinitions
         );
-        if (!this.depsModelCtors) {
-            this.depsModelCtors = [];
-        }
-        this.depsModelCtors.push(Item);
+    }
+
+    protected groupRelationsByCollections(): void {
+        this.relationDefinitions.push({
+            type: 'O2M',
+            ownIdKey: 'agenda_item_id',
+            ownKey: 'item',
+            foreignModel: ViewItem
+        });
+        super.groupRelationsByCollections();
     }
 
     /**

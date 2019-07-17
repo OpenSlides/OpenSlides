@@ -106,14 +106,7 @@ export class ViewProjector extends BaseViewModel<Projector> {
         return this.projector.show_logo;
     }
 
-    public constructor(projector: Projector, referenceProjector?: ViewProjector) {
+    public constructor(projector: Projector) {
         super(Projector.COLLECTIONSTRING, projector);
-        this._referenceProjector = referenceProjector;
-    }
-
-    public updateDependencies(update: BaseViewModel): void {
-        if (update instanceof ViewProjector && this.reference_projector_id === update.id) {
-            this._referenceProjector = update;
-        }
     }
 }

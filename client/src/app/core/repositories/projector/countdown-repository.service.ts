@@ -36,10 +36,6 @@ export class CountdownRepositoryService extends BaseRepository<ViewCountdown, Co
         return this.translate.instant(plural ? 'Countdowns' : 'Countdown');
     };
 
-    protected createViewModel(countdown: Countdown): ViewCountdown {
-        return new ViewCountdown(countdown);
-    }
-
     /**
      * Starts a countdown.
      *

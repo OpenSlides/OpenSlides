@@ -100,7 +100,7 @@ export class AgendaImportService extends BaseImportService<ViewCreateTopic> {
                     newEntry[this.expectedHeader[idx]] = line[idx];
             }
         }
-        const updateModels = this.repo.getTopicDuplicates(newEntry) as ViewCreateTopic[];
+        const hasDuplicates = this.repo.getViewModelList().some(topic => topic.title === newEntry.title);
 
         // set type to 'public' if none is given in import
         if (!newEntry.type) {
@@ -108,12 +108,11 @@ export class AgendaImportService extends BaseImportService<ViewCreateTopic> {
         }
         const mappedEntry: NewEntry<ViewCreateTopic> = {
             newEntry: newEntry,
-            duplicates: [],
+            hasDuplicates: hasDuplicates,
             status: 'new',
             errors: []
         };
-        if (updateModels.length) {
-            mappedEntry.duplicates = updateModels;
+        if (hasDuplicates) {
             this.setError(mappedEntry, 'Duplicates');
         }
         if (hasErrors) {
@@ -198,17 +197,14 @@ export class AgendaImportService extends BaseImportService<ViewCreateTopic> {
                     agenda_type: 1 // set type to 'public item' by default
                 })
             );
+            const hasDuplicates = this.repo.getViewModelList().some(topic => topic.title === newTopic.title);
             const newEntry: NewEntry<ViewCreateTopic> = {
                 newEntry: newTopic,
-                duplicates: [],
+                hasDuplicates: hasDuplicates,
                 status: 'new',
                 errors: []
             };
-            const duplicates = this.repo.getTopicDuplicates(newTopic);
-            if (duplicates.length) {
-                // TODO duplicates are not really ViewCreateTopics, but ViewTopics.
-                // TODO this should be fine as the duplicates will not be created
-                newEntry.duplicates = duplicates as ViewCreateTopic[];
+            if (hasDuplicates) {
                 this.setError(newEntry, 'Duplicates');
             }
             newEntries.push(newEntry);

@@ -14,7 +14,6 @@ from ..core.models import Tag
 from ..utils.auth import has_perm, in_some_groups
 from ..utils.autoupdate import inform_changed_data, inform_deleted_data
 from ..utils.rest_api import (
-    CreateModelMixin,
     DestroyModelMixin,
     GenericViewSet,
     ModelViewSet,
@@ -32,6 +31,7 @@ from .access_permissions import (
     MotionBlockAccessPermissions,
     MotionChangeRecommendationAccessPermissions,
     MotionCommentSectionAccessPermissions,
+    StateAccessPermissions,
     StatuteParagraphAccessPermissions,
     WorkflowAccessPermissions,
 )
@@ -50,7 +50,7 @@ from .models import (
     Workflow,
 )
 from .numbering import numbering
-from .serializers import MotionPollSerializer, StateSerializer
+from .serializers import MotionPollSerializer
 
 
 # Viewsets for the REST API
@@ -1533,10 +1533,8 @@ class WorkflowViewSet(ModelViewSet, ProtectedErrorMessageMixin):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ("list", "retrieve"):
+        if self.action in ("list", "retrieve", "metadata"):
             result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action == "metadata":
-            result = has_perm(self.request.user, "motions.can_see")
         elif self.action in ("create", "partial_update", "update", "destroy"):
             result = has_perm(self.request.user, "motions.can_see") and has_perm(
                 self.request.user, "motions.can_manage"
@@ -1571,13 +1569,7 @@ class WorkflowViewSet(ModelViewSet, ProtectedErrorMessageMixin):
         return result
 
 
-class StateViewSet(
-    CreateModelMixin,
-    UpdateModelMixin,
-    DestroyModelMixin,
-    GenericViewSet,
-    ProtectedErrorMessageMixin,
-):
+class StateViewSet(ModelViewSet, ProtectedErrorMessageMixin):
     """
     API endpoint for workflow states.
 
@@ -1585,21 +1577,29 @@ class StateViewSet(
     """
 
     queryset = State.objects.all()
-    serializer_class = StateSerializer
+    # serializer_class = StateSerializer
+    access_permissions = StateAccessPermissions()
 
     def check_view_permissions(self):
         """
         Returns True if the user has required permissions.
         """
-        return has_perm(self.request.user, "motions.can_see") and has_perm(
-            self.request.user, "motions.can_manage"
-        )
+        if self.action in ("list", "retrieve", "metadata"):
+            result = self.get_access_permissions().check_permissions(self.request.user)
+        elif self.action in ("create", "partial_update", "update", "destroy"):
+            result = has_perm(self.request.user, "motions.can_see") and has_perm(
+                self.request.user, "motions.can_manage"
+            )
+        else:
+            result = False
+        return result
 
     def destroy(self, *args, **kwargs):
         """
         Customized view endpoint to delete a state.
         """
         state = self.get_object()
+        workflow = state.workflow
         if state.workflow.first_state.pk == state.pk:
             # is this the first state of the workflow?
             raise ValidationError(
@@ -1610,6 +1610,17 @@ class StateViewSet(
         except ProtectedError as err:
             msg = self.getProtectedErrorMessage("workflow", err)
             raise ValidationError({"detail": msg})
+        inform_changed_data(workflow)
+        return result
+
+    def create(self, request, *args, **kwargs):
+        """
+        """
+        result = super().create(request, *args, **kwargs)
+        workflow_id = request.data[
+            "workflow_id"
+        ]  # This must be correct, if the state was created successfully
+        inform_changed_data(Workflow.objects.get(pk=workflow_id))
         return result
 
     def update(self, *args, **kwargs):

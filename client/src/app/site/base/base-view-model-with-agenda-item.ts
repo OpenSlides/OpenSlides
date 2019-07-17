@@ -3,8 +3,7 @@ import { SearchRepresentation } from 'app/core/ui-services/search.service';
 import { isDetailNavigable, DetailNavigable } from 'app/shared/models/base/detail-navigable';
 import { isSearchable, Searchable } from './searchable';
 import { BaseModelWithAgendaItem } from 'app/shared/models/base/base-model-with-agenda-item';
-import { BaseViewModel, TitleInformation } from './base-view-model';
-import { Item } from 'app/shared/models/agenda/item';
+import { TitleInformation } from './base-view-model';
 
 export function isBaseViewModelWithAgendaItem(obj: any): obj is BaseViewModelWithAgendaItem {
     const model = <BaseViewModelWithAgendaItem>obj;
@@ -105,11 +104,4 @@ export abstract class BaseViewModelWithAgendaItem<M extends BaseModelWithAgendaI
      * Should return a string representation of the object, so there can be searched for.
      */
     public abstract formatForSearch(): SearchRepresentation;
-
-    public updateDependencies(update: BaseViewModel): void {
-        // We cannot check with instanceof, because this gives circular dependency issues...
-        if (update.collectionString === Item.COLLECTIONSTRING && update.id === this.agenda_item_id) {
-            this._item = update;
-        }
-    }
 }

@@ -12,8 +12,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
 import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
-import { WorkflowState, MergeAmendment } from 'app/shared/models/motions/workflow-state';
 import { PromptService } from 'app/core/ui-services/prompt.service';
+import { MergeAmendment, State } from 'app/shared/models/motions/state';
+import { ViewState } from 'app/site/motions/models/view-state';
+import { StateRepositoryService } from 'app/core/repositories/motions/state-repository.service';
 
 /**
  * Declares data for the workflow dialog
@@ -153,6 +155,7 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
         private promtService: PromptService,
         private dialog: MatDialog,
         private workflowRepo: WorkflowRepositoryService,
+        private stateRepo: StateRepositoryService,
         private route: ActivatedRoute
     ) {
         super(title, translate, matSnackBar);
@@ -180,17 +183,17 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
      *
      * @param state the selected workflow state
      */
-    public onClickStateName(state: WorkflowState): void {
+    public onClickStateName(state: ViewState): void {
         this.openEditDialog(state.name, 'Rename state', '', true).subscribe(result => {
             if (result) {
                 if (result.action === 'update') {
-                    this.workflowRepo.updateState({ name: result.value }, state).then(() => {}, this.raiseError);
+                    this.stateRepo.update({ name: result.value }, state).then(() => {}, this.raiseError);
                 } else if (result.action === 'delete') {
                     const content = this.translate.instant('Delete') + ` ${state.name}?`;
 
                     this.promtService.open('Are you sure', content).then(promptResult => {
                         if (promptResult) {
-                            this.workflowRepo.deleteState(state).then(() => {}, this.raiseError);
+                            this.stateRepo.delete(state).then(() => {}, this.raiseError);
                         }
                     });
                 }
@@ -206,7 +209,11 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
         this.openEditDialog('', this.translate.instant('New state'), this.translate.instant('Name')).subscribe(
             result => {
                 if (result && result.action === 'update') {
-                    this.workflowRepo.addState(result.value, this.workflow).then(() => {}, this.raiseError);
+                    const state = new State({
+                        name: result.value,
+                        workflow_id: this.workflow.id
+                    });
+                    this.stateRepo.create(state).then(() => {}, this.raiseError);
                 }
             }
         );
@@ -231,10 +238,10 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
      * @param perm The permission
      * @param state The selected workflow state
      */
-    public onClickInputPerm(perm: StatePerm, state: WorkflowState): void {
+    public onClickInputPerm(perm: StatePerm, state: ViewState): void {
         this.openEditDialog(state[perm.selector], 'Edit', perm.name).subscribe(result => {
             if (result && result.action === 'update') {
-                this.workflowRepo.updateState({ [perm.selector]: result.value }, state).then(() => {}, this.raiseError);
+                this.stateRepo.update({ [perm.selector]: result.value }, state).then(() => {}, this.raiseError);
             }
         });
     }
@@ -246,8 +253,8 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
      * @param perm The states permission that was changed
      * @param event The change event.
      */
-    public onToggleStatePerm(state: WorkflowState, perm: string, event: MatCheckboxChange): void {
-        this.workflowRepo.updateState({ [perm]: event.checked }, state).then(() => {}, this.raiseError);
+    public onToggleStatePerm(state: ViewState, perm: string, event: MatCheckboxChange): void {
+        this.stateRepo.update({ [perm]: event.checked }, state).then(() => {}, this.raiseError);
     }
 
     /**
@@ -257,8 +264,8 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
      * @param state The selected workflow state
      * @param color The selected color
      */
-    public onSelectColor(state: WorkflowState, color: string): void {
-        this.workflowRepo.updateState({ css_class: color }, state).then(() => {}, this.raiseError);
+    public onSelectColor(state: ViewState, color: string): void {
+        this.stateRepo.update({ css_class: color }, state).then(() => {}, this.raiseError);
     }
 
     /**
@@ -267,7 +274,7 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
      * @param nextState the potential next workflow state
      * @param state the state to add or remove another state to
      */
-    public onSetNextState(nextState: WorkflowState, state: WorkflowState): void {
+    public onSetNextState(nextState: ViewState, state: ViewState): void {
         const ids = state.next_states_id.map(id => id);
         const stateIdIndex = ids.findIndex(id => id === nextState.id);
 
@@ -276,7 +283,7 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
         } else {
             ids.splice(stateIdIndex, 1);
         }
-        this.workflowRepo.updateState({ next_states_id: ids }, state).then(() => {}, this.raiseError);
+        this.stateRepo.update({ next_states_id: ids }, state).then(() => {}, this.raiseError);
     }
 
     /**
@@ -285,7 +292,7 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
      * @param restrictions The new restrictions
      * @param state the state to change
      */
-    public onSetRestriction(restriction: string, state: WorkflowState): void {
+    public onSetRestriction(restriction: string, state: ViewState): void {
         const restrictions = state.restriction.map(r => r);
         const restrictionIndex = restrictions.findIndex(r => r === restriction);
 
@@ -294,7 +301,7 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
         } else {
             restrictions.splice(restrictionIndex, 1);
         }
-        this.workflowRepo.updateState({ restriction: restrictions }, state).then(() => {}, this.raiseError);
+        this.stateRepo.update({ restriction: restrictions }, state).then(() => {}, this.raiseError);
     }
 
     /**
@@ -311,8 +318,8 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
      * @param amendment determines the amendment
      * @param state the state to change
      */
-    public setMergeAmendment(amendment: number, state: WorkflowState): void {
-        this.workflowRepo.updateState({ merge_amendment_into_final: amendment }, state).then(() => {}, this.raiseError);
+    public setMergeAmendment(amendment: number, state: ViewState): void {
+        this.stateRepo.update({ merge_amendment_into_final: amendment }, state).then(() => {}, this.raiseError);
     }
 
     /**
@@ -383,7 +390,7 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
      * @param state the workflow state
      * @returns a unique definition
      */
-    public getColumnDef(state: WorkflowState): string {
+    public getColumnDef(state: ViewState): string {
         return `${state.name}${state.id}`;
     }
 

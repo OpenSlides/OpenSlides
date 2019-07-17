@@ -47,10 +47,7 @@ import {
     LineNumberingMode,
     verboseChangeRecoMode
 } from 'app/site/motions/models/view-motion';
-import {
-    ViewMotionNotificationEditMotion,
-    TypeOfNotificationViewMotion
-} from 'app/site/motions/models/view-motion-notify';
+import { MotionEditNotification, MotionEditNotificationType } from 'app/site/motions/motion-edit-notification';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
 import { ViewCategory } from 'app/site/motions/models/view-category';
 import { ViewCreateMotion } from 'app/site/motions/models/view-create-motion';
@@ -517,7 +514,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * Sends a notification to user editors of the motion was edited
      */
     public ngOnDestroy(): void {
-        this.unsubscribeEditNotifications(TypeOfNotificationViewMotion.TYPE_CLOSING_EDITING_MOTION);
+        this.unsubscribeEditNotifications(MotionEditNotificationType.TYPE_CLOSING_EDITING_MOTION);
         if (this.navigationSubscription) {
             this.navigationSubscription.unsubscribe();
         }
@@ -832,7 +829,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         } else {
             this.updateMotionFromForm();
             // When saving the changes, notify other users if they edit the same motion.
-            this.unsubscribeEditNotifications(TypeOfNotificationViewMotion.TYPE_SAVING_EDITING_MOTION);
+            this.unsubscribeEditNotifications(MotionEditNotificationType.TYPE_SAVING_EDITING_MOTION);
         }
     }
 
@@ -1165,7 +1162,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
             this.motionCopy = this.motion.copy();
             this.patchForm(this.motionCopy);
             this.editNotificationSubscription = this.listenToEditNotification();
-            this.sendEditNotification(TypeOfNotificationViewMotion.TYPE_BEGIN_EDITING_MOTION);
+            this.sendEditNotification(MotionEditNotificationType.TYPE_BEGIN_EDITING_MOTION);
         }
         if (!mode && this.newMotion) {
             this.router.navigate(['./motions/']);
@@ -1173,7 +1170,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         // If the user cancels the work on this motion,
         // notify the users who are still editing the same motion
         if (!mode && !this.newMotion) {
-            this.unsubscribeEditNotifications(TypeOfNotificationViewMotion.TYPE_CLOSING_EDITING_MOTION);
+            this.unsubscribeEditNotifications(MotionEditNotificationType.TYPE_CLOSING_EDITING_MOTION);
         }
     }
 
@@ -1412,8 +1409,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * @param type TypeOfNotificationViewMotion defines the type of the notification which is sent.
      * @param user Optional userId. If set the function will send a notification to the given userId.
      */
-    private sendEditNotification(type: TypeOfNotificationViewMotion, user?: number): void {
-        const content: ViewMotionNotificationEditMotion = {
+    private sendEditNotification(type: MotionEditNotificationType, user?: number): void {
+        const content: MotionEditNotification = {
             motionId: this.motion.id,
             senderId: this.operator.viewUser.id,
             senderName: this.operator.viewUser.short_name,
@@ -1422,7 +1419,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         if (user) {
             this.notifyService.sendToUsers(this.NOTIFICATION_EDIT_MOTION, content, user);
         } else {
-            this.notifyService.sendToAllUsers<ViewMotionNotificationEditMotion>(this.NOTIFICATION_EDIT_MOTION, content);
+            this.notifyService.sendToAllUsers<MotionEditNotification>(this.NOTIFICATION_EDIT_MOTION, content);
         }
     }
 
@@ -1434,13 +1431,13 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      */
     private listenToEditNotification(): Subscription {
         return this.notifyService.getMessageObservable(this.NOTIFICATION_EDIT_MOTION).subscribe(message => {
-            const content = <ViewMotionNotificationEditMotion>message.content;
+            const content = <MotionEditNotification>message.content;
             if (this.operator.viewUser.id !== content.senderId && content.motionId === this.motion.id) {
                 let warning = '';
 
                 switch (content.type) {
-                    case TypeOfNotificationViewMotion.TYPE_BEGIN_EDITING_MOTION:
-                    case TypeOfNotificationViewMotion.TYPE_ALSO_EDITING_MOTION: {
+                    case MotionEditNotificationType.TYPE_BEGIN_EDITING_MOTION:
+                    case MotionEditNotificationType.TYPE_ALSO_EDITING_MOTION: {
                         if (!this.otherWorkOnMotion.includes(content.senderName)) {
                             this.otherWorkOnMotion.push(content.senderName);
                         }
@@ -1448,19 +1445,19 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
                         warning = `${this.translate.instant('Following users are currently editing this motion:')} ${
                             this.otherWorkOnMotion
                         }`;
-                        if (content.type === TypeOfNotificationViewMotion.TYPE_BEGIN_EDITING_MOTION) {
+                        if (content.type === MotionEditNotificationType.TYPE_BEGIN_EDITING_MOTION) {
                             this.sendEditNotification(
-                                TypeOfNotificationViewMotion.TYPE_ALSO_EDITING_MOTION,
+                                MotionEditNotificationType.TYPE_ALSO_EDITING_MOTION,
                                 message.senderUserId
                             );
                         }
                         break;
                     }
-                    case TypeOfNotificationViewMotion.TYPE_CLOSING_EDITING_MOTION: {
+                    case MotionEditNotificationType.TYPE_CLOSING_EDITING_MOTION: {
                         this.recognizeOtherWorkerOnMotion(content.senderName);
                         break;
                     }
-                    case TypeOfNotificationViewMotion.TYPE_SAVING_EDITING_MOTION: {
+                    case MotionEditNotificationType.TYPE_SAVING_EDITING_MOTION: {
                         warning = `${content.senderName} ${this.translate.instant(
                             'has saved his work on this motion.'
                         )}`;
@@ -1496,7 +1493,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      *
      * @param unsubscriptionReason The reason for the unsubscription.
      */
-    private unsubscribeEditNotifications(unsubscriptionReason: TypeOfNotificationViewMotion): void {
+    private unsubscribeEditNotifications(unsubscriptionReason: MotionEditNotificationType): void {
         if (!!this.editNotificationSubscription && !this.editNotificationSubscription.closed) {
             this.sendEditNotification(unsubscriptionReason);
             this.closeSnackBar();

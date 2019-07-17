@@ -236,7 +236,7 @@ export class AssignmentPollComponent extends BaseViewComponent implements OnInit
         }
 
         // TODO additional conditions: assignment not finished?
-        const viewAssignmentRelatedUser = this.assignment.assignmentRelatedUsers.find(
+        const viewAssignmentRelatedUser = this.assignment.assignment_related_users.find(
             user => user.user_id === option.user_id
         );
         if (viewAssignmentRelatedUser) {

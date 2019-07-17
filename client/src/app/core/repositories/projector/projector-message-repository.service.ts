@@ -38,8 +38,4 @@ export class ProjectorMessageRepositoryService extends BaseRepository<
     public getVerboseName = (plural: boolean = false) => {
         return this.translate.instant(plural ? 'Messages' : 'Message');
     };
-
-    protected createViewModel(message: ProjectorMessage): ViewProjectorMessage {
-        return new ViewProjectorMessage(message);
-    }
 }

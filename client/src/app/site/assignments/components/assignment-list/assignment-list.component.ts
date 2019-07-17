@@ -52,7 +52,7 @@ export class AssignmentListComponent extends BaseListViewComponent<ViewAssignmen
     /**
      * Define extra filter properties
      */
-    public filterProps = ['title', 'candidates', 'assignmentRelatedUsers', 'tags', 'candidateAmount'];
+    public filterProps = ['title', 'candidates', 'assignment_related_users', 'tags', 'candidateAmount'];
 
     /**
      * Constructor.

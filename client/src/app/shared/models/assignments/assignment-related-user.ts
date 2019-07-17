@@ -1,27 +1,18 @@
+import { BaseModel } from '../base/base-model';
+
 /**
  * Content of the 'assignment_related_users' property.
  */
-export interface AssignmentRelatedUser {
-    id: number;
+export class AssignmentRelatedUser extends BaseModel<AssignmentRelatedUser> {
+    public static COLLECTIONSTRING = 'assignments/assignment-related-user';
 
-    /**
-     * id of the user this assignment user relates to
-     */
-    user_id: number;
+    public id: number;
+    public user_id: number;
+    public elected: boolean;
+    public assignment_id: number;
+    public weight: number;
 
-    /**
-     * The current 'elected' state
-     */
-    elected: boolean;
-
-    /**
-     * id of the related assignment
-     */
-    assignment_id: number;
-
-    /**
-     * A weight to determine the position in the list of candidates
-     * (determined by the server)
-     */
-    weight: number;
+    public constructor(input?: any) {
+        super(AssignmentRelatedUser.COLLECTIONSTRING, input);
+    }
 }

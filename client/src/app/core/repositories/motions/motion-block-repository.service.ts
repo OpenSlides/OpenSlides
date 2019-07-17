@@ -14,8 +14,6 @@ import { MotionRepositoryService } from './motion-repository.service';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionBlock, MotionBlockTitleInformation } from 'app/site/motions/models/view-motion-block';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
-import { ViewItem } from 'app/site/agenda/models/view-item';
-import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
 import { BaseIsAgendaItemAndListOfSpeakersContentObjectRepository } from '../base-is-agenda-item-and-list-of-speakers-content-object-repository';
 
 /**
@@ -58,18 +56,6 @@ export class MotionBlockRepositoryService extends BaseIsAgendaItemAndListOfSpeak
     public getVerboseName = (plural: boolean = false) => {
         return this.translate.instant(plural ? 'Motion blocks' : 'Motion block');
     };
-
-    /**
-     * Converts a given motion block into a ViewModel
-     *
-     * @param block a motion block
-     * @returns a new ViewMotionBlock
-     */
-    protected createViewModel(block: MotionBlock): ViewMotionBlock {
-        const item = this.viewModelStoreService.get(ViewItem, block.agenda_item_id);
-        const listOfSpeakers = this.viewModelStoreService.get(ViewListOfSpeakers, block.list_of_speakers_id);
-        return new ViewMotionBlock(block, item, listOfSpeakers);
-    }
 
     /**
      * Removes the motion block id from the given motion

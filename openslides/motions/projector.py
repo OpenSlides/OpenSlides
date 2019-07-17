@@ -21,17 +21,14 @@ async def get_state(
     all_data: AllData, motion: Dict[str, Any], state_id_key: str
 ) -> Dict[str, Any]:
     """
-    Returns a state element from one motion.
-
-    Returns an error if the state_id does not exist for the workflow in the motion.
+    Returns a state element from one motion. Raises an error if the state does not exist.
     """
-    states = all_data["motions/workflow"][motion["workflow_id"]]["states"]
-    for state in states:
-        if state["id"] == motion[state_id_key]:
-            return state
-    raise ProjectorElementException(
-        f"motion {motion['id']} can not be on the state with id {motion[state_id_key]}"
-    )
+    state = all_data["motions/state"].get(motion[state_id_key])
+    if not state:
+        raise ProjectorElementException(
+            f"motion {motion['id']} can not be on the state with id {motion[state_id_key]}"
+        )
+    return state
 
 
 async def get_amendment_merge_into_motion_diff(all_data, amendment):
@@ -165,6 +162,7 @@ async def motion_slide(
     * change_recommendations
     * submitter
     """
+    # Get motion
     mode = element.get(
         "mode", await get_config(all_data, "motions_recommendation_text_mode")
     )
@@ -178,6 +176,7 @@ async def motion_slide(
     except KeyError:
         raise ProjectorElementException(f"motion with id {motion_id} does not exist")
 
+    # Get some needed config values
     show_meta_box = not await get_config(
         all_data, "motions_disable_sidebox_on_projector"
     )
@@ -185,26 +184,25 @@ async def motion_slide(
     line_numbering_mode = await get_config(all_data, "motions_default_line_numbering")
     motions_preamble = await get_config(all_data, "motions_preamble")
 
+    # Query all change-recommendation and amendment related things.
+    change_recommendations = []  # type: ignore
+    amendments = []  # type: ignore
+    base_motion = None
+    base_statute = None
     if motion["statute_paragraph_id"]:
-        change_recommendations = []  # type: ignore
-        amendments = []  # type: ignore
-        base_motion = None
         base_statute = await get_amendment_base_statute(motion, all_data)
-    elif bool(motion["parent_id"]) and motion["amendment_paragraphs"]:
-        change_recommendations = []
-        amendments = []
+    elif motion["parent_id"] is not None and motion["amendment_paragraphs"]:
         base_motion = await get_amendment_base_motion(motion, all_data)
-        base_statute = None
     else:
-        change_recommendations = list(
-            filter(
-                lambda reco: reco["internal"] is False, motion["change_recommendations"]
+        for change_recommendation_id in motion["change_recommendations_id"]:
+            cr = all_data["motions/motion-change-recommendation"].get(
+                change_recommendation_id
             )
-        )
+            if cr is not None and not cr["internal"]:
+                change_recommendations.append(cr)
         amendments = await get_amendments_for_motion(motion, all_data)
-        base_motion = None
-        base_statute = None
 
+    # The base return value. More fields will get added below.
     return_value = {
         "identifier": motion["identifier"],
         "title": motion["title"],

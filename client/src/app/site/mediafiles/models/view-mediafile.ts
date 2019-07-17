@@ -1,10 +1,8 @@
-import { BaseViewModel } from '../../base/base-view-model';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { Searchable } from 'app/site/base/searchable';
 import { SearchRepresentation } from 'app/core/ui-services/search.service';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { BaseViewModelWithListOfSpeakers } from 'app/site/base/base-view-model-with-list-of-speakers';
-import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
 import { ViewGroup } from 'app/site/users/models/view-group';
 
 export const IMAGE_MIMETYPES = ['image/png', 'image/jpeg', 'image/gif'];
@@ -95,17 +93,8 @@ export class ViewMediafile extends BaseViewModelWithListOfSpeakers<Mediafile>
         return this.mediafile.create_timestamp ? this.mediafile.create_timestamp : null;
     }
 
-    public constructor(
-        mediafile: Mediafile,
-        listOfSpeakers?: ViewListOfSpeakers,
-        parent?: ViewMediafile,
-        access_groups?: ViewGroup[],
-        inherited_access_groups?: ViewGroup[]
-    ) {
-        super(Mediafile.COLLECTIONSTRING, mediafile, listOfSpeakers);
-        this._parent = parent;
-        this._access_groups = access_groups;
-        this._inherited_access_groups = inherited_access_groups;
+    public constructor(mediafile: Mediafile) {
+        super(Mediafile.COLLECTIONSTRING, mediafile);
     }
 
     public formatForSearch(): SearchRepresentation {
@@ -200,31 +189,6 @@ export class ViewMediafile extends BaseViewModelWithListOfSpeakers<Mediafile>
             return 'movie';
         } else {
             return 'insert_drive_file';
-        }
-    }
-
-    public updateDependencies(update: BaseViewModel): void {
-        super.updateDependencies(update);
-        if (update instanceof ViewMediafile && update.id === this.parent_id) {
-            this._parent = update;
-        } else if (update instanceof ViewGroup) {
-            if (this.access_groups_id.includes(update.id)) {
-                const groupIndex = this.access_groups.findIndex(group => group.id === update.id);
-                if (groupIndex < 0) {
-                    this.access_groups.push(update);
-                } else {
-                    this.access_groups[groupIndex] = update;
-                }
-            }
-
-            if (this.has_inherited_access_groups && (<number[]>this.inherited_access_groups_id).includes(update.id)) {
-                const groupIndex = this.inherited_access_groups.findIndex(group => group.id === update.id);
-                if (groupIndex < 0) {
-                    this.inherited_access_groups.push(update);
-                } else {
-                    this.inherited_access_groups[groupIndex] = update;
-                }
-            }
         }
     }
 }
