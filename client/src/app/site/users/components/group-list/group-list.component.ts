@@ -150,6 +150,13 @@ export class GroupListComponent extends BaseViewComponent implements OnInit {
     }
 
     /**
+     * Prevent deleting group 1 and 2 (default and admin)
+     */
+    public canDeleteGroup(group: ViewGroup): boolean {
+        return group.id !== 1 && group.id !== 2;
+    }
+
+    /**
      * Triggers when a permission was toggled
      * @param viewGroup
      * @param perm
