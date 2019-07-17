@@ -132,7 +132,7 @@ matrix:
         - ng build
 
     - language: node_js
-      name: "Client: Production Build"
+      name: "Client: Production Build (ES5)"
       node_js:
         - "10.9"
       cache:
@@ -142,6 +142,24 @@ matrix:
         - npm install -g @angular/cli@~8.0.6
         - ng --version
         - cd client
+        - sed -i '/\"target\"/c\\"target\":\"es5\",' tsconfig.json
+      install:
+        - npm install
+      script:
+        - npm run ng-high-memory -- build --prod --aot
+
+    - language: node_js
+      name: "Client: Production Build (ES2015)"
+      node_js:
+        - "10.9"
+      cache:
+        directories:
+          - node_modules
+      before_install:
+        - npm install -g @angular/cli@~8.0.6
+        - ng --version
+        - cd client
+        - echo "Firefox ESR" > browserslist
       install:
         - npm install
       script:
