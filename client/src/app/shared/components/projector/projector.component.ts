@@ -53,12 +53,12 @@ export class ProjectorComponent extends BaseComponent implements OnDestroy {
             ) {
                 this.updateScaling();
             }
-            this.projectorStyle['background-color'] = projector.background_color;
-            this.headerFooterStyle.color = projector.header_font_color;
-            this.headerFooterStyle['background-color'] = projector.header_background_color;
-
-            // alter the local scope css variable with the header_h1_color
-            document.documentElement.style.setProperty('--header-h1-color', this.projector.header_h1_color);
+            this.css.projector.color = projector.color;
+            this.css.projector.backgroundColor = projector.background_color;
+            this.css.projector.H1Color = this.projector.header_h1_color;
+            this.css.headerFooter.color = projector.header_font_color;
+            this.css.headerFooter.backgroundColor = projector.header_background_color;
+            this.updateCSS();
         }
     }
 
@@ -85,32 +85,53 @@ export class ProjectorComponent extends BaseComponent implements OnDestroy {
     private containerElement: ElementRef;
 
     /**
-     * Dynamic style attributes for the projector.
+     * The css class assigned to this projector.
      */
-    public projectorStyle: {
-        transform?: string;
-        width: string;
-        height: string;
-        'background-color': string;
+    private projectorClass: string;
+
+    /**
+     * The styleelement for setting projector-specific styles.
+     */
+    private styleElement?: HTMLStyleElement;
+
+    /**
+     * All current css rules for the projector. when updating this, call `updateCSS()` afterwards.
+     */
+    public css: {
+        container: {
+            height: string;
+        };
+        projector: {
+            transform: string;
+            width: string;
+            height: string;
+            color: string;
+            backgroundColor: string;
+            H1Color: string;
+        };
+        headerFooter: {
+            color: string;
+            backgroundColor: string;
+            backgroundImage: string;
+        };
     } = {
-        width: '0px',
-        height: '0px',
-        'background-color': 'white'
+        container: {
+            height: '0px'
+        },
+        projector: {
+            transform: 'none',
+            width: '0px',
+            height: '0px',
+            color: 'black',
+            backgroundColor: 'white',
+            H1Color: '#317796'
+        },
+        headerFooter: {
+            color: 'white',
+            backgroundColor: '#317796',
+            backgroundImage: 'none'
+        }
     };
-
-    /**
-     * Dynamic style attributes for the header and footer.
-     */
-    public headerFooterStyle: { 'background-image': string; 'background-color': string; color: string } = {
-        'background-image': 'none',
-        'background-color': 'blue',
-        color: 'white'
-    };
-
-    /**
-     * Dynamic style attributes for the container.
-     */
-    public containerStyle: { height?: string } = {};
 
     /**
      * All slides to show on this projector
@@ -161,9 +182,21 @@ export class ProjectorComponent extends BaseComponent implements OnDestroy {
         private projectorDataService: ProjectorDataService,
         private projectorRepository: ProjectorRepositoryService,
         private configService: ConfigService,
-        private offlineService: OfflineService
+        private offlineService: OfflineService,
+        private elementRef: ElementRef
     ) {
         super(titleService, translate);
+
+        this.projectorClass =
+            'projector-' +
+            Math.random()
+                .toString(36)
+                .substring(4);
+        this.elementRef.nativeElement.classList.add(this.projectorClass);
+        this.styleElement = document.createElement('style');
+        this.styleElement.appendChild(document.createTextNode('')); // Hack for WebKit to trigger update
+        document.head.appendChild(this.styleElement);
+
         // projector logo / background-image
         this.configService.get<{ path?: string }>('logo_projector_main').subscribe(val => {
             if (val && val.path) {
@@ -174,10 +207,11 @@ export class ProjectorComponent extends BaseComponent implements OnDestroy {
         });
         this.configService.get<{ path?: string }>('logo_projector_header').subscribe(val => {
             if (val && val.path) {
-                this.headerFooterStyle['background-image'] = "url('" + val.path + "')";
+                this.css.headerFooter.backgroundImage = "url('" + val.path + "')";
             } else {
-                this.headerFooterStyle['background-image'] = 'none';
+                this.css.headerFooter.backgroundImage = 'none';
             }
+            this.updateCSS();
         });
 
         // event data
@@ -218,10 +252,39 @@ export class ProjectorComponent extends BaseComponent implements OnDestroy {
         if (isNaN(scale)) {
             return;
         }
-        this.projectorStyle.transform = 'scale(' + scale + ')';
-        this.projectorStyle.width = this.currentProjectorSize.width + 'px';
-        this.projectorStyle.height = this.currentProjectorSize.height + 'px';
-        this.containerStyle.height = Math.round(scale * this.currentProjectorSize.height) + 'px';
+        this.css.projector.transform = 'scale(' + scale + ')';
+        this.css.projector.width = this.currentProjectorSize.width + 'px';
+        this.css.projector.height = this.currentProjectorSize.height + 'px';
+        this.css.container.height = Math.round(scale * this.currentProjectorSize.height) + 'px';
+        this.updateCSS();
+    }
+
+    /**
+     * Update the css element with the current css settings in `this.css`.
+     */
+    private updateCSS(): void {
+        if (!this.styleElement) {
+            return;
+        }
+        this.styleElement.innerHTML = `
+            .${this.projectorClass} .projector-container {
+                height: ${this.css.container.height};
+            }
+            .${this.projectorClass} .projector {
+                transform: ${this.css.projector.transform};
+                width: ${this.css.projector.width};
+                height: ${this.css.projector.height};
+                background-color: ${this.css.projector.backgroundColor};
+                color: ${this.css.projector.color};
+            }
+            .${this.projectorClass} .projector h1 {
+                color: ${this.css.projector.H1Color};
+            }
+            .${this.projectorClass} .headerFooter {
+                color: ${this.css.headerFooter.color};
+                background-color: ${this.css.headerFooter.backgroundColor};
+                background-image: ${this.css.headerFooter.backgroundImage};
+            }`;
     }
 
     /**
@@ -262,5 +325,7 @@ export class ProjectorComponent extends BaseComponent implements OnDestroy {
         if (this.projectorId > 0) {
             this.projectorDataService.projectorClosed(this.projectorId);
         }
+        document.head.removeChild(this.styleElement);
+        this.styleElement = null;
     }
 }

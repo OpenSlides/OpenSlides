@@ -131,75 +131,6 @@ def get_config_variables():
         subgroup="System",
     )
 
-    # General export settings
-
-    yield ConfigVariable(
-        name="general_csv_separator",
-        default_value=",",
-        label="Separator used for all csv exports and examples",
-        weight=142,
-        group="General",
-        subgroup="Export",
-    )
-
-    yield ConfigVariable(
-        name="general_csv_encoding",
-        default_value="utf-8",
-        input_type="choice",
-        label="Default encoding for all csv exports",
-        choices=(
-            {"value": "utf-8", "display_name": "UTF-8"},
-            {"value": "iso-8859-15", "display_name": "ISO-8859-15"},
-        ),
-        weight=143,
-        group="General",
-        subgroup="Export",
-    )
-
-    yield ConfigVariable(
-        name="general_export_pdf_pagenumber_alignment",
-        default_value="center",
-        input_type="choice",
-        label="Page number alignment in PDF",
-        choices=(
-            {"value": "left", "display_name": "Left"},
-            {"value": "center", "display_name": "Center"},
-            {"value": "right", "display_name": "Right"},
-        ),
-        weight=144,
-        group="General",
-        subgroup="Export",
-    )
-
-    yield ConfigVariable(
-        name="general_export_pdf_fontsize",
-        default_value="10",
-        input_type="choice",
-        label="Standard font size in PDF",
-        choices=(
-            {"value": "10", "display_name": "10"},
-            {"value": "11", "display_name": "11"},
-            {"value": "12", "display_name": "12"},
-        ),
-        weight=146,
-        group="General",
-        subgroup="Export",
-    )
-
-    yield ConfigVariable(
-        name="general_export_pdf_pagesize",
-        default_value="A4",
-        input_type="choice",
-        label="Standard page size in PDF",
-        choices=(
-            {"value": "A4", "display_name": "DIN A4"},
-            {"value": "A5", "display_name": "DIN A5"},
-        ),
-        weight=147,
-        group="General",
-        subgroup="Export",
-    )
-
     # Projector
 
     yield ConfigVariable(
@@ -218,7 +149,8 @@ def get_config_variables():
             {"value": "ru", "display_name": "русский"},
         ),
         weight=150,
-        group="Projector",
+        group="General",
+        subgroup="Projector",
     )
 
     yield ConfigVariable(
@@ -226,21 +158,81 @@ def get_config_variables():
         default_value=60,
         input_type="integer",
         label="Predefined seconds of new countdowns",
-        weight=185,
-        group="Projector",
+        weight=152,
+        group="General",
+        subgroup="Projector",
+    )
+
+    # General export settings
+
+    yield ConfigVariable(
+        name="general_csv_separator",
+        default_value=",",
+        label="Separator used for all csv exports and examples",
+        weight=160,
+        group="General",
+        subgroup="Export",
     )
 
     yield ConfigVariable(
-        name="projector_currentListOfSpeakers_reference",
-        default_value=1,
-        input_type="integer",
-        label="Projector reference for list of speakers",
-        weight=201,
-        group="Projector",
-        hidden=True,
+        name="general_csv_encoding",
+        default_value="utf-8",
+        input_type="choice",
+        label="Default encoding for all csv exports",
+        choices=(
+            {"value": "utf-8", "display_name": "UTF-8"},
+            {"value": "iso-8859-15", "display_name": "ISO-8859-15"},
+        ),
+        weight=162,
+        group="General",
+        subgroup="Export",
     )
 
-    # Logos.
+    yield ConfigVariable(
+        name="general_export_pdf_pagenumber_alignment",
+        default_value="center",
+        input_type="choice",
+        label="Page number alignment in PDF",
+        choices=(
+            {"value": "left", "display_name": "Left"},
+            {"value": "center", "display_name": "Center"},
+            {"value": "right", "display_name": "Right"},
+        ),
+        weight=164,
+        group="General",
+        subgroup="Export",
+    )
+
+    yield ConfigVariable(
+        name="general_export_pdf_fontsize",
+        default_value="10",
+        input_type="choice",
+        label="Standard font size in PDF",
+        choices=(
+            {"value": "10", "display_name": "10"},
+            {"value": "11", "display_name": "11"},
+            {"value": "12", "display_name": "12"},
+        ),
+        weight=166,
+        group="General",
+        subgroup="Export",
+    )
+
+    yield ConfigVariable(
+        name="general_export_pdf_pagesize",
+        default_value="A4",
+        input_type="choice",
+        label="Standard page size in PDF",
+        choices=(
+            {"value": "A4", "display_name": "DIN A4"},
+            {"value": "A5", "display_name": "DIN A5"},
+        ),
+        weight=168,
+        group="General",
+        subgroup="Export",
+    )
+
+    # Logos
     yield ConfigVariable(
         name="logos_available",
         default_value=[

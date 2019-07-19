@@ -15,6 +15,7 @@ import { ClockSlideService } from '../../services/clock-slide.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { ViewProjectionDefault } from '../../models/view-projection-default';
 import { ProjectionDefaultRepositoryService } from 'app/core/repositories/projector/projection-default-repository.service';
+import { MatRadioChange } from '@angular/material';
 
 /**
  * All supported aspect rations for projectors.
@@ -22,8 +23,11 @@ import { ProjectionDefaultRepositoryService } from 'app/core/repositories/projec
 const aspectRatios: { [ratio: string]: number } = {
     '4:3': 4 / 3,
     '16:9': 16 / 9,
-    '16:10': 16 / 10
+    '16:10': 16 / 10,
+    '30:9': 30 / 9
 };
+
+const aspectRatio_30_9_MinWidth = 1150;
 
 /**
  * List for all projectors.
@@ -59,7 +63,16 @@ export class ProjectorListEntryComponent extends BaseViewComponent implements On
      * The projector shown by this entry.
      */
     @Input()
-    public projector: ViewProjector;
+    public set projector(value: ViewProjector) {
+        this._projector = value;
+        this.updateForm.patchValue({ width: value.width });
+    }
+
+    public get projector(): ViewProjector {
+        return this._projector;
+    }
+
+    private _projector: ViewProjector;
 
     /**
      * Helper to check manage permissions
@@ -103,6 +116,7 @@ export class ProjectorListEntryComponent extends BaseViewComponent implements On
             width: [0, Validators.required],
             projectiondefaults_id: [[]],
             clock: [true],
+            color: ['', Validators.required],
             background_color: ['', Validators.required],
             header_background_color: ['', Validators.required],
             header_font_color: ['', Validators.required],
@@ -206,6 +220,24 @@ export class ProjectorListEntryComponent extends BaseViewComponent implements On
         }
     }
 
+    public aspectRatioChanged(event: MatRadioChange): void {
+        let width: number;
+        if (event.value === '30:9' && this.updateForm.value.width < aspectRatio_30_9_MinWidth) {
+            width = aspectRatio_30_9_MinWidth;
+        } else {
+            width = this.updateForm.value.width;
+        }
+        this.updateProjectorDimensions(width, event.value);
+    }
+
+    public getMinWidth(): number {
+        if (this.updateForm.value.aspectRatio === '30:9') {
+            return aspectRatio_30_9_MinWidth;
+        } else {
+            return 800;
+        }
+    }
+
     /**
      * Delete the projector.
      */
@@ -222,11 +254,14 @@ export class ProjectorListEntryComponent extends BaseViewComponent implements On
      * @param event The slider value
      */
     public widthSliderValueChanged(event: MatSliderChange): void {
-        const aspectRatio = this.getAspectRatioKey();
+        this.updateProjectorDimensions(event.value, this.updateForm.value.aspectRatio);
+    }
+
+    private updateProjectorDimensions(width: number, aspectRatioKey: string): void {
         const updateProjector: Partial<Projector> = {
-            width: event.value
+            width: width
         };
-        updateProjector.height = Math.round(event.value / aspectRatios[aspectRatio]);
+        updateProjector.height = Math.round(width / aspectRatios[aspectRatioKey]);
         this.repo.update(updateProjector, this.projector).then(null, this.raiseError);
     }
 

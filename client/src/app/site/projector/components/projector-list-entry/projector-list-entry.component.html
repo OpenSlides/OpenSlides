@@ -35,14 +35,14 @@
                 <h3 translate>Resolution and size</h3>
                 <!-- Aspect ratio field -->
                 <mat-radio-group formControlName="aspectRatio" [name]="projector.id">
-                    <mat-radio-button *ngFor="let ratio of aspectRatiosKeys" [value]="ratio">
+                    <mat-radio-button *ngFor="let ratio of aspectRatiosKeys" [value]="ratio" (change)="aspectRatioChanged($event)">
                         {{ ratio }}
                     </mat-radio-button>
                 </mat-radio-group>
                 <div class="spacer-top-20">
                     <mat-slider
                         [thumbLabel]="true"
-                        min="800"
+                        [min]="getMinWidth()"
                         max="2000"
                         step="10"
                         value="{{ updateForm.value.width }}"
@@ -60,6 +60,23 @@
                 </mat-select>
 
                 <!-- colors -->
+                <div class="color-field-wrapper">
+                    <div class="form">
+                        <mat-form-field>
+                            <span translate>Foreground color</span>
+                            <input matInput formControlName="color" type="color" />
+                            <mat-hint *ngIf="!updateForm.controls.color.valid">
+                                <span translate>Required</span>
+                            </mat-hint>
+                        </mat-form-field>
+                    </div>
+                    <div class="reset-button">
+                        <button mat-icon-button matTooltip="{{ 'Reset' | translate }}" (click)="resetField('color', '#000000')">
+                            <mat-icon>replay</mat-icon>
+                        </button>
+                    </div>
+                </div>
+
                 <div class="color-field-wrapper">
                     <div class="form">
                         <mat-form-field>
