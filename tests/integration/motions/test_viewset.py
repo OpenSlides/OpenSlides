@@ -1331,6 +1331,77 @@ class TestMotionCommentSection(TestCase):
         self.assertEqual(MotionCommentSection.objects.count(), 1)
 
 
+class TestMotionCommentSectionSorting(TestCase):
+    """
+    Tests sorting of comment sections.
+    """
+
+    def setUp(self):
+        self.client = APIClient()
+        self.client.login(username="admin", password="admin")
+        self.section1 = MotionCommentSection(name="test_name_hponzp<zp7NUJKLAykbX")
+        self.section1.save()
+        self.section2 = MotionCommentSection(name="test_name_eix,b<bojbP'JO;<kVKL")
+        self.section2.save()
+        self.section3 = MotionCommentSection(name="test_name_ojMOeigSIOfhmpouweqc")
+        self.section3.save()
+
+    def test_simple(self):
+        response = self.client.post(
+            reverse("motioncommentsection-sort"), {"ids": [3, 2, 1]}, format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        section1 = MotionCommentSection.objects.get(pk=1)
+        self.assertEqual(section1.weight, 3)
+        section2 = MotionCommentSection.objects.get(pk=2)
+        self.assertEqual(section2.weight, 2)
+        section3 = MotionCommentSection.objects.get(pk=3)
+        self.assertEqual(section3.weight, 1)
+
+    def test_wrong_data(self):
+        response = self.client.post(
+            reverse("motioncommentsection-sort"), {"ids": "some_string"}, format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assert_not_changed()
+
+    def test_wrong_id_type(self):
+        response = self.client.post(
+            reverse("motioncommentsection-sort"),
+            {"ids": [1, 2, "some_string"]},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assert_not_changed()
+
+    def test_missing_id(self):
+        response = self.client.post(
+            reverse("motioncommentsection-sort"), {"ids": [3, 1]}, format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assert_not_changed()
+
+    def test_duplicate_id(self):
+        response = self.client.post(
+            reverse("motioncommentsection-sort"), {"ids": [3, 2, 1, 1]}, format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assert_not_changed()
+
+    def test_wrong_id(self):
+        response = self.client.post(
+            reverse("motioncommentsection-sort"), {"ids": [3, 4, 1]}, format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assert_not_changed()
+
+    def assert_not_changed(self):
+        """ Asserts, that every comment section has the default weight of 10000. """
+        for section in MotionCommentSection.objects.all():
+            self.assertEqual(section.weight, 10000)
+
+
 class RetrieveMotionChangeRecommendation(TestCase):
     """
     Tests retrieving motion change recommendations.

@@ -54,6 +54,14 @@ export class MotionCommentSectionRepositoryService extends BaseRepository<
         private http: HttpService
     ) {
         super(DS, dataSend, mapperService, viewModelStoreService, translate, MotionCommentSection, [Group]);
+
+        this.viewModelSortFn = (a: ViewMotionCommentSection, b: ViewMotionCommentSection) => {
+            if (a.weight === b.weight) {
+                return a.id - b.id;
+            } else {
+                return a.weight - b.weight;
+            }
+        };
     }
 
     public getTitle = (titleInformation: MotionCommentSectionTitleInformation) => {
@@ -108,5 +116,14 @@ export class MotionCommentSectionRepositoryService extends BaseRepository<
      */
     private async deleteComment(motion: ViewMotion, section: ViewMotionCommentSection): Promise<void> {
         return await this.http.delete(`/rest/motions/motion/${motion.id}/manage_comments/`, { section_id: section.id });
+    }
+
+    /**
+     * Sort all comment sections. All sections must be given excatly once.
+     */
+    public async sortCommentSections(sections: ViewMotionCommentSection[]): Promise<void> {
+        return await this.http.post('/rest/motions/motion-comment-section', {
+            ids: sections.map(section => section.id)
+        });
     }
 }

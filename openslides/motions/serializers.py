@@ -373,7 +373,8 @@ class MotionCommentSectionSerializer(ModelSerializer):
 
     class Meta:
         model = MotionCommentSection
-        fields = ("id", "name", "read_groups", "write_groups")
+        fields = ("id", "name", "read_groups", "write_groups", "weight")
+        read_only_fields = ("weight",)
 
     def create(self, validated_data):
         """ Call inform_changed_data on creation, so the cache includes the groups. """
