@@ -89,7 +89,7 @@ export abstract class BaseListViewComponent<V extends BaseViewModel> extends Bas
      * Select all files in the current data source
      */
     public selectAll(): void {
-        this.dataSource.selection.select(...this.dataSource.source);
+        this.dataSource.selection.select(...this.dataSource.filteredData);
     }
 
     /**

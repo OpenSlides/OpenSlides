@@ -58,6 +58,7 @@ import { AutofocusDirective } from './directives/autofocus.directive';
 // PblNgrid. Cleanup Required.
 import { PblNgridModule } from '@pebula/ngrid';
 import { PblNgridMaterialModule } from '@pebula/ngrid-material';
+import { PblNgridTargetEventsModule } from '@pebula/ngrid/target-events';
 
 // components
 import { HeadBarComponent } from './components/head-bar/head-bar.component';
@@ -152,7 +153,8 @@ import { AttachmentControlComponent } from './components/attachment-control/atta
         CdkTreeModule,
         ScrollingModule,
         PblNgridModule,
-        PblNgridMaterialModule
+        PblNgridMaterialModule,
+        PblNgridTargetEventsModule
     ],
     exports: [
         FormsModule,
@@ -226,6 +228,7 @@ import { AttachmentControlComponent } from './components/attachment-control/atta
         SpeakerButtonComponent,
         PblNgridModule,
         PblNgridMaterialModule,
+        PblNgridTargetEventsModule,
         ListViewTableComponent,
         AgendaContentObjectFormComponent,
         ExtensionFieldComponent

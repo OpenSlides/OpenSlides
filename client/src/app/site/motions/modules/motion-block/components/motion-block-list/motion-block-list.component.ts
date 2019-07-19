@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -23,7 +23,8 @@ import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
 @Component({
     selector: 'os-motion-block-list',
     templateUrl: './motion-block-list.component.html',
-    styleUrls: ['./motion-block-list.component.scss']
+    styleUrls: ['./motion-block-list.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class MotionBlockListComponent extends BaseListViewComponent<ViewMotionBlock> implements OnInit {
     /**

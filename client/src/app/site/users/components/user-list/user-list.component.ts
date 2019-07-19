@@ -245,7 +245,7 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
      */
     public csvExportUserList(): void {
         this.csvExport.export(
-            this.dataSource.source,
+            this.dataSource.filteredData,
             [
                 { property: 'title' },
                 { property: 'first_name', label: 'Given name' },
@@ -270,7 +270,7 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
      * (access information, including personal information such as initial passwords)
      */
     public onDownloadAccessPdf(): void {
-        this.userPdf.exportMultipleUserAccessPDF(this.dataSource.source);
+        this.userPdf.exportMultipleUserAccessPDF(this.dataSource.filteredData);
     }
 
     /**
@@ -278,7 +278,7 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
      * with all users currently matching the filter
      */
     public pdfExportUserList(): void {
-        this.userPdf.exportUserList(this.dataSource.source);
+        this.userPdf.exportUserList(this.dataSource.filteredData);
     }
 
     /**

@@ -191,11 +191,6 @@
     }
 }
 
-.ngrid-lg {
-    height: 110px;
-    min-height: 90px;
-}
-
 /** Define the general style-rules */
 * {
     font-family: OSFont, Fira Sans, Roboto, Arial, Helvetica, sans-serif;
@@ -629,6 +624,7 @@ button.mat-menu-item.selected {
  * Depending in mobile-mode and desktop mode we need to subtract different values
  * from 100vh
  */
+// no os-sort-filter-bar
 .virtual-scroll-full-page {
     height: calc(100vh - 64px);
 }
@@ -638,14 +634,16 @@ button.mat-menu-item.selected {
     display: inline-block;
     line-height: 150%;
 }
-
+// with os-sort-filter-bar
 .virtual-scroll-with-head-bar {
     height: calc(100vh - 125px);
+}
 
+.ngrid-hide-head {
     // For some reason, hiding the table header adds an empty meta bar.
     .pbl-ngrid-container {
         > div {
-            display: none;
+            height: 0;
         }
     }
 }

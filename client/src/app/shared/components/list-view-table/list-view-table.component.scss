@@ -3,3 +3,17 @@
 .projector-button {
     margin: auto;
 }
+
+.pbl-ngrid-row {
+    height: 110px;
+}
+
+.pbl-ngrid-cell {
+    height: inherit;
+}
+
+.multiselect {
+    .pbl-ngrid-cell {
+        cursor: pointer;
+    }
+}

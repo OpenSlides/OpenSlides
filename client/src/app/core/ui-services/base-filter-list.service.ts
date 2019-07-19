@@ -226,27 +226,29 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
             const newDefinitions = this.getFilterDefinitions();
 
             this.store.get<OsFilter[]>('filter_' + this.name).then(storedFilter => {
-                for (const newDef of newDefinitions) {
-                    let count = 0;
-                    const matchingExistingFilter = storedFilter.find(oldDef => oldDef.property === newDef.property);
-                    for (const option of newDef.options) {
-                        if (typeof option === 'object') {
-                            if (matchingExistingFilter && matchingExistingFilter.options) {
-                                const existingOption = matchingExistingFilter.options.find(
-                                    o =>
-                                        typeof o !== 'string' &&
-                                        JSON.stringify(o.condition) === JSON.stringify(option.condition)
-                                ) as OsFilterOption;
-                                if (existingOption) {
-                                    option.isActive = existingOption.isActive;
-                                }
-                                if (option.isActive) {
-                                    count++;
+                if (!!storedFilter) {
+                    for (const newDef of newDefinitions) {
+                        let count = 0;
+                        const matchingExistingFilter = storedFilter.find(oldDef => oldDef.property === newDef.property);
+                        for (const option of newDef.options) {
+                            if (typeof option === 'object') {
+                                if (matchingExistingFilter && matchingExistingFilter.options) {
+                                    const existingOption = matchingExistingFilter.options.find(
+                                        o =>
+                                            typeof o !== 'string' &&
+                                            JSON.stringify(o.condition) === JSON.stringify(option.condition)
+                                    ) as OsFilterOption;
+                                    if (existingOption) {
+                                        option.isActive = existingOption.isActive;
+                                    }
+                                    if (option.isActive) {
+                                        count++;
+                                    }
                                 }
                             }
                         }
+                        newDef.count = count;
                     }
-                    newDef.count = count;
                 }
 
                 this.filterDefinitions = newDefinitions;
