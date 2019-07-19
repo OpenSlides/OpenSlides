@@ -49,7 +49,7 @@
         </button>
 
         <!-- Save button -->
-        <button mat-button *ngIf="editMode" (click)="save()"><strong translate class="upper">Save</strong></button>
+        <button mat-button *ngIf="editMode" [disabled]="!isSaveButtonEnabled" (click)="save()"><strong translate class="upper">Save</strong></button>
 
         <!-- Menu button slot -->
         <ng-content *ngIf="!editMode" select=".menu-slot"></ng-content>

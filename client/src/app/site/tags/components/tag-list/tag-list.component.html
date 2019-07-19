@@ -2,6 +2,7 @@
     [mainButton]="true"
     [nav]="true"
     [editMode]="editTag"
+    [isSaveButtonEnabled]="tagForm.valid"
     (mainEvent)="setEditMode(!editTag)"
     (saveEvent)="saveTag()"
     [multiSelectMode]="isMultiSelect"

@@ -143,6 +143,7 @@
     <div mat-dialog-actions>
         <button
             type="submit"
+            [disabled]="dialogData.value === ''"
             mat-button
             color="primary"
             [mat-dialog-close]="{ action: 'update', value: dialogData.value }"

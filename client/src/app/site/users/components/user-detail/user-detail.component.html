@@ -4,6 +4,7 @@
     [nav]="false"
     [goBack]="!isAllowed('seeOtherUsers')"
     [editMode]="editUser"
+    [isSaveButtonEnabled]="personalInfoForm.valid"
     (mainEvent)="setEditMode(!editUser)"
     (saveEvent)="saveUser()"
 >

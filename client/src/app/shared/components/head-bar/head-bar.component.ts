@@ -72,6 +72,12 @@ export class HeadBarComponent {
     public editMode = false;
 
     /**
+     * The save button can manually be disabled.
+     */
+    @Input()
+    public isSaveButtonEnabled = true;
+
+    /**
      * Determine multiSelect mode: changed interactions and head bar
      */
     @Input()

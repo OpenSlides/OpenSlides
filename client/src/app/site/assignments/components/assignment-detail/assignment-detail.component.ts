@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Title, DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
@@ -196,10 +196,10 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
             phase: null,
             tags_id: [],
             attachments_id: [],
-            title: '',
-            description: '',
-            poll_description_default: '',
-            open_posts: 0,
+            title: ['', Validators.required],
+            description: [''],
+            poll_description_default: [''],
+            open_posts: [1, [Validators.required, Validators.min(1)]],
             agenda_create: [''],
             agenda_parent_id: [],
             agenda_type: ['']

@@ -4,6 +4,7 @@
     [prevUrl]="getPrevUrl()"
     [nav]="false"
     [editMode]="editMotion"
+    [isSaveButtonEnabled]="contentForm.valid"
     (mainEvent)="setEditMode(!editMotion)"
     (saveEvent)="saveMotion()"
 >
@@ -631,6 +632,7 @@
                         [value]="motionCopy.title"
                         required
                     />
+                    <mat-error>{{ 'The title is required' | translate }}</mat-error>
                 </mat-form-field>
             </div>
         </div>
@@ -759,7 +761,7 @@
             <div class="motion-text" *ngIf="!editMotion"><div [innerHtml]="sanitizedText(motion.reason)"></div></div>
 
             <!-- The HTML Editor -->
-            <editor formControlName="reason" [init]="tinyMceSettings" *ngIf="editMotion" required></editor>
+            <editor formControlName="reason" [init]="tinyMceSettings" *ngIf="editMotion" [required]="reasonRequired"></editor>
             <div
                 *ngIf="
                     reasonRequired &&
