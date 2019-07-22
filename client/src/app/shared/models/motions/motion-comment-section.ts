@@ -11,6 +11,7 @@ export class MotionCommentSection extends BaseModel<MotionCommentSection> {
     public name: string;
     public read_groups_id: number[];
     public write_groups_id: number[];
+    public weight: number;
 
     public constructor(input?: any) {
         super(MotionCommentSection.COLLECTIONSTRING, input);

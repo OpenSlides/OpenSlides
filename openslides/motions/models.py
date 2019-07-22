@@ -583,6 +583,11 @@ class MotionCommentSection(RESTModelMixin, models.Model):
     These groups have write-access to the section.
     """
 
+    weight = models.IntegerField(default=10000)
+    """
+    To sort comment sections.
+    """
+
     class Meta:
         default_permissions = ()
 

@@ -48,6 +48,10 @@ export class ViewMotionCommentSection extends BaseViewModel<MotionCommentSection
         return this._writeGroups;
     }
 
+    public get weight(): number {
+        return this.section.weight;
+    }
+
     /**
      * TODO: Where is this needed? Try to avoid this.
      */

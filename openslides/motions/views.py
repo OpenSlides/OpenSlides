@@ -4,6 +4,7 @@ import jsonschema
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
+from django.db.models import Case, When
 from django.db.models.deletion import ProtectedError
 from django.http.request import QueryDict
 from rest_framework import status
@@ -1228,7 +1229,7 @@ class MotionCommentSectionViewSet(ModelViewSet):
         """
         if self.action in ("list", "retrieve"):
             result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action in ("create", "destroy", "update", "partial_update"):
+        elif self.action in ("create", "destroy", "update", "partial_update", "sort"):
             result = has_perm(self.request.user, "motions.can_see") and has_perm(
                 self.request.user, "motions.can_manage"
             )
@@ -1267,6 +1268,39 @@ class MotionCommentSectionViewSet(ModelViewSet):
         section = self.get_object()
         inform_changed_data(MotionComment.objects.filter(section=section))
         return response
+
+    @list_route(methods=["post"])
+    def sort(self, request, *args, **kwargs):
+        """
+        Changes the sorting of comment sections. Every id must be given exactly once.
+        Expected data: { ids: [<id>, <id>, ...] }
+        """
+        # Check request data format
+        ids = request.data.get("ids")
+        if not isinstance(ids, list):
+            raise ValidationError({"detail": "ids must be a list"})
+        for id in ids:
+            if not isinstance(id, int):
+                raise ValidationError({"detail": "every id must be an int"})
+
+        # Validate, that every id is given exactly once.
+        ids_set = set(ids)
+        if len(ids_set) != len(ids):
+            raise ValidationError({"detail": "only unique ids are expected"})
+        db_ids_set = set(
+            list(MotionCommentSection.objects.all().values_list(flat=True))
+        )
+        if ids_set != db_ids_set:
+            raise ValidationError({"detail": "every id must be given"})
+
+        # Ids are ok.
+        preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(ids)])
+        queryset = MotionCommentSection.objects.filter(pk__in=ids).order_by(preserved)
+        for index, section in enumerate(queryset):
+            section.weight = index + 1
+            section.save()
+
+        return Response()
 
 
 class StatuteParagraphViewSet(ModelViewSet):
