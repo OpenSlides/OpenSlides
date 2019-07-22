@@ -3,6 +3,13 @@
     <div class="title-slot">
         <h2 translate>Comment fields</h2>
     </div>
+
+    <!-- Menu -->
+    <div class="menu-slot">
+        <button type="button" mat-icon-button [matMenuTriggerFor]="commentListMenu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+    </div>
 </os-head-bar>
 
 <div class="head-spacer"></div>
@@ -139,3 +146,10 @@
         </mat-action-row>
     </mat-expansion-panel>
 </mat-accordion>
+
+<mat-menu #commentListMenu="matMenu">
+    <button mat-menu-item routerLink="sort">
+        <mat-icon>sort</mat-icon>
+        <span translate>Sort</span>
+    </button>
+</mat-menu>

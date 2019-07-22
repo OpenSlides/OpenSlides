@@ -122,7 +122,7 @@ export class MotionCommentSectionRepositoryService extends BaseRepository<
      * Sort all comment sections. All sections must be given excatly once.
      */
     public async sortCommentSections(sections: ViewMotionCommentSection[]): Promise<void> {
-        return await this.http.post('/rest/motions/motion-comment-section', {
+        return await this.http.post('/rest/motions/motion-comment-section/sort/', {
             ids: sections.map(section => section.id)
         });
     }
