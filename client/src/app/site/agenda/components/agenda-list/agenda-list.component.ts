@@ -303,7 +303,7 @@ export class AgendaListComponent extends BaseListViewComponent<ViewItem> impleme
      * Export all items as CSV
      */
     public csvExportItemList(): void {
-        this.csvExport.exportItemList(this.dataSource.source);
+        this.csvExport.exportItemList(this.dataSource.filteredData);
     }
 
     /**
@@ -312,7 +312,7 @@ export class AgendaListComponent extends BaseListViewComponent<ViewItem> impleme
      */
     public onDownloadPdf(): void {
         const filename = this.translate.instant('Agenda');
-        this.pdfService.download(this.agendaPdfService.agendaListToDocDef(this.dataSource.source), filename);
+        this.pdfService.download(this.agendaPdfService.agendaListToDocDef(this.dataSource.filteredData), filename);
     }
 
     /**

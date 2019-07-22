@@ -308,7 +308,7 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
 
         exportDialogRef.afterClosed().subscribe((exportInfo: ExportFormData) => {
             if (exportInfo && exportInfo.format) {
-                const data = this.isMultiSelect ? this.selectedRows : this.dataSource.source;
+                const data = this.isMultiSelect ? this.selectedRows : this.dataSource.filteredData;
                 if (exportInfo.format === FileFormat.PDF) {
                     try {
                         this.pdfExport.exportMotionCatalog(data, exportInfo);

@@ -57,7 +57,7 @@
         font-size: 90%;
     }
 
-    height: calc(100vh - 170px);
+    height: calc(100vh - 105px);
 
     .pbl-ngrid-row {
         $size: 60px;
@@ -65,13 +65,6 @@
 
         .pbl-ngrid-cell {
             height: $size !important;
-        }
-    }
-
-    // For some reason, hiding the table header adds an empty meta bar.
-    .pbl-ngrid-container {
-        > div {
-            display: none;
         }
     }
 }

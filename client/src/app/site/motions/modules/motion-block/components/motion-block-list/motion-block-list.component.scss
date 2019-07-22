@@ -1,5 +1,13 @@
 @import '~assets/styles/tables.scss';
 
-::ng-deep .mat-form-field {
+.block-list {
+    display: block;
+
+    .virtual-scroll-full-page {
+        height: calc(100vh - 150px);
+    }
+}
+
+.mat-form-field {
     width: 50%;
 }

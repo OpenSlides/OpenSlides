@@ -9,17 +9,19 @@ import {
     ViewEncapsulation,
     ChangeDetectorRef
 } from '@angular/core';
+import { Observable } from 'rxjs';
+
+import { PblDataSource, columnFactory, PblNgridComponent, createDS } from '@pebula/ngrid';
+import { PblColumnDefinition, PblNgridColumnSet } from '@pebula/ngrid/lib/table';
+import { PblNgridDataMatrixRow } from '@pebula/ngrid/target-events';
 
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
 import { BaseSortListService } from 'app/core/ui-services/base-sort-list.service';
 import { BaseViewModelWithContentObject } from 'app/site/base/base-view-model-with-content-object';
-import { PblDataSource, columnFactory, PblNgridComponent, createDS } from '@pebula/ngrid';
 import { BaseFilterListService } from 'app/core/ui-services/base-filter-list.service';
-import { Observable } from 'rxjs';
 import { BaseRepository } from 'app/core/repositories/base-repository';
 import { BaseModel } from 'app/shared/models/base/base-model';
-import { PblColumnDefinition, PblNgridColumnSet } from '@pebula/ngrid/lib/table';
 import { Permission, OperatorService } from 'app/core/core-services/operator.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
@@ -221,7 +223,7 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
      * Gets the amount of filtered data
      */
     public get countFilter(): number {
-        return this.dataSource.source.length;
+        return this.dataSource.filteredData.length;
     }
 
     /**
@@ -358,13 +360,29 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
         // Define the columns. Has to be in the OnInit cause "columns" is slower than
         // the constructor of this class
         this.columnSet = columnFactory()
-            .default({ width: this.columnMinWidth, css: 'ngrid-lg' })
+            .default({ width: this.columnMinWidth })
             .table(...this.defaultColumns, ...this.columns)
             .build();
 
         // restore scroll position
         if (this.scrollKey) {
             this.scrollToPreviousPosition(this.scrollKey);
+        }
+    }
+
+    /**
+     * Generic click handler for rows. Allow so (multi) select anywhere
+     * @param event the clicked row
+     */
+    public onSelectRow(event: PblNgridDataMatrixRow<V>): void {
+        if (this.multiSelect) {
+            const clickedModel: V = event.row;
+            const alreadySelected = this.dataSource.selection.isSelected(clickedModel);
+            if (alreadySelected) {
+                this.dataSource.selection.deselect(clickedModel);
+            } else {
+                this.dataSource.selection.select(clickedModel);
+            }
         }
     }
 

@@ -66,7 +66,7 @@
 </div>
 
 <!-- the actual file manager -->
-<pbl-ngrid class="file-manager-table" showHeader="false" vScrollAuto [dataSource]="dataSource" [columns]="columnSet">
+<pbl-ngrid class="file-manager-table ngrid-hide-head" showHeader="false" vScrollAuto [dataSource]="dataSource" [columns]="columnSet">
     <!-- Icon column -->
     <div *pblNgridCellDef="'icon'; row as mediafile" class="fill clickable">
         <a class="detail-link" target="_blank" [routerLink]="mediafile.url" *ngIf="mediafile.is_file"> </a>
