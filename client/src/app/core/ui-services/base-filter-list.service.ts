@@ -3,6 +3,7 @@ import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { BaseModel } from 'app/shared/models/base/base-model';
 import { BaseRepository } from '../repositories/base-repository';
 import { BaseViewModel, TitleInformation } from '../../site/base/base-view-model';
+import { OpenSlidesStatusService } from '../core-services/openslides-status.service';
 import { StorageService } from '../core-services/storage.service';
 
 /**
@@ -149,7 +150,11 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
      * @param name the name of the filter service
      * @param store storage service, to read saved filter variables
      */
-    public constructor(protected name: string, private store: StorageService) {}
+    public constructor(
+        protected name: string,
+        private store: StorageService,
+        private OSStatus: OpenSlidesStatusService
+    ) {}
 
     /**
      * Initializes the filterService.
@@ -157,7 +162,10 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
      * @param inputData Observable array with ViewModels
      */
     public async initFilters(inputData: Observable<V[]>): Promise<void> {
-        const storedFilter = await this.store.get<OsFilter[]>('filter_' + this.name);
+        let storedFilter: OsFilter[] = null;
+        if (!this.OSStatus.isInHistoryMode) {
+            storedFilter = await this.store.get<OsFilter[]>('filter_' + this.name);
+        }
 
         if (storedFilter && this.isOsFilter(storedFilter)) {
             this.filterDefinitions = storedFilter;
@@ -221,39 +229,42 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
      * Takes the filter definition from children and using {@link getFilterDefinitions}
      * and sets/updates {@link filterDefinitions}
      */
-    public setFilterDefinitions(): void {
+    public async setFilterDefinitions(): Promise<void> {
         if (this.filterDefinitions) {
             const newDefinitions = this.getFilterDefinitions();
 
-            this.store.get<OsFilter[]>('filter_' + this.name).then(storedFilter => {
-                if (!!storedFilter) {
-                    for (const newDef of newDefinitions) {
-                        let count = 0;
-                        const matchingExistingFilter = storedFilter.find(oldDef => oldDef.property === newDef.property);
-                        for (const option of newDef.options) {
-                            if (typeof option === 'object') {
-                                if (matchingExistingFilter && matchingExistingFilter.options) {
-                                    const existingOption = matchingExistingFilter.options.find(
-                                        o =>
-                                            typeof o !== 'string' &&
-                                            JSON.stringify(o.condition) === JSON.stringify(option.condition)
-                                    ) as OsFilterOption;
-                                    if (existingOption) {
-                                        option.isActive = existingOption.isActive;
-                                    }
-                                    if (option.isActive) {
-                                        count++;
-                                    }
+            let storedFilter = null;
+            if (!this.OSStatus.isInHistoryMode) {
+                storedFilter = await this.store.get<OsFilter[]>('filter_' + this.name);
+            }
+
+            if (!!storedFilter) {
+                for (const newDef of newDefinitions) {
+                    let count = 0;
+                    const matchingExistingFilter = storedFilter.find(oldDef => oldDef.property === newDef.property);
+                    for (const option of newDef.options) {
+                        if (typeof option === 'object') {
+                            if (matchingExistingFilter && matchingExistingFilter.options) {
+                                const existingOption = matchingExistingFilter.options.find(
+                                    o =>
+                                        typeof o !== 'string' &&
+                                        JSON.stringify(o.condition) === JSON.stringify(option.condition)
+                                ) as OsFilterOption;
+                                if (existingOption) {
+                                    option.isActive = existingOption.isActive;
+                                }
+                                if (option.isActive) {
+                                    count++;
                                 }
                             }
                         }
-                        newDef.count = count;
                     }
+                    newDef.count = count;
                 }
+            }
 
-                this.filterDefinitions = newDefinitions;
-                this.storeActiveFilters();
-            });
+            this.filterDefinitions = newDefinitions;
+            this.storeActiveFilters();
         }
     }
 
@@ -302,7 +313,9 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
      */
     public storeActiveFilters(): void {
         this.updateFilteredData();
-        this.store.set('filter_' + this.name, this.filterDefinitions);
+        if (!this.OSStatus.isInHistoryMode) {
+            this.store.set('filter_' + this.name, this.filterDefinitions);
+        }
     }
 
     /**

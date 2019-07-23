@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { OpenSlidesStatusService } from 'app/core/core-services/openslides-status.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { BaseFilterListService, OsFilter } from 'app/core/ui-services/base-filter-list.service';
@@ -28,8 +29,13 @@ export class UserFilterListService extends BaseFilterListService<ViewUser> {
      * @param groupRepo to filter by groups
      * @param translate marking some translations that are unique here
      */
-    public constructor(store: StorageService, groupRepo: GroupRepositoryService, private translate: TranslateService) {
-        super('User', store);
+    public constructor(
+        store: StorageService,
+        OSStatus: OpenSlidesStatusService,
+        groupRepo: GroupRepositoryService,
+        private translate: TranslateService
+    ) {
+        super('User', store, OSStatus);
         this.updateFilterForRepo(groupRepo, this.userGroupFilterOptions, this.translate.instant('Default'), [1]);
     }
 

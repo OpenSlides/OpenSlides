@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 
+import { OpenSlidesStatusService } from 'app/core/core-services/openslides-status.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { BaseFilterListService, OsFilter, OsFilterOption } from 'app/core/ui-services/base-filter-list.service';
 import { AssignmentPhases, ViewAssignment } from '../models/view-assignment';
@@ -17,8 +18,8 @@ export class AssignmentFilterListService extends BaseFilterListService<ViewAssig
      * @param store StorageService
      * @param translate translate service
      */
-    public constructor(store: StorageService) {
-        super('Assignments', store);
+    public constructor(store: StorageService, OSStatus: OpenSlidesStatusService) {
+        super('Assignments', store, OSStatus);
     }
 
     /**

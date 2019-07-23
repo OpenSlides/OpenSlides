@@ -11,17 +11,8 @@ import { OpenSlidesStatusService } from './openslides-status.service';
 import { OpenSlidesService } from './openslides.service';
 import { WebsocketService } from './websocket.service';
 
-/**
- * Interface for full history data objects.
- * The are not too different from the history-objects,
- * but contain full-data and a timestamp in contrast to a date
- */
 interface HistoryData {
-    element_id: string;
-    full_data: BaseModel;
-    information: string;
-    timestamp: number;
-    user_id: number;
+    [collection: string]: BaseModel[];
 }
 
 /**
@@ -65,19 +56,16 @@ export class TimeTravelService {
         const updateSlot = await this.DSUpdateManager.getNewUpdateSlot(this.DS);
 
         await this.stopTime(history);
-        const fullDataHistory: HistoryData[] = await this.getHistoryData(history);
-        for (const historyObject of fullDataHistory) {
-            let collectionString: string;
-            let id: string;
-            [collectionString, id] = historyObject.element_id.split(':');
+        const historyData: HistoryData = await this.getHistoryData(history);
 
-            if (historyObject.full_data) {
-                const targetClass = this.modelMapperService.getModelConstructor(collectionString);
-                await this.DS.add([new targetClass(historyObject.full_data)]);
-            } else {
-                await this.DS.remove(collectionString, [+id]);
-            }
-        }
+        const allModels = [];
+        Object.keys(historyData).forEach(collection => {
+            const targetClass = this.modelMapperService.getModelConstructor(collection);
+            historyData[collection].forEach(model => {
+                allModels.push(new targetClass(model));
+            });
+        });
+        await this.DS.set(allModels, 0);
 
         this.DSUpdateManager.commit(updateSlot);
     }
@@ -99,9 +87,13 @@ export class TimeTravelService {
      * @param date the Date object
      * @returns the full history on the given date
      */
-    private async getHistoryData(history: History): Promise<HistoryData[]> {
+    private async getHistoryData(history: History): Promise<HistoryData> {
         const queryParams = { timestamp: Math.ceil(history.timestamp) };
-        return this.httpService.get<HistoryData[]>(`${environment.urlPrefix}/core/history/data/`, null, queryParams);
+        return await this.httpService.get<HistoryData>(
+            `${environment.urlPrefix}/core/history/data/`,
+            null,
+            queryParams
+        );
     }
 
     /**

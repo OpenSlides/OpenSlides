@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { OpenSlidesStatusService } from 'app/core/core-services/openslides-status.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { Deferred } from 'app/core/deferred';
 import { _ } from 'app/core/translate/translation-marker';
@@ -48,8 +49,13 @@ export class MotionSortListService extends BaseSortListService<ViewMotion> {
      * @param store required by parent
      * @param config set the default sorting according to OpenSlides configuration
      */
-    public constructor(translate: TranslateService, store: StorageService, private config: ConfigService) {
-        super('Motion', translate, store);
+    public constructor(
+        translate: TranslateService,
+        store: StorageService,
+        OSStatus: OpenSlidesStatusService,
+        private config: ConfigService
+    ) {
+        super('Motion', translate, store, OSStatus);
 
         this.config.get<string>('motions_motions_sorting').subscribe(defSortProp => {
             if (defSortProp) {

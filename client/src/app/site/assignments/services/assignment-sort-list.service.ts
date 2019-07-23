@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { OpenSlidesStatusService } from 'app/core/core-services/openslides-status.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { BaseSortListService, OsSortingDefinition, OsSortingOption } from 'app/core/ui-services/base-sort-list.service';
 import { ViewAssignment } from '../models/view-assignment';
@@ -29,8 +30,8 @@ export class AssignmentSortListService extends BaseSortListService<ViewAssignmen
      * @param translate required by parent
      * @param storage required by parent
      */
-    public constructor(translate: TranslateService, storage: StorageService) {
-        super('Assignment', translate, storage);
+    public constructor(translate: TranslateService, storage: StorageService, OSStatus: OpenSlidesStatusService) {
+        super('Assignment', translate, storage, OSStatus);
     }
 
     /**

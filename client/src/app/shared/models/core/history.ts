@@ -8,8 +8,7 @@ import { Deserializable } from '../base/deserializable';
 export class History implements Deserializable {
     public element_id: string;
     public timestamp: number;
-    public information: string;
-    public restricted: boolean;
+    public information: string[];
     public user_id: number;
 
     /**
