@@ -42,14 +42,17 @@
                 mat-button
                 [matMenuTriggerFor]="singleMediafileMenu"
                 [matMenuTriggerData]="{ mediafile: directory }"
-                *ngIf="last"
+                *ngIf="last && showFileMenu(directory)"
             >
                 <os-icon-container icon="arrow_drop_down" swap="true" size="large">
                     {{ directory.title }}
                 </os-icon-container>
             </button>
+            <span class="folder fake-folder folder-text" *ngIf="last && !showFileMenu(directory)">
+                {{ directory.title }}
+            </span>
         </span>
-        <span class="visibility" *ngIf="directory && directory.inherited_access_groups_id !== true">
+        <span class="visibility" *ngIf="canEdit && directory && directory.inherited_access_groups_id !== true">
             <span class="visible-for" *ngIf="directory.has_inherited_access_groups" translate>
                 <os-icon-container
                     icon="visibility"
@@ -66,7 +69,14 @@
 </div>
 
 <!-- the actual file manager -->
-<pbl-ngrid class="file-manager-table ngrid-hide-head" showHeader="false" vScrollAuto [dataSource]="dataSource" [columns]="columnSet">
+<pbl-ngrid
+    class="file-manager-table ngrid-hide-head"
+    showHeader="false"
+    vScrollAuto
+    [dataSource]="dataSource"
+    [columns]="columnSet"
+    [hideColumns]="hiddenColumns"
+>
     <!-- Icon column -->
     <div *pblNgridCellDef="'icon'; row as mediafile" class="fill clickable">
         <a class="detail-link" target="_blank" [routerLink]="mediafile.url" *ngIf="mediafile.is_file"> </a>
@@ -110,12 +120,13 @@
         </div>
     </div>
 
-    <!-- Indicator column -->
+    <!-- Menu column -->
     <div *pblNgridCellDef="'menu'; row as mediafile" class="fill">
         <button
             mat-icon-button
             [matMenuTriggerFor]="singleMediafileMenu"
             [matMenuTriggerData]="{ mediafile: mediafile }"
+            *ngIf="showFileMenu(mediafile)"
         >
             <mat-icon>more_vert</mat-icon>
         </button>
@@ -136,7 +147,7 @@
 <mat-menu #singleMediafileMenu="matMenu">
     <ng-template matMenuContent let-mediafile="mediafile">
         <!-- Exclusive for images -->
-        <div *ngIf="mediafile.isImage()">
+        <div *ngIf="mediafile.isImage() && canEdit">
             <div *ngFor="let action of logoActions">
                 <ng-container
                     *ngTemplateOutlet="manageButton; context: { mediafile: mediafile, action: action }"
@@ -145,7 +156,7 @@
         </div>
 
         <!-- Exclusive for fonts -->
-        <div *ngIf="mediafile.isFont()">
+        <div *ngIf="mediafile.isFont() && canEdit">
             <div *ngFor="let action of fontActions">
                 <ng-container
                     *ngTemplateOutlet="manageButton; context: { mediafile: mediafile, action: action }"
@@ -161,18 +172,20 @@
             [menuItem]="true"
         ></os-projector-button>
         <os-speaker-button [object]="mediafile" [menuItem]="true"></os-speaker-button>
-        <button mat-menu-item (click)="onEditFile(mediafile)">
-            <mat-icon>edit</mat-icon>
-            <span translate>Edit</span>
-        </button>
-        <button mat-menu-item (click)="move(moveDialog, mediafile)">
-            <mat-icon>near_me</mat-icon>
-            <span translate>Move</span>
-        </button>
-        <button mat-menu-item class="red-warning-text" (click)="onDelete(mediafile)">
-            <mat-icon>delete</mat-icon>
-            <span translate>Delete</span>
-        </button>
+        <div *ngIf="canEdit">
+            <button mat-menu-item (click)="onEditFile(mediafile)">
+                <mat-icon>edit</mat-icon>
+                <span translate>Edit</span>
+            </button>
+            <button mat-menu-item (click)="move(moveDialog, mediafile)">
+                <mat-icon>near_me</mat-icon>
+                <span translate>Move</span>
+            </button>
+            <button mat-menu-item class="red-warning-text" (click)="onDelete(mediafile)">
+                <mat-icon>delete</mat-icon>
+                <span translate>Delete</span>
+            </button>
+        </div>
     </ng-template>
 </mat-menu>
 
