@@ -287,9 +287,7 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
     public async deleteSelected(): Promise<void> {
         const title = this.translate.instant('Are you sure you want to delete all selected participants?');
         if (await this.promptService.open(title)) {
-            for (const user of this.selectedRows) {
-                await this.repo.delete(user);
-            }
+            await this.repo.bulkDelete(this.selectedRows);
         }
     }
 
@@ -323,47 +321,29 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
      * Handler for bulk setting/unsetting the 'active' attribute.
      * Uses selectedRows defined via multiSelect mode.
      */
-    public async setActiveSelected(): Promise<void> {
-        const content = this.translate.instant('Set active status for selected participants:');
-        const options = [_('active'), _('inactive')];
-        const selectedChoice = await this.choiceService.open(content, null, false, options);
-        if (selectedChoice) {
-            const active = selectedChoice.action === options[0];
-            for (const user of this.selectedRows) {
-                await this.repo.update({ is_active: active }, user);
-            }
+    public async setStateSelected(field: 'is_active' | 'is_present' | 'is_committee'): Promise<void> {
+        let options: [string, string];
+        let verboseStateName: string;
+        switch (field) {
+            case 'is_active':
+                options = [_('active'), _('inactive')];
+                verboseStateName = 'active';
+                break;
+            case 'is_present':
+                options = [_('present'), _('absent')];
+                verboseStateName = 'present';
+                break;
+            case 'is_committee':
+                options = [_('committee'), _('no committee')];
+                verboseStateName = 'committee';
+                break;
         }
-    }
+        const content = this.translate.instant(`Set ${verboseStateName} status for selected participants:`);
 
-    /**
-     * Handler for bulk setting/unsetting the 'is present' attribute.
-     * Uses selectedRows defined via multiSelect mode.
-     */
-    public async setPresentSelected(): Promise<void> {
-        const content = this.translate.instant('Set presence status for selected participants:');
-        const options = [_('present'), _('absent')];
         const selectedChoice = await this.choiceService.open(content, null, false, options);
         if (selectedChoice) {
-            const present = selectedChoice.action === options[0];
-            for (const user of this.selectedRows) {
-                await this.repo.update({ is_present: present }, user);
-            }
-        }
-    }
-
-    /**
-     * Handler for bulk setting/unsetting the 'is committee' attribute.
-     * Uses selectedRows defined via multiSelect mode.
-     */
-    public async setCommitteeSelected(): Promise<void> {
-        const content = this.translate.instant('Set committee status for selected participants:');
-        const options = [_('committee'), _('no committee')];
-        const selectedChoice = await this.choiceService.open(content, null, false, options);
-        if (selectedChoice) {
-            const committee = selectedChoice.action === options[0];
-            for (const user of this.selectedRows) {
-                await this.repo.update({ is_committee: committee }, user);
-            }
+            const value = selectedChoice.action === options[0];
+            await this.repo.bulkSetState(this.selectedRows, field, value);
         }
     }
 
@@ -375,7 +355,7 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
         const title = this.translate.instant('Are you sure you want to send emails to all selected participants?');
         const content = this.selectedRows.length + ' ' + this.translate.instant('emails');
         if (await this.promptService.open(title, content)) {
-            this.repo.sendInvitationEmail(this.selectedRows).then(this.raiseError, this.raiseError);
+            await this.repo.bulkSendInvitationEmail(this.selectedRows);
         }
     }
 
@@ -393,9 +373,14 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
     }
 
     /**
-     * Handler for bulk setting new passwords. Needs multiSelect mode.
+     * Handler for bulk resetting passwords to the default ones. Needs multiSelect mode.
      */
-    public async resetPasswordsSelected(): Promise<void> {
+    public async resetPasswordsToDefaultSelected(): Promise<void> {
+        const title = this.translate.instant('Are you sure you want to reset all passwords to the default ones?');
+        if (!(await this.promptService.open(title))) {
+            return;
+        }
+
         if (this.selectedRows.find(row => row.user.id === this.operator.user.id)) {
             this.raiseError(
                 this.translate.instant(
@@ -403,10 +388,31 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
                 )
             );
         }
-        for (const user of this.selectedRows.filter(u => u.user.id !== this.operator.user.id)) {
-            const password = this.repo.getRandomPassword();
-            this.repo.resetPassword(user, password, true);
+        this.repo.bulkResetPasswordsToDefault(this.selectedRows).then(null, this.raiseError);
+    }
+
+    /**
+     * Handler for bulk generating new passwords. Needs multiSelect mode.
+     */
+    public async generateNewPasswordsPasswordsSelected(): Promise<void> {
+        const title = this.translate.instant(
+            'Are you sure you want to generate new passwords for all selected participants?'
+        );
+        const content = this.translate.instant(
+            'Note, that the default password will be changed to the new generated one.'
+        );
+        if (!(await this.promptService.open(title, content))) {
+            return;
         }
+
+        if (this.selectedRows.find(row => row.user.id === this.operator.user.id)) {
+            this.raiseError(
+                this.translate.instant(
+                    'Note: Your own password was not changed. Please use the password change dialog instead.'
+                )
+            );
+        }
+        this.repo.bulkGenerateNewPasswords(this.selectedRows).then(null, this.raiseError);
     }
 
     /**

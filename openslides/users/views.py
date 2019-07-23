@@ -79,6 +79,10 @@ class UserViewSet(ModelViewSet):
             "create",
             "destroy",
             "reset_password",
+            "bulk_generate_passwords",
+            "bulk_reset_passwords_to_default",
+            "bulk_set_state",
+            "bulk_delete",
             "mass_import",
             "mass_invite_email",
         ):
@@ -144,30 +148,119 @@ class UserViewSet(ModelViewSet):
     @detail_route(methods=["post"])
     def reset_password(self, request, pk=None):
         """
-        View to reset the password using the requested password.
-        If update_defualt_password=True is given, the new password will also be set
-        as the default_password.
+        View to reset the password of the given user (by url) using a provided password.
+        Expected data: { pasword: <the new password> }
         """
         user = self.get_object()
         password = request.data.get("password")
         if not isinstance(password, str):
             raise ValidationError({"detail": "Password has to be a string."})
 
-        update_default_password = request.data.get("update_default_password", False)
-        if not isinstance(update_default_password, bool):
-            raise ValidationError(
-                {"detail": "update_default_password has to be a boolean."}
-            )
-
         try:
             validate_password(password, user=request.user)
         except DjangoValidationError as errors:
             raise ValidationError({"detail": " ".join(errors)})
         user.set_password(password)
-        if update_default_password:
-            user.default_password = password
         user.save()
         return Response({"detail": "Password successfully reset."})
+
+    @list_route(methods=["post"])
+    def bulk_generate_passwords(self, request):
+        """
+        Generates new random passwords for many users. The request user is excluded
+        and the default password will be set to the new generated passwords.
+        Expected data: { user_ids: <list of ids> }
+        """
+        ids = request.data.get("user_ids")
+        self.assert_list_of_ints(ids)
+
+        # Exclude the request user
+        users = User.objects.exclude(pk=request.user.id).filter(pk__in=ids)
+        for user in users:
+            password = User.objects.make_random_password()
+            user.set_password(password)
+            user.default_password = password
+            user.save()
+        return Response()
+
+    @list_route(methods=["post"])
+    def bulk_reset_passwords_to_default(self, request):
+        """
+        resets the password of all given users to their default ones. The
+        request user is excluded.
+        Expected data: { user_ids: <list of ids> }
+        """
+        ids = request.data.get("user_ids")
+        self.assert_list_of_ints(ids)
+
+        # Exclude the request user
+        users = User.objects.exclude(pk=request.user.id).filter(pk__in=ids)
+        # Validate all default passwords
+        for user in users:
+            try:
+                validate_password(user.default_password, user=user)
+            except DjangoValidationError as errors:
+                errors = " ".join(errors)
+                raise ValidationError(
+                    {
+                        "detail": f'The default password of user "{user.username}" is not valid: {errors}'
+                    }
+                )
+
+        # Reset passwords
+        for user in users:
+            user.set_password(user.default_password)
+            user.save()
+        return Response()
+
+    @list_route(methods=["post"])
+    def bulk_set_state(self, request):
+        """
+        Sets the "state" of may users. The "state" means boolean attributes like active
+        or committee of a user. If 'is_active' is choosen, the request user will be
+        removed from the list of user ids. Expected data:
+
+        {
+          user_ids: <list of ids>
+          field: 'is_active' | 'is_present' | 'is_committee'
+          value: True|False
+        }
+        """
+
+        ids = request.data.get("user_ids")
+        self.assert_list_of_ints(ids)
+
+        field = request.data.get("field")
+        if field not in ("is_active", "is_present", "is_committee"):
+            raise ValidationError({"detail": "Unsupported field"})
+        value = request.data.get("value")
+        if not isinstance(value, bool):
+            raise ValidationError({"detail": "value must be true or false"})
+
+        users = User.objects.filter(pk__in=ids)
+        if field == "is_active":
+            users = users.exclude(pk=request.user.id)
+        for user in users:
+            setattr(user, field, value)
+            user.save()
+
+        return Response()
+
+    @list_route(methods=["post"])
+    def bulk_delete(self, request):
+        """
+        Deletes many users. The request user will be excluded. Expected data:
+        { user_ids: <list of ids> }
+        """
+        ids = request.data.get("user_ids")
+        self.assert_list_of_ints(ids)
+
+        # Exclude the request user
+        users = User.objects.exclude(pk=request.user.id).filter(pk__in=ids)
+        for user in list(users):
+            user.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @list_route(methods=["post"])
     @transaction.atomic
@@ -219,11 +312,7 @@ class UserViewSet(ModelViewSet):
         number of emails send.
         """
         user_ids = request.data.get("user_ids")
-        if not isinstance(user_ids, list):
-            raise ValidationError({"detail": "User_ids has to be a list."})
-        for user_id in user_ids:
-            if not isinstance(user_id, int):
-                raise ValidationError({"detail": "User_id has to be an int."})
+        self.assert_list_of_ints(user_ids)
         # Get subject and body from the response. Do not use the config values
         # because they might not be translated.
         subject = request.data.get("subject")
@@ -267,6 +356,14 @@ class UserViewSet(ModelViewSet):
         return Response(
             {"count": len(success_users), "no_email_ids": user_pks_without_email}
         )
+
+    def assert_list_of_ints(self, ids):
+        """ Asserts, that ids is a list of ints. Raises a ValidationError, if not. """
+        if not isinstance(ids, list):
+            raise ValidationError({"detail": "user_ids must be a list"})
+        for id in ids:
+            if not isinstance(id, int):
+                raise ValidationError({"detail": "every id must be a int"})
 
 
 class GroupViewSetMetadata(SimpleMetadata):

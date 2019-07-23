@@ -6,7 +6,6 @@ from rest_framework.test import APIClient
 
 from openslides.core.config import config
 from openslides.users.models import Group, PersonalNote, User
-from openslides.users.serializers import UserFullSerializer
 from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.test import TestCase
 
@@ -218,12 +217,14 @@ class UserDelete(TestCase):
     Tests delete of users via REST API.
     """
 
+    def setUp(self):
+        self.admin_client = APIClient()
+        self.admin_client.login(username="admin", password="admin")
+
     def test_delete(self):
-        admin_client = APIClient()
-        admin_client.login(username="admin", password="admin")
         User.objects.create(username="Test name bo3zieT3iefahng0ahqu")
 
-        response = admin_client.delete(reverse("user-detail", args=["2"]))
+        response = self.admin_client.delete(reverse("user-detail", args=["2"]))
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(
@@ -231,28 +232,50 @@ class UserDelete(TestCase):
         )
 
     def test_delete_yourself(self):
-        admin_client = APIClient()
-        admin_client.login(username="admin", password="admin")
         # This is the builtin user 'Administrator'. The pk is valid.
         admin_user_pk = 1
-
-        response = admin_client.delete(reverse("user-detail", args=[admin_user_pk]))
-
+        response = self.admin_client.delete(
+            reverse("user-detail", args=[admin_user_pk])
+        )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+    def test_bulk_delete(self):
+        # create 10 users:
+        ids = []
+        for i in range(10):
+            user = User(username=f"user_{i}")
+            user.save()
+            ids.append(user.id)
 
-class UserResetPassword(TestCase):
+        response = self.admin_client.post(
+            reverse("user-bulk-delete"), {"user_ids": ids}, format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(User.objects.filter(pk__in=ids).exists())
+
+    def test_bulk_delete_self(self):
+        """ The own id should be excluded, so nothing should happen. """
+        response = self.admin_client.post(
+            reverse("user-bulk-delete"), {"user_ids": [1]}, format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertTrue(User.objects.filter(pk=1).exists())
+
+
+class UserPassword(TestCase):
     """
     Tests resetting users password via REST API by a manager.
     """
 
+    def setUp(self):
+        self.admin_client = APIClient()
+        self.admin_client.login(username="admin", password="admin")
+
     def test_reset(self):
-        admin_client = APIClient()
-        admin_client.login(username="admin", password="admin")
         user = User.objects.create(username="Test name ooMoa4ou4mohn2eo1ree")
         user.default_password = "new_password_Yuuh8OoQueePahngohy3"
         user.save()
-        response = admin_client.post(
+        response = self.admin_client.post(
             reverse("user-reset-password", args=[user.pk]),
             {"password": "new_password_Yuuh8OoQueePahngohy3_new"},
         )
@@ -263,23 +286,139 @@ class UserResetPassword(TestCase):
             )
         )
 
-    """
-    Tests whether a random password is set as default and actual password
-    if no default password is provided.
-    """
-
     def test_set_random_initial_password(self):
-        admin_client = APIClient()
-        admin_client.login(username="admin", password="admin")
+        """
+        Tests whether a random password is set if no default password is given. The password
+        must be set as the default and real password.
+        """
+        response = self.admin_client.post(
+            reverse("user-list"), {"username": "Test name 9gt043qwvnj2d0cr"}
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        serializer = UserFullSerializer()
-        user = serializer.create({"username": "Test name 9gt043qwvnj2d0cr"})
-        user.save()
+        user = User.objects.get(username="Test name 9gt043qwvnj2d0cr")
+        self.assertTrue(isinstance(user.default_password, str))
+        self.assertTrue(len(user.default_password) >= 8)
+        self.assertTrue(user.check_password(user.default_password))
 
-        default_password = User.objects.get(pk=user.pk).default_password
-        self.assertIsNotNone(default_password)
-        self.assertEqual(len(default_password), 8)
-        self.assertTrue(User.objects.get(pk=user.pk).check_password(default_password))
+    def test_bulk_generate_new_passwords(self):
+        default_password1 = "Default password e3fj3oh39hwwcbjb2qqy"
+        default_password2 = "Default password 32pifjmaewrelkqwelng"
+        user1 = User.objects.create(
+            username="Test name r9uJoqq1k0fk09i39elq",
+            default_password=default_password1,
+        )
+        user2 = User.objects.create(
+            username="Test name poqwhfjpofmouivg73NU",
+            default_password=default_password2,
+        )
+        user1.set_password(default_password1)
+        user2.set_password(default_password2)
+        self.assertTrue(user1.check_password(default_password1))
+        self.assertTrue(user2.check_password(default_password2))
+
+        response = self.admin_client.post(
+            reverse("user-bulk-generate-passwords"),
+            {"user_ids": [user1.id, user2.id]},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        user1 = User.objects.get(username="Test name r9uJoqq1k0fk09i39elq")
+        user2 = User.objects.get(username="Test name poqwhfjpofmouivg73NU")
+        self.assertTrue(default_password1 != user1.default_password)
+        self.assertTrue(default_password2 != user2.default_password)
+        self.assertTrue(len(user1.default_password) >= 8)
+        self.assertTrue(len(user2.default_password) >= 8)
+        self.assertTrue(user1.check_password(user1.default_password))
+        self.assertTrue(user2.check_password(user2.default_password))
+
+    def test_bulk_reset_passwords_to_default_ones(self):
+        default_password1 = "Default password e3fj3oh39hwwcbjb2qqy"
+        default_password2 = "Default password 32pifjmaewrelkqwelng"
+        user1 = User.objects.create(
+            username="Test name pefkjOf9m8efNspuhPFq",
+            default_password=default_password1,
+        )
+        user2 = User.objects.create(
+            username="Test name qpymcmbmntiwoE97ev7C",
+            default_password=default_password2,
+        )
+        user1.set_password("")
+        user2.set_password("")
+        self.assertFalse(user1.check_password(default_password1))
+        self.assertFalse(user2.check_password(default_password2))
+
+        response = self.admin_client.post(
+            reverse("user-bulk-reset-passwords-to-default"),
+            {"user_ids": [user1.id, user2.id]},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        user1 = User.objects.get(username="Test name pefkjOf9m8efNspuhPFq")
+        user2 = User.objects.get(username="Test name qpymcmbmntiwoE97ev7C")
+        self.assertTrue(user1.check_password(default_password1))
+        self.assertTrue(user2.check_password(default_password2))
+
+
+class UserBulkSetState(TestCase):
+    """
+    Tests setting states of users.
+    """
+
+    def setUp(self):
+        self.client = APIClient()
+        self.client.login(username="admin", password="admin")
+        admin = User.objects.get()
+        admin.is_active = True
+        admin.is_present = True
+        admin.is_committee = True
+        admin.save()
+
+    def test_set_is_present(self):
+        response = self.client.post(
+            reverse("user-bulk-set-state"),
+            {"user_ids": [1], "field": "is_present", "value": False},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(User.objects.get().is_active)
+        self.assertFalse(User.objects.get().is_present)
+        self.assertTrue(User.objects.get().is_committee)
+
+    def test_invalid_field(self):
+        response = self.client.post(
+            reverse("user-bulk-set-state"),
+            {"user_ids": [1], "field": "invalid", "value": False},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertTrue(User.objects.get().is_active)
+        self.assertTrue(User.objects.get().is_present)
+        self.assertTrue(User.objects.get().is_committee)
+
+    def test_invalid_value(self):
+        response = self.client.post(
+            reverse("user-bulk-set-state"),
+            {"user_ids": [1], "field": "is_active", "value": "invalid"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertTrue(User.objects.get().is_active)
+        self.assertTrue(User.objects.get().is_present)
+        self.assertTrue(User.objects.get().is_committee)
+
+    def test_set_active_not_self(self):
+        response = self.client.post(
+            reverse("user-bulk-set-state"),
+            {"user_ids": [1], "field": "is_active", "value": False},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(User.objects.get().is_active)
+        self.assertTrue(User.objects.get().is_present)
+        self.assertTrue(User.objects.get().is_committee)
 
 
 class UserMassImport(TestCase):

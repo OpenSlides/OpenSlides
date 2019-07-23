@@ -181,17 +181,17 @@
             <div *osPerms="'users.can_manage'">
                 <mat-divider></mat-divider>
 
-                <button mat-menu-item [disabled]="!selectedRows.length" (click)="setActiveSelected()">
+                <button mat-menu-item [disabled]="!selectedRows.length" (click)="setStateSelected('is_active')">
                     <mat-icon>block</mat-icon>
                     <span translate>Enable/disable account ...</span>
                 </button>
 
-                <button mat-menu-item [disabled]="!selectedRows.length" (click)="setPresentSelected()">
+                <button mat-menu-item [disabled]="!selectedRows.length" (click)="setStateSelected('is_present')">
                     <mat-icon>check_box</mat-icon>
                     <span translate>Set presence ...</span>
                 </button>
 
-                <button mat-menu-item [disabled]="!selectedRows.length" (click)="setCommitteeSelected()">
+                <button mat-menu-item [disabled]="!selectedRows.length" (click)="setStateSelected('is_committee')">
                     <mat-icon>account_balance</mat-icon>
                     <span translate>Set committee ...</span>
                 </button>
@@ -203,7 +203,11 @@
                     <span translate>Send invitation email</span>
                 </button>
 
-                <button mat-menu-item [disabled]="!selectedRows.length" (click)="resetPasswordsSelected()">
+                <button mat-menu-item [disabled]="!selectedRows.length" (click)="resetPasswordsToDefaultSelected()">
+                        <mat-icon>vpn_key</mat-icon>
+                        <span translate>Reset passwords to the default ones</span>
+                    </button>
+                <button mat-menu-item [disabled]="!selectedRows.length" (click)="generateNewPasswordsPasswordsSelected()">
                     <mat-icon>vpn_key</mat-icon>
                     <span translate>Generate new passwords</span>
                 </button>
