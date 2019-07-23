@@ -26,6 +26,7 @@ class CoreAppConfig(AppConfig):
         from . import serializers  # noqa
         from .signals import (
             autoupdate_for_many_to_many_relations,
+            cleanup_unused_permissions,
             delete_django_app_permissions,
             get_permission_change_data,
             permission_change,
@@ -59,6 +60,9 @@ class CoreAppConfig(AppConfig):
         # Connect signals.
         post_permission_creation.connect(
             delete_django_app_permissions, dispatch_uid="delete_django_app_permissions"
+        )
+        post_permission_creation.connect(
+            cleanup_unused_permissions, dispatch_uid="cleanup_unused_permissions"
         )
         permission_change.connect(
             get_permission_change_data, dispatch_uid="core_get_permission_change_data"

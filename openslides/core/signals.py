@@ -1,4 +1,7 @@
+import logging
 import sys
+from collections import defaultdict
+from typing import Dict, List
 
 from django.apps import apps
 from django.contrib.auth.models import Permission
@@ -28,6 +31,41 @@ def delete_django_app_permissions(sender, **kwargs):
         Q(app_label="auth") | Q(app_label="contenttypes") | Q(app_label="sessions")
     )
     Permission.objects.filter(content_type__in=contenttypes).delete()
+
+
+def cleanup_unused_permissions(sender, **kwargs):
+    """
+    Deletes all permissions, that are not defined in any model meta class
+    """
+    # Maps the content type id to codenames of perms for this content type.
+    content_type_codename_mapping: Dict[int, List[str]] = defaultdict(list)
+
+    # Maps content type ids to the content type.
+    content_type_id_mapping = {}
+
+    # Collect all perms from all apps.
+    for model in apps.get_models():
+        content_type = ContentType.objects.get_for_model(
+            model, for_concrete_model=False
+        )
+        content_type_id_mapping[content_type.id] = content_type
+
+        for perm in model._meta.permissions:
+            content_type_codename_mapping[content_type.id].append(perm[0])
+
+    # Cleanup perms per content type.
+    logger = logging.getLogger("openslides.core.migrations")
+    for content_type_id, codenames in content_type_codename_mapping.items():
+        app_label = content_type_id_mapping[content_type_id].app_label
+        unused_perms = Permission.objects.filter(
+            content_type__pk=content_type_id
+        ).exclude(codename__in=codenames)
+        if unused_perms.exists():
+            verbose_permissions = ", ".join(
+                [f"{app_label}.{perm.codename}" for perm in unused_perms.all()]
+            )
+            logger.info(f"cleaning unused permissions: {verbose_permissions}")
+            unused_perms.delete()
 
 
 def get_permission_change_data(sender, permissions, **kwargs):
