@@ -1,4 +1,12 @@
-import { Component, OnInit, ViewChild, TemplateRef, OnDestroy, ViewEncapsulation } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    ViewChild,
+    TemplateRef,
+    OnDestroy,
+    ViewEncapsulation,
+    ChangeDetectionStrategy
+} from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -28,6 +36,7 @@ import { BaseViewComponent } from 'app/site/base/base-view';
     selector: 'os-mediafile-list',
     templateUrl: './mediafile-list.component.html',
     styleUrls: ['./mediafile-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
 export class MediafileListComponent extends BaseViewComponent implements OnInit, OnDestroy {
