@@ -82,6 +82,7 @@ class UserViewSet(ModelViewSet):
             "bulk_generate_passwords",
             "bulk_reset_passwords_to_default",
             "bulk_set_state",
+            "bulk_alter_groups",
             "bulk_delete",
             "mass_import",
             "mass_invite_email",
@@ -247,6 +248,40 @@ class UserViewSet(ModelViewSet):
         return Response()
 
     @list_route(methods=["post"])
+    def bulk_alter_groups(self, request):
+        """
+        Adds or removes groups from given users. The request user is excluded.
+        Expected data:
+        {
+            user_ids: <list of ids>,
+            action: "add" | "remove",
+            group_ids: <list of ids>
+        }
+        """
+        user_ids = request.data.get("user_ids")
+        self.assert_list_of_ints(user_ids)
+        group_ids = request.data.get("group_ids")
+        self.assert_list_of_ints(group_ids, ids_name="groups_id")
+
+        action = request.data.get("action")
+        if action not in ("add", "remove"):
+            raise ValidationError({"detail": "The action must be add or remove"})
+
+        users = User.objects.exclude(pk=request.user.id).filter(pk__in=user_ids)
+        groups = list(Group.objects.filter(pk__in=group_ids))
+
+        for user in users:
+            if action == "add":
+                user.groups.add(*groups)
+            else:
+                user.groups.remove(*groups)
+            # Maybe some group assignments have changed. Better delete the restricted user cache
+            async_to_sync(element_cache.del_user)(user.pk)
+
+        inform_changed_data(users)
+        return Response()
+
+    @list_route(methods=["post"])
     def bulk_delete(self, request):
         """
         Deletes many users. The request user will be excluded. Expected data:
@@ -357,13 +392,13 @@ class UserViewSet(ModelViewSet):
             {"count": len(success_users), "no_email_ids": user_pks_without_email}
         )
 
-    def assert_list_of_ints(self, ids):
+    def assert_list_of_ints(self, ids, ids_name="user_ids"):
         """ Asserts, that ids is a list of ints. Raises a ValidationError, if not. """
         if not isinstance(ids, list):
-            raise ValidationError({"detail": "user_ids must be a list"})
+            raise ValidationError({"detail": f"{ids_name} must be a list"})
         for id in ids:
             if not isinstance(id, int):
-                raise ValidationError({"detail": "every id must be a int"})
+                raise ValidationError({"detail": "Every id must be a int"})
 
 
 class GroupViewSetMetadata(SimpleMetadata):

@@ -302,18 +302,8 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
         const choices = [_('add group(s)'), _('remove group(s)')];
         const selectedChoice = await this.choiceService.open(content, this.groupRepo.getViewModelList(), true, choices);
         if (selectedChoice) {
-            for (const user of this.selectedRows) {
-                const newGroups = [...user.groups_id];
-                (selectedChoice.items as number[]).forEach(newChoice => {
-                    const idx = newGroups.indexOf(newChoice);
-                    if (idx < 0 && selectedChoice.action === choices[0]) {
-                        newGroups.push(newChoice);
-                    } else if (idx >= 0 && selectedChoice.action === choices[1]) {
-                        newGroups.splice(idx, 1);
-                    }
-                });
-                await this.repo.update({ groups_id: newGroups }, user);
-            }
+            const action = selectedChoice.action === choices[0] ? 'add' : 'remove';
+            await this.repo.bulkAlterGroups(this.selectedRows, action, selectedChoice.items as number[]);
         }
     }
 

@@ -290,8 +290,7 @@
     <div *ngIf="user.groups && user.groups.length > 0">
         <h4 translate>Groups</h4>
         <span *ngFor="let group of user.groups; let last = last">
-            {{ group.getTitle() | translate }}
-            <span *ngIf="!last">,&nbsp;</span>
+            {{ group.getTitle() | translate }}<span *ngIf="!last">,&nbsp;</span>
         </span>
     </div>
 
