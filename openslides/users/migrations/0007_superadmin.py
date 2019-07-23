@@ -14,6 +14,9 @@ def create_superadmin_group(apps, schema_editor):
     - If a group with the name 'Admin' (probably with pk = 4) exists, move all
       users from it to the new superadmin group and delete it. If not, check for
       the staff group and assign all users to the superadmin group.
+
+    In 0011_postgres_auth_group_id_sequence, the id sequence for this migration is
+    restarted when using postgresql.
     """
     Group = apps.get_model("users", "Group")
 

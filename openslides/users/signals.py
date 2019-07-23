@@ -1,9 +1,9 @@
 from django.apps import apps
 from django.contrib.auth.models import Permission
-from django.db import connection
 from django.db.models import Q
 
 from ..utils.auth import GROUP_ADMIN_PK, GROUP_DEFAULT_PK
+from .db import postgres_restart_auth_group_id_sequence
 from .models import Group, User
 
 
@@ -185,11 +185,5 @@ def create_builtin_groups_and_admin(**kwargs):
     # added to the group. But we do not have to update the cache by calling
     # inform_changed_data() because the cache is updated on server start.
 
-    # For postgres, the id sequence (the current auto increment value for the id field)
-    # needs to be refreshed after inserting the groups per id, because postgres does not
-    # increment the sequence then.
-    if connection.vendor == "postgresql":
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT max(id) + 1 as max FROM auth_group;")
-            max_id = cursor.fetchone()[0]
-            cursor.execute(f"ALTER SEQUENCE auth_group_id_seq RESTART WITH {max_id};")
+    # For postgres: After inserting the gorups by id, the id sequence needs to be restarted.
+    postgres_restart_auth_group_id_sequence()
