@@ -7,9 +7,9 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
 import { environment } from 'environments/environment';
-import { BaseComponent } from '../../../../base.component';
 import { HttpService } from 'app/core/core-services/http.service';
 import { ThemeService } from 'app/core/ui-services/theme.service';
+import { BaseViewComponent } from 'app/site/base/base-view';
 
 /**
  * Reset password component.
@@ -20,7 +20,7 @@ import { ThemeService } from 'app/core/ui-services/theme.service';
     templateUrl: './reset-password.component.html',
     styleUrls: ['../../assets/reset-password-pages.scss']
 })
-export class ResetPasswordComponent extends BaseComponent implements OnInit {
+export class ResetPasswordComponent extends BaseViewComponent implements OnInit {
     /**
      * THis form holds one control for the email.
      */
@@ -30,15 +30,15 @@ export class ResetPasswordComponent extends BaseComponent implements OnInit {
      * Constructur for the reset password view. Initializes the form for the email.
      */
     public constructor(
-        protected titleService: Title,
-        protected translate: TranslateService,
+        titleService: Title,
+        translate: TranslateService,
+        matSnackBar: MatSnackBar,
         private http: HttpService,
         formBuilder: FormBuilder,
-        private matSnackBar: MatSnackBar,
         private router: Router,
         private themeService: ThemeService
     ) {
-        super(titleService, translate);
+        super(titleService, translate, matSnackBar);
         this.resetPasswordForm = formBuilder.group({
             email: ['', [Validators.required, Validators.email]]
         });
@@ -64,7 +64,6 @@ export class ResetPasswordComponent extends BaseComponent implements OnInit {
             await this.http.post<void>(environment.urlPrefix + '/users/reset-password/', {
                 email: this.resetPasswordForm.get('email').value
             });
-            // TODO: Does we get a response for displaying?
             this.matSnackBar.open(
                 this.translate.instant('An email with a password reset link was send!'),
                 this.translate.instant('OK'),
@@ -74,7 +73,7 @@ export class ResetPasswordComponent extends BaseComponent implements OnInit {
             );
             this.router.navigate(['/login']);
         } catch (e) {
-            console.log('error', e);
+            this.raiseError(e);
         }
     }
 }
