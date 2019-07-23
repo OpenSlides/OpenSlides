@@ -29,7 +29,7 @@ export abstract class BaseViewComponent extends BaseComponent implements OnDestr
      * @param translate the translate service, passed to the base component
      * @param matSnackBar the snack bar service. Needed for showing errors.
      */
-    public constructor(titleService: Title, translate: TranslateService, private matSnackBar: MatSnackBar) {
+    public constructor(titleService: Title, translate: TranslateService, protected matSnackBar: MatSnackBar) {
         super(titleService, translate);
         this.subscriptions = [];
     }

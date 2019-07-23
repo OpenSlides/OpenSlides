@@ -838,6 +838,12 @@ class PasswordResetView(APIView):
                         "detail": f"Error {e.smtp_code}: Authentication failure. Please contact your administrator."
                     }
                 )
+            except ConnectionRefusedError:
+                raise ValidationError(
+                    {
+                        "detail": "Connection refused error. Please contact your administrator."
+                    }
+                )
         return super().post(request, *args, **kwargs)
 
     def get_users(self, email):
