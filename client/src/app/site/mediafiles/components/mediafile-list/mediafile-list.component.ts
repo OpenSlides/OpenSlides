@@ -71,6 +71,17 @@ export class MediafileListComponent extends BaseViewComponent implements OnInit,
     }
 
     /**
+     * Determine if the file menu should generally be accessible, according to the users permission
+     */
+    public get canAccessFileMenu(): boolean {
+        return (
+            this.operator.hasPerms('core.can_manage_projector') ||
+            this.operator.hasPerms('agenda.can_see_list_of_speakers') ||
+            this.canEdit
+        );
+    }
+
+    /**
      * The form to edit Files
      */
     @ViewChild('fileEditForm', { static: true })
@@ -81,6 +92,22 @@ export class MediafileListComponent extends BaseViewComponent implements OnInit,
      */
     @ViewChild('fileEditDialog', { static: true })
     public fileEditDialog: TemplateRef<string>;
+
+    /**
+     * Determine generally hidden columns
+     */
+    public get hiddenColumns(): string[] {
+        const hidden = [];
+        if (!this.canEdit) {
+            hidden.push('info');
+        }
+
+        if (!this.canAccessFileMenu) {
+            hidden.push('menu');
+        }
+
+        return hidden;
+    }
 
     /**
      * Create the column set
@@ -192,6 +219,19 @@ export class MediafileListComponent extends BaseViewComponent implements OnInit,
     public ngOnDestroy(): void {
         super.ngOnDestroy();
         this.clearSubscriptions();
+    }
+
+    /**
+     * Determine if the given file has any extra option to show.
+     * @param file the file to check
+     * @returns wether the extra menu should be accessible
+     */
+    public showFileMenu(file: ViewMediafile): boolean {
+        return (
+            this.operator.hasPerms('agenda.can_see_list_of_speakers') ||
+            (file.isProjectable() && this.operator.hasPerms('core.can_manage_projector')) ||
+            this.canEdit
+        );
     }
 
     public getDateFromTimestamp(timestamp: string): string {
