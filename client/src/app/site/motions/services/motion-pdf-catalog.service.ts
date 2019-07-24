@@ -132,7 +132,7 @@ export class MotionPdfCatalogService {
                             body: [
                                 [
                                     {
-                                        text: category.getTitle(),
+                                        text: category.nameWithParentAbove,
                                         style: !!category.parent ? 'tocSubcategoryTitle' : 'tocCategoryTitle'
                                     }
                                 ]
@@ -158,7 +158,12 @@ export class MotionPdfCatalogService {
                     }
 
                     catTocBody.push(
-                        this.pdfService.createTocTableDef(tocBody, StyleType.CATEGORY_SECTION, layout, header)
+                        this.pdfService.createTocTableDef(
+                            tocBody,
+                            StyleType.CATEGORY_SECTION,
+                            layout,
+                            header ? JSON.parse(JSON.stringify(header)) : null
+                        )
                     );
 
                     catTocBody.push(this.pdfService.getPageBreak());
