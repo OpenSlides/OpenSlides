@@ -9,7 +9,12 @@ from openslides.users.models import Group, PersonalNote, User
 from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.test import TestCase
 
-from ...common_groups import GROUP_DEFAULT_PK, GROUP_DELEGATE_PK, GROUP_STAFF_PK
+from ...common_groups import (
+    GROUP_ADMIN_PK,
+    GROUP_DEFAULT_PK,
+    GROUP_DELEGATE_PK,
+    GROUP_STAFF_PK,
+)
 from ..helpers import count_queries
 
 
@@ -419,6 +424,80 @@ class UserBulkSetState(TestCase):
         self.assertTrue(User.objects.get().is_active)
         self.assertTrue(User.objects.get().is_present)
         self.assertTrue(User.objects.get().is_committee)
+
+
+class UserBulkAlterGroups(TestCase):
+    """
+    Tests altering groups of users.
+    """
+
+    def setUp(self):
+        self.client = APIClient()
+        self.client.login(username="admin", password="admin")
+        self.admin = User.objects.get()
+        self.user = User.objects.create(username="Test name apfj31fa0ovmc8cqc8e8")
+
+    def test_add(self):
+        self.assertEqual(self.user.groups.count(), 0)
+        response = self.client.post(
+            reverse("user-bulk-alter-groups"),
+            {
+                "user_ids": [self.user.pk],
+                "action": "add",
+                "group_ids": [GROUP_DELEGATE_PK, GROUP_STAFF_PK],
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.user.groups.count(), 2)
+        self.assertTrue(self.user.groups.filter(pk=GROUP_DELEGATE_PK).exists())
+        self.assertTrue(self.user.groups.filter(pk=GROUP_STAFF_PK).exists())
+
+    def test_remove(self):
+        groups = Group.objects.filter(
+            pk__in=[GROUP_DEFAULT_PK, GROUP_DELEGATE_PK, GROUP_STAFF_PK]
+        )
+        self.user.groups.set(groups)
+        response = self.client.post(
+            reverse("user-bulk-alter-groups"),
+            {
+                "user_ids": [self.user.pk],
+                "action": "remove",
+                "group_ids": [GROUP_DEFAULT_PK, GROUP_STAFF_PK],
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.user.groups.count(), 1)
+        self.assertTrue(self.user.groups.filter(pk=GROUP_DELEGATE_PK).exists())
+
+    def test_no_request_user(self):
+        self.assertEqual(self.admin.groups.count(), 1)
+        self.assertEqual(self.admin.groups.get().pk, GROUP_ADMIN_PK)
+        response = self.client.post(
+            reverse("user-bulk-alter-groups"),
+            {
+                "user_ids": [self.admin.pk],
+                "action": "add",
+                "group_ids": [GROUP_DELEGATE_PK],
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.admin.groups.count(), 1)
+        self.assertEqual(self.admin.groups.get().pk, GROUP_ADMIN_PK)
+
+    def test_invalid_action(self):
+        response = self.client.post(
+            reverse("user-bulk-alter-groups"),
+            {
+                "user_ids": [self.admin.pk],
+                "action": "invalid",
+                "group_ids": [GROUP_DELEGATE_PK],
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
 class UserMassImport(TestCase):

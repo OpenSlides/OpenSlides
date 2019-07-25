@@ -264,6 +264,21 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
     }
 
     /**
+     * Alters groups of all given users. Either adds or removes the given groups.
+     *
+     * @param users Affected users
+     * @param action add or remove the groups
+     * @param groupIds All group ids to add or remove
+     */
+    public async bulkAlterGroups(users: ViewUser[], action: 'add' | 'remove', groupIds: number[]): Promise<void> {
+        await this.httpService.post('/rest/users/user/bulk_alter_groups/', {
+            user_ids: users.map(user => user.id),
+            action: action,
+            group_ids: groupIds
+        });
+    }
+
+    /**
      * Sends invitation emails to all given users. Returns a prepared string to show the user.
      * This string should always be shown, becuase even in success cases, some users may not get
      * an email and the user should be notified about this.
