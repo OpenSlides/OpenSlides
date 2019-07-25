@@ -134,6 +134,8 @@ export class SortFilterBarComponent<V extends BaseViewModel> {
     }
 
     public set sortOption(option: OsSortingOption<V>) {
+        // If the option has a custom sorting function
+        this.sortService.sortFn = option.sortFn || null;
         this.sortService.sortProperty = option.property;
     }
 

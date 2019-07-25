@@ -20,6 +20,7 @@ export interface OsSortingDefinition<V> {
 export interface OsSortingOption<V> {
     property: keyof V;
     label?: string;
+    sortFn?: (itemA: V, itemB: V, ascending: boolean, intl?: Intl.Collator) => number;
 }
 
 /**
@@ -57,7 +58,7 @@ export abstract class BaseSortListService<V extends BaseViewModel> {
     /**
      * The sorting function according to current settings.
      */
-    private sortFn: (a: V, b: V) => number;
+    public sortFn?: (a: V, b: V, ascending: boolean, intl?: Intl.Collator) => number;
 
     /**
      * Set the current sorting order
@@ -202,16 +203,6 @@ export abstract class BaseSortListService<V extends BaseViewModel> {
     }
 
     /**
-     * Sorts an array of data synchronously, using the currently configured sorting
-     *
-     * @param data Array of ViewModels
-     * @returns the data, sorted with the definitions of this service
-     */
-    public sortSync(data: V[]): V[] {
-        return data.sort(this.sortFn);
-    }
-
-    /**
      * Helper function to determine false-like values (if they are not boolean)
      * @param property
      */
@@ -246,42 +237,45 @@ export abstract class BaseSortListService<V extends BaseViewModel> {
                 const firstProperty = this.ascending ? itemA[property] : itemB[property];
                 const secondProperty = this.ascending ? itemB[property] : itemA[property];
 
-                switch (typeof firstProperty) {
-                    case 'boolean':
-                        if (!firstProperty && secondProperty) {
-                            return -1;
-                        } else {
-                            return 1;
-                        }
-                    case 'number':
-                        return firstProperty > secondProperty ? 1 : -1;
-                    case 'string':
-                        if (!!firstProperty && !secondProperty) {
-                            return -1;
-                        } else if (!firstProperty && !!secondProperty) {
-                            return 1;
-                        } else if ((!secondProperty && !secondProperty) || firstProperty === secondProperty) {
-                            return 0;
-                        } else {
-                            return intl.compare(firstProperty, secondProperty);
-                        }
-                    case 'function':
-                        const a = firstProperty();
-                        const b = secondProperty();
-                        return intl.compare(a, b);
-                    case 'object':
-                        if (firstProperty instanceof Date) {
+                if (this.sortFn) {
+                    return this.sortFn(itemA, itemB, this.ascending, intl);
+                } else {
+                    switch (typeof firstProperty) {
+                        case 'boolean':
+                            if (!firstProperty && secondProperty) {
+                                return -1;
+                            } else {
+                                return 1;
+                            }
+                        case 'number':
                             return firstProperty > secondProperty ? 1 : -1;
-                        } else {
-                            return intl.compare(firstProperty.toString(), secondProperty.toString());
-                        }
-                    case 'undefined':
-                        return 1;
-                    default:
-                        return -1;
+                        case 'string':
+                            if (!!firstProperty && !secondProperty) {
+                                return -1;
+                            } else if (!firstProperty && !!secondProperty) {
+                                return 1;
+                            } else if ((!secondProperty && !secondProperty) || firstProperty === secondProperty) {
+                                return 0;
+                            } else {
+                                return intl.compare(firstProperty, secondProperty);
+                            }
+                        case 'function':
+                            const a = firstProperty();
+                            const b = secondProperty();
+                            return intl.compare(a, b);
+                        case 'object':
+                            if (firstProperty instanceof Date) {
+                                return firstProperty > secondProperty ? 1 : -1;
+                            } else {
+                                return intl.compare(firstProperty.toString(), secondProperty.toString());
+                            }
+                        case 'undefined':
+                            return 1;
+                        default:
+                            return -1;
+                    }
                 }
             });
-
             this.outputSubject.next(this.inputData);
         }
     }
