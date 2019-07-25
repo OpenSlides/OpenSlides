@@ -118,4 +118,17 @@
         bottom: 0;
         right: 0;
     }
+
+    /** Custom themes for NGrid. Could be an own file if it gets more */
+    .pbl-ngrid-container {
+        background: mat-color($background, card);
+    }
+
+    .pbl-ngrid-no-data {
+        color: mat-color($foreground, secondary-text);
+    }
+
+    .pbl-ngrid-row:hover {
+        background-color: rgba(0, 0, 0, 0.025);
+    }
 }

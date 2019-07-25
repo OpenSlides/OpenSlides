@@ -34,6 +34,11 @@
             <os-projector-button class="projector-button" [object]="getProjectable(viewModel)"></os-projector-button>
         </div>
 
+        <!-- No Results -->
+        <div *pblNgridNoDataRef class="pbl-ngrid-no-data">
+            <span translate>No data</span>
+        </div>
+
         <!-- Slot transclusion for the individual cells -->
         <ng-content class="ngrid-lg" select=".cell-slot"></ng-content>
     </pbl-ngrid>
