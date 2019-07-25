@@ -2,14 +2,6 @@ import { Workflow } from 'app/shared/models/motions/workflow';
 import { WorkflowState } from 'app/shared/models/motions/workflow-state';
 import { BaseViewModel } from '../../base/base-view-model';
 
-export const StateCssClassMapping = {
-    success: 'green',
-    danger: 'red',
-    default: 'grey',
-    primary: 'lightblue',
-    warning: 'yellow'
-};
-
 export interface WorkflowTitleInformation {
     name: string;
 }
