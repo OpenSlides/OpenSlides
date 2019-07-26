@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 
-import { TranslateService } from '@ngx-translate/core';
-
 import { LoginDataService } from 'app/core/ui-services/login-data.service';
 import { environment } from 'environments/environment';
 import { HttpService } from 'app/core/core-services/http.service';
@@ -82,20 +80,14 @@ export class LegalNoticeContentComponent implements OnInit {
      * @param translate
      * @param http
      */
-    public constructor(
-        private loginDataService: LoginDataService,
-        private translate: TranslateService,
-        private http: HttpService
-    ) {}
+    public constructor(private loginDataService: LoginDataService, private http: HttpService) {}
 
     /**
      * Subscribes for the legal notice text.
      */
     public ngOnInit(): void {
-        this.loginDataService.legal_notice.subscribe(legalNotice => {
-            if (legalNotice) {
-                this.legalNotice = this.translate.instant(legalNotice);
-            }
+        this.loginDataService.legalNotice.subscribe(legalNotice => {
+            this.legalNotice = legalNotice;
         });
 
         // Query the version info.

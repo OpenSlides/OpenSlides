@@ -77,17 +77,4 @@ export class ThemeService {
             return null;
         }
     }
-
-    /**
-     * Function to ensure, that there is at least one theme set to define
-     * the colors of the components.
-     *
-     * If a theme is already set, nothing happens, otherwise the
-     * `DEFAULT_THEME` will be set.
-     */
-    public checkTheme(): void {
-        if (!this.currentTheme || this.currentTheme === '') {
-            this.changeTheme(ThemeService.DEFAULT_THEME);
-        }
-    }
 }

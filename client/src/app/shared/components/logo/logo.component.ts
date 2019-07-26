@@ -42,7 +42,7 @@ export class LogoComponent implements OnInit, OnDestroy {
      * On init method
      */
     public ngOnInit(): void {
-        this.logoSubscription = this.loginDataService.logo_web_header.subscribe(nextLogo => {
+        this.logoSubscription = this.loginDataService.logoWebHeader.subscribe(nextLogo => {
             if (nextLogo) {
                 this.logoPath = nextLogo.path;
             }

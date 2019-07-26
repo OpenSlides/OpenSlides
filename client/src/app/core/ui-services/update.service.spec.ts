@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed, inject } from '@angular/core/testing';
 
 import { UpdateService } from './update.service';
 import { E2EImportsModule } from 'e2e-imports.module';
@@ -11,8 +11,7 @@ describe('UpdateService', () => {
         })
     );
 
-    it('should be created', () => {
-        const service: UpdateService = TestBed.get(UpdateService);
+    it('should be created', inject([UpdateService], (service: UpdateService) => {
         expect(service).toBeTruthy();
-    });
+    }));
 });

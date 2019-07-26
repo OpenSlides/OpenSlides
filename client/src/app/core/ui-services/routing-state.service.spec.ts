@@ -1,17 +1,17 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed, inject } from '@angular/core/testing';
 
 import { RoutingStateService } from './routing-state.service';
 import { E2EImportsModule } from 'e2e-imports.module';
 
 describe('RoutingStateService', () => {
-    beforeEach(() =>
+    beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [E2EImportsModule]
-        })
-    );
-
-    it('should be created', () => {
-        const service: RoutingStateService = TestBed.get(RoutingStateService);
-        expect(service).toBeTruthy();
+            imports: [E2EImportsModule],
+            providers: [RoutingStateService]
+        });
     });
+
+    it('should be created', inject([RoutingStateService], (service: RoutingStateService) => {
+        expect(service).toBeTruthy();
+    }));
 });

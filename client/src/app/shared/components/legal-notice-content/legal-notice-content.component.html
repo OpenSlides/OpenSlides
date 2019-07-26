@@ -1,6 +1,9 @@
 <mat-card class="os-card">
     <div>
-        <div class="legal-notice-text" [innerHtml]="legalNotice"></div>
+        <div *ngIf="legalNotice" class="legal-notice-text" [innerHtml]="legalNotice"></div>
+        <div *ngIf="!legalNotice" translate>
+            The event manager hasn't set up a legal notice yet.
+        </div>
         <mat-divider></mat-divider>
         <div *ngIf="versionInfo" class="version-text">
             <a [attr.href]="versionInfo.openslides_url" target="_blank">

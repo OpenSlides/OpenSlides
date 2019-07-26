@@ -13,6 +13,7 @@
 
 .toolbar-left {
     display: flex;
+    max-width: calc(100% - 100px);
     button {
         margin: 12px 0;
     }

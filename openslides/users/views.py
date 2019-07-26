@@ -732,20 +732,17 @@ class UserLoginView(WhoAmIDataView):
         """
         if self.request.method == "GET":
             if config["general_login_info_text"]:
-                context["info_text"] = config["general_login_info_text"]
+                context["login_info_text"] = config["general_login_info_text"]
             else:
                 try:
                     user = User.objects.get(username="admin")
-                except User.DoesNotExist:
-                    context["info_text"] = ""
-                else:
                     if user.check_password("admin"):
-                        context["info_text"] = (
+                        context["login_info_text"] = (
                             f"Use <strong>admin</strong> and <strong>admin</strong> for your first login.<br>"
                             "Please change your password to hide this message!"
                         )
-                    else:
-                        context["info_text"] = ""
+                except User.DoesNotExist:
+                    pass
             # Add the privacy policy and legal notice, so the client can display it
             # even, it is not logged in.
             context["privacy_policy"] = config["general_event_privacy_policy"]
