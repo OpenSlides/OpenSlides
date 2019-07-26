@@ -39,12 +39,12 @@ export class GlobalSpinnerComponent implements OnInit, OnDestroy {
      *
      * @param spinnerService Reference to the service for this spinner.
      * @param translate Service to get translations for the messages.
-     * @param detector Service to manual initiate a change of the UI.
+     * @param cd Service to manual initiate a change of the UI.
      */
     public constructor(
         private spinnerService: SpinnerService,
         protected translate: TranslateService,
-        private detector: ChangeDetectorRef
+        private cd: ChangeDetectorRef
     ) {}
 
     /**
@@ -59,7 +59,7 @@ export class GlobalSpinnerComponent implements OnInit, OnDestroy {
                 if (!this.text) {
                     this.text = this.LOADING;
                 }
-                this.detector.detectChanges();
+                this.cd.detectChanges();
             });
     }
 

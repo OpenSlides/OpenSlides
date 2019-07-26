@@ -268,11 +268,11 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
         private operator: OperatorService,
         vp: ViewportService,
         private store: StorageService,
-        private ref: ChangeDetectorRef
+        private cd: ChangeDetectorRef
     ) {
         vp.isMobileSubject.subscribe(mobile => {
             if (mobile !== this.isMobile) {
-                this.ref.markForCheck();
+                this.cd.markForCheck();
             }
             this.isMobile = mobile;
         });
