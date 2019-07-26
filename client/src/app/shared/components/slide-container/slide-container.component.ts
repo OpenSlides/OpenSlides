@@ -1,14 +1,15 @@
-import { Component, Input, ViewChild, ViewContainerRef, ComponentRef } from '@angular/core';
+import { Component, ComponentRef, Input, ViewChild, ViewContainerRef } from '@angular/core';
 import { Title } from '@angular/platform-browser';
+
 import { TranslateService } from '@ngx-translate/core';
 
 import { BaseComponent } from 'app/base.component';
-import { SlideManager } from 'app/slides/services/slide-manager.service';
-import { BaseSlideComponent } from 'app/slides/base-slide-component';
 import { SlideData } from 'app/core/core-services/projector-data.service';
 import { ProjectorElement } from 'app/shared/models/core/projector';
 import { ViewProjector } from 'app/site/projector/models/view-projector';
 import { isBaseScaleScrollSlideComponent } from 'app/slides/base-scale-scroll-slide-component';
+import { BaseSlideComponent } from 'app/slides/base-slide-component';
+import { SlideManager } from 'app/slides/services/slide-manager.service';
 
 function hasError(obj: object): obj is { error: string } {
     return (<{ error: string }>obj).error !== undefined;

@@ -2,11 +2,13 @@
  * Remember: Do not tell, Do not ask.
  */
 
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MatDialogRef, MatDialog } from '@angular/material/dialog';
-import { OperatorService } from 'app/core/core-services/operator.service';
-import { NotifyService, NotifyResponse } from 'app/core/core-services/notify.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+
 import { Subscription } from 'rxjs';
+
+import { NotifyResponse, NotifyService } from 'app/core/core-services/notify.service';
+import { OperatorService } from 'app/core/core-services/operator.service';
 
 /**
  * All player types.

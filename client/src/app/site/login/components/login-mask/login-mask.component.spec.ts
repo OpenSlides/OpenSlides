@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LoginMaskComponent } from './login-mask.component';
 import { E2EImportsModule } from '../../../../../e2e-imports.module';
+import { LoginMaskComponent } from './login-mask.component';
 
 describe('LoginMaskComponent', () => {
     let component: LoginMaskComponent;

@@ -1,9 +1,9 @@
-import { BaseProjectableViewModel } from './base-projectable-view-model';
 import { SearchRepresentation } from 'app/core/ui-services/search.service';
-import { isDetailNavigable, DetailNavigable } from 'app/shared/models/base/detail-navigable';
-import { isSearchable, Searchable } from './searchable';
 import { BaseModelWithAgendaItem } from 'app/shared/models/base/base-model-with-agenda-item';
+import { DetailNavigable, isDetailNavigable } from 'app/shared/models/base/detail-navigable';
+import { BaseProjectableViewModel } from './base-projectable-view-model';
 import { TitleInformation } from './base-view-model';
+import { isSearchable, Searchable } from './searchable';
 
 export function isBaseViewModelWithAgendaItem(obj: any): obj is BaseViewModelWithAgendaItem {
     const model = <BaseViewModelWithAgendaItem>obj;

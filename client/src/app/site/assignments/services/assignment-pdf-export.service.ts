@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import { ViewAssignment } from '../models/view-assignment';
-import { AssignmentPdfService } from './assignment-pdf.service';
+
 import { TranslateService } from '@ngx-translate/core';
+
 import { PdfDocumentService, PdfError } from 'app/core/ui-services/pdf-document.service';
+import { AssignmentPdfService } from './assignment-pdf.service';
+import { ViewAssignment } from '../models/view-assignment';
 
 /**
  * Controls PDF export for assignments

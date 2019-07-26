@@ -1,13 +1,14 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { E2EImportsModule } from 'e2e-imports.module';
+
+import { Motion } from 'app/shared/models/motions/motion';
+import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change';
+import { LineNumberingMode, ViewMotion } from 'app/site/motions/models/view-motion';
+import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
 import { MotionDetailDiffComponent } from './motion-detail-diff.component';
 import { MotionDetailOriginalChangeRecommendationsComponent } from '../motion-detail-original-change-recommendations/motion-detail-original-change-recommendations.component';
-import { Motion } from 'app/shared/models/motions/motion';
-import { ViewMotion, LineNumberingMode } from 'app/site/motions/models/view-motion';
-import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
-import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change';
-import { E2EImportsModule } from 'e2e-imports.module';
 
 @Component({
     template: `

@@ -1,9 +1,9 @@
-import { Topic } from 'app/shared/models/topics/topic';
 import { SearchRepresentation } from 'app/core/ui-services/search.service';
+import { Topic } from 'app/shared/models/topics/topic';
+import { TitleInformationWithAgendaItem } from 'app/site/base/base-view-model-with-agenda-item';
+import { BaseViewModelWithAgendaItemAndListOfSpeakers } from 'app/site/base/base-view-model-with-agenda-item-and-list-of-speakers';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
-import { BaseViewModelWithAgendaItemAndListOfSpeakers } from 'app/site/base/base-view-model-with-agenda-item-and-list-of-speakers';
-import { TitleInformationWithAgendaItem } from 'app/site/base/base-view-model-with-agenda-item';
 
 export interface TopicTitleInformation extends TitleInformationWithAgendaItem {
     title: string;

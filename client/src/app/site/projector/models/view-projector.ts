@@ -1,5 +1,5 @@
-import { BaseViewModel } from '../../base/base-view-model';
 import { Projector, ProjectorElements } from 'app/shared/models/core/projector';
+import { BaseViewModel } from '../../base/base-view-model';
 
 export interface ProjectorTitleInformation {
     name: string;

@@ -1,15 +1,16 @@
+import { OnInit, ViewChild } from '@angular/core';
 import { MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTableDataSource, MatTable } from '@angular/material/table';
-import { ViewChild, OnInit } from '@angular/core';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
+import { Title } from '@angular/platform-browser';
 
+import { TranslateService } from '@ngx-translate/core';
+import { auditTime } from 'rxjs/operators';
+
+import { BaseImportService, NewEntry, ValueLabelCombination } from 'app/core/ui-services/base-import.service';
+import { getLongPreview, getShortPreview } from 'app/shared/utils/previewStrings';
 import { BaseViewComponent } from './base-view';
 import { BaseViewModel } from './base-view-model';
-import { NewEntry, ValueLabelCombination, BaseImportService } from 'app/core/ui-services/base-import.service';
-import { Title } from '@angular/platform-browser';
-import { TranslateService } from '@ngx-translate/core';
-import { getLongPreview, getShortPreview } from 'app/shared/utils/previewStrings';
-import { auditTime } from 'rxjs/operators';
 
 export abstract class BaseImportListComponent<V extends BaseViewModel> extends BaseViewComponent implements OnInit {
     /**

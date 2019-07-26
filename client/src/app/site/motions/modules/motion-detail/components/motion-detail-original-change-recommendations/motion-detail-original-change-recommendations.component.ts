@@ -1,17 +1,17 @@
 import {
+    Component,
     ElementRef,
-    Renderer2,
-    OnInit,
-    Output,
     EventEmitter,
     Input,
-    Component,
     OnChanges,
+    OnInit,
+    Output,
+    Renderer2,
     SimpleChanges
 } from '@angular/core';
 
-import { LineRange, ModificationType } from 'app/core/ui-services/diff.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
+import { LineRange, ModificationType } from 'app/core/ui-services/diff.service';
 import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
 
 /**

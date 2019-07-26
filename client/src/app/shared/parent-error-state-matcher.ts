@@ -1,5 +1,5 @@
-import { ErrorStateMatcher } from '@angular/material/core';
 import { FormControl, FormGroupDirective, NgForm } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
 
 /**
  * Custom state matcher for mat-errors. Enables the error for an input, if one has set the error

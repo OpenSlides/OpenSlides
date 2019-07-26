@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
+import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
-import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
-import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
-import { ViewAssignmentPoll } from '../models/view-assignment-poll';
+import { AbstractPollData, BallotCountChoices, PollPdfService } from 'app/core/ui-services/poll-pdf-service';
 import { AssignmentPollMethod } from './assignment-poll.service';
-import { PollPdfService, BallotCountChoices, AbstractPollData } from 'app/core/ui-services/poll-pdf-service';
+import { ViewAssignmentPoll } from '../models/view-assignment-poll';
 
 /**
  * Creates a pdf for a motion poll. Takes as input any motionPoll

@@ -1,8 +1,8 @@
-import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
-import { Searchable } from 'app/site/base/searchable';
 import { SearchRepresentation } from 'app/core/ui-services/search.service';
-import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
+import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { BaseViewModelWithListOfSpeakers } from 'app/site/base/base-view-model-with-list-of-speakers';
+import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
+import { Searchable } from 'app/site/base/searchable';
 import { ViewGroup } from 'app/site/users/models/view-group';
 
 export const IMAGE_MIMETYPES = ['image/png', 'image/jpeg', 'image/gif'];

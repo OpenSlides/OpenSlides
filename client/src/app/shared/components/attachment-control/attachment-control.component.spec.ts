@@ -1,7 +1,8 @@
-import { async, TestBed, ComponentFixture } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { E2EImportsModule } from 'e2e-imports.module';
 
 import { AttachmentControlComponent } from './attachment-control.component';
-import { E2EImportsModule } from 'e2e-imports.module';
 
 describe('AttachmentControlComponent', () => {
     let component: AttachmentControlComponent;

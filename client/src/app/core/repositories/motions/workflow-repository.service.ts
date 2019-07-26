@@ -2,15 +2,15 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { Workflow } from 'app/shared/models/motions/workflow';
+import { ViewMotion } from 'app/site/motions/models/view-motion';
+import { ViewState } from 'app/site/motions/models/view-state';
 import { ViewWorkflow, WorkflowTitleInformation } from 'app/site/motions/models/view-workflow';
-import { DataSendService } from '../../core-services/data-send.service';
-import { DataStoreService } from '../../core-services/data-store.service';
 import { BaseRepository, RelationDefinition } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
-import { ViewMotion } from 'app/site/motions/models/view-motion';
-import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
-import { ViewState } from 'app/site/motions/models/view-state';
+import { DataSendService } from '../../core-services/data-send.service';
+import { DataStoreService } from '../../core-services/data-store.service';
 
 const WorkflowRelations: RelationDefinition[] = [
     {

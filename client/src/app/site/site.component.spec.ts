@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SiteComponent } from './site.component';
 import { E2EImportsModule } from '../../e2e-imports.module';
+import { SiteComponent } from './site.component';
 
 describe('SiteComponent', () => {
     let component: SiteComponent;

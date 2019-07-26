@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 import {
+    ChoiceAnswer,
     ChoiceDialogComponent,
-    ChoiceDialogOptions,
-    ChoiceAnswer
+    ChoiceDialogOptions
 } from '../../shared/components/choice-dialog/choice-dialog.component';
 
 /**

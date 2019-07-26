@@ -1,18 +1,18 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
-import { BaseViewComponent } from 'app/site/base/base-view';
 import { AuthService } from 'app/core/core-services/auth.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { LoginDataService } from 'app/core/ui-services/login-data.service';
-import { ParentErrorStateMatcher } from 'app/shared/parent-error-state-matcher';
 import { SpinnerService } from 'app/core/ui-services/spinner.service';
-import { MatSnackBar } from '@angular/material';
+import { ParentErrorStateMatcher } from 'app/shared/parent-error-state-matcher';
+import { BaseViewComponent } from 'app/site/base/base-view';
 
 /**
  * Login mask component.

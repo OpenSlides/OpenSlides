@@ -1,8 +1,8 @@
 import { TranslateService } from '@ngx-translate/core';
 
-import { SlideDynamicConfiguration, Slide } from './slide-manifest';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { ProjectorElement } from 'app/shared/models/core/projector';
+import { Slide, SlideDynamicConfiguration } from './slide-manifest';
 
 export const allSlidesDynamicConfiguration: (SlideDynamicConfiguration & Slide)[] = [
     {

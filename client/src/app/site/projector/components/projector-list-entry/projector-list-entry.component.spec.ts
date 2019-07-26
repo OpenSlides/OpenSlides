@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { E2EImportsModule } from '../../../../../e2e-imports.module';
-import { ProjectorModule } from '../../projector.module';
 import { ProjectorListEntryComponent } from './projector-list-entry.component';
+import { ProjectorModule } from '../../projector.module';
 
 describe('ProjectorListEntryComponent', () => {
     let component: ProjectorListEntryComponent;

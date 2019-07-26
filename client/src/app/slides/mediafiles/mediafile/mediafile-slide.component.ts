@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 
+import { MediafileProjectorElement } from 'app/site/mediafiles/models/mediafile-projector-element';
+import { IMAGE_MIMETYPES, PDF_MIMETYPES } from 'app/site/mediafiles/models/view-mediafile';
 import { BaseSlideComponent } from 'app/slides/base-slide-component';
 import { MediafileSlideData } from './mediafile-slide-data';
-import { IMAGE_MIMETYPES, PDF_MIMETYPES } from 'app/site/mediafiles/models/view-mediafile';
-import { MediafileProjectorElement } from 'app/site/mediafiles/models/mediafile-projector-element';
 
 @Component({
     selector: 'os-mediafile-slide',

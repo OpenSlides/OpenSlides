@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { E2EImportsModule } from 'e2e-imports.module';
+
 import { SpeakerButtonComponent } from './speaker-button.component';
 
 describe('SpeakerButtonComponent', () => {

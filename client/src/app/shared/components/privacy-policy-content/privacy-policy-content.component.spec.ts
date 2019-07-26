@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PrivacyPolicyContentComponent } from './privacy-policy-content.component';
 import { E2EImportsModule } from '../../../../e2e-imports.module';
+import { PrivacyPolicyContentComponent } from './privacy-policy-content.component';
 
 describe('PrivacyPolicyComponent', () => {
     let component: PrivacyPolicyContentComponent;

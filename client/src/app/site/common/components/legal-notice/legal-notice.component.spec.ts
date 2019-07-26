@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LegalNoticeComponent } from './legal-notice.component';
-import { E2EImportsModule } from '../../../../../e2e-imports.module';
 import { CountUsersComponent } from '../count-users/count-users.component';
+import { E2EImportsModule } from '../../../../../e2e-imports.module';
+import { LegalNoticeComponent } from './legal-notice.component';
 
 describe('LegalNoticeComponent', () => {
     let component: LegalNoticeComponent;

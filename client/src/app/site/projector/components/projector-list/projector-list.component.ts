@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Title } from '@angular/platform-browser';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { OperatorService } from 'app/core/core-services/operator.service';
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
-import { ViewProjector } from '../../models/view-projector';
 import { Projector } from 'app/shared/models/core/projector';
 import { BaseViewComponent } from 'app/site/base/base-view';
-import { OperatorService } from 'app/core/core-services/operator.service';
+import { ViewProjector } from '../../models/view-projector';
 
 /**
  * List for all projectors.

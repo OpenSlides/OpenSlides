@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 
-import { Observable, BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { auditTime } from 'rxjs/operators';
 
 import { WebsocketService } from 'app/core/core-services/websocket.service';
-import { ProjectorElement, Projector } from 'app/shared/models/core/projector';
-import { auditTime } from 'rxjs/operators';
+import { Projector, ProjectorElement } from 'app/shared/models/core/projector';
 
 export interface SlideData<T = { error?: string }, P extends ProjectorElement = ProjectorElement> {
     data: T;

@@ -1,7 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SlideContainerComponent } from './slide-container.component';
 import { E2EImportsModule } from 'e2e-imports.module';
+
+import { SlideContainerComponent } from './slide-container.component';
 
 describe('SlideContainerComponent', () => {
     let component: SlideContainerComponent;

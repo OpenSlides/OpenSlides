@@ -1,5 +1,5 @@
-import { BaseViewModel } from '../../base/base-view-model';
 import { Group } from 'app/shared/models/users/group';
+import { BaseViewModel } from '../../base/base-view-model';
 
 export interface GroupTitleInformation {
     name: string;

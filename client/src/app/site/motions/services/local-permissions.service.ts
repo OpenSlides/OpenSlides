@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 
-import { OperatorService } from 'app/core/core-services/operator.service';
-import { ViewMotion } from '../models/view-motion';
-import { ConfigService } from 'app/core/ui-services/config.service';
 import { ConstantsService } from 'app/core/core-services/constants.service';
+import { OperatorService } from 'app/core/core-services/operator.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
+import { ViewMotion } from '../models/view-motion';
 
 interface Settings {
     MOTIONS_ALLOW_AMENDMENTS_OF_AMENDMENTS: boolean;

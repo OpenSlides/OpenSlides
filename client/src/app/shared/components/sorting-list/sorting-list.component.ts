@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter, ContentChild, TemplateRef, OnDestroy } from '@angular/core';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { Component, ContentChild, EventEmitter, Input, OnDestroy, OnInit, Output, TemplateRef } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, Subscription } from 'rxjs';

@@ -1,4 +1,4 @@
-import { Component, Input, HostBinding, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
 
 @Component({
     selector: 'os-icon-container',

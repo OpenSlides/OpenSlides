@@ -1,14 +1,14 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
-import {
-    Projectable,
-    ProjectorElementBuildDeskriptor,
-    isProjectable,
-    isProjectorElementBuildDeskriptor
-} from 'app/site/base/projectable';
-import { Projector } from 'app/shared/models/core/projector';
 import { ProjectorService } from 'app/core/core-services/projector.service';
 import { ProjectionDialogService } from 'app/core/ui-services/projection-dialog.service';
+import { Projector } from 'app/shared/models/core/projector';
+import {
+    isProjectable,
+    isProjectorElementBuildDeskriptor,
+    Projectable,
+    ProjectorElementBuildDeskriptor
+} from 'app/site/base/projectable';
 
 /**
  * The projector button to project something on the projector.

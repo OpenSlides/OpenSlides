@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 
 import { AssignmentDetailComponent } from './components/assignment-detail/assignment-detail.component';
 import { AssignmentListComponent } from './components/assignment-list/assignment-list.component';

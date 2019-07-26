@@ -3,13 +3,13 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 import { DataSendService } from 'app/core/core-services/data-send.service';
-import { DataStoreService } from '../../core-services/data-store.service';
-import { BaseRepository } from '../base-repository';
-import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { PersonalNote } from 'app/shared/models/users/personal-note';
-import { ViewPersonalNote, PersonalNoteTitleInformation } from 'app/site/users/models/view-personal-note';
-import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { PersonalNoteTitleInformation, ViewPersonalNote } from 'app/site/users/models/view-personal-note';
+import { BaseRepository } from '../base-repository';
+import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
+import { DataStoreService } from '../../core-services/data-store.service';
 
 /**
  */

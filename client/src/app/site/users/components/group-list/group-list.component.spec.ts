@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GroupListComponent } from './group-list.component';
 import { E2EImportsModule } from '../../../../../e2e-imports.module';
+import { GroupListComponent } from './group-list.component';
 
 describe('GroupListComponent', () => {
     let component: GroupListComponent;

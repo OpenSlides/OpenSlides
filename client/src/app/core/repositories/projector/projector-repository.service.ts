@@ -2,15 +2,15 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { HttpService } from 'app/core/core-services/http.service';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { Identifiable } from 'app/shared/models/base/identifiable';
+import { Projector } from 'app/shared/models/core/projector';
+import { ProjectorTitleInformation, ViewProjector } from 'app/site/projector/models/view-projector';
 import { BaseRepository, RelationDefinition } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
-import { Identifiable } from 'app/shared/models/base/identifiable';
-import { ViewProjector, ProjectorTitleInformation } from 'app/site/projector/models/view-projector';
-import { Projector } from 'app/shared/models/core/projector';
-import { HttpService } from 'app/core/core-services/http.service';
-import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 
 /**
  * Directions for scale and scroll requests.

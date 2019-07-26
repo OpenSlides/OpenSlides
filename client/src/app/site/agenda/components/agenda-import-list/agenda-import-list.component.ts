@@ -1,14 +1,15 @@
 import { Component } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
+
 import { TranslateService } from '@ngx-translate/core';
 
 import { AgendaImportService } from '../../services/agenda-import.service';
-import { BaseImportListComponent } from 'app/site/base/base-import-list';
 import { CsvExportService } from 'app/core/ui-services/csv-export.service';
 import { DurationService } from 'app/core/ui-services/duration.service';
 import { ItemVisibilityChoices } from 'app/shared/models/agenda/item';
+import { BaseImportListComponent } from 'app/site/base/base-import-list';
 import { ViewCreateTopic } from 'app/site/topics/models/view-create-topic';
 
 /**

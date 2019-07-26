@@ -1,22 +1,22 @@
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { Papa } from 'ngx-papaparse';
 import { TranslateService } from '@ngx-translate/core';
+import { Papa } from 'ngx-papaparse';
 
-import { BaseImportService, NewEntry } from 'app/core/ui-services/base-import.service';
-import { Category } from 'app/shared/models/motions/category';
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
-import { CreateMotion } from '../models/create-motion';
-import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
-import { motionExportOnly, motionImportExportHeaderOrder } from '../motion-import-export-order';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
-import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
-import { ViewCsvCreateMotion, CsvMapping } from '../models/view-csv-create-motion';
-import { ViewMotion } from '../models/view-motion';
 import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
+import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
+import { BaseImportService, NewEntry } from 'app/core/ui-services/base-import.service';
 import { Tag } from 'app/shared/models/core/tag';
+import { Category } from 'app/shared/models/motions/category';
+import { MotionBlock } from 'app/shared/models/motions/motion-block';
+import { CreateMotion } from '../models/create-motion';
+import { motionExportOnly, motionImportExportHeaderOrder } from '../motion-import-export-order';
+import { CsvMapping, ViewCsvCreateMotion } from '../models/view-csv-create-motion';
+import { ViewMotion } from '../models/view-motion';
 
 /**
  * Service for motion imports

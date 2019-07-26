@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FormBuilder } from '@angular/forms';
 
 import { E2EImportsModule } from 'e2e-imports.module';
+
 import { AgendaContentObjectFormComponent } from './agenda-content-object-form.component';
 
 describe('AgendaContentObjectFormComponent', () => {

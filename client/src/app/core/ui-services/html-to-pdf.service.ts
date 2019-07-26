@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+
 import { LineNumberingMode } from 'app/site/motions/models/view-motion';
 
 /**
@@ -407,7 +408,7 @@ export class HtmlToPdfService {
      * @param styles the styles array, usually just to parse back into the `parseElement` function
      * @returns an array of parsed children
      */
-    private parseChildren(element: Element, styles?: Array<string>): Element[] {
+    private parseChildren(element: Element, styles?: string[]): Element[] {
         const childNodes = Array.from(element.childNodes) as Element[];
         const paragraph = [];
         if (childNodes.length > 0) {

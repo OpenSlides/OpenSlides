@@ -1,11 +1,11 @@
-import { Injectable, Inject, Injector, NgModuleFactoryLoader, ComponentFactory, Type } from '@angular/core';
+import { ComponentFactory, Inject, Injectable, Injector, NgModuleFactoryLoader, Type } from '@angular/core';
 
-import { SlideManifest, SlideDynamicConfiguration, Slide } from '../slide-manifest';
-import { SLIDE } from '../slide-token';
-import { SLIDE_MANIFESTS } from '../slide-manifest';
-import { BaseSlideComponent } from '../base-slide-component';
-import { ProjectorElement, IdentifiableProjectorElement } from 'app/shared/models/core/projector';
 import { allSlidesDynamicConfiguration } from '../all-slide-configurations';
+import { IdentifiableProjectorElement, ProjectorElement } from 'app/shared/models/core/projector';
+import { BaseSlideComponent } from '../base-slide-component';
+import { Slide, SlideDynamicConfiguration, SlideManifest } from '../slide-manifest';
+import { SLIDE_MANIFESTS } from '../slide-manifest';
+import { SLIDE } from '../slide-token';
 
 /**
  * Cares about loading slides dynamically.

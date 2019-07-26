@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 
-import { WebsocketService } from './websocket.service';
 import { ConstantsService } from './constants.service';
+import { DataStoreService } from './data-store.service';
 import { OpenSlidesStatusService } from './openslides-status.service';
 import { OperatorService } from './operator.service';
-import { DataStoreService } from './data-store.service';
+import { WebsocketService } from './websocket.service';
 
 interface OpenSlidesSettings {
     PRIORITIZED_GROUP_IDS?: number[];

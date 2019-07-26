@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 
-import { DataStoreService } from '../core-services/data-store.service';
-import { OperatorService } from '../core-services/operator.service';
-import { PersonalNote, PersonalNoteObject, PersonalNoteContent } from '../../shared/models/users/personal-note';
-import { BaseModel } from '../../shared/models/base/base-model';
-import { HttpService } from '../core-services/http.service';
 import { BaseViewModel } from 'app/site/base/base-view-model';
+import { BaseModel } from '../../shared/models/base/base-model';
+import { DataStoreService } from '../core-services/data-store.service';
+import { HttpService } from '../core-services/http.service';
+import { OperatorService } from '../core-services/operator.service';
+import { PersonalNote, PersonalNoteContent, PersonalNoteObject } from '../../shared/models/users/personal-note';
 
 /**
  * Handles saving personal notes.

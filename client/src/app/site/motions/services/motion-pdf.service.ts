@@ -2,22 +2,22 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { CalculablePollKey } from 'app/core/ui-services/poll.service';
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
-import { ConfigService } from 'app/core/ui-services/config.service';
-import { getRecommendationTypeName } from 'app/shared/utils/recommendation-type-names';
-import { HtmlToPdfService } from 'app/core/ui-services/html-to-pdf.service';
-import { MotionPollService } from './motion-poll.service';
+import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions/statute-paragraph-repository.service';
-import { ChangeRecoMode, LineNumberingMode, ViewMotion } from '../models/view-motion';
+import { ConfigService } from 'app/core/ui-services/config.service';
+import { HtmlToPdfService } from 'app/core/ui-services/html-to-pdf.service';
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
-import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
 import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
+import { CalculablePollKey } from 'app/core/ui-services/poll.service';
+import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/motions/view-unified-change';
+import { getRecommendationTypeName } from 'app/shared/utils/recommendation-type-names';
+import { ExportFormData } from '../modules/motion-list/components/motion-export-dialog/motion-export-dialog.component';
+import { MotionPollService } from './motion-poll.service';
+import { ChangeRecoMode, LineNumberingMode, ViewMotion } from '../models/view-motion';
 import { ViewMotionAmendedParagraph } from '../models/view-motion-amended-paragraph';
 import { ViewMotionChangeRecommendation } from '../models/view-motion-change-recommendation';
-import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/motions/view-unified-change';
-import { ExportFormData } from '../modules/motion-list/components/motion-export-dialog/motion-export-dialog.component';
 
 /**
  * Type declaring which strings are valid options for metainfos to be exported into a pdf

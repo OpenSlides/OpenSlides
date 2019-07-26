@@ -1,7 +1,9 @@
 import { InjectionToken } from '@angular/core';
-import { IdentifiableProjectorElement, ProjectorElement } from 'app/shared/models/core/projector';
+
 import { TranslateService } from '@ngx-translate/core';
+
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { IdentifiableProjectorElement, ProjectorElement } from 'app/shared/models/core/projector';
 
 type BooleanOrFunction = boolean | ((element: ProjectorElement) => boolean);
 

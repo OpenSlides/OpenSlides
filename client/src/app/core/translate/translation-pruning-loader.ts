@@ -1,7 +1,8 @@
-import { TranslateLoader } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators/';
+
+import { TranslateLoader } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators/';
 
 /**
  * Translation loader that replaces empty strings with nothing.

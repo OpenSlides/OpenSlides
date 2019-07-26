@@ -1,19 +1,19 @@
 import { Component, Input } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
-import { BehaviorSubject, Observable } from 'rxjs';
 
 import { TranslateService } from '@ngx-translate/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 
-import { BaseViewComponent } from 'app/site/base/base-view';
-import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
-import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
-import { User } from 'app/shared/models/users/user';
-import { ViewUser } from 'app/site/users/models/view-user';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
+import { User } from 'app/shared/models/users/user';
+import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
+import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
+import { ViewUser } from 'app/site/users/models/view-user';
 
 /**
  * Component for the motion comments view

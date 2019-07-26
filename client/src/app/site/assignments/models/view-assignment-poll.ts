@@ -1,9 +1,9 @@
 import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
+import { AssignmentPollOption } from 'app/shared/models/assignments/assignment-poll-option';
+import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
+import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { AssignmentPollMethod } from '../services/assignment-poll.service';
 import { ViewAssignmentPollOption } from './view-assignment-poll-option';
-import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
-import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
-import { AssignmentPollOption } from 'app/shared/models/assignments/assignment-poll-option';
 
 export class ViewAssignmentPoll extends BaseProjectableViewModel<AssignmentPoll> {
     public static COLLECTIONSTRING = AssignmentPoll.COLLECTIONSTRING;

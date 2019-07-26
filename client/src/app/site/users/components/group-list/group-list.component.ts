@@ -1,16 +1,17 @@
-import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
-import { Title } from '@angular/platform-browser';
-import { TranslateService } from '@ngx-translate/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 
-import { GroupRepositoryService, AppPermissions } from 'app/core/repositories/users/group-repository.service';
-import { ViewGroup } from '../../models/view-group';
+import { TranslateService } from '@ngx-translate/core';
+
+import { AppPermissions, GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 import { Group } from 'app/shared/models/users/group';
 import { BaseViewComponent } from 'app/site/base/base-view';
-import { PromptService } from 'app/core/ui-services/prompt.service';
+import { ViewGroup } from '../../models/view-group';
 
 /**
  * Component for the Group-List and permission matrix

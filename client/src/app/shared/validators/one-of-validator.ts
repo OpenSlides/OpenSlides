@@ -1,4 +1,4 @@
-import { ValidationErrors, AbstractControl } from '@angular/forms';
+import { AbstractControl, ValidationErrors } from '@angular/forms';
 
 /**
  * Custom validator class

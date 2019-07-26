@@ -1,13 +1,13 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { AuthService } from 'app/core/core-services/auth.service';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { Subject } from 'rxjs';
 
+import { AuthService } from 'app/core/core-services/auth.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
+import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
 import { ViewProjector } from 'app/site/projector/models/view-projector';
 import { Size } from 'app/site/projector/size';
-import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
 
 /**
  * The fullscreen projector. Bootstraps OpenSlides, gets the requested projector,

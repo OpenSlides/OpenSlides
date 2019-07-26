@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
-import { Displayable } from 'app/site/base/displayable';
 import { Identifiable } from 'app/shared/models/base/identifiable';
+import { Displayable } from 'app/site/base/displayable';
 
 /**
  * A basic representation of a tree node. This node does not stores any data.

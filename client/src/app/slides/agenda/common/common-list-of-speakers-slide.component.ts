@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
-import { BaseSlideComponent } from 'app/slides/base-slide-component';
-import { CommonListOfSpeakersSlideData } from './common-list-of-speakers-slide-data';
 import { CollectionStringMapperService } from 'app/core/core-services/collection-string-mapper.service';
 import { isBaseIsAgendaItemContentObjectRepository } from 'app/core/repositories/base-is-agenda-item-content-object-repository';
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { BaseSlideComponent } from 'app/slides/base-slide-component';
+import { CommonListOfSpeakersSlideData } from './common-list-of-speakers-slide-data';
 
 @Component({
     selector: 'os-common-list-of-speakers-slide',

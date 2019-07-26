@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { StorageService } from 'app/core/core-services/storage.service';
+import { Deferred } from 'app/core/deferred';
 import { _ } from 'app/core/translate/translation-marker';
 import { BaseSortListService, OsSortingDefinition, OsSortingOption } from 'app/core/ui-services/base-sort-list.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { Deferred } from 'app/core/deferred';
-import { StorageService } from 'app/core/core-services/storage.service';
 import { ViewMotion } from '../models/view-motion';
 
 /**

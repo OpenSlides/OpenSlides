@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { Title } from '@angular/platform-browser';
+import { FormControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Title } from '@angular/platform-browser';
 
-import { auditTime, debounceTime } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
+import { auditTime, debounceTime } from 'rxjs/operators';
 
 import { DataStoreService } from 'app/core/core-services/data-store.service';
-import { SearchService, SearchModel, SearchResult } from 'app/core/ui-services/search.service';
+import { SearchModel, SearchResult, SearchService } from 'app/core/ui-services/search.service';
 import { BaseViewComponent } from '../../../base/base-view';
-import { FormControl } from '@angular/forms';
 
 type SearchModelEnabled = SearchModel & { enabled: boolean };
 

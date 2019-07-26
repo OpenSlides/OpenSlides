@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { Title } from '@angular/platform-browser';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseViewComponent } from 'app/site/base/base-view';
-import { PromptService } from 'app/core/ui-services/prompt.service';
-import { StatuteCsvExportService } from 'app/site/motions/services/statute-csv-export.service';
-import { StatuteParagraph } from 'app/shared/models/motions/statute-paragraph';
 import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions/statute-paragraph-repository.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
+import { StatuteParagraph } from 'app/shared/models/motions/statute-paragraph';
+import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewStatuteParagraph } from 'app/site/motions/models/view-statute-paragraph';
+import { StatuteCsvExportService } from 'app/site/motions/services/statute-csv-export.service';
 
 /**
  * List view for the statute paragraphs.

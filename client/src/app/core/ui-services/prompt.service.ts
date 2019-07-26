@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { PromptDialogComponent } from '../../shared/components/prompt-dialog/prompt-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+
+import { PromptDialogComponent } from '../../shared/components/prompt-dialog/prompt-dialog.component';
 
 /**
  * A general service for prompting 'yes' or 'cancel' thinks from the user.

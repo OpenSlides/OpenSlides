@@ -1,7 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MediaUploadComponent } from './media-upload.component';
 import { E2EImportsModule } from 'e2e-imports.module';
+
+import { MediaUploadComponent } from './media-upload.component';
 
 describe('MediaUploadComponent', () => {
     let component: MediaUploadComponent;

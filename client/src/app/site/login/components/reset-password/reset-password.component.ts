@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { Title } from '@angular/platform-browser';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
-
 import { environment } from 'environments/environment';
+
 import { HttpService } from 'app/core/core-services/http.service';
 import { BaseViewComponent } from 'app/site/base/base-view';
 

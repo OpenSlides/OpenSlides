@@ -1,10 +1,10 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 
-import { MotionBlockRoutingModule } from './motion-block-routing.module';
-import { MotionBlockListComponent } from './components/motion-block-list/motion-block-list.component';
-import { MotionBlockDetailComponent } from './components/motion-block-detail/motion-block-detail.component';
 import { SharedModule } from 'app/shared/shared.module';
+import { MotionBlockDetailComponent } from './components/motion-block-detail/motion-block-detail.component';
+import { MotionBlockListComponent } from './components/motion-block-list/motion-block-list.component';
+import { MotionBlockRoutingModule } from './motion-block-routing.module';
 
 @NgModule({
     declarations: [MotionBlockListComponent, MotionBlockDetailComponent],

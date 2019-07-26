@@ -3,11 +3,11 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { ProjectorService } from 'app/core/core-services/projector.service';
-import { ViewProjector } from '../models/view-projector';
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
-import { SlideManager } from 'app/slides/services/slide-manager.service';
 import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
 import { isBaseViewModelWithListOfSpeakers } from 'app/site/base/base-view-model-with-list-of-speakers';
+import { SlideManager } from 'app/slides/services/slide-manager.service';
+import { ViewProjector } from '../models/view-projector';
 
 /**
  * Observes the projector config for a given projector and returns a observable of the

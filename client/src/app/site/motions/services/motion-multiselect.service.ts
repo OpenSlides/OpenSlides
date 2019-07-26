@@ -2,23 +2,23 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
-import { ChoiceDialogOptions } from 'app/shared/components/choice-dialog/choice-dialog.component';
-import { ChoiceService } from 'app/core/ui-services/choice.service';
-import { Displayable } from 'app/site/base/displayable';
 import { HttpService } from 'app/core/core-services/http.service';
-import { Identifiable } from 'app/shared/models/base/identifiable';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
+import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
+import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
+import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
+import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
+import { ChoiceService } from 'app/core/ui-services/choice.service';
 import { PersonalNoteService } from 'app/core/ui-services/personal-note.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
-import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
-import { TreeService } from 'app/core/ui-services/tree.service';
-import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
-import { ViewMotion } from '../models/view-motion';
-import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
 import { SpinnerService } from 'app/core/ui-services/spinner.service';
+import { TreeService } from 'app/core/ui-services/tree.service';
+import { ChoiceDialogOptions } from 'app/shared/components/choice-dialog/choice-dialog.component';
+import { Identifiable } from 'app/shared/models/base/identifiable';
+import { Displayable } from 'app/site/base/displayable';
+import { ViewMotion } from '../models/view-motion';
 
 /**
  * Contains all multiselect actions for the motion list view.

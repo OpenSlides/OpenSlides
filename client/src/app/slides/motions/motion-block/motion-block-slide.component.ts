@@ -2,10 +2,10 @@ import { Component, Input } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { MotionBlockSlideData, MotionBlockSlideMotionRepresentation } from './motion-block-slide-data';
+import { SlideData } from 'app/core/core-services/projector-data.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { BaseMotionSlideComponent } from '../base/base-motion-slide';
-import { SlideData } from 'app/core/core-services/projector-data.service';
+import { MotionBlockSlideData, MotionBlockSlideMotionRepresentation } from './motion-block-slide-data';
 
 // Layout:
 // 1) Long layout: Motion title is shown and the motions are

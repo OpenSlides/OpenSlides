@@ -1,16 +1,16 @@
 import { AppConfig } from '../../core/app-config';
-import { Projector } from 'app/shared/models/core/projector';
-import { Countdown } from 'app/shared/models/core/countdown';
-import { ProjectorMessage } from 'app/shared/models/core/projector-message';
-import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
 import { CountdownRepositoryService } from 'app/core/repositories/projector/countdown-repository.service';
-import { ProjectorMessageRepositoryService } from 'app/core/repositories/projector/projector-message-repository.service';
-import { ViewProjector } from './models/view-projector';
-import { ViewCountdown } from './models/view-countdown';
-import { ViewProjectorMessage } from './models/view-projector-message';
-import { ProjectionDefault } from 'app/shared/models/core/projection-default';
-import { ViewProjectionDefault } from './models/view-projection-default';
 import { ProjectionDefaultRepositoryService } from 'app/core/repositories/projector/projection-default-repository.service';
+import { ProjectorMessageRepositoryService } from 'app/core/repositories/projector/projector-message-repository.service';
+import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
+import { Countdown } from 'app/shared/models/core/countdown';
+import { ProjectionDefault } from 'app/shared/models/core/projection-default';
+import { Projector } from 'app/shared/models/core/projector';
+import { ProjectorMessage } from 'app/shared/models/core/projector-message';
+import { ViewCountdown } from './models/view-countdown';
+import { ViewProjectionDefault } from './models/view-projection-default';
+import { ViewProjector } from './models/view-projector';
+import { ViewProjectorMessage } from './models/view-projector-message';
 
 export const ProjectorAppConfig: AppConfig = {
     name: 'projector',

@@ -1,7 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MetaTextBlockComponent } from './meta-text-block.component';
 import { E2EImportsModule } from 'e2e-imports.module';
+
+import { MetaTextBlockComponent } from './meta-text-block.component';
 
 describe('MetaTextBlockComponent', () => {
     let component: MetaTextBlockComponent;

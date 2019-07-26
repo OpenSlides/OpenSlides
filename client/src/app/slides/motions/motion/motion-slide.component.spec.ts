@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MotionSlideComponent } from './motion-slide.component';
 import { E2EImportsModule } from '../../../../e2e-imports.module';
+import { MotionSlideComponent } from './motion-slide.component';
 
 describe('MotionsMotionSlideComponent', () => {
     let component: MotionSlideComponent;

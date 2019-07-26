@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+
 import { BaseSlideComponent } from 'app/slides/base-slide-component';
 import { TopicSlideData } from './topic-slide-data';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
     selector: 'os-topic-slide',

@@ -1,5 +1,5 @@
-import { ConfigService } from 'app/core/ui-services/config.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
 import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
 
 /**

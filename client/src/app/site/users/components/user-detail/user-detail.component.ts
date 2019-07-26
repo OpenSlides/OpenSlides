@@ -1,21 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Title, SafeHtml, DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseViewComponent } from 'app/site/base/base-view';
-import { genders, User } from 'app/shared/models/users/user';
 import { OperatorService } from 'app/core/core-services/operator.service';
-import { PromptService } from 'app/core/ui-services/prompt.service';
-import { UserPdfExportService } from '../../services/user-pdf-export.service';
-import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
-import { ViewUser } from '../../models/view-user';
-import { ViewGroup } from '../../models/view-group';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
+import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
+import { genders, User } from 'app/shared/models/users/user';
 import { OneOfValidator } from 'app/shared/validators/one-of-validator';
+import { BaseViewComponent } from 'app/site/base/base-view';
+import { UserPdfExportService } from '../../services/user-pdf-export.service';
+import { ViewGroup } from '../../models/view-group';
+import { ViewUser } from '../../models/view-user';
 
 /**
  * Users detail component for both new and existing users

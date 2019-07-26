@@ -3,8 +3,8 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseComponent } from '../../../../base.component';
 import { LoginDataService } from 'app/core/ui-services/login-data.service';
+import { BaseComponent } from '../../../../base.component';
 
 /**
  * Login component.

@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 
 import { environment } from 'environments/environment';
-import { CollectionStringMapperService } from './collection-string-mapper.service';
-import { History } from 'app/shared/models/core/history';
-import { DataStoreService, DataStoreUpdateManagerService } from './data-store.service';
-import { WebsocketService } from './websocket.service';
+
 import { BaseModel } from 'app/shared/models/base/base-model';
+import { History } from 'app/shared/models/core/history';
+import { CollectionStringMapperService } from './collection-string-mapper.service';
+import { DataStoreService, DataStoreUpdateManagerService } from './data-store.service';
+import { HttpService } from './http.service';
 import { OpenSlidesStatusService } from './openslides-status.service';
 import { OpenSlidesService } from './openslides.service';
-import { HttpService } from './http.service';
+import { WebsocketService } from './websocket.service';
 
 /**
  * Interface for full history data objects.

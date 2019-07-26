@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 
-import { AssignmentPdfService } from './assignment-pdf.service';
 import { E2EImportsModule } from 'e2e-imports.module';
+
+import { AssignmentPdfService } from './assignment-pdf.service';
 
 describe('AssignmentPdfService', () => {
     beforeEach(() =>

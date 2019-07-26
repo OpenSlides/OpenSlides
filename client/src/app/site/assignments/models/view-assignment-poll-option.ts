@@ -1,6 +1,6 @@
-import { AssignmentPollOption, AssignmentOptionVote } from 'app/shared/models/assignments/assignment-poll-option';
-import { BaseViewModel } from 'app/site/base/base-view-model';
 import { PollVoteValue } from 'app/core/ui-services/poll.service';
+import { AssignmentOptionVote, AssignmentPollOption } from 'app/shared/models/assignments/assignment-poll-option';
+import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ViewUser } from 'app/site/users/models/view-user';
 
 /**

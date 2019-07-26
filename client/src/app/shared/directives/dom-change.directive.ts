@@ -1,4 +1,4 @@
-import { Directive, Output, EventEmitter, ElementRef, OnDestroy } from '@angular/core';
+import { Directive, ElementRef, EventEmitter, OnDestroy, Output } from '@angular/core';
 
 /**
  * detects changes in DOM and emits a signal on changes.

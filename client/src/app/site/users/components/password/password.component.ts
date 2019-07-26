@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { ViewUser } from '../../models/view-user';
-import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
+import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { BaseViewComponent } from 'app/site/base/base-view';
+import { ViewUser } from '../../models/view-user';
 
 /**
  * Component for the Password-Reset Handling

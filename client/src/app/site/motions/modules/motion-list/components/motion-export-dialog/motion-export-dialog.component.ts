@@ -1,16 +1,17 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatButtonToggle } from '@angular/material/button-toggle';
 import { MatDialogRef } from '@angular/material/dialog';
 
-import { ConfigService } from 'app/core/ui-services/config.service';
+import { auditTime } from 'rxjs/operators';
+
+import { StorageService } from 'app/core/core-services/storage.service';
 import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
-import { LineNumberingMode, ChangeRecoMode } from 'app/site/motions/models/view-motion';
-import { InfoToExport } from 'app/site/motions/services/motion-pdf.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
+import { ChangeRecoMode, LineNumberingMode } from 'app/site/motions/models/view-motion';
 import { ViewMotionCommentSection } from 'app/site/motions/models/view-motion-comment-section';
 import { motionImportExportHeaderOrder, noMetaData } from 'app/site/motions/motion-import-export-order';
-import { StorageService } from 'app/core/core-services/storage.service';
-import { auditTime } from 'rxjs/operators';
+import { InfoToExport } from 'app/site/motions/services/motion-pdf.service';
 
 /**
  * Determine the possible file format

@@ -1,7 +1,7 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 
-import { WorkflowRepositoryService } from './workflow-repository.service';
 import { E2EImportsModule } from '../../../../e2e-imports.module';
+import { WorkflowRepositoryService } from './workflow-repository.service';
 
 describe('WorkflowRepositoryService', () => {
     beforeEach(() => {

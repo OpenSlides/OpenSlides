@@ -1,7 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LoginWrapperComponent } from './login-wrapper.component';
 import { E2EImportsModule } from 'e2e-imports.module';
+
+import { LoginWrapperComponent } from './login-wrapper.component';
 
 describe('LoginComponent', () => {
     let component: LoginWrapperComponent;

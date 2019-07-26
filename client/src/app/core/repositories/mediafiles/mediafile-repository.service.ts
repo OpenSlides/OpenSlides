@@ -1,21 +1,21 @@
-import { Injectable } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
-import { map, first } from 'rxjs/operators';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { first, map } from 'rxjs/operators';
 
-import { ViewMediafile, MediafileTitleInformation } from 'app/site/mediafiles/models/view-mediafile';
-import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
-import { DataStoreService } from '../../core-services/data-store.service';
-import { Identifiable } from 'app/shared/models/base/identifiable';
-import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataSendService } from 'app/core/core-services/data-send.service';
 import { HttpService } from 'app/core/core-services/http.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
-import { BaseIsListOfSpeakersContentObjectRepository } from '../base-is-list-of-speakers-content-object-repository';
+import { Identifiable } from 'app/shared/models/base/identifiable';
+import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
+import { MediafileTitleInformation, ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewGroup } from 'app/site/users/models/view-group';
+import { BaseIsListOfSpeakersContentObjectRepository } from '../base-is-list-of-speakers-content-object-repository';
 import { RelationDefinition } from '../base-repository';
+import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
+import { DataStoreService } from '../../core-services/data-store.service';
 
 const MediafileRelations: RelationDefinition[] = [
     {

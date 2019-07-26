@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
-import { Projectable, ProjectorElementBuildDeskriptor, isProjectable } from 'app/site/base/projectable';
 import {
     ProjectionDialogComponent,
     ProjectionDialogReturnType
 } from 'app/shared/components/projection-dialog/projection-dialog.component';
-import { ProjectorService } from '../core-services/projector.service';
+import { isProjectable, Projectable, ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { ConfigService } from './config.service';
+import { ProjectorService } from '../core-services/projector.service';
 
 /**
  * Manages the projection dialog. Projects the result of the user's choice.

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Worksheet, Workbook, Color, FillPatterns } from 'exceljs/dist/exceljs.min.js';
+import { Color, FillPatterns, Workbook, Worksheet } from 'exceljs/dist/exceljs.min.js';
 import { saveAs } from 'file-saver';
 
 // interface required for filling cells (`cell.fill`)
@@ -56,7 +56,7 @@ export class XlsxExportServiceService {
             return;
         }
 
-        const maxColumnLengths: Array<number> = [];
+        const maxColumnLengths: number[] = [];
         sheet.eachRow((row, rowNum) => {
             if (rowNum < fromRow) {
                 return;

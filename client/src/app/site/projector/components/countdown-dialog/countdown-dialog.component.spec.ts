@@ -1,8 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
-import { CountdownDialogComponent, CountdownData } from './countdown-dialog.component';
 import { E2EImportsModule } from 'e2e-imports.module';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+
+import { CountdownData, CountdownDialogComponent } from './countdown-dialog.component';
 
 describe('CountdownDialogComponent', () => {
     let component: CountdownDialogComponent;

@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 
-import { TimeTravelService } from './time-travel.service';
 import { E2EImportsModule } from 'e2e-imports.module';
+
+import { TimeTravelService } from './time-travel.service';
 
 describe('TimeTravelService', () => {
     beforeEach(() =>

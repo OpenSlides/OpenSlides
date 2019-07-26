@@ -1,7 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MessageControlsComponent } from './message-controls.component';
 import { E2EImportsModule } from 'e2e-imports.module';
+
+import { MessageControlsComponent } from './message-controls.component';
 
 describe('MessageControlsComponent', () => {
     let component: MessageControlsComponent;

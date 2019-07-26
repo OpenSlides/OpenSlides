@@ -1,27 +1,27 @@
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model';
-import { BaseRepository, RelationDefinition } from './base-repository';
-import {
-    isBaseIsAgendaItemContentObjectRepository,
-    IBaseIsAgendaItemContentObjectRepository
-} from './base-is-agenda-item-content-object-repository';
-import {
-    isBaseIsListOfSpeakersContentObjectRepository,
-    IBaseIsListOfSpeakersContentObjectRepository
-} from './base-is-list-of-speakers-content-object-repository';
-import { DataStoreService } from '../core-services/data-store.service';
-import { DataSendService } from '../core-services/data-send.service';
-import { ViewModelStoreService } from '../core-services/view-model-store.service';
-import { CollectionStringMapperService } from '../core-services/collection-string-mapper.service';
-import {
-    TitleInformationWithAgendaItem,
-    IBaseViewModelWithAgendaItem
-} from 'app/site/base/base-view-model-with-agenda-item';
-import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
-import { IBaseViewModelWithListOfSpeakers } from 'app/site/base/base-view-model-with-list-of-speakers';
+import { BaseModel, ModelConstructor } from 'app/shared/models/base/base-model';
 import { ViewItem } from 'app/site/agenda/models/view-item';
 import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
+import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
+import {
+    IBaseViewModelWithAgendaItem,
+    TitleInformationWithAgendaItem
+} from 'app/site/base/base-view-model-with-agenda-item';
+import { IBaseViewModelWithListOfSpeakers } from 'app/site/base/base-view-model-with-list-of-speakers';
+import {
+    IBaseIsAgendaItemContentObjectRepository,
+    isBaseIsAgendaItemContentObjectRepository
+} from './base-is-agenda-item-content-object-repository';
+import {
+    IBaseIsListOfSpeakersContentObjectRepository,
+    isBaseIsListOfSpeakersContentObjectRepository
+} from './base-is-list-of-speakers-content-object-repository';
+import { BaseRepository, RelationDefinition } from './base-repository';
+import { CollectionStringMapperService } from '../core-services/collection-string-mapper.service';
+import { DataSendService } from '../core-services/data-send.service';
+import { DataStoreService } from '../core-services/data-store.service';
+import { ViewModelStoreService } from '../core-services/view-model-store.service';
 
 export function isBaseIsAgendaItemAndListOfSpeakersContentObjectRepository(
     obj: any

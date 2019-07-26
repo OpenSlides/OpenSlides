@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Title, DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core'; // showcase
 

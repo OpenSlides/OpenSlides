@@ -1,6 +1,6 @@
 import { AppConfig } from '../../core/app-config';
-import { Assignment } from '../../shared/models/assignments/assignment';
 import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
+import { Assignment } from '../../shared/models/assignments/assignment';
 import { ViewAssignment } from './models/view-assignment';
 
 export const AssignmentsAppConfig: AppConfig = {

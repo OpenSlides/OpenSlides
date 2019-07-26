@@ -1,11 +1,11 @@
-import { Injectable, ApplicationRef } from '@angular/core';
+import { ApplicationRef, Injectable } from '@angular/core';
 
 import { first, take } from 'rxjs/operators';
 
-import { WebsocketService } from './websocket.service';
-import { TimeoutPromise } from '../timeout-promise';
 import { ConstantsService } from './constants.service';
 import { Deferred } from '../deferred';
+import { TimeoutPromise } from '../timeout-promise';
+import { WebsocketService } from './websocket.service';
 
 interface OpenSlidesSettings {
     PING_INTERVAL?: number;

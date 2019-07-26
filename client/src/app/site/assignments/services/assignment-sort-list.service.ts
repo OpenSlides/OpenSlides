@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseSortListService, OsSortingDefinition, OsSortingOption } from 'app/core/ui-services/base-sort-list.service';
 import { StorageService } from 'app/core/core-services/storage.service';
+import { BaseSortListService, OsSortingDefinition, OsSortingOption } from 'app/core/ui-services/base-sort-list.service';
 import { ViewAssignment } from '../models/view-assignment';
 
 /**

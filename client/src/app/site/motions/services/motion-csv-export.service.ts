@@ -2,21 +2,21 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
+import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
+import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
 import {
     CsvColumnDefinitionMap,
     CsvColumnDefinitionProperty,
     CsvExportService
 } from 'app/core/ui-services/csv-export.service';
-import { sortMotionPropertyList } from '../motion-import-export-order';
-import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
-import { ChangeRecoMode, ViewMotion } from '../models/view-motion';
-import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
-import { ConfigService } from 'app/core/ui-services/config.service';
-import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change';
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
-import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
+import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change';
 import { reconvertChars } from 'app/shared/utils/reconvert-chars';
 import { stripHtmlTags } from 'app/shared/utils/strip-html-tags';
+import { sortMotionPropertyList } from '../motion-import-export-order';
+import { ChangeRecoMode, ViewMotion } from '../models/view-motion';
 
 /**
  * Exports CSVs for motions. Collect all CSV types here to have them in one place.

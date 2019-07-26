@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { Papa } from 'ngx-papaparse';
 import { TranslateService } from '@ngx-translate/core';
+import { Papa } from 'ngx-papaparse';
 
+import { TopicRepositoryService } from 'app/core/repositories/topics/topic-repository.service';
 import { BaseImportService, NewEntry } from 'app/core/ui-services/base-import.service';
-import { CreateTopic } from '../../topics/models/create-topic';
 import { DurationService } from 'app/core/ui-services/duration.service';
 import { ItemVisibilityChoices } from 'app/shared/models/agenda/item';
-import { TopicRepositoryService } from 'app/core/repositories/topics/topic-repository.service';
 import { ViewCreateTopic } from 'app/site/topics/models/view-create-topic';
+import { CreateTopic } from '../../topics/models/create-topic';
 
 @Injectable({
     providedIn: 'root'

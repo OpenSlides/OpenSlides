@@ -2,28 +2,28 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { BaseModel } from 'app/shared/models/base/base-model';
+import { ProjectionDefault } from 'app/shared/models/core/projection-default';
 import {
-    Projectable,
-    ProjectorElementBuildDeskriptor,
-    isProjectable,
-    isProjectorElementBuildDeskriptor
-} from 'app/site/base/projectable';
-import { DataStoreService } from './data-store.service';
-import {
+    elementIdentifies,
+    IdentifiableProjectorElement,
     Projector,
     ProjectorElement,
-    ProjectorElements,
-    IdentifiableProjectorElement,
-    elementIdentifies
+    ProjectorElements
 } from 'app/shared/models/core/projector';
-import { HttpService } from './http.service';
-import { SlideManager } from 'app/slides/services/slide-manager.service';
-import { BaseModel } from 'app/shared/models/base/base-model';
-import { ViewModelStoreService } from './view-model-store.service';
 import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
+import {
+    isProjectable,
+    isProjectorElementBuildDeskriptor,
+    Projectable,
+    ProjectorElementBuildDeskriptor
+} from 'app/site/base/projectable';
+import { SlideManager } from 'app/slides/services/slide-manager.service';
 import { ConfigService } from '../ui-services/config.service';
+import { DataStoreService } from './data-store.service';
+import { HttpService } from './http.service';
 import { ProjectorDataService } from './projector-data.service';
-import { ProjectionDefault } from 'app/shared/models/core/projection-default';
+import { ViewModelStoreService } from './view-model-store.service';
 
 /**
  * This service cares about Projectables being projected and manage all projection-related

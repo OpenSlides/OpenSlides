@@ -1,6 +1,5 @@
-import { BaseModel } from '../base/base-model';
-
 import { _ } from 'app/core/translate/translation-marker';
+import { BaseModel } from '../base/base-model';
 
 /**
  * Iterable pre selection of genders (sexes)

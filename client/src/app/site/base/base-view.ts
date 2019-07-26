@@ -1,11 +1,11 @@
 import { OnDestroy } from '@angular/core';
-import { Title } from '@angular/platform-browser';
 import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material/snack-bar';
+import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 import { BaseComponent } from '../../base.component';
-import { Subscription } from 'rxjs';
 
 /**
  * A base class for all views. Implements a generic error handling by raising a snack bar

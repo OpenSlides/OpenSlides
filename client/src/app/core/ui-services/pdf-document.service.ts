@@ -1,13 +1,13 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { saveAs } from 'file-saver';
 
-import pdfMake from 'pdfmake/build/pdfmake';
 import { TranslateService } from '@ngx-translate/core';
+import { saveAs } from 'file-saver';
+import pdfMake from 'pdfmake/build/pdfmake';
 
+import { ExportFormData } from 'app/site/motions/modules/motion-list/components/motion-export-dialog/motion-export-dialog.component';
 import { ConfigService } from './config.service';
 import { HttpService } from '../core-services/http.service';
-import { ExportFormData } from 'app/site/motions/modules/motion-list/components/motion-export-dialog/motion-export-dialog.component';
 
 /**
  * Enumeration to define possible values for the styling.
@@ -736,7 +736,7 @@ export class PdfDocumentService {
         pageReference: string,
         style: StyleType = StyleType.DEFAULT,
         ...subTitle: object[]
-    ): Array<Object> {
+    ): Object[] {
         return [
             {
                 text: identifier,

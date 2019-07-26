@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { StatuteParagraph } from 'app/shared/models/motions/statute-paragraph';
+import { StatuteParagraphTitleInformation, ViewStatuteParagraph } from 'app/site/motions/models/view-statute-paragraph';
+import { BaseRepository } from '../base-repository';
+import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
-import { BaseRepository } from '../base-repository';
-import { ViewStatuteParagraph, StatuteParagraphTitleInformation } from 'app/site/motions/models/view-statute-paragraph';
-import { StatuteParagraph } from 'app/shared/models/motions/statute-paragraph';
-import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
-import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 
 /**
  * Repository Services for statute paragraphs

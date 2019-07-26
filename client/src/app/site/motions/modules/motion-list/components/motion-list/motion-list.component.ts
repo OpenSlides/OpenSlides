@@ -1,39 +1,39 @@
-import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Title } from '@angular/platform-browser';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Title } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition } from '@pebula/ngrid';
 
+import { StorageService } from 'app/core/core-services/storage.service';
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
-import { ConfigService } from 'app/core/ui-services/config.service';
-import { BaseListViewComponent } from 'app/site/base/base-list-view';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
-import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
-import { ViewTag } from 'app/site/tags/models/view-tag';
 import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
-import {
-    MotionExportDialogComponent,
-    FileFormat,
-    ExportFormData
-} from '../motion-export-dialog/motion-export-dialog.component';
-import { ViewMotion } from 'app/site/motions/models/view-motion';
-import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
-import { ViewCategory } from 'app/site/motions/models/view-category';
-import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
-import { MotionSortListService } from 'app/site/motions/services/motion-sort-list.service';
-import { MotionFilterListService } from 'app/site/motions/services/motion-filter-list.service';
-import { MotionCsvExportService } from 'app/site/motions/services/motion-csv-export.service';
-import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-export.service';
-import { MotionMultiselectService } from 'app/site/motions/services/motion-multiselect.service';
-import { MotionXlsxExportService } from 'app/site/motions/services/motion-xlsx-export.service';
-import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
-import { StorageService } from 'app/core/core-services/storage.service';
+import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
 import { PdfError } from 'app/core/ui-services/pdf-document.service';
 import { ColumnRestriction } from 'app/shared/components/list-view-table/list-view-table.component';
+import { BaseListViewComponent } from 'app/site/base/base-list-view';
+import { ViewCategory } from 'app/site/motions/models/view-category';
+import { ViewMotion } from 'app/site/motions/models/view-motion';
+import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
+import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
+import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
+import { MotionCsvExportService } from 'app/site/motions/services/motion-csv-export.service';
+import { MotionFilterListService } from 'app/site/motions/services/motion-filter-list.service';
+import { MotionMultiselectService } from 'app/site/motions/services/motion-multiselect.service';
+import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-export.service';
+import { MotionSortListService } from 'app/site/motions/services/motion-sort-list.service';
+import { MotionXlsxExportService } from 'app/site/motions/services/motion-xlsx-export.service';
+import { ViewTag } from 'app/site/tags/models/view-tag';
+import {
+    ExportFormData,
+    FileFormat,
+    MotionExportDialogComponent
+} from '../motion-export-dialog/motion-export-dialog.component';
 
 interface TileCategoryInformation {
     filter: string;

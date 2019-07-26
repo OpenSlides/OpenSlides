@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 
-import { MotionBlockSortService } from './motion-block-sort.service';
 import { E2EImportsModule } from 'e2e-imports.module';
+
+import { MotionBlockSortService } from './motion-block-sort.service';
 
 describe('MotionBlockSortService', () => {
     beforeEach(() =>

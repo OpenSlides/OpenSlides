@@ -1,14 +1,15 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-
-import { BaseViewComponent } from 'app/site/base/base-view';
-import { Projector } from 'app/shared/models/core/projector';
-import { ProjectorMessageRepositoryService } from 'app/core/repositories/projector/projector-message-repository.service';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ViewProjectorMessage } from '../../models/view-projector-message';
-import { PromptService } from 'app/core/ui-services/prompt.service';
-import { TranslateService } from '@ngx-translate/core';
 import { Title } from '@angular/platform-browser';
+
+import { TranslateService } from '@ngx-translate/core';
+
+import { ProjectorMessageRepositoryService } from 'app/core/repositories/projector/projector-message-repository.service';
 import { ProjectionDialogService } from 'app/core/ui-services/projection-dialog.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
+import { Projector } from 'app/shared/models/core/projector';
+import { BaseViewComponent } from 'app/site/base/base-view';
+import { ViewProjectorMessage } from '../../models/view-projector-message';
 
 /**
  * Small controls component for messages.

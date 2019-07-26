@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { formatQueryParams, QueryParams } from '../query-params';
 import { OpenSlidesStatusService } from './openslides-status.service';
+import { formatQueryParams, QueryParams } from '../query-params';
 
 /**
  * Enum for different HTTPMethods

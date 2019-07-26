@@ -1,19 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { Title } from '@angular/platform-browser';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
 
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
+import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 import { MotionCommentSection } from 'app/shared/models/motions/motion-comment-section';
 import { BaseViewComponent } from 'app/site/base/base-view';
-import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
-import { PromptService } from 'app/core/ui-services/prompt.service';
-
-import { ViewGroup } from 'app/site/users/models/view-group';
-import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { ViewMotionCommentSection } from 'app/site/motions/models/view-motion-comment-section';
+import { ViewGroup } from 'app/site/users/models/view-group';
 
 /**
  * List view for the comment sections.

@@ -1,5 +1,5 @@
-import { AssignmentRelatedUser } from './assignment-related-user';
 import { AssignmentPoll } from './assignment-poll';
+import { AssignmentRelatedUser } from './assignment-related-user';
 import { BaseModelWithAgendaItemAndListOfSpeakers } from '../base/base-model-with-agenda-item-and-list-of-speakers';
 
 /**

@@ -1,7 +1,7 @@
-import { BaseViewModel } from '../../base/base-view-model';
+import { SearchRepresentation } from 'app/core/ui-services/search.service';
 import { StatuteParagraph } from 'app/shared/models/motions/statute-paragraph';
 import { Searchable } from 'app/site/base/searchable';
-import { SearchRepresentation } from 'app/core/ui-services/search.service';
+import { BaseViewModel } from '../../base/base-view-model';
 
 export interface StatuteParagraphTitleInformation {
     title: string;

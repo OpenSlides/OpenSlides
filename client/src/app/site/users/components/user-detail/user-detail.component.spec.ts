@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UserDetailComponent } from './user-detail.component';
 import { E2EImportsModule } from '../../../../../e2e-imports.module';
+import { UserDetailComponent } from './user-detail.component';
 
 describe('UserDetailComponent', () => {
     let component: UserDetailComponent;

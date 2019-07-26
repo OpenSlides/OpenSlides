@@ -1,7 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CategoryMotionsSortComponent } from './category-motions-sort.component';
 import { E2EImportsModule } from 'e2e-imports.module';
+
+import { CategoryMotionsSortComponent } from './category-motions-sort.component';
 
 describe('CategoryMotionsSortComponent', () => {
     let component: CategoryMotionsSortComponent;

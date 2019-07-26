@@ -1,6 +1,6 @@
-import { BaseViewModel } from '../../base/base-view-model';
 import { ModificationType } from 'app/core/ui-services/diff.service';
 import { MotionChangeRecommendation } from 'app/shared/models/motions/motion-change-reco';
+import { BaseViewModel } from '../../base/base-view-model';
 import { ViewUnifiedChange, ViewUnifiedChangeType } from '../../../shared/models/motions/view-unified-change';
 
 export type MotionChangeRecommendationTitleInformation = object;

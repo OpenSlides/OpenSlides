@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 
-import { BaseSortListService, OsSortingDefinition, OsSortingOption } from 'app/core/ui-services/base-sort-list.service';
-import { StorageService } from 'app/core/core-services/storage.service';
 import { TranslateService } from '@ngx-translate/core';
+
+import { StorageService } from 'app/core/core-services/storage.service';
+import { BaseSortListService, OsSortingDefinition, OsSortingOption } from 'app/core/ui-services/base-sort-list.service';
 import { ViewMotionBlock } from '../models/view-motion-block';
 
 @Injectable({

@@ -1,16 +1,16 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Title } from '@angular/platform-browser';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseViewComponent } from 'app/site/base/base-view';
-import { ViewCountdown } from '../../models/view-countdown';
 import { CountdownRepositoryService } from 'app/core/repositories/projector/countdown-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { ProjectionDialogService } from 'app/core/ui-services/projection-dialog.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { Projector } from 'app/shared/models/core/projector';
-import { ProjectionDialogService } from 'app/core/ui-services/projection-dialog.service';
+import { BaseViewComponent } from 'app/site/base/base-view';
+import { ViewCountdown } from '../../models/view-countdown';
 
 /**
  *

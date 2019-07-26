@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ItemListSlideComponent } from './item-list-slide.component';
 import { E2EImportsModule } from '../../../../e2e-imports.module';
+import { ItemListSlideComponent } from './item-list-slide.component';
 
 describe('ItemListSlideComponent', () => {
     let component: ItemListSlideComponent;

@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Title } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material';
+import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseViewComponent } from 'app/site/base/base-view';
 import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
+import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewMotionCommentSection } from 'app/site/motions/models/view-motion-comment-section';
 
 /**

@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { OperatorService, WhoAmI } from 'app/core/core-services/operator.service';
 import { environment } from 'environments/environment';
-import { OpenSlidesService } from './openslides.service';
-import { HttpService } from './http.service';
+
+import { OperatorService, WhoAmI } from 'app/core/core-services/operator.service';
 import { DataStoreService } from './data-store.service';
+import { HttpService } from './http.service';
+import { OpenSlidesService } from './openslides.service';
 
 /**
  * Authenticates an OpenSlides user with username and password

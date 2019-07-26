@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { ViewUser } from '../models/view-user';
 import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
+import { ViewUser } from '../models/view-user';
 
 /**
  * Creates a pdf for a user, containing greetings and initial login information

@@ -1,5 +1,5 @@
-import { ViewUser } from './view-user';
 import { User } from 'app/shared/models/users/user';
+import { ViewUser } from './view-user';
 
 /**
  * Interface for correlating between strings representing BaseModels and existing

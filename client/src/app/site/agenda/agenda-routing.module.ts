@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 
 import { AgendaImportListComponent } from './components/agenda-import-list/agenda-import-list.component';
 import { AgendaListComponent } from './components/agenda-list/agenda-list.component';
 import { AgendaSortComponent } from './components/agenda-sort/agenda-sort.component';
-import { ListOfSpeakersComponent } from './components/list-of-speakers/list-of-speakers.component';
 import { WatchSortingTreeGuard } from 'app/shared/utils/watch-sorting-tree.guard';
+import { ListOfSpeakersComponent } from './components/list-of-speakers/list-of-speakers.component';
 
 const routes: Routes = [
     { path: '', component: AgendaListComponent, pathMatch: 'full' },

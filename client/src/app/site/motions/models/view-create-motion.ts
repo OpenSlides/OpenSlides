@@ -1,6 +1,6 @@
-import { ViewMotion } from './view-motion';
-import { CreateMotion } from './create-motion';
 import { ViewUser } from 'app/site/users/models/view-user';
+import { CreateMotion } from './create-motion';
+import { ViewMotion } from './view-motion';
 
 /**
  * Create motion class for the View. Its different to ViewMotion in fact that the submitter handling is different

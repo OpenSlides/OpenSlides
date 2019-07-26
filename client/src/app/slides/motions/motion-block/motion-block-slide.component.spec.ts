@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MotionBlockSlideComponent } from './motion-block-slide.component';
 import { E2EImportsModule } from '../../../../e2e-imports.module';
+import { MotionBlockSlideComponent } from './motion-block-slide.component';
 
 describe('MotionBlockSlideComponent', () => {
     let component: MotionBlockSlideComponent;

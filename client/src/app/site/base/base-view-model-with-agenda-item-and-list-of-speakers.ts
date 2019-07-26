@@ -1,13 +1,13 @@
 import { SearchRepresentation } from 'app/core/ui-services/search.service';
 import { BaseModelWithAgendaItemAndListOfSpeakers } from 'app/shared/models/base/base-model-with-agenda-item-and-list-of-speakers';
+import { BaseProjectableViewModel } from './base-projectable-view-model';
+import { IBaseViewModelWithAgendaItem, isBaseViewModelWithAgendaItem } from './base-view-model-with-agenda-item';
+import {
+    IBaseViewModelWithListOfSpeakers,
+    isBaseViewModelWithListOfSpeakers
+} from './base-view-model-with-list-of-speakers';
 import { ViewItem } from '../agenda/models/view-item';
 import { ViewListOfSpeakers } from '../agenda/models/view-list-of-speakers';
-import { BaseProjectableViewModel } from './base-projectable-view-model';
-import { isBaseViewModelWithAgendaItem, IBaseViewModelWithAgendaItem } from './base-view-model-with-agenda-item';
-import {
-    isBaseViewModelWithListOfSpeakers,
-    IBaseViewModelWithListOfSpeakers
-} from './base-view-model-with-list-of-speakers';
 
 export function isBaseViewModelWithAgendaItemAndListOfSpeakers(
     obj: any

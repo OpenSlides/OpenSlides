@@ -1,23 +1,20 @@
-// angular modules
+import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule, APP_INITIALIZER } from '@angular/core';
-import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
+import { ServiceWorkerModule } from '@angular/service-worker';
+
 import { PapaParseModule } from 'ngx-papaparse';
 
-// Elementary App Components
+import { AppLoadService } from './core/core-services/app-load.service';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
-import { LoginModule } from './site/login/login.module';
-import { AppLoadService } from './core/core-services/app-load.service';
-import { SlidesModule } from './slides/slides.module';
-import { OpenSlidesTranslateModule } from './core/translate/openslides-translate-module';
-
-// PWA
-import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { GlobalSpinnerComponent } from './site/common/components/global-spinner/global-spinner.component';
+import { LoginModule } from './site/login/login.module';
+import { OpenSlidesTranslateModule } from './core/translate/openslides-translate-module';
+import { SlidesModule } from './slides/slides.module';
 
 /**
  * Returns a function that returns a promis that will be resolved, if all apps are loaded.

@@ -1,7 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MediafileListComponent } from './mediafile-list.component';
 import { E2EImportsModule } from 'e2e-imports.module';
+
+import { MediafileListComponent } from './mediafile-list.component';
 
 describe('MediafileListComponent', () => {
     let component: MediafileListComponent;

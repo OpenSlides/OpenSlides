@@ -2,16 +2,16 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseRepository, RelationDefinition } from '../base-repository';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { TreeIdNode } from 'app/core/ui-services/tree.service';
 import { Category } from 'app/shared/models/motions/category';
+import { Motion } from 'app/shared/models/motions/motion';
+import { CategoryTitleInformation, ViewCategory } from 'app/site/motions/models/view-category';
+import { BaseRepository, RelationDefinition } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { HttpService } from '../../core-services/http.service';
-import { ViewCategory, CategoryTitleInformation } from 'app/site/motions/models/view-category';
-import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
-import { Motion } from 'app/shared/models/motions/motion';
-import { TreeIdNode } from 'app/core/ui-services/tree.service';
 
 const CategoryRelations: RelationDefinition[] = [
     {

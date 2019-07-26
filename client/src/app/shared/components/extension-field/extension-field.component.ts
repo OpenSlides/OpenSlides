@@ -1,7 +1,8 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { NavigationEnd, Router } from '@angular/router';
+
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { FormGroup, FormBuilder } from '@angular/forms';
-import { Router, NavigationEnd } from '@angular/router';
 
 @Component({
     selector: 'os-extension-field',

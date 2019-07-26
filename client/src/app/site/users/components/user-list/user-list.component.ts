@@ -1,28 +1,28 @@
-import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition } from '@pebula/ngrid';
 
+import { OperatorService } from 'app/core/core-services/operator.service';
+import { StorageService } from 'app/core/core-services/storage.service';
+import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
+import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
+import { _ } from 'app/core/translate/translation-marker';
 import { ChoiceService } from 'app/core/ui-services/choice.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { CsvExportService } from 'app/core/ui-services/csv-export.service';
-import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
-import { BaseListViewComponent } from 'app/site/base/base-list-view';
 import { PromptService } from 'app/core/ui-services/prompt.service';
+import { genders } from 'app/shared/models/users/user';
+import { BaseListViewComponent } from 'app/site/base/base-list-view';
 import { UserFilterListService } from '../../services/user-filter-list.service';
-import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { UserPdfExportService } from '../../services/user-pdf-export.service';
 import { UserSortListService } from '../../services/user-sort-list.service';
-import { OperatorService } from 'app/core/core-services/operator.service';
-import { ViewUser } from '../../models/view-user';
 import { ViewGroup } from '../../models/view-group';
-import { genders } from 'app/shared/models/users/user';
-import { _ } from 'app/core/translate/translation-marker';
-import { StorageService } from 'app/core/core-services/storage.service';
+import { ViewUser } from '../../models/view-user';
 
 /**
  * Interface for the short editing dialog.

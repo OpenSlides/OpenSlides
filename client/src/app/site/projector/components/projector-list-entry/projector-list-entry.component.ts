@@ -1,21 +1,21 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Title } from '@angular/platform-browser';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatRadioChange } from '@angular/material';
 import { MatSliderChange } from '@angular/material/slider';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { OperatorService } from 'app/core/core-services/operator.service';
+import { ProjectionDefaultRepositoryService } from 'app/core/repositories/projector/projection-default-repository.service';
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
-import { ViewProjector } from '../../models/view-projector';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 import { Projector } from 'app/shared/models/core/projector';
 import { BaseViewComponent } from 'app/site/base/base-view';
-import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ClockSlideService } from '../../services/clock-slide.service';
-import { OperatorService } from 'app/core/core-services/operator.service';
 import { ViewProjectionDefault } from '../../models/view-projection-default';
-import { ProjectionDefaultRepositoryService } from 'app/core/repositories/projector/projection-default-repository.service';
-import { MatRadioChange } from '@angular/material';
+import { ViewProjector } from '../../models/view-projector';
 
 /**
  * All supported aspect rations for projectors.

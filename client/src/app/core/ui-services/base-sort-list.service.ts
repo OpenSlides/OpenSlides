@@ -1,6 +1,5 @@
-import { BehaviorSubject, Subscription, Observable } from 'rxjs';
-
 import { TranslateService } from '@ngx-translate/core';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 
 import { BaseViewModel } from '../../site/base/base-view-model';
 import { StorageService } from '../core-services/storage.service';

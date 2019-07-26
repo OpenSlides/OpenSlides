@@ -1,16 +1,16 @@
 import { TranslateService } from '@ngx-translate/core';
 
+import { ViewItem } from 'app/site/agenda/models/view-item';
+import {
+    BaseViewModelWithAgendaItem,
+    TitleInformationWithAgendaItem
+} from 'app/site/base/base-view-model-with-agenda-item';
 import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model';
+import { BaseRepository, RelationDefinition } from './base-repository';
 import { CollectionStringMapperService } from '../core-services/collection-string-mapper.service';
 import { DataSendService } from '../core-services/data-send.service';
-import { BaseRepository, RelationDefinition } from './base-repository';
 import { DataStoreService } from '../core-services/data-store.service';
 import { ViewModelStoreService } from '../core-services/view-model-store.service';
-import {
-    TitleInformationWithAgendaItem,
-    BaseViewModelWithAgendaItem
-} from 'app/site/base/base-view-model-with-agenda-item';
-import { ViewItem } from 'app/site/agenda/models/view-item';
 
 export function isBaseIsAgendaItemContentObjectRepository(
     obj: any

@@ -1,7 +1,7 @@
-import { Category } from 'app/shared/models/motions/category';
-import { BaseViewModel } from '../../base/base-view-model';
 import { SearchRepresentation } from 'app/core/ui-services/search.service';
+import { Category } from 'app/shared/models/motions/category';
 import { Searchable } from 'app/site/base/searchable';
+import { BaseViewModel } from '../../base/base-view-model';
 
 export interface CategoryTitleInformation {
     prefix: string;

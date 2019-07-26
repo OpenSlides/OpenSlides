@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 
-import { AssignmentPollPdfService } from './assignment-poll-pdf.service';
 import { E2EImportsModule } from 'e2e-imports.module';
+
+import { AssignmentPollPdfService } from './assignment-poll-pdf.service';
 
 describe('MotionPdfService', () => {
     beforeEach(() =>

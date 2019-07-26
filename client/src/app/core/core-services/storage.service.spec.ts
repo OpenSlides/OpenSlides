@@ -1,7 +1,8 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
+
+import { E2EImportsModule } from 'e2e-imports.module';
 
 import { StorageService } from './storage.service';
-import { E2EImportsModule } from 'e2e-imports.module';
 
 describe('StorageService', () => {
     beforeEach(() => {

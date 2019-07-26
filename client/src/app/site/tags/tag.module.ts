@@ -1,9 +1,9 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 
-import { TagRoutingModule } from './tag-routing.module';
 import { SharedModule } from '../../shared/shared.module';
 import { TagListComponent } from './components/tag-list/tag-list.component';
+import { TagRoutingModule } from './tag-routing.module';
 
 @NgModule({
     imports: [CommonModule, TagRoutingModule, SharedModule],

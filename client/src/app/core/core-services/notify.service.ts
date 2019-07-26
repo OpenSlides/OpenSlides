@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 
-import { Subject, Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
-import { WebsocketService } from './websocket.service';
 import { OperatorService } from './operator.service';
+import { WebsocketService } from './websocket.service';
 
 /**
  * Encapslates the name and content of every message regardless of being a request or response.

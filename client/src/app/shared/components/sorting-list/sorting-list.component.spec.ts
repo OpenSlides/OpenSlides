@@ -1,9 +1,10 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { E2EImportsModule } from '../../../../e2e-imports.module';
-import { SortingListComponent } from './sorting-list.component';
 import { Component, ViewChild } from '@angular/core';
-import { Selectable } from '../selectable';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { E2EImportsModule } from '../../../../e2e-imports.module';
 import { EmptySelectable } from '../empty-selectable';
+import { Selectable } from '../selectable';
+import { SortingListComponent } from './sorting-list.component';
 
 describe('SortingListComponent', () => {
     @Component({

@@ -2,22 +2,22 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { Assignment } from 'app/shared/models/assignments/assignment';
-import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataSendService } from 'app/core/core-services/data-send.service';
-import { DataStoreService } from '../../core-services/data-store.service';
 import { HttpService } from 'app/core/core-services/http.service';
-import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
-import { ViewAssignment, AssignmentTitleInformation } from 'app/site/assignments/models/view-assignment';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { Assignment } from 'app/shared/models/assignments/assignment';
+import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
+import { AssignmentTitleInformation, ViewAssignment } from 'app/site/assignments/models/view-assignment';
+import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
+import { ViewAssignmentPollOption } from 'app/site/assignments/models/view-assignment-poll-option';
+import { ViewAssignmentRelatedUser } from 'app/site/assignments/models/view-assignment-related-user';
+import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewUser } from 'app/site/users/models/view-user';
-import { ViewAssignmentRelatedUser } from 'app/site/assignments/models/view-assignment-related-user';
-import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
 import { BaseIsAgendaItemAndListOfSpeakersContentObjectRepository } from '../base-is-agenda-item-and-list-of-speakers-content-object-repository';
 import { RelationDefinition } from '../base-repository';
-import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
-import { ViewAssignmentPollOption } from 'app/site/assignments/models/view-assignment-poll-option';
+import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
+import { DataStoreService } from '../../core-services/data-store.service';
 
 const AssignmentRelations: RelationDefinition[] = [
     {

@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { WebsocketService } from './websocket.service';
-import { OperatorService } from './operator.service';
-import { StorageService } from './storage.service';
 import { AutoupdateService } from './autoupdate.service';
-import { DataStoreService } from './data-store.service';
 import { ConstantsService } from './constants.service';
 import { DataStoreUpgradeService } from './data-store-upgrade.service';
+import { DataStoreService } from './data-store.service';
+import { OperatorService } from './operator.service';
+import { StorageService } from './storage.service';
+import { WebsocketService } from './websocket.service';
 
 /**
  * Handles the bootup/showdown of this application.

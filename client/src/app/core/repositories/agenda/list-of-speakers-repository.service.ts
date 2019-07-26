@@ -2,29 +2,29 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataSendService } from 'app/core/core-services/data-send.service';
-import { DataStoreService } from '../../core-services/data-store.service';
+import { HttpService } from 'app/core/core-services/http.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
-import { ViewListOfSpeakers, ListOfSpeakersTitleInformation } from 'app/site/agenda/models/view-list-of-speakers';
 import { ListOfSpeakers } from 'app/shared/models/agenda/list-of-speakers';
+import { Identifiable } from 'app/shared/models/base/identifiable';
+import { ListOfSpeakersTitleInformation, ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
+import { ViewSpeaker } from 'app/site/agenda/models/view-speaker';
+import { ViewAssignment } from 'app/site/assignments/models/view-assignment';
 import {
     BaseViewModelWithListOfSpeakers,
     isBaseViewModelWithListOfSpeakers
 } from 'app/site/base/base-view-model-with-list-of-speakers';
-import { ViewSpeaker } from 'app/site/agenda/models/view-speaker';
-import { Identifiable } from 'app/shared/models/base/identifiable';
-import { HttpService } from 'app/core/core-services/http.service';
-import { BaseIsListOfSpeakersContentObjectRepository } from '../base-is-list-of-speakers-content-object-repository';
-import { BaseHasContentObjectRepository, GenericRelationDefinition } from '../base-has-content-object-repository';
-import { ItemRepositoryService } from './item-repository.service';
+import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
-import { RelationDefinition } from '../base-repository';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
 import { ViewTopic } from 'app/site/topics/models/view-topic';
-import { ViewAssignment } from 'app/site/assignments/models/view-assignment';
-import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewUser } from 'app/site/users/models/view-user';
+import { BaseHasContentObjectRepository, GenericRelationDefinition } from '../base-has-content-object-repository';
+import { BaseIsListOfSpeakersContentObjectRepository } from '../base-is-list-of-speakers-content-object-repository';
+import { RelationDefinition } from '../base-repository';
+import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
+import { DataStoreService } from '../../core-services/data-store.service';
+import { ItemRepositoryService } from './item-repository.service';
 
 const ListOfSpeakersRelations: (RelationDefinition | GenericRelationDefinition)[] = [
     {

@@ -1,21 +1,21 @@
 import { Injectable } from '@angular/core';
 
-import { Observable, BehaviorSubject, Subscription } from 'rxjs';
+import { environment } from 'environments/environment';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { auditTime, filter } from 'rxjs/operators';
 
 import { Group } from 'app/shared/models/users/group';
-import { User } from '../../shared/models/users/user';
-import { environment } from 'environments/environment';
+import { ViewUser } from 'app/site/users/models/view-user';
+import { CollectionStringMapperService } from './collection-string-mapper.service';
 import { DataStoreService } from './data-store.service';
 import { Deferred } from '../deferred';
-import { OfflineService } from './offline.service';
-import { OpenSlidesStatusService } from './openslides-status.service';
-import { ViewUser } from 'app/site/users/models/view-user';
-import { OnAfterAppsLoaded } from '../onAfterAppsLoaded';
-import { UserRepositoryService } from '../repositories/users/user-repository.service';
-import { CollectionStringMapperService } from './collection-string-mapper.service';
-import { StorageService } from './storage.service';
 import { HttpService } from './http.service';
-import { filter, auditTime } from 'rxjs/operators';
+import { OfflineService } from './offline.service';
+import { OnAfterAppsLoaded } from '../onAfterAppsLoaded';
+import { OpenSlidesStatusService } from './openslides-status.service';
+import { StorageService } from './storage.service';
+import { User } from '../../shared/models/users/user';
+import { UserRepositoryService } from '../repositories/users/user-repository.service';
 
 /**
  * Permissions on the client are just strings. This makes clear, that

@@ -1,7 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CountdownControlsComponent } from './countdown-controls.component';
 import { E2EImportsModule } from 'e2e-imports.module';
+
+import { CountdownControlsComponent } from './countdown-controls.component';
 
 describe('CountdownControlsComponent', () => {
     let component: CountdownControlsComponent;

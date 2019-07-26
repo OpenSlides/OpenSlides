@@ -1,6 +1,6 @@
-import { Speaker } from './speaker';
-import { ContentObject } from '../base/content-object';
 import { BaseModelWithContentObject } from '../base/base-model-with-content-object';
+import { ContentObject } from '../base/content-object';
+import { Speaker } from './speaker';
 
 /**
  * Representations of agenda Item

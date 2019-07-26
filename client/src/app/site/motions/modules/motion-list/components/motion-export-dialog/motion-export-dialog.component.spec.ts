@@ -1,8 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialogRef } from '@angular/material/dialog';
+
+import { E2EImportsModule } from 'e2e-imports.module';
 
 import { MotionExportDialogComponent } from './motion-export-dialog.component';
-import { E2EImportsModule } from 'e2e-imports.module';
-import { MatDialogRef } from '@angular/material/dialog';
 
 describe('MotionExportDialogComponent', () => {
     let component: MotionExportDialogComponent;

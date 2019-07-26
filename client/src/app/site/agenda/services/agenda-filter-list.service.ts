@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { StorageService } from 'app/core/core-services/storage.service';
 import { BaseFilterListService, OsFilter, OsFilterOption } from 'app/core/ui-services/base-filter-list.service';
 import { ItemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { ViewItem } from '../models/view-item';
-import { StorageService } from 'app/core/core-services/storage.service';
 
 /**
  * Filter the agenda list

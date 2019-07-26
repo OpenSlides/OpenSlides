@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { Searchable } from '../../site/base/searchable';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { BaseRepository } from '../repositories/base-repository';
+import { Searchable } from '../../site/base/searchable';
 import { ViewModelStoreService } from '../core-services/view-model-store.service';
 
 /**

@@ -1,10 +1,10 @@
 import { Type } from '@angular/core';
 
-import { ModelConstructor, BaseModel } from '../shared/models/base/base-model';
+import { BaseViewModel, ViewModelConstructor } from 'app/site/base/base-view-model';
+import { BaseModel, ModelConstructor } from '../shared/models/base/base-model';
+import { BaseRepository } from './repositories/base-repository';
 import { MainMenuEntry } from './core-services/main-menu.service';
 import { Searchable } from '../site/base/searchable';
-import { BaseRepository } from './repositories/base-repository';
-import { BaseViewModel, ViewModelConstructor } from 'app/site/base/base-view-model';
 
 interface BaseModelEntry {
     collectionString: string;

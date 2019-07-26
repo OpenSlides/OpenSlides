@@ -1,21 +1,21 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Title } from '@angular/platform-browser';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Title } from '@angular/platform-browser';
 
-import { BehaviorSubject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition } from '@pebula/ngrid';
+import { BehaviorSubject } from 'rxjs';
 
-import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
-import { BaseListViewComponent } from 'app/site/base/base-list-view';
-import { MotionBlock } from 'app/shared/models/motions/motion-block';
-import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
-import { MotionBlockSortService } from 'app/site/motions/services/motion-block-sort.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { StorageService } from 'app/core/core-services/storage.service';
+import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
+import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
+import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { ViewItem } from 'app/site/agenda/models/view-item';
+import { BaseListViewComponent } from 'app/site/base/base-list-view';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
+import { MotionBlockSortService } from 'app/site/motions/services/motion-block-sort.service';
 
 /**
  * Table for the motion blocks

@@ -1,6 +1,6 @@
-import { BaseViewModel } from '../../base/base-view-model';
 import { MotionCommentSection } from 'app/shared/models/motions/motion-comment-section';
 import { ViewGroup } from 'app/site/users/models/view-group';
+import { BaseViewModel } from '../../base/base-view-model';
 
 export interface MotionCommentSectionTitleInformation {
     name: string;

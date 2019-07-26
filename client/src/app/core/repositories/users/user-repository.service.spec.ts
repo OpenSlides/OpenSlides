@@ -1,7 +1,7 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 
-import { UserRepositoryService } from './user-repository.service';
 import { E2EImportsModule } from '../../../../e2e-imports.module';
+import { UserRepositoryService } from './user-repository.service';
 
 describe('UserRepositoryService', () => {
     beforeEach(() => {

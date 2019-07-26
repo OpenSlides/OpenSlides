@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { CollectionStringMapperService } from './collection-string-mapper.service';
+
 import { BaseViewModel, ViewModelConstructor } from 'app/site/base/base-view-model';
 import { BaseRepository } from '../repositories/base-repository';
+import { CollectionStringMapperService } from './collection-string-mapper.service';
 
 /**
  * This service takes care of handling view models.

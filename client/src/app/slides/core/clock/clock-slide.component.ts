@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { Subscription } from 'rxjs';
 
-import { BaseSlideComponent } from 'app/slides/base-slide-component';
 import { ServertimeService } from 'app/core/core-services/servertime.service';
+import { BaseSlideComponent } from 'app/slides/base-slide-component';
 
 @Component({
     selector: 'os-clock-slide',

@@ -1,11 +1,12 @@
-import { Injectable, EventEmitter } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
+
 import { Observable, Subject } from 'rxjs';
 
 import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model';
+import { BaseRepository } from '../repositories/base-repository';
 import { CollectionStringMapperService } from './collection-string-mapper.service';
 import { Deferred } from '../deferred';
 import { StorageService } from './storage.service';
-import { BaseRepository } from '../repositories/base-repository';
 
 /**
  * Represents information about a deleted model.

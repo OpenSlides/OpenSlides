@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ListOfSpeakersComponent } from './list-of-speakers.component';
 import { E2EImportsModule } from '../../../../../e2e-imports.module';
+import { ListOfSpeakersComponent } from './list-of-speakers.component';
 
 describe('ListOfSpeakersComponent', () => {
     let component: ListOfSpeakersComponent;

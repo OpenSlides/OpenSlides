@@ -1,21 +1,21 @@
-import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
-import { Observable } from 'rxjs';
 import { Title } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
+import { Observable } from 'rxjs';
 
-import { BaseViewComponent } from 'app/site/base/base-view';
-import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
+import { StateRepositoryService } from 'app/core/repositories/motions/state-repository.service';
 import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { MergeAmendment, State } from 'app/shared/models/motions/state';
+import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewState } from 'app/site/motions/models/view-state';
-import { StateRepositoryService } from 'app/core/repositories/motions/state-repository.service';
+import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
 
 /**
  * Declares data for the workflow dialog

@@ -1,14 +1,14 @@
 import { TranslateService } from '@ngx-translate/core';
 
-import { TitleInformation } from '../../site/base/base-view-model';
+import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
+import { BaseViewModelWithListOfSpeakers } from 'app/site/base/base-view-model-with-list-of-speakers';
 import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model';
 import { BaseRepository, RelationDefinition } from './base-repository';
-import { DataStoreService } from '../core-services/data-store.service';
-import { DataSendService } from '../core-services/data-send.service';
+import { TitleInformation } from '../../site/base/base-view-model';
 import { CollectionStringMapperService } from '../core-services/collection-string-mapper.service';
+import { DataSendService } from '../core-services/data-send.service';
+import { DataStoreService } from '../core-services/data-store.service';
 import { ViewModelStoreService } from '../core-services/view-model-store.service';
-import { BaseViewModelWithListOfSpeakers } from 'app/site/base/base-view-model-with-list-of-speakers';
-import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
 
 export function isBaseIsListOfSpeakersContentObjectRepository(
     obj: any
