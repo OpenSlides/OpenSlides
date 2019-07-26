@@ -97,7 +97,7 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
      * @param titleService Title
      * @param translate TranslateService
      * @param formBuilder FormBuilder
-     * @param cdRef ChangeDetectorRef
+     * @param cd ChangeDetectorRef
      * @param repo ConfigRepositoryService
      * @param dateTimeAdapter DateTimeAdapter
      */
@@ -105,7 +105,7 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
         protected titleService: Title,
         protected translate: TranslateService,
         private formBuilder: FormBuilder,
-        private cdRef: ChangeDetectorRef,
+        private cd: ChangeDetectorRef,
         public repo: ConfigRepositoryService
     ) {
         super(titleService, translate);
@@ -160,7 +160,7 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
         this.debounceTimeout = <any>setTimeout(() => {
             this.update(value);
         }, this.configItem.getDebouncingTimeout());
-        this.cdRef.detectChanges();
+        this.cd.detectChanges();
     }
 
     /**
@@ -194,22 +194,22 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
         this.updateSuccessIconTimeout = <any>setTimeout(() => {
             this.updateSuccessIcon = false;
             if (!this.wasViewDestroyed()) {
-                this.cdRef.detectChanges();
+                this.cd.detectChanges();
             }
         }, 2000);
         this.updateSuccessIcon = true;
         if (!this.wasViewDestroyed()) {
-            this.cdRef.detectChanges();
+            this.cd.detectChanges();
         }
     }
 
     /**
-     * @returns true, if the veiw was destroyed. Note: This
+     * @returns true, if the view was destroyed. Note: This
      * needs to access internal attributes from the change detection
      * reference.
      */
     private wasViewDestroyed(): boolean {
-        return (<any>this.cdRef).destroyed;
+        return (<any>this.cd).destroyed;
     }
 
     /**
@@ -218,7 +218,7 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
     private setError(error: string): void {
         this.error = error;
         this.form.setErrors({ error: true });
-        this.cdRef.detectChanges();
+        this.cd.detectChanges();
     }
 
     /**

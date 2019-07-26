@@ -5,7 +5,8 @@ import {
     TemplateRef,
     OnDestroy,
     ViewEncapsulation,
-    ChangeDetectionStrategy
+    ChangeDetectionStrategy,
+    ChangeDetectorRef
 } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
@@ -188,7 +189,8 @@ export class MediafileListComponent extends BaseViewComponent implements OnInit,
         private dialog: MatDialog,
         private fb: FormBuilder,
         private formBuilder: FormBuilder,
-        private groupRepo: GroupRepositoryService
+        private groupRepo: GroupRepositoryService,
+        private cd: ChangeDetectorRef
     ) {
         super(titleService, translate, matSnackBar);
 
@@ -255,6 +257,7 @@ export class MediafileListComponent extends BaseViewComponent implements OnInit,
                 this.dataSource = createDS<ViewMediafile>()
                     .onTrigger(() => mediafiles)
                     .create();
+                this.cd.detectChanges();
             }
         });
 
