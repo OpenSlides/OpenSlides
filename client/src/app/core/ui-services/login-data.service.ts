@@ -1,22 +1,35 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { ConfigService } from './config.service';
 import { StorageService } from '../core-services/storage.service';
 import { OpenSlidesStatusService } from '../core-services/openslides-status.service';
+import { HttpService } from '../core-services/http.service';
+import { environment } from 'environments/environment.prod';
+import { auditTime } from 'rxjs/operators';
 
 /**
  * The login data send by the server.
  */
 export interface LoginData {
-    privacy_policy: string;
-    legal_notice: string;
+    privacy_policy?: string;
+    legal_notice?: string;
     theme: string;
     logo_web_header: {
         path: string;
         display_name: string;
     };
+    login_info_text?: string;
+}
+
+/**
+ * Checks, if the given object holds valid LoginData.
+ *
+ * @param obj The object to check
+ */
+function isLoginData(obj: any): obj is LoginData {
+    return !!obj && obj.theme && obj.logo_web_header;
 }
 
 const LOGIN_DATA_STORAGE_KEY = 'LoginData';
@@ -30,27 +43,39 @@ const LOGIN_DATA_STORAGE_KEY = 'LoginData';
 })
 export class LoginDataService {
     /**
+     * Holds the installation notice.
+     */
+    private readonly _loginInfoText = new BehaviorSubject<string>('');
+
+    /**
+     * Returns the installation notice as observable.
+     */
+    public get loginInfoText(): Observable<string> {
+        return this._loginInfoText.asObservable();
+    }
+
+    /**
      * Holds the privacy policy
      */
-    private readonly _privacy_policy = new BehaviorSubject<string>('');
+    private readonly _privacyPolicy = new BehaviorSubject<string>('');
 
     /**
      * Returns an observable for the privacy policy
      */
-    public get privacy_policy(): Observable<string> {
-        return this._privacy_policy.asObservable();
+    public get privacyPolicy(): Observable<string> {
+        return this._privacyPolicy.asObservable();
     }
 
     /**
      * Holds the legal notice
      */
-    private readonly _legal_notice = new BehaviorSubject<string>('');
+    private readonly _legalNotice = new BehaviorSubject<string>('');
 
     /**
      * Returns an observable for the legal notice
      */
-    public get legal_notice(): Observable<string> {
-        return this._legal_notice.asObservable();
+    public get legalNotice(): Observable<string> {
+        return this._legalNotice.asObservable();
     }
 
     /**
@@ -68,7 +93,7 @@ export class LoginDataService {
     /**
      * Holds the custom web header
      */
-    private readonly _logo_web_header = new BehaviorSubject<{ path: string; display_name: string }>({
+    private readonly _logoWebHeader = new BehaviorSubject<{ path: string; display_name: string }>({
         path: '',
         display_name: ''
     });
@@ -76,9 +101,26 @@ export class LoginDataService {
     /**
      * Returns an observable for the web header
      */
-    public get logo_web_header(): Observable<{ path: string; display_name: string }> {
-        return this._logo_web_header.asObservable();
+    public get logoWebHeader(): Observable<{ path: string; display_name: string }> {
+        return this._logoWebHeader.asObservable();
     }
+
+    /**
+     * Emit this event, if the current login data should be stored. This
+     * is debounced to minimize requests to the storage service.
+     */
+    private storeLoginDataRequests = new EventEmitter<void>();
+
+    /**
+     * Holds, if `_refresh` can be called. This will be true fter the setup.
+     */
+    private canRefresh = false;
+
+    /**
+     * Marks, if during the etup (with `canRefresh=false`) a refresh was requested.
+     * After the setup, this variabel will be checked and a refresh triggered, if it is true.
+     */
+    private markRefresh = false;
 
     /**
      * Constructs this service. The config service is needed to update the privacy
@@ -88,67 +130,112 @@ export class LoginDataService {
     public constructor(
         private configService: ConfigService,
         private storageService: StorageService,
-        private OSStatus: OpenSlidesStatusService
+        private OSStatus: OpenSlidesStatusService,
+        private httpService: HttpService
     ) {
+        this.storeLoginDataRequests.pipe(auditTime(100)).subscribe(() => this.storeLoginData());
+        this.setup();
+    }
+
+    /**
+     * Loads the login data and *after* that the configs are subscribed. If a request for a refresh
+     * was issued while the setup, the refresh will be executed afterwards.
+     */
+    private async setup(): Promise<void> {
+        await this.loadLoginData();
         this.configService.get<string>('general_event_privacy_policy').subscribe(value => {
-            this._privacy_policy.next(value);
-            this.storeLoginData();
+            if (value !== undefined) {
+                this._privacyPolicy.next(value);
+                this.storeLoginDataRequests.next();
+            }
         });
         this.configService.get<string>('general_event_legal_notice').subscribe(value => {
-            this._legal_notice.next(value);
-            this.storeLoginData();
+            if (value !== undefined) {
+                this._legalNotice.next(value);
+                this.storeLoginDataRequests.next();
+            }
         });
-        configService.get<string>('openslides_theme').subscribe(value => {
-            this._theme.next(value);
-            this.storeLoginData();
+        this.configService.get<string>('openslides_theme').subscribe(value => {
+            if (value) {
+                this._theme.next(value);
+                this.storeLoginDataRequests.next();
+            }
         });
-        configService.get<{ path: string; display_name: string }>('logo_web_header').subscribe(value => {
-            this._logo_web_header.next(value);
-            this.storeLoginData();
+        this.configService.get<{ path: string; display_name: string }>('logo_web_header').subscribe(value => {
+            if (value) {
+                this._logoWebHeader.next(value);
+                this.storeLoginDataRequests.next();
+            }
         });
+        this.canRefresh = true;
+        if (this.markRefresh) {
+            this._refresh();
+        }
+    }
 
-        this.loadLoginData();
+    /**
+     * Explicit refresh the ata from the server.
+     */
+    public refresh(): void {
+        if (this.canRefresh && !this.markRefresh) {
+            this._refresh();
+        } else if (!this.canRefresh) {
+            this.markRefresh = true;
+        }
+    }
+
+    /**
+     * The actual refresh implementation.
+     */
+    private async _refresh(): Promise<void> {
+        try {
+            const loginData = await this.httpService.get<LoginData>(environment.urlPrefix + '/users/login/');
+            this.setLoginData(loginData);
+            this.storeLoginDataRequests.next();
+        } catch (e) {
+            console.log('Could not refresh login data', e);
+        }
+        this.markRefresh = false;
     }
 
     /**
      * Load the login data from the storage. If it there, set it.
      */
     private async loadLoginData(): Promise<void> {
-        const loginData = await this.storageService.get<LoginData | null>(LOGIN_DATA_STORAGE_KEY);
-        if (loginData) {
+        const loginData = await this.storageService.get<any>(LOGIN_DATA_STORAGE_KEY);
+        if (isLoginData(loginData)) {
             this.setLoginData(loginData);
         }
     }
 
     /**
-     * Setter for the login data
+     * Triggers all subjects with the given data.
      *
-     * @param loginData the login data
+     * @param loginData The data
      */
-    public setLoginData(loginData: LoginData): void {
-        this._privacy_policy.next(loginData.privacy_policy);
-        this._legal_notice.next(loginData.legal_notice);
+    private setLoginData(loginData: LoginData): void {
+        this._privacyPolicy.next(loginData.privacy_policy);
+        this._legalNotice.next(loginData.legal_notice);
         this._theme.next(loginData.theme);
-        this.storeLoginData(loginData);
+        this._logoWebHeader.next(loginData.logo_web_header);
+        this._loginInfoText.next(loginData.login_info_text);
     }
 
     /**
-     * Saves the login data in the storage.
-     *
-     * @param loginData If given, this data is used. If it's null, the current values
-     * from the behaviour subject are taken.
+     * Saves the login data to the storeage. Do not call this method and
+     * use `storeLoginDataRequests` instead. The data to store will be
+     * taken form all subjects.
      */
-    private storeLoginData(loginData?: LoginData): void {
-        if (!loginData) {
-            loginData = {
-                privacy_policy: this._privacy_policy.getValue(),
-                legal_notice: this._legal_notice.getValue(),
-                theme: this._theme.getValue(),
-                logo_web_header: this._logo_web_header.getValue()
-            };
+    private storeLoginData(): void {
+        if (this.OSStatus.isInHistoryMode) {
+            return;
         }
-        if (!this.OSStatus.isInHistoryMode) {
-            this.storageService.set(LOGIN_DATA_STORAGE_KEY, loginData);
-        }
+        const loginData = {
+            privacy_policy: this._privacyPolicy.getValue(),
+            legal_notice: this._legalNotice.getValue(),
+            theme: this._theme.getValue(),
+            logo_web_header: this._logoWebHeader.getValue()
+        };
+        this.storageService.set(LOGIN_DATA_STORAGE_KEY, loginData);
     }
 }

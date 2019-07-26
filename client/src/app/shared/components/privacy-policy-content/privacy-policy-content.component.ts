@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 
-import { TranslateService } from '@ngx-translate/core';
-
 import { LoginDataService } from 'app/core/ui-services/login-data.service';
 
 /**
@@ -24,16 +22,14 @@ export class PrivacyPolicyContentComponent implements OnInit {
      * @param loginDataService Login Data
      * @param translate for the translation
      */
-    public constructor(private loginDataService: LoginDataService, private translate: TranslateService) {}
+    public constructor(private loginDataService: LoginDataService) {}
 
     /**
      * Subscribes for the privacy policy text
      */
     public ngOnInit(): void {
-        this.loginDataService.privacy_policy.subscribe(privacyPolicy => {
-            if (privacyPolicy) {
-                this.privacyPolicy = this.translate.instant(privacyPolicy);
-            }
+        this.loginDataService.privacyPolicy.subscribe(privacyPolicy => {
+            this.privacyPolicy = privacyPolicy;
         });
     }
 }

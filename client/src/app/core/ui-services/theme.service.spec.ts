@@ -1,12 +1,17 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed, inject } from '@angular/core/testing';
 
 import { ThemeService } from './theme.service';
+import { E2EImportsModule } from 'e2e-imports.module';
 
 describe('ThemeService', () => {
-    beforeEach(() => TestBed.configureTestingModule({}));
-
-    it('should be created', () => {
-        const service: ThemeService = TestBed.get(ThemeService);
-        expect(service).toBeTruthy();
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            imports: [E2EImportsModule],
+            providers: [ThemeService]
+        });
     });
+
+    it('should be created', inject([ThemeService], (service: ThemeService) => {
+        expect(service).toBeTruthy();
+    }));
 });

@@ -6,18 +6,13 @@ import { Title } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseComponent } from 'app/base.component';
+import { BaseViewComponent } from 'app/site/base/base-view';
 import { AuthService } from 'app/core/core-services/auth.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
-import { environment } from 'environments/environment';
-import { LoginDataService, LoginData } from 'app/core/ui-services/login-data.service';
+import { LoginDataService } from 'app/core/ui-services/login-data.service';
 import { ParentErrorStateMatcher } from 'app/shared/parent-error-state-matcher';
-import { HttpService } from 'app/core/core-services/http.service';
 import { SpinnerService } from 'app/core/ui-services/spinner.service';
-
-interface LoginDataWithInfoText extends LoginData {
-    info_text?: string;
-}
+import { MatSnackBar } from '@angular/material';
 
 /**
  * Login mask component.
@@ -29,7 +24,7 @@ interface LoginDataWithInfoText extends LoginData {
     templateUrl: './login-mask.component.html',
     styleUrls: ['./login-mask.component.scss']
 })
-export class LoginMaskComponent extends BaseComponent implements OnInit, OnDestroy {
+export class LoginMaskComponent extends BaseViewComponent implements OnInit, OnDestroy {
     /**
      * Show or hide password and change the indicator accordingly
      */
@@ -72,16 +67,16 @@ export class LoginMaskComponent extends BaseComponent implements OnInit, OnDestr
     public constructor(
         title: Title,
         translate: TranslateService,
+        matSnackBar: MatSnackBar,
         private authService: AuthService,
         private operator: OperatorService,
         private router: Router,
         private route: ActivatedRoute,
         private formBuilder: FormBuilder,
-        private httpService: HttpService,
         private loginDataService: LoginDataService,
         private spinnerService: SpinnerService
     ) {
-        super(title, translate);
+        super(title, translate, matSnackBar);
         // Hide the spinner if the user is at `login-mask`
         spinnerService.setVisibility(false);
         this.createForm();
@@ -94,17 +89,8 @@ export class LoginMaskComponent extends BaseComponent implements OnInit, OnDestr
      * Observes the operator, if a user was already logged in, recreate to user and skip the login
      */
     public ngOnInit(): void {
-        // Get the login data. Save information to the login data service. If there is an
-        // error, ignore it.
-        // TODO: This has to be caught by the offline service
-        this.httpService.get<LoginDataWithInfoText>(environment.urlPrefix + '/users/login/').then(
-            response => {
-                if (response.info_text) {
-                    this.installationNotice = response.info_text;
-                }
-                this.loginDataService.setLoginData(response);
-            },
-            () => {}
+        this.subscriptions.push(
+            this.loginDataService.loginInfoText.subscribe(notice => (this.installationNotice = notice))
         );
 
         // Maybe the operator changes and the user is logged in. If so, redirect him and boot OpenSlides.
