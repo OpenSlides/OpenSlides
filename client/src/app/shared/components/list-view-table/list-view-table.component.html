@@ -4,6 +4,7 @@
         [filterCount]="countFilter"
         [filterService]="filterService"
         [sortService]="sortService"
+        [searchFieldInput]="inputValue"
         (searchFieldChange)="searchFilter($event)"
     >
     </os-sort-filter-bar>
@@ -14,7 +15,7 @@
         [ngClass]="{
             'virtual-scroll-with-head-bar ngrid-hide-head': showFilterBar,
             'virtual-scroll-full-page': !showFilterBar,
-            'multiselect': multiSelect
+            multiselect: multiSelect
         }"
         cellTooltip
         [showHeader]="!showFilterBar"

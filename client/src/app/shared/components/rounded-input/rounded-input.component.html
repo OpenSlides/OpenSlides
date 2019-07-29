@@ -1,0 +1,17 @@
+<div class="input-container">
+    <div class="input-prefix">
+        <mat-icon color="primary">search</mat-icon>
+    </div>
+    <input
+        #osInput
+        [autofocus]="autofocus"
+        [placeholder]="placeholder"
+        class="rounded-input"
+        [ngClass]="[size]"
+        [formControl]="modelForm"
+        (keyup)="keyPressed($event)"
+    />
+    <div *ngIf="modelForm.value !== ''" class="input-suffix">
+        <mat-icon (mouseup)="clear()">close</mat-icon>
+    </div>
+</div>

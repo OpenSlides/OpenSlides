@@ -35,22 +35,18 @@
         </button>
 
         <!-- Search bar -->
-        <mat-form-field *ngIf="isSearchBar">
-            <input
-                osAutofocus
-                matInput
-                (keyup)="applySearch($event, $event.target.value)"
-                placeholder="{{ translate.instant('Search') }}"
-            />
-        </mat-form-field>
-        <button mat-button (click)="toggleSearchBar()">
-            <mat-icon>{{ isSearchBar ? 'keyboard_arrow_right' : 'search' }}</mat-icon>
-        </button>
+        <os-rounded-input
+            [model]="searchFieldInput"
+            [size]="'small'"
+            [lazyInput]="true"
+            (oninput)="searchFieldChange.emit($event)"
+            placeholder="{{ 'Search' | translate }}"
+        ></os-rounded-input>
     </div>
 </div>
 
 <!-- Header for the filter side bar -->
-<mat-drawer autoFocus=false #filterMenu mode="push" position="end">
+<mat-drawer autoFocus="false" #filterMenu mode="push" position="end">
     <div class="custom-table-header filter-menu-head" (click)="this.filterMenu.toggle()">
         <span>
             <mat-icon>keyboard_arrow_right</mat-icon>
