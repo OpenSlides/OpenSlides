@@ -130,8 +130,6 @@ class UserViewSet(ModelViewSet):
                 if key not in ("username", "about_me"):
                     del request.data[key]
         response = super().update(request, *args, **kwargs)
-        # Maybe some group assignments have changed. Better delete the restricted user cache
-        async_to_sync(element_cache.del_user)(user.pk)
         return response
 
     def destroy(self, request, *args, **kwargs):
@@ -275,8 +273,6 @@ class UserViewSet(ModelViewSet):
                 user.groups.add(*groups)
             else:
                 user.groups.remove(*groups)
-            # Maybe some group assignments have changed. Better delete the restricted user cache
-            async_to_sync(element_cache.del_user)(user.pk)
 
         inform_changed_data(users)
         return Response()
@@ -570,13 +566,9 @@ class GroupViewSet(ModelViewSet):
         if not changed_permissions:
             return  # either None or empty list.
 
-        # Delete the user chaches of all affected users
-        for user in group.user_set.all():
-            async_to_sync(element_cache.del_user)(user.pk)
-
         elements: List[Element] = []
         signal_results = permission_change.send(None, permissions=changed_permissions)
-        all_full_data = async_to_sync(element_cache.get_all_full_data)()
+        all_full_data = async_to_sync(element_cache.get_all_data_list)()
         for _, signal_collections in signal_results:
             for cachable in signal_collections:
                 for full_data in all_full_data.get(
@@ -672,8 +664,8 @@ class WhoAmIDataView(APIView):
         guest_enabled = anonymous_is_enabled()
 
         if user_id:
-            user_data = async_to_sync(element_cache.get_element_restricted_data)(
-                user_id, self.request.user.get_collection_string(), user_id
+            user_data = async_to_sync(element_cache.get_element_data)(
+                self.request.user.get_collection_string(), user_id, user_id
             )
             group_ids = user_data["groups_id"] or [GROUP_DEFAULT_PK]
         else:
@@ -682,9 +674,7 @@ class WhoAmIDataView(APIView):
 
         # collect all permissions
         permissions: Set[str] = set()
-        group_all_data = async_to_sync(element_cache.get_collection_full_data)(
-            "users/group"
-        )
+        group_all_data = async_to_sync(element_cache.get_collection_data)("users/group")
         for group_id in group_ids:
             permissions.update(group_all_data[group_id]["permissions"])
 

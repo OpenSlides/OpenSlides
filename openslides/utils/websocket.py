@@ -1,6 +1,5 @@
 import json
-from collections import defaultdict
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 import jsonschema
 import lz4.frame
@@ -8,10 +7,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from django.conf import settings
 from websockets.exceptions import ConnectionClosed
 
-from .autoupdate import AutoupdateFormat
-from .cache import element_cache
 from .stats import WebsocketThroughputLogger
-from .utils import split_element_id
 
 
 # Custom Websocket error codes (not to be confused with the websocket *connection*
@@ -25,7 +21,7 @@ WEBSOCKET_CHANGE_ID_TOO_HIGH = 101
 # If data is requested and the given change id is higher than the highest change id
 # from the element_cache.
 
-WEBSOCKET_WRONG_FORMAT = 10
+WEBSOCKET_WRONG_FORMAT = 102
 # If the recieved data has not the expected format.
 
 
@@ -232,37 +228,3 @@ def register_client_message(
         message_schema["required"] = ["content"]
 
     schema["anyOf"].append(message_schema)
-
-
-async def get_element_data(user_id: int, change_id: int = 0) -> AutoupdateFormat:
-    """
-    Returns all element data since a change_id.
-    """
-    current_change_id = await element_cache.get_current_change_id()
-    if change_id > current_change_id:
-        raise ValueError(
-            f"Requested change_id {change_id} is higher this highest change_id {current_change_id}."
-        )
-    try:
-        changed_elements, deleted_element_ids = await element_cache.get_restricted_data(
-            user_id, change_id, current_change_id
-        )
-    except RuntimeError:
-        # The change_id is lower the the lowerst change_id in redis. Return all data
-        changed_elements = await element_cache.get_all_restricted_data(user_id)
-        all_data = True
-        deleted_elements: Dict[str, List[int]] = {}
-    else:
-        all_data = False
-        deleted_elements = defaultdict(list)
-        for element_id in deleted_element_ids:
-            collection_string, id = split_element_id(element_id)
-            deleted_elements[collection_string].append(id)
-
-    return AutoupdateFormat(
-        changed=changed_elements,
-        deleted=deleted_elements,
-        from_change_id=change_id,
-        to_change_id=current_change_id,
-        all_data=all_data,
-    )

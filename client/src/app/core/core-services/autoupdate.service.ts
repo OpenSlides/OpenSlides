@@ -96,7 +96,10 @@ export class AutoupdateService {
         Object.keys(autoupdate.changed).forEach(collection => {
             elements = elements.concat(this.mapObjectsToBaseModels(collection, autoupdate.changed[collection]));
         });
+
+        const updateSlot = await this.DSUpdateManager.getNewUpdateSlot(this.DS);
         await this.DS.set(elements, autoupdate.to_change_id);
+        this.DSUpdateManager.commit(updateSlot);
     }
 
     /**
@@ -107,7 +110,7 @@ export class AutoupdateService {
         const maxChangeId = this.DS.maxChangeId;
 
         if (autoupdate.from_change_id <= maxChangeId && autoupdate.to_change_id <= maxChangeId) {
-            console.log('ignore');
+            console.log(`Ignore. Clients change id: ${maxChangeId}`);
             return; // Ignore autoupdates, that lay full behind our changeid.
         }
 

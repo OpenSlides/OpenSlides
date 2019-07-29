@@ -1,14 +1,15 @@
 import logging
 import time
 from collections import defaultdict
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 from urllib.parse import parse_qs
 
+from ..utils.websocket import WEBSOCKET_CHANGE_ID_TOO_HIGH
 from .auth import async_anonymous_is_enabled
 from .autoupdate import AutoupdateFormat
 from .cache import element_cache, split_element_id
 from .utils import get_worker_id
-from .websocket import ProtocollAsyncJsonWebsocketConsumer, get_element_data
+from .websocket import ProtocollAsyncJsonWebsocketConsumer
 
 
 logger = logging.getLogger("openslides.websocket")
@@ -70,13 +71,7 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
 
         if change_id is not None:
             logger.debug(f"connect: change id {change_id} ({self._id})")
-            try:
-                data = await get_element_data(self.scope["user"]["id"], change_id)
-            except ValueError:
-                # When the change_id is to big, do nothing
-                pass
-            else:
-                await self.send_json(type="autoupdate", content=data)
+            await self.send_autoupdate(change_id)
         else:
             logger.debug(f"connect: no change id ({self._id})")
 
@@ -111,29 +106,68 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
             item["senderUserId"] = event["senderUserId"]
             await self.send_json(type="notify", content=item)
 
-    async def send_data(self, event: Dict[str, Any]) -> None:
+    async def send_autoupdate(
+        self,
+        change_id: int,
+        max_change_id: Optional[int] = None,
+        in_response: Optional[str] = None,
+    ) -> None:
         """
-        Send changed or deleted elements to the user.
+        Sends an autoupdate to the client from change_id to max_change_id.
+        If max_change_id is None, the current change id will be used.
         """
-        change_id = event["change_id"]
-        changed_elements, deleted_elements_ids = await element_cache.get_restricted_data(
-            self.scope["user"]["id"], change_id, max_change_id=change_id
-        )
+        user_id = self.scope["user"]["id"]
 
-        deleted_elements: Dict[str, List[int]] = defaultdict(list)
-        for element_id in deleted_elements_ids:
-            collection_string, id = split_element_id(element_id)
-            deleted_elements[collection_string].append(id)
+        if max_change_id is None:
+            max_change_id = await element_cache.get_current_change_id()
+
+        if change_id == max_change_id + 1:
+            # The client is up-to-date, so nothing will be done
+            return
+
+        if change_id > max_change_id:
+            message = f"Requested change_id {change_id} is higher this highest change_id {max_change_id}."
+            await self.send_error(
+                code=WEBSOCKET_CHANGE_ID_TOO_HIGH,
+                message=message,
+                in_response=in_response,
+            )
+            return
+
+        try:
+            changed_elements, deleted_element_ids = await element_cache.get_data_since(
+                user_id, change_id, max_change_id
+            )
+        except RuntimeError:
+            # The change_id is lower the the lowerst change_id in redis. Return all data
+            changed_elements = await element_cache.get_all_data_list(user_id)
+            all_data = True
+            deleted_elements: Dict[str, List[int]] = {}
+        else:
+            all_data = False
+            deleted_elements = defaultdict(list)
+            for element_id in deleted_element_ids:
+                collection_string, id = split_element_id(element_id)
+                deleted_elements[collection_string].append(id)
+
         await self.send_json(
             type="autoupdate",
             content=AutoupdateFormat(
                 changed=changed_elements,
                 deleted=deleted_elements,
                 from_change_id=change_id,
-                to_change_id=change_id,
-                all_data=False,
+                to_change_id=max_change_id,
+                all_data=all_data,
             ),
+            in_response=in_response,
         )
+
+    async def send_data(self, event: Dict[str, Any]) -> None:
+        """
+        Send changed or deleted elements to the user.
+        """
+        change_id = event["change_id"]
+        await self.send_autoupdate(change_id, max_change_id=change_id)
 
     async def projector_changed(self, event: Dict[str, Any]) -> None:
         """

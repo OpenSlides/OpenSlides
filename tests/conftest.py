@@ -82,5 +82,5 @@ def reset_cache(request):
         async_to_sync(element_cache.cache_provider.clear_cache)()
         element_cache.ensure_cache(reset=True)
 
-    # Set constant start_time
-    element_cache.start_time = 1
+    # Set constant default change_id
+    element_cache.set_default_change_id(1)

@@ -67,14 +67,14 @@ async def async_has_perm(user_id: int, perm: str) -> bool:
         has_perm = False
     elif not user_id:
         # Use the permissions from the default group.
-        default_group = await element_cache.get_element_full_data(
+        default_group = await element_cache.get_element_data(
             group_collection_string, GROUP_DEFAULT_PK
         )
         if default_group is None:
             raise RuntimeError("Default Group does not exist.")
         has_perm = perm in default_group["permissions"]
     else:
-        user_data = await element_cache.get_element_full_data(
+        user_data = await element_cache.get_element_data(
             user_collection_string, user_id
         )
         if user_data is None:
@@ -87,7 +87,7 @@ async def async_has_perm(user_id: int, perm: str) -> bool:
             # permission. If the user has no groups, then use the default group.
             group_ids = user_data["groups_id"] or [GROUP_DEFAULT_PK]
             for group_id in group_ids:
-                group = await element_cache.get_element_full_data(
+                group = await element_cache.get_element_data(
                     group_collection_string, group_id
                 )
                 if group is None:
@@ -131,7 +131,7 @@ async def async_in_some_groups(user_id: int, groups: List[int]) -> bool:
         # Use the permissions from the default group.
         in_some_groups = GROUP_DEFAULT_PK in groups
     else:
-        user_data = await element_cache.get_element_full_data(
+        user_data = await element_cache.get_element_data(
             user_collection_string, user_id
         )
         if user_data is None:
@@ -167,7 +167,7 @@ async def async_anonymous_is_enabled() -> bool:
     """
     from ..core.config import config
 
-    element = await element_cache.get_element_full_data(
+    element = await element_cache.get_element_data(
         config.get_collection_string(),
         (await config.async_get_key_to_id())["general_system_enable_anonymous"],
     )

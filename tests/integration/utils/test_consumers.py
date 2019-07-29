@@ -16,7 +16,10 @@ from openslides.utils.autoupdate import (
     inform_deleted_data,
 )
 from openslides.utils.cache import element_cache
-from openslides.utils.websocket import WEBSOCKET_CHANGE_ID_TOO_HIGH
+from openslides.utils.websocket import (
+    WEBSOCKET_CHANGE_ID_TOO_HIGH,
+    WEBSOCKET_WRONG_FORMAT,
+)
 
 from ...unit.utils.cache_provider import Collection1, Collection2, get_cachable_provider
 from ..helpers import TConfig, TProjector, TUser
@@ -36,7 +39,7 @@ async def prepare_element_cache(settings):
         [Collection1(), Collection2(), TConfig(), TUser(), TProjector()]
     )
     element_cache._cachables = None
-    await sync_to_async(element_cache.ensure_cache)()
+    await element_cache.async_ensure_cache(default_change_id=1)
     yield
     # Reset the cachable_provider
     element_cache.cachable_provider = orig_cachable_provider
@@ -118,31 +121,6 @@ async def test_connection_with_change_id(get_communicator, set_config):
     assert TUser().get_collection_string() in content["changed"]
 
 
-@pytest.mark.asyncio
-async def test_connection_with_change_id_get_restricted_data_with_restricted_data_cache(
-    get_communicator, set_config
-):
-    """
-    Test, that the returned data is the restricted_data when restricted_data_cache is activated
-    """
-    try:
-        # Save the value of use_restricted_data_cache
-        original_use_restricted_data = element_cache.use_restricted_data_cache
-        element_cache.use_restricted_data_cache = True
-
-        await set_config("general_system_enable_anonymous", True)
-        communicator = get_communicator("change_id=0")
-        await communicator.connect()
-
-        response = await communicator.receive_json_from()
-
-        content = response.get("content")
-        assert content["changed"]["app/collection1"][0]["value"] == "restricted_value1"
-    finally:
-        # reset the value of use_restricted_data_cache
-        element_cache.use_restricted_data_cache = original_use_restricted_data
-
-
 @pytest.mark.xfail  # This will fail until a proper solution in #4009
 @pytest.mark.asyncio
 async def test_connection_with_invalid_change_id(get_communicator, set_config):
@@ -154,14 +132,14 @@ async def test_connection_with_invalid_change_id(get_communicator, set_config):
 
 
 @pytest.mark.asyncio
-async def test_connection_with_to_big_change_id(get_communicator, set_config):
+async def test_connection_with_too_big_change_id(get_communicator, set_config):
     await set_config("general_system_enable_anonymous", True)
     communicator = get_communicator("change_id=100")
 
     connected, __ = await communicator.connect()
 
     assert connected is True
-    assert await communicator.receive_nothing()
+    await communicator.assert_receive_error(code=WEBSOCKET_CHANGE_ID_TOO_HIGH)
 
 
 @pytest.mark.asyncio
@@ -271,8 +249,7 @@ async def test_invalid_websocket_message_type(communicator, set_config):
 
     await communicator.send_json_to([])
 
-    response = await communicator.receive_json_from()
-    assert response["type"] == "error"
+    await communicator.assert_receive_error(code=WEBSOCKET_WRONG_FORMAT)
 
 
 @pytest.mark.asyncio
@@ -282,8 +259,7 @@ async def test_invalid_websocket_message_no_id(communicator, set_config):
 
     await communicator.send_json_to({"type": "test", "content": "foobar"})
 
-    response = await communicator.receive_json_from()
-    assert response["type"] == "error"
+    await communicator.assert_receive_error(code=WEBSOCKET_WRONG_FORMAT)
 
 
 @pytest.mark.asyncio
@@ -299,9 +275,9 @@ async def test_send_unknown_type(communicator, set_config):
         }
     )
 
-    response = await communicator.receive_json_from()
-    assert response["type"] == "error"
-    assert response["in_response"] == "test_id"
+    await communicator.assert_receive_error(
+        code=WEBSOCKET_WRONG_FORMAT, in_response="test_id"
+    )
 
 
 @pytest.mark.asyncio
@@ -343,18 +319,16 @@ async def test_send_get_elements(communicator, set_config):
 
 
 @pytest.mark.asyncio
-async def test_send_get_elements_to_big_change_id(communicator, set_config):
+async def test_send_get_elements_too_big_change_id(communicator, set_config):
     await set_config("general_system_enable_anonymous", True)
     await communicator.connect()
 
     await communicator.send_json_to(
         {"type": "getElements", "content": {"change_id": 100}, "id": "test_id"}
     )
-    response = await communicator.receive_json_from()
-
-    type = response.get("type")
-    assert type == "error"
-    assert response.get("in_response") == "test_id"
+    await communicator.assert_receive_error(
+        code=WEBSOCKET_CHANGE_ID_TOO_HIGH, in_response="test_id"
+    )
 
 
 @pytest.mark.asyncio
@@ -374,10 +348,10 @@ async def test_send_get_elements_to_small_change_id(communicator, set_config):
 
 
 @pytest.mark.asyncio
-async def test_send_connect_twice_with_clear_change_id_cache(communicator, set_config):
+async def test_send_connect_up_to_date(communicator, set_config):
     """
-    Test, that a second request with change_id+1 from the first request, returns
-    an error.
+    Test, that a second request with change_id+1 from the first request does not
+    send anything, becuase the client is up to date.
     """
     await set_config("general_system_enable_anonymous", True)
     element_cache.cache_provider.change_id_data = {}  # type: ignore
@@ -395,13 +369,7 @@ async def test_send_connect_twice_with_clear_change_id_cache(communicator, set_c
             "id": "test_id",
         }
     )
-    response2 = await communicator.receive_json_from()
-
-    assert response2["type"] == "error"
-    assert response2.get("content") == {
-        "code": WEBSOCKET_CHANGE_ID_TOO_HIGH,
-        "message": "Requested change_id 2 is higher this highest change_id 1.",
-    }
+    assert await communicator.receive_nothing()
 
 
 @pytest.mark.xfail  # This test is broken

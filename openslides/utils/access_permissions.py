@@ -86,16 +86,14 @@ class RequiredUsers:
         user_ids: Set[int] = set()
 
         for collection_string in collection_strings:
-            collection_full_data = await element_cache.get_collection_full_data(
-                collection_string
-            )
+            collection_data = await element_cache.get_collection_data(collection_string)
             # Get the callable for the collection_string
             get_user_ids = self.callables.get(collection_string)
-            if not (get_user_ids and collection_full_data):
+            if not (get_user_ids and collection_data):
                 # if the collection_string is unknown or it has no data, do nothing
                 continue
 
-            for element in collection_full_data.values():
+            for element in collection_data.values():
                 user_ids.update(get_user_ids(element))
 
         return user_ids

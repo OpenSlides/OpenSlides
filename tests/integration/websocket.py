@@ -23,3 +23,16 @@ class WebsocketCommunicator(ChannelsWebsocketCommunicator):
 
         assert isinstance(text_data, str), "JSON data is not a text frame"
         return json.loads(text_data)
+
+    async def assert_receive_error(self, timeout=1, in_response=None, **kwargs):
+        response = await self.receive_json_from(timeout)
+        assert response["type"] == "error"
+
+        content = response.get("content")
+        if kwargs:
+            assert content
+        for key, value in kwargs.items():
+            assert content.get(key) == value
+
+        if in_response:
+            assert response["in_response"] == in_response

@@ -13,11 +13,17 @@ import { OpenSlidesStatusService } from './openslides-status.service';
     providedIn: 'root'
 })
 export class StorageService {
+    private noClearKeys: string[] = [];
+
     /**
      * Constructor to create the StorageService. Needs the localStorage service.
      * @param localStorage
      */
     public constructor(private localStorage: LocalStorage, private OSStatus: OpenSlidesStatusService) {}
+
+    public addNoClearKey(key: string): void {
+        this.noClearKeys.push(key);
+    }
 
     /**
      * Sets the item into the store asynchronously.
@@ -57,12 +63,19 @@ export class StorageService {
     }
 
     /**
-     * Clear the whole cache
+     * Clear the whole cache except for keys given in `addNoClearKey`.
      */
     public async clear(): Promise<void> {
         this.assertNotHistoryMode();
+        const savedData: { [key: string]: any } = {};
+        for (const key of this.noClearKeys) {
+            savedData[key] = await this.get(key);
+        }
         if (!(await this.localStorage.clear().toPromise())) {
             throw new Error('Could not clear the storage.');
+        }
+        for (const key of this.noClearKeys) {
+            await this.set(key, savedData[key]);
         }
     }
 
