@@ -1,7 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TopicSlideComponent } from './topic-slide.component';
 import { E2EImportsModule } from 'e2e-imports.module';
+
+import { TopicSlideComponent } from './topic-slide.component';
 
 describe('TopicSlideComponent', () => {
     let component: TopicSlideComponent;

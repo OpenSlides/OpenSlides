@@ -1,14 +1,14 @@
-import { Component, OnInit, Input, OnDestroy, Output, EventEmitter, ContentChild, TemplateRef } from '@angular/core';
-import { FlatTreeControl } from '@angular/cdk/tree';
 import { ArrayDataSource } from '@angular/cdk/collections';
-import { CdkDragMove, CdkDragStart, CdkDragSortEvent } from '@angular/cdk/drag-drop';
+import { CdkDragMove, CdkDragSortEvent, CdkDragStart } from '@angular/cdk/drag-drop';
+import { FlatTreeControl } from '@angular/cdk/tree';
+import { Component, ContentChild, EventEmitter, Input, OnDestroy, OnInit, Output, TemplateRef } from '@angular/core';
 
 import { Observable, Subscription } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
 
+import { FlatNode, TreeIdNode, TreeService } from 'app/core/ui-services/tree.service';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { Displayable } from 'app/site/base/displayable';
-import { TreeService, FlatNode, TreeIdNode } from 'app/core/ui-services/tree.service';
 
 /**
  * Enumaration to separate between the directions.

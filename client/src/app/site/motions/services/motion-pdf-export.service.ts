@@ -2,14 +2,14 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { MotionPdfService } from './motion-pdf.service';
-import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
-import { ViewMotion } from '../models/view-motion';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { MotionPdfCatalogService } from './motion-pdf-catalog.service';
+import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
 import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
-import { ViewMotionCommentSection } from '../models/view-motion-comment-section';
 import { ExportFormData } from '../modules/motion-list/components/motion-export-dialog/motion-export-dialog.component';
+import { MotionPdfCatalogService } from './motion-pdf-catalog.service';
+import { MotionPdfService } from './motion-pdf.service';
+import { ViewMotion } from '../models/view-motion';
+import { ViewMotionCommentSection } from '../models/view-motion-comment-section';
 
 /**
  * Export service to handle various kind of exporting necessities.

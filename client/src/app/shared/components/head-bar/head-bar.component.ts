@@ -1,9 +1,9 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { MainMenuService } from 'app/core/core-services/main-menu.service';
 import { RoutingStateService } from 'app/core/ui-services/routing-state.service';
+import { ViewportService } from 'app/core/ui-services/viewport.service';
 
 /**
  * Reusable head bar component for Apps.

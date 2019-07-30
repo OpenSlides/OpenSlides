@@ -1,6 +1,6 @@
-import { BaseViewModel } from './base-view-model';
 import { BaseModelWithContentObject } from 'app/shared/models/base/base-model-with-content-object';
 import { ContentObject } from 'app/shared/models/base/content-object';
+import { BaseViewModel } from './base-view-model';
 
 /**
  * Base class for view models with content objects. Ensures a content object attribute and

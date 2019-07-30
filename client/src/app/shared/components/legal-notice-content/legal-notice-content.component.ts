@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
-import { LoginDataService } from 'app/core/ui-services/login-data.service';
 import { environment } from 'environments/environment';
+
 import { HttpService } from 'app/core/core-services/http.service';
+import { LoginDataService } from 'app/core/ui-services/login-data.service';
 
 /**
  * Characterize a plugin. This data is retrieved from the server

@@ -1,23 +1,23 @@
-import { Component, ApplicationRef } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { ApplicationRef, Component } from '@angular/core';
+import { Router } from '@angular/router';
 
-import { take, filter, auditTime } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
+import { auditTime, filter, take } from 'rxjs/operators';
 
 import { ConfigService } from './core/ui-services/config.service';
 import { ConstantsService } from './core/core-services/constants.service';
 import { CountUsersService } from './core/ui-services/count-users.service';
+import { DataStoreUpgradeService } from './core/core-services/data-store-upgrade.service';
 import { LoadFontService } from './core/ui-services/load-font.service';
 import { LoginDataService } from './core/ui-services/login-data.service';
 import { OperatorService } from './core/core-services/operator.service';
-import { ServertimeService } from './core/core-services/servertime.service';
-import { ThemeService } from './core/ui-services/theme.service';
-import { DataStoreUpgradeService } from './core/core-services/data-store-upgrade.service';
-import { PrioritizeService } from './core/core-services/prioritize.service';
 import { PingService } from './core/core-services/ping.service';
-import { SpinnerService } from './core/ui-services/spinner.service';
-import { Router } from '@angular/router';
-import { ViewUser } from './site/users/models/view-user';
+import { PrioritizeService } from './core/core-services/prioritize.service';
 import { RoutingStateService } from './core/ui-services/routing-state.service';
+import { ServertimeService } from './core/core-services/servertime.service';
+import { SpinnerService } from './core/ui-services/spinner.service';
+import { ThemeService } from './core/ui-services/theme.service';
+import { ViewUser } from './site/users/models/view-user';
 
 /**
  * Enhance array with own functions
@@ -25,7 +25,7 @@ import { RoutingStateService } from './core/ui-services/routing-state.service';
  */
 declare global {
     interface Array<T> {
-        flatMap(o: any): Array<any>;
+        flatMap(o: any): any[];
     }
 }
 

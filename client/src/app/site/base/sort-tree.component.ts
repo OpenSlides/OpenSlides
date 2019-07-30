@@ -1,15 +1,15 @@
-import { ViewChild, EventEmitter } from '@angular/core';
+import { EventEmitter, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseViewModel } from './base-view-model';
-import { BaseViewComponent } from './base-view';
-import { CanComponentDeactivate } from 'app/shared/utils/watch-sorting-tree.guard';
-import { Identifiable } from 'app/shared/models/base/identifiable';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { SortingTreeComponent } from 'app/shared/components/sorting-tree/sorting-tree.component';
+import { Identifiable } from 'app/shared/models/base/identifiable';
+import { CanComponentDeactivate } from 'app/shared/utils/watch-sorting-tree.guard';
+import { BaseViewComponent } from './base-view';
+import { BaseViewModel } from './base-view-model';
 
 export interface SortTreeFilterOption extends Identifiable {
     label: string;

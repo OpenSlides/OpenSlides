@@ -1,64 +1,64 @@
-import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
-import { Component, OnInit, OnDestroy, ElementRef, HostListener } from '@angular/core';
-import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
-import { BehaviorSubject, Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { BehaviorSubject, Subscription } from 'rxjs';
 
-import { BaseViewComponent } from 'app/site/base/base-view';
-import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
-import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
-import { CreateMotion } from 'app/site/motions/models/create-motion';
-import { ConfigService } from 'app/core/ui-services/config.service';
-import { DiffLinesInParagraph, DiffService, LineRange } from 'app/core/ui-services/diff.service';
-import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
-import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
-import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
-import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
-import { Motion } from 'app/shared/models/motions/motion';
-import {
-    MotionChangeRecommendationDialogComponentData,
-    MotionChangeRecommendationDialogComponent
-} from '../motion-change-recommendation-dialog/motion-change-recommendation-dialog.component';
-import {
-    MotionTitleChangeRecommendationDialogComponentData,
-    MotionTitleChangeRecommendationDialogComponent
-} from '../motion-title-change-recommendation-dialog/motion-title-change-recommendation-dialog.component';
-import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-export.service';
-import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
-import { MotionFilterListService } from 'app/site/motions/services/motion-filter-list.service';
-import { MotionRepositoryService, ParagraphToChoose } from 'app/core/repositories/motions/motion-repository.service';
-import { MotionSortListService } from 'app/site/motions/services/motion-sort-list.service';
 import { NotifyService } from 'app/core/core-services/notify.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
-import { PersonalNoteService } from 'app/core/ui-services/personal-note.service';
-import { PromptService } from 'app/core/ui-services/prompt.service';
+import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
+import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
+import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
+import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
+import { MotionRepositoryService, ParagraphToChoose } from 'app/core/repositories/motions/motion-repository.service';
 import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions/statute-paragraph-repository.service';
+import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
 import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
-import {
-    ViewMotion,
-    ChangeRecoMode,
-    LineNumberingMode,
-    verboseChangeRecoMode
-} from 'app/site/motions/models/view-motion';
-import { MotionEditNotification, MotionEditNotificationType } from 'app/site/motions/motion-edit-notification';
-import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
+import { ConfigService } from 'app/core/ui-services/config.service';
+import { DiffLinesInParagraph, DiffService, LineRange } from 'app/core/ui-services/diff.service';
+import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
+import { PersonalNoteService } from 'app/core/ui-services/personal-note.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
+import { ViewportService } from 'app/core/ui-services/viewport.service';
+import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
+import { Motion } from 'app/shared/models/motions/motion';
+import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change';
+import { BaseViewComponent } from 'app/site/base/base-view';
+import { CreateMotion } from 'app/site/motions/models/create-motion';
 import { ViewCategory } from 'app/site/motions/models/view-category';
 import { ViewCreateMotion } from 'app/site/motions/models/view-create-motion';
-import { ViewportService } from 'app/core/ui-services/viewport.service';
+import {
+    ChangeRecoMode,
+    LineNumberingMode,
+    verboseChangeRecoMode,
+    ViewMotion
+} from 'app/site/motions/models/view-motion';
+import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
 import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
 import { ViewStatuteParagraph } from 'app/site/motions/models/view-statute-paragraph';
-import { ViewTag } from 'app/site/tags/models/view-tag';
-import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change';
-import { ViewUser } from 'app/site/users/models/view-user';
 import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
-import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
+import { MotionEditNotification, MotionEditNotificationType } from 'app/site/motions/motion-edit-notification';
+import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
+import { MotionFilterListService } from 'app/site/motions/services/motion-filter-list.service';
+import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-export.service';
+import { MotionSortListService } from 'app/site/motions/services/motion-sort-list.service';
+import { ViewTag } from 'app/site/tags/models/view-tag';
+import { ViewUser } from 'app/site/users/models/view-user';
+import {
+    MotionChangeRecommendationDialogComponent,
+    MotionChangeRecommendationDialogComponentData
+} from '../motion-change-recommendation-dialog/motion-change-recommendation-dialog.component';
+import {
+    MotionTitleChangeRecommendationDialogComponent,
+    MotionTitleChangeRecommendationDialogComponentData
+} from '../motion-title-change-recommendation-dialog/motion-title-change-recommendation-dialog.component';
 
 /**
  * Component for the motion detail view

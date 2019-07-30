@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
 
-import { AssignmentOptionVote } from 'app/shared/models/assignments/assignment-poll-option';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import {
-    PollService,
-    PollMajorityMethod,
-    MajorityMethod,
     CalculablePollKey,
+    MajorityMethod,
+    PollMajorityMethod,
+    PollService,
     PollVoteValue
 } from 'app/core/ui-services/poll.service';
-import { ViewAssignmentPollOption } from '../models/view-assignment-poll-option';
+import { AssignmentOptionVote } from 'app/shared/models/assignments/assignment-poll-option';
 import { ViewAssignmentPoll } from '../models/view-assignment-poll';
+import { ViewAssignmentPollOption } from '../models/view-assignment-poll-option';
 
 type AssignmentPollValues = 'auto' | 'votes' | 'yesnoabstain' | 'yesno';
 export type AssignmentPollMethod = 'yn' | 'yna' | 'votes';

@@ -1,8 +1,10 @@
-import { TestBed, async, fakeAsync, tick } from '@angular/core/testing';
+import { async, fakeAsync, TestBed, tick } from '@angular/core/testing';
+
+import { TranslateService } from '@ngx-translate/core';
+
 import { AppComponent } from './app.component';
 import { E2EImportsModule } from './../e2e-imports.module';
 import { ServertimeService } from './core/core-services/servertime.service';
-import { TranslateService } from '@ngx-translate/core';
 
 describe('AppComponent', () => {
     let servertimeService, translate;

@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Title } from '@angular/platform-browser';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Title } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseViewComponent } from 'app/site/base/base-view';
-import { ConfigService } from 'app/core/ui-services/config.service';
-import { CreateMotion } from 'app/site/motions/models/create-motion';
 import { MotionRepositoryService, ParagraphToChoose } from 'app/core/repositories/motions/motion-repository.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
+import { BaseViewComponent } from 'app/site/base/base-view';
+import { CreateMotion } from 'app/site/motions/models/create-motion';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 
 /**

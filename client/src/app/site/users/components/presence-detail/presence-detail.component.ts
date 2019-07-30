@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
-import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
-import { ConfigService } from 'app/core/ui-services/config.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
 import { ViewUser } from '../../models/view-user';
 
 /**

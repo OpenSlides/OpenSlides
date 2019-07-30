@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
 
+import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { TranslateService } from '@ngx-translate/core';
 
 import { CollectionStringMapperService } from 'app/core/core-services/collection-string-mapper.service';
 import { DataSendService } from 'app/core/core-services/data-send.service';
 import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { HttpService } from 'app/core/core-services/http.service';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { Motion } from 'app/shared/models/motions/motion';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
-import { MotionRepositoryService } from './motion-repository.service';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
-import { ViewMotionBlock, MotionBlockTitleInformation } from 'app/site/motions/models/view-motion-block';
-import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { MotionBlockTitleInformation, ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
 import { BaseIsAgendaItemAndListOfSpeakersContentObjectRepository } from '../base-is-agenda-item-and-list-of-speakers-content-object-repository';
+import { MotionRepositoryService } from './motion-repository.service';
 
 /**
  * Repository service for motion blocks

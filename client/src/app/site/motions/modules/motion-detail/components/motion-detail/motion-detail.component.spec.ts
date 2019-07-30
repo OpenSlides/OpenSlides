@@ -1,13 +1,14 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MotionDetailComponent } from './motion-detail.component';
 import { E2EImportsModule } from 'e2e-imports.module';
-import { MotionCommentsComponent } from '../motion-comments/motion-comments.component';
-import { PersonalNoteComponent } from '../personal-note/personal-note.component';
+
 import { ManageSubmittersComponent } from '../manage-submitters/manage-submitters.component';
-import { MotionPollComponent } from '../motion-poll/motion-poll.component';
-import { MotionDetailOriginalChangeRecommendationsComponent } from '../motion-detail-original-change-recommendations/motion-detail-original-change-recommendations.component';
+import { MotionCommentsComponent } from '../motion-comments/motion-comments.component';
 import { MotionDetailDiffComponent } from '../motion-detail-diff/motion-detail-diff.component';
+import { MotionDetailOriginalChangeRecommendationsComponent } from '../motion-detail-original-change-recommendations/motion-detail-original-change-recommendations.component';
+import { MotionDetailComponent } from './motion-detail.component';
+import { MotionPollComponent } from '../motion-poll/motion-poll.component';
+import { PersonalNoteComponent } from '../personal-note/personal-note.component';
 
 describe('MotionDetailComponent', () => {
     let component: MotionDetailComponent;

@@ -1,16 +1,16 @@
 import { Component, ViewChild } from '@angular/core';
-import { Title } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 
-import { BaseViewComponent } from 'app/site/base/base-view';
-import { CanComponentDeactivate } from 'app/shared/utils/watch-sorting-tree.guard';
+import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { SortingTreeComponent } from 'app/shared/components/sorting-tree/sorting-tree.component';
+import { CanComponentDeactivate } from 'app/shared/utils/watch-sorting-tree.guard';
+import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewCategory } from 'app/site/motions/models/view-category';
-import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 
 /**
  * Sort view for the call list.

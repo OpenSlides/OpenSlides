@@ -1,7 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WorkflowDetailComponent } from './workflow-detail.component';
 import { E2EImportsModule } from 'e2e-imports.module';
+
+import { WorkflowDetailComponent } from './workflow-detail.component';
 
 describe('WorkflowDetailComponent', () => {
     let component: WorkflowDetailComponent;

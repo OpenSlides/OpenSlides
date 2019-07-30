@@ -1,9 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { E2EImportsModule } from '../../../../../e2e-imports.module';
-import { ConfigListComponent } from './config-list.component';
 import { ConfigFieldComponent } from '../config-field/config-field.component';
+import { ConfigListComponent } from './config-list.component';
 import { CustomTranslationComponent } from '../custom-translation/custom-translation.component';
+import { E2EImportsModule } from '../../../../../e2e-imports.module';
 
 describe('ConfigListComponent', () => {
     let component: ConfigListComponent;

@@ -1,8 +1,8 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 
-import { CommonListOfSpeakersSlideComponent } from './common-list-of-speakers-slide.component';
 import { SharedModule } from 'app/shared/shared.module';
+import { CommonListOfSpeakersSlideComponent } from './common-list-of-speakers-slide.component';
 
 @NgModule({
     declarations: [CommonListOfSpeakersSlideComponent],

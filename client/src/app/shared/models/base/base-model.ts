@@ -1,6 +1,6 @@
+import { Collection } from './collection';
 import { Deserializable } from './deserializable';
 import { Identifiable } from './identifiable';
-import { Collection } from './collection';
 
 export interface ModelConstructor<T extends BaseModel<T>> {
     COLLECTIONSTRING: string;

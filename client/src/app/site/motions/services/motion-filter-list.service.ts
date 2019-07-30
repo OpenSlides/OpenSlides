@@ -2,21 +2,21 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { OperatorService } from 'app/core/core-services/operator.service';
+import { StorageService } from 'app/core/core-services/storage.service';
+import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
+import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
+import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
+import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
+import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
 import {
     BaseFilterListService,
     OsFilter,
-    OsFilterOptions,
-    OsFilterOption
+    OsFilterOption,
+    OsFilterOptions
 } from 'app/core/ui-services/base-filter-list.service';
-import { ViewMotion } from '../models/view-motion';
-import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
-import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
-import { StorageService } from 'app/core/core-services/storage.service';
-import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
-import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
-import { OperatorService } from 'app/core/core-services/operator.service';
-import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { ViewMotion } from '../models/view-motion';
 
 /**
  * Filter description to easier parse dynamically occurring workflows

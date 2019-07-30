@@ -1,7 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { StatuteParagraphListComponent } from './statute-paragraph-list.component';
 import { E2EImportsModule } from 'e2e-imports.module';
+
+import { StatuteParagraphListComponent } from './statute-paragraph-list.component';
 
 describe('StatuteParagraphListComponent', () => {
     let component: StatuteParagraphListComponent;

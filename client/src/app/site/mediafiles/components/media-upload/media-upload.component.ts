@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseViewComponent } from 'app/site/base/base-view';
-import { ActivatedRoute } from '@angular/router';
 import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
+import { BaseViewComponent } from 'app/site/base/base-view';
 
 /**
  * Handle file uploads from user

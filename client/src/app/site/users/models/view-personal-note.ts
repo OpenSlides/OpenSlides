@@ -1,5 +1,5 @@
+import { PersonalNote, PersonalNoteContent, PersonalNotesFormat } from 'app/shared/models/users/personal-note';
 import { BaseViewModel } from 'app/site/base/base-view-model';
-import { PersonalNote, PersonalNotesFormat, PersonalNoteContent } from 'app/shared/models/users/personal-note';
 
 export type PersonalNoteTitleInformation = object;
 

@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 
+import { SlideData } from 'app/core/core-services/projector-data.service';
 import { BaseSlideComponent } from 'app/slides/base-slide-component';
 import { AssignmentSlideData } from './assignment-slide-data';
-import { SlideData } from 'app/core/core-services/projector-data.service';
 
 @Component({
     selector: 'os-assignment-slide',

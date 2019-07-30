@@ -1,5 +1,5 @@
-import { BaseViewModel } from 'app/site/base/base-view-model';
 import { Speaker } from 'app/shared/models/agenda/speaker';
+import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ViewUser } from 'app/site/users/models/view-user';
 
 /**

@@ -1,19 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { Title } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Title } from '@angular/platform-browser';
 
-import { Observable, BehaviorSubject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
+import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
+import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 import { FlatNode } from 'app/core/ui-services/tree.service';
+import { SortTreeFilterOption, SortTreeViewComponent } from 'app/site/base/sort-tree.component';
+import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { MotionCsvExportService } from 'app/site/motions/services/motion-csv-export.service';
 import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-export.service';
-import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
-import { PromptService } from 'app/core/ui-services/prompt.service';
-import { SortTreeViewComponent, SortTreeFilterOption } from 'app/site/base/sort-tree.component';
-import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
-import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 
 /**

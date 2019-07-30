@@ -1,10 +1,10 @@
 import { AppConfig } from '../../core/app-config';
-import { Item } from '../../shared/models/agenda/item';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
-import { ViewItem } from './models/view-item';
-import { ListOfSpeakers } from 'app/shared/models/agenda/list-of-speakers';
-import { ViewListOfSpeakers } from './models/view-list-of-speakers';
 import { ListOfSpeakersRepositoryService } from 'app/core/repositories/agenda/list-of-speakers-repository.service';
+import { ListOfSpeakers } from 'app/shared/models/agenda/list-of-speakers';
+import { Item } from '../../shared/models/agenda/item';
+import { ViewItem } from './models/view-item';
+import { ViewListOfSpeakers } from './models/view-list-of-speakers';
 
 export const AgendaAppConfig: AppConfig = {
     name: 'agenda',

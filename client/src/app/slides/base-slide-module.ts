@@ -3,8 +3,8 @@ import { NgModule } from '@angular/compiler/src/core';
 import { Type } from '@angular/core';
 
 import { SharedModule } from 'app/shared/shared.module';
-import { SLIDE } from './slide-token';
 import { BaseSlideComponent } from './base-slide-component';
+import { SLIDE } from './slide-token';
 
 /**
  * Generates the configuration for a slide module.

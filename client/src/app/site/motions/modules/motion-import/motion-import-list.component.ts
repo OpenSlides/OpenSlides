@@ -5,9 +5,9 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 
 import { BaseImportListComponent } from 'app/site/base/base-import-list';
+import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { MotionCsvExportService } from 'app/site/motions/services/motion-csv-export.service';
 import { MotionImportService } from 'app/site/motions/services/motion-import.service';
-import { ViewMotion } from 'app/site/motions/models/view-motion';
 
 /**
  * Component for the motion import list view.

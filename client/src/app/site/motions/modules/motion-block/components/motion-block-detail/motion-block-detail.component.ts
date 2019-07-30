@@ -1,21 +1,21 @@
-import { ActivatedRoute, Router } from '@angular/router';
-import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
-import { PblColumnDefinition, PblDataSource, createDS, columnFactory } from '@pebula/ngrid';
+import { columnFactory, createDS, PblColumnDefinition, PblDataSource } from '@pebula/ngrid';
 
-import { MotionBlock } from 'app/shared/models/motions/motion-block';
+import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
+import { MotionBlock } from 'app/shared/models/motions/motion-block';
+import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
-import { BaseViewComponent } from 'app/site/base/base-view';
-import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 
 /**
  * Detail component to display one motion block

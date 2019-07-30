@@ -1,34 +1,34 @@
 import {
-    Component,
-    OnInit,
-    ViewChild,
-    TemplateRef,
-    OnDestroy,
-    ViewEncapsulation,
     ChangeDetectionStrategy,
-    ChangeDetectorRef
+    ChangeDetectorRef,
+    Component,
+    OnDestroy,
+    OnInit,
+    TemplateRef,
+    ViewChild,
+    ViewEncapsulation
 } from '@angular/core';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
-import { PblDataSource, columnFactory, createDS } from '@pebula/ngrid';
+import { columnFactory, createDS, PblDataSource } from '@pebula/ngrid';
+import { BehaviorSubject, Subscription } from 'rxjs';
 
-import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
-import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
-import { MediaManageService } from 'app/core/ui-services/media-manage.service';
-import { MediafilesSortListService } from '../../services/mediafiles-sort-list.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
+import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
+import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
+import { MediaManageService } from 'app/core/ui-services/media-manage.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
-import { ViewGroup } from 'app/site/users/models/view-group';
-import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { BaseViewComponent } from 'app/site/base/base-view';
+import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
+import { ViewGroup } from 'app/site/users/models/view-group';
+import { MediafilesSortListService } from '../../services/mediafiles-sort-list.service';
 
 /**
  * Lists all the uploaded files.

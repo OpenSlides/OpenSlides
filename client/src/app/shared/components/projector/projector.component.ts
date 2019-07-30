@@ -1,16 +1,16 @@
-import { Component, Input, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, ViewChild } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription, Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 
 import { BaseComponent } from 'app/base.component';
+import { OfflineService } from 'app/core/core-services/offline.service';
+import { ProjectorDataService, SlideData } from 'app/core/core-services/projector-data.service';
+import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { ViewProjector } from 'app/site/projector/models/view-projector';
 import { Size } from 'app/site/projector/size';
-import { OfflineService } from 'app/core/core-services/offline.service';
-import { SlideData, ProjectorDataService } from 'app/core/core-services/projector-data.service';
-import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
 
 /**
  * THE projector. Cares about scaling and the right size and resolution.

@@ -1,6 +1,6 @@
-import { Submitter } from './submitter';
-import { MotionPoll } from './motion-poll';
 import { BaseModelWithAgendaItemAndListOfSpeakers } from '../base/base-model-with-agenda-item-and-list-of-speakers';
+import { MotionPoll } from './motion-poll';
+import { Submitter } from './submitter';
 
 export interface MotionComment {
     id: number;

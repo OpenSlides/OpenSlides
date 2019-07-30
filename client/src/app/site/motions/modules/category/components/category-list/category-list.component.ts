@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Title } from '@angular/platform-browser';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
+import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
-import { ViewCategory } from 'app/site/motions/models/view-category';
 import { BaseViewComponent } from 'app/site/base/base-view';
+import { ViewCategory } from 'app/site/motions/models/view-category';
 
 /**
  * Table for categories

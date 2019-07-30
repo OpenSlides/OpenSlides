@@ -2,18 +2,18 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { HttpService } from 'app/core/core-services/http.service';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { NewEntry } from 'app/core/ui-services/base-import.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
+import { User } from 'app/shared/models/users/user';
+import { ViewGroup } from 'app/site/users/models/view-group';
+import { UserTitleInformation, ViewUser } from 'app/site/users/models/view-user';
 import { BaseRepository, RelationDefinition } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
-import { ConfigService } from 'app/core/ui-services/config.service';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { environment } from '../../../../environments/environment';
-import { HttpService } from 'app/core/core-services/http.service';
-import { NewEntry } from 'app/core/ui-services/base-import.service';
-import { User } from 'app/shared/models/users/user';
-import { ViewUser, UserTitleInformation } from 'app/site/users/models/view-user';
-import { ViewGroup } from 'app/site/users/models/view-group';
-import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 
 /**
  * type for determining the user name from a string during import.

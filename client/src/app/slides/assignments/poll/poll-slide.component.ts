@@ -1,5 +1,9 @@
 import { Component, Input } from '@angular/core';
 
+import { TranslateService } from '@ngx-translate/core';
+
+import { SlideData } from 'app/core/core-services/projector-data.service';
+import { CalculablePollKey, PollVoteValue } from 'app/core/ui-services/poll.service';
 import {
     AssignmentPollService,
     CalculationData,
@@ -7,9 +11,6 @@ import {
 } from 'app/site/assignments/services/assignment-poll.service';
 import { BaseSlideComponent } from 'app/slides/base-slide-component';
 import { PollSlideData, PollSlideOption } from './poll-slide-data';
-import { PollVoteValue, CalculablePollKey } from 'app/core/ui-services/poll.service';
-import { SlideData } from 'app/core/core-services/projector-data.service';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'os-poll-slide',

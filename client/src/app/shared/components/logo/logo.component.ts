@@ -1,8 +1,9 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 
-import { ThemeService } from 'app/core/ui-services/theme.service';
-import { LoginDataService } from 'app/core/ui-services/login-data.service';
 import { Subscription } from 'rxjs';
+
+import { LoginDataService } from 'app/core/ui-services/login-data.service';
+import { ThemeService } from 'app/core/ui-services/theme.service';
 
 /**
  * Component to hold the logo for the app.

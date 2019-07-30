@@ -1,13 +1,13 @@
-import { Component, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
-import { MatTableDataSource, MatTable } from '@angular/material/table';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
 
 import { FileSystemFileEntry, NgxFileDropEntry } from 'ngx-file-drop';
 import { BehaviorSubject } from 'rxjs';
 
 import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
-import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
+import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewGroup } from 'app/site/users/models/view-group';
 
 /**

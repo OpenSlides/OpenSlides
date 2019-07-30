@@ -3,8 +3,8 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseComponent } from '../../../base.component';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
+import { BaseComponent } from '../../../base.component';
 
 /**
  * Component for the motion comments view

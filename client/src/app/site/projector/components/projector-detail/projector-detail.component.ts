@@ -1,33 +1,33 @@
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnInit } from '@angular/core';
-import { Title } from '@angular/platform-browser';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { ProjectorService } from 'app/core/core-services/projector.service';
+import { CountdownRepositoryService } from 'app/core/repositories/projector/countdown-repository.service';
+import { ProjectorMessageRepositoryService } from 'app/core/repositories/projector/projector-message-repository.service';
 import {
     ProjectorRepositoryService,
     ScrollScaleDirection
 } from 'app/core/repositories/projector/projector-repository.service';
-import { ViewProjector } from '../../models/view-projector';
-import { BaseViewComponent } from 'app/site/base/base-view';
-import { Countdown } from 'app/shared/models/core/countdown';
-import { CountdownDialogComponent, CountdownData } from '../countdown-dialog/countdown-dialog.component';
-import { CurrentListOfSpeakersSlideService } from '../../services/current-list-of-of-speakers-slide.service';
-import { CurrentSpeakerChyronSlideService } from '../../services/current-speaker-chyron-slide.service';
 import { DurationService } from 'app/core/ui-services/duration.service';
-import { ProjectorService } from 'app/core/core-services/projector.service';
-import { moveItemInArray, CdkDragDrop } from '@angular/cdk/drag-drop';
-import { Projectable } from 'app/site/base/projectable';
+import { Countdown } from 'app/shared/models/core/countdown';
 import { ProjectorElement } from 'app/shared/models/core/projector';
 import { ProjectorMessage } from 'app/shared/models/core/projector-message';
-import { SlideManager } from 'app/slides/services/slide-manager.service';
-import { CountdownRepositoryService } from 'app/core/repositories/projector/countdown-repository.service';
-import { ProjectorMessageRepositoryService } from 'app/core/repositories/projector/projector-message-repository.service';
-import { ViewProjectorMessage } from 'app/site/projector/models/view-projector-message';
+import { BaseViewComponent } from 'app/site/base/base-view';
+import { Projectable } from 'app/site/base/projectable';
 import { ViewCountdown } from 'app/site/projector/models/view-countdown';
-import { MessageDialogComponent, MessageData } from '../message-dialog/message-dialog.component';
+import { ViewProjectorMessage } from 'app/site/projector/models/view-projector-message';
+import { SlideManager } from 'app/slides/services/slide-manager.service';
+import { CountdownData, CountdownDialogComponent } from '../countdown-dialog/countdown-dialog.component';
+import { CurrentListOfSpeakersSlideService } from '../../services/current-list-of-of-speakers-slide.service';
+import { CurrentSpeakerChyronSlideService } from '../../services/current-speaker-chyron-slide.service';
+import { MessageData, MessageDialogComponent } from '../message-dialog/message-dialog.component';
+import { ViewProjector } from '../../models/view-projector';
 
 /**
  * The projector detail view.

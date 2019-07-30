@@ -1,16 +1,16 @@
+import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
-import { TranslateService } from '@ngx-translate/core';
 
-import { BaseViewModel, TitleInformation, ViewModelConstructor } from '../../site/base/base-view-model';
+import { Collection } from 'app/shared/models/base/collection';
 import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model';
+import { BaseViewModel, TitleInformation, ViewModelConstructor } from '../../site/base/base-view-model';
 import { CollectionStringMapperService } from '../core-services/collection-string-mapper.service';
 import { DataSendService } from '../core-services/data-send.service';
-import { DataStoreService, CollectionIds } from '../core-services/data-store.service';
+import { CollectionIds, DataStoreService } from '../core-services/data-store.service';
 import { Identifiable } from '../../shared/models/base/identifiable';
-import { ViewModelStoreService } from '../core-services/view-model-store.service';
 import { OnAfterAppsLoaded } from '../onAfterAppsLoaded';
-import { Collection } from 'app/shared/models/base/collection';
+import { ViewModelStoreService } from '../core-services/view-model-store.service';
 
 // All "standard" relations.
 export type RelationDefinition<VForeign extends BaseViewModel = BaseViewModel> =

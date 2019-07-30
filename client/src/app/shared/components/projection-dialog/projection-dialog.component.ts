@@ -1,16 +1,16 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
-import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { DataStoreService } from 'app/core/core-services/data-store.service';
-import { Projector, IdentifiableProjectorElement } from 'app/shared/models/core/projector';
 import { ProjectorService } from 'app/core/core-services/projector.service';
+import { IdentifiableProjectorElement, Projector } from 'app/shared/models/core/projector';
+import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import {
-    SlideOption,
-    isSlideDecisionOption,
     isSlideChoiceOption,
-    SlideDecisionOption,
+    isSlideDecisionOption,
     SlideChoiceOption,
+    SlideDecisionOption,
+    SlideOption,
     SlideOptions
 } from 'app/site/base/slide-options';
 

@@ -1,10 +1,12 @@
 // External imports
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
+
+import { SpinnerService } from 'app/core/ui-services/spinner.service';
 
 // Internal imports
-import { SpinnerService } from 'app/core/ui-services/spinner.service';
 
 /**
  * Component for the global spinner.

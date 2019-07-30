@@ -1,10 +1,10 @@
-import { Component, Input, ViewChild, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatSelect } from '@angular/material';
 
+import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
-import { TranslateService } from '@ngx-translate/core';
 
 import { Selectable } from '../selectable';
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, TemplateRef, ContentChild, Output, EventEmitter, HostBinding } from '@angular/core';
+import { Component, ContentChild, EventEmitter, HostBinding, Input, OnInit, Output, TemplateRef } from '@angular/core';
 
 /**
  * Interface, that defines the type of the `ClickEvent`.

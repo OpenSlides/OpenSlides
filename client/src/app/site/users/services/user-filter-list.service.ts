@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 
-import { BaseFilterListService, OsFilter } from 'app/core/ui-services/base-filter-list.service';
-import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
-import { StorageService } from 'app/core/core-services/storage.service';
 import { TranslateService } from '@ngx-translate/core';
+
+import { StorageService } from 'app/core/core-services/storage.service';
+import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
+import { BaseFilterListService, OsFilter } from 'app/core/ui-services/base-filter-list.service';
 import { ViewUser } from '../models/view-user';
 
 /**

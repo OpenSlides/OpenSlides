@@ -1,12 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 
 import { BehaviorSubject } from 'rxjs';
 
-import { ConfigService } from 'app/core/ui-services/config.service';
-import { ViewItem } from 'app/site/agenda/models/view-item';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
 import { ItemVisibilityChoices } from 'app/shared/models/agenda/item';
+import { ViewItem } from 'app/site/agenda/models/view-item';
 
 type AgendaItemCreateChoices = 'always' | 'never' | 'default_yes' | 'default_no';
 

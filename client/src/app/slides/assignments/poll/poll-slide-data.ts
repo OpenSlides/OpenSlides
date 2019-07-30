@@ -1,5 +1,5 @@
-import { AssignmentPercentBase, AssignmentPollMethod } from 'app/site/assignments/services/assignment-poll.service';
 import { PollVoteValue } from 'app/core/ui-services/poll.service';
+import { AssignmentPercentBase, AssignmentPollMethod } from 'app/site/assignments/services/assignment-poll.service';
 
 export interface PollSlideOption {
     user: string;

@@ -1,14 +1,12 @@
-import { NgModule, Optional, SkipSelf, Type } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule, Optional, SkipSelf, Type } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
-// Shared Components
-import { PromptDialogComponent } from '../shared/components/prompt-dialog/prompt-dialog.component';
-import { ChoiceDialogComponent } from '../shared/components/choice-dialog/choice-dialog.component';
 import { ProjectionDialogComponent } from 'app/shared/components/projection-dialog/projection-dialog.component';
-
-import { OperatorService } from './core-services/operator.service';
+import { ChoiceDialogComponent } from '../shared/components/choice-dialog/choice-dialog.component';
 import { OnAfterAppsLoaded } from './onAfterAppsLoaded';
+import { OperatorService } from './core-services/operator.service';
+import { PromptDialogComponent } from '../shared/components/prompt-dialog/prompt-dialog.component';
 
 export const ServicesToLoadOnAppsLoaded: Type<OnAfterAppsLoaded>[] = [OperatorService];
 

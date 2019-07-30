@@ -1,20 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition } from '@pebula/ngrid';
 
-import { AssignmentFilterListService } from '../../services/assignment-filter.service';
-import { AssignmentSortListService } from '../../services/assignment-sort-list.service';
-import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
-import { BaseListViewComponent } from 'app/site/base/base-list-view';
 import { OperatorService } from 'app/core/core-services/operator.service';
-import { PromptService } from 'app/core/ui-services/prompt.service';
 import { StorageService } from 'app/core/core-services/storage.service';
-import { ViewAssignment, AssignmentPhases } from '../../models/view-assignment';
+import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
+import { BaseListViewComponent } from 'app/site/base/base-list-view';
+import { AssignmentFilterListService } from '../../services/assignment-filter.service';
 import { AssignmentPdfExportService } from '../../services/assignment-pdf-export.service';
+import { AssignmentSortListService } from '../../services/assignment-sort-list.service';
+import { AssignmentPhases, ViewAssignment } from '../../models/view-assignment';
 
 /**
  * List view for the assignments

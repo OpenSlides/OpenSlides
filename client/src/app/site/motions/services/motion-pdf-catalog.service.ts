@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
 
 import { TranslateService } from '@ngx-translate/core';
+import { BehaviorSubject } from 'rxjs';
 
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
-import { ConfigService } from 'app/core/ui-services/config.service';
-import { MotionPdfService } from './motion-pdf.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
-import { PdfError, PdfDocumentService, StyleType, BorderType } from 'app/core/ui-services/pdf-document.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
+import { BorderType, PdfDocumentService, PdfError, StyleType } from 'app/core/ui-services/pdf-document.service';
+import { ExportFormData } from '../modules/motion-list/components/motion-export-dialog/motion-export-dialog.component';
+import { MotionPdfService } from './motion-pdf.service';
 import { ViewCategory } from '../models/view-category';
 import { ViewMotion } from '../models/view-motion';
-import { ExportFormData } from '../modules/motion-list/components/motion-export-dialog/motion-export-dialog.component';
 
 /**
  * Service to export a list of motions.
@@ -238,7 +238,7 @@ export class MotionPdfCatalogService {
      *
      * @returns {Array<Object>} An array containing the `DocDefinitions` for `pdf-make`.
      */
-    private appendSubmittersAndRecommendation(motion: ViewMotion, style: StyleType = StyleType.DEFAULT): Array<Object> {
+    private appendSubmittersAndRecommendation(motion: ViewMotion, style: StyleType = StyleType.DEFAULT): Object[] {
         const recommendation = this.motionRepo.getExtendedRecommendationLabel(motion);
         let submitterList = '';
         for (let i = 0; i < motion.submitters.length; ++i) {

@@ -1,6 +1,6 @@
-import { BaseProjectableViewModel } from './base-projectable-view-model';
-import { isDetailNavigable, DetailNavigable } from 'app/shared/models/base/detail-navigable';
 import { BaseModelWithListOfSpeakers } from 'app/shared/models/base/base-model-with-list-of-speakers';
+import { DetailNavigable, isDetailNavigable } from 'app/shared/models/base/detail-navigable';
+import { BaseProjectableViewModel } from './base-projectable-view-model';
 
 export function isBaseViewModelWithListOfSpeakers(obj: any): obj is BaseViewModelWithListOfSpeakers {
     const model = <BaseViewModelWithListOfSpeakers>obj;

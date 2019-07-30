@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-
 import { SwUpdate, UpdateAvailableEvent } from '@angular/service-worker';
-import { NotifyService } from '../core-services/notify.service';
+
 import { Observable } from 'rxjs';
+
+import { NotifyService } from '../core-services/notify.service';
 
 /**
  * Handle Service Worker updates using the SwUpdate service form angular.

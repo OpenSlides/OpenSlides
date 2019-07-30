@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 
 import { take } from 'rxjs/operators';
 
-import { ConstantsService } from './constants.service';
 import { AutoupdateService } from './autoupdate.service';
+import { ConstantsService } from './constants.service';
 import { StorageService } from './storage.service';
 
 const DB_SCHEMA_VERSION = 'DbSchemaVersion';

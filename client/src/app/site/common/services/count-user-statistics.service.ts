@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 
-import { CountUsersService, CountUserData } from 'app/core/ui-services/count-users.service';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
+import { CountUserData, CountUsersService } from 'app/core/ui-services/count-users.service';
 
 /**
  * The format of the count statistic

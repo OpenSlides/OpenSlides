@@ -1,7 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GridLayoutComponent } from './grid-layout.component';
 import { E2EImportsModule } from 'e2e-imports.module';
+
+import { GridLayoutComponent } from './grid-layout.component';
 
 describe('GridLayoutComponent', () => {
     let component: GridLayoutComponent;

@@ -2,14 +2,14 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { DataSendService } from '../../core-services/data-send.service';
-import { DataStoreService } from '../../core-services/data-store.service';
+import { ServertimeService } from 'app/core/core-services/servertime.service';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { Countdown } from 'app/shared/models/core/countdown';
+import { CountdownTitleInformation, ViewCountdown } from 'app/site/projector/models/view-countdown';
 import { BaseRepository } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
-import { ViewCountdown, CountdownTitleInformation } from 'app/site/projector/models/view-countdown';
-import { Countdown } from 'app/shared/models/core/countdown';
-import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
-import { ServertimeService } from 'app/core/core-services/servertime.service';
+import { DataSendService } from '../../core-services/data-send.service';
+import { DataStoreService } from '../../core-services/data-store.service';
 
 @Injectable({
     providedIn: 'root'

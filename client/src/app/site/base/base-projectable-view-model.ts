@@ -1,7 +1,7 @@
-import { Projectable, ProjectorElementBuildDeskriptor } from './projectable';
-import { BaseViewModel } from './base-view-model';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { BaseModel } from 'app/shared/models/base/base-model';
+import { BaseViewModel } from './base-view-model';
+import { Projectable, ProjectorElementBuildDeskriptor } from './projectable';
 
 /**
  * Base view class for projectable models.

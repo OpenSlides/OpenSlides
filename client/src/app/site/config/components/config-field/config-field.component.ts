@@ -1,14 +1,14 @@
-import { Component, OnInit, Input, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 
-import { distinctUntilChanged } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
+import { distinctUntilChanged } from 'rxjs/operators';
 
 import { BaseComponent } from 'app/base.component';
+import { ConfigRepositoryService } from 'app/core/repositories/config/config-repository.service';
 import { ParentErrorStateMatcher } from 'app/shared/parent-error-state-matcher';
 import { ViewConfig } from '../../models/view-config';
-import { ConfigRepositoryService } from 'app/core/repositories/config/config-repository.service';
 
 /**
  * Component for a config field, used by the {@link ConfigListComponent}. Handles

@@ -1,5 +1,5 @@
-import { ContentObject } from '../base/content-object';
 import { BaseModelWithContentObject } from '../base/base-model-with-content-object';
+import { ContentObject } from '../base/content-object';
 
 /**
  * Determine visibility states for agenda items

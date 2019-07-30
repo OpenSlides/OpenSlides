@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { Title } from '@angular/platform-browser';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Title } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
-
-import { BaseComponent } from '../../../../base.component';
 import { environment } from 'environments/environment';
+
 import { HttpService } from 'app/core/core-services/http.service';
+import { BaseComponent } from '../../../../base.component';
 
 /**
  * Reset password component.

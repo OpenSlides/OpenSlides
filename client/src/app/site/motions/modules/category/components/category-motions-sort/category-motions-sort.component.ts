@@ -1,17 +1,18 @@
-import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Title } from '@angular/platform-browser';
-import { TranslateService } from '@ngx-translate/core';
-
-import { BaseViewComponent } from 'app/site/base/base-view';
-import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
-import { CanComponentDeactivate } from 'app/shared/utils/watch-sorting-tree.guard';
-import { ChoiceService } from 'app/core/ui-services/choice.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Title } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
+
+import { TranslateService } from '@ngx-translate/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+
+import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
+import { ChoiceService } from 'app/core/ui-services/choice.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { SortingListComponent } from 'app/shared/components/sorting-list/sorting-list.component';
+import { CanComponentDeactivate } from 'app/shared/utils/watch-sorting-tree.guard';
+import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewCategory } from 'app/site/motions/models/view-category';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 

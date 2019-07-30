@@ -2,17 +2,17 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { Identifiable } from 'app/shared/models/base/identifiable';
+import { ProjectionDefault } from 'app/shared/models/core/projection-default';
+import {
+    ProjectionDefaultTitleInformation,
+    ViewProjectionDefault
+} from 'app/site/projector/models/view-projection-default';
 import { BaseRepository } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
-import { Identifiable } from 'app/shared/models/base/identifiable';
-import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
-import { ProjectionDefault } from 'app/shared/models/core/projection-default';
-import {
-    ViewProjectionDefault,
-    ProjectionDefaultTitleInformation
-} from 'app/site/projector/models/view-projection-default';
 
 /**
  * Manages all projection default instances.

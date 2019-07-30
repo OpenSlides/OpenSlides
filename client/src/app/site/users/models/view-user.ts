@@ -1,8 +1,8 @@
+import { SearchRepresentation } from 'app/core/ui-services/search.service';
 import { User } from 'app/shared/models/users/user';
 import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { Searchable } from 'app/site/base/searchable';
-import { SearchRepresentation } from 'app/core/ui-services/search.service';
 import { ViewGroup } from './view-group';
 
 export interface UserTitleInformation {

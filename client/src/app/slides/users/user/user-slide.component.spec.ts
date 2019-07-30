@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UserSlideComponent } from './user-slide.component';
 import { E2EImportsModule } from '../../../../e2e-imports.module';
+import { UserSlideComponent } from './user-slide.component';
 
 describe('UserSlideComponent', () => {
     let component: UserSlideComponent;

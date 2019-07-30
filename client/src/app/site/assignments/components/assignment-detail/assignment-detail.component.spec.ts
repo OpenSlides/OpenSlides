@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { E2EImportsModule } from '../../../../../e2e-imports.module';
 import { AssignmentDetailComponent } from './assignment-detail.component';
 import { AssignmentPollComponent } from '../assignment-poll/assignment-poll.component';
+import { E2EImportsModule } from '../../../../../e2e-imports.module';
 
 describe('AssignmentDetailComponent', () => {
     let component: AssignmentDetailComponent;

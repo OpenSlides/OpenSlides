@@ -1,14 +1,15 @@
+import { Inject, Injectable } from '@angular/core';
+
 import {
-    TranslateStore,
-    TranslateService,
-    TranslateLoader,
-    TranslateCompiler,
-    TranslateParser,
     MissingTranslationHandler,
+    TranslateCompiler,
+    TranslateLoader,
+    TranslateParser,
+    TranslateService,
+    TranslateStore,
     USE_DEFAULT_LANG,
     USE_STORE
 } from '@ngx-translate/core';
-import { Inject, Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
 /**

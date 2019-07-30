@@ -2,16 +2,16 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { DataStoreService } from '../../core-services/data-store.service';
-import { BaseRepository } from '../base-repository';
-import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
+import { DataSendService } from 'app/core/core-services/data-send.service';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { ProjectorMessage } from 'app/shared/models/core/projector-message';
 import {
-    ViewProjectorMessage,
-    ProjectorMessageTitleInformation
+    ProjectorMessageTitleInformation,
+    ViewProjectorMessage
 } from 'app/site/projector/models/view-projector-message';
-import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
-import { DataSendService } from 'app/core/core-services/data-send.service';
+import { BaseRepository } from '../base-repository';
+import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
+import { DataStoreService } from '../../core-services/data-store.service';
 
 @Injectable({
     providedIn: 'root'

@@ -1,4 +1,4 @@
-import { ValidatorFn, FormGroup, ValidationErrors } from '@angular/forms';
+import { FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 /**
  * Constant to validate a `duration` field.

@@ -1,4 +1,5 @@
-import { Component, TemplateRef, ContentChild, Input } from '@angular/core';
+import { Component, ContentChild, Input, TemplateRef } from '@angular/core';
+
 import { TileComponent } from '../tile/tile.component';
 
 /**

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { TreeService, OSTreeNode } from 'app/core/ui-services/tree.service';
+import { OSTreeNode, TreeService } from 'app/core/ui-services/tree.service';
 import { ViewItem } from '../models/view-item';
 
 /**

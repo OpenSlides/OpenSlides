@@ -1,20 +1,20 @@
-import { ActivatedRoute, Router } from '@angular/router';
-import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { Title } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
-import { PromptService } from 'app/core/ui-services/prompt.service';
-import { ViewMotion } from 'app/site/motions/models/view-motion';
-import { ViewCategory } from 'app/site/motions/models/view-category';
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
+import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 import { BaseViewComponent } from 'app/site/base/base-view';
+import { ViewCategory } from 'app/site/motions/models/view-category';
+import { ViewMotion } from 'app/site/motions/models/view-motion';
 
 /**
  * Detail component to display one motion block

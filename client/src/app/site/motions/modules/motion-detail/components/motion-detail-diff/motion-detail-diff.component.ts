@@ -5,10 +5,15 @@ import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseViewComponent } from 'app/site/base/base-view';
-import { ConfigService } from 'app/core/ui-services/config.service';
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
 import { DiffService, LineRange } from 'app/core/ui-services/diff.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
+import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/motions/view-unified-change';
+import { getRecommendationTypeName } from 'app/shared/utils/recommendation-type-names';
+import { BaseViewComponent } from 'app/site/base/base-view';
+import { LineNumberingMode, ViewMotion } from 'app/site/motions/models/view-motion';
+import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
 import {
     MotionChangeRecommendationDialogComponent,
     MotionChangeRecommendationDialogComponentData
@@ -17,11 +22,6 @@ import {
     MotionTitleChangeRecommendationDialogComponent,
     MotionTitleChangeRecommendationDialogComponentData
 } from '../motion-title-change-recommendation-dialog/motion-title-change-recommendation-dialog.component';
-import { PromptService } from 'app/core/ui-services/prompt.service';
-import { ViewMotion, LineNumberingMode } from 'app/site/motions/models/view-motion';
-import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/motions/view-unified-change';
-import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
-import { getRecommendationTypeName } from 'app/shared/utils/recommendation-type-names';
 
 /**
  * This component displays the original motion text with the change blocks inside.

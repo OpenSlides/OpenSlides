@@ -1,31 +1,31 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Title, DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
 
-import { Assignment } from 'app/shared/models/assignments/assignment';
-import { AssignmentPdfExportService } from '../../services/assignment-pdf-export.service';
-import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
-import { AssignmentPollService } from '../../services/assignment-poll.service';
-import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
-import { BaseViewComponent } from 'app/site/base/base-view';
-import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
-import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
-import { PromptService } from 'app/core/ui-services/prompt.service';
+import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
+import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
+import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
 import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
-import { ViewAssignment, AssignmentPhases } from '../../models/view-assignment';
-import { ViewAssignmentRelatedUser } from '../../models/view-assignment-related-user';
+import { PromptService } from 'app/core/ui-services/prompt.service';
+import { Assignment } from 'app/shared/models/assignments/assignment';
+import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
 import { ViewItem } from 'app/site/agenda/models/view-item';
+import { BaseViewComponent } from 'app/site/base/base-view';
+import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
+import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewUser } from 'app/site/users/models/view-user';
-import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
-import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
+import { AssignmentPdfExportService } from '../../services/assignment-pdf-export.service';
+import { AssignmentPollService } from '../../services/assignment-poll.service';
+import { AssignmentPhases, ViewAssignment } from '../../models/view-assignment';
+import { ViewAssignmentRelatedUser } from '../../models/view-assignment-related-user';
 
 /**
  * Component for the assignment detail view

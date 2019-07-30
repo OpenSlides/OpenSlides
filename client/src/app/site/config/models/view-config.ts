@@ -1,5 +1,5 @@
-import { BaseViewModel } from '../../base/base-view-model';
 import { Config } from 'app/shared/models/core/config';
+import { BaseViewModel } from '../../base/base-view-model';
 
 interface ConfigChoice {
     value: string;

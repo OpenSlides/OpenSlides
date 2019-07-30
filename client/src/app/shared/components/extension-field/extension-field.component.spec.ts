@@ -1,7 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ExtensionFieldComponent } from './extension-field.component';
 import { E2EImportsModule } from 'e2e-imports.module';
+
+import { ExtensionFieldComponent } from './extension-field.component';
 
 describe('ExtensionFieldComponent', () => {
     let component: ExtensionFieldComponent;

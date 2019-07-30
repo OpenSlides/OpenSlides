@@ -1,10 +1,10 @@
 import { Item } from 'app/shared/models/agenda/item';
-import { ProjectorElementBuildDeskriptor, Projectable } from 'app/site/base/projectable';
 import { ListOfSpeakers } from 'app/shared/models/agenda/list-of-speakers';
-import { ViewSpeaker, SpeakerState } from './view-speaker';
-import { BaseViewModelWithListOfSpeakers } from 'app/site/base/base-view-model-with-list-of-speakers';
-import { BaseViewModelWithContentObject } from 'app/site/base/base-view-model-with-content-object';
 import { ContentObject } from 'app/shared/models/base/content-object';
+import { BaseViewModelWithContentObject } from 'app/site/base/base-view-model-with-content-object';
+import { BaseViewModelWithListOfSpeakers } from 'app/site/base/base-view-model-with-list-of-speakers';
+import { Projectable, ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
+import { SpeakerState, ViewSpeaker } from './view-speaker';
 
 export interface ListOfSpeakersTitleInformation {
     contentObject: BaseViewModelWithListOfSpeakers;

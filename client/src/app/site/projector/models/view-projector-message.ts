@@ -1,7 +1,7 @@
-import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
-import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { ProjectorMessage } from 'app/shared/models/core/projector-message';
 import { stripHtmlTags } from 'app/shared/utils/strip-html-tags';
+import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
+import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 
 export type ProjectorMessageTitleInformation = object;
 

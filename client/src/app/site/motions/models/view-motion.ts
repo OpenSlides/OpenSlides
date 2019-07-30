@@ -1,22 +1,22 @@
+import { _ } from 'app/core/translate/translation-marker';
+import { ConfigService } from 'app/core/ui-services/config.service';
+import { SearchRepresentation } from 'app/core/ui-services/search.service';
 import { Motion, MotionComment } from 'app/shared/models/motions/motion';
 import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
-import { ViewMotionCommentSection } from './view-motion-comment-section';
+import { TitleInformationWithAgendaItem } from 'app/site/base/base-view-model-with-agenda-item';
+import { BaseViewModelWithAgendaItemAndListOfSpeakers } from 'app/site/base/base-view-model-with-agenda-item-and-list-of-speakers';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
-import { SearchRepresentation } from 'app/core/ui-services/search.service';
 import { Searchable } from 'app/site/base/searchable';
-import { ViewUser } from 'app/site/users/models/view-user';
-import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
-import { ViewWorkflow } from './view-workflow';
+import { ViewTag } from 'app/site/tags/models/view-tag';
+import { ViewUser } from 'app/site/users/models/view-user';
 import { ViewCategory } from './view-category';
 import { ViewMotionBlock } from './view-motion-block';
-import { ConfigService } from 'app/core/ui-services/config.service';
 import { ViewMotionChangeRecommendation } from './view-motion-change-recommendation';
-import { _ } from 'app/core/translate/translation-marker';
-import { BaseViewModelWithAgendaItemAndListOfSpeakers } from 'app/site/base/base-view-model-with-agenda-item-and-list-of-speakers';
-import { TitleInformationWithAgendaItem } from 'app/site/base/base-view-model-with-agenda-item';
+import { ViewMotionCommentSection } from './view-motion-comment-section';
 import { ViewState } from './view-state';
 import { ViewSubmitter } from './view-submitter';
+import { ViewWorkflow } from './view-workflow';
 
 /**
  * The line numbering mode for the motion detail view.

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 
-import { WebsocketService } from './websocket.service';
 import { Observable, of, Subject } from 'rxjs';
+
+import { WebsocketService } from './websocket.service';
 
 /**
  * constants have a key associated with the data.

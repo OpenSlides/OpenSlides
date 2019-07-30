@@ -1,12 +1,12 @@
 import { Component, Input } from '@angular/core';
 
+import { ListOfSpeakersRepositoryService } from 'app/core/repositories/agenda/list-of-speakers-repository.service';
 import { ContentObject, isContentObject } from 'app/shared/models/base/content-object';
 import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
 import {
     BaseViewModelWithListOfSpeakers,
     isBaseViewModelWithListOfSpeakers
 } from 'app/site/base/base-view-model-with-list-of-speakers';
-import { ListOfSpeakersRepositoryService } from 'app/core/repositories/agenda/list-of-speakers-repository.service';
 
 /**
  * A generic button to go to the list of speakers. Give the content object with

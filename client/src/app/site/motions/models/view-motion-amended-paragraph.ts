@@ -1,7 +1,7 @@
-import { ViewUnifiedChange, ViewUnifiedChangeType } from '../../../shared/models/motions/view-unified-change';
-import { ViewMotion } from './view-motion';
 import { LineRange } from 'app/core/ui-services/diff.service';
 import { MergeAmendment } from 'app/shared/models/motions/state';
+import { ViewMotion } from './view-motion';
+import { ViewUnifiedChange, ViewUnifiedChangeType } from '../../../shared/models/motions/view-unified-change';
 
 /**
  * This represents the Unified Diff part of an amendments.

@@ -1,7 +1,7 @@
-import { Tag } from 'app/shared/models/core/tag';
-import { BaseViewModel } from '../../base/base-view-model';
 import { SearchRepresentation } from 'app/core/ui-services/search.service';
+import { Tag } from 'app/shared/models/core/tag';
 import { Searchable } from 'app/site/base/searchable';
+import { BaseViewModel } from '../../base/base-view-model';
 
 export interface TagTitleInformation {
     name: string;

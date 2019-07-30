@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { CommonListOfSpeakersSlideModule } from '../common/common-list-of-speakers-slide.module';
 import { CurrentListOfSpeakersOverlaySlideComponent } from './current-list-of-speakers-overlay-slide.component';
 import { E2EImportsModule } from '../../../../e2e-imports.module';
-import { CommonListOfSpeakersSlideModule } from '../common/common-list-of-speakers-slide.module';
 
 describe('CurrentListOfSpeakersOverlaySlideComponent', () => {
     let component: CurrentListOfSpeakersOverlaySlideComponent;

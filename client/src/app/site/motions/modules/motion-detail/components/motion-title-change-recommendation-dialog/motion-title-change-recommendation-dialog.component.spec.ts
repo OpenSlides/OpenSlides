@@ -1,14 +1,14 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 
+import { E2EImportsModule } from 'e2e-imports.module';
+
+import { ModificationType } from 'app/core/ui-services/diff.service';
+import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
 import {
     MotionTitleChangeRecommendationDialogComponent,
     MotionTitleChangeRecommendationDialogComponentData
 } from './motion-title-change-recommendation-dialog.component';
-
-import { E2EImportsModule } from 'e2e-imports.module';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { ModificationType } from 'app/core/ui-services/diff.service';
-import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
 
 describe('MotionTitleChangeRecommendationDialogComponent', () => {
     let component: MotionTitleChangeRecommendationDialogComponent;

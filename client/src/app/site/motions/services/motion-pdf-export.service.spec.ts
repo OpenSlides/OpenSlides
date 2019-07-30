@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 
-import { MotionPdfExportService } from './motion-pdf-export.service';
 import { E2EImportsModule } from 'e2e-imports.module';
+
+import { MotionPdfExportService } from './motion-pdf-export.service';
 
 describe('MotionPdfExportService', () => {
     beforeEach(() =>

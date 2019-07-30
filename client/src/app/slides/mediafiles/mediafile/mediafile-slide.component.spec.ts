@@ -1,8 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MediafileSlideComponent } from './mediafile-slide.component';
-import { E2EImportsModule } from '../../../../e2e-imports.module';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
+
+import { E2EImportsModule } from '../../../../e2e-imports.module';
+import { MediafileSlideComponent } from './mediafile-slide.component';
 
 describe('MediafileSlideComponent', () => {
     let component: MediafileSlideComponent;

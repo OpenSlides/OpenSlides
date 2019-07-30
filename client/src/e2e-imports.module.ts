@@ -1,12 +1,13 @@
-import { NgModule } from '@angular/core';
 import { APP_BASE_HREF, CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { SharedModule } from 'app/shared/shared.module';
-import { AppModule } from 'app/app.module';
-import { AppRoutingModule } from 'app/app-routing.module';
-import { LoginModule } from 'app/site/login/login.module';
+import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { AppRoutingModule } from 'app/app-routing.module';
+import { AppModule } from 'app/app.module';
 import { OpenSlidesTranslateModule } from 'app/core/translate/openslides-translate-module';
+import { SharedModule } from 'app/shared/shared.module';
+import { LoginModule } from 'app/site/login/login.module';
 
 /**
  * Share Module for all "dumb" components and pipes.

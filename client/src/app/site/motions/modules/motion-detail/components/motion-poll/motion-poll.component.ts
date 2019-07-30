@@ -1,17 +1,17 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { CalculablePollKey } from 'app/core/ui-services/poll.service';
 import { ConstantsService } from 'app/core/core-services/constants.service';
-import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
+import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
+import { CalculablePollKey } from 'app/core/ui-services/poll.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 import { MotionPoll } from 'app/shared/models/motions/motion-poll';
-import { MotionPollDialogComponent } from './motion-poll-dialog.component';
+import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
 import { MotionPollPdfService } from 'app/site/motions/services/motion-poll-pdf.service';
 import { MotionPollService } from 'app/site/motions/services/motion-poll.service';
-import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
-import { PromptService } from 'app/core/ui-services/prompt.service';
+import { MotionPollDialogComponent } from './motion-poll-dialog.component';
 
 /**
  * A component used to display and edit polls of a motion.

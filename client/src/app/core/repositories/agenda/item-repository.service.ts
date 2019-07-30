@@ -2,28 +2,28 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
-import { ConfigService } from 'app/core/ui-services/config.service';
 import { DataSendService } from 'app/core/core-services/data-send.service';
-import { DataStoreService } from '../../core-services/data-store.service';
 import { HttpService } from 'app/core/core-services/http.service';
-import { Item } from 'app/shared/models/agenda/item';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
 import { TreeIdNode } from 'app/core/ui-services/tree.service';
-import { ViewItem, ItemTitleInformation } from 'app/site/agenda/models/view-item';
+import { Item } from 'app/shared/models/agenda/item';
+import { Identifiable } from 'app/shared/models/base/identifiable';
+import { ItemTitleInformation, ViewItem } from 'app/site/agenda/models/view-item';
+import { ViewAssignment } from 'app/site/assignments/models/view-assignment';
 import {
     BaseViewModelWithAgendaItem,
-    isBaseViewModelWithAgendaItem,
-    IBaseViewModelWithAgendaItem
+    IBaseViewModelWithAgendaItem,
+    isBaseViewModelWithAgendaItem
 } from 'app/site/base/base-view-model-with-agenda-item';
-import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
-import { BaseIsAgendaItemContentObjectRepository } from '../base-is-agenda-item-content-object-repository';
-import { BaseHasContentObjectRepository, GenericRelationDefinition } from '../base-has-content-object-repository';
-import { Identifiable } from 'app/shared/models/base/identifiable';
-import { RelationDefinition } from '../base-repository';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
 import { ViewTopic } from 'app/site/topics/models/view-topic';
-import { ViewAssignment } from 'app/site/assignments/models/view-assignment';
+import { BaseHasContentObjectRepository, GenericRelationDefinition } from '../base-has-content-object-repository';
+import { BaseIsAgendaItemContentObjectRepository } from '../base-is-agenda-item-content-object-repository';
+import { RelationDefinition } from '../base-repository';
+import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
+import { DataStoreService } from '../../core-services/data-store.service';
 
 const ItemRelations: (RelationDefinition | GenericRelationDefinition)[] = [
     {

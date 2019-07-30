@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { CalculablePollKey, PollMajorityMethod, PollService } from 'app/core/ui-services/poll.service';
 import { MotionPoll } from 'app/shared/models/motions/motion-poll';
-import { PollService, PollMajorityMethod, CalculablePollKey } from 'app/core/ui-services/poll.service';
 
 /**
  * Service class for motion polls.

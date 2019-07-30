@@ -1,14 +1,14 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Title, SafeHtml, DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
 import { BaseComponent } from 'app/base.component';
-import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-export.service';
-import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
 import { PersonalNoteService } from 'app/core/ui-services/personal-note.service';
+import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
+import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-export.service';
 
 /**
  * Component for the motion comments view

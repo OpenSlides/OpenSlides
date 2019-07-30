@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Papa } from 'ngx-papaparse';
-import { TranslateService } from '@ngx-translate/core';
 
+import { TranslateService } from '@ngx-translate/core';
+import { Papa } from 'ngx-papaparse';
+
+import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions/statute-paragraph-repository.service';
 import { BaseImportService, NewEntry } from 'app/core/ui-services/base-import.service';
 import { StatuteParagraph } from 'app/shared/models/motions/statute-paragraph';
 import { ViewStatuteParagraph } from '../models/view-statute-paragraph';
-import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions/statute-paragraph-repository.service';
 
 /**
  * Service for motion imports

@@ -3,8 +3,8 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { ConfigRepositoryService, ConfigGroup } from 'app/core/repositories/config/config-repository.service';
 import { BaseComponent } from 'app/base.component';
+import { ConfigGroup, ConfigRepositoryService } from 'app/core/repositories/config/config-repository.service';
 
 /**
  * List view for the global settings

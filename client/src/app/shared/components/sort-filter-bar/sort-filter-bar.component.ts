@@ -1,15 +1,15 @@
-import { Input, Output, Component, ViewChild, EventEmitter, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseViewModel } from 'app/site/base/base-view-model';
-import { SortBottomSheetComponent } from './sort-bottom-sheet/sort-bottom-sheet.component';
-import { FilterMenuComponent } from './filter-menu/filter-menu.component';
+import { BaseFilterListService, OsFilterIndicator } from 'app/core/ui-services/base-filter-list.service';
 import { OsSortingOption } from 'app/core/ui-services/base-sort-list.service';
 import { BaseSortListService } from 'app/core/ui-services/base-sort-list.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
-import { BaseFilterListService, OsFilterIndicator } from 'app/core/ui-services/base-filter-list.service';
+import { BaseViewModel } from 'app/site/base/base-view-model';
+import { FilterMenuComponent } from './filter-menu/filter-menu.component';
+import { SortBottomSheetComponent } from './sort-bottom-sheet/sort-bottom-sheet.component';
 
 /**
  * Reusable bar for list views, offering sorting and filter options.

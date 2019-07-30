@@ -1,17 +1,17 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition } from '@pebula/ngrid';
 
-import { BaseListViewComponent } from 'app/site/base/base-list-view';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { PromptService } from 'app/core/ui-services/prompt.service';
-import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
-import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
-import { Workflow } from 'app/shared/models/motions/workflow';
 import { StorageService } from 'app/core/core-services/storage.service';
+import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
+import { Workflow } from 'app/shared/models/motions/workflow';
+import { BaseListViewComponent } from 'app/site/base/base-list-view';
+import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
 
 /**
  * List view for workflows

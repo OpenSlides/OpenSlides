@@ -1,8 +1,9 @@
+import { Component } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MotionDetailOriginalChangeRecommendationsComponent } from './motion-detail-original-change-recommendations.component';
 import { E2EImportsModule } from 'e2e-imports.module';
-import { Component } from '@angular/core';
+
+import { MotionDetailOriginalChangeRecommendationsComponent } from './motion-detail-original-change-recommendations.component';
 
 @Component({
     template: `

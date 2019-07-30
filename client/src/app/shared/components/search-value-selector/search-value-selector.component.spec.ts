@@ -1,12 +1,13 @@
+import { Component, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormBuilder, FormControl } from '@angular/forms';
 
-import { SearchValueSelectorComponent } from './search-value-selector.component';
-import { E2EImportsModule } from '../../../../e2e-imports.module';
-import { ViewChild, Component } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { FormControl, FormBuilder } from '@angular/forms';
-import { Selectable } from '../selectable';
+
+import { E2EImportsModule } from '../../../../e2e-imports.module';
 import { EmptySelectable } from '../empty-selectable';
+import { SearchValueSelectorComponent } from './search-value-selector.component';
+import { Selectable } from '../selectable';
 
 describe('SearchValueSelectorComponent', () => {
     @Component({

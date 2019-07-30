@@ -1,30 +1,30 @@
 import {
-    Component,
-    OnInit,
-    Input,
-    ViewChild,
-    Output,
-    EventEmitter,
     ChangeDetectionStrategy,
-    ViewEncapsulation,
-    ChangeDetectorRef
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    OnInit,
+    Output,
+    ViewChild,
+    ViewEncapsulation
 } from '@angular/core';
-import { Observable } from 'rxjs';
 
-import { PblDataSource, columnFactory, PblNgridComponent, createDS } from '@pebula/ngrid';
+import { columnFactory, createDS, PblDataSource, PblNgridComponent } from '@pebula/ngrid';
 import { PblColumnDefinition, PblNgridColumnSet } from '@pebula/ngrid/lib/table';
 import { PblNgridDataMatrixRow } from '@pebula/ngrid/target-events';
+import { Observable } from 'rxjs';
 
-import { BaseViewModel } from 'app/site/base/base-view-model';
-import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
-import { BaseSortListService } from 'app/core/ui-services/base-sort-list.service';
-import { BaseViewModelWithContentObject } from 'app/site/base/base-view-model-with-content-object';
-import { BaseFilterListService } from 'app/core/ui-services/base-filter-list.service';
-import { BaseRepository } from 'app/core/repositories/base-repository';
-import { BaseModel } from 'app/shared/models/base/base-model';
-import { Permission, OperatorService } from 'app/core/core-services/operator.service';
+import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { StorageService } from 'app/core/core-services/storage.service';
+import { BaseRepository } from 'app/core/repositories/base-repository';
+import { BaseFilterListService } from 'app/core/ui-services/base-filter-list.service';
+import { BaseSortListService } from 'app/core/ui-services/base-sort-list.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
+import { BaseModel } from 'app/shared/models/base/base-model';
+import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
+import { BaseViewModel } from 'app/site/base/base-view-model';
+import { BaseViewModelWithContentObject } from 'app/site/base/base-view-model-with-content-object';
 
 /**
  * To hide columns via restriction

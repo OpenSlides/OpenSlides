@@ -1,8 +1,8 @@
 import { Component, Inject, ViewEncapsulation } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
-import { Displayable } from 'app/site/base/displayable';
 import { Identifiable } from 'app/shared/models/base/identifiable';
+import { Displayable } from 'app/site/base/displayable';
 
 /**
  * An option needs to be identifiable and should have a strnig to display. Either uses Displayble or

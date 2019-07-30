@@ -1,6 +1,7 @@
-import { TestBed, inject } from '@angular/core/testing';
-import { ViewModelStoreService } from './view-model-store.service';
+import { inject, TestBed } from '@angular/core/testing';
+
 import { E2EImportsModule } from '../../../e2e-imports.module';
+import { ViewModelStoreService } from './view-model-store.service';
 
 describe('ViewModelStoreService', () => {
     beforeEach(() => {

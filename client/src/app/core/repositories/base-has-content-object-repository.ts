@@ -1,14 +1,15 @@
-import { BaseRepository, RelationDefinition } from './base-repository';
+import { TranslateService } from '@ngx-translate/core';
+
+import { ModelConstructor } from 'app/shared/models/base/base-model';
 import { BaseModelWithContentObject } from 'app/shared/models/base/base-model-with-content-object';
-import { BaseViewModelWithContentObject } from 'app/site/base/base-view-model-with-content-object';
 import { ContentObject } from 'app/shared/models/base/content-object';
 import { BaseViewModel, TitleInformation, ViewModelConstructor } from 'app/site/base/base-view-model';
-import { DataStoreService } from '../core-services/data-store.service';
-import { DataSendService } from '../core-services/data-send.service';
+import { BaseViewModelWithContentObject } from 'app/site/base/base-view-model-with-content-object';
+import { BaseRepository, RelationDefinition } from './base-repository';
 import { CollectionStringMapperService } from '../core-services/collection-string-mapper.service';
+import { DataSendService } from '../core-services/data-send.service';
+import { DataStoreService } from '../core-services/data-store.service';
 import { ViewModelStoreService } from '../core-services/view-model-store.service';
-import { TranslateService } from '@ngx-translate/core';
-import { ModelConstructor } from 'app/shared/models/base/base-model';
 
 /**
  * A generic relation for models with a content_object

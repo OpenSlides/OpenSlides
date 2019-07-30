@@ -1,7 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ResetPasswordComponent } from './reset-password.component';
 import { E2EImportsModule } from 'e2e-imports.module';
+
+import { ResetPasswordComponent } from './reset-password.component';
 
 describe('ResetPasswordComponent', () => {
     let component: ResetPasswordComponent;

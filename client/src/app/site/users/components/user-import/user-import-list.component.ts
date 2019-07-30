@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
+
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseImportListComponent } from 'app/site/base/base-import-list';
-import { CsvExportService } from 'app/core/ui-services/csv-export.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
 import { NewEntry } from 'app/core/ui-services/base-import.service';
+import { CsvExportService } from 'app/core/ui-services/csv-export.service';
+import { BaseImportListComponent } from 'app/site/base/base-import-list';
 import { UserImportService } from '../../services/user-import.service';
 import { ViewUser } from '../../models/view-user';
 

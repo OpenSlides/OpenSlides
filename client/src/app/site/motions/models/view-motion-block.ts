@@ -1,9 +1,9 @@
-import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { SearchRepresentation } from 'app/core/ui-services/search.service';
+import { MotionBlock } from 'app/shared/models/motions/motion-block';
+import { TitleInformationWithAgendaItem } from 'app/site/base/base-view-model-with-agenda-item';
+import { BaseViewModelWithAgendaItemAndListOfSpeakers } from 'app/site/base/base-view-model-with-agenda-item-and-list-of-speakers';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { Searchable } from 'app/site/base/searchable';
-import { BaseViewModelWithAgendaItemAndListOfSpeakers } from 'app/site/base/base-view-model-with-agenda-item-and-list-of-speakers';
-import { TitleInformationWithAgendaItem } from 'app/site/base/base-view-model-with-agenda-item';
 
 export interface MotionBlockTitleInformation extends TitleInformationWithAgendaItem {
     title: string;

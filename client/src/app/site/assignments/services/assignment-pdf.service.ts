@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { AssignmentPollService } from './assignment-poll.service';
 import { HtmlToPdfService } from 'app/core/ui-services/html-to-pdf.service';
 import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
 import { PollVoteValue } from 'app/core/ui-services/poll.service';
+import { AssignmentPollService } from './assignment-poll.service';
 import { ViewAssignment } from '../models/view-assignment';
-import { ViewAssignmentPollOption } from '../models/view-assignment-poll-option';
 import { ViewAssignmentPoll } from '../models/view-assignment-poll';
+import { ViewAssignmentPollOption } from '../models/view-assignment-poll-option';
 
 /**
  * Creates a PDF document from a single assignment

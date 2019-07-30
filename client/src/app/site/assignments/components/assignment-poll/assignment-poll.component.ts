@@ -1,19 +1,19 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { OperatorService } from 'app/core/core-services/operator.service';
+import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
+import { CalculablePollKey, MajorityMethod } from 'app/core/ui-services/poll.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
+import { BaseViewComponent } from 'app/site/base/base-view';
 import { AssignmentPollDialogComponent } from '../assignment-poll-dialog/assignment-poll-dialog.component';
 import { AssignmentPollPdfService } from '../../services/assignment-poll-pdf.service';
 import { AssignmentPollService } from '../../services/assignment-poll.service';
-import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
-import { BaseViewComponent } from 'app/site/base/base-view';
-import { MajorityMethod, CalculablePollKey } from 'app/core/ui-services/poll.service';
-import { OperatorService } from 'app/core/core-services/operator.service';
-import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewAssignment } from '../../models/view-assignment';
 import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
 import { ViewAssignmentPollOption } from '../../models/view-assignment-poll-option';

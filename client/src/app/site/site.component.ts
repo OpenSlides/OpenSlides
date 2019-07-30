@@ -1,25 +1,25 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router, NavigationEnd, ActivationEnd } from '@angular/router';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
+import { ActivationEnd, NavigationEnd, Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
+import { filter } from 'rxjs/operators';
 
-import { AuthService } from '../core/core-services/auth.service';
-import { OperatorService } from '../core/core-services/operator.service';
-import { BaseComponent } from '../base.component';
-import { pageTransition, navItemAnim } from '../shared/animations';
-import { ViewportService } from '../core/ui-services/viewport.service';
-import { MainMenuService } from '../core/core-services/main-menu.service';
-import { OpenSlidesStatusService } from '../core/core-services/openslides-status.service';
-import { TimeTravelService } from '../core/core-services/time-travel.service';
-import { langToLocale } from 'app/shared/utils/lang-to-locale';
+import { navItemAnim, pageTransition } from '../shared/animations';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { UpdateService } from 'app/core/ui-services/update.service';
-import { filter } from 'rxjs/operators';
+import { langToLocale } from 'app/shared/utils/lang-to-locale';
+import { AuthService } from '../core/core-services/auth.service';
+import { BaseComponent } from '../base.component';
+import { MainMenuService } from '../core/core-services/main-menu.service';
+import { OpenSlidesStatusService } from '../core/core-services/openslides-status.service';
+import { OperatorService } from '../core/core-services/operator.service';
+import { TimeTravelService } from '../core/core-services/time-travel.service';
+import { ViewportService } from '../core/ui-services/viewport.service';
 
 /**
  * Interface to describe possible routing data

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { CsvExportService, CsvColumnDefinitionProperty } from 'app/core/ui-services/csv-export.service';
+import { CsvColumnDefinitionProperty, CsvExportService } from 'app/core/ui-services/csv-export.service';
 import { ViewStatuteParagraph } from '../models/view-statute-paragraph';
 
 /**

@@ -1,12 +1,13 @@
 import { Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+
 import { TranslateService } from '@ngx-translate/core';
 
+import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
+import { CalculablePollKey, PollVoteValue } from 'app/core/ui-services/poll.service';
 import { AssignmentPollOption } from 'app/shared/models/assignments/assignment-poll-option';
 import { AssignmentPollService, SummaryPollKey } from '../../services/assignment-poll.service';
-import { CalculablePollKey, PollVoteValue } from 'app/core/ui-services/poll.service';
-import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ViewAssignmentPoll } from '../../models/view-assignment-poll';
 import { ViewAssignmentPollOption } from '../../models/view-assignment-poll-option';
 

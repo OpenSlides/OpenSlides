@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router, RoutesRecognized } from '@angular/router';
+
 import { filter, pairwise } from 'rxjs/operators';
 
 /**

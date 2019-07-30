@@ -1,5 +1,5 @@
-import { ViewCreateMotion } from './view-create-motion';
 import { CreateMotion } from './create-motion';
+import { ViewCreateMotion } from './view-create-motion';
 
 /**
  * Interface for correlating between strings representing BaseModels and existing

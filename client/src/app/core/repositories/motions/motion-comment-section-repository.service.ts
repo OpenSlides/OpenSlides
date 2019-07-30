@@ -2,19 +2,19 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { DataSendService } from '../../core-services/data-send.service';
-import { DataStoreService } from '../../core-services/data-store.service';
-import { BaseRepository, RelationDefinition } from '../base-repository';
-import {
-    ViewMotionCommentSection,
-    MotionCommentSectionTitleInformation
-} from 'app/site/motions/models/view-motion-comment-section';
-import { MotionCommentSection } from 'app/shared/models/motions/motion-comment-section';
-import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { HttpService } from 'app/core/core-services/http.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
-import { ViewGroup } from 'app/site/users/models/view-group';
+import { MotionCommentSection } from 'app/shared/models/motions/motion-comment-section';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
+import {
+    MotionCommentSectionTitleInformation,
+    ViewMotionCommentSection
+} from 'app/site/motions/models/view-motion-comment-section';
+import { ViewGroup } from 'app/site/users/models/view-group';
+import { BaseRepository, RelationDefinition } from '../base-repository';
+import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
+import { DataSendService } from '../../core-services/data-send.service';
+import { DataStoreService } from '../../core-services/data-store.service';
 
 const MotionCommentSectionRelations: RelationDefinition[] = [
     {

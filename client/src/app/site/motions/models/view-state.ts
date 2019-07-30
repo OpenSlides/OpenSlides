@@ -1,5 +1,5 @@
+import { MergeAmendment, State } from 'app/shared/models/motions/state';
 import { BaseViewModel } from '../../base/base-view-model';
-import { State, MergeAmendment } from 'app/shared/models/motions/state';
 import { ViewWorkflow } from './view-workflow';
 
 export interface StateTitleInformation {

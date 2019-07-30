@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 
 import { ProjectorService } from 'app/core/core-services/projector.service';
-import { ViewProjector } from '../models/view-projector';
 import { IdentifiableProjectorElement } from 'app/shared/models/core/projector';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
+import { ViewProjector } from '../models/view-projector';
 
 /**
  * Handles the curent list of speakers slide. Manages the projection and provides

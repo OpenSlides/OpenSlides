@@ -1,7 +1,7 @@
+import { BaseModel } from 'app/shared/models/base/base-model';
+import { Collection } from 'app/shared/models/base/collection';
 import { Displayable } from './displayable';
 import { Identifiable } from '../../shared/models/base/identifiable';
-import { Collection } from 'app/shared/models/base/collection';
-import { BaseModel } from 'app/shared/models/base/base-model';
 
 export type TitleInformation = object;
 

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, CanActivateChild, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, CanActivateChild, Router } from '@angular/router';
 
-import { OperatorService } from './operator.service';
 import { OpenSlidesService } from './openslides.service';
+import { OperatorService } from './operator.service';
 
 /**
  * Classical Auth-Guard. Checks if the user has to correct permissions to enter a page, and forwards to login if not.

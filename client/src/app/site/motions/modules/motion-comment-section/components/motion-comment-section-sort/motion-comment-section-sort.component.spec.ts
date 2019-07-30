@@ -1,7 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MotionCommentSectionSortComponent } from './motion-comment-section-sort.component';
 import { E2EImportsModule } from 'e2e-imports.module';
+
+import { MotionCommentSectionSortComponent } from './motion-comment-section-sort.component';
 
 describe('MotionCommentSectionSortComponent', () => {
     let component: MotionCommentSectionSortComponent;

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, Input } from '@angular/core';
+import { Component, Input, OnDestroy } from '@angular/core';
 
 import { ServertimeService } from 'app/core/core-services/servertime.service';
 

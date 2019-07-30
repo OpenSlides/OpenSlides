@@ -1,6 +1,7 @@
-import { Component, OnInit, TemplateRef, Output, EventEmitter, Input } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
+import { ControlValueAccessor, FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material';
-import { FormControl, ControlValueAccessor } from '@angular/forms';
+
 import { BehaviorSubject } from 'rxjs';
 
 import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';

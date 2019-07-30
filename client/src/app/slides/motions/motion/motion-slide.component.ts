@@ -3,18 +3,18 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { MotionSlideData, MotionSlideDataAmendment } from './motion-slide-data';
-import { ChangeRecoMode, LineNumberingMode, MotionTitleInformation } from 'app/site/motions/models/view-motion';
+import { SlideData } from 'app/core/core-services/projector-data.service';
+import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
+import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { DiffLinesInParagraph, DiffService, LineRange } from 'app/core/ui-services/diff.service';
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
 import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change';
-import { MotionSlideObjChangeReco } from './motion-slide-obj-change-reco';
-import { SlideData } from 'app/core/core-services/projector-data.service';
-import { MotionSlideObjAmendmentParagraph } from './motion-slide-obj-amendment-paragraph';
-import { BaseMotionSlideComponent } from '../base/base-motion-slide';
-import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
-import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
+import { ChangeRecoMode, LineNumberingMode, MotionTitleInformation } from 'app/site/motions/models/view-motion';
 import { IBaseScaleScrollSlideComponent } from 'app/slides/base-scale-scroll-slide-component';
+import { BaseMotionSlideComponent } from '../base/base-motion-slide';
+import { MotionSlideData, MotionSlideDataAmendment } from './motion-slide-data';
+import { MotionSlideObjAmendmentParagraph } from './motion-slide-obj-amendment-paragraph';
+import { MotionSlideObjChangeReco } from './motion-slide-obj-change-reco';
 
 @Component({
     selector: 'os-motion-slide',

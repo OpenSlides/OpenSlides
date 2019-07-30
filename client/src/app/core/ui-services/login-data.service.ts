@@ -1,13 +1,13 @@
-import { Injectable, EventEmitter } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 
+import { environment } from 'environments/environment.prod';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { auditTime } from 'rxjs/operators';
 
 import { ConfigService } from './config.service';
-import { StorageService } from '../core-services/storage.service';
-import { OpenSlidesStatusService } from '../core-services/openslides-status.service';
 import { HttpService } from '../core-services/http.service';
-import { environment } from 'environments/environment.prod';
-import { auditTime } from 'rxjs/operators';
+import { OpenSlidesStatusService } from '../core-services/openslides-status.service';
+import { StorageService } from '../core-services/storage.service';
 
 /**
  * The login data send by the server.

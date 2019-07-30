@@ -1,28 +1,28 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
-import { Router, ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
-import { Subject, BehaviorSubject } from 'rxjs';
-
 import { environment } from 'environments/environment';
-import { isDetailNavigable } from 'app/shared/models/base/detail-navigable';
-import { OperatorService } from 'app/core/core-services/operator.service';
-import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
-import { langToLocale } from 'app/shared/utils/lang-to-locale';
-import { TimeTravelService } from 'app/core/core-services/time-travel.service';
-import { HttpService } from 'app/core/core-services/http.service';
-import { BaseViewComponent } from 'app/site/base/base-view';
-import { History } from 'app/shared/models/core/history';
-import { ViewUser } from 'app/site/users/models/view-user';
-import { FormGroup, FormBuilder } from '@angular/forms';
-import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
-import { BaseViewModel } from 'app/site/base/base-view-model';
-import { Motion } from 'app/shared/models/motions/motion';
-import { PromptService } from 'app/core/ui-services/prompt.service';
+import { BehaviorSubject, Subject } from 'rxjs';
+
 import { CollectionStringMapperService } from 'app/core/core-services/collection-string-mapper.service';
+import { HttpService } from 'app/core/core-services/http.service';
+import { OperatorService } from 'app/core/core-services/operator.service';
+import { TimeTravelService } from 'app/core/core-services/time-travel.service';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
+import { isDetailNavigable } from 'app/shared/models/base/detail-navigable';
+import { History } from 'app/shared/models/core/history';
+import { Motion } from 'app/shared/models/motions/motion';
+import { langToLocale } from 'app/shared/utils/lang-to-locale';
+import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseViewModel } from 'app/site/base/base-view-model';
+import { ViewUser } from 'app/site/users/models/view-user';
 
 /**
  * A list view for the history.

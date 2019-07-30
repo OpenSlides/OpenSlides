@@ -1,15 +1,15 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Title } from '@angular/platform-browser';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition } from '@pebula/ngrid';
 
-import { BaseListViewComponent } from 'app/site/base/base-list-view';
+import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { Tag } from 'app/shared/models/core/tag';
-import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
+import { BaseListViewComponent } from 'app/site/base/base-list-view';
 import { ViewTag } from '../../models/view-tag';
 
 /**

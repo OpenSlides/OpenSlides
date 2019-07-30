@@ -1,4 +1,4 @@
-import { trigger, animate, transition, style, query, stagger, group } from '@angular/animations';
+import { animate, group, query, stagger, style, transition, trigger } from '@angular/animations';
 
 const fadeVanish = [
     style({ transform: 'translateY(0%)', opacity: 1 }),

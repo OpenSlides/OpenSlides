@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
+
+import { TranslateService } from '@ngx-translate/core';
+
 import { OpenSlidesService } from 'app/core/core-services/openslides.service';
 import { UpdateService } from 'app/core/ui-services/update.service';
-import { Title } from '@angular/platform-browser';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'os-legal-notice',

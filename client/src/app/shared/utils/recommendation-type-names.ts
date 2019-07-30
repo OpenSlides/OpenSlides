@@ -1,5 +1,5 @@
-import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
 import { ModificationType } from 'app/core/ui-services/diff.service';
+import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
 
 /**
  * Gets the name of the modification type

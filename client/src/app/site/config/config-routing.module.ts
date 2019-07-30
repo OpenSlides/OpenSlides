@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
+
 import { ConfigListComponent } from './components/config-list/config-list.component';
 
 const routes: Routes = [{ path: '', component: ConfigListComponent, pathMatch: 'full' }];

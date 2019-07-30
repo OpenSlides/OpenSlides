@@ -1,17 +1,17 @@
 import { Component, Input } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Title, DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseViewComponent } from 'app/site/base/base-view';
-import { MotionComment } from 'app/shared/models/motions/motion';
-import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
-import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-export.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
+import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
+import { MotionComment } from 'app/shared/models/motions/motion';
+import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionCommentSection } from 'app/site/motions/models/view-motion-comment-section';
+import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-export.service';
 
 /**
  * Component for the motion comments view

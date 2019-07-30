@@ -2,14 +2,14 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { WorkflowTitleInformation, ViewWorkflow } from 'app/site/motions/models/view-workflow';
-import { DataSendService } from '../../core-services/data-send.service';
-import { DataStoreService } from '../../core-services/data-store.service';
-import { BaseRepository, RelationDefinition } from '../base-repository';
-import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { State } from 'app/shared/models/motions/state';
-import { ViewState, StateTitleInformation } from 'app/site/motions/models/view-state';
+import { StateTitleInformation, ViewState } from 'app/site/motions/models/view-state';
+import { ViewWorkflow, WorkflowTitleInformation } from 'app/site/motions/models/view-workflow';
+import { BaseRepository, RelationDefinition } from '../base-repository';
+import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
+import { DataSendService } from '../../core-services/data-send.service';
+import { DataStoreService } from '../../core-services/data-store.service';
 
 const StateRelations: RelationDefinition[] = [
     {

@@ -1,25 +1,25 @@
 import { Injectable, Injector } from '@angular/core';
 
-import { plugins } from '../../../plugins';
-import { CommonAppConfig } from '../../site/common/common.config';
-import { AppConfig, SearchableModelEntry, ModelEntry } from '../app-config';
+import { AgendaAppConfig } from '../../site/agenda/agenda.config';
+import { AppConfig, ModelEntry, SearchableModelEntry } from '../app-config';
+import { BaseRepository } from 'app/core/repositories/base-repository';
+import { HistoryAppConfig } from 'app/site/history/history.config';
+import { ProjectorAppConfig } from 'app/site/projector/projector.config';
+import { TopicsAppConfig } from 'app/site/topics/topics.config';
+import { AssignmentsAppConfig } from '../../site/assignments/assignments.config';
 import { CollectionStringMapperService } from './collection-string-mapper.service';
+import { CommonAppConfig } from '../../site/common/common.config';
+import { ConfigAppConfig } from '../../site/config/config.config';
+import { ServicesToLoadOnAppsLoaded } from '../core.module';
+import { MainMenuService } from './main-menu.service';
 import { MediafileAppConfig } from '../../site/mediafiles/mediafile.config';
 import { MotionsAppConfig } from '../../site/motions/motions.config';
-import { ConfigAppConfig } from '../../site/config/config.config';
-import { AgendaAppConfig } from '../../site/agenda/agenda.config';
-import { AssignmentsAppConfig } from '../../site/assignments/assignments.config';
-import { UsersAppConfig } from '../../site/users/users.config';
-import { TagAppConfig } from '../../site/tags/tag.config';
-import { MainMenuService } from './main-menu.service';
-import { HistoryAppConfig } from 'app/site/history/history.config';
+import { OnAfterAppsLoaded } from '../onAfterAppsLoaded';
+import { plugins } from '../../../plugins';
 import { SearchService } from '../ui-services/search.service';
 import { isSearchable } from '../../site/base/searchable';
-import { ProjectorAppConfig } from 'app/site/projector/projector.config';
-import { BaseRepository } from 'app/core/repositories/base-repository';
-import { OnAfterAppsLoaded } from '../onAfterAppsLoaded';
-import { ServicesToLoadOnAppsLoaded } from '../core.module';
-import { TopicsAppConfig } from 'app/site/topics/topics.config';
+import { TagAppConfig } from '../../site/tags/tag.config';
+import { UsersAppConfig } from '../../site/users/users.config';
 
 /**
  * A list of all app configurations of all delivered apps.

@@ -1,6 +1,6 @@
 import { AppConfig } from '../../core/app-config';
-import { Mediafile } from '../../shared/models/mediafiles/mediafile';
 import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
+import { Mediafile } from '../../shared/models/mediafiles/mediafile';
 import { ViewMediafile } from './models/view-mediafile';
 
 export const MediafileAppConfig: AppConfig = {

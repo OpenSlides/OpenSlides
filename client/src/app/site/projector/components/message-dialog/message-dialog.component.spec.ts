@@ -1,8 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
-import { MessageDialogComponent, MessageData } from './message-dialog.component';
 import { E2EImportsModule } from 'e2e-imports.module';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+
+import { MessageData, MessageDialogComponent } from './message-dialog.component';
 
 describe('MessageDialogComponent', () => {
     let component: MessageDialogComponent;

@@ -2,15 +2,15 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { HttpService } from 'app/core/core-services/http.service';
+import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { Group } from 'app/shared/models/users/group';
+import { GroupTitleInformation, ViewGroup } from 'app/site/users/models/view-group';
 import { BaseRepository } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { ConstantsService } from '../../core-services/constants.service';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
-import { Group } from 'app/shared/models/users/group';
-import { ViewGroup, GroupTitleInformation } from 'app/site/users/models/view-group';
-import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
-import { HttpService } from 'app/core/core-services/http.service';
 
 /**
  * Shape of a permission

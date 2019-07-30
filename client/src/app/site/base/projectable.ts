@@ -1,7 +1,7 @@
-import { Displayable } from 'app/site/base/displayable';
-import { IdentifiableProjectorElement, ProjectorElementOptions } from 'app/shared/models/core/projector';
-import { SlideOptions } from './slide-options';
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { IdentifiableProjectorElement, ProjectorElementOptions } from 'app/shared/models/core/projector';
+import { Displayable } from 'app/site/base/displayable';
+import { SlideOptions } from './slide-options';
 
 export function isProjectorElementBuildDeskriptor(obj: any): obj is ProjectorElementBuildDeskriptor {
     const deskriptor = <ProjectorElementBuildDeskriptor>obj;

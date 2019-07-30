@@ -1,22 +1,22 @@
 import { Component } from '@angular/core';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Title, DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
 
-import { BaseViewComponent } from 'app/site/base/base-view';
-import { PromptService } from 'app/core/ui-services/prompt.service';
-import { TopicRepositoryService } from 'app/core/repositories/topics/topic-repository.service';
-import { ViewTopic } from '../../models/view-topic';
 import { OperatorService } from 'app/core/core-services/operator.service';
-import { ItemVisibilityChoices } from 'app/shared/models/agenda/item';
-import { CreateTopic } from '../../models/create-topic';
-import { Topic } from 'app/shared/models/topics/topic';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
+import { TopicRepositoryService } from 'app/core/repositories/topics/topic-repository.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
+import { ItemVisibilityChoices } from 'app/shared/models/agenda/item';
+import { Topic } from 'app/shared/models/topics/topic';
 import { ViewItem } from 'app/site/agenda/models/view-item';
+import { BaseViewComponent } from 'app/site/base/base-view';
+import { CreateTopic } from '../../models/create-topic';
+import { ViewTopic } from '../../models/view-topic';
 
 /**
  * Detail page for topics.

@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TopicDetailComponent } from './topic-detail.component';
 import { E2EImportsModule } from '../../../../../e2e-imports.module';
+import { TopicDetailComponent } from './topic-detail.component';
 
 describe('TopicComponent', () => {
     let component: TopicDetailComponent;

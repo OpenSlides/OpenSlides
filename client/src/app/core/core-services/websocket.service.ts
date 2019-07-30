@@ -1,15 +1,15 @@
-import { Injectable, NgZone, EventEmitter } from '@angular/core';
+import { EventEmitter, Injectable, NgZone } from '@angular/core';
 import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
+import { compress, decompress } from 'lz4js';
 import { Observable, Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { compress, decompress } from 'lz4js';
 import { TextDecoder, TextEncoder } from 'text-encoding';
 
-import { formatQueryParams, QueryParams } from '../query-params';
 import { OpenSlidesStatusService } from './openslides-status.service';
+import { formatQueryParams, QueryParams } from '../query-params';
 
 /**
  * The generic message format in which messages are send and recieved by the server.

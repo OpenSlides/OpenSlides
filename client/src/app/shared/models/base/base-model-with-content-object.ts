@@ -1,5 +1,5 @@
-import { ContentObject } from './content-object';
 import { BaseModel } from './base-model';
+import { ContentObject } from './content-object';
 
 /**
  * A base model which has a content object, like items of list of speakers.

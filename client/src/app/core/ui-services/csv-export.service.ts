@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
+
 import { TranslateService } from '@ngx-translate/core';
 
 import { BaseViewModel } from '../../site/base/base-view-model';
-import { FileExportService } from './file-export.service';
 import { ConfigService } from './config.service';
+import { FileExportService } from './file-export.service';
 
 /**
  * Defines a csv column with a property of the model and an optional label. If this is not given, the

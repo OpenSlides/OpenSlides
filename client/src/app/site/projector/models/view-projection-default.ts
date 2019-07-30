@@ -1,5 +1,5 @@
-import { BaseViewModel } from '../../base/base-view-model';
 import { ProjectionDefault } from 'app/shared/models/core/projection-default';
+import { BaseViewModel } from '../../base/base-view-model';
 
 export interface ProjectionDefaultTitleInformation {
     display_name: string;

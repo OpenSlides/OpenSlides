@@ -1,29 +1,28 @@
-import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 
-import { BaseViewComponent } from 'app/site/base/base-view';
 import { CollectionStringMapperService } from 'app/core/core-services/collection-string-mapper.service';
+import { OperatorService } from 'app/core/core-services/operator.service';
+import { ListOfSpeakersRepositoryService } from 'app/core/repositories/agenda/list-of-speakers-repository.service';
+import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
+import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { DurationService } from 'app/core/ui-services/duration.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
+import { BaseViewComponent } from 'app/site/base/base-view';
+import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
+import { ViewProjector } from 'app/site/projector/models/view-projector';
 import { CurrentListOfSpeakersService } from 'app/site/projector/services/current-agenda-item.service';
 import { CurrentListOfSpeakersSlideService } from 'app/site/projector/services/current-list-of-of-speakers-slide.service';
-import { DurationService } from 'app/core/ui-services/duration.service';
-import { OperatorService } from 'app/core/core-services/operator.service';
-import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
-import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
-import { PromptService } from 'app/core/ui-services/prompt.service';
-import { ViewSpeaker, SpeakerState } from '../../models/view-speaker';
-import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
-import { ViewProjector } from 'app/site/projector/models/view-projector';
 import { ViewUser } from 'app/site/users/models/view-user';
-
-import { ListOfSpeakersRepositoryService } from 'app/core/repositories/agenda/list-of-speakers-repository.service';
 import { ViewListOfSpeakers } from '../../models/view-list-of-speakers';
+import { SpeakerState, ViewSpeaker } from '../../models/view-speaker';
 
 /**
  * The list of speakers for agenda items.

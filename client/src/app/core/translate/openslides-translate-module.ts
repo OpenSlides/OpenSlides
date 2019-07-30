@@ -1,20 +1,22 @@
+import { HttpClient } from '@angular/common/http';
 import { ModuleWithProviders, NgModule } from '@angular/core';
+
 import {
-    TranslateModule,
-    TranslateLoader,
-    TranslateFakeCompiler,
-    TranslateParser,
-    TranslateCompiler,
     FakeMissingTranslationHandler,
     MissingTranslationHandler,
-    TranslateStore,
-    USE_STORE,
-    USE_DEFAULT_LANG,
-    TranslateService,
+    TranslateCompiler,
+    TranslateDirective,
+    TranslateFakeCompiler,
+    TranslateLoader,
+    TranslateModule,
+    TranslateParser,
     TranslatePipe,
-    TranslateDirective
+    TranslateService,
+    TranslateStore,
+    USE_DEFAULT_LANG,
+    USE_STORE
 } from '@ngx-translate/core';
-import { HttpClient } from '@angular/common/http';
+
 import { OpenSlidesTranslateParser } from './translation-parser';
 import { PruningTranslationLoader } from './translation-pruning-loader';
 import { OpenSlidesTranslateService } from './translation-service';

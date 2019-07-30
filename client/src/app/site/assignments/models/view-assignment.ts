@@ -1,13 +1,13 @@
-import { Assignment } from 'app/shared/models/assignments/assignment';
 import { SearchRepresentation } from 'app/core/ui-services/search.service';
-import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
-import { ViewUser } from 'app/site/users/models/view-user';
-import { ViewTag } from 'app/site/tags/models/view-tag';
-import { ViewAssignmentRelatedUser } from './view-assignment-related-user';
-import { ViewAssignmentPoll } from './view-assignment-poll';
-import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
-import { BaseViewModelWithAgendaItemAndListOfSpeakers } from 'app/site/base/base-view-model-with-agenda-item-and-list-of-speakers';
+import { Assignment } from 'app/shared/models/assignments/assignment';
 import { TitleInformationWithAgendaItem } from 'app/site/base/base-view-model-with-agenda-item';
+import { BaseViewModelWithAgendaItemAndListOfSpeakers } from 'app/site/base/base-view-model-with-agenda-item-and-list-of-speakers';
+import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
+import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
+import { ViewTag } from 'app/site/tags/models/view-tag';
+import { ViewUser } from 'app/site/users/models/view-user';
+import { ViewAssignmentPoll } from './view-assignment-poll';
+import { ViewAssignmentRelatedUser } from './view-assignment-related-user';
 
 export interface AssignmentTitleInformation extends TitleInformationWithAgendaItem {
     title: string;

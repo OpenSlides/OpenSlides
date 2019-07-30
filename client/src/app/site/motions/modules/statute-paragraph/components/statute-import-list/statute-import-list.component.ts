@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
+
 import { TranslateService } from '@ngx-translate/core';
 
 import { BaseImportListComponent } from 'app/site/base/base-import-list';
 import { ViewStatuteParagraph } from 'app/site/motions/models/view-statute-paragraph';
-import { StatuteImportService } from 'app/site/motions/services/statute-import.service';
 import { StatuteCsvExportService } from 'app/site/motions/services/statute-csv-export.service';
+import { StatuteImportService } from 'app/site/motions/services/statute-import.service';
 
 /**
  * Component for the statute paragraphs import list view.

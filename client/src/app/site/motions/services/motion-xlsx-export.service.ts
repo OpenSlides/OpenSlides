@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
 
+import { TranslateService } from '@ngx-translate/core';
 import { Workbook } from 'exceljs/dist/exceljs.min.js';
 
-import { InfoToExport } from './motion-pdf.service';
-import { sortMotionPropertyList } from '../motion-import-export-order';
-import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
-import { TranslateService } from '@ngx-translate/core';
-import { ViewMotion } from '../models/view-motion';
-import { XlsxExportServiceService, CellFillingDefinition } from 'app/core/ui-services/xlsx-export-service.service';
 import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
-import { stripHtmlTags } from 'app/shared/utils/strip-html-tags';
+import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
+import { CellFillingDefinition, XlsxExportServiceService } from 'app/core/ui-services/xlsx-export-service.service';
 import { reconvertChars } from 'app/shared/utils/reconvert-chars';
+import { stripHtmlTags } from 'app/shared/utils/strip-html-tags';
+import { sortMotionPropertyList } from '../motion-import-export-order';
+import { InfoToExport } from './motion-pdf.service';
+import { ViewMotion } from '../models/view-motion';
 
 /**
  * Service to export motion elements to XLSX

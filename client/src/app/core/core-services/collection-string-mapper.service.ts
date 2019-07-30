@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 
-import { ModelConstructor, BaseModel } from '../../shared/models/base/base-model';
 import { BaseRepository } from 'app/core/repositories/base-repository';
-import { ViewModelConstructor, BaseViewModel, TitleInformation } from 'app/site/base/base-view-model';
+import { BaseViewModel, TitleInformation, ViewModelConstructor } from 'app/site/base/base-view-model';
+import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model';
 
 /**
  * Unifies the ModelConstructor and ViewModelConstructor.

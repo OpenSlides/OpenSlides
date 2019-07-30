@@ -1,11 +1,11 @@
+import { Component, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ManageSubmittersComponent } from './manage-submitters.component';
 import { E2EImportsModule } from 'e2e-imports.module';
-import { ViewChild, Component } from '@angular/core';
 
-import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { Motion } from 'app/shared/models/motions/motion';
+import { ViewMotion } from 'app/site/motions/models/view-motion';
+import { ManageSubmittersComponent } from './manage-submitters.component';
 
 describe('ManageSubmittersComponent', () => {
     @Component({

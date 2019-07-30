@@ -1,7 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FullscreenProjectorComponent } from './fullscreen-projector.component';
 import { E2EImportsModule } from 'e2e-imports.module';
+
+import { FullscreenProjectorComponent } from './fullscreen-projector.component';
 import { FullscreenProjectorModule } from '../fullscreen-projector.module';
 
 describe('FullscreenProjectorComponent', () => {

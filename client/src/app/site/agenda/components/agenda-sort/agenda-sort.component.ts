@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { Title } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Title } from '@angular/platform-browser';
 
-import { BehaviorSubject, Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
-import { SortTreeViewComponent, SortTreeFilterOption } from 'app/site/base/sort-tree.component';
 import { PromptService } from 'app/core/ui-services/prompt.service';
-import { ViewItem } from '../../models/view-item';
 import { ItemVisibilityChoices } from 'app/shared/models/agenda/item';
+import { SortTreeFilterOption, SortTreeViewComponent } from 'app/site/base/sort-tree.component';
+import { ViewItem } from '../../models/view-item';
 
 /**
  * Sort view for the agenda.
