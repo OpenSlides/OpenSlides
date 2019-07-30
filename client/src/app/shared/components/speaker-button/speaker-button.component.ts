@@ -49,7 +49,7 @@ export class SpeakerButtonComponent {
     }
 
     public get tooltip(): string {
-        return this.listOfSpeakers.closed ? 'The list of speakers is closed' : 'List of speakers';
+        return this.listOfSpeakers.closed ? 'The list of speakers is closed.' : 'List of speakers';
     }
 
     /**

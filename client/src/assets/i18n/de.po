@@ -188,10 +188,6 @@ msgstr "Änderungsanträge"
 msgid "Amendments can change multiple paragraphs"
 msgstr "Änderungsanträge können mehrere Absätze ändern"
 
-msgid "An email with a password reset link was send!"
-msgstr ""
-"Es wurde eine E-Mail mit einem Link zum Zurücksetzen des Passworts gesendet."
-
 msgid "An unknown error occurred."
 msgstr "Ein unbekannter Fehler ist aufgetreten."
 
@@ -270,6 +266,13 @@ msgstr "Soll diese Abstimmung wirklich gelöscht werden?"
 msgid "Are you sure you want to delete this workflow?"
 msgstr "Soll dieser Arbeitsablauf wirklich gelöscht werden?"
 
+msgid ""
+"Are you sure you want to generate new passwords for all selected "
+"participants?"
+msgstr ""
+"Sollen wirklich neue Passwörter für alle ausgewählte Teilnehmende generiert "
+"werden?"
+
 msgid "Are you sure you want to number all agenda items?"
 msgstr "Sollen alle Tagesordnungspunkte wirklich neu nummeriert werden?"
 
@@ -294,6 +297,11 @@ msgstr "Soll dieser Antrag wirklich aus dem Antragsblock entfernt werden?"
 msgid "Are you sure you want to renumber all motions of this category?"
 msgstr ""
 "Sollen alle Anträge dieses Sachgebiets wirklich neu nummeriert werden?"
+
+msgid "Are you sure you want to reset all passwords to the default ones?"
+msgstr ""
+"Sollen wirklich alle Passwörter auf die initialen Passwörter zurückgesetzt "
+"werden?"
 
 msgid "Are you sure you want to send an invitation email to the user?"
 msgstr "Soll wirklich eine E-Mail den diesen Nutzer gesendet werden?"
@@ -785,8 +793,8 @@ msgstr "Dauer"
 msgid "Edit"
 msgstr "Bearbeiten"
 
-msgid "Edit comment field:"
-msgstr "Kommentarfeld bearbeiten:"
+msgid "Edit comment field"
+msgstr "Kommentarfeld bearbeiten"
 
 msgid "Edit details"
 msgstr "Details bearbeiten"
@@ -794,8 +802,11 @@ msgstr "Details bearbeiten"
 msgid "Edit details for"
 msgstr "Details bearbeiten für"
 
-msgid "Edit statute paragraph:"
-msgstr "Satzungsabschnitt bearbeiten:"
+msgid "Edit statute paragraph"
+msgstr "Satzungsabschnitt bearbeiten"
+
+msgid "Edit tag"
+msgstr "Schlagwort bearbeiten"
 
 msgid "Edit the whole motion text"
 msgstr "Vollständigen Antragstext bearbeiten"
@@ -983,6 +994,9 @@ msgstr ""
 "gibt, ist 100% die Summe aller Stimmen von allen Kandidaten. Andernfalls ist"
 " 100% die Summe aller Stimmen pro Kandidat."
 
+msgid "Foreground color"
+msgstr "Vordergrundfarbe"
+
 msgid "Forgot Password?"
 msgstr "Passwort vergessen?"
 
@@ -1101,6 +1115,9 @@ msgstr "Satzung importieren"
 
 msgid "Import topics"
 msgstr "Themen importieren"
+
+msgid "Inactive"
+msgstr "Inaktiv"
 
 msgid "Initial password"
 msgstr "Initiales Passwort"
@@ -1393,7 +1410,7 @@ msgstr "Neuer Status"
 msgid "New statute paragraph"
 msgstr "Neuer Satzungsabschnitt"
 
-msgid "New tag name"
+msgid "New tag"
 msgstr "Neues Schlagwort"
 
 msgid "New topic"
@@ -1459,6 +1476,9 @@ msgstr "Keine Einträge ausgewählte"
 msgid "No motion block set"
 msgstr "kein Antragsblock gesetzt"
 
+msgid "No one"
+msgstr "Niemand"
+
 msgid "No personal note"
 msgstr "Keine persönliche Notiz"
 
@@ -1479,6 +1499,12 @@ msgstr "Nr."
 
 msgid "None"
 msgstr "aus"
+
+msgid ""
+"Note, that the default password will be changed to the new generated one."
+msgstr ""
+"Beachten Sie, dass das Passwort auf das neu generierte Passwort geändert "
+"wird."
 
 msgid ""
 "Note: Your own password was not changed. Please use the password change "
@@ -1632,6 +1658,9 @@ msgstr "Elternelement in der Tagesordnung"
 
 msgid "Parent directory"
 msgstr "Elternverzeichnis"
+
+msgid "Participant"
+msgstr "Teilnehmer/in"
 
 msgid "Participant cannot be found"
 msgstr "Teilnehmende wurde nicht gefunden"
@@ -1891,6 +1920,9 @@ msgstr "Cache leeren"
 msgid "Reset password"
 msgstr "Passwort zurücksetzen"
 
+msgid "Reset passwords to the default ones"
+msgstr "Passwörter zurücksetzen auf Initiales"
+
 msgid "Reset recommendation"
 msgstr "Empfehlung zurücksetzen"
 
@@ -1978,9 +2010,6 @@ msgstr "Laufende Nummer"
 msgid "Serially numbered"
 msgstr "fortlaufend nummerieren"
 
-msgid "Set active status for selected participants:"
-msgstr "Aktiv-Status für ausgewählte Teilnehmende setzen:"
-
 msgid "Set as favorite"
 msgstr "Als Favorit markieren"
 
@@ -1995,9 +2024,6 @@ msgstr "Sachgebiet setzen"
 
 msgid "Set committee ..."
 msgstr "Gremium setzen ..."
-
-msgid "Set committee status for selected participants:"
-msgstr "Gremium-Status für ausgewählte Teilnehmende setzen:"
 
 msgid "Set favorite"
 msgstr "Favorit markieren"
@@ -2019,9 +2045,6 @@ msgstr "Antragsblock setzen"
 
 msgid "Set presence ..."
 msgstr "Anwesenheit setzen ..."
-
-msgid "Set presence status for selected participants:"
-msgstr "Anwesenheits-Status für ausgewählte Teilnehmende setzen:"
 
 msgid "Set public"
 msgstr "Öffentlich setzen"
@@ -2117,6 +2140,9 @@ msgstr "Tagesordnung sortieren"
 msgid "Sort categories"
 msgstr "Sachgebiete sortieren"
 
+msgid "Sort comments"
+msgstr "Kommentare sortieren"
+
 msgid "Sort motions"
 msgstr "Anträge sortieren"
 
@@ -2168,6 +2194,9 @@ msgstr "Satzungsabschnitt wurde importiert"
 msgid "Statute paragraph will be imported"
 msgstr "Satzungsabschnitt wird importiert"
 
+msgid "Statute paragraphs"
+msgstr "Satzung"
+
 msgid "Stop counting"
 msgstr "Zählen stoppen"
 
@@ -2177,6 +2206,9 @@ msgstr ""
 
 msgid "Structure level"
 msgstr "Gliederungsebene"
+
+msgid "Subcategory"
+msgstr "Untersachgebiete"
 
 msgid "Submitters"
 msgstr "Antragsteller/in"
@@ -2232,6 +2264,9 @@ msgstr "Die 100%-Basis eines Wahlergebnisses besteht aus"
 msgid "The assembly may decide:"
 msgstr "Die Versammlung möge beschließen:"
 
+msgid "The event manager hasn't set up a legal notice yet."
+msgstr "Der Veranstalter hat noch kein Impressum hinterlegt."
+
 msgid "The event manager hasn't set up a privacy policy yet."
 msgstr "Der Veranstalter hat noch keine Datenschutzerklärung hinterlegt."
 
@@ -2252,12 +2287,18 @@ msgid "The link is broken. Please contact your system administrator."
 msgstr ""
 "Der Link ist defekt. Bitte kontaktieren Sie den zuständigen Administrator."
 
+msgid "The list of speakers is closed."
+msgstr "Die Redeliste ist geschlossen."
+
 msgid ""
 "The maximum number of characters per line. Relevant when line numbering is "
 "enabled. Min: 40"
 msgstr ""
 "Die maximale Zeichenanzahl pro Zeile. Relevant, wenn die Zeilennummerierung "
 "eingeschaltet ist. Minimum: 40."
+
+msgid "The number has to be greater than 0."
+msgstr "Die Anzahl muss größer als 0 sein."
 
 msgid "The reason field may not be blank."
 msgstr "Die Begründung darf nicht leer sein."
@@ -2284,6 +2325,9 @@ msgstr "Der Server antwortet nicht."
 
 msgid "The text field may not be blank."
 msgstr "Der Antragstext darf nicht leer sein."
+
+msgid "The title is required"
+msgstr "Ein Titel ist erforderlich"
 
 msgid "The title of the motion is always applied."
 msgstr "Der Antragstitel wird immer übernommen."
@@ -2399,6 +2443,9 @@ msgstr "Thema wurde importiert"
 
 msgid "Topic will be imported"
 msgstr "Thema wird importiert"
+
+msgid "Topics"
+msgstr "Themen"
 
 msgid "Topics have been imported."
 msgstr "Themen wurden importiert."
@@ -2516,6 +2563,9 @@ msgstr "Auf Ergebnisse wartend ..."
 
 msgid "Web interface header logo"
 msgstr "Web-Interface-Kopfzeilen-Logo"
+
+msgid "Web workers are not supported on your browser."
+msgstr "Web Workers werden in diesem Browser nicht unterstützt."
 
 msgid "Welcome to OpenSlides"
 msgstr "Willkommen bei OpenSlides"

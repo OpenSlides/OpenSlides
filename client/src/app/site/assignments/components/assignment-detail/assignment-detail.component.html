@@ -296,8 +296,8 @@
                         type="number"
                         required
                     />
-                    <mat-error *ngIf="assignmentForm.get('open_posts').hasError('required')">{{ 'This field is required' | translate }}</mat-error>
-                    <mat-error *ngIf="assignmentForm.get('open_posts').hasError('min')">{{ 'The number has to be greater than "0" ' | translate }}</mat-error>
+                    <mat-error *ngIf="assignmentForm.get('open_posts').hasError('required')">{{ 'This field is required.' | translate }}</mat-error>
+                    <mat-error *ngIf="assignmentForm.get('open_posts').hasError('min')">{{ 'The number has to be greater than 0.' | translate }}</mat-error>
                 </mat-form-field>
             </div>
             <!-- TODO searchValueSelector: Parent -->
