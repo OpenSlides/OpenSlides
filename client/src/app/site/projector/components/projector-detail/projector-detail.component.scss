@@ -93,6 +93,10 @@
         width: 25px;
         color: slategrey;
         cursor: move;
+
+        &.no-drag {
+            cursor: default;
+        }
     }
 
     .button-right {
