@@ -6,7 +6,7 @@
 <os-list-view-table
     [repo]="workflowRepo"
     [columns]="tableColumnDefinition"
-    scrollKey="workflow"
+    listStorageKey="workflow"
     (dataSourceChange)="onDataSourceChange($event)"
 >
     <!-- Name column -->
@@ -36,11 +36,17 @@
     <div mat-dialog-content>
         <p translate>Please enter a name for the new workflow:</p>
         <mat-form-field>
-            <input matInput osAutofocus [(ngModel)]="newWorkflowTitle" required/>
+            <input matInput osAutofocus [(ngModel)]="newWorkflowTitle" required />
         </mat-form-field>
     </div>
     <div mat-dialog-actions>
-        <button type="submit" mat-button color="primary" [disabled]="newWorkflowTitle === ''" [mat-dialog-close]="newWorkflowTitle">
+        <button
+            type="submit"
+            mat-button
+            color="primary"
+            [disabled]="newWorkflowTitle === ''"
+            [mat-dialog-close]="newWorkflowTitle"
+        >
             <span translate>Save</span>
         </button>
         <button type="button" mat-button [mat-dialog-close]="null">

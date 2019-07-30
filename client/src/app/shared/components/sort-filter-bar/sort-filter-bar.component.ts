@@ -63,6 +63,16 @@ export class SortFilterBarComponent<V extends BaseViewModel> {
     @Input()
     public itemsVerboseName: string;
 
+    /**
+     * Custom input for the search-field.
+     * Used to change the value of the input from outside of this component.
+     */
+    @Input()
+    public searchFieldInput: string;
+
+    /**
+     * EventEmitter to emit the next search-value.
+     */
     @Output()
     public searchFieldChange = new EventEmitter<string>();
 
@@ -82,11 +92,6 @@ export class SortFilterBarComponent<V extends BaseViewModel> {
      * Optional boolean, whether the filter and sort service should be shown.
      */
     private _showFilterSort = true;
-
-    /**
-     * The 'opened/active' state of the fulltext filter input field
-     */
-    public isSearchBar = false;
 
     /**
      * Return the amount of data passing filters. Priorizes the override in {@link filterCount} over
@@ -184,18 +189,6 @@ export class SortFilterBarComponent<V extends BaseViewModel> {
     }
 
     /**
-     * Listen to keypresses on the quick-search input
-     */
-    public applySearch(event: KeyboardEvent, value?: string): void {
-        if (event.key === 'Escape') {
-            this.searchFieldChange.emit('');
-            this.isSearchBar = false;
-        } else {
-            this.searchFieldChange.emit(value);
-        }
-    }
-
-    /**
      * Checks if there is an active SortService present
      */
     public get hasSorting(): boolean {
@@ -229,18 +222,5 @@ export class SortFilterBarComponent<V extends BaseViewModel> {
         }
         const itemProperty = option.property as string;
         return itemProperty.charAt(0).toUpperCase() + itemProperty.slice(1);
-    }
-
-    /**
-     * Open/closes the 'quick search input'. When closing, also removes the filter
-     * that input applied
-     */
-    public toggleSearchBar(): void {
-        if (!this.isSearchBar) {
-            this.isSearchBar = true;
-        } else {
-            this.searchFieldChange.emit('');
-            this.isSearchBar = false;
-        }
     }
 }

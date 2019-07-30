@@ -22,7 +22,7 @@
     [filterProps]="filterProps"
     [multiSelect]="isMultiSelect"
     [hiddenInMobile]="['group']"
-    scrollKey="user"
+    listStorageKey="user"
     [(selectedRows)]="selectedRows"
     (dataSourceChange)="onDataSourceChange($event)"
 >
@@ -204,10 +204,14 @@
                 </button>
 
                 <button mat-menu-item [disabled]="!selectedRows.length" (click)="resetPasswordsToDefaultSelected()">
-                        <mat-icon>vpn_key</mat-icon>
-                        <span translate>Reset passwords to the default ones</span>
-                    </button>
-                <button mat-menu-item [disabled]="!selectedRows.length" (click)="generateNewPasswordsPasswordsSelected()">
+                    <mat-icon>vpn_key</mat-icon>
+                    <span translate>Reset passwords to the default ones</span>
+                </button>
+                <button
+                    mat-menu-item
+                    [disabled]="!selectedRows.length"
+                    (click)="generateNewPasswordsPasswordsSelected()"
+                >
                     <mat-icon>vpn_key</mat-icon>
                     <span translate>Generate new passwords</span>
                 </button>

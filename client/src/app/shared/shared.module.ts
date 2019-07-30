@@ -94,6 +94,7 @@ import { ListViewTableComponent } from './components/list-view-table/list-view-t
 import { AgendaContentObjectFormComponent } from './components/agenda-content-object-form/agenda-content-object-form.component';
 import { ExtensionFieldComponent } from './components/extension-field/extension-field.component';
 import { AttachmentControlComponent } from './components/attachment-control/attachment-control.component';
+import { RoundedInputComponent } from './components/rounded-input/rounded-input.component';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -231,7 +232,8 @@ import { AttachmentControlComponent } from './components/attachment-control/atta
         PblNgridTargetEventsModule,
         ListViewTableComponent,
         AgendaContentObjectFormComponent,
-        ExtensionFieldComponent
+        ExtensionFieldComponent,
+        RoundedInputComponent
     ],
     declarations: [
         PermsDirective,
@@ -268,7 +270,8 @@ import { AttachmentControlComponent } from './components/attachment-control/atta
         ListViewTableComponent,
         AgendaContentObjectFormComponent,
         ExtensionFieldComponent,
-        AttachmentControlComponent
+        AttachmentControlComponent,
+        RoundedInputComponent
     ],
     providers: [
         { provide: DateAdapter, useClass: OpenSlidesDateAdapter },

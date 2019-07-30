@@ -64,7 +64,7 @@ export interface ColumnRestriction {
  *     [hiddenInMobile]="['state']"
  *     [allowProjector]="false"
  *     [multiSelect]="isMultiSelect"
- *     scrollKey="motion"
+ *     listStorageKey="motion"
  *     [(selectedRows)]="selectedRows"
  *     (dataSourceChange)="onDataSourceChange($event)"
  * >
@@ -157,7 +157,7 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
      * Key to restore scroll position after navigating
      */
     @Input()
-    public scrollKey: string;
+    public listStorageKey: string;
 
     /**
      * Wether or not to show the filter bar
@@ -195,6 +195,12 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
      * Search input value
      */
     public inputValue: string;
+
+    /**
+     * Flag to indicate, whether the table is loading the first time or not.
+     * Otherwise the `DataSource` will be empty, if there is a query stored in the local-storage.
+     */
+    private initialLoading = true;
 
     /**
      * Most, of not all list views require these
@@ -365,8 +371,9 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
             .build();
 
         // restore scroll position
-        if (this.scrollKey) {
-            this.scrollToPreviousPosition(this.scrollKey);
+        if (this.listStorageKey) {
+            this.scrollToPreviousPosition(this.listStorageKey);
+            this.restoreSearchQuery(this.listStorageKey);
         }
     }
 
@@ -409,8 +416,15 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
      * @param event the string to search for
      */
     public searchFilter(filterValue: string): void {
+        if (this.listStorageKey) {
+            this.saveSearchQuery(this.listStorageKey, filterValue);
+        }
         this.inputValue = filterValue;
-        this.dataSource.syncFilter();
+        if (this.initialLoading) {
+            this.initialLoading = false;
+        } else {
+            this.dataSource.syncFilter();
+        }
     }
 
     /**
@@ -422,6 +436,25 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
     public async getScrollIndex(key: string): Promise<number> {
         const scrollIndex = await this.store.get<number>(`scroll_${key}`);
         return scrollIndex ? scrollIndex : 0;
+    }
+
+    /**
+     * Saves the given query to restore it later, if navigating to other sites happened.
+     *
+     * @param key The `StorageKey` for the list-view.
+     * @param query The query, that should be stored.
+     */
+    public saveSearchQuery(key: string, query: string): void {
+        this.store.set(`query_${key}`, query);
+    }
+
+    /**
+     * Function to load any query from the store for the given `StorageKey`.
+     *
+     * @param key The `StorageKey` for the list-view.
+     */
+    public async restoreSearchQuery(key: string): Promise<void> {
+        this.inputValue = await this.store.get<string>(`query_${key}`);
     }
 
     /**
