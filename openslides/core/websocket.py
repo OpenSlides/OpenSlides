@@ -50,7 +50,7 @@ class NotifyWebsocketClientMessage(BaseWebsocketClientMessage):
     }
     # Define a required permission for a notify message here. If the emitting user does not
     # have this permission, he will get an error message in response.
-    notify_permissions: Dict[str, str] = {"swCheckForUpdate": "users.can_manage"}
+    notify_permissions: Dict[str, str] = {"swCheckForUpdate": "superadmin"}
 
     async def receive_content(
         self, consumer: "ProtocollAsyncJsonWebsocketConsumer", content: Any, id: str

@@ -52,6 +52,7 @@ import { EditorModule } from '@tinymce/tinymce-angular';
 
 // directives
 import { PermsDirective } from './directives/perms.directive';
+import { IsSuperAdminDirective } from './directives/is-super-admin.directive';
 import { DomChangeDirective } from './directives/dom-change.directive';
 import { AutofocusDirective } from './directives/autofocus.directive';
 
@@ -196,6 +197,7 @@ import { RoundedInputComponent } from './components/rounded-input/rounded-input.
         TranslateModule,
         OpenSlidesTranslateModule,
         PermsDirective,
+        IsSuperAdminDirective,
         DomChangeDirective,
         AutofocusDirective,
         HeadBarComponent,
@@ -237,6 +239,7 @@ import { RoundedInputComponent } from './components/rounded-input/rounded-input.
     ],
     declarations: [
         PermsDirective,
+        IsSuperAdminDirective,
         DomChangeDirective,
         AutofocusDirective,
         HeadBarComponent,
