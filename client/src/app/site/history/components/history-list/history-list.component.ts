@@ -65,10 +65,6 @@ export class HistoryListComponent extends BaseViewComponent implements OnInit {
         return this.modelSelectForm.controls.model.value;
     }
 
-    public get isSuperAdmin(): boolean {
-        return this.operator.isSuperAdmin();
-    }
-
     /**
      * Constructor for the history list component
      *
@@ -190,7 +186,7 @@ export class HistoryListComponent extends BaseViewComponent implements OnInit {
      * @param history Represents the selected element
      */
     public async onClickRow(history: History): Promise<void> {
-        if (!this.isSuperAdmin) {
+        if (!this.operator.isSuperAdmin) {
             return;
         }
 

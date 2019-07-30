@@ -52,6 +52,7 @@ import { EditorModule } from '@tinymce/tinymce-angular';
 
 // directives
 import { PermsDirective } from './directives/perms.directive';
+import { IsSuperAdminDirective } from './directives/is-super-admin.directive';
 import { DomChangeDirective } from './directives/dom-change.directive';
 import { AutofocusDirective } from './directives/autofocus.directive';
 
@@ -195,6 +196,7 @@ import { AttachmentControlComponent } from './components/attachment-control/atta
         TranslateModule,
         OpenSlidesTranslateModule,
         PermsDirective,
+        IsSuperAdminDirective,
         DomChangeDirective,
         AutofocusDirective,
         HeadBarComponent,
@@ -235,6 +237,7 @@ import { AttachmentControlComponent } from './components/attachment-control/atta
     ],
     declarations: [
         PermsDirective,
+        IsSuperAdminDirective,
         DomChangeDirective,
         AutofocusDirective,
         HeadBarComponent,

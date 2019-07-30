@@ -85,6 +85,10 @@ export class OperatorService implements OnAfterAppsLoaded {
         return !this.user || this.user.id === 0;
     }
 
+    public get isSuperAdmin(): boolean {
+        return this.isInGroupIdsNonAdminCheck(2);
+    }
+
     /**
      * Save, if guests are enabled.
      */
@@ -358,10 +362,6 @@ export class OperatorService implements OnAfterAppsLoaded {
         return groupIds.some(id => this.user.groups_id.includes(id));
     }
 
-    public isSuperAdmin(): boolean {
-        return this.isInGroupIdsNonAdminCheck(2);
-    }
-
     /**
      * Update the operators permissions and publish the operator afterwards.
      * Saves the current WhoAmI to storage with the updated permissions
@@ -383,7 +383,7 @@ export class OperatorService implements OnAfterAppsLoaded {
                     this.permissions = defaultGroup.permissions;
                 }
             } else {
-                const permissionSet = new Set();
+                const permissionSet = new Set<string>();
                 this.DS.getMany(Group, this.user.groups_id).forEach(group => {
                     group.permissions.forEach(permission => {
                         permissionSet.add(permission);
