@@ -13,3 +13,13 @@
 .infoCell {
     display: grid;
 }
+
+.nameCell {
+    position: relative;
+    z-index: 2;
+    display: flex;
+
+    span {
+        margin-right: 5px;
+    }
+}

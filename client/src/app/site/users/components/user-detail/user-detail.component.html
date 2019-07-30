@@ -257,7 +257,12 @@
     <!-- User name -->
     <div *ngIf="isAllowed('seeName')">
         <h4 translate>Name</h4>
-        <span>{{ user.short_name }}</span>
+        <span class="state-icons">
+            <span>{{ user.short_name }}</span>
+            <mat-icon *ngIf="user.is_present" matTooltip="{{ 'Is present' | translate }}">check_box</mat-icon>
+            <mat-icon *ngIf="user.is_committee" matTooltip="{{ 'Is committee' | translate }}">stars</mat-icon>
+            <mat-icon *ngIf="!user.is_active" matTooltip="{{ 'Inactive' | translate }}">block</mat-icon>
+        </span>
     </div>
 
     <div *ngIf="isAllowed('seePersonal')">
