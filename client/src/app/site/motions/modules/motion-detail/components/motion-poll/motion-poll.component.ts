@@ -8,6 +8,7 @@ import { MotionRepositoryService } from 'app/core/repositories/motions/motion-re
 import { CalculablePollKey } from 'app/core/ui-services/poll.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { MotionPoll } from 'app/shared/models/motions/motion-poll';
+import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
 import { MotionPollPdfService } from 'app/site/motions/services/motion-poll-pdf.service';
 import { MotionPollService } from 'app/site/motions/services/motion-poll.service';
@@ -184,9 +185,7 @@ export class MotionPollComponent implements OnInit {
     public editPoll(): void {
         const dialogRef = this.dialog.open(MotionPollDialogComponent, {
             data: { ...this.poll },
-            maxHeight: '90vh',
-            minWidth: '250px',
-            disableClose: true
+            ...infoDialogSettings
         });
         dialogRef.afterClosed().subscribe(result => {
             if (result) {

@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material';
 import { BehaviorSubject } from 'rxjs';
 
 import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
+import { mediumDialogSettings } from 'app/shared/utils/dialog-settings';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 
 @Component({
@@ -51,11 +52,7 @@ export class AttachmentControlComponent implements OnInit, ControlValueAccessor 
      * @param dialog the dialog to open
      */
     public openUploadDialog(dialog: TemplateRef<string>): void {
-        this.dialogService.open(dialog, {
-            width: '750px',
-            maxWidth: '90vw',
-            maxHeight: '90vh'
-        });
+        this.dialogService.open(dialog, mediumDialogSettings);
     }
 
     /**

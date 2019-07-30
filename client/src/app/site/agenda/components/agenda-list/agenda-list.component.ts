@@ -22,6 +22,7 @@ import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { ColumnRestriction } from 'app/shared/components/list-view-table/list-view-table.component';
+import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseListViewComponent } from 'app/site/base/base-list-view';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { ViewTopic } from 'app/site/topics/models/view-topic';
@@ -190,11 +191,7 @@ export class AgendaListComponent extends BaseListViewComponent<ViewItem> impleme
         if (this.isMultiSelect || !this.canManage) {
             return;
         }
-        const dialogRef = this.dialog.open(ItemInfoDialogComponent, {
-            width: '400px',
-            data: item,
-            disableClose: true
-        });
+        const dialogRef = this.dialog.open(ItemInfoDialogComponent, infoDialogSettings);
 
         dialogRef.afterClosed().subscribe(result => {
             if (result) {

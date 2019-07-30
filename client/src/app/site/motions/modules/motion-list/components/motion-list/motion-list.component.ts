@@ -16,6 +16,7 @@ import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { PdfError } from 'app/core/ui-services/pdf-document.service';
 import { ColumnRestriction } from 'app/shared/components/list-view-table/list-view-table.component';
+import { infoDialogSettings, largeDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseListViewComponent } from 'app/site/base/base-list-view';
 import { ViewCategory } from 'app/site/motions/models/view-category';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
@@ -300,9 +301,7 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
      */
     public openExportDialog(): void {
         const exportDialogRef = this.dialog.open(MotionExportDialogComponent, {
-            width: '1100px',
-            maxWidth: '90vw',
-            maxHeight: '90vh',
+            ...largeDialogSettings,
             data: this.dataSource
         });
 
@@ -447,12 +446,7 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
             // Copies the interface to check, if changes were made.
             const copyDialog = { ...this.infoDialog };
 
-            const dialogRef = this.dialog.open(this.motionInfoDialog, {
-                width: '400px',
-                maxWidth: '90vw',
-                maxHeight: '90vh',
-                disableClose: true
-            });
+            const dialogRef = this.dialog.open(this.motionInfoDialog, infoDialogSettings);
 
             dialogRef.keydownEvents().subscribe((event: KeyboardEvent) => {
                 if (event.key === 'Enter' && event.shiftKey) {

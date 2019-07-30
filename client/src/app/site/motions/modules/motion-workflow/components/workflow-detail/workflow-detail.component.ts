@@ -13,6 +13,7 @@ import { StateRepositoryService } from 'app/core/repositories/motions/state-repo
 import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { MergeAmendment, State } from 'app/shared/models/motions/state';
+import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewState } from 'app/site/motions/models/view-state';
 import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
@@ -344,11 +345,7 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
             deletable: deletable
         };
 
-        const dialogRef = this.dialog.open(this.workflowDialog, {
-            maxHeight: '90vh',
-            width: '400px',
-            maxWidth: '90vw'
-        });
+        const dialogRef = this.dialog.open(this.workflowDialog, infoDialogSettings);
 
         return dialogRef.afterClosed();
     }

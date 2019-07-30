@@ -18,6 +18,7 @@ import { DurationService } from 'app/core/ui-services/duration.service';
 import { Countdown } from 'app/shared/models/core/countdown';
 import { ProjectorElement } from 'app/shared/models/core/projector';
 import { ProjectorMessage } from 'app/shared/models/core/projector-message';
+import { infoDialogSettings, mediumDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { Projectable } from 'app/site/base/projectable';
 import { ViewCountdown } from 'app/site/projector/models/view-countdown';
@@ -207,10 +208,7 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
 
         const dialogRef = this.dialog.open(CountdownDialogComponent, {
             data: countdownData,
-            maxHeight: '90vh',
-            width: '400px',
-            maxWidth: '90vw',
-            disableClose: true
+            ...infoDialogSettings
         });
 
         dialogRef.afterClosed().subscribe(result => {
@@ -238,10 +236,7 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
 
         const dialogRef = this.dialog.open(MessageDialogComponent, {
             data: messageData,
-            maxHeight: '90vh',
-            width: '800px',
-            maxWidth: '90vw',
-            disableClose: true
+            ...mediumDialogSettings
         });
 
         dialogRef.afterClosed().subscribe(result => {

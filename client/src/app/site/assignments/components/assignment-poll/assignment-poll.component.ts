@@ -10,6 +10,7 @@ import { OperatorService } from 'app/core/core-services/operator.service';
 import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
 import { CalculablePollKey, MajorityMethod } from 'app/core/ui-services/poll.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
+import { mediumDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { AssignmentPollDialogComponent } from '../assignment-poll-dialog/assignment-poll-dialog.component';
 import { AssignmentPollPdfService } from '../../services/assignment-poll-pdf.service';
@@ -197,10 +198,7 @@ export class AssignmentPollComponent extends BaseViewComponent implements OnInit
         const dialogRef = this.dialog.open(AssignmentPollDialogComponent, {
             // TODO deep copy of this.poll (JSON parse is ugly workaround) or sending just copy of the options
             data: this.poll.copy(),
-            maxHeight: '90vh',
-            width: '600px',
-            maxWidth: '90vw',
-            disableClose: true
+            ...mediumDialogSettings
         });
         dialogRef.afterClosed().subscribe(result => {
             if (result) {

@@ -12,6 +12,7 @@ import { OperatorService } from 'app/core/core-services/operator.service';
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
+import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewCategory } from 'app/site/motions/models/view-category';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
@@ -198,12 +199,7 @@ export class CategoryDetailComponent extends BaseViewComponent implements OnInit
             name: [this.selectedCategory.name, Validators.required]
         });
 
-        this.dialog.open(this.editDialog, {
-            width: '400px',
-            maxWidth: '90vw',
-            maxHeight: '90vh',
-            disableClose: true
-        });
+        this.dialog.open(this.editDialog, infoDialogSettings);
     }
 
     /**

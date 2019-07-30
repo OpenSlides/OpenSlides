@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
+import { mediumDialogSettings } from 'app/shared/utils/dialog-settings';
 import {
     ChoiceAnswer,
     ChoiceDialogComponent,
@@ -42,9 +43,7 @@ export class ChoiceService {
         clearChoice?: string
     ): Promise<ChoiceAnswer> {
         const dialogRef = this.dialog.open(ChoiceDialogComponent, {
-            maxWidth: '90vw',
-            maxHeight: '90vh',
-            disableClose: true,
+            ...mediumDialogSettings,
             data: {
                 title: title,
                 choices: choices,

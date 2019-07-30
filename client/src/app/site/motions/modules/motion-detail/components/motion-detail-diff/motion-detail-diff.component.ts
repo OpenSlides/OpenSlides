@@ -10,6 +10,7 @@ import { ConfigService } from 'app/core/ui-services/config.service';
 import { DiffService, LineRange } from 'app/core/ui-services/diff.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/motions/view-unified-change';
+import { mediumDialogSettings } from 'app/shared/utils/dialog-settings';
 import { getRecommendationTypeName } from 'app/shared/utils/recommendation-type-names';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { LineNumberingMode, ViewMotion } from 'app/site/motions/models/view-motion';
@@ -324,12 +325,8 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
             changeRecommendation: reco
         };
         this.dialogService.open(MotionChangeRecommendationDialogComponent, {
-            height: '600px',
-            width: '800px',
-            maxHeight: '90vh',
-            maxWidth: '90vw',
-            data: data,
-            disableClose: true
+            ...mediumDialogSettings,
+            data: data
         });
     }
 
@@ -343,12 +340,8 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
             changeRecommendation: reco
         };
         this.dialogService.open(MotionTitleChangeRecommendationDialogComponent, {
-            height: '600px',
-            width: '800px',
-            maxHeight: '90vh',
-            maxWidth: '90vw',
-            data: data,
-            disableClose: true
+            ...mediumDialogSettings,
+            data: data
         });
     }
 

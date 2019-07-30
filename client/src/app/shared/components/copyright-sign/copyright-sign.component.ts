@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs';
 
 import { NotifyResponse, NotifyService } from 'app/core/core-services/notify.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
+import { mediumDialogSettings } from 'app/shared/utils/dialog-settings';
 
 /**
  * All player types.
@@ -602,10 +603,7 @@ export class CopyrightSignComponent {
 
         if (this.clickCounter === 5) {
             this.clickCounter = 0;
-            this.dialog.open(C4DialogComponent, {
-                width: '550px',
-                disableClose: true
-            });
+            this.dialog.open(C4DialogComponent, mediumDialogSettings);
         } else {
             this.clickTimeout = <any>setTimeout(() => {
                 this.clickCounter = 0;

@@ -10,6 +10,7 @@ import { StorageService } from 'app/core/core-services/storage.service';
 import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { Workflow } from 'app/shared/models/motions/workflow';
+import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseListViewComponent } from 'app/site/base/base-list-view';
 import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
 
@@ -76,9 +77,7 @@ export class WorkflowListComponent extends BaseListViewComponent<ViewWorkflow> i
      */
     public onNewButton(templateRef: TemplateRef<string>): void {
         this.newWorkflowTitle = '';
-        const dialogRef = this.dialog.open(templateRef, {
-            width: '400px'
-        });
+        const dialogRef = this.dialog.open(templateRef, infoDialogSettings);
 
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
