@@ -28,6 +28,4 @@ export class ViewProjectionDefault extends BaseViewModel<ProjectionDefault>
     public constructor(projectionDefault: ProjectionDefault) {
         super(ProjectionDefault.COLLECTIONSTRING, projectionDefault);
     }
-
-    public updateDependencies(update: BaseViewModel): void {}
 }

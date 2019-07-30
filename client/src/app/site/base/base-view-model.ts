@@ -2,7 +2,6 @@ import { Displayable } from './displayable';
 import { Identifiable } from '../../shared/models/base/identifiable';
 import { Collection } from 'app/shared/models/base/collection';
 import { BaseModel } from 'app/shared/models/base/base-model';
-import { Updateable } from './updateable';
 
 export type TitleInformation = object;
 
@@ -14,8 +13,7 @@ export interface ViewModelConstructor<T extends BaseViewModel> {
 /**
  * Base class for view models. alls view models should have titles.
  */
-export abstract class BaseViewModel<M extends BaseModel = any>
-    implements Displayable, Identifiable, Collection, Updateable {
+export abstract class BaseViewModel<M extends BaseModel = any> implements Displayable, Identifiable, Collection {
     protected _model: M;
 
     public get id(): number {
@@ -71,8 +69,6 @@ export abstract class BaseViewModel<M extends BaseModel = any>
     public getModel(): M {
         return this._model;
     }
-
-    public abstract updateDependencies(update: BaseViewModel): void;
 
     public toString(): string {
         return this.getTitle();

@@ -20,6 +20,9 @@ import { ViewMotionBlock } from './models/view-motion-block';
 import { ViewStatuteParagraph } from './models/view-statute-paragraph';
 import { ViewMotion } from './models/view-motion';
 import { ViewWorkflow } from './models/view-workflow';
+import { State } from 'app/shared/models/motions/state';
+import { ViewState } from './models/view-state';
+import { StateRepositoryService } from 'app/core/repositories/motions/state-repository.service';
 
 export const MotionsAppConfig: AppConfig = {
     name: 'motions',
@@ -43,6 +46,12 @@ export const MotionsAppConfig: AppConfig = {
             model: Workflow,
             viewModel: ViewWorkflow,
             repository: WorkflowRepositoryService
+        },
+        {
+            collectionString: 'motions/state',
+            model: State,
+            viewModel: ViewState,
+            repository: StateRepositoryService
         },
         {
             collectionString: 'motions/motion-comment-section',

@@ -1,5 +1,4 @@
-import { Deserializer } from '../base/deserializer';
-import { Workflow } from './workflow';
+import { BaseModel } from '../base/base-model';
 
 /**
  * Specifies if an amendment of this state/recommendation should be merged into the motion
@@ -16,7 +15,9 @@ export enum MergeAmendment {
  * Part of the 'states'-array in motion/workflow
  * @ignore
  */
-export class WorkflowState extends Deserializer {
+export class State extends BaseModel<State> {
+    public static COLLECTIONSTRING = 'motions/state';
+
     public id: number;
     public name: string;
     public recommendation_label: string;
@@ -37,23 +38,7 @@ export class WorkflowState extends Deserializer {
      * @param input If given, it will be deserialized
      */
     public constructor(input?: any) {
-        super(input);
-    }
-
-    /**
-     * return a list of the next possible states.
-     * Also adds the current state.
-     */
-    public getNextStates(workflow: Workflow): WorkflowState[] {
-        return workflow.states.filter(state => {
-            return this.next_states_id.includes(state.id);
-        });
-    }
-
-    public getPreviousStates(workflow: Workflow): WorkflowState[] {
-        return workflow.states.filter(state => {
-            return state.next_states_id.includes(this.id);
-        });
+        super(State.COLLECTIONSTRING, input);
     }
 
     public toString = (): string => {

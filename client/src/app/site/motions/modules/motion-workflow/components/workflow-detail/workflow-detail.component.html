@@ -19,7 +19,7 @@
     <div class="title-line">
         <strong>
             <span translate>First state</span>:
-            <span>{{ workflow.firstState.name | translate }}</span>
+            <span>{{ workflow.first_state.name | translate }}</span>
         </strong>
     </div>
 
@@ -70,20 +70,13 @@
                             {{ state[perm.selector] | translate }}
                         </mat-basic-chip>
                     </div>
-                    <div
-                        *ngIf="perm.type === 'state'"
-                    >
+                    <div *ngIf="perm.type === 'state'">
                         <div class="inner-table">
-                            <div *ngIf="!state.next_states_id.length">
+                            <div *ngIf="!state.next_states.length">
                                 -
                             </div>
-                            <div *ngIf="state.next_states_id.length">
-                                <div
-                                    *ngFor="
-                                        let nextstate of state.getNextStates(workflow.workflow);
-                                        let last = last
-                                    "
-                                >
+                            <div *ngIf="state.next_states.length">
+                                <div *ngFor="let nextstate of state.next_states; let last = last">
                                     {{ nextstate.name | translate }}<span *ngIf="!last">,&nbsp;</span>
                                 </div>
                             </div>
@@ -92,11 +85,9 @@
                             class="clickable-cell stretch-to-fill-parent"
                             [matMenuTriggerFor]="nextStatesMenu"
                             [matMenuTriggerData]="{ state: state }"
-                            ></div>
+                        ></div>
                     </div>
-                    <div
-                        *ngIf="perm.type === 'amendment'"
-                    >
+                    <div *ngIf="perm.type === 'amendment'">
                         <div class="inner-table">
                             {{ getMergeAmendmentLabel(state.merge_amendment_into_final) | translate }}
                         </div>
@@ -106,9 +97,7 @@
                             [matMenuTriggerData]="{ state: state }"
                         ></div>
                     </div>
-                    <div
-                        *ngIf="perm.type === 'restriction'"
-                    >
+                    <div *ngIf="perm.type === 'restriction'">
                         <div class="inner-table">
                             <div *ngIf="!state.restriction.length">
                                 -

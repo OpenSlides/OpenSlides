@@ -45,10 +45,4 @@ export class ViewStatuteParagraph extends BaseViewModel<StatuteParagraph>
     public getDetailStateURL(): string {
         return '/motions/statute-paragraphs';
     }
-
-    /**
-     * Updates the local objects if required
-     * @param section
-     */
-    public updateDependencies(update: BaseViewModel): void {}
 }

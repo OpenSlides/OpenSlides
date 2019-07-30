@@ -127,7 +127,7 @@ export class AssignmentPdfService {
      */
     private createCandidateList(assignment: ViewAssignment): object {
         if (assignment.phase !== 2) {
-            const candidates = assignment.assignmentRelatedUsers.sort((a, b) => a.weight - b.weight);
+            const candidates = assignment.assignment_related_users.sort((a, b) => a.weight - b.weight);
 
             const candidatesText = `${this.translate.instant('Candidates')}: `;
             const userList = candidates.map(candidate => {

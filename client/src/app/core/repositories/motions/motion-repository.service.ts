@@ -5,42 +5,35 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Category } from 'app/shared/models/motions/category';
 import { ChangeRecoMode, MotionTitleInformation, ViewMotion } from 'app/site/motions/models/view-motion';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { DataSendService } from '../../core-services/data-send.service';
-import { DataStoreService, CollectionIds } from 'app/core/core-services/data-store.service';
+import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { DiffService, DiffLinesInParagraph } from 'app/core/ui-services/diff.service';
 import { HttpService } from 'app/core/core-services/http.service';
 import { LinenumberingService, LineNumberRange } from '../../ui-services/linenumbering.service';
-import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { Motion } from 'app/shared/models/motions/motion';
-import { MotionBlock } from 'app/shared/models/motions/motion-block';
-import { MotionChangeRecommendation } from 'app/shared/models/motions/motion-change-reco';
 import { MotionPoll } from 'app/shared/models/motions/motion-poll';
 import { TreeIdNode } from 'app/core/ui-services/tree.service';
-import { User } from 'app/shared/models/users/user';
 import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
 import { ViewMotionAmendedParagraph } from 'app/site/motions/models/view-motion-amended-paragraph';
 import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change';
 import { ViewStatuteParagraph } from 'app/site/motions/models/view-statute-paragraph';
-import { Workflow } from 'app/shared/models/motions/workflow';
-import { WorkflowState } from 'app/shared/models/motions/workflow-state';
-import { Tag } from 'app/shared/models/core/tag';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { ViewCategory } from 'app/site/motions/models/view-category';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
-import { ViewItem } from 'app/site/agenda/models/view-item';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewPersonalNote } from 'app/site/users/models/view-personal-note';
 import { OperatorService } from 'app/core/core-services/operator.service';
-import { PersonalNote, PersonalNoteContent } from 'app/shared/models/users/personal-note';
-import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
+import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
 import { BaseIsAgendaItemAndListOfSpeakersContentObjectRepository } from '../base-is-agenda-item-and-list-of-speakers-content-object-repository';
+import { RelationDefinition } from '../base-repository';
+import { ViewState } from 'app/site/motions/models/view-state';
+import { ViewSubmitter } from 'app/site/motions/models/view-submitter';
 
 type SortProperty = 'weight' | 'identifier';
 
@@ -73,6 +66,84 @@ export interface ParagraphToChoose {
      */
     lineTo: number;
 }
+
+const MotionRelations: RelationDefinition[] = [
+    {
+        type: 'O2M',
+        ownIdKey: 'state_id',
+        ownKey: 'state',
+        foreignModel: ViewState
+    },
+    {
+        type: 'O2M',
+        ownIdKey: 'recommendation_id',
+        ownKey: 'recommendation',
+        foreignModel: ViewState
+    },
+    {
+        type: 'O2M',
+        ownIdKey: 'workflow_id',
+        ownKey: 'workflow',
+        foreignModel: ViewWorkflow
+    },
+    {
+        type: 'O2M',
+        ownIdKey: 'category_id',
+        ownKey: 'category',
+        foreignModel: ViewCategory
+    },
+    {
+        type: 'O2M',
+        ownIdKey: 'motion_block_id',
+        ownKey: 'motion_block',
+        foreignModel: ViewMotionBlock
+    },
+    {
+        type: 'nested',
+        ownKey: 'submitters',
+        foreignModel: ViewSubmitter,
+        order: 'weight',
+        relationDefinition: [
+            {
+                type: 'O2M',
+                ownIdKey: 'user_id',
+                ownKey: 'user',
+                foreignModel: ViewUser
+            }
+        ]
+    },
+    {
+        type: 'M2M',
+        ownIdKey: 'supporters_id',
+        ownKey: 'supporters',
+        foreignModel: ViewUser
+    },
+    {
+        type: 'M2M',
+        ownIdKey: 'attachments_id',
+        ownKey: 'attachments',
+        foreignModel: ViewMediafile
+    },
+    {
+        type: 'M2M',
+        ownIdKey: 'tags_id',
+        ownKey: 'tags',
+        foreignModel: ViewTag
+    },
+    {
+        type: 'O2M',
+        ownIdKey: 'parent_id',
+        ownKey: 'parent',
+        foreignModel: ViewMotion
+    },
+    {
+        type: 'M2M',
+        ownIdKey: 'change_recommendations_id',
+        ownKey: 'changeRecommendations',
+        foreignModel: ViewMotionChangeRecommendation
+    }
+    // Personal notes are dynamically added in the repo.
+];
 
 /**
  * Repository Services for motions (and potentially categories)
@@ -126,21 +197,34 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
         private readonly diff: DiffService,
         private operator: OperatorService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, Motion, [
-            Category,
-            User,
-            Workflow,
-            MotionBlock,
-            Mediafile,
-            Tag,
-            MotionChangeRecommendation,
-            PersonalNote,
-            Motion
-        ]);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, Motion, MotionRelations);
         config.get<SortProperty>('motions_motions_sorting').subscribe(conf => {
             this.sortProperty = conf;
             this.setConfigSortFn();
         });
+    }
+
+    /**
+     * Adds the personal note custom relation to the relation definitions.
+     */
+    protected groupRelationsByCollections(): void {
+        this.relationDefinitions.push({
+            type: 'custom',
+            foreignModel: ViewPersonalNote,
+            setRelations: (motion: Motion, viewMotion: ViewMotion) => {
+                viewMotion.personalNote = this.getPersonalNoteForMotion(motion);
+            },
+            updateDependency: (viewMotion: ViewMotion, viewPersonalNote: ViewPersonalNote) => {
+                const personalNoteContent = viewPersonalNote.getNoteContent(this.collectionString, viewMotion.id);
+                if (!personalNoteContent) {
+                    return false;
+                }
+
+                viewMotion.personalNote = personalNoteContent;
+                return true;
+            }
+        });
+        super.groupRelationsByCollections();
     }
 
     public getTitle = (titleInformation: MotionTitleInformation) => {
@@ -183,64 +267,20 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
         return this.translate.instant(plural ? 'Motions' : 'Motion');
     };
 
-    /**
-     * Converts a motion to a ViewMotion and adds it to the store.
-     *
-     * Foreign references of the motion will be resolved (e.g submitters to users)
-     * Expandable to all (server side) changes that might occur on the motion object.
-     *
-     * @param motion blank motion domain object
-     */
-    protected createViewModel(motion: Motion): ViewMotion {
-        const category = this.viewModelStoreService.get(ViewCategory, motion.category_id);
-        const submitters = this.viewModelStoreService.getMany(ViewUser, motion.sorted_submitters_id);
-        const supporters = this.viewModelStoreService.getMany(ViewUser, motion.supporters_id);
-        const workflow = this.viewModelStoreService.get(ViewWorkflow, motion.workflow_id);
-        const item = this.viewModelStoreService.get(ViewItem, motion.agenda_item_id);
-        const listOfSpeakers = this.viewModelStoreService.get(ViewListOfSpeakers, motion.list_of_speakers_id);
-        const block = this.viewModelStoreService.get(ViewMotionBlock, motion.motion_block_id);
-        const attachments = this.viewModelStoreService.getMany(ViewMediafile, motion.attachments_id);
-        const tags = this.viewModelStoreService.getMany(ViewTag, motion.tags_id);
-        const parent = this.viewModelStoreService.get(ViewMotion, motion.parent_id);
-        const amendments = this.viewModelStoreService.filter(ViewMotion, m => m.parent_id && m.parent_id === motion.id);
-        const changeRecommendations = this.viewModelStoreService.filter(
-            ViewMotionChangeRecommendation,
-            cr => cr.motion_id === motion.id
-        );
-        let state: WorkflowState = null;
-        if (workflow) {
-            state = workflow.getStateById(motion.state_id);
-        }
-        const personalNote = this.getPersonalNoteForMotion(motion.id);
-        const viewMotion = new ViewMotion(
-            motion,
-            category,
-            submitters,
-            supporters,
-            workflow,
-            state,
-            item,
-            listOfSpeakers,
-            block,
-            attachments,
-            tags,
-            parent,
-            changeRecommendations,
-            amendments,
-            personalNote
-        );
-        viewMotion.getIdentifierOrTitle = () => this.getIdentifierOrTitle(viewMotion);
-        viewMotion.getProjectorTitle = () => this.getAgendaSlideTitle(viewMotion);
-        return viewMotion;
+    protected createViewModelWithTitles(model: Motion): ViewMotion {
+        const viewModel = super.createViewModelWithTitles(model);
+        viewModel.getIdentifierOrTitle = () => this.getIdentifierOrTitle(viewModel);
+        viewModel.getProjectorTitle = () => this.getAgendaSlideTitle(viewModel);
+        return viewModel;
     }
 
     /**
      * Get the personal note content for one motion by their id
      *
-     * @param motionId the id of the motion
+     * @param motion the motion
      * @returns the personal note content for this motion or null
      */
-    private getPersonalNoteForMotion(motionId: number): PersonalNoteContent | null {
+    private getPersonalNoteForMotion(motion: Motion): PersonalNoteContent | null {
         if (this.operator.isAnonymous) {
             return;
         }
@@ -248,62 +288,15 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
         const personalNote = this.viewModelStoreService.find(ViewPersonalNote, pn => {
             return pn.userId === this.operator.user.id;
         });
-
         if (!personalNote) {
             return;
         }
 
         const notes = personalNote.notes;
         const collection = Motion.COLLECTIONSTRING;
-        if (notes && notes[collection] && notes[collection][motionId]) {
-            return notes[collection][motionId];
+        if (notes && notes[collection] && notes[collection][motion.id]) {
+            return notes[collection][motion.id];
         }
-    }
-
-    /**
-     * Special handling of updating personal notes.
-     * @override
-     */
-    public updateDependencies(changedModels: CollectionIds): boolean {
-        if (!this.depsModelCtors || this.depsModelCtors.length === 0) {
-            return;
-        }
-        const viewModels = this.getViewModelList();
-        let somethingUpdated = false;
-        Object.keys(changedModels).forEach(collection => {
-            const dependencyChanged: boolean = this.depsModelCtors.some(ctor => {
-                return ctor.COLLECTIONSTRING === collection;
-            });
-            if (!dependencyChanged) {
-                return;
-            }
-
-            // Do not update personal notes, if the operator is anonymous
-            if (collection === PersonalNote.COLLECTIONSTRING && this.operator.isAnonymous) {
-                return;
-            }
-
-            viewModels.forEach(ownViewModel => {
-                changedModels[collection].forEach(id => {
-                    const viewModel = this.viewModelStoreService.get(collection, id);
-                    // Only update the personal note, if the operator is the right user.
-                    if (
-                        collection === PersonalNote.COLLECTIONSTRING &&
-                        (<ViewPersonalNote>viewModel).userId !== this.operator.user.id
-                    ) {
-                        return;
-                    }
-                    ownViewModel.updateDependencies(viewModel);
-                });
-            });
-            somethingUpdated = true;
-        });
-        if (somethingUpdated) {
-            viewModels.forEach(ownViewModel => {
-                this.updateViewModelObservable(ownViewModel.id);
-            });
-        }
-        return somethingUpdated;
     }
 
     /**
@@ -755,20 +748,6 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
                 }
             )
             .filter((para: ViewMotionAmendedParagraph) => para !== null);
-    }
-
-    /**
-     * Returns motion duplicates (sharing the identifier)
-     *
-     * @param viewMotion the ViewMotion to compare against the list of Motions
-     * in the data
-     * @returns An Array of ViewMotions with the same identifier of the input, or an empty array
-     */
-    public getMotionDuplicates(motion: ViewMotion): ViewMotion[] {
-        const duplicates = this.DS.filter(Motion, item => motion.identifier === item.identifier);
-        const viewMotions: ViewMotion[] = [];
-        duplicates.forEach(item => viewMotions.push(this.createViewModel(item)));
-        return viewMotions;
     }
 
     /**

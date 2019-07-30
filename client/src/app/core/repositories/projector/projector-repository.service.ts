@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseRepository } from '../base-repository';
+import { BaseRepository, RelationDefinition } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
@@ -20,6 +20,15 @@ export enum ScrollScaleDirection {
     Down = 'down',
     Reset = 'reset'
 }
+
+const ProjectorRelations: RelationDefinition[] = [
+    {
+        type: 'O2M',
+        ownIdKey: 'reference_projector_id',
+        ownKey: 'referenceProjector',
+        foreignModel: ViewProjector
+    }
+];
 
 /**
  * Manages all projector instances.
@@ -44,7 +53,7 @@ export class ProjectorRepositoryService extends BaseRepository<ViewProjector, Pr
         translate: TranslateService,
         private http: HttpService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, Projector, [Projector]);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, Projector, ProjectorRelations);
     }
 
     public getTitle = (titleInformation: ProjectorTitleInformation) => {
@@ -54,10 +63,6 @@ export class ProjectorRepositoryService extends BaseRepository<ViewProjector, Pr
     public getVerboseName = (plural: boolean = false) => {
         return this.translate.instant(plural ? 'Projectors' : 'Projector');
     };
-
-    public createViewModel(projector: Projector): ViewProjector {
-        return new ViewProjector(projector);
-    }
 
     /**
      * Creates a new projector. Adds the clock as default, stable element

@@ -2,13 +2,12 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseRepository } from '../base-repository';
+import { BaseRepository, RelationDefinition } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { environment } from '../../../../environments/environment';
-import { Group } from 'app/shared/models/users/group';
 import { HttpService } from 'app/core/core-services/http.service';
 import { NewEntry } from 'app/core/ui-services/base-import.service';
 import { User } from 'app/shared/models/users/user';
@@ -23,6 +22,15 @@ import { ViewModelStoreService } from 'app/core/core-services/view-model-store.s
 type StringNamingSchema = 'lastCommaFirst' | 'firstSpaceLast';
 
 type SortProperty = 'first_name' | 'last_name' | 'number';
+
+const UserRelations: RelationDefinition[] = [
+    {
+        type: 'M2M',
+        ownIdKey: 'groups_id',
+        ownKey: 'groups',
+        foreignModel: ViewGroup
+    }
+];
 
 /**
  * Repository service for users
@@ -57,7 +65,7 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
         private httpService: HttpService,
         private configService: ConfigService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, User, [Group]);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, User, UserRelations);
         this.sortProperty = this.configService.instant('users_sort_by');
         this.configService.get<SortProperty>('users_sort_by').subscribe(conf => {
             this.sortProperty = conf;
@@ -133,12 +141,14 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
         return pw;
     }
 
-    public createViewModel(user: User): ViewUser {
-        const groups = this.viewModelStoreService.getMany(ViewGroup, user.groups_id);
-        const viewUser = new ViewUser(user, groups);
-        viewUser.getFullName = () => this.getFullName(viewUser);
-        viewUser.getShortName = () => this.getShortName(viewUser);
-        return viewUser;
+    /**
+     * Adds teh short and full name to the view user.
+     */
+    protected createViewModelWithTitles(model: User): ViewUser {
+        const viewModel = super.createViewModelWithTitles(model);
+        viewModel.getFullName = () => this.getFullName(viewModel);
+        viewModel.getShortName = () => this.getShortName(viewModel);
+        return viewModel;
     }
 
     /**

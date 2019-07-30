@@ -1,8 +1,5 @@
 import { Item, ItemVisibilityChoices } from 'app/shared/models/agenda/item';
-import {
-    BaseViewModelWithAgendaItem,
-    isBaseViewModelWithAgendaItem
-} from 'app/site/base/base-view-model-with-agenda-item';
+import { BaseViewModelWithAgendaItem } from 'app/site/base/base-view-model-with-agenda-item';
 import { BaseViewModelWithContentObject } from 'app/site/base/base-view-model-with-content-object';
 import { ContentObject } from 'app/shared/models/base/content-object';
 
@@ -87,7 +84,7 @@ export class ViewItem extends BaseViewModelWithContentObject<Item, BaseViewModel
         return this.item.parent_id;
     }
 
-    public constructor(item: Item, contentObject?: BaseViewModelWithAgendaItem) {
-        super(Item.COLLECTIONSTRING, item, isBaseViewModelWithAgendaItem, 'BaseViewModelWithAgendaItem', contentObject);
+    public constructor(item: Item) {
+        super(Item.COLLECTIONSTRING, item);
     }
 }

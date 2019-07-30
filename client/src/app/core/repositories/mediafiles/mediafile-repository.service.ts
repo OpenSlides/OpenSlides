@@ -14,9 +14,29 @@ import { DataSendService } from 'app/core/core-services/data-send.service';
 import { HttpService } from 'app/core/core-services/http.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { BaseIsListOfSpeakersContentObjectRepository } from '../base-is-list-of-speakers-content-object-repository';
-import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
 import { ViewGroup } from 'app/site/users/models/view-group';
-import { Group } from 'app/shared/models/users/group';
+import { RelationDefinition } from '../base-repository';
+
+const MediafileRelations: RelationDefinition[] = [
+    {
+        type: 'O2M',
+        ownIdKey: 'parent_id',
+        ownKey: 'parent',
+        foreignModel: ViewMediafile
+    },
+    {
+        type: 'M2M',
+        ownIdKey: 'access_groups_id',
+        ownKey: 'access_groups',
+        foreignModel: ViewGroup
+    },
+    {
+        type: 'M2M',
+        ownIdKey: 'inherited_access_groups_id',
+        ownKey: 'inherited_access_groups',
+        foreignModel: ViewGroup
+    }
+];
 
 /**
  * Repository for MediaFiles
@@ -46,7 +66,7 @@ export class MediafileRepositoryService extends BaseIsListOfSpeakersContentObjec
         dataSend: DataSendService,
         private httpService: HttpService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, Mediafile, [Mediafile, Group]);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, Mediafile, MediafileRelations);
         this.directoryBehaviorSubject = new BehaviorSubject([]);
         this.getViewModelListObservable().subscribe(mediafiles => {
             if (mediafiles) {
@@ -66,25 +86,6 @@ export class MediafileRepositoryService extends BaseIsListOfSpeakersContentObjec
     public getVerboseName = (plural: boolean = false) => {
         return this.translate.instant(plural ? 'Files' : 'File');
     };
-
-    /**
-     * Creates mediafile ViewModels out of given mediafile objects
-     *
-     * @param file mediafile to convert
-     * @returns a new mediafile ViewModel
-     */
-    public createViewModel(file: Mediafile): ViewMediafile {
-        const listOfSpeakers = this.viewModelStoreService.get(ViewListOfSpeakers, file.list_of_speakers_id);
-        const parent = this.viewModelStoreService.get(ViewMediafile, file.parent_id);
-        const accessGroups = this.viewModelStoreService.getMany(ViewGroup, file.access_groups_id);
-        let inheritedAccessGroups;
-        if (file.has_inherited_access_groups) {
-            inheritedAccessGroups = this.viewModelStoreService.getMany(ViewGroup, <number[]>(
-                file.inherited_access_groups_id
-            ));
-        }
-        return new ViewMediafile(file, listOfSpeakers, parent, accessGroups, inheritedAccessGroups);
-    }
 
     public async getDirectoryIdByPath(pathSegments: string[]): Promise<number | null> {
         let parentId = null;

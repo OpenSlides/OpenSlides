@@ -269,14 +269,13 @@ export class UserImportService extends BaseImportService<ViewUser> {
     private userToEntry(newUser: ViewCsvCreateUser): NewEntry<ViewUser> {
         const newEntry: NewEntry<ViewUser> = {
             newEntry: newUser,
-            duplicates: [],
+            hasDuplicates: false,
             status: 'new',
             errors: []
         };
         if (newUser.isValid) {
-            const updateModels = this.repo.getUserDuplicates(newUser);
-            if (updateModels.length) {
-                newEntry.duplicates = updateModels;
+            newEntry.hasDuplicates = this.repo.getViewModelList().some(user => user.full_name === newUser.full_name);
+            if (newEntry.hasDuplicates) {
                 this.setError(newEntry, 'Duplicates');
             }
         } else {

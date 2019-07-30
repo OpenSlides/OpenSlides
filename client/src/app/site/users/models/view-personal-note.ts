@@ -29,6 +29,4 @@ export class ViewPersonalNote extends BaseViewModel<PersonalNote> implements Per
             return null;
         }
     }
-
-    public updateDependencies(update: BaseViewModel): void {}
 }

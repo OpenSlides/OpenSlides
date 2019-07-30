@@ -2,33 +2,32 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { Workflow } from 'app/shared/models/motions/workflow';
-import { ViewWorkflow, WorkflowTitleInformation } from 'app/site/motions/models/view-workflow';
+import { WorkflowTitleInformation, ViewWorkflow } from 'app/site/motions/models/view-workflow';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { BaseRepository, RelationDefinition } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
-import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
-import { ViewState } from 'app/site/motions/models/view-state';
+import { State } from 'app/shared/models/motions/state';
+import { ViewState, StateTitleInformation } from 'app/site/motions/models/view-state';
 
-const WorkflowRelations: RelationDefinition[] = [
-    {
-        type: 'M2M',
-        ownIdKey: 'states_id',
-        ownKey: 'states',
-        foreignModel: ViewState
-    },
+const StateRelations: RelationDefinition[] = [
     {
         type: 'O2M',
-        ownIdKey: 'first_state_id',
-        ownKey: 'first_state',
+        ownIdKey: 'workflow_id',
+        ownKey: 'workflow',
+        foreignModel: ViewWorkflow
+    },
+    {
+        type: 'M2M',
+        ownIdKey: 'next_states_id',
+        ownKey: 'next_states',
         foreignModel: ViewState
     }
 ];
 
 /**
- * Repository Services for Workflows
+ * Repository Services for States
  *
  * The repository is meant to process domain objects (those found under
  * shared/models), so components can display them and interact with them.
@@ -40,7 +39,7 @@ const WorkflowRelations: RelationDefinition[] = [
 @Injectable({
     providedIn: 'root'
 })
-export class WorkflowRepositoryService extends BaseRepository<ViewWorkflow, Workflow, WorkflowTitleInformation> {
+export class StateRepositoryService extends BaseRepository<ViewState, State, StateTitleInformation> {
     /**
      * Creates a WorkflowRepository
      * Converts existing and incoming workflow to ViewWorkflows
@@ -57,7 +56,7 @@ export class WorkflowRepositoryService extends BaseRepository<ViewWorkflow, Work
         viewModelStoreService: ViewModelStoreService,
         translate: TranslateService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, Workflow, WorkflowRelations);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, State, StateRelations);
     }
 
     public getTitle = (titleInformation: WorkflowTitleInformation) => {
@@ -67,22 +66,4 @@ export class WorkflowRepositoryService extends BaseRepository<ViewWorkflow, Work
     public getVerboseName = (plural: boolean = false) => {
         return this.translate.instant(plural ? 'Workflows' : 'Workflow');
     };
-
-    /**
-     * Returns all workflowStates that cover the list of viewMotions given
-     *
-     * @param motions The motions to get the workflows from
-     * @returns The workflow states to the given motion
-     */
-    public getWorkflowStatesForMotions(motions: ViewMotion[]): ViewState[] {
-        let states: ViewState[] = [];
-        const workflowIds = motions
-            .map(motion => motion.workflow_id)
-            .filter((value, index, self) => self.indexOf(value) === index);
-        workflowIds.forEach(id => {
-            const workflow = this.getViewModel(id);
-            states = states.concat(workflow.states);
-        });
-        return states;
-    }
 }

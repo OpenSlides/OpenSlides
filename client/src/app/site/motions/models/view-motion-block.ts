@@ -2,9 +2,7 @@ import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { SearchRepresentation } from 'app/core/ui-services/search.service';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { Searchable } from 'app/site/base/searchable';
-import { ViewItem } from 'app/site/agenda/models/view-item';
 import { BaseViewModelWithAgendaItemAndListOfSpeakers } from 'app/site/base/base-view-model-with-agenda-item-and-list-of-speakers';
-import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
 import { TitleInformationWithAgendaItem } from 'app/site/base/base-view-model-with-agenda-item';
 
 export interface MotionBlockTitleInformation extends TitleInformationWithAgendaItem {
@@ -31,8 +29,8 @@ export class ViewMotionBlock extends BaseViewModelWithAgendaItemAndListOfSpeaker
         return this.motionBlock.internal;
     }
 
-    public constructor(motionBlock: MotionBlock, agendaItem?: ViewItem, listOfSpeakers?: ViewListOfSpeakers) {
-        super(MotionBlock.COLLECTIONSTRING, motionBlock, agendaItem, listOfSpeakers);
+    public constructor(motionBlock: MotionBlock) {
+        super(MotionBlock.COLLECTIONSTRING, motionBlock);
     }
 
     /**

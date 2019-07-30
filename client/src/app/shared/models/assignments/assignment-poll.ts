@@ -1,12 +1,13 @@
 import { AssignmentPollMethod } from 'app/site/assignments/services/assignment-poll.service';
-import { Deserializer } from '../base/deserializer';
 import { AssignmentPollOption } from './assignment-poll-option';
+import { BaseModel } from '../base/base-model';
 
 /**
  * Content of the 'polls' property of assignments
  * @ignore
  */
-export class AssignmentPoll extends Deserializer {
+export class AssignmentPoll extends BaseModel<AssignmentPoll> {
+    public static COLLECTIONSTRING = 'assignments/assignment-poll';
     private static DECIMAL_FIELDS = ['votesvalid', 'votesinvalid', 'votescast', 'votesno', 'votesabstain'];
 
     public id: number;
@@ -23,7 +24,6 @@ export class AssignmentPoll extends Deserializer {
     public assignment_id: number;
 
     /**
-     * Needs to be completely optional because assignment has (yet) the optional parameter 'polls'
      * @param input
      */
     public constructor(input?: any) {
@@ -35,14 +35,6 @@ export class AssignmentPoll extends Deserializer {
                 }
             });
         }
-        super(input);
-    }
-
-    public deserialize(input: any): void {
-        Object.assign(this, input);
-        this.options = [];
-        if (input.options instanceof Array) {
-            this.options = input.options.map(pollOptionData => new AssignmentPollOption(pollOptionData));
-        }
+        super(AssignmentPoll.COLLECTIONSTRING, input);
     }
 }

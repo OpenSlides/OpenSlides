@@ -36,6 +36,4 @@ export class ViewGroup extends BaseViewModel<Group> implements GroupTitleInforma
     public hasPermission(perm: string): boolean {
         return this.permissions.includes(perm);
     }
-
-    public updateDependencies(update: BaseViewModel): void {}
 }

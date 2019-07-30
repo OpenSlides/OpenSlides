@@ -1,7 +1,7 @@
 /**
  * Enum to define different types of notifications.
  */
-export enum TypeOfNotificationViewMotion {
+export enum MotionEditNotificationType {
     /**
      * Type to declare editing a motion.
      */
@@ -25,7 +25,7 @@ export enum TypeOfNotificationViewMotion {
 /**
  * Class to specify the notifications for editing a motion.
  */
-export interface ViewMotionNotificationEditMotion {
+export interface MotionEditNotification {
     /**
      * The id of the motion the user wants to edit.
      * Necessary to identify if users edit the same motion.
@@ -48,5 +48,5 @@ export interface ViewMotionNotificationEditMotion {
      * The type of the notification.
      * Separates if the user is beginning the work or closing the edit-view.
      */
-    type: TypeOfNotificationViewMotion;
+    type: MotionEditNotificationType;
 }

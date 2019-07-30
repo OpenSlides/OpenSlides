@@ -3,26 +3,71 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 import { Assignment } from 'app/shared/models/assignments/assignment';
-import { AssignmentRelatedUser } from 'app/shared/models/assignments/assignment-related-user';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataSendService } from 'app/core/core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { HttpService } from 'app/core/core-services/http.service';
 import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
-import { Tag } from 'app/shared/models/core/tag';
-import { User } from 'app/shared/models/users/user';
 import { ViewAssignment, AssignmentTitleInformation } from 'app/site/assignments/models/view-assignment';
-import { ViewItem } from 'app/site/agenda/models/view-item';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { ViewAssignmentRelatedUser } from 'app/site/assignments/models/view-assignment-related-user';
 import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
-import { ViewAssignmentPollOption } from 'app/site/assignments/models/view-assignment-poll-option';
-import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
-import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
-import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
 import { BaseIsAgendaItemAndListOfSpeakersContentObjectRepository } from '../base-is-agenda-item-and-list-of-speakers-content-object-repository';
+import { RelationDefinition } from '../base-repository';
+import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
+import { ViewAssignmentPollOption } from 'app/site/assignments/models/view-assignment-poll-option';
+
+const AssignmentRelations: RelationDefinition[] = [
+    {
+        type: 'M2M',
+        ownIdKey: 'tags_id',
+        ownKey: 'tags',
+        foreignModel: ViewTag
+    },
+    {
+        type: 'M2M',
+        ownIdKey: 'attachments_id',
+        ownKey: 'attachments',
+        foreignModel: ViewMediafile
+    },
+    {
+        type: 'nested',
+        ownKey: 'assignment_related_users',
+        foreignModel: ViewAssignmentRelatedUser,
+        order: 'weight',
+        relationDefinition: [
+            {
+                type: 'O2M',
+                ownIdKey: 'user_id',
+                ownKey: 'user',
+                foreignModel: ViewUser
+            }
+        ]
+    },
+    {
+        type: 'nested',
+        ownKey: 'polls',
+        foreignModel: ViewAssignmentPoll,
+        relationDefinition: [
+            {
+                type: 'nested',
+                ownKey: 'options',
+                foreignModel: ViewAssignmentPollOption,
+                order: 'weight',
+                relationDefinition: [
+                    {
+                        type: 'O2M',
+                        ownIdKey: 'user_id',
+                        ownKey: 'user',
+                        foreignModel: ViewUser
+                    }
+                ]
+            }
+        ]
+    }
+];
 
 /**
  * Repository Service for Assignments.
@@ -62,7 +107,7 @@ export class AssignmentRepositoryService extends BaseIsAgendaItemAndListOfSpeake
         protected translate: TranslateService,
         private httpService: HttpService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, Assignment, [User, Tag, Mediafile]);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, Assignment, AssignmentRelations);
     }
 
     public getTitle = (titleInformation: AssignmentTitleInformation) => {
@@ -72,48 +117,6 @@ export class AssignmentRepositoryService extends BaseIsAgendaItemAndListOfSpeake
     public getVerboseName = (plural: boolean = false) => {
         return this.translate.instant(plural ? 'Elections' : 'Election');
     };
-
-    public createViewModel(assignment: Assignment): ViewAssignment {
-        const item = this.viewModelStoreService.get(ViewItem, assignment.agenda_item_id);
-        const listOfSpeakers = this.viewModelStoreService.get(ViewListOfSpeakers, assignment.list_of_speakers_id);
-        const tags = this.viewModelStoreService.getMany(ViewTag, assignment.tags_id);
-        const attachments = this.viewModelStoreService.getMany(ViewMediafile, assignment.attachments_id);
-        const assignmentRelatedUsers = this.createViewAssignmentRelatedUsers(assignment.assignment_related_users);
-        const assignmentPolls = this.createViewAssignmentPolls(assignment.polls);
-
-        return new ViewAssignment(
-            assignment,
-            assignmentRelatedUsers,
-            assignmentPolls,
-            item,
-            listOfSpeakers,
-            tags,
-            attachments
-        );
-    }
-
-    private createViewAssignmentRelatedUsers(
-        assignmentRelatedUsers: AssignmentRelatedUser[]
-    ): ViewAssignmentRelatedUser[] {
-        return assignmentRelatedUsers
-            .map(aru => {
-                const user = this.viewModelStoreService.get(ViewUser, aru.user_id);
-                return new ViewAssignmentRelatedUser(aru, user);
-            })
-            .sort((a, b) => a.weight - b.weight);
-    }
-
-    private createViewAssignmentPolls(assignmentPolls: AssignmentPoll[]): ViewAssignmentPoll[] {
-        return assignmentPolls.map(poll => {
-            const options = poll.options
-                .map(option => {
-                    const user = this.viewModelStoreService.get(ViewUser, option.candidate_id);
-                    return new ViewAssignmentPollOption(option, user);
-                })
-                .sort((a, b) => a.weight - b.weight);
-            return new ViewAssignmentPoll(poll, options);
-        });
-    }
 
     /**
      * Adds/removes another user to/from the candidates list of an assignment

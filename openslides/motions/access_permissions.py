@@ -171,3 +171,11 @@ class WorkflowAccessPermissions(BaseAccessPermissions):
     """
 
     base_permission = "motions.can_see"
+
+
+class StateAccessPermissions(BaseAccessPermissions):
+    """
+    Access permissions container for State and StateViewSet.
+    """
+
+    base_permission = "motions.can_see"

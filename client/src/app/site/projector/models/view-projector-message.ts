@@ -1,7 +1,6 @@
 import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { ProjectorMessage } from 'app/shared/models/core/projector-message';
-import { BaseViewModel } from 'app/site/base/base-view-model';
 import { stripHtmlTags } from 'app/shared/utils/strip-html-tags';
 
 export type ProjectorMessageTitleInformation = object;
@@ -21,8 +20,6 @@ export class ViewProjectorMessage extends BaseProjectableViewModel<ProjectorMess
     public constructor(projectorMessage: ProjectorMessage) {
         super(ProjectorMessage.COLLECTIONSTRING, projectorMessage);
     }
-
-    public updateDependencies(update: BaseViewModel): void {}
 
     public getSlide(): ProjectorElementBuildDeskriptor {
         return {

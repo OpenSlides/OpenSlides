@@ -135,14 +135,6 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config, 
     };
 
     /**
-     * Creates a new ViewConfig of a given Config object
-     * @param config
-     */
-    public createViewModel(config: Config): ViewConfig {
-        return new ViewConfig(config);
-    }
-
-    /**
      * Overwrites the default delete procedure
      *
      * @ignore
@@ -158,14 +150,6 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config, 
      */
     public async create(): Promise<Identifiable> {
         throw new Error('Config variables cannot be created');
-    }
-
-    protected loadInitialFromDS(): void {
-        this.DS.getAll(Config).forEach((config: Config) => {
-            this.viewModelStore[config.id] = this.createViewModel(config);
-            this.updateConfigStructure(false, this.viewModelStore[config.id]);
-        });
-        this.updateConfigListObservable();
     }
 
     public changedModels(ids: number[]): void {

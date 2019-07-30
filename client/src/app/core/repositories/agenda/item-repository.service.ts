@@ -16,14 +16,23 @@ import {
     IBaseViewModelWithAgendaItem
 } from 'app/site/base/base-view-model-with-agenda-item';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
-import { BaseViewModel } from 'app/site/base/base-view-model';
-import { Motion } from 'app/shared/models/motions/motion';
-import { MotionBlock } from 'app/shared/models/motions/motion-block';
-import { Topic } from 'app/shared/models/topics/topic';
-import { Assignment } from 'app/shared/models/assignments/assignment';
 import { BaseIsAgendaItemContentObjectRepository } from '../base-is-agenda-item-content-object-repository';
-import { BaseHasContentObjectRepository } from '../base-has-content-object-repository';
+import { BaseHasContentObjectRepository, GenericRelationDefinition } from '../base-has-content-object-repository';
 import { Identifiable } from 'app/shared/models/base/identifiable';
+import { RelationDefinition } from '../base-repository';
+import { ViewMotion } from 'app/site/motions/models/view-motion';
+import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
+import { ViewTopic } from 'app/site/topics/models/view-topic';
+import { ViewAssignment } from 'app/site/assignments/models/view-assignment';
+
+const ItemRelations: (RelationDefinition | GenericRelationDefinition)[] = [
+    {
+        type: 'generic',
+        possibleModels: [ViewMotion, ViewMotionBlock, ViewTopic, ViewAssignment],
+        isVForeign: isBaseViewModelWithAgendaItem,
+        VForeignVerbose: 'BaseViewModelWithAgendaItem'
+    }
+];
 
 /**
  * Repository service for items
@@ -58,12 +67,7 @@ export class ItemRepositoryService extends BaseHasContentObjectRepository<
         private httpService: HttpService,
         private config: ConfigService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, Item, [
-            Topic,
-            Assignment,
-            Motion,
-            MotionBlock
-        ]);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, Item, ItemRelations);
 
         this.setSortFunction((a, b) => a.weight - b.weight);
     }
@@ -82,34 +86,6 @@ export class ItemRepositoryService extends BaseHasContentObjectRepository<
             return repo.getAgendaListTitle(titleInformation.title_information);
         }
     };
-
-    /**
-     * Creates the viewItem out of a given item
-     *
-     * @param item the item that should be converted to view item
-     * @returns a new view item
-     */
-    public createViewModel(item: Item): ViewItem {
-        const contentObject = this.getContentObject(item);
-        return new ViewItem(item, contentObject);
-    }
-
-    /**
-     * Returns the corresponding content object to a given {@link Item} as an {@link BaseAgendaItemViewModel}
-     *
-     * @param agendaItem the target agenda Item
-     * @returns the content object of the given item. Might be null if it was not found.
-     */
-    public getContentObject(agendaItem: Item): BaseViewModelWithAgendaItem {
-        const contentObject = this.viewModelStoreService.get<BaseViewModel>(
-            agendaItem.content_object.collection,
-            agendaItem.content_object.id
-        );
-        if (!contentObject || !isBaseViewModelWithAgendaItem(contentObject)) {
-            return null;
-        }
-        return contentObject;
-    }
 
     /**
      * Trigger the automatic numbering sequence on the server

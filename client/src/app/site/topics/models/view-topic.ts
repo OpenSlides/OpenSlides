@@ -2,9 +2,6 @@ import { Topic } from 'app/shared/models/topics/topic';
 import { SearchRepresentation } from 'app/core/ui-services/search.service';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
-import { ViewItem } from '../../agenda/models/view-item';
-import { BaseViewModel } from 'app/site/base/base-view-model';
-import { ViewListOfSpeakers } from '../../agenda/models/view-list-of-speakers';
 import { BaseViewModelWithAgendaItemAndListOfSpeakers } from 'app/site/base/base-view-model-with-agenda-item-and-list-of-speakers';
 import { TitleInformationWithAgendaItem } from 'app/site/base/base-view-model-with-agenda-item';
 
@@ -42,14 +39,8 @@ export class ViewTopic extends BaseViewModelWithAgendaItemAndListOfSpeakers impl
         return this.topic.text;
     }
 
-    public constructor(
-        topic: Topic,
-        attachments?: ViewMediafile[],
-        item?: ViewItem,
-        listOfSpeakers?: ViewListOfSpeakers
-    ) {
-        super(Topic.COLLECTIONSTRING, topic, item, listOfSpeakers);
-        this._attachments = attachments;
+    public constructor(topic: Topic) {
+        super(Topic.COLLECTIONSTRING, topic);
     }
 
     /**
@@ -88,17 +79,5 @@ export class ViewTopic extends BaseViewModelWithAgendaItemAndListOfSpeakers impl
 
     public hasAttachments(): boolean {
         return this.attachments && this.attachments.length > 0;
-    }
-
-    public updateDependencies(update: BaseViewModel): void {
-        super.updateDependencies(update);
-        if (update instanceof ViewMediafile && this.attachments_id.includes(update.id)) {
-            const attachmentIndex = this.attachments.findIndex(mediafile => mediafile.id === update.id);
-            if (attachmentIndex < 0) {
-                this.attachments.push(update);
-            } else {
-                this.attachments[attachmentIndex] = update;
-            }
-        }
     }
 }

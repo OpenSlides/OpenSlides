@@ -1,7 +1,6 @@
 import { Countdown } from 'app/shared/models/core/countdown';
 import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
-import { BaseViewModel } from 'app/site/base/base-view-model';
 
 export interface CountdownTitleInformation {
     title: string;
@@ -38,8 +37,6 @@ export class ViewCountdown extends BaseProjectableViewModel<Countdown> implement
     public constructor(countdown: Countdown) {
         super(Countdown.COLLECTIONSTRING, countdown);
     }
-
-    public updateDependencies(update: BaseViewModel): void {}
 
     public getSlide(): ProjectorElementBuildDeskriptor {
         return {

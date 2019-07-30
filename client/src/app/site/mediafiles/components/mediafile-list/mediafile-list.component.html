@@ -52,8 +52,8 @@
                 {{ directory.title }}
             </span>
         </span>
-        <span class="visibility" *ngIf="canEdit && directory && directory.inherited_access_groups_id !== true">
-            <span class="visible-for" *ngIf="directory.has_inherited_access_groups" translate>
+        <span class="visibility" *ngIf="canEdit && directory && directory.has_inherited_access_groups">
+            <span class="visible-for" translate>
                 <os-icon-container
                     icon="visibility"
                     matTooltip="{{ 'Allowed access groups for this directory' | translate }}"
@@ -61,6 +61,16 @@
                     <span *ngFor="let group of directory.inherited_access_groups; let last = last">
                         {{ translateSync(group.getTitle()) }}<span *ngIf="!last">,</span>
                     </span>
+                </os-icon-container>
+            </span>
+        </span>
+        <span class="visibility" *ngIf="canEdit && directory && directory.inherited_access_groups_id === false">
+            <span class="visible-for">
+                <os-icon-container
+                    icon="visibility"
+                    matTooltip="{{ 'Allowed access groups for this directory' | translate }}"
+                >
+                    <span translate>Noone</span>
                 </os-icon-container>
             </span>
         </span>

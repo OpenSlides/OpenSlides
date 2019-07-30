@@ -72,12 +72,12 @@ export class StatuteImportService extends BaseImportService<ViewStatuteParagraph
                     break;
             }
         }
-        const updateModels = this.repo.getViewModelList().filter(paragraph => paragraph.title === newEntry.title);
+        const hasDuplicates = this.repo.getViewModelList().some(paragraph => paragraph.title === newEntry.title);
         return {
             newEntry: newEntry,
-            duplicates: updateModels,
-            status: updateModels.length ? 'error' : 'new',
-            errors: updateModels.length ? ['Duplicates'] : []
+            hasDuplicates: hasDuplicates,
+            status: hasDuplicates ? 'error' : 'new',
+            errors: hasDuplicates ? ['Duplicates'] : []
         };
     }
 

@@ -1,22 +1,20 @@
-import { BaseViewModel } from 'app/site/base/base-view-model';
-import { Updateable } from 'app/site/base/updateable';
-import { Identifiable } from 'app/shared/models/base/identifiable';
 import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
 import { AssignmentPollMethod } from '../services/assignment-poll.service';
 import { ViewAssignmentPollOption } from './view-assignment-poll-option';
+import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
+import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
 import { AssignmentPollOption } from 'app/shared/models/assignments/assignment-poll-option';
-import { Projectable, ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 
-export class ViewAssignmentPoll implements Identifiable, Updateable, Projectable {
-    private _assignmentPoll: AssignmentPoll;
-    private _assignmentPollOptions: ViewAssignmentPollOption[];
+export class ViewAssignmentPoll extends BaseProjectableViewModel<AssignmentPoll> {
+    public static COLLECTIONSTRING = AssignmentPoll.COLLECTIONSTRING;
+    private _options: ViewAssignmentPollOption[];
 
     public get poll(): AssignmentPoll {
-        return this._assignmentPoll;
+        return this._model;
     }
 
     public get options(): ViewAssignmentPollOption[] {
-        return this._assignmentPollOptions;
+        return this._options;
     }
 
     public get id(): number {
@@ -78,43 +76,38 @@ export class ViewAssignmentPoll implements Identifiable, Updateable, Projectable
         return this.poll.assignment_id;
     }
 
-    public constructor(assignmentPoll: AssignmentPoll, assignmentPollOptions: ViewAssignmentPollOption[]) {
-        this._assignmentPoll = assignmentPoll;
-        this._assignmentPollOptions = assignmentPollOptions;
+    public constructor(assignmentPoll: AssignmentPoll) {
+        super(AssignmentPoll.COLLECTIONSTRING, assignmentPoll);
     }
 
-    public updateDependencies(update: BaseViewModel): void {
-        this.options.forEach(option => option.updateDependencies(update));
-    }
+    public getTitle = () => {
+        return 'Poll';
+    };
 
-    public getTitle(): string {
-        return 'TODO';
-    }
-
-    public getListTitle(): string {
+    public getListTitle = () => {
         return this.getTitle();
-    }
+    };
 
-    public getProjectorTitle(): string {
+    public getProjectorTitle = () => {
         return this.getTitle();
-    }
+    };
 
     /**
      * Creates a copy with deep-copy on all changing numerical values,
      * but intact uncopied references to the users
      *
-     * TODO check and review
+     * TODO: This MUST NOT be done this way. Do not create ViewModels on your own...
      */
     public copy(): ViewAssignmentPoll {
-        return new ViewAssignmentPoll(
-            new AssignmentPoll(JSON.parse(JSON.stringify(this._assignmentPoll))),
-            this._assignmentPollOptions.map(option => {
-                return new ViewAssignmentPollOption(
-                    new AssignmentPollOption(JSON.parse(JSON.stringify(option.option))),
-                    option.user
-                );
-            })
-        );
+        const poll = new ViewAssignmentPoll(new AssignmentPoll(JSON.parse(JSON.stringify(this.poll))));
+        (<any>poll)._options = this.options.map(option => {
+            const polloption = new ViewAssignmentPollOption(
+                new AssignmentPollOption(JSON.parse(JSON.stringify(option.option)))
+            );
+            (<any>polloption)._user = option.user;
+            return polloption;
+        });
+        return poll;
     }
 
     public getSlide(): ProjectorElementBuildDeskriptor {

@@ -25,7 +25,7 @@ export interface NewEntry<V> {
     newEntry: V;
     status: CsvImportStatus;
     errors: string[];
-    duplicates: V[];
+    hasDuplicates: boolean;
     importTrackId?: number;
 }
 
@@ -259,11 +259,11 @@ export abstract class BaseImportService<V extends BaseViewModel> {
             if (entry.status === 'done') {
                 summary.done += 1;
                 return;
-            } else if (entry.status === 'error' && !entry.duplicates.length) {
+            } else if (entry.status === 'error' && !entry.hasDuplicates) {
                 // errors that are not due to duplicates
                 summary.errors += 1;
                 return;
-            } else if (entry.duplicates.length) {
+            } else if (entry.hasDuplicates) {
                 summary.duplicates += 1;
                 return;
             } else if (entry.status === 'new') {

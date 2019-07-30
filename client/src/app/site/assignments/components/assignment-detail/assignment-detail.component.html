@@ -162,10 +162,10 @@
     <div>
         <div
             class="candidates-list"
-            *ngIf="assignment && assignment.assignmentRelatedUsers && assignment.assignmentRelatedUsers.length > 0"
+            *ngIf="assignment && assignment.assignment_related_users && assignment.assignment_related_users.length > 0"
         >
             <os-sorting-list
-                [input]="assignment.assignmentRelatedUsers"
+                [input]="assignment.assignment_related_users"
                 [live]="true"
                 [count]="true"
                 [enable]="hasPerms('addOthers')"

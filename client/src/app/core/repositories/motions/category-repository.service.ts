@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseRepository } from '../base-repository';
+import { BaseRepository, RelationDefinition } from '../base-repository';
 import { Category } from 'app/shared/models/motions/category';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataSendService } from '../../core-services/data-send.service';
@@ -12,6 +12,15 @@ import { ViewCategory, CategoryTitleInformation } from 'app/site/motions/models/
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { Motion } from 'app/shared/models/motions/motion';
 import { TreeIdNode } from 'app/core/ui-services/tree.service';
+
+const CategoryRelations: RelationDefinition[] = [
+    {
+        type: 'O2M',
+        ownIdKey: 'parent_id',
+        ownKey: 'parent',
+        foreignModel: ViewCategory
+    }
+];
 
 /**
  * Repository Services for Categories
@@ -47,7 +56,7 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
         translate: TranslateService,
         private httpService: HttpService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, Category, [Category]);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, Category, CategoryRelations);
 
         this.setSortFunction((a, b) => a.weight - b.weight);
     }
@@ -61,11 +70,6 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
     public getVerboseName = (plural: boolean = false) => {
         return this.translate.instant(plural ? 'Categories' : 'Category');
     };
-
-    protected createViewModel(category: Category): ViewCategory {
-        const parent = this.viewModelStoreService.get(ViewCategory, category.parent_id);
-        return new ViewCategory(category, parent);
-    }
 
     /**
      * Updates a categories numbering.

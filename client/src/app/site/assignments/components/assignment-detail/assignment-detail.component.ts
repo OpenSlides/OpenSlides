@@ -388,7 +388,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
             super.setTitle('New election');
             this.newAssignment = true;
             // TODO set defaults?
-            this.assignment = new ViewAssignment(new Assignment(), [], []);
+            this.assignment = new ViewAssignment(new Assignment());
             this.patchForm(this.assignment);
             this.setEditMode(true);
         }

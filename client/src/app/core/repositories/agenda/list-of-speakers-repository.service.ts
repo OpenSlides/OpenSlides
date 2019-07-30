@@ -12,20 +12,42 @@ import {
     BaseViewModelWithListOfSpeakers,
     isBaseViewModelWithListOfSpeakers
 } from 'app/site/base/base-view-model-with-list-of-speakers';
-import { BaseViewModel } from 'app/site/base/base-view-model';
 import { ViewSpeaker } from 'app/site/agenda/models/view-speaker';
-import { ViewUser } from 'app/site/users/models/view-user';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { HttpService } from 'app/core/core-services/http.service';
 import { BaseIsListOfSpeakersContentObjectRepository } from '../base-is-list-of-speakers-content-object-repository';
-import { BaseHasContentObjectRepository } from '../base-has-content-object-repository';
-import { Topic } from 'app/shared/models/topics/topic';
-import { Assignment } from 'app/shared/models/assignments/assignment';
-import { Motion } from 'app/shared/models/motions/motion';
-import { MotionBlock } from 'app/shared/models/motions/motion-block';
-import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
+import { BaseHasContentObjectRepository, GenericRelationDefinition } from '../base-has-content-object-repository';
 import { ItemRepositoryService } from './item-repository.service';
-import { User } from 'app/shared/models/users/user';
+import { ViewMotion } from 'app/site/motions/models/view-motion';
+import { RelationDefinition } from '../base-repository';
+import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
+import { ViewTopic } from 'app/site/topics/models/view-topic';
+import { ViewAssignment } from 'app/site/assignments/models/view-assignment';
+import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
+import { ViewUser } from 'app/site/users/models/view-user';
+
+const ListOfSpeakersRelations: (RelationDefinition | GenericRelationDefinition)[] = [
+    {
+        type: 'generic',
+        possibleModels: [ViewMotion, ViewMotionBlock, ViewTopic, ViewAssignment, ViewMediafile],
+        isVForeign: isBaseViewModelWithListOfSpeakers,
+        VForeignVerbose: 'BaseViewModelWithListOfSpeakers'
+    },
+    {
+        type: 'nested',
+        ownKey: 'speakers',
+        foreignModel: ViewSpeaker,
+        order: 'weight',
+        relationDefinition: [
+            {
+                type: 'O2M',
+                ownIdKey: 'user_id',
+                ownKey: 'user',
+                foreignModel: ViewUser
+            }
+        ]
+    }
+];
 
 /**
  * Repository service for lists of speakers
@@ -60,14 +82,7 @@ export class ListOfSpeakersRepositoryService extends BaseHasContentObjectReposit
         private httpService: HttpService,
         private itemRepo: ItemRepositoryService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, ListOfSpeakers, [
-            Topic,
-            Assignment,
-            Motion,
-            MotionBlock,
-            Mediafile,
-            User
-        ]);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, ListOfSpeakers, ListOfSpeakersRelations);
     }
 
     public getVerboseName = (plural: boolean = false) => {
@@ -92,48 +107,6 @@ export class ListOfSpeakersRepositoryService extends BaseHasContentObjectReposit
             return repo.getListOfSpeakersTitle(titleInformation.title_information);
         }
     };
-
-    /**
-     * Creates the viewListOfSpeakers out of a given list of speakers
-     *
-     * @param listOfSpeakers the list fo speakers that should be converted to view item
-     * @returns a new view list fo speakers
-     */
-    public createViewModel(listOfSpeakers: ListOfSpeakers): ViewListOfSpeakers {
-        const contentObject = this.getContentObject(listOfSpeakers);
-        const speakers = this.getSpeakers(listOfSpeakers);
-        return new ViewListOfSpeakers(listOfSpeakers, speakers, contentObject);
-    }
-
-    private getSpeakers(listOfSpeakers: ListOfSpeakers): ViewSpeaker[] {
-        return listOfSpeakers.speakers.map(speaker => {
-            const user = this.viewModelStoreService.get(ViewUser, speaker.user_id);
-            return new ViewSpeaker(speaker, user);
-        });
-    }
-
-    /**
-     * Returns the corresponding content object to a given {@link ListOfSpeakers} as an {@link BaseListOfSpeakersViewModel}
-     *
-     * @param listOfSpeakers the target list fo speakers
-     * @returns the content object of the given list of sepakers. Might be null if it was not found.
-     */
-    public getContentObject(listOfSpeakers: ListOfSpeakers): BaseViewModelWithListOfSpeakers {
-        const contentObject = this.viewModelStoreService.get<BaseViewModel>(
-            listOfSpeakers.content_object.collection,
-            listOfSpeakers.content_object.id
-        );
-        if (!contentObject) {
-            return null;
-        }
-        if (isBaseViewModelWithListOfSpeakers(contentObject)) {
-            return contentObject;
-        } else {
-            throw new Error(
-                `The content object (${listOfSpeakers.content_object.collection}, ${listOfSpeakers.content_object.id}) of list of speakers ${listOfSpeakers.id} is not a BaseListOfSpeakersViewModel.`
-            );
-        }
-    }
 
     /**
      * Add a new speaker to a list of speakers.

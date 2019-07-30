@@ -1,8 +1,6 @@
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { Speaker } from 'app/shared/models/agenda/speaker';
 import { ViewUser } from 'app/site/users/models/view-user';
-import { Updateable } from 'app/site/base/updateable';
-import { Identifiable } from 'app/shared/models/base/identifiable';
 
 /**
  * Determine the state of the speaker
@@ -16,15 +14,15 @@ export enum SpeakerState {
 /**
  * Provides "safe" access to a speaker with all it's components
  */
-export class ViewSpeaker implements Updateable, Identifiable {
-    private _speaker: Speaker;
+export class ViewSpeaker extends BaseViewModel<Speaker> {
+    public static COLLECTIONSTRING = Speaker.COLLECTIONSTRING;
     private _user?: ViewUser;
 
     public get speaker(): Speaker {
-        return this._speaker;
+        return this._model;
     }
 
-    public get user(): ViewUser {
+    public get user(): ViewUser | null {
         return this._user;
     }
 
@@ -82,20 +80,11 @@ export class ViewSpeaker implements Updateable, Identifiable {
         return this.user ? this.user.gender : '';
     }
 
-    public constructor(speaker: Speaker, user?: ViewUser) {
-        this._speaker = speaker;
-        this._user = user;
+    public constructor(speaker: Speaker) {
+        super(Speaker.COLLECTIONSTRING, speaker);
     }
 
     public getTitle = () => {
         return this.name;
     };
-
-    public updateDependencies(update: BaseViewModel): boolean {
-        if (update instanceof ViewUser && update.id === this.speaker.user_id) {
-            this._user = update;
-            return true;
-        }
-        return false;
-    }
 }

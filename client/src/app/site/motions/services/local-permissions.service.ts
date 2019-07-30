@@ -70,9 +70,9 @@ export class LocalPermissionsService {
                     motion.state &&
                     motion.state.allow_support &&
                     motion.submitters &&
-                    motion.submitters.indexOf(this.operator.viewUser) === -1 &&
+                    !motion.submittersAsUsers.includes(this.operator.viewUser) &&
                     motion.supporters &&
-                    motion.supporters.indexOf(this.operator.viewUser) === -1
+                    !motion.supporters.includes(this.operator.viewUser)
                 );
             }
             case 'unsupport': {

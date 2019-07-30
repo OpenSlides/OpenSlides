@@ -1,4 +1,4 @@
-import { MotionSubmitter } from './motion-submitter';
+import { Submitter } from './submitter';
 import { MotionPoll } from './motion-poll';
 import { BaseModelWithAgendaItemAndListOfSpeakers } from '../base/base-model-with-agenda-item-and-list-of-speakers';
 
@@ -31,7 +31,7 @@ export class Motion extends BaseModelWithAgendaItemAndListOfSpeakers<Motion> {
     public category_weight: number;
     public motion_block_id: number;
     public origin: string;
-    public submitters: MotionSubmitter[];
+    public submitters: Submitter[];
     public supporters_id: number[];
     public comments: MotionComment[];
     public workflow_id: number;
@@ -48,6 +48,7 @@ export class Motion extends BaseModelWithAgendaItemAndListOfSpeakers<Motion> {
     public sort_parent_id: number;
     public created: string;
     public last_modified: string;
+    public change_recommendations_id: number[];
 
     public constructor(input?: any) {
         super(Motion.COLLECTIONSTRING, input);
@@ -58,9 +59,9 @@ export class Motion extends BaseModelWithAgendaItemAndListOfSpeakers<Motion> {
      */
     public get sorted_submitters_id(): number[] {
         return this.submitters
-            .sort((a: MotionSubmitter, b: MotionSubmitter) => {
+            .sort((a: Submitter, b: Submitter) => {
                 return a.weight - b.weight;
             })
-            .map((submitter: MotionSubmitter) => submitter.user_id);
+            .map((submitter: Submitter) => submitter.user_id);
     }
 }

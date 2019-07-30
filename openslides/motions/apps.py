@@ -89,6 +89,7 @@ class MotionsAppConfig(AppConfig):
             "Motion",
             "MotionBlock",
             "Workflow",
+            "State",
             "MotionChangeRecommendation",
             "MotionCommentSection",
         ):

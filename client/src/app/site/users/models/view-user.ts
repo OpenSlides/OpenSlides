@@ -4,7 +4,6 @@ import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { Searchable } from 'app/site/base/searchable';
 import { SearchRepresentation } from 'app/core/ui-services/search.service';
 import { ViewGroup } from './view-group';
-import { BaseViewModel } from 'app/site/base/base-view-model';
 
 export interface UserTitleInformation {
     username: string;
@@ -121,9 +120,8 @@ export class ViewUser extends BaseProjectableViewModel<User> implements UserTitl
     public getFullName: () => string;
     public getShortName: () => string;
 
-    public constructor(user: User, groups?: ViewGroup[]) {
+    public constructor(user: User) {
         super(User.COLLECTIONSTRING, user);
-        this._groups = groups;
     }
 
     /**
@@ -150,16 +148,5 @@ export class ViewUser extends BaseProjectableViewModel<User> implements UserTitl
             projectionDefaultName: 'users',
             getDialogTitle: () => this.getTitle()
         };
-    }
-
-    public updateDependencies(update: BaseViewModel): void {
-        if (update instanceof ViewGroup && this.user.groups_id.includes(update.id)) {
-            const groupIndex = this.groups.findIndex(group => group.id === update.id);
-            if (groupIndex < 0) {
-                this.groups.push(update);
-            } else {
-                this.groups[groupIndex] = update;
-            }
-        }
     }
 }

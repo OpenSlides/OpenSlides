@@ -26,38 +26,8 @@ export abstract class BaseViewModelWithContentObject<
     /**
      * @param collectionString The collection string of this model
      * @param model the model this view model captures
-     * @param isC A function ensuring that an arbitrary object is a valid content object
-     * @param CVerbose is the verbose name of the base content object class, for debugging purposes
-     * @param contentObject (optional) The content object, if it is known during creation.
      */
-    public constructor(
-        collectionString: string,
-        model: M,
-        private isC: (obj: any) => obj is C,
-        private CVerbose: string,
-        contentObject?: C
-    ) {
+    public constructor(collectionString: string, model: M) {
         super(collectionString, model);
-        this._contentObject = contentObject;
-    }
-
-    /**
-     * Check, if the given model mathces the content object definition. If so, the function
-     * returns true, else false.
-     */
-    public updateDependencies(update: BaseViewModel): boolean {
-        if (
-            update &&
-            update.collectionString === this.contentObjectData.collection &&
-            update.id === this.contentObjectData.id
-        ) {
-            if (this.isC(update)) {
-                this._contentObject = update;
-                return true;
-            } else {
-                throw new Error(`The object is not an ${this.CVerbose}:` + update);
-            }
-        }
-        return false;
     }
 }

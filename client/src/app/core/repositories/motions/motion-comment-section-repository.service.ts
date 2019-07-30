@@ -4,18 +4,32 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
-import { BaseRepository } from '../base-repository';
+import { BaseRepository, RelationDefinition } from '../base-repository';
 import {
     ViewMotionCommentSection,
     MotionCommentSectionTitleInformation
 } from 'app/site/motions/models/view-motion-comment-section';
 import { MotionCommentSection } from 'app/shared/models/motions/motion-comment-section';
-import { Group } from 'app/shared/models/users/group';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { HttpService } from 'app/core/core-services/http.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { ViewGroup } from 'app/site/users/models/view-group';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
+
+const MotionCommentSectionRelations: RelationDefinition[] = [
+    {
+        type: 'M2M',
+        ownIdKey: 'read_groups_id',
+        ownKey: 'read_groups',
+        foreignModel: ViewGroup
+    },
+    {
+        type: 'M2M',
+        ownIdKey: 'write_groups_id',
+        ownKey: 'write_groups',
+        foreignModel: ViewGroup
+    }
+];
 
 /**
  * Repository Services for Categories
@@ -53,7 +67,15 @@ export class MotionCommentSectionRepositoryService extends BaseRepository<
         translate: TranslateService,
         private http: HttpService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, MotionCommentSection, [Group]);
+        super(
+            DS,
+            dataSend,
+            mapperService,
+            viewModelStoreService,
+            translate,
+            MotionCommentSection,
+            MotionCommentSectionRelations
+        );
 
         this.viewModelSortFn = (a: ViewMotionCommentSection, b: ViewMotionCommentSection) => {
             if (a.weight === b.weight) {
@@ -71,18 +93,6 @@ export class MotionCommentSectionRepositoryService extends BaseRepository<
     public getVerboseName = (plural: boolean = false) => {
         return this.translate.instant(plural ? 'Comment sections' : 'Comment section');
     };
-
-    /**
-     * Creates the ViewModel for the MotionComment Section
-     *
-     * @param section the MotionCommentSection the View Model should be created of
-     * @returns the View Model representation of the MotionCommentSection
-     */
-    protected createViewModel(section: MotionCommentSection): ViewMotionCommentSection {
-        const readGroups = this.viewModelStoreService.getMany(ViewGroup, section.read_groups_id);
-        const writeGroups = this.viewModelStoreService.getMany(ViewGroup, section.write_groups_id);
-        return new ViewMotionCommentSection(section, readGroups, writeGroups);
-    }
 
     /**
      * Saves a comment made at a MotionCommentSection. Does an update, if

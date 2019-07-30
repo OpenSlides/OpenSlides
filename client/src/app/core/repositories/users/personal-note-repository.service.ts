@@ -43,10 +43,6 @@ export class PersonalNoteRepositoryService extends BaseRepository<
         return this.translate.instant(plural ? 'Personal notes' : 'Personal note');
     };
 
-    protected createViewModel(personalNote: PersonalNote): ViewPersonalNote {
-        return new ViewPersonalNote(personalNote);
-    }
-
     /**
      * Overwrite the default procedure
      *

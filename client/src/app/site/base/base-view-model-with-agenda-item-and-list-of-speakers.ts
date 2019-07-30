@@ -8,7 +8,6 @@ import {
     isBaseViewModelWithListOfSpeakers,
     IBaseViewModelWithListOfSpeakers
 } from './base-view-model-with-list-of-speakers';
-import { BaseViewModel } from './base-view-model';
 
 export function isBaseViewModelWithAgendaItemAndListOfSpeakers(
     obj: any
@@ -23,7 +22,7 @@ export abstract class BaseViewModelWithAgendaItemAndListOfSpeakers<
     M extends BaseModelWithAgendaItemAndListOfSpeakers = any
 > extends BaseProjectableViewModel implements IBaseViewModelWithAgendaItem<M>, IBaseViewModelWithListOfSpeakers<M> {
     protected _item?: ViewItem;
-    protected _listOfSpeakers?: ViewListOfSpeakers;
+    protected _list_of_speakers?: ViewListOfSpeakers;
 
     public get agendaItem(): ViewItem | null {
         return this._item;
@@ -38,7 +37,7 @@ export abstract class BaseViewModelWithAgendaItemAndListOfSpeakers<
     }
 
     public get listOfSpeakers(): ViewListOfSpeakers | null {
-        return this._listOfSpeakers;
+        return this._list_of_speakers;
     }
 
     public get list_of_speakers_id(): number {
@@ -50,11 +49,8 @@ export abstract class BaseViewModelWithAgendaItemAndListOfSpeakers<
     public getListOfSpeakersTitle: () => string;
     public getListOfSpeakersSlideTitle: () => string;
 
-    public constructor(collectionString: string, model: M, item?: ViewItem, listOfSpeakers?: ViewListOfSpeakers) {
+    public constructor(collectionString: string, model: M) {
         super(collectionString, model);
-        // Explicit set to null instead of undefined, if not given
-        this._item = item || null;
-        this._listOfSpeakers = listOfSpeakers || null;
     }
 
     /**
@@ -71,12 +67,4 @@ export abstract class BaseViewModelWithAgendaItemAndListOfSpeakers<
      * Should return a string representation of the object, so there can be searched for.
      */
     public abstract formatForSearch(): SearchRepresentation;
-
-    public updateDependencies(update: BaseViewModel): void {
-        if (update instanceof ViewItem && update.id === this.agenda_item_id) {
-            this._item = update;
-        } else if (update instanceof ViewListOfSpeakers && update.id === this.list_of_speakers_id) {
-            this._listOfSpeakers = update;
-        }
-    }
 }

@@ -499,7 +499,7 @@ class ListOfSpeakersViewSet(
             if not isinstance(speaker_id, int) or speakers.get(speaker_id) is None:
                 raise ValidationError({"detail": "Invalid data."})
             valid_speakers.append(speakers[speaker_id])
-        weight = 0
+        weight = 1
         with transaction.atomic():
             for speaker in valid_speakers:
                 speaker.weight = weight

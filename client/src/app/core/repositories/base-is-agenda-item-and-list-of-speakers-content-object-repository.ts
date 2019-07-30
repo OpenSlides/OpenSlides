@@ -1,7 +1,7 @@
 import { TranslateService } from '@ngx-translate/core';
 
 import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model';
-import { BaseRepository } from './base-repository';
+import { BaseRepository, RelationDefinition } from './base-repository';
 import {
     isBaseIsAgendaItemContentObjectRepository,
     IBaseIsAgendaItemContentObjectRepository
@@ -13,8 +13,6 @@ import {
 import { DataStoreService } from '../core-services/data-store.service';
 import { DataSendService } from '../core-services/data-send.service';
 import { ViewModelStoreService } from '../core-services/view-model-store.service';
-import { Item } from 'app/shared/models/agenda/item';
-import { ListOfSpeakers } from 'app/shared/models/agenda/list-of-speakers';
 import { CollectionStringMapperService } from '../core-services/collection-string-mapper.service';
 import {
     TitleInformationWithAgendaItem,
@@ -22,6 +20,8 @@ import {
 } from 'app/site/base/base-view-model-with-agenda-item';
 import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
 import { IBaseViewModelWithListOfSpeakers } from 'app/site/base/base-view-model-with-list-of-speakers';
+import { ViewItem } from 'app/site/agenda/models/view-item';
+import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
 
 export function isBaseIsAgendaItemAndListOfSpeakersContentObjectRepository(
     obj: any
@@ -50,7 +50,7 @@ export abstract class BaseIsAgendaItemAndListOfSpeakersContentObjectRepository<
         viewModelStoreService: ViewModelStoreService,
         translate: TranslateService,
         baseModelCtor: ModelConstructor<M>,
-        depsModelCtors?: ModelConstructor<BaseModel>[]
+        relationDefinitions?: RelationDefinition[]
     ) {
         super(
             DS,
@@ -59,13 +59,24 @@ export abstract class BaseIsAgendaItemAndListOfSpeakersContentObjectRepository<
             viewModelStoreService,
             translate,
             baseModelCtor,
-            depsModelCtors
+            relationDefinitions
         );
-        if (!this.depsModelCtors) {
-            this.depsModelCtors = [];
-        }
-        this.depsModelCtors.push(Item);
-        this.depsModelCtors.push(ListOfSpeakers);
+    }
+
+    protected groupRelationsByCollections(): void {
+        this.relationDefinitions.push({
+            type: 'O2M',
+            ownIdKey: 'agenda_item_id',
+            ownKey: 'item',
+            foreignModel: ViewItem
+        });
+        this.relationDefinitions.push({
+            type: 'O2M',
+            ownIdKey: 'list_of_speakers_id',
+            ownKey: 'list_of_speakers',
+            foreignModel: ViewListOfSpeakers
+        });
+        super.groupRelationsByCollections();
     }
 
     public getAgendaListTitle(titleInformation: T): string {
