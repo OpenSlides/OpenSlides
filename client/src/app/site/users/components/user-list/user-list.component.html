@@ -33,18 +33,11 @@
             (click)="saveScrollIndex('user', rowContext.identity)"
             [routerLink]="user.id"
             *ngIf="!isMultiSelect"
-            matTooltip="{{ getUserTooltip(user) | translate }}"
         ></a>
-        <div>
-            <span *ngIf="user.is_active !== false">
-                {{ name }}
-            </span>
-
-            <span *ngIf="user.is_active === false">
-                <os-icon-container icon="block" swap="true">
-                    {{ name }}
-                </os-icon-container>
-            </span>
+        <div class="nameCell">
+            <span>{{ name }}</span>
+            <mat-icon matTooltip="{{ 'Is committee' | translate }}" *ngIf="user.is_committee">stars</mat-icon>
+            <mat-icon matTooltip="{{ 'Inactive' | translate }}" *ngIf="!user.is_active">block</mat-icon>
         </div>
     </div>
 

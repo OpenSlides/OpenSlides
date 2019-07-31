@@ -33,3 +33,11 @@
 mat-checkbox {
     margin-right: 10px;
 }
+
+.state-icons {
+    display: flex;
+
+    mat-icon {
+        margin-left: 5px;
+    }
+}

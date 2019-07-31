@@ -8,7 +8,6 @@ import { PblColumnDefinition, PblDataSource } from '@pebula/ngrid';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { BaseViewComponent } from './base-view';
 import { BaseViewModel } from './base-view-model';
-import { ViewUser } from '../users/models/view-user';
 
 export abstract class BaseListViewComponent<V extends BaseViewModel> extends BaseViewComponent implements OnDestroy {
     /**
@@ -116,15 +115,5 @@ export abstract class BaseListViewComponent<V extends BaseViewModel> extends Bas
      */
     public saveScrollIndex(key: string, index: number): void {
         this.storage.set(`scroll_${key}`, index);
-    }
-
-    /**
-     * If the user is not active, formulate a tooltip accordingly
-     *
-     * @param user
-     * @returns "Inactive" as (untranslated) string if the given user is not active
-     */
-    public getUserTooltip(user: ViewUser): string {
-        return user.is_active ? '' : 'Inactive';
     }
 }
