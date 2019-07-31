@@ -179,6 +179,7 @@ class ProjectorViewSet(ModelViewSet):
         at the same time.
         """
         projector = self.get_object()
+        projector.scroll = 0
         elements = request.data.get("elements")
         preview = request.data.get("preview")
         history_element = request.data.get("append_to_history")

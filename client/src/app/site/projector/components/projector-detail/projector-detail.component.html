@@ -142,7 +142,7 @@
                             <div class="drag-handle" cdkDragHandle *ngIf="editQueue">
                                 <mat-icon>drag_indicator</mat-icon>
                             </div>
-                            <div class="drag-handle" *ngIf="!editQueue">
+                            <div class="drag-handle no-drag" *ngIf="!editQueue">
                                 <button type="button" mat-icon-button (click)="projectNow(i)">
                                     <mat-icon>videocam</mat-icon>
                                 </button>
@@ -235,7 +235,12 @@
                     <!-- Slide-->
                     <mat-list *ngIf="projectorCount > 1">
                         <mat-list-item>
-                            <button type="button" mat-mini-fab (click)="toggleClos(false)" [ngClass]="isClosProjected(false) ? 'projector-active' : 'projector-inactive'">
+                            <button
+                                type="button"
+                                mat-mini-fab
+                                (click)="toggleClos(false)"
+                                [ngClass]="isClosProjected(false) ? 'projector-active' : 'projector-inactive'"
+                            >
                                 <mat-icon>videocam</mat-icon>
                             </button>
                             <span class="spacer-left-10" translate>Slide</span>
@@ -245,7 +250,12 @@
                     <!-- Overlay -->
                     <mat-list>
                         <mat-list-item>
-                            <button type="button" mat-mini-fab (click)="toggleClos(true)" [ngClass]="isClosProjected(true) ? 'projector-active' : 'projector-inactive'">
+                            <button
+                                type="button"
+                                mat-mini-fab
+                                (click)="toggleClos(true)"
+                                [ngClass]="isClosProjected(true) ? 'projector-active' : 'projector-inactive'"
+                            >
                                 <mat-icon>videocam</mat-icon>
                             </button>
                             <span class="spacer-left-10" translate>Overlay</span>
@@ -255,7 +265,12 @@
                     <!-- Chyron -->
                     <mat-list>
                         <mat-list-item>
-                            <button type="button" mat-mini-fab (click)="toggleChyron()" [ngClass]="isChyronProjected() ? 'projector-active' : 'projector-inactive'">
+                            <button
+                                type="button"
+                                mat-mini-fab
+                                (click)="toggleChyron()"
+                                [ngClass]="isChyronProjected() ? 'projector-active' : 'projector-inactive'"
+                            >
                                 <mat-icon>videocam</mat-icon>
                             </button>
                             <span class="spacer-left-10" translate>Chyron</span>
@@ -272,8 +287,7 @@
                     </os-presentation-control>
                 </mat-expansion-panel>-->
 
-                <os-presentation-control [projector]="projector">
-                </os-presentation-control>
+                <os-presentation-control [projector]="projector"> </os-presentation-control>
             </mat-accordion>
         </div>
     </div>
