@@ -1,5 +1,6 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialog, MatDialogRef } from '@angular/material';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
@@ -27,6 +28,11 @@ import { MotionBlockSortService } from 'app/site/motions/services/motion-block-s
     encapsulation: ViewEncapsulation.None
 })
 export class MotionBlockListComponent extends BaseListViewComponent<ViewMotionBlock> implements OnInit {
+    @ViewChild('newMotionBlockDialog', { static: true })
+    private newMotionBlockDialog: TemplateRef<string>;
+
+    private dialogRef: MatDialogRef<string, any>;
+
     /**
      * Holds the create form
      */
@@ -95,6 +101,7 @@ export class MotionBlockListComponent extends BaseListViewComponent<ViewMotionBl
         private formBuilder: FormBuilder,
         private itemRepo: ItemRepositoryService,
         private operator: OperatorService,
+        private dialog: MatDialog,
         public sortService: MotionBlockSortService
     ) {
         super(titleService, translate, matSnackBar, storage);
@@ -127,21 +134,29 @@ export class MotionBlockListComponent extends BaseListViewComponent<ViewMotionBl
     }
 
     /**
-     * Helper function reset the form and set the default values
+     * Helper function reset the form and set the default values as well as closing the modal dialog
      */
     public resetForm(): void {
         this.createBlockForm.reset();
         this.createBlockForm.get('agenda_type').setValue(this.defaultVisibility);
+        if (this.dialogRef) {
+            this.dialogRef.close();
+        }
+        this.dialogRef = null;
     }
 
     /**
-     * Click handler for the plus button
+     * Click handler for the plus button.
+     * Opens the dialog for motion block creation.
      */
     public onPlusButton(): void {
-        if (!this.isCreatingNewBlock) {
-            this.resetForm();
-            this.isCreatingNewBlock = true;
-        }
+        this.resetForm();
+        this.dialogRef = this.dialog.open(this.newMotionBlockDialog, {
+            width: '400px',
+            maxWidth: '90vw',
+            maxHeight: '90vh',
+            disableClose: true
+        });
     }
 
     /**
@@ -158,7 +173,6 @@ export class MotionBlockListComponent extends BaseListViewComponent<ViewMotionBl
             try {
                 await this.repo.create(block);
                 this.resetForm();
-                this.isCreatingNewBlock = false;
             } catch (e) {
                 this.raiseError(e);
             }
@@ -186,6 +200,6 @@ export class MotionBlockListComponent extends BaseListViewComponent<ViewMotionBl
      * Cancels the current form action
      */
     public onCancel(): void {
-        this.isCreatingNewBlock = false;
+        this.resetForm();
     }
 }

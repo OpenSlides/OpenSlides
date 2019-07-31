@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialog, MatDialogRef } from '@angular/material';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
@@ -21,7 +22,12 @@ import { StatuteCsvExportService } from 'app/site/motions/services/statute-csv-e
     styleUrls: ['./statute-paragraph-list.component.scss']
 })
 export class StatuteParagraphListComponent extends BaseViewComponent implements OnInit {
-    public statuteParagraphToCreate: StatuteParagraph | null;
+    @ViewChild('statuteParagraphDialog', { static: true })
+    private statuteParagraphDialog: TemplateRef<string>;
+
+    private dialogRef: MatDialogRef<string, any>;
+
+    private currentStatuteParagraph: ViewStatuteParagraph | null;
 
     /**
      * Source of the Data
@@ -29,14 +35,11 @@ export class StatuteParagraphListComponent extends BaseViewComponent implements 
     public statuteParagraphs: ViewStatuteParagraph[] = [];
 
     /**
-     * The current focussed formgroup
+     * Formgroup for creating and updating of statute paragraphs
      */
-    public updateForm: FormGroup;
+    public statuteParagraphForm: FormGroup;
 
-    public createForm: FormGroup;
-
-    public openId: number | null;
-    public editId: number | null;
+    public openId: Number | null;
 
     /**
      * The usual component constructor. Initializes the forms
@@ -56,6 +59,7 @@ export class StatuteParagraphListComponent extends BaseViewComponent implements 
         private repo: StatuteParagraphRepositoryService,
         private formBuilder: FormBuilder,
         private promptService: PromptService,
+        private dialog: MatDialog,
         private csvExportService: StatuteCsvExportService
     ) {
         super(titleService, translate, matSnackBar);
@@ -64,8 +68,7 @@ export class StatuteParagraphListComponent extends BaseViewComponent implements 
             title: ['', Validators.required],
             text: ['', Validators.required]
         };
-        this.createForm = this.formBuilder.group(form);
-        this.updateForm = this.formBuilder.group(form);
+        this.statuteParagraphForm = this.formBuilder.group(form);
     }
 
     /**
@@ -81,53 +84,39 @@ export class StatuteParagraphListComponent extends BaseViewComponent implements 
     }
 
     /**
-     * Add a new Section.
+     * Open the modal dialog
      */
-    public onPlusButton(): void {
-        if (!this.statuteParagraphToCreate) {
-            this.createForm.reset();
-            this.createForm.setValue({
-                title: '',
-                text: ''
+    public openDialog(p?: ViewStatuteParagraph): void {
+        this.currentStatuteParagraph = p;
+        this.statuteParagraphForm.reset();
+        if (p) {
+            this.statuteParagraphForm.setValue({
+                title: p.title,
+                text: p.text
             });
-            this.statuteParagraphToCreate = new StatuteParagraph();
         }
-    }
-
-    /**
-     * Handler when clicking on create to create a new statute paragraph
-     */
-    public create(): void {
-        if (this.createForm.valid) {
-            this.statuteParagraphToCreate.patchValues(this.createForm.value as StatuteParagraph);
-            this.repo.create(this.statuteParagraphToCreate).then(() => {
-                this.statuteParagraphToCreate = null;
-            }, this.raiseError);
-        }
-    }
-
-    /**
-     * Executed on edit button
-     * @param viewStatuteParagraph
-     */
-    public onEditButton(viewStatuteParagraph: ViewStatuteParagraph): void {
-        this.editId = viewStatuteParagraph.id;
-
-        this.updateForm.setValue({
-            title: viewStatuteParagraph.title,
-            text: viewStatuteParagraph.text
+        this.dialogRef = this.dialog.open(this.statuteParagraphDialog, {
+            width: '1000px',
+            maxWidth: '95vw',
+            maxHeight: '90vh',
+            disableClose: true
         });
     }
 
     /**
-     * Saves the statute paragraph
-     * @param viewStatuteParagraph The statute paragraph to save
+     * creates a new statute paragraph or updates the current one
      */
-    public onSaveButton(viewStatuteParagraph: ViewStatuteParagraph): void {
-        if (this.updateForm.valid) {
-            this.repo.update(this.updateForm.value as Partial<StatuteParagraph>, viewStatuteParagraph).then(() => {
-                this.openId = this.editId = null;
-            }, this.raiseError);
+    public save(): void {
+        if (this.statuteParagraphForm.valid) {
+            // eiher update or create
+            if (this.currentStatuteParagraph) {
+                this.repo
+                    .update(this.statuteParagraphForm.value as Partial<StatuteParagraph>, this.currentStatuteParagraph)
+                    .then(() => this.dialogRef.close(), this.raiseError);
+            } else {
+                const p = new StatuteParagraph(this.statuteParagraphForm.value);
+                this.repo.create(p).then(() => this.dialogRef.close(), this.raiseError);
+            }
         }
     }
 
@@ -139,18 +128,7 @@ export class StatuteParagraphListComponent extends BaseViewComponent implements 
         const title = this.translate.instant('Are you sure you want to delete this statute paragraph?');
         const content = viewStatuteParagraph.title;
         if (await this.promptService.open(title, content)) {
-            this.repo.delete(viewStatuteParagraph).then(() => (this.openId = this.editId = null), this.raiseError);
-        }
-    }
-
-    /**
-     * Is executed when a mat-extension-panel is closed
-     * @param viewStatuteParagraph the statute paragraph in the panel
-     */
-    public panelClosed(viewStatuteParagraph: ViewStatuteParagraph): void {
-        this.openId = null;
-        if (this.editId) {
-            this.onSaveButton(viewStatuteParagraph);
+            this.repo.delete(viewStatuteParagraph).catch(this.raiseError);
         }
     }
 
@@ -167,43 +145,20 @@ export class StatuteParagraphListComponent extends BaseViewComponent implements 
      *
      * @param event has the code
      */
-    public onKeyDownCreate(event: KeyboardEvent): void {
+    public onKeyDown(event: KeyboardEvent): void {
         if (event.key === 'Enter' && event.shiftKey) {
-            this.create();
+            this.save();
         }
         if (event.key === 'Escape') {
-            this.onCancelCreate();
+            this.cancel();
         }
     }
 
     /**
-     * Cancels the current form action
+     * Closes the dialog
      */
-    public onCancelCreate(): void {
-        this.statuteParagraphToCreate = null;
-    }
-
-    /**
-     * clicking Shift and Enter will save automatically
-     * clicking Escape will cancel the process
-     *
-     * @param event has the code
-     */
-    public onKeyDownUpdate(event: KeyboardEvent): void {
-        if (event.key === 'Enter' && event.shiftKey) {
-            const myParagraph = this.statuteParagraphs.find(x => x.id === this.editId);
-            this.onSaveButton(myParagraph);
-        }
-        if (event.key === 'Escape') {
-            this.onCancelUpdate();
-        }
-    }
-
-    /**
-     * Cancels the current form action
-     */
-    public onCancelUpdate(): void {
-        this.editId = null;
+    public cancel(): void {
+        this.dialogRef.close();
     }
 
     /**

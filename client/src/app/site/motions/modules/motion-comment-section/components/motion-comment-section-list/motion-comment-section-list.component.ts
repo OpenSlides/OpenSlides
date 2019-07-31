@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialog, MatDialogRef } from '@angular/material';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
@@ -23,7 +24,12 @@ import { ViewGroup } from 'app/site/users/models/view-group';
     styleUrls: ['./motion-comment-section-list.component.scss']
 })
 export class MotionCommentSectionListComponent extends BaseViewComponent implements OnInit {
-    public commentSectionToCreate: MotionCommentSection | null;
+    @ViewChild('motionCommentDialog', { static: true })
+    private motionCommentDialog: TemplateRef<string>;
+
+    public currentComment: ViewMotionCommentSection | null;
+
+    public dialogRef: MatDialogRef<string, any>;
 
     /**
      * Source of the Data
@@ -31,14 +37,11 @@ export class MotionCommentSectionListComponent extends BaseViewComponent impleme
     public commentSections: ViewMotionCommentSection[] = [];
 
     /**
-     * The current focussed formgroup
+     * formgroup for editing and creating of comments
      */
-    public updateForm: FormGroup;
-
-    public createForm: FormGroup;
+    public commentFieldForm: FormGroup;
 
     public openId: number | null;
-    public editId: number | null;
 
     public groups: BehaviorSubject<ViewGroup[]>;
 
@@ -59,6 +62,7 @@ export class MotionCommentSectionListComponent extends BaseViewComponent impleme
         private repo: MotionCommentSectionRepositoryService,
         private formBuilder: FormBuilder,
         private promptService: PromptService,
+        private dialog: MatDialog,
         private groupRepo: GroupRepositoryService
     ) {
         super(titleService, translate, matSnackBar);
@@ -68,8 +72,7 @@ export class MotionCommentSectionListComponent extends BaseViewComponent impleme
             read_groups_id: [[]],
             write_groups_id: [[]]
         };
-        this.createForm = this.formBuilder.group(form);
-        this.updateForm = this.formBuilder.group(form);
+        this.commentFieldForm = this.formBuilder.group(form);
     }
 
     /**
@@ -82,79 +85,60 @@ export class MotionCommentSectionListComponent extends BaseViewComponent impleme
     }
 
     /**
-     * Event on Key Down in update or create form.
+     * Event on Key Down in form.
      *
      * @param event the keyboard event
      * @param the current view in scope
      */
-    public keyDownFunction(event: KeyboardEvent, viewSection?: ViewMotionCommentSection): void {
+    public onKeyDown(event: KeyboardEvent, viewSection?: ViewMotionCommentSection): void {
         if (event.key === 'Enter' && event.shiftKey) {
-            if (viewSection) {
-                this.onSaveButton(viewSection);
-            } else {
-                this.create();
-            }
+            this.save();
         }
         if (event.key === 'Escape') {
-            if (viewSection) {
-                this.editId = null;
-            } else {
-                this.commentSectionToCreate = null;
-            }
+            this.cancel();
         }
     }
 
     /**
-     * Opens the create form.
+     * Opens the create dialog.
      */
-    public onPlusButton(): void {
-        if (!this.commentSectionToCreate) {
-            this.commentSectionToCreate = new MotionCommentSection();
-            this.createForm.setValue({
-                name: '',
-                read_groups_id: [],
-                write_groups_id: []
-            });
-        }
-    }
-
-    /**
-     * Creates the comment section from the create form.
-     */
-    public create(): void {
-        if (this.createForm.valid) {
-            this.commentSectionToCreate.patchValues(this.createForm.value as MotionCommentSection);
-            this.repo
-                .create(this.commentSectionToCreate)
-                .then(() => (this.commentSectionToCreate = null), this.raiseError);
-        }
-    }
-
-    /**
-     * Executed on edit button
-     * @param viewSection
-     */
-    public onEditButton(viewSection: ViewMotionCommentSection): void {
-        this.editId = viewSection.id;
-
-        this.updateForm.setValue({
-            name: viewSection.name,
-            read_groups_id: viewSection.read_groups_id,
-            write_groups_id: viewSection.write_groups_id
+    public openDialog(c?: ViewMotionCommentSection): void {
+        this.currentComment = c;
+        this.commentFieldForm.reset({
+            name: c ? c.name : '',
+            read_groups_id: c ? c.read_groups_id : [],
+            write_groups_id: c ? c.write_groups_id : []
+        });
+        this.dialogRef = this.dialog.open(this.motionCommentDialog, {
+            width: '500px',
+            maxWidth: '90vw',
+            maxHeight: '90vh',
+            disableClose: true
         });
     }
 
     /**
-     * Saves the comment section
-     *
-     * @param viewSection The section to save
+     * saves the current data, either updating an existing comment or creating a new one.
      */
-    public onSaveButton(viewSection: ViewMotionCommentSection): void {
-        if (this.updateForm.valid) {
-            this.repo.update(this.updateForm.value as Partial<MotionCommentSection>, viewSection).then(() => {
-                this.openId = this.editId = null;
-            }, this.raiseError);
+    public save(): void {
+        if (this.commentFieldForm.valid) {
+            // eiher update or create
+            if (this.currentComment) {
+                this.repo
+                    .update(this.commentFieldForm.value as Partial<MotionCommentSection>, this.currentComment)
+                    .then(() => this.dialogRef.close(), this.raiseError);
+            } else {
+                const c = new MotionCommentSection(this.commentFieldForm.value);
+                this.repo.create(c).then(() => this.dialogRef.close(), this.raiseError);
+            }
         }
+    }
+
+    /**
+     * close the dialog
+     */
+    public cancel(): void {
+        this.dialogRef.close();
     }
 
     /**
@@ -165,18 +149,7 @@ export class MotionCommentSectionListComponent extends BaseViewComponent impleme
         const title = this.translate.instant('Are you sure you want to delete this comment field?');
         const content = viewSection.name;
         if (await this.promptService.open(title, content)) {
-            this.repo.delete(viewSection).then(() => (this.openId = this.editId = null), this.raiseError);
-        }
-    }
-
-    /**
-     * Is executed when a mat-extension-panel is closed
-     * @param viewSection the section in the panel
-     */
-    public panelClosed(viewSection: ViewMotionCommentSection): void {
-        this.openId = null;
-        if (this.editId) {
-            this.onSaveButton(viewSection);
+            this.repo.delete(viewSection).catch(this.raiseError);
         }
     }
 }
