@@ -10,6 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { AppPermissions, GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { Group } from 'app/shared/models/users/group';
+import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewGroup } from '../../models/view-group';
 
@@ -96,12 +97,7 @@ export class GroupListComponent extends BaseViewComponent implements OnInit {
             name: [name, Validators.required]
         });
 
-        const dialogRef = this.dialog.open(this.groupEditDialog, {
-            width: '400px',
-            maxWidth: '90vw',
-            maxHeight: '90vh',
-            disableClose: true
-        });
+        const dialogRef = this.dialog.open(this.groupEditDialog, infoDialogSettings);
 
         dialogRef.keydownEvents().subscribe((event: KeyboardEvent) => {
             if (event.key === 'Enter' && event.shiftKey && this.groupForm.valid) {

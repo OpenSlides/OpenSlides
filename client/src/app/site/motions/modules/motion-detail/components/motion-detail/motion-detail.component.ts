@@ -30,6 +30,7 @@ import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { Motion } from 'app/shared/models/motions/motion';
 import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change';
+import { infoDialogSettings, mediumDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { CreateMotion } from 'app/site/motions/models/create-motion';
 import { ViewCategory } from 'app/site/motions/models/view-category';
@@ -1037,12 +1038,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
             )
         };
         this.dialogService.open(MotionChangeRecommendationDialogComponent, {
-            height: '600px',
-            width: '800px',
-            maxHeight: '90vh',
-            maxWidth: '90vw',
-            data: data,
-            disableClose: true
+            ...mediumDialogSettings,
+            data: data
         });
     }
 
@@ -1059,11 +1056,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
             )
         };
         this.dialogService.open(MotionTitleChangeRecommendationDialogComponent, {
-            width: '400px',
-            maxHeight: '90vh',
-            maxWidth: '90vw',
-            data: data,
-            disableClose: true
+            ...infoDialogSettings,
+            data: data
         });
     }
 

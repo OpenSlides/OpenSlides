@@ -25,6 +25,7 @@ import { MediaManageService } from 'app/core/ui-services/media-manage.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
+import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewGroup } from 'app/site/users/models/view-group';
@@ -306,12 +307,7 @@ export class MediafileListComponent extends BaseViewComponent implements OnInit,
             access_groups_id: [file.access_groups_id]
         });
 
-        const dialogRef = this.dialog.open(this.fileEditDialog, {
-            width: '400px',
-            maxWidth: '90vw',
-            maxHeight: '90vh',
-            disableClose: true
-        });
+        const dialogRef = this.dialog.open(this.fileEditDialog, infoDialogSettings);
 
         dialogRef.keydownEvents().subscribe((event: KeyboardEvent) => {
             if (event.key === 'Enter' && event.shiftKey && this.fileEditForm.valid) {
@@ -410,9 +406,7 @@ export class MediafileListComponent extends BaseViewComponent implements OnInit,
 
     public createNewFolder(templateRef: TemplateRef<string>): void {
         this.newDirectoryForm.reset();
-        const dialogRef = this.dialog.open(templateRef, {
-            width: '400px'
-        });
+        const dialogRef = this.dialog.open(templateRef, infoDialogSettings);
 
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
@@ -428,9 +422,7 @@ export class MediafileListComponent extends BaseViewComponent implements OnInit,
 
     public move(templateRef: TemplateRef<string>, mediafile: ViewMediafile): void {
         this.newDirectoryForm.reset();
-        const dialogRef = this.dialog.open(templateRef, {
-            width: '400px'
-        });
+        const dialogRef = this.dialog.open(templateRef, infoDialogSettings);
 
         dialogRef.afterClosed().subscribe(result => {
             if (result) {

@@ -17,6 +17,7 @@ import { ConfigService } from 'app/core/ui-services/config.service';
 import { CsvExportService } from 'app/core/ui-services/csv-export.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { genders } from 'app/shared/models/users/user';
+import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseListViewComponent } from 'app/site/base/base-list-view';
 import { UserFilterListService } from '../../services/user-filter-list.service';
 import { UserPdfExportService } from '../../services/user-pdf-export.service';
@@ -219,12 +220,7 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
             number: user.number
         };
 
-        const dialogRef = this.dialog.open(this.userInfoDialog, {
-            width: '400px',
-            maxWidth: '90vw',
-            maxHeight: '90vh',
-            disableClose: true
-        });
+        const dialogRef = this.dialog.open(this.userInfoDialog, infoDialogSettings);
 
         dialogRef.keydownEvents().subscribe((event: KeyboardEvent) => {
             if (event.key === 'Enter' && event.shiftKey) {

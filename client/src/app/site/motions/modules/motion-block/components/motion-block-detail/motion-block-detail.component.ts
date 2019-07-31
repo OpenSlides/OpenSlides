@@ -13,6 +13,7 @@ import { MotionBlockRepositoryService } from 'app/core/repositories/motions/moti
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
+import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
@@ -219,12 +220,7 @@ export class MotionBlockDetailComponent extends BaseViewComponent implements OnI
             internal: [this.block.internal]
         });
 
-        const dialogRef = this.dialog.open(this.editDialog, {
-            width: '400px',
-            maxWidth: '90vw',
-            maxHeight: '90vh',
-            disableClose: true
-        });
+        const dialogRef = this.dialog.open(this.editDialog, infoDialogSettings);
 
         dialogRef.keydownEvents().subscribe((event: KeyboardEvent) => {
             if (event.key === 'Enter' && event.shiftKey) {
