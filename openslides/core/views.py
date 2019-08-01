@@ -182,15 +182,17 @@ class ProjectorViewSet(ModelViewSet):
         If `delete_last_history_element` is True, the last element is deleted.
         Note: You cannot give `append_to_history` and `delete_last_history_element`
         at the same time.
+
+        If `reset_scroll` is True, the scoll of the projector will reset.
         """
         projector = self.get_object()
-        projector.scroll = 0
         elements = request.data.get("elements")
         preview = request.data.get("preview")
         history_element = request.data.get("append_to_history")
         delete_last_history_element = request.data.get(
             "delete_last_history_element", False
         )
+        reset_scroll = request.data.get("reset_scroll", False)
 
         if elements is not None:
             elements_validator(elements)
@@ -208,6 +210,9 @@ class ProjectorViewSet(ModelViewSet):
         if elements_history is not None:
             elements_array_validator(elements_history)
             projector.elements_history = elements_history
+
+        if reset_scroll:
+            projector.scroll = 0
 
         projector.save()
         return Response()

@@ -158,7 +158,7 @@ export class ProjectorService {
                 changed = true;
             }
             if (changed) {
-                await this.projectRequest(projector, projector.elements, null, removedElements);
+                await this.projectRequest(projector, projector.elements, null, removedElements, false, true);
             }
         }
     }
@@ -211,7 +211,8 @@ export class ProjectorService {
         elements?: ProjectorElements,
         preview?: ProjectorElements,
         appendToHistory?: ProjectorElements,
-        deleteLastHistroyElement?: boolean
+        deleteLastHistroyElement?: boolean,
+        resetScroll?: boolean
     ): Promise<void> {
         const requestData: any = {};
         if (elements) {
@@ -228,6 +229,9 @@ export class ProjectorService {
         }
         if (appendToHistory && appendToHistory.length && deleteLastHistroyElement) {
             throw new Error('You cannot append to the history and delete the last element at the same time');
+        }
+        if (resetScroll) {
+            requestData.reset_scroll = resetScroll;
         }
         await this.http.post(`/rest/core/projector/${projector.id}/project/`, requestData);
     }
@@ -361,7 +365,14 @@ export class ProjectorService {
 
         const removedElements = projector.removeAllNonStableElements();
         projector.addElement(projector.elements_preview.splice(previewIndex, 1)[0]);
-        await this.projectRequest(projector, projector.elements, projector.elements_preview, removedElements);
+        await this.projectRequest(
+            projector,
+            projector.elements,
+            projector.elements_preview,
+            removedElements,
+            false,
+            true
+        );
     }
 
     /**
@@ -388,7 +399,7 @@ export class ProjectorService {
         if (lastElement) {
             projector.addElement(lastElement);
         }
-        await this.projectRequest(projector, projector.elements, projector.elements_preview, null, true);
+        await this.projectRequest(projector, projector.elements, projector.elements_preview, null, true, true);
     }
 
     /**
