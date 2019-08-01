@@ -8,13 +8,13 @@ import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition } from '@pebula/ngrid';
 
 import { StorageService } from 'app/core/core-services/storage.service';
+import { PdfError } from 'app/core/pdf-services/pdf-document.service';
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
 import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { PdfError } from 'app/core/ui-services/pdf-document.service';
 import { ColumnRestriction } from 'app/shared/components/list-view-table/list-view-table.component';
 import { infoDialogSettings, largeDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseListViewComponent } from 'app/site/base/base-list-view';

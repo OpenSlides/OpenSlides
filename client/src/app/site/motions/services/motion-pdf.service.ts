@@ -2,14 +2,14 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { HtmlToPdfService } from 'app/core/pdf-services/html-to-pdf.service';
+import { PdfDocumentService } from 'app/core/pdf-services/pdf-document.service';
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
 import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions/statute-paragraph-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { HtmlToPdfService } from 'app/core/ui-services/html-to-pdf.service';
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
-import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
 import { CalculablePollKey } from 'app/core/ui-services/poll.service';
 import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/motions/view-unified-change';
 import { getRecommendationTypeName } from 'app/shared/utils/recommendation-type-names';
@@ -547,21 +547,7 @@ export class MotionPdfService {
                     body: metaTableBody
                 },
                 margin: [0, 0, 0, 20],
-                // That did not work too well in the past. Perhaps substitution by a pdfWorker the worker will be necessary
-                layout: {
-                    fillColor: () => {
-                        return '#dddddd';
-                    },
-                    hLineWidth: (i, node) => {
-                        return i === 0 || i === node.table.body.length ? 0 : 0.5;
-                    },
-                    vLineWidth: () => {
-                        return 0;
-                    },
-                    hLineColor: () => {
-                        return 'white';
-                    }
-                }
+                layout: 'metaboxLayout'
             };
         }
     }
@@ -776,7 +762,7 @@ export class MotionPdfService {
                 dontBreakRows: true,
                 body: callListTableBody.concat(callListRows)
             },
-            layout: this.pdfDocumentService.switchColorTableLayout
+            layout: 'switchColorTableLayout'
         };
         return [title, table];
     }

@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { PdfDocumentService } from 'app/core/pdf-services/pdf-document.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
 import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
 import { ExportFormData } from '../modules/motion-list/components/motion-export-dialog/motion-export-dialog.component';
 import { MotionPdfCatalogService } from './motion-pdf-catalog.service';

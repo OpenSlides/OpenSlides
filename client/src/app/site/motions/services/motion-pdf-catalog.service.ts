@@ -3,10 +3,10 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
 
+import { BorderType, PdfDocumentService, PdfError, StyleType } from 'app/core/pdf-services/pdf-document.service';
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { BorderType, PdfDocumentService, PdfError, StyleType } from 'app/core/ui-services/pdf-document.service';
 import { ExportFormData } from '../modules/motion-list/components/motion-export-dialog/motion-export-dialog.component';
 import { MotionPdfService } from './motion-pdf.service';
 import { ViewCategory } from '../models/view-category';

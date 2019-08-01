@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { AbstractPollData, PollPdfService } from 'app/core/pdf-services/base-poll-pdf-service';
+import { PdfDocumentService } from 'app/core/pdf-services/pdf-document.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
-import { AbstractPollData, PollPdfService } from 'app/core/ui-services/poll-pdf-service';
 import { MotionPoll } from 'app/shared/models/motions/motion-poll';
 
 type BallotCountChoices = 'NUMBER_OF_DELEGATES' | 'NUMBER_OF_ALL_PARTICIPANTS' | 'CUSTOM_NUMBER';

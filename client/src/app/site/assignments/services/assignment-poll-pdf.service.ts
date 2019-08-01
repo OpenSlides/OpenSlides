@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { AbstractPollData, BallotCountChoices, PollPdfService } from 'app/core/pdf-services/base-poll-pdf-service';
+import { PdfDocumentService } from 'app/core/pdf-services/pdf-document.service';
 import { AssignmentRepositoryService } from 'app/core/repositories/assignments/assignment-repository.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
-import { AbstractPollData, BallotCountChoices, PollPdfService } from 'app/core/ui-services/poll-pdf-service';
 import { AssignmentPollMethod } from './assignment-poll.service';
 import { ViewAssignmentPoll } from '../models/view-assignment-poll';
 
