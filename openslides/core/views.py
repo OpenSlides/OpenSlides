@@ -3,6 +3,7 @@ import os
 from collections import defaultdict
 from typing import Any, Dict
 
+from asgiref.sync import async_to_sync
 from django.conf import settings
 from django.contrib.staticfiles import finders
 from django.contrib.staticfiles.views import serve
@@ -20,6 +21,7 @@ from ..utils import views as utils_views
 from ..utils.arguments import arguments
 from ..utils.auth import GROUP_ADMIN_PK, anonymous_is_enabled, has_perm, in_some_groups
 from ..utils.autoupdate import inform_changed_data
+from ..utils.cache import element_cache
 from ..utils.plugins import (
     get_plugin_description,
     get_plugin_license,
@@ -590,8 +592,24 @@ class HistoryDataView(utils_views.APIView):
             full_data = instance.full_data.full_data
             if full_data:
                 dataset[collection][id] = full_data
-            else:
+            elif id in dataset[collection]:
                 del dataset[collection][id]
+
+        # Ensure, that newer configs than the requested timepoint are also
+        # included, so the client is happy and doesn't miss any config variables.
+        all_current_config_keys = set(config.config_variables.keys())
+        all_old_config_keys = set(
+            map(lambda config: config["key"], dataset["core/config"].values())
+        )
+        missing_keys = all_current_config_keys - all_old_config_keys
+        if missing_keys:
+            config_full_data = async_to_sync(element_cache.get_collection_full_data)(
+                "core/config"
+            )
+            key_to_id = config.get_key_to_id()
+            for key in missing_keys:
+                id = key_to_id[key]
+                dataset["core/config"][id] = config_full_data[id]
 
         return {
             collection: list(dataset[collection].values())

@@ -93,7 +93,8 @@ export abstract class BaseHasContentObjectRepository<
                     (<any>ownViewModel)._contentObject = foreignModel;
                     return true;
                 } else {
-                    throw new Error(`The object is not an ${relation.VForeignVerbose}:` + foreignModel);
+                    console.warn(`The object is not an ${relation.VForeignVerbose}:` + foreignModel);
+                    return false;
                 }
 
                 // TODO: set reverse
