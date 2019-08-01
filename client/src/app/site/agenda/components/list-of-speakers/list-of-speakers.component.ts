@@ -369,7 +369,11 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
      * @returns 0 or the number of times a speaker occurs in finishedSpeakers
      */
     public hasSpokenCount(speaker: ViewSpeaker): number {
-        return this.finishedSpeakers.filter(finishedSpeaker => finishedSpeaker.user.id === speaker.user.id).length;
+        return this.finishedSpeakers.filter(finishedSpeaker => {
+            if (finishedSpeaker && finishedSpeaker.user) {
+                return finishedSpeaker.user.id === speaker.user.id;
+            }
+        }).length;
     }
 
     /**

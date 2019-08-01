@@ -77,6 +77,7 @@ _('Input format: DD.MM.YYYY HH:MM');
 _('Hide internal items when projecting subitems');
 _('Number of last speakers to be shown on the projector');
 _('List of speakers');
+_('The list of speakers is closed');
 _('Show orange countdown in the last x seconds of speaking time');
 _('Enter duration in seconds. Choose 0 to disable warning color.');
 _('Hide the amount of speakers in subtitle of list of speakers slide');
