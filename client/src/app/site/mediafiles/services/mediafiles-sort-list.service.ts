@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { OpenSlidesStatusService } from 'app/core/core-services/openslides-status.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { BaseSortListService, OsSortingDefinition, OsSortingOption } from 'app/core/ui-services/base-sort-list.service';
 import { ViewMediafile } from '../models/view-mediafile';
@@ -31,8 +32,8 @@ export class MediafilesSortListService extends BaseSortListService<ViewMediafile
      * @param translate required by parent
      * @param store required by parent
      */
-    public constructor(translate: TranslateService, store: StorageService) {
-        super('Mediafiles', translate, store);
+    public constructor(translate: TranslateService, store: StorageService, OSStatus: OpenSlidesStatusService) {
+        super('Mediafiles', translate, store, OSStatus);
     }
 
     /**

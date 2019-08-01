@@ -2,6 +2,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 
 import { BaseViewModel } from '../../site/base/base-view-model';
+import { OpenSlidesStatusService } from '../core-services/openslides-status.service';
 import { StorageService } from '../core-services/storage.service';
 
 /**
@@ -119,7 +120,12 @@ export abstract class BaseSortListService<V extends BaseViewModel> {
      * @param translate required for language sensitive comparing
      * @param store to save and load sorting preferences
      */
-    public constructor(protected name: string, protected translate: TranslateService, private store: StorageService) {}
+    public constructor(
+        protected name: string,
+        protected translate: TranslateService,
+        private store: StorageService,
+        private OSStatus: OpenSlidesStatusService
+    ) {}
 
     /**
      * Enforce children to implement a method that returns the fault sorting
@@ -139,7 +145,12 @@ export abstract class BaseSortListService<V extends BaseViewModel> {
         }
 
         if (!this.sortDefinition) {
-            this.sortDefinition = await this.store.get<OsSortingDefinition<V> | null>('sorting_' + this.name);
+            if (this.OSStatus.isInHistoryMode) {
+                this.sortDefinition = null;
+            } else {
+                this.sortDefinition = await this.store.get<OsSortingDefinition<V> | null>('sorting_' + this.name);
+            }
+
             if (this.sortDefinition && this.sortDefinition.sortProperty) {
                 this.updateSortedData();
             } else {
@@ -198,7 +209,9 @@ export abstract class BaseSortListService<V extends BaseViewModel> {
      */
     private updateSortDefinitions(): void {
         this.updateSortedData();
-        this.store.set('sorting_' + this.name, this.sortDefinition);
+        if (!this.OSStatus.isInHistoryMode) {
+            this.store.set('sorting_' + this.name, this.sortDefinition);
+        }
     }
 
     /**

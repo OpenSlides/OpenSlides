@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { OpenSlidesStatusService } from 'app/core/core-services/openslides-status.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { BaseFilterListService, OsFilter, OsFilterOption } from 'app/core/ui-services/base-filter-list.service';
 import { ItemVisibilityChoices } from 'app/shared/models/agenda/item';
@@ -20,8 +21,8 @@ export class AgendaFilterListService extends BaseFilterListService<ViewItem> {
      * @param store
      * @param translate Translation service
      */
-    public constructor(store: StorageService, private translate: TranslateService) {
-        super('Agenda', store);
+    public constructor(store: StorageService, OSStatus: OpenSlidesStatusService, private translate: TranslateService) {
+        super('Agenda', store, OSStatus);
     }
 
     /**

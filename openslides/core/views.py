@@ -1,5 +1,6 @@
 import datetime
 import os
+from collections import defaultdict
 from typing import Any, Dict
 
 from django.conf import settings
@@ -10,6 +11,8 @@ from django.http import Http404, HttpResponse
 from django.utils.timezone import now
 from django.views import static
 from django.views.generic.base import View
+
+from openslides.utils.utils import split_element_id
 
 from .. import __license__ as license, __url__ as url, __version__ as version
 from ..users.models import User
@@ -523,15 +526,15 @@ class HistoryInformationView(utils_views.APIView):
         """
         data = []
         for instance in History.objects.filter(element_id=value).order_by("-now"):
-            data.append(
-                {
-                    "element_id": instance.element_id,
-                    "timestamp": instance.now.timestamp(),
-                    "information": instance.information,
-                    "resticted": instance.restricted,
-                    "user_id": instance.user.pk if instance.user else None,
-                }
-            )
+            if instance.information:
+                data.append(
+                    {
+                        "element_id": instance.element_id,
+                        "timestamp": instance.now.timestamp(),
+                        "information": instance.information,
+                        "user_id": instance.user.pk if instance.user else None,
+                    }
+                )
         return data
 
     def delete(self, request, *args, **kwargs):
@@ -563,8 +566,8 @@ class HistoryDataView(utils_views.APIView):
 
     def get_context_data(self, **context):
         """
-        Checks if user is in admin group. If yes all history data until
-        (including) timestamp are added to the response data.
+        Checks if user is in admin group. If yes, all history data until
+        (including) timestamp are collected to build a valid dataset for the client.
         """
         if not in_some_groups(self.request.user.pk or 0, [GROUP_ADMIN_PK]):
             self.permission_denied(self.request)
@@ -572,22 +575,25 @@ class HistoryDataView(utils_views.APIView):
             timestamp = int(self.request.query_params.get("timestamp", 0))
         except ValueError:
             raise ValidationError(
-                {"detail": "Invalid input. Timestamp  should be an integer."}
+                {"detail": "Invalid input. Timestamp should be an integer."}
             )
-        data = []
         queryset = History.objects.select_related("full_data")
         if timestamp:
             queryset = queryset.filter(
                 now__lte=datetime.datetime.fromtimestamp(timestamp)
             )
+
+        # collection <--> id <--> full_data
+        dataset: Dict[str, Dict[int, Any]] = defaultdict(dict)
         for instance in queryset:
-            data.append(
-                {
-                    "full_data": instance.full_data.full_data,
-                    "element_id": instance.element_id,
-                    "timestamp": instance.now.timestamp(),
-                    "information": instance.information,
-                    "user_id": instance.user.pk if instance.user else None,
-                }
-            )
-        return data
+            collection, id = split_element_id(instance.element_id)
+            full_data = instance.full_data.full_data
+            if full_data:
+                dataset[collection][id] = full_data
+            else:
+                del dataset[collection][id]
+
+        return {
+            collection: list(dataset[collection].values())
+            for collection in dataset.keys()
+        }
