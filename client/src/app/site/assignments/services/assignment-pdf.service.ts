@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { HtmlToPdfService } from 'app/core/ui-services/html-to-pdf.service';
-import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
+import { HtmlToPdfService } from 'app/core/pdf-services/html-to-pdf.service';
 import { PollVoteValue } from 'app/core/ui-services/poll.service';
 import { AssignmentPollService } from './assignment-poll.service';
 import { ViewAssignment } from '../models/view-assignment';
@@ -34,7 +33,6 @@ export class AssignmentPdfService {
     public constructor(
         private translate: TranslateService,
         private pollService: AssignmentPollService,
-        private pdfDocumentService: PdfDocumentService,
         private htmlToPdfService: HtmlToPdfService
     ) {}
 
@@ -265,7 +263,7 @@ export class AssignmentPdfService {
                         headerRows: 1,
                         body: pollTableBody
                     },
-                    layout: this.pdfDocumentService.switchColorTableLayout
+                    layout: 'switchColorTableLayout'
                 });
             }
         }

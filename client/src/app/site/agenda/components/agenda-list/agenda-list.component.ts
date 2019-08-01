@@ -12,13 +12,13 @@ import { AgendaFilterListService } from '../../services/agenda-filter-list.servi
 import { AgendaPdfService } from '../../services/agenda-pdf.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { StorageService } from 'app/core/core-services/storage.service';
+import { PdfDocumentService } from 'app/core/pdf-services/pdf-document.service';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { ListOfSpeakersRepositoryService } from 'app/core/repositories/agenda/list-of-speakers-repository.service';
 import { TopicRepositoryService } from 'app/core/repositories/topics/topic-repository.service';
 import { _ } from 'app/core/translate/translation-marker';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { DurationService } from 'app/core/ui-services/duration.service';
-import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { ColumnRestriction } from 'app/shared/components/list-view-table/list-view-table.component';

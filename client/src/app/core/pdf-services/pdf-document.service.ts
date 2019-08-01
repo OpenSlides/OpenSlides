@@ -1,13 +1,15 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { MatSnackBar } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
 import { saveAs } from 'file-saver';
-import pdfMake from 'pdfmake/build/pdfmake';
 
+import { ProgressSnackBarComponent } from 'app/shared/components/progress-snack-bar/progress-snack-bar.component';
 import { ExportFormData } from 'app/site/motions/modules/motion-list/components/motion-export-dialog/motion-export-dialog.component';
-import { ConfigService } from './config.service';
+import { ConfigService } from '../ui-services/config.service';
 import { HttpService } from '../core-services/http.service';
+import { ProgressService } from '../ui-services/progress.service';
 
 /**
  * Enumeration to define possible values for the styling.
@@ -51,7 +53,7 @@ export class PdfError extends Error {
  * @example
  * ```ts
  * const motionContent = this.motionPdfService.motionToDocDef(this.motion);
- * this.this.pdfDocumentService.open(motionContent);
+ * this.pdfDocumentService.download(motionContent, 'test.pdf');
  * ```
  */
 @Injectable({
@@ -65,25 +67,6 @@ export class PdfDocumentService {
     private imageUrls: string[] = [];
 
     /**
-     * Table layout that switches the background color every other row.
-     * @example
-     * ```ts
-     * layout: this.pdfDocumentService.switchColorTableLayout
-     * ```
-     */
-    public switchColorTableLayout = {
-        hLineWidth: rowIndex => {
-            return rowIndex === 1;
-        },
-        vLineWidth: () => {
-            return 0;
-        },
-        fillColor: rowIndex => {
-            return rowIndex % 2 === 0 ? '#EEEEEE' : null;
-        }
-    };
-
-    /**
      * Constructor
      *
      * @param translate translations
@@ -93,7 +76,9 @@ export class PdfDocumentService {
     public constructor(
         private translate: TranslateService,
         private configService: ConfigService,
-        private httpService: HttpService
+        private httpService: HttpService,
+        private matSnackBar: MatSnackBar,
+        private progressService: ProgressService
     ) {}
 
     /**
@@ -183,13 +168,9 @@ export class PdfDocumentService {
         customMargins?: [number, number, number, number],
         landscape?: boolean
     ): Promise<object> {
-        this.initFonts();
         this.imageUrls = imageUrls ? imageUrls : [];
-        pdfMake.vfs = await this.initVfs();
         const pageSize = this.configService.instant('general_export_pdf_pagesize');
         const defaultMargins = pageSize === 'A5' ? [45, 30, 45, 45] : [75, 90, 75, 75];
-        // needs to be done before, cause the footer is async
-        this.loadFooterImages();
         const result = {
             pageSize: pageSize || 'A4',
             pageOrientation: landscape ? 'landscape' : 'portrait',
@@ -199,21 +180,12 @@ export class PdfDocumentService {
                 fontSize: this.configService.instant('general_export_pdf_fontsize')
             },
             header: this.getHeader(customMargins ? [customMargins[0], customMargins[2]] : null),
-
-            // TODO: option for no footer, wherever this can be defined
-            footer: (currentPage, pageCount) => {
-                return this.getFooter(
-                    currentPage,
-                    pageCount,
-                    customMargins ? [customMargins[0], customMargins[2]] : null,
-                    exportInfo
-                );
-            },
+            // real footer gets created in the worker
+            tmpfooter: this.getFooter(customMargins ? [customMargins[0], customMargins[2]] : null, exportInfo),
             info: metadata,
             content: documentContent,
             styles: this.getStandardPaperStyles()
         };
-        await this.loadAllImages();
         return result;
     }
 
@@ -226,9 +198,7 @@ export class PdfDocumentService {
      * @returns the pdf document definition ready to export
      */
     private async getBallotPaper(documentContent: object, imageUrl?: string): Promise<object> {
-        this.initFonts();
         this.imageUrls = imageUrl ? [imageUrl] : [];
-        pdfMake.vfs = await this.initVfs();
         const result = {
             pageSize: 'A4',
             pageMargins: [0, 0, 0, 0],
@@ -239,21 +209,18 @@ export class PdfDocumentService {
             content: documentContent,
             styles: this.getBlankPaperStyles()
         };
-        await this.loadAllImages();
         return result;
     }
 
     /**
-     * Define the fonts
+     * Get pdfFonts from storage
      */
-    private initFonts(): void {
-        pdfMake.fonts = {
-            PdfFont: {
-                normal: this.getFontName('font_regular'),
-                bold: this.getFontName('font_bold'),
-                italics: this.getFontName('font_italic'),
-                bolditalics: this.getFontName('font_bold_italic')
-            }
+    private getPdfFonts(): object {
+        return {
+            normal: this.getFontName('font_regular'),
+            bold: this.getFontName('font_bold'),
+            italics: this.getFontName('font_italic'),
+            bolditalics: this.getFontName('font_bold_italic')
         };
     }
 
@@ -341,14 +308,9 @@ export class PdfDocumentService {
      * @param lrMargin optionally overriding the margins
      * @returns the footer doc definition
      */
-    private getFooter(
-        currentPage: number,
-        pageCount: number,
-        lrMargin?: [number, number],
-        exportInfo?: ExportFormData
-    ): object {
+    private getFooter(lrMargin?: [number, number], exportInfo?: ExportFormData): object {
         const columns = [];
-        const showPage = exportInfo && exportInfo.pdfOptions ? exportInfo.pdfOptions.includes('page') : true;
+        const showPageNr = exportInfo && exportInfo.pdfOptions ? exportInfo.pdfOptions.includes('page') : true;
         const showDate = exportInfo && exportInfo.pdfOptions ? exportInfo.pdfOptions.includes('date') : false;
         let logoContainerWidth: string;
         let pageNumberPosition: string;
@@ -357,11 +319,10 @@ export class PdfDocumentService {
         const logoFooterRightUrl = this.configService.instant<any>('logo_pdf_footer_R').path;
 
         let footerPageNumber = '';
-        if (showPage) {
-            footerPageNumber += `${currentPage} / ${pageCount}`;
-            if (showDate) {
-                footerPageNumber += '\n';
-            }
+        if (showPageNr) {
+            // footerPageNumber += `${currentPage} / ${pageCount}`;
+            // replace with `${currentPage} / ${pageCount}` in worker
+            footerPageNumber += `%PAGENR%`;
         }
 
         let footerDate = {};
@@ -402,11 +363,12 @@ export class PdfDocumentService {
                 width: logoContainerWidth,
                 alignment: 'left'
             });
+            this.imageUrls.push(logoFooterLeftUrl);
         }
 
         // add the page number
         columns.push({
-            text: [footerPageNumber, footerDate],
+            stack: [footerPageNumber, footerDate],
             style: 'footerPageNumber',
             alignment: pageNumberPosition
         });
@@ -419,6 +381,7 @@ export class PdfDocumentService {
                 width: logoContainerWidth,
                 alignment: 'right'
             });
+            this.imageUrls.push(logoFooterRightUrl);
         }
 
         const margin = [lrMargin ? lrMargin[0] : 75, 0, lrMargin ? lrMargin[0] : 75, 10];
@@ -454,6 +417,7 @@ export class PdfDocumentService {
             this.createPdf(doc, filename);
         });
     }
+
     /**
      * Downloads a pdf with the ballot papet page definitions.
      *
@@ -471,12 +435,57 @@ export class PdfDocumentService {
      * Triggers the actual page creation and saving.
      *
      * @param doc the finished layout
-     * @param filename the filename (without extension) to save as
+     * @param filetitle the filename (without extension) to save as
      */
-    private createPdf(doc: object, filename: string): void {
-        pdfMake.createPdf(doc).getBlob(blob => {
-            saveAs(blob, `${filename}.pdf`, { autoBOM: true });
+    private async createPdf(doc: object, filetitle: string): Promise<void> {
+        const filename = `${filetitle}.pdf`;
+
+        // set the required progress info
+        this.progressService.progressInfo = {
+            mode: 'determinate',
+            text: filename
+        };
+
+        // open progress bar
+        this.matSnackBar.openFromComponent(ProgressSnackBarComponent, {
+            duration: 0
         });
+        const fonts = this.getPdfFonts();
+        const vfs = await this.initVfs();
+        await this.loadAllImages(vfs);
+
+        if (typeof Worker !== 'undefined') {
+            const worker = new Worker('./pdf-worker.worker', {
+                type: 'module'
+            });
+
+            // the result of the worker
+            worker.onmessage = ({ data }) => {
+                // if the worker returns a numbers, is always the progress
+                if (typeof data === 'number') {
+                    // update progress
+                    const progress = Math.ceil(data * 100);
+                    this.progressService.progressAmount = progress;
+                }
+
+                // if the worker returns an object, it's always the document
+                if (typeof data === 'object') {
+                    // close progress bar
+                    this.matSnackBar.dismiss();
+                    saveAs(data, filename, { autoBOM: true });
+                }
+            };
+
+            worker.postMessage({
+                doc: JSON.parse(JSON.stringify(doc)),
+                fonts: fonts,
+                vfs: vfs
+            });
+        } else {
+            this.matSnackBar.open(this.translate.instant('Web workers are not supported on your browser.'), '', {
+                duration: 0
+            });
+        }
     }
 
     /**
@@ -613,29 +622,12 @@ export class PdfDocumentService {
     }
 
     /**
-     * Adds the footer images to the imageUrls-list, cause the create footer function is async and
-     * potentially called after loadAllImages was called.
-     */
-    private loadFooterImages(): void {
-        const logoFooterLeftUrl = this.configService.instant<any>('logo_pdf_footer_L').path;
-        const logoFooterRightUrl = this.configService.instant<any>('logo_pdf_footer_R').path;
-
-        if (logoFooterLeftUrl) {
-            this.imageUrls.push(logoFooterLeftUrl);
-        }
-
-        if (logoFooterRightUrl) {
-            this.imageUrls.push(logoFooterRightUrl);
-        }
-    }
-
-    /**
      * Triggers the addition of all images found during creation(including header and footer)
      * to the vfs.
      */
-    private async loadAllImages(): Promise<void> {
+    private async loadAllImages(vfs: object): Promise<void> {
         const promises = this.imageUrls.map(image => {
-            return this.addImageToVfS(image);
+            return this.addImageToVfS(image, vfs);
         });
         await Promise.all(promises);
     }
@@ -645,14 +637,14 @@ export class PdfDocumentService {
      *
      * @param url
      */
-    private async addImageToVfS(url: string): Promise<void> {
+    private async addImageToVfS(url: string, vfs: object): Promise<void> {
         if (url.indexOf('/') === 0) {
             url = url.substr(1);
         }
 
-        if (!pdfMake.vfs[url]) {
+        if (!vfs[url]) {
             const base64 = await this.convertUrlToBase64(url);
-            pdfMake.vfs[url] = base64;
+            vfs[url] = base64;
         }
     }
 

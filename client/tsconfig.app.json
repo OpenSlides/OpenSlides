@@ -8,5 +8,5 @@
         "enableIvy": false
     },
     "include": ["src/**/*.ts"],
-    "exclude": ["src/test.ts", "**/*.spec.ts"]
+    "exclude": ["src/test.ts", "**/*.spec.ts", "src/**/*.worker.ts"]
 }

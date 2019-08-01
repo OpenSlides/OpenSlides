@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { PdfDocumentService } from 'app/core/ui-services/pdf-document.service';
 import { ViewUser } from '../models/view-user';
 
 /**
@@ -25,13 +24,8 @@ export class UserPdfService {
      *
      * @param translate handle translations
      * @param configService Read config variables
-     * @param pdfDocumentService Global PDF Functions
      */
-    public constructor(
-        private translate: TranslateService,
-        private configService: ConfigService,
-        private pdfDocumentService: PdfDocumentService
-    ) {}
+    public constructor(private translate: TranslateService, private configService: ConfigService) {}
 
     /**
      * Converts a user to PdfMake doc definition, containing access information
@@ -254,7 +248,7 @@ export class UserPdfService {
                 headerRows: 1,
                 body: userTableBody.concat(this.getListUsers(users))
             },
-            layout: this.pdfDocumentService.switchColorTableLayout
+            layout: 'switchColorTableLayout'
         };
     }
 

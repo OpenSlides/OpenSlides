@@ -96,6 +96,7 @@ import { AgendaContentObjectFormComponent } from './components/agenda-content-ob
 import { ExtensionFieldComponent } from './components/extension-field/extension-field.component';
 import { AttachmentControlComponent } from './components/attachment-control/attachment-control.component';
 import { RoundedInputComponent } from './components/rounded-input/rounded-input.component';
+import { ProgressSnackBarComponent } from './components/progress-snack-bar/progress-snack-bar.component';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -274,7 +275,8 @@ import { RoundedInputComponent } from './components/rounded-input/rounded-input.
         AgendaContentObjectFormComponent,
         ExtensionFieldComponent,
         AttachmentControlComponent,
-        RoundedInputComponent
+        RoundedInputComponent,
+        ProgressSnackBarComponent
     ],
     providers: [
         { provide: DateAdapter, useClass: OpenSlidesDateAdapter },
@@ -283,14 +285,16 @@ import { RoundedInputComponent } from './components/rounded-input/rounded-input.
         SortingTreeComponent,
         SortFilterBarComponent,
         SortBottomSheetComponent,
-        DecimalPipe
+        DecimalPipe,
+        ProgressSnackBarComponent
     ],
     entryComponents: [
         SortBottomSheetComponent,
         C4DialogComponent,
         PromptDialogComponent,
         ChoiceDialogComponent,
-        ProjectionDialogComponent
+        ProjectionDialogComponent,
+        ProgressSnackBarComponent
     ]
 })
 export class SharedModule {}

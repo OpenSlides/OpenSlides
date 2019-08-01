@@ -31,7 +31,8 @@
                             { "glob": "**/*", "input": "node_modules/tinymce/plugins", "output": "/tinymce/plugins/" }
                         ],
                         "styles": ["src/styles.scss"],
-                        "scripts": ["node_modules/tinymce/tinymce.min.js"]
+                        "scripts": ["node_modules/tinymce/tinymce.min.js"],
+                        "webWorkerTsConfig": "tsconfig.worker.json"
                     },
                     "configurations": {
                         "production": {
