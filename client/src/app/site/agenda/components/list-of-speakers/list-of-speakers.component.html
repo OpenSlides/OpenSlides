@@ -13,7 +13,12 @@
 
 <mat-card class="os-card speaker-card" *ngIf="viewListOfSpeakers">
     <!-- Title -->
-    <h1 class="los-title">{{ viewListOfSpeakers.getTitle() }}</h1>
+    <h1 class="los-title">
+        {{ viewListOfSpeakers.getTitle() }}
+        <mat-icon *ngIf="viewListOfSpeakers.closed">
+            lock
+        </mat-icon>
+    </h1>
 
     <!-- List of finished speakers -->
     <mat-expansion-panel *ngIf="finishedSpeakers && finishedSpeakers.length > 0" class="finished-list">
@@ -131,7 +136,7 @@
     <!-- Add me and remove me if OP has correct permission -->
     <div *osPerms="'agenda.can_be_speaker'" class="add-self-buttons">
         <div *ngIf="speakers && !closedList">
-            <button mat-stroked-button (click)="addNewSpeaker()" *ngIf="!isOpInList() && canAddSelf">
+            <button mat-stroked-button [disabled]="viewListOfSpeakers.closed" (click)="addNewSpeaker()" *ngIf="!isOpInList() && canAddSelf">
                 <mat-icon>add</mat-icon>
                 <span translate>Add me</span>
             </button>
@@ -166,12 +171,12 @@
     ></os-projector-button>
 
     <button mat-menu-item *ngIf="isListOfSpeakersClosed" (click)="openSpeakerList()">
-        <mat-icon>mic</mat-icon>
+        <mat-icon>lock_open</mat-icon>
         <span translate>Open list of speakers</span>
     </button>
 
     <button mat-menu-item *ngIf="!isListOfSpeakersClosed" (click)="closeSpeakerList()">
-        <mat-icon>mic_off</mat-icon>
+        <mat-icon>lock</mat-icon>
         <span translate>Close list of speakers</span>
     </button>
 

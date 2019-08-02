@@ -44,6 +44,14 @@ export class SpeakerButtonComponent {
         }
     }
 
+    public get icon(): string {
+        return this.listOfSpeakers.closed ? 'voice_over_off' : 'record_voice_over';
+    }
+
+    public get tooltip(): string {
+        return this.listOfSpeakers.closed ? 'The list of speakers is closed' : 'List of speakers';
+    }
+
     /**
      * The constructor
      */

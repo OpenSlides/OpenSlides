@@ -1,5 +1,10 @@
 <mat-form-field [style.display]="fullWidth ? 'block' : 'inline-block'">
-    <mat-select [formControl]="formControl" placeholder="{{ listname | translate }}" [multiple]="multiple" #thisSelector>
+    <mat-select
+        [formControl]="formControl"
+        placeholder="{{ listname | translate }}"
+        [multiple]="multiple"
+        #thisSelector
+    >
         <ngx-mat-select-search ngModel (ngModelChange)="onSearch($event)"></ngx-mat-select-search>
         <div *ngIf="!multiple && includeNone">
             <mat-option [value]="null">
