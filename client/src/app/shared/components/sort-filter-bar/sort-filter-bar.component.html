@@ -10,8 +10,10 @@
     <div class="current-filters" *ngIf="filterService">
         <div *ngFor="let filter of filterService.filterStack">
             <button mat-stroked-button (click)="removeFilterFromStack(filter)">
-                <os-icon-container icon="close">
-                    {{ filter.option.label | translate }}
+                <os-icon-container icon="close" class="active-filter">
+                    <span class="active-filter">
+                        {{ filter.option.label | translate }}
+                    </span>
                 </os-icon-container>
             </button>
         </div>

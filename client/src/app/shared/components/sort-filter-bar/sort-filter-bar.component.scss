@@ -14,6 +14,11 @@
     display: flex;
 }
 
+.active-filter {
+    // force the filter tex tot stay in one line. Safe due to horizontal scrolling
+    white-space: pre;
+}
+
 span.right-with-margin {
     margin-right: 25px;
 }
