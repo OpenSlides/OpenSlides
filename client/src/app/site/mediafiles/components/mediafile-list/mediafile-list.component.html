@@ -23,7 +23,7 @@
 
 <!-- Folder navigation bar -->
 <div>
-    <div class="folder-nav-bar">
+    <div class="custom-table-header folder-nav-bar">
         <button class="folder" mat-button (click)="changeDirectory(null)">
             <mat-icon class="file-icon">home</mat-icon>
         </button>
@@ -75,12 +75,11 @@
             </span>
         </span>
     </div>
-    <mat-divider></mat-divider>
 </div>
 
 <!-- the actual file manager -->
 <pbl-ngrid
-    class="file-manager-table ngrid-hide-head"
+    class="virtual-scroll-with-head-bar ngrid-hide-head file-manager-table"
     showHeader="false"
     vScrollAuto
     [dataSource]="dataSource"

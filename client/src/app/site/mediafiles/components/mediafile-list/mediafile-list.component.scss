@@ -6,17 +6,16 @@
 }
 
 .folder-nav-bar {
-    $size: 40px;
+    $size: 64px;
     position: relative;
     display: flex;
-    line-height: $size;
-    background-color: white; // TODO: theme
 
     .arrow {
         height: $size;
         float: left;
         .mat-icon {
             line-height: $size;
+            height: $size;
         }
     }
 
@@ -60,8 +59,6 @@
     .info-text {
         font-size: 90%;
     }
-
-    height: calc(100vh - 105px);
 
     .pbl-ngrid-row {
         $size: 60px;
