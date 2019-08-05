@@ -30,7 +30,7 @@ export class ViewSpeaker extends BaseViewModel<Speaker> {
         return this.speaker.id;
     }
 
-    public get userId(): number {
+    public get user_id(): number {
         return this.speaker.user_id;
     }
 

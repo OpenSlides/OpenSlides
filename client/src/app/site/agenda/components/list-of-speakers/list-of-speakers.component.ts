@@ -359,7 +359,7 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
      * @returns whether or not the current operator is in the list
      */
     public isOpInList(): boolean {
-        return this.speakers.some(speaker => speaker.userId === this.operator.user.id);
+        return this.speakers.some(speaker => speaker.user_id === this.operator.user.id);
     }
 
     /**
@@ -444,7 +444,7 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
         if (!this.speakers || !this.speakers.length) {
             this.filteredUsers.next(users);
         } else {
-            this.filteredUsers.next(users.filter(u => !this.speakers.some(speaker => speaker.userId === u.id)));
+            this.filteredUsers.next(users.filter(u => !this.speakers.some(speaker => speaker.user_id === u.id)));
         }
     }
 }
