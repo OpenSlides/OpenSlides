@@ -1,4 +1,4 @@
-import { AppConfig } from '../../core/app-config';
+import { AppConfig } from '../../core/definitions/app-config';
 
 export const CommonAppConfig: AppConfig = {
     name: 'common',

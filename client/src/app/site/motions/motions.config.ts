@@ -1,4 +1,4 @@
-import { AppConfig } from '../../core/app-config';
+import { AppConfig } from '../../core/definitions/app-config';
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 import { ChangeRecommendationRepositoryService } from 'app/core/repositories/motions/change-recommendation-repository.service';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';

@@ -62,6 +62,7 @@ export interface MotionTitleInformation extends TitleInformationWithAgendaItem {
 export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Motion>
     implements MotionTitleInformation, Searchable {
     public static COLLECTIONSTRING = Motion.COLLECTIONSTRING;
+    protected _collectionString = Motion.COLLECTIONSTRING;
 
     protected _category?: ViewCategory;
     protected _submitters?: ViewSubmitter[];
@@ -339,10 +340,6 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
 
     // This is set by the repository
     public getIdentifierOrTitle: () => string;
-
-    public constructor(motion: Motion) {
-        super(Motion.COLLECTIONSTRING, motion);
-    }
 
     /**
      * Formats the category for search

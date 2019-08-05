@@ -49,8 +49,8 @@ export abstract class BaseViewModelWithListOfSpeakers<M extends BaseModelWithLis
     public getListOfSpeakersTitle: () => string;
     public getListOfSpeakersSlideTitle: () => string;
 
-    public constructor(collectionString: string, model: M, listOfSpeakers?: any) {
-        super(collectionString, model);
+    public constructor(model: M, listOfSpeakers?: any) {
+        super(model);
         this._list_of_speakers = listOfSpeakers || null; // Explicit set to null instead of undefined, if not given
     }
 

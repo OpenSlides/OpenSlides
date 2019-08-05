@@ -1,4 +1,4 @@
-import { AppConfig } from '../../core/app-config';
+import { AppConfig } from '../../core/definitions/app-config';
 import { CountdownRepositoryService } from 'app/core/repositories/projector/countdown-repository.service';
 import { ProjectionDefaultRepositoryService } from 'app/core/repositories/projector/projection-default-repository.service';
 import { ProjectorMessageRepositoryService } from 'app/core/repositories/projector/projector-message-repository.service';

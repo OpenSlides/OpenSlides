@@ -39,6 +39,7 @@ export const AssignmentPhases: { name: string; value: number; display_name: stri
 export class ViewAssignment extends BaseViewModelWithAgendaItemAndListOfSpeakers<Assignment>
     implements AssignmentTitleInformation {
     public static COLLECTIONSTRING = Assignment.COLLECTIONSTRING;
+    protected _collectionString = Assignment.COLLECTIONSTRING;
 
     private _assignment_related_users?: ViewAssignmentRelatedUser[];
     private _polls?: ViewAssignmentPoll[];
@@ -123,10 +124,6 @@ export class ViewAssignment extends BaseViewModelWithAgendaItemAndListOfSpeakers
      */
     public get candidateAmount(): number {
         return this._assignment_related_users ? this._assignment_related_users.length : 0;
-    }
-
-    public constructor(assignment: Assignment) {
-        super(Assignment.COLLECTIONSTRING, assignment);
     }
 
     public formatForSearch(): SearchRepresentation {

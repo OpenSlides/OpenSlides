@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { RelationManagerService } from 'app/core/core-services/relation-manager.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { Tag } from 'app/shared/models/core/tag';
 import { TagTitleInformation, ViewTag } from 'app/site/tags/models/view-tag';
@@ -38,9 +39,10 @@ export class TagRepositoryService extends BaseRepository<ViewTag, Tag, TagTitleI
         dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        translate: TranslateService
+        translate: TranslateService,
+        relationManager: RelationManagerService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, Tag);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, relationManager, Tag);
         this.initSorting();
     }
 

@@ -1,4 +1,4 @@
-import { AppConfig } from '../../core/app-config';
+import { AppConfig } from '../../core/definitions/app-config';
 import { TopicRepositoryService } from 'app/core/repositories/topics/topic-repository.service';
 import { Topic } from '../../shared/models/topics/topic';
 import { ViewTopic } from './models/view-topic';

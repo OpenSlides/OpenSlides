@@ -4,6 +4,7 @@ import { TitleInformationWithAgendaItem } from 'app/site/base/base-view-model-wi
 import { BaseViewModelWithAgendaItemAndListOfSpeakers } from 'app/site/base/base-view-model-with-agenda-item-and-list-of-speakers';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { Searchable } from 'app/site/base/searchable';
+import { ViewMotion } from './view-motion';
 
 export interface MotionBlockTitleInformation extends TitleInformationWithAgendaItem {
     title: string;
@@ -16,9 +17,15 @@ export interface MotionBlockTitleInformation extends TitleInformationWithAgendaI
 export class ViewMotionBlock extends BaseViewModelWithAgendaItemAndListOfSpeakers
     implements MotionBlockTitleInformation, Searchable {
     public static COLLECTIONSTRING = MotionBlock.COLLECTIONSTRING;
+    protected _collectionString = MotionBlock.COLLECTIONSTRING;
+
+    private _motions?: ViewMotion[];
 
     public get motionBlock(): MotionBlock {
         return this._model;
+    }
+    public get motions(): ViewMotion[] {
+        return this._motions || [];
     }
 
     public get title(): string {
@@ -27,10 +34,6 @@ export class ViewMotionBlock extends BaseViewModelWithAgendaItemAndListOfSpeaker
 
     public get internal(): boolean {
         return this.motionBlock.internal;
-    }
-
-    public constructor(motionBlock: MotionBlock) {
-        super(MotionBlock.COLLECTIONSTRING, motionBlock);
     }
 
     /**

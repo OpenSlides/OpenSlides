@@ -16,6 +16,7 @@ export interface TopicTitleInformation extends TitleInformationWithAgendaItem {
  */
 export class ViewTopic extends BaseViewModelWithAgendaItemAndListOfSpeakers implements TopicTitleInformation {
     public static COLLECTIONSTRING = Topic.COLLECTIONSTRING;
+    protected _collectionString = Topic.COLLECTIONSTRING;
 
     private _attachments?: ViewMediafile[];
 
@@ -37,10 +38,6 @@ export class ViewTopic extends BaseViewModelWithAgendaItemAndListOfSpeakers impl
 
     public get text(): string {
         return this.topic.text;
-    }
-
-    public constructor(topic: Topic) {
-        super(Topic.COLLECTIONSTRING, topic);
     }
 
     /**

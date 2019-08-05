@@ -14,8 +14,6 @@ export interface ViewModelConstructor<T extends BaseViewModel> {
  * Base class for view models. alls view models should have titles.
  */
 export abstract class BaseViewModel<M extends BaseModel = any> implements Displayable, Identifiable, Collection {
-    protected _model: M;
-
     public get id(): number {
         return this._model.id;
     }
@@ -58,10 +56,7 @@ export abstract class BaseViewModel<M extends BaseModel = any> implements Displa
      * @param collectionString
      * @param model
      */
-    public constructor(collectionString: string, model: M) {
-        this._collectionString = collectionString;
-        this._model = model;
-    }
+    public constructor(protected _model: M) {}
 
     /**
      * @returns the main underlying model of the view model

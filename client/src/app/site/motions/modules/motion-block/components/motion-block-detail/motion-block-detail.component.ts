@@ -132,7 +132,7 @@ export class MotionBlockDetailComponent extends BaseViewComponent implements OnI
 
                     this.dataSource = createDS<ViewMotion>()
                         .onTrigger(() => {
-                            return this.repo.getViewMotionsByBlock(this.block.motionBlock);
+                            return this.block.motions;
                         })
                         .create();
                 }

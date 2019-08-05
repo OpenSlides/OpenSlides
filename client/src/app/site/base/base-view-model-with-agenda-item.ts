@@ -85,8 +85,8 @@ export abstract class BaseViewModelWithAgendaItem<M extends BaseModelWithAgendaI
      */
     public getAgendaListTitle: () => string;
 
-    public constructor(collecitonString: string, model: M, item?: any) {
-        super(collecitonString, model);
+    public constructor(model: M, item?: any) {
+        super(model);
         this._item = item || null; // Explicit set to null instead of undefined, if not given
     }
 

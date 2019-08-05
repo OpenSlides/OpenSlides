@@ -16,6 +16,7 @@ export interface MotionCommentSectionTitleInformation {
 export class ViewMotionCommentSection extends BaseViewModel<MotionCommentSection>
     implements MotionCommentSectionTitleInformation {
     public static COLLECTIONSTRING = MotionCommentSection.COLLECTIONSTRING;
+    protected _collectionString = MotionCommentSection.COLLECTIONSTRING;
 
     private _read_groups: ViewGroup[];
     private _write_groups: ViewGroup[];
@@ -57,10 +58,6 @@ export class ViewMotionCommentSection extends BaseViewModel<MotionCommentSection
      */
     public set name(name: string) {
         this._model.name = name;
-    }
-
-    public constructor(motionCommentSection: MotionCommentSection) {
-        super(MotionCommentSection.COLLECTIONSTRING, motionCommentSection);
     }
 
     /**

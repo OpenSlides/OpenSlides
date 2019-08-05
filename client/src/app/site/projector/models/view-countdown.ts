@@ -9,6 +9,7 @@ export interface CountdownTitleInformation {
 
 export class ViewCountdown extends BaseProjectableViewModel<Countdown> implements CountdownTitleInformation {
     public static COLLECTIONSTRING = Countdown.COLLECTIONSTRING;
+    protected _collectionString = Countdown.COLLECTIONSTRING;
 
     public get countdown(): Countdown {
         return this._model;
@@ -32,10 +33,6 @@ export class ViewCountdown extends BaseProjectableViewModel<Countdown> implement
 
     public get title(): string {
         return this.countdown.title;
-    }
-
-    public constructor(countdown: Countdown) {
-        super(Countdown.COLLECTIONSTRING, countdown);
     }
 
     public getSlide(): ProjectorElementBuildDeskriptor {

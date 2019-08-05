@@ -4,6 +4,8 @@ import { ViewUser } from 'app/site/users/models/view-user';
 
 export class ViewSubmitter extends BaseViewModel<Submitter> {
     public static COLLECTIONSTRING = Submitter.COLLECTIONSTRING;
+    protected _collectionString = Submitter.COLLECTIONSTRING;
+
     private _user?: ViewUser;
 
     public get submitter(): Submitter {
@@ -28,10 +30,6 @@ export class ViewSubmitter extends BaseViewModel<Submitter> {
 
     public get weight(): number {
         return this.submitter.weight;
-    }
-
-    public constructor(submitter: Submitter) {
-        super(Submitter.COLLECTIONSTRING, submitter);
     }
 
     public getTitle = () => {

@@ -96,16 +96,6 @@ export class CategoryListComponent extends BaseViewComponent implements OnInit {
     }
 
     /**
-     * return the amount of motions in a category
-     *
-     * @param category the category to determine the amount of motions for
-     * @returns a number that indicates how many motions are in the given category
-     */
-    public getMotionAmount(category: ViewCategory): number {
-        return this.repo.getMotionAmountByCategory(category);
-    }
-
-    /**
      * Click handler for the plus button
      */
     public onPlusButton(): void {

@@ -66,7 +66,7 @@
                 <span translate>Motions</span>
             </mat-header-cell>
             <mat-cell *matCellDef="let category">
-                <span class="os-amount-chip">{{ getMotionAmount(category) }}</span>
+                <span class="os-amount-chip">{{ category.motions.length }}</span>
             </mat-cell>
         </ng-container>
 

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { RelationManagerService } from 'app/core/core-services/relation-manager.service';
 import { ServertimeService } from 'app/core/core-services/servertime.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { Countdown } from 'app/shared/models/core/countdown';
@@ -21,9 +22,10 @@ export class CountdownRepositoryService extends BaseRepository<ViewCountdown, Co
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
         translate: TranslateService,
+        relationManager: RelationManagerService,
         private servertimeService: ServertimeService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, Countdown);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, relationManager, Countdown);
     }
 
     public getTitle = (titleInformation: CountdownTitleInformation) => {

@@ -1,6 +1,4 @@
-import { TranslateService } from '@ngx-translate/core';
-
-import { BaseModel, ModelConstructor } from 'app/shared/models/base/base-model';
+import { BaseModel } from 'app/shared/models/base/base-model';
 import { ViewItem } from 'app/site/agenda/models/view-item';
 import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
 import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
@@ -17,11 +15,7 @@ import {
     IBaseIsListOfSpeakersContentObjectRepository,
     isBaseIsListOfSpeakersContentObjectRepository
 } from './base-is-list-of-speakers-content-object-repository';
-import { BaseRepository, RelationDefinition } from './base-repository';
-import { CollectionStringMapperService } from '../core-services/collection-string-mapper.service';
-import { DataSendService } from '../core-services/data-send.service';
-import { DataStoreService } from '../core-services/data-store.service';
-import { ViewModelStoreService } from '../core-services/view-model-store.service';
+import { BaseRepository } from './base-repository';
 
 export function isBaseIsAgendaItemAndListOfSpeakersContentObjectRepository(
     obj: any
@@ -43,35 +37,15 @@ export abstract class BaseIsAgendaItemAndListOfSpeakersContentObjectRepository<
     implements
         IBaseIsAgendaItemContentObjectRepository<V, M, T>,
         IBaseIsListOfSpeakersContentObjectRepository<V, M, T> {
-    public constructor(
-        DS: DataStoreService,
-        dataSend: DataSendService,
-        collectionStringMapperService: CollectionStringMapperService,
-        viewModelStoreService: ViewModelStoreService,
-        translate: TranslateService,
-        baseModelCtor: ModelConstructor<M>,
-        relationDefinitions?: RelationDefinition[]
-    ) {
-        super(
-            DS,
-            dataSend,
-            collectionStringMapperService,
-            viewModelStoreService,
-            translate,
-            baseModelCtor,
-            relationDefinitions
-        );
-    }
-
     protected groupRelationsByCollections(): void {
         this.relationDefinitions.push({
-            type: 'O2M',
+            type: 'M2O',
             ownIdKey: 'agenda_item_id',
             ownKey: 'item',
             foreignModel: ViewItem
         });
         this.relationDefinitions.push({
-            type: 'O2M',
+            type: 'M2O',
             ownIdKey: 'list_of_speakers_id',
             ownKey: 'list_of_speakers',
             foreignModel: ViewListOfSpeakers

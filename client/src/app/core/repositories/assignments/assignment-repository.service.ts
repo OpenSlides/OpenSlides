@@ -4,7 +4,9 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { DataSendService } from 'app/core/core-services/data-send.service';
 import { HttpService } from 'app/core/core-services/http.service';
+import { RelationManagerService } from 'app/core/core-services/relation-manager.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { RelationDefinition } from 'app/core/definitions/relations';
 import { Assignment } from 'app/shared/models/assignments/assignment';
 import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
 import { AssignmentTitleInformation, ViewAssignment } from 'app/site/assignments/models/view-assignment';
@@ -15,7 +17,6 @@ import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { BaseIsAgendaItemAndListOfSpeakersContentObjectRepository } from '../base-is-agenda-item-and-list-of-speakers-content-object-repository';
-import { RelationDefinition } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 
@@ -39,7 +40,7 @@ const AssignmentRelations: RelationDefinition[] = [
         order: 'weight',
         relationDefinition: [
             {
-                type: 'O2M',
+                type: 'M2O',
                 ownIdKey: 'user_id',
                 ownKey: 'user',
                 foreignModel: ViewUser
@@ -58,7 +59,7 @@ const AssignmentRelations: RelationDefinition[] = [
                 order: 'weight',
                 relationDefinition: [
                     {
-                        type: 'O2M',
+                        type: 'M2O',
                         ownIdKey: 'user_id',
                         ownKey: 'user',
                         foreignModel: ViewUser
@@ -104,10 +105,20 @@ export class AssignmentRepositoryService extends BaseIsAgendaItemAndListOfSpeake
         dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        protected translate: TranslateService,
+        translate: TranslateService,
+        relationManager: RelationManagerService,
         private httpService: HttpService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, Assignment, AssignmentRelations);
+        super(
+            DS,
+            dataSend,
+            mapperService,
+            viewModelStoreService,
+            translate,
+            relationManager,
+            Assignment,
+            AssignmentRelations
+        );
     }
 
     public getTitle = (titleInformation: AssignmentTitleInformation) => {

@@ -107,7 +107,7 @@ export class CategoryDetailComponent extends BaseViewComponent implements OnInit
                     return;
                 }
 
-                // Find index of last child. THis can be easily done by searching, becuase this
+                // Find index of last child. This can be easily done by searching, because this
                 // is the flat sorted tree
                 this.selectedCategory = categories[selectedCategoryIndex];
                 super.setTitle(this.selectedCategory.prefixedName);
@@ -122,24 +122,10 @@ export class CategoryDetailComponent extends BaseViewComponent implements OnInit
                 this.categories = categories.slice(selectedCategoryIndex, lastChildIndex);
 
                 // setup datasources:
-                const allMotions = this.motionRepo
-                    .getViewModelList()
-                    .sort((a, b) => a.category_weight - b.category_weight);
                 this.categories.forEach(category => {
-                    if (!this.dataSources[category.id]) {
-                        const dataSource = new MatTableDataSource<ViewMotion>();
-                        dataSource.data = allMotions.filter(motion => motion.category_id === category.id);
-                        this.dataSources[category.id] = dataSource;
-                    }
-                });
-            }),
-            this.motionRepo.getViewModelListObservable().subscribe(motions => {
-                motions = motions
-                    .filter(motion => !!motion.category_id)
-                    .sort((a, b) => a.category_weight - b.category_weight);
-                Object.keys(this.dataSources).forEach(_id => {
-                    const id = +_id;
-                    this.dataSources[id].data = motions.filter(motion => motion.category_id === id);
+                    const dataSource = new MatTableDataSource<ViewMotion>();
+                    dataSource.data = category.motions;
+                    this.dataSources[category.id] = dataSource;
                 });
             })
         );

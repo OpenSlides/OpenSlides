@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { RelationManagerService } from 'app/core/core-services/relation-manager.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { StatuteParagraph } from 'app/shared/models/motions/statute-paragraph';
 import { StatuteParagraphTitleInformation, ViewStatuteParagraph } from 'app/site/motions/models/view-statute-paragraph';
@@ -39,9 +40,10 @@ export class StatuteParagraphRepositoryService extends BaseRepository<
         dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        translate: TranslateService
+        translate: TranslateService,
+        relationManager: RelationManagerService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, StatuteParagraph);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, relationManager, StatuteParagraph);
     }
 
     public getTitle = (titleInformation: StatuteParagraphTitleInformation) => {

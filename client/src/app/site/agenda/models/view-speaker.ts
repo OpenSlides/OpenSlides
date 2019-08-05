@@ -16,6 +16,8 @@ export enum SpeakerState {
  */
 export class ViewSpeaker extends BaseViewModel<Speaker> {
     public static COLLECTIONSTRING = Speaker.COLLECTIONSTRING;
+    protected _collectionString = Speaker.COLLECTIONSTRING;
+
     private _user?: ViewUser;
 
     public get speaker(): Speaker {
@@ -78,10 +80,6 @@ export class ViewSpeaker extends BaseViewModel<Speaker> {
 
     public get gender(): string {
         return this.user ? this.user.gender : '';
-    }
-
-    public constructor(speaker: Speaker) {
-        super(Speaker.COLLECTIONSTRING, speaker);
     }
 
     public getTitle = () => {

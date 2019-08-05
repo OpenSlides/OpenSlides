@@ -3,11 +3,13 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 import { HttpService } from 'app/core/core-services/http.service';
+import { RelationManagerService } from 'app/core/core-services/relation-manager.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { RelationDefinition } from 'app/core/definitions/relations';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { Projector } from 'app/shared/models/core/projector';
 import { ProjectorTitleInformation, ViewProjector } from 'app/site/projector/models/view-projector';
-import { BaseRepository, RelationDefinition } from '../base-repository';
+import { BaseRepository } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
@@ -23,7 +25,7 @@ export enum ScrollScaleDirection {
 
 const ProjectorRelations: RelationDefinition[] = [
     {
-        type: 'O2M',
+        type: 'M2O',
         ownIdKey: 'reference_projector_id',
         ownKey: 'referenceProjector',
         foreignModel: ViewProjector
@@ -51,9 +53,19 @@ export class ProjectorRepositoryService extends BaseRepository<ViewProjector, Pr
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
         translate: TranslateService,
+        relationManager: RelationManagerService,
         private http: HttpService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, Projector, ProjectorRelations);
+        super(
+            DS,
+            dataSend,
+            mapperService,
+            viewModelStoreService,
+            translate,
+            relationManager,
+            Projector,
+            ProjectorRelations
+        );
     }
 
     public getTitle = (titleInformation: ProjectorTitleInformation) => {

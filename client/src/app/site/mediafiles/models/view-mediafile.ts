@@ -16,6 +16,7 @@ export interface MediafileTitleInformation {
 export class ViewMediafile extends BaseViewModelWithListOfSpeakers<Mediafile>
     implements MediafileTitleInformation, Searchable {
     public static COLLECTIONSTRING = Mediafile.COLLECTIONSTRING;
+    protected _collectionString = Mediafile.COLLECTIONSTRING;
 
     private _parent?: ViewMediafile;
     private _access_groups?: ViewGroup[];
@@ -99,10 +100,6 @@ export class ViewMediafile extends BaseViewModelWithListOfSpeakers<Mediafile>
 
     public get timestamp(): string {
         return this.mediafile.create_timestamp ? this.mediafile.create_timestamp : null;
-    }
-
-    public constructor(mediafile: Mediafile) {
-        super(Mediafile.COLLECTIONSTRING, mediafile);
     }
 
     public formatForSearch(): SearchRepresentation {

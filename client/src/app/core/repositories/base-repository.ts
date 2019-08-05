@@ -9,91 +9,15 @@ import { CollectionStringMapperService } from '../core-services/collection-strin
 import { DataSendService } from '../core-services/data-send.service';
 import { CollectionIds, DataStoreService } from '../core-services/data-store.service';
 import { Identifiable } from '../../shared/models/base/identifiable';
-import { OnAfterAppsLoaded } from '../onAfterAppsLoaded';
+import { OnAfterAppsLoaded } from '../definitions/on-after-apps-loaded';
+import { RelationManagerService } from '../core-services/relation-manager.service';
+import {
+    isNormalRelationDefinition,
+    isReverseRelationDefinition,
+    RelationDefinition,
+    ReverseRelationDefinition
+} from '../definitions/relations';
 import { ViewModelStoreService } from '../core-services/view-model-store.service';
-
-// All "standard" relations.
-export type RelationDefinition<VForeign extends BaseViewModel = BaseViewModel> =
-    | NormalRelationDefinition<VForeign>
-    | NestedRelationDefinition<VForeign>
-    | CustomRelationDefinition<VForeign>;
-
-/**
- * Normal relations.
- */
-interface NormalRelationDefinition<VForeign extends BaseViewModel> {
-    /**
-     * - O2M: From this model to another one, where this model is the One-side.
-     *        E.g. motions<->categories: One motions has One category; One category has
-     *        Many motions
-     * - M2M: M2M relation from this to another model.
-     */
-    type: 'M2M' | 'O2M';
-
-    /**
-     * The key where the id(s) are given. Must be present in the model and view model. E.g. `category_id`.
-     */
-    ownIdKey: string;
-
-    /**
-     * The name of the property, where the foreign view model should be accessable.
-     * Note, that this must be a getter to a private variable `_<ownKey`!
-     *
-     * E.g. `category`. (private variable `_category`)
-     */
-    ownKey: string;
-
-    /**
-     * The model on the other side of the relation.
-     */
-    foreignModel: ViewModelConstructor<VForeign>;
-
-    /**
-     * TODO: reverse relations.
-     */
-    foreignKey?: keyof VForeign;
-}
-
-/**
- * Nested relations in the REST-API. For the most values see
- * `NormalRelationDefinition`.
- */
-interface NestedRelationDefinition<VForeign extends BaseViewModel> {
-    type: 'nested';
-    ownKey: string;
-    foreignModel: ViewModelConstructor<VForeign>;
-    foreignKey?: keyof VForeign;
-
-    /**
-     * The nested relations.
-     */
-    relationDefinition?: RelationDefinition[];
-
-    /**
-     * Provide an extra key (holding a number) to order by.
-     * If the value is equal or no order key is given, the models
-     * will be sorted by id.
-     */
-    order?: string;
-}
-
-/**
- * A custom relation with callbacks with things todo.
- */
-interface CustomRelationDefinition<VForeign extends BaseViewModel> {
-    type: 'custom';
-    foreignModel: ViewModelConstructor<VForeign>;
-
-    /**
-     * Called, when the view model is created from the model.
-     */
-    setRelations: (model: BaseModel, viewModel: BaseViewModel) => void;
-
-    /**
-     * Called, when the dependency was updated.
-     */
-    updateDependency: (ownViewModel: BaseViewModel, foreignViewModel: VForeign) => boolean;
-}
 
 export abstract class BaseRepository<V extends BaseViewModel & T, M extends BaseModel, T extends TitleInformation>
     implements OnAfterAppsLoaded, Collection {
@@ -163,6 +87,8 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
      */
     protected relationsByCollection: { [collection: string]: RelationDefinition<BaseViewModel>[] } = {};
 
+    protected reverseRelationsByCollection: { [collection: string]: ReverseRelationDefinition<BaseViewModel>[] } = {};
+
     /**
      * The view model ctor of the encapsulated view model.
      */
@@ -183,12 +109,14 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
         protected collectionStringMapperService: CollectionStringMapperService,
         protected viewModelStoreService: ViewModelStoreService,
         protected translate: TranslateService,
+        protected relationManager: RelationManagerService,
         protected baseModelCtor: ModelConstructor<M>,
         protected relationDefinitions: RelationDefinition<BaseViewModel>[] = []
     ) {
         this._collectionString = baseModelCtor.COLLECTIONSTRING;
 
         this.groupRelationsByCollections();
+        this.buildReverseRelationsGrouping();
 
         // All data is piped through an auditTime of 1ms. This is to prevent massive
         // updates, if e.g. an autoupdate with a lot motions come in. The result is just one
@@ -219,13 +147,37 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
             (relation.relationDefinition || []).forEach(nestedRelation => {
                 this._groupRelationsByCollections(nestedRelation, baseRelation);
             });
-        } else if (relation.type === 'O2M' || relation.type === 'M2M' || relation.type === 'custom') {
+        } else if (
+            relation.type === 'M2O' ||
+            relation.type === 'M2M' ||
+            relation.type === 'O2M' ||
+            relation.type === 'custom'
+        ) {
             const collection = relation.foreignModel.COLLECTIONSTRING;
             if (!this.relationsByCollection[collection]) {
                 this.relationsByCollection[collection] = [];
             }
             this.relationsByCollection[collection].push(baseRelation);
+        } else if (relation.type === 'generic') {
+            relation.possibleModels.forEach(ctor => {
+                const collection = ctor.COLLECTIONSTRING;
+                if (!this.relationsByCollection[collection]) {
+                    this.relationsByCollection[collection] = [];
+                }
+                this.relationsByCollection[collection].push(baseRelation);
+            });
         }
+    }
+
+    protected buildReverseRelationsGrouping(): void {
+        Object.keys(this.relationsByCollection).forEach(collection => {
+            const reverseRelations = this.relationsByCollection[collection].filter(relation =>
+                isReverseRelationDefinition(relation)
+            ) as ReverseRelationDefinition<BaseViewModel>[];
+            if (reverseRelations.length) {
+                this.reverseRelationsByCollection[collection] = reverseRelations;
+            }
+        });
     }
 
     public onAfterAppsLoaded(): void {
@@ -274,66 +226,11 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
      * are assigned to the new view model.
      */
     protected createViewModelWithTitles(model: M): V {
-        const viewModel = this.createViewModel(model, this.baseViewModelCtor, this.relationDefinitions);
+        const viewModel = this.relationManager.createViewModel(model, this.baseViewModelCtor, this.relationDefinitions);
         viewModel.getTitle = () => this.getTitle(viewModel);
         viewModel.getListTitle = () => this.getListTitle(viewModel);
         viewModel.getVerboseName = this.getVerboseName;
         return viewModel;
-    }
-
-    /**
-     * Creates a view model from the given model and model ctor. All dependencies will be
-     * set accorting to relations.
-     */
-    protected createViewModel<K extends BaseViewModel = V>(
-        model: M,
-        modelCtor: ViewModelConstructor<K>,
-        relations: RelationDefinition[]
-    ): K {
-        const viewModel = new modelCtor(model) as K;
-
-        // no reverse setting needed
-        relations.forEach(relation => {
-            this.setRelationsInViewModel(model, viewModel, relation);
-        });
-
-        return viewModel;
-    }
-
-    /**
-     * Sets one foreign view model in the view model according to the relation and the information
-     * from the model.
-     */
-    protected setRelationsInViewModel<K extends BaseViewModel = V>(
-        model: M,
-        viewModel: K,
-        relation: RelationDefinition
-    ): void {
-        if (relation.type === 'M2M' && model[relation.ownIdKey] instanceof Array) {
-            const foreignViewModels = this.viewModelStoreService.getMany(
-                relation.foreignModel,
-                model[relation.ownIdKey]
-            );
-            viewModel['_' + relation.ownKey] = foreignViewModels;
-        } else if (relation.type === 'O2M') {
-            const foreignViewModel = this.viewModelStoreService.get(relation.foreignModel, model[relation.ownIdKey]);
-            viewModel['_' + relation.ownKey] = foreignViewModel;
-        } else if (relation.type === 'nested') {
-            const foreignViewModels: BaseViewModel[] = model[relation.ownKey].map(foreignModel =>
-                this.createViewModel(foreignModel, relation.foreignModel, relation.relationDefinition || [])
-            );
-            foreignViewModels.sort((a: BaseViewModel, b: BaseViewModel) => {
-                const order = relation.order;
-                if (!relation.order || a[order] === b[order]) {
-                    return a.id - b.id;
-                } else {
-                    return a[order] - b[order];
-                }
-            });
-            viewModel['_' + relation.ownKey] = foreignViewModels;
-        } else if (relation.type === 'custom') {
-            relation.setRelations(model, viewModel);
-        }
     }
 
     /**
@@ -342,14 +239,14 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
      * @param changedModels A mapping of collections to ids of all changed models.
      * @returns if at least one model was affected.
      */
-    public updateDependencies(changedModels: CollectionIds): boolean {
+    public updateDependenciesForChangedModels(changedModels: CollectionIds): boolean {
         if (!this.relationDefinitions.length) {
-            return;
+            return false;
         }
 
         // Get all viewModels from this repo once.
-        const viewModels = this.getViewModelList();
-        let somethingUpdated = false;
+        const ownViewModels = this.getViewModelList();
+        const updatedIds = [];
         Object.keys(changedModels).forEach(collection => {
             const dependencyChanged: boolean = Object.keys(this.relationsByCollection).includes(collection);
             if (!dependencyChanged) {
@@ -357,85 +254,79 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
             }
 
             // Ok, we are affected by this collection. Update all viewModels from this repo.
-            viewModels.forEach(ownViewModel => {
-                const relations = this.relationsByCollection[collection];
-                if (!relations || !relations.length) {
-                    return;
-                }
+            const relations = this.relationsByCollection[collection];
+            ownViewModels.forEach(ownViewModel => {
                 relations.forEach(relation => {
                     changedModels[collection].forEach(id => {
-                        if (this.updateSingleDependency(ownViewModel, relation, collection, id)) {
-                            somethingUpdated = true;
+                        if (
+                            this.relationManager.updateSingleDependencyForChangedModel(
+                                ownViewModel,
+                                relation,
+                                collection,
+                                id
+                            )
+                        ) {
+                            updatedIds.push(ownViewModel.id);
                         }
                     });
                 });
             });
-        });
-        if (somethingUpdated) {
-            viewModels.forEach(ownViewModel => {
-                this.updateViewModelObservable(ownViewModel.id);
-            });
-        }
-        return somethingUpdated;
-    }
-
-    /**
-     * Updates an own view model with an implicit given model by the collection and changedId.
-     *
-     * @return true, if something was updated.
-     */
-    protected updateSingleDependency(
-        ownViewModel: BaseViewModel,
-        relation: RelationDefinition,
-        collection: string,
-        changedId: number
-    ): boolean {
-        if (relation.type === 'M2M') {
-            if (
-                ownViewModel[relation.ownIdKey] &&
-                ownViewModel[relation.ownIdKey] instanceof Array &&
-                ownViewModel[relation.ownIdKey].includes(changedId)
-            ) {
-                const foreignViewModel = <any>this.viewModelStoreService.get(collection, changedId);
-                let ownModelArray = <any>ownViewModel['_' + relation.ownKey];
-                if (!ownModelArray) {
-                    ownViewModel['_' + relation.ownKey] = [];
-                    ownModelArray = <any>ownViewModel['_' + relation.ownKey];
-                }
-                const index = ownModelArray.findIndex(user => user.id === changedId);
-                if (index < 0) {
-                    ownModelArray.push(foreignViewModel);
-                } else {
-                    ownModelArray[index] = foreignViewModel;
-                }
-                // TODO: set reverse
-
-                return true;
-            }
-        } else if (relation.type === 'O2M') {
-            if (ownViewModel[relation.ownIdKey] === <any>changedId) {
-                ownViewModel['_' + relation.ownKey] = <any>this.viewModelStoreService.get(collection, changedId);
-                // TODO: set reverse
-
-                return true;
-            }
-        } else if (relation.type === 'nested') {
-            let updated = false;
-            (relation.relationDefinition || []).forEach(nestedRelation => {
-                const nestedViewModels = ownViewModel[relation.ownKey] as BaseViewModel[];
-                nestedViewModels.forEach(nestedViewModel => {
-                    if (this.updateSingleDependency(nestedViewModel, nestedRelation, collection, changedId)) {
-                        updated = true;
+            // Order all relations, if neeed.
+            if (updatedIds.length) {
+                relations.forEach(relation => {
+                    if (
+                        (isNormalRelationDefinition(relation) || isReverseRelationDefinition(relation)) &&
+                        (relation.type === 'M2M' || relation.type === 'O2M') &&
+                        relation.order
+                    ) {
+                        ownViewModels.forEach(ownViewModel => {
+                            if (ownViewModel['_' + relation.ownKey]) {
+                                this.relationManager.sortByRelation(relation, ownViewModel);
+                            }
+                        });
                     }
                 });
+            }
+
+            // Inform about changes. (List updates is done in `commitUpdate` via `DataStoreUpdateManagerService`)
+            updatedIds.forEach(id => {
+                this.updateViewModelObservable(id);
             });
-            return updated;
-        } else if (relation.type === 'custom') {
-            const foreignViewModel = <any>this.viewModelStoreService.get(collection, changedId);
-            return relation.updateDependency(ownViewModel, foreignViewModel);
+        });
+        return !!updatedIds.length;
+    }
+
+    public updateDependenciesForDeletedModels(deletedModels: CollectionIds): boolean {
+        if (!Object.keys(this.reverseRelationsByCollection).length) {
+            return false;
         }
 
-        return false;
+        // Get all viewModels from this repo once.
+        const ownViewModels = this.getViewModelList();
+        let somethingChanged = false;
+        Object.keys(deletedModels).forEach(collection => {
+            const dependencyChanged: boolean = Object.keys(this.reverseRelationsByCollection).includes(collection);
+            if (!dependencyChanged) {
+                return;
+            }
+
+            // Ok, we are affected by this collection. Update all viewModels from this repo.
+            const relations = this.reverseRelationsByCollection[collection];
+            ownViewModels.forEach(ownViewModel => {
+                relations.forEach(relation => {
+                    deletedModels[collection].forEach(id => {
+                        if (this.relationManager.updateSingleDependencyForDeletedModel(ownViewModel, relation, id)) {
+                            // Inform about changes. (List updates is done in `commitUpdate` via `DataStoreUpdateManagerService`)
+                            this.updateViewModelObservable(id);
+                            somethingChanged = true;
+                        }
+                    });
+                });
+            });
+            // Ordering all relations is not needed, because just deleting things out of arrays
+            // will not unorder them.
+        });
+        return somethingChanged;
     }
 
     /**

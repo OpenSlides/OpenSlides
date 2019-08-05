@@ -4,7 +4,9 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { DataSendService } from 'app/core/core-services/data-send.service';
 import { HttpService } from 'app/core/core-services/http.service';
+import { RelationManagerService } from 'app/core/core-services/relation-manager.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { RelationDefinition } from 'app/core/definitions/relations';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { TreeIdNode } from 'app/core/ui-services/tree.service';
 import { Item } from 'app/shared/models/agenda/item';
@@ -19,18 +21,19 @@ import {
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
 import { ViewTopic } from 'app/site/topics/models/view-topic';
-import { BaseHasContentObjectRepository, GenericRelationDefinition } from '../base-has-content-object-repository';
+import { BaseHasContentObjectRepository } from '../base-has-content-object-repository';
 import { BaseIsAgendaItemContentObjectRepository } from '../base-is-agenda-item-content-object-repository';
-import { RelationDefinition } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 
-const ItemRelations: (RelationDefinition | GenericRelationDefinition)[] = [
+const ItemRelations: RelationDefinition[] = [
     {
         type: 'generic',
         possibleModels: [ViewMotion, ViewMotionBlock, ViewTopic, ViewAssignment],
         isVForeign: isBaseViewModelWithAgendaItem,
-        VForeignVerbose: 'BaseViewModelWithAgendaItem'
+        VForeignVerbose: 'BaseViewModelWithAgendaItem',
+        ownContentObjectDataKey: 'contentObjectData',
+        ownKey: 'contentObject'
     }
 ];
 
@@ -64,10 +67,11 @@ export class ItemRepositoryService extends BaseHasContentObjectRepository<
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
         translate: TranslateService,
+        relationManager: RelationManagerService,
         private httpService: HttpService,
         private config: ConfigService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, Item, ItemRelations);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, relationManager, Item, ItemRelations);
 
         this.setSortFunction((a, b) => a.weight - b.weight);
     }

@@ -1,7 +1,7 @@
 import { Injectable, Injector } from '@angular/core';
 
 import { AgendaAppConfig } from '../../site/agenda/agenda.config';
-import { AppConfig, ModelEntry, SearchableModelEntry } from '../app-config';
+import { AppConfig, ModelEntry, SearchableModelEntry } from '../definitions/app-config';
 import { BaseRepository } from 'app/core/repositories/base-repository';
 import { HistoryAppConfig } from 'app/site/history/history.config';
 import { ProjectorAppConfig } from 'app/site/projector/projector.config';
@@ -14,7 +14,7 @@ import { ServicesToLoadOnAppsLoaded } from '../core.module';
 import { MainMenuService } from './main-menu.service';
 import { MediafileAppConfig } from '../../site/mediafiles/mediafile.config';
 import { MotionsAppConfig } from '../../site/motions/motions.config';
-import { OnAfterAppsLoaded } from '../onAfterAppsLoaded';
+import { OnAfterAppsLoaded } from '../definitions/on-after-apps-loaded';
 import { plugins } from '../../../plugins';
 import { SearchService } from '../ui-services/search.service';
 import { isSearchable } from '../../site/base/searchable';

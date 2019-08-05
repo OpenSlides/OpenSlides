@@ -7,19 +7,20 @@ import { first, map } from 'rxjs/operators';
 
 import { DataSendService } from 'app/core/core-services/data-send.service';
 import { HttpService } from 'app/core/core-services/http.service';
+import { RelationManagerService } from 'app/core/core-services/relation-manager.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { RelationDefinition } from 'app/core/definitions/relations';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { MediafileTitleInformation, ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewGroup } from 'app/site/users/models/view-group';
 import { BaseIsListOfSpeakersContentObjectRepository } from '../base-is-list-of-speakers-content-object-repository';
-import { RelationDefinition } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 
 const MediafileRelations: RelationDefinition[] = [
     {
-        type: 'O2M',
+        type: 'M2O',
         ownIdKey: 'parent_id',
         ownKey: 'parent',
         foreignModel: ViewMediafile
@@ -64,9 +65,19 @@ export class MediafileRepositoryService extends BaseIsListOfSpeakersContentObjec
         viewModelStoreService: ViewModelStoreService,
         translate: TranslateService,
         dataSend: DataSendService,
+        relationManager: RelationManagerService,
         private httpService: HttpService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, Mediafile, MediafileRelations);
+        super(
+            DS,
+            dataSend,
+            mapperService,
+            viewModelStoreService,
+            translate,
+            relationManager,
+            Mediafile,
+            MediafileRelations
+        );
         this.directoryBehaviorSubject = new BehaviorSubject([]);
         this.getViewModelListObservable().subscribe(mediafiles => {
             if (mediafiles) {

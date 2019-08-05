@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 import { OpenSlidesStatusService } from './openslides-status.service';
-import { formatQueryParams, QueryParams } from '../query-params';
+import { formatQueryParams, QueryParams } from '../definitions/query-params';
 
 /**
  * Enum for different HTTPMethods

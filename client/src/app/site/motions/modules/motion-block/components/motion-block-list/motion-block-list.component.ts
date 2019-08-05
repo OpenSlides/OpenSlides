@@ -12,7 +12,6 @@ import { OperatorService } from 'app/core/core-services/operator.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
-import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { ViewItem } from 'app/site/agenda/models/view-item';
 import { BaseListViewComponent } from 'app/site/base/base-list-view';
@@ -115,16 +114,6 @@ export class MotionBlockListComponent extends BaseListViewComponent<ViewMotionBl
     public ngOnInit(): void {
         super.setTitle('Motion blocks');
         this.items = this.itemRepo.getViewModelListBehaviorSubject();
-    }
-
-    /**
-     * return the amount of motions in a motion block
-     *
-     * @param motionBlock the block to determine the amount of motions for
-     * @returns a number that indicates how many motions are in the given block
-     */
-    public getMotionAmount(motionBlock: MotionBlock): number {
-        return this.repo.getMotionAmountByBlock(motionBlock);
     }
 
     /**

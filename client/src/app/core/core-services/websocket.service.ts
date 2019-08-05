@@ -9,7 +9,7 @@ import { take } from 'rxjs/operators';
 import { TextDecoder, TextEncoder } from 'text-encoding';
 
 import { OpenSlidesStatusService } from './openslides-status.service';
-import { formatQueryParams, QueryParams } from '../query-params';
+import { formatQueryParams, QueryParams } from '../definitions/query-params';
 
 /**
  * The generic message format in which messages are send and recieved by the server.

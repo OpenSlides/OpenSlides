@@ -3,13 +3,15 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 import { HttpService } from 'app/core/core-services/http.service';
+import { RelationManagerService } from 'app/core/core-services/relation-manager.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { RelationDefinition } from 'app/core/definitions/relations';
 import { NewEntry } from 'app/core/ui-services/base-import.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { User } from 'app/shared/models/users/user';
 import { ViewGroup } from 'app/site/users/models/view-group';
 import { UserTitleInformation, ViewUser } from 'app/site/users/models/view-user';
-import { BaseRepository, RelationDefinition } from '../base-repository';
+import { BaseRepository } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
@@ -61,11 +63,12 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
         dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
+        relationManager: RelationManagerService,
         protected translate: TranslateService,
         private httpService: HttpService,
         private configService: ConfigService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, User, UserRelations);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, relationManager, User, UserRelations);
         this.sortProperty = this.configService.instant('users_sort_by');
         this.configService.get<SortProperty>('users_sort_by').subscribe(conf => {
             this.sortProperty = conf;
