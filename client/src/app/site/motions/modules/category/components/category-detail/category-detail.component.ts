@@ -158,7 +158,7 @@ export class CategoryDetailComponent extends BaseViewComponent implements OnInit
      * Click handler to delete a category
      */
     public async onDeleteButton(): Promise<void> {
-        const title = this.translate.instant('Are you sure you want to delete this category?');
+        const title = this.translate.instant('Are you sure you want to delete this category and all subcategories?');
         const content = this.selectedCategory.prefixedName;
         if (await this.promptService.open(title, content)) {
             await this.repo.delete(this.selectedCategory);
