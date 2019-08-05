@@ -94,13 +94,13 @@ export abstract class BaseHasContentObjectRepository<
                     return true;
                 } else {
                     console.warn(`The object is not an ${relation.VForeignVerbose}:` + foreignModel);
-                    return false;
                 }
 
                 // TODO: set reverse
             }
+            return false;
         } else {
-            super.updateSingleDependency(ownViewModel, relation, collection, changedId);
+            return super.updateSingleDependency(ownViewModel, relation, collection, changedId);
         }
     }
 
