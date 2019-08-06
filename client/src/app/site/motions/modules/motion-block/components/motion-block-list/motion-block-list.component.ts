@@ -38,11 +38,6 @@ export class MotionBlockListComponent extends BaseListViewComponent<ViewMotionBl
     public createBlockForm: FormGroup;
 
     /**
-     * Flag, if the creation panel is open
-     */
-    public isCreatingNewBlock = false;
-
-    /**
      * Holds the agenda items to select the parent item
      */
     public items: BehaviorSubject<ViewItem[]>;
@@ -133,7 +128,7 @@ export class MotionBlockListComponent extends BaseListViewComponent<ViewMotionBl
     }
 
     /**
-     * Helper function reset the form and set the default values as well as closing the modal dialog
+     * Helper function reset the form and set the default values
      */
     private resetForm(): void {
         this.createBlockForm.reset();
