@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog } from '@angular/material';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
@@ -17,6 +17,7 @@ import { ViewItem } from 'app/site/agenda/models/view-item';
 import { BaseListViewComponent } from 'app/site/base/base-list-view';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
 import { MotionBlockSortService } from 'app/site/motions/services/motion-block-sort.service';
+import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 
 /**
  * Table for the motion blocks
@@ -30,8 +31,6 @@ import { MotionBlockSortService } from 'app/site/motions/services/motion-block-s
 export class MotionBlockListComponent extends BaseListViewComponent<ViewMotionBlock> implements OnInit {
     @ViewChild('newMotionBlockDialog', { static: true })
     private newMotionBlockDialog: TemplateRef<string>;
-
-    private dialogRef: MatDialogRef<string, any>;
 
     /**
      * Holds the create form
@@ -136,13 +135,9 @@ export class MotionBlockListComponent extends BaseListViewComponent<ViewMotionBl
     /**
      * Helper function reset the form and set the default values as well as closing the modal dialog
      */
-    public resetForm(): void {
+    private resetForm(): void {
         this.createBlockForm.reset();
         this.createBlockForm.get('agenda_type').setValue(this.defaultVisibility);
-        if (this.dialogRef) {
-            this.dialogRef.close();
-        }
-        this.dialogRef = null;
     }
 
     /**
@@ -151,19 +146,18 @@ export class MotionBlockListComponent extends BaseListViewComponent<ViewMotionBl
      */
     public onPlusButton(): void {
         this.resetForm();
-        this.dialogRef = this.dialog.open(this.newMotionBlockDialog, {
-            width: '400px',
-            maxWidth: '90vw',
-            maxHeight: '90vh',
-            disableClose: true
-        });
+        const dialogRef = this.dialog.open(this.newMotionBlockDialog, infoDialogSettings);
+        dialogRef.afterClosed().subscribe((res) => {
+            if (res) {
+                this.save();
+            }
+        })
     }
 
     /**
-     * Click handler for the save button.
      * Sends the block to create to the repository and resets the form.
      */
-    public async onSaveNewButton(): Promise<void> {
+    private save(): void {
         if (this.createBlockForm.valid) {
             const block = this.createBlockForm.value;
             if (!block.agenda_parent_id) {
@@ -171,14 +165,12 @@ export class MotionBlockListComponent extends BaseListViewComponent<ViewMotionBl
             }
 
             try {
-                await this.repo.create(block);
+                this.repo.create(block);
                 this.resetForm();
             } catch (e) {
                 this.raiseError(e);
             }
         }
-        // set a form control as "touched" to trigger potential error messages
-        this.createBlockForm.get('title').markAsTouched();
     }
 
     /**
@@ -189,17 +181,12 @@ export class MotionBlockListComponent extends BaseListViewComponent<ViewMotionBl
      */
     public onKeyDown(event: KeyboardEvent): void {
         if (event.key === 'Enter' && event.shiftKey) {
-            this.onSaveNewButton();
+            this.save();
+            this.dialog.closeAll();
         }
         if (event.key === 'Escape') {
-            this.onCancel();
+            this.resetForm();
+            this.dialog.closeAll();
         }
-    }
-
-    /**
-     * Cancels the current form action
-     */
-    public onCancel(): void {
-        this.resetForm();
     }
 }

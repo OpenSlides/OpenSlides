@@ -64,7 +64,7 @@
 <!-- Template for statute paragraph dialog -->
 <ng-template #statuteParagraphDialog>
     <h1 mat-dialog-title>
-        <span>{{ (currentStatuteParagraph ? "Edit statute paragraph" : "New statute paragraph") | translate }}</span>
+        <span>{{ ((currentStatuteParagraph ? "Edit" : "New") + "statute paragraph") | translate }}</span>
     </h1>
     <div class="os-form-card-mobile" mat-dialog-content>
         <form [formGroup]="statuteParagraphForm" (keydown)="onKeyDown($event)">
@@ -84,10 +84,10 @@
         </form>
     </div>
     <div mat-dialog-actions>
-        <button mat-button (click)="save()" [disabled]="!statuteParagraphForm.valid">
+        <button mat-button [mat-dialog-close]="true" [disabled]="!statuteParagraphForm.valid">
             <span translate>Save</span>
         </button>
-        <button mat-button (click)="cancel()">
+        <button mat-button [mat-dialog-close]="false">
             <span translate>Cancel</span>
         </button>
     </div>

@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog } from '@angular/material';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
@@ -14,6 +14,7 @@ import { MotionCommentSection } from 'app/shared/models/motions/motion-comment-s
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewMotionCommentSection } from 'app/site/motions/models/view-motion-comment-section';
 import { ViewGroup } from 'app/site/users/models/view-group';
+import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 
 /**
  * List view for the comment sections.
@@ -28,8 +29,6 @@ export class MotionCommentSectionListComponent extends BaseViewComponent impleme
     private motionCommentDialog: TemplateRef<string>;
 
     public currentComment: ViewMotionCommentSection | null;
-
-    public dialogRef: MatDialogRef<string, any>;
 
     /**
      * Source of the Data
@@ -93,52 +92,45 @@ export class MotionCommentSectionListComponent extends BaseViewComponent impleme
     public onKeyDown(event: KeyboardEvent, viewSection?: ViewMotionCommentSection): void {
         if (event.key === 'Enter' && event.shiftKey) {
             this.save();
+            this.dialog.closeAll();
         }
         if (event.key === 'Escape') {
-            this.cancel();
+            this.dialog.closeAll();
         }
     }
 
     /**
      * Opens the create dialog.
      */
-    public openDialog(c?: ViewMotionCommentSection): void {
-        this.currentComment = c;
+    public openDialog(commentSection?: ViewMotionCommentSection): void {
+        this.currentComment = commentSection;
         this.commentFieldForm.reset({
-            name: c ? c.name : '',
-            read_groups_id: c ? c.read_groups_id : [],
-            write_groups_id: c ? c.write_groups_id : []
+            name: commentSection ? commentSection.name : '',
+            read_groups_id: commentSection ? commentSection.read_groups_id : [],
+            write_groups_id: commentSection ? commentSection.write_groups_id : []
         });
-        this.dialogRef = this.dialog.open(this.motionCommentDialog, {
-            width: '500px',
-            maxWidth: '90vw',
-            maxHeight: '90vh',
-            disableClose: true
+        const dialogRef = this.dialog.open(this.motionCommentDialog, infoDialogSettings);
+        dialogRef.afterClosed().subscribe((res) => {
+            if (res) {
+                this.save();
+            }
         });
     }
 
     /**
      * saves the current data, either updating an existing comment or creating a new one.
      */
-    public save(): void {
+    private save(): void {
         if (this.commentFieldForm.valid) {
             // eiher update or create
             if (this.currentComment) {
-                this.repo
-                    .update(this.commentFieldForm.value as Partial<MotionCommentSection>, this.currentComment)
-                    .then(() => this.dialogRef.close(), this.raiseError);
+                this.repo.update(this.commentFieldForm.value as Partial<MotionCommentSection>, this.currentComment).catch(this.raiseError);
             } else {
                 const c = new MotionCommentSection(this.commentFieldForm.value);
-                this.repo.create(c).then(() => this.dialogRef.close(), this.raiseError);
+                this.repo.create(c).catch(this.raiseError);
             }
+            this.commentFieldForm.reset();
         }
-    }
-
-    /**
-     * close the dialog
-     */
-    public cancel(): void {
-        this.dialogRef.close();
     }
 
     /**

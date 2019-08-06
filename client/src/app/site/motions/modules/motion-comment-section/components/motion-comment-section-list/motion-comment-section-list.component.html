@@ -112,10 +112,10 @@
         </form>
     </div>
     <div mat-dialog-actions>
-        <button [disabled]="commentFieldForm.invalid" mat-button (click)="save()">
+        <button [disabled]="commentFieldForm.invalid" mat-button [mat-dialog-close]="true">
             <span translate>Save</span>
         </button>
-        <button mat-button (click)="cancel()">
+        <button mat-button [mat-dialog-close]="false">
             <span translate>Cancel</span>
         </button>
     </div>

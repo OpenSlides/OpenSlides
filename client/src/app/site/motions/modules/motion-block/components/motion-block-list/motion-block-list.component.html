@@ -41,16 +41,14 @@
         <span>{{ "New motion block" | translate }}</span>
     </h1>
     <form [formGroup]="createBlockForm" (keydown)="onKeyDown($event)">
-        <div class="os-form-card-mobile" mat-dialog-content>
+        <div mat-dialog-content>
             <!-- Title -->
-            <p>
-                <mat-form-field>
-                    <input formControlName="title" matInput placeholder="{{ 'Title' | translate }}" required />
-                    <mat-error *ngIf="createBlockForm.get('title').hasError('required')" translate>
-                        A title is required
-                    </mat-error>
-                </mat-form-field>
-            </p>
+            <mat-form-field>
+                <input formControlName="title" matInput placeholder="{{ 'Title' | translate }}" required />
+                <mat-error *ngIf="createBlockForm.get('title').hasError('required')" translate>
+                    A title is required
+                </mat-error>
+            </mat-form-field>
 
             <!-- Internal -->
             <p>
@@ -61,9 +59,9 @@
         </div>
     </form>
     <div mat-dialog-actions>
-        <button mat-button [disabled]="!createBlockForm.valid" (click)="onSaveNewButton()">
+        <button mat-button [disabled]="!createBlockForm.valid" [mat-dialog-close]="true">
             <span translate>Save</span>
         </button>
-        <button mat-button (click)="onCancel()"><span translate>Cancel</span></button>
+        <button mat-button [mat-dialog-close]="false"><span translate>Cancel</span></button>
     </div>
 </ng-template>

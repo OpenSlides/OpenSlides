@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog } from '@angular/material';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
@@ -12,6 +12,7 @@ import { StatuteParagraph } from 'app/shared/models/motions/statute-paragraph';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewStatuteParagraph } from 'app/site/motions/models/view-statute-paragraph';
 import { StatuteCsvExportService } from 'app/site/motions/services/statute-csv-export.service';
+import { largeDialogSettings } from 'app/shared/utils/dialog-settings';
 
 /**
  * List view for the statute paragraphs.
@@ -24,8 +25,6 @@ import { StatuteCsvExportService } from 'app/site/motions/services/statute-csv-e
 export class StatuteParagraphListComponent extends BaseViewComponent implements OnInit {
     @ViewChild('statuteParagraphDialog', { static: true })
     private statuteParagraphDialog: TemplateRef<string>;
-
-    private dialogRef: MatDialogRef<string, any>;
 
     private currentStatuteParagraph: ViewStatuteParagraph | null;
 
@@ -86,37 +85,36 @@ export class StatuteParagraphListComponent extends BaseViewComponent implements 
     /**
      * Open the modal dialog
      */
-    public openDialog(p?: ViewStatuteParagraph): void {
-        this.currentStatuteParagraph = p;
+    public openDialog(paragraph?: ViewStatuteParagraph): void {
+        this.currentStatuteParagraph = paragraph;
         this.statuteParagraphForm.reset();
-        if (p) {
+        if (paragraph) {
             this.statuteParagraphForm.setValue({
-                title: p.title,
-                text: p.text
+                title: paragraph.title,
+                text: paragraph.text
             });
         }
-        this.dialogRef = this.dialog.open(this.statuteParagraphDialog, {
-            width: '1000px',
-            maxWidth: '95vw',
-            maxHeight: '90vh',
-            disableClose: true
+        const dialogRef = this.dialog.open(this.statuteParagraphDialog, largeDialogSettings);
+        dialogRef.afterClosed().subscribe((res) => {
+            if (res) {
+                this.save();
+            }
         });
     }
 
     /**
      * creates a new statute paragraph or updates the current one
      */
-    public save(): void {
+    private save(): void {
         if (this.statuteParagraphForm.valid) {
             // eiher update or create
             if (this.currentStatuteParagraph) {
-                this.repo
-                    .update(this.statuteParagraphForm.value as Partial<StatuteParagraph>, this.currentStatuteParagraph)
-                    .then(() => this.dialogRef.close(), this.raiseError);
+                this.repo.update(this.statuteParagraphForm.value as Partial<StatuteParagraph>, this.currentStatuteParagraph).catch(this.raiseError);
             } else {
                 const p = new StatuteParagraph(this.statuteParagraphForm.value);
-                this.repo.create(p).then(() => this.dialogRef.close(), this.raiseError);
+                this.repo.create(p).catch(this.raiseError);
             }
+            this.statuteParagraphForm.reset();
         }
     }
 
@@ -148,17 +146,11 @@ export class StatuteParagraphListComponent extends BaseViewComponent implements 
     public onKeyDown(event: KeyboardEvent): void {
         if (event.key === 'Enter' && event.shiftKey) {
             this.save();
+            this.dialog.closeAll();
         }
         if (event.key === 'Escape') {
-            this.cancel();
+            this.dialog.closeAll();
         }
-    }
-
-    /**
-     * Closes the dialog
-     */
-    public cancel(): void {
-        this.dialogRef.close();
     }
 
     /**

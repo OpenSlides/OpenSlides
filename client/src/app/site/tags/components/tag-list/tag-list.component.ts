@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog } from '@angular/material';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
@@ -12,6 +12,7 @@ import { PromptService } from 'app/core/ui-services/prompt.service';
 import { Tag } from 'app/shared/models/core/tag';
 import { BaseListViewComponent } from 'app/site/base/base-list-view';
 import { ViewTag } from '../../models/view-tag';
+import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 
 /**
  * Listview for the complete list of available Tags
@@ -32,8 +33,6 @@ export class TagListComponent extends BaseListViewComponent<ViewTag> implements 
     private tagForm: FormGroup = this.formBuilder.group({
         name: ['', [Validators.required]]
     });
-
-    private dialogRef: MatDialogRef<string, any>;
 
     /**
      * Holds the tag that's currently being edited, or null.
@@ -94,28 +93,27 @@ export class TagListComponent extends BaseListViewComponent<ViewTag> implements 
         this.currentTag = tag;
         this.tagForm.reset();
         this.tagForm.get('name').setValue(this.currentTag ? this.currentTag.name : '');
-        this.dialogRef = this.dialog.open(this.tagDialog, {
-            width: '400px',
-            maxWidth: '90vw',
-            maxHeight: '90vh',
-            disableClose: true
-        });
+        const dialogRef = this.dialog.open(this.tagDialog, infoDialogSettings);
+        dialogRef.afterClosed().subscribe((res) => {
+            if (res) {
+                this.save();
+            }
+        })
     }
 
     /**
      * Submit the form and create or update a tag.
      */
-    public onSubmit(): void {
+    private save(): void {
         if (!this.tagForm.value || !this.tagForm.valid) {
             return;
         }
         if (this.currentTag) {
-            this.repo
-                .update(new Tag(this.tagForm.value), this.currentTag)
-                .then(() => this.dialogRef.close(), this.raiseError);
+            this.repo.update(new Tag(this.tagForm.value), this.currentTag).catch(this.raiseError);
         } else {
-            this.repo.create(this.tagForm.value).then(() => this.dialogRef.close(), this.raiseError);
+            this.repo.create(this.tagForm.value).catch(this.raiseError);
         }
+        this.tagForm.reset();   // reset here so pressing shift+enter wont save when dialog isnt open
     }
 
     /**
@@ -126,6 +124,22 @@ export class TagListComponent extends BaseListViewComponent<ViewTag> implements 
         const content = tag.name;
         if (await this.promptService.open(title, content)) {
             this.repo.delete(tag).catch(this.raiseError);
+        }
+    }
+
+    /**
+     * clicking Shift and Enter will save automatically
+     * clicking Escape will cancel the process
+     *
+     * @param event has the code
+     */
+    public onKeyDown(event: KeyboardEvent): void {
+        if (event.key === 'Enter' && event.shiftKey) {
+            this.save();
+            this.dialog.closeAll();
+        }
+        if (event.key === 'Escape') {
+            this.dialog.closeAll();
         }
     }
 }

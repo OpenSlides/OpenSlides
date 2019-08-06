@@ -1,9 +1,11 @@
 <ng-container *osPerms="'agenda.can_manage'">
     <ng-container *ngIf="showForm">
         <div [formGroup]="form">
-            <mat-checkbox formControlName="agenda_create">
-                <span translate>Add to agenda</span>
-            </mat-checkbox>
+            <p>
+                <mat-checkbox formControlName="agenda_create">
+                    <span translate>Add to agenda</span>
+                </mat-checkbox>
+            </p>
         </div>
 
         <ng-container *ngIf="!!checkbox.value">
