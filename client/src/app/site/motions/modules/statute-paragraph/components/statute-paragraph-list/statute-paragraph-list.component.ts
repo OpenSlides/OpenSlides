@@ -9,10 +9,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { StatuteParagraphRepositoryService } from 'app/core/repositories/motions/statute-paragraph-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { StatuteParagraph } from 'app/shared/models/motions/statute-paragraph';
+import { largeDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewStatuteParagraph } from 'app/site/motions/models/view-statute-paragraph';
 import { StatuteCsvExportService } from 'app/site/motions/services/statute-csv-export.service';
-import { largeDialogSettings } from 'app/shared/utils/dialog-settings';
 
 /**
  * List view for the statute paragraphs.
@@ -95,7 +95,7 @@ export class StatuteParagraphListComponent extends BaseViewComponent implements 
             });
         }
         const dialogRef = this.dialog.open(this.statuteParagraphDialog, largeDialogSettings);
-        dialogRef.afterClosed().subscribe((res) => {
+        dialogRef.afterClosed().subscribe(res => {
             if (res) {
                 this.save();
             }
@@ -109,10 +109,12 @@ export class StatuteParagraphListComponent extends BaseViewComponent implements 
         if (this.statuteParagraphForm.valid) {
             // eiher update or create
             if (this.currentStatuteParagraph) {
-                this.repo.update(this.statuteParagraphForm.value as Partial<StatuteParagraph>, this.currentStatuteParagraph).catch(this.raiseError);
+                this.repo
+                    .update(this.statuteParagraphForm.value as Partial<StatuteParagraph>, this.currentStatuteParagraph)
+                    .catch(this.raiseError);
             } else {
-                const p = new StatuteParagraph(this.statuteParagraphForm.value);
-                this.repo.create(p).catch(this.raiseError);
+                const paragraph = new StatuteParagraph(this.statuteParagraphForm.value);
+                this.repo.create(paragraph).catch(this.raiseError);
             }
             this.statuteParagraphForm.reset();
         }

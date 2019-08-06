@@ -79,7 +79,8 @@
 <!-- Template for motion comment dialog -->
 <ng-template #motionCommentDialog>
     <h1 mat-dialog-title>
-        <span>{{ (currentComment ? "Edit comment field" : "New comment field") | translate }}</span>
+        <span *ngIf="currentComment" translate>Edit comment field</span>
+        <span *ngIf="!currentComment" translate>New comment field</span>
     </h1>
     <div class="os-form-card-mobile" mat-dialog-content>
         <form [formGroup]="commentFieldForm" (keydown)="onKeyDown($event)">

@@ -10,9 +10,9 @@ import { PblColumnDefinition } from '@pebula/ngrid';
 import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { Tag } from 'app/shared/models/core/tag';
+import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseListViewComponent } from 'app/site/base/base-list-view';
 import { ViewTag } from '../../models/view-tag';
-import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 
 /**
  * Listview for the complete list of available Tags
@@ -94,11 +94,11 @@ export class TagListComponent extends BaseListViewComponent<ViewTag> implements 
         this.tagForm.reset();
         this.tagForm.get('name').setValue(this.currentTag ? this.currentTag.name : '');
         const dialogRef = this.dialog.open(this.tagDialog, infoDialogSettings);
-        dialogRef.afterClosed().subscribe((res) => {
+        dialogRef.afterClosed().subscribe(res => {
             if (res) {
                 this.save();
             }
-        })
+        });
     }
 
     /**
@@ -113,7 +113,7 @@ export class TagListComponent extends BaseListViewComponent<ViewTag> implements 
         } else {
             this.repo.create(this.tagForm.value).catch(this.raiseError);
         }
-        this.tagForm.reset();   // reset here so pressing shift+enter wont save when dialog isnt open
+        this.tagForm.reset(); // reset here so pressing shift+enter wont save when dialog isnt open
     }
 
     /**

@@ -37,7 +37,8 @@
 <!-- Template for dialog for quick editing -->
 <ng-template #tagDialog>
     <h1 mat-dialog-title>
-        <span>{{ (currentTag ? 'Edit tag' : 'New tag') | translate }}</span>
+        <span *ngIf="currentTag" translate>Edit tag</span>
+        <span *ngIf="!currentTag" translate>New tag</span>
     </h1>
     <div class="os-form-card-mobile" mat-dialog-content>
         <form [formGroup]="tagForm" (keydown)="onKeyDown($event)">

@@ -64,7 +64,8 @@
 <!-- Template for statute paragraph dialog -->
 <ng-template #statuteParagraphDialog>
     <h1 mat-dialog-title>
-        <span>{{ ((currentStatuteParagraph ? "Edit" : "New") + "statute paragraph") | translate }}</span>
+        <span *ngIf="currentStatuteParagraph" translate>Edit statute paragraph</span>
+        <span *ngIf="!currentStatuteParagraph" translate>New statute paragraph</span>
     </h1>
     <div class="os-form-card-mobile" mat-dialog-content>
         <form [formGroup]="statuteParagraphForm" (keydown)="onKeyDown($event)">

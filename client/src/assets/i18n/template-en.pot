@@ -174,9 +174,6 @@ msgstr ""
 msgid "Amendments can change multiple paragraphs"
 msgstr ""
 
-msgid "An email with a password reset link was send!"
-msgstr ""
-
 msgid "An unknown error occurred."
 msgstr ""
 
@@ -252,6 +249,11 @@ msgstr ""
 msgid "Are you sure you want to delete this workflow?"
 msgstr ""
 
+msgid ""
+"Are you sure you want to generate new passwords for all selected "
+"participants?"
+msgstr ""
+
 msgid "Are you sure you want to number all agenda items?"
 msgstr ""
 
@@ -270,6 +272,9 @@ msgid "Are you sure you want to remove this motion from motion block?"
 msgstr ""
 
 msgid "Are you sure you want to renumber all motions of this category?"
+msgstr ""
+
+msgid "Are you sure you want to reset all passwords to the default ones?"
 msgstr ""
 
 msgid "Are you sure you want to send an invitation email to the user?"
@@ -737,16 +742,10 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-msgid "Edit comment field:"
-msgstr ""
-
 msgid "Edit details"
 msgstr ""
 
 msgid "Edit details for"
-msgstr ""
-
-msgid "Edit statute paragraph:"
 msgstr ""
 
 msgid "Edit the whole motion text"
@@ -927,6 +926,9 @@ msgid ""
 "candidate the sum of all votes is 100 %."
 msgstr ""
 
+msgid "Foreground color"
+msgstr ""
+
 msgid "Forgot Password?"
 msgstr ""
 
@@ -1041,6 +1043,9 @@ msgid "Import statute"
 msgstr ""
 
 msgid "Import topics"
+msgstr ""
+
+msgid "Inactive"
 msgstr ""
 
 msgid "Initial password"
@@ -1301,9 +1306,6 @@ msgstr ""
 msgid "New change recommendation"
 msgstr ""
 
-msgid "New comment field"
-msgstr ""
-
 msgid "New directory"
 msgstr ""
 
@@ -1329,12 +1331,6 @@ msgid "New password"
 msgstr ""
 
 msgid "New state"
-msgstr ""
-
-msgid "New statute paragraph"
-msgstr ""
-
-msgid "New tag name"
 msgstr ""
 
 msgid "New topic"
@@ -1419,6 +1415,12 @@ msgid "No."
 msgstr ""
 
 msgid "None"
+msgstr ""
+
+msgid "Noone"
+msgstr ""
+
+msgid "Note, that the default password will be changed to the new generated one."
 msgstr ""
 
 msgid ""
@@ -1823,6 +1825,9 @@ msgstr ""
 msgid "Reset password"
 msgstr ""
 
+msgid "Reset passwords to the default ones"
+msgstr ""
+
 msgid "Reset recommendation"
 msgstr ""
 
@@ -1910,9 +1915,6 @@ msgstr ""
 msgid "Serially numbered"
 msgstr ""
 
-msgid "Set active status for selected participants:"
-msgstr ""
-
 msgid "Set as favorite"
 msgstr ""
 
@@ -1926,9 +1928,6 @@ msgid "Set category"
 msgstr ""
 
 msgid "Set committee ..."
-msgstr ""
-
-msgid "Set committee status for selected participants:"
 msgstr ""
 
 msgid "Set favorite"
@@ -1950,9 +1949,6 @@ msgid "Set motion block"
 msgstr ""
 
 msgid "Set presence ..."
-msgstr ""
-
-msgid "Set presence status for selected participants:"
 msgstr ""
 
 msgid "Set public"
@@ -2042,6 +2038,9 @@ msgstr ""
 msgid "Sort"
 msgstr ""
 
+msgid "Sort Comments"
+msgstr ""
+
 msgid "Sort agenda"
 msgstr ""
 
@@ -2108,6 +2107,9 @@ msgstr ""
 msgid "Structure level"
 msgstr ""
 
+msgid "Subcategory"
+msgstr ""
+
 msgid "Submitters"
 msgstr ""
 
@@ -2162,6 +2164,9 @@ msgstr ""
 msgid "The assembly may decide:"
 msgstr ""
 
+msgid "The event manager hasn't set up a legal notice yet."
+msgstr ""
+
 msgid "The event manager hasn't set up a privacy policy yet."
 msgstr ""
 
@@ -2177,9 +2182,15 @@ msgstr ""
 msgid "The link is broken. Please contact your system administrator."
 msgstr ""
 
+msgid "The list of speakers is closed"
+msgstr ""
+
 msgid ""
 "The maximum number of characters per line. Relevant when line numbering is "
 "enabled. Min: 40"
+msgstr ""
+
+msgid "The number has to be greater than \"0\" "
 msgstr ""
 
 msgid "The reason field may not be blank."
@@ -2204,6 +2215,9 @@ msgstr ""
 msgid "The text field may not be blank."
 msgstr ""
 
+msgid "The title is required"
+msgstr ""
+
 msgid "The title of the motion is always applied."
 msgstr ""
 
@@ -2220,6 +2234,9 @@ msgid "This change collides with another one."
 msgstr ""
 
 msgid "This element does not exist at this time."
+msgstr ""
+
+msgid "This field is required"
 msgstr ""
 
 msgid "This field is required."
@@ -2406,6 +2423,9 @@ msgid "Waiting for results"
 msgstr ""
 
 msgid "Web interface header logo"
+msgstr ""
+
+msgid "Web workers are not supported on your browser."
 msgstr ""
 
 msgid "Welcome to OpenSlides"
@@ -2692,4 +2712,7 @@ msgid "with local storage"
 msgstr ""
 
 msgid "withdrawed"
+msgstr ""
+
+msgid "{{ option.label }}"
 msgstr ""

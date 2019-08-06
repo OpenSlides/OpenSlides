@@ -11,10 +11,10 @@ import { MotionCommentSectionRepositoryService } from 'app/core/repositories/mot
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { MotionCommentSection } from 'app/shared/models/motions/motion-comment-section';
+import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewMotionCommentSection } from 'app/site/motions/models/view-motion-comment-section';
 import { ViewGroup } from 'app/site/users/models/view-group';
-import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 
 /**
  * List view for the comment sections.
@@ -110,7 +110,7 @@ export class MotionCommentSectionListComponent extends BaseViewComponent impleme
             write_groups_id: commentSection ? commentSection.write_groups_id : []
         });
         const dialogRef = this.dialog.open(this.motionCommentDialog, infoDialogSettings);
-        dialogRef.afterClosed().subscribe((res) => {
+        dialogRef.afterClosed().subscribe(res => {
             if (res) {
                 this.save();
             }
@@ -124,10 +124,12 @@ export class MotionCommentSectionListComponent extends BaseViewComponent impleme
         if (this.commentFieldForm.valid) {
             // eiher update or create
             if (this.currentComment) {
-                this.repo.update(this.commentFieldForm.value as Partial<MotionCommentSection>, this.currentComment).catch(this.raiseError);
+                this.repo
+                    .update(this.commentFieldForm.value as Partial<MotionCommentSection>, this.currentComment)
+                    .catch(this.raiseError);
             } else {
-                const c = new MotionCommentSection(this.commentFieldForm.value);
-                this.repo.create(c).catch(this.raiseError);
+                const comment = new MotionCommentSection(this.commentFieldForm.value);
+                this.repo.create(comment).catch(this.raiseError);
             }
             this.commentFieldForm.reset();
         }

@@ -13,11 +13,11 @@ import { StorageService } from 'app/core/core-services/storage.service';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
+import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { ViewItem } from 'app/site/agenda/models/view-item';
 import { BaseListViewComponent } from 'app/site/base/base-list-view';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
 import { MotionBlockSortService } from 'app/site/motions/services/motion-block-sort.service';
-import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 
 /**
  * Table for the motion blocks
@@ -147,11 +147,11 @@ export class MotionBlockListComponent extends BaseListViewComponent<ViewMotionBl
     public onPlusButton(): void {
         this.resetForm();
         const dialogRef = this.dialog.open(this.newMotionBlockDialog, infoDialogSettings);
-        dialogRef.afterClosed().subscribe((res) => {
+        dialogRef.afterClosed().subscribe(res => {
             if (res) {
                 this.save();
             }
-        })
+        });
     }
 
     /**
@@ -163,13 +163,8 @@ export class MotionBlockListComponent extends BaseListViewComponent<ViewMotionBl
             if (!block.agenda_parent_id) {
                 delete block.agenda_parent_id;
             }
-
-            try {
-                this.repo.create(block);
-                this.resetForm();
-            } catch (e) {
-                this.raiseError(e);
-            }
+            this.repo.create(block).catch(this.raiseError);
+            this.resetForm();
         }
     }
 
