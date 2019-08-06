@@ -40,8 +40,6 @@ export class MotionCommentSectionListComponent extends BaseViewComponent impleme
      */
     public commentFieldForm: FormGroup;
 
-    public openId: number | null;
-
     public groups: BehaviorSubject<ViewGroup[]>;
 
     /**

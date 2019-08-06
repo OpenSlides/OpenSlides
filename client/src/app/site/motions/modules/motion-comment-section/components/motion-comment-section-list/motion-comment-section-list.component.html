@@ -16,9 +16,6 @@
 <mat-accordion class="os-card">
     <mat-expansion-panel
         *ngFor="let section of this.commentSections"
-        (opened)="openId = section.id"
-        (closed)="openId = null"
-        [expanded]="openId === section.id"
         multiple="false"
     >
         <mat-expansion-panel-header>

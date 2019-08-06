@@ -38,8 +38,6 @@ export class StatuteParagraphListComponent extends BaseViewComponent implements 
      */
     public statuteParagraphForm: FormGroup;
 
-    public openId: Number | null;
-
     /**
      * The usual component constructor. Initializes the forms
      *

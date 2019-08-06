@@ -16,9 +16,6 @@
     <mat-accordion class="os-card">
         <mat-expansion-panel
             *cdkVirtualFor="let statuteParagraph of statuteParagraphs"
-            (opened)="openId = statuteParagraph.id"
-            (closed)="openId = null"
-            [expanded]="openId === statuteParagraph.id"
             multiple="false"
         >
             <mat-expansion-panel-header>
