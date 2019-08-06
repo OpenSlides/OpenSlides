@@ -1,8 +1,10 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
+import * as moment from 'moment';
+import { Moment } from 'moment';
 import { distinctUntilChanged } from 'rxjs/operators';
 
 import { BaseComponent } from 'app/base.component';
@@ -12,7 +14,7 @@ import { ViewConfig } from '../../models/view-config';
 
 /**
  * Component for a config field, used by the {@link ConfigListComponent}. Handles
- * all inpu types defined by the server, as well as updating the configs
+ * all input types defined by the server, as well as updating the configs
  *
  * @example
  * ```ts
@@ -23,15 +25,11 @@ import { ViewConfig } from '../../models/view-config';
     selector: 'os-config-field',
     templateUrl: './config-field.component.html',
     styleUrls: ['./config-field.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    encapsulation: ViewEncapsulation.None // to style the date and time pickers
 })
 export class ConfigFieldComponent extends BaseComponent implements OnInit {
     public configItem: ViewConfig;
-
-    /**
-     * Date representation od the config value, used by the datetimepicker
-     */
-    public dateValue: Date;
 
     /**
      * Option to show a green check-icon.
@@ -58,8 +56,6 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
      */
     public translatedValue: object;
 
-    public rawDate: Date;
-
     /**
      * The config item for this component. Just accepts components with already
      * populated constants-info.
@@ -70,12 +66,18 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
             this.configItem = value;
 
             if (this.form) {
-                this.form.patchValue(
-                    {
-                        value: this.configItem.value
-                    },
-                    { emitEvent: false }
-                );
+                if (this.configItem.inputType === 'datetimepicker') {
+                    // datetime has to be converted
+                    const datetimeObj = this.unixToDateAndTime(this.configItem.value as number);
+                    this.form.patchValue(datetimeObj, { emitEvent: false });
+                } else {
+                    this.form.patchValue(
+                        {
+                            value: this.configItem.value
+                        },
+                        { emitEvent: false }
+                    );
+                }
             }
         }
     }
@@ -99,7 +101,6 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
      * @param formBuilder FormBuilder
      * @param cd ChangeDetectorRef
      * @param repo ConfigRepositoryService
-     * @param dateTimeAdapter DateTimeAdapter
      */
     public constructor(
         protected titleService: Title,
@@ -116,7 +117,9 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
      */
     public ngOnInit(): void {
         this.form = this.formBuilder.group({
-            value: ['']
+            value: [''],
+            date: [''],
+            time: ['']
         });
         this.translatedValue = this.configItem.value;
         if (
@@ -128,8 +131,9 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
                 this.translatedValue = this.translate.instant(this.configItem.value);
             }
         }
-        if (this.configItem.inputType === 'datetimepicker') {
-            this.dateValue = new Date(this.configItem.value as number);
+        if (this.configItem.inputType === 'datetimepicker' && this.configItem.value) {
+            const datetimeObj = this.unixToDateAndTime(this.configItem.value as number);
+            this.form.patchValue(datetimeObj);
         }
         this.form.patchValue({
             value: this.translatedValue
@@ -144,6 +148,41 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
     }
 
     /**
+     * Helper function to split a unix timestamp into a date as a moment object and a time string in the form of HH:SS
+     *
+     * @param unix the timestamp
+     *
+     * @return an object with a date and a time field
+     */
+    private unixToDateAndTime(unix: number): { date: Moment; time: string } {
+        const date = moment.unix(unix);
+        const time = date.hours() + ':' + date.minutes();
+        return { date: date, time: time };
+    }
+
+    /**
+     * Helper function to fuse a moment object as the date part and a time string (HH:SS) as the time part.
+     *
+     * @param date the moment date object
+     * @param time the time string
+     *
+     * @return a unix timestamp
+     */
+    private dateAndTimeToUnix(date: Moment, time: string): number {
+        if (date) {
+            if (time) {
+                const timeSplit = time.split(':');
+                // + is faster than parseint and number(). ~~ would be fastest but prevented by linter...
+                date.hour(+timeSplit[0]);
+                date.minute(+timeSplit[1]);
+            }
+            return date.unix();
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Trigger an update of the data
      */
     private onChange(value: any): void {
@@ -152,7 +191,10 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
             return;
         }
         if (this.configItem.inputType === 'datetimepicker') {
-            this.dateValue = new Date(value as number);
+            // datetime has to be converted
+            const date = this.form.get('date').value;
+            const time = this.form.get('time').value;
+            value = this.dateAndTimeToUnix(date, time);
         }
         if (this.debounceTimeout !== null) {
             clearTimeout(<any>this.debounceTimeout);
@@ -214,6 +256,8 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
 
     /**
      * Sets the error on this field.
+     *
+     * @param error The error as string.
      */
     private setError(error: string): void {
         this.error = error;
@@ -226,6 +270,7 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
      * input, textarea, choice or date
      *
      * @param type: the type of a config item
+     *
      * @returns the template type
      */
     public formType(type: string): string {
@@ -243,22 +288,12 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
      * Checks of the config.type can be part of the form
      *
      * @param type the config.type of a setting
+     *
      * @returns wheather it should be excluded or not
      */
     public isExcludedType(type: string): boolean {
         const excluded = ['boolean', 'markupText', 'text', 'translations', 'datetimepicker'];
         return excluded.includes(type);
-    }
-
-    /**
-     * custom handler for datetime picker updates. Sets the form's value
-     * to the timestamp of the Date being the event's value
-     *
-     * @param event an event-like object with a Date as value property
-     */
-    public updateTime(event: { value: Date }): void {
-        this.dateValue = event.value;
-        this.onChange(event.value.valueOf());
     }
 
     /**

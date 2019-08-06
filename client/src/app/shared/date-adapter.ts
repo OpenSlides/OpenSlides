@@ -1,29 +1,30 @@
-import { Injectable } from '@angular/core';
-import { NativeDateAdapter } from '@angular/material/core';
+import { Inject, Injectable, Optional } from '@angular/core';
+import { MAT_DATE_LOCALE } from '@angular/material';
+import {
+    MAT_MOMENT_DATE_ADAPTER_OPTIONS,
+    MatMomentDateAdapterOptions,
+    MomentDateAdapter
+} from '@angular/material-moment-adapter';
+
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 
 /**
- * A custom DateAdapter for the datetimepicker in the config. This is still not fully working and needs to be done later.
- * See comments in PR #3895.
+ * A custom DateAdapter for the datetimepicker in the config. Uses MomentDateAdapter for localisation.
+ * Is needed to subscribe to language changes
  */
 @Injectable()
-export class OpenSlidesDateAdapter extends NativeDateAdapter {
-    public format(date: Date, displayFormat: Object): string {
-        if (displayFormat === 'input') {
-            return this.toFullIso8601(date);
-        } else {
-            return date.toDateString();
-        }
-    }
-
-    private to2digit(n: number): string {
-        return ('00' + n).slice(-2);
-    }
-
-    public toFullIso8601(date: Date): string {
-        return (
-            [date.getUTCFullYear(), this.to2digit(date.getUTCMonth() + 1), this.to2digit(date.getUTCDate())].join('-') +
-            'T' +
-            [this.to2digit(date.getUTCHours()), this.to2digit(date.getUTCMinutes())].join(':')
-        );
+export class OpenSlidesDateAdapter extends MomentDateAdapter {
+    public constructor(
+        translate: TranslateService,
+        @Optional() @Inject(MAT_DATE_LOCALE) dateLocale: string,
+        @Optional() @Inject(MAT_MOMENT_DATE_ADAPTER_OPTIONS) _options?: MatMomentDateAdapterOptions
+    ) {
+        super(dateLocale, _options);
+        // subscribe to language changes to change localisation of dates accordingly
+        // DateAdapter seems not to be a singleton so we do that in this subclass instead of app.component
+        this.setLocale(translate.currentLang);
+        translate.onLangChange.subscribe((e: LangChangeEvent) => {
+            this.setLocale(e.lang);
+        });
     }
 }

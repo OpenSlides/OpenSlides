@@ -36,6 +36,7 @@ def get_config_variables():
     yield ConfigVariable(
         name="general_event_date",
         default_value="",
+        input_type="datetimepicker",
         label="Event date",
         weight=120,
         group="General",

@@ -66,16 +66,36 @@
 
                 <!-- datetimepicker -->
                 <div *ngIf="configItem.inputType === 'datetimepicker'">
-                    <input
-                        matInput
-                        [value]="dateValue"
-                    />
-
-                    <mat-label>{{ configItem.label | translate }}</mat-label>
-                    <span matSuffix>
-                        <mat-icon pull="right" class="text-success" *ngIf="updateSuccessIcon">check_circle</mat-icon>
-                    </span>
-                    <mat-error *ngIf="error"> {{ error }} </mat-error>
+                    <div class="datetimepicker-container">
+                        <mat-form-field>
+                            <mat-label>{{ configItem.label | translate }}</mat-label>
+                            <input
+                                matInput
+                                formControlName="date"
+                                [matDatepicker]="datepicker"
+                                (click)="datepicker.open()"
+                            />
+                            <mat-hint *ngIf="configItem.helpText">{{ configItem.helpText | translate }}</mat-hint>
+                            <div class="suffix-wrapper" matSuffix>
+                                <mat-icon class="text-success" *ngIf="updateSuccessIcon">check_circle</mat-icon>
+                                <mat-datepicker-toggle
+                                    [for]="datepicker"
+                                    (click)="$event.preventDefault()"
+                                ></mat-datepicker-toggle>
+                            </div>
+                            <mat-error *ngIf="error"> {{ error }} </mat-error>
+                            <mat-datepicker #datepicker></mat-datepicker>
+                        </mat-form-field>
+                        <mat-form-field>
+                            <input matInput [format]="24" formControlName="time" [ngxTimepicker]="timepicker" />
+                            <div class="suffix-wrapper" matSuffix>
+                                <mat-icon class="text-success" *ngIf="updateSuccessIcon">check_circle</mat-icon>
+                                <ngx-material-timepicker-toggle [for]="timepicker"></ngx-material-timepicker-toggle>
+                            </div>
+                            <mat-error *ngIf="error"> {{ error }} </mat-error>
+                            <ngx-material-timepicker #timepicker></ngx-material-timepicker>
+                        </mat-form-field>
+                    </div>
                 </div>
 
                 <!-- The editor -->

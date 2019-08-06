@@ -100,6 +100,7 @@ export class AppComponent {
         const browserLang = translate.getBrowserLang();
         // try to use the browser language if it is available. If not, uses english.
         translate.use(translate.getLangs().includes(browserLang) ? browserLang : 'en');
+
         // change default JS functions
         this.overloadArrayToString();
         this.overloadFlatMap();
