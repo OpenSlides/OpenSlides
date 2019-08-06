@@ -1,5 +1,6 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
@@ -12,6 +13,7 @@ import { StorageService } from 'app/core/core-services/storage.service';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
+import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { ViewItem } from 'app/site/agenda/models/view-item';
 import { BaseListViewComponent } from 'app/site/base/base-list-view';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
@@ -27,15 +29,13 @@ import { MotionBlockSortService } from 'app/site/motions/services/motion-block-s
     encapsulation: ViewEncapsulation.None
 })
 export class MotionBlockListComponent extends BaseListViewComponent<ViewMotionBlock> implements OnInit {
+    @ViewChild('newMotionBlockDialog', { static: true })
+    private newMotionBlockDialog: TemplateRef<string>;
+
     /**
      * Holds the create form
      */
     public createBlockForm: FormGroup;
-
-    /**
-     * Flag, if the creation panel is open
-     */
-    public isCreatingNewBlock = false;
 
     /**
      * Holds the agenda items to select the parent item
@@ -95,6 +95,7 @@ export class MotionBlockListComponent extends BaseListViewComponent<ViewMotionBl
         private formBuilder: FormBuilder,
         private itemRepo: ItemRepositoryService,
         private operator: OperatorService,
+        private dialog: MatDialog,
         public sortService: MotionBlockSortService
     ) {
         super(titleService, translate, matSnackBar, storage);
@@ -129,42 +130,37 @@ export class MotionBlockListComponent extends BaseListViewComponent<ViewMotionBl
     /**
      * Helper function reset the form and set the default values
      */
-    public resetForm(): void {
+    private resetForm(): void {
         this.createBlockForm.reset();
         this.createBlockForm.get('agenda_type').setValue(this.defaultVisibility);
     }
 
     /**
-     * Click handler for the plus button
+     * Click handler for the plus button.
+     * Opens the dialog for motion block creation.
      */
     public onPlusButton(): void {
-        if (!this.isCreatingNewBlock) {
-            this.resetForm();
-            this.isCreatingNewBlock = true;
-        }
+        this.resetForm();
+        const dialogRef = this.dialog.open(this.newMotionBlockDialog, infoDialogSettings);
+        dialogRef.afterClosed().subscribe(res => {
+            if (res) {
+                this.save();
+            }
+        });
     }
 
     /**
-     * Click handler for the save button.
      * Sends the block to create to the repository and resets the form.
      */
-    public async onSaveNewButton(): Promise<void> {
+    private save(): void {
         if (this.createBlockForm.valid) {
             const block = this.createBlockForm.value;
             if (!block.agenda_parent_id) {
                 delete block.agenda_parent_id;
             }
-
-            try {
-                await this.repo.create(block);
-                this.resetForm();
-                this.isCreatingNewBlock = false;
-            } catch (e) {
-                this.raiseError(e);
-            }
+            this.repo.create(block).catch(this.raiseError);
+            this.resetForm();
         }
-        // set a form control as "touched" to trigger potential error messages
-        this.createBlockForm.get('title').markAsTouched();
     }
 
     /**
@@ -175,17 +171,12 @@ export class MotionBlockListComponent extends BaseListViewComponent<ViewMotionBl
      */
     public onKeyDown(event: KeyboardEvent): void {
         if (event.key === 'Enter' && event.shiftKey) {
-            this.onSaveNewButton();
+            this.save();
+            this.dialog.closeAll();
         }
         if (event.key === 'Escape') {
-            this.onCancel();
+            this.resetForm();
+            this.dialog.closeAll();
         }
-    }
-
-    /**
-     * Cancels the current form action
-     */
-    public onCancel(): void {
-        this.isCreatingNewBlock = false;
     }
 }

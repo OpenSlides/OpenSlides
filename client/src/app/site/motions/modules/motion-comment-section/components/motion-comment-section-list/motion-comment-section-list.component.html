@@ -1,4 +1,4 @@
-<os-head-bar prevUrl="../.." [nav]="false" [mainButton]="true" (mainEvent)="onPlusButton()">
+<os-head-bar prevUrl="../.." [nav]="false" [mainButton]="true" (mainEvent)="openDialog()">
     <!-- Title -->
     <div class="title-slot">
         <h2 translate>Comment fields</h2>
@@ -13,53 +13,9 @@
 </os-head-bar>
 
 <div class="head-spacer"></div>
-<mat-card *ngIf="commentSectionToCreate">
-    <mat-card-title translate>New comment field</mat-card-title>
-    <mat-card-content>
-        <form [formGroup]="createForm" (keydown)="keyDownFunction($event)">
-            <p>
-                <mat-form-field>
-                    <input formControlName="name" matInput placeholder="{{ 'Name' | translate }}" required />
-                    <mat-error *ngIf="!createForm.controls.name.valid">
-                        <span translate>Required</span>
-                    </mat-error>
-                </mat-form-field>
-            </p>
-            <p>
-                <os-search-value-selector
-                    ngDefaultControl
-                    [formControl]="this.createForm.get('read_groups_id')"
-                    [multiple]="true"
-                    listname="Groups with read permissions"
-                    [InputListValues]="this.groups"
-                ></os-search-value-selector>
-            </p>
-            <p>
-                <os-search-value-selector
-                    ngDefaultControl
-                    [formControl]="this.createForm.get('write_groups_id')"
-                    [multiple]="true"
-                    listname="Groups with write permissions"
-                    [InputListValues]="this.groups"
-                ></os-search-value-selector>
-            </p>
-        </form>
-    </mat-card-content>
-    <mat-card-actions>
-        <button [disabled]="createForm.invalid" mat-button (click)="create()">
-            <span translate>Create</span>
-        </button>
-        <button mat-button (click)="commentSectionToCreate = null">
-            <span translate>Cancel</span>
-        </button>
-    </mat-card-actions>
-</mat-card>
 <mat-accordion class="os-card">
     <mat-expansion-panel
         *ngFor="let section of this.commentSections"
-        (opened)="openId = section.id"
-        (closed)="panelClosed(section)"
-        [expanded]="openId === section.id"
         multiple="false"
     >
         <mat-expansion-panel-header>
@@ -87,58 +43,21 @@
                 </div>
             </mat-panel-title>
         </mat-expansion-panel-header>
-        <form [formGroup]="updateForm" *ngIf="editId === section.id" (keydown)="keyDownFunction($event, section)">
-            <span translate>Edit comment field:</span>
-            <p>
-                <mat-form-field>
-                    <input formControlName="name" matInput placeholder="{{ 'Name' | translate }}" required />
-                    <mat-error *ngIf="!updateForm.controls.name.valid">
-                        <span translate>Required</span>
-                    </mat-error>
-                </mat-form-field>
-            </p>
-            <p>
-                <os-search-value-selector
-                    ngDefaultControl
-                    [formControl]="this.updateForm.get('read_groups_id')"
-                    [multiple]="true"
-                    listname="Groups with read permissions"
-                    [InputListValues]="this.groups"
-                ></os-search-value-selector>
-            </p>
-            <p>
-                <os-search-value-selector
-                    ngDefaultControl
-                    [formControl]="this.updateForm.get('write_groups_id')"
-                    [multiple]="true"
-                    listname="Groups with write permissions"
-                    [InputListValues]="this.groups"
-                ></os-search-value-selector>
-            </p>
-        </form>
-        <ng-container *ngIf="editId !== section.id">
-            <h3 translate>Name</h3>
-            <div class="spacer-left">{{ section.name }}</div>
-            <h3 translate>Groups with read permissions</h3>
-            <ul *ngFor="let group of section.read_groups">
-                <li>{{ group.getTitle() }}</li>
-            </ul>
-            <div class="spacer-left" *ngIf="section.read_groups.length === 0" translate>No groups selected</div>
-            <h3 translate>Groups with write permissions</h3>
-            <ul *ngFor="let group of section.write_groups">
-                <li>{{ group.getTitle() }}</li>
-            </ul>
-            <div class="spacer-left" *ngIf="section.write_groups.length === 0" translate>No groups selected</div>
-        </ng-container>
+        <h3 translate>Name</h3>
+        <div class="spacer-left">{{ section.name }}</div>
+        <h3 translate>Groups with read permissions</h3>
+        <ul *ngFor="let group of section.read_groups">
+            <li>{{ group.getTitle() }}</li>
+        </ul>
+        <div class="spacer-left" *ngIf="section.read_groups.length === 0" translate>No groups selected</div>
+        <h3 translate>Groups with write permissions</h3>
+        <ul *ngFor="let group of section.write_groups">
+            <li>{{ group.getTitle() }}</li>
+        </ul>
+        <div class="spacer-left" *ngIf="section.write_groups.length === 0" translate>No groups selected</div>
         <mat-action-row>
-            <button *ngIf="editId !== section.id" mat-button (click)="onEditButton(section)" mat-icon-button>
+            <button mat-button (click)="openDialog(section)" mat-icon-button>
                 <mat-icon>edit</mat-icon>
-            </button>
-            <button *ngIf="editId === section.id" mat-button (click)="editId = null" mat-icon-button>
-                <mat-icon>cancel</mat-icon>
-            </button>
-            <button *ngIf="editId === section.id" [disabled]="updateForm.invalid" mat-button (click)="onSaveButton(section)" mat-icon-button>
-                <mat-icon>save</mat-icon>
             </button>
             <button mat-button (click)="onDeleteButton(section)" mat-icon-button>
                 <mat-icon>delete</mat-icon>
@@ -153,3 +72,49 @@
         <span translate>Sort</span>
     </button>
 </mat-menu>
+
+<!-- Template for motion comment dialog -->
+<ng-template #motionCommentDialog>
+    <h1 mat-dialog-title>
+        <span *ngIf="currentComment" translate>Edit comment field</span>
+        <span *ngIf="!currentComment" translate>New comment field</span>
+    </h1>
+    <div class="os-form-card-mobile" mat-dialog-content>
+        <form [formGroup]="commentFieldForm" (keydown)="onKeyDown($event)">
+            <p>
+                <mat-form-field>
+                    <input formControlName="name" matInput placeholder="{{ 'Name' | translate }}" required />
+                    <mat-error *ngIf="!commentFieldForm.controls.name.valid">
+                        <span translate>Required</span>
+                    </mat-error>
+                </mat-form-field>
+            </p>
+            <p>
+                <os-search-value-selector
+                    ngDefaultControl
+                    [formControl]="commentFieldForm.get('read_groups_id')"
+                    [multiple]="true"
+                    listname="Groups with read permissions"
+                    [InputListValues]="groups"
+                ></os-search-value-selector>
+            </p>
+            <p>
+                <os-search-value-selector
+                    ngDefaultControl
+                    [formControl]="commentFieldForm.get('write_groups_id')"
+                    [multiple]="true"
+                    listname="Groups with write permissions"
+                    [InputListValues]="groups"
+                ></os-search-value-selector>
+            </p>
+        </form>
+    </div>
+    <div mat-dialog-actions>
+        <button [disabled]="commentFieldForm.invalid" mat-button [mat-dialog-close]="true">
+            <span translate>Save</span>
+        </button>
+        <button mat-button [mat-dialog-close]="false">
+            <span translate>Cancel</span>
+        </button>
+    </div>
+</ng-template>
