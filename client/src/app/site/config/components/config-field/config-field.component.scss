@@ -3,6 +3,35 @@
     width: 100%;
 }
 
+.datetimepicker-container {
+    margin-left: -20px;
+
+    .mat-form-field {
+        width: 50%;
+        box-sizing: border-box;
+        padding-left: 20px;
+
+        .suffix-wrapper {
+            display: flex;
+            align-items: center;
+
+            .mat-datepicker-toggle {
+                padding-left: 4px;
+                padding-right: 4px;
+
+                .mat-datepicker-toggle-default-icon {
+                    width: 20px;
+                    margin-bottom: 10px;
+                }
+            }
+
+            .ngx-material-timepicker-toggle {
+                width: 28px;
+            }
+        }
+    }
+}
+
 /* limit the color bar of color inputs */
 input[type='color'] {
     max-width: 100px;
