@@ -7,7 +7,7 @@ from django.db import transaction
 from django.db.utils import IntegrityError
 from django.utils.crypto import get_random_string
 
-from openslides.agenda.models import Item
+from openslides.agenda.models import Item, ListOfSpeakers
 from openslides.assignments.models import Assignment
 from openslides.core.apps import startup
 from openslides.motions.models import Motion
@@ -137,9 +137,12 @@ class Command(BaseCommand):
                 new_topics.append(Topic(title=get_random_string(20, self.chars)))
             Topic.objects.bulk_create(new_topics)
             items = []
+            lists_of_speakers = []
             for topic in Topic.objects.exclude(pk__in=current_topics):
                 items.append(Item(content_object=topic, type=Item.AGENDA_ITEM))
+                lists_of_speakers.append(ListOfSpeakers(content_object=topic))
             Item.objects.bulk_create(items)
+            ListOfSpeakers.objects.bulk_create(lists_of_speakers)
             self.stdout.write(
                 self.style.SUCCESS(f"{number_of_topics} topcis successfully created.")
             )
@@ -180,9 +183,12 @@ class Command(BaseCommand):
                 )
             Assignment.objects.bulk_create(new_assignments)
             items = []
+            lists_of_speakers = []
             for assignment in Assignment.objects.exclude(pk__in=current_assignments):
                 items.append(Item(content_object=assignment))
+                lists_of_speakers.append(ListOfSpeakers(content_object=assignment))
             Item.objects.bulk_create(items)
+            ListOfSpeakers.objects.bulk_create(lists_of_speakers)
             self.stdout.write(
                 self.style.SUCCESS(
                     f"{number_of_assignments} assignments successfully created."
