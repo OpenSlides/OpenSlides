@@ -267,7 +267,11 @@
                     </button>
                     <div>
                         <mat-divider *ngIf="motion.state.next_states.length > 0"></mat-divider>
-                        <button *ngFor="let state of motion.state.previous_states" mat-menu-item (click)="setState(state.id)">
+                        <button
+                            *ngFor="let state of motion.state.previous_states"
+                            mat-menu-item
+                            (click)="setState(state.id)"
+                        >
                             <mat-icon>arrow_back</mat-icon> {{ state.name | translate }}
                             <span *ngIf="state.show_state_extension_field">&nbsp;...</span>
                         </button>
@@ -280,7 +284,7 @@
         </div>
 
         <!-- Recommendation -->
-        <div *ngIf="recommender && !editMotion">
+        <div *ngIf="(perms.isAllowed('change_metadata') || motion.recommendation) && recommender && !editMotion">
             <os-extension-field
                 title="{{ recommender }}"
                 [inputValue]="recommendationStateExtension"
@@ -362,7 +366,13 @@
                 class="grey"
                 disableRipple
             >
-                {{ motion.category.prefixedNameWithParents }}
+                <div *ngIf="motion.category">
+                    <div *ngIf="motion.category.parent">
+                        {{ motion.category.parent }}
+                    </div>
+                    <span *ngIf="motion.category.parent">{{ 'Subcategory' | translate }}:</span>
+                    {{ motion.category }}
+                </div>
             </mat-basic-chip>
         </div>
 
@@ -761,7 +771,12 @@
             <div class="motion-text" *ngIf="!editMotion"><div [innerHtml]="sanitizedText(motion.reason)"></div></div>
 
             <!-- The HTML Editor -->
-            <editor formControlName="reason" [init]="tinyMceSettings" *ngIf="editMotion" [required]="reasonRequired"></editor>
+            <editor
+                formControlName="reason"
+                [init]="tinyMceSettings"
+                *ngIf="editMotion"
+                [required]="reasonRequired"
+            ></editor>
             <div
                 *ngIf="
                     reasonRequired &&
