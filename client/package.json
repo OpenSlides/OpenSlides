@@ -24,8 +24,8 @@
         "po2json-tempfix": "./node_modules/.bin/po2json -f mf src/assets/i18n/de.po /dev/stdout | sed -f sed_replacements > src/assets/i18n/de.json && ./node_modules/.bin/po2json -f mf src/assets/i18n/cs.po /dev/stdout | sed -f sed_replacements > src/assets/i18n/cs.json",
         "prettify-check": "prettier --config ./.prettierrc --list-different \"src/{app,environments}/**/*{.ts,.js,.json,.css,.scss}\"",
         "prettify-write": "prettier --config ./.prettierrc --write \"src/{app,environments}/**/*{.ts,.js,.json,.css,.scss}\"",
-        "cleanup": "npm run lint-write; npm run prettify-write",
-        "cleanup-win": "npm run lint-write & npm run prettify-write"
+        "cleanup": "npm run prettify-write; npm run lint-write",
+        "cleanup-win": "npm run prettify-write & npm run lint-write"
     },
     "dependencies": {
         "@angular/animations": "^8.0.3",

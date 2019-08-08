@@ -608,7 +608,7 @@ class HistoryDataView(utils_views.APIView):
         )
         missing_keys = all_current_config_keys - all_old_config_keys
         if missing_keys:
-            config_full_data = async_to_sync(element_cache.get_collection_full_data)(
+            config_full_data = async_to_sync(element_cache.get_collection_data)(
                 "core/config"
             )
             key_to_id = config.get_key_to_id()

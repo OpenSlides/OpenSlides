@@ -1,12 +1,23 @@
 import { Injectable } from '@angular/core';
 
-import { take } from 'rxjs/operators';
-
 import { AutoupdateService } from './autoupdate.service';
 import { ConstantsService } from './constants.service';
 import { StorageService } from './storage.service';
 
-const DB_SCHEMA_VERSION = 'DbSchemaVersion';
+interface SchemaVersion {
+    db: string;
+    config: number;
+    migration: number;
+}
+
+function isSchemaVersion(obj: any): obj is SchemaVersion {
+    if (!obj || typeof obj !== 'object') {
+        return false;
+    }
+    return obj.db !== undefined && obj.config !== undefined && obj.migration !== undefined;
+}
+
+const SCHEMA_VERSION = 'SchemaVersion';
 
 /**
  * Manages upgrading the DataStore, if the migration version from the server is higher than the current one.
@@ -25,24 +36,47 @@ export class DataStoreUpgradeService {
         private constantsService: ConstantsService,
         private storageService: StorageService
     ) {
-        this.checkForUpgrade();
+        // Prevent the schema version to be cleard. This is important
+        // after a reset from OpenSlides, because the complete data is
+        // queried from the server and we do not want also to trigger a reload
+        // by changing the schema from null -> <schema>.
+        this.storageService.addNoClearKey(SCHEMA_VERSION);
+
+        this.constantsService
+            .get<SchemaVersion>(SCHEMA_VERSION)
+            .subscribe(serverVersion => this.checkForUpgrade(serverVersion));
     }
 
-    public async checkForUpgrade(): Promise<boolean> {
-        const version = await this.constantsService
-            .get<string | number>(DB_SCHEMA_VERSION)
-            .pipe(take(1))
-            .toPromise();
-        console.log('DB schema version:', version);
-        const currentVersion = await this.storageService.get<string>(DB_SCHEMA_VERSION);
-        await this.storageService.set(DB_SCHEMA_VERSION, version);
-        const doUpgrade = version !== currentVersion;
+    public async checkForUpgrade(serverVersion: SchemaVersion): Promise<boolean> {
+        console.log('Server schema version:', serverVersion);
+        const clientVersion = await this.storageService.get<SchemaVersion>(SCHEMA_VERSION);
+        await this.storageService.set(SCHEMA_VERSION, serverVersion);
 
-        if (doUpgrade) {
-            console.log(`DB schema version changed from ${currentVersion} to ${version}`);
-            await this.autoupdateService.doFullUpdate();
+        let doUpgrade = false;
+        if (isSchemaVersion(clientVersion)) {
+            if (clientVersion.db !== serverVersion.db) {
+                console.log(`\tDB id changed from ${clientVersion.db} to ${serverVersion.db}`);
+                doUpgrade = true;
+            }
+            if (clientVersion.config !== serverVersion.config) {
+                console.log(`\tConfig changed from ${clientVersion.config} to ${serverVersion.config}`);
+                doUpgrade = true;
+            }
+            if (clientVersion.migration !== serverVersion.migration) {
+                console.log(`\tMigration changed from ${clientVersion.migration} to ${serverVersion.migration}`);
+                doUpgrade = true;
+            }
+        } else {
+            console.log('\tNo client schema version.');
+            doUpgrade = true;
         }
 
+        if (doUpgrade) {
+            console.log('\t-> In result of a schema version change: Do full update.');
+            await this.autoupdateService.doFullUpdate();
+        } else {
+            console.log('\t-> No upgrade needed.');
+        }
         return doUpgrade;
     }
 }

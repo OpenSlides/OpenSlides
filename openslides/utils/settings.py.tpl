@@ -100,11 +100,6 @@ if use_redis:
     # or a unix domain socket path string — "/path/to/redis.sock".
     REDIS_ADDRESS = "redis://127.0.0.1"
 
-    # When use_redis is True, the restricted data cache caches the data individuel
-    # for each user. This requires a lot of memory if there are a lot of active
-    # users.
-    RESTRICTED_DATA_CACHE = True
-
     # Session backend
 
     # Redis configuration for django-redis-sessions.

@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 
 import { AutoupdateService } from './autoupdate.service';
 import { ConstantsService } from './constants.service';
-import { DataStoreUpgradeService } from './data-store-upgrade.service';
 import { DataStoreService } from './data-store.service';
 import { OperatorService } from './operator.service';
 import { StorageService } from './storage.service';
@@ -47,8 +46,7 @@ export class OpenSlidesService {
         private router: Router,
         private autoupdateService: AutoupdateService,
         private DS: DataStoreService,
-        private constantsService: ConstantsService,
-        private dataStoreUpgradeService: DataStoreUpgradeService
+        private constantsService: ConstantsService
     ) {
         // Handler that gets called, if the websocket connection reconnects after a disconnection.
         // There might have changed something on the server, so we check the operator, if he changed.
@@ -162,6 +160,7 @@ export class OpenSlidesService {
         const response = await this.operator.whoAmI();
         // User logged off.
         if (!response.user && !response.guest_enabled) {
+            this.websocketService.cancelReconnectenRetry();
             await this.shutdown();
             this.redirectToLoginIfNotSubpage();
         } else {
@@ -174,24 +173,9 @@ export class OpenSlidesService {
                 await this.reboot();
             } else if (requestChanges) {
                 // User is still the same, but check for missed autoupdates.
-                await this.recoverAfterReconnect();
+                this.autoupdateService.requestChanges();
+                this.constantsService.refresh();
             }
-        }
-    }
-
-    /**
-     * The cache-refresh strategy, if there was an reconnect and the user didn't changed.
-     */
-    private async recoverAfterReconnect(): Promise<void> {
-        // Reload constants to get either new one (in general) and especially
-        // the "DbSchemaVersion" one, to check, if the DB has changed (e.g. due
-        // to an update)
-        await this.constantsService.refresh();
-
-        // If the DB schema version didn't change, request normal changes.
-        // If so, then a full update is implicit triggered, so we do not need to to anything.
-        if (!(await this.dataStoreUpgradeService.checkForUpgrade())) {
-            this.autoupdateService.requestChanges();
         }
     }
 }

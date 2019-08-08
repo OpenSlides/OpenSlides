@@ -183,6 +183,11 @@ export class WebsocketService {
     private retryCounter = 0;
 
     /**
+     * The timeout in the onClose-handler for the next reconnect retry.
+     */
+    private retryTimeout: any = null;
+
+    /**
      * Constructor that handles the router
      * @param matSnackBar
      * @param zone
@@ -385,9 +390,17 @@ export class WebsocketService {
 
             // A random retry timeout between 2000 and 5000 ms.
             const timeout = Math.floor(Math.random() * 3000 + 2000);
-            setTimeout(() => {
+            this.retryTimeout = setTimeout(() => {
+                this.retryTimeout = null;
                 this.connect({ enableAutoupdates: true }, true);
             }, timeout);
+        }
+    }
+
+    public cancelReconnectenRetry(): void {
+        if (this.retryTimeout) {
+            clearTimeout(this.retryTimeout);
+            this.retryTimeout = null;
         }
     }
 

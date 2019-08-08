@@ -67,7 +67,7 @@ async def get_projector_data(
     if projector_ids is None:
         projector_ids = []
 
-    all_data = await element_cache.get_all_full_data_ordered()
+    all_data = await element_cache.get_all_data_dict()
     projector_data: Dict[int, List[Dict[str, Any]]] = {}
 
     for projector_id, projector in all_data.get("core/projector", {}).items():

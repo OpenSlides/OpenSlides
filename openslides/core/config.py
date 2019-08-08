@@ -49,7 +49,7 @@ class ConfigHandler:
         if not self.exists(key):
             raise ConfigNotFound(f"The config variable {key} was not found.")
 
-        return async_to_sync(element_cache.get_element_full_data)(
+        return async_to_sync(element_cache.get_element_data)(
             self.get_collection_string(), self.get_key_to_id()[key]
         )["value"]
 
@@ -85,7 +85,7 @@ class ConfigHandler:
             if self.key_to_id is not None:
                 return
 
-        config_full_data = await element_cache.get_collection_full_data(
+        config_full_data = await element_cache.get_collection_data(
             self.get_collection_string()
         )
         elements = config_full_data.values()

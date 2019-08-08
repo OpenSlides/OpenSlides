@@ -1,3 +1,5 @@
+import uuid
+
 from django.core.validators import MaxLengthValidator
 
 from openslides.core.config import ConfigVariable
@@ -394,11 +396,18 @@ def get_config_variables():
         group="Custom translations",
     )
 
-    # Config version
+    # Config version and DB id
     yield ConfigVariable(
         name="config_version",
         input_type="integer",
         default_value=1,
+        group="Version",
+        hidden=True,
+    )
+    yield ConfigVariable(
+        name="db_id",
+        input_type="string",
+        default_value=uuid.uuid4().hex,
         group="Version",
         hidden=True,
     )

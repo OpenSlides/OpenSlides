@@ -54,7 +54,7 @@ async def get_user(scope: Dict[str, Any]) -> Dict[str, Any]:
         pass
     else:
         if backend_path in settings.AUTHENTICATION_BACKENDS:
-            user = await element_cache.get_element_full_data("users/user", user_id)
+            user = await element_cache.get_element_data("users/user", user_id)
             if user:
                 # Verify the session
                 session_hash = session.get(HASH_SESSION_KEY)

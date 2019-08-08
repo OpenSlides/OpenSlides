@@ -253,10 +253,11 @@ class ListModelMixin(_ListModelMixin):
             # The corresponding queryset does not support caching.
             response = super().list(request, *args, **kwargs)
         else:
+            # TODO
             # This loads all data from the cache, not only the requested data.
             # If we would use the rest api, we should add a method
             # element_cache.get_collection_restricted_data
-            all_restricted_data = async_to_sync(element_cache.get_all_restricted_data)(
+            all_restricted_data = async_to_sync(element_cache.get_all_data_list)(
                 request.user.pk or 0
             )
             response = Response(all_restricted_data.get(collection_string, []))
@@ -278,8 +279,8 @@ class RetrieveModelMixin(_RetrieveModelMixin):
         else:
             lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
             user_id = request.user.pk or 0
-            content = async_to_sync(element_cache.get_element_restricted_data)(
-                user_id, collection_string, self.kwargs[lookup_url_kwarg]
+            content = async_to_sync(element_cache.get_element_data)(
+                collection_string, self.kwargs[lookup_url_kwarg], user_id
             )
             if content is None:
                 raise Http404

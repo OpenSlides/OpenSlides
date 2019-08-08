@@ -1,4 +1,3 @@
-import hashlib
 import logging
 import os
 import sys
@@ -8,11 +7,9 @@ from typing import Any, Dict, List
 
 from django.apps import AppConfig
 from django.conf import settings
-from django.db.models import Max
 from django.db.models.signals import post_migrate, pre_delete
 
-
-logger = logging.getLogger("openslides.core")
+from openslides.utils.schema_version import schema_version_handler
 
 
 class CoreAppConfig(AppConfig):
@@ -179,18 +176,7 @@ class CoreAppConfig(AppConfig):
             config_groups[-1]["subgroups"][-1]["items"].append(config_variable.data)
         constants["ConfigVariables"] = config_groups
 
-        # get max migration id -> the "version" of the DB
-        from django.db.migrations.recorder import MigrationRecorder
-
-        migration_version = MigrationRecorder.Migration.objects.aggregate(Max("id"))[
-            "id__max"
-        ]
-        config_version = config["config_version"]
-        hash = hashlib.sha1(
-            f"{migration_version}#{config_version}".encode()
-        ).hexdigest()
-        constants["DbSchemaVersion"] = hash
-        logger.info(f"DbSchemaVersion={hash}")
+        constants["SchemaVersion"] = schema_version_handler.get()
 
         return constants
 
@@ -209,6 +195,7 @@ def manage_config(**kwargs):
     altered = config.cleanup_old_config_values() or altered
     if altered:
         config.increment_version()
+        logging.getLogger(__name__).info("Updated config variables")
 
 
 def startup():
@@ -224,6 +211,6 @@ def startup():
     from openslides.utils.cache import element_cache
     from openslides.core.models import History
 
-    element_cache.ensure_cache()
+    element_cache.ensure_schema_version()
     set_constants(get_constants_from_apps())
     History.objects.build_history()

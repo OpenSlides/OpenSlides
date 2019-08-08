@@ -17,7 +17,7 @@ matrix:
         - pip freeze
       script:
         - mypy openslides/ tests/
-        - pytest --cov --cov-fail-under=76
+        - pytest --cov --cov-fail-under=75
 
     - language: python
       name: "Server: Tests Python 3.7"
@@ -36,7 +36,7 @@ matrix:
         - isort --check-only --diff --recursive openslides tests
         - black --check --diff --target-version py36 openslides tests
         - mypy openslides/ tests/
-        - pytest --cov --cov-fail-under=76
+        - pytest --cov --cov-fail-under=75
 
     - language: python
       name: "Server: Tests Startup Routine Python 3.7"

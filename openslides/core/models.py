@@ -287,7 +287,7 @@ class HistoryManager(models.Manager):
         instances = None
         if self.all().count() == 0:
             elements = []
-            all_full_data = async_to_sync(element_cache.get_all_full_data)()
+            all_full_data = async_to_sync(element_cache.get_all_data_list)()
             for collection_string, data in all_full_data.items():
                 for full_data in data:
                     elements.append(
