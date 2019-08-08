@@ -77,7 +77,7 @@ _('Input format: DD.MM.YYYY HH:MM');
 _('Hide internal items when projecting subitems');
 _('Number of last speakers to be shown on the projector');
 _('List of speakers');
-_('The list of speakers is closed');
+_('The list of speakers is closed.');
 _('Show orange countdown in the last x seconds of speaking time');
 _('Enter duration in seconds. Choose 0 to disable warning color.');
 _('Hide the amount of speakers in subtitle of list of speakers slide');
@@ -93,6 +93,7 @@ _('Internal item');
 _('Hidden item');
 // agenda misc strings
 _('Only main agenda items');
+_('Topics');
 
 // Motions config strings
 // subgroup general
@@ -168,6 +169,7 @@ _('Sort motions by');
 // misc motion strings
 _('Amendment');
 _('Statute amendment for');
+_('Statute paragraphs');
 
 // motion workflow 1
 _('Simple Workflow');
@@ -352,6 +354,7 @@ _(
 // users misc
 _('Username or password is not correct.');
 _('Guest');
+_('Participant');
 
 // default groups
 _('Default');

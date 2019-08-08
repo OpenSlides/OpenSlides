@@ -22,7 +22,11 @@
     </div>
 
     <mat-menu #menu="matMenu">
-        <button mat-menu-item *ngFor="let registeredModel of registeredModels" (click)="toggleModel($event, registeredModel)">
+        <button
+            mat-menu-item
+            *ngFor="let registeredModel of registeredModels"
+            (click)="toggleModel($event, registeredModel)"
+        >
             <mat-checkbox [checked]="registeredModel.enabled" (click)="$event.preventDefault()">
                 <span>{{ registeredModel.verboseNamePlural | translate }}</span>
             </mat-checkbox>
@@ -32,7 +36,7 @@
         <mat-list-item *ngFor="let option of sortingOptionsList" (click)="toggleSorting($event, option.option)">
             <button mat-menu-item>
                 <mat-icon matListIcon>{{ sortingProperty === option.option ? 'check' : '' }}</mat-icon>
-                <span translate>{{ option.label }}</span>
+                <span>{{ option.label | translate }}</span>
             </button>
         </mat-list-item>
     </mat-menu>
@@ -59,7 +63,11 @@
                                 <a *ngIf="!searchResult.openInNewTab" [routerLink]="model.getDetailStateURL()">
                                     {{ model.getTitle() }}
                                 </a>
-                                <a *ngIf="searchResult.openInNewTab" [routerLink]="model.getDetailStateURL()" target="_blank" >
+                                <a
+                                    *ngIf="searchResult.openInNewTab"
+                                    [routerLink]="model.getDetailStateURL()"
+                                    target="_blank"
+                                >
                                     {{ model.getTitle() }}
                                 </a>
                             </mat-list-item>
