@@ -50,6 +50,14 @@ export class ViewMediafile extends BaseViewModelWithListOfSpeakers<Mediafile>
     }
 
     public get title(): string {
+        if (this.is_directory) {
+            return this.mediafile.path;
+        } else {
+            return this.mediafile.title;
+        }
+    }
+
+    public get filename(): string {
         return this.mediafile.title;
     }
 
