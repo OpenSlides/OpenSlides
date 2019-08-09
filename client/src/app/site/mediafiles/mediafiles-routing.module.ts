@@ -17,7 +17,7 @@ const routes: Routes = [
     },
     {
         path: 'upload',
-        data: { basePerm: 'mediafiles.can_upload' },
+        data: { basePerm: 'mediafiles.can_manage' },
         children: [{ path: '**', component: MediaUploadComponent }],
         pathMatch: 'prefix'
     }

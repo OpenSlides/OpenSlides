@@ -135,4 +135,15 @@ export class MediafileRepositoryService extends BaseIsListOfSpeakersContentObjec
             directory_id: directoryId
         });
     }
+
+    /**
+     * Deletes many files.
+     *
+     * @param mediafiles The users to delete
+     */
+    public async bulkDelete(mediafiles: ViewMediafile[]): Promise<void> {
+        await this.httpService.post('/rest/mediafiles/mediafile/bulk_delete/', {
+            ids: mediafiles.map(mediafile => mediafile.id)
+        });
+    }
 }

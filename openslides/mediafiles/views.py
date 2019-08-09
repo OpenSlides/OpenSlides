@@ -32,7 +32,14 @@ class MediafileViewSet(ModelViewSet):
         """
         if self.action in ("list", "retrieve", "metadata"):
             result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action in ("create", "partial_update", "update", "move", "destroy"):
+        elif self.action in (
+            "create",
+            "partial_update",
+            "update",
+            "move",
+            "destroy",
+            "bulk_delete",
+        ):
             result = has_perm(self.request.user, "mediafiles.can_see") and has_perm(
                 self.request.user, "mediafiles.can_manage"
             )
@@ -147,6 +154,49 @@ class MediafileViewSet(ModelViewSet):
             inform_changed_data(Mediafile.objects.all())
         else:
             inform_changed_data(directory.get_children_deep())
+
+        return Response()
+
+    @list_route(methods=["post"])
+    def bulk_delete(self, request):
+        """
+        Deletes mediafiles *from one directory*. Expected data:
+        { ids: [<id>, <id>, ...] }
+        It is checked, that every id belongs to the same directory.
+        """
+        # Validate data:
+        if not isinstance(request.data, dict):
+            raise ValidationError({"detail": "The data must be a dict"})
+        ids = request.data.get("ids")
+        if not isinstance(ids, list):
+            raise ValidationError({"detail": "The ids must be a list"})
+        for id in ids:
+            if not isinstance(id, int):
+                raise ValidationError({"detail": "All ids must be an int"})
+
+        # Get mediafiles
+        mediafiles = []
+        for id in ids:
+            try:
+                mediafiles.append(Mediafile.objects.get(pk=id))
+            except Mediafile.DoesNotExist:
+                raise ValidationError(
+                    {"detail": f"The mediafile with id {id} does not exist"}
+                )
+        if not mediafiles:
+            return Response()
+
+        # Validate, that they are in the same directory:
+        directory_id = mediafiles[0].parent_id
+        for mediafile in mediafiles:
+            if mediafile.parent_id != directory_id:
+                raise ValidationError(
+                    {"detail": "All mediafiles must be in the same directory."}
+                )
+
+        with watch_and_update_configs():
+            for mediafile in mediafiles:
+                mediafile.delete()
 
         return Response()
 

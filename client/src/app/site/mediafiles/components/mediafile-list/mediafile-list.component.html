@@ -1,4 +1,4 @@
-<os-head-bar [mainButton]="canUploadFiles" [multiSelectMode]="false" (mainEvent)="onMainEvent()">
+<os-head-bar [mainButton]="canEdit" [multiSelectMode]="isMultiSelect" (mainEvent)="onMainEvent()">
     <!-- Title -->
     <div class="title-slot">
         <h2 translate>Files</h2>
@@ -6,35 +6,40 @@
 
     <!-- Menu -->
     <div class="menu-slot" *osPerms="'mediafiles.can_manage'">
-        <button type="button" mat-icon-button (click)="createNewFolder(newFolderDialog)">
+        <button type="button" mat-icon-button (click)="createNewFolder(newFolderDialog)" *ngIf="!isMultiSelect">
             <mat-icon>create_new_folder</mat-icon>
         </button>
-        <!--<button type="button" mat-icon-button [matMenuTriggerFor]="mediafilesMenu">
+        <button type="button" mat-icon-button [matMenuTriggerFor]="mediafilesMenu">
             <mat-icon>more_vert</mat-icon>
-        </button>-->
+        </button>
     </div>
 
     <!-- Multiselect info -->
-    <!--<div *ngIf="this.isMultiSelect" class="central-info-slot">
+    <div *ngIf="isMultiSelect" class="central-info-slot">
         <button mat-icon-button (click)="toggleMultiSelect()"><mat-icon>arrow_back</mat-icon></button>
         <span>{{ selectedRows.length }}&nbsp;</span><span translate>selected</span>
-    </div>-->
+    </div>
 </os-head-bar>
 
 <!-- Folder navigation bar -->
 <div>
     <div class="custom-table-header folder-nav-bar">
-        <button class="folder" mat-button (click)="changeDirectory(null)">
+        <button class="folder" mat-button (click)="changeDirectory(null)" [disabled]="isMultiSelect">
             <mat-icon class="file-icon">home</mat-icon>
         </button>
         <span *ngFor="let directory of directoryChain; let last = last">
             <div class="arrow">
                 <mat-icon>chevron_right</mat-icon>
             </div>
-
-            <button class="folder" mat-button (click)="changeDirectory(directory.id)" *ngIf="!last">
+            <button
+                class="folder"
+                mat-button
+                (click)="changeDirectory(directory.id)"
+                [disabled]="isMultiSelect"
+                *ngIf="!last"
+            >
                 <span class="folder-text">
-                    {{ directory.title }}
+                    {{ directory.filename }}
                 </span>
             </button>
             <button
@@ -42,14 +47,15 @@
                 mat-button
                 [matMenuTriggerFor]="singleMediafileMenu"
                 [matMenuTriggerData]="{ mediafile: directory }"
+                [disabled]="isMultiSelect"
                 *ngIf="last && showFileMenu(directory)"
             >
                 <os-icon-container icon="arrow_drop_down" swap="true" size="large">
-                    {{ directory.title }}
+                    {{ directory.filename }}
                 </os-icon-container>
             </button>
             <span class="folder fake-folder folder-text" *ngIf="last && !showFileMenu(directory)">
-                {{ directory.title }}
+                {{ directory.filename }}
             </span>
         </span>
         <span class="visibility" *ngIf="canEdit && directory && directory.has_inherited_access_groups">
@@ -83,23 +89,29 @@
     showHeader="false"
     vScrollAuto
     [dataSource]="dataSource"
+    matCheckboxSelection="selection"
     [columns]="columnSet"
     [hideColumns]="hiddenColumns"
+    (rowClick)="onSelectRow($event)"
 >
     <!-- Icon column -->
     <div *pblNgridCellDef="'icon'; row as mediafile" class="fill clickable">
-        <a class="detail-link" target="_blank" [routerLink]="mediafile.url" *ngIf="mediafile.is_file"> </a>
-        <a class="detail-link" (click)="changeDirectory(mediafile.id)" *ngIf="mediafile.is_directory"> </a>
+        <a class="detail-link" target="_blank" [routerLink]="mediafile.url" *ngIf="mediafile.is_file && !isMultiSelect">
+        </a>
+        <a class="detail-link" (click)="changeDirectory(mediafile.id)" *ngIf="mediafile.is_directory && !isMultiSelect">
+        </a>
         <mat-icon class="file-icon">{{ mediafile.getIcon() }}</mat-icon>
     </div>
 
     <!-- Title column -->
     <div *pblNgridCellDef="'title'; row as mediafile" class="fill clickable">
-        <a class="detail-link" target="_blank" [routerLink]="mediafile.url" *ngIf="mediafile.is_file"> </a>
-        <a class="detail-link" (click)="changeDirectory(mediafile.id)" *ngIf="mediafile.is_directory"> </a>
+        <a class="detail-link" target="_blank" [routerLink]="mediafile.url" *ngIf="mediafile.is_file && !isMultiSelect">
+        </a>
+        <a class="detail-link" (click)="changeDirectory(mediafile.id)" *ngIf="mediafile.is_directory && !isMultiSelect">
+        </a>
         <div class="innerTable">
             <div class="file-title ellipsis-overflow">
-                {{ mediafile.title }}
+                {{ mediafile.filename }}
             </div>
             <div class="info-text" *ngIf="mediafile.is_file">
                 <span> {{ getDateFromTimestamp(mediafile.timestamp) }} · {{ mediafile.size }} </span>
@@ -135,6 +147,7 @@
             mat-icon-button
             [matMenuTriggerFor]="singleMediafileMenu"
             [matMenuTriggerData]="{ mediafile: mediafile }"
+            [disabled]="isMultiSelect"
             *ngIf="showFileMenu(mediafile)"
         >
             <mat-icon>more_vert</mat-icon>
@@ -191,7 +204,7 @@
                 <mat-icon>edit</mat-icon>
                 <span translate>Edit</span>
             </button>
-            <button mat-menu-item (click)="move(moveDialog, mediafile)">
+            <button mat-menu-item (click)="move(moveDialog, [mediafile])">
                 <mat-icon>near_me</mat-icon>
                 <span translate>Move</span>
             </button>
@@ -204,7 +217,7 @@
 </mat-menu>
 
 <!-- Menu for Mediafiles -->
-<!--<mat-menu #mediafilesMenu="matMenu">
+<mat-menu #mediafilesMenu="matMenu">
     <div *ngIf="!isMultiSelect">
         <button mat-menu-item *osPerms="'mediafiles.can_manage'" (click)="toggleMultiSelect()">
             <mat-icon>library_add</mat-icon>
@@ -212,6 +225,10 @@
         </button>
     </div>
     <div *ngIf="isMultiSelect">
+        <button mat-menu-item [disabled]="!selectedRows.length" (click)="move(moveDialog, selectedRows)">
+            <mat-icon>near_me</mat-icon>
+            <span translate>Move</span>
+        </button>
         <mat-divider></mat-divider>
         <button mat-menu-item (click)="selectAll()">
             <mat-icon>done_all</mat-icon>
@@ -228,11 +245,11 @@
             [disabled]="!selectedRows.length"
             (click)="deleteSelected()"
         >
-            <mat-icon>delete</mat-icon>
+            <mat-icon color="warn">delete</mat-icon>
             <span translate>Delete</span>
         </button>
     </div>
-</mat-menu>-->
+</mat-menu>
 
 <!-- File edit dialog -->
 <ng-template #fileEditDialog>
@@ -310,7 +327,7 @@
     <h1 mat-dialog-title>
         <span translate>Move into directory</span>
     </h1>
-    <div mat-dialog-content>
+    <div class="os-form-card-mobile" mat-dialog-content>
         <p translate>Please select the directory:</p>
         <os-search-value-selector
             ngDefaultControl
@@ -318,7 +335,7 @@
             [includeNone]="true"
             [noneTitle]="'Base folder'"
             listname="{{ 'Parent directory' | translate }}"
-            [InputListValues]="directoryBehaviorSubject"
+            [InputListValues]="filteredDirectoryBehaviorSubject"
         ></os-search-value-selector>
     </div>
     <div mat-dialog-actions>
