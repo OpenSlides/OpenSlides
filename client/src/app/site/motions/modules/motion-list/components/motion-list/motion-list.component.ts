@@ -42,6 +42,7 @@ interface TileCategoryInformation {
     prefix?: string;
     condition: number | boolean | null;
     amountOfMotions: number;
+    weightOfCategory?: number;
 }
 
 /**
@@ -275,15 +276,16 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
                     motion.category_id,
                     'category',
                     motion.category.name,
-                    motion.category.prefix
+                    motion.category.prefix,
+                    motion.category.weight
                 );
             } else {
                 this.countMotions(-2, null, 'category', 'No category');
             }
         }
 
-        this.tileCategories = Object.values(this.informationOfMotionsInTileCategories).sort((a, b) =>
-            ('' + a.prefix).localeCompare(b.prefix)
+        this.tileCategories = Object.values(this.informationOfMotionsInTileCategories).sort(
+            (a, b) => a.weightOfCategory - b.weightOfCategory
         );
     }
 
@@ -346,13 +348,15 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
      * @param filter The filter, if the tile is selected
      * @param name The title of the tile
      * @param prefix The prefix of the category
+     * @param categoryWeight The weight of the category in the category-list
      */
     private countMotions(
         id: number,
         condition: number | boolean | null,
         filter: string,
         name: string,
-        prefix?: string
+        prefix?: string,
+        categoryWeight?: number
     ): void {
         let info = this.informationOfMotionsInTileCategories[id];
         if (info) {
@@ -363,7 +367,8 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
                 name,
                 condition,
                 prefix,
-                amountOfMotions: 1
+                amountOfMotions: 1,
+                weightOfCategory: categoryWeight
             };
         }
         this.informationOfMotionsInTileCategories[id] = info;
