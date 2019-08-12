@@ -331,7 +331,13 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
                 // custom filter predicates
                 if (this.filterProps && this.filterProps.length) {
                     for (const prop of this.filterProps) {
-                        const propertyAsString = '' + item[prop];
+                        let propertyAsString = '';
+                        // If the property is a function, call it.
+                        if (typeof item[prop] === 'function') {
+                            propertyAsString = '' + item[prop]();
+                        } else {
+                            propertyAsString = '' + item[prop];
+                        }
 
                         if (!!propertyAsString) {
                             const foundProp =
