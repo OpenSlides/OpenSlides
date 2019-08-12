@@ -804,14 +804,14 @@ class Category(RESTModelMixin, models.Model):
     """Name of the category."""
 
     prefix = models.CharField(blank=True, max_length=32)
-    """Prefix of the category.
-
+    """
+    Prefix of the category.
     Used to build the identifier of a motion.
     """
 
     parent = models.ForeignKey(
         "self",
-        on_delete=SET_NULL_AND_AUTOUPDATE,
+        on_delete=CASCADE_AND_AUTOUPDATE,
         null=True,
         blank=True,
         related_name="children",

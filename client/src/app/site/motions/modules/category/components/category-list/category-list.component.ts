@@ -80,7 +80,7 @@ export class CategoryListComponent extends BaseViewComponent implements OnInit {
 
         this.dataSource = new MatTableDataSource();
         this.repo.getViewModelListObservable().subscribe(viewCategories => {
-            if (viewCategories && viewCategories.length && this.dataSource) {
+            if (viewCategories && this.dataSource) {
                 this.dataSource.data = viewCategories;
             }
         });
