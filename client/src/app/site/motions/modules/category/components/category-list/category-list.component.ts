@@ -1,14 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTableDataSource } from '@angular/material/table';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
+import { PblColumnDefinition } from '@pebula/ngrid';
 
 import { OperatorService } from 'app/core/core-services/operator.service';
+import { StorageService } from 'app/core/core-services/storage.service';
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
+import { BaseListViewComponent } from 'app/site/base/base-list-view';
 import { ViewCategory } from 'app/site/motions/models/view-category';
 
 /**
@@ -19,21 +22,33 @@ import { ViewCategory } from 'app/site/motions/models/view-category';
     templateUrl: './category-list.component.html',
     styleUrls: ['./category-list.component.scss']
 })
-export class CategoryListComponent extends BaseViewComponent implements OnInit {
+export class CategoryListComponent extends BaseListViewComponent<ViewCategory> implements OnInit {
+    @ViewChild('newCategoryDialog', { static: true })
+    private newCategoryDialog: TemplateRef<string>;
+
     /**
      * Holds the create form
      */
     public createForm: FormGroup;
 
     /**
-     * Table data Source
+     * Define the columns to show
      */
-    public dataSource: MatTableDataSource<ViewCategory>;
+    public tableColumnDefinition: PblColumnDefinition[] = [
+        {
+            prop: 'title',
+            width: 'auto'
+        },
+        {
+            prop: 'amount',
+            width: this.singleButtonWidth
+        }
+    ];
 
     /**
-     * Flag, if the creation panel is open
+     * Define extra filter properties
      */
-    public isCreatingNewCategory = false;
+    public filterProps = ['prefixedName'];
 
     /**
      * helper for permission checks
@@ -59,11 +74,13 @@ export class CategoryListComponent extends BaseViewComponent implements OnInit {
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
-        private repo: CategoryRepositoryService,
+        storage: StorageService,
+        public repo: CategoryRepositoryService,
         private formBuilder: FormBuilder,
+        private dialog: MatDialog,
         private operator: OperatorService
     ) {
-        super(titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, storage);
 
         this.createForm = this.formBuilder.group({
             prefix: [''],
@@ -77,72 +94,44 @@ export class CategoryListComponent extends BaseViewComponent implements OnInit {
      */
     public ngOnInit(): void {
         super.setTitle('Categories');
-
-        this.dataSource = new MatTableDataSource();
-        this.repo.getViewModelListObservable().subscribe(viewCategories => {
-            if (viewCategories && this.dataSource) {
-                this.dataSource.data = viewCategories;
-            }
-        });
-    }
-
-    /**
-     * Returns the columns that should be shown in the table
-     *
-     * @returns an array of strings building the column definition
-     */
-    public getColumnDefinition(): string[] {
-        return ['title', 'amount', 'anchor'];
     }
 
     /**
      * Click handler for the plus button
      */
     public onPlusButton(): void {
-        if (!this.isCreatingNewCategory) {
-            this.createForm.reset();
-            this.isCreatingNewCategory = true;
-        }
-    }
-
-    /**
-     * Click handler for the save button.
-     * Sends the category to create to the repository and resets the form.
-     */
-    public onCreate(): void {
-        if (this.createForm.valid) {
-            try {
-                this.repo.create(this.createForm.value);
-                this.createForm.reset();
-                this.isCreatingNewCategory = false;
-            } catch (e) {
-                this.raiseError(e);
+        this.createForm.reset();
+        const dialogRef = this.dialog.open(this.newCategoryDialog, infoDialogSettings);
+        dialogRef.afterClosed().subscribe(res => {
+            if (res) {
+                this.save();
             }
-        }
-        // set a form control as "touched" to trigger potential error messages
-        this.createForm.get('name').markAsTouched();
+        });
     }
 
     /**
-     * clicking Shift and Enter will save automatically
+     * Sends the category to create to the repository.
+     */
+    private save(): void {
+        if (this.createForm.valid) {
+            this.repo.create(this.createForm.value).catch(this.raiseError);
+        }
+    }
+
+    /**
+     * clicking Enter will save automatically
      * clicking Escape will cancel the process
      *
      * @param event has the code
      */
     public onKeyDown(event: KeyboardEvent): void {
         if (event.key === 'Enter') {
-            this.onCreate();
+            this.save();
+            this.dialog.closeAll();
         }
         if (event.key === 'Escape') {
-            this.onCancel();
+            this.dialog.closeAll();
         }
-    }
-
-    /**
-     * Cancels the current form action
-     */
-    public onCancel(): void {
-        this.isCreatingNewCategory = false;
     }
 
     public getMargin(category: ViewCategory): string {

@@ -12,10 +12,43 @@
     </div>
 </os-head-bar>
 
-<!-- Creating a new category -->
-<mat-card class="os-card" *ngIf="isCreatingNewCategory">
-    <mat-card-title>New category</mat-card-title>
-    <mat-card-content>
+<os-list-view-table
+    [repo]="repo"
+    [allowProjector]="false"
+    [columns]="tableColumnDefinition"
+    [filterProps]="filterProps"
+    listStorageKey="category"
+    (dataSourceChange)="onDataSourceChange($event)"
+>
+    <!-- Title -->
+    <div *pblNgridCellDef="'title'; row as category; rowContext as rowContext" class="cell-slot fill">
+        <a
+            class="detail-link"
+            [routerLink]="category.id"
+            (click)="saveScrollIndex('category', rowContext.identity)"
+        ></a>
+        <div [style.margin-left]="getMargin(category)">{{ category.prefixedName }}</div>
+    </div>
+
+    <!-- Amount -->
+    <div *pblNgridCellDef="'amount'; row as category" class="cell-slot fill">
+        <span class="os-amount-chip">{{ category.motions.length }}</span>
+    </div>
+</os-list-view-table>
+
+<mat-menu #categoryMenu="matMenu">
+    <button mat-menu-item [routerLink]="'./sort'">
+        <mat-icon>sort</mat-icon>
+        <span translate>Sort categories</span>
+    </button>
+</mat-menu>
+
+<!-- Template for new motion block dialog -->
+<ng-template #newCategoryDialog>
+    <h1 mat-dialog-title>
+        <span translate>New category</span>
+    </h1>
+    <div class="os-form-card-mobile" mat-dialog-content>
         <form [formGroup]="createForm" (keydown)="onKeyDown($event)">
             <!-- Prefix -->
             <p>
@@ -28,64 +61,19 @@
             <p>
                 <mat-form-field>
                     <input formControlName="name" matInput placeholder="{{ 'Name' | translate }}" required />
-                    <mat-error *ngIf="!createForm.controls.name.valuid" translate>
+                    <mat-error *ngIf="!createForm.controls.name.valid" translate>
                         A name is required
                     </mat-error>
                 </mat-form-field>
             </p>
         </form>
-    </mat-card-content>
-
-    <!-- Save and Cancel buttons -->
-    <mat-card-actions>
-        <button mat-button [disabled]="!createForm.valid" (click)="onCreate()">
+    </div>
+    <div mat-dialog-actions>
+        <button mat-button [disabled]="!createForm.valid" [mat-dialog-close]="true">
             <span translate>Save</span>
         </button>
-        <button mat-button (click)="onCancel()">
+        <button mat-button [mat-dialog-close]="false">
             <span translate>Cancel</span>
         </button>
-    </mat-card-actions>
-</mat-card>
-
-<!-- Table -->
-<mat-card class="os-card">
-    <table class="os-headed-listview-table" mat-table [dataSource]="dataSource">
-        <!-- title column -->
-        <ng-container matColumnDef="title">
-            <mat-header-cell *matHeaderCellDef>
-                <span translate>Title</span>
-            </mat-header-cell>
-            <mat-cell *matCellDef="let category">
-                <div [style.margin-left]="getMargin(category)">{{ category.prefixedName }}</div>
-            </mat-cell>
-        </ng-container>
-
-        <!-- amount column -->
-        <ng-container matColumnDef="amount">
-            <mat-header-cell *matHeaderCellDef>
-                <span translate>Motions</span>
-            </mat-header-cell>
-            <mat-cell *matCellDef="let category">
-                <span class="os-amount-chip">{{ category.motions.length }}</span>
-            </mat-cell>
-        </ng-container>
-
-        <!-- Anchor column to open the separate tab -->
-        <ng-container matColumnDef="anchor">
-            <mat-header-cell *matHeaderCellDef></mat-header-cell>
-            <mat-cell *matCellDef="let category">
-                <a [routerLink]="category.id"></a>
-            </mat-cell>
-        </ng-container>
-
-        <mat-header-row *matHeaderRowDef="getColumnDefinition()"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: getColumnDefinition()"> </mat-row>
-    </table>
-</mat-card>
-
-<mat-menu #categoryMenu="matMenu">
-    <button mat-menu-item [routerLink]="'./sort'">
-        <mat-icon>sort</mat-icon>
-        <span translate>Sort categories</span>
-    </button>
-</mat-menu>
+    </div>
+</ng-template>
