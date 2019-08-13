@@ -5,6 +5,7 @@ export type PersonalNoteTitleInformation = object;
 
 export class ViewPersonalNote extends BaseViewModel<PersonalNote> implements PersonalNoteTitleInformation {
     public static COLLECTIONSTRING = PersonalNote.COLLECTIONSTRING;
+    protected _collectionString = PersonalNote.COLLECTIONSTRING;
 
     public get personalNote(): PersonalNote {
         return this._model;
@@ -16,10 +17,6 @@ export class ViewPersonalNote extends BaseViewModel<PersonalNote> implements Per
 
     public get notes(): PersonalNotesFormat {
         return this.personalNote.notes;
-    }
-
-    public constructor(personalNote: PersonalNote) {
-        super(PersonalNote.COLLECTIONSTRING, personalNote);
     }
 
     public getNoteContent(collection: string, id: number): PersonalNoteContent | null {

@@ -5,7 +5,7 @@ import { Observable, Subject } from 'rxjs';
 import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model';
 import { BaseRepository } from '../repositories/base-repository';
 import { CollectionStringMapperService } from './collection-string-mapper.service';
-import { Deferred } from '../deferred';
+import { Deferred } from '../promises/deferred';
 import { StorageService } from './storage.service';
 
 /**
@@ -100,6 +100,13 @@ export class UpdateSlot {
      */
     public getDeletedModelIdsForCollection(collection: string): number[] {
         return this.deletedModels[collection] || [];
+    }
+
+    /**
+     * @returns the mapping of all deleted models
+     */
+    public getDeletedModels(): CollectionIds {
+        return this.deletedModels;
     }
 
     /**
@@ -221,9 +228,12 @@ export class DataStoreUpdateManagerService {
             }
         });
 
-        // Phase 2: updating dependencies
+        // Phase 2: updating dependencies (deleting ad changing in this order)
         repositories.forEach(repo => {
-            if (repo.updateDependencies(slot.getChangedModels())) {
+            if (repo.updateDependenciesForDeletedModels(slot.getDeletedModels())) {
+                affectedRepos[repo.collectionString] = repo;
+            }
+            if (repo.updateDependenciesForChangedModels(slot.getChangedModels())) {
                 affectedRepos[repo.collectionString] = repo;
             }
         });

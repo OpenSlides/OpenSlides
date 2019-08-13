@@ -8,6 +8,7 @@ export type ProjectorMessageTitleInformation = object;
 export class ViewProjectorMessage extends BaseProjectableViewModel<ProjectorMessage>
     implements ProjectorMessageTitleInformation {
     public static COLLECTIONSTRING = ProjectorMessage.COLLECTIONSTRING;
+    protected _collectionString = ProjectorMessage.COLLECTIONSTRING;
 
     public get projectormessage(): ProjectorMessage {
         return this._model;
@@ -15,10 +16,6 @@ export class ViewProjectorMessage extends BaseProjectableViewModel<ProjectorMess
 
     public get message(): string {
         return this.projectormessage.message;
-    }
-
-    public constructor(projectorMessage: ProjectorMessage) {
-        super(ProjectorMessage.COLLECTIONSTRING, projectorMessage);
     }
 
     public getSlide(): ProjectorElementBuildDeskriptor {

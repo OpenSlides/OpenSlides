@@ -15,13 +15,10 @@ export type MotionChangeRecommendationTitleInformation = object;
 export class ViewMotionChangeRecommendation extends BaseViewModel<MotionChangeRecommendation>
     implements MotionChangeRecommendationTitleInformation, ViewUnifiedChange {
     public static COLLECTIONSTRING = MotionChangeRecommendation.COLLECTIONSTRING;
+    protected _collectionString = MotionChangeRecommendation.COLLECTIONSTRING;
 
     public get changeRecommendation(): MotionChangeRecommendation {
         return this._model;
-    }
-
-    public constructor(motionChangeRecommendation: MotionChangeRecommendation) {
-        super(MotionChangeRecommendation.COLLECTIONSTRING, motionChangeRecommendation);
     }
 
     public updateChangeReco(type: number, text: string, internal: boolean): void {

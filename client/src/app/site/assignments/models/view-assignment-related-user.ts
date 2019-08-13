@@ -4,6 +4,7 @@ import { ViewUser } from 'app/site/users/models/view-user';
 
 export class ViewAssignmentRelatedUser extends BaseViewModel<AssignmentRelatedUser> {
     public static COLLECTIONSTRING = AssignmentRelatedUser.COLLECTIONSTRING;
+    protected _collectionString = AssignmentRelatedUser.COLLECTIONSTRING;
 
     private _user?: ViewUser;
 
@@ -36,10 +37,6 @@ export class ViewAssignmentRelatedUser extends BaseViewModel<AssignmentRelatedUs
     }
 
     public getListTitle: () => string = this.getTitle;
-
-    public constructor(assignmentRelatedUser: AssignmentRelatedUser) {
-        super(AssignmentRelatedUser.COLLECTIONSTRING, assignmentRelatedUser);
-    }
 
     public getTitle: () => string = () => {
         return this.user ? this.user.getFullName() : '';

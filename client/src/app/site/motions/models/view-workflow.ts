@@ -12,6 +12,7 @@ export interface WorkflowTitleInformation {
  */
 export class ViewWorkflow extends BaseViewModel<Workflow> implements WorkflowTitleInformation {
     public static COLLECTIONSTRING = Workflow.COLLECTIONSTRING;
+    protected _collectionString = Workflow.COLLECTIONSTRING;
 
     private _states?: ViewState[];
     private _first_state?: ViewState;
@@ -38,9 +39,5 @@ export class ViewWorkflow extends BaseViewModel<Workflow> implements WorkflowTit
 
     public get first_state(): ViewState | null {
         return this._first_state;
-    }
-
-    public constructor(workflow: Workflow) {
-        super(Workflow.COLLECTIONSTRING, workflow);
     }
 }

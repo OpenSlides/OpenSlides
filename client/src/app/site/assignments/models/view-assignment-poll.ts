@@ -7,6 +7,8 @@ import { ViewAssignmentPollOption } from './view-assignment-poll-option';
 
 export class ViewAssignmentPoll extends BaseProjectableViewModel<AssignmentPoll> {
     public static COLLECTIONSTRING = AssignmentPoll.COLLECTIONSTRING;
+    protected _collectionString = AssignmentPoll.COLLECTIONSTRING;
+
     private _options: ViewAssignmentPollOption[];
 
     public get poll(): AssignmentPoll {
@@ -74,10 +76,6 @@ export class ViewAssignmentPoll extends BaseProjectableViewModel<AssignmentPoll>
 
     public get assignment_id(): number {
         return this.poll.assignment_id;
-    }
-
-    public constructor(assignmentPoll: AssignmentPoll) {
-        super(AssignmentPoll.COLLECTIONSTRING, assignmentPoll);
     }
 
     public getTitle = () => {

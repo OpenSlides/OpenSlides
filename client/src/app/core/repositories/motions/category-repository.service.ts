@@ -2,12 +2,14 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { RelationManagerService } from 'app/core/core-services/relation-manager.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { RelationDefinition } from 'app/core/definitions/relations';
 import { TreeIdNode } from 'app/core/ui-services/tree.service';
 import { Category } from 'app/shared/models/motions/category';
-import { Motion } from 'app/shared/models/motions/motion';
 import { CategoryTitleInformation, ViewCategory } from 'app/site/motions/models/view-category';
-import { BaseRepository, RelationDefinition } from '../base-repository';
+import { ViewMotion } from 'app/site/motions/models/view-motion';
+import { BaseRepository } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
@@ -15,10 +17,24 @@ import { HttpService } from '../../core-services/http.service';
 
 const CategoryRelations: RelationDefinition[] = [
     {
-        type: 'O2M',
+        type: 'M2O',
         ownIdKey: 'parent_id',
         ownKey: 'parent',
         foreignModel: ViewCategory
+    },
+    {
+        type: 'O2M',
+        foreignIdKey: 'category_id',
+        ownKey: 'motions',
+        foreignModel: ViewMotion,
+        order: 'category_weight'
+    },
+    {
+        type: 'O2M',
+        foreignIdKey: 'parent_id',
+        ownKey: 'children',
+        foreignModel: ViewCategory,
+        order: 'weight'
     }
 ];
 
@@ -54,9 +70,19 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
         translate: TranslateService,
+        relationManager: RelationManagerService,
         private httpService: HttpService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, Category, CategoryRelations);
+        super(
+            DS,
+            dataSend,
+            mapperService,
+            viewModelStoreService,
+            translate,
+            relationManager,
+            Category,
+            CategoryRelations
+        );
 
         this.setSortFunction((a, b) => a.weight - b.weight);
     }
@@ -97,15 +123,5 @@ export class CategoryRepositoryService extends BaseRepository<ViewCategory, Cate
      */
     public async sortCategories(data: TreeIdNode[]): Promise<void> {
         await this.httpService.post('/rest/motions/category/sort_categories/', data);
-    }
-
-    /**
-     * Filter the DataStore by Motions and returns the amount of motions in the given category
-     *
-     * @param category the category
-     * @returns the number of motions inside the category
-     */
-    public getMotionAmountByCategory(category: ViewCategory): number {
-        return this.DS.filter(Motion, motion => motion.category_id === category.id).length;
     }
 }

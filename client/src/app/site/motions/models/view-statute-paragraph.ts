@@ -17,6 +17,7 @@ export interface StatuteParagraphTitleInformation {
 export class ViewStatuteParagraph extends BaseViewModel<StatuteParagraph>
     implements StatuteParagraphTitleInformation, Searchable {
     public static COLLECTIONSTRING = StatuteParagraph.COLLECTIONSTRING;
+    protected _collectionString = StatuteParagraph.COLLECTIONSTRING;
 
     public get statuteParagraph(): StatuteParagraph {
         return this._model;
@@ -32,10 +33,6 @@ export class ViewStatuteParagraph extends BaseViewModel<StatuteParagraph>
 
     public get weight(): number {
         return this.statuteParagraph.weight;
-    }
-
-    public constructor(statuteParagraph: StatuteParagraph) {
-        super(StatuteParagraph.COLLECTIONSTRING, statuteParagraph);
     }
 
     public formatForSearch(): SearchRepresentation {

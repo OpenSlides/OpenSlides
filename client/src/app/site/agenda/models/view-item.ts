@@ -12,6 +12,7 @@ export interface ItemTitleInformation {
 export class ViewItem extends BaseViewModelWithContentObject<Item, BaseViewModelWithAgendaItem>
     implements ItemTitleInformation {
     public static COLLECTIONSTRING = Item.COLLECTIONSTRING;
+    protected _collectionString = Item.COLLECTIONSTRING;
 
     public get item(): Item {
         return this._model;
@@ -82,9 +83,5 @@ export class ViewItem extends BaseViewModelWithContentObject<Item, BaseViewModel
      */
     public get parent_id(): number {
         return this.item.parent_id;
-    }
-
-    public constructor(item: Item) {
-        super(Item.COLLECTIONSTRING, item);
     }
 }

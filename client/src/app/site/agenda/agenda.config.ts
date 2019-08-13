@@ -1,4 +1,4 @@
-import { AppConfig } from '../../core/app-config';
+import { AppConfig } from '../../core/definitions/app-config';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { ListOfSpeakersRepositoryService } from 'app/core/repositories/agenda/list-of-speakers-repository.service';
 import { ListOfSpeakers } from 'app/shared/models/agenda/list-of-speakers';

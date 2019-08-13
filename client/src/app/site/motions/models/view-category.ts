@@ -2,6 +2,7 @@ import { SearchRepresentation } from 'app/core/ui-services/search.service';
 import { Category } from 'app/shared/models/motions/category';
 import { Searchable } from 'app/site/base/searchable';
 import { BaseViewModel } from '../../base/base-view-model';
+import { ViewMotion } from './view-motion';
 
 export interface CategoryTitleInformation {
     prefix: string;
@@ -17,8 +18,11 @@ export interface CategoryTitleInformation {
  */
 export class ViewCategory extends BaseViewModel<Category> implements CategoryTitleInformation, Searchable {
     public static COLLECTIONSTRING = Category.COLLECTIONSTRING;
+    protected _collectionString = Category.COLLECTIONSTRING;
 
     private _parent?: ViewCategory;
+    private _children?: ViewCategory[];
+    private _motions?: ViewMotion[];
 
     public get category(): Category {
         return this._model;
@@ -26,6 +30,14 @@ export class ViewCategory extends BaseViewModel<Category> implements CategoryTit
 
     public get parent(): ViewCategory | null {
         return this._parent;
+    }
+
+    public get children(): ViewCategory[] {
+        return this._children || [];
+    }
+
+    public get motions(): ViewMotion[] {
+        return this._motions || [];
     }
 
     public get name(): string {
@@ -73,10 +85,6 @@ export class ViewCategory extends BaseViewModel<Category> implements CategoryTit
         } else {
             return this.toString();
         }
-    }
-
-    public constructor(category: Category) {
-        super(Category.COLLECTIONSTRING, category);
     }
 
     public formatForSearch(): SearchRepresentation {

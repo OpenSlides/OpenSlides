@@ -7,6 +7,7 @@ export interface GroupTitleInformation {
 
 export class ViewGroup extends BaseViewModel<Group> implements GroupTitleInformation {
     public static COLLECTIONSTRING = Group.COLLECTIONSTRING;
+    protected _collectionString = Group.COLLECTIONSTRING;
 
     public get group(): Group {
         return this._model;
@@ -27,10 +28,6 @@ export class ViewGroup extends BaseViewModel<Group> implements GroupTitleInforma
 
     public get permissions(): string[] {
         return this.group.permissions;
-    }
-
-    public constructor(group?: Group) {
-        super(Group.COLLECTIONSTRING, group);
     }
 
     public hasPermission(perm: string): boolean {

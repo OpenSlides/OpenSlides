@@ -1,4 +1,3 @@
-import { Item } from 'app/shared/models/agenda/item';
 import { ListOfSpeakers } from 'app/shared/models/agenda/list-of-speakers';
 import { ContentObject } from 'app/shared/models/base/content-object';
 import { BaseViewModelWithContentObject } from 'app/site/base/base-view-model-with-content-object';
@@ -18,6 +17,7 @@ export interface ListOfSpeakersTitleInformation {
 export class ViewListOfSpeakers extends BaseViewModelWithContentObject<ListOfSpeakers, BaseViewModelWithListOfSpeakers>
     implements ListOfSpeakersTitleInformation, Projectable {
     public static COLLECTIONSTRING = ListOfSpeakers.COLLECTIONSTRING;
+    protected _collectionString = ListOfSpeakers.COLLECTIONSTRING;
 
     private _speakers?: ViewSpeaker[];
 
@@ -46,10 +46,6 @@ export class ViewListOfSpeakers extends BaseViewModelWithContentObject<ListOfSpe
 
     public get listOfSpeakersUrl(): string {
         return `/agenda/speakers/${this.id}`;
-    }
-
-    public constructor(listOfSpeakers: ListOfSpeakers) {
-        super(Item.COLLECTIONSTRING, listOfSpeakers);
     }
 
     public getProjectorTitle(): string {

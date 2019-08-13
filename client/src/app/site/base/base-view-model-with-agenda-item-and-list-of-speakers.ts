@@ -49,10 +49,6 @@ export abstract class BaseViewModelWithAgendaItemAndListOfSpeakers<
     public getListOfSpeakersTitle: () => string;
     public getListOfSpeakersSlideTitle: () => string;
 
-    public constructor(collectionString: string, model: M) {
-        super(collectionString, model);
-    }
-
     /**
      * @returns the (optional) descriptive text to be exported in the CSV.
      * May be overridden by inheriting classes

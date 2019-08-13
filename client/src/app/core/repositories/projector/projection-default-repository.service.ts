@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { RelationManagerService } from 'app/core/core-services/relation-manager.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { ProjectionDefault } from 'app/shared/models/core/projection-default';
@@ -39,9 +40,10 @@ export class ProjectionDefaultRepositoryService extends BaseRepository<
         dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        translate: TranslateService
+        translate: TranslateService,
+        relationManager: RelationManagerService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, ProjectionDefault);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, relationManager, ProjectionDefault);
     }
 
     public getVerboseName = (plural: boolean = false) => {

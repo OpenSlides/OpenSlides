@@ -16,6 +16,7 @@ export interface TagTitleInformation {
  */
 export class ViewTag extends BaseViewModel<Tag> implements TagTitleInformation, Searchable {
     public static COLLECTIONSTRING = Tag.COLLECTIONSTRING;
+    protected _collectionString = Tag.COLLECTIONSTRING;
 
     public get tag(): Tag {
         return this._model;
@@ -23,10 +24,6 @@ export class ViewTag extends BaseViewModel<Tag> implements TagTitleInformation, 
 
     public get name(): string {
         return this.tag.name;
-    }
-
-    public constructor(tag: Tag) {
-        super(Tag.COLLECTIONSTRING, tag);
     }
 
     public formatForSearch(): SearchRepresentation {

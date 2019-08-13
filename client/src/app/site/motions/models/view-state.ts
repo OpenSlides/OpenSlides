@@ -12,6 +12,7 @@ export interface StateTitleInformation {
  */
 export class ViewState extends BaseViewModel<State> implements StateTitleInformation {
     public static COLLECTIONSTRING = State.COLLECTIONSTRING;
+    protected _collectionString = State.COLLECTIONSTRING;
 
     private _next_states?: ViewState[];
     public _workflow?: ViewWorkflow;
@@ -91,9 +92,5 @@ export class ViewState extends BaseViewModel<State> implements StateTitleInforma
         return this.workflow.states.filter(state => {
             return state.next_states_id.includes(this.id);
         });
-    }
-
-    public constructor(state: State) {
-        super(State.COLLECTIONSTRING, state);
     }
 }

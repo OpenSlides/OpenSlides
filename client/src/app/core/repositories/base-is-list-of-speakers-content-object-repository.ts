@@ -3,11 +3,13 @@ import { TranslateService } from '@ngx-translate/core';
 import { ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
 import { BaseViewModelWithListOfSpeakers } from 'app/site/base/base-view-model-with-list-of-speakers';
 import { BaseModel, ModelConstructor } from '../../shared/models/base/base-model';
-import { BaseRepository, RelationDefinition } from './base-repository';
+import { BaseRepository } from './base-repository';
 import { TitleInformation } from '../../site/base/base-view-model';
 import { CollectionStringMapperService } from '../core-services/collection-string-mapper.service';
 import { DataSendService } from '../core-services/data-send.service';
 import { DataStoreService } from '../core-services/data-store.service';
+import { RelationManagerService } from '../core-services/relation-manager.service';
+import { RelationDefinition } from '../definitions/relations';
 import { ViewModelStoreService } from '../core-services/view-model-store.service';
 
 export function isBaseIsListOfSpeakersContentObjectRepository(
@@ -43,6 +45,7 @@ export abstract class BaseIsListOfSpeakersContentObjectRepository<
         collectionStringMapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
         translate: TranslateService,
+        relationManager: RelationManagerService,
         baseModelCtor: ModelConstructor<M>,
         relationDefinitions?: RelationDefinition[]
     ) {
@@ -52,6 +55,7 @@ export abstract class BaseIsListOfSpeakersContentObjectRepository<
             collectionStringMapperService,
             viewModelStoreService,
             translate,
+            relationManager,
             baseModelCtor,
             relationDefinitions
         );
@@ -59,7 +63,7 @@ export abstract class BaseIsListOfSpeakersContentObjectRepository<
 
     protected groupRelationsByCollections(): void {
         this.relationDefinitions.push({
-            type: 'O2M',
+            type: 'M2O',
             ownIdKey: 'list_of_speakers_id',
             ownKey: 'list_of_speakers',
             foreignModel: ViewListOfSpeakers

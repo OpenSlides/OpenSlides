@@ -2,12 +2,14 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { RelationManagerService } from 'app/core/core-services/relation-manager.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { RelationDefinition } from 'app/core/definitions/relations';
 import { Workflow } from 'app/shared/models/motions/workflow';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewState } from 'app/site/motions/models/view-state';
 import { ViewWorkflow, WorkflowTitleInformation } from 'app/site/motions/models/view-workflow';
-import { BaseRepository, RelationDefinition } from '../base-repository';
+import { BaseRepository } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
@@ -20,7 +22,7 @@ const WorkflowRelations: RelationDefinition[] = [
         foreignModel: ViewState
     },
     {
-        type: 'O2M',
+        type: 'M2O',
         ownIdKey: 'first_state_id',
         ownKey: 'first_state',
         foreignModel: ViewState
@@ -55,9 +57,19 @@ export class WorkflowRepositoryService extends BaseRepository<ViewWorkflow, Work
         dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        translate: TranslateService
+        translate: TranslateService,
+        relationManager: RelationManagerService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, Workflow, WorkflowRelations);
+        super(
+            DS,
+            dataSend,
+            mapperService,
+            viewModelStoreService,
+            translate,
+            relationManager,
+            Workflow,
+            WorkflowRelations
+        );
     }
 
     public getTitle = (titleInformation: WorkflowTitleInformation) => {

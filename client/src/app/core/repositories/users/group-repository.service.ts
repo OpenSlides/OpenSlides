@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 import { HttpService } from 'app/core/core-services/http.service';
+import { RelationManagerService } from 'app/core/core-services/relation-manager.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { Group } from 'app/shared/models/users/group';
 import { GroupTitleInformation, ViewGroup } from 'app/site/users/models/view-group';
@@ -55,10 +56,11 @@ export class GroupRepositoryService extends BaseRepository<ViewGroup, Group, Gro
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
         translate: TranslateService,
+        relationManager: RelationManagerService,
         private constantsService: ConstantsService,
         private http: HttpService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, Group);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, relationManager, Group);
         this.sortPermsPerApp();
     }
 

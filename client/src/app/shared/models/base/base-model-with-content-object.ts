@@ -6,4 +6,8 @@ import { ContentObject } from './content-object';
  */
 export abstract class BaseModelWithContentObject<T = object> extends BaseModel<T> {
     public abstract content_object: ContentObject;
+
+    public get contentObjectData(): ContentObject {
+        return this.content_object;
+    }
 }

@@ -4,7 +4,9 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { DataSendService } from 'app/core/core-services/data-send.service';
 import { HttpService } from 'app/core/core-services/http.service';
+import { RelationManagerService } from 'app/core/core-services/relation-manager.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { RelationDefinition } from 'app/core/definitions/relations';
 import { ListOfSpeakers } from 'app/shared/models/agenda/list-of-speakers';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { ListOfSpeakersTitleInformation, ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
@@ -19,19 +21,20 @@ import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
 import { ViewTopic } from 'app/site/topics/models/view-topic';
 import { ViewUser } from 'app/site/users/models/view-user';
-import { BaseHasContentObjectRepository, GenericRelationDefinition } from '../base-has-content-object-repository';
+import { BaseHasContentObjectRepository } from '../base-has-content-object-repository';
 import { BaseIsListOfSpeakersContentObjectRepository } from '../base-is-list-of-speakers-content-object-repository';
-import { RelationDefinition } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 import { ItemRepositoryService } from './item-repository.service';
 
-const ListOfSpeakersRelations: (RelationDefinition | GenericRelationDefinition)[] = [
+const ListOfSpeakersRelations: RelationDefinition[] = [
     {
         type: 'generic',
         possibleModels: [ViewMotion, ViewMotionBlock, ViewTopic, ViewAssignment, ViewMediafile],
         isVForeign: isBaseViewModelWithListOfSpeakers,
-        VForeignVerbose: 'BaseViewModelWithListOfSpeakers'
+        VForeignVerbose: 'BaseViewModelWithListOfSpeakers',
+        ownContentObjectDataKey: 'contentObjectData',
+        ownKey: 'contentObject'
     },
     {
         type: 'nested',
@@ -40,7 +43,7 @@ const ListOfSpeakersRelations: (RelationDefinition | GenericRelationDefinition)[
         order: 'weight',
         relationDefinition: [
             {
-                type: 'O2M',
+                type: 'M2O',
                 ownIdKey: 'user_id',
                 ownKey: 'user',
                 foreignModel: ViewUser
@@ -79,10 +82,20 @@ export class ListOfSpeakersRepositoryService extends BaseHasContentObjectReposit
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
         translate: TranslateService,
+        relationManager: RelationManagerService,
         private httpService: HttpService,
         private itemRepo: ItemRepositoryService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, ListOfSpeakers, ListOfSpeakersRelations);
+        super(
+            DS,
+            dataSend,
+            mapperService,
+            viewModelStoreService,
+            translate,
+            relationManager,
+            ListOfSpeakers,
+            ListOfSpeakersRelations
+        );
     }
 
     public getVerboseName = (plural: boolean = false) => {

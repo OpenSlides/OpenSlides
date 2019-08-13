@@ -16,6 +16,7 @@ export interface UserTitleInformation {
 
 export class ViewUser extends BaseProjectableViewModel<User> implements UserTitleInformation, Searchable {
     public static COLLECTIONSTRING = User.COLLECTIONSTRING;
+    protected _collectionString = User.COLLECTIONSTRING;
 
     private _groups: ViewGroup[];
 
@@ -119,10 +120,6 @@ export class ViewUser extends BaseProjectableViewModel<User> implements UserTitl
     // Will be set by the repository
     public getFullName: () => string;
     public getShortName: () => string;
-
-    public constructor(user: User) {
-        super(User.COLLECTIONSTRING, user);
-    }
 
     /**
      * Formats the category for search

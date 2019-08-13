@@ -10,6 +10,8 @@ const votesOrder: PollVoteValue[] = ['Votes', 'Yes', 'No', 'Abstain'];
 
 export class ViewAssignmentPollOption extends BaseViewModel<AssignmentPollOption> {
     public static COLLECTIONSTRING = AssignmentPollOption.COLLECTIONSTRING;
+    protected _collectionString = AssignmentPollOption.COLLECTIONSTRING;
+
     private _user?: ViewUser; // This is the "candidate". We'll stay consistent wich user here...
 
     public get option(): AssignmentPollOption {
@@ -48,9 +50,5 @@ export class ViewAssignmentPollOption extends BaseViewModel<AssignmentPollOption
 
     public get weight(): number {
         return this.option.weight;
-    }
-
-    public constructor(assignmentPollOption: AssignmentPollOption) {
-        super(AssignmentPollOption.COLLECTIONSTRING, assignmentPollOption);
     }
 }

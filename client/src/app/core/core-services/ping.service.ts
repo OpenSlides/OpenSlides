@@ -3,8 +3,8 @@ import { ApplicationRef, Injectable } from '@angular/core';
 import { first, take } from 'rxjs/operators';
 
 import { ConstantsService } from './constants.service';
-import { Deferred } from '../deferred';
-import { TimeoutPromise } from '../timeout-promise';
+import { Deferred } from '../promises/deferred';
+import { TimeoutPromise } from '../promises/timeout-promise';
 import { WebsocketService } from './websocket.service';
 
 interface OpenSlidesSettings {

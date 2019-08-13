@@ -1,4 +1,4 @@
-import { AppConfig } from '../../core/app-config';
+import { AppConfig } from '../../core/definitions/app-config';
 import { Config } from '../../shared/models/core/config';
 import { ConfigRepositoryService } from '../../core/repositories/config/config-repository.service';
 import { ViewConfig } from './models/view-config';

@@ -22,12 +22,4 @@ export abstract class BaseViewModelWithContentObject<
     public get contentObject(): C | null {
         return this._contentObject;
     }
-
-    /**
-     * @param collectionString The collection string of this model
-     * @param model the model this view model captures
-     */
-    public constructor(collectionString: string, model: M) {
-        super(collectionString, model);
-    }
 }

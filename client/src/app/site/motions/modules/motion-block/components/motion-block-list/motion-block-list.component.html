@@ -15,22 +15,22 @@
         (dataSourceChange)="onDataSourceChange($event)"
     >
         <!-- Title column -->
-        <div *pblNgridCellDef="'title'; value as title; row as block; rowContext as rowContext" class="cell-slot fill">
+        <div *pblNgridCellDef="'title'; value as title; row as motionBlock; rowContext as rowContext" class="cell-slot fill">
             <a
                 class="detail-link"
                 (click)="saveScrollIndex('motionBlock', rowContext.identity)"
-                [routerLink]="block.id"
+                [routerLink]="motionBlock.id"
                 *ngIf="!isMultiSelect"
             ></a>
             <div>
-                <mat-icon matTooltip="Internal" *ngIf="block.internal">lock</mat-icon>
+                <mat-icon matTooltip="Internal" *ngIf="motionBlock.internal">lock</mat-icon>
                 {{ title }}
             </div>
         </div>
 
         <!-- Amount -->
-        <div *pblNgridCellDef="'amount'; row as block" class="cell-slot fill">
-            <span class="os-amount-chip">{{ getMotionAmount(block.motionBlock) }}</span>
+        <div *pblNgridCellDef="'amount'; row as motionBlock" class="cell-slot fill">
+            <span class="os-amount-chip">{{ motionBlock.motions.length }}</span>
         </div>
     </os-list-view-table>
 </mat-card>

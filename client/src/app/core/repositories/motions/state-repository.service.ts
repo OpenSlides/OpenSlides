@@ -2,18 +2,20 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { RelationManagerService } from 'app/core/core-services/relation-manager.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
+import { RelationDefinition } from 'app/core/definitions/relations';
 import { State } from 'app/shared/models/motions/state';
 import { StateTitleInformation, ViewState } from 'app/site/motions/models/view-state';
 import { ViewWorkflow, WorkflowTitleInformation } from 'app/site/motions/models/view-workflow';
-import { BaseRepository, RelationDefinition } from '../base-repository';
+import { BaseRepository } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataSendService } from '../../core-services/data-send.service';
 import { DataStoreService } from '../../core-services/data-store.service';
 
 const StateRelations: RelationDefinition[] = [
     {
-        type: 'O2M',
+        type: 'M2O',
         ownIdKey: 'workflow_id',
         ownKey: 'workflow',
         foreignModel: ViewWorkflow
@@ -54,9 +56,10 @@ export class StateRepositoryService extends BaseRepository<ViewState, State, Sta
         dataSend: DataSendService,
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
-        translate: TranslateService
+        translate: TranslateService,
+        relationManager: RelationManagerService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, State, StateRelations);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, relationManager, State, StateRelations);
     }
 
     public getTitle = (titleInformation: WorkflowTitleInformation) => {

@@ -7,6 +7,7 @@ export interface ProjectorTitleInformation {
 
 export class ViewProjector extends BaseViewModel<Projector> {
     public static COLLECTIONSTRING = Projector.COLLECTIONSTRING;
+    protected _collectionString = Projector.COLLECTIONSTRING;
 
     private _referenceProjector: ViewProjector;
 
@@ -104,9 +105,5 @@ export class ViewProjector extends BaseViewModel<Projector> {
 
     public get show_logo(): boolean {
         return this.projector.show_logo;
-    }
-
-    public constructor(projector: Projector) {
-        super(Projector.COLLECTIONSTRING, projector);
     }
 }

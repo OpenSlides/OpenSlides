@@ -41,6 +41,7 @@ export interface ConfigTitleInformation {
  */
 export class ViewConfig extends BaseViewModel<Config> implements ConfigTitleInformation {
     public static COLLECTIONSTRING = Config.COLLECTIONSTRING;
+    protected _collectionString = Config.COLLECTIONSTRING;
 
     /* This private members are set by setConstantsInfo. */
     private _helpText: string;
@@ -88,10 +89,6 @@ export class ViewConfig extends BaseViewModel<Config> implements ConfigTitleInfo
 
     public get defaultValue(): any {
         return this._defaultValue;
-    }
-
-    public constructor(config: Config) {
-        super(Config.COLLECTIONSTRING, config);
     }
 
     /**

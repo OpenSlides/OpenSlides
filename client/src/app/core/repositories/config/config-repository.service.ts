@@ -8,6 +8,7 @@ import { ConstantsService } from 'app/core/core-services/constants.service';
 import { DataSendService } from 'app/core/core-services/data-send.service';
 import { DataStoreService } from 'app/core/core-services/data-store.service';
 import { HttpService } from 'app/core/core-services/http.service';
+import { RelationManagerService } from 'app/core/core-services/relation-manager.service';
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { BaseRepository } from 'app/core/repositories/base-repository';
 import { Identifiable } from 'app/shared/models/base/identifiable';
@@ -112,10 +113,11 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config, 
         mapperService: CollectionStringMapperService,
         viewModelStoreService: ViewModelStoreService,
         translate: TranslateService,
+        relationManager: RelationManagerService,
         private constantsService: ConstantsService,
         private http: HttpService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, Config);
+        super(DS, dataSend, mapperService, viewModelStoreService, translate, relationManager, Config);
 
         this.constantsService.get('ConfigVariables').subscribe(constant => {
             this.createConfigStructure(constant);
