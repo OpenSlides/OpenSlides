@@ -16,6 +16,7 @@ import { DiffLinesInParagraph, DiffService } from 'app/core/ui-services/diff.ser
 import { TreeIdNode } from 'app/core/ui-services/tree.service';
 import { Motion } from 'app/shared/models/motions/motion';
 import { MotionPoll } from 'app/shared/models/motions/motion-poll';
+import { Submitter } from 'app/shared/models/motions/submitter';
 import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change';
 import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
@@ -73,43 +74,44 @@ const MotionRelations: RelationDefinition[] = [
         type: 'M2O',
         ownIdKey: 'state_id',
         ownKey: 'state',
-        foreignModel: ViewState
+        foreignViewModel: ViewState
     },
     {
         type: 'M2O',
         ownIdKey: 'recommendation_id',
         ownKey: 'recommendation',
-        foreignModel: ViewState
+        foreignViewModel: ViewState
     },
     {
         type: 'M2O',
         ownIdKey: 'workflow_id',
         ownKey: 'workflow',
-        foreignModel: ViewWorkflow
+        foreignViewModel: ViewWorkflow
     },
     {
         type: 'M2O',
         ownIdKey: 'category_id',
         ownKey: 'category',
-        foreignModel: ViewCategory
+        foreignViewModel: ViewCategory
     },
     {
         type: 'M2O',
         ownIdKey: 'motion_block_id',
         ownKey: 'motion_block',
-        foreignModel: ViewMotionBlock
+        foreignViewModel: ViewMotionBlock
     },
     {
         type: 'nested',
         ownKey: 'submitters',
-        foreignModel: ViewSubmitter,
+        foreignViewModel: ViewSubmitter,
+        foreignModel: Submitter,
         order: 'weight',
         relationDefinition: [
             {
                 type: 'M2O',
                 ownIdKey: 'user_id',
                 ownKey: 'user',
-                foreignModel: ViewUser
+                foreignViewModel: ViewUser
             }
         ]
     },
@@ -117,31 +119,31 @@ const MotionRelations: RelationDefinition[] = [
         type: 'M2M',
         ownIdKey: 'supporters_id',
         ownKey: 'supporters',
-        foreignModel: ViewUser
+        foreignViewModel: ViewUser
     },
     {
         type: 'M2M',
         ownIdKey: 'attachments_id',
         ownKey: 'attachments',
-        foreignModel: ViewMediafile
+        foreignViewModel: ViewMediafile
     },
     {
         type: 'M2M',
         ownIdKey: 'tags_id',
         ownKey: 'tags',
-        foreignModel: ViewTag
+        foreignViewModel: ViewTag
     },
     {
         type: 'M2O',
         ownIdKey: 'parent_id',
         ownKey: 'parent',
-        foreignModel: ViewMotion
+        foreignViewModel: ViewMotion
     },
     {
         type: 'M2M',
         ownIdKey: 'change_recommendations_id',
         ownKey: 'changeRecommendations',
-        foreignModel: ViewMotionChangeRecommendation
+        foreignViewModel: ViewMotionChangeRecommendation
     }
     // Personal notes are dynamically added in the repo.
 ];
@@ -212,7 +214,7 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
     protected groupRelationsByCollections(): void {
         this.relationDefinitions.push({
             type: 'custom',
-            foreignModel: ViewPersonalNote,
+            foreignViewModel: ViewPersonalNote,
             setRelations: (motion: Motion, viewMotion: ViewMotion) => {
                 viewMotion.personalNote = this.getPersonalNoteForMotion(motion);
             },
@@ -269,8 +271,8 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
         return this.translate.instant(plural ? 'Motions' : 'Motion');
     };
 
-    protected createViewModelWithTitles(model: Motion): ViewMotion {
-        const viewModel = super.createViewModelWithTitles(model);
+    protected createViewModelWithTitles(model: Motion, initialLoading: boolean): ViewMotion {
+        const viewModel = super.createViewModelWithTitles(model, initialLoading);
         viewModel.getIdentifierOrTitle = () => this.getIdentifierOrTitle(viewModel);
         viewModel.getProjectorTitle = () => this.getAgendaSlideTitle(viewModel);
         return viewModel;

@@ -23,19 +23,19 @@ const MediafileRelations: RelationDefinition[] = [
         type: 'M2O',
         ownIdKey: 'parent_id',
         ownKey: 'parent',
-        foreignModel: ViewMediafile
+        foreignViewModel: ViewMediafile
     },
     {
         type: 'M2M',
         ownIdKey: 'access_groups_id',
         ownKey: 'access_groups',
-        foreignModel: ViewGroup
+        foreignViewModel: ViewGroup
     },
     {
         type: 'M2M',
         ownIdKey: 'inherited_access_groups_id',
         ownKey: 'inherited_access_groups',
-        foreignModel: ViewGroup
+        foreignViewModel: ViewGroup
     }
 ];
 

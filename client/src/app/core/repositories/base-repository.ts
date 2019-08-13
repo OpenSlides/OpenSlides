@@ -153,7 +153,7 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
             relation.type === 'O2M' ||
             relation.type === 'custom'
         ) {
-            const collection = relation.foreignModel.COLLECTIONSTRING;
+            const collection = relation.foreignViewModel.COLLECTIONSTRING;
             if (!this.relationsByCollection[collection]) {
                 this.relationsByCollection[collection] = [];
             }
@@ -214,9 +214,12 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
      *
      * @param ids All model ids.
      */
-    public changedModels(ids: number[]): void {
+    public changedModels(ids: number[], initialLoading: boolean): void {
         ids.forEach(id => {
-            this.viewModelStore[id] = this.createViewModelWithTitles(this.DS.get(this.collectionString, id));
+            this.viewModelStore[id] = this.createViewModelWithTitles(
+                this.DS.get(this.collectionString, id),
+                initialLoading
+            );
             this.updateViewModelObservable(id);
         });
     }
@@ -225,8 +228,13 @@ export abstract class BaseRepository<V extends BaseViewModel & T, M extends Base
      * After creating a view model, all functions for models form the repo
      * are assigned to the new view model.
      */
-    protected createViewModelWithTitles(model: M): V {
-        const viewModel = this.relationManager.createViewModel(model, this.baseViewModelCtor, this.relationDefinitions);
+    protected createViewModelWithTitles(model: M, initialLoading: boolean): V {
+        const viewModel = this.relationManager.createViewModel(
+            model,
+            this.baseViewModelCtor,
+            this.relationDefinitions,
+            initialLoading
+        );
         viewModel.getTitle = () => this.getTitle(viewModel);
         viewModel.getListTitle = () => this.getListTitle(viewModel);
         viewModel.getVerboseName = this.getVerboseName;

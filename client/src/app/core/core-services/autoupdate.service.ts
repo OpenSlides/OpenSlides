@@ -97,7 +97,7 @@ export class AutoupdateService {
             elements = elements.concat(this.mapObjectsToBaseModels(collection, autoupdate.changed[collection]));
         });
 
-        const updateSlot = await this.DSUpdateManager.getNewUpdateSlot(this.DS);
+        const updateSlot = await this.DSUpdateManager.getNewUpdateSlot(this.DS, true);
         await this.DS.set(elements, autoupdate.to_change_id);
         this.DSUpdateManager.commit(updateSlot);
     }
@@ -172,7 +172,7 @@ export class AutoupdateService {
         const oldChangeId = this.DS.maxChangeId;
         const response = await this.websocketService.sendAndGetResponse<{}, AutoupdateFormat>('getElements', {});
 
-        const updateSlot = await this.DSUpdateManager.getNewUpdateSlot(this.DS);
+        const updateSlot = await this.DSUpdateManager.getNewUpdateSlot(this.DS, true);
         let allModels: BaseModel[] = [];
         for (const collection of Object.keys(response.changed)) {
             if (this.modelMapper.isCollectionRegistered(collection)) {

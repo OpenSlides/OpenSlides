@@ -20,7 +20,7 @@ const MotionBlockRelations: RelationDefinition[] = [
         type: 'O2M',
         foreignIdKey: 'motion_block_id',
         ownKey: 'motions',
-        foreignModel: ViewMotion
+        foreignViewModel: ViewMotion
     }
 ];
 

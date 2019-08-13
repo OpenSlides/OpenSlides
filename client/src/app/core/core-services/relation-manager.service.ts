@@ -48,12 +48,13 @@ export class RelationManagerService {
     public createViewModel<M extends BaseModel, V extends BaseViewModel>(
         model: M,
         modelCtor: ViewModelConstructor<V>,
-        relations: RelationDefinition[]
+        relations: RelationDefinition[],
+        initialLoading: boolean
     ): V {
         const viewModel = new modelCtor(model) as V;
 
         relations.forEach(relation => {
-            this.setRelationsInViewModel(model, viewModel, relation);
+            this.setRelationsInViewModel(model, viewModel, relation, initialLoading);
         });
 
         return viewModel;
@@ -66,30 +67,65 @@ export class RelationManagerService {
     protected setRelationsInViewModel<M extends BaseModel, V extends BaseViewModel>(
         model: M,
         viewModel: V,
-        relation: RelationDefinition
+        relation: RelationDefinition,
+        initialLoading: boolean
     ): void {
-        // no reverse setting needed. This is done in the second phase of the ds-upgrade-manager
-        if (isReverseRelationDefinition(relation)) {
-            return;
-        }
-
-        if (
-            (relation.type === 'M2M' || relation.type === 'O2M') &&
-            model[relation.ownIdKey] &&
-            model[relation.ownIdKey].constructor === Array
-        ) {
-            const foreignViewModels = this.viewModelStoreService.getMany(
-                relation.foreignModel,
-                model[relation.ownIdKey]
-            );
-            viewModel['_' + relation.ownKey] = foreignViewModels;
-            this.sortByRelation(relation, viewModel);
-        } else if (relation.type === 'M2O') {
-            const foreignViewModel = this.viewModelStoreService.get(relation.foreignModel, model[relation.ownIdKey]);
-            viewModel['_' + relation.ownKey] = foreignViewModel;
+        if (isNormalRelationDefinition(relation)) {
+            if (
+                (relation.type === 'M2M' || relation.type === 'O2M') &&
+                model[relation.ownIdKey] &&
+                model[relation.ownIdKey].constructor === Array
+            ) {
+                const foreignViewModels = this.viewModelStoreService.getMany(
+                    relation.foreignViewModel,
+                    model[relation.ownIdKey]
+                );
+                viewModel['_' + relation.ownKey] = foreignViewModels;
+                this.sortByRelation(relation, viewModel);
+            } else if (relation.type === 'M2O') {
+                const foreignViewModel = this.viewModelStoreService.get(
+                    relation.foreignViewModel,
+                    model[relation.ownIdKey]
+                );
+                viewModel['_' + relation.ownKey] = foreignViewModel;
+            }
+        } else if (isReverseRelationDefinition(relation) && !initialLoading) {
+            if (relation.type === 'M2M') {
+                const foreignViewModels = this.viewModelStoreService.filter(
+                    relation.foreignViewModel,
+                    foreignViewModel =>
+                        foreignViewModel[relation.foreignIdKey] &&
+                        foreignViewModel[relation.foreignIdKey].constructor === Array &&
+                        foreignViewModel[relation.foreignIdKey].includes(model.id)
+                );
+                viewModel['_' + relation.ownKey] = foreignViewModels;
+                this.sortByRelation(relation, viewModel);
+            } else if (relation.type === 'O2M') {
+                const foreignViewModels = this.viewModelStoreService.filter(
+                    relation.foreignViewModel,
+                    foreignViewModel =>
+                        foreignViewModel[relation.foreignIdKey] && foreignViewModel[relation.foreignIdKey] === model.id
+                );
+                viewModel['_' + relation.ownKey] = foreignViewModels;
+                this.sortByRelation(relation, viewModel);
+            } else if (relation.type === 'M2O') {
+                const foreignViewModel = this.viewModelStoreService.find(
+                    relation.foreignViewModel,
+                    _foreignViewModel =>
+                        _foreignViewModel[relation.foreignIdKey] &&
+                        _foreignViewModel[relation.foreignIdKey] === model.id
+                );
+                viewModel['_' + relation.ownKey] = foreignViewModel;
+            }
         } else if (isNestedRelationDefinition(relation)) {
-            const foreignViewModels: BaseViewModel[] = model[relation.ownKey].map(foreignModel =>
-                this.createViewModel(foreignModel, relation.foreignModel, relation.relationDefinition || [])
+            const foreignModels = model[relation.ownKey].map(m => new relation.foreignModel(m));
+            const foreignViewModels: BaseViewModel[] = foreignModels.map((foreignModel: BaseModel) =>
+                this.createViewModel(
+                    foreignModel,
+                    relation.foreignViewModel,
+                    relation.relationDefinition || [],
+                    initialLoading
+                )
             );
             viewModel['_' + relation.ownKey] = foreignViewModels;
             this.sortByRelation(relation, viewModel);
@@ -181,15 +217,29 @@ export class RelationManagerService {
 
             // The foreign model has one id. Check, if the ownViewModel is the matching view model.
             // If so, add the foreignViewModel to the array from the ownViewModel (with many foreignViewModels)
+            // If not, check, if the model _was_ in our foreignViewModel array and remove it.
             if (relation.type === 'O2M') {
                 if (foreignViewModel[relation.foreignIdKey] === ownViewModel.id) {
                     this.setForeingViewModelInOwnViewModelArray(foreignViewModel, ownViewModel, relation.ownKey);
                     return true;
+                } else {
+                    const ownViewModelArray = <any>ownViewModel['_' + relation.ownKey];
+                    if (ownViewModelArray) {
+                        // We have the array of foreign view models for our own view model. Remove the foreignViewModel (if it was there).
+                        const index = ownViewModelArray.findIndex(
+                            _foreignViewModel => _foreignViewModel.id === foreignViewModel.id
+                        );
+                        if (index > -1) {
+                            ownViewModelArray.splice(index, 1);
+                            return true;
+                        }
+                    }
                 }
             }
 
             // The foreign model should hold an array of ids. If the ownViewModel is in it, the foreignViewModel must
-            // be included into the array from the ownViewModel (with many foreignViewModels)
+            // be included into the array from the ownViewModel (with many foreignViewModels).
+            // If not, check, if the model _was_ in our foreignViewModel array and remove it.
             else if (relation.type === 'M2M') {
                 if (
                     foreignViewModel[relation.foreignIdKey] &&
@@ -198,11 +248,24 @@ export class RelationManagerService {
                 ) {
                     this.setForeingViewModelInOwnViewModelArray(foreignViewModel, ownViewModel, relation.ownKey);
                     return true;
+                } else {
+                    const ownViewModelArray = <any>ownViewModel['_' + relation.ownKey];
+                    if (ownViewModelArray) {
+                        // We have the array of foreign view models for our own view model. Remove the foreignViewModel (if it was there).
+                        const index = ownViewModelArray.findIndex(
+                            _foreignViewModel => _foreignViewModel.id === foreignViewModel.id
+                        );
+                        if (index > -1) {
+                            ownViewModelArray.splice(index, 1);
+                            return true;
+                        }
+                    }
                 }
             }
 
             // The foreign model should hold an array of ids. If the ownViewModel is in it, the foreignViewModel is the
-            // one and only matching model for the ownViewModel
+            // one and only matching model for the ownViewModel. If the ownViewModel is not in it, check if the
+            // foreignViewModel _was_ the matching model. If so, set the reference to null.
             else if (relation.type === 'M2O') {
                 if (
                     foreignViewModel[relation.foreignIdKey] &&
@@ -211,6 +274,11 @@ export class RelationManagerService {
                 ) {
                     ownViewModel['_' + relation.ownKey] = foreignViewModel;
                     return true;
+                } else if (
+                    ownViewModel['_' + relation.ownKey] &&
+                    ownViewModel['_' + relation.ownKey].id === foreignViewModel.id
+                ) {
+                    ownViewModel['_' + relation.ownKey] = null;
                 }
             }
         } else if (isNestedRelationDefinition(relation)) {

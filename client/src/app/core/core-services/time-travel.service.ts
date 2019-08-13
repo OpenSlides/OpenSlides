@@ -53,7 +53,7 @@ export class TimeTravelService {
      * @param history the desired point in the history of OpenSlides
      */
     public async loadHistoryPoint(history: History): Promise<void> {
-        const updateSlot = await this.DSUpdateManager.getNewUpdateSlot(this.DS);
+        const updateSlot = await this.DSUpdateManager.getNewUpdateSlot(this.DS, true);
 
         await this.stopTime(history);
         const historyData: HistoryData = await this.getHistoryData(history);

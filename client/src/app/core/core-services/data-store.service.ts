@@ -49,7 +49,7 @@ export class UpdateSlot {
     /**
      * @param DS Carries the DataStore: TODO (see below `DataStoreUpdateManagerService.getNewUpdateSlot`)
      */
-    public constructor(public readonly DS: DataStoreService) {
+    public constructor(public readonly DS: DataStoreService, public readonly initialLoading: boolean) {
         this._id = UpdateSlot.ID_COUTNER++;
     }
 
@@ -185,13 +185,13 @@ export class DataStoreUpdateManagerService {
      * @param DS The DataStore. This is a hack, becuase we cannot use the DataStore
      * here, because these are cyclic dependencies... --> TODO
      */
-    public async getNewUpdateSlot(DS: DataStoreService): Promise<UpdateSlot> {
+    public async getNewUpdateSlot(DS: DataStoreService, initialLoading: boolean = false): Promise<UpdateSlot> {
         if (this.currentUpdateSlot) {
             const request = new Deferred();
             this.updateSlotRequests.push(request);
             await request;
         }
-        this.currentUpdateSlot = new UpdateSlot(DS);
+        this.currentUpdateSlot = new UpdateSlot(DS, initialLoading);
         return this.currentUpdateSlot;
     }
 
@@ -221,7 +221,7 @@ export class DataStoreUpdateManagerService {
             const deletedModelIds = slot.getDeletedModelIdsForCollection(repo.collectionString);
             repo.deleteModels(deletedModelIds);
             const changedModelIds = slot.getChangedModelIdsForCollection(repo.collectionString);
-            repo.changedModels(changedModelIds);
+            repo.changedModels(changedModelIds, slot.initialLoading);
 
             if (deletedModelIds.length || changedModelIds.length) {
                 affectedRepos[repo.collectionString] = repo;
@@ -350,7 +350,7 @@ export class DataStoreService {
         // This promise will be resolved with cached datastore.
         const store = await this.storageService.get<JsonStorage>(DataStoreService.cachePrefix + 'DS');
         if (store) {
-            const updateSlot = await this.DSUpdateManager.getNewUpdateSlot(this);
+            const updateSlot = await this.DSUpdateManager.getNewUpdateSlot(this, true);
 
             // There is a store. Deserialize it
             this.jsonStore = store;

@@ -154,8 +154,8 @@ export class ConfigRepositoryService extends BaseRepository<ViewConfig, Config, 
         throw new Error('Config variables cannot be created');
     }
 
-    public changedModels(ids: number[]): void {
-        super.changedModels(ids);
+    public changedModels(ids: number[], initialLoading: boolean): void {
+        super.changedModels(ids, initialLoading);
 
         ids.forEach(id => {
             this.updateConfigStructure(false, this.viewModelStore[id]);

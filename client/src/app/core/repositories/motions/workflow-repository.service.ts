@@ -19,13 +19,13 @@ const WorkflowRelations: RelationDefinition[] = [
         type: 'M2M',
         ownIdKey: 'states_id',
         ownKey: 'states',
-        foreignModel: ViewState
+        foreignViewModel: ViewState
     },
     {
         type: 'M2O',
         ownIdKey: 'first_state_id',
         ownKey: 'first_state',
-        foreignModel: ViewState
+        foreignViewModel: ViewState
     }
 ];
 

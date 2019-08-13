@@ -8,6 +8,7 @@ import { RelationManagerService } from 'app/core/core-services/relation-manager.
 import { ViewModelStoreService } from 'app/core/core-services/view-model-store.service';
 import { RelationDefinition } from 'app/core/definitions/relations';
 import { ListOfSpeakers } from 'app/shared/models/agenda/list-of-speakers';
+import { Speaker } from 'app/shared/models/agenda/speaker';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { ListOfSpeakersTitleInformation, ViewListOfSpeakers } from 'app/site/agenda/models/view-list-of-speakers';
 import { ViewSpeaker } from 'app/site/agenda/models/view-speaker';
@@ -39,14 +40,15 @@ const ListOfSpeakersRelations: RelationDefinition[] = [
     {
         type: 'nested',
         ownKey: 'speakers',
-        foreignModel: ViewSpeaker,
+        foreignViewModel: ViewSpeaker,
+        foreignModel: Speaker,
         order: 'weight',
         relationDefinition: [
             {
                 type: 'M2O',
                 ownIdKey: 'user_id',
                 ownKey: 'user',
-                foreignModel: ViewUser
+                foreignViewModel: ViewUser
             }
         ]
     }

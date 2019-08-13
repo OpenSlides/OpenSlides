@@ -66,7 +66,7 @@ export abstract class BaseIsListOfSpeakersContentObjectRepository<
             type: 'M2O',
             ownIdKey: 'list_of_speakers_id',
             ownKey: 'list_of_speakers',
-            foreignModel: ViewListOfSpeakers
+            foreignViewModel: ViewListOfSpeakers
         });
         super.groupRelationsByCollections();
     }
@@ -82,8 +82,8 @@ export abstract class BaseIsListOfSpeakersContentObjectRepository<
     /**
      * Adds the list of speakers titles to the view model
      */
-    protected createViewModelWithTitles(model: M): V {
-        const viewModel = super.createViewModelWithTitles(model);
+    protected createViewModelWithTitles(model: M, initialLoading: boolean): V {
+        const viewModel = super.createViewModelWithTitles(model, initialLoading);
         viewModel.getListOfSpeakersTitle = () => this.getListOfSpeakersTitle(viewModel);
         viewModel.getListOfSpeakersSlideTitle = () => this.getListOfSpeakersSlideTitle(viewModel);
         return viewModel;

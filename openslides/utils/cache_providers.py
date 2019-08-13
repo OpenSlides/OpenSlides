@@ -186,7 +186,7 @@ class RedisCacheProvider:
             if (nd > 0) then
                 max = 3 + nc + nd
                 redis.call('hdel', KEYS[1], unpack(ARGV, 4 + nc, max))
-                for i = 4 + nc, max, 2 do
+                for i = 4 + nc, max, 1 do
                     redis.call('zadd', KEYS[2], change_id, ARGV[i])
                 end
             end

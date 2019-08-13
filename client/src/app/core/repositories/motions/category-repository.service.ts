@@ -20,20 +20,20 @@ const CategoryRelations: RelationDefinition[] = [
         type: 'M2O',
         ownIdKey: 'parent_id',
         ownKey: 'parent',
-        foreignModel: ViewCategory
+        foreignViewModel: ViewCategory
     },
     {
         type: 'O2M',
         foreignIdKey: 'category_id',
         ownKey: 'motions',
-        foreignModel: ViewMotion,
+        foreignViewModel: ViewMotion,
         order: 'category_weight'
     },
     {
         type: 'O2M',
         foreignIdKey: 'parent_id',
         ownKey: 'children',
-        foreignModel: ViewCategory,
+        foreignViewModel: ViewCategory,
         order: 'weight'
     }
 ];
