@@ -161,7 +161,7 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
         private groupRepo: GroupRepositoryService,
         private choiceService: ChoiceService,
         private router: Router,
-        private operator: OperatorService,
+        public operator: OperatorService,
         protected csvExport: CsvExportService,
         private promptService: PromptService,
         public filterService: UserFilterListService,

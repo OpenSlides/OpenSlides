@@ -36,8 +36,14 @@
         ></a>
         <div class="nameCell">
             <span>{{ name }}</span>
-            <mat-icon matTooltip="{{ 'Is committee' | translate }}" *ngIf="user.is_committee">stars</mat-icon>
-            <mat-icon matTooltip="{{ 'Inactive' | translate }}" *ngIf="!user.is_active">block</mat-icon>
+        </div>
+        <div class="icon-group">
+            <mat-icon matTooltip="{{ 'Is committee' | translate }}" *ngIf="user.is_committee">account_balance</mat-icon>
+            <mat-icon
+                matTooltip="{{ 'Inactive' | translate }}"
+                *ngIf="!user.is_active && this.operator.hasPerms('users.see_extra')"
+                >block</mat-icon
+            >
         </div>
     </div>
 
