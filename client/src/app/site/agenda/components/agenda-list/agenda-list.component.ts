@@ -105,7 +105,7 @@ export class AgendaListComponent extends BaseListViewComponent<ViewItem> impleme
     /**
      * Define extra filter properties
      */
-    public filterProps = ['itemNumber', 'comment'];
+    public filterProps = ['itemNumber', 'comment', 'getListTitle'];
 
     /**
      * The usual constructor for components
@@ -191,7 +191,7 @@ export class AgendaListComponent extends BaseListViewComponent<ViewItem> impleme
         if (this.isMultiSelect || !this.canManage) {
             return;
         }
-        const dialogRef = this.dialog.open(ItemInfoDialogComponent, infoDialogSettings);
+        const dialogRef = this.dialog.open(ItemInfoDialogComponent, { ...infoDialogSettings, data: item });
 
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
