@@ -133,7 +133,7 @@
             <div class="column-state innerTable">
                 <!-- Category -->
                 <div class="ellipsis-overflow" *ngIf="motion.category">
-                    <os-icon-container icon="device_hub">
+                    <os-icon-container icon="category">
                         {{ motion.category.nameWithParentAbove }}
                     </os-icon-container>
                 </div>
@@ -169,32 +169,38 @@
 <ng-template #tiles>
     <os-grid-layout>
         <os-block-tile
-            *ngFor="let tileCategory of tileCategories"
-            (clicked)="changeToViewWithTileCategory(tileCategory)"
+            *ngFor="let tile of listTiles"
+            (clicked)="changeToViewWithTileCategory(tile)"
             [orientation]="'horizontal'"
             [only]="'title'"
             [blockType]="'node'"
-            [data]="tileCategory"
-            title="{{ tileCategory.name | translate }}"
+            [data]="tile"
+            title="{{ tile.name | translate }}"
         >
             <ng-container class="block-node">
                 <table
-                    matTooltip="{{ tileCategory.amountOfMotions }} {{ 'Motions' | translate }} – {{
-                        tileCategory.name | translate
-                    }}"
+                    matTooltip="{{ tile.amountOfMotions }} {{ 'Motions' | translate }} – {{ tile.name | translate }}"
                 >
                     <tbody>
                         <tr>
                             <td>
                                 <span
                                     class="tile-block-title"
-                                    [matBadge]="tileCategory.amountOfMotions"
+                                    [matBadge]="tile.amountOfMotions"
                                     [matBadgeColor]="'accent'"
-                                    [ngSwitch]="tileCategory.name"
+                                    [ngSwitch]="tile.name"
                                 >
                                     <span *ngSwitchCase="'Favorites'"><mat-icon>star</mat-icon></span>
                                     <span *ngSwitchCase="'No category'"><mat-icon>block</mat-icon></span>
-                                    <span *ngSwitchDefault>{{ tileCategory.prefix }}</span>
+                                    <span *ngSwitchCase="'Personal Note'"><mat-icon>speaker_notes</mat-icon></span>
+                                    <span *ngSwitchDefault>
+                                        <span *ngIf="tile.prefix">
+                                            {{ tile.prefix }}
+                                        </span>
+                                        <span *ngIf="!tile.prefix">
+                                            <mat-icon>category</mat-icon>
+                                        </span>
+                                    </span>
                                 </span>
                             </td>
                         </tr>
@@ -221,7 +227,7 @@
         </div>
         <div *ngIf="perms.isAllowed('manage') || categories.length">
             <button mat-menu-item routerLink="category">
-                <mat-icon>device_hub</mat-icon>
+                <mat-icon>category</mat-icon>
                 <span translate>Categories</span>
             </button>
         </div>
@@ -305,7 +311,7 @@
                 *ngIf="categories.length"
                 (click)="multiselectWrapper(multiselectService.setCategory(selectedRows))"
             >
-                <mat-icon>device_hub</mat-icon>
+                <mat-icon>category</mat-icon>
                 <!-- TODO: icon -->
                 <span translate>Set category</span>
             </button>

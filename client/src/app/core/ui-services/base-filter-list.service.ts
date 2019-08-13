@@ -38,6 +38,7 @@ export interface OsFilterOption {
     condition: OsFilterOptionCondition;
     isActive?: boolean;
     isChild?: boolean;
+    children?: OsFilterOption[];
 }
 
 /**
@@ -54,12 +55,13 @@ export interface OsFilterIndicator {
  */
 interface HierarchyModel extends BaseViewModel {
     parent: BaseViewModel;
+    children: BaseViewModel<any>[];
 }
 
 /**
  * Define the type of a filter condition
  */
-type OsFilterOptionCondition = string | boolean | number | number[];
+export type OsFilterOptionCondition = string | boolean | number | number[];
 
 /**
  * Filter for the list view. List views can subscribe to its' dataService (providing filter definitions)
@@ -292,7 +294,16 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
                         return {
                             condition: model.id,
                             label: model.getTitle(),
-                            isChild: !!model.parent
+                            isChild: !!model.parent,
+                            children:
+                                model.children && model.children.length
+                                    ? model.children.map(child => {
+                                          return {
+                                              label: child.getTitle(),
+                                              condition: child.id
+                                          };
+                                      })
+                                    : undefined
                         };
                     });
 
@@ -373,6 +384,7 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
      */
     protected addFilterOption(filterProperty: string, option: OsFilterOption): void {
         const filter = this.filterDefinitions.find(f => f.property === filterProperty);
+
         if (filter) {
             const filterOption = filter.options.find(
                 o => typeof o !== 'string' && o.condition === option.condition
@@ -386,6 +398,12 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
                     filter.count = 1;
                 } else {
                     filter.count += 1;
+                }
+
+                if (filterOption.children && filterOption.children.length) {
+                    for (const child of filterOption.children) {
+                        this.addFilterOption(filterProperty, child);
+                    }
                 }
             }
         }
@@ -419,6 +437,12 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
 
                 if (filter.count) {
                     filter.count -= 1;
+                }
+
+                if (filterOption.children && filterOption.children.length) {
+                    for (const child of filterOption.children) {
+                        this.removeFilterOption(filterProperty, child);
+                    }
                 }
             }
         }

@@ -32,6 +32,14 @@ export class ViewCategory extends BaseViewModel<Category> implements CategoryTit
         return this._parent;
     }
 
+    public get oldestParent(): ViewCategory {
+        if (!this.parent_id) {
+            return this;
+        } else {
+            return this.parent.oldestParent;
+        }
+    }
+
     public get children(): ViewCategory[] {
         return this._children || [];
     }
@@ -62,6 +70,17 @@ export class ViewCategory extends BaseViewModel<Category> implements CategoryTit
 
     public get prefixedName(): string {
         return this.prefix ? this.prefix + ' - ' + this.name : this.name;
+    }
+
+    /**
+     * The amount of all motions on this category and all children
+     */
+    public get totalAmountOfMotions(): number {
+        let totalAmount = this.motions.length;
+        for (const child of this.children) {
+            totalAmount += child.totalAmountOfMotions;
+        }
+        return totalAmount;
     }
 
     /**
