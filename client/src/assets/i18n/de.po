@@ -2208,7 +2208,7 @@ msgid "Structure level"
 msgstr "Gliederungsebene"
 
 msgid "Subcategory"
-msgstr "Untersachgebiete"
+msgstr "Untersachgebiet"
 
 msgid "Submitters"
 msgstr "Antragsteller/in"
