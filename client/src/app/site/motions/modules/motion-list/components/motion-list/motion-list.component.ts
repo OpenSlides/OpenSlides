@@ -14,6 +14,7 @@ import { MotionBlockRepositoryService } from 'app/core/repositories/motions/moti
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflow-repository.service';
 import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
+import { OsFilterOptionCondition } from 'app/core/ui-services/base-filter-list.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { ColumnRestriction } from 'app/shared/components/list-view-table/list-view-table.component';
 import { infoDialogSettings, largeDialogSettings } from 'app/shared/utils/dialog-settings';
@@ -40,7 +41,7 @@ interface TileCategoryInformation {
     filter: string;
     name: string;
     prefix?: string;
-    condition: number | boolean | null;
+    condition: OsFilterOptionCondition;
     amountOfMotions: number;
 }
 
@@ -157,12 +158,11 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
      * List of `TileCategoryInformation`.
      * Necessary to not iterate over the values of the map below.
      */
-    public tileCategories: TileCategoryInformation[] = [];
+    public listTiles: TileCategoryInformation[];
 
-    /**
-     * Map of information about the categories relating to their id.
-     */
-    public informationOfMotionsInTileCategories: { [id: number]: TileCategoryInformation } = {};
+    private motionTiles: TileCategoryInformation[] = [];
+
+    private categoryTiles: TileCategoryInformation[] = [];
 
     /**
      * The verbose name for the motions.
@@ -257,34 +257,87 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
 
         this.motionRepo.getViewModelListObservable().subscribe(motions => {
             if (motions && motions.length) {
-                this.createTiles(motions);
+                this.createMotionTiles(motions);
             }
         });
     }
 
-    private createTiles(motions: ViewMotion[]): void {
-        this.informationOfMotionsInTileCategories = {};
-        for (const motion of motions) {
-            if (motion.star) {
-                this.countMotions(-1, true, 'star', 'Favorites');
-            }
+    /**
+     * Publishes the tileList
+     */
+    private createTileList(): void {
+        this.listTiles = this.categoryTiles.concat(this.motionTiles);
+    }
 
-            if (motion.category_id) {
-                this.countMotions(
-                    motion.category_id,
-                    motion.category_id,
-                    'category',
-                    motion.category.name,
-                    motion.category.prefix
-                );
+    /**
+     * Creates the tiles for categories.
+     * Filters thous without parent, sorts them by theit weight, maps them to TileInfo and publishes
+     * the result
+     */
+    private createCategoryTiles(categories: ViewCategory[]): void {
+        this.categoryTiles = categories
+            .filter(category => !category.parent_id && !!category.totalAmountOfMotions)
+            .sort((a, b) => a.weight - b.weight)
+            .map(category => {
+                return {
+                    filter: 'category',
+                    name: category.name,
+                    condition: category.id,
+                    amountOfMotions: category.totalAmountOfMotions,
+                    prefix: category.prefix
+                };
+            });
+    }
+
+    /**
+     * Creates the tiles for motions
+     * @param motions
+     */
+    private createMotionTiles(motions: ViewMotion[]): void {
+        this.motionTiles = [];
+        let favoriteMotions = 0;
+        let motionsWithNotes = 0;
+        let motionsWithoutCategory = 0;
+        const localCategories = new Set<ViewCategory>();
+
+        for (const motion of motions) {
+            if (!motion.category_id) {
+                motionsWithoutCategory++;
             } else {
-                this.countMotions(-2, null, 'category', 'No category');
+                localCategories.add(motion.category.oldestParent);
             }
+            favoriteMotions += +this.motionHasProp(motion, 'star');
+            motionsWithNotes += +this.motionHasProp(motion, 'hasNotes');
         }
 
-        this.tileCategories = Object.values(this.informationOfMotionsInTileCategories).sort((a, b) =>
-            ('' + a.prefix).localeCompare(b.prefix)
-        );
+        this.addToTileInfo('Favorites', 'star', true, favoriteMotions);
+        this.addToTileInfo('Personal Note', 'hasNote', true, motionsWithNotes);
+        this.addToTileInfo('No category', 'category', null, motionsWithoutCategory);
+
+        this.createCategoryTiles(Array.from(localCategories));
+
+        this.createTileList();
+    }
+
+    /**
+     * @returns true if the motion has the given prop
+     */
+    private motionHasProp(motion: ViewMotion, property: string, positive: boolean = true): boolean {
+        return !!motion[property] === positive ? true : false;
+    }
+
+    /**
+     * Helper function to add new tile information to the tileCategories-List
+     */
+    private addToTileInfo(name: string, filter: string, condition: OsFilterOptionCondition, amount: number): void {
+        if (amount) {
+            this.motionTiles.push({
+                filter: filter,
+                name: name,
+                condition: condition,
+                amountOfMotions: amount
+            });
+        }
     }
 
     /**
@@ -336,37 +389,6 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
                 }
             }
         });
-    }
-
-    /**
-     * Function to count the motions in their related categories.
-     *
-     * @param id The key of TileCategory in `informationOfMotionsInTileCategories` object
-     * @param condition The condition, if the tile is selected
-     * @param filter The filter, if the tile is selected
-     * @param name The title of the tile
-     * @param prefix The prefix of the category
-     */
-    private countMotions(
-        id: number,
-        condition: number | boolean | null,
-        filter: string,
-        name: string,
-        prefix?: string
-    ): void {
-        let info = this.informationOfMotionsInTileCategories[id];
-        if (info) {
-            ++info.amountOfMotions;
-        } else {
-            info = {
-                filter,
-                name,
-                condition,
-                prefix,
-                amountOfMotions: 1
-            };
-        }
-        this.informationOfMotionsInTileCategories[id] = info;
     }
 
     /**
