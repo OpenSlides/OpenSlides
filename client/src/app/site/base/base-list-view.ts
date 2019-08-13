@@ -57,7 +57,7 @@ export abstract class BaseListViewComponent<V extends BaseViewModel> extends Bas
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar,
-        protected storage?: StorageService
+        protected storage: StorageService
     ) {
         super(titleService, translate, matSnackBar);
         this.selectedRows = [];

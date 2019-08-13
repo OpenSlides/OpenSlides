@@ -7,6 +7,7 @@ import { Title } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition } from '@pebula/ngrid';
 
+import { StorageService } from 'app/core/core-services/storage.service';
 import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { Tag } from 'app/shared/models/core/tag';
@@ -68,13 +69,14 @@ export class TagListComponent extends BaseListViewComponent<ViewTag> implements 
     public constructor(
         titleService: Title,
         matSnackBar: MatSnackBar,
+        storage: StorageService,
         public repo: TagRepositoryService,
         protected translate: TranslateService, // protected required for ng-translate-extract
         private promptService: PromptService,
         private dialog: MatDialog,
         private formBuilder: FormBuilder
     ) {
-        super(titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, storage);
     }
 
     /**

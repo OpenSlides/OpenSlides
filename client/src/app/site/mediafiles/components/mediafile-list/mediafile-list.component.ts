@@ -20,6 +20,7 @@ import { PblNgridDataMatrixRow } from '@pebula/ngrid/target-events';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 
 import { OperatorService } from 'app/core/core-services/operator.service';
+import { StorageService } from 'app/core/core-services/storage.service';
 import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { MediaManageService } from 'app/core/ui-services/media-manage.service';
@@ -185,6 +186,7 @@ export class MediafileListComponent extends BaseListViewComponent<ViewMediafile>
         titleService: Title,
         protected translate: TranslateService,
         matSnackBar: MatSnackBar,
+        storage: StorageService,
         private route: ActivatedRoute,
         private router: Router,
         public repo: MediafileRepositoryService,
@@ -199,7 +201,7 @@ export class MediafileListComponent extends BaseListViewComponent<ViewMediafile>
         private groupRepo: GroupRepositoryService,
         private cd: ChangeDetectorRef
     ) {
-        super(titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, storage);
         this.canMultiSelect = true;
 
         this.newDirectoryForm = this.formBuilder.group({
