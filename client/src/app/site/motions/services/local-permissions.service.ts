@@ -1,13 +1,8 @@
 import { Injectable } from '@angular/core';
 
-import { ConstantsService } from 'app/core/core-services/constants.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { ViewMotion } from '../models/view-motion';
-
-interface Settings {
-    MOTIONS_ALLOW_AMENDMENTS_OF_AMENDMENTS: boolean;
-}
 
 @Injectable({
     providedIn: 'root'
@@ -17,11 +12,7 @@ export class LocalPermissionsService {
     private amendmentEnabled: boolean;
     private amendmentOfAmendment: boolean;
 
-    public constructor(
-        private operator: OperatorService,
-        private configService: ConfigService,
-        private constants: ConstantsService
-    ) {
+    public constructor(private operator: OperatorService, private configService: ConfigService) {
         // load config variables
         this.configService
             .get<number>('motions_min_supporters')
@@ -29,9 +20,9 @@ export class LocalPermissionsService {
         this.configService
             .get<boolean>('motions_amendments_enabled')
             .subscribe(enabled => (this.amendmentEnabled = enabled));
-        this.constants
-            .get<Settings>('Settings')
-            .subscribe(settings => (this.amendmentOfAmendment = settings.MOTIONS_ALLOW_AMENDMENTS_OF_AMENDMENTS));
+        this.configService
+            .get<boolean>('motions_amendments_of_amendments')
+            .subscribe(enabled => (this.amendmentOfAmendment = enabled));
     }
 
     /**

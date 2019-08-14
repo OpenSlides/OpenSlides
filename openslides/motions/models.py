@@ -332,26 +332,23 @@ class Motion(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model):
             # Do not set an identifier.
             return
 
-        # If MOTION_IDENTIFIER_WITHOUT_BLANKS is set, don't use blanks when building identifier.
-        without_blank = (
-            hasattr(settings, "MOTION_IDENTIFIER_WITHOUT_BLANKS")
-            and settings.MOTION_IDENTIFIER_WITHOUT_BLANKS
-        )
+        # If config 'motions_identifier_with_blank' is set, use blanks when building identifier.
+        with_blank = config["motions_identifier_with_blank"]
 
         # Build prefix.
         if self.is_amendment():
             parent_identifier = self.parent.identifier or ""
-            if without_blank:
-                prefix = f"{parent_identifier}{config['motions_amendments_prefix']}"
+            if with_blank:
+                prefix = f"{parent_identifier} {config['motions_amendments_prefix']}"
             else:
-                prefix = f"{parent_identifier} {config['motions_amendments_prefix']} "
+                prefix = f"{parent_identifier}{config['motions_amendments_prefix']}"
         elif self.category is None or not self.category.prefix:
             prefix = ""
         else:
-            if without_blank:
-                prefix = self.category.prefix
-            else:
+            if with_blank:
                 prefix = f"{self.category.prefix} "
+            else:
+                prefix = self.category.prefix
         self._identifier_prefix = prefix
 
         # Use the already assigned identifier_number, if the motion has one.
@@ -402,20 +399,16 @@ class Motion(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model):
     def extend_identifier_number(cls, number):
         """
         Returns the number used in the set_identifier method with leading
-        zero charaters according to the settings value
-        MOTION_IDENTIFIER_MIN_DIGITS.
+        zero charaters according to the config value.
         """
         result = str(number)
-        if (
-            hasattr(settings, "MOTION_IDENTIFIER_MIN_DIGITS")
-            and settings.MOTION_IDENTIFIER_MIN_DIGITS
-        ):
-            if not isinstance(settings.MOTION_IDENTIFIER_MIN_DIGITS, int):
+        if config["motions_identifier_min_digits"]:
+            if not isinstance(config["motions_identifier_min_digits"], int):
                 raise ImproperlyConfigured(
-                    "Settings value MOTION_IDENTIFIER_MIN_DIGITS must be an integer."
+                    "Config value 'motions_identifier_min_digits' must be an integer."
                 )
             result = (
-                "0" * (settings.MOTION_IDENTIFIER_MIN_DIGITS - len(str(number)))
+                "0" * (config["motions_identifier_min_digits"] - len(str(number)))
                 + result
             )
         return result

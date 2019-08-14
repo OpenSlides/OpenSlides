@@ -50,21 +50,6 @@ def get_config_variables():
     )
 
     yield ConfigVariable(
-        name="motions_identifier",
-        default_value="per_category",
-        input_type="choice",
-        label="Identifier",
-        choices=(
-            {"value": "per_category", "display_name": "Numbered per category"},
-            {"value": "serially_numbered", "display_name": "Serially numbered"},
-            {"value": "manually", "display_name": "Set it manually"},
-        ),
-        weight=315,
-        group="Motions",
-        subgroup="General",
-    )
-
-    yield ConfigVariable(
         name="motions_preamble",
         default_value="The assembly may decide:",
         label="Motion preamble",
@@ -75,7 +60,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name="motions_default_line_numbering",
-        default_value="none",
+        default_value="outside",
         input_type="choice",
         label="Default line numbering",
         choices=(
@@ -90,7 +75,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name="motions_line_length",
-        default_value=90,
+        default_value=85,
         input_type="integer",
         label="Line length",
         help_text="The maximum number of characters per line. Relevant when line numbering is enabled. Min: 40",
@@ -141,6 +126,17 @@ def get_config_variables():
     )
 
     yield ConfigVariable(
+        name="motions_show_sequential_numbers",
+        default_value=True,
+        input_type="boolean",
+        label="Show the sequential number for a motion",
+        help_text="In motion list, motion detail and PDF.",
+        weight=328,
+        group="Motions",
+        subgroup="General",
+    )
+
+    yield ConfigVariable(
         name="motions_recommendations_by",
         default_value="",
         label="Name of recommender",
@@ -162,7 +158,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name="motions_recommendation_text_mode",
-        default_value="original",
+        default_value="diff",
         input_type="choice",
         label="Default text version for change recommendations",
         choices=(
@@ -190,14 +186,43 @@ def get_config_variables():
         subgroup="General",
     )
 
+    # Numbering
     yield ConfigVariable(
-        name="motions_show_sequential_numbers",
-        default_value=True,
-        input_type="boolean",
-        label="Show the sequential number for a motion",
-        weight=336,
+        name="motions_identifier",
+        default_value="per_category",
+        input_type="choice",
+        label="Identifier",
+        choices=(
+            {"value": "per_category", "display_name": "Numbered per category"},
+            {"value": "serially_numbered", "display_name": "Serially numbered"},
+            {"value": "manually", "display_name": "Set it manually"},
+        ),
+        weight=340,
         group="Motions",
-        subgroup="General",
+        subgroup="Numbering",
+    )
+
+    yield ConfigVariable(
+        name="motions_identifier_min_digits",
+        default_value=1,
+        input_type="integer",
+        label="Number of minimal digits for identifier",
+        help_text="Uses leading zeros to sort motions correctly by identifier.",
+        weight=342,
+        group="Motions",
+        subgroup="Numbering",
+        validators=(MinValueValidator(1),),
+    )
+
+    yield ConfigVariable(
+        name="motions_identifier_with_blank",
+        default_value=False,
+        input_type="boolean",
+        label="Allow blank in identifier",
+        help_text="Blank between prefix and number, e.g. 'A 001'.",
+        weight=344,
+        group="Motions",
+        subgroup="Numbering",
     )
 
     # Amendments
@@ -207,7 +232,7 @@ def get_config_variables():
         default_value=False,
         input_type="boolean",
         label="Activate statute amendments",
-        weight=338,
+        weight=350,
         group="Motions",
         subgroup="Amendments",
     )
@@ -217,17 +242,17 @@ def get_config_variables():
         default_value=False,
         input_type="boolean",
         label="Activate amendments",
-        weight=339,
+        weight=351,
         group="Motions",
         subgroup="Amendments",
     )
 
     yield ConfigVariable(
         name="motions_amendments_main_table",
-        default_value=False,
+        default_value=True,
         input_type="boolean",
         label="Show amendments together with motions",
-        weight=340,
+        weight=352,
         group="Motions",
         subgroup="Amendments",
     )
@@ -236,14 +261,14 @@ def get_config_variables():
         name="motions_amendments_prefix",
         default_value="-",
         label="Prefix for the identifier for amendments",
-        weight=341,
+        weight=353,
         group="Motions",
         subgroup="Amendments",
     )
 
     yield ConfigVariable(
         name="motions_amendments_text_mode",
-        default_value="freestyle",
+        default_value="paragraph",
         input_type="choice",
         label="How to create new amendments",
         choices=(
@@ -251,17 +276,27 @@ def get_config_variables():
             {"value": "fulltext", "display_name": "Edit the whole motion text"},
             {"value": "paragraph", "display_name": "Paragraph-based, Diff-enabled"},
         ),
-        weight=342,
+        weight=354,
         group="Motions",
         subgroup="Amendments",
     )
 
     yield ConfigVariable(
         name="motions_amendments_multiple_paragraphs",
-        default_value=False,
+        default_value=True,
         input_type="boolean",
         label="Amendments can change multiple paragraphs",
-        weight=343,
+        weight=355,
+        group="Motions",
+        subgroup="Amendments",
+    )
+
+    yield ConfigVariable(
+        name="motions_amendments_of_amendments",
+        default_value=False,
+        input_type="boolean",
+        label="Allow amendments of amendments",
+        weight=356,
         group="Motions",
         subgroup="Amendments",
     )
@@ -274,7 +309,7 @@ def get_config_variables():
         input_type="integer",
         label="Number of (minimum) required supporters for a motion",
         help_text="Choose 0 to disable the supporting system.",
-        weight=345,
+        weight=360,
         group="Motions",
         subgroup="Supporters",
         validators=(MinValueValidator(0),),
@@ -285,7 +320,7 @@ def get_config_variables():
         default_value=False,
         input_type="boolean",
         label="Remove all supporters of a motion if a submitter edits his motion in early state",
-        weight=350,
+        weight=361,
         group="Motions",
         subgroup="Supporters",
     )
@@ -304,7 +339,7 @@ def get_config_variables():
             {"value": "CAST", "display_name": "All casted ballots"},
             {"value": "DISABLED", "display_name": "Disabled (no percents)"},
         ),
-        weight=355,
+        weight=370,
         group="Motions",
         subgroup="Voting and ballot papers",
     )
@@ -317,7 +352,7 @@ def get_config_variables():
         choices=majorityMethods,
         label="Required majority",
         help_text="Default method to check whether a motion has reached the required majority.",
-        weight=357,
+        weight=372,
         group="Motions",
         subgroup="Voting and ballot papers",
     )
@@ -338,7 +373,7 @@ def get_config_variables():
                 "display_name": "Use the following custom number",
             },
         ),
-        weight=360,
+        weight=374,
         group="Motions",
         subgroup="Voting and ballot papers",
     )
@@ -348,7 +383,7 @@ def get_config_variables():
         default_value=8,
         input_type="integer",
         label="Custom number of ballot papers",
-        weight=365,
+        weight=376,
         group="Motions",
         subgroup="Voting and ballot papers",
         validators=(MinValueValidator(1),),
@@ -360,7 +395,7 @@ def get_config_variables():
         name="motions_export_title",
         default_value="Motions",
         label="Title for PDF documents of motions",
-        weight=370,
+        weight=380,
         group="Motions",
         subgroup="PDF export",
     )
@@ -369,7 +404,7 @@ def get_config_variables():
         name="motions_export_preamble",
         default_value="",
         label="Preamble text for PDF documents of motions",
-        weight=375,
+        weight=382,
         group="Motions",
         subgroup="PDF export",
     )
@@ -379,7 +414,7 @@ def get_config_variables():
         default_value=False,
         label="Show submitters and recommendation in table of contents",
         input_type="boolean",
-        weight=378,
+        weight=384,
         group="Motions",
         subgroup="PDF export",
     )
@@ -389,7 +424,7 @@ def get_config_variables():
         default_value=False,
         label="Show checkbox to record decision",
         input_type="boolean",
-        weight=379,
+        weight=386,
         group="Motions",
         subgroup="PDF export",
     )
