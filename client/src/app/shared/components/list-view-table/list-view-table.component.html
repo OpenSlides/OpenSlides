@@ -1,6 +1,7 @@
 <mat-drawer-container *ngIf="columns && columnSet">
     <os-sort-filter-bar
         *ngIf="showFilterBar"
+        [totalCount]="totalCount"
         [filterCount]="countFilter"
         [filterService]="filterService"
         [sortService]="sortService"

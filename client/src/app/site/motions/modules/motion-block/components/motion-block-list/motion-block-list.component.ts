@@ -47,6 +47,11 @@ export class MotionBlockListComponent extends BaseListViewComponent<ViewMotionBl
     public defaultVisibility: number;
 
     /**
+     * Defines the properties the `sort-filter-bar` can search for.
+     */
+    public filterProps = ['title'];
+
+    /**
      * helper for permission checks
      *
      * @returns true if the user may alter motions or their metadata
@@ -67,6 +72,10 @@ export class MotionBlockListComponent extends BaseListViewComponent<ViewMotionBl
         {
             prop: 'amount',
             label: this.translate.instant('Motions')
+        },
+        {
+            prop: 'speaker',
+            width: this.badgeButtonWidth
         }
     ];
 

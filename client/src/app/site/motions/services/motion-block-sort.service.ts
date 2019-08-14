@@ -11,7 +11,18 @@ import { ViewMotionBlock } from '../models/view-motion-block';
     providedIn: 'root'
 })
 export class MotionBlockSortService extends BaseSortListService<ViewMotionBlock> {
-    public sortOptions: OsSortingOption<ViewMotionBlock>[] = [{ property: 'title' }];
+    public sortOptions: OsSortingOption<ViewMotionBlock>[] = [
+        { property: 'title' },
+        {
+            property: 'motions',
+            label: 'Amount of motions',
+            sortFn: (aBlock, bBlock, ascending) => {
+                return ascending
+                    ? aBlock.motions.length - bBlock.motions.length
+                    : bBlock.motions.length - aBlock.motions.length;
+            }
+        }
+    ];
 
     public constructor(translate: TranslateService, store: StorageService, OSStatus: OpenSlidesStatusService) {
         super('Motion block', translate, store, OSStatus);

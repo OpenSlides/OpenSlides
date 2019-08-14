@@ -94,16 +94,9 @@ export class SortFilterBarComponent<V extends BaseViewModel> {
     private _showFilterSort = true;
 
     /**
-     * Return the amount of data passing filters. Priorizes the override in {@link filterCount} over
-     * the information from the filterService
+     * Holds the total amount of data.
      */
-    public get displayedCount(): number {
-        if (this.filterCount === undefined || this.filterCount === null) {
-            return this.filterService.filteredCount;
-        } else {
-            return this.filterCount;
-        }
-    }
+    private _totalCount: number;
 
     /**
      * Setter for `showFilterSort`
@@ -121,10 +114,18 @@ export class SortFilterBarComponent<V extends BaseViewModel> {
     }
 
     /**
+     * Overwrites the total-count. If there is no filter-service set, this is used by default.
+     */
+    @Input()
+    public set totalCount(count: number) {
+        this._totalCount = count;
+    }
+
+    /**
      * Return the total count of potential filters
      */
     public get totalCount(): number {
-        return this.filterService.unfilteredCount;
+        return this.filterService ? this.filterService.unfilteredCount : this._totalCount;
     }
 
     public get sortOptions(): any {

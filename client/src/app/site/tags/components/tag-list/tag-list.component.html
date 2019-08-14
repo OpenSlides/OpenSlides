@@ -1,9 +1,4 @@
-<os-head-bar
-    [mainButton]="true"
-    [nav]="true"
-    (mainEvent)="openTagDialog()"
-    [multiSelectMode]="isMultiSelect"
->
+<os-head-bar [mainButton]="true" [nav]="true" (mainEvent)="openTagDialog()" [multiSelectMode]="isMultiSelect">
     <div class="title-slot"><h2 translate>Tags</h2></div>
 </os-head-bar>
 
@@ -13,6 +8,7 @@
     [allowProjector]="false"
     [(selectedRows)]="selectedRows"
     (dataSourceChange)="onDataSourceChange($event)"
+    [filterProps]="['name']"
 >
     <!-- Name column -->
     <div *pblNgridCellDef="'name'; value as name" class="cell-slot fill">
@@ -43,7 +39,7 @@
     <div class="os-form-card-mobile" mat-dialog-content>
         <form [formGroup]="tagForm" (keydown)="onKeyDown($event)">
             <mat-form-field>
-                <input required type="text" matInput formControlName="name" placeholder="{{ 'Name' | translate }}">
+                <input required type="text" matInput formControlName="name" placeholder="{{ 'Name' | translate }}" />
             </mat-form-field>
         </form>
     </div>

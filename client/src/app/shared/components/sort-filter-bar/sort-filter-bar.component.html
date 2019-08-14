@@ -1,7 +1,7 @@
 <div class="custom-table-header flex-spaced">
     <!-- Amount of filters -->
-    <div class="filter-count" *ngIf="filterService">
-        <span>{{ displayedCount }}&nbsp;</span><span translate>of</span>
+    <div class="filter-count">
+        <span>{{ filterCount }}&nbsp;</span><span translate>of</span>
         <span>&nbsp;{{ totalCount }}</span>
         <span *ngIf="extraItemInfo">&nbsp;·&nbsp;{{ extraItemInfo }}</span>
     </div>

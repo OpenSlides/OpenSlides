@@ -233,6 +233,13 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
     }
 
     /**
+     * @returns The total length of the data-source.
+     */
+    public get totalCount(): number {
+        return this.dataSource.length;
+    }
+
+    /**
      * @returns the repositories `viewModelListObservable`
      */
     private get viewModelListObservable(): Observable<V[]> {
