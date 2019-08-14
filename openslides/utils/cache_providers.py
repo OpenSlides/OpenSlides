@@ -309,12 +309,9 @@ class RedisCacheProvider:
         """
         Returns one element from the cache. Returns None, when the element does not exist.
         """
-        try:
-            return await self.eval(
-                "get_element_data", [self.get_full_data_cache_key()], [element_id]
-            )
-        except aioredis.errors.ReplyError:
-            raise CacheReset()
+        return await self.eval(
+            "get_element_data", [self.get_full_data_cache_key()], [element_id]
+        )
 
     @ensure_cache_wrapper()
     async def add_changed_elements(
@@ -457,6 +454,8 @@ class RedisCacheProvider:
         send.
         If the script uses the ensure_cache-prefix, the first key must be the full_data
         cache key. This is checked here.
+        Also this method incudes the custom "CacheReset" error, which will be raised in
+        python, if the lua-script returns a "cache_reset" string as an error response.
         """
         hash = self._script_hashes[script_name]
         if (
@@ -472,9 +471,23 @@ class RedisCacheProvider:
                 return await redis.evalsha(hash, keys, args)
             except aioredis.errors.ReplyError as e:
                 if str(e).startswith("NOSCRIPT"):
-                    return await redis.eval(self.scripts[script_name][0], keys, args)
+                    return await self._eval(redis, script_name, keys=keys, args=args)
+                elif str(e) == "cache_reset":
+                    raise CacheReset()
                 else:
                     raise e
+
+    async def _eval(
+        self, redis: Any, script_name: str, keys: List[str] = [], args: List[Any] = []
+    ) -> Any:
+        """ Do a real eval of the script (no hash used here). Catches "cache_reset". """
+        try:
+            return await redis.eval(self.scripts[script_name][0], keys, args)
+        except aioredis.errors.ReplyError as e:
+            if str(e) == "cache_reset":
+                raise CacheReset()
+            else:
+                raise e
 
 
 class MemmoryCacheProvider:
