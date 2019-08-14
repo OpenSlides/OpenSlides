@@ -302,24 +302,36 @@ class ElementCache:
         }
 
         if user_id is not None:
-            for collection_string, elements in changed_elements.items():
-                restricter = self.cachables[collection_string].restrict_elements
-                restricted_elements = await restricter(user_id, elements)
-
-                # Add removed objects (through restricter) to deleted elements.
-                element_ids = set([element["id"] for element in elements])
-                restricted_element_ids = set(
-                    [element["id"] for element in restricted_elements]
-                )
-                for id in element_ids - restricted_element_ids:
-                    deleted_elements.append(get_element_id(collection_string, id))
-
-                if not restricted_elements:
-                    del changed_elements[collection_string]
-                else:
-                    changed_elements[collection_string] = restricted_elements
+            await self.restrict(changed_elements, deleted_elements, user_id)
 
         return (changed_elements, deleted_elements)
+
+    async def restrict(
+        self,
+        changed_elements: Dict[str, List[Dict[str, Any]]],
+        deleted_elements: List[str],
+        user_id: int,
+    ) -> None:
+        """
+        This method restricts the given data for the given user. Attention: The method
+        arguments will be modified.
+        """
+        for collection_string, elements in changed_elements.items():
+            restricter = self.cachables[collection_string].restrict_elements
+            restricted_elements = await restricter(user_id, elements)
+
+            # Add removed objects (through restricter) to deleted elements.
+            element_ids = set([element["id"] for element in elements])
+            restricted_element_ids = set(
+                [element["id"] for element in restricted_elements]
+            )
+            for id in element_ids - restricted_element_ids:
+                deleted_elements.append(get_element_id(collection_string, id))
+
+            if not restricted_elements:
+                del changed_elements[collection_string]
+            else:
+                changed_elements[collection_string] = restricted_elements
 
     async def get_current_change_id(self) -> int:
         """

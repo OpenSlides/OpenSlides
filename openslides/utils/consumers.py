@@ -7,9 +7,10 @@ from urllib.parse import parse_qs
 from ..utils.websocket import WEBSOCKET_CHANGE_ID_TOO_HIGH
 from .auth import async_anonymous_is_enabled
 from .autoupdate import AutoupdateFormat
-from .cache import element_cache, split_element_id
-from .utils import get_worker_id
+from .cache import element_cache
+from .utils import get_worker_id, split_element_id
 from .websocket import ProtocollAsyncJsonWebsocketConsumer
+from .worker_consumer import worker_consumer
 
 
 logger = logging.getLogger("openslides.websocket")
@@ -28,10 +29,17 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
     """
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
-        self.projector_hash: Dict[int, int] = {}
+        self.listen_projector_ids: List[int] = []
+        self.autoupdates_enabled: bool = False
         SiteConsumer.ID_COUNTER += 1
         self._id = get_worker_id() + "-" + str(SiteConsumer.ID_COUNTER)
         super().__init__(*args, **kwargs)
+
+    @property
+    def user_id(self) -> int:
+        # self.scope['user'] is the full_data dict of the user. For an
+        # anonymous user is it the dict {'id': 0}
+        return self.scope["user"]["id"]
 
     async def connect(self) -> None:
         """
@@ -42,10 +50,8 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
         Sends the startup data to the user.
         """
         self.connect_time = time.time()
-        # self.scope['user'] is the full_data dict of the user. For an
-        # anonymous user is it the dict {'id': 0}
         change_id = None
-        if not await async_anonymous_is_enabled() and not self.scope["user"]["id"]:
+        if not await async_anonymous_is_enabled() and not self.user_id:
             await self.accept()  # workaround for #4009
             await self.close()
             logger.debug(f"connect: denied ({self._id})")
@@ -65,9 +71,10 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
             0
         ].lower() not in [b"0", b"off", b"false"]:
             # a positive value in autoupdate. Start autoupdate
-            await self.channel_layer.group_add("autoupdate", self.channel_name)
+            self.autoupdates_enabled = True
 
         await self.accept()
+        await worker_consumer.add_autoupdate_consumer(self)
 
         if change_id is not None:
             logger.debug(f"connect: change id {change_id} ({self._id})")
@@ -79,7 +86,7 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
         """
         A user disconnects. Remove it from autoupdate.
         """
-        await self.channel_layer.group_discard("autoupdate", self.channel_name)
+        await worker_consumer.remove_autoupdate_consumer(self)
         active_seconds = int(time.time() - self.connect_time)
         logger.debug(
             f"disconnect code={close_code} active_secs={active_seconds} ({self._id})"
@@ -89,14 +96,13 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
         """
         Send a notify message to the user.
         """
-        user_id = self.scope["user"]["id"]
         item = event["incomming"]
 
         users = item.get("users")
         reply_channels = item.get("replyChannels")
         if (
             (isinstance(users, bool) and users)
-            or (isinstance(users, list) and user_id in users)
+            or (isinstance(users, list) and self.user_id in users)
             or (
                 isinstance(reply_channels, list) and self.channel_name in reply_channels
             )
@@ -116,8 +122,6 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
         Sends an autoupdate to the client from change_id to max_change_id.
         If max_change_id is None, the current change id will be used.
         """
-        user_id = self.scope["user"]["id"]
-
         if max_change_id is None:
             max_change_id = await element_cache.get_current_change_id()
 
@@ -136,11 +140,11 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
 
         try:
             changed_elements, deleted_element_ids = await element_cache.get_data_since(
-                user_id, change_id, max_change_id
+                self.user_id, change_id, max_change_id
             )
         except RuntimeError:
             # The change_id is lower the the lowerst change_id in redis. Return all data
-            changed_elements = await element_cache.get_all_data_list(user_id)
+            changed_elements = await element_cache.get_all_data_list(self.user_id)
             all_data = True
             deleted_elements: Dict[str, List[int]] = {}
         else:
@@ -161,26 +165,3 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
             ),
             in_response=in_response,
         )
-
-    async def send_data(self, event: Dict[str, Any]) -> None:
-        """
-        Send changed or deleted elements to the user.
-        """
-        change_id = event["change_id"]
-        await self.send_autoupdate(change_id, max_change_id=change_id)
-
-    async def projector_changed(self, event: Dict[str, Any]) -> None:
-        """
-        The projector has changed.
-        """
-        all_projector_data = event["data"]
-        projector_data: Dict[int, Dict[str, Any]] = {}
-        for projector_id in self.listen_projector_ids:
-            data = all_projector_data.get(projector_id, [])
-            new_hash = hash(str(data))
-            if new_hash != self.projector_hash.get(projector_id):
-                projector_data[projector_id] = data
-                self.projector_hash[projector_id] = new_hash
-
-        if projector_data:
-            await self.send_json(type="projector", content=projector_data)

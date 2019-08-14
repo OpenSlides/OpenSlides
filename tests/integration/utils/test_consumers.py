@@ -20,6 +20,7 @@ from openslides.utils.websocket import (
     WEBSOCKET_CHANGE_ID_TOO_HIGH,
     WEBSOCKET_WRONG_FORMAT,
 )
+from openslides.utils.worker_consumer import worker_consumer
 
 from ...unit.utils.cache_provider import Collection1, Collection2, get_cachable_provider
 from ..helpers import TConfig, TProjector, TUser
@@ -45,6 +46,20 @@ async def prepare_element_cache(settings):
     element_cache.cachable_provider = orig_cachable_provider
     element_cache._cachables = None
     await element_cache.cache_provider.clear_cache()
+
+
+@pytest.fixture(autouse=True)
+async def prepare_worker_consumer():
+    worker_consumer._setup = False
+    if hasattr(asyncio, "get_running_loop"):
+        # new and preferred for python 3.7
+        event_loop = asyncio.get_running_loop()
+    else:
+        event_loop = asyncio.get_event_loop()  # legacy
+    task = await worker_consumer.setup(event_loop)
+    yield
+    if task:
+        task.cancel()
 
 
 @pytest.fixture

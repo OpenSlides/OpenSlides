@@ -128,12 +128,9 @@ class AutoupdateWebsocketClientMessage(BaseWebsocketClientMessage):
         self, consumer: "ProtocollAsyncJsonWebsocketConsumer", content: Any, id: str
     ) -> None:
         # Turn on or off the autoupdate for the client
-        if content:  # accept any value, that can be interpreted as bool
-            await consumer.channel_layer.group_add("autoupdate", consumer.channel_name)
-        else:
-            await consumer.channel_layer.group_discard(
-                "autoupdate", consumer.channel_name
-            )
+        consumer.autoupdates_enabled = bool(
+            content
+        )  # accept any value, that can be interpreted as bool
 
 
 class ListenToProjectors(BaseWebsocketClientMessage):
@@ -164,20 +161,10 @@ class ListenToProjectors(BaseWebsocketClientMessage):
         self, consumer: "ProtocollAsyncJsonWebsocketConsumer", content: Any, id: str
     ) -> None:
         consumer.listen_projector_ids = content["projector_ids"]
-        if consumer.listen_projector_ids:
-            # listen to projector group
-            await consumer.channel_layer.group_add("projector", consumer.channel_name)
-        else:
-            # do not listen to projector group
-            await consumer.channel_layer.group_discard(
-                "projector", consumer.channel_name
-            )
 
         # Send projector data
         if consumer.listen_projector_ids:
             projector_data = await get_projector_data(consumer.listen_projector_ids)
-            for projector_id, data in projector_data.items():
-                consumer.projector_hash[projector_id] = hash(str(data))
 
             await consumer.send_json(
                 type="projector", content=projector_data, in_response=id
