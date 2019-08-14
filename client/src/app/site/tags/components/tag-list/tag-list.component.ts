@@ -31,7 +31,7 @@ export class TagListComponent extends BaseListViewComponent<ViewTag> implements 
     @ViewChild('tagDialog', { static: true })
     private tagDialog: TemplateRef<string>;
 
-    private tagForm: FormGroup = this.formBuilder.group({
+    public tagForm: FormGroup = this.formBuilder.group({
         name: ['', [Validators.required]]
     });
 

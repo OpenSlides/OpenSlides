@@ -3,37 +3,46 @@
     <div class="title-slot"><h2 translate>Motion blocks</h2></div>
 </os-head-bar>
 
-<mat-card class="os-card">
-    <os-list-view-table
-        class="block-list"
-        [repo]="repo"
-        [showFilterBar]="false"
-        [columns]="tableColumnDefinition"
-        [multiSelect]="isMultiSelect"
-        listStorageKey="motionBlock"
-        [(selectedRows)]="selectedRows"
-        (dataSourceChange)="onDataSourceChange($event)"
-    >
-        <!-- Title column -->
-        <div *pblNgridCellDef="'title'; value as title; row as motionBlock; rowContext as rowContext" class="cell-slot fill">
-            <a
-                class="detail-link"
-                (click)="saveScrollIndex('motionBlock', rowContext.identity)"
-                [routerLink]="motionBlock.id"
-                *ngIf="!isMultiSelect"
-            ></a>
-            <div>
-                <mat-icon matTooltip="Internal" *ngIf="motionBlock.internal">lock</mat-icon>
-                {{ title }}
-            </div>
+<os-list-view-table
+    class="block-list"
+    [repo]="repo"
+    [showFilterBar]="true"
+    [columns]="tableColumnDefinition"
+    [sortService]="sortService"
+    [multiSelect]="isMultiSelect"
+    listStorageKey="motionBlock"
+    [(selectedRows)]="selectedRows"
+    [filterProps]="filterProps"
+    (dataSourceChange)="onDataSourceChange($event)"
+>
+    <!-- Title column -->
+    <div *pblNgridCellDef="'title'; value as title; row as block; rowContext as rowContext" class="cell-slot fill">
+        <a
+            class="detail-link"
+            (click)="saveScrollIndex('motionBlock', rowContext.identity)"
+            [routerLink]="block.id"
+            *ngIf="!isMultiSelect"
+        ></a>
+        <div>
+            <mat-icon matTooltip="Internal" *ngIf="block.internal">lock</mat-icon>
+            {{ title }}
         </div>
+    </div>
 
-        <!-- Amount -->
-        <div *pblNgridCellDef="'amount'; row as motionBlock" class="cell-slot fill">
-            <span class="os-amount-chip">{{ motionBlock.motions.length }}</span>
-        </div>
-    </os-list-view-table>
-</mat-card>
+    <!-- Amount -->
+    <div *pblNgridCellDef="'amount'; row as block" class="cell-slot fill">
+        <span class="os-amount-chip" matTooltip="{{ 'Motions' | translate }}">{{ block.motions.length }}</span>
+    </div>
+
+    <!-- Speaker column-->
+    <div *pblNgridCellDef="'speaker'; row as block; rowContext as rowContext" class="fill">
+        <os-speaker-button
+            [object]="block"
+            [disabled]="isMultiSelect"
+            (click)="saveScrollIndex('motionBlock', rowContext.identity)"
+        ></os-speaker-button>
+    </div>
+</os-list-view-table>
 
 <!-- Template for new motion block dialog -->
 <ng-template #newMotionBlockDialog>

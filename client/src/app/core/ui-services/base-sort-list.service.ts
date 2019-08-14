@@ -187,7 +187,7 @@ export abstract class BaseSortListService<V extends BaseViewModel> {
         if (this.sortProperty !== option.property) {
             return '';
         }
-        return this.ascending ? 'arrow_downward' : 'arrow_upward';
+        return this.ascending ? 'arrow_upward' : 'arrow_downward';
     }
 
     /**
