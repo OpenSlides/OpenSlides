@@ -27,7 +27,7 @@ import { ViewMotion } from '../models/view-motion';
     providedIn: 'root'
 })
 export class MotionMultiselectService {
-    private messageForSpinner = 'Motions are in process. Please wait...';
+    private messageForSpinner = this.translate.instant('Motions are in process. Please wait...');
 
     /**
      * Does nothing.

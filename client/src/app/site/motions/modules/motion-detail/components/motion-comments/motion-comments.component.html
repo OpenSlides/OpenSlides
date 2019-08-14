@@ -17,7 +17,6 @@
             </ng-container>
             <form [formGroup]="commentForms[section.id]" *ngIf="isCommentEdited(section)">
                 <!-- The HTML Editor -->
-                <h4 translate>Comment</h4>
                 <editor formControlName="comment" [init]="tinyMceSettings"></editor>
             </form>
         </ng-container>

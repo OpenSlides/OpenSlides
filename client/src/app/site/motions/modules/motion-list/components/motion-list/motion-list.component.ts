@@ -311,7 +311,7 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
         }
 
         this.addToTileInfo('Favorites', 'star', true, favoriteMotions);
-        this.addToTileInfo('Personal Note', 'hasNote', true, motionsWithNotes);
+        this.addToTileInfo('Personal notes', 'hasNotes', true, motionsWithNotes);
         this.addToTileInfo('No category', 'category', null, motionsWithoutCategory);
 
         this.createCategoryTiles(Array.from(localCategories));
