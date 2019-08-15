@@ -13,70 +13,79 @@
             <mat-icon>more_vert</mat-icon>
         </button>
     </div>
+
+    <!-- Extra Controls -->
+    <div class="extra-controls-slot" *ngIf="!vp.isMobile">
+        <button
+            *osPerms="['motions.can_manage', 'motions.can_manage_metadata']"
+            mat-button
+            (click)="onFollowRecButton()"
+            [disabled]="isFollowingProhibited()"
+        >
+            <os-icon-container icon="done_all">
+                <span translate>Follow recommendations for all motions</span>
+            </os-icon-container>
+        </button>
+    </div>
 </os-head-bar>
 
-<mat-card>
-    <button
-        *osPerms="['motions.can_manage', 'motions.can_manage_metadata']"
-        mat-raised-button
-        color="primary"
-        (click)="onFollowRecButton()"
-        [disabled]="isFollowingProhibited()"
-    >
-        <mat-icon>done_all</mat-icon>&nbsp;
-        <span translate>Follow recommendations for all motions</span>
-    </button>
+<os-list-view-table
+    [repo]="motionRepo"
+    [filterService]="filterService"
+    [columns]="tableColumnDefinition"
+    [filterProps]="filterProps"
+    (dataSourceChange)="onDataSourceChange($event)"
+>
+    <!-- Title column -->
+    <div *pblNgridCellDef="'title'; row as motion; rowContext as rowContext" class="cell-slot fill motion-block-title">
+        <a class="detail-link" [routerLink]="motion.getDetailStateURL()" *ngIf="!isMultiSelect"></a>
+        <span>{{ motion.getTitle() }}</span>
+    </div>
 
-    <pbl-ngrid
-        class="block-detail-table"
-        cellTooltip
-        showHeader="true"
-        vScrollFixed="80"
-        [dataSource]="dataSource"
-        [columns]="columnSet"
-    >
-        <!-- Title column -->
-        <div
-            *pblNgridCellDef="'title'; row as motion; rowContext as rowContext"
-            class="cell-slot fill motion-block-title"
-        >
-            <a class="detail-link" [routerLink]="motion.getDetailStateURL()" *ngIf="!isMultiSelect"></a>
-            <span>{{ motion.getTitle() }}</span>
-        </div>
-
-        <!-- State column -->
-        <div *pblNgridCellDef="'state'; row as motion" class="cell-slot fill">
-            <div class="chip-container">
-                <mat-basic-chip disableRipple [ngClass]="motion.stateCssColor">
-                    {{ getStateLabel(motion) }}
-                </mat-basic-chip>
-            </div>
-        </div>
-
-        <!-- Recommendation column -->
-        <div *pblNgridCellDef="'recommendation'; row as motion" class="cell-slot fill">
-            <mat-basic-chip *ngIf="!!motion.recommendation" disableRipple class="bluegrey">
-                {{ getRecommendationLabel(motion) }}
+    <!-- State column -->
+    <div *pblNgridCellDef="'state'; row as motion" class="cell-slot fill">
+        <div class="chip-container">
+            <mat-basic-chip disableRipple [ngClass]="motion.stateCssColor">
+                {{ getStateLabel(motion) }}
             </mat-basic-chip>
         </div>
+    </div>
 
-        <!-- Remove from block column -->
-        <div *pblNgridCellDef="'remove'; row as motion" class="cell-slot fill">
-            <button
-                type="button"
-                mat-icon-button
-                color="warn"
-                matTooltip="{{ 'Remove from motion block' | translate }}"
-                (click)="onRemoveMotionButton(motion)"
-            >
-                <mat-icon>close</mat-icon>
-            </button>
-        </div>
-    </pbl-ngrid>
-</mat-card>
+    <!-- Recommendation column -->
+    <div *pblNgridCellDef="'recommendation'; row as motion" class="cell-slot fill">
+        <mat-basic-chip *ngIf="!!motion.recommendation" disableRipple class="bluegrey">
+            {{ getRecommendationLabel(motion) }}
+        </mat-basic-chip>
+    </div>
+
+    <!-- Remove from block column -->
+    <div *pblNgridCellDef="'remove'; row as motion" class="cell-slot fill">
+        <button
+            type="button"
+            mat-icon-button
+            color="warn"
+            matTooltip="{{ 'Remove from motion block' | translate }}"
+            (click)="onRemoveMotionButton(motion)"
+        >
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+</os-list-view-table>
 
 <!-- The menu content -->
 <mat-menu #motionBlockMenu="matMenu">
+    <div *ngIf="vp.isMobile">
+        <button
+            *osPerms="['motions.can_manage', 'motions.can_manage_metadata']"
+            mat-menu-item
+            (click)="onFollowRecButton()"
+            [disabled]="isFollowingProhibited()"
+        >
+            <mat-icon>done_all</mat-icon>
+            <span translate>Follow recommendations for all motions</span>
+        </button>
+    </div>
+
     <os-speaker-button [menuItem]="true" [object]="block"></os-speaker-button>
 
     <os-projector-button *ngIf="block" [object]="block" [menuItem]="true"></os-projector-button>
