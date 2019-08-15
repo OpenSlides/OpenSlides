@@ -13,7 +13,7 @@ import { LinenumberingService } from 'app/core/ui-services/linenumbering.service
 import { CalculablePollKey } from 'app/core/ui-services/poll.service';
 import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/motions/view-unified-change';
 import { getRecommendationTypeName } from 'app/shared/utils/recommendation-type-names';
-import { ExportFormData } from '../modules/motion-list/components/motion-export-dialog/motion-export-dialog.component';
+import { MotionExportInfo } from './motion-export.service';
 import { MotionPollService } from './motion-poll.service';
 import { ChangeRecoMode, LineNumberingMode, ViewMotion } from '../models/view-motion';
 import { ViewMotionAmendedParagraph } from '../models/view-motion-amended-paragraph';
@@ -92,7 +92,7 @@ export class MotionPdfService {
      * @param commentsToExport comments to chose for export. If 'allcomments' is set in infoToExport, this selection will be ignored and all comments exported
      * @returns doc def for the motion
      */
-    public motionToDocDef(motion: ViewMotion, exportInfo?: ExportFormData): object {
+    public motionToDocDef(motion: ViewMotion, exportInfo?: MotionExportInfo): object {
         let lnMode = exportInfo && exportInfo.lnMode ? exportInfo.lnMode : null;
         let crMode = exportInfo && exportInfo.crMode ? exportInfo.crMode : null;
         const infoToExport = exportInfo ? exportInfo.metaInfo : null;

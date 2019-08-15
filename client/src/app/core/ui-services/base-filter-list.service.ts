@@ -147,16 +147,20 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
     }
 
     /**
+     * The key to access stored valued
+     */
+    private storageKey: string;
+
+    /**
      * Constructor.
      *
      * @param name the name of the filter service
      * @param store storage service, to read saved filter variables
      */
-    public constructor(
-        protected name: string,
-        private store: StorageService,
-        private OSStatus: OpenSlidesStatusService
-    ) {}
+    public constructor(private store: StorageService, private OSStatus: OpenSlidesStatusService) {
+        this.storageKey = this.constructor.name;
+        console.log('storage-key: ', this.storageKey);
+    }
 
     /**
      * Initializes the filterService.
@@ -166,7 +170,7 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
     public async initFilters(inputData: Observable<V[]>): Promise<void> {
         let storedFilter: OsFilter[] = null;
         if (!this.OSStatus.isInHistoryMode) {
-            storedFilter = await this.store.get<OsFilter[]>('filter_' + this.name);
+            storedFilter = await this.store.get<OsFilter[]>('filter_' + this.storageKey);
         }
 
         if (storedFilter && this.isOsFilter(storedFilter)) {
@@ -237,7 +241,7 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
 
             let storedFilter = null;
             if (!this.OSStatus.isInHistoryMode) {
-                storedFilter = await this.store.get<OsFilter[]>('filter_' + this.name);
+                storedFilter = await this.store.get<OsFilter[]>('filter_' + this.storageKey);
             }
 
             if (!!storedFilter) {
@@ -276,42 +280,42 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
      * @param repo repository to create dynamic filters from
      * @param filter the OSFilter for the filter property
      * @param noneOptionLabel The label of the non option, if set
-     * @param exexcludeIds Set if certain ID's should be excluded from filtering
+     * @param filterFn custom filter function if required
      */
     protected updateFilterForRepo(
         repo: BaseRepository<BaseViewModel, BaseModel, TitleInformation>,
         filter: OsFilter,
         noneOptionLabel?: string,
-        excludeIds?: number[]
+        filterFn?: (filter: BaseViewModel<any>) => boolean
     ): void {
         repo.getViewModelListObservable().subscribe(viewModel => {
             if (viewModel && viewModel.length) {
                 let filterProperties: (OsFilterOption | string)[];
 
-                filterProperties = viewModel
-                    .filter(model => (excludeIds && excludeIds.length ? !excludeIds.includes(model.id) : true))
-                    .map((model: HierarchyModel) => {
-                        return {
-                            condition: model.id,
-                            label: model.getTitle(),
-                            isChild: !!model.parent,
-                            children:
-                                model.children && model.children.length
-                                    ? model.children.map(child => {
-                                          return {
-                                              label: child.getTitle(),
-                                              condition: child.id
-                                          };
-                                      })
-                                    : undefined
-                        };
-                    });
-
-                filterProperties.push('-');
-                filterProperties.push({
-                    condition: null,
-                    label: noneOptionLabel
+                filterProperties = viewModel.filter(filterFn ? filterFn : () => true).map((model: HierarchyModel) => {
+                    return {
+                        condition: model.id,
+                        label: model.getTitle(),
+                        isChild: !!model.parent,
+                        children:
+                            model.children && model.children.length
+                                ? model.children.map(child => {
+                                      return {
+                                          label: child.getTitle(),
+                                          condition: child.id
+                                      };
+                                  })
+                                : undefined
+                    };
                 });
+
+                if (!!noneOptionLabel) {
+                    filterProperties.push('-');
+                    filterProperties.push({
+                        condition: null,
+                        label: noneOptionLabel
+                    });
+                }
 
                 filter.options = filterProperties;
                 this.setFilterDefinitions();
@@ -325,7 +329,7 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
     public storeActiveFilters(): void {
         this.updateFilteredData();
         if (!this.OSStatus.isInHistoryMode) {
-            this.store.set('filter_' + this.name, this.filterDefinitions);
+            this.store.set('filter_' + this.storageKey, this.filterDefinitions);
         }
     }
 

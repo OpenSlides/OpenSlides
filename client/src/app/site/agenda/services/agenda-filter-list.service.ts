@@ -22,7 +22,7 @@ export class AgendaFilterListService extends BaseFilterListService<ViewItem> {
      * @param translate Translation service
      */
     public constructor(store: StorageService, OSStatus: OpenSlidesStatusService, private translate: TranslateService) {
-        super('Agenda', store, OSStatus);
+        super(store, OSStatus);
     }
 
     /**

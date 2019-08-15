@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { saveAs } from 'file-saver';
 
 import { ProgressSnackBarComponent } from 'app/shared/components/progress-snack-bar/progress-snack-bar.component';
-import { ExportFormData } from 'app/site/motions/modules/motion-list/components/motion-export-dialog/motion-export-dialog.component';
+import { MotionExportInfo } from 'app/site/motions/services/motion-export.service';
 import { ConfigService } from '../ui-services/config.service';
 import { HttpService } from '../core-services/http.service';
 import { ProgressService } from '../ui-services/progress.service';
@@ -163,7 +163,7 @@ export class PdfDocumentService {
     private async getStandardPaper(
         documentContent: object,
         metadata?: object,
-        exportInfo?: ExportFormData,
+        exportInfo?: MotionExportInfo,
         imageUrls?: string[],
         customMargins?: [number, number, number, number],
         landscape?: boolean
@@ -308,7 +308,7 @@ export class PdfDocumentService {
      * @param lrMargin optionally overriding the margins
      * @returns the footer doc definition
      */
-    private getFooter(lrMargin?: [number, number], exportInfo?: ExportFormData): object {
+    private getFooter(lrMargin?: [number, number], exportInfo?: MotionExportInfo): object {
         const columns = [];
         const showPageNr = exportInfo && exportInfo.pdfOptions ? exportInfo.pdfOptions.includes('page') : true;
         const showDate = exportInfo && exportInfo.pdfOptions ? exportInfo.pdfOptions.includes('date') : false;
@@ -399,7 +399,7 @@ export class PdfDocumentService {
      * @param filename the name of the file to use
      * @param metadata
      */
-    public download(docDefinition: object, filename: string, metadata?: object, exportInfo?: ExportFormData): void {
+    public download(docDefinition: object, filename: string, metadata?: object, exportInfo?: MotionExportInfo): void {
         this.getStandardPaper(docDefinition, metadata, exportInfo).then(doc => {
             this.createPdf(doc, filename);
         });

@@ -452,9 +452,12 @@
         <!-- Ammendments -->
         <div *ngIf="!editMotion && amendments && amendments.length > 0">
             <h4 translate>Amendments</h4>
-            <div *ngFor="let amendment of amendments">
-                <a [routerLink]="amendment.getDetailStateURL()">{{ amendment.identifierOrTitle }}</a>
-            </div>
+            <a *ngIf="amendments.length === 1" [routerLink]="['/motions/amendments', motion.id]">
+                {{ amendments.length }} <span translate>Amendment</span>
+            </a>
+            <a *ngIf="amendments.length > 1" [routerLink]="['/motions/amendments', motion.id]">
+                {{ amendments.length }} <span translate>Amendments</span></a
+            >
         </div>
 
         <!-- motion polls -->

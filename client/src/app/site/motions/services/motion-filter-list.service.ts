@@ -134,7 +134,7 @@ export class MotionFilterListService extends BaseFilterListService<ViewMotion> {
         private operator: OperatorService,
         private config: ConfigService
     ) {
-        super('Motion', store, OSStatus);
+        super(store, OSStatus);
         this.getWorkflowConfig();
 
         this.updateFilterForRepo(categoryRepo, this.categoryFilterOptions, this.translate.instant('No category set'));

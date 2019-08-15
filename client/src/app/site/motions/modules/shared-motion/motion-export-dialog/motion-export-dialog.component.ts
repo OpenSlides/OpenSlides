@@ -11,29 +11,7 @@ import { ConfigService } from 'app/core/ui-services/config.service';
 import { ChangeRecoMode, LineNumberingMode } from 'app/site/motions/models/view-motion';
 import { ViewMotionCommentSection } from 'app/site/motions/models/view-motion-comment-section';
 import { motionImportExportHeaderOrder, noMetaData } from 'app/site/motions/motion-import-export-order';
-import { InfoToExport } from 'app/site/motions/services/motion-pdf.service';
-
-/**
- * Determine the possible file format
- */
-export enum FileFormat {
-    PDF = 1,
-    CSV,
-    XLSX
-}
-
-/**
- * Shape the structure of the dialog data
- */
-export interface ExportFormData {
-    format?: FileFormat;
-    lnMode?: LineNumberingMode;
-    crMode?: ChangeRecoMode;
-    content?: string[];
-    metaInfo?: InfoToExport[];
-    pdfOptions?: string[];
-    comments?: number[];
-}
+import { ExportFileFormat, MotionExportInfo } from 'app/site/motions/services/motion-export.service';
 
 /**
  * Dialog component to determine exporting.
@@ -57,7 +35,7 @@ export class MotionExportDialogComponent implements OnInit {
     /**
      * to use the format in the template
      */
-    public fileFormat = FileFormat;
+    public fileFormat = ExportFileFormat;
 
     /**
      * The form that contains the export information.
@@ -67,8 +45,8 @@ export class MotionExportDialogComponent implements OnInit {
     /**
      * The default export values in contrast to the restored values
      */
-    private defaults: ExportFormData = {
-        format: FileFormat.PDF,
+    private defaults: MotionExportInfo = {
+        format: ExportFileFormat.PDF,
         content: ['text', 'reason'],
         pdfOptions: ['toc', 'page'],
         metaInfo: ['submitters', 'state', 'recommendation', 'category', 'origin', 'tags', 'motion_block', 'polls', 'id']
@@ -130,26 +108,26 @@ export class MotionExportDialogComponent implements OnInit {
      * Observes the form for changes to react dynamically
      */
     public ngOnInit(): void {
-        this.exportForm.valueChanges.pipe(auditTime(500)).subscribe((value: ExportFormData) => {
+        this.exportForm.valueChanges.pipe(auditTime(500)).subscribe((value: MotionExportInfo) => {
             this.store.set('motion_export_selection', value);
         });
 
-        this.exportForm.get('format').valueChanges.subscribe((value: FileFormat) => this.onFormatChange(value));
+        this.exportForm.get('format').valueChanges.subscribe((value: ExportFileFormat) => this.onFormatChange(value));
     }
 
     /**
      * React to changes on the file format
      * @param format
      */
-    private onFormatChange(format: FileFormat): void {
+    private onFormatChange(format: ExportFileFormat): void {
         // XLSX cannot have "content"
-        if (format === FileFormat.XLSX) {
+        if (format === ExportFileFormat.XLSX) {
             this.disableControl('content');
         } else {
             this.enableControl('content');
         }
 
-        if (format === FileFormat.CSV || format === FileFormat.XLSX) {
+        if (format === ExportFileFormat.CSV || format === ExportFileFormat.XLSX) {
             this.disableControl('lnMode');
             this.disableControl('crMode');
             this.disableControl('pdfOptions');
@@ -165,7 +143,7 @@ export class MotionExportDialogComponent implements OnInit {
             this.votingResultButton.disabled = true;
         }
 
-        if (format === FileFormat.PDF) {
+        if (format === ExportFileFormat.PDF) {
             this.enableControl('lnMode');
             this.enableControl('crMode');
             this.enableControl('pdfOptions');
@@ -222,7 +200,7 @@ export class MotionExportDialogComponent implements OnInit {
         });
 
         // restore selection or set default
-        this.store.get<ExportFormData>('motion_export_selection').then(restored => {
+        this.store.get<MotionExportInfo>('motion_export_selection').then(restored => {
             if (!!restored) {
                 this.exportForm.patchValue(restored);
             } else {

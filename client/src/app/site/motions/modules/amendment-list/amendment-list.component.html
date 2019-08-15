@@ -1,0 +1,107 @@
+<os-head-bar [nav]="false" [multiSelectMode]="isMultiSelect" goBack="true">
+    <!-- Title -->
+    <div class="title-slot"><h2 translate>Amendments</h2></div>
+
+    <!-- Menu -->
+    <div class="menu-slot">
+        <button type="button" mat-icon-button [matMenuTriggerFor]="amendmentListMenu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+    </div>
+
+    <!-- Multiselect info -->
+    <div class="central-info-slot">
+        <button mat-icon-button (click)="toggleMultiSelect()"><mat-icon>arrow_back</mat-icon></button>
+        <span>{{ selectedRows.length }}&nbsp;</span><span translate>selected</span>
+    </div>
+</os-head-bar>
+
+<os-list-view-table
+    [repo]="motionRepo"
+    [sortService]="motionSortService"
+    [filterService]="amendmentFilterService"
+    [columns]="tableColumnDefinition"
+    [filterProps]="filterProps"
+    [multiSelect]="isMultiSelect"
+    listStorageKey="amendments"
+    [(selectedRows)]="selectedRows"
+    (dataSourceChange)="onDataSourceChange($event)"
+>
+    <!-- Meta -->
+    <div *pblNgridCellDef="'meta'; row as motion" class="cell-slot fill">
+        <a class="detail-link" [routerLink]="motion.getDetailStateURL()"></a>
+        <div class="column-identifier innerTable">
+            <!-- Identifier and line -->
+            <div class="title-line">
+                {{ motion.identifier }}
+                (<span translate>Line</span>&nbsp;<span>{{ getChangeLines(motion) }}</span
+                >)
+            </div>
+
+            <!-- Submitter -->
+            <div class="submitters-line">
+                <span *ngIf="motion.submitters.length">
+                    <span translate>by</span>
+                    {{ motion.submitters }}
+                </span>
+
+                <span *ngIf="motion.submitters.length">
+                    &middot;
+                </span>
+                <span translate>Sequential number</span>
+                {{ motion.id }}
+            </div>
+
+            <!-- State -->
+            <div>
+                <mat-basic-chip *ngIf="motion.state" [ngClass]="motion.stateCssColor" [disabled]="true">
+                    {{ motionRepo.getExtendedStateLabel(motion) }}
+                </mat-basic-chip>
+            </div>
+
+            <!--  Reco -->
+            <div class="spacer-top-3" *ngIf="motion.recommendation && motion.state.next_states_id.length > 0">
+                <mat-basic-chip class="bluegrey" [disabled]="true">
+                    {{ this.motionRepo.getExtendedRecommendationLabel(motion) }}
+                </mat-basic-chip>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary -->
+    <div *pblNgridCellDef="'summary'; row as motion" class="cell-slot fill">
+        <div class="innerTable">
+            <div class="motion-text" [innerHtml]="sanitizeText(getAmendmentSummary(motion))"></div>
+        </div>
+    </div>
+
+    <!-- List of Speakers -->
+    <div *pblNgridCellDef="'speakers'; row as motion" class="cell-slot fill">
+        <os-speaker-button [object]="motion"></os-speaker-button>
+    </div>
+</os-list-view-table>
+
+<mat-menu #amendmentListMenu="matMenu">
+    <div *ngIf="!isMultiSelect">
+        <div *osPerms="'motions.can_manage'">
+            <button mat-menu-item (click)="toggleMultiSelect()">
+                <mat-icon>library_add</mat-icon>
+                <span translate>Multiselect</span>
+            </button>
+        </div>
+        <button mat-menu-item (click)="openExportDialog()">
+            <mat-icon>archive</mat-icon>
+            <span translate>Export</span>
+        </button>
+    </div>
+    <div *ngIf="isMultiSelect">
+        <button mat-menu-item (click)="selectAll()">
+            <mat-icon>done_all</mat-icon>
+            <span translate>Select all</span>
+        </button>
+        <button mat-menu-item [disabled]="!selectedRows.length" (click)="deselectAll()">
+            <mat-icon>clear</mat-icon>
+            <span translate>Deselect all</span>
+        </button>
+    </div>
+</mat-menu>

@@ -8,7 +8,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition } from '@pebula/ngrid';
 
 import { StorageService } from 'app/core/core-services/storage.service';
-import { PdfError } from 'app/core/pdf-services/pdf-document.service';
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
@@ -24,18 +23,12 @@ import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
 import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
 import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
-import { MotionCsvExportService } from 'app/site/motions/services/motion-csv-export.service';
+import { MotionExportInfo, MotionExportService } from 'app/site/motions/services/motion-export.service';
 import { MotionFilterListService } from 'app/site/motions/services/motion-filter-list.service';
 import { MotionMultiselectService } from 'app/site/motions/services/motion-multiselect.service';
-import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-export.service';
 import { MotionSortListService } from 'app/site/motions/services/motion-sort-list.service';
-import { MotionXlsxExportService } from 'app/site/motions/services/motion-xlsx-export.service';
 import { ViewTag } from 'app/site/tags/models/view-tag';
-import {
-    ExportFormData,
-    FileFormat,
-    MotionExportDialogComponent
-} from '../motion-export-dialog/motion-export-dialog.component';
+import { MotionExportDialogComponent } from '../../../shared-motion/motion-export-dialog/motion-export-dialog.component';
 
 interface TileCategoryInformation {
     filter: string;
@@ -208,12 +201,10 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
         private categoryRepo: CategoryRepositoryService,
         private workflowRepo: WorkflowRepositoryService,
         public motionRepo: MotionRepositoryService,
-        private motionCsvExport: MotionCsvExportService,
-        private pdfExport: MotionPdfExportService,
         private dialog: MatDialog,
         public multiselectService: MotionMultiselectService,
         public perms: LocalPermissionsService,
-        private motionXlsxExport: MotionXlsxExportService
+        private motionExport: MotionExportService
     ) {
         super(titleService, translate, matSnackBar, storage);
         this.canMultiSelect = true;
@@ -358,37 +349,14 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
             data: this.dataSource
         });
 
-        exportDialogRef.afterClosed().subscribe((exportInfo: ExportFormData) => {
-            if (exportInfo && exportInfo.format) {
-                const data = this.isMultiSelect ? this.selectedRows : this.dataSource.filteredData;
-                if (exportInfo.format === FileFormat.PDF) {
-                    try {
-                        this.pdfExport.exportMotionCatalog(data, exportInfo);
-                    } catch (err) {
-                        if (err instanceof PdfError) {
-                            this.raiseError(err.message);
-                        } else {
-                            throw err;
-                        }
-                    }
-                } else if (exportInfo.format === FileFormat.CSV) {
-                    const content = [];
-                    const comments = [];
-                    if (exportInfo.content) {
-                        content.push(...exportInfo.content);
-                    }
-                    if (exportInfo.metaInfo) {
-                        content.push(...exportInfo.metaInfo);
-                    }
-                    if (exportInfo.comments) {
-                        comments.push(...exportInfo.comments);
-                    }
-                    this.motionCsvExport.exportMotionList(data, content, comments, exportInfo.crMode);
-                } else if (exportInfo.format === FileFormat.XLSX) {
-                    this.motionXlsxExport.exportMotionList(data, exportInfo.metaInfo, exportInfo.comments);
-                }
-            }
-        });
+        exportDialogRef
+            .afterClosed()
+            .subscribe((exportInfo: MotionExportInfo) =>
+                this.motionExport.evaluateExportRequest(
+                    exportInfo,
+                    this.isMultiSelect ? this.selectedRows : this.dataSource.filteredData
+                )
+            );
     }
 
     /**
@@ -402,26 +370,6 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
         } catch (e) {
             this.raiseError(e);
         }
-    }
-
-    /**
-     * Fetch a motion's current recommendation label
-     *
-     * @param motion
-     * @returns the current recommendation label (with extension)
-     */
-    public getRecommendationLabel(motion: ViewMotion): string {
-        return this.motionRepo.getExtendedRecommendationLabel(motion);
-    }
-
-    /**
-     * Fetch a motion's current state label
-     *
-     * @param motion
-     * @returns the current state label (with extension)
-     */
-    public getStateLabel(motion: ViewMotion): string {
-        return this.motionRepo.getExtendedStateLabel(motion);
     }
 
     /**
@@ -493,6 +441,13 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
                 }
             });
         }
+    }
+
+    /**
+     * @returns if there are amendments or not
+     */
+    public hasAmendments(): boolean {
+        return !!this.motionRepo.getAllAmendmentsInstantly().length;
     }
 
     /**

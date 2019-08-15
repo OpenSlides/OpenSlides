@@ -498,6 +498,13 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
     }
 
     /**
+     * @returns all amendments
+     */
+    public getAllAmendmentsInstantly(): ViewMotion[] {
+        return this.getViewModelList().filter(motion => !!motion.parent_id);
+    }
+
+    /**
      * Returns the amendments to a given motion
      *
      * @param motionId the motion ID to get the amendments to

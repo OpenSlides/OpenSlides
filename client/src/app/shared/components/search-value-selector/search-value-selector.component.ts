@@ -102,7 +102,7 @@ export class SearchValueSelectorComponent implements OnDestroy {
      * Placeholder of the List
      */
     @Input()
-    public listname: String;
+    public listname: string;
 
     /**
      * Name of the Form

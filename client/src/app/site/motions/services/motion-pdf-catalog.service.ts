@@ -7,7 +7,7 @@ import { BorderType, PdfDocumentService, PdfError, StyleType } from 'app/core/pd
 import { CategoryRepositoryService } from 'app/core/repositories/motions/category-repository.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { ExportFormData } from '../modules/motion-list/components/motion-export-dialog/motion-export-dialog.component';
+import { MotionExportInfo } from './motion-export.service';
 import { MotionPdfService } from './motion-pdf.service';
 import { ViewCategory } from '../models/view-category';
 import { ViewMotion } from '../models/view-motion';
@@ -56,7 +56,7 @@ export class MotionPdfCatalogService {
      * @param commentsToExport
      * @returns pdfmake doc definition as object
      */
-    public motionListToDocDef(motions: ViewMotion[], exportInfo: ExportFormData): object {
+    public motionListToDocDef(motions: ViewMotion[], exportInfo: MotionExportInfo): object {
         let doc = [];
         const motionDocList = [];
 
