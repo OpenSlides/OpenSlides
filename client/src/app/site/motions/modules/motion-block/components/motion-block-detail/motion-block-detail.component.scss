@@ -1,30 +1,5 @@
 @import '~assets/styles/tables.scss';
 
-.block-detail-table {
-    margin-top: 10px;
-    height: calc(100vh - 250px);
-
-    ::ng-deep .pbl-ngrid-row {
-        height: 80px !important;
-    }
-
-    .pbl-ngrid-column-title {
-        height: 100%;
-    }
-}
-
-@media only screen and (max-width: 960px) {
-    .block-detail-table {
-        height: calc(100vh - 186px);
-    }
-}
-
-.motion-block-title {
-    &.pbl-ngrid-cell {
-        height: 100%;
-    }
-}
-
 .edit-form {
     overflow: hidden;
 }

@@ -6,17 +6,20 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
-import { columnFactory, createDS, PblColumnDefinition, PblDataSource } from '@pebula/ngrid';
+import { PblColumnDefinition } from '@pebula/ngrid';
 
+import { StorageService } from 'app/core/core-services/storage.service';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
+import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
-import { BaseViewComponent } from 'app/site/base/base-view';
+import { BaseListViewComponent } from 'app/site/base/base-list-view';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
+import { BlockDetailFilterListService } from 'app/site/motions/services/block-detail-filter-list.service';
 
 /**
  * Detail component to display one motion block
@@ -26,52 +29,48 @@ import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
     templateUrl: './motion-block-detail.component.html',
     styleUrls: ['./motion-block-detail.component.scss']
 })
-export class MotionBlockDetailComponent extends BaseViewComponent implements OnInit {
+export class MotionBlockDetailComponent extends BaseListViewComponent<ViewMotion> implements OnInit {
+    /**
+     * Holds the block ID
+     */
+    private blockId: number;
+
     /**
      * Determines the block id from the given URL
      */
     public block: ViewMotionBlock;
 
     /**
-     * Data source for the motions in the block
+     * To quick-filter the list
      */
-    public dataSource: PblDataSource<ViewMotion>;
+    public filterProps = ['submitters', 'title', 'identifier'];
 
     /**
+     * Columns to display in table when desktop view is available
      * Define the columns to show
      */
-    public tableColumnDefinition: PblColumnDefinition[] = [];
-
-    /**
-     * Define the columns to show
-     * TODO: The translation will not update when the
-     */
-    public columnSet = columnFactory()
-        .table(
-            {
-                prop: 'title',
-                label: this.translate.instant('Title'),
-                width: 'auto'
-            },
-            {
-                prop: 'state',
-                label: this.translate.instant('State'),
-                width: '30%',
-                minWidth: 60
-            },
-            {
-                prop: 'recommendation',
-                label: this.translate.instant('Recommendation'),
-                width: '30%',
-                minWidth: 60
-            },
-            {
-                prop: 'remove',
-                label: '',
-                width: '40px'
-            }
-        )
-        .build();
+    public tableColumnDefinition: PblColumnDefinition[] = [
+        {
+            prop: 'title',
+            width: 'auto'
+        },
+        {
+            prop: 'state',
+            width: '30%',
+            minWidth: 60
+        },
+        {
+            prop: 'recommendation',
+            label: this.translate.instant('Recommendation'),
+            width: '30%',
+            minWidth: 60
+        },
+        {
+            prop: 'remove',
+            label: '',
+            width: '40px'
+        }
+    ];
 
     /**
      * The form to edit blocks
@@ -105,13 +104,18 @@ export class MotionBlockDetailComponent extends BaseViewComponent implements OnI
         private route: ActivatedRoute,
         private router: Router,
         protected repo: MotionBlockRepositoryService,
-        protected motionRepo: MotionRepositoryService,
+        public motionRepo: MotionRepositoryService,
         private promptService: PromptService,
         private fb: FormBuilder,
         private dialog: MatDialog,
-        private itemRepo: ItemRepositoryService
+        private itemRepo: ItemRepositoryService,
+        storage: StorageService,
+        public filterService: BlockDetailFilterListService,
+        public vp: ViewportService
     ) {
-        super(titleService, translate, matSnackBar);
+        super(titleService, translate, matSnackBar, storage);
+        this.blockId = parseInt(this.route.snapshot.params.id, 10);
+        this.filterService.blockId = this.blockId;
     }
 
     /**
@@ -119,22 +123,12 @@ export class MotionBlockDetailComponent extends BaseViewComponent implements OnI
      * Sets the title, observes the block and the motions belonging in this block
      */
     public ngOnInit(): void {
-        super.setTitle('Motion block');
-
-        const blockId = parseInt(this.route.snapshot.params.id, 10);
-
         // pseudo filter
         this.subscriptions.push(
-            this.repo.getViewModelObservable(blockId).subscribe(newBlock => {
+            this.repo.getViewModelObservable(this.blockId).subscribe(newBlock => {
                 if (newBlock) {
-                    super.setTitle(newBlock.getTitle());
+                    super.setTitle(`${this.translate.instant('Motion block')} - ${newBlock.getTitle()}`);
                     this.block = newBlock;
-
-                    this.dataSource = createDS<ViewMotion>()
-                        .onTrigger(() => {
-                            return this.block.motions;
-                        })
-                        .create();
                 }
             })
         );
