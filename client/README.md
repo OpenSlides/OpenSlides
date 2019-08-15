@@ -75,8 +75,8 @@ OpenSlides uses the following software or parts of them:
 - [@ngx-pwa/local-storage@8.0.2](https://github.com/cyrilletuzi/angular-async-local-storage), License: MIT
 - [@ngx-translate/core@11.0.1](https://github.com/ngx-translate/core), License: MIT
 - [@ngx-translate/http-loader@4.0.0](https://github.com/ngx-translate/http-loader), License: MIT
-- [@pebula/ngrid-material@1.0.0-alpha.26](https://github.com/shlomiassaf/ngrid), License: MIT
-- [@pebula/ngrid@1.0.0-alpha.26](https://github.com/shlomiassaf/ngrid), License: MIT
+- [@pebula/ngrid-material@1.0.0-alpha.27](https://github.com/shlomiassaf/ngrid), License: MIT
+- [@pebula/ngrid@1.0.0-alpha.27](https://github.com/shlomiassaf/ngrid), License: MIT
 - [@pebula/utils@1.0.0-alpha.3](https://github.com/shlomiassaf/ngrid), License: MIT
 - [@tinymce/tinymce-angular@3.2.0](https://github.com/tinymce/tinymce-angular), License: Apache-2.0
 - [acorn@6.1.1](https://github.com/acornjs/acorn), License: MIT

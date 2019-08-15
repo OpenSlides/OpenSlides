@@ -146,7 +146,7 @@ matrix:
       install:
         - npm install
       script:
-        - npm run ng-high-memory -- build --prod --aot
+        - npm run build
 
     - language: node_js
       name: "Client: Production Build (ES2015)"
@@ -163,4 +163,4 @@ matrix:
       install:
         - npm install
       script:
-        - npm run ng-high-memory -- build --prod --aot
+        - npm run build
