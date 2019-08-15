@@ -40,7 +40,6 @@
         </ng-container>
         <form [formGroup]="personalNoteForm" *ngIf="isEditMode">
             <!-- The HTML Editor -->
-            <h4 translate>Personal note</h4>
             <editor formControlName="note" [init]="tinyMceSettings"></editor>
         </form>
     </ng-container>
