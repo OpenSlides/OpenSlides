@@ -30,7 +30,7 @@ const UserRelations: RelationDefinition[] = [
         type: 'M2M',
         ownIdKey: 'groups_id',
         ownKey: 'groups',
-        foreignModel: ViewGroup
+        foreignViewModel: ViewGroup
     }
 ];
 
@@ -147,8 +147,8 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
     /**
      * Adds teh short and full name to the view user.
      */
-    protected createViewModelWithTitles(model: User): ViewUser {
-        const viewModel = super.createViewModelWithTitles(model);
+    protected createViewModelWithTitles(model: User, initialLoading: boolean): ViewUser {
+        const viewModel = super.createViewModelWithTitles(model, initialLoading);
         viewModel.getFullName = () => this.getFullName(viewModel);
         viewModel.getShortName = () => this.getShortName(viewModel);
         return viewModel;

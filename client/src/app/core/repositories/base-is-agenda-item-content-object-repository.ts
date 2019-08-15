@@ -68,7 +68,7 @@ export abstract class BaseIsAgendaItemContentObjectRepository<
             type: 'M2O',
             ownIdKey: 'agenda_item_id',
             ownKey: 'item',
-            foreignModel: ViewItem
+            foreignViewModel: ViewItem
         });
         super.groupRelationsByCollections();
     }
@@ -93,8 +93,8 @@ export abstract class BaseIsAgendaItemContentObjectRepository<
     /**
      * Adds the agenda titles to the viewmodel.
      */
-    protected createViewModelWithTitles(model: M): V {
-        const viewModel = super.createViewModelWithTitles(model);
+    protected createViewModelWithTitles(model: M, initialLoading: boolean): V {
+        const viewModel = super.createViewModelWithTitles(model, initialLoading);
         viewModel.getAgendaListTitle = () => this.getAgendaListTitle(viewModel);
         viewModel.getAgendaSlideTitle = () => this.getAgendaSlideTitle(viewModel);
         return viewModel;

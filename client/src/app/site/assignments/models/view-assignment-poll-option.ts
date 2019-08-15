@@ -29,11 +29,8 @@ export class ViewAssignmentPollOption extends BaseViewModel<AssignmentPollOption
         return this.option.id;
     }
 
-    /**
-     * Note: "User" instead of "candidate" to be consistent.
-     */
     public get user_id(): number {
-        return this.option.candidate_id;
+        return this.option.user_id;
     }
 
     public get is_elected(): boolean {

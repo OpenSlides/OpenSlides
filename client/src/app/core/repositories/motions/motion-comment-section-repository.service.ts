@@ -23,13 +23,13 @@ const MotionCommentSectionRelations: RelationDefinition[] = [
         type: 'M2M',
         ownIdKey: 'read_groups_id',
         ownKey: 'read_groups',
-        foreignModel: ViewGroup
+        foreignViewModel: ViewGroup
     },
     {
         type: 'M2M',
         ownIdKey: 'write_groups_id',
         ownKey: 'write_groups',
-        foreignModel: ViewGroup
+        foreignViewModel: ViewGroup
     }
 ];
 

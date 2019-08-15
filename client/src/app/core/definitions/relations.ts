@@ -1,4 +1,4 @@
-import { BaseModel } from 'app/shared/models/base/base-model';
+import { BaseModel, ModelConstructor } from 'app/shared/models/base/base-model';
 import { BaseViewModel, ViewModelConstructor } from 'app/site/base/base-view-model';
 
 // All "standard" relations.
@@ -21,7 +21,7 @@ interface BaseRelationDefinition<VForeign extends BaseViewModel> {
     /**
      * The model on the other side of the relation.
      */
-    foreignModel: ViewModelConstructor<VForeign>;
+    foreignViewModel: ViewModelConstructor<VForeign>;
 }
 
 export interface BaseOrderedRelation<VForeign extends BaseViewModel> extends BaseRelationDefinition<VForeign> {
@@ -97,7 +97,7 @@ interface BaseReverseRelationDefinition<VForeign extends BaseViewModel> {
     /**
      * The model on the other side of the relation.
      */
-    foreignModel: ViewModelConstructor<VForeign>;
+    foreignViewModel: ViewModelConstructor<VForeign>;
 }
 
 interface ReverseM2MRelationDefinition<VForeign extends BaseViewModel>
@@ -130,7 +130,7 @@ export function isReverseRelationDefinition(obj: RelationDefinition): obj is Rev
  * Nested relations in the REST-API. For the most values see
  * `NormalRelationDefinition`.
  */
-interface NestedRelationDefinition<VForeign extends BaseViewModel> extends BaseOrderedRelation<VForeign> {
+export interface NestedRelationDefinition<VForeign extends BaseViewModel> extends BaseOrderedRelation<VForeign> {
     type: 'nested';
     ownKey: string;
 
@@ -138,6 +138,11 @@ interface NestedRelationDefinition<VForeign extends BaseViewModel> extends BaseO
      * The nested relations.
      */
     relationDefinition?: RelationDefinition[];
+
+    /**
+     * The matching model for the foreignViewModel.
+     */
+    foreignModel: ModelConstructor<BaseModel>;
 }
 
 export function isNestedRelationDefinition(obj: RelationDefinition): obj is NestedRelationDefinition<BaseViewModel> {
@@ -172,7 +177,7 @@ export function isGenericRelationDefinition(obj: RelationDefinition): obj is Gen
  */
 interface CustomRelationDefinition<VForeign extends BaseViewModel> {
     type: 'custom';
-    foreignModel: ViewModelConstructor<VForeign>;
+    foreignViewModel: ViewModelConstructor<VForeign>;
 
     /**
      * Called, when the view model is created from the model.

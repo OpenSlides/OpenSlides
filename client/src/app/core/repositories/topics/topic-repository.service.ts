@@ -18,7 +18,7 @@ const TopicRelations: RelationDefinition[] = [
         type: 'M2M',
         ownIdKey: 'attachments_id',
         ownKey: 'attachments',
-        foreignModel: ViewMediafile
+        foreignViewModel: ViewMediafile
     }
 ];
 

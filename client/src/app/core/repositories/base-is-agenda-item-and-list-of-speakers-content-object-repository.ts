@@ -42,13 +42,13 @@ export abstract class BaseIsAgendaItemAndListOfSpeakersContentObjectRepository<
             type: 'M2O',
             ownIdKey: 'agenda_item_id',
             ownKey: 'item',
-            foreignModel: ViewItem
+            foreignViewModel: ViewItem
         });
         this.relationDefinitions.push({
             type: 'M2O',
             ownIdKey: 'list_of_speakers_id',
             ownKey: 'list_of_speakers',
-            foreignModel: ViewListOfSpeakers
+            foreignViewModel: ViewListOfSpeakers
         });
         super.groupRelationsByCollections();
     }
@@ -72,8 +72,8 @@ export abstract class BaseIsAgendaItemAndListOfSpeakersContentObjectRepository<
         return this.getAgendaSlideTitle(titleInformation);
     };
 
-    protected createViewModelWithTitles(model: M): V {
-        const viewModel = super.createViewModelWithTitles(model);
+    protected createViewModelWithTitles(model: M, initialLoading: boolean): V {
+        const viewModel = super.createViewModelWithTitles(model, initialLoading);
         viewModel.getAgendaListTitle = () => this.getAgendaListTitle(viewModel);
         viewModel.getAgendaSlideTitle = () => this.getAgendaSlideTitle(viewModel);
         viewModel.getListOfSpeakersTitle = () => this.getListOfSpeakersTitle(viewModel);

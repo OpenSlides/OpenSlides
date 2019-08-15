@@ -9,6 +9,8 @@ import { ViewModelStoreService } from 'app/core/core-services/view-model-store.s
 import { RelationDefinition } from 'app/core/definitions/relations';
 import { Assignment } from 'app/shared/models/assignments/assignment';
 import { AssignmentPoll } from 'app/shared/models/assignments/assignment-poll';
+import { AssignmentPollOption } from 'app/shared/models/assignments/assignment-poll-option';
+import { AssignmentRelatedUser } from 'app/shared/models/assignments/assignment-related-user';
 import { AssignmentTitleInformation, ViewAssignment } from 'app/site/assignments/models/view-assignment';
 import { ViewAssignmentPoll } from 'app/site/assignments/models/view-assignment-poll';
 import { ViewAssignmentPollOption } from 'app/site/assignments/models/view-assignment-poll-option';
@@ -25,44 +27,47 @@ const AssignmentRelations: RelationDefinition[] = [
         type: 'M2M',
         ownIdKey: 'tags_id',
         ownKey: 'tags',
-        foreignModel: ViewTag
+        foreignViewModel: ViewTag
     },
     {
         type: 'M2M',
         ownIdKey: 'attachments_id',
         ownKey: 'attachments',
-        foreignModel: ViewMediafile
+        foreignViewModel: ViewMediafile
     },
     {
         type: 'nested',
         ownKey: 'assignment_related_users',
-        foreignModel: ViewAssignmentRelatedUser,
+        foreignViewModel: ViewAssignmentRelatedUser,
+        foreignModel: AssignmentRelatedUser,
         order: 'weight',
         relationDefinition: [
             {
                 type: 'M2O',
                 ownIdKey: 'user_id',
                 ownKey: 'user',
-                foreignModel: ViewUser
+                foreignViewModel: ViewUser
             }
         ]
     },
     {
         type: 'nested',
         ownKey: 'polls',
-        foreignModel: ViewAssignmentPoll,
+        foreignViewModel: ViewAssignmentPoll,
+        foreignModel: AssignmentPoll,
         relationDefinition: [
             {
                 type: 'nested',
                 ownKey: 'options',
-                foreignModel: ViewAssignmentPollOption,
+                foreignViewModel: ViewAssignmentPollOption,
+                foreignModel: AssignmentPollOption,
                 order: 'weight',
                 relationDefinition: [
                     {
                         type: 'M2O',
                         ownIdKey: 'user_id',
                         ownKey: 'user',
-                        foreignModel: ViewUser
+                        foreignViewModel: ViewUser
                     }
                 ]
             }

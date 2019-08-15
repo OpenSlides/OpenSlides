@@ -15,8 +15,12 @@ export interface AssignmentOptionVote {
 export class AssignmentPollOption extends BaseModel<AssignmentPollOption> {
     public static COLLECTIONSTRING = 'assignments/assignment-poll-option';
 
-    public id: number; // The AssignmentUser id of the candidate
-    public candidate_id: number; // the User id of the candidate
+    public id: number; // The AssignmentPollOption id
+    public candidate_id: number; // the user id of the candidate
+    public get user_id(): number {
+        // to be consistent with user...
+        return this.candidate_id;
+    }
     public is_elected: boolean;
     public votes: AssignmentOptionVote[];
     public poll_id: number;

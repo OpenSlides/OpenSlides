@@ -28,7 +28,7 @@ const ProjectorRelations: RelationDefinition[] = [
         type: 'M2O',
         ownIdKey: 'reference_projector_id',
         ownKey: 'referenceProjector',
-        foreignModel: ViewProjector
+        foreignViewModel: ViewProjector
     }
 ];
 

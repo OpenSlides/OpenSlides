@@ -40,9 +40,9 @@ export abstract class BaseHasContentObjectRepository<
     /**
      * @override
      */
-    public changedModels(ids: number[]): void {
+    public changedModels(ids: number[], initialLoading: boolean): void {
         ids.forEach(id => {
-            const v = this.createViewModelWithTitles(this.DS.get(this.collectionString, id));
+            const v = this.createViewModelWithTitles(this.DS.get(this.collectionString, id), initialLoading);
             this.viewModelStore[id] = v;
 
             const contentObject = v.contentObjectData;
