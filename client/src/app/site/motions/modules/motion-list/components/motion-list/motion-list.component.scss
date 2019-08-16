@@ -1,4 +1,5 @@
 @import '~assets/styles/tables.scss';
+@import '~app/site/motions/styles/motion-list-styles.scss';
 
 // Determine the distance between the top edge to the start of the table content
 $text-margin-top: 10px;
@@ -27,9 +28,6 @@ $text-margin-top: 10px;
     margin-top: $text-margin-top;
 
     .title-line {
-        font-weight: 500;
-        font-size: 16px;
-
         .attached-files {
             .mat-icon {
                 display: inline-flex;
@@ -44,10 +42,6 @@ $text-margin-top: 10px;
         .favorite-star {
             padding-right: 3px;
         }
-    }
-
-    .submitters-line {
-        font-size: 90%;
     }
 }
 

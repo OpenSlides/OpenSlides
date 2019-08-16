@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { PdfDocumentService } from 'app/core/pdf-services/pdf-document.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
-import { ExportFormData } from '../modules/motion-list/components/motion-export-dialog/motion-export-dialog.component';
+import { MotionExportInfo } from './motion-export.service';
 import { MotionPdfCatalogService } from './motion-pdf-catalog.service';
 import { MotionPdfService } from './motion-pdf.service';
 import { ViewMotion } from '../models/view-motion';
@@ -41,7 +41,7 @@ export class MotionPdfExportService {
      * @param lnMode the desired line numbering mode
      * @param crMode the desired change recomendation mode
      */
-    public exportSingleMotion(motion: ViewMotion, exportInfo?: ExportFormData): void {
+    public exportSingleMotion(motion: ViewMotion, exportInfo?: MotionExportInfo): void {
         const doc = this.motionPdfService.motionToDocDef(motion, exportInfo);
         const filename = `${this.translate.instant('Motion')} ${motion.identifierOrTitle}`;
         const metadata = {
@@ -60,7 +60,7 @@ export class MotionPdfExportService {
      * @param infoToExport Determine the meta info to export
      * @param commentsToExport Comments (by id) to export
      */
-    public exportMotionCatalog(motions: ViewMotion[], exportInfo: ExportFormData): void {
+    public exportMotionCatalog(motions: ViewMotion[], exportInfo: MotionExportInfo): void {
         const doc = this.pdfCatalogService.motionListToDocDef(motions, exportInfo);
         const filename = this.translate.instant(this.configService.instant<string>('motions_export_title'));
         const metadata = {

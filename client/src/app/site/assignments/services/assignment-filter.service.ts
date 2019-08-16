@@ -19,7 +19,7 @@ export class AssignmentFilterListService extends BaseFilterListService<ViewAssig
      * @param translate translate service
      */
     public constructor(store: StorageService, OSStatus: OpenSlidesStatusService) {
-        super('Assignments', store, OSStatus);
+        super(store, OSStatus);
     }
 
     /**

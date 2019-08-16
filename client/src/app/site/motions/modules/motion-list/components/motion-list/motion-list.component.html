@@ -104,10 +104,11 @@
                     </span>
                 </div>
 
+                <!-- TODO: These two now appear twice. Might be an own component -->
                 <!-- Workflow state -->
                 <div class="ellipsis-overflow white">
                     <mat-basic-chip *ngIf="motion.state" [ngClass]="motion.stateCssColor" [disabled]="true">
-                        {{ getStateLabel(motion) }}
+                        {{ this.motionRepo.getExtendedStateLabel(motion) }}
                     </mat-basic-chip>
                 </div>
 
@@ -117,7 +118,7 @@
                     class="ellipsis-overflow white spacer-top-3"
                 >
                     <mat-basic-chip class="bluegrey" [disabled]="true">
-                        {{ getRecommendationLabel(motion) }}
+                        {{ motionRepo.getExtendedRecommendationLabel(motion) }}
                     </mat-basic-chip>
                 </div>
             </div>
@@ -217,6 +218,14 @@
             <button mat-menu-item (click)="toggleMultiSelect()">
                 <mat-icon>library_add</mat-icon>
                 <span translate>Multiselect</span>
+            </button>
+        </div>
+        <div *ngIf="perms.isAllowed('manage') || hasAmendments()">
+            <button mat-menu-item routerLink="amendments">
+                <!-- color_lens -->
+                <!-- format_paint -->
+                <mat-icon>color_lens</mat-icon>
+                <span translate>Amendments</span>
             </button>
         </div>
         <div *ngIf="perms.isAllowed('manage')">

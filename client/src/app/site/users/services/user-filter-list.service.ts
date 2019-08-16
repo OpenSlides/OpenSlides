@@ -35,8 +35,13 @@ export class UserFilterListService extends BaseFilterListService<ViewUser> {
         groupRepo: GroupRepositoryService,
         private translate: TranslateService
     ) {
-        super('User', store, OSStatus);
-        this.updateFilterForRepo(groupRepo, this.userGroupFilterOptions, this.translate.instant('Default'), [1]);
+        super(store, OSStatus);
+        this.updateFilterForRepo(
+            groupRepo,
+            this.userGroupFilterOptions,
+            this.translate.instant('Default'),
+            (model: ViewUser) => model.id !== 1
+        );
     }
 
     /**

@@ -600,6 +600,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
                         }
                     }
                 }),
+
                 this.repo.amendmentsTo(motionId).subscribe((amendments: ViewMotion[]): void => {
                     this.amendments = amendments;
                     this.recalcUnifiedChanges();
