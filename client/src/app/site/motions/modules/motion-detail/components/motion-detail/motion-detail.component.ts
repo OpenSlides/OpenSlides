@@ -171,6 +171,11 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     public reasonRequired: boolean;
 
     /**
+     * Value of the config variable `motions_hide_referring_motions`
+     */
+    public showReferringMotions: boolean;
+
+    /**
      * Value of the config variable `motions_min_supporters`
      */
     public minSupporters: number;
@@ -470,6 +475,9 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         this.configService
             .get<boolean>('motions_reason_required')
             .subscribe(required => (this.reasonRequired = required));
+        this.configService
+            .get<boolean>('motions_hide_referring_motions')
+            .subscribe(show => (this.showReferringMotions = !show));
         this.configService
             .get<number>('motions_min_supporters')
             .subscribe(supporters => (this.minSupporters = supporters));
