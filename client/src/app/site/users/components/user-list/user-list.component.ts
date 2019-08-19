@@ -283,7 +283,7 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
     public async deleteSelected(): Promise<void> {
         const title = this.translate.instant('Are you sure you want to delete all selected participants?');
         if (await this.promptService.open(title)) {
-            await this.repo.bulkDelete(this.selectedRows);
+            this.repo.bulkDelete(this.selectedRows).catch(this.raiseError);
         }
     }
 
@@ -299,7 +299,9 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
         const selectedChoice = await this.choiceService.open(content, this.groupRepo.getViewModelList(), true, choices);
         if (selectedChoice) {
             const action = selectedChoice.action === choices[0] ? 'add' : 'remove';
-            await this.repo.bulkAlterGroups(this.selectedRows, action, selectedChoice.items as number[]);
+            this.repo
+                .bulkAlterGroups(this.selectedRows, action, selectedChoice.items as number[])
+                .catch(this.raiseError);
         }
     }
 
@@ -329,7 +331,7 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
         const selectedChoice = await this.choiceService.open(content, null, false, options);
         if (selectedChoice) {
             const value = selectedChoice.action === options[0];
-            await this.repo.bulkSetState(this.selectedRows, field, value);
+            this.repo.bulkSetState(this.selectedRows, field, value).catch(this.raiseError);
         }
     }
 
@@ -341,7 +343,7 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
         const title = this.translate.instant('Are you sure you want to send emails to all selected participants?');
         const content = this.selectedRows.length + ' ' + this.translate.instant('emails');
         if (await this.promptService.open(title, content)) {
-            await this.repo.bulkSendInvitationEmail(this.selectedRows);
+            this.repo.bulkSendInvitationEmail(this.selectedRows).catch(this.raiseError);
         }
     }
 
@@ -374,7 +376,7 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
                 )
             );
         }
-        this.repo.bulkResetPasswordsToDefault(this.selectedRows).then(null, this.raiseError);
+        this.repo.bulkResetPasswordsToDefault(this.selectedRows).catch(this.raiseError);
     }
 
     /**
@@ -398,7 +400,7 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
                 )
             );
         }
-        this.repo.bulkGenerateNewPasswords(this.selectedRows).then(null, this.raiseError);
+        this.repo.bulkGenerateNewPasswords(this.selectedRows).catch(this.raiseError);
     }
 
     /**
@@ -407,8 +409,8 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
      * @param viewUser the viewUser Object
      * @param event the mouse event (to prevent propagaton to row triggers)
      */
-    public async setPresent(viewUser: ViewUser): Promise<void> {
+    public setPresent(viewUser: ViewUser): void {
         viewUser.user.is_present = !viewUser.user.is_present;
-        await this.repo.update(viewUser.user, viewUser);
+        this.repo.update(viewUser.user, viewUser).catch(this.raiseError);
     }
 }

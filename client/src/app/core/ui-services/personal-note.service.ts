@@ -58,7 +58,7 @@ export class PersonalNoteService {
         }
 
         pnObject.notes[model.collectionString][model.id] = content;
-        this.savePersonalNoteObject(pnObject);
+        await this.savePersonalNoteObject(pnObject);
     }
 
     /**

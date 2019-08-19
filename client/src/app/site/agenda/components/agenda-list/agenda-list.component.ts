@@ -200,7 +200,7 @@ export class AgendaListComponent extends BaseListViewComponent<ViewItem> impleme
                 } else {
                     result.duration = 0;
                 }
-                this.repo.update(result, item);
+                this.repo.update(result, item).catch(this.raiseError);
             }
         });
     }
@@ -262,12 +262,16 @@ export class AgendaListComponent extends BaseListViewComponent<ViewItem> impleme
         const title = this.translate.instant('Are you sure you want to remove all selected items from the agenda?');
         const content = this.translate.instant("All topics will be deleted and won't be accessible afterwards.");
         if (await this.promptService.open(title, content)) {
-            for (const item of this.selectedRows) {
-                if (item.contentObject instanceof ViewTopic) {
-                    await this.topicRepo.delete(item.contentObject);
-                } else {
-                    await this.repo.removeFromAgenda(item);
+            try {
+                for (const item of this.selectedRows) {
+                    if (item.contentObject instanceof ViewTopic) {
+                        await this.topicRepo.delete(item.contentObject);
+                    } else {
+                        await this.repo.removeFromAgenda(item);
+                    }
                 }
+            } catch (e) {
+                this.raiseError(e);
             }
         }
     }
@@ -279,8 +283,12 @@ export class AgendaListComponent extends BaseListViewComponent<ViewItem> impleme
      * @param closed true if the item is to be considered done
      */
     public async setClosedSelected(closed: boolean): Promise<void> {
-        for (const item of this.selectedRows) {
-            await this.repo.update({ closed: closed }, item);
+        try {
+            for (const item of this.selectedRows) {
+                await this.repo.update({ closed: closed }, item);
+            }
+        } catch (e) {
+            this.raiseError(e);
         }
     }
 
@@ -291,8 +299,12 @@ export class AgendaListComponent extends BaseListViewComponent<ViewItem> impleme
      * @param visible true if the item is to be shown
      */
     public async setAgendaType(agendaType: number): Promise<void> {
-        for (const item of this.selectedRows) {
-            await this.repo.update({ type: agendaType }, item).then(null, this.raiseError);
+        try {
+            for (const item of this.selectedRows) {
+                await this.repo.update({ type: agendaType }, item).then(null, this.raiseError);
+            }
+        } catch (e) {
+            this.raiseError(e);
         }
     }
 

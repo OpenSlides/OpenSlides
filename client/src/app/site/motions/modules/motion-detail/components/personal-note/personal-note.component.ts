@@ -1,12 +1,13 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatSnackBar } from '@angular/material';
 import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
-import { BaseComponent } from 'app/base.component';
 import { PersonalNoteService } from 'app/core/ui-services/personal-note.service';
 import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
+import { BaseViewComponent } from 'app/site/base/base-view';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-export.service';
 
@@ -18,7 +19,7 @@ import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-exp
     templateUrl: './personal-note.component.html',
     styleUrls: ['./personal-note.component.scss']
 })
-export class PersonalNoteComponent extends BaseComponent {
+export class PersonalNoteComponent extends BaseViewComponent {
     /**
      * The motion, which the personal note belong to.
      */
@@ -50,12 +51,13 @@ export class PersonalNoteComponent extends BaseComponent {
     public constructor(
         title: Title,
         translate: TranslateService,
+        matSnackBar: MatSnackBar,
         private personalNoteService: PersonalNoteService,
         formBuilder: FormBuilder,
         private pdfService: MotionPdfExportService,
         private sanitizer: DomSanitizer
     ) {
-        super(title, translate);
+        super(title, translate, matSnackBar);
         this.personalNoteForm = formBuilder.group({
             note: ['']
         });
@@ -90,7 +92,7 @@ export class PersonalNoteComponent extends BaseComponent {
             await this.personalNoteService.savePersonalNote(this.motion.motion, content);
             this.isEditMode = false;
         } catch (e) {
-            console.log(e);
+            this.raiseError(e);
         }
     }
 

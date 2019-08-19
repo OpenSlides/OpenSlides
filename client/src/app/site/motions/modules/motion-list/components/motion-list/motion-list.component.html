@@ -381,7 +381,7 @@
                 mat-menu-item
                 class="red-warning-text"
                 [disabled]="!selectedRows.length"
-                (click)="multiselectService.delete(selectedRows); toggleMultiSelect()"
+                (click)="multiselectWrapper(multiselectService.delete(selectedRows)); toggleMultiSelect()"
             >
                 <mat-icon>delete</mat-icon>
                 <span translate>Delete</span>

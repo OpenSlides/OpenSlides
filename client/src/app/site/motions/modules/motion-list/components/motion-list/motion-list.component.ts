@@ -15,6 +15,7 @@ import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflo
 import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
 import { OsFilterOptionCondition } from 'app/core/ui-services/base-filter-list.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { SpinnerService } from 'app/core/ui-services/spinner.service';
 import { ColumnRestriction } from 'app/shared/components/list-view-table/list-view-table.component';
 import { infoDialogSettings, largeDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseListViewComponent } from 'app/site/base/base-list-view';
@@ -204,7 +205,8 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
         private dialog: MatDialog,
         public multiselectService: MotionMultiselectService,
         public perms: LocalPermissionsService,
-        private motionExport: MotionExportService
+        private motionExport: MotionExportService,
+        private spinnerService: SpinnerService
     ) {
         super(titleService, translate, matSnackBar, storage);
         this.canMultiSelect = true;
@@ -369,6 +371,8 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
             await multiselectPromise;
         } catch (e) {
             this.raiseError(e);
+        } finally {
+            this.spinnerService.setVisibility(false);
         }
     }
 

@@ -422,7 +422,7 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
                 }
             ]
         };
-        this.httpService.post('/rest/motions/motion/manage_multiple_submitters/', requestData);
+        await this.httpService.post('/rest/motions/motion/manage_multiple_submitters/', requestData);
     }
 
     /**

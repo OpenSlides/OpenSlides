@@ -114,15 +114,19 @@ export class TopicDetailComponent extends BaseViewComponent {
             return;
         }
 
-        if (this.newTopic) {
-            if (!this.topicForm.value.agenda_parent_id) {
-                delete this.topicForm.value.agenda_parent_id;
+        try {
+            if (this.newTopic) {
+                if (!this.topicForm.value.agenda_parent_id) {
+                    delete this.topicForm.value.agenda_parent_id;
+                }
+                await this.repo.create(new CreateTopic(this.topicForm.value));
+                this.router.navigate([`/agenda/`]);
+            } else {
+                await this.repo.update(this.topicForm.value, this.topic);
+                this.setEditMode(false);
             }
-            await this.repo.create(new CreateTopic(this.topicForm.value));
-            this.router.navigate([`/agenda/`]);
-        } else {
-            this.setEditMode(false);
-            await this.repo.update(this.topicForm.value, this.topic);
+        } catch (e) {
+            this.raiseError(e);
         }
     }
 
