@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material';
 import { MatDialog } from '@angular/material/dialog';
+import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
@@ -9,6 +11,7 @@ import { CalculablePollKey } from 'app/core/ui-services/poll.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { MotionPoll } from 'app/shared/models/motions/motion-poll';
 import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
+import { BaseViewComponent } from 'app/site/base/base-view';
 import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
 import { MotionPollPdfService } from 'app/site/motions/services/motion-poll-pdf.service';
 import { MotionPollService } from 'app/site/motions/services/motion-poll.service';
@@ -22,7 +25,7 @@ import { MotionPollDialogComponent } from './motion-poll-dialog.component';
     templateUrl: './motion-poll.component.html',
     styleUrls: ['./motion-poll.component.scss']
 })
-export class MotionPollComponent implements OnInit {
+export class MotionPollComponent extends BaseViewComponent implements OnInit {
     /**
      * A representation of all values of the current poll.
      */
@@ -77,24 +80,29 @@ export class MotionPollComponent implements OnInit {
     /**
      * Constructor. Subscribes to the constants and settings for motion polls
      *
+     * @param title
+     * @param translate TranslateService
+     * @param matSnackbar
      * @param dialog Dialog Service for entering poll data
      * @param pollService MotionPollService
      * @param motionRepo Subscribing to the motion to update poll from the server
      * @param constants ConstantsService
      * @param config ConfigService
-     * @param translate TranslateService
      * @param perms LocalPermissionService
      */
     public constructor(
+        title: Title,
+        translate: TranslateService,
+        matSnackBar: MatSnackBar,
         public dialog: MatDialog,
         public pollService: MotionPollService,
         private motionRepo: MotionRepositoryService,
         private constants: ConstantsService,
-        private translate: TranslateService,
         private promptService: PromptService,
         public perms: LocalPermissionsService,
         private pdfService: MotionPollPdfService
     ) {
+        super(title, translate, matSnackBar);
         this.pollValues = this.pollService.pollValues;
         this.majorityChoice = this.pollService.defaultMajorityMethod;
         this.subscribeMajorityChoices();
@@ -121,7 +129,7 @@ export class MotionPollComponent implements OnInit {
     public async deletePoll(): Promise<void> {
         const title = this.translate.instant('Are you sure you want to delete this vote?');
         if (await this.promptService.open(title)) {
-            this.motionRepo.deletePoll(this.poll);
+            this.motionRepo.deletePoll(this.poll).catch(this.raiseError);
         }
     }
 
@@ -189,8 +197,7 @@ export class MotionPollComponent implements OnInit {
         });
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.motionRepo.updatePoll(result);
-                // TODO error handling
+                this.motionRepo.updatePoll(result).catch(this.raiseError);
             }
         });
     }

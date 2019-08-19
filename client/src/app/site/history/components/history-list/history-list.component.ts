@@ -261,10 +261,18 @@ export class HistoryListComponent extends BaseViewComponent implements OnInit {
      * Sets the data source to the requested element id.
      */
     private async queryByElementId(elementId: string): Promise<void> {
-        const historyData = await this.http.get<History[]>(`${environment.urlPrefix}/core/history/information/`, null, {
-            type: 'element',
-            value: elementId
-        });
-        this.dataSource.data = historyData.map(data => new History(data));
+        try {
+            const historyData = await this.http.get<History[]>(
+                `${environment.urlPrefix}/core/history/information/`,
+                null,
+                {
+                    type: 'element',
+                    value: elementId
+                }
+            );
+            this.dataSource.data = historyData.map(data => new History(data));
+        } catch (e) {
+            this.raiseError(e);
+        }
     }
 }

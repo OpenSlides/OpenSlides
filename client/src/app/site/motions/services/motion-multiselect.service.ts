@@ -119,11 +119,7 @@ export class MotionMultiselectService {
         if (selectedChoice) {
             const message = `${motions.length} ` + this.translate.instant(this.messageForSpinner);
             this.spinnerService.setVisibility(true, message);
-            await this.repo.setMultiState(motions, selectedChoice.items as number).catch(error => {
-                this.spinnerService.setVisibility(false);
-                throw error;
-            });
-            this.spinnerService.setVisibility(false);
+            await this.repo.setMultiState(motions, selectedChoice.items as number);
         }
     }
 
@@ -151,15 +147,9 @@ export class MotionMultiselectService {
 
             const message = `${motions.length} ` + this.translate.instant(this.messageForSpinner);
             this.spinnerService.setVisibility(true, message);
-            await this.httpService
-                .post('/rest/motions/motion/manage_multiple_recommendation/', {
-                    motions: requestData
-                })
-                .catch(error => {
-                    this.spinnerService.setVisibility(false);
-                    throw error;
-                });
-            this.spinnerService.setVisibility(false);
+            await this.httpService.post('/rest/motions/motion/manage_multiple_recommendation/', {
+                motions: requestData
+            });
         }
     }
 
@@ -181,11 +171,7 @@ export class MotionMultiselectService {
         if (selectedChoice) {
             const message = this.translate.instant(this.messageForSpinner);
             this.spinnerService.setVisibility(true, message);
-            await this.repo.setMultiCategory(motions, selectedChoice.items as number).catch(error => {
-                this.spinnerService.setVisibility(false);
-                throw error;
-            });
-            this.spinnerService.setVisibility(false);
+            await this.repo.setMultiCategory(motions, selectedChoice.items as number);
         }
     }
 
@@ -226,7 +212,6 @@ export class MotionMultiselectService {
             const message = `${motions.length} ` + this.translate.instant(this.messageForSpinner);
             this.spinnerService.setVisibility(true, message);
             await this.httpService.post('/rest/motions/motion/manage_multiple_submitters/', { motions: requestData });
-            this.spinnerService.setVisibility(false);
         }
     }
 
@@ -277,7 +262,6 @@ export class MotionMultiselectService {
             const message = `${motions.length} ` + this.translate.instant(this.messageForSpinner);
             this.spinnerService.setVisibility(true, message);
             await this.httpService.post('/rest/motions/motion/manage_multiple_tags/', { motions: requestData });
-            this.spinnerService.setVisibility(false);
         }
     }
 
@@ -300,11 +284,7 @@ export class MotionMultiselectService {
             const message = this.translate.instant(this.messageForSpinner);
             this.spinnerService.setVisibility(true, message);
             const blockId = selectedChoice.action ? null : (selectedChoice.items as number);
-            await this.repo.setMultiMotionBlock(motions, blockId).catch(error => {
-                this.spinnerService.setVisibility(false);
-                throw error;
-            });
-            this.spinnerService.setVisibility(false);
+            await this.repo.setMultiMotionBlock(motions, blockId);
         }
     }
 
@@ -338,7 +318,7 @@ export class MotionMultiselectService {
                         itemsToMove,
                         selectedChoice.items as number
                     );
-                    this.repo.sortMotions(this.treeService.stripTree(sortedChildTree));
+                    await this.repo.sortMotions(this.treeService.stripTree(sortedChildTree));
                 } else if (selectedChoice.action === options[1]) {
                     const sortedSiblingTree = this.treeService.insertBranchesIntoTree(
                         partialTree,
@@ -346,7 +326,7 @@ export class MotionMultiselectService {
                         this.repo.getViewModel(selectedChoice.items as number).parent_id,
                         selectedChoice.items as number
                     );
-                    this.repo.sortMotions(this.treeService.stripTree(sortedSiblingTree));
+                    await this.repo.sortMotions(this.treeService.stripTree(sortedSiblingTree));
                 }
             }
         }
@@ -369,7 +349,6 @@ export class MotionMultiselectService {
             const star = (selectedChoice.items as number) === choices[0].id;
             this.spinnerService.setVisibility(true, message);
             await this.personalNoteService.bulkSetStar(motions, star);
-            this.spinnerService.setVisibility(false);
         }
     }
 }

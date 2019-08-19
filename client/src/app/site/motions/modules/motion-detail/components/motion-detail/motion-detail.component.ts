@@ -1304,10 +1304,9 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      */
     public setCategory(id: number): void {
         if (id === this.motion.category_id) {
-            this.repo.setCatetory(this.motion, null);
-        } else {
-            this.repo.setCatetory(this.motion, id);
+            id = null;
         }
+        this.repo.setCatetory(this.motion, id).catch(this.raiseError);
     }
 
     /**
@@ -1317,7 +1316,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      */
     public setTag(event: MouseEvent, id: number): void {
         event.stopPropagation();
-        this.repo.setTag(this.motion, id);
+        this.repo.setTag(this.motion, id).catch(this.raiseError);
     }
 
     /**
@@ -1327,10 +1326,9 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      */
     public setBlock(id: number): void {
         if (id === this.motion.motion_block_id) {
-            this.repo.setBlock(this.motion, null);
-        } else {
-            this.repo.setBlock(this.motion, id);
+            id = null;
         }
+        this.repo.setBlock(this.motion, id).catch(this.raiseError);
     }
 
     /**
@@ -1373,8 +1371,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     /**
      * Handler for creating a poll
      */
-    public async createPoll(): Promise<void> {
-        await this.repo.createPoll(this.motion);
+    public createPoll(): void {
+        this.repo.createPoll(this.motion).catch(this.raiseError);
     }
 
     /**
