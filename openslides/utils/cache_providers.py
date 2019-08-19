@@ -39,7 +39,9 @@ class ElementCacheProvider(Protocol):
     async def clear_cache(self) -> None:
         ...
 
-    async def reset_full_cache(self, data: Dict[str, str]) -> None:
+    async def reset_full_cache(
+        self, data: Dict[str, str], default_change_id: int
+    ) -> None:
         ...
 
     async def data_exists(self) -> bool:
@@ -55,10 +57,7 @@ class ElementCacheProvider(Protocol):
         ...
 
     async def add_changed_elements(
-        self,
-        changed_elements: List[str],
-        deleted_element_ids: List[str],
-        default_change_id: int,
+        self, changed_elements: List[str], deleted_element_ids: List[str]
     ) -> int:
         ...
 
@@ -76,10 +75,10 @@ class ElementCacheProvider(Protocol):
     async def del_lock(self, lock_name: str) -> None:
         ...
 
-    async def get_current_change_id(self) -> Optional[int]:
+    async def get_current_change_id(self) -> int:
         ...
 
-    async def get_lowest_change_id(self) -> Optional[int]:
+    async def get_lowest_change_id(self) -> int:
         ...
 
     async def get_schema_version(self) -> Optional[SchemaVersion]:
@@ -127,7 +126,6 @@ class RedisCacheProvider:
     full_data_cache_key: str = "full_data"
     change_id_cache_key: str = "change_id"
     schema_cache_key: str = "schema"
-    prefix: str = "element_cache_"
 
     # All lua-scripts used by this provider. Every entry is a Tuple (str, bool) with the
     # script and an ensure_cache-indicator. If the indicator is True, a short ensure_cache-script
@@ -164,35 +162,32 @@ class RedisCacheProvider:
             local change_id
             if next(tmp) == nil then
                 -- The key does not exist
-                change_id = ARGV[1]
+                return redis.error_reply("cache_reset")
             else
                 change_id = tmp[2] + 1
             end
 
-            local nc = tonumber(ARGV[2])
-            local nd = tonumber(ARGV[3])
+            local nc = tonumber(ARGV[1])
+            local nd = tonumber(ARGV[2])
 
             local i, max
             -- Add changed_elements to the cache and sorted set (the first of the pairs)
             if (nc > 0) then
-                max = 2 + nc
-                redis.call('hmset', KEYS[1], unpack(ARGV, 4, max + 1))
-                for i = 4, max, 2 do
+                max = 1 + nc
+                redis.call('hmset', KEYS[1], unpack(ARGV, 3, max + 1))
+                for i = 3, max, 2 do
                     redis.call('zadd', KEYS[2], change_id, ARGV[i])
                 end
             end
 
             -- Delete deleted_element_ids and add them to sorted set
             if (nd > 0) then
-                max = 3 + nc + nd
-                redis.call('hdel', KEYS[1], unpack(ARGV, 4 + nc, max))
-                for i = 4 + nc, max, 1 do
+                max = 2 + nc + nd
+                redis.call('hdel', KEYS[1], unpack(ARGV, 3 + nc, max))
+                for i = 3 + nc, max, 1 do
                     redis.call('zadd', KEYS[2], change_id, ARGV[i])
                 end
             end
-
-            -- Set lowest_change_id if it does not exist
-            redis.call('zadd', KEYS[2], 'NX', change_id, '_config:lowest_change_id')
 
             return change_id
             """,
@@ -244,31 +239,27 @@ class RedisCacheProvider:
     async def ensure_cache(self) -> None:
         await self._ensure_cache()
 
-    def get_full_data_cache_key(self) -> str:
-        return "".join((self.prefix, self.full_data_cache_key))
-
-    def get_change_id_cache_key(self) -> str:
-        return "".join((self.prefix, self.change_id_cache_key))
-
-    def get_schema_cache_key(self) -> str:
-        return "".join((self.prefix, self.schema_cache_key))
-
     async def clear_cache(self) -> None:
         """
         Deleted all cache entries created with this element cache.
         """
-        await self.eval("clear_cache", keys=[], args=[f"{self.prefix}*"])
+        await self.eval("clear_cache", keys=[], args=["*"])
 
-    async def reset_full_cache(self, data: Dict[str, str]) -> None:
+    async def reset_full_cache(
+        self, data: Dict[str, str], default_change_id: int
+    ) -> None:
         """
         Deletes the full_data_cache and write new data in it. Clears the change id key.
         Does not clear locks.
         """
         async with get_connection() as redis:
             tr = redis.multi_exec()
-            tr.delete(self.get_change_id_cache_key())
-            tr.delete(self.get_full_data_cache_key())
-            tr.hmset_dict(self.get_full_data_cache_key(), data)
+            tr.delete(self.change_id_cache_key)
+            tr.delete(self.full_data_cache_key)
+            tr.hmset_dict(self.full_data_cache_key, data)
+            tr.zadd(
+                self.change_id_cache_key, default_change_id, "_config:lowest_change_id"
+            )
             await tr.execute()
 
     async def data_exists(self) -> bool:
@@ -276,7 +267,11 @@ class RedisCacheProvider:
         Returns True, when there is data in the cache.
         """
         async with get_connection() as redis:
-            return await redis.exists(self.get_full_data_cache_key())
+            return await redis.exists(self.full_data_cache_key) and bool(
+                await redis.zrangebyscore(
+                    self.change_id_cache_key, withscores=True, count=1, offset=0
+                )
+            )
 
     @ensure_cache_wrapper()
     async def get_all_data(self) -> Dict[bytes, bytes]:
@@ -284,7 +279,7 @@ class RedisCacheProvider:
         Returns all data from the full_data_cache in a mapping from element_id to the element.
         """
         return await aioredis.util.wait_make_dict(
-            self.eval("get_all_data", [self.get_full_data_cache_key()])
+            self.eval("get_all_data", [self.full_data_cache_key])
         )
 
     @ensure_cache_wrapper()
@@ -294,7 +289,7 @@ class RedisCacheProvider:
         from element_id to the element.
         """
         response = await self.eval(
-            "get_collection_data", [self.get_full_data_cache_key()], [f"{collection}:*"]
+            "get_collection_data", [self.full_data_cache_key], [f"{collection}:*"]
         )
 
         collection_data = {}
@@ -310,15 +305,12 @@ class RedisCacheProvider:
         Returns one element from the cache. Returns None, when the element does not exist.
         """
         return await self.eval(
-            "get_element_data", [self.get_full_data_cache_key()], [element_id]
+            "get_element_data", [self.full_data_cache_key], [element_id]
         )
 
     @ensure_cache_wrapper()
     async def add_changed_elements(
-        self,
-        changed_elements: List[str],
-        deleted_element_ids: List[str],
-        default_change_id: int,
+        self, changed_elements: List[str], deleted_element_ids: List[str]
     ) -> int:
         """
         Modified the full_data_cache to insert the changed_elements and removes the
@@ -329,9 +321,8 @@ class RedisCacheProvider:
         return int(
             await self.eval(
                 "add_changed_elements",
-                keys=[self.get_full_data_cache_key(), self.get_change_id_cache_key()],
+                keys=[self.full_data_cache_key, self.change_id_cache_key],
                 args=[
-                    default_change_id,
                     len(changed_elements),
                     len(deleted_element_ids),
                     *(changed_elements + deleted_element_ids),
@@ -363,7 +354,7 @@ class RedisCacheProvider:
         elements: Dict[bytes, Optional[bytes]] = await aioredis.util.wait_make_dict(
             self.eval(
                 "get_data_since",
-                keys=[self.get_full_data_cache_key(), self.get_change_id_cache_key()],
+                keys=[self.full_data_cache_key, self.change_id_cache_key],
                 args=[change_id, redis_max_change_id],
             )
         )
@@ -388,48 +379,53 @@ class RedisCacheProvider:
         """
         # TODO: Improve lock. See: https://redis.io/topics/distlock
         async with get_connection() as redis:
-            return await redis.setnx(f"{self.prefix}lock_{lock_name}", 1)
+            return await redis.setnx(f"lock_{lock_name}", 1)
 
     async def get_lock(self, lock_name: str) -> bool:
         """
         Returns True, when the lock is set. Else False.
         """
         async with get_connection() as redis:
-            return await redis.get(f"{self.prefix}lock_{lock_name}")
+            return await redis.get(f"lock_{lock_name}")
 
     async def del_lock(self, lock_name: str) -> None:
         """
         Deletes the lock. Does nothing when the lock is not set.
         """
         async with get_connection() as redis:
-            await redis.delete(f"{self.prefix}lock_{lock_name}")
+            await redis.delete(f"lock_{lock_name}")
 
-    async def get_current_change_id(self) -> Optional[int]:
+    @ensure_cache_wrapper()
+    async def get_current_change_id(self) -> int:
         """
         Get the highest change_id from redis.
         """
         async with get_connection() as redis:
             value = await redis.zrevrangebyscore(
-                self.get_change_id_cache_key(), withscores=True, count=1, offset=0
+                self.change_id_cache_key, withscores=True, count=1, offset=0
             )
-            # Return the score (second element) of the first (and only) element, if exists.
-            return value[0][1] if value else None
+        # Return the score (second element) of the first (and only) element, if exists.
+        if not value:
+            raise CacheReset()
+        return value[0][1]
 
-    async def get_lowest_change_id(self) -> Optional[int]:
+    @ensure_cache_wrapper()
+    async def get_lowest_change_id(self) -> int:
         """
         Get the lowest change_id from redis.
-
-        Returns None if lowest score does not exist.
         """
         async with get_connection() as redis:
-            return await redis.zscore(
-                self.get_change_id_cache_key(), "_config:lowest_change_id"
+            value = await redis.zscore(
+                self.change_id_cache_key, "_config:lowest_change_id"
             )
+        if not value:
+            raise CacheReset()
+        return value
 
     async def get_schema_version(self) -> Optional[SchemaVersion]:
         """ Retrieves the schema version of the cache or None, if not existent """
         async with get_connection() as redis:
-            schema_version = await redis.hgetall(self.get_schema_cache_key())
+            schema_version = await redis.hgetall(self.schema_cache_key)
         if not schema_version:
             return None
 
@@ -442,7 +438,7 @@ class RedisCacheProvider:
     async def set_schema_version(self, schema_version: SchemaVersion) -> None:
         """ Sets the schema version for this cache. """
         async with get_connection() as redis:
-            await redis.hmset_dict(self.get_schema_cache_key(), schema_version)
+            await redis.hmset_dict(self.schema_cache_key, schema_version)
 
     async def eval(
         self, script_name: str, keys: List[str] = [], args: List[Any] = []
@@ -458,10 +454,7 @@ class RedisCacheProvider:
         python, if the lua-script returns a "cache_reset" string as an error response.
         """
         hash = self._script_hashes[script_name]
-        if (
-            self.scripts[script_name][1]
-            and not keys[0] == self.get_full_data_cache_key()
-        ):
+        if self.scripts[script_name][1] and not keys[0] == self.full_data_cache_key:
             raise ImproperlyConfigured(
                 "A script with a ensure_cache prefix must have the full_data cache key as its first key"
             )
@@ -490,7 +483,7 @@ class RedisCacheProvider:
                 raise e
 
 
-class MemmoryCacheProvider:
+class MemoryCacheProvider:
     """
     CacheProvider for the ElementCache that uses only the memory.
 
@@ -510,6 +503,7 @@ class MemmoryCacheProvider:
         self.full_data: Dict[str, str] = {}
         self.change_id_data: Dict[int, Set[str]] = {}
         self.locks: Dict[str, str] = {}
+        self.default_change_id: int = -1
 
     async def ensure_cache(self) -> None:
         pass
@@ -517,12 +511,15 @@ class MemmoryCacheProvider:
     async def clear_cache(self) -> None:
         self.set_data_dicts()
 
-    async def reset_full_cache(self, data: Dict[str, str]) -> None:
+    async def reset_full_cache(
+        self, data: Dict[str, str], default_change_id: int
+    ) -> None:
         self.change_id_data = {}
         self.full_data = data
+        self.default_change_id = default_change_id
 
     async def data_exists(self) -> bool:
-        return bool(self.full_data)
+        return bool(self.full_data) and self.default_change_id >= 0
 
     async def get_all_data(self) -> Dict[bytes, bytes]:
         return str_dict_to_bytes(self.full_data)
@@ -541,16 +538,9 @@ class MemmoryCacheProvider:
         return value.encode() if value is not None else None
 
     async def add_changed_elements(
-        self,
-        changed_elements: List[str],
-        deleted_element_ids: List[str],
-        default_change_id: int,
+        self, changed_elements: List[str], deleted_element_ids: List[str]
     ) -> int:
-        current_change_id = await self.get_current_change_id()
-        if current_change_id is None:
-            change_id = default_change_id
-        else:
-            change_id = current_change_id + 1
+        change_id = await self.get_current_change_id() + 1
 
         for i in range(0, len(changed_elements), 2):
             element_id = changed_elements[i]
@@ -610,17 +600,14 @@ class MemmoryCacheProvider:
         except KeyError:
             pass
 
-    async def get_current_change_id(self) -> Optional[int]:
-        change_data = self.change_id_data
-        if change_data:
-            return max(change_data.keys())
-        return None
+    async def get_current_change_id(self) -> int:
+        if self.change_id_data:
+            return max(self.change_id_data.keys())
+        else:
+            return await self.get_lowest_change_id()
 
-    async def get_lowest_change_id(self) -> Optional[int]:
-        change_data = self.change_id_data
-        if change_data:
-            return min(change_data.keys())
-        return None
+    async def get_lowest_change_id(self) -> int:
+        return self.default_change_id
 
     async def get_schema_version(self) -> Optional[SchemaVersion]:
         return None

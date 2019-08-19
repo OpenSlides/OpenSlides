@@ -1,7 +1,7 @@
 import asyncio
 from typing import Any, Callable, Dict, List
 
-from openslides.utils.cache_providers import Cachable, MemmoryCacheProvider
+from openslides.utils.cache_providers import Cachable, MemoryCacheProvider
 
 
 def restrict_elements(elements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -62,9 +62,9 @@ def example_data():
     }
 
 
-class TTestCacheProvider(MemmoryCacheProvider):
+class TTestCacheProvider(MemoryCacheProvider):
     """
-    CacheProvider simular to the MemmoryCacheProvider with special methods for
+    CacheProvider simular to the MemoryCacheProvider with special methods for
     testing.
     """
 

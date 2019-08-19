@@ -34,7 +34,6 @@ def element_cache():
         default_change_id=0,
     )
     element_cache.ensure_cache()
-    element_cache.set_default_change_id(0)
     return element_cache
 
 
@@ -148,13 +147,14 @@ async def test_get_data_since_change_id_0(element_cache):
 
 
 @pytest.mark.asyncio
-async def test_get_data_since_change_id_lower_then_in_redis(element_cache):
+async def test_get_data_since_change_id_lower_than_in_redis(element_cache):
     element_cache.cache_provider.full_data = {
         "app/collection1:1": '{"id": 1, "value": "value1"}',
         "app/collection1:2": '{"id": 2, "value": "value2"}',
         "app/collection2:1": '{"id": 1, "key": "value1"}',
         "app/collection2:2": '{"id": 2, "key": "value2"}',
     }
+    element_cache.cache_provider.default_change_id = 2
     element_cache.cache_provider.change_id_data = {2: {"app/collection1:1"}}
     with pytest.raises(RuntimeError):
         await element_cache.get_data_since(None, 1)
@@ -196,8 +196,9 @@ async def test_get_data_since_change_id_data_in_db(element_cache):
 
 @pytest.mark.asyncio
 async def test_get_gata_since_change_id_data_in_db_empty_change_id(element_cache):
-    with pytest.raises(RuntimeError):
-        await element_cache.get_data_since(None, 1)
+    result = await element_cache.get_data_since(None, 1)
+
+    assert result == ({}, [])
 
 
 @pytest.mark.asyncio
@@ -279,8 +280,8 @@ async def test_get_restricted_data_2(element_cache):
 
 
 @pytest.mark.asyncio
-async def test_get_restricted_data_change_id_lower_then_in_redis(element_cache):
-    element_cache.cache_provider.change_id_data = {2: {"app/collection1:1"}}
+async def test_get_restricted_data_change_id_lower_than_in_redis(element_cache):
+    element_cache.cache_provider.default_change_id = 2
 
     with pytest.raises(RuntimeError):
         await element_cache.get_data_since(0, 1)
@@ -310,5 +311,5 @@ async def test_lowest_change_id_after_updating_lowest_element(element_cache):
     )
     second_lowest_change_id = await element_cache.get_lowest_change_id()
 
-    assert first_lowest_change_id == 1
-    assert second_lowest_change_id == 1  # The lowest_change_id should not change
+    assert first_lowest_change_id == 0
+    assert second_lowest_change_id == 0  # The lowest_change_id should not change

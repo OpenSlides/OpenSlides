@@ -1,4 +1,5 @@
 import os
+from typing import cast
 
 import pytest
 from asgiref.sync import async_to_sync
@@ -7,6 +8,7 @@ from pytest_django.django_compat import is_django_unittest
 from pytest_django.plugin import validate_django_db
 
 from openslides.utils.cache import element_cache
+from openslides.utils.cache_providers import MemoryCacheProvider
 
 
 # Set an environment variable to stop the startup command
@@ -83,4 +85,4 @@ def reset_cache(request):
         element_cache.ensure_cache(reset=True)
 
     # Set constant default change_id
-    element_cache.set_default_change_id(1)
+    cast(MemoryCacheProvider, element_cache.cache_provider).default_change_id = 1

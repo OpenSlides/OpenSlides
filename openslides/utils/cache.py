@@ -11,7 +11,7 @@ from django.apps import apps
 from .cache_providers import (
     Cachable,
     ElementCacheProvider,
-    MemmoryCacheProvider,
+    MemoryCacheProvider,
     RedisCacheProvider,
 )
 from .redis import use_redis
@@ -71,19 +71,7 @@ class ElementCache:
         self.cache_provider = cache_provider_class(self.async_ensure_cache)
         self.cachable_provider = cachable_provider
         self._cachables: Optional[Dict[str, Cachable]] = None
-        self.set_default_change_id(default_change_id)
-
-    def set_default_change_id(self, default_change_id: Optional[int] = None) -> None:
-        """
-        Sets the default change id for the cache. Needs to update, if the cache gets generated.
-        """
-        # The current time is used as the first change_id if there is non in redis
-        if default_change_id is None:
-            # Use the miliseconds (rounted) since the 2016-02-29.
-            default_change_id = (
-                int((datetime.utcnow() - datetime(2016, 2, 29)).total_seconds()) * 1000
-            )
-        self.default_change_id = default_change_id
+        self.default_change_id: Optional[int] = default_change_id
 
     @property
     def cachables(self) -> Dict[str, Cachable]:
@@ -151,8 +139,16 @@ class ElementCache:
                         )
                 logger.info("Done building the cache data.")
                 logger.info("Saving cache data into the cache...")
-                self.set_default_change_id(default_change_id=default_change_id)
-                await self.cache_provider.reset_full_cache(mapping)
+                if default_change_id is None:
+                    if self.default_change_id is not None:
+                        default_change_id = self.default_change_id
+                    else:
+                        # Use the miliseconds (rounded) since the 2016-02-29.
+                        default_change_id = int(
+                            (datetime.utcnow() - datetime(2016, 2, 29)).total_seconds()
+                        )
+                        default_change_id *= 1000
+                await self.cache_provider.reset_full_cache(mapping, default_change_id)
                 if schema_version:
                     await self.cache_provider.set_schema_version(schema_version)
                 logger.info("Done saving the cache data.")
@@ -187,7 +183,7 @@ class ElementCache:
                 deleted_elements.append(element_id)
 
         return await self.cache_provider.add_changed_elements(
-            changed_elements, deleted_elements, self.default_change_id + 1
+            changed_elements, deleted_elements
         )
 
     async def get_all_data_list(
@@ -331,8 +327,7 @@ class ElementCache:
 
         Returns default_change_id if there is no change id yet.
         """
-        value = await self.cache_provider.get_current_change_id()
-        return value if value is not None else self.default_change_id
+        return await self.cache_provider.get_current_change_id()
 
     async def get_lowest_change_id(self) -> int:
         """
@@ -340,11 +335,7 @@ class ElementCache:
 
         Raises a RuntimeError if there is no change_id.
         """
-        value = await self.cache_provider.get_lowest_change_id()
-        if not value:
-            raise RuntimeError("There is no known change_id.")
-        # Return the score (second element) of the first (and only) element
-        return value
+        return await self.cache_provider.get_lowest_change_id()
 
 
 def load_element_cache() -> ElementCache:
@@ -354,7 +345,7 @@ def load_element_cache() -> ElementCache:
     if use_redis:
         cache_provider_class: Type[ElementCacheProvider] = RedisCacheProvider
     else:
-        cache_provider_class = MemmoryCacheProvider
+        cache_provider_class = MemoryCacheProvider
 
     return ElementCache(cache_provider_class=cache_provider_class)
 

@@ -39,7 +39,7 @@ async def prepare_element_cache(settings):
         [Collection1(), Collection2(), TConfig(), TUser(), TProjector()]
     )
     element_cache._cachables = None
-    await element_cache.async_ensure_cache(default_change_id=1)
+    await element_cache.async_ensure_cache(default_change_id=2)
     yield
     # Reset the cachable_provider
     element_cache.cachable_provider = orig_cachable_provider
@@ -332,7 +332,7 @@ async def test_send_get_elements_too_big_change_id(communicator, set_config):
 
 
 @pytest.mark.asyncio
-async def test_send_get_elements_to_small_change_id(communicator, set_config):
+async def test_send_get_elements_too_small_change_id(communicator, set_config):
     await set_config("general_system_enable_anonymous", True)
     await communicator.connect()
 
