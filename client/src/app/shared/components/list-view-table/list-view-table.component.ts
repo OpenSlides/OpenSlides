@@ -338,23 +338,27 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
                 // custom filter predicates
                 if (this.filterProps && this.filterProps.length) {
                     for (const prop of this.filterProps) {
-                        let propertyAsString = '';
-                        // If the property is a function, call it.
-                        if (typeof item[prop] === 'function') {
-                            propertyAsString = '' + item[prop]();
-                        } else {
-                            propertyAsString = '' + item[prop];
-                        }
+                        if (item[prop]) {
+                            let propertyAsString = '';
+                            // If the property is a function, call it.
+                            if (typeof item[prop] === 'function') {
+                                propertyAsString = '' + item[prop]();
+                            } else if (item[prop].constructor === Array) {
+                                propertyAsString = item[prop].join('');
+                            } else {
+                                propertyAsString = '' + item[prop];
+                            }
 
-                        if (!!propertyAsString) {
-                            const foundProp =
-                                propertyAsString
-                                    .trim()
-                                    .toLowerCase()
-                                    .indexOf(trimmedInput) !== -1;
+                            if (!!propertyAsString) {
+                                const foundProp =
+                                    propertyAsString
+                                        .trim()
+                                        .toLowerCase()
+                                        .indexOf(trimmedInput) !== -1;
 
-                            if (foundProp) {
-                                return true;
+                                if (foundProp) {
+                                    return true;
+                                }
                             }
                         }
                     }

@@ -62,7 +62,7 @@ export class AmendmentListComponent extends BaseListViewComponent<ViewMotion> im
     /**
      * To filter stuff
      */
-    public filterProps = ['submitters', 'title', 'identifier'];
+    public filterProps = ['submitters', 'title', 'identifier', 'amendment_paragraphs'];
 
     /**
      *
