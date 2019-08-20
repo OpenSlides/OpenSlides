@@ -23,18 +23,26 @@ class UserAccessPermissions(BaseAccessPermissions):
             USERCANSEEEXTRASERIALIZER_FIELDS,
         )
 
-        def filtered_data(full_data, whitelist):
+        def filtered_data(full_data, whitelist, whitelist_operator=None):
             """
             Returns a new dict like full_data but only with whitelisted keys.
+            If the whitelist_operator is given and the full_data-user is the
+            oeperator (the user with user_id), the whitelist_operator will
+            be used instead of the whitelist.
             """
-            return {key: full_data[key] for key in whitelist}
+            if whitelist_operator is not None and full_data["id"] == user_id:
+                return {key: full_data[key] for key in whitelist_operator}
+            else:
+                return {key: full_data[key] for key in whitelist}
 
-        # We have five sets of data to be sent:
+        # We have some sets of data to be sent:
         # * full data i. e. all fields (including session_auth_hash),
         # * all data i. e. all fields but not session_auth_hash,
         # * many data i. e. all fields but not the default password and session_auth_hash,
         # * little data i. e. all fields but not the default password, session_auth_hash,
-        #   comments, gender, email, last_email_send and active status,
+        #   comments, gender, email, last_email_send, active status and auth_type
+        # * own data i. e. all little data fields plus email and gender. This is applied
+        #   to the own user, if he just can see little or no data.
         # * no data.
 
         # Prepare field set for users with "all" data, "many" data and with "little" data.
@@ -44,9 +52,12 @@ class UserAccessPermissions(BaseAccessPermissions):
         all_data_fields.add("default_password")
         many_data_fields = all_data_fields.copy()
         many_data_fields.discard("default_password")
-        litte_data_fields = set(USERCANSEESERIALIZER_FIELDS)
-        litte_data_fields.add("groups_id")
-        litte_data_fields.discard("groups")
+        little_data_fields = set(USERCANSEESERIALIZER_FIELDS)
+        little_data_fields.add("groups_id")
+        little_data_fields.discard("groups")
+        own_data_fields = set(little_data_fields)
+        own_data_fields.add("email")
+        own_data_fields.add("gender")
 
         # Check user permissions.
         if await async_has_perm(user_id, "users.can_see_name"):
@@ -56,7 +67,10 @@ class UserAccessPermissions(BaseAccessPermissions):
                 else:
                     data = [filtered_data(full, many_data_fields) for full in full_data]
             else:
-                data = [filtered_data(full, litte_data_fields) for full in full_data]
+                data = [
+                    filtered_data(full, little_data_fields, own_data_fields)
+                    for full in full_data
+                ]
         else:
             # Build a list of users, that can be seen without any permissions (with little fields).
 
@@ -84,7 +98,7 @@ class UserAccessPermissions(BaseAccessPermissions):
 
             # Parse data.
             data = [
-                filtered_data(full, litte_data_fields)
+                filtered_data(full, little_data_fields, own_data_fields)
                 for full in full_data
                 if full["id"] in user_ids
             ]

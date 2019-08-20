@@ -1,4 +1,3 @@
-import os
 import sys
 from collections import OrderedDict
 from operator import attrgetter
@@ -95,9 +94,6 @@ class CoreAppConfig(AppConfig):
             self.get_model("Countdown").get_collection_string(), CountdownViewSet
         )
 
-        if "runserver" in sys.argv or "changeconfig" in sys.argv:
-            startup()
-
         # Register client messages
         register_client_message(NotifyWebsocketClientMessage())
         register_client_message(ConstantsWebsocketClientMessage())
@@ -105,6 +101,22 @@ class CoreAppConfig(AppConfig):
         register_client_message(AutoupdateWebsocketClientMessage())
         register_client_message(ListenToProjectors())
         register_client_message(PingPong())
+
+        if "runserver" in sys.argv or "changeconfig" in sys.argv:
+            from openslides.utils.startup import run_startup_hooks
+
+            run_startup_hooks()
+
+    def get_startup_hooks(self):
+        from openslides.utils.constants import set_constants_from_apps
+        from openslides.utils.cache import element_cache
+        from openslides.core.models import History
+
+        return {
+            10: element_cache.ensure_schema_version,
+            40: set_constants_from_apps,
+            90: History.objects.build_history,
+        }
 
     def get_config_variables(self):
         from .config_variables import get_config_variables
@@ -193,21 +205,3 @@ def manage_config(**kwargs):
     if altered:
         config.increment_version()
         logging.getLogger(__name__).info("Updated config variables")
-
-
-def startup():
-    """
-    Runs commands that are needed at startup.
-
-    Sets the cache, constants and startup history
-    """
-    if os.environ.get("NO_STARTUP"):
-        return
-
-    from openslides.utils.constants import set_constants, get_constants_from_apps
-    from openslides.utils.cache import element_cache
-    from openslides.core.models import History
-
-    element_cache.ensure_schema_version()
-    set_constants(get_constants_from_apps())
-    History.objects.build_history()

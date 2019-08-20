@@ -5,9 +5,15 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
 
 import { ConfigService } from './config.service';
+import { ConstantsService } from '../core-services/constants.service';
 import { HttpService } from '../core-services/http.service';
 import { OpenSlidesStatusService } from '../core-services/openslides-status.service';
 import { StorageService } from '../core-services/storage.service';
+
+interface SamlSettings {
+    loginButtonText: string;
+    changePasswordUrl: string;
+}
 
 /**
  * The login data send by the server.
@@ -21,6 +27,7 @@ export interface LoginData {
         display_name: string;
     };
     login_info_text?: string;
+    saml_settings?: SamlSettings;
 }
 
 /**
@@ -105,6 +112,11 @@ export class LoginDataService {
         return this._logoWebHeader.asObservable();
     }
 
+    private readonly _samlSettings = new BehaviorSubject<SamlSettings>(undefined);
+    public get samlSettings(): Observable<SamlSettings> {
+        return this._samlSettings.asObservable();
+    }
+
     /**
      * Emit this event, if the current login data should be stored. This
      * is debounced to minimize requests to the storage service.
@@ -131,7 +143,8 @@ export class LoginDataService {
         private configService: ConfigService,
         private storageService: StorageService,
         private OSStatus: OpenSlidesStatusService,
-        private httpService: HttpService
+        private httpService: HttpService,
+        private constantsService: ConstantsService
     ) {
         this.storeLoginDataRequests.pipe(auditTime(100)).subscribe(() => this.storeLoginData());
         this.setup();
@@ -164,6 +177,12 @@ export class LoginDataService {
         this.configService.get<{ path: string; display_name: string }>('logo_web_header').subscribe(value => {
             if (value) {
                 this._logoWebHeader.next(value);
+                this.storeLoginDataRequests.next();
+            }
+        });
+        this.constantsService.get<SamlSettings>('SamlSettings').subscribe(value => {
+            if (value !== undefined) {
+                this._samlSettings.next(value);
                 this.storeLoginDataRequests.next();
             }
         });
@@ -219,6 +238,7 @@ export class LoginDataService {
         this._theme.next(loginData.theme);
         this._logoWebHeader.next(loginData.logo_web_header);
         this._loginInfoText.next(loginData.login_info_text);
+        this._samlSettings.next(loginData.saml_settings);
     }
 
     /**
@@ -234,7 +254,8 @@ export class LoginDataService {
             privacy_policy: this._privacyPolicy.getValue(),
             legal_notice: this._legalNotice.getValue(),
             theme: this._theme.getValue(),
-            logo_web_header: this._logoWebHeader.getValue()
+            logo_web_header: this._logoWebHeader.getValue(),
+            samlSettings: this._samlSettings.getValue()
         };
         this.storageService.set(LOGIN_DATA_STORAGE_KEY, loginData);
     }

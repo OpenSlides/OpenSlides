@@ -6,13 +6,13 @@ defined in the ASGI_APPLICATION setting.
 import django
 from channels.routing import get_default_application
 
-from .core.apps import startup
 from .utils.main import setup_django_settings_module
+from .utils.startup import run_startup_hooks
 
 
 # Loads the openslides setting. You can use your own settings by setting the
 # environment variable DJANGO_SETTINGS_MODULE
 setup_django_settings_module()
 django.setup()
-startup()
+run_startup_hooks()
 application = get_default_application()

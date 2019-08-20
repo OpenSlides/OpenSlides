@@ -11,6 +11,7 @@ import { AuthService } from 'app/core/core-services/auth.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { LoginDataService } from 'app/core/ui-services/login-data.service';
 import { OverlayService } from 'app/core/ui-services/overlay.service';
+import { UserAuthType } from 'app/shared/models/users/user';
 import { ParentErrorStateMatcher } from 'app/shared/parent-error-state-matcher';
 import { BaseViewComponent } from 'app/site/base/base-view';
 
@@ -51,6 +52,8 @@ export class LoginMaskComponent extends BaseViewComponent implements OnInit, OnD
     public parentErrorStateMatcher = new ParentErrorStateMatcher();
 
     public operatorSubscription: Subscription | null;
+
+    public samlLoginButtonText: string | null = null;
 
     /**
      * The message, that should appear, when the user logs in.
@@ -97,6 +100,12 @@ export class LoginMaskComponent extends BaseViewComponent implements OnInit, OnD
             this.loginDataService.loginInfoText.subscribe(notice => (this.installationNotice = notice))
         );
 
+        this.subscriptions.push(
+            this.loginDataService.samlSettings.subscribe(
+                samlSettings => (this.samlLoginButtonText = samlSettings ? samlSettings.loginButtonText : null)
+            )
+        );
+
         // Maybe the operator changes and the user is logged in. If so, redirect him and boot OpenSlides.
         this.operatorSubscription = this.operator.getUserObservable().subscribe(user => {
             if (user) {
@@ -138,12 +147,12 @@ export class LoginMaskComponent extends BaseViewComponent implements OnInit, OnD
      *
      * Send username and password to the {@link AuthService}
      */
-    public async formLogin(): Promise<void> {
+    public async formLogin(authType: UserAuthType): Promise<void> {
         this.loginErrorMsg = '';
         try {
             this.overlayService.logout(); // Ensures displaying spinner, if logging in
             this.overlayService.showSpinner(this.translate.instant(this.loginMessage), true);
-            await this.authService.login(this.loginForm.value.username, this.loginForm.value.password, () => {
+            await this.authService.login(authType, this.loginForm.value.username, this.loginForm.value.password, () => {
                 this.clearOperatorSubscription(); // We take control, not the subscription.
             });
         } catch (e) {

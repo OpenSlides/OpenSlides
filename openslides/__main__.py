@@ -8,7 +8,6 @@ import django
 from django.core.management import call_command, execute_from_command_line
 
 import openslides
-from openslides.core.apps import startup
 from openslides.utils.arguments import arguments
 from openslides.utils.main import (
     ExceptionArgumentParser,
@@ -20,6 +19,7 @@ from openslides.utils.main import (
     setup_django_settings_module,
     write_settings,
 )
+from openslides.utils.startup import run_startup_hooks
 
 
 def main():
@@ -227,7 +227,7 @@ def start(args):
     if not args.no_browser:
         open_browser(args.host, args.port)
 
-    startup()
+    run_startup_hooks()
 
     # Start the built-in webserver
     #

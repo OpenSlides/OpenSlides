@@ -7,6 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
 
+import { ConstantsService } from 'app/core/core-services/constants.service';
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
@@ -17,6 +18,12 @@ import { BaseViewComponent } from 'app/site/base/base-view';
 import { UserPdfExportService } from '../../services/user-pdf-export.service';
 import { ViewGroup } from '../../models/view-group';
 import { ViewUser } from '../../models/view-user';
+
+interface UserBackends {
+    [name: string]: {
+        disallowedUpdateKeys: string[];
+    };
+}
 
 /**
  * Users detail component for both new and existing users
@@ -67,6 +74,8 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
      */
     public genderList = genders;
 
+    private userBackends: UserBackends | null = null;
+
     /**
      * Constructor for user
      *
@@ -93,10 +102,13 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
         private operator: OperatorService,
         private promptService: PromptService,
         private pdfService: UserPdfExportService,
-        private groupRepo: GroupRepositoryService
+        private groupRepo: GroupRepositoryService,
+        private constantsService: ConstantsService
     ) {
         super(title, translate, matSnackBar);
         this.createForm();
+
+        this.constantsService.get<UserBackends>('UserBackends').subscribe(backends => (this.userBackends = backends));
 
         this.groupRepo
             .getViewModelListObservable()
@@ -236,6 +248,12 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
                 }
             });
         }
+
+        if (!this.newUser && this.user.auth_type && this.userBackends && this.userBackends[this.user.auth_type]) {
+            this.userBackends[this.user.auth_type].disallowedUpdateKeys.forEach(key => {
+                this.personalInfoForm.get(key).disable();
+            });
+        }
     }
 
     /**
@@ -350,7 +368,7 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
      * @returns a translated string with either the localized date/time; of 'No email sent'
      */
     public getEmailSentTime(): string {
-        if (!this.user.is_last_email_send) {
+        if (!this.user.isLastEmailSend) {
             return this.translate.instant('No email sent');
         }
         return this.repo.lastSentEmailTimeString(this.user);

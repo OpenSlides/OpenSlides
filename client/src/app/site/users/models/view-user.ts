@@ -21,8 +21,12 @@ export class ViewUser extends BaseProjectableViewModel<User> implements UserTitl
         return this._model;
     }
 
-    public get is_last_email_send(): boolean {
-        return this.user && !!this.user.last_email_send;
+    public get isSamlUser(): boolean {
+        return this.auth_type === 'saml';
+    }
+
+    public get isLastEmailSend(): boolean {
+        return !!this.user.last_email_send;
     }
 
     public get short_name(): string {

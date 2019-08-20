@@ -86,3 +86,13 @@ def reset_cache(request):
 
     # Set constant default change_id
     cast(MemoryCacheProvider, element_cache.cache_provider).default_change_id = 1
+
+
+@pytest.fixture(scope="session", autouse=True)
+def set_default_user_backend(request):
+    """
+    Sets the userbackend once.
+    """
+    from openslides.users.user_backend import user_backend_manager
+
+    user_backend_manager.collect_backends_from_apps()

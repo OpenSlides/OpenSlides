@@ -155,30 +155,6 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
     }
 
     /**
-     * Updates a the selected user with the form values.
-     * Since user should actually "delete" field, the unified update method
-     * cannot be used
-     *
-     * @param update the forms values
-     * @param viewUser
-     */
-    public async update(update: Partial<User>, viewUser: ViewUser): Promise<void> {
-        // if the user deletes the username, reset
-        // prevents the server of generating '<firstname> <lastname> +1' as username
-        if (update.username === '') {
-            update.username = viewUser.username;
-        }
-
-        // if the update user does not have a gender-field, send gender as empty string.
-        // This allow to delete a previously selected gender
-        if (!update.gender) {
-            update.gender = '';
-        }
-
-        return super.update(update, viewUser);
-    }
-
-    /**
      * Updates the password and sets the password without checking for the old one.
      * Also resets the 'default password' to the newly created one.
      *
