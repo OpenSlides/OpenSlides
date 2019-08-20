@@ -63,7 +63,7 @@ export class HeadBarComponent {
      * Custom icon if necessary
      */
     @Input()
-    public mainButtonIcon = 'add';
+    public mainButtonIcon = 'add_circle';
 
     /**
      * Determine edit mode
@@ -106,10 +106,22 @@ export class HeadBarComponent {
     public prevUrl = '../';
 
     /**
+     * Optional tooltip for the main action
+     */
+    @Input()
+    public mainActionTooltip: string;
+
+    /**
      * Emit a signal to the parent component if the main button was clicked
      */
     @Output()
     public mainEvent = new EventEmitter<void>();
+
+    /**
+     * Optional custom event for cancel the edit
+     */
+    @Output()
+    public cancelEditEvent = new EventEmitter<void>();
 
     /**
      * Sends a signal if a detail view should be saved
@@ -140,6 +152,13 @@ export class HeadBarComponent {
     }
 
     /**
+     * Emits a signal to for custom cancel edits
+     */
+    public sendCancelEditEvent(): void {
+        this.cancelEditEvent.next();
+    }
+
+    /**
      * Clicking the burger-menu-icon should toggle the menu
      */
     public clickHamburgerMenu(): void {
@@ -159,7 +178,7 @@ export class HeadBarComponent {
      */
     public onBackButton(): void {
         if (this.goBack) {
-            this.router.navigateByUrl(this.routingState.previousUrl);
+            this.routingState.goBack();
         } else {
             this.router.navigate([this.prevUrl], { relativeTo: this.route });
         }

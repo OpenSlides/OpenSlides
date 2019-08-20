@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { Router, RoutesRecognized } from '@angular/router';
 
@@ -14,7 +15,7 @@ export class RoutingStateService {
     /**
      * Hold the previous URL
      */
-    private _previousUrl: string;
+    private previousUrl: string;
 
     /**
      * Unsafe paths that the user should not go "back" to
@@ -23,14 +24,11 @@ export class RoutingStateService {
     private unsafeUrls: string[] = ['/login', '/privacypolicy', '/legalnotice'];
 
     /**
-     * @return Get the previous URL
+     * Checks if the previous URL is safe to navigate to.
+     * If this fails, the open nav button should be shown
      */
-    public get previousUrl(): string {
-        return this._previousUrl ? this._previousUrl : null;
-    }
-
     public get isSafePrevUrl(): boolean {
-        return !!this.previousUrl && !this.unsafeUrls.includes(this.previousUrl);
+        return !this.previousUrl || !this.unsafeUrls.includes(this.previousUrl);
     }
 
     /**
@@ -38,14 +36,18 @@ export class RoutingStateService {
      *
      * @param router Angular Router
      */
-    public constructor(private router: Router) {
+    public constructor(private router: Router, private location: Location) {
         this.router.events
             .pipe(
                 filter(e => e instanceof RoutesRecognized),
                 pairwise()
             )
             .subscribe((event: any[]) => {
-                this._previousUrl = event[0].urlAfterRedirects;
+                this.previousUrl = event[0].urlAfterRedirects;
             });
+    }
+
+    public goBack(): void {
+        this.location.back();
     }
 }
