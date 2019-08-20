@@ -11,7 +11,7 @@
         </button>
 
         <!-- Cancel edit button -->
-        <button mat-icon-button *ngIf="editMode" (click)="sendMainEvent()">
+        <button mat-icon-button *ngIf="editMode" (click)="cancelEditEvent ? sendCancelEditEvent() : sendMainEvent()">
             <mat-icon>close</mat-icon>
         </button>
 
@@ -35,21 +35,17 @@
         <!-- Main action button - desktop -->
         <button
             mat-icon-button
-            *ngIf="mainButtonIcon == 'add' && mainButton && !editMode && !vp.isMobile && !multiSelectMode"
+            *ngIf="mainButton && !editMode && !vp.isMobile && !multiSelectMode"
             (click)="sendMainEvent()"
+            matTooltip="{{ mainActionTooltip | translate }}"
         >
-            <mat-icon>add_circle</mat-icon>
-        </button>
-        <button
-            mat-icon-button
-            *ngIf="mainButtonIcon == 'edit' && mainButton && !editMode && !vp.isMobile && !multiSelectMode"
-            (click)="sendMainEvent()"
-        >
-            <mat-icon>edit</mat-icon>
+            <mat-icon>{{ mainButtonIcon }}</mat-icon>
         </button>
 
         <!-- Save button -->
-        <button mat-button *ngIf="editMode" [disabled]="!isSaveButtonEnabled" (click)="save()"><strong translate class="upper">Save</strong></button>
+        <button mat-button *ngIf="editMode" [disabled]="!isSaveButtonEnabled" (click)="save()">
+            <strong translate class="upper">Save</strong>
+        </button>
 
         <!-- Menu button slot -->
         <ng-content *ngIf="!editMode" select=".menu-slot"></ng-content>
@@ -60,9 +56,10 @@
 
 <button
     mat-fab
-    class="head-button "
+    class="head-button"
     *ngIf="mainButton && !editMode && vp.isMobile && !multiSelectMode"
     (click)="sendMainEvent()"
+    matTooltip="{{ mainActionTooltip | translate }}"
 >
     <mat-icon>{{ mainButtonIcon }}</mat-icon>
 </button>

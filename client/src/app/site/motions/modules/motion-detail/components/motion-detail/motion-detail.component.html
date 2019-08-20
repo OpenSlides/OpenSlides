@@ -1,11 +1,13 @@
 <os-head-bar
-    [mainButton]="perms.isAllowed('update', motion)"
-    mainButtonIcon="edit"
-    [prevUrl]="getPrevUrl()"
+    [mainButton]="perms.isAllowed('can_create_amendments', motion)"
+    mainActionTooltip="New amendment"
+    prevUrl="../.."
+    [goBack]="motion && !!motion.parent_id"
     [nav]="false"
     [editMode]="editMotion"
     [isSaveButtonEnabled]="contentForm.valid"
-    (mainEvent)="setEditMode(!editMotion)"
+    (mainEvent)="createAmendment()"
+    (cancelEditEvent)="setEditMode(false)"
     (saveEvent)="saveMotion()"
 >
     <!-- Title -->
@@ -24,15 +26,6 @@
     <div *ngIf="!editMotion && !vp.isMobile" class="extra-controls-slot">
         <div *ngIf="previousMotion">
             <button mat-button (click)="navigateToMotion(previousMotion)">
-                <!-- possible icons:
-                    arrow_left
-                    chevron_left
-                    first_page
-                    arrow_back
-                    arrow_back_ios
-                    navigate_before
-                    fast_rewind
-                -->
                 <mat-icon>chevron_left</mat-icon>
                 <span>{{ previousMotion.identifier }}</span>
             </button>
@@ -40,15 +33,6 @@
         <div *ngIf="nextMotion">
             <button mat-button (click)="navigateToMotion(nextMotion)">
                 <span>{{ nextMotion.identifier }}</span>
-                <!-- possible icons:
-                    arrow_right
-                    chevron_right
-                    last_page
-                    arrow_forward
-                    arrow_forward_ios
-                    navigate_next
-                    fast_forward
-                -->
                 <mat-icon>chevron_right</mat-icon>
             </button>
         </div>
@@ -63,13 +47,25 @@
 
     <mat-menu #motionExtraMenu="matMenu">
         <div *ngIf="motion">
+            <div *ngIf="vp.isMobile">
+                <button mat-menu-item (click)="navigateToMotion(previousMotion)" *ngIf="previousMotion">
+                    <mat-icon>chevron_left</mat-icon>
+                    <span>{{ 'Motion' | translate }} {{ previousMotion.identifier }}</span>
+                </button>
+                <button mat-menu-item (click)="navigateToMotion(nextMotion)" *ngIf="nextMotion">
+                    <mat-icon>chevron_right</mat-icon>
+                    <span>{{ 'Motion' | translate }} {{ nextMotion.identifier }}</span>
+                </button>
+                <mat-divider *ngIf="previousMotion || nextMotion"></mat-divider>
+            </div>
+            <!-- List of speakers -->
+            <os-speaker-button [object]="motion" [menuItem]="true"></os-speaker-button>
             <!-- PDF -->
             <button mat-menu-item (click)="onDownloadPdf()">
                 <mat-icon>picture_as_pdf</mat-icon>
                 <span translate>PDF</span>
             </button>
-            <!-- List of speakers -->
-            <os-speaker-button [object]="motion" [menuItem]="true"></os-speaker-button>
+            <mat-divider></mat-divider>
             <!-- Project -->
             <os-projector-button
                 [object]="motion"
@@ -87,21 +83,6 @@
                     <span translate>Remove from agenda</span>
                 </button>
             </div>
-            <!-- New amendment -->
-            <button mat-menu-item (click)="createAmendment()" *ngIf="perms.isAllowed('can_create_amendments', motion)">
-                <mat-icon>add</mat-icon>
-                <span translate>New amendment</span>
-            </button>
-            <!-- Show entire motion text -->
-            <button
-                mat-menu-item
-                (click)="showAmendmentContext = !showAmendmentContext"
-                *ngIf="motion && motion.isParagraphBasedAmendment()"
-            >
-                <mat-icon>{{ !showAmendmentContext ? 'check_box_outline_blank' : 'check_box' }}</mat-icon>
-                <span translate>Show entire motion text</span>
-            </button>
-
             <button
                 mat-menu-item
                 *osPerms="'core.can_see_history'"
@@ -113,15 +94,22 @@
                     History
                 </span>
             </button>
-
-            <div *ngIf="perms.isAllowed('manage')">
-                <mat-divider></mat-divider>
-                <!-- Delete -->
-                <button mat-menu-item class="red-warning-text" (click)="deleteMotionButton()">
-                    <mat-icon>delete</mat-icon>
-                    <span translate>Delete</span>
-                </button>
-            </div>
+            <mat-divider></mat-divider>
+            <!-- Edit-->
+            <button mat-menu-item (click)="setEditMode(true)" *ngIf="perms.isAllowed('update', motion)">
+                <mat-icon>edit</mat-icon>
+                <span translate>Edit</span>
+            </button>
+            <!-- Delete -->
+            <button
+                mat-menu-item
+                class="red-warning-text"
+                (click)="deleteMotionButton()"
+                *ngIf="perms.isAllowed('manage')"
+            >
+                <mat-icon>delete</mat-icon>
+                <span translate>Delete</span>
+            </button>
         </div>
     </mat-menu>
 </os-head-bar>
@@ -901,6 +889,17 @@
             <div class="paragraphcontext" [innerHtml]="sanitizedText(paragraph.textPost)"></div>
         </div>
     </section>
+
+    <!-- Show entire motion text -->
+    <div>
+        <mat-checkbox
+            (change)="showAmendmentContext = !showAmendmentContext"
+            *ngIf="motion && motion.isParagraphBasedAmendment()"
+            class="show-entire-text-check"
+        >
+            <span translate>Show entire motion text</span>
+        </mat-checkbox>
+    </div>
 </ng-template>
 
 <!-- Line number Menu -->
