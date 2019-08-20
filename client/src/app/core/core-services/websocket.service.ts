@@ -1,13 +1,13 @@
 import { EventEmitter, Injectable, NgZone } from '@angular/core';
-import { MatSnackBar, MatSnackBarRef, SimpleSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBarRef, SimpleSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 
-import { TranslateService } from '@ngx-translate/core';
 import { compress, decompress } from 'lz4js';
 import { Observable, Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { TextDecoder, TextEncoder } from 'text-encoding';
 
+import { OfflineService } from './offline.service';
 import { OpenSlidesStatusService } from './openslides-status.service';
 import { formatQueryParams, QueryParams } from '../definitions/query-params';
 
@@ -189,17 +189,17 @@ export class WebsocketService {
 
     /**
      * Constructor that handles the router
-     * @param matSnackBar
+     *
      * @param zone
-     * @param translate
      * @param router
+     * @param openSlidesStatusService
+     * @param offlineService
      */
     public constructor(
-        private matSnackBar: MatSnackBar,
         private zone: NgZone,
-        private translate: TranslateService,
         private router: Router,
-        private openSlidesStatusService: OpenSlidesStatusService
+        private openSlidesStatusService: OpenSlidesStatusService,
+        private offlineService: OfflineService
     ) {}
 
     /**
@@ -380,12 +380,7 @@ export class WebsocketService {
             }
 
             if (!this.connectionErrorNotice && !onProjector && this.retryCounter > 3) {
-                // So here we have a connection failure that wasn't intendet.
-                this.connectionErrorNotice = this.matSnackBar.open(
-                    this.translate.instant('Offline mode: You can use OpenSlides but changes are not saved.'),
-                    '',
-                    { duration: 0 }
-                );
+                this.offlineService.goOfflineBecauseConnectionLost();
             }
 
             // A random retry timeout between 2000 and 5000 ms.
@@ -405,10 +400,7 @@ export class WebsocketService {
     }
 
     private dismissConnectionErrorNotice(): void {
-        if (this.connectionErrorNotice) {
-            this.connectionErrorNotice.dismiss();
-            this.connectionErrorNotice = null;
-        }
+        this.offlineService.goOnline();
     }
 
     /**

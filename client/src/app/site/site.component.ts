@@ -10,6 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { filter } from 'rxjs/operators';
 
 import { navItemAnim, pageTransition } from '../shared/animations';
+import { OfflineService } from 'app/core/core-services/offline.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { UpdateService } from 'app/core/ui-services/update.service';
 import { langToLocale } from 'app/shared/utils/lang-to-locale';
@@ -53,6 +54,11 @@ export class SiteComponent extends BaseComponent implements OnInit {
     public isLoggedIn: boolean;
 
     /**
+     * Indicates, whether the user is offline or not.
+     */
+    public isOffline: boolean;
+
+    /**
      * Holds the typed search query.
      */
     public searchform: FormGroup;
@@ -84,6 +90,7 @@ export class SiteComponent extends BaseComponent implements OnInit {
         title: Title,
         protected translate: TranslateService,
         configService: ConfigService,
+        offlineService: OfflineService,
         private updateService: UpdateService,
         private authService: AuthService,
         private router: Router,
@@ -104,6 +111,10 @@ export class SiteComponent extends BaseComponent implements OnInit {
                 this.username = translate.instant('Guest');
             }
             this.isLoggedIn = !!user;
+        });
+
+        offlineService.isOffline().subscribe(offline => {
+            this.isOffline = offline;
         });
 
         this.searchform = new FormGroup({ query: new FormControl([]) });

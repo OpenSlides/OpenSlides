@@ -7,18 +7,18 @@ $openslides-blue: (
     400: #508ba6,
     500: #317796,
     600: #2c6f8e,
-    700: #002a42,
-    800: #00253c,
-    900: #001f33,
+    700: #256483,
+    800: #1f5a79,
+    900: #134768,
     A100: #9fd7ff,
     A200: #6cc2ff,
     A400: #39acff,
     A700: #1fa2ff,
     contrast: (
-        50: #ffffff,
-        100: #ffffff,
-        200: #ffffff,
-        300: #ffffff,
+        50: #000000,
+        100: #000000,
+        200: #000000,
+        300: #000000,
         400: #ffffff,
         500: #ffffff,
         600: #ffffff,
@@ -57,9 +57,19 @@ $os-background: mat-color($mat-grey, 100);
  *  The components will get a value from this map.
  */
 $background: map-get($openslides-theme, background);
-$background: map_merge($background, (background: $os-background));
+$background: map_merge(
+    $background,
+    (
+        background: $os-background
+    )
+);
 
 /**
  *  Merge the theme with the custom-background.
  */
-$openslides-theme: map_merge($openslides-theme, (background: $background));
+$openslides-theme: map_merge(
+    $openslides-theme,
+    (
+        background: $background
+    )
+);
