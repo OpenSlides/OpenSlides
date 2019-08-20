@@ -49,7 +49,7 @@ export class MotionExportDialogComponent implements OnInit {
         format: ExportFileFormat.PDF,
         content: ['text', 'reason'],
         pdfOptions: ['toc', 'page'],
-        metaInfo: ['submitters', 'state', 'recommendation', 'category', 'origin', 'tags', 'motion_block', 'polls', 'id']
+        metaInfo: ['submitters', 'state', 'recommendation', 'category', 'origin', 'tags', 'motion_block', 'polls']
     };
 
     /**
@@ -96,6 +96,9 @@ export class MotionExportDialogComponent implements OnInit {
     ) {
         this.defaults.lnMode = this.configService.instant('motions_default_line_numbering');
         this.defaults.crMode = this.configService.instant('motions_recommendation_text_mode');
+        if (this.configService.instant('motions_show_sequential_numbers')) {
+            this.defaults.metaInfo.push('id');
+        }
         // Get the export order, exclude everything that does not count as meta-data
         this.metaInfoExportOrder = motionImportExportHeaderOrder.filter(metaData => {
             return !noMetaData.some(noMeta => metaData === noMeta);
