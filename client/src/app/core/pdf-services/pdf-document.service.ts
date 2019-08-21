@@ -457,7 +457,8 @@ export class PdfDocumentService {
         const vfs = await this.initVfs();
         await this.loadAllImages(vfs);
 
-        if (typeof Worker !== 'undefined') {
+        const isIE = /msie\s|trident\//i.test(window.navigator.userAgent);
+        if (typeof Worker !== 'undefined' && !isIE) {
             const worker = new Worker('./pdf-worker.worker', {
                 type: 'module'
             });
@@ -485,7 +486,7 @@ export class PdfDocumentService {
             });
         } else {
             this.matSnackBar.dismiss();
-            this.matSnackBar.open(this.translate.instant('Web workers are not supported on your browser.'), '', {
+            this.matSnackBar.open(this.translate.instant('Cannot create PDF files on this browser.'), '', {
                 duration: 0
             });
         }
