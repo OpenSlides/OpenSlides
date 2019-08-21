@@ -199,7 +199,7 @@
                         [formControl]="candidatesForm.get('userId')"
                         [multiple]="false"
                         listname="{{ 'Select a new candidate' | translate }}"
-                        [InputListValues]="filteredCandidates"
+                        [inputListValues]="filteredCandidates"
                     ></os-search-value-selector>
                 </form>
             </div>
@@ -263,16 +263,22 @@
                     [multiple]="true"
                     [includeNone]="true"
                     listname="{{ 'Tags' | translate }}"
-                    [InputListValues]="tagsObserver"
+                    [inputListValues]="tagsObserver"
                 ></os-search-value-selector>
             </div>
 
             <!-- Attachments -->
             <div class="content-field">
-                <os-attachment-control (errorHandler)="raiseError($event)" [controlName]="assignmentForm.get('attachments_id')"></os-attachment-control>
+                <os-attachment-control
+                    (errorHandler)="raiseError($event)"
+                    [controlName]="assignmentForm.get('attachments_id')"
+                ></os-attachment-control>
             </div>
 
-            <os-agenda-content-object-form *ngIf="newAssignment" [form]="assignmentForm"></os-agenda-content-object-form>
+            <os-agenda-content-object-form
+                *ngIf="newAssignment"
+                [form]="assignmentForm"
+            ></os-agenda-content-object-form>
 
             <!-- poll_description_default -->
             <div>
@@ -296,8 +302,12 @@
                         type="number"
                         required
                     />
-                    <mat-error *ngIf="assignmentForm.get('open_posts').hasError('required')">{{ 'This field is required.' | translate }}</mat-error>
-                    <mat-error *ngIf="assignmentForm.get('open_posts').hasError('min')">{{ 'The number has to be greater than 0.' | translate }}</mat-error>
+                    <mat-error *ngIf="assignmentForm.get('open_posts').hasError('required')">{{
+                        'This field is required.' | translate
+                    }}</mat-error>
+                    <mat-error *ngIf="assignmentForm.get('open_posts').hasError('min')">{{
+                        'The number has to be greater than 0.' | translate
+                    }}</mat-error>
                 </mat-form-field>
             </div>
             <!-- TODO searchValueSelector: Parent -->

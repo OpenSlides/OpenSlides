@@ -2,7 +2,8 @@ import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@an
 import { ControlValueAccessor, FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 
-import { BehaviorSubject } from 'rxjs';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { MediafileRepositoryService } from 'app/core/repositories/mediafiles/mediafile-repository.service';
 import { mediumDialogSettings } from 'app/shared/utils/dialog-settings';
@@ -29,7 +30,7 @@ export class AttachmentControlComponent implements OnInit, ControlValueAccessor 
     /**
      * The file list that is necessary for the `SearchValueSelector`
      */
-    public mediaFileList: BehaviorSubject<ViewMediafile[]> = new BehaviorSubject([]);
+    public mediaFileList: Observable<ViewMediafile[]>;
 
     /**
      * Default constructor
@@ -43,7 +44,9 @@ export class AttachmentControlComponent implements OnInit, ControlValueAccessor 
      * On init method
      */
     public ngOnInit(): void {
-        this.mediaFileList = this.mediaService.getViewModelListBehaviorSubject();
+        this.mediaFileList = this.mediaService
+            .getViewModelListObservable()
+            .pipe(map(files => files.filter(file => !file.is_directory)));
     }
 
     /**
@@ -52,7 +55,7 @@ export class AttachmentControlComponent implements OnInit, ControlValueAccessor 
      * @param dialog the dialog to open
      */
     public openUploadDialog(dialog: TemplateRef<string>): void {
-        this.dialogService.open(dialog, mediumDialogSettings);
+        this.dialogService.open(dialog, { ...mediumDialogSettings, disableClose: false });
     }
 
     /**

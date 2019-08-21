@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { MatSelect } from '@angular/material';
 
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
 
 import { Selectable } from '../selectable';
@@ -79,7 +79,7 @@ export class SearchValueSelectorComponent implements OnDestroy {
      * changes its values.
      */
     @Input()
-    public set InputListValues(value: BehaviorSubject<Selectable[]>) {
+    public set inputListValues(value: Observable<Selectable[]>) {
         if (!value) {
             return;
         }
@@ -91,9 +91,9 @@ export class SearchValueSelectorComponent implements OnDestroy {
         this._inputListSubscription = value.pipe(auditTime(10)).subscribe(items => {
             this.selectableItems = items;
             if (this.formControl) {
-                items.length === 0
-                    ? this.formControl.disable({ emitEvent: false })
-                    : this.formControl.enable({ emitEvent: false });
+                !!items && items.length > 0
+                    ? this.formControl.enable({ emitEvent: false })
+                    : this.formControl.disable({ emitEvent: false });
             }
         });
     }

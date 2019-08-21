@@ -128,7 +128,7 @@
                 ngDefaultControl
                 [formControl]="addSpeakerForm.get('user_id')"
                 listname="{{ 'Select or search new speaker ...' | translate }}"
-                [InputListValues]="filteredUsers"
+                [inputListValues]="filteredUsers"
             ></os-search-value-selector>
         </form>
     </div>
@@ -136,7 +136,12 @@
     <!-- Add me and remove me if OP has correct permission -->
     <div *osPerms="'agenda.can_be_speaker'" class="add-self-buttons">
         <div *ngIf="speakers && !closedList">
-            <button mat-stroked-button [disabled]="viewListOfSpeakers.closed" (click)="addNewSpeaker()" *ngIf="!isOpInList() && canAddSelf">
+            <button
+                mat-stroked-button
+                [disabled]="viewListOfSpeakers.closed"
+                (click)="addNewSpeaker()"
+                *ngIf="!isOpInList() && canAddSelf"
+            >
                 <mat-icon>add</mat-icon>
                 <span translate>Add me</span>
             </button>

@@ -273,7 +273,7 @@
                 [formControl]="fileEditForm.get('access_groups_id')"
                 [multiple]="true"
                 listname="{{ 'Access groups' | translate }}"
-                [InputListValues]="groupsBehaviorSubject"
+                [inputListValues]="groupsBehaviorSubject"
             ></os-search-value-selector>
         </form>
     </div>
@@ -308,7 +308,7 @@
                 [formControl]="newDirectoryForm.get('access_groups_id')"
                 [multiple]="true"
                 listname="{{ 'Access groups' | translate }}"
-                [InputListValues]="groupsBehaviorSubject"
+                [inputListValues]="groupsBehaviorSubject"
             ></os-search-value-selector>
         </form>
     </div>
@@ -335,7 +335,7 @@
             [includeNone]="true"
             [noneTitle]="'Base folder'"
             listname="{{ 'Parent directory' | translate }}"
-            [InputListValues]="filteredDirectoryBehaviorSubject"
+            [inputListValues]="filteredDirectoryBehaviorSubject"
         ></os-search-value-selector>
     </div>
     <div mat-dialog-actions>

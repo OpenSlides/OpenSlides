@@ -21,7 +21,7 @@
             [includeNone]="true"
             [noneTitle]="'Base folder'"
             listname="{{ 'Parent directory' | translate }}"
-            [InputListValues]="directoryBehaviorSubject"
+            [inputListValues]="directoryBehaviorSubject"
         ></os-search-value-selector>
     </div>
 
@@ -72,7 +72,7 @@
                         [formControl]="file.form.get('access_groups_id')"
                         [multiple]="true"
                         listname="{{ 'Access groups' | translate }}"
-                        [InputListValues]="groupsBehaviorSubject"
+                        [inputListValues]="groupsBehaviorSubject"
                     ></os-search-value-selector>
                 </td>
             </ng-container>
