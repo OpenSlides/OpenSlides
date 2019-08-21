@@ -110,6 +110,7 @@ _('Reason required for creating new motion');
 _('Hide reason on projector');
 _('Hide meta information box on projector');
 _('Hide recommendation on projector');
+_('Hide referring motions');
 _('Show the sequential number for a motion');
 _('In motion list, motion detail and PDF.');
 _('Stop submitting new motions by non-staff users');
@@ -388,3 +389,4 @@ _('Motion change recommendation deleted');
 
 // core misc strings
 _('items per page');
+_('Tag');

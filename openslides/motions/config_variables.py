@@ -126,12 +126,22 @@ def get_config_variables():
     )
 
     yield ConfigVariable(
+        name="motions_hide_referring_motions",
+        default_value=False,
+        input_type="boolean",
+        label="Hide referring motions",
+        weight=328,
+        group="Motions",
+        subgroup="General",
+    )
+
+    yield ConfigVariable(
         name="motions_show_sequential_numbers",
         default_value=True,
         input_type="boolean",
         label="Show the sequential number for a motion",
         help_text="In motion list, motion detail and PDF.",
-        weight=328,
+        weight=329,
         group="Motions",
         subgroup="General",
     )

@@ -11,22 +11,24 @@
             <h3>{{ data.data.recommender }}</h3>
             {{ getRecommendationLabel() }}
         </div>
-
-        <!-- recommendation referencing motions -->
-        <div *ngIf="data.data.recommendation_referencing_motions">
-            <h3 translate>Referring motions</h3>
-            <div *ngFor="let titleInformation of data.data.recommendation_referencing_motions">
-                {{ getIdentifierOrTitle(titleInformation) }}
-            </div>
-        </div>
     </div>
 
     <div [ngStyle]="{width: data.data.show_meta_box ? 'calc(100% - 250px)' : '100%'}">
         <!-- Title -->
         <div class="spacer" [ngStyle]="{height: projector.show_header_footer ? '50px' : '0'}"></div>
         <div class="slidetitle">
-            <h1>{{ getTitleWithChanges() }}</h1>
-            <h2><span translate>Motion</span> {{ data.data.identifier }}</h2>
+            <h1>
+                <span *ngIf="data.data.identifier">{{ data.data.identifier }}:</span>
+                {{ getTitleWithChanges() }}
+            </h1>
+
+            <!-- recommendation referencing motions -->
+            <h2 *ngIf="data.data.recommendation_referencing_motions">
+                <span translate>Referring motions</span>:
+                <span *ngFor="let titleInformation of data.data.recommendation_referencing_motions; let last = last">
+                    {{ getIdentifierOrTitle(titleInformation) }}<span *ngIf="!last">,</span>
+                </span>
+            </h2>
         </div>
     </div>
 

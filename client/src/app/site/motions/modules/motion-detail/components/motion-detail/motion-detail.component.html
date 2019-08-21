@@ -312,11 +312,12 @@
         </div>
 
         <!-- recommendation referencing motions -->
-        <div *ngIf="!editMotion && recommendationReferencingMotions.length > 0">
+        <div *ngIf="!editMotion && recommendationReferencingMotions.length > 0 && showReferringMotions">
             <h4 translate>Referring motions</h4>
-            <div *ngFor="let motion of recommendationReferencingMotions">
-                <a [routerLink]="motion.getDetailStateURL()">{{ motion.identifierOrTitle }}</a>
-            </div>
+            <span *ngFor="let motion of recommendationReferencingMotions; let last = last">
+                <a [routerLink]="motion.getDetailStateURL()" class="nowrap">{{ motion.identifierOrTitle }}</a>
+                <span *ngIf="!last"> · </span>
+            </span>
         </div>
 
         <!-- Category -->

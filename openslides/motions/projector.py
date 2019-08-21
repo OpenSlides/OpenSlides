@@ -154,6 +154,7 @@ async def motion_slide(
     * amendment_paragraphs
     * is_child
     * show_meta_box
+    * show_referring_motions
     * reason
     * modified_final_version
     * recommendation
@@ -179,6 +180,9 @@ async def motion_slide(
     # Get some needed config values
     show_meta_box = not await get_config(
         all_data, "motions_disable_sidebox_on_projector"
+    )
+    show_referring_motions = not await get_config(
+        all_data, "motions_hide_referring_motions"
     )
     line_length = await get_config(all_data, "motions_line_length")
     line_numbering_mode = await get_config(all_data, "motions_default_line_numbering")
@@ -213,6 +217,7 @@ async def motion_slide(
         "base_statute": base_statute,
         "is_child": bool(motion["parent_id"]),
         "show_meta_box": show_meta_box,
+        "show_referring_motions": show_referring_motions,
         "change_recommendations": change_recommendations,
         "amendments": amendments,
         "line_length": line_length,
@@ -261,6 +266,7 @@ async def motion_slide(
             )
         ]
 
+    if show_referring_motions:
         # Add recommendation-referencing motions
         return_value[
             "recommendation_referencing_motions"
