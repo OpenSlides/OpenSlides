@@ -393,6 +393,17 @@ export class PdfDocumentService {
     }
 
     /**
+     * Shows the progress bar earlier
+     */
+    private showProgress(): void {
+        this.matSnackBar.openFromComponent(ProgressSnackBarComponent, {
+            duration: 0
+        });
+        this.progressService.message = this.translate.instant('Creating PDF file...');
+        this.progressService.progressMode = 'determinate';
+    }
+
+    /**
      * Downloads a pdf with the standard page definitions.
      *
      * @param docDefinition the structure of the PDF document
@@ -400,6 +411,7 @@ export class PdfDocumentService {
      * @param metadata
      */
     public download(docDefinition: object, filename: string, metadata?: object, exportInfo?: MotionExportInfo): void {
+        this.showProgress();
         this.getStandardPaper(docDefinition, metadata, exportInfo).then(doc => {
             this.createPdf(doc, filename);
         });
@@ -413,6 +425,7 @@ export class PdfDocumentService {
      * @param metadata
      */
     public downloadLandscape(docDefinition: object, filename: string, metadata?: object): void {
+        this.showProgress();
         this.getStandardPaper(docDefinition, metadata, null, null, [50, 80, 50, 75], true).then(doc => {
             this.createPdf(doc, filename);
         });
@@ -426,6 +439,7 @@ export class PdfDocumentService {
      * @param logo (optional) url of a logo to be placed as ballot logo
      */
     public downloadWithBallotPaper(docDefinition: object, filename: string, logo?: string): void {
+        this.showProgress();
         this.getBallotPaper(docDefinition, logo).then(doc => {
             this.createPdf(doc, filename);
         });
@@ -439,17 +453,6 @@ export class PdfDocumentService {
      */
     private async createPdf(doc: object, filetitle: string): Promise<void> {
         const filename = `${filetitle}.pdf`;
-
-        // set the required progress info
-        this.progressService.progressInfo = {
-            mode: 'determinate',
-            text: filename
-        };
-
-        // open progress bar
-        this.matSnackBar.openFromComponent(ProgressSnackBarComponent, {
-            duration: 0
-        });
         const fonts = this.getPdfFonts();
         const vfs = await this.initVfs();
         await this.loadAllImages(vfs);
@@ -470,7 +473,6 @@ export class PdfDocumentService {
 
                 // if the worker returns an object, it's always the document
                 if (typeof data === 'object') {
-                    // close progress bar
                     this.matSnackBar.dismiss();
                     saveAs(data, filename, { autoBOM: true });
                 }
@@ -482,6 +484,7 @@ export class PdfDocumentService {
                 vfs: vfs
             });
         } else {
+            this.matSnackBar.dismiss();
             this.matSnackBar.open(this.translate.instant('Web workers are not supported on your browser.'), '', {
                 duration: 0
             });

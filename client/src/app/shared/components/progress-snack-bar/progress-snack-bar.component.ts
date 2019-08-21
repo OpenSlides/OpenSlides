@@ -42,12 +42,17 @@ export class ProgressSnackBarComponent implements OnInit, OnDestroy {
     /**
      * The sub for the info
      */
-    private infoSubscription: Subscription;
+    private messageSubscription: Subscription;
 
     /**
      * The sub for the amount
      */
     private valueSubscription: Subscription;
+
+    /**
+     *
+     */
+    private progressModeSubscription: Subscription;
 
     /**
      * Public getter of the progress bar mode
@@ -79,13 +84,17 @@ export class ProgressSnackBarComponent implements OnInit, OnDestroy {
      * Get the progress subject and subscribe to the info subject
      */
     public ngOnInit(): void {
-        this.infoSubscription = this.progressService.info.subscribe(info => {
-            this._message = info.text;
-            this._mode = info.mode;
+        this.messageSubscription = this.progressService.messageSubject.subscribe(message => {
+            this._message = message;
             this.cd.detectChanges();
         });
 
-        this.valueSubscription = this.progressService.amount.pipe(distinctUntilChanged()).subscribe(value => {
+        this.progressModeSubscription = this.progressService.progressModeSubject.subscribe(mode => {
+            this._mode = mode;
+            this.cd.detectChanges();
+        });
+
+        this.valueSubscription = this.progressService.amountSubject.pipe(distinctUntilChanged()).subscribe(value => {
             if (value - this._value >= 5 || value === 100) {
                 this._value = value;
                 this.cd.detectChanges();
@@ -97,14 +106,19 @@ export class ProgressSnackBarComponent implements OnInit, OnDestroy {
      * clear the Subscriptions
      */
     public ngOnDestroy(): void {
-        if (this.infoSubscription) {
-            this.infoSubscription.unsubscribe();
-            this.infoSubscription = null;
+        if (this.messageSubscription) {
+            this.messageSubscription.unsubscribe();
+            this.messageSubscription = null;
         }
 
         if (this.valueSubscription) {
             this.valueSubscription.unsubscribe();
             this.valueSubscription = null;
+        }
+
+        if (this.progressModeSubscription) {
+            this.progressModeSubscription.unsubscribe();
+            this.progressModeSubscription = null;
         }
     }
 }
