@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatButtonToggle } from '@angular/material/button-toggle';
 import { MatDialogRef } from '@angular/material/dialog';
 
+import { BehaviorSubject } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
 
 import { StorageService } from 'app/core/core-services/storage.service';
@@ -43,6 +44,11 @@ export class MotionExportDialogComponent implements OnInit {
     public exportForm: FormGroup;
 
     /**
+     * Store the subject to the ViewMotionCommentSection
+     */
+    private commentsSubject: BehaviorSubject<ViewMotionCommentSection[]>;
+
+    /**
      * The default export values in contrast to the restored values
      */
     private defaults: MotionExportInfo = {
@@ -58,10 +64,10 @@ export class MotionExportDialogComponent implements OnInit {
     public metaInfoExportOrder: string[];
 
     /**
-     * @returns a list of availavble commentSections
+     * @returns a list of available commentSections
      */
     public get commentsToExport(): ViewMotionCommentSection[] {
-        return this.commentRepo.getViewModelList();
+        return this.commentsSubject ? this.commentsSubject.value : [];
     }
 
     /**
@@ -96,6 +102,7 @@ export class MotionExportDialogComponent implements OnInit {
     ) {
         this.defaults.lnMode = this.configService.instant('motions_default_line_numbering');
         this.defaults.crMode = this.configService.instant('motions_recommendation_text_mode');
+        this.commentsSubject = this.commentRepo.getViewModelListBehaviorSubject();
         if (this.configService.instant('motions_show_sequential_numbers')) {
             this.defaults.metaInfo.push('id');
         }
