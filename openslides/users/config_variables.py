@@ -44,7 +44,7 @@ def get_config_variables():
         label="Title for access data and welcome PDF",
         weight=520,
         group="Participants",
-        subgroup="PDF",
+        subgroup="PDF export",
     )
 
     yield ConfigVariable(
@@ -53,7 +53,7 @@ def get_config_variables():
         label="Help text for access data and welcome PDF",
         weight=530,
         group="Participants",
-        subgroup="PDF",
+        subgroup="PDF export",
     )
 
     # TODO: Use Django's URLValidator here.
@@ -64,7 +64,7 @@ def get_config_variables():
         help_text="Used for QRCode in PDF of access data.",
         weight=540,
         group="Participants",
-        subgroup="PDF",
+        subgroup="PDF export",
     )
 
     yield ConfigVariable(
@@ -74,7 +74,7 @@ def get_config_variables():
         help_text="Used for WLAN QRCode in PDF of access data.",
         weight=550,
         group="Participants",
-        subgroup="PDF",
+        subgroup="PDF export",
     )
 
     yield ConfigVariable(
@@ -84,7 +84,7 @@ def get_config_variables():
         help_text="Used for WLAN QRCode in PDF of access data.",
         weight=560,
         group="Participants",
-        subgroup="PDF",
+        subgroup="PDF export",
     )
 
     yield ConfigVariable(
@@ -101,7 +101,7 @@ def get_config_variables():
         ),
         weight=570,
         group="Participants",
-        subgroup="PDF",
+        subgroup="PDF export",
     )
 
     # Email
@@ -129,7 +129,7 @@ def get_config_variables():
 
     yield ConfigVariable(
         name="users_email_subject",
-        default_value="Your login for {event_name}",
+        default_value="OpenSlides access data",
         input_type="string",
         label="Email subject",
         help_text="You can use {event_name} and {username} as placeholder.",

@@ -170,10 +170,3 @@ LOGGING = {
         }
     },
 }
-
-
-# Customization of OpenSlides apps
-
-MOTION_IDENTIFIER_MIN_DIGITS = 1
-MOTION_IDENTIFIER_WITHOUT_BLANKS = False
-MOTIONS_ALLOW_AMENDMENTS_OF_AMENDMENTS = True

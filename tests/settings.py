@@ -60,11 +60,6 @@ STATICFILES_DIRS.insert(0, os.path.join(OPENSLIDES_USER_DATA_PATH, "static"))  #
 MEDIA_ROOT = os.path.join(OPENSLIDES_USER_DATA_PATH, "")
 
 
-# Customization of OpenSlides apps
-
-MOTION_IDENTIFIER_MIN_DIGITS = 1
-
-
 # Special settings only for testing
 
 # Use a faster password hasher.

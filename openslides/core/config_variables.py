@@ -133,38 +133,6 @@ def get_config_variables():
         subgroup="System",
     )
 
-    # Projector
-
-    yield ConfigVariable(
-        name="projector_language",
-        default_value="browser",
-        input_type="choice",
-        label="Projector language",
-        choices=(
-            {"value": "browser", "display_name": "Current browser language"},
-            {"value": "en", "display_name": "English"},
-            {"value": "de", "display_name": "Deutsch"},
-            {"value": "fr", "display_name": "Français"},
-            {"value": "es", "display_name": "Español"},
-            {"value": "pt", "display_name": "Português"},
-            {"value": "cs", "display_name": "Čeština"},
-            {"value": "ru", "display_name": "русский"},
-        ),
-        weight=150,
-        group="General",
-        subgroup="Projector",
-    )
-
-    yield ConfigVariable(
-        name="projector_default_countdown",
-        default_value=60,
-        input_type="integer",
-        label="Predefined seconds of new countdowns",
-        weight=152,
-        group="General",
-        subgroup="Projector",
-    )
-
     # General export settings
 
     yield ConfigVariable(

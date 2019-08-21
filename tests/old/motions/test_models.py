@@ -89,13 +89,14 @@ class ModelTest(TestCase):
         parent + a suffix.
         """
         config["motions_amendments_enabled"] = True
+        config["motions_identifier_with_blank"] = False
         self.motion.identifier = "Parent identifier"
         self.motion.save()
         motion = Motion(parent=self.motion)
 
         motion.set_identifier()
 
-        self.assertEqual(motion.identifier, "Parent identifier - 1")
+        self.assertEqual(motion.identifier, "Parent identifier-1")
 
     def test_set_identifier_second_amendment(self):
         """
@@ -110,4 +111,4 @@ class ModelTest(TestCase):
 
         motion.set_identifier()
 
-        self.assertEqual(motion.identifier, "Parent identifier - 2")
+        self.assertEqual(motion.identifier, "Parent identifier-2")

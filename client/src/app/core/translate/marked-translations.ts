@@ -100,9 +100,6 @@ _('Topics');
 _('General');
 _('Workflow of new motions');
 _('Workflow of new statute amendments');
-_('Numbered per category');
-_('Serially numbered');
-_('Set it manually');
 _('Motion preamble');
 _('The assembly may decide:');
 _('Default line numbering');
@@ -113,8 +110,9 @@ _('Reason required for creating new motion');
 _('Hide reason on projector');
 _('Hide meta information box on projector');
 _('Hide recommendation on projector');
+_('Show the sequential number for a motion');
+_('In motion list, motion detail and PDF.');
 _('Stop submitting new motions by non-staff users');
-_('Allow to disable versioning');
 _('Name of recommender');
 _(
     'Will be displayed as label before selected recommendation. Use an empty value to disable the recommendation system.'
@@ -122,7 +120,15 @@ _(
 _('Name of recommender for statute amendments');
 _('Will be displayed as label before selected recommendation in statute amendments.');
 _('Default text version for change recommendations');
-_('Show the sequential number for a motion');
+_('Sort motions by');
+// subgroup Numbering
+_('Numbered per category');
+_('Serially numbered');
+_('Set it manually');
+_('Number of minimal digits for identifier');
+_('Uses leading zeros to sort motions correctly by identifier.');
+_('Allow blank in identifier');
+_("Blank between prefix and number, e.g. 'A 001'.");
 // subgroup Amendments
 _('Amendments');
 _('Activate statute amendments');
@@ -135,6 +141,7 @@ _('How to create new amendments');
 _('Empty text field');
 _('Edit the whole motion text');
 _('Paragraph-based, Diff-enabled');
+_('Allow amendments of amendments');
 // subgroup Supporters
 _('Supporters');
 _('Number of (minimum) required supporters for a motion');
@@ -165,7 +172,6 @@ _('Title for PDF documents of motions');
 _('Preamble text for PDF documents of motions');
 _('Show submitters and recommendation in table of contents');
 _('Show checkbox to record decision');
-_('Sort motions by');
 // misc motion strings
 _('Amendment');
 _('Statute amendment for');
@@ -340,7 +346,7 @@ _('Sender name');
 _('The sender address is defined in the OpenSlides server settings and should modified by administrator only.');
 _('Reply address');
 _('Email subject');
-_('Your login for {event_name}');
+_('OpenSlides access data');
 _('You can use {event_name} and {username} as placeholder.');
 _('Email body');
 _(

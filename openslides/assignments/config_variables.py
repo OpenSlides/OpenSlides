@@ -68,16 +68,6 @@ def get_config_variables():
     )
 
     yield ConfigVariable(
-        name="assignments_add_candidates_to_list_of_speakers",
-        default_value=True,
-        input_type="boolean",
-        label="Put all candidates on the list of speakers",
-        weight=428,
-        group="Elections",
-        subgroup="Ballot and ballot papers",
-    )
-
-    yield ConfigVariable(
         name="assignments_pdf_ballot_papers_selection",
         default_value="CUSTOM_NUMBER",
         input_type="choice",
@@ -103,10 +93,20 @@ def get_config_variables():
         default_value=8,
         input_type="integer",
         label="Custom number of ballot papers",
-        weight=440,
+        weight=435,
         group="Elections",
         subgroup="Ballot and ballot papers",
         validators=(MinValueValidator(1),),
+    )
+
+    yield ConfigVariable(
+        name="assignments_add_candidates_to_list_of_speakers",
+        default_value=True,
+        input_type="boolean",
+        label="Put all candidates on the list of speakers",
+        weight=440,
+        group="Elections",
+        subgroup="Ballot and ballot papers",
     )
 
     # PDF
@@ -117,7 +117,7 @@ def get_config_variables():
         label="Title for PDF document (all elections)",
         weight=460,
         group="Elections",
-        subgroup="PDF",
+        subgroup="PDF export",
     )
 
     yield ConfigVariable(
@@ -126,5 +126,5 @@ def get_config_variables():
         label="Preamble text for PDF document (all elections)",
         weight=470,
         group="Elections",
-        subgroup="PDF",
+        subgroup="PDF export",
     )

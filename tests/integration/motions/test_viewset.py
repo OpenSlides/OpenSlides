@@ -1,7 +1,6 @@
 import json
 
 import pytest
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework import status
@@ -295,7 +294,7 @@ class CreateMotion(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         motion = Motion.objects.get()
         self.assertEqual(motion.category, category)
-        self.assertEqual(motion.identifier, "TEST_PREFIX_la0eadaewuec3seoxeiN 1")
+        self.assertEqual(motion.identifier, "TEST_PREFIX_la0eadaewuec3seoxeiN1")
 
     def test_with_submitters(self):
         submitter_1 = get_user_model().objects.create_user(
@@ -1942,24 +1941,25 @@ class NumberMotionsInCategories(TestCase):
 
     def test_with_blanks(self):
         config["motions_amendments_prefix"] = "-X"
-        settings.MOTION_IDENTIFIER_WITHOUT_BLANKS = True
-        settings.MOTION_IDENTIFIER_MIN_DIGITS = 3
+        config["motions_identifier_with_blank"] = False
+        config["motions_identifier_min_digits"] = 3
         response = self.client.post(reverse("category-numbering", args=[self.A.pk]))
-        settings.MOTION_IDENTIFIER_WITHOUT_BLANKS = False
-        settings.MOTION_IDENTIFIER_MIN_DIGITS = 1
+        config["motions_identifier_with_blank"] = True
+        config["motions_identifier_min_digits"] = 1
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(Motion.objects.get(pk=self.M1.pk).identifier, "test_A001")
-        self.assertEqual(Motion.objects.get(pk=self.M3.pk).identifier, "test_A002")
-        self.assertEqual(Motion.objects.get(pk=self.M2.pk).identifier, "test_C003")
+        self.assertEqual(Motion.objects.get(pk=self.M1.pk).identifier, "test_A 001")
+        self.assertEqual(Motion.objects.get(pk=self.M3.pk).identifier, "test_A 002")
+        self.assertEqual(Motion.objects.get(pk=self.M2.pk).identifier, "test_C 003")
         self.assertEqual(
-            Motion.objects.get(pk=self.M2_A1.pk).identifier, "test_C003-X002"
+            Motion.objects.get(pk=self.M2_A1.pk).identifier, "test_C 003 -X 002"
         )
         self.assertEqual(
-            Motion.objects.get(pk=self.M2_A1_A1.pk).identifier, "test_C003-X002-X001"
+            Motion.objects.get(pk=self.M2_A1_A1.pk).identifier,
+            "test_C 003 -X 002 -X 001",
         )
         self.assertEqual(
-            Motion.objects.get(pk=self.M2_A2.pk).identifier, "test_C003-X001"
+            Motion.objects.get(pk=self.M2_A2.pk).identifier, "test_C 003 -X 001"
         )
 
     def test_existing_identifier_no_category(self):
