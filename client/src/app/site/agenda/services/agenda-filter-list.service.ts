@@ -16,6 +16,11 @@ import { ViewItem } from '../models/view-item';
 })
 export class AgendaFilterListService extends BaseFilterListService<ViewItem> {
     /**
+     * set the storage key name
+     */
+    protected storageKey = 'AgendaList';
+
+    /**
      * Constructor. Also creates the dynamic filter options
      *
      * @param store
