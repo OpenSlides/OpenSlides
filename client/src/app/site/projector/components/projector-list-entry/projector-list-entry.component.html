@@ -1,4 +1,4 @@
-<os-meta-text-block showActionRow="false" *ngIf="projector">
+<os-meta-text-block showActionRow="false" *ngIf="projector" [disableExpandControl]="true">
     <ng-container class="meta-text-block-title">
         {{ projector.getTitle() | translate }}
     </ng-container>
@@ -35,7 +35,11 @@
                 <h3 translate>Resolution and size</h3>
                 <!-- Aspect ratio field -->
                 <mat-radio-group formControlName="aspectRatio" [name]="projector.id">
-                    <mat-radio-button *ngFor="let ratio of aspectRatiosKeys" [value]="ratio" (change)="aspectRatioChanged($event)">
+                    <mat-radio-button
+                        *ngFor="let ratio of aspectRatiosKeys"
+                        [value]="ratio"
+                        (change)="aspectRatioChanged($event)"
+                    >
                         {{ ratio }}
                     </mat-radio-button>
                 </mat-radio-group>
@@ -53,7 +57,11 @@
 
                 <!-- projection defaults -->
                 <h3 translate>Projection defaults</h3>
-                <mat-select formControlName="projectiondefaults_id" placeholder="{{ 'Projection defaults' | translate }}" [multiple]="true">
+                <mat-select
+                    formControlName="projectiondefaults_id"
+                    placeholder="{{ 'Projection defaults' | translate }}"
+                    [multiple]="true"
+                >
                     <mat-option *ngFor="let pd of projectionDefaults" [value]="pd.id">
                         {{ pd.getTitle() | translate }}
                     </mat-option>
@@ -71,7 +79,11 @@
                         </mat-form-field>
                     </div>
                     <div class="reset-button">
-                        <button mat-icon-button matTooltip="{{ 'Reset' | translate }}" (click)="resetField('color', '#000000')">
+                        <button
+                            mat-icon-button
+                            matTooltip="{{ 'Reset' | translate }}"
+                            (click)="resetField('color', '#000000')"
+                        >
                             <mat-icon>replay</mat-icon>
                         </button>
                     </div>
@@ -88,7 +100,11 @@
                         </mat-form-field>
                     </div>
                     <div class="reset-button">
-                        <button mat-icon-button matTooltip="{{ 'Reset' | translate }}" (click)="resetField('background_color', '#ffffff')">
+                        <button
+                            mat-icon-button
+                            matTooltip="{{ 'Reset' | translate }}"
+                            (click)="resetField('background_color', '#ffffff')"
+                        >
                             <mat-icon>replay</mat-icon>
                         </button>
                     </div>
@@ -105,7 +121,11 @@
                         </mat-form-field>
                     </div>
                     <div class="reset-button">
-                        <button mat-icon-button matTooltip="{{ 'Reset' | translate }}" (click)="resetField('header_background_color', '#317796')">
+                        <button
+                            mat-icon-button
+                            matTooltip="{{ 'Reset' | translate }}"
+                            (click)="resetField('header_background_color', '#317796')"
+                        >
                             <mat-icon>replay</mat-icon>
                         </button>
                     </div>
@@ -122,7 +142,11 @@
                         </mat-form-field>
                     </div>
                     <div class="reset-button">
-                        <button mat-icon-button matTooltip="{{ 'Reset' | translate }}" (click)="resetField('header_font_color', '#f5f5f5')">
+                        <button
+                            mat-icon-button
+                            matTooltip="{{ 'Reset' | translate }}"
+                            (click)="resetField('header_font_color', '#f5f5f5')"
+                        >
                             <mat-icon>replay</mat-icon>
                         </button>
                     </div>
@@ -139,7 +163,11 @@
                         </mat-form-field>
                     </div>
                     <div class="reset-button">
-                        <button mat-icon-button matTooltip="{{ 'Reset' | translate }}" (click)="resetField('header_h1_color', '#317796')">
+                        <button
+                            mat-icon-button
+                            matTooltip="{{ 'Reset' | translate }}"
+                            (click)="resetField('header_h1_color', '#317796')"
+                        >
                             <mat-icon>replay</mat-icon>
                         </button>
                     </div>
@@ -156,7 +184,11 @@
                         </mat-form-field>
                     </div>
                     <div class="reset-button">
-                        <button mat-icon-button matTooltip="{{ 'Reset' | translate }}" (click)="resetField('chyron_background_color', '#317796')">
+                        <button
+                            mat-icon-button
+                            matTooltip="{{ 'Reset' | translate }}"
+                            (click)="resetField('chyron_background_color', '#317796')"
+                        >
                             <mat-icon>replay</mat-icon>
                         </button>
                     </div>
@@ -173,7 +205,11 @@
                         </mat-form-field>
                     </div>
                     <div class="reset-button">
-                        <button mat-icon-button matTooltip="{{ 'Reset' | translate }}" (click)="resetField('chyron_font_color', '#ffffff')">
+                        <button
+                            mat-icon-button
+                            matTooltip="{{ 'Reset' | translate }}"
+                            (click)="resetField('chyron_font_color', '#ffffff')"
+                        >
                             <mat-icon>replay</mat-icon>
                         </button>
                     </div>

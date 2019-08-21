@@ -3,18 +3,29 @@
         <mat-card-header>
             <mat-card-title>
                 <div class="title-container">
-                    <div>
+                    <div class="ellipsis-overflow">
                         <ng-container *ngTemplateOutlet="title"></ng-container>
                     </div>
-                    <div *ngIf="showActionRow">
+                    <div class="action-row" *ngIf="showActionRow">
                         <ng-container *ngTemplateOutlet="actionRow"></ng-container>
                     </div>
                 </div>
-
             </mat-card-title>
         </mat-card-header>
         <mat-card-content>
-            <ng-container *ngTemplateOutlet="content"></ng-container>
+            <!-- Content -->
+            <div
+                #contentBox
+                [osHeightResizing]="resizeSubject"
+                class="content"
+                [ngClass]="!isExpanded && !disableExpandControl ? 'collapsed' : ''"
+            >
+                <ng-container *ngTemplateOutlet="content"></ng-container>
+            </div>
+            <!-- Expanding control -->
+            <div class="small show-entire-text" *ngIf="canExpand && !disableExpandControl">
+                <a (click)="isExpanded = !isExpanded">{{ isExpanded ? 'Hide more text' : 'Show full text' }}</a>
+            </div>
         </mat-card-content>
     </mat-card>
 </div>

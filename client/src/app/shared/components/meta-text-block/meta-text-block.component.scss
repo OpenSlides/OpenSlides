@@ -1,30 +1,72 @@
-.meta-text-block {
-    padding: 0px;
-    margin: 20px 0;
-    min-width: 200px;
+@import '~@angular/material/theming';
 
-    mat-card-header {
-        display: inherit;
-        padding-top: 10px;
-        margin: 0;
+@mixin os-meta-text-block-style($theme) {
+    $foreground: map-get($theme, foreground);
 
-        .mat-card-header-text {
-            margin: 0 10px;
+    .meta-text-block {
+        padding: 0px;
+        margin: 20px 0;
+        min-width: 200px;
+
+        .mat-icon-button mat-icon {
+            color: mat-color($foreground, icon);
+            font-size: 18px;
         }
-        mat-card-title {
-            margin: 0;
-            font-size: 16px;
-            font-weight: 400;
 
-            .title-container {
-                display: flex;
-                justify-content: space-between;
+        mat-card-header {
+            display: inherit;
+            margin: 0;
+
+            .mat-card-header-text {
+                margin: 0 10px;
+            }
+            mat-card-title {
+                margin: 0;
+                font-size: 16px;
+                font-weight: 400;
+
+                .title-container {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+
+                    .action-row {
+                        display: flex;
+                    }
+                }
             }
         }
-    }
 
-    mat-card-content {
-        padding: 15px;
-        word-wrap: break-word;
+        mat-card-content {
+            padding: 15px;
+            word-wrap: break-word;
+
+            .content {
+                transition: all 1s ease;
+
+                &.collapsed {
+                    max-height: 200px;
+                    overflow: hidden;
+                    position: relative;
+                    &::after {
+                        content: '';
+                        position: absolute;
+                        top: 150px;
+                        bottom: 0;
+                        left: 0;
+                        right: 0;
+                        background: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+                    }
+                }
+            }
+
+            .show-entire-text {
+                text-align: end;
+                margin-top: 4px;
+                a {
+                    cursor: pointer;
+                }
+            }
+        }
     }
 }
