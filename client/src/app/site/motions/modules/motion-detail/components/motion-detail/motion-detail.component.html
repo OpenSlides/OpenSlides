@@ -601,7 +601,7 @@
                     [formControl]="contentForm.get('submitters_id')"
                     [multiple]="true"
                     listname="{{ 'Submitters' | translate }}"
-                    [InputListValues]="submitterObserver"
+                    [inputListValues]="submitterObserver"
                 ></os-search-value-selector>
             </div>
         </div>
@@ -788,7 +788,7 @@
                 [formControl]="contentForm.get('category_id')"
                 [includeNone]="true"
                 listname="{{ 'Category' | translate }}"
-                [InputListValues]="categoryObserver"
+                [inputListValues]="categoryObserver"
             ></os-search-value-selector>
         </div>
 
@@ -823,7 +823,7 @@
                         [formControl]="contentForm.get('supporters_id')"
                         [multiple]="true"
                         listname="{{ 'Supporters' | translate }}"
-                        [InputListValues]="supporterObserver"
+                        [inputListValues]="supporterObserver"
                     ></os-search-value-selector>
                 </div>
             </div>
@@ -835,7 +835,7 @@
                         ngDefaultControl
                         [formControl]="contentForm.get('workflow_id')"
                         listname="{{ 'Workflow' | translate }}"
-                        [InputListValues]="workflowObserver"
+                        [inputListValues]="workflowObserver"
                     ></os-search-value-selector>
                 </div>
             </div>

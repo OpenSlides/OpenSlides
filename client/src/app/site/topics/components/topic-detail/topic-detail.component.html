@@ -69,7 +69,10 @@
         </div>
 
         <!-- Attachments -->
-        <os-attachment-control [controlName]="topicForm.get('attachments_id')" (errorHandler)="raiseError($event)"></os-attachment-control>
+        <os-attachment-control
+            [controlName]="topicForm.get('attachments_id')"
+            (errorHandler)="raiseError($event)"
+        ></os-attachment-control>
 
         <div *ngIf="newTopic">
             <!-- Visibility -->
@@ -90,7 +93,7 @@
                     [formControl]="topicForm.get('agenda_parent_id')"
                     [includeNone]="true"
                     listname="{{ 'Parent agenda item' | translate }}"
-                    [InputListValues]="itemObserver"
+                    [inputListValues]="itemObserver"
                 ></os-search-value-selector>
             </div>
         </div>

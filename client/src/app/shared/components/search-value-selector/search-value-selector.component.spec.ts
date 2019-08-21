@@ -40,7 +40,7 @@ describe('SearchValueSelectorComponent', () => {
             subjectList.push(new EmptySelectable());
         }
         const subject: BehaviorSubject<Selectable[]> = new BehaviorSubject(subjectList);
-        hostComponent.searchValueSelectorComponent.InputListValues = subject;
+        hostComponent.searchValueSelectorComponent.inputListValues = subject;
 
         const formBuilder: FormBuilder = TestBed.get(FormBuilder);
         const formGroup = formBuilder.group({

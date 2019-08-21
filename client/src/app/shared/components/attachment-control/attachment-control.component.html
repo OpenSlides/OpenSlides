@@ -5,14 +5,9 @@
         [multiple]="true"
         listname="{{ 'Attachments' | translate }}"
         [formControl]="controlName"
-        [InputListValues]="mediaFileList"
+        [inputListValues]="mediaFileList"
     ></os-search-value-selector>
-    <button
-        type="button"
-        mat-icon-button
-        (click)="openUploadDialog(uploadDialog)"
-        *osPerms="'mediafiles.can_manage'"
-    >
+    <button type="button" mat-icon-button (click)="openUploadDialog(uploadDialog)" *osPerms="'mediafiles.can_manage'">
         <mat-icon>cloud_upload</mat-icon>
     </button>
 </div>
