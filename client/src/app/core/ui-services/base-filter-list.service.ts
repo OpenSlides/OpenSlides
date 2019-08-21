@@ -149,7 +149,7 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
     /**
      * The key to access stored valued
      */
-    private storageKey: string;
+    protected abstract readonly storageKey: string;
 
     /**
      * Constructor.
@@ -157,10 +157,7 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
      * @param name the name of the filter service
      * @param store storage service, to read saved filter variables
      */
-    public constructor(private store: StorageService, private OSStatus: OpenSlidesStatusService) {
-        this.storageKey = this.constructor.name;
-        console.log('storage-key: ', this.storageKey);
-    }
+    public constructor(private store: StorageService, private OSStatus: OpenSlidesStatusService) {}
 
     /**
      * Initializes the filterService.

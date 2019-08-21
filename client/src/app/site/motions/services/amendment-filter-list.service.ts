@@ -24,9 +24,14 @@ import { ViewMotion } from '../models/view-motion';
 })
 export class AmendmentFilterListService extends MotionFilterListService {
     /**
-     * Private acessor for an amendment id
+     * Private accessor for an amendment id
      */
     private _parentMotionId: number;
+
+    /**
+     * set the storage key nae
+     */
+    protected storageKey = 'AmendmentList';
 
     /**
      * publicly get an amendment id

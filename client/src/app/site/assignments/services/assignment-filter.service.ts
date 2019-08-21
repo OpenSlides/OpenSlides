@@ -13,6 +13,11 @@ import { AssignmentPhases, ViewAssignment } from '../models/view-assignment';
 })
 export class AssignmentFilterListService extends BaseFilterListService<ViewAssignment> {
     /**
+     * set the storage key name
+     */
+    protected storageKey = 'AssignmentList';
+
+    /**
      * Constructor. Activates the phase options subscription
      *
      * @param store StorageService

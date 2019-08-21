@@ -35,6 +35,11 @@ interface WorkflowFilterDesc {
 })
 export class MotionFilterListService extends BaseFilterListService<ViewMotion> {
     /**
+     * set the storage key name
+     */
+    protected storageKey = 'MotionList';
+
+    /**
      * Listen to the configuration for change in defined/used workflows
      */
     private enabledWorkflows = { statuteEnabled: false, statute: null, motion: null };

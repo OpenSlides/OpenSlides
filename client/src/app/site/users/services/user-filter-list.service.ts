@@ -15,6 +15,11 @@ import { ViewUser } from '../models/view-user';
     providedIn: 'root'
 })
 export class UserFilterListService extends BaseFilterListService<ViewUser> {
+    /**
+     * set the storage key name
+     */
+    protected storageKey = 'UserList';
+
     private userGroupFilterOptions: OsFilter = {
         property: 'groups_id',
         label: 'Groups',
