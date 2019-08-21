@@ -149,9 +149,19 @@ export class ProjectorComponent extends BaseComponent implements OnDestroy {
     public scale = 0;
 
     /**
+     * Info about if the user is offline.
+     */
+    public isOffline = false;
+
+    /**
      * The subscription to the projector.
      */
     private projectorSubscription: Subscription;
+
+    /**
+     * Holds the subscription to the offline-service.
+     */
+    private offlineSubscription: Subscription;
 
     /**
      * A subject that fires, if the container is resized.
@@ -226,15 +236,8 @@ export class ProjectorComponent extends BaseComponent implements OnDestroy {
                 this.updateScaling();
             }
         });
-    }
 
-    /**
-     * determine if the server is offline
-     *
-     * @returns whether the client is offlien
-     */
-    public isOffline(): boolean {
-        return this.offlineService.isOffline();
+        this.offlineSubscription = this.offlineService.isOffline().subscribe(isOffline => (this.isOffline = isOffline));
     }
 
     /**
@@ -327,5 +330,9 @@ export class ProjectorComponent extends BaseComponent implements OnDestroy {
         }
         document.head.removeChild(this.styleElement);
         this.styleElement = null;
+        if (this.offlineSubscription) {
+            this.offlineSubscription.unsubscribe();
+            this.offlineSubscription = null;
+        }
     }
 }

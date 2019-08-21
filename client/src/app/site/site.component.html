@@ -1,3 +1,4 @@
+<div class="offline-banner" *ngIf="isOffline"><mat-icon>cloud_off</mat-icon><span translate>Offline mode</span></div>
 <div class="history-mode-indicator" *ngIf="OSStatus.isInHistoryMode">
     <span translate>You are using the history mode of OpenSlides. Changes will not be saved.</span>
     <span>({{ getHistoryTimestamp() }})</span>
@@ -133,7 +134,6 @@
             <div class="os-footer-logo-container">
                 <os-logo [footer]="true"></os-logo>
             </div>
-
         </mat-nav-list>
         <!-- Toggle-button -->
         <div class="nav-toggle-button-container" *ngIf="!vp.isMobile">
