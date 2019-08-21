@@ -131,4 +131,8 @@
     .pbl-ngrid-row:hover {
         background-color: rgba(0, 0, 0, 0.025);
     }
+
+    .mat-progress-bar-buffer {
+        background-color: mat-color($background, card) !important;
+    }
 }
