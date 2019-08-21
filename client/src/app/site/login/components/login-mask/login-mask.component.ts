@@ -138,7 +138,7 @@ export class LoginMaskComponent extends BaseViewComponent implements OnInit, OnD
         this.loginErrorMsg = '';
         try {
             await this.authService.login(this.loginForm.value.username, this.loginForm.value.password, () => {
-                this.spinnerService.setVisibility(true, this.translate.instant('Loading data. Please wait...'));
+                this.spinnerService.setVisibility(true, this.translate.instant('Loading data. Please wait ...'));
                 this.clearOperatorSubscription(); // We take control, not the subscription.
             });
         } catch (e) {

@@ -399,7 +399,7 @@ export class PdfDocumentService {
         this.matSnackBar.openFromComponent(ProgressSnackBarComponent, {
             duration: 0
         });
-        this.progressService.message = this.translate.instant('Creating PDF file...');
+        this.progressService.message = this.translate.instant('Creating PDF file ...');
         this.progressService.progressMode = 'determinate';
     }
 
