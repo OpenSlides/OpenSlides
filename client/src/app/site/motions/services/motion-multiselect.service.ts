@@ -27,7 +27,7 @@ import { ViewMotion } from '../models/view-motion';
     providedIn: 'root'
 })
 export class MotionMultiselectService {
-    private messageForSpinner = this.translate.instant('Motions are in process. Please wait...');
+    private messageForSpinner = this.translate.instant('Motions are in process. Please wait ...');
 
     /**
      * Does nothing.
@@ -345,7 +345,7 @@ export class MotionMultiselectService {
         ];
         const selectedChoice = await this.choiceService.open(title, choices);
         if (selectedChoice && motions.length) {
-            const message = this.translate.instant(`I have ${motions.length} favorite motions. Please wait...`);
+            const message = this.translate.instant(`I have ${motions.length} favorite motions. Please wait ...`);
             const star = (selectedChoice.items as number) === choices[0].id;
             this.spinnerService.setVisibility(true, message);
             await this.personalNoteService.bulkSetStar(motions, star);

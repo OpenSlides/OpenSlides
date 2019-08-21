@@ -67,7 +67,7 @@ msgid "Activate amendments"
 msgstr "Änderungsanträge aktivieren"
 
 msgid "Activate statute amendments"
-msgstr "Satzungsänderungsanträge"
+msgstr "Satzungsänderungsanträge aktivieren"
 
 msgid "Active"
 msgstr "Aktiv"
@@ -146,6 +146,12 @@ msgstr "Alle Änderungen werden sofort gespeichert."
 msgid "Allow access for anonymous guest users"
 msgstr "Erlaube Zugriff für anonyme Gast-Nutzer"
 
+msgid "Allow amendments of amendments"
+msgstr "Änderungsanträge zu Änderungsanträgen erlauben"
+
+msgid "Allow blank in identifier"
+msgstr "Leerzeichen im Bezeichner erlauben"
+
 msgid "Allow create poll"
 msgstr "Abstimmung möglich"
 
@@ -154,9 +160,6 @@ msgstr "Antragsteller/in darf bearbeiten"
 
 msgid "Allow support"
 msgstr "Unterstützung möglich"
-
-msgid "Allow to disable versioning"
-msgstr "Erlaubt Versionierung zu deaktiveren"
 
 msgid "Allowed access groups for this directory"
 msgstr "Zulässige Zugriffsgruppen für dieses Verzeichnis"
@@ -202,6 +205,10 @@ msgstr ""
 msgid "Are you sure you want to delete all selected elections?"
 msgstr "Sollen alle ausgewählten Wahlen wirklich gelöscht werden?"
 
+msgid "Are you sure you want to delete all selected files and folders?"
+msgstr ""
+"Sollen alle ausgewählten Dateien und Verzeichnisse wirklich gelöscht werden?"
+
 msgid "Are you sure you want to delete all selected motions?"
 msgstr "Sollen alle ausgewählten Anträge wirklich gelöscht werden?"
 
@@ -218,8 +225,9 @@ msgstr "Soll die Beschluss-Druckvorlage wirklich gelöscht werden?"
 msgid "Are you sure you want to delete this ballot?"
 msgstr "Soll dieser Wahlgang wirklich gelöscht werden?"
 
-msgid "Are you sure you want to delete this category?"
-msgstr "Soll dieses Sachgebiet wirklich gelöscht werden?"
+msgid "Are you sure you want to delete this category and all subcategories?"
+msgstr ""
+"Soll dieses Sachgebiet und deren Untersachgebiete wirklich gelöscht werden?"
 
 msgid "Are you sure you want to delete this change recommendation?"
 msgstr "Soll diese Änderungsempfehlung wirklich gelöscht werden?"
@@ -259,9 +267,6 @@ msgstr "Soll dieses Schlagwort wirklich gelöscht werden?"
 
 msgid "Are you sure you want to delete this topic?"
 msgstr "Soll dieses Thema wirklich gelöscht werden?"
-
-msgid "Are you sure you want to delete this vote?"
-msgstr "Soll diese Abstimmung wirklich gelöscht werden?"
 
 msgid "Are you sure you want to delete this workflow?"
 msgstr "Soll dieser Arbeitsablauf wirklich gelöscht werden?"
@@ -358,6 +363,9 @@ msgstr "Beginn der Veranstaltung"
 
 msgid "Begin speech"
 msgstr "Rede beginnen"
+
+msgid "Blank between prefix and number, e.g. 'A 001'."
+msgstr "Leerzeichen zwischen Präfix und Nummer, z. B. 'A 001'."
 
 msgid "CSV import"
 msgstr "CSV-Import"
@@ -629,6 +637,9 @@ msgstr "Erstellen"
 
 msgid "Create final print template"
 msgstr "Beschluss-Druckvorlage erstellen"
+
+msgid "Creating PDF file ..."
+msgstr "PDF-Datei wird erstellt ..."
 
 msgid "Creation date"
 msgstr "Erstellungsdatum"
@@ -1075,6 +1086,9 @@ msgstr "Begründung auf dem Projektor ausblenden"
 msgid "Hide recommendation on projector"
 msgstr "Empfehlung auf dem Projektor ausblenden"
 
+msgid "Hide referring motions"
+msgstr "Verweisende Anträge ausblenden"
+
 msgid "Hide the amount of speakers in subtitle of list of speakers slide"
 msgstr ""
 "Anzahl der Redner/innen im Untertitel der Redelistenprojektion ausblenden"
@@ -1115,6 +1129,9 @@ msgstr "Satzung importieren"
 
 msgid "Import topics"
 msgstr "Themen importieren"
+
+msgid "In motion list, motion detail and PDF."
+msgstr "In Antragsliste, Detailansicht und PDF."
 
 msgid "Inactive"
 msgstr "Inaktiv"
@@ -1254,8 +1271,8 @@ msgstr "Redelisten-Einblendung"
 msgid "List view"
 msgstr "Listenansicht"
 
-msgid "Loading data. Please wait..."
-msgstr "Daten werden geladen. Bitte warten..."
+msgid "Loading data. Please wait ..."
+msgstr "Daten werden geladen. Bitte warten ..."
 
 msgid "Login"
 msgstr "Anmelden"
@@ -1329,6 +1346,9 @@ msgstr "Anträge werden importieren."
 msgid "Motions"
 msgstr "Anträge"
 
+msgid "Motions are in process. Please wait ..."
+msgstr "Anträge werden bearbeitet. Bitte warten ..."
+
 msgid "Motions have been imported."
 msgstr "Anträge wurden importiert."
 
@@ -1373,6 +1393,9 @@ msgstr "Neuer Änderungsantrag"
 
 msgid "New ballot"
 msgstr "Neuer Wahlgang"
+
+msgid "New category"
+msgstr "Neues Sachgebiet"
 
 msgid "New change recommendation"
 msgstr "Neue Änderungsempfehlung"
@@ -1537,6 +1560,9 @@ msgstr "Kandidatenanzahl"
 msgid "Number of last speakers to be shown on the projector"
 msgstr "Anzahl der dargestellten letzten Redner/innen auf dem Projektor"
 
+msgid "Number of minimal digits for identifier"
+msgstr "Minimale Anzahl an Ziffern im Bezeichner"
+
 msgid "Number of persons to be elected"
 msgstr "Anzahl der zu wählenden Personen"
 
@@ -1544,7 +1570,7 @@ msgid "Number set"
 msgstr "Nummer gesetzt"
 
 msgid "Numbered per category"
-msgstr "Pro Sachgebiet nummerieren"
+msgstr "pro Sachgebiet nummerieren"
 
 msgid "Numbering"
 msgstr "Nummerierung"
@@ -1558,10 +1584,8 @@ msgstr "Nummerierungssystem für Tagesordnungspunkte"
 msgid "OK"
 msgstr "OK"
 
-msgid "Offline mode: You can use OpenSlides but changes are not saved."
-msgstr ""
-"Offlinemodus: Sie können OpenSlides weiter nutzen, aber Änderungen werden "
-"nicht gespeichert."
+msgid "Offline mode"
+msgstr "Offline-Modus"
 
 msgid "Old password"
 msgstr "Altes Passwort"
@@ -2243,6 +2267,9 @@ msgstr "System-URL"
 msgid "Table of contents"
 msgstr "Inhaltsverzeichnis"
 
+msgid "Tag"
+msgstr "Schlagwort"
+
 msgid "Tags"
 msgstr "Schlagwörter"
 
@@ -2510,6 +2537,10 @@ msgstr "Benutzername"
 msgid "Username or password is not correct."
 msgstr "Benutzername oder Passwort war nicht korrekt."
 
+msgid "Uses leading zeros to sort motions correctly by identifier."
+msgstr ""
+"Es werden führende Nullen verwendet, um die Bezeichner korrekt zu sortieren."
+
 msgid "Valid votes"
 msgstr "Gültige Stimmen"
 
@@ -2635,9 +2666,6 @@ msgstr "Sie haben Änderungen vorgenommen."
 
 msgid "You override the personally set password!"
 msgstr "Sie überschreiben hiermit das persönlich gesetzte Passwort!"
-
-msgid "Your login for {event_name}"
-msgstr "Zugangsdaten für {event_name}"
 
 msgid "Your password was resetted successfully!"
 msgstr "Ihr Passwort wurde erfolgreich zurückgesetzt!"

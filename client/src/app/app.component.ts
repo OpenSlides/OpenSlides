@@ -96,7 +96,7 @@ export class AppComponent {
         this.overloadArrayToString();
         this.overloadFlatMap();
         // Show the spinner initial
-        spinnerService.setVisibility(true, translate.instant('Loading data. Please wait...'));
+        spinnerService.setVisibility(true, translate.instant('Loading data. Please wait ...'));
 
         appRef.isStable
             .pipe(
