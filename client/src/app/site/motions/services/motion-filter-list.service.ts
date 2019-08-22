@@ -88,6 +88,15 @@ export class MotionFilterListService extends BaseFilterListService<ViewMotion> {
         options: []
     };
 
+    public hasSpeakerOptions: OsFilter = {
+        property: 'hasSpeakers',
+        label: 'Speakers',
+        options: [
+            { condition: true, label: this.translate.instant('Has speakers') },
+            { condition: false, label: this.translate.instant('Has no speakers') }
+        ]
+    };
+
     public personalNoteFilterOptions = [
         {
             property: 'star',
@@ -211,6 +220,11 @@ export class MotionFilterListService extends BaseFilterListService<ViewMotion> {
             this.motionCommentFilterOptions,
             this.tagFilterOptions
         ];
+
+        // only add the filter if the user has the correct permission
+        if (this.operator.hasPerms('agenda.can_see_list_of_speakers')) {
+            filterDefinitions.push(this.hasSpeakerOptions);
+        }
 
         if (!this.operator.isAnonymous) {
             filterDefinitions = filterDefinitions.concat(this.personalNoteFilterOptions);
