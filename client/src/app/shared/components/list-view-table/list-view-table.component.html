@@ -33,7 +33,7 @@
 
         <!-- Projector column -->
         <div *pblNgridCellDef="'projector'; row as viewModel" class="fill ngrid-lg">
-            <os-projector-button class="projector-button" [object]="getProjectable(viewModel)"></os-projector-button>
+            <os-projector-button class="projector-button" [object]="getProjectable(viewModel)" (changeEvent)="viewUpdateEvent()"></os-projector-button>
         </div>
 
         <!-- No Results -->

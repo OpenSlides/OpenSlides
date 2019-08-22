@@ -1,6 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+
+import { Subscription } from 'rxjs';
+import { distinctUntilChanged } from 'rxjs/operators';
 
 import { ProjectorService } from 'app/core/core-services/projector.service';
+import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
 import { ProjectionDialogService } from 'app/core/ui-services/projection-dialog.service';
 import { Projector } from 'app/shared/models/core/projector';
 import {
@@ -23,7 +27,7 @@ import {
     templateUrl: './projector-button.component.html',
     styleUrls: ['./projector-button.component.scss']
 })
-export class ProjectorButtonComponent implements OnInit {
+export class ProjectorButtonComponent implements OnInit, OnDestroy {
     /**
      * The object to project.
      */
@@ -32,6 +36,8 @@ export class ProjectorButtonComponent implements OnInit {
     public get object(): Projectable | ProjectorElementBuildDeskriptor {
         return this._object;
     }
+
+    public isProjected = false;
 
     @Input()
     public set object(obj: Projectable | ProjectorElementBuildDeskriptor) {
@@ -48,16 +54,22 @@ export class ProjectorButtonComponent implements OnInit {
     @Input()
     public menuItem = false;
 
+    @Output()
+    public changeEvent: EventEmitter<void> = new EventEmitter();
+
     /**
      * Pre-define projection target
      */
     @Input()
     public projector: Projector | null;
 
+    private projectorRepoSub: Subscription;
+
     /**
      * The constructor
      */
     public constructor(
+        private projectorRepo: ProjectorRepositoryService,
         private projectionDialogService: ProjectionDialogService,
         private projectorService: ProjectorService
     ) {}
@@ -65,7 +77,27 @@ export class ProjectorButtonComponent implements OnInit {
     /**
      * Initialization function
      */
-    public ngOnInit(): void {}
+    public ngOnInit(): void {
+        this.isProjected = this.checkIsProjected();
+
+        this.projectorRepoSub = this.projectorRepo
+            .getGeneralViewModelObservable()
+            .pipe(distinctUntilChanged())
+            .subscribe(() => {
+                const isProjected = this.checkIsProjected();
+                if (this.isProjected !== isProjected) {
+                    this.isProjected = isProjected;
+                    this.changeEvent.next();
+                }
+            });
+    }
+
+    public ngOnDestroy(): void {
+        if (this.projectorRepoSub) {
+            this.projectorRepoSub.unsubscribe();
+            this.projectorRepoSub = null;
+        }
+    }
 
     /**
      * Click on the projector button
@@ -79,7 +111,7 @@ export class ProjectorButtonComponent implements OnInit {
         if (this.object) {
             if (this.projector) {
                 // if the projection target was defines before
-                if (this.isProjected()) {
+                if (this.checkIsProjected()) {
                     // remove the projected object
                     this.projectorService.removeFrom(this.projector, this.object);
                 } else {
@@ -98,7 +130,7 @@ export class ProjectorButtonComponent implements OnInit {
      *
      * @returns true, if the object is projected on one projector.
      */
-    public isProjected(): boolean {
+    public checkIsProjected(): boolean {
         if (!this.object) {
             return false;
         }
