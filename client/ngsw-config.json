@@ -25,5 +25,16 @@
                 ]
             }
         }
+    ],
+    "dataGroups": [
+        {
+            "name": "api",
+            "urls": ["/rest/*", "/apps/*"],
+            "cacheConfig": {
+                "maxSize": 0,
+                "maxAge": "0u",
+                "strategy": "freshness"
+            }
+        }
     ]
 }
