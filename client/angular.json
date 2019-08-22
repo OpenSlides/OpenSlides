@@ -26,9 +26,21 @@
                         "assets": [
                             "src/assets",
                             "src/manifest.json",
-                            { "glob": "**/*", "input": "node_modules/tinymce/skins", "output": "/tinymce/skins/" },
-                            { "glob": "**/*", "input": "node_modules/tinymce/themes", "output": "/tinymce/themes/" },
-                            { "glob": "**/*", "input": "node_modules/tinymce/plugins", "output": "/tinymce/plugins/" }
+                            {
+                                "glob": "**/*",
+                                "input": "node_modules/tinymce/skins",
+                                "output": "/tinymce/skins/"
+                            },
+                            {
+                                "glob": "**/*",
+                                "input": "node_modules/tinymce/themes",
+                                "output": "/tinymce/themes/"
+                            },
+                            {
+                                "glob": "**/*",
+                                "input": "node_modules/tinymce/plugins",
+                                "output": "/tinymce/plugins/"
+                            }
                         ],
                         "styles": ["src/styles.scss"],
                         "scripts": ["node_modules/tinymce/tinymce.min.js"],
@@ -36,12 +48,10 @@
                     },
                     "configurations": {
                         "production": {
-                            "fileReplacements": [
-                                {
-                                    "replace": "src/environments/environment.ts",
-                                    "with": "src/environments/environment.prod.ts"
-                                }
-                            ],
+                            "fileReplacements": [{
+                                "replace": "src/environments/environment.ts",
+                                "with": "src/environments/environment.prod.ts"
+                            }],
                             "optimization": true,
                             "outputHashing": "all",
                             "sourceMap": false,
@@ -52,13 +62,14 @@
                             "vendorChunk": false,
                             "buildOptimizer": true,
                             "serviceWorker": true,
-                            "budgets": [
-                                {
-                                    "type": "initial",
-                                    "maximumWarning": "5mb",
-                                    "maximumError": "10mb"
-                                }
-                            ]
+                            "budgets": [{
+                                "type": "initial",
+                                "maximumWarning": "5mb",
+                                "maximumError": "10mb"
+                            }]
+                        },
+                        "es5": {
+                            "tsConfig": "./tsconfig-es5.app.json"
                         }
                     }
                 },
@@ -70,6 +81,9 @@
                     "configurations": {
                         "production": {
                             "browserTarget": "client:build:production"
+                        },
+                        "es5": {
+                            "browserTarget": "client:build:es5"
                         }
                     }
                 },
@@ -91,9 +105,21 @@
                         "assets": [
                             "src/assets",
                             "src/manifest.json",
-                            { "glob": "**/*", "input": "node_modules/tinymce/skins", "output": "/tinymce/skins/" },
-                            { "glob": "**/*", "input": "node_modules/tinymce/themes", "output": "/tinymce/themes/" },
-                            { "glob": "**/*", "input": "node_modules/tinymce/plugins", "output": "/tinymce/plugins/" }
+                            {
+                                "glob": "**/*",
+                                "input": "node_modules/tinymce/skins",
+                                "output": "/tinymce/skins/"
+                            },
+                            {
+                                "glob": "**/*",
+                                "input": "node_modules/tinymce/themes",
+                                "output": "/tinymce/themes/"
+                            },
+                            {
+                                "glob": "**/*",
+                                "input": "node_modules/tinymce/plugins",
+                                "output": "/tinymce/plugins/"
+                            }
                         ]
                     }
                 },
