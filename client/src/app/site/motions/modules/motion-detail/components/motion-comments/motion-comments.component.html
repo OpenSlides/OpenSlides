@@ -17,8 +17,19 @@
             </ng-container>
             <form [formGroup]="commentForms[section.id]" *ngIf="isCommentEdited(section)">
                 <!-- The HTML Editor -->
-                <editor formControlName="comment" [init]="tinyMceSettings"></editor>
+                <editor
+                    [id]="section.id"
+                    formControlName="comment"
+                    [init]="tinyMceSettings"
+                    (onInit)="onInitTinyMce($event)"
+                    (onRemove)="onLeaveTinyMce($event)"
+                ></editor>
             </form>
+            <div *ngIf="saveHint">
+                <span translate>Touch the book icon to enter text</span>
+                <br />
+                <span class="red-warning-text" translate>Do not forget to save your changes!</span>
+            </div>
         </ng-container>
 
         <ng-container class="meta-text-block-action-row">
@@ -40,6 +51,7 @@
             </button>
             <button
                 mat-icon-button
+                color="warn"
                 *ngIf="isCommentEdited(section)"
                 (click)="saveComment(section)"
                 matTooltip="{{ 'Save' | translate }}"
