@@ -127,6 +127,11 @@ export class MotionPdfCatalogService {
                 const motionToCurrentCat = motions.filter(motionIn => category === motionIn.category);
 
                 if (motionToCurrentCat && motionToCurrentCat.length) {
+                    // if this is not the first page, start with a pagebreak
+                    if (catTocBody.length) {
+                        catTocBody.push(this.pdfService.getPageBreak());
+                    }
+
                     catTocBody.push({
                         table: {
                             body: [
@@ -165,8 +170,6 @@ export class MotionPdfCatalogService {
                             header ? JSON.parse(JSON.stringify(header)) : null
                         )
                     );
-
-                    catTocBody.push(this.pdfService.getPageBreak());
                 }
             }
 
@@ -183,6 +186,7 @@ export class MotionPdfCatalogService {
 
             // only push this array if there is at least one entry
             if (uncatTocBody.length > 0) {
+                catTocBody.push(this.pdfService.getPageBreak());
                 catTocBody.push(this.pdfService.createTocTableDef(uncatTocBody, StyleType.CATEGORY_SECTION));
             }
 
