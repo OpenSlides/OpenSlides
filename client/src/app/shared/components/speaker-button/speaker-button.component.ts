@@ -1,4 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnDestroy } from '@angular/core';
+
+import { Subscription } from 'rxjs';
+import { distinctUntilChanged } from 'rxjs/operators';
 
 import { ListOfSpeakersRepositoryService } from 'app/core/repositories/agenda/list-of-speakers-repository.service';
 import { ContentObject, isContentObject } from 'app/shared/models/base/content-object';
@@ -18,15 +21,27 @@ import {
     selector: 'os-speaker-button',
     templateUrl: './speaker-button.component.html'
 })
-export class SpeakerButtonComponent {
+export class SpeakerButtonComponent implements OnDestroy {
     @Input()
     public set object(obj: BaseViewModelWithListOfSpeakers | ContentObject | null) {
+        let listOfSpeakers: ViewListOfSpeakers;
         if (isBaseViewModelWithListOfSpeakers(obj)) {
-            this.listOfSpeakers = obj.listOfSpeakers;
+            listOfSpeakers = obj.listOfSpeakers;
         } else if (isContentObject(obj)) {
-            this.listOfSpeakers = this.listOfSpeakersRepo.findByContentObject(obj);
+            listOfSpeakers = this.listOfSpeakersRepo.findByContentObject(obj);
         } else {
-            this.listOfSpeakers = null;
+            listOfSpeakers = null;
+        }
+
+        this.cleanLosSub();
+
+        if (!!listOfSpeakers) {
+            this.losSub = this.listOfSpeakersRepo
+                .getViewModelObservable(listOfSpeakers.id)
+                .pipe(distinctUntilChanged())
+                .subscribe(speakerObj => {
+                    this.listOfSpeakers = speakerObj;
+                });
         }
     }
 
@@ -52,8 +67,21 @@ export class SpeakerButtonComponent {
         return this.listOfSpeakers.closed ? 'The list of speakers is closed.' : 'List of speakers';
     }
 
+    private losSub: Subscription;
+
     /**
      * The constructor
      */
     public constructor(private listOfSpeakersRepo: ListOfSpeakersRepositoryService) {}
+
+    public ngOnDestroy(): void {
+        this.cleanLosSub();
+    }
+
+    private cleanLosSub(): void {
+        if (this.losSub) {
+            this.losSub.unsubscribe();
+            this.losSub = null;
+        }
+    }
 }

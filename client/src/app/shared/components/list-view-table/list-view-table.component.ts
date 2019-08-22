@@ -395,6 +395,13 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
     }
 
     /**
+     * Receive manual view updates
+     */
+    public viewUpdateEvent(): void {
+        this.cd.markForCheck();
+    }
+
+    /**
      * Generic click handler for rows. Allow so (multi) select anywhere
      * @param event the clicked row
      */
