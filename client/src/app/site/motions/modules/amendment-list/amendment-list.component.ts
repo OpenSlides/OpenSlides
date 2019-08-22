@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
@@ -26,7 +26,8 @@ import { ViewMotion } from '../../models/view-motion';
 @Component({
     selector: 'os-amendment-list',
     templateUrl: './amendment-list.component.html',
-    styleUrls: ['./amendment-list.component.scss']
+    styleUrls: ['./amendment-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AmendmentListComponent extends BaseListViewComponent<ViewMotion> implements OnInit {
     private parentMotionId: number;
