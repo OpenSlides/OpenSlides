@@ -107,7 +107,10 @@ export class ViewCategory extends BaseViewModel<Category> implements CategoryTit
     }
 
     public formatForSearch(): SearchRepresentation {
-        return [this.name, this.prefix];
+        return {
+            properties: [{ key: 'Name', value: this.name }, { key: 'Prefix', value: this.prefix }],
+            searchValue: [this.name, this.prefix]
+        };
     }
 
     public getDetailStateURL(): string {

@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { MainMenuService } from 'app/core/core-services/main-menu.service';
+import { OverlayService } from 'app/core/ui-services/overlay.service';
 import { RoutingStateService } from 'app/core/ui-services/routing-state.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 
@@ -155,7 +156,8 @@ export class HeadBarComponent implements OnInit {
         private menu: MainMenuService,
         private router: Router,
         private route: ActivatedRoute,
-        private routingState: RoutingStateService
+        private routingState: RoutingStateService,
+        private overlayService: OverlayService
     ) {}
 
     /**
@@ -191,6 +193,13 @@ export class HeadBarComponent implements OnInit {
      */
     public save(): void {
         this.saveEvent.next(true);
+    }
+
+    /**
+     * Opens the `super-search.component`.
+     */
+    public openSearch(): void {
+        this.overlayService.showSearch();
     }
 
     /**

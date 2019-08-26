@@ -21,6 +21,8 @@
 @import './app/shared/components/icon-container/icon-container.component.scss';
 @import './app/site/common/components/start/start.component.scss';
 @import './app/site/mediafiles/components/mediafile-list/mediafile-list.component.scss-theme.scss';
+@import './app/site/common/components/super-search/super-search.component.scss';
+@import './app/shared/components/rounded-input/rounded-input.component.scss';
 
 /** fonts */
 @import './assets/styles/fonts.scss';
@@ -42,6 +44,8 @@ $narrow-spacing: (
     @include os-global-spinner-theme($theme);
     @include os-tile-style($theme);
     @include os-mediafile-list-theme($theme);
+    @include os-super-search-style($theme);
+    @include os-rounded-input-style($theme);
 }
 
 /** Load projector specific SCSS values */

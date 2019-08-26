@@ -1,6 +1,6 @@
 import { _ } from 'app/core/translate/translation-marker';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { SearchRepresentation } from 'app/core/ui-services/search.service';
+import { SearchProperty, SearchRepresentation } from 'app/core/ui-services/search.service';
 import { Motion, MotionComment } from 'app/shared/models/motions/motion';
 import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
 import { TitleInformationWithAgendaItem } from 'app/site/base/base-view-model-with-agenda-item';
@@ -351,24 +351,50 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
      * @override
      */
     public formatForSearch(): SearchRepresentation {
-        let searchValues = [this.title, this.text, this.reason];
+        const properties: SearchProperty[] = [];
+        properties.push({ key: 'Title', value: this.getTitle() });
+        properties.push({ key: 'Submitters', value: this.submittersAsUsers.map(user => user.full_name).join(', ') });
+        properties.push({ key: 'Text', value: this.text, trusted: true });
+        properties.push({ key: 'Reason', value: this.reason, trusted: true });
         if (this.amendment_paragraphs) {
-            searchValues = searchValues.concat(this.amendment_paragraphs.filter(x => !!x));
+            properties.push({
+                key: 'Amendments',
+                value: this.amendment_paragraphs.filter(x => !!x).join('\n'),
+                trusted: true
+            });
         }
-        searchValues = searchValues.concat(this.submittersAsUsers.map(user => user.full_name));
-        searchValues = searchValues.concat(this.supporters.map(user => user.full_name));
-        searchValues = searchValues.concat(this.tags.map(tag => tag.getTitle()));
-        searchValues = searchValues.concat(this.motion.comments.map(comment => comment.comment));
+        properties.push({ key: 'Tags', value: this.tags.map(tag => tag.getTitle()).join(', ') });
+        properties.push({
+            key: 'Comments',
+            value: this.motion.comments.map(comment => comment.comment).join('\n'),
+            trusted: true
+        });
+        properties.push({ key: 'Supporters', value: this.supporters.map(user => user.full_name).join(', ') });
+
+        // A property with block-value to unify the meta-info.
+        const metaData: SearchProperty = {
+            key: null,
+            value: null,
+            blockProperties: []
+        };
         if (this.motion_block) {
-            searchValues.push(this.motion_block.getTitle());
+            metaData.blockProperties.push({ key: 'Motion block', value: this.motion_block.getTitle() });
         }
         if (this.category) {
-            searchValues.push(this.category.getTitle());
+            metaData.blockProperties.push({ key: 'Category', value: this.category.getTitle() });
         }
         if (this.state) {
-            searchValues.push(this.state.name);
+            metaData.blockProperties.push({ key: 'State', value: this.state.name });
         }
-        return searchValues;
+
+        properties.push(metaData);
+
+        return {
+            properties,
+            searchValue: properties.map(property =>
+                property.key ? property.value : property.blockProperties.join(',')
+            )
+        };
     }
 
     public getDetailStateURL(): string {

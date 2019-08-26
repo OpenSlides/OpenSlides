@@ -27,7 +27,7 @@ export class ViewTag extends BaseViewModel<Tag> implements TagTitleInformation, 
     }
 
     public formatForSearch(): SearchRepresentation {
-        return [this.name];
+        return { properties: [{ key: 'Name', value: this.name }], searchValue: [this.name] };
     }
 
     public getDetailStateURL(): string {

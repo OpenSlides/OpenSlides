@@ -1,0 +1,6 @@
+<div class="overlay-component stretch-to-fill-parent">
+    <div class="overlay-content" [ngClass]="position">
+        <ng-content></ng-content>
+    </div>
+    <div class="overlay-backdrop stretch-to-fill-parent" (click)="backdrop.emit()"></div>
+</div>

@@ -1,0 +1,41 @@
+<ng-content></ng-content>
+<div *ngIf="model" [ngSwitch]="model.collectionString" class="preview-container">
+    <div *ngSwitchCase="'mediafiles/mediafile'">
+        <div *ngIf="modelType.includes('image')">
+            <img [src]="model.getDetailStateURL()" />
+        </div>
+        <div *ngIf="modelType.includes('pdf')">
+            <pdf-viewer
+                [original-size]="false"
+                [fit-to-page]="true"
+                [autoresize]="true"
+                [src]="model.getDetailStateURL()"
+                [style.display]="'block'"
+            ></pdf-viewer>
+        </div>
+        <div *ngIf="modelType.includes('directory')">
+            <div *ngFor="let entry of formattedSearchValue">
+                <mat-card class="os-card" *ngIf="entry.value !== ''">
+                    <div class="key-part">{{ entry.key | translate }}</div>
+                    <div>{{ entry.value }}</div>
+                </mat-card>
+            </div>
+        </div>
+    </div>
+    <div *ngSwitchDefault>
+        <div *ngFor="let entry of formattedSearchValue">
+            <mat-card class="os-card" *ngIf="entry.value !== '' && !entry.blockProperties">
+                <div class="key-part">{{ entry.key | translate }}</div>
+                <div *ngIf="!entry.trusted">{{ entry.value }}</div>
+                <div *ngIf="entry.trusted" [innerHTML]="sanitize(entry.value)"></div>
+            </mat-card>
+            <mat-card class="os-card" *ngIf="entry.blockProperties">
+                <div *ngFor="let property of entry.blockProperties">
+                    <div class="key-part">{{ property.key | translate }}</div>
+                    <div *ngIf="!property.trusted">{{ property.value }}</div>
+                    <div *ngIf="property.trusted" [innerHTML]="sanitize(property.value)"></div>
+                </div>
+            </mat-card>
+        </div>
+    </div>
+</div>

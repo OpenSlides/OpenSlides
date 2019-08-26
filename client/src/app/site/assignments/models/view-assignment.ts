@@ -127,7 +127,7 @@ export class ViewAssignment extends BaseViewModelWithAgendaItemAndListOfSpeakers
     }
 
     public formatForSearch(): SearchRepresentation {
-        return [this.title];
+        return { properties: [{ key: 'Title', value: this.getTitle() }], searchValue: [this.getTitle()] };
     }
 
     public getDetailStateURL(): string {

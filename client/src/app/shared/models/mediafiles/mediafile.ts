@@ -19,7 +19,7 @@ export class Mediafile extends BaseModelWithListOfSpeakers<Mediafile> {
     public title: string;
     public mediafile?: FileMetadata;
     public media_url_prefix: string;
-    public filesize: string;
+    public filesize?: string;
     public access_groups_id: number[];
     public create_timestamp: string;
     public parent_id: number | null;

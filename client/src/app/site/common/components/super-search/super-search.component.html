@@ -1,0 +1,96 @@
+<div class="query-container">
+    <div class="super-search-input">
+        <os-rounded-input
+            [autofocus]="true"
+            placeholder="{{ 'Search' | translate }}"
+            [modelForm]="searchForm"
+            [keepFocus]="true"
+        ></os-rounded-input>
+        <button mat-icon-button [matMenuTriggerFor]="filterMenu"><mat-icon>filter_list</mat-icon></button>
+        <mat-menu #filterMenu="matMenu">
+            <button
+                mat-menu-item
+                *ngFor="let model of registeredModels"
+                (click)="setCollection(model.verboseNamePlural)"
+            >
+                <mat-icon>{{ model.verboseNamePlural === searchCollection ? 'checked' : '' }}</mat-icon>
+                {{ model.verboseNamePlural | translate }}
+            </button>
+        </mat-menu>
+    </div>
+    <h4 *ngIf="searchResultCount > 0" class="result-count">
+        {{ searchResultCount }} {{ (searchResultCount === 1 ? 'result' : 'results') | translate }}
+    </h4>
+    <mat-divider></mat-divider>
+    <div class="result-view" *ngIf="searchResults.length > 0">
+        <div class="result-list">
+            <mat-accordion [displayMode]="'flat'">
+                <ng-container *ngFor="let result of searchResults">
+                    <mat-expansion-panel
+                        *ngIf="result.models.length > 0"
+                        [expanded]="selectedCollection === result.collectionString"
+                    >
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{ result.verboseName | translate }}
+                                <mat-basic-chip
+                                    class="lightblue filter-count"
+                                    disableRipple
+                                    matTooltip="{{ (result.models.length === 1 ? 'result' : 'results') | translate }}"
+                                    >{{ result.models.length }}</mat-basic-chip
+                                >
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+                        <ng-template matExpansionPanelContent>
+                            <mat-list role="list">
+                                <mat-list-item
+                                    [ngClass]="selectedModel === model ? 'selected' : ''"
+                                    role="listitem"
+                                    (click)="changeModel(model)"
+                                    (dblclick)="viewResult(model)"
+                                    *ngFor="let model of result.models"
+                                >
+                                    <div class="flex-1 ellipsis-overflow">
+                                        {{ model.getTitle() }}
+                                    </div>
+                                    <div *ngIf="selectedModel === model">
+                                        <button
+                                            *ngIf="!vp.isMobile"
+                                            mat-icon-button
+                                            (click)="showPreview = !showPreview"
+                                            matTooltip="{{ 'Show preview' | translate }}"
+                                        >
+                                            <mat-icon>
+                                                {{ showPreview ? 'visibility_off' : 'visibility_on' }}
+                                            </mat-icon>
+                                        </button>
+                                        <button
+                                            mat-icon-button
+                                            (click)="viewResult(model)"
+                                            matTooltip="{{ 'View' | translate }}"
+                                        >
+                                            <mat-icon>
+                                                present_to_all
+                                            </mat-icon>
+                                        </button>
+                                    </div>
+                                    <mat-divider></mat-divider>
+                                </mat-list-item>
+                            </mat-list>
+                        </ng-template>
+                    </mat-expansion-panel>
+                </ng-container>
+            </mat-accordion>
+            <div class="no-results" *ngIf="!selectedModel && searchString.length > 0">
+                <span translate>No search result found for</span> "{{ searchString }}"
+                <span *ngIf="searchCollection">in {{ searchCollection | translate }}</span>
+            </div>
+        </div>
+        <mat-divider [vertical]="true"></mat-divider>
+        <div *ngIf="showPreview" class="result-preview flex-1">
+            <div *ngIf="!!selectedModel">
+                <os-preview [viewModel]="selectedModel"> </os-preview>
+            </div>
+        </div>
+    </div>
+</div>

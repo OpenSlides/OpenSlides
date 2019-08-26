@@ -1,47 +1,74 @@
-.input-container {
-    position: relative;
-    height: 100%;
-    &,
-    div {
-        display: flex;
-        align-items: center;
-        z-index: 1;
-    }
-    div {
-        position: absolute;
-        &.input-prefix {
-            left: 8px;
+@import '~@angular/material/theming';
+
+:host.full-width {
+    width: 100%;
+}
+
+@mixin os-rounded-input-style($theme) {
+    $background: map-get($theme, background);
+    $foreground: map-get($theme, foreground);
+
+    $foreground-color: mat-color($foreground, icon);
+
+    .input-container {
+        position: relative;
+        height: 100%;
+        &,
+        div {
+            display: flex;
+            align-items: center;
+            z-index: 1;
         }
-        &.input-suffix {
-            right: 8px;
-            color: #666;
-        }
-    }
-
-    .rounded-input {
-        outline: 0;
-        z-index: 0;
-        height: 24px;
-        width: 100%;
-        padding: 8px 39px;
-        border-radius: 32px;
-        font-size: 16px;
-        border: 1px solid #ccc;
-        color: #666;
-        transition: all 0.25s ease;
-
-        &.small {
-            height: 14px;
-            font-size: 14px;
-            width: 100px;
-
-            &:focus {
-                width: 200px;
+        div {
+            position: absolute;
+            &.input-prefix {
+                left: 8px;
+            }
+            &.input-suffix {
+                right: 8px;
+                color: $foreground-color;
             }
         }
-    }
 
-    mat-icon {
-        cursor: pointer;
+        .rounded-input {
+            outline: 0;
+            z-index: 0;
+            height: 24px;
+            width: 100%;
+            padding: 8px 39px;
+            border-radius: 32px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            background: mat-color($background, background);
+            color: $foreground-color;
+            transition: all 0.25s ease;
+
+            &.small {
+                height: 14px;
+                font-size: 14px;
+                width: 100px;
+
+                &:focus {
+                    width: 200px;
+                }
+            }
+
+            &.medium-border-radius {
+                border-radius: 16px;
+            }
+
+            &.small-border-radius {
+                border-radius: 4px;
+            }
+
+            &.children-bottom {
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
+            }
+        }
+
+        mat-icon {
+            cursor: pointer;
+        }
     }
 }
