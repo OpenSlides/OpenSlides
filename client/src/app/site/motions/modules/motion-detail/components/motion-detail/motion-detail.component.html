@@ -1,8 +1,8 @@
 <os-head-bar
     [mainButton]="perms.isAllowed('can_create_amendments', motion)"
     mainActionTooltip="New amendment"
-    prevUrl="../.."
-    [goBack]="motion && !!motion.parent_id"
+    [prevUrl]="getPrevUrl()"
+    [goBack]="routingStateService.isSafePrevUrl"
     [nav]="false"
     [editMode]="editMotion"
     [isSaveButtonEnabled]="contentForm.valid"

@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { MotionRepositoryService, ParagraphToChoose } from 'app/core/repositories/motions/motion-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { PromptService } from 'app/core/ui-services/prompt.service';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { CreateMotion } from 'app/site/motions/models/create-motion';
 import { ViewMotion } from 'app/site/motions/models/view-motion';
@@ -54,14 +55,15 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
     /**
      * Constructs this component.
      *
-     * @param {Title} titleService set the browser title
-     * @param {TranslateService} translate the translation service
-     * @param {ConfigService} configService The configuration provider
-     * @param {FormBuilder} formBuilder Form builder
-     * @param {MotionRepositoryService} repo Motion Repository
-     * @param {ActivatedRoute} route The activated route
-     * @param {Router} router The router
-     * @param {MatSnackBar} matSnackBar Material Design SnackBar
+     * @param titleService set the browser title
+     * @param translate the translation service
+     * @param configService The configuration provider
+     * @param formBuilder Form builder
+     * @param repo Motion Repository
+     * @param route The activated route
+     * @param router The router
+     * @param promptService Show a prompt by leaving the view
+     * @param matSnackBar Material Design SnackBar
      */
     public constructor(
         titleService: Title,
@@ -71,6 +73,7 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
         private repo: MotionRepositoryService,
         private route: ActivatedRoute,
         private router: Router,
+        private promptService: PromptService,
         matSnackBar: MatSnackBar
     ) {
         super(titleService, translate, matSnackBar);
@@ -101,6 +104,21 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
                 this.paragraphs = this.repo.getParagraphsToChoose(newViewMotion, this.lineLength);
             });
         });
+    }
+
+    /**
+     * Cancel the editing.
+     * Only fires when the form was dirty
+     */
+    public async cancelCreation(): Promise<void> {
+        if (this.contentForm.dirty || this.contentForm.value.selectedParagraphs.length > 0) {
+            const title = this.translate.instant('Are you sure you want to discard this amendment?');
+            if (await this.promptService.open(title)) {
+                this.router.navigate(['..'], { relativeTo: this.route });
+            }
+        } else {
+            this.router.navigate(['..'], { relativeTo: this.route });
+        }
     }
 
     /**

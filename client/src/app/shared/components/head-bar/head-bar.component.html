@@ -11,7 +11,7 @@
         </button>
 
         <!-- Cancel edit button -->
-        <button mat-icon-button *ngIf="editMode" (click)="cancelEditEvent ? sendCancelEditEvent() : sendMainEvent()">
+        <button mat-icon-button *ngIf="editMode" (click)="isCancelEditUsed ? sendCancelEditEvent() : sendMainEvent()">
             <mat-icon>close</mat-icon>
         </button>
 
@@ -44,7 +44,7 @@
 
         <!-- Save button -->
         <button mat-button *ngIf="editMode" [disabled]="!isSaveButtonEnabled" (click)="save()">
-            <strong translate class="upper">Save</strong>
+            <strong translate class="upper">{{ saveText }}</strong>
         </button>
 
         <!-- Menu button slot -->
@@ -61,5 +61,10 @@
     (click)="sendMainEvent()"
     matTooltip="{{ mainActionTooltip | translate }}"
 >
-    <mat-icon>{{ mainButtonIcon }}</mat-icon>
+    <mat-icon *ngIf="mainButtonIcon === 'add_circle'; else mainIconBlock">
+        add
+    </mat-icon>
 </button>
+<ng-template #mainIconBlock>
+    {{ mainButtonIcon }}
+</ng-template>

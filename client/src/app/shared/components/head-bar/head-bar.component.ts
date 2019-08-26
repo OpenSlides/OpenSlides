@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { MainMenuService } from 'app/core/core-services/main-menu.service';
@@ -17,11 +17,14 @@ import { ViewportService } from 'app/core/ui-services/viewport.service';
  * ```html
  * <os-head-bar
  *   prevUrl="../.."
+ *   saveText="Create"
  *   [nav]="false"
  *   [goBack]="true"
  *   [mainButton]="opCanEdit()"
  *   [mainButtonIcon]="edit"
+ *   [backButtonIcon]="arrow_back"
  *   [editMode]="editMotion"
+ *   [isSaveButtonEnabled]="myConditionIsTrue()"
  *   [multiSelectMode]="isMultiSelect"
  *   (mainEvent)="setEditMode(!editMotion)"
  *   (saveEvent)="saveMotion()">
@@ -52,7 +55,7 @@ import { ViewportService } from 'app/core/ui-services/viewport.service';
     templateUrl: './head-bar.component.html',
     styleUrls: ['./head-bar.component.scss']
 })
-export class HeadBarComponent {
+export class HeadBarComponent implements OnInit {
     /**
      * Determine if the the navigation "hamburger" icon should be displayed in mobile mode
      */
@@ -64,6 +67,12 @@ export class HeadBarComponent {
      */
     @Input()
     public mainButtonIcon = 'add_circle';
+
+    /**
+     * Custom text to show as "save"
+     */
+    @Input()
+    public saveText = 'Save';
 
     /**
      * Determine edit mode
@@ -124,6 +133,11 @@ export class HeadBarComponent {
     public cancelEditEvent = new EventEmitter<void>();
 
     /**
+     * To detect if the cancel event was used
+     */
+    public isCancelEditUsed = false;
+
+    /**
      * Sends a signal if a detail view should be saved
      */
     @Output()
@@ -143,6 +157,13 @@ export class HeadBarComponent {
         private route: ActivatedRoute,
         private routingState: RoutingStateService
     ) {}
+
+    /**
+     * Detect if the cancel edit event was used
+     */
+    public ngOnInit(): void {
+        this.isCancelEditUsed = this.cancelEditEvent.observers.length > 0;
+    }
 
     /**
      * Emits a signal to the parent if

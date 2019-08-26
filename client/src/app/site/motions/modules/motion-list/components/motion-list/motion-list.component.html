@@ -214,7 +214,7 @@
 
 <mat-menu #motionListMenu="matMenu">
     <div *ngIf="!isMultiSelect">
-        <div *ngIf="perms.isAllowed('change_metadata')">
+        <div *ngIf="perms.isAllowed('change_metadata') && selectedView === 'list'">
             <button mat-menu-item (click)="toggleMultiSelect()">
                 <mat-icon>library_add</mat-icon>
                 <span translate>Multiselect</span>
@@ -265,7 +265,7 @@
             </button>
         </div>
 
-        <button mat-menu-item (click)="openExportDialog()">
+        <button mat-menu-item *ngIf="selectedView === 'list'" (click)="openExportDialog()">
             <mat-icon>archive</mat-icon>
             <span translate>Export</span>
         </button>

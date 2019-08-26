@@ -31,6 +31,14 @@ import { MotionSortListService } from 'app/site/motions/services/motion-sort-lis
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { MotionExportDialogComponent } from '../../../shared-motion/motion-export-dialog/motion-export-dialog.component';
 
+/**
+ * Determine the types of the motionList
+ */
+type MotionListviewType = 'tiles' | 'list';
+
+/**
+ * Tile information
+ */
 interface TileCategoryInformation {
     filter: string;
     name: string;
@@ -88,7 +96,7 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
     /**
      * String to define the current selected view.
      */
-    public selectedView: string;
+    public selectedView: MotionListviewType;
 
     /**
      * Columns to display in table when desktop view is available
@@ -236,7 +244,7 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
         this.categoryRepo.getViewModelListObservable().subscribe(cats => {
             this.categories = cats;
             if (cats.length > 0) {
-                this.storage.get<string>('motionListView').then(savedView => {
+                this.storage.get<string>('motionListView').then((savedView: MotionListviewType) => {
                     this.selectedView = savedView ? savedView : 'tiles';
                 });
             } else {
@@ -381,7 +389,7 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
      *
      * @param value is the new view the user has selected.
      */
-    public onChangeView(value: string): void {
+    public onChangeView(value: MotionListviewType): void {
         this.selectedView = value;
         this.storage.set('motionListView', value);
     }

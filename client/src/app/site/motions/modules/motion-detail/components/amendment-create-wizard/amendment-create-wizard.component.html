@@ -1,15 +1,24 @@
-<os-head-bar [nav]="false" [goBack]="false">
+<os-head-bar
+    [nav]="false"
+    [editMode]="true"
+    saveText="Create"
+    [isSaveButtonEnabled]="matStepper.selectedIndex === 1"
+    (saveEvent)="saveAmendment()"
+    (cancelEditEvent)="cancelCreation()"
+>
     <!-- Title -->
     <div class="title-slot"><h2 translate>New amendment</h2></div>
-    <div class="menu-slot">
+
+    <!-- Next-button -->
+    <div class="extra-controls-slot">
         <div *ngIf="matStepper.selectedIndex === 0">
-            <button mat-button [disabled]="contentForm.value.selectedParagraph === null" (click)="matStepper.next()">
+            <button mat-button [disabled]="contentForm.value.selectedParagraphs.length === 0" (click)="matStepper.next()">
                 <span class="upper" translate>Next</span>
             </button>
         </div>
         <div *ngIf="matStepper.selectedIndex === 1">
-            <button type="button" mat-button (click)="saveAmendment()">
-                <span class="upper" translate>Create</span>
+            <button type="button" mat-button (click)="matStepper.previous()">
+                <span class="upper" translate>Previous</span>
             </button>
         </div>
     </div>
