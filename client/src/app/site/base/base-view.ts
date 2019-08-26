@@ -62,11 +62,19 @@ export abstract class BaseViewComponent extends BaseComponent implements OnDestr
      * @param message The message to show or an "real" error, which will be passed to the console.
      */
     protected raiseError = (message: string | Error): void => {
+        let errorNotification: string;
         if (message instanceof Error) {
-            console.error(message);
-            message = this.translate.instant('A client error occured. Please contact your system administrator.');
+            if (message.message) {
+                errorNotification = message.message;
+            } else {
+                errorNotification = this.translate.instant(
+                    'A client error occurred. Please contact your system administrator.'
+                );
+            }
+        } else {
+            errorNotification = message;
         }
-        this.messageSnackBar = this.matSnackBar.open(message as string, this.translate.instant('OK'), {
+        this.messageSnackBar = this.matSnackBar.open(errorNotification, this.translate.instant('OK'), {
             duration: 0
         });
     };
