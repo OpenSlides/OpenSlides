@@ -8,7 +8,6 @@
         margin: 3px 0;
         display: flex;
         align-items: center;
-        cursor: pointer;
 
         div {
             display: inherit;
@@ -21,13 +20,22 @@
         }
     }
 
+    // Overwrite the handler
+    .cdk-drag-handle {
+        display: flex;
+        cursor: move;
+        width: 50px;
+        align-items: center;
+        justify-content: center;
+    }
+
     // Overwrite the preview
     .cdk-drag-preview {
         box-shadow: none !important;
         background-color: unset !important;
         border-radius: 6px !important;
 
-        div {
+        div.backgroundColorLight {
             box-sizing: border-box;
             background-color: mat-color($background, background);
             border-radius: 4px;
