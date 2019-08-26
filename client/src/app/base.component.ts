@@ -28,6 +28,11 @@ export abstract class BaseComponent {
     protected swipeTime?: number;
 
     /**
+     * Determine to display a save hint
+     */
+    public saveHint: boolean;
+
+    /**
      * Settings for the TinyMCE editor selector
      */
     public tinyMceSettings = {
@@ -77,5 +82,27 @@ export abstract class BaseComponent {
      */
     public trackByIndex(index: number): number {
         return index;
+    }
+
+    /**
+     * TinyMCE Init callback. Used for certain mobile editors
+     * @param event
+     */
+    protected onInitTinyMce(event: any): void {
+        console.log('tinyMCE event: ', event);
+
+        if (event.event.target.settings.theme === 'mobile') {
+            console.log('is mobile editor');
+            this.saveHint = true;
+        } else {
+            console.log('is no mobile editor');
+            event.editor.focus();
+        }
+    }
+
+    protected onLeaveTinyMce(event: any): void {
+        console.log('tinyevent:', event.event.type);
+        this.saveHint = false;
+        // console.log("event: ", event.event.type);
     }
 }

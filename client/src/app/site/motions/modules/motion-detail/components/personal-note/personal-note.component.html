@@ -17,7 +17,13 @@
         >
             <mat-icon>picture_as_pdf</mat-icon>
         </button>
-        <button mat-icon-button *ngIf="isEditMode" (click)="savePersonalNote()" matTooltip="{{ 'Save' | translate }}">
+        <button
+            mat-icon-button
+            color="warn"
+            *ngIf="isEditMode"
+            (click)="savePersonalNote()"
+            matTooltip="{{ 'Save' | translate }}"
+        >
             <mat-icon>save</mat-icon>
         </button>
         <button
@@ -40,7 +46,17 @@
         </ng-container>
         <form [formGroup]="personalNoteForm" *ngIf="isEditMode">
             <!-- The HTML Editor -->
-            <editor formControlName="note" [init]="tinyMceSettings"></editor>
+            <editor
+                formControlName="note"
+                [init]="tinyMceSettings"
+                (onInit)="onInitTinyMce($event)"
+                (onRemove)="onLeaveTinyMce($event)"
+            ></editor>
         </form>
+        <div *ngIf="saveHint">
+            <span translate>Touch the book icon to enter text</span>
+            <br />
+            <span class="red-warning-text" translate>Do not forget to save your changes!</span>
+        </div>
     </ng-container>
 </os-meta-text-block>
