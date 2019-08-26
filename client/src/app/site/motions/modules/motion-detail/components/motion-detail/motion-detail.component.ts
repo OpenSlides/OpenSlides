@@ -26,6 +26,7 @@ import { DiffLinesInParagraph, DiffService, LineRange } from 'app/core/ui-servic
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
 import { PersonalNoteService } from 'app/core/ui-services/personal-note.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
+import { RoutingStateService } from 'app/core/ui-services/routing-state.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { Mediafile } from 'app/shared/models/mediafiles/mediafile';
 import { Motion } from 'app/shared/models/motions/motion';
@@ -445,7 +446,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         private blockRepo: MotionBlockRepositoryService,
         private itemRepo: ItemRepositoryService,
         private motionSortService: MotionSortListService,
-        private motionFilterService: MotionFilterListService
+        private motionFilterService: MotionFilterListService,
+        public routingStateService: RoutingStateService
     ) {
         super(title, translate, matSnackBar);
     }
@@ -1548,15 +1550,17 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     }
 
     /**
-     * Tries to "logically" navigate back. If the motion has a parent, it will
-     * try to navigate to the parent
-     * rather than just into the list view.
+     * Tries to determine the previous URL if it's considered unsafe
      *
      * @returns the target to navigate to
      */
     public getPrevUrl(): string {
         if (this.motion && this.motion.parent_id) {
-            return `../../${this.motion.parent_id}`;
+            if (this.routingStateService.previousUrl && this.routingStateService.isSafePrevUrl) {
+                return this.routingStateService.previousUrl;
+            } else {
+                return this.motion.parent.getDetailStateURL();
+            }
         }
         return '../..';
     }
