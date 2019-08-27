@@ -24,7 +24,7 @@
             </div>
             <!-- Expanding control -->
             <div class="small show-entire-text" *ngIf="canExpand && !disableExpandControl">
-                <a (click)="isExpanded = !isExpanded">{{ isExpanded ? 'Hide more text' : 'Show full text' }}</a>
+                <a (click)="isExpanded = !isExpanded">{{ isExpanded ? ('Hide more text' | translate) : ('Show full text' | translate) }}</a>
             </div>
         </mat-card-content>
     </mat-card>

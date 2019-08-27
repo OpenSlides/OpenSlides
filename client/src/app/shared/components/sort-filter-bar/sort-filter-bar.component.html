@@ -40,6 +40,7 @@
         <os-rounded-input
             [model]="searchFieldInput"
             [size]="'small'"
+            [fullWidth]="false"
             [lazyInput]="true"
             (oninput)="searchFieldChange.emit($event)"
             placeholder="{{ 'Search' | translate }}"
