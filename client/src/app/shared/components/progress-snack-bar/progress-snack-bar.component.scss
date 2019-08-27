@@ -1,0 +1,20 @@
+.progress-grid-wrapper {
+    display: grid;
+    width: 100%;
+    grid-template-areas:
+        'message action'
+        'bar action';
+    grid-template-columns: auto min-content;
+}
+
+.message {
+    grid-area: message;
+}
+
+.bar {
+    grid-area: bar;
+}
+
+.action {
+    grid-area: action;
+}

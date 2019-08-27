@@ -6,6 +6,7 @@ import {
     OnInit,
     ViewEncapsulation
 } from '@angular/core';
+import { MatSnackBarRef } from '@angular/material';
 
 import { Subscription } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
@@ -78,7 +79,11 @@ export class ProgressSnackBarComponent implements OnInit, OnDestroy {
     /**
      * Declare the progressService
      */
-    public constructor(private progressService: ProgressService, private cd: ChangeDetectorRef) {}
+    public constructor(
+        private progressService: ProgressService,
+        private cd: ChangeDetectorRef,
+        public snackBarRef: MatSnackBarRef<ProgressSnackBarComponent>
+    ) {}
 
     /**
      * Get the progress subject and subscribe to the info subject
