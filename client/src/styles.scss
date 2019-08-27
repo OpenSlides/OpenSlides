@@ -23,6 +23,7 @@
 @import './app/site/mediafiles/components/mediafile-list/mediafile-list.component.scss-theme.scss';
 @import './app/site/common/components/super-search/super-search.component.scss';
 @import './app/shared/components/rounded-input/rounded-input.component.scss';
+@import './app/shared/components/meta-text-block/meta-text-block.component.scss';
 
 /** fonts */
 @import './assets/styles/fonts.scss';
@@ -46,6 +47,7 @@ $narrow-spacing: (
     @include os-mediafile-list-theme($theme);
     @include os-super-search-style($theme);
     @include os-rounded-input-style($theme);
+    @include os-meta-text-block-style($theme);
 }
 
 /** Load projector specific SCSS values */
@@ -544,13 +546,6 @@ button.mat-menu-item.selected {
 
 .mat-menu-item .mat-icon {
     margin-right: 8px !important;
-}
-
-.meta-text-block .mat-icon-button {
-    margin-top: -12px !important;
-}
-.meta-text-block .mat-icon-button mat-icon {
-    font-size: 18px;
 }
 
 /** helper classes for margin/padding */

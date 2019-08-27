@@ -1,4 +1,4 @@
-<os-meta-text-block showActionRow="true">
+<os-meta-text-block showActionRow="true" [disableExpandControl]="true">
     <ng-container class="meta-text-block-title">
         <span translate>Voting result</span>
         <span *ngIf="pollIndex">&nbsp;({{ pollIndex + 1 }})</span>

@@ -102,6 +102,7 @@ import { OverlayComponent } from 'app/site/common/components/overlay/overlay.com
 import { PreviewComponent } from './components/preview/preview.component';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { GlobalSpinnerComponent } from 'app/site/common/components/global-spinner/global-spinner.component';
+import { HeightResizingDirective } from './directives/height-resizing.directive';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -223,6 +224,7 @@ import { GlobalSpinnerComponent } from 'app/site/common/components/global-spinne
         ProjectorButtonComponent,
         ProjectionDialogComponent,
         ResizedDirective,
+        HeightResizingDirective,
         MetaTextBlockComponent,
         ProjectorComponent,
         SlideContainerComponent,
@@ -290,7 +292,8 @@ import { GlobalSpinnerComponent } from 'app/site/common/components/global-spinne
         GlobalSpinnerComponent,
         SuperSearchComponent,
         OverlayComponent,
-        PreviewComponent
+        PreviewComponent,
+        HeightResizingDirective
     ],
     providers: [
         { provide: DateAdapter, useClass: OpenSlidesDateAdapter },

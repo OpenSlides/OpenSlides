@@ -2,6 +2,7 @@
     <os-meta-text-block
         *ngIf="sectionVisible(section)"
         [showActionRow]="canEditSection(section) || comments[section.id].comment"
+        [disableExpandControl]="isCommentEdited(section)"
         icon="comment"
     >
         <ng-container class="meta-text-block-title">
