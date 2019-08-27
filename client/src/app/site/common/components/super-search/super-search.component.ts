@@ -304,14 +304,16 @@ export class SuperSearchComponent implements OnInit {
      * @param event KeyboardEvent to listen to keyboard-inputs.
      */
     @HostListener('document:keydown', ['$event']) public onKeyNavigation(event: KeyboardEvent): void {
-        if (event.key === 'Enter') {
-            this.viewResult(this.selectedModel);
-        }
-        if (event.key === 'ArrowUp') {
-            this.selectNextResult(true);
-        }
-        if (event.key === 'ArrowDown') {
-            this.selectNextResult(false);
+        if (!!this.selectedModel) {
+            if (event.key === 'Enter') {
+                this.viewResult(this.selectedModel);
+            }
+            if (event.key === 'ArrowUp') {
+                this.selectNextResult(true);
+            }
+            if (event.key === 'ArrowDown') {
+                this.selectNextResult(false);
+            }
         }
         if (event.altKey && event.shiftKey && event.key === 'V') {
             this.showPreview = !this.showPreview;

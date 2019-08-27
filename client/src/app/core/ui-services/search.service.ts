@@ -213,7 +213,9 @@ export class SearchService {
                     .filter(model =>
                         dedicatedId
                             ? model.id === dedicatedId
-                            : model.formatForSearch().searchValue.some(text => text.toLowerCase().indexOf(query) !== -1)
+                            : model
+                                  .formatForSearch()
+                                  .searchValue.some(text => text && text.toLowerCase().indexOf(query) !== -1)
                     )
                     .sort((a, b) => {
                         switch (sortingProperty) {
