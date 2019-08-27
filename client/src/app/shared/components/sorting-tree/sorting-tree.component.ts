@@ -481,21 +481,37 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
     }
 
     /**
+     * Initializes the `this.pointer` with the x- and y-coordinates,
+     * where the user starts the dragging.
+     *
+     * @param x The value of the x-position on screen.
+     * @param y The value of the y-position on screen.
+     */
+    private initPointer(x: number, y: number): void {
+        this.pointer = {
+            position: {
+                x,
+                y
+            },
+            currentPosition: {
+                x,
+                y
+            }
+        };
+    }
+
+    /**
      * Function to set the cursor position immediately if the user starts dragging a node.
      *
      * @param event The mouse event which emits the event.
      */
     public mouseDown(event: MouseEvent): void {
-        this.pointer = {
-            position: {
-                x: event.x,
-                y: event.y
-            },
-            currentPosition: {
-                x: event.x,
-                y: event.y
-            }
-        };
+        this.initPointer(event.x, event.y);
+    }
+
+    public touchStart(event: TouchEvent): void {
+        const { clientX, clientY }: { clientX: number; clientY: number } = event.touches[0];
+        this.initPointer(Math.round(clientX), Math.round(clientY));
     }
 
     /**
@@ -551,16 +567,22 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
      */
     private getDirection(): Movement {
         const movement = new Movement();
-        movement.verticalMove =
-            this.nextNode.startPosition < this.nextNode.nextPosition
-                ? Direction.DOWNWARDS
-                : this.nextNode.startPosition > this.nextNode.nextPosition
-                ? Direction.UPWARDS
-                : Direction.NOWAY;
+        if (this.nextNode.startPosition < this.nextNode.nextPosition) {
+            movement.verticalMove = Direction.DOWNWARDS;
+        } else if (this.nextNode.startPosition > this.nextNode.nextPosition) {
+            movement.verticalMove = Direction.UPWARDS;
+        } else {
+            movement.verticalMove = Direction.NOWAY;
+        }
         const deltaX = this.pointer.currentPosition.x - this.pointer.position.x;
         movement.steps = Math.trunc(deltaX / 40);
-        movement.horizontalMove =
-            movement.steps > 0 ? Direction.RIGHT : movement.steps < 0 ? Direction.LEFT : Direction.NOWAY;
+        if (movement.steps > 0) {
+            movement.horizontalMove = Direction.RIGHT;
+        } else if (movement.steps < 0) {
+            movement.horizontalMove = Direction.LEFT;
+        } else {
+            movement.horizontalMove = Direction.NOWAY;
+        }
         return movement;
     }
 
