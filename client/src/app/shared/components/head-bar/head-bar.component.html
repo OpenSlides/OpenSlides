@@ -49,7 +49,7 @@
 
         <!-- Save button -->
         <button mat-button *ngIf="editMode" [disabled]="!isSaveButtonEnabled" (click)="save()">
-            <strong translate class="upper">{{ saveText }}</strong>
+            <strong class="upper">{{ saveText | translate }}</strong>
         </button>
 
         <!-- Menu button slot -->
