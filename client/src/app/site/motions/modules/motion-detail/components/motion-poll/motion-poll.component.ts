@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { MatDialog } from '@angular/material/dialog';
 import { Title } from '@angular/platform-browser';
@@ -23,7 +23,8 @@ import { MotionPollDialogComponent } from './motion-poll-dialog.component';
 @Component({
     selector: 'os-motion-poll',
     templateUrl: './motion-poll.component.html',
-    styleUrls: ['./motion-poll.component.scss']
+    styleUrls: ['./motion-poll.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class MotionPollComponent extends BaseViewComponent implements OnInit {
     /**

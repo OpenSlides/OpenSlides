@@ -32,12 +32,14 @@ mat-divider {
     margin-left: 20px;
 }
 
-// adds breaks to mat-checkboxes with long labels
-::ng-deep .mat-checkbox-layout {
-    white-space: normal !important;
-}
+mat-checkbox {
+    // adds breaks to mat-checkboxes with long labels
+    .mat-checkbox-layout {
+        white-space: normal;
+    }
 
-// rather than center the checkbox, put the checkbox in the first line
-::ng-deep .mat-checkbox-inner-container {
-    margin-top: 3px !important;
+    // rather than center the checkbox, put the checkbox in the first line
+    .mat-checkbox-inner-container {
+        margin-top: 3px;
+    }
 }

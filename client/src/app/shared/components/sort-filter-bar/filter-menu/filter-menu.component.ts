@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 
 import { BaseFilterListService, OsFilterOption } from 'app/core/ui-services/base-filter-list.service';
 import { BaseViewModel } from 'app/site/base/base-view-model';
@@ -17,7 +17,8 @@ import { BaseViewModel } from 'app/site/base/base-view-model';
 @Component({
     selector: 'os-filter-menu',
     templateUrl: './filter-menu.component.html',
-    styleUrls: ['./filter-menu.component.scss']
+    styleUrls: ['./filter-menu.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class FilterMenuComponent implements OnInit {
     /**

@@ -43,8 +43,7 @@
 <!-- The actual diff view -->
 <div class="motion-text-with-diffs">
     <div *ngIf="getTitleChangingObject() as changedTitle">
-        <div
-            class="diff-box diff-box-{{ changedTitle.getChangeId() }} clearfix">
+        <div class="diff-box diff-box-{{ changedTitle.getChangeId() }} clearfix">
             <div class="action-row" *osPerms="'motions.can_manage'">
                 <button
                     mat-icon-button
@@ -60,15 +59,14 @@
                 <i class="grey">{{ 'Rejected' | translate }}</i>
             </div>
 
-            <div class="motion-text motion-text-diff"
-                 [class.line-numbers-none]="isLineNumberingNone()"
-                 [class.line-numbers-inline]="isLineNumberingInline()"
-                 [class.line-numbers-outside]="isLineNumberingOutside()"
-                 [attr.data-change-id]="changedTitle.getChangeId()"
+            <div
+                class="motion-text motion-text-diff"
+                [class.line-numbers-none]="isLineNumberingNone()"
+                [class.line-numbers-inline]="isLineNumberingInline()"
+                [class.line-numbers-outside]="isLineNumberingOutside()"
+                [attr.data-change-id]="changedTitle.getChangeId()"
             >
-                <div class="bold">
-                    {{ 'Changed title' | translate }}:
-                </div>
+                <div class="bold">{{ 'Changed title' | translate }}:</div>
                 <div [innerHTML]="getFormattedTitleDiff()"></div>
             </div>
         </div>
@@ -153,7 +151,7 @@
         >
             <mat-icon>thumb_up</mat-icon>
             <span translate>Accept</span>
-            <mat-icon *ngIf="change.isAccepted()" class="active-indicator">done</mat-icon>
+            <mat-icon class="active-indicator">{{ change.isAccepted() ? 'done' : '' }}</mat-icon>
         </button>
         <button
             type="button"
@@ -163,7 +161,7 @@
         >
             <mat-icon>thumb_down</mat-icon>
             <span translate>Reject</span>
-            <mat-icon *ngIf="change.isRejected()" class="active-indicator">done</mat-icon>
+            <mat-icon class="active-indicator">{{ change.isRejected() ? 'done' : '' }}</mat-icon>
         </button>
         <button type="button" mat-menu-item (click)="setInternal(change, !change.internal)">
             <mat-icon>{{ change.internal ? 'check_box_outline_blank' : 'check_box' }}</mat-icon>
@@ -173,11 +171,21 @@
             <mat-icon>delete</mat-icon>
             <span translate>Delete</span>
         </button>
-        <button type="button" mat-menu-item (click)="editChangeRecommendation(change, $event)" *ngIf="!change.isTitleChange()">
+        <button
+            type="button"
+            mat-menu-item
+            (click)="editChangeRecommendation(change, $event)"
+            *ngIf="!change.isTitleChange()"
+        >
             <mat-icon>edit</mat-icon>
             <span translate>Edit</span>
         </button>
-        <button type="button" mat-menu-item (click)="editTitleChangeRecommendation(change, $event)" *ngIf="change.isTitleChange()">
+        <button
+            type="button"
+            mat-menu-item
+            (click)="editTitleChangeRecommendation(change, $event)"
+            *ngIf="change.isTitleChange()"
+        >
             <mat-icon>edit</mat-icon>
             <span translate>Edit</span>
         </button>

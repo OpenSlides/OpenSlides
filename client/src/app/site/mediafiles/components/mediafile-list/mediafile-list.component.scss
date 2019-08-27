@@ -2,11 +2,6 @@
 
 $navbar-size: 64px;
 
-// multi line tooltip
-::ng-deep .mat-tooltip {
-    white-space: pre-line !important;
-}
-
 .folder-nav-bar {
     width: 100%;
     display: flex;

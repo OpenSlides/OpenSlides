@@ -1,0 +1,22 @@
+// smaller and closer mat icon buttons.
+// use on button-tags
+.small-mat-icon-button {
+    $size: 20px;
+    margin: 0 5px;
+    position: relative;
+    width: $size;
+    height: $size;
+
+    .mat-icon {
+        position: absolute;
+        left: 0;
+        top: 0;
+        line-height: normal;
+        width: $size;
+        height: $size;
+    }
+
+    .material-icons {
+        font-size: $size;
+    }
+}

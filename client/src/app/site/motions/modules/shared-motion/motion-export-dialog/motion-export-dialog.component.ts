@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatButtonToggle } from '@angular/material/button-toggle';
 import { MatDialogRef } from '@angular/material/dialog';
@@ -20,7 +20,8 @@ import { ExportFileFormat, MotionExportInfo } from 'app/site/motions/services/mo
 @Component({
     selector: 'os-motion-export-dialog',
     templateUrl: './motion-export-dialog.component.html',
-    styleUrls: ['./motion-export-dialog.component.scss']
+    styleUrls: ['./motion-export-dialog.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class MotionExportDialogComponent implements OnInit {
     /**

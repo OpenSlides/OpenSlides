@@ -328,7 +328,7 @@ mat-card {
     }
 }
 .os-form-card {
-    width: 770px;
+    max-width: 770px;
     margin-top: 20px !important;
     margin-left: auto !important;
     margin-right: auto !important;
@@ -825,10 +825,14 @@ button.mat-menu-item.selected {
     font-size: 16px;
 }
 
-.ellipsis-overflow {
+.one-line {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.ellipsis-overflow {
+    @extend .one-line;
     padding-right: 3px;
     margin-right: 3px;
 }

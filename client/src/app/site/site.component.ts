@@ -212,15 +212,6 @@ export class SiteComponent extends BaseComponent implements OnInit {
     }
 
     /**
-     * Shows the `super-search.component`,
-     * only if the user is on a mobile device.
-     */
-    public toggleSearch(): void {
-        this.overlayService.showSearch();
-        this.mobileAutoCloseNav();
-    }
-
-    /**
      * Automatically close the navigation in while navigating in mobile mode
      */
     public mobileAutoCloseNav(): void {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
@@ -19,7 +19,8 @@ import { ViewMotion } from 'app/site/motions/models/view-motion';
 @Component({
     selector: 'os-amendment-create-wizard',
     templateUrl: './amendment-create-wizard.component.html',
-    styleUrls: ['./amendment-create-wizard.component.scss']
+    styleUrls: ['./amendment-create-wizard.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class AmendmentCreateWizardComponent extends BaseViewComponent {
     /**

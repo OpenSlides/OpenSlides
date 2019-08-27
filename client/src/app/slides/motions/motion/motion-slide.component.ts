@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -19,7 +19,8 @@ import { MotionSlideObjChangeReco } from './motion-slide-obj-change-reco';
 @Component({
     selector: 'os-motion-slide',
     templateUrl: './motion-slide.component.html',
-    styleUrls: ['./motion-slide.component.scss']
+    styleUrls: ['./motion-slide.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideData>
     implements IBaseScaleScrollSlideComponent<MotionSlideData> {

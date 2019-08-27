@@ -28,7 +28,7 @@
     <mat-horizontal-stepper #matStepper linear>
         <mat-step [completed]="contentForm.value.selectedParagraphs.length > 0">
             <ng-template matStepLabel>{{ 'Select paragraphs' | translate }}</ng-template>
-            <div>
+            <div class="amendment-create-wizard-wrapper">
                 <section
                     *ngFor="let paragraph of paragraphs"
                     class="paragraph-row"

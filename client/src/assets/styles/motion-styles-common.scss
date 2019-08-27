@@ -1,8 +1,4 @@
-/* Line numbers */
-// :host ::ng-deep is needed as this styling applies to the motion html that is injected using innerHTML,
-// which doesn't have the [ngcontent]-attributes necessary for regular styles.
-// An alternative approach (in case ::ng-deep gets removed) might be to change the view encapsulation.
-:host ::ng-deep .motion-text {
+.motion-text {
     ins,
     .insert {
         color: green;
@@ -115,7 +111,7 @@
     }
 }
 
-:host ::ng-deep .amendment-view {
+.amendment-view {
     .os-split-after {
         margin-bottom: 0;
     }

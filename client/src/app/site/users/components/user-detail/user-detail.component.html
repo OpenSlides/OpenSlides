@@ -53,9 +53,11 @@
     </mat-menu>
 </os-head-bar>
 
-<mat-card [ngClass]="editUser ? 'os-form-card' : 'os-card'" *ngIf="isAllowed('seeName')">
-    <ng-container *ngIf="editUser; then editView; else showView"></ng-container>
-</mat-card>
+<div class="content-container">
+    <mat-card [ngClass]="editUser ? 'os-form-card' : 'os-card'" *ngIf="isAllowed('seeName')">
+        <ng-container *ngIf="editUser; then editView; else showView"></ng-container>
+    </mat-card>
+</div>
 
 <ng-template #editView>
     <form [formGroup]="personalInfoForm" *ngIf="user" (keydown)="onKeyDown($event)">

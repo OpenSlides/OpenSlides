@@ -1,3 +1,5 @@
+@import '~assets/styles/custom-button-styles.scss';
+
 .grid-wrapper {
     display: grid;
     width: 100%;
@@ -18,28 +20,4 @@
 .action-buttons {
     grid-area: buttons;
     text-align: right;
-}
-
-// smaller and closer mat icon buttons.
-// use on button-tags
-// TODO: Somehow does not apply when in style.scss
-.small-mat-icon-button {
-    $size: 20px;
-    margin: 0 5px;
-    position: relative;
-    width: $size;
-    height: $size;
-
-    ::ng-deep .mat-icon {
-        position: absolute;
-        left: 0;
-        top: 0;
-        line-height: normal;
-        width: $size;
-        height: $size;
-    }
-
-    .material-icons {
-        font-size: $size;
-    }
 }
