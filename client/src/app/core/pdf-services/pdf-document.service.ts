@@ -66,6 +66,8 @@ export class PdfDocumentService {
      */
     private imageUrls: string[] = [];
 
+    private pdfWorker: Worker;
+
     /**
      * Constructor
      *
@@ -396,9 +398,15 @@ export class PdfDocumentService {
      * Shows the progress bar earlier
      */
     private showProgress(): void {
-        this.matSnackBar.openFromComponent(ProgressSnackBarComponent, {
+        const progressBarRef = this.matSnackBar.openFromComponent(ProgressSnackBarComponent, {
             duration: 0
         });
+
+        // Listen to clicks on the cancel button
+        progressBarRef.onAction().subscribe(() => {
+            this.cancelPdfCreation();
+        });
+
         this.progressService.message = this.translate.instant('Creating PDF file ...');
         this.progressService.progressMode = 'determinate';
     }
@@ -459,12 +467,12 @@ export class PdfDocumentService {
 
         const isIE = /msie\s|trident\//i.test(window.navigator.userAgent);
         if (typeof Worker !== 'undefined' && !isIE) {
-            const worker = new Worker('./pdf-worker.worker', {
+            this.pdfWorker = new Worker('./pdf-worker.worker', {
                 type: 'module'
             });
 
             // the result of the worker
-            worker.onmessage = ({ data }) => {
+            this.pdfWorker.onmessage = ({ data }) => {
                 // if the worker returns a numbers, is always the progress
                 if (typeof data === 'number') {
                     // update progress
@@ -476,10 +484,11 @@ export class PdfDocumentService {
                 if (typeof data === 'object') {
                     this.matSnackBar.dismiss();
                     saveAs(data, filename, { autoBOM: true });
+                    this.pdfWorker = null;
                 }
             };
 
-            worker.postMessage({
+            this.pdfWorker.postMessage({
                 doc: JSON.parse(JSON.stringify(doc)),
                 fonts: fonts,
                 vfs: vfs
@@ -489,6 +498,16 @@ export class PdfDocumentService {
             this.matSnackBar.open(this.translate.instant('Cannot create PDF files on this browser.'), '', {
                 duration: 0
             });
+        }
+    }
+
+    /**
+     * Cancel the pdf generation
+     */
+    private cancelPdfCreation(): void {
+        if (!!this.pdfWorker) {
+            this.pdfWorker.terminate();
+            this.pdfWorker = null;
         }
     }
 
