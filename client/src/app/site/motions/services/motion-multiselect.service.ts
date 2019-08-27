@@ -110,21 +110,20 @@ export class MotionMultiselectService {
      * @param motions The motions to change
      */
     public async setStateOfMultiple(motions: ViewMotion[]): Promise<void> {
-        const title = this.translate.instant('This will set the following state for all selected motions:');
-        const choices = this.workflowRepo.getWorkflowStatesForMotions(motions).map(workflowState => ({
-            id: workflowState.id,
-            label: workflowState.name
-        }));
-        const selectedChoice = await this.choiceService.open(title, choices);
-        if (selectedChoice) {
-            const message = `${motions.length} ` + this.translate.instant(this.messageForSpinner);
-            this.overlayService.setSpinner(true, message);
-            await this.repo.setMultiState(motions, selectedChoice.items as number);
-            // .catch(error => {
-            //     this.overlayService.setSpinner(false);
-            //     throw error;
-            // });
-            // this.overlayService.setSpinner(false);
+        if (motions.every(motion => motion.workflow_id === motions[0].workflow_id)) {
+            const title = this.translate.instant('This will set the following state for all selected motions:');
+            const choices = this.workflowRepo.getWorkflowStatesForMotions(motions).map(workflowState => ({
+                id: workflowState.id,
+                label: workflowState.name
+            }));
+            const selectedChoice = await this.choiceService.open(title, choices);
+            if (selectedChoice) {
+                const message = `${motions.length} ` + this.translate.instant(this.messageForSpinner);
+                this.overlayService.setSpinner(true, message);
+                await this.repo.setMultiState(motions, selectedChoice.items as number);
+            }
+        } else {
+            throw new Error(this.translate.instant('You cannot change the state of motions in different workflows!'));
         }
     }
 
@@ -134,32 +133,34 @@ export class MotionMultiselectService {
      * @param motions The motions to change
      */
     public async setRecommendation(motions: ViewMotion[]): Promise<void> {
-        const title = this.translate.instant('This will set the following recommendation for all selected motions:');
-        const choices = this.workflowRepo
-            .getWorkflowStatesForMotions(motions)
-            .filter(workflowState => !!workflowState.recommendation_label)
-            .map(workflowState => ({
-                id: workflowState.id,
-                label: workflowState.recommendation_label
-            }));
-        const clearChoice = this.translate.instant('Delete recommendation');
-        const selectedChoice = await this.choiceService.open(title, choices, false, null, clearChoice);
-        if (selectedChoice) {
-            const requestData = motions.map(motion => ({
-                id: motion.id,
-                recommendation: selectedChoice.action ? 0 : (selectedChoice.items as number)
-            }));
-
-            const message = `${motions.length} ` + this.translate.instant(this.messageForSpinner);
-            this.overlayService.setSpinner(true, message);
-            await this.httpService.post('/rest/motions/motion/manage_multiple_recommendation/', {
-                motions: requestData
-            });
-            //     .catch(error => {
-            //         this.overlayService.setSpinner(false);
-            //         throw error;
-            //     });
-            // this.overlayService.setSpinner(false);
+        if (motions.every(motion => motion.workflow_id === motions[0].workflow_id)) {
+            const title = this.translate.instant(
+                'This will set the following recommendation for all selected motions:'
+            );
+            const choices = this.workflowRepo
+                .getWorkflowStatesForMotions(motions)
+                .filter(workflowState => !!workflowState.recommendation_label)
+                .map(workflowState => ({
+                    id: workflowState.id,
+                    label: workflowState.recommendation_label
+                }));
+            const clearChoice = this.translate.instant('Delete recommendation');
+            const selectedChoice = await this.choiceService.open(title, choices, false, null, clearChoice);
+            if (selectedChoice) {
+                const requestData = motions.map(motion => ({
+                    id: motion.id,
+                    recommendation: selectedChoice.action ? 0 : (selectedChoice.items as number)
+                }));
+                const message = `${motions.length} ` + this.translate.instant(this.messageForSpinner);
+                this.overlayService.setSpinner(true, message);
+                await this.httpService.post('/rest/motions/motion/manage_multiple_recommendation/', {
+                    motions: requestData
+                });
+            }
+        } else {
+            throw new Error(
+                this.translate.instant('You cannot change the recommendation of motions in different workflows!')
+            );
         }
     }
 
