@@ -1,32 +1,10 @@
 import { Injectable } from '@angular/core';
-import { MatDialog, MatDialogRef, ProgressSpinnerMode } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material';
 
 import { Observable, Subject } from 'rxjs';
 
 import { largeDialogSettings } from 'app/shared/utils/dialog-settings';
 import { SuperSearchComponent } from 'app/site/common/components/super-search/super-search.component';
-
-/**
- * Optional configuration for the spinner.
- */
-export interface SpinnerConfig {
-    /**
-     * The mode of the spinner. Defaults to `'indeterminate'`
-     */
-    mode?: ProgressSpinnerMode;
-    /**
-     * The diameter of the svg.
-     */
-    diameter?: number;
-    /**
-     * The width of the stroke of the spinner.
-     */
-    stroke?: number;
-    /**
-     * An optional value, if the spinner is in `'determinate'-mode`.
-     */
-    value?: number;
-}
 
 /**
  * Component to control the visibility of components, that overlay the whole window.
@@ -45,7 +23,7 @@ export class OverlayService {
     /**
      * Subject, that holds the visibility and message. The component can observe this.
      */
-    private spinner: Subject<{ isVisible: boolean; text?: string; config?: SpinnerConfig }> = new Subject();
+    private spinner: Subject<{ isVisible: boolean; text?: string }> = new Subject();
 
     /**
      * Boolean, whether appearing of the spinner should be prevented next time.
@@ -70,9 +48,9 @@ export class OverlayService {
      * @param text optional. If the spinner should show a message.
      * @param preventAppearing optional. Wether to prevent showing the spinner the next time.
      */
-    public setSpinner(isVisible: boolean, text?: string, preventAppearing?: boolean, config?: SpinnerConfig): void {
+    public setSpinner(isVisible: boolean, text?: string, preventAppearing?: boolean): void {
         if (!(this.preventAppearingSpinner && !this.spinnerHasAppeared && isVisible)) {
-            setTimeout(() => this.spinner.next({ isVisible, text, config }));
+            setTimeout(() => this.spinner.next({ isVisible, text }));
             if (isVisible) {
                 this.spinnerHasAppeared = true;
             }
@@ -85,7 +63,7 @@ export class OverlayService {
      *
      * @returns class member `visibility`.
      */
-    public getSpinner(): Observable<{ isVisible: boolean; text?: string; config?: SpinnerConfig }> {
+    public getSpinner(): Observable<{ isVisible: boolean; text?: string }> {
         return this.spinner;
     }
 
