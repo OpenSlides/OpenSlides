@@ -7,23 +7,12 @@
 
 .column-left {
     color: black;
-    display: inline-block;
-    padding-top: 20px;
-    width: 60%;
-    min-width: 200px;
-    padding-right: 25px;
 
     /* Do not let the a tag ruin the projector */
     a {
         color: inherit;
         text-decoration: inherit;
     }
-}
-
-.column-right {
-    padding-top: 20px;
-    width: calc(40% - 30px);
-    float: right;
 }
 
 .control-group {

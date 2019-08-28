@@ -5,290 +5,296 @@
     </div>
 </os-head-bar>
 
-<div class="content-container" *ngIf="projector">
-    <div class="column-left">
-        <a [routerLink]="['/projector', projector.id]">
-            <div id="projector">
-                <os-projector [projector]="projector"></os-projector>
+<os-grid-layout *ngIf="projector">
+    <os-tile [preferredSize]="projectorTileSizeLeft">
+        <div *ngIf="projector" class="column-left">
+            <a [routerLink]="['/projector', projector.id]">
+                <div id="projector">
+                    <os-projector [projector]="projector"></os-projector>
+                </div>
+            </a>
+            <!-- Controls under the projector preview -->
+            <div *osPerms="'core.can_manage_projector'" class="control-group projector-controls">
+                <!-- scale up -->
+                <button type="button" mat-icon-button (click)="scale(scrollScaleDirection.Up)">
+                    <mat-icon>zoom_in</mat-icon>
+                </button>
+                <!-- scale down -->
+                <button type="button" mat-icon-button (click)="scale(scrollScaleDirection.Down)">
+                    <mat-icon>zoom_out</mat-icon>
+                </button>
+                <!-- reset button -->
+                <button type="button" mat-icon-button (click)="scale(scrollScaleDirection.Reset)">
+                    <mat-icon>refresh</mat-icon>
+                </button>
+                <!-- scaling indicator -->
+                <div class="button-size" [ngClass]="projector.scale != 0 ? 'warn' : ''">{{ projector.scale }}</div>
+
+                <!-- scroll viewport up (fast), decrease scroll counter -->
+                <button
+                    [disabled]="projector.scroll <= 4"
+                    type="button"
+                    class="spacer-left-50"
+                    mat-icon-button
+                    (click)="scroll(scrollScaleDirection.Down, 5)"
+                    matTooltip="{{ 'Scroll up (big step)' | translate }}"
+                >
+                    <mat-icon>arrow_upward</mat-icon>
+                </button>
+                <!-- scroll viewport up (slow), decrease scroll counter -->
+                <button
+                    [disabled]="projector.scroll <= 0"
+                    type="button"
+                    mat-icon-button
+                    (click)="scroll(scrollScaleDirection.Down)"
+                    matTooltip="{{ 'Scroll up' | translate }}"
+                >
+                    <mat-icon>arrow_drop_up</mat-icon>
+                </button>
+                <!-- scroll viewport down (slow), increase scroll counter -->
+                <button
+                    type="button"
+                    mat-icon-button
+                    (click)="scroll(scrollScaleDirection.Up)"
+                    matTooltip="{{ 'Scroll down' | translate }}"
+                >
+                    <mat-icon>arrow_drop_down</mat-icon>
+                </button>
+                <!-- scroll viewport down (fast), increase scroll counter -->
+                <button
+                    type="button"
+                    mat-icon-button
+                    (click)="scroll(scrollScaleDirection.Up, 5)"
+                    matTooltip="{{ 'Scroll down (big step)' | translate }}"
+                >
+                    <mat-icon>arrow_downward</mat-icon>
+                </button>
+                <!-- reset button -->
+                <button type="button" mat-icon-button (click)="scroll(scrollScaleDirection.Reset)">
+                    <mat-icon>refresh</mat-icon>
+                </button>
+                <!-- scroll indicator -->
+                <div class="button-size" [ngClass]="projector.scroll != 0 ? 'warn' : ''">
+                    {{ projector.scroll }}
+                </div>
             </div>
-        </a>
-        <!-- Controls under the projector preview -->
-        <div *osPerms="'core.can_manage_projector'" class="control-group projector-controls">
-            <!-- scale up -->
-            <button type="button" mat-icon-button (click)="scale(scrollScaleDirection.Up)">
-                <mat-icon>zoom_in</mat-icon>
-            </button>
-            <!-- scale down -->
-            <button type="button" mat-icon-button (click)="scale(scrollScaleDirection.Down)">
-                <mat-icon>zoom_out</mat-icon>
-            </button>
-            <!-- reset button -->
-            <button type="button" mat-icon-button (click)="scale(scrollScaleDirection.Reset)">
-                <mat-icon>refresh</mat-icon>
-            </button>
-            <!-- scaling indicator -->
-            <div class="button-size" [ngClass]="projector.scale != 0 ? 'warn' : ''">{{ projector.scale }}</div>
-
-            <!-- scroll viewport up (fast), decrease scroll counter -->
-            <button
-                [disabled]="projector.scroll <= 4"
-                type="button"
-                class="spacer-left-50"
-                mat-icon-button
-                (click)="scroll(scrollScaleDirection.Down, 5)"
-                matTooltip="{{ 'Scroll up (big step)' | translate }}"
-            >
-                <mat-icon>arrow_upward</mat-icon>
-            </button>
-            <!-- scroll viewport up (slow), decrease scroll counter -->
-            <button
-                [disabled]="projector.scroll <= 0"
-                type="button"
-                mat-icon-button
-                (click)="scroll(scrollScaleDirection.Down)"
-                matTooltip="{{ 'Scroll up' | translate }}"
-            >
-                <mat-icon>arrow_drop_up</mat-icon>
-            </button>
-            <!-- scroll viewport down (slow), increase scroll counter -->
-            <button
-                type="button"
-                mat-icon-button
-                (click)="scroll(scrollScaleDirection.Up)"
-                matTooltip="{{ 'Scroll down' | translate }}"
-            >
-                <mat-icon>arrow_drop_down</mat-icon>
-            </button>
-            <!-- scroll viewport down (fast), increase scroll counter -->
-            <button
-                type="button"
-                mat-icon-button
-                (click)="scroll(scrollScaleDirection.Up, 5)"
-                matTooltip="{{ 'Scroll down (big step)' | translate }}"
-            >
-                <mat-icon>arrow_downward</mat-icon>
-            </button>
-            <!-- reset button -->
-            <button type="button" mat-icon-button (click)="scroll(scrollScaleDirection.Reset)">
-                <mat-icon>refresh</mat-icon>
-            </button>
-            <!-- scroll indicator -->
-            <div class="button-size" [ngClass]="projector.scroll != 0 ? 'warn' : ''">{{ projector.scroll }}</div>
         </div>
-    </div>
-    <div class="column-right" *osPerms="'core.can_manage_projector'">
-        <div class="control-group slide-controls">
-            <button
-                type="button"
-                mat-button
-                (click)="projectPreviousSlide()"
-                [disabled]="projector?.elements_history.length === 0"
-            >
-                <mat-icon>arrow_back</mat-icon>
-                <span translate>Previous</span>
-            </button>
-            <button
-                type="button"
-                mat-button
-                (click)="projectNextSlide()"
-                [disabled]="projector?.elements_preview.length === 0"
-            >
-                <span translate>Next</span>
-                <mat-icon>arrow_forward</mat-icon>
-            </button>
-            <hr />
-        </div>
-
-        <div>
-            <div *ngIf="projector.non_stable_elements.length">
-                <mat-list>
-                    <mat-list-item
-                        *ngFor="let element of projector.non_stable_elements"
-                        class="currentElement backgroundColorAccent"
-                    >
-                        <button type="button" mat-icon-button (click)="unprojectCurrent(element)">
-                            <mat-icon>videocam</mat-icon>
-                        </button>
-                        {{ getSlideTitle(element) }}
-                        <div class="button-right">
-                            <div>
-                                <button type="button" mat-icon-button (click)="unprojectCurrent(element)">
-                                    <mat-icon>close</mat-icon>
-                                </button>
-                            </div>
-                        </div>
-                    </mat-list-item>
-                </mat-list>
+    </os-tile>
+    <os-tile [preferredSize]="projectorTileSizeRight">
+        <div *osPerms="'core.can_manage_projector'">
+            <div class="control-group slide-controls">
+                <button
+                    type="button"
+                    mat-button
+                    (click)="projectPreviousSlide()"
+                    [disabled]="projector?.elements_history.length === 0"
+                >
+                    <mat-icon>arrow_back</mat-icon>
+                    <span translate>Previous</span>
+                </button>
+                <button
+                    type="button"
+                    mat-button
+                    (click)="projectNextSlide()"
+                    [disabled]="projector?.elements_preview.length === 0"
+                >
+                    <span translate>Next</span>
+                    <mat-icon>arrow_forward</mat-icon>
+                </button>
+                <hr />
             </div>
 
-            <!-- Expandable elements -->
-            <mat-accordion multi="true">
-                <!-- Queue -->
-                <mat-expansion-panel *ngIf="projector.elements_preview.length" [expanded]="true" class="queue">
-                    <mat-expansion-panel-header>
-                        <span translate>Queue</span>
-                    </mat-expansion-panel-header>
-                    <div
-                        cdkDropList
-                        class="drop-list"
-                        [cdkDropListDisabled]="!editQueue"
-                        (cdkDropListDropped)="onSortingChange($event)"
-                    >
-                        <div
-                            class="drop-list-entry queue-element backgroundColorLight"
-                            *ngFor="let element of projector.elements_preview; let i = index"
-                            cdkDrag
+            <div>
+                <div *ngIf="projector.non_stable_elements.length">
+                    <mat-list>
+                        <mat-list-item
+                            *ngFor="let element of projector.non_stable_elements"
+                            class="currentElement backgroundColorAccent"
                         >
-                            <div class="drag-handle" cdkDragHandle *ngIf="editQueue">
-                                <mat-icon>drag_indicator</mat-icon>
-                            </div>
-                            <div class="drag-handle no-drag" *ngIf="!editQueue">
-                                <button type="button" mat-icon-button (click)="projectNow(i)">
-                                    <mat-icon>videocam</mat-icon>
-                                </button>
-                            </div>
-                            <div class="name">
-                                <span>{{ getSlideTitle(element) }}</span>
-                            </div>
-                            <div class="button-right" *ngIf="editQueue">
+                            <button type="button" mat-icon-button (click)="unprojectCurrent(element)">
+                                <mat-icon>videocam</mat-icon>
+                            </button>
+                            {{ getSlideTitle(element) }}
+                            <div class="button-right">
                                 <div>
-                                    <button type="button" mat-icon-button (click)="removePreviewElement(i)">
-                                        <mat-icon>delete</mat-icon>
+                                    <button type="button" mat-icon-button (click)="unprojectCurrent(element)">
+                                        <mat-icon>close</mat-icon>
                                     </button>
                                 </div>
                             </div>
+                        </mat-list-item>
+                    </mat-list>
+                </div>
+
+                <!-- Expandable elements -->
+                <mat-accordion multi="true">
+                    <!-- Queue -->
+                    <mat-expansion-panel *ngIf="projector.elements_preview.length" [expanded]="true" class="queue">
+                        <mat-expansion-panel-header>
+                            <span translate>Queue</span>
+                        </mat-expansion-panel-header>
+                        <div
+                            cdkDropList
+                            class="drop-list"
+                            [cdkDropListDisabled]="!editQueue"
+                            (cdkDropListDropped)="onSortingChange($event)"
+                        >
+                            <div
+                                class="drop-list-entry queue-element backgroundColorLight"
+                                *ngFor="let element of projector.elements_preview; let i = index"
+                                cdkDrag
+                            >
+                                <div class="drag-handle" cdkDragHandle *ngIf="editQueue">
+                                    <mat-icon>drag_indicator</mat-icon>
+                                </div>
+                                <div class="drag-handle no-drag" *ngIf="!editQueue">
+                                    <button type="button" mat-icon-button (click)="projectNow(i)">
+                                        <mat-icon>videocam</mat-icon>
+                                    </button>
+                                </div>
+                                <div class="name">
+                                    <span>{{ getSlideTitle(element) }}</span>
+                                </div>
+                                <div class="button-right" *ngIf="editQueue">
+                                    <div>
+                                        <button type="button" mat-icon-button (click)="removePreviewElement(i)">
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <mat-action-row>
-                        <button *ngIf="!editQueue" type="button" mat-icon-button (click)="editQueue = !editQueue">
-                            <mat-icon>edit</mat-icon>
-                        </button>
-                        <button *ngIf="editQueue" type="button" mat-icon-button (click)="editQueue = !editQueue">
-                            <mat-icon>close</mat-icon>
-                        </button>
-                    </mat-action-row>
-                </mat-expansion-panel>
-
-                <!-- Previous Slides -->
-                <mat-expansion-panel *ngIf="projector.elements_history.length" class="previous-slides">
-                    <mat-expansion-panel-header>
-                        <span translate>Previous slides</span>
-                    </mat-expansion-panel-header>
-                    <p *ngFor="let elements of projector.elements_history; let i = index">
-                        {{ i + 1 }}. &nbsp; {{ getSlideTitle(elements[0]) }}
-                    </p>
-                </mat-expansion-panel>
-
-                <!-- countdowns -->
-                <mat-expansion-panel>
-                    <mat-expansion-panel-header>
-                        <span translate>Countdowns</span>
-                    </mat-expansion-panel-header>
-                    <mat-list>
-                        <mat-list-item *ngFor="let countdown of countdowns" class="larger-mat-list-item">
-                            <os-countdown-controls
-                                class="dynamic-list-entry"
-                                [countdown]="countdown"
-                                [projector]="projector.projector"
-                                (editEvent)="openCountdownDialog($event)"
-                            ></os-countdown-controls>
-                        </mat-list-item>
-                    </mat-list>
-                    <mat-action-row>
-                        <button type="button" mat-button (click)="openCountdownDialog()">
-                            <mat-icon>add</mat-icon>
-                            <span translate>Add countdown</span>
-                        </button>
-                    </mat-action-row>
-                </mat-expansion-panel>
-
-                <!-- messages -->
-                <mat-expansion-panel>
-                    <mat-expansion-panel-header>
-                        <span translate>Messages</span>
-                    </mat-expansion-panel-header>
-                    <mat-list>
-                        <mat-list-item *ngFor="let message of messages" class="larger-mat-list-item">
-                            <os-message-controls
-                                class="dynamic-list-entry"
-                                [message]="message"
-                                [projector]="projector.projector"
-                                (editEvent)="openMessagesDialog($event)"
-                            >
-                            </os-message-controls>
-                        </mat-list-item>
-                    </mat-list>
-                    <mat-action-row>
-                        <button type="button" mat-button (click)="openMessagesDialog()">
-                            <mat-icon>add</mat-icon>
-                            <span translate>Add message</span>
-                        </button>
-                    </mat-action-row>
-                </mat-expansion-panel>
-
-                <!-- Current list of speakers -->
-                <mat-expansion-panel>
-                    <mat-expansion-panel-header>
-                        <span translate>Current list of speakers</span>
-                    </mat-expansion-panel-header>
-
-                    <!-- Slide-->
-                    <mat-list *ngIf="projectorCount > 1">
-                        <mat-list-item>
-                            <button
-                                type="button"
-                                mat-mini-fab
-                                (click)="toggleClos(false)"
-                                [ngClass]="isClosProjected(false) ? 'projector-active' : 'projector-inactive'"
-                            >
-                                <mat-icon>videocam</mat-icon>
+                        <mat-action-row>
+                            <button *ngIf="!editQueue" type="button" mat-icon-button (click)="editQueue = !editQueue">
+                                <mat-icon>edit</mat-icon>
                             </button>
-                            <span class="spacer-left-10" translate>Slide</span>
-                        </mat-list-item>
-                    </mat-list>
-
-                    <!-- Overlay -->
-                    <mat-list>
-                        <mat-list-item>
-                            <button
-                                type="button"
-                                mat-mini-fab
-                                (click)="toggleClos(true)"
-                                [ngClass]="isClosProjected(true) ? 'projector-active' : 'projector-inactive'"
-                            >
-                                <mat-icon>videocam</mat-icon>
+                            <button *ngIf="editQueue" type="button" mat-icon-button (click)="editQueue = !editQueue">
+                                <mat-icon>close</mat-icon>
                             </button>
-                            <span class="spacer-left-10" translate>Overlay</span>
-                        </mat-list-item>
-                    </mat-list>
+                        </mat-action-row>
+                    </mat-expansion-panel>
 
-                    <!-- Chyron -->
-                    <mat-list>
-                        <mat-list-item>
-                            <button
-                                type="button"
-                                mat-mini-fab
-                                (click)="toggleChyron()"
-                                [ngClass]="isChyronProjected() ? 'projector-active' : 'projector-inactive'"
-                            >
-                                <mat-icon>videocam</mat-icon>
+                    <!-- Previous Slides -->
+                    <mat-expansion-panel *ngIf="projector.elements_history.length" class="previous-slides">
+                        <mat-expansion-panel-header>
+                            <span translate>Previous slides</span>
+                        </mat-expansion-panel-header>
+                        <p *ngFor="let elements of projector.elements_history; let i = index">
+                            {{ i + 1 }}. &nbsp; {{ getSlideTitle(elements[0]) }}
+                        </p>
+                    </mat-expansion-panel>
+
+                    <!-- countdowns -->
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <span translate>Countdowns</span>
+                        </mat-expansion-panel-header>
+                        <mat-list>
+                            <mat-list-item *ngFor="let countdown of countdowns" class="larger-mat-list-item">
+                                <os-countdown-controls
+                                    class="dynamic-list-entry"
+                                    [countdown]="countdown"
+                                    [projector]="projector.projector"
+                                    (editEvent)="openCountdownDialog($event)"
+                                ></os-countdown-controls>
+                            </mat-list-item>
+                        </mat-list>
+                        <mat-action-row>
+                            <button type="button" mat-button (click)="openCountdownDialog()">
+                                <mat-icon>add</mat-icon>
+                                <span translate>Add countdown</span>
                             </button>
-                            <span class="spacer-left-10" translate>Chyron</span>
-                        </mat-list-item>
-                    </mat-list>
-                </mat-expansion-panel>
+                        </mat-action-row>
+                    </mat-expansion-panel>
 
-                <!-- File display controls -->
-                <!--<mat-expansion-panel>
-                    <mat-expansion-panel-header>
-                            <span translate>Media controls</span>
-                    </mat-expansion-panel-header>
-                    <os-presentation-control [projector]="projector">
-                    </os-presentation-control>
-                </mat-expansion-panel>-->
+                    <!-- messages -->
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <span translate>Messages</span>
+                        </mat-expansion-panel-header>
+                        <mat-list>
+                            <mat-list-item *ngFor="let message of messages" class="larger-mat-list-item">
+                                <os-message-controls
+                                    class="dynamic-list-entry"
+                                    [message]="message"
+                                    [projector]="projector.projector"
+                                    (editEvent)="openMessagesDialog($event)"
+                                >
+                                </os-message-controls>
+                            </mat-list-item>
+                        </mat-list>
+                        <mat-action-row>
+                            <button type="button" mat-button (click)="openMessagesDialog()">
+                                <mat-icon>add</mat-icon>
+                                <span translate>Add message</span>
+                            </button>
+                        </mat-action-row>
+                    </mat-expansion-panel>
 
-                <os-presentation-control [projector]="projector"> </os-presentation-control>
-            </mat-accordion>
+                    <!-- Current list of speakers -->
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <span translate>Current list of speakers</span>
+                        </mat-expansion-panel-header>
+
+                        <!-- Slide-->
+                        <mat-list *ngIf="projectorCount > 1">
+                            <mat-list-item>
+                                <button
+                                    type="button"
+                                    mat-mini-fab
+                                    (click)="toggleClos(false)"
+                                    [ngClass]="isClosProjected(false) ? 'projector-active' : 'projector-inactive'"
+                                >
+                                    <mat-icon>videocam</mat-icon>
+                                </button>
+                                <span class="spacer-left-10" translate>Slide</span>
+                            </mat-list-item>
+                        </mat-list>
+
+                        <!-- Overlay -->
+                        <mat-list>
+                            <mat-list-item>
+                                <button
+                                    type="button"
+                                    mat-mini-fab
+                                    (click)="toggleClos(true)"
+                                    [ngClass]="isClosProjected(true) ? 'projector-active' : 'projector-inactive'"
+                                >
+                                    <mat-icon>videocam</mat-icon>
+                                </button>
+                                <span class="spacer-left-10" translate>Overlay</span>
+                            </mat-list-item>
+                        </mat-list>
+
+                        <!-- Chyron -->
+                        <mat-list>
+                            <mat-list-item>
+                                <button
+                                    type="button"
+                                    mat-mini-fab
+                                    (click)="toggleChyron()"
+                                    [ngClass]="isChyronProjected() ? 'projector-active' : 'projector-inactive'"
+                                >
+                                    <mat-icon>videocam</mat-icon>
+                                </button>
+                                <span class="spacer-left-10" translate>Chyron</span>
+                            </mat-list-item>
+                        </mat-list>
+                    </mat-expansion-panel>
+
+                    <!-- File display controls -->
+                    <!--<mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                                <span translate>Media controls</span>
+                        </mat-expansion-panel-header>
+                        <os-presentation-control [projector]="projector">
+                        </os-presentation-control>
+                    </mat-expansion-panel>-->
+
+                    <os-presentation-control [projector]="projector"> </os-presentation-control>
+                </mat-accordion>
+            </div>
         </div>
-    </div>
-</div>
+    </os-tile>
+</os-grid-layout>
