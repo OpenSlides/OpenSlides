@@ -31,7 +31,7 @@ export class RoutingStateService {
         if (this._previousUrl) {
             return !this.unsafeUrls.some(unsafeUrl => this._previousUrl.includes(unsafeUrl));
         } else {
-            return false;
+            return true;
         }
     }
 

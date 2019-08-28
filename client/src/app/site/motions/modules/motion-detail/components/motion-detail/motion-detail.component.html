@@ -2,7 +2,6 @@
     [mainButton]="perms.isAllowed('can_create_amendments', motion)"
     mainActionTooltip="New amendment"
     [prevUrl]="getPrevUrl()"
-    [goBack]="routingStateService.isSafePrevUrl"
     [nav]="false"
     [editMode]="editMotion"
     [isSaveButtonEnabled]="contentForm.valid"
@@ -441,12 +440,11 @@
         <!-- Ammendments -->
         <div *ngIf="!editMotion && amendments && amendments.length > 0">
             <h4 translate>Amendments</h4>
-            <a *ngIf="amendments.length === 1" [routerLink]="['/motions/amendments', motion.id]">
-                {{ amendments.length }} <span translate>Amendment</span>
+            <a [routerLink]="['/motions/amendments', motion.id]">
+                {{ amendments.length }}
+                <span *ngIf="amendments.length === 1" translate>Amendment</span>
+                <span *ngIf="amendments.length > 1" translate>Amendments</span>
             </a>
-            <a *ngIf="amendments.length > 1" [routerLink]="['/motions/amendments', motion.id]">
-                {{ amendments.length }} <span translate>Amendments</span></a
-            >
         </div>
 
         <!-- motion polls -->

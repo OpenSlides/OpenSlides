@@ -447,7 +447,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         private itemRepo: ItemRepositoryService,
         private motionSortService: MotionSortListService,
         private motionFilterService: MotionFilterListService,
-        public routingStateService: RoutingStateService
+        private routingStateService: RoutingStateService
     ) {
         super(title, translate, matSnackBar);
     }
@@ -1557,7 +1557,15 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     public getPrevUrl(): string {
         if (this.motion && this.motion.parent_id) {
             if (this.routingStateService.previousUrl && this.routingStateService.isSafePrevUrl) {
-                return this.routingStateService.previousUrl;
+                if (
+                    (this.previousMotion &&
+                        this.routingStateService.previousUrl === this.previousMotion.getDetailStateURL()) ||
+                    (this.nextMotion && this.routingStateService.previousUrl === this.nextMotion.getDetailStateURL())
+                ) {
+                    return '../..';
+                } else {
+                    return this.routingStateService.previousUrl;
+                }
             } else {
                 return this.motion.parent.getDetailStateURL();
             }
