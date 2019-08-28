@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { SearchProperty } from 'app/core/ui-services/search.service';
@@ -8,7 +8,8 @@ import { Searchable } from 'app/site/base/searchable';
 @Component({
     selector: 'os-preview',
     templateUrl: './preview.component.html',
-    styleUrls: ['./preview.component.scss']
+    styleUrls: ['./preview.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PreviewComponent {
     /**
@@ -23,6 +24,7 @@ export class PreviewComponent {
             const representation = model.formatForSearch();
             this.formattedSearchValue = representation.properties;
             this.modelType = representation.type;
+            this.cd.detectChanges();
         }
     }
 
@@ -46,7 +48,7 @@ export class PreviewComponent {
      *
      * @param sanitizer DomSanitizer
      */
-    public constructor(private sanitizer: DomSanitizer) {}
+    public constructor(private sanitizer: DomSanitizer, private cd: ChangeDetectorRef) {}
 
     /**
      * Function to sanitize any text to show html.
