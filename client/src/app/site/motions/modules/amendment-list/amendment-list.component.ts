@@ -30,7 +30,11 @@ import { ViewMotion } from '../../models/view-motion';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AmendmentListComponent extends BaseListViewComponent<ViewMotion> implements OnInit {
+    /**
+     * Has the id of the parent motion if passed through the constructor
+     */
     private parentMotionId: number;
+
     /**
      * Hold item visibility
      */
@@ -95,6 +99,11 @@ export class AmendmentListComponent extends BaseListViewComponent<ViewMotion> im
         super.setTitle('Amendments');
         this.canMultiSelect = true;
         this.parentMotionId = parseInt(route.snapshot.params.id, 10);
+        if (this.parentMotionId) {
+            this.amendmentFilterService.parentMotionId = this.parentMotionId;
+        } else {
+            this.amendmentFilterService.parentMotionId = undefined;
+        }
     }
 
     /**
@@ -106,10 +115,7 @@ export class AmendmentListComponent extends BaseListViewComponent<ViewMotion> im
         });
 
         if (!!this.parentMotionId) {
-            this.amendmentFilterService.clearAllFilters();
-            this.amendmentFilterService.parentMotionId = this.parentMotionId;
-        } else {
-            this.amendmentFilterService.parentMotionId = 0;
+            // this.amendmentFilterService.clearAllFilters();
         }
     }
 

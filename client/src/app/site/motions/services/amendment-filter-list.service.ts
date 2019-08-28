@@ -26,25 +26,34 @@ export class AmendmentFilterListService extends MotionFilterListService {
     /**
      * Private accessor for an amendment id
      */
-    private _parentMotionId: number;
+    public _parentMotionId: number;
 
     /**
      * set the storage key nae
      */
-    protected storageKey = 'AmendmentList';
+    protected storageKey: string;
+
+    /**
+     * The sorage key prefix to identify the parent id
+     */
+    private keyPrefix = 'AmendmentList';
+
+    /**
+     * Filters by motion parent id
+     */
+    private motionFilterOptions: OsFilter = {
+        property: 'parent_id',
+        label: 'Motion',
+        options: []
+    };
 
     /**
      * publicly get an amendment id
      */
     public set parentMotionId(id: number) {
         this._parentMotionId = id;
+        this.updateStorageKey();
     }
-
-    private motionFilterOptions: OsFilter = {
-        property: 'parent_id',
-        label: 'Motion',
-        options: []
-    };
 
     public constructor(
         store: StorageService,
@@ -78,9 +87,20 @@ export class AmendmentFilterListService extends MotionFilterListService {
     }
 
     /**
+     * Function to define a new storage key by parent id
+     */
+    private updateStorageKey(): void {
+        if (!!this._parentMotionId) {
+            this.storageKey = `${this.keyPrefix}_parentId_${this._parentMotionId}`;
+        } else {
+            this.storageKey = this.keyPrefix;
+        }
+    }
+
+    /**
      * @override from base filter list service
      *
-     * @returns the list of Motions which only contains view motions
+     * @returns the only motons with a parentId
      */
     protected preFilter(motions: ViewMotion[]): ViewMotion[] {
         return motions.filter(motion => {
@@ -96,6 +116,8 @@ export class AmendmentFilterListService extends MotionFilterListService {
      * Currently, no filters for the amendment list, except the pre-filter
      */
     protected getFilterDefinitions(): OsFilter[] {
-        return [this.motionFilterOptions].concat(super.getFilterDefinitions());
+        if (this.motionFilterOptions) {
+            return [this.motionFilterOptions].concat(super.getFilterDefinitions());
+        }
     }
 }
