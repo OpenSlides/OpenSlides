@@ -846,3 +846,28 @@ button.mat-menu-item.selected {
         padding: 0 !important;
     }
 }
+
+// custom horrizontal scroll-bar
+
+.h-scroller {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: 5px;
+    scrollbar-color: #666666;
+}
+.h-scroller::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+.h-scroller::-webkit-scrollbar-thumb {
+    background: #666666;
+    height: 5px;
+    border-radius: 5px;
+}
+
+.h-scroller::-webkit-scrollbar-corner {
+    display: none;
+    height: 0px;
+    width: 0px;
+}

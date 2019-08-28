@@ -37,6 +37,13 @@ os-icon-container {
         margin: auto 5px;
         text-overflow: ellipsis;
         overflow: hidden;
+    }
+
+    .break-lines {
         white-space: pre-line;
+    }
+
+    .single-line {
+        white-space: nowrap;
     }
 }
