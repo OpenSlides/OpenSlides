@@ -15,6 +15,7 @@ import {
     ScrollScaleDirection
 } from 'app/core/repositories/projector/projector-repository.service';
 import { DurationService } from 'app/core/ui-services/duration.service';
+import { SizeObject } from 'app/shared/components/tile/tile.component';
 import { Countdown } from 'app/shared/models/core/countdown';
 import { ProjectorElement } from 'app/shared/models/core/projector';
 import { ProjectorMessage } from 'app/shared/models/core/projector-message';
@@ -51,6 +52,16 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
     public messages: ViewProjectorMessage[] = [];
 
     public projectorCount: number;
+
+    /**
+     * Defines the used sizes for different devices for the left column.
+     */
+    public projectorTileSizeLeft: SizeObject = { medium: 8, large: 10 };
+
+    /**
+     * Defines the used sizes for different devices for the right column.
+     */
+    public projectorTileSizeRight: SizeObject = { medium: 4, large: 6 };
 
     /**
      * true if the queue might be altered
