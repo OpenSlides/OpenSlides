@@ -51,6 +51,12 @@ export class IconContainerComponent {
     public iconTooltip: string;
 
     /**
+     * Uses a css class for nowrap
+     */
+    @Input()
+    public noWrap = false;
+
+    /**
      * Optional action for clicking on the icon.
      */
     @Output()

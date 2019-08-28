@@ -1,52 +1,57 @@
 @import '~assets/styles/tables.scss';
 
+$navbar-size: 64px;
+
 // multi line tooltip
 ::ng-deep .mat-tooltip {
     white-space: pre-line !important;
 }
 
 .folder-nav-bar {
-    $size: 64px;
-    position: relative;
+    width: 100%;
+    display: flex;
+}
+
+.folder-section {
+    white-space: nowrap;
     display: flex;
 
-    .arrow {
-        height: $size;
-        float: left;
-        .mat-icon {
-            line-height: $size;
-            height: $size;
-        }
+    .mat-button {
+        padding: 0;
     }
+}
 
-    .folder {
-        height: $size;
+.arrow {
+    height: $navbar-size;
+    .mat-icon {
+        line-height: $navbar-size;
+        height: $navbar-size;
     }
+}
 
-    .fake-folder {
-        padding: 0 16px;
+.folder {
+    // float: left;
+    height: $navbar-size;
+    > .content-node {
+        white-space: nowrap;
     }
+}
 
-    .folder-text {
-        font-size: 16px;
-        font-weight: 500;
-        margin: auto 5px;
-        text-overflow: ellipsis;
-        overflow: hidden;
-    }
+.fake-folder {
+    padding: 0 16px;
+}
 
-    .visibility {
-        display: flex;
-        position: absolute;
-        right: 10px;
-        top: 12px;
-        .visible-for {
-            margin-left: 10px;
-            display: inherit;
-        }
-        mat-icon {
-            cursor: auto;
-        }
+.folder-text {
+    font-size: 16px;
+    font-weight: 500;
+    margin: auto 5px;
+    overflow: hidden;
+}
+
+.visibility {
+    display: flex;
+    .visible-for {
+        width: min-content;
     }
 }
 

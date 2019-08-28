@@ -23,62 +23,59 @@
 
 <!-- Folder navigation bar -->
 <div>
-    <div class="custom-table-header folder-nav-bar">
-        <button class="folder" mat-button (click)="changeDirectory(null)" [disabled]="isMultiSelect">
-            <mat-icon class="file-icon">home</mat-icon>
-        </button>
-        <span *ngFor="let directory of directoryChain; let last = last">
-            <div class="arrow">
-                <mat-icon>chevron_right</mat-icon>
-            </div>
-            <button
-                class="folder"
-                mat-button
-                (click)="changeDirectory(directory.id)"
-                [disabled]="isMultiSelect"
-                *ngIf="!last"
-            >
-                <span class="folder-text">
+    <div class="custom-table-header">
+        <!-- Scrollable folder bar -->
+        <span class="folder-nav-bar h-scroller">
+            <button class="folder" mat-button (click)="changeDirectory(null)" [disabled]="isMultiSelect">
+                <mat-icon class="file-icon">home</mat-icon>
+            </button>
+            <span class="folder-section" *ngFor="let directory of directoryChain; let last = last">
+                <span class="arrow">
+                    <mat-icon>chevron_right</mat-icon>
+                </span>
+                <button
+                    class="folder"
+                    mat-button
+                    (click)="changeDirectory(directory.id)"
+                    [disabled]="isMultiSelect"
+                    *ngIf="!last"
+                >
+                    <span class="folder-text">
+                        {{ directory.filename }}
+                    </span>
+                </button>
+                <button
+                    class="folder"
+                    mat-button
+                    [matMenuTriggerFor]="singleMediafileMenu"
+                    [matMenuTriggerData]="{ mediafile: directory }"
+                    [disabled]="isMultiSelect"
+                    *ngIf="last && showFileMenu(directory)"
+                >
+                    <os-icon-container icon="arrow_drop_down" swap="true" size="large" [noWrap]="true">
+                        {{ directory.filename }}
+                    </os-icon-container>
+                </button>
+                <span class="folder fake-folder folder-text" *ngIf="last && !showFileMenu(directory)">
                     {{ directory.filename }}
                 </span>
-            </button>
-            <button
-                class="folder"
-                mat-button
-                [matMenuTriggerFor]="singleMediafileMenu"
-                [matMenuTriggerData]="{ mediafile: directory }"
-                [disabled]="isMultiSelect"
-                *ngIf="last && showFileMenu(directory)"
-            >
-                <os-icon-container icon="arrow_drop_down" swap="true" size="large">
-                    {{ directory.filename }}
-                </os-icon-container>
-            </button>
-            <span class="folder fake-folder folder-text" *ngIf="last && !showFileMenu(directory)">
-                {{ directory.filename }}
             </span>
         </span>
+
+        <!-- Visibility as button -->
         <span class="visibility" *ngIf="canEdit && directory && directory.has_inherited_access_groups">
-            <span class="visible-for" translate>
+            <button class="visible-for" mat-button (click)="onEditFile(directory)">
                 <os-icon-container
-                    icon="visibility"
+                    icon="group"
                     matTooltip="{{ 'Allowed access groups for this directory' | translate }}"
                 >
-                    <span *ngFor="let group of directory.inherited_access_groups; let last = last">
-                        {{ translateSync(group.getTitle()) }}<span *ngIf="!last">,</span>
+                    <span *ngFor="let group of directory.inherited_access_groups | slice: 0:3; let last = last">
+                        <span>{{ group.getTitle() | translate }}</span>
+                        <span *ngIf="!last">, </span>
+                        <span *ngIf="last && directory.inherited_access_groups.length > 3">...</span>
                     </span>
                 </os-icon-container>
-            </span>
-        </span>
-        <span class="visibility" *ngIf="canEdit && directory && directory.inherited_access_groups_id === false">
-            <span class="visible-for">
-                <os-icon-container
-                    icon="visibility"
-                    matTooltip="{{ 'Allowed access groups for this directory' | translate }}"
-                >
-                    <span translate>No one</span>
-                </os-icon-container>
-            </span>
+            </button>
         </span>
     </div>
 </div>
@@ -122,8 +119,10 @@
     <!-- Info column -->
     <div *pblNgridCellDef="'info'; row as mediafile" class="fill clickable" (click)="onEditFile(mediafile)">
         <os-icon-container *ngIf="mediafile.access_groups.length" icon="group">
-            <span *ngFor="let group of mediafile.access_groups; let last = last">
-                {{ translateSync(group.getTitle()) }}<span *ngIf="!last">,</span>
+            <span *ngFor="let group of mediafile.access_groups | slice: 0:3; let last = last">
+                <span>{{ group.getTitle() | translate }}</span>
+                <span *ngIf="!last">, </span>
+                <span *ngIf="last && mediafile.access_groups.length > 3">...</span>
             </span>
         </os-icon-container>
     </div>

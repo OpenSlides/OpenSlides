@@ -52,28 +52,4 @@ span.right-with-margin {
         height: $size;
         width: $size;
     }
-
-    overflow-x: auto;
-
-    // firefox scrollbar
-    scrollbar-width: 5px;
-    scrollbar-color: #666666;
-}
-
-// custom scrollbar. If required on more components, move to style.scss
-.current-filters::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
-}
-
-.current-filters::-webkit-scrollbar-thumb {
-    background: #666666;
-    height: 5px;
-    border-radius: 5px;
-}
-
-.current-filters::-webkit-scrollbar-corner {
-    display: none;
-    height: 0px;
-    width: 0px;
 }
