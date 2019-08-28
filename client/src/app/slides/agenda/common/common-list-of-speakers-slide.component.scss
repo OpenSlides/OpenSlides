@@ -6,6 +6,7 @@
 
 .currentSpeaker {
     font-weight: bold;
+    margin: 20px 0 16px;
 
     .mat-icon,
     span {
@@ -17,10 +18,11 @@
 }
 
 .nextSpeakers {
-    margin-left: 13px !important;
-    margin-top: 10px !important;
+    margin: 0;
+    padding-left: 6px;
 
     li {
+        list-style-position: inside;
         line-height: 150%;
     }
 }
