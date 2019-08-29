@@ -1,10 +1,10 @@
-import logging
 import time
 from collections import defaultdict
 from typing import Any, Dict, List, Optional
 from urllib.parse import parse_qs
 
 from ..utils.websocket import WEBSOCKET_CHANGE_ID_TOO_HIGH
+from . import logging
 from .auth import async_anonymous_is_enabled
 from .autoupdate import AutoupdateFormat
 from .cache import element_cache, split_element_id

@@ -1,6 +1,5 @@
 import functools
 import hashlib
-import logging
 from collections import defaultdict
 from textwrap import dedent
 from typing import Any, Callable, Coroutine, Dict, List, Optional, Set, Tuple
@@ -8,6 +7,7 @@ from typing import Any, Callable, Coroutine, Dict, List, Optional, Set, Tuple
 from django.core.exceptions import ImproperlyConfigured
 from typing_extensions import Protocol
 
+from . import logging
 from .redis import use_redis
 from .schema_version import SchemaVersion
 from .utils import split_element_id, str_dict_to_bytes

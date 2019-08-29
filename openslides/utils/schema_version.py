@@ -1,8 +1,9 @@
-import logging
 from typing import Optional
 
 from django.db.models import Max
 from mypy_extensions import TypedDict
+
+from . import logging
 
 
 logger = logging.getLogger(__name__)

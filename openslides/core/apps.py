@@ -1,4 +1,3 @@
-import logging
 import os
 import sys
 from collections import OrderedDict
@@ -9,6 +8,7 @@ from django.apps import AppConfig
 from django.conf import settings
 from django.db.models.signals import post_migrate, pre_delete
 
+from openslides.utils import logging
 from openslides.utils.schema_version import schema_version_handler
 
 
