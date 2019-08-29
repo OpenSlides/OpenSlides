@@ -10,7 +10,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatNativeDateModule, DateAdapter } from '@angular/material/core';
+import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
@@ -42,7 +43,7 @@ import { CdkTreeModule } from '@angular/cdk/tree';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 
 // ngx-translate
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 // ngx-file-drop
 import { NgxFileDropModule } from 'ngx-file-drop';
@@ -60,6 +61,9 @@ import { AutofocusDirective } from './directives/autofocus.directive';
 import { PblNgridModule } from '@pebula/ngrid';
 import { PblNgridMaterialModule } from '@pebula/ngrid-material';
 import { PblNgridTargetEventsModule } from '@pebula/ngrid/target-events';
+
+// time picker because angular still doesnt offer one!!
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 
 // components
 import { HeadBarComponent } from './components/head-bar/head-bar.component';
@@ -125,7 +129,7 @@ import { HeightResizingDirective } from './directives/height-resizing.directive'
         MatCheckboxModule,
         MatToolbarModule,
         MatDatepickerModule,
-        MatNativeDateModule,
+        MatMomentDateModule,
         MatCardModule,
         MatInputModule,
         MatTableModule,
@@ -164,7 +168,8 @@ import { HeightResizingDirective } from './directives/height-resizing.directive'
         PblNgridModule,
         PblNgridMaterialModule,
         PblNgridTargetEventsModule,
-        PdfViewerModule
+        PdfViewerModule,
+        NgxMaterialTimepickerModule
     ],
     exports: [
         FormsModule,
@@ -248,7 +253,8 @@ import { HeightResizingDirective } from './directives/height-resizing.directive'
         RoundedInputComponent,
         GlobalSpinnerComponent,
         OverlayComponent,
-        PreviewComponent
+        PreviewComponent,
+        NgxMaterialTimepickerModule
     ],
     declarations: [
         PermsDirective,
@@ -296,7 +302,11 @@ import { HeightResizingDirective } from './directives/height-resizing.directive'
         HeightResizingDirective
     ],
     providers: [
-        { provide: DateAdapter, useClass: OpenSlidesDateAdapter },
+        {
+            provide: DateAdapter,
+            useClass: OpenSlidesDateAdapter,
+            deps: [TranslateService, MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
+        }, // see remarks in OpenSlidesDateAdapter
         SearchValueSelectorComponent,
         SortingListComponent,
         SortingTreeComponent,
