@@ -3,7 +3,6 @@ from typing import Any, Dict, List, Set
 from django.db import models, transaction
 from rest_framework.views import APIView as _APIView
 
-from .autoupdate import inform_changed_data
 from .rest_api import Response, ValidationError
 
 
@@ -129,13 +128,16 @@ class TreeSortMixin:
                 parent_id = node[parent_id_key]
 
                 db_node = model.objects.get(pk=id)
-                setattr(db_node, parent_id_key, parent_id)
-                setattr(db_node, weight_key, weight)
-                db_node.save(skip_autoupdate=True)
+                db_parent_id = getattr(db_node, parent_id_key, None)
+                db_weight = getattr(db_node, weight_key, -1)
+                # Just update, if some attribute was changed
+                if db_parent_id != parent_id or db_weight != weight:
+                    setattr(db_node, parent_id_key, parent_id)
+                    setattr(db_node, weight_key, weight)
+                    db_node.save()
                 # Add children, if exist.
                 children = node.get("children")
                 if isinstance(children, list):
                     nodes_to_update.extend(children)
 
-        inform_changed_data(model.objects.all())
         return Response()
