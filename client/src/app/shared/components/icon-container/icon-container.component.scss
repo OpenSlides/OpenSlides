@@ -14,6 +14,7 @@ os-icon-container {
             font-size: $size;
             height: $size;
             width: $size;
+            margin-top: 0 !important;
         }
     }
 
@@ -25,6 +26,7 @@ os-icon-container {
             font-size: $size;
             width: $size;
             height: $size;
+            margin-top: 0 !important;
         }
 
         .content-node {

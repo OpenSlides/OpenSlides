@@ -465,7 +465,7 @@
     <form class="motion-content" [formGroup]="contentForm" (keydown)="onKeyDown($event)">
         <!-- Toolbar with text controls and buttonf for managing the (modified) final version-->
         <div
-            class="motion-text-toolbar-wrapper outline-border-bottom"
+            class="motion-text-toolbar-wrapper"
             *ngIf="!editMotion && !motion.isStatuteAmendment()"
         >
             <!-- Line Number and Diff buttons -->
