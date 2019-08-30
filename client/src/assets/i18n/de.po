@@ -191,6 +191,9 @@ msgstr "Änderungsanträge"
 msgid "Amendments can change multiple paragraphs"
 msgstr "Änderungsanträge können mehrere Absätze ändern"
 
+msgid "An email with a password reset link was send!"
+msgstr "Es wurde eine E-Mail mit Link zum Passwort-Zurücksetzen gesendet."
+
 msgid "An unknown error occurred."
 msgstr "Ein unbekannter Fehler ist aufgetreten."
 
@@ -1517,17 +1520,14 @@ msgstr "Keine Einträge ausgewählte"
 msgid "No motion block set"
 msgstr "kein Antragsblock gesetzt"
 
-msgid "No one"
-msgstr "Niemand"
-
 msgid "No personal note"
 msgstr "Keine persönliche Notiz"
 
 msgid "No recommendation"
 msgstr "keine Empfehlung gesetzt"
 
-msgid "No search result found for"
-msgstr "Keine Suchergebnisse gefunden für"
+msgid "No search result found"
+msgstr "Keine Suchergebnisse gefunden"
 
 msgid "No statute paragraphs"
 msgstr "Keine Satzungsabschnitte vorhanden"
@@ -2883,6 +2883,12 @@ msgstr "verworfen (nicht zulässig)"
 msgid "remove group(s)"
 msgstr "Gruppe(n) entfernen"
 
+msgid "result"
+msgstr "Ergebnis"
+
+msgid "results"
+msgstr "Ergebnisse"
+
 msgid "selected"
 msgstr "ausgewählt"
 
@@ -2906,6 +2912,9 @@ msgstr "nicht erfasst"
 
 msgid "unpublished"
 msgstr "unveröffentlicht"
+
+msgid "with filter"
+msgstr "mit Filter"
 
 msgid "with indexedDB"
 msgstr "mit indexedDB"

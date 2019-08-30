@@ -30,7 +30,7 @@ export class ResetPasswordComponent extends BaseViewComponent implements OnInit 
      */
     public constructor(
         titleService: Title,
-        translate: TranslateService,
+        protected translate: TranslateService,
         matSnackBar: MatSnackBar,
         private http: HttpService,
         formBuilder: FormBuilder,

@@ -19,7 +19,7 @@
         </mat-menu>
     </div>
     <h4 *ngIf="searchResultCount > 0" class="result-count">
-        {{ searchResultCount }} {{ (searchResultCount === 1 ? 'result' : 'results') | translate }}
+        {{ searchResultCount }} {{ searchResultCount === 1 ? ( 'result' | translate ) : ( 'results' | translate ) }}
     </h4>
     <mat-divider></mat-divider>
     <div class="result-view" *ngIf="searchResults.length > 0">
@@ -36,7 +36,7 @@
                                 <mat-basic-chip
                                     class="lightblue filter-count"
                                     disableRipple
-                                    matTooltip="{{ (result.models.length === 1 ? 'result' : 'results') | translate }}"
+                                    matTooltip="{{ result.models.length === 1 ? ( 'result' | translate ) : ( 'results' | translate ) }}"
                                     >{{ result.models.length }}</mat-basic-chip
                                 >
                             </mat-panel-title>
@@ -82,8 +82,8 @@
                 </ng-container>
             </mat-accordion>
             <div class="no-results" *ngIf="!selectedModel && searchString.length > 0">
-                <span translate>No search result found for</span> "{{ searchString }}"
-                <span *ngIf="searchCollection">in {{ searchCollection | translate }}</span>
+                <span translate>No search result found</span>
+                <span *ngIf="searchCollection">&nbsp;({{ 'with filter' | translate }} "{{ searchCollection | translate }}")</span>.
             </div>
         </div>
         <mat-divider [vertical]="true"></mat-divider>
