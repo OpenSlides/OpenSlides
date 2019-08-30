@@ -2,7 +2,7 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { TranslateService } from '@ngx-translate/core';
-import { Papa, PapaParseConfig } from 'ngx-papaparse';
+import { Papa, ParseConfig } from 'ngx-papaparse';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { BaseViewModel } from 'app/site/base/base-view-model';
@@ -192,7 +192,7 @@ export abstract class BaseImportService<V extends BaseViewModel> {
     public parseInput(file: string): void {
         this.clearData();
         this.clearPreview();
-        const papaConfig: PapaParseConfig = {
+        const papaConfig: ParseConfig = {
             header: false,
             skipEmptyLines: true,
             quoteChar: this.textSeparator

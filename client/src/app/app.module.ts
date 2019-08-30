@@ -4,8 +4,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 
-import { PapaParseModule } from 'ngx-papaparse';
-
 import { AppLoadService } from './core/core-services/app-load.service';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -40,7 +38,6 @@ export function AppLoaderFactory(appLoadService: AppLoadService): () => Promise<
         AppRoutingModule,
         CoreModule,
         LoginModule,
-        PapaParseModule,
         ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
         SlidesModule.forRoot()
     ],
