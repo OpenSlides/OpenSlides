@@ -29,12 +29,8 @@ span {
 
     button {
         font-weight: 400;
-        margin-top: 7px;
     }
-
-    height: 50px;
-    margin: -16px -16px 5px -16px;
-    padding: 0 16px;
+    margin-bottom: 16px;
 
     > button {
         // Prevent moving the buttons when the "go to line"-input is shown

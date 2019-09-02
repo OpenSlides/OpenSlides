@@ -1,11 +1,12 @@
 /* Diffbox */
 .diff-box {
+    position: relative;
     background-color: #f9f9f9;
     border: solid 1px #eee;
     border-radius: 3px;
     margin-bottom: 0;
     padding-top: 0;
-    padding-right: 155px;
+    padding-right: 40px;
 
     &:hover {
         background-color: #f0f0f0;
@@ -15,18 +16,10 @@
         }
     }
 
-    .mat-icon-button {
-        margin-top: -20px;
-    }
-
     .action-row {
+        position: absolute;
+        right: 0;
         font-size: 0.8em;
-        height: 22px;
-        padding-top: 2px;
-        float: right;
-        width: 150px;
-        text-align: right;
-        margin-right: -150px;
         opacity: 0.5;
         overflow: hidden;
 
@@ -44,6 +37,7 @@
             min-width: 68px;
         }
     }
+
     .status-row {
         font-style: italic;
         color: gray;
