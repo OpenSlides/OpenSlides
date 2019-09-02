@@ -101,7 +101,7 @@ export class LocalPermissionsService {
                         motion.submitters &&
                         motion.submitters.length &&
                         !this.operator.isAnonymous &&
-                        motion.submitters.some(submitter => submitter.id === this.operator.user.id))
+                        motion.submitters.some(submitter => submitter.user_id === this.operator.user.id))
                 );
             }
             case 'update_submitters': {
@@ -117,7 +117,7 @@ export class LocalPermissionsService {
                     motion.state.allow_submitter_edit &&
                     motion.submitters &&
                     motion.submitters.length &&
-                    motion.submitters.some(submitter => submitter.id === this.operator.user.id)
+                    motion.submitters.some(submitter => submitter.user_id === this.operator.user.id)
                 );
             }
             case 'change_state': {
@@ -133,7 +133,7 @@ export class LocalPermissionsService {
                         motion.state.allow_submitter_edit &&
                         !this.operator.isAnonymous &&
                         motion.submitters &&
-                        motion.submitters.some(submitter => submitter.id === this.operator.user.id))
+                        motion.submitters.some(submitter => submitter.user_id === this.operator.user.id))
                 );
             }
             case 'change_metadata': {
