@@ -1,6 +1,6 @@
 import asyncio
 from importlib import import_module
-from typing import Optional
+from typing import Optional, Tuple
 from unittest.mock import patch
 
 import pytest
@@ -21,7 +21,12 @@ from openslides.utils.websocket import (
     WEBSOCKET_WRONG_FORMAT,
 )
 
-from ...unit.utils.cache_provider import Collection1, Collection2, get_cachable_provider
+from ...unit.utils.cache_provider import (
+    Collection1,
+    Collection2,
+    PersonalizedCollection,
+    get_cachable_provider,
+)
 from ..helpers import TConfig, TProjector, TUser
 from ..websocket import WebsocketCommunicator
 
@@ -36,7 +41,14 @@ async def prepare_element_cache(settings):
     await element_cache.cache_provider.clear_cache()
     orig_cachable_provider = element_cache.cachable_provider
     element_cache.cachable_provider = get_cachable_provider(
-        [Collection1(), Collection2(), TConfig(), TUser(), TProjector()]
+        [
+            Collection1(),
+            Collection2(),
+            PersonalizedCollection(),
+            TConfig(),
+            TUser(),
+            TProjector(),
+        ]
     )
     element_cache._cachables = None
     await element_cache.async_ensure_cache(default_change_id=2)
@@ -51,11 +63,13 @@ async def prepare_element_cache(settings):
 async def get_communicator():
     communicator: Optional[WebsocketCommunicator] = None
 
-    def get_communicator(query_string=""):
+    def get_communicator(query_string="", headers=None):
         nonlocal communicator  # use the outer communicator variable
         if query_string:
             query_string = f"?{query_string}"
-        communicator = WebsocketCommunicator(application, f"/ws/{query_string}")
+        communicator = WebsocketCommunicator(
+            application, f"/ws/{query_string}", headers=headers
+        )
         return communicator
 
     yield get_communicator
@@ -117,6 +131,7 @@ async def test_connection_with_change_id(get_communicator, set_config):
     assert "to_change_id" in content
     assert Collection1().get_collection_string() in content["changed"]
     assert Collection2().get_collection_string() in content["changed"]
+    assert PersonalizedCollection().get_collection_string() in content["changed"]
     assert TConfig().get_collection_string() in content["changed"]
     assert TUser().get_collection_string() in content["changed"]
 
@@ -179,26 +194,72 @@ async def test_anonymous_disabled(communicator):
     assert not connected
 
 
-@pytest.mark.asyncio
-async def test_with_user():
+async def create_user_session_cookie(user_id: int) -> Tuple[bytes, bytes]:
     # login user with id 1
     engine = import_module(settings.SESSION_ENGINE)
     session = engine.SessionStore()  # type: ignore
-    session[SESSION_KEY] = "1"
+    session[SESSION_KEY] = str(user_id)
     session[
         HASH_SESSION_KEY
     ] = "362d4f2de1463293cb3aaba7727c967c35de43ee"  # see helpers.TUser
     session[BACKEND_SESSION_KEY] = "django.contrib.auth.backends.ModelBackend"
     session.save()
     scn = settings.SESSION_COOKIE_NAME
-    cookies = (b"cookie", f"{scn}={session.session_key}".encode())
-    communicator = WebsocketCommunicator(application, "/ws/", headers=[cookies])
+    cookie_header = (b"cookie", f"{scn}={session.session_key}".encode())
+    return cookie_header
+
+
+@pytest.mark.asyncio
+async def test_with_user(get_communicator):
+    cookie_header = await create_user_session_cookie(1)
+    communicator = get_communicator("autoupdate=on", headers=[cookie_header])
 
     connected, __ = await communicator.connect()
 
     assert connected
 
-    await communicator.disconnect()
+
+@pytest.mark.asyncio
+async def test_skipping_autoupdate(set_config, get_communicator):
+    cookie_header = await create_user_session_cookie(1)
+    communicator = get_communicator("autoupdate=on", headers=[cookie_header])
+
+    await communicator.connect()
+
+    with patch("openslides.utils.autoupdate.save_history"):
+        await sync_to_async(inform_changed_elements)(
+            [
+                Element(
+                    id=2,
+                    collection_string=PersonalizedCollection().get_collection_string(),
+                    full_data={"id": 2, "value": "new value 1", "user_id": 2},
+                    disable_history=True,
+                )
+            ]
+        )
+        await sync_to_async(inform_changed_elements)(
+            [
+                Element(
+                    id=2,
+                    collection_string=PersonalizedCollection().get_collection_string(),
+                    full_data={"id": 2, "value": "new value 2", "user_id": 2},
+                    disable_history=True,
+                )
+            ]
+        )
+    assert await communicator.receive_nothing()
+
+    # Trigger autoupdate
+    await set_config("general_event_name", "Test Event")
+    response = await communicator.receive_json_from()
+    content = response["content"]
+
+    assert PersonalizedCollection().get_collection_string() not in content["deleted"]
+    assert PersonalizedCollection().get_collection_string() not in content["changed"]
+    assert config.get_collection_string() in content["changed"]
+    assert (
+        content["to_change_id"] - content["from_change_id"]
+    ) == 2  # Skipped two autoupdates
 
 
 @pytest.mark.asyncio
@@ -314,6 +375,7 @@ async def test_send_get_elements(communicator, set_config):
     assert "to_change_id" in content
     assert Collection1().get_collection_string() in content["changed"]
     assert Collection2().get_collection_string() in content["changed"]
+    assert PersonalizedCollection().get_collection_string() in content["changed"]
     assert TConfig().get_collection_string() in content["changed"]
     assert TUser().get_collection_string() in content["changed"]
 

@@ -623,6 +623,8 @@ class Cachable(Protocol):
     It needs at least the methods defined here.
     """
 
+    personalized_model: bool
+
     def get_collection_string(self) -> str:
         """
         Returns the string representing the name of the cachable.

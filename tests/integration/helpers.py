@@ -14,6 +14,8 @@ class TConfig:
     Cachable, that fills the cache with the default values of the config variables.
     """
 
+    personalized_model = False
+
     def get_collection_string(self) -> str:
         return config.get_collection_string()
 
@@ -37,6 +39,8 @@ class TUser:
     """
     Cachable, that fills the cache with fake users.
     """
+
+    personalized_model = False
 
     def get_collection_string(self) -> str:
         return User.get_collection_string()
@@ -74,6 +78,8 @@ class TProjector:
     """
     Cachable, that mocks the projector.
     """
+
+    personalized_model = False
 
     def get_collection_string(self) -> str:
         return Projector.get_collection_string()

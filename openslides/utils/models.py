@@ -38,6 +38,15 @@ class RESTModelMixin:
 
     access_permissions: Optional[BaseAccessPermissions] = None
 
+    personalized_model = False
+    """
+    Flag, if the model is personalized on a per-user basis.
+    Requires the model to have a `user_id` which should be
+    a OneToOne relation to User. The relation must never change,
+    because it won't be deleted from it's former user when the relation
+    changes.
+    """
+
     def get_root_rest_element(self) -> models.Model:
         """
         Returns the root rest instance.
