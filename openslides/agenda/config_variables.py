@@ -118,14 +118,14 @@ def get_config_variables():
 
     yield ConfigVariable(
         name="agenda_show_next_speakers",
-        default_value=0,
+        default_value=-1,
         input_type="integer",
         label="Number of the next speakers to be shown on the projector",
-        help_text="Enter number of the next shown speakers. Choose 0 to disable this.",
+        help_text="Enter number of the next shown speakers. Choose -1 to show all next speakers.",
         weight=222,
         group="Agenda",
         subgroup="List of speakers",
-        validators=(MinValueValidator(0),),
+        validators=(MinValueValidator(-1),),
     )
 
     yield ConfigVariable(

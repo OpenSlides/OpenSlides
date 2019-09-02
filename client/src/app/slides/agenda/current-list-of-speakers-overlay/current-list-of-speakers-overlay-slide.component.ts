@@ -1,17 +1,7 @@
 import { Component, Input } from '@angular/core';
 
 import { BaseSlideComponent } from 'app/slides/base-slide-component';
-import { CommonListOfSpeakersSlideData } from '../common/common-list-of-speakers-slide-data';
-
-/**
- * Interface, that describes how the speaker-objects look like.
- */
-interface SpeakerObject {
-    user: string;
-    marked: boolean;
-    end_time: number | null;
-    weight: number | null;
-}
+import { CommonListOfSpeakersSlideData, SlideSpeaker } from '../common/common-list-of-speakers-slide-data';
 
 @Component({
     selector: 'os-current-list-of-speakers-overlay-slide',
@@ -37,12 +27,12 @@ export class CurrentListOfSpeakersOverlaySlideComponent extends BaseSlideCompone
     /**
      * The current speaker.
      */
-    public currentSpeaker: SpeakerObject;
+    public currentSpeaker: SlideSpeaker;
 
     /**
      * List with the next speakers for this list.
      */
-    public nextSpeakers: SpeakerObject[] = [];
+    public nextSpeakers: SlideSpeaker[] = [];
 
     public constructor() {
         super();

@@ -157,11 +157,10 @@ async def get_list_of_speakers_slide_data(
     if number_of_last_speakers == 0:
         speakers_finished = []
     else:
-        speakers_finished = speakers_finished[
-            -number_of_last_speakers:
-        ]  # Take the last speakers
+        # Take the last speakers
+        speakers_finished = speakers_finished[-number_of_last_speakers:]
 
-    if number_of_next_speakers != 0:
+    if number_of_next_speakers != -1:
         speakers_waiting = speakers_waiting[:number_of_next_speakers]
 
     return {
