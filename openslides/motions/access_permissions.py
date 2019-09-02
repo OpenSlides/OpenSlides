@@ -1,4 +1,4 @@
-from copy import deepcopy
+import json
 from typing import Any, Dict, List
 
 from ..utils.access_permissions import BaseAccessPermissions
@@ -61,7 +61,7 @@ class MotionAccessPermissions(BaseAccessPermissions):
 
                 # Parse single motion.
                 if permission:
-                    full_copy = deepcopy(full)
+                    full_copy = json.loads(json.dumps(full))
                     full_copy["comments"] = []
                     for comment in full["comments"]:
                         if await async_in_some_groups(
