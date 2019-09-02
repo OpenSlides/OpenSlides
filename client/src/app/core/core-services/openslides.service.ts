@@ -63,16 +63,23 @@ export class OpenSlidesService {
      */
     public async bootup(): Promise<void> {
         // start autoupdate if the user is logged in:
-        const response = await this.operator.whoAmIFromStorage();
+        let response = await this.operator.whoAmIFromStorage();
+        const needToCheckOperator = !!response;
+
+        if (!response) {
+            response = await this.operator.whoAmI();
+        }
+
         if (!response.user && !response.guest_enabled) {
             if (!location.pathname.includes('error')) {
                 this.redirectUrl = location.pathname;
             }
             this.redirectToLoginIfNotSubpage();
-            this.checkOperator(false);
         } else {
             await this.afterLoginBootup(response.user_id);
+        }
 
+        if (needToCheckOperator) {
             // Check for the operator via a async whoami (so no await here)
             // to validate, that the cache was correct.
             this.checkOperator(false);

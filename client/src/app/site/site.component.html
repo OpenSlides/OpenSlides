@@ -76,6 +76,14 @@
 
         <!-- navigation -->
         <mat-nav-list class="main-nav">
+            <ng-container *ngIf="!isLoggedIn">
+                <a routerLink="/login" mat-list-item>
+                    <mat-icon>exit_to_app</mat-icon>
+                    <span translate>Login</span>
+                </a>
+                <mat-divider></mat-divider>
+            </ng-container>
+
             <span *ngFor="let entry of mainMenuService.entries">
                 <a
                     [@navItemAnim]

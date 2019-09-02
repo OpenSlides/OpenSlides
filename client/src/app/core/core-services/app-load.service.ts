@@ -11,11 +11,11 @@ import { CollectionStringMapperService } from './collection-string-mapper.servic
 import { CommonAppConfig } from '../../site/common/common.config';
 import { ConfigAppConfig } from '../../site/config/config.config';
 import { ServicesToLoadOnAppsLoaded } from '../core.module';
+import { FallbackRoutesService } from './fallback-routes.service';
 import { MainMenuService } from './main-menu.service';
 import { MediafileAppConfig } from '../../site/mediafiles/mediafile.config';
 import { MotionsAppConfig } from '../../site/motions/motions.config';
 import { OnAfterAppsLoaded } from '../definitions/on-after-apps-loaded';
-import { plugins } from '../../../plugins';
 import { SearchService } from '../ui-services/search.service';
 import { isSearchable } from '../../site/base/searchable';
 import { TagAppConfig } from '../../site/tags/tag.config';
@@ -56,17 +56,11 @@ export class AppLoadService {
         private modelMapper: CollectionStringMapperService,
         private mainMenuService: MainMenuService,
         private searchService: SearchService,
-        private injector: Injector
+        private injector: Injector,
+        private fallbackRoutesService: FallbackRoutesService
     ) {}
 
     public async loadApps(): Promise<void> {
-        if (plugins.length) {
-            console.log('plugins: ', plugins);
-        }
-        /*for (const pluginName of plugins) {
-            const plugin = await import('../../../../../plugins/' + pluginName + '/' + pluginName);
-            plugin.main();
-        }*/
         const repositories: OnAfterAppsLoaded[] = [];
         appConfigs.forEach((config: AppConfig) => {
             if (config.models) {
@@ -92,6 +86,7 @@ export class AppLoadService {
             }
             if (config.mainMenuEntries) {
                 this.mainMenuService.registerEntries(config.mainMenuEntries);
+                this.fallbackRoutesService.registerFallbackEntries(config.mainMenuEntries);
             }
         });
 

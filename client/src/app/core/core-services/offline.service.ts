@@ -30,16 +30,20 @@ export class OfflineService {
      * Sets the offline flag. Restores the DataStoreService to the last known configuration.
      */
     public goOfflineBecauseFailedWhoAmI(): void {
+        if (!this.offline.getValue()) {
+            console.log('offline because whoami failed.');
+        }
         this.offline.next(true);
-        console.log('offline because whoami failed.');
     }
 
     /**
      * Sets the offline flag, because there is no connection to the server.
      */
     public goOfflineBecauseConnectionLost(): void {
+        if (!this.offline.getValue()) {
+            console.log('offline because connection lost.');
+        }
         this.offline.next(true);
-        console.log('offline because connection lost.');
     }
 
     /**

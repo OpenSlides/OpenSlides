@@ -11,7 +11,6 @@ import { filter } from 'rxjs/operators';
 
 import { navItemAnim, pageTransition } from '../shared/animations';
 import { OfflineService } from 'app/core/core-services/offline.service';
-import { ConfigService } from 'app/core/ui-services/config.service';
 import { OverlayService } from 'app/core/ui-services/overlay.service';
 import { UpdateService } from 'app/core/ui-services/update.service';
 import { langToLocale } from 'app/shared/utils/lang-to-locale';
@@ -90,7 +89,6 @@ export class SiteComponent extends BaseComponent implements OnInit {
     public constructor(
         title: Title,
         protected translate: TranslateService,
-        configService: ConfigService,
         offlineService: OfflineService,
         private updateService: UpdateService,
         private authService: AuthService,
@@ -108,11 +106,7 @@ export class SiteComponent extends BaseComponent implements OnInit {
         overlayService.setSpinner(true, translate.instant('Loading data. Please wait...'));
 
         this.operator.getViewUserObservable().subscribe(user => {
-            if (user) {
-                this.username = user.short_name;
-            } else if (!user && configService.instant<boolean>('general_system_enable_anonymous')) {
-                this.username = translate.instant('Guest');
-            }
+            this.username = user ? user.short_name : translate.instant('Guest');
             this.isLoggedIn = !!user;
         });
 
