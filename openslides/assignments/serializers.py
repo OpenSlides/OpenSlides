@@ -147,20 +147,25 @@ class AssignmentAllPollSerializer(ModelSerializer):
             if len(votes) != len(options):
                 raise ValidationError(
                     {
-                        "detail": f"You have to submit data for {len(options)} candidates."
+                        "detail": "You have to submit data for {0} candidates.",
+                        "args": [len(options)],
                     }
                 )
             for index, option in enumerate(options):
                 if len(votes[index]) != len(instance.get_vote_values()):
                     raise ValidationError(
                         {
-                            "detail": f"You have to submit data for {len(instance.get_vote_values())} vote values."
+                            "detail": "You have to submit data for {0} vote values",
+                            "args": [len(instance.get_vote_values())],
                         }
                     )
                 for vote_value, __ in votes[index].items():
                     if vote_value not in instance.get_vote_values():
                         raise ValidationError(
-                            {"detail": f"Vote value {vote_value} is invalid."}
+                            {
+                                "detail": "Vote value {0} is invalid.",
+                                "args": [vote_value],
+                            }
                         )
                 instance.set_vote_objects_with_values(
                     option, votes[index], skip_autoupdate=True

@@ -227,7 +227,7 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
         try:
             message = message.format(**message_format)
         except KeyError as err:
-            raise ValidationError({"detail": f"Invalid property {err}."})
+            raise ValidationError({"detail": "Invalid property {0}", "args": [err]})
 
         subject_format = format_dict(
             {"event_name": config["general_event_name"], "username": self.username}
@@ -235,7 +235,7 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
         try:
             subject = subject.format(**subject_format)
         except KeyError as err:
-            raise ValidationError({"detail": f"Invalid property {err}."})
+            raise ValidationError({"detail": "Invalid property {0}", "args": [err]})
 
         # Create an email and send it.
         email = mail.EmailMessage(
@@ -255,7 +255,10 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
                 helptext = " Is the email sender correct?"
             connection.close()
             raise ValidationError(
-                {"detail": f"Error {error}. Cannot send email.{helptext}"}
+                {
+                    "detail": "Error {0}. Cannot send email.{1}",
+                    "args": [error, helptext],
+                }
             )
         except smtplib.SMTPRecipientsRefused:
             pass  # Run into returning false later
@@ -263,7 +266,8 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
             # Nice error message on auth failure
             raise ValidationError(
                 {
-                    "detail": f"Error {e.smtp_code}: Authentication failure. Please contact your local administrator."
+                    "detail": "Error {0}: Authentication failure. Please contact your local administrator.",
+                    "args": [e.smtp_code],
                 }
             )
         else:

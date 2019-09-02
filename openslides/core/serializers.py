@@ -62,7 +62,7 @@ def elements_validator(value: Any) -> None:
             )
         if element["name"] not in projector_slides:
             raise ValidationError(
-                {"detail": f"Unknown projector element {element['name']},"}
+                {"detail": "Unknown projector element {0}.", "args": [element["name"]]}
             )
 
 

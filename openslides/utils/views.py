@@ -59,7 +59,7 @@ class TreeSortMixin:
         does not have every model, the remaining models are sorted correctly.
         """
         if not isinstance(request.data, list):
-            raise ValidationError("The data must be a list.")
+            raise ValidationError({"detail": "The data must be a list."})
 
         # get all item ids to verify, that the user send all ids.
         all_model_ids = set(model.objects.all().values_list("pk", flat=True))
@@ -91,9 +91,11 @@ class TreeSortMixin:
                 node[weight_key] = weight
                 weight += 2
                 if id in ids_found:
-                    raise ValidationError(f"Duplicate id: {id}")
+                    raise ValidationError({"detail": "Duplicate id: {0}", "args": [id]})
                 if id not in all_model_ids:
-                    raise ValidationError(f"Id does not exist: {id}")
+                    raise ValidationError(
+                        {"detail": "Id does not exist: {0}", "args": [id]}
+                    )
                 ids_found.add(id)
 
             # Add children, if exist.
@@ -105,14 +107,17 @@ class TreeSortMixin:
                         child.get("id"), int
                     ):
                         raise ValidationError(
-                            "child must be a dict with an id as integer"
+                            {"detail": "child must be a dict with an id as integer"}
                         )
                     child[parent_id_key] = id
                     nodes_to_check.append(child)
 
         if len(all_model_ids) != len(ids_found):
             raise ValidationError(
-                f"Did not recieved {len(all_model_ids)} ids, got {len(ids_found)}."
+                {
+                    "detail": "Did not recieved {0} ids, got {1}.",
+                    "args": [len(all_model_ids), len(ids_found)],
+                }
             )
 
         # Do the actual update:

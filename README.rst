@@ -115,8 +115,17 @@ Download the latest portable version of OpenSlides for Windows from
 install steps. Simply unzip the downloaded file and run ``openslides.exe``.
 
 
+Configuration
+=============
+
+Please consider reading the `OpenSlides configuration
+<https://github.com/OpenSlides/OpenSlides/blob/master/SETTINGS.rst>`_ page to
+find out about all configurations, especially when using OpenSlides for big
+assemblies.
+
+
 Using the Dockerfile
-===============================
+====================
 
 You can either pull the image ``openslides/openslides`` or build it yourself
 (via `docker build -t openslides/openslides .`). You have all prequistes installed

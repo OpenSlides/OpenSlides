@@ -14,6 +14,6 @@ def default_votes_validator(data):
             and data[key] < -2
         ):
             raise ValidationError(
-                {"detail": f"Value for {key} must not be less than -2"}
+                {"detail": "Value for {0} must not be less than -2", "args": [key]}
             )
     return data
