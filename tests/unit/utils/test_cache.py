@@ -3,7 +3,7 @@ from typing import Any, Dict, List
 
 import pytest
 
-from openslides.utils.cache import ElementCache
+from openslides.utils.cache import ChangeIdTooLowError, ElementCache
 
 from .cache_provider import TTestCacheProvider, example_data, get_cachable_provider
 
@@ -156,7 +156,7 @@ async def test_get_data_since_change_id_lower_than_in_redis(element_cache):
     }
     element_cache.cache_provider.default_change_id = 2
     element_cache.cache_provider.change_id_data = {2: {"app/collection1:1"}}
-    with pytest.raises(RuntimeError):
+    with pytest.raises(ChangeIdTooLowError):
         await element_cache.get_data_since(None, 1)
 
 
@@ -283,7 +283,7 @@ async def test_get_restricted_data_2(element_cache):
 async def test_get_restricted_data_change_id_lower_than_in_redis(element_cache):
     element_cache.cache_provider.default_change_id = 2
 
-    with pytest.raises(RuntimeError):
+    with pytest.raises(ChangeIdTooLowError):
         await element_cache.get_data_since(0, 1)
 
 

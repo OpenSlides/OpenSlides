@@ -7,7 +7,7 @@ from ..utils.websocket import WEBSOCKET_CHANGE_ID_TOO_HIGH
 from . import logging
 from .auth import async_anonymous_is_enabled
 from .autoupdate import AutoupdateFormat
-from .cache import element_cache, split_element_id
+from .cache import ChangeIdTooLowError, element_cache, split_element_id
 from .utils import get_worker_id
 from .websocket import ProtocollAsyncJsonWebsocketConsumer
 
@@ -138,7 +138,7 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
             changed_elements, deleted_element_ids = await element_cache.get_data_since(
                 user_id, change_id, max_change_id
             )
-        except RuntimeError:
+        except ChangeIdTooLowError:
             # The change_id is lower the the lowerst change_id in redis. Return all data
             changed_elements = await element_cache.get_all_data_list(user_id)
             all_data = True
