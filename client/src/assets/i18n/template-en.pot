@@ -177,6 +177,9 @@ msgstr ""
 msgid "Amendments can change multiple paragraphs"
 msgstr ""
 
+msgid "An email with a password reset link was send!"
+msgstr ""
+
 msgid "An unknown error occurred."
 msgstr ""
 
@@ -1453,16 +1456,13 @@ msgstr ""
 msgid "No motion block set"
 msgstr ""
 
-msgid "No one"
-msgstr ""
-
 msgid "No personal note"
 msgstr ""
 
 msgid "No recommendation"
 msgstr ""
 
-msgid "No search result found for"
+msgid "No search result found"
 msgstr ""
 
 msgid "No statute paragraphs"
@@ -2756,6 +2756,12 @@ msgstr ""
 msgid "remove group(s)"
 msgstr ""
 
+msgid "result"
+msgstr ""
+
+msgid "results"
+msgstr ""
+
 msgid "selected"
 msgstr ""
 
@@ -2778,6 +2784,9 @@ msgid "undocumented"
 msgstr ""
 
 msgid "unpublished"
+msgstr ""
+
+msgid "with filter"
 msgstr ""
 
 msgid "with indexedDB"
