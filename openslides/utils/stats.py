@@ -1,7 +1,8 @@
 import asyncio
-import logging
 import time
 from typing import List, Optional
+
+from . import logging
 
 
 class WebsocketLatencyLogger:

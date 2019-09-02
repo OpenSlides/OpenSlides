@@ -1,4 +1,3 @@
-import logging
 import sys
 from collections import defaultdict
 from typing import Dict, List
@@ -9,6 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.dispatch import Signal
 
+from ..utils import logging
 from ..utils.autoupdate import Element, inform_changed_elements
 
 

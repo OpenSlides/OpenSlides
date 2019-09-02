@@ -1,5 +1,4 @@
 import json
-import logging
 from collections import defaultdict
 from datetime import datetime
 from time import sleep
@@ -8,6 +7,7 @@ from typing import Any, Callable, Dict, List, Optional, Tuple, Type
 from asgiref.sync import async_to_sync
 from django.apps import apps
 
+from . import logging
 from .cache_providers import (
     Cachable,
     ElementCacheProvider,

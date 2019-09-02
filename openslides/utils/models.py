@@ -1,10 +1,10 @@
-import logging
 import time
 from typing import Any, Dict, List, Optional
 
 from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 
+from . import logging
 from .access_permissions import BaseAccessPermissions
 from .autoupdate import Element, inform_changed_data, inform_changed_elements
 from .rest_api import model_serializer_classes
