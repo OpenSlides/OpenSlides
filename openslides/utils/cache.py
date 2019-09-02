@@ -22,6 +22,10 @@ from .utils import get_element_id, split_element_id
 logger = logging.getLogger(__name__)
 
 
+class ChangeIdTooLowError(Exception):
+    pass
+
+
 def get_all_cachables() -> List[Cachable]:
     """
     Returns all element of OpenSlides.
@@ -274,7 +278,7 @@ class ElementCache:
         Only returns elements with the change_id or newer. When change_id is 0,
         all elements are returned.
 
-        Raises a RuntimeError when the lowest change_id in redis is higher then
+        Raises a ChangeIdTooLowError when the lowest change_id in redis is higher then
         the requested change_id. In this case the method has to be rerun with
         change_id=0. This is importend because there could be deleted elements
         that the cache does not know about.
@@ -288,9 +292,8 @@ class ElementCache:
         if change_id < lowest_change_id:
             # When change_id is lower then the lowest change_id in redis, we can
             # not inform the user about deleted elements.
-            raise RuntimeError(
-                f"change_id {change_id} is lower then the lowest change_id in redis {lowest_change_id}. "
-                "Catch this exception and rerun the method with change_id=0."
+            raise ChangeIdTooLowError(
+                f"change_id {change_id} is lower then the lowest change_id in redis {lowest_change_id}."
             )
 
         raw_changed_elements, deleted_elements = await self.cache_provider.get_data_since(
@@ -302,7 +305,9 @@ class ElementCache:
         }
 
         if user_id is not None:
-            for collection_string, elements in changed_elements.items():
+            # the list(...) is important, because `changed_elements` will be
+            # altered during iteration and restricting data
+            for collection_string, elements in list(changed_elements.items()):
                 restricter = self.cachables[collection_string].restrict_elements
                 restricted_elements = await restricter(user_id, elements)
 
@@ -332,8 +337,6 @@ class ElementCache:
     async def get_lowest_change_id(self) -> int:
         """
         Returns the lowest change id.
-
-        Raises a RuntimeError if there is no change_id.
         """
         return await self.cache_provider.get_lowest_change_id()
 
