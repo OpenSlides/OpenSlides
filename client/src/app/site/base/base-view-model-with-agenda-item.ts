@@ -47,6 +47,11 @@ export interface IBaseViewModelWithAgendaItem<M extends BaseModelWithAgendaItem 
     getAgendaListTitle: () => string;
 
     /**
+     * @return the agenda title with the verbose name of the content object
+     */
+    getAgendaListTitleWithoutItemNumber: () => string;
+
+    /**
      * @returns the (optional) descriptive text to be exported in the CSV.
      * May be overridden by inheriting classes
      */
@@ -84,6 +89,11 @@ export abstract class BaseViewModelWithAgendaItem<M extends BaseModelWithAgendaI
      * @return the agenda title for the list view
      */
     public getAgendaListTitle: () => string;
+
+    /**
+     * @return the agenda title without any item number.
+     */
+    public getAgendaListTitleWithoutItemNumber: () => string;
 
     public constructor(model: M, item?: any) {
         super(model);
