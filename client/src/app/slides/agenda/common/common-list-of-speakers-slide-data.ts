@@ -1,4 +1,4 @@
-interface SlideSpeaker {
+export interface SlideSpeaker {
     user: string;
     marked: boolean;
 }

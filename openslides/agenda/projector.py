@@ -152,12 +152,16 @@ async def get_list_of_speakers_slide_data(
     speakers_finished = sorted(speakers_finished, key=lambda s: s["end_time"])
 
     number_of_last_speakers = await get_config(all_data, "agenda_show_last_speakers")
+    number_of_next_speakers = await get_config(all_data, "agenda_show_next_speakers")
+
     if number_of_last_speakers == 0:
         speakers_finished = []
     else:
-        speakers_finished = speakers_finished[
-            -number_of_last_speakers:
-        ]  # Take the last speakers
+        # Take the last speakers
+        speakers_finished = speakers_finished[-number_of_last_speakers:]
+
+    if number_of_next_speakers != -1:
+        speakers_waiting = speakers_waiting[:number_of_next_speakers]
 
     return {
         "waiting": speakers_waiting,

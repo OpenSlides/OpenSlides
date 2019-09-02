@@ -117,12 +117,24 @@ def get_config_variables():
     )
 
     yield ConfigVariable(
+        name="agenda_show_next_speakers",
+        default_value=-1,
+        input_type="integer",
+        label="Number of the next speakers to be shown on the projector",
+        help_text="Enter number of the next shown speakers. Choose -1 to show all next speakers.",
+        weight=222,
+        group="Agenda",
+        subgroup="List of speakers",
+        validators=(MinValueValidator(-1),),
+    )
+
+    yield ConfigVariable(
         name="agenda_countdown_warning_time",
         default_value=0,
         input_type="integer",
         label="Show orange countdown in the last x seconds of speaking time",
         help_text="Enter duration in seconds. Choose 0 to disable warning color.",
-        weight=221,
+        weight=224,
         group="Agenda",
         subgroup="List of speakers",
         validators=(MinValueValidator(0),),
@@ -133,7 +145,7 @@ def get_config_variables():
         default_value=60,
         input_type="integer",
         label="Predefined seconds of new countdowns",
-        weight=222,
+        weight=226,
         group="Agenda",
         subgroup="List of speakers",
     )
@@ -144,7 +156,7 @@ def get_config_variables():
         input_type="boolean",
         label="Couple countdown with the list of speakers",
         help_text="[Begin speech] starts the countdown, [End speech] stops the countdown.",
-        weight=223,
+        weight=228,
         group="Agenda",
         subgroup="List of speakers",
     )
@@ -154,7 +166,7 @@ def get_config_variables():
         default_value=False,
         input_type="boolean",
         label="Hide the amount of speakers in subtitle of list of speakers slide",
-        weight=224,
+        weight=230,
         group="Agenda",
         subgroup="List of speakers",
     )
@@ -164,7 +176,7 @@ def get_config_variables():
         default_value=False,
         input_type="boolean",
         label="Only present participants can be added to the list of speakers",
-        weight=225,
+        weight=232,
         group="Agenda",
         subgroup="List of speakers",
     )

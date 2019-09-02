@@ -1,11 +1,11 @@
 .lastSpeakers {
     color: #9a9898;
-    margin-left: 33px;
-    margin-bottom: 10px;
+    margin: 20px 0 10px 33px;
 }
 
 .currentSpeaker {
     font-weight: bold;
+    margin: 20px 0 16px;
 
     .mat-icon,
     span {
@@ -17,10 +17,12 @@
 }
 
 .nextSpeakers {
-    margin-left: 13px !important;
-    margin-top: 10px !important;
+    margin: 0;
+    padding-left: 6px;
+    margin-top: 20px !important;
 
     li {
+        list-style-position: inside;
         line-height: 150%;
     }
 }
