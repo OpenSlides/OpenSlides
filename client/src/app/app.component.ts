@@ -199,7 +199,7 @@ export class AppComponent {
      */
     private checkConnectionProgress(): void {
         if ((this.user || this.operator.isAnonymous) && this.isStable) {
-            this.overlayService.setSpinner(false, null, true);
+            this.overlayService.setSpinner(false, null, false, true);
         }
     }
 }
