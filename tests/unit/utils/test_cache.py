@@ -79,6 +79,7 @@ async def test_change_elements_with_no_data_in_redis(element_cache):
         "app/collection1:2": {"id": 2, "value": "new"},
         "app/collection2:1": {"id": 1, "key": "updated"},
         "app/collection2:2": None,
+        "app/personalized-collection:2": None,
     }
 
     result = await element_cache.change_elements(input_data)
@@ -89,6 +90,7 @@ async def test_change_elements_with_no_data_in_redis(element_cache):
             "app/collection1:1": '{"id": 1, "value": "updated"}',
             "app/collection1:2": '{"id": 2, "value": "new"}',
             "app/collection2:1": '{"id": 1, "key": "updated"}',
+            "app/personalized-collection:1": '{"id": 1, "key": "value1", "user_id": 1}',
         }
     )
     assert element_cache.cache_provider.change_id_data == {
@@ -97,6 +99,7 @@ async def test_change_elements_with_no_data_in_redis(element_cache):
             "app/collection1:2",
             "app/collection2:1",
             "app/collection2:2",
+            "app/personalized-collection:2",
         }
     }
 
@@ -113,6 +116,8 @@ async def test_get_all_data_from_db(element_cache):
             "app/collection1:2": '{"id": 2, "value": "value2"}',
             "app/collection2:1": '{"id": 1, "key": "value1"}',
             "app/collection2:2": '{"id": 2, "key": "value2"}',
+            "app/personalized-collection:1": '{"id": 1, "key": "value1", "user_id": 1}',
+            "app/personalized-collection:2": '{"id": 2, "key": "value2", "user_id": 2}',
         }
     )
 
@@ -124,6 +129,8 @@ async def test_get_all_data_from_redis(element_cache):
         "app/collection1:2": '{"id": 2, "value": "value2"}',
         "app/collection2:1": '{"id": 1, "key": "value1"}',
         "app/collection2:2": '{"id": 2, "key": "value2"}',
+        "app/personalized-collection:1": '{"id": 1, "key": "value1", "user_id": 1}',
+        "app/personalized-collection:2": '{"id": 2, "key": "value2", "user_id": 2}',
     }
 
     result = await element_cache.get_all_data_list()
@@ -139,6 +146,8 @@ async def test_get_data_since_change_id_0(element_cache):
         "app/collection1:2": '{"id": 2, "value": "value2"}',
         "app/collection2:1": '{"id": 1, "key": "value1"}',
         "app/collection2:2": '{"id": 2, "key": "value2"}',
+        "app/personalized-collection:1": '{"id": 1, "key": "value1", "user_id": 1}',
+        "app/personalized-collection:2": '{"id": 2, "key": "value2", "user_id": 2}',
     }
 
     result = await element_cache.get_data_since(None, 0)
@@ -231,7 +240,9 @@ async def test_get_element_data_full_redis(element_cache):
 
 @pytest.mark.asyncio
 async def test_get_all_restricted_data(element_cache):
-    result = await element_cache.get_all_data_list(0)
+    result = await element_cache.get_all_data_list(1)
+
+    # The output from redis has to be the same then the db_data
 
     assert sort_dict(result) == sort_dict(
         {
@@ -243,13 +254,14 @@ async def test_get_all_restricted_data(element_cache):
                 {"id": 1, "key": "restricted_value1"},
                 {"id": 2, "key": "restricted_value2"},
             ],
+            "app/personalized-collection": [{"id": 1, "key": "value1", "user_id": 1}],
         }
     )
 
 
 @pytest.mark.asyncio
 async def test_get_restricted_data_change_id_0(element_cache):
-    result = await element_cache.get_data_since(0, 0)
+    result = await element_cache.get_data_since(2, 0)
 
     assert sort_dict(result[0]) == sort_dict(
         {
@@ -261,6 +273,7 @@ async def test_get_restricted_data_change_id_0(element_cache):
                 {"id": 1, "key": "restricted_value1"},
                 {"id": 2, "key": "restricted_value2"},
             ],
+            "app/personalized-collection": [{"id": 2, "key": "value2", "user_id": 2}],
         }
     )
 
@@ -277,6 +290,15 @@ async def test_get_restricted_data_2(element_cache):
         {"app/collection1": [{"id": 1, "value": "restricted_value1"}]},
         ["app/collection1:3"],
     )
+
+
+@pytest.mark.asyncio
+async def test_get_restricted_data_from_personalized_cacheable(element_cache):
+    element_cache.cache_provider.change_id_data = {1: {"app/personalized-collection:2"}}
+
+    result = await element_cache.get_data_since(0, 1)
+
+    assert result == ({}, [])
 
 
 @pytest.mark.asyncio

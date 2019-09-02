@@ -308,16 +308,20 @@ class ElementCache:
             # the list(...) is important, because `changed_elements` will be
             # altered during iteration and restricting data
             for collection_string, elements in list(changed_elements.items()):
-                restricter = self.cachables[collection_string].restrict_elements
-                restricted_elements = await restricter(user_id, elements)
-
-                # Add removed objects (through restricter) to deleted elements.
-                element_ids = set([element["id"] for element in elements])
-                restricted_element_ids = set(
-                    [element["id"] for element in restricted_elements]
+                cacheable = self.cachables[collection_string]
+                restricted_elements = await cacheable.restrict_elements(
+                    user_id, elements
                 )
-                for id in element_ids - restricted_element_ids:
-                    deleted_elements.append(get_element_id(collection_string, id))
+
+                # If the model is personalized, it must not be deleted for other users
+                if not cacheable.personalized_model:
+                    # Add removed objects (through restricter) to deleted elements.
+                    element_ids = set([element["id"] for element in elements])
+                    restricted_element_ids = set(
+                        [element["id"] for element in restricted_elements]
+                    )
+                    for id in element_ids - restricted_element_ids:
+                        deleted_elements.append(get_element_id(collection_string, id))
 
                 if not restricted_elements:
                     del changed_elements[collection_string]

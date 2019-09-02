@@ -340,6 +340,12 @@ class PersonalNote(RESTModelMixin, models.Model):
 
     access_permissions = PersonalNoteAccessPermissions()
 
+    personalized_model = True
+    """
+    Each model belongs to one user. This relation is set during creation and
+    will not be changed.
+    """
+
     objects = PersonalNoteManager()
 
     user = models.OneToOneField(User, on_delete=CASCADE_AND_AUTOUPDATE)

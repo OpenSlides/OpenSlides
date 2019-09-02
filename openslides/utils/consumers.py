@@ -27,6 +27,8 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
     ID counter for assigning each instance of this class an unique id.
     """
 
+    skipped_autoupdate_from_change_id: Optional[int] = None
+
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         self.projector_hash: Dict[int, int] = {}
         SiteConsumer.ID_COUNTER += 1
@@ -150,17 +152,31 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
                 collection_string, id = split_element_id(element_id)
                 deleted_elements[collection_string].append(id)
 
-        await self.send_json(
-            type="autoupdate",
-            content=AutoupdateFormat(
-                changed=changed_elements,
-                deleted=deleted_elements,
-                from_change_id=change_id,
-                to_change_id=max_change_id,
-                all_data=all_data,
-            ),
-            in_response=in_response,
-        )
+        # Check, if the autoupdate has any data.
+        if not changed_elements and not deleted_element_ids:
+            # Set the current from_change_id, if it is the first skipped autoupdate
+            if not self.skipped_autoupdate_from_change_id:
+                self.skipped_autoupdate_from_change_id = change_id
+        else:
+            # Normal autoupdate with data
+            from_change_id = change_id
+
+            # If there is at least one skipped autoupdate, take the saved from_change_id
+            if self.skipped_autoupdate_from_change_id:
+                from_change_id = self.skipped_autoupdate_from_change_id
+                self.skipped_autoupdate_from_change_id = None
+
+            await self.send_json(
+                type="autoupdate",
+                content=AutoupdateFormat(
+                    changed=changed_elements,
+                    deleted=deleted_elements,
+                    from_change_id=from_change_id,
+                    to_change_id=max_change_id,
+                    all_data=all_data,
+                ),
+                in_response=in_response,
+            )
 
     async def send_data(self, event: Dict[str, Any]) -> None:
         """
