@@ -92,6 +92,22 @@ export class ItemRepositoryService extends BaseHasContentObjectRepository<
     };
 
     /**
+     * Overrides the base function.
+     *
+     * @returns The title without any prefix like item number.
+     */
+    public getTitleWithoutItemNumber = (titleInformation: ItemTitleInformation) => {
+        if (titleInformation.contentObject) {
+            return titleInformation.contentObject.getAgendaListTitleWithoutItemNumber();
+        } else {
+            const repo = this.collectionStringMapperService.getRepository(
+                titleInformation.contentObjectData.collection
+            ) as BaseIsAgendaItemContentObjectRepository<any, any, any>;
+            return repo.getAgendaListTitleWithoutItemNumber(titleInformation.title_information);
+        }
+    };
+
+    /**
      * Trigger the automatic numbering sequence on the server
      */
     public async autoNumbering(): Promise<void> {

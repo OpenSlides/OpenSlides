@@ -267,6 +267,17 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
         }
     };
 
+    /**
+     * @override The base function
+     */
+    public getAgendaListTitleWithoutItemNumber = (titleInformation: MotionTitleInformation) => {
+        if (titleInformation.identifier) {
+            return this.translate.instant('Motion') + ' ' + titleInformation.identifier;
+        } else {
+            return titleInformation.title + `(${this.getVerboseName()})`;
+        }
+    };
+
     public getVerboseName = (plural: boolean = false) => {
         return this.translate.instant(plural ? 'Motions' : 'Motion');
     };

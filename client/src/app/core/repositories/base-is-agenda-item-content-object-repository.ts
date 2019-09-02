@@ -30,6 +30,7 @@ export interface IBaseIsAgendaItemContentObjectRepository<
     T extends TitleInformationWithAgendaItem
 > extends BaseRepository<V, M, T> {
     getAgendaListTitle: (titleInformation: T) => string;
+    getAgendaListTitleWithoutItemNumber: (titleInformation: T) => string;
     getAgendaSlideTitle: (titleInformation: T) => string;
 }
 
@@ -84,6 +85,17 @@ export abstract class BaseIsAgendaItemContentObjectRepository<
     }
 
     /**
+     * Function to return the title without item-number, in example used for pdf-creation.
+     *
+     * @param titleInformation The title information.
+     *
+     * @returns {string} The title without any prefix like the item-number.
+     */
+    public getAgendaListTitleWithoutItemNumber(titleInformation: T): string {
+        return this.getTitle(titleInformation) + ' (' + this.getVerboseName() + ')';
+    }
+
+    /**
      * @returns the agenda title for the item slides
      */
     public getAgendaSlideTitle(titleInformation: T): string {
@@ -96,6 +108,7 @@ export abstract class BaseIsAgendaItemContentObjectRepository<
     protected createViewModelWithTitles(model: M, initialLoading: boolean): V {
         const viewModel = super.createViewModelWithTitles(model, initialLoading);
         viewModel.getAgendaListTitle = () => this.getAgendaListTitle(viewModel);
+        viewModel.getAgendaListTitleWithoutItemNumber = () => this.getAgendaListTitleWithoutItemNumber(viewModel);
         viewModel.getAgendaSlideTitle = () => this.getAgendaSlideTitle(viewModel);
         return viewModel;
     }

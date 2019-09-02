@@ -87,7 +87,7 @@ export class AgendaPdfService {
                         text: nodeItem.item.itemNumber
                     },
                     {
-                        text: nodeItem.item.getTitle()
+                        text: nodeItem.item.contentObject.getAgendaListTitleWithoutItemNumber()
                     }
                 ]
             };

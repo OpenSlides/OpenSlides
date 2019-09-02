@@ -69,6 +69,15 @@ export class TopicRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCon
         return this.getTitle(titleInformation);
     };
 
+    /**
+     * @override The base function.
+     *
+     * @returns The plain title.
+     */
+    public getAgendaListTitleWithoutItemNumber = (titleInformation: TopicTitleInformation) => {
+        return titleInformation.title;
+    };
+
     public getVerboseName = (plural: boolean = false) => {
         return this.translate.instant(plural ? 'Topics' : 'Topic');
     };

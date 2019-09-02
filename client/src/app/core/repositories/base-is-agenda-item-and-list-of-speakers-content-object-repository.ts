@@ -64,6 +64,17 @@ export abstract class BaseIsAgendaItemAndListOfSpeakersContentObjectRepository<
         return numberPrefix + this.getTitle(titleInformation);
     }
 
+    /**
+     * Function to get the list-title without the item-number.
+     *
+     * @param titleInformation The title-information for an object.
+     *
+     * @returns {string} The title without any prefix like item-number.
+     */
+    public getAgendaListTitleWithoutItemNumber(titleInformation: T): string {
+        return this.getTitle(titleInformation) + ' (' + this.getVerboseName() + ')';
+    }
+
     public getListOfSpeakersTitle = (titleInformation: T) => {
         return this.getAgendaListTitle(titleInformation);
     };
@@ -75,6 +86,7 @@ export abstract class BaseIsAgendaItemAndListOfSpeakersContentObjectRepository<
     protected createViewModelWithTitles(model: M, initialLoading: boolean): V {
         const viewModel = super.createViewModelWithTitles(model, initialLoading);
         viewModel.getAgendaListTitle = () => this.getAgendaListTitle(viewModel);
+        viewModel.getAgendaListTitleWithoutItemNumber = () => this.getAgendaListTitleWithoutItemNumber(viewModel);
         viewModel.getAgendaSlideTitle = () => this.getAgendaSlideTitle(viewModel);
         viewModel.getListOfSpeakersTitle = () => this.getListOfSpeakersTitle(viewModel);
         viewModel.getListOfSpeakersSlideTitle = () => this.getListOfSpeakersSlideTitle(viewModel);
