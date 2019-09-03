@@ -585,22 +585,38 @@ class HistoryDataView(utils_views.APIView):
             raise ValidationError(
                 {"detail": "Invalid input. Timestamp should be an integer."}
             )
-        queryset = History.objects.select_related("full_data")
+        queryset = History.objects
         if timestamp:
             queryset = queryset.filter(
                 now__lte=datetime.datetime.fromtimestamp(timestamp)
             )
 
-        # collection <--> id <--> full_data
+        # collection <--> id <--> full_data_id
         dataset: Dict[str, Dict[int, Any]] = defaultdict(dict)
         for instance in queryset:
             collection, id = split_element_id(instance.element_id)
-            full_data = instance.full_data.full_data
-            if full_data:
-                dataset[collection][id] = full_data
-            elif id in dataset[collection]:
-                del dataset[collection][id]
+            dataset[collection][id] = instance.full_data_id
 
+        all_history_data_ids = []
+        for collection, _mapping in dataset.items():
+            for id, history_data_id in _mapping.items():
+                all_history_data_ids.append(history_data_id)
+
+        all_history_data = {}  # history_data_id <--> history_data
+        for history_data in HistoryData.objects.exclude(full_data=None).filter(pk__in=all_history_data_ids):
+            all_history_data[history_data.id] = history_data
+
+        data_point = HistoryDataPoint()
+        for collection, _mapping in dataset.items():
+            for id, history_data_id in _mapping.items():
+                if history_data_id in all_history_data:
+                    history_data = all_history_data[history_data_id]
+                    data_point.add_element(collection, id, history_data.full_data, hsitory_data.migration_id)
+
+        history_migration_manager.migrate(data_point)
+
+
+        # TODO: Move configs to the `migrate` function
         # Ensure, that newer configs than the requested timepoint are also
         # included, so the client is happy and doesn't miss any config variables.
         all_current_config_keys = set(config.config_variables.keys())
@@ -617,7 +633,8 @@ class HistoryDataView(utils_views.APIView):
                 id = key_to_id[key]
                 dataset["core/config"][id] = config_full_data[id]
 
-        return {
-            collection: list(dataset[collection].values())
-            for collection in dataset.keys()
-        }
+        return data_point.get_full_data()
+        #return {
+        #    collection: list(dataset[collection].values())
+        #    for collection in dataset.keys()
+        #}

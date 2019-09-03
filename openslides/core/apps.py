@@ -208,6 +208,10 @@ def startup():
     from openslides.utils.cache import element_cache
     from openslides.core.models import History
 
+    from openslides.core.historymigration import history_migration_manager
+
+    history_migration_manager.load_migrations()
+
     element_cache.ensure_schema_version()
     set_constants(get_constants_from_apps())
     History.objects.build_history()

@@ -15,6 +15,7 @@ from .access_permissions import (
     ProjectorMessageAccessPermissions,
     TagAccessPermissions,
 )
+from .historymigration import history_migration_manager
 
 
 class ProjectorManager(models.Manager):
@@ -243,6 +244,8 @@ class HistoryData(models.Model):
 
     full_data = JSONField()
 
+    migration_id = models.PositiveIntegerField()
+
     class Meta:
         default_permissions = ()
 
@@ -264,7 +267,10 @@ class HistoryManager(models.Manager):
                     # Do not update history if history is disabled.
                     continue
                 # HistoryData is not a root rest element so there is no autoupdate and not history saving here.
-                data = HistoryData.objects.create(full_data=element["full_data"])
+                history_data = HistoryData.objects.create(
+                    full_data=element["full_data"],
+                    migration_id=history_migration_manager.get_current_migration_id(),
+                )
                 instance = self.model(
                     element_id=get_element_id(
                         element["collection_string"], element["id"]
@@ -273,7 +279,7 @@ class HistoryManager(models.Manager):
                     information=element.get("information", []),
                     restricted=element.get("restricted", False),
                     user_id=element.get("user_id"),
-                    full_data=data,
+                    full_data=history_data,
                 )
                 instance.save()
                 instances.append(instance)
