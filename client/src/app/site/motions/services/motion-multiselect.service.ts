@@ -81,7 +81,7 @@ export class MotionMultiselectService {
                     `\n${i} ` +
                     this.translate.instant('of') +
                     ` ${motions.length}`;
-                this.overlayService.setSpinner(true, message);
+                this.overlayService.setSpinner(true, message, true);
                 await this.repo.delete(motion);
             }
             this.overlayService.setSpinner(false);
@@ -119,7 +119,7 @@ export class MotionMultiselectService {
             const selectedChoice = await this.choiceService.open(title, choices);
             if (selectedChoice) {
                 const message = `${motions.length} ` + this.translate.instant(this.messageForSpinner);
-                this.overlayService.setSpinner(true, message);
+                this.overlayService.setSpinner(true, message, true);
                 await this.repo.setMultiState(motions, selectedChoice.items as number);
             }
         } else {
@@ -152,7 +152,7 @@ export class MotionMultiselectService {
                     recommendation: selectedChoice.action ? 0 : (selectedChoice.items as number)
                 }));
                 const message = `${motions.length} ` + this.translate.instant(this.messageForSpinner);
-                this.overlayService.setSpinner(true, message);
+                this.overlayService.setSpinner(true, message, true);
                 await this.httpService.post('/rest/motions/motion/manage_multiple_recommendation/', {
                     motions: requestData
                 });
@@ -181,13 +181,8 @@ export class MotionMultiselectService {
         );
         if (selectedChoice) {
             const message = this.translate.instant(this.messageForSpinner);
-            this.overlayService.setSpinner(true, message);
+            this.overlayService.setSpinner(true, message, true);
             await this.repo.setMultiCategory(motions, selectedChoice.items as number);
-            // .catch(error => {
-            //     this.overlayService.setSpinner(false);
-            //     throw error;
-            // });
-            // this.overlayService.setSpinner(false);
         }
     }
 
@@ -213,7 +208,6 @@ export class MotionMultiselectService {
                         submitters: submitterIds
                     };
                 });
-                // await this.httpService.post('/rest/motions/motion/manage_multiple_submitters/', { motions: requestData });
             } else if (selectedChoice.action === choices[1]) {
                 requestData = motions.map(motion => {
                     const submitterIdsToRemove = selectedChoice.items as number[];
@@ -226,9 +220,8 @@ export class MotionMultiselectService {
             }
 
             const message = `${motions.length} ` + this.translate.instant(this.messageForSpinner);
-            this.overlayService.setSpinner(true, message);
+            this.overlayService.setSpinner(true, message, true);
             await this.httpService.post('/rest/motions/motion/manage_multiple_submitters/', { motions: requestData });
-            // this.overlayService.setSpinner(false);
         }
     }
 
@@ -256,7 +249,6 @@ export class MotionMultiselectService {
                         tags: tagIds
                     };
                 });
-                // await this.httpService.post('/rest/motions/motion/manage_multiple_tags/', { motions: requestData });
             } else if (selectedChoice.action === choices[1]) {
                 requestData = motions.map(motion => {
                     const tagIdsToRemove = selectedChoice.items as number[];
@@ -266,7 +258,6 @@ export class MotionMultiselectService {
                         tags: tagIds
                     };
                 });
-                // await this.httpService.post('/rest/motions/motion/manage_multiple_tags/', { motions: requestData });
             } else if (selectedChoice.action === choices[2]) {
                 requestData = motions.map(motion => {
                     return {
@@ -277,9 +268,8 @@ export class MotionMultiselectService {
             }
 
             const message = `${motions.length} ` + this.translate.instant(this.messageForSpinner);
-            this.overlayService.setSpinner(true, message);
+            this.overlayService.setSpinner(true, message, true);
             await this.httpService.post('/rest/motions/motion/manage_multiple_tags/', { motions: requestData });
-            // this.overlayService.setSpinner(false);
         }
     }
 
@@ -300,14 +290,9 @@ export class MotionMultiselectService {
         );
         if (selectedChoice) {
             const message = this.translate.instant(this.messageForSpinner);
-            this.overlayService.setSpinner(true, message);
+            this.overlayService.setSpinner(true, message, true);
             const blockId = selectedChoice.action ? null : (selectedChoice.items as number);
             await this.repo.setMultiMotionBlock(motions, blockId);
-            // .catch(error => {
-            //     this.overlayService.setSpinner(false);
-            //     throw error;
-            // });
-            // this.overlayService.setSpinner(false);
         }
     }
 
@@ -370,9 +355,8 @@ export class MotionMultiselectService {
         if (selectedChoice && motions.length) {
             const message = this.translate.instant(`I have ${motions.length} favorite motions. Please wait ...`);
             const star = (selectedChoice.items as number) === choices[0].id;
-            this.overlayService.setSpinner(true, message);
+            this.overlayService.setSpinner(true, message, true);
             await this.personalNoteService.bulkSetStar(motions, star);
-            // this.overlayService.setSpinner(false);
         }
     }
 }

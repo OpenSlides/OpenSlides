@@ -28,12 +28,7 @@ export class OverlayService {
     /**
      * Boolean, whether appearing of the spinner should be prevented next time.
      */
-    private preventAppearingSpinner: boolean;
-
-    /**
-     * Boolean to indicate, if the spinner has already appeared.
-     */
-    private spinnerHasAppeared = false;
+    private preventAppearingSpinner = false;
 
     /**
      *
@@ -48,12 +43,9 @@ export class OverlayService {
      * @param text optional. If the spinner should show a message.
      * @param preventAppearing optional. Wether to prevent showing the spinner the next time.
      */
-    public setSpinner(isVisible: boolean, text?: string, preventAppearing?: boolean): void {
-        if (!(this.preventAppearingSpinner && !this.spinnerHasAppeared && isVisible)) {
+    public setSpinner(isVisible: boolean, text?: string, forceAppearing?: boolean, preventAppearing?: boolean): void {
+        if (!this.preventAppearingSpinner || forceAppearing) {
             setTimeout(() => this.spinner.next({ isVisible, text }));
-            if (isVisible) {
-                this.spinnerHasAppeared = true;
-            }
         }
         this.preventAppearingSpinner = preventAppearing;
     }
@@ -93,7 +85,6 @@ export class OverlayService {
      * and still stays at the website.
      */
     public logout(): void {
-        this.spinnerHasAppeared = false;
         this.preventAppearingSpinner = false;
     }
 }
