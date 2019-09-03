@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
-from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.db import IntegrityError, models, transaction
 from django.db.models import Max
 from jsonfield import JSONField
@@ -18,6 +17,7 @@ from openslides.poll.models import (
 from openslides.utils.autoupdate import inform_changed_data
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import RESTModelMixin
+from openslides.utils.rest_api import ValidationError
 
 from ..utils.models import CASCADE_AND_AUTOUPDATE, SET_NULL_AND_AUTOUPDATE
 from .access_permissions import (
@@ -401,17 +401,9 @@ class Motion(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model):
         Returns the number used in the set_identifier method with leading
         zero charaters according to the config value.
         """
-        result = str(number)
-        if config["motions_identifier_min_digits"]:
-            if not isinstance(config["motions_identifier_min_digits"], int):
-                raise ImproperlyConfigured(
-                    "Config value 'motions_identifier_min_digits' must be an integer."
-                )
-            result = (
-                "0" * (config["motions_identifier_min_digits"] - len(str(number)))
-                + result
-            )
-        return result
+        return "0" * (config["motions_identifier_min_digits"] - len(str(number))) + str(
+            number
+        )
 
     def is_submitter(self, user):
         """
@@ -766,7 +758,10 @@ class MotionChangeRecommendation(RESTModelMixin, models.Model):
 
         if self.collides_with_other_recommendation(recommendations):
             raise ValidationError(
-                f"The recommendation collides with an existing one (line {self.line_from} - {self.line_to})."
+                {
+                    "detail": "The recommendation collides with an existing one (line {0} - {1}).",
+                    "args": [self.line_from, self.line_to],
+                }
             )
 
         result = super().save(*args, **kwargs)

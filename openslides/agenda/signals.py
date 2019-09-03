@@ -64,7 +64,8 @@ def listen_to_related_object_post_save(sender, instance, created, **kwargs):
                     except Item.DoesNotExist:
                         raise ValidationError(
                             {
-                                "detail": f"The parent item with id {parent_id} does not exist"
+                                "detail": "The parent item with id {0} does not exist",
+                                "args": [parent_id],
                             }
                         )
                     attrs["weight"] = parent.weight + 1

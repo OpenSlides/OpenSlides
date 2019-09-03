@@ -131,8 +131,12 @@ class AssignmentViewSet(ModelViewSet):
         self.mark_elected can play with it.
         """
         if not isinstance(request.data, dict):
-            detail = f"Invalid data. Expected dictionary, got {type(request.data)}."
-            raise ValidationError({"detail": detail})
+            raise ValidationError(
+                {
+                    "detail": "Invalid data. Expected dictionary, got {0}.",
+                    "args": [type(request.data)],
+                }
+            )
         user_str = request.data.get("user", "")
         try:
             user_pk = int(user_str)
@@ -144,7 +148,7 @@ class AssignmentViewSet(ModelViewSet):
             user = get_user_model().objects.get(pk=user_pk)
         except get_user_model().DoesNotExist:
             raise ValidationError(
-                {"detail": f"Invalid data. User {user_pk} does not exist."}
+                {"detail": "Invalid data. User {0} does not exist.", "args": [user_pk]}
             )
         return user
 
@@ -157,46 +161,60 @@ class AssignmentViewSet(ModelViewSet):
         user = self.get_user_from_request_data(request)
         assignment = self.get_object()
         if request.method == "POST":
-            message = self.nominate_other(request, user, assignment)
+            return self.nominate_other(request, user, assignment)
         else:
             # request.method == 'DELETE'
-            message = self.delete_other(request, user, assignment)
-        return Response({"detail": message})
+            return self.delete_other(request, user, assignment)
 
     def nominate_other(self, request, user, assignment):
         if assignment.is_elected(user):
-            raise ValidationError({"detail": f"User {user} is already elected."})
-        if assignment.phase == assignment.PHASE_FINISHED:
-            detail = (
-                "You can not nominate someone to this election because it is finished."
+            raise ValidationError(
+                {"detail": "User {0} is already elected.", "args": [str(user)]}
             )
-            raise ValidationError({"detail": detail})
+        if assignment.phase == assignment.PHASE_FINISHED:
+            raise ValidationError(
+                {
+                    "detail": "You can not nominate someone to this election because it is finished."
+                }
+            )
         if assignment.phase == assignment.PHASE_VOTING and not has_perm(
             request.user, "assignments.can_manage"
         ):
             # To nominate another user during voting you have to be a manager.
             self.permission_denied(request)
         if assignment.is_candidate(user):
-            raise ValidationError({"detail": f"User {user} is already nominated."})
+            raise ValidationError(
+                {"detail": "User {0} is already nominated.", "args": [str(user)]}
+            )
         assignment.set_candidate(user)
         # Send new candidate via autoupdate because users without permission
         # to see users may not have it but can get it now.
         inform_changed_data(user)
-        return f"User {user} was nominated successfully."
+        return Response(
+            {"detail": "User {0} was nominated successfully.", "args": [str(user)]}
+        )
 
     def delete_other(self, request, user, assignment):
         # To delete candidature status you have to be a manager.
         if not has_perm(request.user, "assignments.can_manage"):
             self.permission_denied(request)
         if assignment.phase == assignment.PHASE_FINISHED:
-            detail = "You can not delete someone's candidature to this election because it is finished."
-            raise ValidationError({"detail": detail})
+            raise ValidationError(
+                {
+                    "detail": "You can not delete someone's candidature to this election because it is finished."
+                }
+            )
         if not assignment.is_candidate(user) and not assignment.is_elected(user):
             raise ValidationError(
-                {"detail": f"User {user} has no status in this election."}
+                {
+                    "detail": "User {0} has no status in this election.",
+                    "args": [str(user)],
+                }
             )
         assignment.delete_related_user(user)
-        return f"Candidate {user} was withdrawn successfully."
+        return Response(
+            {"detail": "Candidate {0} was withdrawn successfully.", "args": [str(user)]}
+        )
 
     @detail_route(methods=["post", "delete"])
     def mark_elected(self, request, pk=None):
@@ -209,18 +227,25 @@ class AssignmentViewSet(ModelViewSet):
         if request.method == "POST":
             if not assignment.is_candidate(user):
                 raise ValidationError(
-                    {"detail": f"User {user} is not a candidate of this election."}
+                    {
+                        "detail": "User {0} is not a candidate of this election.",
+                        "args": [str(user)],
+                    }
                 )
             assignment.set_elected(user)
-            message = f"User {user} was successfully elected."
+            message = "User {0} was successfully elected."
         else:
             # request.method == 'DELETE'
             if not assignment.is_elected(user):
-                detail = f"User {user} is not an elected candidate of this election."
-                raise ValidationError({"detail": detail})
+                raise ValidationError(
+                    {
+                        "detail": "User {0} is not an elected candidate of this election.",
+                        "args": [str(user)],
+                    }
+                )
             assignment.set_candidate(user)
-            message = f"User {user} was successfully unelected."
-        return Response({"detail": message})
+            message = "User {0} was successfully unelected."
+        return Response({"detail": message, "args": [str(user)]})
 
     @detail_route(methods=["post"])
     def create_poll(self, request, pk=None):

@@ -86,7 +86,7 @@ class ItemViewSet(ModelViewSet, TreeSortMixin):
         try:
             model = get_model_from_collection_string(collection)
         except ValueError:
-            raise ValidationError("Invalid collection")
+            raise ValidationError({"detail": "Invalid collection"})
 
         try:
             content_object = model.objects.get(pk=id)
@@ -220,7 +220,10 @@ class ItemViewSet(ModelViewSet, TreeSortMixin):
             parent = Item.objects.get(pk=request.data["parent_id"])
         except Item.DoesNotExist:
             raise ValidationError(
-                {"detail": f"Parent item {request.data['parent_id']} does not exist"}
+                {
+                    "detail": "Parent item {0} does not exist",
+                    "args": [request.data["parent_id"]],
+                }
             )
 
         # Collect ancestors
@@ -237,7 +240,8 @@ class ItemViewSet(ModelViewSet, TreeSortMixin):
             if item_id in ancestors:
                 raise ValidationError(
                     {
-                        "detail": f"Assigning item {item_id} to one of its children is not possible."
+                        "detail": "Assigning item {0} to one of its children is not possible.",
+                        "args": [item_id],
                     }
                 )
 
@@ -245,7 +249,9 @@ class ItemViewSet(ModelViewSet, TreeSortMixin):
             try:
                 items.append(Item.objects.get(pk=item_id))
             except Item.DoesNotExist:
-                raise ValidationError({"detail": f"Item {item_id} does not exist"})
+                raise ValidationError(
+                    {"detail": "Item {0} does not exist", "args": [item_id]}
+                )
 
         # OK, assign new parents.
         for item in items:
@@ -257,7 +263,9 @@ class ItemViewSet(ModelViewSet, TreeSortMixin):
         inform_changed_data(items)
 
         # Send response.
-        return Response({"detail": f"{len(items)} items successfully assigned."})
+        return Response(
+            {"detail": "{0} items successfully assigned.", "args": [len(items)]}
+        )
 
 
 class ListOfSpeakersViewSet(
@@ -464,7 +472,8 @@ class ListOfSpeakersViewSet(
             except Speaker.DoesNotExist:
                 raise ValidationError(
                     {
-                        "detail": f"There is no one speaking at the moment according to {list_of_speakers}."
+                        "detail": "There is no one speaking at the moment according to {0}.",
+                        "args": [list_of_speakers],
                     }
                 )
             current_speaker.end_speech()

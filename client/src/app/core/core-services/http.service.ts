@@ -17,6 +17,20 @@ export enum HTTPMethod {
     DELETE = 'delete'
 }
 
+export interface DetailResponse {
+    detail: string | string[];
+    args?: string[];
+}
+
+function isDetailResponse(obj: any): obj is DetailResponse {
+    return (
+        obj &&
+        typeof obj === 'object' &&
+        (typeof obj.detail === 'string' || obj.detail instanceof Array) &&
+        (!obj.args || obj.args instanceof Array)
+    );
+}
+
 /**
  * Service for managing HTTP requests. Allows to send data for every method. Also (TODO) will do generic error handling.
  */
@@ -128,13 +142,13 @@ export class HttpService {
         } else if (!e.error) {
             error += this.translate.instant("The server didn't respond.");
         } else if (typeof e.error === 'object') {
-            if (e.error.detail) {
-                error += this.translate.instant(this.processErrorTexts(e.error.detail));
+            if (isDetailResponse(e.error)) {
+                error += this.processDetailResponse(e.error);
             } else {
                 error = Object.keys(e.error)
                     .map(key => {
                         const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
-                        return this.translate.instant(capitalizedKey) + ': ' + this.processErrorTexts(e.error[key]);
+                        return this.translate.instant(capitalizedKey) + ': ' + this.processDetailResponse(e.error[key]);
                     })
                     .join(', ');
             }
@@ -155,12 +169,21 @@ export class HttpService {
      * @param str a string or a string array to join together.
      * @returns Error text(s) as single string
      */
-    private processErrorTexts(str: string | string[]): string {
-        if (str instanceof Array) {
-            return str.join(' ');
+    private processDetailResponse(response: DetailResponse): string {
+        let message: string;
+        if (response.detail instanceof Array) {
+            message = response.detail.join(' ');
         } else {
-            return str;
+            message = response.detail;
         }
+        message = this.translate.instant(message);
+
+        if (response.args && response.args.length > 0) {
+            for (let i = 0; i < response.args.length; i++) {
+                message = message.replace(`{${i}}`, response.args[i].toString());
+            }
+        }
+        return message;
     }
 
     /**

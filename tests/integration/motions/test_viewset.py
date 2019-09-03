@@ -927,8 +927,9 @@ class ManageComments(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
-            response.data["detail"], "A comment section with id 42 does not exist."
+            response.data["detail"], "A comment section with id {0} does not exist."
         )
+        self.assertEqual(response.data["args"][0], "42")
 
     def test_create_comment(self):
         response = self.client.post(
@@ -1309,7 +1310,7 @@ class TestMotionCommentSection(TestCase):
         response = self.client.delete(
             reverse("motioncommentsection-detail", args=[section.pk])
         )
-        self.assertTrue("test_title_SlqfMw(waso0saWMPqcZ" in response.data["detail"])
+        self.assertEqual(response.data["args"][0], '"test_title_SlqfMw(waso0saWMPqcZ"')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(MotionCommentSection.objects.count(), 1)
 
@@ -1510,12 +1511,8 @@ class CreateMotionChangeRecommendation(TestCase):
             },
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(
-            response.data,
-            {
-                "detail": "The recommendation collides with an existing one (line 3 - 6)."
-            },
-        )
+        self.assertEqual(response.data["args"][0], "3")
+        self.assertEqual(response.data["args"][1], "6")
 
     def test_no_collission_different_motions(self):
         """
@@ -1635,7 +1632,10 @@ class SetState(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
             response.data,
-            {"detail": "You can not set the state to %d." % invalid_state_id},
+            {
+                "detail": "You can not set the state to {0}.",
+                "args": [str(invalid_state_id)],
+            },
         )
 
     def test_reset(self):
@@ -1672,7 +1672,10 @@ class SetRecommendation(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             response.data,
-            {"detail": "The recommendation of the motion was set to Acceptance."},
+            {
+                "detail": "The recommendation of the motion was set to {0}.",
+                "args": ["Acceptance"],
+            },
         )
         self.assertEqual(
             Motion.objects.get(pk=self.motion.pk).recommendation.name, "accepted"
@@ -1699,7 +1702,10 @@ class SetRecommendation(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
             response.data,
-            {"detail": "You can not set the recommendation to %d." % invalid_state_id},
+            {
+                "detail": "You can not set the recommendation to {0}.",
+                "args": [str(invalid_state_id)],
+            },
         )
 
     def test_set_invalid_recommendation(self):
@@ -1712,7 +1718,10 @@ class SetRecommendation(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
             response.data,
-            {"detail": "You can not set the recommendation to %d." % invalid_state_id},
+            {
+                "detail": "You can not set the recommendation to {0}.",
+                "args": [str(invalid_state_id)],
+            },
         )
 
     def test_set_invalid_recommendation_2(self):
@@ -1727,7 +1736,10 @@ class SetRecommendation(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(
             response.data,
-            {"detail": "You can not set the recommendation to %d." % invalid_state_id},
+            {
+                "detail": "You can not set the recommendation to {0}.",
+                "args": [str(invalid_state_id)],
+            },
         )
 
     def test_reset(self):
@@ -1739,7 +1751,10 @@ class SetRecommendation(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             response.data,
-            {"detail": "The recommendation of the motion was set to None."},
+            {
+                "detail": "The recommendation of the motion was set to {0}.",
+                "args": ["None"],
+            },
         )
         self.assertTrue(Motion.objects.get(pk=self.motion.pk).recommendation is None)
 
@@ -1753,7 +1768,10 @@ class SetRecommendation(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             response.data,
-            {"detail": "The recommendation of the motion was set to Acceptance."},
+            {
+                "detail": "The recommendation of the motion was set to {0}.",
+                "args": ["Acceptance"],
+            },
         )
         self.assertEqual(
             Motion.objects.get(pk=self.motion.pk).recommendation.name, "accepted"
@@ -1838,6 +1856,10 @@ class UpdateMotionPoll(TestCase):
 class NumberMotionsInCategories(TestCase):
     """
     Tests numbering motions in categories.
+
+    Default test environment:
+     - *without* blanks
+     - 1 min digit
 
     Testdata. All names (and prefixes) are prefixed with "test_". The
     ordering is ensured with "category_weight".
@@ -1926,25 +1948,21 @@ class NumberMotionsInCategories(TestCase):
     def test_numbering(self):
         response = self.client.post(reverse("category-numbering", args=[self.A.pk]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(Motion.objects.get(pk=self.M1.pk).identifier, "test_A 1")
-        self.assertEqual(Motion.objects.get(pk=self.M3.pk).identifier, "test_A 2")
-        self.assertEqual(Motion.objects.get(pk=self.M2.pk).identifier, "test_C 3")
+        self.assertEqual(Motion.objects.get(pk=self.M1.pk).identifier, "test_A1")
+        self.assertEqual(Motion.objects.get(pk=self.M3.pk).identifier, "test_A2")
+        self.assertEqual(Motion.objects.get(pk=self.M2.pk).identifier, "test_C3")
+        self.assertEqual(Motion.objects.get(pk=self.M2_A1.pk).identifier, "test_C3-2")
         self.assertEqual(
-            Motion.objects.get(pk=self.M2_A1.pk).identifier, "test_C 3 - 2"
+            Motion.objects.get(pk=self.M2_A1_A1.pk).identifier, "test_C3-2-1"
         )
-        self.assertEqual(
-            Motion.objects.get(pk=self.M2_A1_A1.pk).identifier, "test_C 3 - 2 - 1"
-        )
-        self.assertEqual(
-            Motion.objects.get(pk=self.M2_A2.pk).identifier, "test_C 3 - 1"
-        )
+        self.assertEqual(Motion.objects.get(pk=self.M2_A2.pk).identifier, "test_C3-1")
 
-    def test_with_blanks(self):
+    def test_with_blanks_and_leading_zeros(self):
         config["motions_amendments_prefix"] = "-X"
-        config["motions_identifier_with_blank"] = False
+        config["motions_identifier_with_blank"] = True
         config["motions_identifier_min_digits"] = 3
         response = self.client.post(reverse("category-numbering", args=[self.A.pk]))
-        config["motions_identifier_with_blank"] = True
+        config["motions_identifier_with_blank"] = False
         config["motions_identifier_min_digits"] = 1
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -1963,16 +1981,17 @@ class NumberMotionsInCategories(TestCase):
         )
 
     def test_existing_identifier_no_category(self):
+        # config["motions_identifier_with_blank"] = True
         conflicting_motion = Motion(
             title="test_title_al2=2k21fjv1lsck3ehlWExg",
             text="test_text_3omvpEhnfg082ejplk1m",
         )
         conflicting_motion.save()
-        conflicting_motion.identifier = "test_C 3 - 2 - 1"
+        conflicting_motion.identifier = "test_C3-2-1"
         conflicting_motion.save()
         response = self.client.post(reverse("category-numbering", args=[self.A.pk]))
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertTrue("test_C 3 - 2 - 1" in response.data["detail"])
+        self.assertEqual("test_C3-2-1", response.data["args"][0])
 
     def test_existing_identifier_with_category(self):
         conflicting_category = Category.objects.create(
@@ -1984,20 +2003,20 @@ class NumberMotionsInCategories(TestCase):
             category=conflicting_category,
         )
         conflicting_motion.save()
-        conflicting_motion.identifier = "test_C 3 - 2 - 1"
+        conflicting_motion.identifier = "test_C3-2-1"
         conflicting_motion.save()
         response = self.client.post(reverse("category-numbering", args=[self.A.pk]))
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertTrue("test_C 3 - 2 - 1" in response.data["detail"])
-        self.assertTrue(conflicting_category.name in response.data["detail"])
+        self.assertEqual("test_C3-2-1", response.data["args"][0])
+        self.assertEqual(conflicting_category.name, response.data["args"][1])
 
     def test_incomplete_amendment_tree(self):
         self.M2_A1.category = None
         self.M2_A1.save()
         response = self.client.post(reverse("category-numbering", args=[self.A.pk]))
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertTrue(self.M2_A1_A1.title in response.data["detail"])
-        self.assertTrue(self.M2_A1.title in response.data["detail"])
+        self.assertEqual(self.M2_A1_A1.title, response.data["args"][0])
+        self.assertEqual(self.M2_A1.title, response.data["args"][1])
 
 
 class TestMotionBlock(TestCase):

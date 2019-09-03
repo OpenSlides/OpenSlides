@@ -2,10 +2,7 @@
 Settings file for OpenSlides.
 
 For more information on this file, see
-https://docs.djangoproject.com/en/1.10/topics/settings/
-
-For the full list of settings and their values, see
-https://docs.djangoproject.com/en/1.10/ref/settings/
+https://github.com/OpenSlides/OpenSlides/blob/master/SETTINGS.rst
 """
 
 import os
@@ -39,6 +36,13 @@ SECRET_KEY = %(secret_key)r
 # SECURITY WARNING: Don't run with debug turned on in production!
 
 DEBUG = %(debug)s
+
+# Controls the verbosity on errors during a reset password. If enabled, an error
+# will be shown, if there does not exist a user with a given email address. So one
+# can check, if a email is registered. If this is not wanted, disable verbose
+# messages. An success message will always be shown.
+
+RESET_PASSWORD_VERBOSE_ERRORS = True
 
 # Email settings
 # For SSL/TLS specific settings see https://docs.djangoproject.com/en/1.11/topics/email/#smtp-backend

@@ -41,7 +41,9 @@ def validate_workflow_field(value):
     Validator to ensure that the workflow with the given id exists.
     """
     if not Workflow.objects.filter(pk=value).exists():
-        raise ValidationError({"detail": f"Workflow {value} does not exist."})
+        raise ValidationError(
+            {"detail": "Workflow {0} does not exist.", "args": [value]}
+        )
 
 
 class StatuteParagraphSerializer(ModelSerializer):
@@ -307,13 +309,14 @@ class MotionPollSerializer(ModelSerializer):
             if len(votes) != len(instance.get_vote_values()):
                 raise ValidationError(
                     {
-                        "detail": f"You have to submit data for {len(instance.get_vote_values())} vote values."
+                        "detail": "You have to submit data for {0} vote values.",
+                        "args": [len(instance.get_vote_values())],
                     }
                 )
             for vote_value in votes.keys():
                 if vote_value not in instance.get_vote_values():
                     raise ValidationError(
-                        {"detail": f"Vote value {vote_value} is invalid."}
+                        {"detail": "Vote value {0} is invalid.", "args": [vote_value]}
                     )
             instance.set_vote_objects_with_values(
                 instance.get_options().get(), votes, skip_autoupdate=True

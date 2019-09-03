@@ -1,7 +1,6 @@
 from collections import defaultdict
 from typing import Any, Dict, List, Tuple
 
-from django.conf import settings
 from django.db import transaction
 from django.db.models import Model
 
@@ -41,11 +40,8 @@ def numbering(main_category: Category) -> List[Model]:
     - Both counters may be filled with leading zeros according to `Motion.extend_identifier_number`
     - On errors, ValidationErrors with appropriate content will be raised.
     """
-    # If MOTION_IDENTIFIER_WITHOUT_BLANKS is set, don't use blanks when building identifier.
-    without_blank = (
-        hasattr(settings, "MOTION_IDENTIFIER_WITHOUT_BLANKS")
-        and settings.MOTION_IDENTIFIER_WITHOUT_BLANKS
-    )
+    # If the config is false, don't use blanks when building identifier.
+    without_blank = not config["motions_identifier_with_blank"]
 
     # Get child categories (to build affected categories) and precalculate all prefixes.
     child_categories = get_child_categories(main_category)
@@ -171,9 +167,10 @@ def get_amendment_level_mapping(
         if motion.parent_id is not None and motion.parent_id not in affected_motion_ids:
             raise ValidationError(
                 {
-                    "detail": f'Amendment "{motion}" cannot be numbered, because '
-                    f"it's lead motion ({motion.parent}) is not in category "
-                    f"{main_category} or any subcategory."
+                    "detail": 'Amendment "{0}" cannot be numbered, because '
+                    "it's lead motion ({1}) is not in category "
+                    "{2} or any subcategory.",
+                    "args": [str(motion), str(motion.parent), str(main_category)],
                 }
             )
     return max_amendment_level, amendment_level_mapping
@@ -234,17 +231,22 @@ def check_new_identifiers_for_conflicts(
         # We do have a conflict. Build a nice error message.
         conflicting_motion = conflicting_motions.first()
         if conflicting_motion.category:
-            error_message = (
-                "Numbering aborted because the motion identifier "
-                f'"{conflicting_motion.identifier}" already exists in '
-                f"category {conflicting_motion.category}."
+            raise ValidationError(
+                {
+                    "detail": 'Numbering aborted because the motion identifier "{0}" already exists in category {1}.',
+                    "args": [
+                        conflicting_motion.identifier,
+                        str(conflicting_motion.category),
+                    ],
+                }
             )
         else:
-            error_message = (
-                "Numbering aborted because the motion identifier "
-                f'"{conflicting_motion.identifier}" already exists.'
+            raise ValidationError(
+                {
+                    "detail": 'Numbering aborted because the motion identifier "{0}" already exists.',
+                    "args": [conflicting_motion.identifier],
+                }
             )
-        raise ValidationError({"detail": error_message})
 
 
 def update_identifiers(affected_motions, new_identifier_mapping) -> List[Model]:

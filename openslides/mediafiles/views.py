@@ -126,7 +126,7 @@ class MediafileViewSet(ModelViewSet):
                 mediafiles.append(Mediafile.objects.get(pk=id))
             except Mediafile.DoesNotExist:
                 raise ValidationError(
-                    {"detail": f"The mediafile with id {id} does not exist"}
+                    {"detail": "The mediafile with id {0} does not exist", "args": [id]}
                 )
 
         # Search for valid parents (None is not included, but also safe!)
@@ -181,7 +181,7 @@ class MediafileViewSet(ModelViewSet):
                 mediafiles.append(Mediafile.objects.get(pk=id))
             except Mediafile.DoesNotExist:
                 raise ValidationError(
-                    {"detail": f"The mediafile with id {id} does not exist"}
+                    {"detail": "The mediafile with id {0} does not exist", "args": [id]}
                 )
         if not mediafiles:
             return Response()

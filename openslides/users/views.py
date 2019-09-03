@@ -202,7 +202,8 @@ class UserViewSet(ModelViewSet):
                 errors = " ".join(errors)
                 raise ValidationError(
                     {
-                        "detail": f'The default password of user "{user.username}" is not valid: {errors}'
+                        "detail": 'The default password of user "{0}" is not valid: {1}',
+                        "args": [user.username, str(errors)],
                     }
                 )
 
@@ -331,7 +332,8 @@ class UserViewSet(ModelViewSet):
         inform_changed_data(created_users)
         return Response(
             {
-                "detail": f"{len(created_users)} users successfully imported.",
+                "detail": "{0} users successfully imported.",
+                "args": [len(created_users)],
                 "importedTrackIds": imported_track_ids,
             }
         )
@@ -362,7 +364,8 @@ class UserViewSet(ModelViewSet):
         except ConnectionRefusedError:
             raise ValidationError(
                 {
-                    "detail": f"Cannot connect to SMTP server on {settings.EMAIL_HOST}:{settings.EMAIL_PORT}"
+                    "detail": "Cannot connect to SMTP server on {0}:{1}",
+                    "args": [settings.EMAIL_HOST, settings.EMAIL_PORT],
                 }
             )
         except smtplib.SMTPException as err:
@@ -391,7 +394,7 @@ class UserViewSet(ModelViewSet):
     def assert_list_of_ints(self, ids, ids_name="user_ids"):
         """ Asserts, that ids is a list of ints. Raises a ValidationError, if not. """
         if not isinstance(ids, list):
-            raise ValidationError({"detail": f"{ids_name} must be a list"})
+            raise ValidationError({"detail": "{0} must be a list", "args": [ids_name]})
         for id in ids:
             if not isinstance(id, int):
                 raise ValidationError({"detail": "Every id must be a int"})
@@ -546,7 +549,10 @@ class GroupViewSet(ModelViewSet):
         inform_changed_data(group)
 
         return Response(
-            {"detail": f"Permissions of group {group.pk} successfully changed."}
+            {
+                "detail": "Permissions of group {0} successfully changed.",
+                "args": [group.pk],
+            }
         )
 
     def inform_permission_change(
@@ -627,7 +633,8 @@ class PersonalNoteViewSet(ModelViewSet):
         except IntegrityError:
             raise ValidationError(
                 {
-                    "detail": f"The personal note for user {self.request.user.id} does already exist"
+                    "detail": "The personal note for user {0} does already exist",
+                    "args": [self.request.user.id],
                 }
             )
 
@@ -812,7 +819,14 @@ class PasswordResetView(APIView):
         Loop over all users and send emails.
         """
         to_email = request.data.get("email")
-        for user in self.get_users(to_email):
+        users = self.get_users(to_email)
+
+        if len(users) == 0 and getattr(settings, "RESET_PASSWORD_VERBOSE_ERRORS", True):
+            raise ValidationError(
+                {"detail": "No users with email {0} found.", "args": [to_email]}
+            )
+
+        for user in users:
             current_site = get_current_site(request)
             site_name = current_site.name
             if has_perm(user, "users.can_change_password") or has_perm(
@@ -850,14 +864,16 @@ class PasswordResetView(APIView):
             except smtplib.SMTPRecipientsRefused:
                 raise ValidationError(
                     {
-                        "detail": f"Error: The email to {to_email} was refused by the server. Please contact your local administrator."
+                        "detail": "Error: The email to {0} was refused by the server. Please contact your local administrator.",
+                        "args": [to_email],
                     }
                 )
             except smtplib.SMTPAuthenticationError as e:
                 # Nice error message on auth failure
                 raise ValidationError(
                     {
-                        "detail": f"Error {e.smtp_code}: Authentication failure. Please contact your administrator."
+                        "detail": "Error {0}: Authentication failure. Please contact your administrator.",
+                        "args": [e.smtp_code],
                     }
                 )
             except ConnectionRefusedError:
@@ -866,7 +882,7 @@ class PasswordResetView(APIView):
                         "detail": "Connection refused error. Please contact your administrator."
                     }
                 )
-        return super().post(request, *args, **kwargs)
+        return Response()
 
     def get_users(self, email):
         """Given an email, return matching user(s) who should receive a reset.
@@ -878,7 +894,7 @@ class PasswordResetView(APIView):
         active_users = User.objects.filter(
             **{"email__iexact": email, "is_active": True}
         )
-        return (u for u in active_users if u.has_usable_password())
+        return [u for u in active_users if u.has_usable_password()]
 
     def get_email_body(self, **context):
         """

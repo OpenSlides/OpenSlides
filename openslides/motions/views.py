@@ -2,7 +2,6 @@ from typing import List, Set
 
 import jsonschema
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
 from django.db.models import Case, When
 from django.db.models.deletion import ProtectedError
@@ -358,7 +357,10 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
             section = MotionCommentSection.objects.get(pk=section_id)
         except MotionCommentSection.DoesNotExist:
             raise ValidationError(
-                {"detail": f"A comment section with id {section_id} does not exist."}
+                {
+                    "detail": "A comment section with id {0} does not exist.",
+                    "args": [section_id],
+                }
             )
 
         # the request user needs to see and write to the comment section
@@ -448,7 +450,9 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
             try:
                 motion = Motion.objects.get(pk=item["id"])
             except Motion.DoesNotExist:
-                raise ValidationError({"detail": f"Motion {item['id']} does not exist"})
+                raise ValidationError(
+                    {"detail": "Motion {0} does not exist", "args": [item["id"]]}
+                )
 
             # Remove all submitters.
             Submitter.objects.filter(motion=motion).delete()
@@ -459,7 +463,10 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
                     submitter = get_user_model().objects.get(pk=submitter_id)
                 except get_user_model().DoesNotExist:
                     raise ValidationError(
-                        {"detail": f"Submitter {submitter_id} does not exist"}
+                        {
+                            "detail": "Submitter {0} does not exist",
+                            "args": [submitter_id],
+                        }
                     )
                 Submitter.objects.add(submitter, motion)
                 new_submitters.append(submitter)
@@ -479,7 +486,10 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
 
         # Send response.
         return Response(
-            {"detail": f"{len(motion_result)} motions successfully updated."}
+            {
+                "detail": "{0} motions successfully updated.",
+                "args": [len(motion_result)],
+            }
         )
 
     @detail_route(methods=["post", "delete"])
@@ -566,7 +576,9 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
             try:
                 motion = Motion.objects.get(pk=item["id"])
             except Motion.DoesNotExist:
-                raise ValidationError({"detail": f"Motion {item['id']} does not exist"})
+                raise ValidationError(
+                    {"detail": "Motion {0} does not exist", "args": [item["id"]]}
+                )
 
             # Get category
             category = None
@@ -575,7 +587,10 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
                     category = Category.objects.get(pk=item["category"])
                 except Category.DoesNotExist:
                     raise ValidationError(
-                        {"detail": f"Category {item['category']} does not exist"}
+                        {
+                            "detail": "Category {0} does not exist",
+                            "args": [item["category"]],
+                        }
                     )
 
             # Set category
@@ -601,7 +616,10 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
 
         # Send response.
         return Response(
-            {"detail": f"Category of {len(motion_result)} motions successfully set."}
+            {
+                "detail": "Category of {0} motions successfully set.",
+                "args": [len(motion_result)],
+            }
         )
 
     @list_route(methods=["post"])
@@ -645,7 +663,9 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
             try:
                 motion = Motion.objects.get(pk=item["id"])
             except Motion.DoesNotExist:
-                raise ValidationError({"detail": f"Motion {item['id']} does not exist"})
+                raise ValidationError(
+                    {"detail": "Motion {0} does not exist", "args": [item["id"]]}
+                )
 
             # Get motion block
             motion_block = None
@@ -654,7 +674,10 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
                     motion_block = MotionBlock.objects.get(pk=item["motion_block"])
                 except MotionBlock.DoesNotExist:
                     raise ValidationError(
-                        {"detail": f"MotionBlock {item['motion_block']} does not exist"}
+                        {
+                            "detail": "MotionBlock {0} does not exist",
+                            "args": [item["motion_block"]],
+                        }
                     )
 
             # Set motion bock
@@ -681,7 +704,8 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
         # Send response.
         return Response(
             {
-                "detail": f"Motion block of {len(motion_result)} motions successfully set."
+                "detail": "Motion block of {0} motions successfully set.",
+                "args": [len(motion_result)],
             }
         )
 
@@ -714,7 +738,7 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
                 )
             if not motion.state.is_next_or_previous_state_id(state_id):
                 raise ValidationError(
-                    {"detail": f"You can not set the state to {state_id}."}
+                    {"detail": "You can not set the state to {0}.", "args": [state_id]}
                 )
             motion.set_state(state_id)
         else:
@@ -786,7 +810,9 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
             try:
                 motion = Motion.objects.get(pk=item["id"])
             except Motion.DoesNotExist:
-                raise ValidationError({"detail": f"Motion {item['id']} does not exist"})
+                raise ValidationError(
+                    {"detail": "Motion {0} does not exist", "args": [item["id"]]}
+                )
 
             # Set or reset state.
             state_id = item["state"]
@@ -794,7 +820,7 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
             if state_id not in [item.id for item in valid_states]:
                 # States of different workflows are not allowed.
                 raise ValidationError(
-                    {"detail": f"You can not set the state to {state_id}."}
+                    {"detail": "You can not set the state to {0}.", "args": [state_id]}
                 )
             motion.set_state(state_id)
 
@@ -826,7 +852,10 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
 
         # Send response.
         return Response(
-            {"detail": f"State of {len(motion_result)} motions successfully set."}
+            {
+                "detail": "State of {0} motions successfully set.",
+                "args": [len(motion_result)],
+            }
         )
 
     @detail_route(methods=["put"])
@@ -858,7 +887,8 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
             ]:
                 raise ValidationError(
                     {
-                        "detail": f"You can not set the recommendation to {recommendation_state_id}."
+                        "detail": "You can not set the recommendation to {0}.",
+                        "args": [recommendation_state_id],
                     }
                 )
             motion.set_recommendation(recommendation_state_id)
@@ -875,7 +905,6 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
             if motion.recommendation
             else "None"
         )
-        message = f"The recommendation of the motion was set to {label}."
 
         # Fire autoupdate again to save information to OpenSlides history.
         inform_changed_data(
@@ -884,7 +913,12 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
             user_id=request.user.pk,
         )
 
-        return Response({"detail": message})
+        return Response(
+            {
+                "detail": "The recommendation of the motion was set to {0}.",
+                "args": [label],
+            }
+        )
 
     @list_route(methods=["post"])
     @transaction.atomic
@@ -927,7 +961,9 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
             try:
                 motion = Motion.objects.get(pk=item["id"])
             except Motion.DoesNotExist:
-                raise ValidationError({"detail": f"Motion {item['id']} does not exist"})
+                raise ValidationError(
+                    {"detail": "Motion {0} does not exist", "args": [item["id"]]}
+                )
 
             # Set or reset recommendation.
             recommendation_state_id = item["recommendation"]
@@ -944,7 +980,8 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
                 ]:
                     raise ValidationError(
                         {
-                            "detail": "You can not set the recommendation to {recommendation_state_id}."
+                            "detail": "You can not set the recommendation to {0}.",
+                            "args": [recommendation_state_id],
                         }
                     )
                 motion.set_recommendation(recommendation_state_id)
@@ -971,7 +1008,10 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
 
         # Send response.
         return Response(
-            {"detail": f"{len(motion_result)} motions successfully updated."}
+            {
+                "detail": "{0} motions successfully updated.",
+                "args": [len(motion_result)],
+            }
         )
 
     @detail_route(methods=["post"])
@@ -1070,12 +1110,16 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
             try:
                 motion = Motion.objects.get(pk=item["id"])
             except Motion.DoesNotExist:
-                raise ValidationError({"detail": f"Motion {item['id']} does not exist"})
+                raise ValidationError(
+                    {"detail": "Motion {0} does not exist", "args": [item["id"]]}
+                )
 
             # Set new tags
             for tag_id in item["tags"]:
                 if not Tag.objects.filter(pk=tag_id).exists():
-                    raise ValidationError({"detail": f"Tag {tag_id} does not exist"})
+                    raise ValidationError(
+                        {"detail": "Tag {0} does not exist", "args": [tag_id]}
+                    )
             motion.tags.set(item["tags"])
 
             # Finish motion.
@@ -1086,7 +1130,10 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
 
         # Send response.
         return Response(
-            {"detail": f"{len(motion_result)} motions successfully updated."}
+            {
+                "detail": "{0} motions successfully updated.",
+                "args": [len(motion_result)],
+            }
         )
 
 
@@ -1163,15 +1210,6 @@ class MotionChangeRecommendationViewSet(ModelViewSet):
         else:
             result = False
         return result
-
-    def create(self, request, *args, **kwargs):
-        """
-        Creating a Change Recommendation, custom exception handling
-        """
-        try:
-            return super().create(request, *args, **kwargs)
-        except DjangoValidationError as err:
-            return Response({"detail": err.message}, status=400)
 
     def perform_create(self, serializer):
         """
@@ -1253,12 +1291,12 @@ class MotionCommentSectionViewSet(ModelViewSet):
                 motions_verbose += ", ..."
 
             if count == 1:
-                msg = f"This section has still comments in motion {motions_verbose}."
+                msg = "This section has still comments in motion {0}."
             else:
-                msg = f"This section has still comments in motions {motions_verbose}."
+                msg = "This section has still comments in motions {0}."
 
             msg += " " + "Please remove all comments before deletion."
-            raise ValidationError({"detail": msg})
+            raise ValidationError({"detail": msg, "args": [motions_verbose]})
         return result
 
     def update(self, *args, **kwargs):
@@ -1440,7 +1478,8 @@ class CategoryViewSet(TreeSortMixin, ModelViewSet):
         )
         return Response(
             {
-                "detail": f"All motions in category {main_category} numbered successfully."
+                "detail": "All motions in category {0} numbered successfully.",
+                "args": [str(main_category)],
             }
         )
 
@@ -1503,7 +1542,7 @@ class MotionBlockViewSet(ModelViewSet):
 
 
 class ProtectedErrorMessageMixin:
-    def getProtectedErrorMessage(self, name, error):
+    def raiseProtectedError(self, name, error):
         # The protected objects can just be motions..
         motions = ['"' + str(m) + '"' for m in error.protected_objects.all()]
         count = len(motions)
@@ -1512,10 +1551,15 @@ class ProtectedErrorMessageMixin:
             motions_verbose += ", ..."
 
         if count == 1:
-            msg = f"This {name} is assigned to motion {motions_verbose}."
+            msg = f"This {0} is assigned to motion {1}."
         else:
-            msg = f"This {name} is assigned to motions {motions_verbose}."
-        return f"{msg} Please remove all assignments before deletion."
+            msg = f"This {0} is assigned to motions {1}."
+        raise ValidationError(
+            {
+                "detail": f"{msg} Please remove all assignments before deletion.",
+                "args": [name, motions_verbose],
+            }
+        )
 
 
 class WorkflowViewSet(ModelViewSet, ProtectedErrorMessageMixin):
@@ -1555,8 +1599,7 @@ class WorkflowViewSet(ModelViewSet, ProtectedErrorMessageMixin):
         try:
             result = super().destroy(*args, **kwargs)
         except ProtectedError as err:
-            msg = self.getProtectedErrorMessage("workflow", err)
-            raise ValidationError({"detail": msg})
+            self.raiseProtectedError("workflow", err)
 
         # Change motion default workflows in the config
         if int(config["motions_workflow"]) == workflow_pk:
@@ -1608,8 +1651,7 @@ class StateViewSet(ModelViewSet, ProtectedErrorMessageMixin):
         try:
             result = super().destroy(*args, **kwargs)
         except ProtectedError as err:
-            msg = self.getProtectedErrorMessage("workflow", err)
-            raise ValidationError({"detail": msg})
+            self.raiseProtectedError("workflow", err)
         inform_changed_data(workflow)
         return result
 

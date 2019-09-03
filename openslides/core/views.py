@@ -291,8 +291,9 @@ class ProjectorViewSet(ModelViewSet):
         projector_instance.scroll = request.data
 
         projector_instance.save()
-        message = f"Setting scroll to {request.data} was successful."
-        return Response({"detail": message})
+        return Response(
+            {"detail": "Setting scroll to {0} was successful.", "args": [request.data]}
+        )
 
 
 class ProjectionDefaultViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
