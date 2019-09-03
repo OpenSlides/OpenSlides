@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
@@ -7,10 +7,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition } from '@pebula/ngrid';
 
 import { AmendmentFilterListService } from '../../services/amendment-filter-list.service';
+import { AmendmentSortListService } from '../../services/amendment-sort-list.service';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
-import { ConfigService } from 'app/core/ui-services/config.service';
-import { DiffLinesInParagraph } from 'app/core/ui-services/diff.service';
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
 import { ItemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { largeDialogSettings } from 'app/shared/utils/dialog-settings';
@@ -27,7 +26,8 @@ import { ViewMotion } from '../../models/view-motion';
     selector: 'os-amendment-list',
     templateUrl: './amendment-list.component.html',
     styleUrls: ['./amendment-list.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    encapsulation: ViewEncapsulation.None
 })
 export class AmendmentListComponent extends BaseListViewComponent<ViewMotion> implements OnInit {
     /**
@@ -39,11 +39,6 @@ export class AmendmentListComponent extends BaseListViewComponent<ViewMotion> im
      * Hold item visibility
      */
     public itemVisibility = ItemVisibilityChoices;
-
-    /**
-     * To hold the motions line length
-     */
-    private motionLineLength: number;
 
     /**
      * Column defintiion
@@ -88,9 +83,9 @@ export class AmendmentListComponent extends BaseListViewComponent<ViewMotion> im
         route: ActivatedRoute,
         public motionRepo: MotionRepositoryService,
         public motionSortService: MotionSortListService,
+        public amendmentSortService: AmendmentSortListService,
         public amendmentFilterService: AmendmentFilterListService,
         private sanitizer: DomSanitizer,
-        private configService: ConfigService,
         private dialog: MatDialog,
         private motionExport: MotionExportService,
         private linenumberingService: LinenumberingService
@@ -106,32 +101,7 @@ export class AmendmentListComponent extends BaseListViewComponent<ViewMotion> im
         }
     }
 
-    /**
-     * Observe the line length
-     */
-    public ngOnInit(): void {
-        this.configService.get<number>('motions_line_length').subscribe(lineLength => {
-            this.motionLineLength = lineLength;
-        });
-
-        if (!!this.parentMotionId) {
-            // this.amendmentFilterService.clearAllFilters();
-        }
-    }
-
-    /**
-     * Helper function to get amendment paragraphs of a given motion
-     *
-     * @param amendment the get the paragraphs from
-     * @returns DiffLinesInParagraph-List
-     */
-    private getDiffLines(amendment: ViewMotion): DiffLinesInParagraph[] {
-        if (amendment.isParagraphBasedAmendment()) {
-            return this.motionRepo.getAmendmentParagraphs(amendment, this.motionLineLength, false);
-        } else {
-            return null;
-        }
-    }
+    public ngOnInit(): void {}
 
     /**
      * Extract the lines of the amendments
@@ -141,7 +111,7 @@ export class AmendmentListComponent extends BaseListViewComponent<ViewMotion> im
      * @return The lines of the amendment
      */
     public getChangeLines(amendment: ViewMotion): string {
-        const diffLines = this.getDiffLines(amendment);
+        const diffLines = amendment.diffLines;
 
         if (!!diffLines) {
             return diffLines
@@ -163,7 +133,7 @@ export class AmendmentListComponent extends BaseListViewComponent<ViewMotion> im
      * @returns the amendments as string, if they are multiple they gonna be separated by `[...]`
      */
     public getAmendmentSummary(amendment: ViewMotion): string {
-        const diffLines = this.getDiffLines(amendment);
+        const diffLines = amendment.diffLines;
         if (!!diffLines) {
             return diffLines
                 .map(diffLine => {

@@ -14,7 +14,12 @@ import { ViewMediafile } from '../models/view-mediafile';
     providedIn: 'root'
 })
 export class MediafilesSortListService extends BaseSortListService<ViewMediafile> {
-    public sortOptions: OsSortingOption<ViewMediafile>[] = [
+    /**
+     * set the storage key name
+     */
+    protected storageKey = 'MediafileList';
+
+    private mediafilesSortOptions: OsSortingOption<ViewMediafile>[] = [
         { property: 'title' },
         {
             property: 'type',
@@ -33,7 +38,14 @@ export class MediafilesSortListService extends BaseSortListService<ViewMediafile
      * @param store required by parent
      */
     public constructor(translate: TranslateService, store: StorageService, OSStatus: OpenSlidesStatusService) {
-        super('Mediafiles', translate, store, OSStatus);
+        super(translate, store, OSStatus);
+    }
+
+    /**
+     * @override
+     */
+    protected getSortOptions(): OsSortingOption<ViewMediafile>[] {
+        return this.mediafilesSortOptions;
     }
 
     /**

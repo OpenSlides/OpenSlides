@@ -134,12 +134,6 @@ const MotionRelations: RelationDefinition[] = [
         foreignViewModel: ViewTag
     },
     {
-        type: 'M2O',
-        ownIdKey: 'parent_id',
-        ownKey: 'parent',
-        foreignViewModel: ViewMotion
-    },
-    {
         type: 'M2M',
         ownIdKey: 'change_recommendations_id',
         ownKey: 'changeRecommendations',
@@ -170,6 +164,11 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
      * The property the incoming data is sorted by
      */
     protected sortProperty: SortProperty;
+
+    /**
+     * Line length of a motion
+     */
+    private motionLineLength: number;
 
     /**
      * Creates a MotionRepository
@@ -206,10 +205,15 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
             this.sortProperty = conf;
             this.setConfigSortFn();
         });
+
+        config.get<number>('motions_line_length').subscribe(lineLength => {
+            this.motionLineLength = lineLength;
+        });
     }
 
     /**
      * Adds the personal note custom relation to the relation definitions.
+     * Also adds the parent relation here to get access to methods in this repo.
      */
     protected groupRelationsByCollections(): void {
         this.relationDefinitions.push({
@@ -226,6 +230,22 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
 
                 viewMotion.personalNote = personalNoteContent;
                 return true;
+            }
+        });
+        this.relationDefinitions.push({
+            type: 'M2O',
+            ownIdKey: 'parent_id',
+            ownKey: 'parent',
+            foreignViewModel: ViewMotion,
+            afterSetRelation: (motion: ViewMotion, foreignViewModel: ViewMotion | null) => {
+                if (foreignViewModel) {
+                    motion.diffLines = this.getAmendmentParagraphs(motion, this.motionLineLength, false);
+                }
+            },
+            afterDependencyChange: (motion: ViewMotion, parent: ViewMotion) => {
+                if (motion.parent) {
+                    motion.diffLines = this.getAmendmentParagraphs(motion, this.motionLineLength, false);
+                }
             }
         });
         super.groupRelationsByCollections();
@@ -284,8 +304,10 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
 
     protected createViewModelWithTitles(model: Motion, initialLoading: boolean): ViewMotion {
         const viewModel = super.createViewModelWithTitles(model, initialLoading);
+
         viewModel.getIdentifierOrTitle = () => this.getIdentifierOrTitle(viewModel);
         viewModel.getProjectorTitle = () => this.getAgendaSlideTitle(viewModel);
+
         return viewModel;
     }
 
@@ -640,16 +662,6 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
     }
 
     /**
-     * Given an amendment, this returns the motion affected by this amendments
-     *
-     * @param {ViewMotion} amendment
-     * @returns {ViewMotion}
-     */
-    public getAmendmentBaseMotion(amendment: ViewMotion): ViewMotion {
-        return this.getViewModel(amendment.parent_id);
-    }
-
-    /**
      * Splits a motion into paragraphs, optionally adding line numbers
      *
      * @param {ViewMotion} motion
@@ -700,7 +712,7 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
         lineLength: number,
         includeUnchanged: boolean
     ): DiffLinesInParagraph[] {
-        const motion = this.getAmendmentBaseMotion(amendment);
+        const motion = amendment.parent;
         const baseParagraphs = this.getTextParagraphs(motion, true, lineLength);
 
         return amendment.amendment_paragraphs
@@ -744,7 +756,7 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
      * @returns {ViewMotionAmendedParagraph[]}
      */
     public getAmendmentAmendedParagraphs(amendment: ViewMotion, lineLength: number): ViewMotionAmendedParagraph[] {
-        const motion = this.getAmendmentBaseMotion(amendment);
+        const motion = amendment.parent;
         const baseParagraphs = this.getTextParagraphs(motion, true, lineLength);
 
         return amendment.amendment_paragraphs

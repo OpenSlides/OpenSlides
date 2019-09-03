@@ -15,9 +15,14 @@ import { ViewUser } from '../models/view-user';
 })
 export class UserSortListService extends BaseSortListService<ViewUser> {
     /**
+     * set the storage key name
+     */
+    protected storageKey = 'UserList';
+
+    /**
      * Define the sort options
      */
-    public sortOptions: OsSortingOption<ViewUser>[] = [
+    private userSortOptions: OsSortingOption<ViewUser>[] = [
         { property: 'first_name', label: 'Given name' },
         { property: 'last_name', label: 'Surname' },
         { property: 'is_present', label: 'Presence' },
@@ -36,7 +41,14 @@ export class UserSortListService extends BaseSortListService<ViewUser> {
      * @param store requires by parent
      */
     public constructor(translate: TranslateService, store: StorageService, OSStatus: OpenSlidesStatusService) {
-        super('User', translate, store, OSStatus);
+        super(translate, store, OSStatus);
+    }
+
+    /**
+     * @override
+     */
+    protected getSortOptions(): OsSortingOption<ViewUser>[] {
+        return this.userSortOptions;
     }
 
     /**

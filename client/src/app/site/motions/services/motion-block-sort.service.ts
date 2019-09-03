@@ -11,7 +11,12 @@ import { ViewMotionBlock } from '../models/view-motion-block';
     providedIn: 'root'
 })
 export class MotionBlockSortService extends BaseSortListService<ViewMotionBlock> {
-    public sortOptions: OsSortingOption<ViewMotionBlock>[] = [
+    /**
+     * set the storage key name
+     */
+    protected storageKey = 'MotionBlockList';
+
+    private MotionBlockSortOptions: OsSortingOption<ViewMotionBlock>[] = [
         { property: 'title' },
         {
             property: 'motions',
@@ -25,7 +30,14 @@ export class MotionBlockSortService extends BaseSortListService<ViewMotionBlock>
     ];
 
     public constructor(translate: TranslateService, store: StorageService, OSStatus: OpenSlidesStatusService) {
-        super('Motion block', translate, store, OSStatus);
+        super(translate, store, OSStatus);
+    }
+
+    /**
+     * @override
+     */
+    protected getSortOptions(): OsSortingOption<ViewMotionBlock>[] {
+        return this.MotionBlockSortOptions;
     }
 
     protected async getDefaultDefinition(): Promise<OsSortingDefinition<ViewMotionBlock>> {

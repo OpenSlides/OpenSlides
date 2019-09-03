@@ -18,6 +18,11 @@ import { ViewMotion } from '../models/view-motion';
 })
 export class MotionSortListService extends BaseSortListService<ViewMotion> {
     /**
+     * set the storage key name
+     */
+    protected storageKey = 'MotionList';
+
+    /**
      * Hold the default motion sorting
      */
     private defaultMotionSorting: string;
@@ -30,7 +35,7 @@ export class MotionSortListService extends BaseSortListService<ViewMotion> {
     /**
      * Define the sort options
      */
-    public sortOptions: OsSortingOption<ViewMotion>[] = [
+    protected motionSortOptions: OsSortingOption<ViewMotion>[] = [
         { property: 'weight', label: 'Call list' },
         { property: 'identifier' },
         { property: 'title' },
@@ -53,16 +58,20 @@ export class MotionSortListService extends BaseSortListService<ViewMotion> {
         translate: TranslateService,
         store: StorageService,
         OSStatus: OpenSlidesStatusService,
-        private config: ConfigService
+        config: ConfigService
     ) {
-        super('Motion', translate, store, OSStatus);
+        super(translate, store, OSStatus);
 
-        this.config.get<string>('motions_motions_sorting').subscribe(defSortProp => {
+        config.get<string>('motions_motions_sorting').subscribe(defSortProp => {
             if (defSortProp) {
                 this.defaultMotionSorting = defSortProp;
                 this.defaultSortingLoaded.resolve();
             }
         });
+    }
+
+    protected getSortOptions(): OsSortingOption<ViewMotion>[] {
+        return this.motionSortOptions;
     }
 
     /**
