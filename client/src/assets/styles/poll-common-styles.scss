@@ -1,0 +1,63 @@
+.poll-result {
+    .poll-progress-bar {
+        height: 5px;
+        width: 100%;
+        .mat-progress-bar {
+            height: 100%;
+            width: 100%;
+        }
+    }
+    .poll-progress {
+        display: flex;
+        margin-bottom: 15px;
+        margin-top: 15px;
+        mat-icon {
+            min-width: 40px;
+            margin-right: 5px;
+        }
+        .progress-container {
+            width: 85%;
+        }
+    }
+}
+
+.poll-progress-bar {
+    mat-progress-bar {
+        &.progress-green {
+            .mat-progress-bar-fill::after {
+                background-color: #4caf50;
+            }
+            .mat-progress-bar-buffer {
+                background-color: #d5ecd5;
+            }
+        }
+        &.progress-red {
+            .mat-progress-bar-fill::after {
+                background-color: #f44336;
+            }
+            .mat-progress-bar-buffer {
+                background-color: #fcd2cf;
+            }
+        }
+        &.progress-yellow {
+            .mat-progress-bar-fill::after {
+                background-color: #ffc107;
+            }
+            .mat-progress-bar-buffer {
+                background-color: #fff0c4;
+            }
+        }
+    }
+}
+
+.poll-quorum-line {
+    display: flex;
+    vertical-align: bottom;
+    .mat-button {
+        padding: 1px;
+    }
+}
+
+.main-nav-color {
+    color: rgba(0, 0, 0, 0.54);
+}

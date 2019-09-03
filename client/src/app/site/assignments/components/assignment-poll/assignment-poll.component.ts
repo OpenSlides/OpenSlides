@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -25,7 +25,8 @@ import { ViewAssignmentPollOption } from '../../models/view-assignment-poll-opti
 @Component({
     selector: 'os-assignment-poll',
     templateUrl: './assignment-poll.component.html',
-    styleUrls: ['./assignment-poll.component.scss']
+    styleUrls: ['./assignment-poll.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class AssignmentPollComponent extends BaseViewComponent implements OnInit {
     /**

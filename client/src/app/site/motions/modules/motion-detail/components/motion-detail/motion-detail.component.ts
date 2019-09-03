@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { ErrorStateMatcher } from '@angular/material/core';
@@ -68,7 +68,8 @@ import {
 @Component({
     selector: 'os-motion-detail',
     templateUrl: './motion-detail.component.html',
-    styleUrls: ['./motion-detail.component.scss']
+    styleUrls: ['./motion-detail.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class MotionDetailComponent extends BaseViewComponent implements OnInit, OnDestroy {
     /**

@@ -74,7 +74,7 @@ export class RoundedInputComponent implements OnInit, OnDestroy {
      * Whether this component should render over the full width.
      */
     @Input()
-    public fullWidth = true;
+    public fullWidth = false;
 
     /**
      * Custom `FormControl`.

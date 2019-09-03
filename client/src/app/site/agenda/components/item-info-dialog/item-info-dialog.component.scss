@@ -1,8 +1,6 @@
-.itemDialogForm {
+.item-dialog-form {
     display: inline-block;
-    ::ng-deep {
-        .mat-form-field {
-            width: 100%;
-        }
+    .mat-form-field {
+        width: 100%;
     }
 }

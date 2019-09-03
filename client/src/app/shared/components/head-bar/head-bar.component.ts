@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { MainMenuService } from 'app/core/core-services/main-menu.service';
@@ -54,7 +54,8 @@ import { ViewportService } from 'app/core/ui-services/viewport.service';
 @Component({
     selector: 'os-head-bar',
     templateUrl: './head-bar.component.html',
-    styleUrls: ['./head-bar.component.scss']
+    styleUrls: ['./head-bar.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class HeadBarComponent implements OnInit {
     /**

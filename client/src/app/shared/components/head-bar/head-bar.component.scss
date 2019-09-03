@@ -9,39 +9,40 @@
     top: 0;
     z-index: 5;
     position: sticky;
-}
 
-.toolbar-left {
-    display: flex;
-    max-width: calc(100% - 100px);
-    button {
-        margin: 12px 0;
-    }
-    .toolbar-left-text {
-        margin-left: 10px;
-        width: 100%;
-        overflow: hidden;
+    .toolbar-left {
+        display: flex;
+        max-width: calc(100% - 100px);
+        button {
+            margin: 12px 0;
+        }
+        .toolbar-left-text {
+            margin-left: 10px;
+            width: 100%;
+            overflow: hidden;
 
-        ::ng-deep .title-slot {
-            h2 {
+            .title-slot {
                 margin: 16px 0;
                 display: block;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
+                h2 {
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
             }
         }
     }
-}
-.toolbar-centered {
-    margin: auto;
-    vertical-align: baseline;
-}
 
-.toolbar-right {
-    display: flex;
-    ::ng-deep .extra-controls-slot {
+    .toolbar-centered {
+        margin: auto;
+        vertical-align: baseline;
+    }
+
+    .toolbar-right {
         display: flex;
+        .extra-controls-slot {
+            display: flex;
+        }
     }
 }
 

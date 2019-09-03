@@ -95,12 +95,9 @@
     }
 }
 
-::ng-deep .mat-menu-content {
-    .active-indicator {
-        font-size: 18px;
-        color: green !important;
-        margin-left: 10px;
-        margin-right: 0;
-        margin-top: 3px;
-    }
+.active-indicator {
+    font-size: 18px;
+    margin-left: 10px;
+    margin-right: 0;
+    margin-top: 3px;
 }

@@ -8,10 +8,6 @@ form {
     margin-top: 10px;
 }
 
-::ng-deep mat-card {
-    margin: 0;
-}
-
 .no-markup {
     /* Do not let the a tag ruin the projector */
     color: inherit;
