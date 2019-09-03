@@ -207,13 +207,15 @@ export class UserPdfService {
      * @returns pdfMake definitions
      */
     private createWelcomeText(): object {
+        const users_pdf_welcometitle = this.configService.instant<string>('users_pdf_welcometitle');
+        const users_pdf_welcometext = this.configService.instant<string>('users_pdf_welcometext');
         return [
             {
-                text: this.translate.instant(this.configService.instant<string>('users_pdf_welcometitle')),
+                text: this.translate.instant(users_pdf_welcometitle),
                 style: 'userDataHeading'
             },
             {
-                text: this.translate.instant(this.configService.instant<string>('users_pdf_welcometext')),
+                text: this.translate.instant(users_pdf_welcometext),
                 style: 'userDataTopic'
             }
         ];

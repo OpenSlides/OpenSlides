@@ -300,8 +300,10 @@ export class UserRepositoryService extends BaseRepository<ViewUser, User, UserTi
      */
     public async bulkSendInvitationEmail(users: ViewUser[]): Promise<string> {
         const user_ids = users.map(user => user.id);
-        const subject = this.translate.instant(this.configService.instant('users_email_subject'));
-        const message = this.translate.instant(this.configService.instant('users_email_body'));
+        const users_email_subject = this.configService.instant<string>('users_email_subject');
+        const users_email_body = this.configService.instant<string>('users_email_body');
+        const subject = this.translate.instant(users_email_subject);
+        const message = this.translate.instant(users_email_body);
 
         const response = await this.httpService.post<{ count: Number; no_email_ids: number[] }>(
             '/rest/users/user/mass_invite_email/',
