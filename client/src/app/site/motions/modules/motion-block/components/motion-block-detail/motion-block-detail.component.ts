@@ -14,6 +14,7 @@ import { MotionBlockRepositoryService } from 'app/core/repositories/motions/moti
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
+import { ColumnRestriction } from 'app/shared/components/list-view-table/list-view-table.component';
 import { MotionBlock } from 'app/shared/models/motions/motion-block';
 import { infoDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseListViewComponent } from 'app/site/base/base-list-view';
@@ -69,6 +70,15 @@ export class MotionBlockDetailComponent extends BaseListViewComponent<ViewMotion
             prop: 'remove',
             label: '',
             width: '40px'
+        }
+    ];
+    /**
+     * Restrictions for specific columns
+     */
+    public restrictedColumns: ColumnRestriction[] = [
+        {
+            columnName: 'remove',
+            permission: 'motions.can_manage'
         }
     ];
 
