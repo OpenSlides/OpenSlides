@@ -82,6 +82,7 @@
         (hasChanged)="receiveChanges($event)"
         [model]="motionsObservable"
         [filterChange]="changeFilter"
+        [sortingDefinition]="forceSort"
     >
         <ng-template #innerNode let-item="item">
             <div class="line">
@@ -100,6 +101,13 @@
 </mat-card>
 
 <mat-menu #mainMenu="matMenu">
+    <button mat-menu-item (click)="sortMotionsByIdentifier()">
+        <mat-icon>sort</mat-icon>
+        <span translate>Sort by identifier</span>
+    </button>
+
+    <mat-divider></mat-divider>
+
     <button mat-menu-item (click)="pdfExportCallList()">
         <mat-icon>picture_as_pdf</mat-icon>
         <span translate>Export as PDF</span>

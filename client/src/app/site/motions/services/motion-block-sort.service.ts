@@ -4,7 +4,8 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { OpenSlidesStatusService } from 'app/core/core-services/openslides-status.service';
 import { StorageService } from 'app/core/core-services/storage.service';
-import { BaseSortListService, OsSortingDefinition, OsSortingOption } from 'app/core/ui-services/base-sort-list.service';
+import { BaseSortListService } from 'app/core/ui-services/base-sort-list.service';
+import { OsSortingDefinition, OsSortingOption } from 'app/core/ui-services/base-sort.service';
 import { ViewMotionBlock } from '../models/view-motion-block';
 
 @Injectable({

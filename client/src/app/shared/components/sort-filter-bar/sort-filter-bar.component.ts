@@ -4,8 +4,8 @@ import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { TranslateService } from '@ngx-translate/core';
 
 import { BaseFilterListService, OsFilterIndicator } from 'app/core/ui-services/base-filter-list.service';
-import { OsSortingOption } from 'app/core/ui-services/base-sort-list.service';
 import { BaseSortListService } from 'app/core/ui-services/base-sort-list.service';
+import { OsSortingOption } from 'app/core/ui-services/base-sort.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { FilterMenuComponent } from './filter-menu/filter-menu.component';

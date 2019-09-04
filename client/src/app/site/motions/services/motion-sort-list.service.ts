@@ -6,7 +6,8 @@ import { OpenSlidesStatusService } from 'app/core/core-services/openslides-statu
 import { StorageService } from 'app/core/core-services/storage.service';
 import { Deferred } from 'app/core/promises/deferred';
 import { _ } from 'app/core/translate/translation-marker';
-import { BaseSortListService, OsSortingDefinition, OsSortingOption } from 'app/core/ui-services/base-sort-list.service';
+import { BaseSortListService } from 'app/core/ui-services/base-sort-list.service';
+import { OsSortingDefinition, OsSortingOption } from 'app/core/ui-services/base-sort.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { ViewMotion } from '../models/view-motion';
 
