@@ -1,4 +1,4 @@
-<div class="filter-menu">
+<div class="filter-menu-content-wrapper">
     <mat-accordion (keyup)="checkKeyEvent($event)">
         <mat-expansion-panel *ngFor="let filter of service.filterDefinitions">
             <mat-expansion-panel-header *ngIf="filter.options && filter.options.length">
