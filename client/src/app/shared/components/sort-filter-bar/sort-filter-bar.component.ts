@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -9,6 +9,7 @@ import { BaseSortListService } from 'app/core/ui-services/base-sort-list.service
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { FilterMenuComponent } from './filter-menu/filter-menu.component';
+import { RoundedInputComponent } from '../rounded-input/rounded-input.component';
 import { SortBottomSheetComponent } from './sort-bottom-sheet/sort-bottom-sheet.component';
 
 /**
@@ -32,6 +33,9 @@ import { SortBottomSheetComponent } from './sort-bottom-sheet/sort-bottom-sheet.
     encapsulation: ViewEncapsulation.None
 })
 export class SortFilterBarComponent<V extends BaseViewModel> {
+    @ViewChild('searchField', { static: true })
+    public searchField: RoundedInputComponent;
+
     /**
      * The currently active sorting service for the list view
      */
@@ -223,5 +227,13 @@ export class SortFilterBarComponent<V extends BaseViewModel> {
         }
         const itemProperty = option.property as string;
         return itemProperty.charAt(0).toUpperCase() + itemProperty.slice(1);
+    }
+
+    @HostListener('document:keydown', ['$event']) public onKeyDown(event: KeyboardEvent): void {
+        if (event.ctrlKey && event.key === 'f') {
+            event.preventDefault();
+            event.stopPropagation();
+            this.searchField.focus();
+        }
     }
 }

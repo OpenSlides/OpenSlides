@@ -192,16 +192,16 @@ export class SearchService {
      *
      * @param query The search query
      * @param inCollectionStrings All connection strings which should be used for searching.
-     * @param sortingProperty Sorting by `id` or `title`.
      * @param dedicatedId Optional parameter. Useful to look for a specific id in the given collectionStrings.
+     * @param searchOnlyById Optional parameter. Decides, whether all models should only be filtered by their id.
      *
      * @returns All search results sorted by the model's title (via `getTitle()`).
      */
     public search(
         query: string,
         inCollectionStrings: string[],
-        sortingProperty: 'title' | 'id' = 'title',
-        dedicatedId?: number
+        dedicatedId?: number,
+        searchOnlyById: boolean = false
     ): SearchResult[] {
         query = query.toLowerCase();
         return this.searchModels
@@ -211,20 +211,15 @@ export class SearchService {
                     .getAll(searchModel.collectionString)
                     .map(x => x as (BaseViewModel & Searchable))
                     .filter(model =>
-                        dedicatedId
-                            ? model.id === dedicatedId
-                            : model
+                        !searchOnlyById
+                            ? model.id === dedicatedId ||
+                              model
                                   .formatForSearch()
                                   .searchValue.some(text => text && text.toLowerCase().indexOf(query) !== -1)
+                            : model.id === dedicatedId
                     )
-                    .sort((a, b) => {
-                        switch (sortingProperty) {
-                            case 'id':
-                                return a.id - b.id;
-                            case 'title':
-                                return this.languageCollator.compare(a.getTitle(), b.getTitle());
-                        }
-                    });
+                    .sort((a, b) => this.languageCollator.compare(a.getTitle(), b.getTitle()));
+
                 return {
                     collectionString: searchModel.collectionString,
                     verboseName: results.length === 1 ? searchModel.verboseNameSingular : searchModel.verboseNamePlural,

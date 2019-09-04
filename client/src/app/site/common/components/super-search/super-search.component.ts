@@ -36,8 +36,20 @@ export class SuperSearchComponent implements OnInit {
 
     /**
      * Holds the collection-string of the specific collection.
+     *
+     * Is set, if the user has entered a collection.
      */
-    private specificCollectionString: string = null;
+    public specificCollectionString: string = null;
+
+    /**
+     * Holds the input text the user entered to search for a specific id.
+     */
+    public searchStringForID: string = null;
+
+    /**
+     * The specific id the user searches for.
+     */
+    private specificID: number = null;
 
     /**
      * The results for the given query.
@@ -119,11 +131,11 @@ export class SuperSearchComponent implements OnInit {
         this.collectionStrings = this.registeredModels.map(rm => rm.collectionString);
         this.translatedCollectionStrings = this.searchService.getTranslatedCollectionStrings();
 
-        this.searchForm.valueChanges.pipe(debounceTime(250)).subscribe(value => {
+        this.searchForm.valueChanges.pipe(debounceTime(250)).subscribe((value: string) => {
             if (value.trim() === '') {
                 this.clearResults();
             } else {
-                this.specificCollectionString = this.searchSpecificCollection(value.trim());
+                this.prepareForSearch(value.trim());
             }
             this.search();
         });
@@ -136,22 +148,11 @@ export class SuperSearchComponent implements OnInit {
      */
     private search(): void {
         if (this.searchString !== '') {
-            // Local variable to check, if the user searches for a specific id.
-            let dedicatedId: number;
-
-            const query = this.searchString;
-            // Looks, if the query matches variations of 'nr.' followed by at least one digit.
-            // If so, the user searches for a specific id in some collections.
-            // Everything not case-sensitive.
-            if (query.match(/n\w*r\.?\:?\s*\d+/gi)) {
-                // If so, this expression finds the number.
-                dedicatedId = +query.match(/\d+/g);
-            }
             this.searchResults = this.searchService.search(
-                query,
+                this.searchString,
                 this.specificCollectionString ? [this.specificCollectionString] : this.collectionStrings,
-                'title',
-                dedicatedId
+                this.specificID,
+                !!this.searchStringForID
             );
             this.selectFirstResult();
         } else {
@@ -163,32 +164,70 @@ export class SuperSearchComponent implements OnInit {
     }
 
     /**
+     * Function to check several things.
+     *
+     * First the query is splitted and the first part is tested
+     * for a specific collection.
+     *
+     * Second the next part is tested for a specific id.
+     * It's looking for the word `id` or any kind of `nr.`
+     * and a number.
+     *
+     * @param query The user's input, he searches for.
+     */
+    private prepareForSearch(query: string): void {
+        // The query is splitted by the first whitespace or the first ':'.
+        const splittedQuery = query.split(/\s*(?::|\s+)\s*/);
+
+        this.specificCollectionString = this.searchSpecificCollection(splittedQuery[0]);
+        if (this.specificCollectionString) {
+            this.searchCollection = splittedQuery.shift();
+        }
+
+        this.searchStringForID = this.searchSpecificId(splittedQuery[0]) ? splittedQuery.shift() : null;
+
+        // This test, whether the query includes an number --> Then get this number.
+        if (/\b\d+\b/g.test(splittedQuery[0])) {
+            this.specificID = +query.match(/\d+/g);
+        }
+
+        // The rest will be joined to one string.
+        this.searchString = splittedQuery.join(' ');
+    }
+
+    /**
      * This function test, if the query matches some of the `collectionStrings`.
      *
      * That indicates, that the user looks for items in a specific collection.
      *
-     * @returns { { collection: string, query: string[] } | null } Either an object containing the found collection and the query
+     * @returns { string | null } Either an object containing the found collection and the query
      * or null, if there exists none.
      */
     private searchSpecificCollection(query: string): string | null {
         // The query is splitted by the first whitespace or the first ':'.
-        const splittedQuery = query.split(/\s*(?::|\s+)\s*/);
         const nextCollection = this.translatedCollectionStrings.find(item =>
             // The value of the item should match the query plus any further
             // characters (useful for splitted words in the query).
             // This will look, if the user searches in a specific collection.
             // Flag 'i' tells, that cases are ignored.
-            new RegExp(item.value, 'i').test(splittedQuery[0])
+            // new RegExp(item.value, 'i').test(splittedQuery[0])
+            new RegExp(item.value, 'i').test(query)
         );
-        if (!!nextCollection) {
-            this.searchString = splittedQuery.slice(1).join(' ');
-            this.searchCollection = splittedQuery[0];
-            return nextCollection.collection;
-        } else {
-            this.searchString = query;
-            this.searchCollection = '';
-            return null;
-        }
+        return !!nextCollection ? nextCollection.collection : null;
+    }
+
+    /**
+     * Function to see, whether a string matches the word `id` or any kind of `nr`.
+     *
+     * @param query The query, which is tested for the word `id` or `nr`.
+     *
+     * @returns {boolean} If the given string matches any kind of the test-string.
+     */
+    private searchSpecificId(query: string = ''): boolean {
+        // Looks, if the query matches variations of 'nr.' or 'id'
+        // If so, the user searches for a specific id in some collections.
+        // Everything not case-sensitive.
+        return !!(query.match(/\bn\w*r\.?\:?\b/gi) || query.match(/\bid\.?\:?\b/gi));
     }
 
     /**
@@ -215,6 +254,19 @@ export class SuperSearchComponent implements OnInit {
     private selectNextResult(up: boolean): void {
         const tmp = this.searchResults.flatMap((result: SearchResult) => result.models);
         this.changeModel(tmp[(tmp.indexOf(this.selectedModel) + (up ? -1 : 1)).modulo(tmp.length)]);
+
+        this.scrollToSelected();
+    }
+
+    /**
+     * Function to scroll with the current selected model, if the user uses the keyboard to navigate.
+     */
+    private scrollToSelected(): void {
+        const selectedElement = document.getElementsByClassName('selected')[0];
+        selectedElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+        });
     }
 
     /**
@@ -223,12 +275,27 @@ export class SuperSearchComponent implements OnInit {
      * @param collectionName The `verboseName` of the selected collection.
      */
     public setCollection(collectionName: string): void {
-        this.searchCollection = this.searchCollection === collectionName ? '' : collectionName;
-        if (this.searchCollection !== '') {
-            this.searchForm.setValue(this.searchCollection + ': ' + this.searchString);
-        } else {
-            this.searchForm.setValue(this.searchString);
-        }
+        this.searchCollection =
+            this.searchCollection.toLowerCase() === collectionName.toLowerCase() ? '' : collectionName;
+        this.setSearch();
+    }
+
+    /**
+     * This function sets the string for id or clears the variable, if already existing.
+     */
+    public setSearchStringForID(): void {
+        this.searchStringForID = !!this.searchStringForID ? null : 'id';
+        this.setSearch();
+    }
+
+    /**
+     * This function puts the various strings together.
+     */
+    private setSearch(): void {
+        this.searchForm.setValue(
+            [this.searchCollection, this.searchStringForID].map(value => (value ? value + ': ' : '')).join('') +
+                this.searchString
+        );
     }
 
     /**
@@ -274,6 +341,7 @@ export class SuperSearchComponent implements OnInit {
         this.selectedModel = null;
         this.searchCollection = '';
         this.searchString = '';
+        this.searchStringForID = null;
         this.saveQueryToStorage(null);
     }
 
@@ -304,6 +372,10 @@ export class SuperSearchComponent implements OnInit {
      * @param event KeyboardEvent to listen to keyboard-inputs.
      */
     @HostListener('document:keydown', ['$event']) public onKeyNavigation(event: KeyboardEvent): void {
+        if (event.ctrlKey && event.key === 'f') {
+            event.preventDefault();
+            event.stopPropagation();
+        }
         if (!!this.selectedModel) {
             if (event.key === 'Enter') {
                 this.viewResult(this.selectedModel);

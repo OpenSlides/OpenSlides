@@ -315,6 +315,8 @@ export class SiteComponent extends BaseComponent implements OnInit {
      */
     @HostListener('document:keydown', ['$event']) public onKeyNavigation(event: KeyboardEvent): void {
         if (event.altKey && event.shiftKey && event.code === 'KeyF') {
+            event.preventDefault();
+            event.stopPropagation();
             this.overlayService.showSearch();
         }
     }
