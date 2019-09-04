@@ -245,6 +245,8 @@ export class SiteComponent extends BaseComponent implements OnInit {
             return 'Deutsch';
         } else if (abbreviation === 'cs') {
             return 'Čeština';
+        } else if (abbreviation === 'ru') {
+            return 'русский';
         }
     }
 
