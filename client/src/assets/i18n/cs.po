@@ -1,9 +1,9 @@
 # Translators:
-# fri, 2018
-#
+# fri, 2019
+# 
 msgid ""
 msgstr ""
-"Last-Translator: fri, 2018\n"
+"Last-Translator: fri, 2019\n"
 "Language-Team: Czech (https://www.transifex.com/openslides/teams/14270/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -11,23 +11,479 @@ msgstr ""
 "Language: cs\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
+msgid "%num% emails were send sucessfully."
+msgstr "%num% elektronických dopisů bylo úspěšně odesláno."
+
+msgid ""
+"<a href=\"http://www.openslides.org\">OpenSlides</a> is a free web based "
+"presentation and assembly system for visualizing and controlling agenda, "
+"motions and elections of an assembly."
+msgstr ""
+"<a href=\"http://www.openslides.org\">OpenSlides</a> je svobodný na "
+"internetu založený promítací a schůzovací systém k znázornění a řízení "
+"pořadu jednání, návrhů a voleb ve shromáždění."
+
+msgid "<unknown motion>"
+msgstr "<unknown motion>"
+
+msgid "A name is required"
+msgstr "Je požadováno jméno"
+
+msgid "A new update is available!"
+msgstr "Je dostupná nová aktualizace!"
+
+msgid "A password is required"
+msgstr "Je požadováno heslo"
+
+msgid "A server error occured. Please contact your system administrator."
+msgstr "Došlo k chybě serveru. Spojte se, prosím, se správcem systému."
+
+msgid "A title is required"
+msgstr "Je požadován název"
+
 msgid "About me"
 msgstr "O mě"
+
+msgid "Abstain"
+msgstr "Zdržení se"
 
 msgid "Accept"
 msgstr "Přijmout"
 
-msgid "Accepted"
-msgstr "Přijato"
+msgid "Acceptance"
+msgstr "Souhlas"
+
+msgid "Access data (PDF)"
+msgstr "Přístupová data (PDF)"
+
+msgid "Access groups"
+msgstr "Přístupové skupiny"
+
+msgid "Access-data"
+msgstr "Přístupová data"
+
+msgid "Activate amendments"
+msgstr "Zapnout pozměňovací návrhy"
+
+msgid "Activate statute amendments"
+msgstr "Zapnout pozměňovací návrhy předpisu"
+
+msgid "Active"
+msgstr "Činný"
+
+msgid "Active filters"
+msgstr "Činné filtry"
+
+msgid "Add"
+msgstr "Přidat"
+
+msgid "Add countdown"
+msgstr "Přidat odpočítávání"
+
+msgid "Add me"
+msgstr "Přidat mě"
+
+msgid "Add message"
+msgstr "Přidat oznámení"
+
+msgid "Add new custom translation"
+msgstr "Přidat nový vlastní překlad"
+
+msgid "Add to agenda"
+msgstr "Přidat do pořadu jednání"
+
+msgid "Add to queue"
+msgstr "Přidat do řady"
+
+msgid "Add/remove groups ..."
+msgstr "Přidat/Odstranit skupiny..."
+
+msgid "Add/remove submitters"
+msgstr "Přidat/Odstranit navrhovatele"
+
+msgid "Add/remove tags"
+msgstr "Přidat/Odstranit značky..."
+
+msgid ""
+"Additional columns after the required ones may be present and won't affect "
+"the import."
+msgstr ""
+"Za požadovanými mohou být přítomny dodatečné sloupce. Zavedení tím nebude "
+"ovlivněno."
+
+msgid "Adjourn"
+msgstr "Odložit"
+
+msgid "Adjournment"
+msgstr "Odložení"
+
+msgid "Admin"
+msgstr "Správce"
+
+msgid "After verifiy the preview click on 'import' please (see top right)."
+msgstr "Po přezkoušení náhledu klepněte na Zavést (nahoře vpravo)."
 
 msgid "Agenda"
 msgstr "Pořad jednání"
 
+msgid "Agenda visibility"
+msgstr "Viditelnost pořadu jednání"
+
+msgid "All casted ballots"
+msgstr "Všechny odevzdané hlasovací lístky"
+
+msgid "All topics will be deleted and won't be accessible afterwards."
+msgstr "Všechny náměty budou smazány, a potom k nim nebude možno přistupovat."
+
+msgid "All valid ballots"
+msgstr "Všechn platné hlasovací lístky"
+
 msgid "All your changes are saved immediately."
 msgstr "Všechny vaše změny jsou okamžitě uloženy."
 
+msgid "Allow access for anonymous guest users"
+msgstr "Povolit přístup anonymním hostům-uživatelům"
+
+msgid "Allow amendments of amendments"
+msgstr "Povolit pozměňovací návrhy k pozměňovacím návrhům"
+
+msgid "Allow blank in identifier"
+msgstr "Povolit prázdný identifikátor"
+
+msgid "Allow create poll"
+msgstr "Povolit vytvořen hlasování"
+
+msgid "Allow submitter edit"
+msgstr "Povolit upravení předkladatele"
+
+msgid "Allow support"
+msgstr "Povolit podporu"
+
+msgid "Allowed access groups for this directory"
+msgstr "Povolené přístupové skupiny pro tento adresář"
+
+msgid "Always"
+msgstr "Vždy"
+
+msgid "Always Yes-No-Abstain per candidate"
+msgstr "Ano, Ne, Zdržení se pro uchazeče"
+
+msgid "Always Yes/No per candidate"
+msgstr "Ano, Ne pro uchazeče"
+
+msgid "Always one option per candidate"
+msgstr "Jeden hlas pro uchazeče"
+
+msgid "Amendment"
+msgstr "Pozměňovací návrh"
+
+msgid "Amendment text"
+msgstr "Text pozměňovacího návrhu"
+
+msgid "Amendment to"
+msgstr "Pozměňovací návrh k"
+
+msgid "Amendments"
+msgstr "Pozměňovací návrhy"
+
+msgid "Amendments can change multiple paragraphs"
+msgstr "Pozměňovací návrhy mohou změnit více odstavců"
+
+msgid "An email with a password reset link was send!"
+msgstr "Byl poslán elektronický dopis s odkazem na obnovení hesla!"
+
+msgid "An unknown error occurred."
+msgstr "Vyskytla se neznámá chyba."
+
+msgid "Arabic"
+msgstr "Arabský"
+
+msgid "Are you sure you want to copy the final version to the print template?"
+msgstr "Opravdu má být konečná verze zkopírována do předlohy pro tisk?"
+
+msgid "Are you sure you want to delete all selected elections?"
+msgstr "Opravdu mají být smazány všechny vybrané volby?"
+
+msgid "Are you sure you want to delete all selected files and folders?"
+msgstr "Opravdu mají být smazány všechny vybrané soubory a složky?"
+
+msgid "Are you sure you want to delete all selected motions?"
+msgstr "Opravdu mají být smazány všechny vybrané návrhy?"
+
+msgid "Are you sure you want to delete all selected participants?"
+msgstr "Opravdu mají být smazáni všichni vybraní účastníci?"
+
+msgid ""
+"Are you sure you want to delete all speakers from this list of speakers?"
+msgstr "Opravdu mají být odstraněni všichni řečníci ze seznamu řečníků?"
+
+msgid "Are you sure you want to delete the print template?"
+msgstr "Opravdu má být smazána předloha pro tisk?"
+
+msgid "Are you sure you want to delete this ballot?"
+msgstr "Opravdu má být smazáno toto hlasování?"
+
+msgid "Are you sure you want to delete this category and all subcategories?"
+msgstr ""
+"Opravdu má být smazán tento obor činnosti a všechny podobory činnosti?"
+
+msgid "Are you sure you want to delete this change recommendation?"
+msgstr "Opravdu má být smazáno toto doporučení změny?"
+
+msgid "Are you sure you want to delete this comment field?"
+msgstr "Opravdu má být smazáno toto poznámkové pole?"
+
+msgid "Are you sure you want to delete this election?"
+msgstr "Opravdu má být smazán tuto volbu?"
+
+msgid "Are you sure you want to delete this entry?"
+msgstr "Opravdu má být smazána tato položka?"
+
+msgid "Are you sure you want to delete this file?"
+msgstr "Opravdu má být smazán tento soubor?"
+
+msgid "Are you sure you want to delete this group?"
+msgstr "Opravdu má být smazána tato skupina?"
+
+msgid "Are you sure you want to delete this motion block?"
+msgstr "Opravdu má být smazán tento návrhový blok?"
+
+msgid "Are you sure you want to delete this motion?"
+msgstr "Opravdu má být smazán tento návrh?"
+
+msgid "Are you sure you want to delete this participant?"
+msgstr "Opravdu má být smazán tento účastník?"
+
+msgid "Are you sure you want to delete this projector?"
+msgstr "Opravdu má být smazán tento promítací stroj?"
+
+msgid "Are you sure you want to delete this statute paragraph?"
+msgstr "Opravdu má být smazán tento odstavec předpisu?"
+
+msgid "Are you sure you want to delete this tag?"
+msgstr "Opravdu má být smazána tato značka?"
+
+msgid "Are you sure you want to delete this topic?"
+msgstr "Opravdu má být smazán tento námět?"
+
+msgid "Are you sure you want to delete this workflow?"
+msgstr "Opravdu má být smazáno tento pracovní postup?"
+
+msgid "Are you sure you want to discard this amendment?"
+msgstr "Opravdu má být vyřazen tento pozměňovací návrh?"
+
+msgid ""
+"Are you sure you want to generate new passwords for all selected "
+"participants?"
+msgstr "Opravdu mají být vytvořena nová hesla všem vybraným účastníkům?"
+
+msgid "Are you sure you want to number all agenda items?"
+msgstr "Opravdu mají být číslovány všechny body pořadu jednání?"
+
+msgid ""
+"Are you sure you want to override the state of all motions of this motion "
+"block?"
+msgstr "Opravdu má být přepsán stav všech návrhů z tohoto návrhového bloku?"
+
+msgid "Are you sure you want to remove all selected items from the agenda?"
+msgstr "Opravdu mají být odstraněny všechny vybrané body z pořadu jednání?"
+
+msgid "Are you sure you want to remove this entry from the agenda?"
+msgstr "Opravdu mají být odstraněna tato položka z pořadu jednání?"
+
+msgid "Are you sure you want to remove this motion from motion block?"
+msgstr "Opravdu má být odstraněn tento návrh z návrhového bloku?"
+
+msgid "Are you sure you want to renumber all motions of this category?"
+msgstr "Opravdu mají být přečíslovány všechny návrhy v tomto oboru činnosti?"
+
+msgid "Are you sure you want to reset all passwords to the default ones?"
+msgstr "Opravdu mají být obnovena všechna hesla na výchozí?"
+
+msgid "Are you sure you want to send an invitation email to the user?"
+msgstr "Opravdu má být uživateli poslán elektronický dopis s pozváním?"
+
+msgid "Are you sure you want to send emails to all selected participants?"
+msgstr ""
+"Opravdu mají být poslány elektronické dopisy všem vybraným účastníkům?"
+
+msgid "As of"
+msgstr "Od"
+
+msgid "As recommendation"
+msgstr "Jako doporučení"
+
+msgid "Ask, default no"
+msgstr "Zeptat se, výchozí je ne"
+
+msgid "Ask, default yes"
+msgstr "Zeptat se, výchozí je ano"
+
+msgid ""
+"At least given name or surname have to be filled in. All other fields are "
+"optional and may be empty."
+msgstr ""
+"Musí být vyplněny alespoň křestní jméno nebo příjmení. Všechna zbývající "
+"pole jsou nepovinná a smějí být prázdná."
+
+msgid "Attachments"
+msgstr "Přílohy"
+
+msgid "Automatic assign of method"
+msgstr "Automatické určení způsobu"
+
+msgid "Back"
+msgstr "Zpět"
+
+msgid "Back to login"
+msgstr "Zpět na přihlášení"
+
+msgid "Background color"
+msgstr "Barva pozadí"
+
+msgid "Ballot"
+msgstr "Hlasování"
+
+msgid "Ballot and ballot papers"
+msgstr "Volba a hlasovací lístky"
+
+msgid "Base folder"
+msgstr "Základní složka"
+
+msgid "Begin of event"
+msgstr "Začátek události"
+
+msgid "Begin speech"
+msgstr "Začít projev"
+
+msgid "Blank between prefix and number, e.g. 'A 001'."
+msgstr "Prázdné mezi předlohou a číslem, např. 'A 001'."
+
+msgid "CSV import"
+msgstr "Zavedení CSV"
+
+msgid "Call list"
+msgstr "Vyvolávací seznam"
+
+msgid "Called"
+msgstr "Zavoláno"
+
+msgid "Called with"
+msgstr "Vyvoláno s"
+
+msgid "Can change its own password"
+msgstr "Může měnit své vlastní heslo"
+
+msgid "Can create amendments"
+msgstr "Může vytvářet pozměňovací návrhy"
+
+msgid "Can create motions"
+msgstr "Smí vytvářet návrhy"
+
+msgid "Can manage agenda"
+msgstr "Smí spravovat pořad jednání"
+
+msgid "Can manage comments"
+msgstr "Smí spravovat poznámky"
+
+msgid "Can manage configuration"
+msgstr "Smí spravovat nastavení"
+
+msgid "Can manage elections"
+msgstr "Smí spravovat volby"
+
+msgid "Can manage files"
+msgstr "Smí spravovat soubory"
+
+msgid "Can manage list of speakers"
+msgstr "Smí spravovat seznam řečníků"
+
+msgid "Can manage logos and fonts"
+msgstr "Smí spravovat emblémy a písma"
+
+msgid "Can manage motion metadata"
+msgstr "Může spravovat návrhy"
+
+msgid "Can manage motions"
+msgstr "Smí spravovat návrhy"
+
+msgid "Can manage tags"
+msgstr "Smí spravovat klíčová slova"
+
+msgid "Can manage the projector"
+msgstr "Smí spravovat promítací přístroj"
+
+msgid "Can manage users"
+msgstr "Smí spravovat uživatele"
+
+msgid "Can nominate another participant"
+msgstr "Může navrhnout jiného účastníka"
+
+msgid "Can nominate oneself"
+msgstr "Smí se sám ucházet ve volbách"
+
+msgid "Can put oneself on the list of speakers"
+msgstr "Smí se sám umístit na seznamu řečníků"
+
+msgid "Can see agenda"
+msgstr "Smí vidět pořad jednání"
+
+msgid "Can see comments"
+msgstr "Smí vidět poznámky"
+
+msgid "Can see elections"
+msgstr "Smí vidět volby"
+
+msgid "Can see extra data of users (e.g. present and comment)"
+msgstr "Může vidět další údaje o uživatelích (například přítomný a poznámka)"
+
+msgid "Can see hidden files"
+msgstr "Smí vidět skryté soubory"
+
+msgid "Can see history"
+msgstr "Smí vidět minulost"
+
+msgid "Can see internal items and time scheduling of agenda"
+msgstr "Smí vidět vnitřní body a časový rozvrh pořadu dne"
+
+msgid "Can see list of speakers"
+msgstr "Smí vidět seznam řečníků"
+
+msgid "Can see motions"
+msgstr "Smí vidět návrhy"
+
+msgid "Can see motions in internal state"
+msgstr "Smí vidět návrhy ve vnitřním stavu"
+
+msgid "Can see names of users"
+msgstr "Smí vidět jména uživatelů"
+
+msgid "Can see the front page"
+msgstr "Smí vidět přední stranu"
+
+msgid "Can see the list of files"
+msgstr "Smí vidět seznam souborů"
+
+msgid "Can see the projector"
+msgstr "Smí vidět promítací přístroj"
+
+msgid "Can support motions"
+msgstr "Smí podporovat návrhy"
+
+msgid "Can upload files"
+msgstr "Smí nahrávat soubory"
+
 msgid "Cancel"
 msgstr "Zrušit"
+
+msgid "Cancel edit"
+msgstr "Zrušit upravení"
+
+msgid "Candidates"
+msgstr "Uchazeči"
+
+msgid "Cannot create PDF files on this browser."
+msgstr "Na tomto prohlížeči nelze vytvářet soubory PDF."
 
 msgid "Categories"
 msgstr "Skupiny"
@@ -35,38 +491,245 @@ msgstr "Skupiny"
 msgid "Category"
 msgstr "Obor činnosti"
 
+msgid "Center"
+msgstr "Na střed"
+
+msgid "Change paragraph"
+msgstr "Změnit odstavec"
+
 msgid "Change password"
 msgstr "Změnit heslo"
+
+msgid "Change password for"
+msgstr "Změnit heslo pro"
+
+msgid "Change presence"
+msgstr "Změnit účast"
 
 msgid "Change recommendation"
 msgstr "Změnit doporučení"
 
+msgid "Change recommendations"
+msgstr "Změnit doporučení"
+
+msgid "Changed by"
+msgstr "Změněno"
+
+msgid "Changed title"
+msgstr "Změněný název"
+
 msgid "Changed version"
 msgstr "Změněná verze"
+
+msgid "Changed version in line"
+msgstr "Změněná verze v řádku"
+
+msgid "Check for updates"
+msgstr "Zkontrolovat aktualizace"
+
+msgid "Check in or check out participants based on their participant numbers:"
+msgstr "Přihlašte nebo odhlašte účastníky pomocí jejich účastnických čísel:"
+
+msgid "Choose 0 to disable the supporting system."
+msgstr "Zadejte 0 pro vypnutí podpůrného systému."
+
+msgid "Chyron"
+msgstr "Dolní třetina"
+
+msgid "Chyron background color"
+msgstr "Barva pozadí v dolní třetině"
+
+msgid "Chyron font color"
+msgstr "Barva písma v dolní třetině"
+
+msgid "Clear all"
+msgstr "Vyprázdnit vše"
+
+msgid "Clear all filters"
+msgstr "Vyprázdnit všechny filtry"
+
+msgid "Clear list"
+msgstr "Vyprázdnit seznam"
+
+msgid "Clear motion block"
+msgstr "Vyprázdnit návrhový blok"
+
+msgid "Clear tags"
+msgstr "Vyprázdnit značky"
+
+msgid "Close"
+msgstr "Zavřít"
+
+msgid "Close list of speakers"
+msgstr "Zavřít seznam řečníků"
+
+msgid "Closed items"
+msgstr "Vyřízené body"
+
+msgid "Collapse all"
+msgstr "Sbalit vše"
+
+msgid "Column separator"
+msgstr "Oddělovač sloupce"
+
+msgid "Comma separated names will be read as 'Surname, given name(s)'."
+msgstr "Čárkou oddělená jména budou čtena jako \"příjmení, křestní jméno(a)\"."
 
 msgid "Comment"
 msgstr "Poznámka"
 
+msgid "Comment fields"
+msgstr "Poznámková pole"
+
 msgid "Comments"
 msgstr "Poznámky"
+
+msgid "Committee"
+msgstr "Výbor"
+
+msgid "Committees"
+msgstr "Výbory"
+
+msgid "Complex Workflow"
+msgstr "Složitý pracovní postup"
+
+msgid "Confirm new password"
+msgstr "Potvrdit nové heslo"
 
 msgid "Content"
 msgstr "Obsah"
 
-msgid "Create new category"
-msgstr "Vytvořit nový obor činnosti"
+msgid "Copy and paste your participant names in this textbox."
+msgstr "Kopírujte a vložte jména účastníků do tohoto textového pole."
 
-msgid "Create new comment field"
-msgstr "Vytvořit nové poznámkové pole"
+msgid "Count active users"
+msgstr "Počítat činné uživatele"
 
-msgid "Create new statute paragraph"
-msgstr "Vytvořit nový odstavec předpisu"
+msgid "Countdown"
+msgstr "Odpočítávání"
+
+msgid "Countdown description"
+msgstr "Popis odpočítávání"
+
+msgid "Countdown time"
+msgstr "Čas odpočítávání"
+
+msgid "Countdown title"
+msgstr "Název odpočítávání"
+
+msgid "Countdowns"
+msgstr "Odpočítávání"
+
+msgid "Couple countdown with the list of speakers"
+msgstr "Sdružit odpočítávání se seznamem řečníků"
+
+msgid "Create"
+msgstr "Vytvořit"
+
+msgid "Create final print template"
+msgstr "Vytvořit předlohu pro konečný tisk"
+
+msgid "Creating PDF file ..."
+msgstr "Vytváří se soubor PDF..."
+
+msgid "Creation date"
+msgstr "Doba vytvoření"
+
+msgid "Current browser language"
+msgstr "Nynější jazyk prohlížeče"
+
+msgid "Current date"
+msgstr "Nynější datum"
+
+msgid "Current list of speakers"
+msgstr "Nynější seznam řečníků"
+
+msgid "Custom number of ballot papers"
+msgstr "Uživatelsky stanovený počet hlasovacích lístků"
+
+msgid "Custom translations"
+msgstr "Vlastní překlady"
+
+msgid ""
+"Dear {name},\n"
+"\n"
+"this is your OpenSlides login for the event {event_name}:\n"
+"\n"
+"    {url}\n"
+"    username: {username}\n"
+"    password: {password}\n"
+"\n"
+"This email was generated automatically."
+msgstr ""
+"Vážený {name},\n"
+"\n"
+"toto jsou Vaše přihlašovací údaje OpenSlides pro událost {event_name}:\n"
+"    {url}\n"
+"    uživatelské jméno: {username}\n"
+"    heslo: {password}\n"
+"\n"
+"Tento elektronický dopis byl vytvořen automaticky."
+
+msgid "Decision"
+msgstr "Rozhodnutí"
+
+msgid "Default"
+msgstr "Výchozí"
+
+msgid "Default comment on the ballot paper"
+msgstr "Výchozí poznámka na hlasovacím lístku"
+
+msgid "Default encoding for all csv exports"
+msgstr "Výchozí kódování pro všechna vyvedení do CSV"
+
+msgid "Default line numbering"
+msgstr "Výchozí číslování řádků"
+
+msgid ""
+"Default method to check whether a candidate has reached the required "
+"majority."
+msgstr ""
+"Výchozí postup pro přezkoušení, zda uchazeč dosáhl požadovanou většinu."
+
+msgid ""
+"Default method to check whether a motion has reached the required majority."
+msgstr "Výchozí postup pro přezkoušení, zda návrh dosáhl požadovanou většinu."
+
+msgid "Default projector"
+msgstr "Výchozí promítací přístroj"
+
+msgid "Default text version for change recommendations"
+msgstr "Výchozí verze textu pro doporučení změn"
+
+msgid "Default visibility for new agenda items (except topics)"
+msgstr "Výchozí viditelnost pro nové body pořadu jednání (vyjma námětů)"
+
+msgid "Delegates"
+msgstr "Zástupci"
 
 msgid "Delete"
 msgstr "Smazat"
 
-msgid "Delete all files"
-msgstr "Smazat všechny soubory"
+msgid "Delete final print template"
+msgstr "Smazat předlohu pro konečný tisk"
+
+msgid "Delete message"
+msgstr "Smazat oznámení"
+
+msgid "Delete recommendation"
+msgstr "Smazat doporučení"
+
+msgid "Delete whole history"
+msgstr "Smazat celou minulost"
+
+msgid "Deletion"
+msgstr "Smazání"
+
+msgid "Description"
+msgstr "Popis"
+
+msgid "Deselect all"
+msgstr "Zrušit výběr všeho"
 
 msgid "Designates whether this user is in the room."
 msgstr "Určuje, zda je tento uživatel v místnosti."
@@ -81,32 +744,179 @@ msgstr ""
 "Určuje, zda se má s tímto uživatelem zacházet jako s činným. Zrušte vybrání "
 "namísto smazání účtu."
 
+msgid "Didn't get an email"
+msgstr "Nedostal elektronický dopis"
+
 msgid "Diff version"
 msgstr "Znázornění změn"
+
+msgid "Disabled"
+msgstr "Vypnuto"
+
+msgid "Disabled (no percents)"
+msgstr "Vypnuto (žádná procenta)"
+
+msgid "Divergent:"
+msgstr "Rozdílný"
+
+msgid "Do not concern"
+msgstr "Nezaobírat se"
+
+msgid "Do not decide"
+msgstr "Nerozhodovat"
+
+msgid "Do not forget to save your changes!"
+msgstr "Nezapoměňte uložit své změny!"
+
+msgid "Do you really want to exit this page?"
+msgstr "Opravdu chcete opustit tuto stránku?"
+
+msgid "Do you really want to save your changes?"
+msgstr "Opravdu chcete uložit své změny?"
+
+msgid "Does not have notes"
+msgstr "Nemá poznámky"
+
+msgid "Done"
+msgstr "Hotovo"
+
+msgid "Download CSV example file"
+msgstr "Stáhnout soubor s příkladem CSV"
+
+msgid "Drop files into this area OR click here to select files"
+msgstr "Upusťte soubory na tuto oblast NEBO klepněte sem a vyberte soubory"
+
+msgid "Duration"
+msgstr "Doba trvání"
 
 msgid "Edit"
 msgstr "Upravit"
 
-msgid "Edit category:"
-msgstr "Upravit obor činnosti:"
+msgid "Edit comment field"
+msgstr "Upravit poznámkové pole"
 
-msgid "Edit comment field:"
-msgstr "Upravit poznámkové pole:"
+msgid "Edit details"
+msgstr "Upravit podrobnosti"
 
-msgid "Edit profile"
-msgstr "Upravit profil"
+msgid "Edit details for"
+msgstr "Upravit podrobnosti pro"
 
-msgid "Edit statute paragraph:"
-msgstr "Upravit odstavec předpisu:"
+msgid "Edit statute paragraph"
+msgstr "Upravit odstavec předpisu"
+
+msgid "Edit tag"
+msgstr "Upravit klíčové slovo"
+
+msgid "Edit the whole motion text"
+msgstr "Upravit text celého návrhu"
+
+msgid "Edit topic"
+msgstr "Upravit námět"
+
+msgid "Elected"
+msgstr "Zvolen"
+
+msgid "Election"
+msgstr "Volba"
+
+msgid "Election documents"
+msgstr "Volební dokumenty"
+
+msgid "Election method"
+msgstr "Způsob volby"
+
+msgid "Election result"
+msgstr "Výsledek volby"
 
 msgid "Elections"
-msgstr ""
+msgstr "Volby"
+
+msgid "Element"
+msgstr "Prvek"
 
 msgid "Email"
 msgstr "E-mail"
 
-msgid "English"
-msgstr "Angličtina"
+msgid "Email body"
+msgstr "Tělo elektronického dopisu"
+
+msgid "Email sent"
+msgstr "Elektronický dopis odeslán"
+
+msgid "Email subject"
+msgstr "Předmět elektronického dopisu"
+
+msgid "Empty text field"
+msgstr "Vyprázdnit textové pole"
+
+msgid "Enable numbering for agenda items"
+msgstr "Povolit číslování bodů pořadu jednání"
+
+msgid "Enable participant presence view"
+msgstr "Povolit pohled na přítomnost účastníka"
+
+msgid "Enable/disable account ..."
+msgstr "Povolit/Zakázat účet..."
+
+msgid "Encoding of the file"
+msgstr "Kódování souboru"
+
+msgid "End speech"
+msgstr "Ukončit projev"
+
+msgid "Enter duration in seconds. Choose 0 to disable warning color."
+msgstr ""
+"Zadejte dobu trvání v sekundách. Zvolte 0 pro vypnutí upozorňující barvy."
+
+msgid "Enter participant number"
+msgstr "Zadat číslo účastníka"
+
+msgid "Enter votes"
+msgstr "Zadat hlasy"
+
+msgid "Enter your email to send the password reset link"
+msgstr ""
+"Zadejte svoji adresu elektronické pošty, kam se má poslat odkaz na obnovení "
+"hesla"
+
+msgid "Error"
+msgstr "Chyba"
+
+msgid "Error during PDF creation of election:"
+msgstr "Chyba během vytváření PDF k volbě:"
+
+msgid "Error during PDF creation of motion:"
+msgstr "Chyba během vytváření PDF k návrhu:"
+
+msgid "Error: The new passwords do not match."
+msgstr "Chyba: Nová hesla se neshodují."
+
+msgid "Estimated end"
+msgstr "Odhadovaný konec"
+
+msgid "Event"
+msgstr "Událost"
+
+msgid "Event date"
+msgstr "Časový úsek události"
+
+msgid "Event location"
+msgstr "Místo události"
+
+msgid "Event name"
+msgstr "Název události"
+
+msgid "Event organizer"
+msgstr "Pořadatel události"
+
+msgid "Exit"
+msgstr "Ukončit"
+
+msgid "Expand all"
+msgstr "Rozbalit vše"
+
+msgid "Export"
+msgstr "Vyvést"
 
 msgid "Export ..."
 msgstr "Vyvést..."
@@ -114,23 +924,109 @@ msgstr "Vyvést..."
 msgid "Export as CSV"
 msgstr "Vyvést jako CSV"
 
-msgid "FILTER"
-msgstr "FILTR"
+msgid "Export as PDF"
+msgstr "Vyvést jako PDF"
+
+msgid "Export comment"
+msgstr "Vyvést poznámku"
+
+msgid "Export motions"
+msgstr "Vyvést návrhy"
+
+msgid "Export personal note only"
+msgstr "Vyvést pouze osobní poznámku"
+
+msgid "Export selected elections"
+msgstr "Vyvést vybrané volby"
+
+msgid "Export selected motions"
+msgstr "Vyvést vybrané návrhy"
+
+msgid "Extension"
+msgstr "Rozšíření"
+
+msgid "Favorites"
+msgstr "Oblíbené"
+
+msgid "File information"
+msgstr "Informace k souboru"
+
+msgid "File name"
+msgstr "Název souboru"
 
 msgid "Files"
 msgstr "Soubory"
 
+msgid "Filter"
+msgstr "Filtr"
+
+msgid "Final print template"
+msgstr "Předloha pro konečný tisk"
+
 msgid "Final version"
 msgstr "Konečná verze"
 
-msgid "French"
-msgstr "Francouzština"
+msgid "Finished"
+msgstr "Dokončeno"
 
-msgid "German"
-msgstr "Němčina"
+msgid "First state"
+msgstr "První stav"
+
+msgid "Follow recommendation"
+msgstr "Sledovat doporučení"
+
+msgid "Follow recommendations for all motions"
+msgstr "Sledovat doporučení pro všechny návrhy"
+
+msgid "Following users are currently editing this motion:"
+msgstr "Tento návrh nyní upravují následující uživatelé:"
+
+msgid ""
+"For Yes/No/Abstain per candidate and Yes/No per candidate the 100-%-base "
+"depends on the election method: If there is only one option per candidate, "
+"the sum of all votes of all candidates is 100 %. Otherwise for each "
+"candidate the sum of all votes is 100 %."
+msgstr ""
+"Při Ano/Ne/Zdržení se na uchazeče a Ano/Ne na uchazeče 100 % základ závisí "
+"na způsobu hlasování: Pokud je jen jedna volba na uchazeče, je součet všech "
+"hlasů všech uchazečů 100 %. Jinak je pro každého uchazeče součet všech hlasů"
+" 100 %"
+
+msgid "Foreground color"
+msgstr "Barva popředí"
+
+msgid "Forgot Password?"
+msgstr "Zapomněl jste heslo?"
+
+msgid "Format"
+msgstr "Formát"
+
+msgid "Front page text"
+msgstr "Text na první straně"
+
+msgid "Front page title"
+msgstr "Název první strany"
+
+msgid "Gender"
+msgstr "Pohlaví"
+
+msgid "General"
+msgstr "Obecné"
+
+msgid "Generate new passwords"
+msgstr "Vytvořit nové heslo"
+
+msgid "Generate password"
+msgstr "Vytvořit heslo"
 
 msgid "Given name"
 msgstr "Křestní jméno"
+
+msgid "Go to line"
+msgstr "Jít na řádek"
+
+msgid "Got an email"
+msgstr "Dostal elektronický dopis"
 
 msgid "Groups"
 msgstr "Skupiny"
@@ -141,20 +1037,147 @@ msgstr "Skupiny s oprávněním pro čtení"
 msgid "Groups with write permissions"
 msgstr "Skupiny s oprávněním pro zápis"
 
+msgid "Guest"
+msgstr "Host"
+
+msgid "Has no speakers"
+msgstr "Nemá žádné řečníky"
+
+msgid "Has notes"
+msgstr "Má poznámky"
+
+msgid "Has speakers"
+msgstr "Má řečníky"
+
+msgid "Header background color"
+msgstr "Barva pozadí záhlaví"
+
+msgid "Header font color"
+msgstr "Barva písma záhlaví"
+
+msgid "Headline color"
+msgstr "Barva titulku"
+
+msgid "Help text for access data and welcome PDF"
+msgstr "Nápomocný text k přístupovým údajům a pozdravné PDF"
+
+msgid "Hidden item"
+msgstr "Skrytý bod"
+
+msgid "Hide internal items when projecting subitems"
+msgstr "Skrýt vnitřní body při promítání podbodů"
+
+msgid "Hide meta information box on projector"
+msgstr "Skrýt okno s popisnými informacemi na promítacím přístroji"
+
+msgid "Hide more text"
+msgstr "Skrýt více textu"
+
+msgid "Hide password"
+msgstr "Skrýt heslo"
+
+msgid "Hide reason on projector"
+msgstr "Skrýt důvod na promítacím přístroji"
+
+msgid "Hide recommendation on projector"
+msgstr "Skrýt doporučení na promítacím přístroji"
+
+msgid "Hide referring motions"
+msgstr "Skrýt odkazující návrhy"
+
+msgid "Hide the amount of speakers in subtitle of list of speakers slide"
+msgstr "Skrýt množství řečníků v titulku snímku se seznamem řečníků"
+
+msgid "Hint for ballot paper"
+msgstr "Rada pro hlasovací lístek"
+
+msgid "History"
+msgstr "Minulost"
+
 msgid "Home"
 msgstr "Domovská stránka"
+
+msgid "How to create new amendments"
+msgstr "Jak vytvořit nové pozměňovací návrhy"
 
 msgid "Identifier"
 msgstr "Identifikátor"
 
-msgid "Import ..."
-msgstr "Zavést..."
+msgid ""
+"Identifier, reason, submitter, category, origin and motion block are "
+"optional and may be empty."
+msgstr ""
+"Identifikátor (označení dat), zdůvodnění, navrhovatel/navrhovatel/ka, obor "
+"činnosti, původ a návrhový blok jsou nepovinné a mohou zůstat prázdné"
+
+msgid "Import"
+msgstr "Zavést"
+
+msgid "Import motions"
+msgstr "Zavést návrhy"
+
+msgid "Import participants"
+msgstr "Zavést účastníky"
+
+msgid "Import statute"
+msgstr "Zavést předpis"
+
+msgid "Import topics"
+msgstr "Zavést náměty"
+
+msgid "In motion list, motion detail and PDF."
+msgstr "V seznamu návrhu, podrobnosti návrhu a PDF."
+
+msgid "Inactive"
+msgstr "Nečinný"
 
 msgid "Initial password"
 msgstr "Počáteční heslo"
 
+msgid "Initiate update check for all clients"
+msgstr "Zahájit kontrolu aktualizací pro všechny klienty"
+
+msgid "Inline"
+msgstr "Uvnitř"
+
+msgid "Input format: DD.MM.YYYY HH:MM"
+msgstr "Zadávací formát: DD.MM.RRRR HH:MM"
+
+msgid "Insert after"
+msgstr "Vložit po"
+
+msgid "Insert before"
+msgstr "Vložit před"
+
+msgid "Insert behind"
+msgstr "Vložit za"
+
+msgid "Insert participants here"
+msgstr "Vložit účastníky zde"
+
+msgid "Insert topics here"
+msgstr "Vložit náměty zde"
+
+msgid "Insertion"
+msgstr "Vložení"
+
 msgid "Installed plugins"
 msgstr "Nainstalované přídavné moduly"
+
+msgid "Internal"
+msgstr "Vnitřní"
+
+msgid "Internal item"
+msgstr "Vnitřní bod"
+
+msgid "Invalid input."
+msgstr "Neplatné zadání."
+
+msgid "Invalid line number"
+msgstr "Neplatné číslo řádku"
+
+msgid "Invalid votes"
+msgstr "Neplatné hlasy"
 
 msgid "Is a committee"
 msgstr "Je výbor"
@@ -162,11 +1185,59 @@ msgstr "Je výbor"
 msgid "Is active"
 msgstr "Je činná"
 
+msgid "Is already projected"
+msgstr "Již je promítáno"
+
+msgid "Is committee"
+msgstr "Je výbor"
+
+msgid "Is favorite"
+msgstr "Je oblíbené"
+
+msgid "Is not a committee"
+msgstr "Není výbor"
+
+msgid "Is not active"
+msgstr "Není činný"
+
+msgid "Is not favorite"
+msgstr "Není oblíbené"
+
+msgid "Is not present"
+msgstr "Není přítomen"
+
 msgid "Is present"
 msgstr "Je přítomná"
 
+msgid "Item number"
+msgstr "Číslo bodu"
+
+msgid "Keep each item in a single line."
+msgstr "Držet každý bod na jednom řádku."
+
+msgid "Keep each person in a single line."
+msgstr "Držet každou osobu na jednom řádku."
+
+msgid "Label color"
+msgstr "Barva štítku"
+
+msgid "Last email send"
+msgstr "Poslední elektronický dopis odeslán"
+
+msgid "Last email sent"
+msgstr "Poslední elektronický dopis odeslán"
+
+msgid "Last modified"
+msgstr "Naposledy změněno"
+
+msgid "Last speakers"
+msgstr "Poslední řečník"
+
+msgid "Left"
+msgstr "Vlevo"
+
 msgid "Legal notice"
-msgstr "Právní upozornění"
+msgstr "Impresum (tiráž)"
 
 msgid "License"
 msgstr "Povolení"
@@ -174,14 +1245,53 @@ msgstr "Povolení"
 msgid "Line"
 msgstr "Řádek"
 
+msgid "Line length"
+msgstr "Délka řádku"
+
+msgid "Line numbering"
+msgstr "Číslování řádků"
+
+msgid "List of participants"
+msgstr "Seznam účastníků"
+
+msgid "List of participants (PDF)"
+msgstr "Seznam účastníků (PDF)"
+
+msgid "List of speakers"
+msgstr "Seznam řečníků"
+
+msgid "List of speakers overlay"
+msgstr "Přidání seznamu řečníků"
+
+msgid "List view"
+msgstr "Zobrazení seznamu"
+
+msgid "Loading data. Please wait ..."
+msgstr "Nahrávají se data. Počkejte, prosím..."
+
 msgid "Login"
 msgstr "Přihlášení"
 
-msgid "Login as Guest"
+msgid "Login as guest"
 msgstr "Přihlásit se jako host"
 
 msgid "Logout"
 msgstr "Odhlásit se"
+
+msgid "Mark as elected"
+msgstr "Označit jako zvoleného"
+
+msgid "Mark speaker"
+msgstr "Označit řečníka"
+
+msgid "Media file"
+msgstr "Multimediální soubor"
+
+msgid "Message"
+msgstr "Oznámení"
+
+msgid "Messages"
+msgstr "Oznámení"
 
 msgid "Meta information"
 msgstr "Popisné informace"
@@ -189,11 +1299,113 @@ msgstr "Popisné informace"
 msgid "Motion"
 msgstr "Návrh"
 
+msgid "Motion block"
+msgstr "Návrhový blok"
+
+msgid "Motion blocks"
+msgstr "Návrhové bloky"
+
+msgid "Motion change recommendation created"
+msgstr "Doporučení změny návrhu vytvořeno"
+
+msgid "Motion change recommendation deleted"
+msgstr "Doporučení změny návrhu smazáno"
+
+msgid "Motion change recommendation updated"
+msgstr "Doporučení změny návrhu aktualizováno"
+
+msgid "Motion created"
+msgstr "Návrh vytvořen"
+
+msgid "Motion deleted"
+msgstr "Návrh smazán"
+
+msgid "Motion has been imported"
+msgstr "Návrh byl zaveden"
+
+msgid "Motion preamble"
+msgstr "Úvod návrhu"
+
+msgid "Motion text"
+msgstr "Text návrhu"
+
+msgid "Motion updated"
+msgstr "Návrh aktualizován"
+
+msgid "Motion will be imported"
+msgstr "Návrh bude zaveden"
+
+msgid "Motion(s) will be imported."
+msgstr "Návrh(y) budou zavedeny."
+
 msgid "Motions"
 msgstr "Návrhy"
 
+msgid "Motions are in process. Please wait ..."
+msgstr "Návrhy se zpracovávají. Počkejte, prosím..."
+
+msgid "Motions have been imported."
+msgstr "Návrhy byly zavedeny."
+
+msgid "Move"
+msgstr "Přesunout"
+
+msgid "Move in call list"
+msgstr "Přesunout do vyvolávacího seznamu"
+
+msgid "Move into directory"
+msgstr "Přesunout do adresáře"
+
+msgid "Move selected items ..."
+msgstr "Přesunout vybrané položky..."
+
+msgid "Move to agenda item"
+msgstr "Přesunout do bodu pořadu jednání"
+
+msgid "Multiselect"
+msgstr "Několikanásobný výběr"
+
 msgid "Name"
 msgstr "Název"
+
+msgid "Name of recommender"
+msgstr "Jméno doporučujícího"
+
+msgid "Name of recommender for statute amendments"
+msgstr "Jméno doporučujícího pro pozměňovací návrhy předpisu "
+
+msgid "Needs review"
+msgstr "Potřebuje posoudit"
+
+msgid "Never"
+msgstr "Nikdy"
+
+msgid "New Projector"
+msgstr "Nový promítací přístroj"
+
+msgid "New amendment"
+msgstr "Nový pozměňovací návrh"
+
+msgid "New ballot"
+msgstr "Nové hlasování"
+
+msgid "New category"
+msgstr "Nový obor činnosti"
+
+msgid "New change recommendation"
+msgstr "Nové doporučení změny"
+
+msgid "New comment field"
+msgstr "Nové poznámkové pole"
+
+msgid "New directory"
+msgstr "Nový adresář"
+
+msgid "New election"
+msgstr "Nová volba"
+
+msgid "New file name"
+msgstr "Nový název souboru"
 
 msgid "New group name"
 msgstr "Název nové skupiny"
@@ -201,44 +1413,208 @@ msgstr "Název nové skupiny"
 msgid "New motion"
 msgstr "Nový návrh"
 
-msgid "New tag name"
-msgstr "Název nové značky"
+msgid "New motion block"
+msgstr "Nový návrhový blok"
+
+msgid "New participant"
+msgstr "Nový účastník"
+
+msgid "New password"
+msgstr "Nové heslo"
+
+msgid "New state"
+msgstr "Nový stav"
+
+msgid "New statute paragraph"
+msgstr "Nový odstavec předpisu"
+
+msgid "New tag"
+msgstr "Nová značka"
+
+msgid "New topic"
+msgstr "Nový námět"
+
+msgid "New vote"
+msgstr "Nové hlasování"
+
+msgid "New workflow"
+msgstr "Nový pracovní postup"
+
+msgid "Next"
+msgstr "Další"
+
+msgid "Next states"
+msgstr "Další stavy"
+
+msgid "No"
+msgstr "Ne"
+
+msgid "No category"
+msgstr "Žádný obor činnosti"
+
+msgid "No category set"
+msgstr "Nestanoven žádný obor činnosti"
 
 msgid "No change recommendations yet"
 msgstr "Dosud žádná doporučení změn"
 
+msgid "No changes at the text."
+msgstr "Žádné změny v textu."
+
 msgid "No comment"
 msgstr "Bez poznámky"
+
+msgid "No concernment"
+msgstr "Neprobíráno"
+
+msgid "No data"
+msgstr "Žádná data"
+
+msgid "No decision"
+msgstr "Žádné rozhodnutí"
+
+msgid "No email sent"
+msgstr "Neposlán žádný elektronický dopis"
+
+msgid "No emails were send."
+msgstr "Nebyly odeslány žádné elektronický dopisy"
+
+msgid "No encryption"
+msgstr "Žádné šifrování"
 
 msgid "No groups selected"
 msgstr "Nevybrány žádné skupiny"
 
+msgid "No information available"
+msgstr "Nejsou dostupné žádné informace"
+
+msgid "No items selected"
+msgstr "Nevybrány žádné položky"
+
+msgid "No motion block set"
+msgstr "Nestanoven žádný návrhový blok"
+
 msgid "No personal note"
 msgstr "Bez osobní poznámky"
 
+msgid "No recommendation"
+msgstr "Žádné doporučení"
+
+msgid "No search result found"
+msgstr "Nenalezeny žádné výsledky hledání"
+
 msgid "No statute paragraphs"
 msgstr "Žádné odstavce předpisu"
+
+msgid "No tags"
+msgstr "Žádné značky"
+
+msgid "No."
+msgstr "Č."
 
 msgid "None"
 msgstr "Žádné"
 
 msgid ""
-"Note: You have to reject all change recommendations if the plenum does not "
-"follow the recommendation. This does not affect amendments."
+"Note, that the default password will be changed to the new generated one."
+msgstr "Všimněte si, že výchozí heslo bude změněno na nově vytvořené."
+
+msgid ""
+"Note: Your own password was not changed. Please use the password change "
+"dialog instead."
 msgstr ""
-"Poznámka: Musíte odmítnout všechna doporučení změn, pokud plenární zasedání "
-"nesleduje doporučení. Toto neovlivní dodatky."
+"Poznámka: Vaše vlastní heslo nebylo změněno. Použijte, prosím, místo toho "
+"dialog na změnu hesla."
+
+msgid "Notes"
+msgstr "Poznámky"
+
+msgid "Number motions"
+msgstr "Číslovat návrhy"
+
+msgid "Number of (minimum) required supporters for a motion"
+msgstr "Nejnižší počet podporovatelů potřebných pro návrh"
+
+msgid "Number of all delegates"
+msgstr "Počet všech zástupců"
+
+msgid "Number of all participants"
+msgstr "Počet všech účastníků"
+
+msgid "Number of ballot papers (selection)"
+msgstr "Počet hlasovacích lístků (předběžná volba)"
+
+msgid "Number of candidates"
+msgstr "Počet uchazečů"
+
+msgid "Number of last speakers to be shown on the projector"
+msgstr "Počet posledních na promítacím přístroji zobrazených  řečníků"
+
+msgid "Number of minimal digits for identifier"
+msgstr "Nejmenší počet číslic pro identifikátor"
+
+msgid "Number of persons to be elected"
+msgstr "Počet osob ke zvolení"
+
+msgid "Number set"
+msgstr "Číslo stanoveno"
+
+msgid "Numbered per category"
+msgstr "Číslovat na základě oborů činnosti"
+
+msgid "Numbering"
+msgstr "Číslování"
+
+msgid "Numbering prefix for agenda items"
+msgstr "Předpona pro číslování bodů pořadu jednání"
+
+msgid "Numeral system for agenda items"
+msgstr "Číselný systém pro body pořadu jednání"
 
 msgid "OK"
-msgstr "OK"
+msgstr "Ok"
 
-msgid "Offline mode: You can use OpenSlides but changes are not saved."
-msgstr ""
-"Režim nepřipojen k internetu: Můžete OpenSlides používat, ale změny nejsou "
-"ukládány."
+msgid "Offline mode"
+msgstr "Režim bez připojení k internetu"
+
+msgid "Old password"
+msgstr "Staré heslo"
+
+msgid "One email was send sucessfully."
+msgstr "Byl úspěšně odeslán jeden elektronický dopis."
+
+msgid "One vote per candidate"
+msgstr "Jeden hlas pro uchazeče"
 
 msgid "Only for internal notes."
 msgstr "Jen pro vnitřní poznámky."
+
+msgid "Only main agenda items"
+msgstr "Pouze hlavní body pořadu jednání"
+
+msgid "Only present participants can be added to the list of speakers"
+msgstr "Jen přítomní účastníci mohou být přidáni do seznamu řečníků"
+
+msgid "Open"
+msgstr "Otevřít"
+
+msgid "Open items"
+msgstr "Otevřené body"
+
+msgid "Open list of speakers"
+msgstr "Otevřít seznam řečníků"
+
+msgid "Open projection dialog"
+msgstr "Otevřít dialog pro promítání"
+
+msgid "OpenSlides Theme"
+msgstr "Vzhled OpenSlides"
+
+msgid "OpenSlides access data"
+msgstr "Přístupová data k OpenSlides"
+
+msgid "OpenSlides is temporarily reset to following timestamp"
+msgstr "OpenSlides má dočasně obnoveno následující časové razítko timestamp"
 
 msgid "Origin"
 msgstr "Původ"
@@ -246,26 +1622,170 @@ msgstr "Původ"
 msgid "Original version"
 msgstr "Původní verze"
 
+msgid "Outside"
+msgstr "Vně"
+
+msgid "Overlay"
+msgstr "Pokryv"
+
 msgid "PDF"
 msgstr "PDF"
+
+msgid "PDF ballot paper logo"
+msgstr "Emblém na hlasovacích lístcích v PDF"
+
+msgid "PDF export"
+msgstr "Vyvedení do PDF"
+
+msgid "PDF footer logo (left)"
+msgstr "Emblém v zápatí PDF (nalevo)"
+
+msgid "PDF footer logo (right)"
+msgstr "Emblém v zápatí PDF (napravo)"
+
+msgid "PDF header logo (left)"
+msgstr "Emblém v záhlaví PDF (nalevo)"
+
+msgid "PDF header logo (right)"
+msgstr "Emblém v záhlaví PDF (napravo)"
+
+msgid "PDF options"
+msgstr "Volby pro PDF"
+
+msgid "Page"
+msgstr "Strana"
+
+msgid "Page number alignment in PDF"
+msgstr "Zarovnání čísel stran v PDF"
+
+msgid "Page numbers"
+msgstr "Čísla stran"
+
+msgid "Paragraph-based, Diff-enabled"
+msgstr "Založeno na odstavci se znázorněním změn"
+
+msgid "Parallel upload"
+msgstr "Souběžné nahrání"
+
+msgid "Parent agenda item"
+msgstr "Rodičovský bod pořadu jednání"
+
+msgid "Parent directory"
+msgstr "Rodičovský adresář"
+
+msgid "Participant"
+msgstr "Účastník"
+
+msgid "Participant cannot be found"
+msgstr "Účastníka nelze nalézt"
+
+msgid "Participant has been imported"
+msgstr "Účastník byl zaveden"
 
 msgid "Participant number"
 msgstr "Číslo účastníka"
 
+msgid "Participant number is not unique"
+msgstr "Číslo účastníka není jedinečné"
+
+msgid "Participant will be imported"
+msgstr "Účastník bude zaveden"
+
+msgid "Participant(s) will be imported."
+msgstr "Účastník(ci) budou zavedeni."
+
 msgid "Participants"
 msgstr "Účastníci"
+
+msgid "Participants have been imported."
+msgstr "Účastník(ci) byli zavedeni."
+
+msgid "Password"
+msgstr "Heslo"
+
+msgid "Paste/write your topics in this textbox."
+msgstr "Kopírujte nebo vložte názvy vašich námětů do tohoto textového pole."
+
+msgid "Permission"
+msgstr "Oprávnění"
 
 msgid "Permissions"
 msgstr "Oprávnění"
 
+msgid "Permit"
+msgstr "Schválit"
+
 msgid "Personal note"
 msgstr "Osobní poznámka"
+
+msgid "Personal notes"
+msgstr "Osobní poznámky"
+
+msgid "Phase"
+msgstr "Fáze"
+
+msgid "Please enter a name for the new directory:"
+msgstr "Zadejte, prosím, název pro nový adresář:"
+
+msgid "Please enter a name for the new workflow:"
+msgstr "Zadejte, prosím, jméno pro nový pracovní postup:"
+
+msgid "Please enter a valid email address"
+msgstr "Zadejte, prosím, platnou adresu elektronické pošty"
+
+msgid "Please enter a valid email address!"
+msgstr "Zadejte, prosím, platnou adresu elektronické pošty!"
+
+msgid "Please enter your new password"
+msgstr "Zadejte, prosím, své nové heslo"
+
+msgid "Please fill in all required values"
+msgstr "Vyplňte, prosím, všechny požadované hodnoty"
+
+msgid "Please fill in the values for each candidate"
+msgstr "Vyplňte, prosím, hodnoty pro každého uchazeče"
+
+msgid "Please select the directory:"
+msgstr "Vyberte, prosím, adresář:"
+
+msgid "Preamble text for PDF document (all elections)"
+msgstr "Text úvodu dokumentu PDF (všechny volby)"
+
+msgid "Preamble text for PDF documents of motions"
+msgstr "Text úvodu dokumentů PDF s návrhy"
+
+msgid "Predefined seconds of new countdowns"
+msgstr "Předem stanovené sekundy pro nová odpočítávání"
 
 msgid "Prefix"
 msgstr "Předpona"
 
+msgid "Prefix for the identifier for amendments"
+msgstr "Předpona identifikátoru pro pozměňovací návrhy"
+
+msgid "Presence"
+msgstr "Účast"
+
 msgid "Present"
 msgstr "Přítomen"
+
+msgid "Presentation and assembly system"
+msgstr "Předváděcí a schůzovací systém"
+
+msgid "Preview"
+msgstr "Náhled"
+
+msgid "Previous"
+msgstr "Předchozí"
+
+msgid "Previous slides"
+msgstr "Předchozí snímky"
+
+msgid "Print ballot paper"
+msgstr "Tisk hlasovacích lístků"
+
+msgid "Print ballot papers"
+msgstr "Tisk hlasovacích lístků"
 
 msgid "Privacy Policy"
 msgstr "Politika pro soukromí"
@@ -276,101 +1796,1089 @@ msgstr "Politika pro soukromí"
 msgid "Project"
 msgstr "Promítat"
 
+msgid "Project selection?"
+msgstr "Promítnout výběr?"
+
+msgid "Projection defaults"
+msgstr "Výchozí pro promítání"
+
 msgid "Projector"
 msgstr "Promítací přístroj"
+
+msgid "Projector header image"
+msgstr "Obrázek promítacího přístroje pro záhlaví"
+
+msgid "Projector language"
+msgstr "Jazyk promítacího přístroje"
+
+msgid "Projector logo"
+msgstr "Emblém promítacího přístroje"
+
+msgid "Projectors"
+msgstr "Promítací přístroje"
 
 msgid "Public"
 msgstr "Veřejný"
 
+msgid "Public item"
+msgstr "Veřejný bod"
+
+msgid "Publish"
+msgstr "Zveřejnit"
+
+msgid "Put all candidates on the list of speakers"
+msgstr "Dát všechny uchazeče na seznam řečníků"
+
+msgid "Queue"
+msgstr "Řada"
+
+msgid "Quorum"
+msgstr "Usnášeníschopný počet"
+
 msgid "Reason"
 msgstr "Zdůvodnění"
+
+msgid "Reason required for creating new motion"
+msgstr "Důvod požadovaný pro vytvoření nového návrhu"
+
+msgid "Recommendation"
+msgstr "Doporučení"
+
+msgid "Recommendation label"
+msgstr "Štítek s doporučením"
+
+msgid "Recommendation set to {arg1}"
+msgstr "Doporučení nastaveno na {arg1}"
+
+msgid "Refer to committee"
+msgstr "Předat do výboru"
+
+msgid "Reference projector for current list of speakers:"
+msgstr "Srovnávací promítací přístroj pro nynější seznam řečníků:"
+
+msgid "Referral to committee"
+msgstr "Postoupení do výboru"
+
+msgid "Referring motions"
+msgstr "Vztahující se návrhy"
+
+msgid "Refresh"
+msgstr "Obnovit"
 
 msgid "Reject"
 msgstr "Odmítnout"
 
+msgid "Reject (not authorized)"
+msgstr "Odmítnout (není schváleno)"
+
 msgid "Rejected"
 msgstr "Odmítnuto"
 
+msgid "Rejection"
+msgstr "Odmítnutí"
+
+msgid "Rejection (not authorized)"
+msgstr "Odmítnutí (není schváleno)"
+
+msgid "Remove"
+msgstr "Odstranit"
+
+msgid "Remove all speakers"
+msgstr "Odstranit všechny řečníky"
+
+msgid ""
+"Remove all supporters of a motion if a submitter edits his motion in early "
+"state"
+msgstr ""
+"Odstranit všechny podporovatele návrhu, pokud navrhovatel svůj návrh v "
+"počátečním stavu upravuje"
+
+msgid "Remove candidate"
+msgstr "Odstranit uchazeče"
+
+msgid "Remove from agenda"
+msgstr "Odstranit z pořadu jednání"
+
+msgid "Remove from motion block"
+msgstr "Odstranit z návrhového bloku"
+
+msgid "Remove me"
+msgstr "Odstranit mě"
+
+msgid "Replacement"
+msgstr "Nahrazení"
+
+msgid "Reply address"
+msgstr "Adresa odpovědi"
+
 msgid "Required"
 msgstr "Požadováno"
+
+msgid ""
+"Required comma or semicolon separated values with these column header names "
+"in the first row:"
+msgstr ""
+"Požadovány hodnoty oddělené čárkou nebo středníkem s těmito názvy sloupců v "
+"prvním řádku:"
+
+msgid "Required majority"
+msgstr "Požadovaná většina"
+
+msgid "Reset"
+msgstr "Obnovit výchozí"
+
+msgid "Reset cache"
+msgstr "Vynulovat vyrovnávací paměť"
+
+msgid "Reset password"
+msgstr "Nastavit heslo znovu"
+
+msgid "Reset passwords to the default ones"
+msgstr "Obnovit hesla na výchozí"
 
 msgid "Reset recommendation"
 msgstr "Vynulovat doporučení"
 
 msgid "Reset state"
-msgstr "Obnovit stav"
+msgstr "Vynulovat stav"
 
-msgid "SORT"
-msgstr "TŘÍDIT"
+msgid "Resolution and size"
+msgstr "Rozlišení a velikost"
+
+msgid "Restrictions"
+msgstr "Omezení"
+
+msgid "Right"
+msgstr "Vpravo"
+
+msgid "Roman"
+msgstr "Římský"
 
 msgid "Save"
 msgstr "Uložit"
 
-msgid "Selected values"
-msgstr "Vybrané hodnoty"
+msgid "Scan this QR code to connect to WLAN."
+msgstr "Snímat tento QRCode pro spojení s WLAN."
+
+msgid "Scan this QR code to open URL."
+msgstr "Snímat tento QRCode pro otevření adresy (URL)."
+
+msgid "Scroll down"
+msgstr "Posunout dolů"
+
+msgid "Scroll down (big step)"
+msgstr "Posunout dolů (velký krok)"
+
+msgid "Scroll up"
+msgstr "Posunout nahoru"
+
+msgid "Scroll up (big step)"
+msgstr "Posunout nahoru (velký krok)"
+
+msgid "Search"
+msgstr "Hledání"
+
+msgid "Search player"
+msgstr "Hledat přehrávač"
+
+msgid "Searching for candidates"
+msgstr "Hledání uchazečů"
+
+msgid "Select a new candidate"
+msgstr "Vybrat nového uchazeče"
+
+msgid "Select all"
+msgstr "Vybrat vše"
+
+msgid "Select file"
+msgstr "Vybrat soubor"
+
+msgid "Select or search new speaker ..."
+msgstr "Vybrat nebo hledat nového řečníka..."
+
+msgid "Select or search new submitter ..."
+msgstr "Vybrat nebo hledat nového navrhovatele/navrhovatelku..."
+
+msgid "Select paragraphs"
+msgstr "Vybrat odstavce"
+
+msgid "Send invitation email"
+msgstr "Poslat elektronický dopis s pozváním"
+
+msgid "Sender name"
+msgstr "Jméno odesílatele"
+
+msgid "Sending an invitation email"
+msgstr "Posílá se elektronický dopis s pozváním"
+
+msgid "Separator used for all csv exports and examples"
+msgstr "Oddělovač použitý pro všechna vyvedení do CSV a příklady"
+
+msgid "Sequential number"
+msgstr "Pořadové číslo"
+
+msgid "Serially numbered"
+msgstr "Průběžné číslování"
+
+msgid "Set as favorite"
+msgstr "Nastavit jako oblíbené"
+
+msgid "Set as not favorite"
+msgstr "Nastavit jako neoblíbené"
+
+msgid "Set as parent"
+msgstr "Nastavit jako rodiče"
+
+msgid "Set category"
+msgstr "Stanovit obor činnosti"
+
+msgid "Set committee ..."
+msgstr "Stanovit výbor..."
+
+msgid "Set favorite"
+msgstr "Nastavit oblíbené"
+
+msgid "Set hidden"
+msgstr "Nastavit na skryto"
+
+msgid "Set identifier"
+msgstr "Nastavit identifikátor"
+
+msgid "Set internal"
+msgstr "Nastavit vnitřní"
+
+msgid "Set it manually"
+msgstr "Nastavit ručně"
+
+msgid "Set motion block"
+msgstr "Stanovit návrhový blok"
+
+msgid "Set presence ..."
+msgstr "Nastavit účast..."
+
+msgid "Set public"
+msgstr "Nastavit veřejné"
+
+msgid "Set recommendation"
+msgstr "Stanovit doporučení"
+
+msgid "Set status"
+msgstr "Nastavit stav"
 
 msgid "Settings"
 msgstr "Nastavení"
 
-msgid "Sort ..."
-msgstr "Třídit..."
+msgid "Short description of event"
+msgstr "Krátký popis události"
+
+msgid "Show all"
+msgstr "Ukázat vše"
+
+msgid "Show amendment in parent motion"
+msgstr "Ukázat pozměňovací návrh v rodičovském návrhu"
+
+msgid "Show amendments together with motions"
+msgstr "Ukázat pozměňovací návrhy společně s návrhy"
+
+msgid "Show checkbox to record decision"
+msgstr "Ukázat zaškrtávací políčko k zaznamenání rozhodnutí"
+
+msgid "Show clock"
+msgstr "Ukázat hodiny"
+
+msgid "Show correct entries"
+msgstr "Ukázat správné záznamy"
+
+msgid "Show correct entries only"
+msgstr "Ukázat jen správné záznamy"
+
+msgid "Show entire motion text"
+msgstr "Ukázat text celého návrhu"
+
+msgid "Show errors only"
+msgstr "Ukázat jen chyby"
+
+msgid "Show full text"
+msgstr "Ukázat celý text"
+
+msgid "Show header and footer"
+msgstr "Ukázat záhlaví a zápatí"
+
+msgid "Show logo"
+msgstr "Ukázat emblém"
+
+msgid "Show orange countdown in the last x seconds of speaking time"
+msgstr ""
+"Ukázat odpočítávání v posledních x sekundách času mluvení v oranžové barvě"
+
+msgid "Show password"
+msgstr "Ukázat heslo"
+
+msgid "Show preview"
+msgstr "Ukázat náhled"
+
+msgid "Show profile"
+msgstr "Ukázat profil"
+
+msgid "Show recommendation extension field"
+msgstr "Ukázat rozšiřující pole doporučení"
+
+msgid "Show state extension field"
+msgstr "Ukázat rozšiřující pole stavu"
+
+msgid "Show submitters and recommendation in table of contents"
+msgstr "Ukázat navrhovatele a doporučení v obsahu"
+
+msgid "Show the sequential number for a motion"
+msgstr "Ukázat pořadové číslo pro návrh"
+
+msgid "Show this text on the login page"
+msgstr "Ukázat tento text na přihlašovací stránce"
+
+msgid "Show title"
+msgstr "Ukázat název"
+
+msgid "Simple Workflow"
+msgstr "Jednoduchý pracovní postup"
+
+msgid "Simple majority"
+msgstr "Jednoduchá většina"
+
+msgid "Slide"
+msgstr "Snímek"
+
+msgid "Sort"
+msgstr "Řadit"
+
+msgid "Sort agenda"
+msgstr "Řadit pořad jednání"
+
+msgid "Sort categories"
+msgstr "Řadit obory činnosti"
+
+msgid "Sort comments"
+msgstr "Řadit poznámky"
+
+msgid "Sort motions"
+msgstr "Řadit návrhy"
+
+msgid "Sort motions by"
+msgstr "Řadit návrhy podle"
+
+msgid "Sort name of participants by"
+msgstr "Řadit jména účastníků podle"
+
+msgid "Speakers"
+msgstr "Řečníci"
+
+msgid "Special values"
+msgstr "Zvláštní hodnoty"
+
+msgid "Staff"
+msgstr "Zaměstnanci"
+
+msgid "Standard font size in PDF"
+msgstr "Běžná velikost písma v PDF"
+
+msgid "Standard page size in PDF"
+msgstr "Běžná velikost strany v PDF"
+
+msgid "Start time"
+msgstr "Začáteční čas"
 
 msgid "State"
 msgstr "Stav"
 
+msgid "State set to {arg1}"
+msgstr "Stav nastavit na {arg1}"
+
+msgid "Statute"
+msgstr "Předpis"
+
+msgid "Statute amendment"
+msgstr "Pozměňovací návrh předpisu"
+
+msgid "Statute amendment for"
+msgstr "Pozměňovací návrh předpisu pro"
+
 msgid "Statute paragraph"
 msgstr "Odstavec předpisu"
+
+msgid "Statute paragraph has been imported"
+msgstr "Odstavec předpisu byl zaveden"
+
+msgid "Statute paragraph will be imported"
+msgstr "Odstavec předpisu bude zaveden"
 
 msgid "Statute paragraphs"
 msgstr "Odstavce předpisu"
 
+msgid "Stop counting"
+msgstr "Zastavit počítání"
+
+msgid "Stop submitting new motions by non-staff users"
+msgstr "Zastavit podávání nových návrhů uživateli bez práv správce"
+
 msgid "Structure level"
 msgstr "Úroveň rozčlenění"
+
+msgid "Subcategory"
+msgstr "Podobor činnosti"
 
 msgid "Submitters"
 msgstr "Navrhovatelé"
 
+msgid "Submitters changed"
+msgstr "Navrhovatelé změněni"
+
 msgid "Summary of changes"
 msgstr "Přehled změn"
+
+msgid "Summary of changes:"
+msgstr "Přehled změn:"
+
+msgid "Support"
+msgstr "Podporovat"
 
 msgid "Supporters"
 msgstr "Podporovatel"
 
+msgid "Supporters changed"
+msgstr "Podporovatelé změněni"
+
 msgid "Surname"
 msgstr "Příjmení"
+
+msgid "System"
+msgstr "Systém"
+
+msgid "System URL"
+msgstr "Adresa systému (URL)"
+
+msgid "Table of contents"
+msgstr "Obsah"
+
+msgid "Tag"
+msgstr "Klíčové slovo"
 
 msgid "Tags"
 msgstr "Klíčová slova"
 
+msgid "Text"
+msgstr "Text"
+
+msgid "Text import"
+msgstr "Zavedení textu"
+
+msgid "Text separator"
+msgstr "Oddělovač textu"
+
+msgid "The 100 % base of a voting result consists of"
+msgstr "100 % základ výsledku hlasování se skládá z"
+
+msgid "The 100-%-base of an election result consists of"
+msgstr "100 % základ volebního výsledku se skládá z"
+
 msgid "The assembly may decide:"
 msgstr "Shromáždění se může usnést:"
+
+msgid "The event manager hasn't set up a legal notice yet."
+msgstr "Správce událostí ještě nenastavil impresum (tiráž)."
 
 msgid "The event manager hasn't set up a privacy policy yet."
 msgstr "Správce událostí ještě nenastavil politiku soukromí."
 
+msgid "The file has too few columns to be parsed properly."
+msgstr "Soubor má příliš mnoho sloupců na to, aby byly použity řádně."
+
+msgid "The file seems to have additional columns. They will be ignored."
+msgstr "Zdá se, že soubor má dodatečné sloupce. Budou se přehlížet."
+
+msgid ""
+"The file seems to have some ommitted columns. They will be considered empty."
+msgstr "Zdá se, že soubor má vypuštěné sloupce. Budou považovány za prázdné."
+
+msgid "The link is broken. Please contact your system administrator."
+msgstr "Odkaz je poškozen. Spojte se, prosím, se správcem systému."
+
+msgid "The list of speakers is closed."
+msgstr "Seznam řečníků je uzavřen."
+
+msgid ""
+"The maximum number of characters per line. Relevant when line numbering is "
+"enabled. Min: 40"
+msgstr ""
+"Největší počet znaků na řádek. Má význam, když je zapnuto číslování řádků. "
+"Nejméně: 40"
+
+msgid "The number has to be greater than 0."
+msgstr "Číslo musí být větší než 0."
+
+msgid "The reason field may not be blank."
+msgstr "Pole pro důvod nesmí být prázdné."
+
+msgid ""
+"The requested method is not allowed. Please contact your system "
+"administrator."
+msgstr ""
+"Požadovaná metoda není dovolena. Spojte se, prosím, se správcem systému."
+
+msgid ""
+"The sender address is defined in the OpenSlides server settings and should "
+"modified by administrator only."
+msgstr ""
+"Adresa odesílatele je stanovena v nastavení serveru OpenSlides a má ji měnit"
+" pouze správce."
+
+msgid "The server could not be reached."
+msgstr "Server se nepodařilo dosáhnout."
+
+msgid "The server didn't respond."
+msgstr "Server neodpověděl."
+
+msgid "The text field may not be blank."
+msgstr "Pole pro text nesmí být prázdné."
+
+msgid "The title is required"
+msgstr "Je požadován název"
+
+msgid "The title of the motion is always applied."
+msgstr "Název návrhu je vždy převzat."
+
+msgid ""
+"The user %user% has no email, so the invitation email could not be send."
+msgstr ""
+"Uživatel %user% nemá žádnou adresu elektronické pošty (nelze mu zasílat "
+"elektronické dopisy), takže elektronický dopis s pozváním se mu nepodařilo "
+"poslat."
+
+msgid ""
+"The users %user% have no email, so the invitation emails could not be send."
+msgstr ""
+"Uživatelé %user% nemají žádnou adresu elektronické pošty (nelze jim zasílat "
+"elektronické dopisy), takže elektronické dopisy s pozváními se jim "
+"nepodařilo poslat."
+
+msgid "There are no items left to chose from"
+msgstr "Nezbyly žádné položky, ze kterých vybrat"
+
 msgid "This change collides with another one."
 msgstr "Tato změna se střetává s jinou."
+
+msgid "This element does not exist at this time."
+msgstr "Tento prvek toho času neexistuje."
+
+msgid "This field is required."
+msgstr "Toto pole je požadováno."
+
+msgid "This prefix will be set if you run the automatic agenda numbering."
+msgstr ""
+"Tato předpona bude nastavena k provádění automatického číslování bodů pořadu"
+" jednání."
+
+msgid ""
+"This will add or remove the following groups for all selected participants:"
+msgstr ""
+"Toto přidá nebo odstraní následující skupiny pro všechny vybrané účastníky:"
+
+msgid ""
+"This will add or remove the following submitters for all selected motions:"
+msgstr ""
+"Toto přidá nebo odstraní následující navrhovatele pro všechny vybrané "
+"návrhy:"
+
+msgid "This will add or remove the following tags for all selected motions:"
+msgstr ""
+"Toto přidá nebo odstraní následující značky pro všechny vybrané návrhy:"
+
+msgid "This will move all selected motions as childs to:"
+msgstr ""
+"Všechny vybrané návrhy budou přesunuty pod následující bod pořadu jednání:"
+
+msgid ""
+"This will move all selected motions under or after the following motion in "
+"the call list:"
+msgstr ""
+"Všechny vybrané návrhy budou přesunuty pod nebo za následující návrh ve "
+"vyvolávacím seznamu:"
+
+msgid "This will send an update notification to all active clients"
+msgstr "Toto pošle oznámení o aktualizaci všem činným klientům"
+
+msgid "This will set the favorite status for all selected motions:"
+msgstr "Toto nastaví oblíbený stav pro všechny vybrané návrhy:"
+
+msgid "This will set the following category for all selected motions:"
+msgstr "Toto nastaví následující obor činnosti pro všechny vybrané návrhy:"
+
+msgid "This will set the following motion block for all selected motions:"
+msgstr "Toto nastaví následující návrhový blok pro všechny vybrané návrhy:"
+
+msgid "This will set the following recommendation for all selected motions:"
+msgstr "Toto nastaví následující doporučení pro všechny vybrané návrhy:"
+
+msgid "This will set the following state for all selected motions:"
+msgstr "Toto nastaví následující stav pro všechny vybrané návrhy:"
+
+msgid "Three-quarters majority"
+msgstr "Tříčtvrtinová většina"
+
+msgid "Tile view"
+msgstr "Dlaždicové zobrazení"
+
+msgid "Timestamp"
+msgstr "Časové razítko"
 
 msgid "Title"
 msgstr "Název"
 
+msgid "Title for PDF document (all elections)"
+msgstr "Název dokumentu PDF (všechny volby)"
+
+msgid "Title for PDF documents of motions"
+msgstr "Název dokumentů PDF s návrhy"
+
+msgid "Title for access data and welcome PDF"
+msgstr "Název pro přístupová data a pozdravné PDF"
+
+msgid "Title is required. All other fields are optional and may be empty."
+msgstr ""
+"Název je požadován. Všechna ostatní pole jsou nepovinná a mohou zůstat "
+"prázdná."
+
+msgid "Topic"
+msgstr "Námět"
+
+msgid "Topic has been imported"
+msgstr "Námět byl zaveden"
+
+msgid "Topic will be imported"
+msgstr "Námět bude zaveden"
+
+msgid "Topics"
+msgstr "Náměty"
+
+msgid "Topics have been imported."
+msgstr "Náměty byly zavedeny."
+
+msgid "Topics(s) will be imported."
+msgstr "Námět(y) budou zavedeny."
+
+msgid "Total votes cast"
+msgstr "Celkem odevzdáno hlasů"
+
+msgid "Touch the book icon to enter text"
+msgstr "Klepněte na ikonu knihy a zadejte text"
+
+msgid "Two-thirds majority"
+msgstr "Dvoutřetinová většina"
+
+msgid "Type"
+msgstr "Typ"
+
+msgid "Undone"
+msgstr "Nevyřízeno"
+
+msgid "Unpublish"
+msgstr "Nezveřejněno"
+
+msgid "Unsupport"
+msgstr "Stáhnout podporu"
+
+msgid "Upload"
+msgstr "Nahrát"
+
+msgid "Upload files"
+msgstr "Nahrát soubory"
+
+msgid "Upload to:"
+msgstr "Nahrát do:"
+
+msgid ""
+"Use <strong>admin</strong> and <strong>admin</strong> for your first "
+"login.<br>Please change your password to hide this message!"
+msgstr ""
+"Pro své první přihlášení použijte <strong>admin</strong> a "
+"<strong>admin</strong>.<br>Ke skrytí této zprávy, prosím, změňte své heslo!"
+
+msgid "Use the following custom number"
+msgstr "Použít následující uživatelsky stanovený počet"
+
+msgid ""
+"Use these placeholders: {name}, {event_name}, {url}, {username}, {password}."
+" The url referrs to the system url."
+msgstr ""
+"Použijte tyto zástupné symboly: {name}, {event_name}, {url}, {username}, "
+"{password}. Adresa (URL) odkazuje na systémovou adresu (URL)."
+
+msgid "Used for QRCode in PDF of access data."
+msgstr "Použito jako QR kód v PDF přístupových dat."
+
+msgid "Used for WLAN QRCode in PDF of access data."
+msgstr "Použito jako WLAN QR kód v PDF přístupových dat."
+
 msgid "Username"
 msgstr "Uživatelské jméno"
+
+msgid "Username or password is not correct."
+msgstr "Uživatelské jméno nebo heslo není správné."
+
+msgid "Uses leading zeros to sort motions correctly by identifier."
+msgstr ""
+"Použije nuly na začátku pro správné řazení návrhů podle identifikátoru."
+
+msgid "Valid votes"
+msgstr "Platné hlasy"
+
+msgid "View"
+msgstr "Pohled"
+
+msgid "Visibility"
+msgstr "Viditelnost"
+
+msgid "Vote"
+msgstr "Hlasování"
+
+msgid "Vote created"
+msgstr "Hlasování vytvořeno"
+
+msgid "Vote deleted"
+msgstr "Hlasování smazáno"
+
+msgid "Vote updated"
+msgstr "Hlasování aktualizováno"
+
+msgid "Votes"
+msgstr "Hlasy"
+
+msgid "Voting"
+msgstr "Hlasování"
+
+msgid "Voting and ballot papers"
+msgstr "Hlasování a hlasovací lístky"
+
+msgid "Voting result"
+msgstr "Výsledek hlasování"
+
+msgid "WEP"
+msgstr "WEP"
+
+msgid "WLAN access data"
+msgstr "Přístupová data k WLAN"
+
+msgid "WLAN encryption"
+msgstr "Šifrování WLAN"
+
+msgid "WLAN name (SSID)"
+msgstr "Název WLAN (SSID)"
+
+msgid "WLAN password"
+msgstr "Heslo k WLAN"
+
+msgid "WPA/WPA2"
+msgstr "WPA/WPA2"
+
+msgid "Waiting for results"
+msgstr "Čeká se na výsledky"
+
+msgid "Web interface header logo"
+msgstr "Emblém v záhlaví internetového rozhraní"
 
 msgid "Welcome to OpenSlides"
 msgstr "Vítejte v OpenSlides"
 
+msgid "Which version?"
+msgstr "Kterou verzi?"
+
+msgid ""
+"Will be displayed as label before selected recommendation in statute "
+"amendments."
+msgstr ""
+"Bude zobrazeno jako popis před vybraným doporučením v pozměňovacích návrzích"
+" předpisu."
+
+msgid ""
+"Will be displayed as label before selected recommendation. Use an empty "
+"value to disable the recommendation system."
+msgstr ""
+"Bude zobrazeno jako popis před vybraným doporučením. Použijte prázdné zadání"
+" pro vypnutí doporučovací soustavy"
+
+msgid "Withdraw"
+msgstr "Stáhnout"
+
+msgid "Workflow"
+msgstr "Pracovní postup"
+
+msgid "Workflow of new motions"
+msgstr "Postup práce na nových návrzích"
+
+msgid "Workflow of new statute amendments"
+msgstr "Průběh práce na nových pozměňovacích návrzích předpisu"
+
+msgid "Workflows"
+msgstr "Pracovní postupy"
+
 msgid "Yes"
 msgstr "Ano"
+
+msgid "Yes/No"
+msgstr "Ano/Ne"
+
+msgid "Yes/No per candidate"
+msgstr "Ano/Ne pro uchazeče"
+
+msgid "Yes/No/Abstain"
+msgstr "Ano/Ne/Zdržení se"
+
+msgid "Yes/No/Abstain per candidate"
+msgstr "Ano/Ne/Zdržení se pro uchazeče"
+
+msgid "You are not supposed to be here..."
+msgstr "Nemáte tu být..."
+
+msgid ""
+"You are using the history mode of OpenSlides. Changes will not be saved."
+msgstr "Používáte minulostní režim OpenSlides. Změny nebudou uloženy."
+
+msgid "You can use {event_name} and {username} as placeholder."
+msgstr "Můžete použít {event_name} a {username} jako zástupné symboly."
+
+msgid ""
+"You cannot change the recommendation of motions in different workflows!"
+msgstr "Nemůžete změnit doporučení návrhů v různých pracovních postupech!"
+
+msgid "You cannot change the state of motions in different workflows!"
+msgstr "Nemůžete změnit stav návrhů v různých pracovních postupech!"
+
+msgid "You do not have the required permission to see that page!"
+msgstr ""
+"Nemáte požadované oprávnění k tomu, abyste se mohl podívat na tu stránku."
+
+msgid "You made changes."
+msgstr "Provedl jste změny."
+
+msgid "You override the personally set password!"
+msgstr "Tímto přepíšete osobně nastavené heslo!"
+
+msgid "Your password was resetted successfully!"
+msgstr "Vaše heslo byla úspěšně obnoveno!"
+
+msgid "[Begin speech] starts the countdown, [End speech] stops the countdown."
+msgstr "[Začít řeč] spustí odpočítávání, [Ukončit řeč] zastaví odpočítávání."
+
+msgid "[Place for your welcome and help text.]"
+msgstr "[Místo pro váš uvítací a nápomocný text.]"
+
+msgid "[Space for your welcome text.]"
+msgstr "[Místo pro váš uvítací text.]"
+
+msgid "absent"
+msgstr "Nepřítomen"
+
+msgid "accepted"
+msgstr "přijato"
+
+msgid "active"
+msgstr "Činný"
+
+msgid "active users"
+msgstr "Činní uživatelé"
+
+msgid "add group(s)"
+msgstr "Přidat skupinu(y)"
+
+msgid "adjourned"
+msgstr "odloženo"
+
+msgid "and"
+msgstr "a"
+
+msgid "ballot-paper"
+msgstr "Hlasovací lístek"
 
 msgid "by"
 msgstr "od"
 
+msgid "committee"
+msgstr "Výbor"
+
+msgid "connections"
+msgstr "Spojení"
+
+msgid "contribution"
+msgstr "Hlášení slov"
+
+msgid "disabled"
+msgstr "Vypnuto"
+
+msgid "diverse"
+msgstr "Odlišný"
+
+msgid "emails"
+msgstr "Elektronické dopisy"
+
+msgid "entries will be ommitted."
+msgstr "Záznamy budou vypuštěny."
+
+msgid "errors"
+msgstr "Chyby"
+
+msgid "example"
+msgstr "Příklad"
+
+msgid "female"
+msgstr "Žena"
+
+msgid "fullscreen"
+msgstr "celá obrazovka"
+
+msgid "has saved his work on this motion."
+msgstr "uložil svoji práci na tomto návrhu."
+
+msgid "hidden"
+msgstr "skryto"
+
+msgid "in progress"
+msgstr "probíhá"
+
+msgid "inactive"
+msgstr "Nečinný"
+
 msgid "inline"
 msgstr "uvnitř"
+
+msgid "internal"
+msgstr "vnitřní"
+
+msgid "is elected"
+msgstr "je zvolen"
+
+msgid "is now"
+msgstr "je nyní"
+
+msgid "items"
+msgstr "položek"
+
+msgid "items per page"
+msgstr "Záznamů na stranu"
+
+msgid "items selected"
+msgstr "položek vybráno"
+
+msgid "majority"
+msgstr "Většina"
+
+msgid "male"
+msgstr "Muž"
+
+msgid "motions"
+msgstr "Návrhy"
+
+msgid "motions-example"
+msgstr "Příklad návrhů"
+
+msgid "move ..."
+msgstr "přesunout ..."
+
+msgid "needs review"
+msgstr "potřeba posouzení"
+
+msgid "no committee"
+msgstr "Není výbor"
 
 msgid "none"
 msgstr "žádné"
 
+msgid "not concerned"
+msgstr "neprobíráno"
+
+msgid "not decided"
+msgstr "nerozhodnuto"
+
+msgid "not reached"
+msgstr "nedosažen"
+
+msgid "not reached."
+msgstr "nedosažen."
+
+msgid "of"
+msgstr "z"
+
 msgid "outside"
 msgstr "vně"
+
+msgid "participants-example"
+msgstr "Příklad účastníků"
+
+msgid "permitted"
+msgstr "schváleno"
+
+msgid "present"
+msgstr "Přítomen"
+
+msgid "public"
+msgstr "veřejný"
+
+msgid "published"
+msgstr "zveřejněno"
+
+msgid "reached"
+msgstr "dosažen"
+
+msgid "reached."
+msgstr "dosažen."
+
+msgid "refered to committee"
+msgstr "předáno do výboru"
+
+msgid "rejected"
+msgstr "odmítnuto"
+
+msgid "rejected (not authorized)"
+msgstr "odmítnuto (není schváleno)"
+
+msgid "remove group(s)"
+msgstr "Odstranit skupinu(y)"
+
+msgid "result"
+msgstr "výsledek"
+
+msgid "results"
+msgstr "výsledky"
+
+msgid "selected"
+msgstr "vybráno"
+
+msgid "statute paragraphs have been imported."
+msgstr "odstavec(e) předpisu byly zavedeny."
+
+msgid "statute paragraphs(s) will be imported."
+msgstr "odstavec(e) předpisu budou zavedeny."
+
+msgid "submitted"
+msgstr "podáno"
+
+msgid "supporters"
+msgstr "Podporovatelé"
+
+msgid "to"
+msgstr "po"
+
+msgid "undocumented"
+msgstr "nedokumentováno"
+
+msgid "unpublished"
+msgstr "nezveřejněno"
+
+msgid "with filter"
+msgstr "s filtrem"
+
+msgid "with indexedDB"
+msgstr "s indexedDB"
+
+msgid "with local storage"
+msgstr "s místním úložištěm"
+
+msgid "withdrawed"
+msgstr "staženo"
