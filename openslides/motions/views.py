@@ -278,7 +278,7 @@ class MotionViewSet(TreeSortMixin, ModelViewSet):
             whitelist: List[str] = []
             # Add title, text and reason to the whitelist only, if the user is the submitter.
             if motion.is_submitter(request.user) and motion.state.allow_submitter_edit:
-                whitelist.extend(("title", "text", "reason"))
+                whitelist.extend(("title", "text", "reason", "amendment_paragraphs"))
 
             if has_perm(request.user, "motions.can_manage_metadata"):
                 whitelist.extend(
