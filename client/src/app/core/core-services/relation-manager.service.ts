@@ -82,12 +82,18 @@ export class RelationManagerService {
                 );
                 viewModel['_' + relation.ownKey] = foreignViewModels;
                 this.sortByRelation(relation, viewModel);
+                if (relation.afterSetRelation) {
+                    relation.afterSetRelation(viewModel, foreignViewModels);
+                }
             } else if (relation.type === 'M2O') {
                 const foreignViewModel = this.viewModelStoreService.get(
                     relation.foreignViewModel,
                     model[relation.ownIdKey]
                 );
                 viewModel['_' + relation.ownKey] = foreignViewModel;
+                if (relation.afterSetRelation) {
+                    relation.afterSetRelation(viewModel, foreignViewModel);
+                }
             }
         } else if (isReverseRelationDefinition(relation) && !initialLoading) {
             if (relation.type === 'M2M') {
@@ -203,12 +209,19 @@ export class RelationManagerService {
                 ) {
                     const foreignViewModel = <any>this.viewModelStoreService.get(collection, changedId);
                     this.setForeingViewModelInOwnViewModelArray(foreignViewModel, ownViewModel, relation.ownKey);
+                    if (relation.afterDependencyChange) {
+                        relation.afterDependencyChange(ownViewModel, foreignViewModel);
+                    }
                     return true;
                 }
             } else if (relation.type === 'M2O') {
                 if (ownViewModel[relation.ownIdKey] === <any>changedId) {
                     // Check, if this is the matching foreign view model.
-                    ownViewModel['_' + relation.ownKey] = <any>this.viewModelStoreService.get(collection, changedId);
+                    const foreignViewModel = this.viewModelStoreService.get(collection, changedId);
+                    ownViewModel['_' + relation.ownKey] = <any>foreignViewModel;
+                    if (relation.afterDependencyChange) {
+                        relation.afterDependencyChange(ownViewModel, foreignViewModel);
+                    }
                     return true;
                 }
             }

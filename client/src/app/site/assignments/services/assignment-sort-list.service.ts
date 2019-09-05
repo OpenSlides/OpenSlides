@@ -15,9 +15,14 @@ import { ViewAssignment } from '../models/view-assignment';
 })
 export class AssignmentSortListService extends BaseSortListService<ViewAssignment> {
     /**
+     * set the storage key name
+     */
+    protected storageKey = 'AssignmentList';
+
+    /**
      * Define the sort options
      */
-    public sortOptions: OsSortingOption<ViewAssignment>[] = [
+    private assignmentSortOptions: OsSortingOption<ViewAssignment>[] = [
         { property: 'title', label: 'Name' },
         { property: 'phase', label: 'Phase' },
         { property: 'candidateAmount', label: 'Number of candidates' },
@@ -31,7 +36,14 @@ export class AssignmentSortListService extends BaseSortListService<ViewAssignmen
      * @param storage required by parent
      */
     public constructor(translate: TranslateService, storage: StorageService, OSStatus: OpenSlidesStatusService) {
-        super('Assignment', translate, storage, OSStatus);
+        super(translate, storage, OSStatus);
+    }
+
+    /**
+     * @override
+     */
+    protected getSortOptions(): OsSortingOption<ViewAssignment>[] {
+        return this.assignmentSortOptions;
     }
 
     /**

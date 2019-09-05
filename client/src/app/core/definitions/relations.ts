@@ -39,6 +39,8 @@ interface BaseNormalRelationDefinition<VForeign extends BaseViewModel> extends B
      * the model and view model. E.g. `category_id` in a motion.
      */
     ownIdKey: string;
+
+    afterDependencyChange?: (ownViewModel: BaseViewModel, foreignViewModel: BaseViewModel) => void;
 }
 
 /**
@@ -56,16 +58,19 @@ interface NormalM2MRelationDefinition<VForeign extends BaseViewModel>
     extends BaseNormalRelationDefinition<VForeign>,
         BaseOrderedRelation<VForeign> {
     type: 'M2M';
+    afterSetRelation?: (ownViewModel: BaseViewModel, foreignViewModels: BaseViewModel[]) => void;
 }
 
 interface NormalO2MRelationDefinition<VForeign extends BaseViewModel>
     extends BaseNormalRelationDefinition<VForeign>,
         BaseOrderedRelation<VForeign> {
     type: 'O2M';
+    afterSetRelation?: (ownViewModel: BaseViewModel, foreignViewModels: BaseViewModel[]) => void;
 }
 
 interface NormalM2ORelationDefinition<VForeign extends BaseViewModel> extends BaseNormalRelationDefinition<VForeign> {
     type: 'M2O';
+    afterSetRelation?: (ownViewModel: BaseViewModel, foreignViewModel: BaseViewModel | null) => void;
 }
 
 export type NormalRelationDefinition<VForeign extends BaseViewModel = BaseViewModel> =

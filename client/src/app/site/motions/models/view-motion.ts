@@ -1,5 +1,6 @@
 import { _ } from 'app/core/translate/translation-marker';
 import { ConfigService } from 'app/core/ui-services/config.service';
+import { DiffLinesInParagraph } from 'app/core/ui-services/diff.service';
 import { SearchProperty, SearchRepresentation } from 'app/core/ui-services/search.service';
 import { Motion, MotionComment } from 'app/shared/models/motions/motion';
 import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
@@ -76,6 +77,7 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
     protected _parent?: ViewMotion;
     protected _amendments?: ViewMotion[];
     protected _changeRecommendations?: ViewMotionChangeRecommendation[];
+    protected _diffLines?: DiffLinesInParagraph[];
     public personalNote?: PersonalNoteContent;
 
     public get motion(): Motion {
@@ -340,6 +342,31 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
      */
     public get stateCssColor(): string {
         return this.state ? this.state.css_class : '';
+    }
+
+    /**
+     * getter to access diff lines
+     */
+    public get diffLines(): DiffLinesInParagraph[] {
+        if (!this.parent_id) {
+            throw new Error('No parent No diff');
+        }
+        return this._diffLines;
+    }
+
+    public set diffLines(value: DiffLinesInParagraph[]) {
+        this._diffLines = value;
+    }
+
+    /**
+     * Get the number of the first diff line, in case a motion is an amendment
+     */
+    public get parentAndLineNumber(): string | null {
+        if (this.isParagraphBasedAmendment() && this.parent && this.diffLines && this.diffLines.length) {
+            return `${this.parent.identifier} ${this.diffLines[0].diffLineFrom}`;
+        } else {
+            return null;
+        }
     }
 
     // This is set by the repository

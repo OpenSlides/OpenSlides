@@ -56,6 +56,11 @@ export abstract class BaseSortListService<V extends BaseViewModel> {
     private sortDefinition: OsSortingDefinition<V>;
 
     /**
+     * The key to access stored valued
+     */
+    protected abstract readonly storageKey: string;
+
+    /**
      * The sorting function according to current settings.
      */
     public sortFn?: (a: V, b: V, ascending: boolean, intl?: Intl.Collator) => number;
@@ -105,13 +110,15 @@ export abstract class BaseSortListService<V extends BaseViewModel> {
      * @returns wether sorting is active or not
      */
     public get isActive(): boolean {
-        return this.sortDefinition && this.sortOptions.length > 0;
+        return this.sortOptions && this.sortOptions.length > 0;
     }
 
-    /**
-     * Enforce children to implement sortOptions
-     */
-    public abstract sortOptions: OsSortingOption<V>[];
+    public get sortOptions(): OsSortingOption<V>[] {
+        const sortOptions = this.getSortOptions();
+        if (sortOptions && sortOptions.length) {
+            return sortOptions;
+        }
+    }
 
     /**
      * Constructor.
@@ -121,11 +128,15 @@ export abstract class BaseSortListService<V extends BaseViewModel> {
      * @param store to save and load sorting preferences
      */
     public constructor(
-        protected name: string,
         protected translate: TranslateService,
         private store: StorageService,
         private OSStatus: OpenSlidesStatusService
     ) {}
+
+    /**
+     * Enforce children to implement a function that returns their sorting options
+     */
+    protected abstract getSortOptions(): OsSortingOption<V>[];
 
     /**
      * Enforce children to implement a method that returns the fault sorting
@@ -148,7 +159,7 @@ export abstract class BaseSortListService<V extends BaseViewModel> {
             if (this.OSStatus.isInHistoryMode) {
                 this.sortDefinition = null;
             } else {
-                this.sortDefinition = await this.store.get<OsSortingDefinition<V> | null>('sorting_' + this.name);
+                this.sortDefinition = await this.store.get<OsSortingDefinition<V> | null>('sorting_' + this.storageKey);
             }
 
             if (this.sortDefinition && this.sortDefinition.sortProperty) {
@@ -183,11 +194,15 @@ export abstract class BaseSortListService<V extends BaseViewModel> {
      * @param option
      * @returns the name of the sorting icon, fit to material icon ligatures
      */
-    public getSortIcon(option: OsSortingOption<V>): string {
-        if (this.sortProperty !== option.property) {
-            return '';
+    public getSortIcon(option: OsSortingOption<V>): string | null {
+        if (this.sortDefinition) {
+            if (this.sortProperty && this.sortProperty !== option.property) {
+                return '';
+            }
+            return this.ascending ? 'arrow_upward' : 'arrow_downward';
+        } else {
+            return null;
         }
-        return this.ascending ? 'arrow_upward' : 'arrow_downward';
     }
 
     /**
@@ -210,7 +225,7 @@ export abstract class BaseSortListService<V extends BaseViewModel> {
     private updateSortDefinitions(): void {
         this.updateSortedData();
         if (!this.OSStatus.isInHistoryMode) {
-            this.store.set('sorting_' + this.name, this.sortDefinition);
+            this.store.set('sorting_' + this.storageKey, this.sortDefinition);
         }
     }
 
@@ -227,7 +242,7 @@ export abstract class BaseSortListService<V extends BaseViewModel> {
      * every time the sorting (property, ascending/descending) or the language changes
      */
     protected updateSortedData(): void {
-        if (this.inputData) {
+        if (this.inputData && this.sortDefinition) {
             const property = this.sortProperty as string;
 
             const intl = new Intl.Collator(this.translate.currentLang, {

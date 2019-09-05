@@ -243,8 +243,6 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
 
             if (storedFilter && storedFilter.length && newDefinitions && newDefinitions.length) {
                 for (const newDef of newDefinitions) {
-                    console.log('set filter');
-
                     // for some weird angular bugs, newDef can actually be undefined
                     if (newDef) {
                         let count = 0;

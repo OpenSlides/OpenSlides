@@ -18,7 +18,7 @@
 
 <os-list-view-table
     [repo]="motionRepo"
-    [sortService]="motionSortService"
+    [sortService]="amendmentSortService"
     [filterService]="amendmentFilterService"
     [columns]="tableColumnDefinition"
     [filterProps]="filterProps"
@@ -70,6 +70,7 @@
 
     <!-- Summary -->
     <div *pblNgridCellDef="'summary'; row as motion" class="cell-slot fill">
+        <a class="detail-link" [routerLink]="motion.getDetailStateURL()"></a>
         <div class="innerTable">
             <div class="motion-text" [innerHtml]="sanitizeText(getAmendmentSummary(motion))"></div>
         </div>

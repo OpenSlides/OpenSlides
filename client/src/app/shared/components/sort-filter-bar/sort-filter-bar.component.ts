@@ -208,8 +208,9 @@ export class SortFilterBarComponent<V extends BaseViewModel> {
      * Retrieves the currently active icon for an option.
      * @param option
      */
-    public getSortIcon(option: OsSortingOption<V>): string {
-        return this.sortService.getSortIcon(option);
+    public getSortIcon(option: OsSortingOption<V>): string | null {
+        const icon = this.sortService.getSortIcon(option);
+        return icon ? icon : null;
     }
 
     /**
