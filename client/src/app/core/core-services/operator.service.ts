@@ -116,10 +116,30 @@ export class OperatorService implements OnAfterAppsLoaded {
      */
     private userRepository: UserRepositoryService | null;
 
+    private _currentWhoAmI: WhoAmI | null = null;
+    private _defaultWhoAMI: WhoAmI = {
+        user_id: null,
+        guest_enabled: false,
+        user: null,
+        permissions: []
+    };
+
     /**
      * The current WhoAmI response to extract the user (the operator) from.
      */
-    private currentWhoAmI: WhoAmI | null;
+    private get currentWhoAmI(): WhoAmI {
+        return this._currentWhoAmI || this._defaultWhoAMI;
+    }
+
+    private set currentWhoAmI(value: WhoAmI | null) {
+        this._currentWhoAmI = value;
+
+        // Resetting the default whoami, when the current whoami isn't there. This
+        // is for a fresh restart and do not have (old) changed values in this.defaultWhoAmI
+        if (!value) {
+            this._defaultWhoAMI = this.getDefaultWhoAmIResponse();
+        }
+    }
 
     private readonly _loaded: Deferred<void> = new Deferred();
 
@@ -169,7 +189,7 @@ export class OperatorService implements OnAfterAppsLoaded {
                 ),
                 auditTime(10)
             )
-            .subscribe(_ => this.updatePermissions());
+            .subscribe(() => this.updatePermissions());
 
         // Watches the user observable to update the viewUser for the operator.
         this.getUserObservable().subscribe(user => {
@@ -199,36 +219,6 @@ export class OperatorService implements OnAfterAppsLoaded {
     }
 
     /**
-     * Returns a default WhoAmI response
-     */
-    private getDefaultWhoAmIResponse(): WhoAmI {
-        return {
-            user_id: null,
-            guest_enabled: false,
-            user: null,
-            permissions: []
-        };
-    }
-
-    /**
-     * Gets the current WhoAmI response from the storage.
-     */
-    public async whoAmIFromStorage(): Promise<WhoAmI> {
-        let response: WhoAmI;
-        try {
-            response = await this.storageService.get<WhoAmI>(WHOAMI_STORAGE_KEY);
-            if (!response) {
-                response = this.getDefaultWhoAmIResponse();
-            }
-        } catch (e) {
-            response = this.getDefaultWhoAmIResponse();
-        }
-        await this.updateCurrentWhoAmI(response);
-        this._loaded.resolve();
-        return this.currentWhoAmI;
-    }
-
-    /**
      * Load the repo to get a view user.
      */
     public onAfterAppsLoaded(): void {
@@ -237,6 +227,24 @@ export class OperatorService implements OnAfterAppsLoaded {
             this._viewUser = this.userRepository.getViewModel(this.user.id);
         }
         this.viewOperatorSubject.next(this._viewUser);
+    }
+
+    /**
+     * Gets the current WhoAmI response from the storage.
+     */
+    public async whoAmIFromStorage(): Promise<WhoAmI | null> {
+        let response: WhoAmI | null = null;
+        try {
+            response = await this.storageService.get<WhoAmI>(WHOAMI_STORAGE_KEY);
+            if (!isWhoAmI(response)) {
+                response = null;
+            }
+        } catch (e) {}
+
+        if (response) {
+            await this.updateCurrentWhoAmI(response);
+        }
+        return response;
     }
 
     /**
@@ -274,9 +282,6 @@ export class OperatorService implements OnAfterAppsLoaded {
      * WhoAMI response.
      */
     private async updateUserInCurrentWhoAmI(): Promise<void> {
-        if (!this.currentWhoAmI) {
-            this.currentWhoAmI = this.getDefaultWhoAmIResponse();
-        }
         if (this.isAnonymous) {
             this.currentWhoAmI.user_id = null;
             this.currentWhoAmI.user = null;
@@ -300,6 +305,7 @@ export class OperatorService implements OnAfterAppsLoaded {
 
         this._user = whoami ? whoami.user : null;
         await this.updatePermissions();
+        this._loaded.resolve();
     }
 
     /**
@@ -394,9 +400,6 @@ export class OperatorService implements OnAfterAppsLoaded {
         }
 
         // Save perms to current WhoAmI
-        if (!this.currentWhoAmI) {
-            this.currentWhoAmI = this.getDefaultWhoAmIResponse();
-        }
         this.currentWhoAmI.permissions = this.permissions;
 
         if (!this.OSStatus.isInHistoryMode) {
@@ -405,5 +408,17 @@ export class OperatorService implements OnAfterAppsLoaded {
 
         // publish changes in the operator.
         this.operatorSubject.next(this.user);
+    }
+
+    /**
+     * Returns a default WhoAmI response
+     */
+    private getDefaultWhoAmIResponse(): WhoAmI {
+        return {
+            user_id: null,
+            guest_enabled: false,
+            user: null,
+            permissions: []
+        };
     }
 }

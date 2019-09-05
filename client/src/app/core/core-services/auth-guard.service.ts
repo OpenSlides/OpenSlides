@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, CanActivateChild, Router } from '@angular/router';
 
+import { FallbackRoutesService } from './fallback-routes.service';
 import { OpenSlidesService } from './openslides.service';
 import { OperatorService } from './operator.service';
 
@@ -21,7 +22,8 @@ export class AuthGuard implements CanActivate, CanActivateChild {
     public constructor(
         private router: Router,
         private operator: OperatorService,
-        private openSlidesService: OpenSlidesService
+        private openSlidesService: OpenSlidesService,
+        private fallbackRoutesService: FallbackRoutesService
     ) {}
 
     /**
@@ -56,13 +58,34 @@ export class AuthGuard implements CanActivate, CanActivateChild {
         if (this.canActivate(route)) {
             return true;
         } else {
-            this.openSlidesService.redirectUrl = location.pathname;
-            this.router.navigate(['/error'], {
-                queryParams: {
-                    error: 'Authentication Error',
-                    msg: route.data.basePerm
-                }
-            });
+            this.handleForbiddenRoute(route);
         }
+    }
+
+    /**
+     * Handles a forbidden route. If the route is "/" (start page), It is tried to
+     * use a fallback route provided by AuthGuardFallbackRoutes. If this won't work
+     * or it wasn't the start page in the first place, the operator will be redirected
+     * to an error page.
+     */
+    private handleForbiddenRoute(route: ActivatedRouteSnapshot): void {
+        if (route.url.length === 0) {
+            // start page
+            const fallbackRoute = this.fallbackRoutesService.getFallbackRoute();
+            if (fallbackRoute) {
+                this.router.navigate([fallbackRoute]);
+                return;
+            }
+        }
+        // Fall-through: If the url is the start page, but no other fallback was found,
+        // navigate to the error page.
+
+        this.openSlidesService.redirectUrl = location.pathname;
+        this.router.navigate(['/error'], {
+            queryParams: {
+                error: 'Authentication Error',
+                msg: route.data.basePerm
+            }
+        });
     }
 }
