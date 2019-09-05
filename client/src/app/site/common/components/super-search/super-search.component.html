@@ -9,18 +9,23 @@
         ></os-rounded-input>
         <button mat-icon-button [matMenuTriggerFor]="filterMenu"><mat-icon>filter_list</mat-icon></button>
         <mat-menu #filterMenu="matMenu">
+            <button mat-menu-item (click)="setSearchStringForID()">
+                <mat-icon>{{ !!searchStringForID ? 'checked' : '' }}</mat-icon>
+                ID
+            </button>
+            <mat-divider></mat-divider>
             <button
                 mat-menu-item
                 *ngFor="let model of registeredModels"
                 (click)="setCollection(model.verboseNamePlural)"
             >
-                <mat-icon>{{ model.verboseNamePlural === searchCollection ? 'checked' : '' }}</mat-icon>
+                <mat-icon>{{ model.collectionString === specificCollectionString ? 'checked' : '' }}</mat-icon>
                 {{ model.verboseNamePlural | translate }}
             </button>
         </mat-menu>
     </div>
     <h4 *ngIf="searchResultCount > 0" class="result-count">
-        {{ searchResultCount }} {{ searchResultCount === 1 ? ( 'result' | translate ) : ( 'results' | translate ) }}
+        {{ searchResultCount }} {{ searchResultCount === 1 ? ('result' | translate) : ('results' | translate) }}
     </h4>
     <mat-divider></mat-divider>
     <div class="result-view" *ngIf="searchResults.length > 0">
@@ -37,7 +42,9 @@
                                 <mat-basic-chip
                                     class="lightblue filter-count"
                                     disableRipple
-                                    matTooltip="{{ result.models.length === 1 ? ( 'result' | translate ) : ( 'results' | translate ) }}"
+                                    matTooltip="{{
+                                        result.models.length === 1 ? ('result' | translate) : ('results' | translate)
+                                    }}"
                                     >{{ result.models.length }}</mat-basic-chip
                                 >
                             </mat-panel-title>
@@ -84,7 +91,9 @@
             </mat-accordion>
             <div class="no-results" *ngIf="!selectedModel && searchString.length > 0">
                 <span translate>No search result found</span>
-                <span *ngIf="searchCollection">&nbsp;({{ 'with filter' | translate }} "{{ searchCollection | translate }}")</span>.
+                <span *ngIf="searchCollection"
+                    >&nbsp;({{ 'with filter' | translate }} "{{ searchCollection | translate }}")</span
+                >.
             </div>
         </div>
         <mat-divider [vertical]="true"></mat-divider>

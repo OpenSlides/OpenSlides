@@ -114,7 +114,7 @@ export class ViewCategory extends BaseViewModel<Category> implements CategoryTit
     }
 
     public getDetailStateURL(): string {
-        return '/motions/category';
+        return `motions/category/${this.id}`;
     }
 
     /**
