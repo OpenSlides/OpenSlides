@@ -66,10 +66,10 @@
     (click)="sendMainEvent()"
     matTooltip="{{ mainActionTooltip | translate }}"
 >
-    <mat-icon *ngIf="mainButtonIcon === 'add_circle'; else mainIconBlock">
+    <mat-icon *ngIf="mainButtonIcon === 'add_circle'">
         add
     </mat-icon>
+    <mat-icon *ngIf="mainButtonIcon !== 'add_circle'">
+        {{ mainButtonIcon }}
+    </mat-icon>
 </button>
-<ng-template #mainIconBlock>
-    {{ mainButtonIcon }}
-</ng-template>
