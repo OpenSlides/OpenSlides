@@ -584,6 +584,29 @@ class UpdateMotion(TestCase):
         motion = Motion.objects.get()
         self.assertEqual(motion.text, "test_text_xeigheeha7thopubeu4U")
 
+    def test_patch_amendment_paragraphs_no_manage_perms(self):
+        admin = get_user_model().objects.get(username="admin")
+        admin.groups.remove(GROUP_ADMIN_PK)
+        admin.groups.add(GROUP_DELEGATE_PK)
+        Submitter.objects.add(admin, self.motion)
+        self.motion.state.allow_submitter_edit = True
+        self.motion.state.save()
+        inform_changed_data(admin)
+
+        response = self.client.patch(
+            reverse("motion-detail", args=[self.motion.pk]),
+            {"amendment_paragraphs": ["test_paragraph_39fo8qcpcaFMmjfaD2Lb"]},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        motion = Motion.objects.get()
+        self.assertTrue(isinstance(motion.amendment_paragraphs, list))
+        self.assertEqual(len(motion.amendment_paragraphs), 1)
+        self.assertEqual(
+            motion.amendment_paragraphs[0], "test_paragraph_39fo8qcpcaFMmjfaD2Lb"
+        )
+        self.assertEqual(motion.text, "")
+
     def test_patch_workflow(self):
         """
         Tests to only update the workflow of a motion.
