@@ -322,7 +322,10 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
                     }
                 });
                 editor.on('Remove', ev => {
-                    if (ev.target.getContent() !== this.translatedValue) {
+                    // Do not save empty values on remove. This prevents losing the value on e.g.
+                    // fast navigation, when the editor is not fully loaded. Then the content is empty
+                    // and would trigger an update with empty data.
+                    if (ev.target.getContent() && ev.target.getContent() !== this.translatedValue) {
                         this.update(ev.target.getContent());
                     }
                 });
