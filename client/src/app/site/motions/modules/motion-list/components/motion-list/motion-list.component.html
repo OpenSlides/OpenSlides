@@ -214,12 +214,16 @@
 
 <mat-menu #motionListMenu="matMenu">
     <div *ngIf="!isMultiSelect">
+        <!-- Multiselect -->
         <div *ngIf="perms.isAllowed('change_metadata') && selectedView === 'list'">
             <button mat-menu-item (click)="toggleMultiSelect()">
                 <mat-icon>library_add</mat-icon>
                 <span translate>Multiselect</span>
             </button>
+            <mat-divider></mat-divider>
         </div>
+
+        <!-- Amendments -->
         <div *ngIf="perms.isAllowed('manage') || hasAmendments()">
             <button mat-menu-item routerLink="amendments">
                 <!-- color_lens -->
@@ -228,48 +232,68 @@
                 <span translate>Amendments</span>
             </button>
         </div>
-        <div *ngIf="perms.isAllowed('manage')">
-            <button mat-menu-item routerLink="call-list">
-                <mat-icon>sort</mat-icon>
-                <span translate>Call list</span>
-            </button>
-        </div>
+
+        <!-- Categories -->
         <div *ngIf="perms.isAllowed('manage') || categories.length">
             <button mat-menu-item routerLink="category">
                 <mat-icon>category</mat-icon>
                 <span translate>Categories</span>
             </button>
         </div>
+
+        <!-- Motion blocks -->
         <div *ngIf="perms.isAllowed('manage') || motionBlocks.length">
             <button mat-menu-item routerLink="blocks">
                 <mat-icon>widgets</mat-icon>
                 <span translate>Motion blocks</span>
             </button>
         </div>
+
+        <mat-divider
+            *ngIf="categories.length || motionBlocks.length || hasAmendments() || perms.isAllowed('manage')"
+        ></mat-divider>
+
         <div *ngIf="perms.isAllowed('manage')">
+            <!-- Call list -->
+            <button mat-menu-item routerLink="call-list">
+                <mat-icon>sort</mat-icon>
+                <span translate>Call list</span>
+            </button>
+
+            <!-- Statutes -->
             <button mat-menu-item routerLink="statute-paragraphs" *ngIf="statutesEnabled">
                 <mat-icon>account_balance</mat-icon>
                 <span translate>Statute</span>
             </button>
+
+            <!-- Comments -->
             <button mat-menu-item routerLink="comment-section">
                 <mat-icon>speaker_notes</mat-icon>
                 <span translate>Comment fields</span>
             </button>
+
+            <!-- Workflows -->
             <button mat-menu-item routerLink="workflow">
                 <mat-icon>build</mat-icon>
                 <span translate>Workflows</span>
             </button>
+
+            <!-- Tags -->
             <button mat-menu-item routerLink="/tags" *osPerms="'core.can_manage_tags'">
                 <mat-icon>local_offer</mat-icon>
                 <span translate>Tags</span>
             </button>
+
+            <mat-divider></mat-divider>
         </div>
 
+        <!-- Export -->
         <button mat-menu-item *ngIf="selectedView === 'list'" (click)="openExportDialog()">
             <mat-icon>archive</mat-icon>
             <span translate>Export</span>
         </button>
 
+        <!-- Import -->
         <div *ngIf="perms.isAllowed('manage')">
             <button mat-menu-item routerLink="import">
                 <mat-icon>cloud_upload</mat-icon>
