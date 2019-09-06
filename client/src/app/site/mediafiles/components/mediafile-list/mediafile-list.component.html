@@ -172,26 +172,28 @@
 <!-- Menu for single files in the list -->
 <mat-menu #singleMediafileMenu="matMenu">
     <ng-template matMenuContent let-mediafile="mediafile">
-        <!-- Exclusive for images -->
-        <div *ngIf="mediafile.isImage() && canEdit">
-            <div *ngFor="let action of logoActions">
-                <ng-container
-                    *ngTemplateOutlet="manageButton; context: { mediafile: mediafile, action: action }"
-                ></ng-container>
+        <div *osPerms="'core.can_manage_logos_and_fonts'">
+            <!-- Exclusive for images -->
+            <div *ngIf="mediafile.isImage()">
+                <div *ngFor="let action of logoActions">
+                    <ng-container
+                        *ngTemplateOutlet="manageButton; context: { mediafile: mediafile, action: action }"
+                    ></ng-container>
+                </div>
             </div>
-        </div>
 
-        <!-- Exclusive for fonts -->
-        <div *ngIf="mediafile.isFont() && canEdit">
-            <div *ngFor="let action of fontActions">
-                <ng-container
-                    *ngTemplateOutlet="manageButton; context: { mediafile: mediafile, action: action }"
-                ></ng-container>
+            <!-- Exclusive for fonts -->
+            <div *ngIf="mediafile.isFont()">
+                <div *ngFor="let action of fontActions">
+                    <ng-container
+                        *ngTemplateOutlet="manageButton; context: { mediafile: mediafile, action: action }"
+                    ></ng-container>
+                </div>
             </div>
+            <mat-divider *ngIf="mediafile.isFont() || mediafile.isImage()"></mat-divider>
         </div>
 
         <!-- Edit and delete for all images -->
-        <mat-divider *ngIf="mediafile.isFont() || mediafile.isImage()"></mat-divider>
         <os-projector-button
             *ngIf="mediafile.isProjectable()"
             [object]="mediafile"

@@ -81,6 +81,7 @@ export class MediafileListComponent extends BaseListViewComponent<ViewMediafile>
         return (
             this.operator.hasPerms('core.can_manage_projector') ||
             this.operator.hasPerms('agenda.can_see_list_of_speakers') ||
+            this.operator.hasPerms('core.can_manage_logos_and_fonts') ||
             this.canEdit
         );
     }
@@ -253,6 +254,8 @@ export class MediafileListComponent extends BaseListViewComponent<ViewMediafile>
         return (
             this.operator.hasPerms('agenda.can_see_list_of_speakers') ||
             (file.isProjectable() && this.operator.hasPerms('core.can_manage_projector')) ||
+            (file.isFont() && this.operator.hasPerms('core.can_manage_logos_and_fonts')) ||
+            (file.isImage() && this.operator.hasPerms('core.can_manage_logos_and_fonts')) ||
             this.canEdit
         );
     }
@@ -433,7 +436,9 @@ export class MediafileListComponent extends BaseListViewComponent<ViewMediafile>
     public onManageButton(event: any, file: ViewMediafile, action: string): void {
         // prohibits automatic closing
         event.stopPropagation();
-        this.mediaManage.setAs(file, action);
+        this.mediaManage.setAs(file, action).then(() => {
+            this.cd.markForCheck();
+        });
     }
 
     public createNewFolder(templateRef: TemplateRef<string>): void {
