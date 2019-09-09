@@ -211,7 +211,6 @@ async def motion_slide(
         "identifier": motion["identifier"],
         "title": motion["title"],
         "preamble": motions_preamble,
-        "text": motion["text"],
         "amendment_paragraphs": motion["amendment_paragraphs"],
         "base_motion": base_motion,
         "base_statute": base_statute,
@@ -223,6 +222,9 @@ async def motion_slide(
         "line_length": line_length,
         "line_numbering_mode": line_numbering_mode,
     }
+
+    if not await get_config(all_data, "motions_disable_text_on_projector"):
+        return_value["text"] = motion["text"]
 
     if not await get_config(all_data, "motions_disable_reason_on_projector"):
         return_value["reason"] = motion["reason"]

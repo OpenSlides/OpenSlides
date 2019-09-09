@@ -35,7 +35,7 @@
     <div id="text-wrapper">
     <div id="text" [ngStyle]="textDivStyles">
         <!-- Text -->
-        <span class="text-prefix-label">{{ preamble | translate }}</span>
+        <span *ngIf="isStatuteAmendment() || isParagraphBasedAmendment() || !!getFormattedText()" class="text-prefix-label">{{ preamble | translate }}</span>
 
         <!-- Regular motions or traditional amendments -->
         <ng-container *ngIf="!isStatuteAmendment() && !isParagraphBasedAmendment()">
@@ -51,7 +51,7 @@
                     </div>
                     <div [innerHTML]="getFormattedTitleDiff()"></div>
                 </div>
-                <div [innerHTML]="sanitizedText(getFormattedText())"></div>
+                <div *ngIf="getFormattedText()" [innerHTML]="sanitizedText(getFormattedText())"></div>
             </div>
         </ng-container>
 
