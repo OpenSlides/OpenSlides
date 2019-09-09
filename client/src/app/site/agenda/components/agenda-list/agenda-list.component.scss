@@ -1,5 +1,4 @@
 @import '~assets/styles/tables.scss';
-
 .info-col-items {
     display: inline-block;
     white-space: nowrap;
@@ -15,6 +14,9 @@
     }
 }
 
+/*
+* Where is this used?
+*/
 .done-check {
     margin-right: 10px;
 }

@@ -23,6 +23,16 @@ def get_config_variables():
         subgroup="General",
     )
 
+    yield ConfigVariable(
+        name="agenda_show_subtitle",
+        default_value=False,
+        input_type="boolean",
+        label="Show subtitles in the agenda",
+        weight=201,
+        group="Agenda",
+        subgroup="General",
+    )
+
     # Numbering
 
     yield ConfigVariable(

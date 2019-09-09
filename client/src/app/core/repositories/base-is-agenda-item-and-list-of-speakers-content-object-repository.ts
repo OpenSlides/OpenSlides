@@ -59,6 +59,17 @@ export abstract class BaseIsAgendaItemAndListOfSpeakersContentObjectRepository<
         return numberPrefix + this.getTitle(titleInformation) + ' (' + this.getVerboseName() + ')';
     }
 
+    /**
+     * Overwrites the base function.
+     *
+     * @param titleInformation The information about the model.
+     *
+     * @returns {string | null} An optional subtitle. `Null`, if it returns no subtitle, otherwise `string`.
+     */
+    public getAgendaSubtitle(titleInformation: T): string | null {
+        return null;
+    }
+
     public getAgendaSlideTitle(titleInformation: T): string {
         const numberPrefix = titleInformation.agenda_item_number ? `${titleInformation.agenda_item_number} · ` : '';
         return numberPrefix + this.getTitle(titleInformation);
@@ -88,6 +99,7 @@ export abstract class BaseIsAgendaItemAndListOfSpeakersContentObjectRepository<
         viewModel.getAgendaListTitle = () => this.getAgendaListTitle(viewModel);
         viewModel.getAgendaListTitleWithoutItemNumber = () => this.getAgendaListTitleWithoutItemNumber(viewModel);
         viewModel.getAgendaSlideTitle = () => this.getAgendaSlideTitle(viewModel);
+        viewModel.getAgendaSubtitle = () => this.getAgendaSubtitle(viewModel);
         viewModel.getListOfSpeakersTitle = () => this.getListOfSpeakersTitle(viewModel);
         viewModel.getListOfSpeakersSlideTitle = () => this.getListOfSpeakersSlideTitle(viewModel);
         return viewModel;

@@ -1,11 +1,13 @@
 @import '~assets/styles/tables.scss';
 
+$pbl-height: var(--pbl-height);
+
 .projector-button {
     margin: auto;
 }
 
 .pbl-ngrid-row {
-    height: 110px;
+    height: $pbl-height;
 }
 
 .pbl-ngrid-cell {

@@ -294,6 +294,13 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
     };
 
     /**
+     * @override The base function and returns the submitters as optional subtitle.
+     */
+    public getAgendaSubtitle = (model: ViewMotion) => {
+        return model.submittersAsUsers.join(', ');
+    };
+
+    /**
      * @override The base function
      */
     public getAgendaListTitleWithoutItemNumber = (titleInformation: MotionTitleInformation) => {

@@ -92,6 +92,22 @@ export class ItemRepositoryService extends BaseHasContentObjectRepository<
     };
 
     /**
+     * Overrides the base function, if implemented.
+     *
+     * @returns An optional subtitle as `string`. Defaults to `null`.
+     */
+    public getSubtitle = (titleInformation: ItemTitleInformation) => {
+        if (titleInformation.contentObject) {
+            return titleInformation.contentObject.getAgendaSubtitle();
+        } else {
+            const repo = this.collectionStringMapperService.getRepository(
+                titleInformation.contentObjectData.collection
+            ) as BaseIsAgendaItemContentObjectRepository<any, any, any>;
+            return repo.getAgendaSubtitle(titleInformation.title_information);
+        }
+    };
+
+    /**
      * Overrides the base function.
      *
      * @returns The title without any prefix like item number.
@@ -106,6 +122,20 @@ export class ItemRepositoryService extends BaseHasContentObjectRepository<
             return repo.getAgendaListTitleWithoutItemNumber(titleInformation.title_information);
         }
     };
+
+    /**
+     * @override The base-function to extends the items with an optional subtitle.
+     *
+     * @param model The underlying item.
+     * @param initialLoading boolean passed to the base-function.
+     *
+     * @returns {ViewItem} The modified item extended with the `getSubtitle()`-function.
+     */
+    protected createViewModelWithTitles(model: Item, initialLoading: boolean): ViewItem {
+        const viewModel = super.createViewModelWithTitles(model, initialLoading);
+        viewModel.getSubtitle = () => this.getSubtitle(viewModel);
+        return viewModel;
+    }
 
     /**
      * Trigger the automatic numbering sequence on the server

@@ -82,6 +82,12 @@
         color: mat-color($foreground, secondary-text);
     }
 
+    .subtitle {
+        color: mat-color($foreground, secondary-text);
+        font-size: 12px;
+        font-weight: 400;
+    }
+
     mat-card-header {
         background-color: mat-color($background, app-bar);
     }
