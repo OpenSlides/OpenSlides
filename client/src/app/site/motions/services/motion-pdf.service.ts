@@ -559,8 +559,9 @@ export class MotionPdfService {
      * @returns doc def for the motion text
      */
     private createPreamble(motion: ViewMotion): object {
+        const motions_preamble = this.configService.instant<string>('motions_preamble');
         return {
-            text: `${this.translate.instant(this.configService.instant('motions_preamble'))}`,
+            text: `${this.translate.instant(motions_preamble)}`,
             margin: [0, 10, 0, 10]
         };
     }

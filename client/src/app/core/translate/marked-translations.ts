@@ -362,6 +362,7 @@ _(
 _('Username or password is not correct.');
 _('Guest');
 _('Participant');
+_('No users with email {0} found.');
 
 // default groups
 _('Default');

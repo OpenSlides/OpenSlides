@@ -5,11 +5,11 @@ msgid ""
 msgstr ""
 "Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>, 2019\n"
 "Language-Team: German (https://www.transifex.com/openslides/teams/14270/de/)\n"
-"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"mime-version: 1.0\n"
 
 msgid "%num% emails were send sucessfully."
 msgstr "%num% E-Mails wurden erfolgreich versandt."
@@ -1534,6 +1534,9 @@ msgstr "Keine Satzungsabschnitte vorhanden"
 
 msgid "No tags"
 msgstr "Keine Schlagwörter"
+
+msgid "No users with email {0} found."
+msgstr "Es wurde kein Nutzer mit E-Mail-Adresse {0} gefunden."
 
 msgid "No."
 msgstr "Nr."
