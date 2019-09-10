@@ -149,7 +149,7 @@
             </button>
         </div>
         <div (touchstart)="swipe($event, 'start')" (touchend)="swipe($event, 'end')" class="content">
-            <main [@pageTransition]="o.isActivated ? o.activatedRoute : ''">
+            <main>
                 <router-outlet #o="outlet"></router-outlet>
             </main>
         </div>

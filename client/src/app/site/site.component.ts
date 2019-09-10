@@ -9,7 +9,7 @@ import { ActivationEnd, NavigationEnd, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { filter } from 'rxjs/operators';
 
-import { navItemAnim, pageTransition } from '../shared/animations';
+import { navItemAnim } from '../shared/animations';
 import { OfflineService } from 'app/core/core-services/offline.service';
 import { OverlayService } from 'app/core/ui-services/overlay.service';
 import { UpdateService } from 'app/core/ui-services/update.service';
@@ -32,7 +32,7 @@ interface RoutingData {
 
 @Component({
     selector: 'os-site',
-    animations: [pageTransition, navItemAnim],
+    animations: [navItemAnim],
     templateUrl: './site.component.html',
     styleUrls: ['./site.component.scss']
 })
