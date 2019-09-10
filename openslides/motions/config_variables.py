@@ -96,11 +96,21 @@ def get_config_variables():
     )
 
     yield ConfigVariable(
+        name="motions_disable_text_on_projector",
+        default_value=False,
+        input_type="boolean",
+        label="Hide motion-text on projector",
+        weight=325,
+        group="Motions",
+        subgroup="General",
+    )
+
+    yield ConfigVariable(
         name="motions_disable_reason_on_projector",
         default_value=False,
         input_type="boolean",
         label="Hide reason on projector",
-        weight=325,
+        weight=326,
         group="Motions",
         subgroup="General",
     )
@@ -110,7 +120,7 @@ def get_config_variables():
         default_value=False,
         input_type="boolean",
         label="Hide meta information box on projector",
-        weight=326,
+        weight=327,
         group="Motions",
         subgroup="General",
     )
@@ -120,7 +130,7 @@ def get_config_variables():
         default_value=False,
         input_type="boolean",
         label="Hide recommendation on projector",
-        weight=327,
+        weight=328,
         group="Motions",
         subgroup="General",
     )
@@ -130,7 +140,7 @@ def get_config_variables():
         default_value=False,
         input_type="boolean",
         label="Hide referring motions",
-        weight=328,
+        weight=329,
         group="Motions",
         subgroup="General",
     )
@@ -141,7 +151,7 @@ def get_config_variables():
         input_type="boolean",
         label="Show the sequential number for a motion",
         help_text="In motion list, motion detail and PDF.",
-        weight=329,
+        weight=330,
         group="Motions",
         subgroup="General",
     )

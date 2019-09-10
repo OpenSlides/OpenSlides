@@ -324,6 +324,9 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
         // const changes: ViewUnifiedChange[] = Object.assign([], this.allChangingObjects);
         const motion = this.data.data;
 
+        if (!motion.text) {
+            return null;
+        }
         switch (this.crMode) {
             case ChangeRecoMode.Original:
                 return this.lineNumbering.insertLineNumbers(motion.text, this.lineLength, this.highlightedLine);
