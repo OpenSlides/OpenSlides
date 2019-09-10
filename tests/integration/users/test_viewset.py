@@ -853,69 +853,75 @@ class PersonalNoteTest(TestCase):
     def test_create(self):
         admin_client = APIClient()
         admin_client.login(username="admin", password="admin")
+        content1 = {
+            "note": "note for the example.model with id 1 Oohae1JeuSedooyeeviH",
+            "star": True,
+        }
+        content2 = {
+            "note": "note for the example.model with id 2 gegjhjynjiohnhioaaiu",
+            "star": False,
+        }
         response = admin_client.post(
-            reverse("personalnote-list"),
-            {
-                "notes": {
-                    "example-model": {
-                        "1": {
-                            "note": "note for the example.model with id 1 Oohae1JeuSedooyeeviH",
-                            "star": True,
-                        }
-                    }
-                }
-            },
+            reverse("personalnote-create-or-update"),
+            [
+                {"collection": "example-model", "id": 1, "content": content1},
+                {"collection": "example-model", "id": 2, "content": content2},
+            ],
             format="json",
         )
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(PersonalNote.objects.exists())
+        personal_note = PersonalNote.objects.get()
+        self.assertTrue("example-model" in personal_note.notes)
+        self.assertTrue("1" in personal_note.notes["example-model"])
+        self.assertTrue("2" in personal_note.notes["example-model"])
+        self.assertEqual(personal_note.notes["example-model"]["1"], content1)
+        self.assertEqual(personal_note.notes["example-model"]["2"], content2)
 
     def test_anonymous_create(self):
         guest_client = APIClient()
         response = guest_client.post(
-            reverse("personalnote-list"), {"notes": {}}, format="json"
+            reverse("personalnote-create-or-update"), [], format="json"
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertFalse(PersonalNote.objects.exists())
-
-    def test_create_twice(self):
-        admin_client = APIClient()
-        admin_client.login(username="admin", password="admin")
-        response = admin_client.post(
-            reverse("personalnote-list"), {"notes": {}}, format="json"
-        )
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        response = admin_client.post(
-            reverse("personalnote-list"), {"notes": {}}, format="json"
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_update(self):
         admin_client = APIClient()
         admin_client.login(username="admin", password="admin")
         personal_note = PersonalNote.objects.create(
-            user=self.admin, notes="test_note_ld3mo1xjcnKNC(836qWe"
+            user=self.admin,
+            notes={"test_collection": {2: "test_note_ld3mo1xjcnKNC(836qWe"}},
         )
-        response = admin_client.put(
-            reverse("personalnote-detail", args=[personal_note.pk]),
-            {"notes": "test_note_do2ncoi7ci2fm93LjwlO"},
+        response = admin_client.post(
+            reverse("personalnote-create-or-update"),
+            [
+                {
+                    "collection": "test_collection",
+                    "id": 2,
+                    "content": "test_note_do2ncoi7ci2fm93LjwlO",
+                }
+            ],
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        personal_note = PersonalNote.objects.get()
+        self.assertTrue("test_collection" in personal_note.notes)
+        self.assertTrue("2" in personal_note.notes["test_collection"])
         self.assertEqual(
-            PersonalNote.objects.get().notes, "test_note_do2ncoi7ci2fm93LjwlO"
+            personal_note.notes["test_collection"]["2"],
+            "test_note_do2ncoi7ci2fm93LjwlO",
         )
 
-    def test_update_other_user(self):
+    def test_delete_other_user(self):
         user = User.objects.create(username="user")
         admin_client = APIClient()
         admin_client.login(username="admin", password="admin")
         personal_note = PersonalNote.objects.create(
             user=user, notes="test_note_fof3joqmcufh32fn(/2f"
         )
-        response = admin_client.put(
-            reverse("personalnote-detail", args=[personal_note.pk]),
-            {"notes": "test_note_1qowuddm3d8mF8h29fwI"},
-            format="json",
+        response = admin_client.delete(
+            reverse("personalnote-detail", args=[personal_note.pk])
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(

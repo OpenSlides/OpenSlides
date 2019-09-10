@@ -7,6 +7,12 @@ import { HttpService } from '../core-services/http.service';
 import { OperatorService } from '../core-services/operator.service';
 import { PersonalNote, PersonalNoteContent, PersonalNoteObject } from '../../shared/models/users/personal-note';
 
+type PersonalNoteRequestData = {
+    collection: string;
+    id: number;
+    content: object;
+}[];
+
 /**
  * Handles saving personal notes.
  */
@@ -17,7 +23,7 @@ export class PersonalNoteService {
     /**
      * The personal note object for the operator
      */
-    private personalNoteObject: PersonalNoteObject;
+    private personalNoteObject: PersonalNoteObject | null;
 
     /**
      * Watches for changes in the personal note model and the operator.
@@ -34,6 +40,7 @@ export class PersonalNoteService {
      */
     private updatePersonalNoteObject(): void {
         if (this.operator.isAnonymous) {
+            this.personalNoteObject = null;
             return;
         }
 
@@ -49,16 +56,13 @@ export class PersonalNoteService {
      * @param content The new content.
      */
     public async savePersonalNote(model: BaseModel | BaseViewModel, content: PersonalNoteContent): Promise<void> {
-        const pnObject: Partial<PersonalNoteObject> = this.personalNoteObject || {};
-        if (!pnObject.notes) {
-            pnObject.notes = {};
-        }
-        if (!pnObject.notes[model.collectionString]) {
-            pnObject.notes[model.collectionString] = {};
-        }
-
-        pnObject.notes[model.collectionString][model.id] = content;
-        await this.savePersonalNoteObject(pnObject);
+        await this.savePersonalNoteObject([
+            {
+                collection: model.collectionString,
+                id: model.id,
+                content: content
+            }
+        ]);
     }
 
     /**
@@ -75,7 +79,7 @@ export class PersonalNoteService {
         if (!pnObject.notes) {
             pnObject.notes = {};
         }
-        for (const model of models) {
+        const requestData: PersonalNoteRequestData = models.map(model => {
             if (!pnObject.notes[model.collectionString]) {
                 pnObject.notes[model.collectionString] = {};
             }
@@ -84,20 +88,21 @@ export class PersonalNoteService {
             } else {
                 pnObject.notes[model.collectionString][model.id] = { star: star, note: '' };
             }
-        }
-        await this.savePersonalNoteObject(pnObject);
+            return {
+                collection: model.collectionString,
+                id: model.id,
+                content: pnObject.notes[model.collectionString][model.id]
+            };
+        });
+        await this.savePersonalNoteObject(requestData);
     }
 
     /**
      * Sends an updated personal note to the server
      *
-     * @param pnObject a partial (if new) or complete personal note object
+     * @param requestData The data to send to the server
      */
-    private async savePersonalNoteObject(pnObject: Partial<PersonalNoteObject>): Promise<void> {
-        if (!pnObject.id) {
-            await this.http.post('/rest/users/personal-note/', pnObject);
-        } else {
-            await this.http.put(`/rest/users/personal-note/${pnObject.id}/`, pnObject);
-        }
+    private async savePersonalNoteObject(requestData: PersonalNoteRequestData): Promise<void> {
+        await this.http.post(`/rest/users/personal-note/create_or_update/`, requestData);
     }
 }

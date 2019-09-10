@@ -17,7 +17,6 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core import mail
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
-from django.db.utils import IntegrityError
 from django.http.request import QueryDict
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
@@ -608,13 +607,7 @@ class PersonalNoteViewSet(ModelViewSet):
         """
         if self.action in ("list", "retrieve"):
             result = self.get_access_permissions().check_permissions(self.request.user)
-        elif self.action in (
-            "metadata",
-            "create",
-            "partial_update",
-            "update",
-            "destroy",
-        ):
+        elif self.action in ("create_or_update", "destroy"):
             # Every authenticated user can see metadata and create personal
             # notes for himself and can manipulate only his own personal notes.
             # See self.perform_create(), self.update() and self.destroy().
@@ -623,29 +616,44 @@ class PersonalNoteViewSet(ModelViewSet):
             result = False
         return result
 
-    def perform_create(self, serializer):
-        """
-        Customized method to inject the request.user into serializer's save
-        method so that the request.user can be saved into the model field.
-        """
-        try:
-            serializer.save(user=self.request.user)
-        except IntegrityError:
-            raise ValidationError(
-                {
-                    "detail": "The personal note for user {0} does already exist",
-                    "args": [self.request.user.id],
-                }
-            )
-
-    def update(self, request, *args, **kwargs):
+    @list_route(methods=["post"])
+    @transaction.atomic
+    def create_or_update(self, request, *args, **kwargs):
         """
         Customized method to ensure that every user can change only his own
         personal notes.
+
+        [{
+            collection: <collection>,
+            id: <id>,
+            content: <Any>,
+        }, ...]
         """
-        if self.get_object().user != self.request.user:
-            self.permission_denied(request)
-        return super().update(request, *args, **kwargs)
+        # verify data:
+        if not isinstance(request.data, list):
+            raise ValidationError({"detail": "Data must be a list"})
+        for data in request.data:
+            if not isinstance(data, dict):
+                raise ValidationError({"detail": "Every entry must be a dict"})
+            if not isinstance(data.get("collection"), str):
+                raise ValidationError({"detail": "The collection must be a string"})
+            if not isinstance(data.get("id"), int):
+                raise ValidationError({"detail": "The id must be an integer"})
+
+        # get note
+        personal_note, _ = PersonalNote.objects.get_or_create(user=request.user)
+
+        # set defaults
+        if not personal_note.notes:
+            personal_note.notes = {}
+
+        for data in request.data:
+            if data["collection"] not in personal_note.notes:
+                personal_note.notes[data["collection"]] = {}
+            personal_note.notes[data["collection"]][data["id"]] = data["content"]
+
+        personal_note.save()
+        return Response()
 
     def destroy(self, request, *args, **kwargs):
         """
