@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { AmendmentListPdfService } from './amendment-list-pdf.service';
 import { PdfDocumentService } from 'app/core/pdf-services/pdf-document.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
@@ -30,6 +31,7 @@ export class MotionPdfExportService {
         private translate: TranslateService,
         private configService: ConfigService,
         private motionPdfService: MotionPdfService,
+        private amendmentListPdfService: AmendmentListPdfService,
         private pdfCatalogService: MotionPdfCatalogService,
         private pdfDocumentService: PdfDocumentService
     ) {}
@@ -115,5 +117,23 @@ export class MotionPdfExportService {
             const metadata = { title: filename };
             this.pdfDocumentService.download(doc, filename, metadata);
         }
+    }
+
+    /**
+     * Exports the amendments to the given motion as an overview table
+     * @param parentMotion
+     */
+    public exportAmendmentList(amendments: ViewMotion[], parentMotion?: ViewMotion): void {
+        let filename: string;
+        if (parentMotion) {
+            filename = `${this.translate.instant('Amendments to')} ${parentMotion.getListTitle()}`;
+        } else {
+            filename = `${this.translate.instant('Amendments')}`;
+        }
+        const doc = this.amendmentListPdfService.overviewToDocDef(filename, amendments);
+        const metadata = {
+            title: filename
+        };
+        this.pdfDocumentService.downloadLandscape(doc, filename, metadata);
     }
 }

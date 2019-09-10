@@ -62,24 +62,6 @@ export interface MotionTitleInformation extends TitleInformationWithAgendaItem {
  */
 export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Motion>
     implements MotionTitleInformation, Searchable {
-    public static COLLECTIONSTRING = Motion.COLLECTIONSTRING;
-    protected _collectionString = Motion.COLLECTIONSTRING;
-
-    protected _category?: ViewCategory;
-    protected _submitters?: ViewSubmitter[];
-    protected _supporters?: ViewUser[];
-    protected _workflow?: ViewWorkflow;
-    protected _state?: ViewState;
-    protected _recommendation?: ViewState;
-    protected _motion_block?: ViewMotionBlock;
-    protected _attachments?: ViewMediafile[];
-    protected _tags?: ViewTag[];
-    protected _parent?: ViewMotion;
-    protected _amendments?: ViewMotion[];
-    protected _changeRecommendations?: ViewMotionChangeRecommendation[];
-    protected _diffLines?: DiffLinesInParagraph[];
-    public personalNote?: PersonalNoteContent;
-
     public get motion(): Motion {
         return this._model;
     }
@@ -368,9 +350,47 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
             return null;
         }
     }
+    public static COLLECTIONSTRING = Motion.COLLECTIONSTRING;
+    protected _collectionString = Motion.COLLECTIONSTRING;
+
+    protected _category?: ViewCategory;
+    protected _submitters?: ViewSubmitter[];
+    protected _supporters?: ViewUser[];
+    protected _workflow?: ViewWorkflow;
+    protected _state?: ViewState;
+    protected _recommendation?: ViewState;
+    protected _motion_block?: ViewMotionBlock;
+    protected _attachments?: ViewMediafile[];
+    protected _tags?: ViewTag[];
+    protected _parent?: ViewMotion;
+    protected _amendments?: ViewMotion[];
+    protected _changeRecommendations?: ViewMotionChangeRecommendation[];
+    protected _diffLines?: DiffLinesInParagraph[];
+    public personalNote?: PersonalNoteContent;
 
     // This is set by the repository
     public getIdentifierOrTitle: () => string;
+
+    /**
+     * Extract the lines of the amendments
+     * If an amendments has multiple changes, they will be printed like an array of strings
+     *
+     * @param amendment the motion to create the amendment to
+     * @return The lines of the amendment
+     */
+    public getChangeLines(): string {
+        if (!!this.diffLines) {
+            return this.diffLines
+                .map(diffLine => {
+                    if (diffLine.diffLineTo === diffLine.diffLineFrom + 1) {
+                        return '' + diffLine.diffLineFrom;
+                    } else {
+                        return `${diffLine.diffLineFrom} - ${diffLine.diffLineTo - 1}`;
+                    }
+                })
+                .toString();
+        }
+    }
 
     /**
      * Formats the category for search

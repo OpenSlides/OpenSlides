@@ -46,7 +46,7 @@
                 <span *ngIf="motion.diffLines && motion.diffLines.length">
                     <span *ngIf="motion.identifier">&nbsp;&middot;&nbsp;</span>
                     <span translate>Line</span>
-                    <span>&nbsp;{{ getChangeLines(motion) }}</span>
+                    <span>&nbsp;{{ motion.getChangeLines() }}</span>
                 </span>
             </div>
 
@@ -105,6 +105,10 @@
         <button mat-menu-item (click)="openExportDialog()">
             <mat-icon>archive</mat-icon>
             <span translate>Export</span>
+        </button>
+        <button mat-menu-item (click)="exportAmendmentListPdf()">
+            <mat-icon>picture_as_pdf</mat-icon>
+            <span translate>Amendment list PDF</span>
         </button>
     </div>
     <div *ngIf="isMultiSelect">

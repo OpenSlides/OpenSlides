@@ -18,6 +18,7 @@ import { largeDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseListViewComponent } from 'app/site/base/base-list-view';
 import { MotionExportDialogComponent } from '../shared-motion/motion-export-dialog/motion-export-dialog.component';
 import { MotionExportInfo, MotionExportService } from '../../services/motion-export.service';
+import { MotionPdfExportService } from '../../services/motion-pdf-export.service';
 import { MotionSortListService } from '../../services/motion-sort-list.service';
 import { ViewMotion } from '../../models/view-motion';
 
@@ -32,6 +33,11 @@ import { ViewMotion } from '../../models/view-motion';
     encapsulation: ViewEncapsulation.None
 })
 export class AmendmentListComponent extends BaseListViewComponent<ViewMotion> implements OnInit {
+    /**
+     * Hold the Id of the parent motion
+     */
+    private parentMotionId: number;
+
     /**
      * Hold the parent motion if present
      */
@@ -91,7 +97,8 @@ export class AmendmentListComponent extends BaseListViewComponent<ViewMotion> im
         private sanitizer: DomSanitizer,
         private dialog: MatDialog,
         private motionExport: MotionExportService,
-        private linenumberingService: LinenumberingService
+        private linenumberingService: LinenumberingService,
+        private pdfExport: MotionPdfExportService
     ) {
         super(titleService, translate, matSnackBar, storage);
         super.setTitle('Amendments');
@@ -105,36 +112,13 @@ export class AmendmentListComponent extends BaseListViewComponent<ViewMotion> im
             // if there is a subscription to the parent motion
             this.parentMotion = this.route.paramMap.pipe(
                 switchMap((params: ParamMap) => {
-                    const parentMotionId = +params.get('id');
-                    this.amendmentFilterService.parentMotionId = parentMotionId;
-                    return this.motionRepo.getViewModelObservable(parentMotionId);
+                    this.parentMotionId = +params.get('id');
+                    this.amendmentFilterService.parentMotionId = this.parentMotionId;
+                    return this.motionRepo.getViewModelObservable(this.parentMotionId);
                 })
             );
         } else {
             this.amendmentFilterService.parentMotionId = undefined;
-        }
-    }
-
-    /**
-     * Extract the lines of the amendments
-     * If an amendments has multiple changes, they will be printed like an array of strings
-     *
-     * @param amendment the motion to create the amendment to
-     * @return The lines of the amendment
-     */
-    public getChangeLines(amendment: ViewMotion): string {
-        const diffLines = amendment.diffLines;
-
-        if (!!diffLines) {
-            return diffLines
-                .map(diffLine => {
-                    if (diffLine.diffLineTo === diffLine.diffLineFrom + 1) {
-                        return '' + diffLine.diffLineFrom;
-                    } else {
-                        return `${diffLine.diffLineFrom} - ${diffLine.diffLineTo - 1}`;
-                    }
-                })
-                .toString();
         }
     }
 
@@ -170,6 +154,14 @@ export class AmendmentListComponent extends BaseListViewComponent<ViewMotion> im
                     this.isMultiSelect ? this.selectedRows : this.dataSource.filteredData
                 )
             );
+    }
+
+    /**
+     * Export the given motion ist as special PDF
+     */
+    public exportAmendmentListPdf(): void {
+        const parentMotion = this.parentMotionId ? this.motionRepo.getViewModel(this.parentMotionId) : undefined;
+        this.pdfExport.exportAmendmentList(this.dataSource.filteredData, parentMotion);
     }
 
     public sanitizeText(text: string): SafeHtml {

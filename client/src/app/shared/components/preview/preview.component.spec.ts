@@ -4,7 +4,7 @@ import { E2EImportsModule } from 'e2e-imports.module';
 
 import { PreviewComponent } from './preview.component';
 
-fdescribe('PreviewComponent', () => {
+describe('PreviewComponent', () => {
     let component: PreviewComponent;
     let fixture: ComponentFixture<PreviewComponent>;
 
