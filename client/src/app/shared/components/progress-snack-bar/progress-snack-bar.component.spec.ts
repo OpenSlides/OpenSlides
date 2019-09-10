@@ -5,7 +5,7 @@ import { E2EImportsModule } from 'e2e-imports.module';
 
 import { ProgressSnackBarComponent } from './progress-snack-bar.component';
 
-fdescribe('ProgressSnackBarComponent', () => {
+describe('ProgressSnackBarComponent', () => {
     let component: ProgressSnackBarComponent;
     let fixture: ComponentFixture<ProgressSnackBarComponent>;
 

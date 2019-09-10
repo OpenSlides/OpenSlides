@@ -3,7 +3,7 @@ import { async, TestBed } from '@angular/core/testing';
 // import { SuperSearchComponent } from './super-search.component';
 import { E2EImportsModule } from 'e2e-imports.module';
 
-fdescribe('SuperSearchComponent', () => {
+describe('SuperSearchComponent', () => {
     // let component: SuperSearchComponent;
     // let fixture: ComponentFixture<SuperSearchComponent>;
 

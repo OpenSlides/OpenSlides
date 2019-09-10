@@ -2,9 +2,9 @@ import { TestBed } from '@angular/core/testing';
 
 import { E2EImportsModule } from 'e2e-imports.module';
 
-import { OverlayService } from './overlay.service';
+import { AmendmentListPdfService } from './amendment-list-pdf.service';
 
-describe('OverlayService', () => {
+describe('AmendmentListPdfService', () => {
     beforeEach(() =>
         TestBed.configureTestingModule({
             imports: [E2EImportsModule]
@@ -12,7 +12,7 @@ describe('OverlayService', () => {
     );
 
     it('should be created', () => {
-        const service: OverlayService = TestBed.get(OverlayService);
+        const service: AmendmentListPdfService = TestBed.get(AmendmentListPdfService);
         expect(service).toBeTruthy();
     });
 });

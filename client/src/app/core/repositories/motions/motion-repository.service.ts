@@ -138,6 +138,12 @@ const MotionRelations: RelationDefinition[] = [
         ownIdKey: 'change_recommendations_id',
         ownKey: 'changeRecommendations',
         foreignViewModel: ViewMotionChangeRecommendation
+    },
+    {
+        type: 'O2M',
+        foreignIdKey: 'parent_id',
+        ownKey: 'amendments',
+        foreignViewModel: ViewMotion
     }
     // Personal notes are dynamically added in the repo.
 ];
