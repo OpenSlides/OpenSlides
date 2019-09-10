@@ -283,22 +283,21 @@ export class MotionFilterListService extends BaseFilterListService<ViewMotion> {
                 // convert to filter options
                 if (workflowFilters && workflowFilters.length) {
                     let workflowOptions: OsFilterOptions = [];
-                    for (const filterDef of workflowFilters) {
-                        workflowOptions.push(filterDef.name);
-                        workflowOptions = workflowOptions.concat(filterDef.filter);
-                    }
-
                     // add "done" and "undone"
-                    workflowOptions.push('-');
                     workflowOptions.push({
                         label: 'Done',
                         condition: finalStates
                     });
-
                     workflowOptions.push({
                         label: this.translate.instant('Undone'),
                         condition: nonFinalStates
                     });
+                    workflowOptions.push('-');
+
+                    for (const filterDef of workflowFilters) {
+                        workflowOptions.push(filterDef.name);
+                        workflowOptions = workflowOptions.concat(filterDef.filter);
+                    }
 
                     this.stateFilterOptions.options = workflowOptions;
                 }
