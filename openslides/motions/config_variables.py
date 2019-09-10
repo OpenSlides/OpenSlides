@@ -99,7 +99,7 @@ def get_config_variables():
         name="motions_disable_text_on_projector",
         default_value=False,
         input_type="boolean",
-        label="Hide motion-text on projector",
+        label="Hide motion text on projector",
         weight=325,
         group="Motions",
         subgroup="General",
