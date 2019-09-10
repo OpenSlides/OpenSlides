@@ -21,7 +21,7 @@ else:
         logger.info(f"Redis address {redis_address}")
 
 pool = ConnectionPool({"address": redis_address})
-semaphore = asyncio.Semaphore(100)
+counter = 0
 
 
 class RedisConnectionContextManager:
@@ -32,7 +32,11 @@ class RedisConnectionContextManager:
     # TODO: contextlib.asynccontextmanager can be used in python 3.7
 
     async def __aenter__(self) -> "aioredis.RedisConnection":
-        await semaphore.acquire()
+        global counter
+        while counter > 100:
+            await asyncio.sleep(0.1)
+        counter += 1
+
         self.conn = await pool.pop()
         return self.conn
 
@@ -44,7 +48,8 @@ class RedisConnectionContextManager:
             pool.push(self.conn)
         self.conn = None
 
-        semaphore.release()
+        global counter
+        counter -= 1
 
 
 def get_connection() -> RedisConnectionContextManager:
