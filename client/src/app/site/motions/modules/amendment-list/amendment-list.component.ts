@@ -1,10 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
 import { PblColumnDefinition } from '@pebula/ngrid';
+import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 import { AmendmentFilterListService } from '../../services/amendment-filter-list.service';
 import { AmendmentSortListService } from '../../services/amendment-sort-list.service';
@@ -31,9 +33,9 @@ import { ViewMotion } from '../../models/view-motion';
 })
 export class AmendmentListComponent extends BaseListViewComponent<ViewMotion> implements OnInit {
     /**
-     * Has the id of the parent motion if passed through the constructor
+     * Hold the parent motion if present
      */
-    private parentMotionId: number;
+    public parentMotion: Observable<ViewMotion>;
 
     /**
      * Hold item visibility
@@ -47,10 +49,11 @@ export class AmendmentListComponent extends BaseListViewComponent<ViewMotion> im
         {
             prop: 'meta',
             minWidth: 250,
-            width: '15%'
+            width: 'auto'
         },
         {
             prop: 'summary',
+            minWidth: 280,
             width: 'auto'
         },
         {
@@ -80,7 +83,7 @@ export class AmendmentListComponent extends BaseListViewComponent<ViewMotion> im
         translate: TranslateService,
         matSnackBar: MatSnackBar,
         storage: StorageService,
-        route: ActivatedRoute,
+        private route: ActivatedRoute,
         public motionRepo: MotionRepositoryService,
         public motionSortService: MotionSortListService,
         public amendmentSortService: AmendmentSortListService,
@@ -93,15 +96,24 @@ export class AmendmentListComponent extends BaseListViewComponent<ViewMotion> im
         super(titleService, translate, matSnackBar, storage);
         super.setTitle('Amendments');
         this.canMultiSelect = true;
-        this.parentMotionId = parseInt(route.snapshot.params.id, 10);
-        if (this.parentMotionId) {
-            this.amendmentFilterService.parentMotionId = this.parentMotionId;
+    }
+
+    public ngOnInit(): void {
+        // determine if a paramter exists.
+        if (!!this.route.snapshot.paramMap.get('id')) {
+            // set the parentMotion observable. This will "only" fire
+            // if there is a subscription to the parent motion
+            this.parentMotion = this.route.paramMap.pipe(
+                switchMap((params: ParamMap) => {
+                    const parentMotionId = +params.get('id');
+                    this.amendmentFilterService.parentMotionId = parentMotionId;
+                    return this.motionRepo.getViewModelObservable(parentMotionId);
+                })
+            );
         } else {
             this.amendmentFilterService.parentMotionId = undefined;
         }
     }
-
-    public ngOnInit(): void {}
 
     /**
      * Extract the lines of the amendments
