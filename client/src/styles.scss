@@ -628,6 +628,7 @@ button.mat-menu-item.selected {
 .innerTable {
     display: inline-block;
     line-height: 150%;
+    width: -webkit-fill-available;
 }
 // with os-sort-filter-bar
 .virtual-scroll-with-head-bar {

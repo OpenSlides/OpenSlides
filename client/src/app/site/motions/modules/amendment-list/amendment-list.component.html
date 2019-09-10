@@ -1,6 +1,14 @@
 <os-head-bar [nav]="false" [multiSelectMode]="isMultiSelect" goBack="true">
     <!-- Title -->
-    <div class="title-slot"><h2 translate>Amendments</h2></div>
+    <div class="title-slot" *ngIf="!parentMotion"><h2 translate>Amendments</h2></div>
+
+    <!-- TODO would require translations with parameters -->
+    <div class="title-slot" *ngIf="parentMotion">
+        <h2>
+            {{ 'Amendments to' | translate }}
+            {{ (parentMotion | async)?.identifierOrTitle }}
+        </h2>
+    </div>
 
     <!-- Menu -->
     <div class="menu-slot">
@@ -23,6 +31,7 @@
     [columns]="tableColumnDefinition"
     [filterProps]="filterProps"
     [multiSelect]="isMultiSelect"
+    [hiddenInMobile]="['summary']"
     listStorageKey="amendments"
     [(selectedRows)]="selectedRows"
     (dataSourceChange)="onDataSourceChange($event)"
@@ -30,16 +39,19 @@
     <!-- Meta -->
     <div *pblNgridCellDef="'meta'; row as motion" class="cell-slot fill">
         <a class="detail-link" [routerLink]="motion.getDetailStateURL()"></a>
-        <div class="column-identifier innerTable">
+        <div class="innerTable">
             <!-- Identifier and line -->
-            <div class="title-line">
-                {{ motion.identifier }}
-                (<span translate>Line</span>&nbsp;<span>{{ getChangeLines(motion) }}</span
-                >)
+            <div class="title-line one-line">
+                <span>{{ motion.identifier }}</span>
+                <span *ngIf="motion.diffLines && motion.diffLines.length">
+                    <span *ngIf="motion.identifier">&nbsp;&middot;&nbsp;</span>
+                    <span translate>Line</span>
+                    <span>&nbsp;{{ getChangeLines(motion) }}</span>
+                </span>
             </div>
 
             <!-- Submitter -->
-            <div class="submitters-line">
+            <div class="submitters-line one-line">
                 <span *ngIf="motion.submitters.length">
                     <span translate>by</span>
                     {{ motion.submitters }}
