@@ -179,6 +179,9 @@ msgstr "Eine Stimme pro Kandidat/in"
 msgid "Amendment"
 msgstr "Änderungsantrag"
 
+msgid "Amendment list (PDF)"
+msgstr "Änderungsantragsliste (PDF)"
+
 msgid "Amendment text"
 msgstr "Änderungsantragstext"
 
@@ -190,6 +193,9 @@ msgstr "Änderungsanträge"
 
 msgid "Amendments can change multiple paragraphs"
 msgstr "Änderungsanträge können mehrere Absätze ändern"
+
+msgid "Amendments to"
+msgstr "Änderungsanträge zu"
 
 msgid "An email with a password reset link was send!"
 msgstr "Es wurde eine E-Mail mit Link zum Passwort-Zurücksetzen gesendet."
@@ -539,6 +545,9 @@ msgstr "Geänderte Fassung"
 
 msgid "Changed version in line"
 msgstr "Geänderte Fassung in Zeile"
+
+msgid "Changes"
+msgstr "Änderungen"
 
 msgid "Check for updates"
 msgstr "Auf Updates prüfen"
@@ -893,6 +902,13 @@ msgstr ""
 "Geben Sie die Dauer in Sekunden an. Zum Deaktivieren der Warn-Farbe 0 "
 "auswählen."
 
+msgid ""
+"Enter number of the next shown speakers. Choose -1 to show all next "
+"speakers."
+msgstr ""
+"Geben Sie die Anzahl der nächsten anzuzeigenden Redner/innen ein. Wählen Sie"
+" -1 um alle anzuzeigen."
+
 msgid "Enter participant number"
 msgstr "Teilnehmernummer eingeben"
 
@@ -1097,6 +1113,9 @@ msgstr "Meta-Informations-Box auf dem Projektor ausblenden"
 
 msgid "Hide more text"
 msgstr "weniger anzeigen"
+
+msgid "Hide motion text on projector"
+msgstr "Antragstext auf dem Projektor ausblenden"
 
 msgid "Hide password"
 msgstr "Passwort verstecken"
@@ -1586,6 +1605,9 @@ msgstr "Minimale Anzahl an Ziffern im Bezeichner"
 
 msgid "Number of persons to be elected"
 msgstr "Anzahl der zu wählenden Personen"
+
+msgid "Number of the next speakers to be shown on the projector"
+msgstr "Anzahl der dargestellten nächsten Render/innen auf dem Projektor"
 
 msgid "Number set"
 msgstr "Nummer gesetzt"

@@ -165,6 +165,9 @@ msgstr ""
 msgid "Amendment"
 msgstr ""
 
+msgid "Amendment list (PDF)"
+msgstr ""
+
 msgid "Amendment text"
 msgstr ""
 
@@ -175,6 +178,9 @@ msgid "Amendments"
 msgstr ""
 
 msgid "Amendments can change multiple paragraphs"
+msgstr ""
+
+msgid "Amendments to"
 msgstr ""
 
 msgid "An email with a password reset link was send!"
@@ -505,6 +511,9 @@ msgid "Changed version"
 msgstr ""
 
 msgid "Changed version in line"
+msgstr ""
+
+msgid "Changes"
 msgstr ""
 
 msgid "Check for updates"
@@ -838,6 +847,11 @@ msgstr ""
 msgid "Enter duration in seconds. Choose 0 to disable warning color."
 msgstr ""
 
+msgid ""
+"Enter number of the next shown speakers. Choose -1 to show all next "
+"speakers."
+msgstr ""
+
 msgid "Enter participant number"
 msgstr ""
 
@@ -1035,6 +1049,9 @@ msgid "Hide meta information box on projector"
 msgstr ""
 
 msgid "Hide more text"
+msgstr ""
+
+msgid "Hide motion text on projector"
 msgstr ""
 
 msgid "Hide password"
@@ -1516,6 +1533,9 @@ msgid "Number of minimal digits for identifier"
 msgstr ""
 
 msgid "Number of persons to be elected"
+msgstr ""
+
+msgid "Number of the next speakers to be shown on the projector"
 msgstr ""
 
 msgid "Number set"
