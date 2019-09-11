@@ -43,6 +43,9 @@ export class MotionExportService {
     ) {}
 
     public evaluateExportRequest(exportInfo: MotionExportInfo, data: ViewMotion[]): void {
+        if (!exportInfo) {
+            return;
+        }
         if (!!exportInfo.format) {
             if (exportInfo.format === ExportFileFormat.PDF) {
                 try {

@@ -81,7 +81,9 @@ export class MotionXlsxExportService {
      */
     public exportMotionList(motions: ViewMotion[], infoToExport: InfoToExport[], comments: number[]): void {
         const workbook = new Workbook();
-        const properties = sortMotionPropertyList(['identifier', 'title'].concat(infoToExport));
+        const properties = infoToExport.includes('speakers')
+            ? sortMotionPropertyList(['identifier', 'title'].concat(infoToExport)).concat('speakers')
+            : sortMotionPropertyList(['identifier', 'title'].concat(infoToExport));
 
         const worksheet = workbook.addWorksheet(this.translate.instant('Motions'), {
             pageSetup: {
@@ -105,10 +107,17 @@ export class MotionXlsxExportService {
         const columns = [];
         columns.push(
             ...properties.map(property => {
-                const propertyHeader =
-                    property === 'motion_block'
-                        ? 'Motion block'
-                        : property.charAt(0).toLocaleUpperCase() + property.slice(1);
+                let propertyHeader = '';
+                switch (property) {
+                    case 'motion_block':
+                        propertyHeader = 'Motion block';
+                        break;
+                    case 'speakers':
+                        propertyHeader = 'List of next speakers';
+                        break;
+                    default:
+                        propertyHeader = property.charAt(0).toUpperCase() + property.slice(1);
+                }
                 return {
                     header: this.translate.instant(propertyHeader)
                 };
@@ -138,17 +147,21 @@ export class MotionXlsxExportService {
             data.push(
                 ...properties.map(property => {
                     const motionProp = motion[property];
-                    if (motionProp) {
-                        switch (property) {
-                            case 'state':
-                                return this.motionRepo.getExtendedStateLabel(motion);
-                            case 'recommendation':
-                                return this.motionRepo.getExtendedRecommendationLabel(motion);
-                            default:
-                                return this.translate.instant(motionProp.toString());
-                        }
-                    } else {
+                    if (property === 'speakers') {
+                        return motion.listOfSpeakers && motion.listOfSpeakers.waitingSpeakerAmount > 0
+                            ? motion.listOfSpeakers.waitingSpeakerAmount
+                            : '';
+                    }
+                    if (!motionProp) {
                         return '';
+                    }
+                    switch (property) {
+                        case 'state':
+                            return this.motionRepo.getExtendedStateLabel(motion);
+                        case 'recommendation':
+                            return this.motionRepo.getExtendedRecommendationLabel(motion);
+                        default:
+                            return this.translate.instant(motionProp.toString());
                     }
                 })
             );
