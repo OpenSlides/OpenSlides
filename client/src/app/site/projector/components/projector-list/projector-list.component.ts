@@ -1,10 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnDestroy,
+    OnInit,
+    ViewEncapsulation
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
+import { timer } from 'rxjs';
 
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
@@ -18,9 +27,11 @@ import { ViewProjector } from '../../models/view-projector';
 @Component({
     selector: 'os-projector-list',
     templateUrl: './projector-list.component.html',
-    styleUrls: ['./projector-list.component.scss']
+    styleUrls: ['./projector-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    encapsulation: ViewEncapsulation.None
 })
-export class ProjectorListComponent extends BaseViewComponent implements OnInit {
+export class ProjectorListComponent extends BaseViewComponent implements OnInit, AfterViewInit, OnDestroy {
     /**
      * This member is set, if the user is creating a new projector.
      */
@@ -68,13 +79,23 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
         matSnackBar: MatSnackBar,
         private repo: ProjectorRepositoryService,
         private formBuilder: FormBuilder,
-        private operator: OperatorService
+        private operator: OperatorService,
+        private cd: ChangeDetectorRef
     ) {
         super(titleService, translate, matSnackBar);
 
         this.createForm = this.formBuilder.group({
             name: ['', Validators.required]
         });
+
+        /**
+         * Angulars change detection goes nuts, since countdown and motios with long texts are pushing too much data
+         */
+        this.subscriptions.push(
+            timer(0, 1000).subscribe(() => {
+                this.cd.detectChanges();
+            })
+        );
     }
 
     /**
@@ -84,6 +105,21 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
         super.setTitle('Projectors');
         this.projectors = this.repo.getViewModelList();
         this.repo.getViewModelListObservable().subscribe(projectors => (this.projectors = projectors));
+    }
+
+    /**
+     * Initial change detection
+     */
+    public ngAfterViewInit(): void {
+        this.cd.detectChanges();
+    }
+
+    /**
+     * implicitly Destroy the timer sub and detach the CD
+     */
+    public ngOnDestroy(): void {
+        super.ngOnDestroy();
+        this.cd.detach();
     }
 
     /**
@@ -105,7 +141,10 @@ export class ProjectorListComponent extends BaseViewComponent implements OnInit 
             this.projectorToCreate.patchValues({
                 reference_projector_id: this.projectors[0].reference_projector_id
             });
-            this.repo.create(this.projectorToCreate).then(() => (this.projectorToCreate = null), this.raiseError);
+            this.repo.create(this.projectorToCreate).then(() => {
+                this.projectorToCreate = null;
+                this.cd.detectChanges();
+            }, this.raiseError);
         }
     }
 
