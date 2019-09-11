@@ -42,8 +42,6 @@
             word-wrap: break-word;
 
             .content {
-                transition: all 1s ease;
-
                 &.collapsed {
                     max-height: 200px;
                     overflow: hidden;
