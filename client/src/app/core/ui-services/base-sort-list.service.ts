@@ -1,32 +1,15 @@
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 
+import { BaseSortService, OsSortingDefinition, OsSortingOption } from './base-sort.service';
 import { BaseViewModel } from '../../site/base/base-view-model';
 import { OpenSlidesStatusService } from '../core-services/openslides-status.service';
 import { StorageService } from '../core-services/storage.service';
 
 /**
- * Describes the sorting columns of an associated ListView, and their state.
- */
-export interface OsSortingDefinition<V> {
-    sortProperty: keyof V;
-    sortAscending: boolean;
-}
-
-/**
- * A sorting property (data may be a string, a number, a function, or an object
- * with a toString method) to sort after. Sorting will be done in {@link filterData}
- */
-export interface OsSortingOption<V> {
-    property: keyof V;
-    label?: string;
-    sortFn?: (itemA: V, itemB: V, ascending: boolean, intl?: Intl.Collator) => number;
-}
-
-/**
  * Base class for generic sorting purposes
  */
-export abstract class BaseSortListService<V extends BaseViewModel> {
+export abstract class BaseSortListService<V extends BaseViewModel> extends BaseSortService<V> {
     /**
      * The data to be sorted. See also the setter for {@link data}
      */
@@ -59,11 +42,6 @@ export abstract class BaseSortListService<V extends BaseViewModel> {
      * The key to access stored valued
      */
     protected abstract readonly storageKey: string;
-
-    /**
-     * The sorting function according to current settings.
-     */
-    public sortFn?: (a: V, b: V, ascending: boolean, intl?: Intl.Collator) => number;
 
     /**
      * Set the current sorting order
@@ -131,7 +109,9 @@ export abstract class BaseSortListService<V extends BaseViewModel> {
         protected translate: TranslateService,
         private store: StorageService,
         private OSStatus: OpenSlidesStatusService
-    ) {}
+    ) {
+        super(translate);
+    }
 
     /**
      * Enforce children to implement a function that returns their sorting options
@@ -230,78 +210,13 @@ export abstract class BaseSortListService<V extends BaseViewModel> {
     }
 
     /**
-     * Helper function to determine false-like values (if they are not boolean)
-     * @param property
-     */
-    private isFalsy(property: any): boolean {
-        return property === null || property === undefined || property === 0 || property === '';
-    }
-
-    /**
      * Recreates the sorting function. Is supposed to be called on init and
      * every time the sorting (property, ascending/descending) or the language changes
      */
     protected updateSortedData(): void {
-        if (this.inputData && this.sortDefinition) {
-            const property = this.sortProperty as string;
-
-            const intl = new Intl.Collator(this.translate.currentLang, {
-                numeric: true,
-                ignorePunctuation: true,
-                sensitivity: 'base'
-            });
-
+        if (this.inputData) {
             this.inputData.sort((itemA, itemB) => {
-                // always sort falsy values to the bottom
-                if (this.isFalsy(itemA[property]) && this.isFalsy(itemB[property])) {
-                    return 0;
-                } else if (this.isFalsy(itemA[property])) {
-                    return 1;
-                } else if (this.isFalsy(itemB[property])) {
-                    return -1;
-                }
-
-                const firstProperty = this.ascending ? itemA[property] : itemB[property];
-                const secondProperty = this.ascending ? itemB[property] : itemA[property];
-
-                if (this.sortFn) {
-                    return this.sortFn(itemA, itemB, this.ascending, intl);
-                } else {
-                    switch (typeof firstProperty) {
-                        case 'boolean':
-                            if (!firstProperty && secondProperty) {
-                                return -1;
-                            } else {
-                                return 1;
-                            }
-                        case 'number':
-                            return firstProperty > secondProperty ? 1 : -1;
-                        case 'string':
-                            if (!!firstProperty && !secondProperty) {
-                                return -1;
-                            } else if (!firstProperty && !!secondProperty) {
-                                return 1;
-                            } else if ((!secondProperty && !secondProperty) || firstProperty === secondProperty) {
-                                return 0;
-                            } else {
-                                return intl.compare(firstProperty, secondProperty);
-                            }
-                        case 'function':
-                            const a = firstProperty();
-                            const b = secondProperty();
-                            return intl.compare(a, b);
-                        case 'object':
-                            if (firstProperty instanceof Date) {
-                                return firstProperty > secondProperty ? 1 : -1;
-                            } else {
-                                return intl.compare(firstProperty.toString(), secondProperty.toString());
-                            }
-                        case 'undefined':
-                            return 1;
-                        default:
-                            return -1;
-                    }
-                }
+                return this.sortItems(itemA, itemB, this.sortProperty, this.ascending);
             });
             this.outputSubject.next(this.inputData);
         }

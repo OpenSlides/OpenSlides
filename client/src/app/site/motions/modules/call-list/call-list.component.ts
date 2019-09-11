@@ -257,6 +257,19 @@ export class CallListComponent extends SortTreeViewComponent<ViewMotion> impleme
     }
 
     /**
+     * This method requires a confirmation from the user
+     * and starts the sorting by the property `identifier` of the motions
+     * in case of `true`.
+     */
+    public async sortMotionsByIdentifier(): Promise<void> {
+        const title = this.translate.instant('Do you really want to go ahead?');
+        const text = this.translate.instant('This will reset all made changes and sort the tree...');
+        if (await this.promptService.open(title, text)) {
+            this.forceSort.emit('identifier');
+        }
+    }
+
+    /**
      * Helper to trigger an update of the filter itself and the information about
      * the state of filters
      *

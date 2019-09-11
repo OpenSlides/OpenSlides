@@ -4,6 +4,7 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { SortDefinition } from 'app/core/ui-services/base-sort.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { SortingTreeComponent } from 'app/shared/components/sorting-tree/sorting-tree.component';
 import { Identifiable } from 'app/shared/models/base/identifiable';
@@ -39,6 +40,11 @@ export abstract class SortTreeViewComponent<V extends BaseViewModel> extends Bas
      * is to be visible!
      */
     public readonly changeFilter: EventEmitter<(item: V) => boolean> = new EventEmitter<(item: V) => boolean>();
+
+    /**
+     * Emitter to notice the `tree-sorting.service` for sorting the data-source.
+     */
+    public readonly forceSort = new EventEmitter<SortDefinition<V>>();
 
     /**
      * Boolean to check if changes has been made.

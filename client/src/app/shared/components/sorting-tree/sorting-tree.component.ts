@@ -6,6 +6,8 @@ import { Component, ContentChild, EventEmitter, Input, OnDestroy, OnInit, Output
 import { Observable, Subscription } from 'rxjs';
 import { auditTime } from 'rxjs/operators';
 
+import { SortDefinition } from 'app/core/ui-services/base-sort.service';
+import { TreeSortService } from 'app/core/ui-services/tree-sort.service';
 import { FlatNode, TreeIdNode, TreeService } from 'app/core/ui-services/tree.service';
 import { Identifiable } from 'app/shared/models/base/identifiable';
 import { Displayable } from 'app/site/base/displayable';
@@ -176,6 +178,19 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
     }
 
     /**
+     * Setter for sorting functions.
+     *
+     * @param predicate An `EventEmitter` to push to sort the tree by the passed property.
+     * It should pass a `SortDefinition`.
+     */
+    @Input()
+    public set sortingDefinition(predicate: EventEmitter<SortDefinition<T>>) {
+        predicate.subscribe((event: SortDefinition<T>) => {
+            this.resolveSortingPredicate(event);
+        });
+    }
+
+    /**
      * EventEmitter to send info if changes has been made.
      */
     @Output()
@@ -197,8 +212,9 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
      * Constructor
      *
      * @param treeService Service to get data from store and build the tree nodes.
+     * @param sortService Service to sort tree nodes by their given items.
      */
-    public constructor(private treeService: TreeService) {}
+    public constructor(private treeService: TreeService, private sortService: TreeSortService<T>) {}
 
     /**
      * On init method
@@ -945,6 +961,27 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
         }
         node.expandable = result;
         return willFiltered;
+    }
+
+    /**
+     * Function to sort the given source-array by the passed property of the underlying items `<T>`.
+     *
+     * @param event `SortDefinition<T>` - can be only a `keyof T` or
+     * an object defining the property and whether ascending order or not:
+     * `{ property: keyof T, ascending: boolean }`.
+     */
+    private resolveSortingPredicate(event: SortDefinition<T>): void {
+        this.removeSubscription();
+        const sortProperty = typeof event === 'object' ? event.sortProperty : event;
+        const sortAscending = typeof event === 'object' ? event.sortAscending : true;
+
+        this.osTreeData = this.sortService.sortTree(this.osTreeData, sortProperty, sortAscending);
+        this.checkActiveFilters();
+
+        this.dataSource = null;
+        this.dataSource = new ArrayDataSource(this.osTreeData);
+
+        this.madeChanges(true);
     }
 
     /**
