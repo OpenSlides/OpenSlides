@@ -116,11 +116,6 @@ installer is required even on a 64-bit Windows system. If you use the 64-bit
 installer, step 1c of the instruction might fail unless you installed some
 packages manually.
 
-In some cases you have to install `MS Visual C++ 2015 build tools
-<https://www.microsoft.com/en-us/download/details.aspx?id=48159>`_ before you
-install the required python packages for OpenSlides (unfortunately Twisted
-needs it).
-
 To setup and activate the virtual environment in step 1b use::
 
     > .virtualenv\Scripts\activate.bat
@@ -165,7 +160,7 @@ Used software
 
 OpenSlides uses the following projects or parts of them:
 
-* Several Python packages (see ``requirements/production.txt`` and ``requirements/big_mode.txt``).
+* Several Python packages (see ``requirements/production.txt``).
 
 * Several JavaScript packages (see ``client/package.json``)
 

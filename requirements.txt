@@ -1,6 +1,5 @@
 # Requirements for OpenSlides in production
 -r requirements/production.txt
--r requirements/big_mode.txt
 
 # Requirements for development and tests in alphabetical order
 -r requirements/development.txt

@@ -4,6 +4,5 @@ include LICENSE
 include README.rst
 include SETTINGS.rst
 include requirements/production.txt
-include requirements/big_mode.txt
 recursive-include openslides *.*
 exclude openslides/__pycache__/*
