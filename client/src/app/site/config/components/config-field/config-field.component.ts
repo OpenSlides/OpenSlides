@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+    OnDestroy,
+    OnInit,
+    ViewEncapsulation
+} from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 
@@ -28,7 +36,7 @@ import { ViewConfig } from '../../models/view-config';
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None // to style the date and time pickers
 })
-export class ConfigFieldComponent extends BaseComponent implements OnInit {
+export class ConfigFieldComponent extends BaseComponent implements OnInit, OnDestroy {
     public configItem: ViewConfig;
 
     /**
@@ -145,6 +153,13 @@ export class ConfigFieldComponent extends BaseComponent implements OnInit {
             .subscribe(form => {
                 this.onChange(form.value);
             });
+    }
+
+    /**
+     * Stops the change detection
+     */
+    public ngOnDestroy(): void {
+        this.cd.detach();
     }
 
     /**

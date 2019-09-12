@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 
 import { BaseFilterListService, OsFilterOption } from 'app/core/ui-services/base-filter-list.service';
 import { BaseViewModel } from 'app/site/base/base-view-model';
@@ -20,7 +20,7 @@ import { BaseViewModel } from 'app/site/base/base-view-model';
     styleUrls: ['./filter-menu.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class FilterMenuComponent implements OnInit {
+export class FilterMenuComponent implements OnInit, OnDestroy {
     /**
      * An event emitter to submit a desire to close this component
      * TODO: Might be an easier way to do this
@@ -48,6 +48,13 @@ export class FilterMenuComponent implements OnInit {
         if (!this.service.filterDefinitions) {
             this.dismissed.next(true);
         }
+    }
+
+    /**
+     *
+     */
+    public ngOnDestroy(): void {
+        this.dismissed.unsubscribe();
     }
 
     /**

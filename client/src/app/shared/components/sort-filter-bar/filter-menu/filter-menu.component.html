@@ -1,7 +1,7 @@
 <div class="filter-menu-content-wrapper">
     <mat-accordion (keyup)="checkKeyEvent($event)">
         <mat-expansion-panel *ngFor="let filter of service.filterDefinitions">
-            <mat-expansion-panel-header *ngIf="filter.options && filter.options.length">
+            <mat-expansion-panel-header *ngIf="filter && filter.options && filter.options.length">
                 <mat-panel-title>
                     <span>{{ service.getFilterName(filter) | translate }}</span>
                     <mat-basic-chip disableRipple class="lightblue filter-count" *ngIf="filter.count">

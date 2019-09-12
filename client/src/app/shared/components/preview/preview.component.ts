@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { SearchProperty } from 'app/core/ui-services/search.service';
@@ -11,7 +11,7 @@ import { Searchable } from 'app/site/base/searchable';
     styleUrls: ['./preview.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PreviewComponent {
+export class PreviewComponent implements OnDestroy {
     /**
      * Sets the view-model, whose properties are displayed.
      *
@@ -49,6 +49,13 @@ export class PreviewComponent {
      * @param sanitizer DomSanitizer
      */
     public constructor(private sanitizer: DomSanitizer, private cd: ChangeDetectorRef) {}
+
+    /**
+     * detach the change detection
+     */
+    public ngOnDestroy(): void {
+        this.cd.detach();
+    }
 
     /**
      * Function to sanitize any text to show html.

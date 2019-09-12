@@ -102,6 +102,7 @@ export class MetaTextBlockComponent extends BaseComponent implements OnInit, OnD
             this.contentSubscription.unsubscribe();
             this.contentSubscription = null;
         }
+        this.cd.detach();
     }
 
     /**

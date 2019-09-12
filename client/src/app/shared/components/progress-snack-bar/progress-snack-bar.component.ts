@@ -125,5 +125,7 @@ export class ProgressSnackBarComponent implements OnInit, OnDestroy {
             this.progressModeSubscription.unsubscribe();
             this.progressModeSubscription = null;
         }
+
+        this.cd.detach();
     }
 }

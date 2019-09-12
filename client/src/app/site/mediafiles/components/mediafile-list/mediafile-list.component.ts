@@ -243,6 +243,7 @@ export class MediafileListComponent extends BaseListViewComponent<ViewMediafile>
     public ngOnDestroy(): void {
         super.ngOnDestroy();
         this.clearSubscriptions();
+        this.cd.detach();
     }
 
     /**
