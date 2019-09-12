@@ -15,6 +15,7 @@ The `settings.py` is just an extension for Django settings. Please visit the
 <https://docs.djangoproject.com/en/2.2/ref/settings/>`_ to get an overview about
 all existing settings.
 
+
 SECURITY
 ========
 
@@ -32,6 +33,7 @@ validator. See `django auth docs
 <https://docs.djangoproject.com/en/2.2/topics/auth/passwords/#module-django.contrib.auth.password_validation>`_
 for mor information.
 
+
 Directories
 ===========
 
@@ -45,20 +47,21 @@ is not delivered by the server anymore, these settings are obsolete.
 `MEDIA_ROOT`: The location of mediafiles. The default is a `media` folder inside
 `OPENSLIDES_USER_DATA_DIR`, but can be altered to another path.
 
+
 Email
 =====
 
 Please refer to the Django settings documentation. A changed email backend is
 useful for debugging to print all email the the console::
 
-   EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
 Logging
 =======
 
 To setup basic logging see `logging
-<https://docs.djangoproject.com/en/2.2/topics/logging/>`_. 
+<https://docs.djangoproject.com/en/2.2/topics/logging/>`_.
 We recommend to enable all OpenSlides related logging with level `INFO` per
 default::
 
@@ -86,6 +89,7 @@ default::
 
 With the environment variable `OPENSLIDES_LOG_LEVEL` the level can be adjusted
 without changing the `settings.py`.
+
 
 Big mode and caching
 ====================
@@ -119,4 +123,3 @@ not affect the client.
 operator is in one of these groups, the client disconnected and reconnects again.
 All requests urls (including websockets) are now prefixed with `/prioritize`, so
 these requests from "prioritized clients" can be routed to different servers.
-

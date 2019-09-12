@@ -2,8 +2,7 @@
  OpenSlides Development
 ========================
 
-If you want to contribute to OpenSlides, have a look at `OpenSlides website
-<https://openslides.org/>`_ and write us an email.
+This instruction helps you to setup a development environment for OpenSlides.
 
 
 Installation and start of the development version
@@ -16,9 +15,9 @@ a. Check requirements
 '''''''''''''''''''''
 
 Make sure that you have installed `Python (>= 3.6) <https://www.python.org/>`_,
-`Node.js (>=10.x) <https://nodejs.org/>`_ and
-`Git <http://git-scm.com/>`_ on your system. You also need build-essential
-packages and header files and a static library for Python.
+`Node.js (>=10.x) <https://nodejs.org/>`_ and `Git <http://git-scm.com/>`_ on
+your system. You also need build-essential packages and header files and a
+static library for Python.
 
 For Debian based systems (Ubuntu, etc) run::
 
@@ -61,8 +60,8 @@ To get help on the command line options run::
 
 Later you might want to restart the server with one of the following commands.
 
-To start OpenSlides with Daphne and to avoid opening new browser
-windows run::
+To start OpenSlides with this command and to avoid opening new browser windows
+run::
 
     $ python manage.py start --no-browser
 
@@ -71,25 +70,22 @@ When debugging something email related change the email backend to console::
     $ python manage.py start --debug-email
 
 
-d.a Debugging the Server
-''''''''''''''''''''''''
+e. Debugging the server
+'''''''''''''''''''''''
 
 If you wish to have even further debugging, enable `django-extensions
-<https://django-extensions.readthedocs.io/>`_,
-in the ``settings.py``  by adding ``django_extensions`` to the list of
-``INSTALLED_PLLUGINS``. Make sure, you add the following lines to your
-``requirements/development.txt``::
+<https://django-extensions.readthedocs.io/>`_ in the ``settings.py``  by adding
+``django_extensions`` to the list of ``INSTALLED_PLLUGINS``. Make sure, you
+install the following packages::
 
-    Werkzeug
-    pyparsing
-    pydot
-    django-extensions
+    $ pip install Werkzeug pyparsing pydot django-extensions
 
-and install them via pip. You can start the enhanced debugging-server via::
+You can start the enhanced debugging-server via::
 
     $ python manage.py runserver_plus
 
-e. Setup and start the client
+
+f. Setup and start the client
 '''''''''''''''''''''''''''''
 
 Go in the client's directory in a second command-line interface::
@@ -108,7 +104,7 @@ If you want to provide the client statically, you can build it via::
     $ npm run build
 
 The build client files are availible from the root directory in
-``openslides/static`` and can be provided via ``nginx`` (Point 4).
+``openslides/static`` and can be provided via NGINX.
 
 
 2. Installation on Windows
@@ -123,10 +119,10 @@ installer is required even on a 64-bit Windows system. If you use the 64-bit
 installer, step d. of the instruction might fail unless you installed some
 packages manually.
 
-You have to install `MS Visual C++ 2015 build tools
+In some cases you have to install `MS Visual C++ 2015 build tools
 <https://www.microsoft.com/en-us/download/details.aspx?id=48159>`_ before you
 install the required python packages for OpenSlides (unfortunately Twisted
-16.6.x needs it).
+needs it).
 
 To setup and activate the virtual environment in step c. use::
 
@@ -144,7 +140,8 @@ a. Running server tests
 To run some server tests see `.travis.yml
 <https://github.com/OpenSlides/OpenSlides/blob/master/.travis.yml>`_.
 
-You can generate an class-structure image, when having `django_extensions` enabled (see above)
+You can generate an class-structure image when having `django_extensions`
+enabled (see above)::
 
     $ python manage.py graph_models -a -g -o my_project_visualized.png
 
@@ -159,22 +156,24 @@ client tests::
 
 Fix the code format and lint it with::
 
-    npm run prettify-write
-    npm run lint
+    $ npm run prettify-write
+    $ npm run lint
 
 To extract translations run::
 
     $ npm run extract
 
-When updating, adding or changing used packages from npm, please update the README.md using following command::
+When updating, adding or changing used packages from npm, please update the
+README.md using following command::
 
     $ npm run licenses
+
 
 OpenSlides in big mode
 ======================
 
 In the so called big mode you should use OpenSlides with Redis, PostgreSQL and
-a webserver like Apache HTTP Server or nginx as proxy server in front of your
+a webserver like Apache HTTP Server or NGINX as proxy server in front of your
 OpenSlides interface server.
 
 
@@ -182,18 +181,17 @@ OpenSlides interface server.
 ---------------------------------------------
 
 Install `PostgreSQL <https://www.postgresql.org/>`_ and `Redis
-<https://redis.io/>`_. For Ubuntu 16.04 e. g. run::
+<https://redis.io/>`_. For Ubuntu 18.04 e. g. run::
 
     $ sudo apt-get install postgresql libpq-dev redis-server
 
-Be sure that database and redis server is running. For Ubuntu 16.04 e. g. this
+Be sure that database and redis server is running. For Ubuntu 18.04 e. g. this
 was done automatically if you used the package manager.
 
-Then add database user and database. For Ubuntu 16.04 e. g. run::
+Then add database user and database. For Ubuntu 18.04 e. g. run::
 
     $ sudo -u postgres createuser --pwprompt --createdb openslides
     $ sudo -u postgres createdb --owner=openslides openslides
-
 
 
 2. Change OpenSlides settings
@@ -215,23 +213,26 @@ Populate your new database::
 3. Run OpenSlides
 -----------------
 
-To start Daphne, run::
+To start Daphne run::
 
     $ export DJANGO_SETTINGS_MODULE=settings
     $ export PYTHONPATH=personal_data/var/
     $ daphne -b 0.0.0.0 -p 8000 openslides.asgi:application
 
-The last line may be interchangeable with gunicorn and uvicorn as protocol server::
+The last line may be interchangeable with gunicorn and uvicorn as protocol
+server::
 
     $ gunicorn -w 4 -b 0.0.0.0:8000 -k uvicorn.workers.UvicornWorker openslides.asgi:application
 
-4. Use Nginx (optional)
+
+4. Use NGINX (optional)
 -----------------------
 
-When using Nginx as a proxy for delivering static files the performance of the
+When using NGINX as a proxy for delivering static files the performance of the
 setup will increase.
 
-This is an example ``nginx.conf`` configuration for Daphne listing on port 8000::
+This is an example ``nginx.conf`` configuration for Daphne listing on port
+8000::
 
     worker_processes  1;
 
