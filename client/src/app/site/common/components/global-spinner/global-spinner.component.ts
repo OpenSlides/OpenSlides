@@ -75,5 +75,6 @@ export class GlobalSpinnerComponent implements OnInit, OnDestroy {
             this.isVisible = false;
         }
         this.spinnerSubscription = null;
+        this.cd.detach();
     }
 }

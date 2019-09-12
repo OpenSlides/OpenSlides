@@ -4,6 +4,7 @@ import {
     Component,
     EventEmitter,
     Input,
+    OnDestroy,
     OnInit,
     Output,
     ViewChild,
@@ -81,7 +82,7 @@ export interface ColumnRestriction {
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel> implements OnInit {
+export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel> implements OnInit, OnDestroy {
     /**
      * Declare the table
      */
@@ -243,7 +244,9 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
      * @returns the repositories `viewModelListObservable`
      */
     private get viewModelListObservable(): Observable<V[]> {
-        return this.repo.getViewModelListObservable();
+        if (this.repo) {
+            return this.repo.getViewModelListObservable();
+        }
     }
 
     /**
@@ -296,24 +299,27 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
         this.dataSource = createDS<V>()
             .onTrigger(() => {
                 let listObservable: Observable<V[]>;
-                if (this.filterService && this.sortService) {
-                    // filtering and sorting
-                    this.filterService.initFilters(this.viewModelListObservable);
-                    this.sortService.initSorting(this.filterService.outputObservable);
-                    listObservable = this.sortService.outputObservable;
-                } else if (this.filterService) {
-                    // only filter service
-                    this.filterService.initFilters(this.viewModelListObservable);
-                    listObservable = this.filterService.outputObservable;
-                } else if (this.sortService) {
-                    // only sorting
-                    this.sortService.initSorting(this.viewModelListObservable);
-                    listObservable = this.sortService.outputObservable;
-                } else {
-                    // none of both
-                    listObservable = this.viewModelListObservable;
+                if (this.repo && this.viewModelListObservable) {
+                    if (this.filterService && this.sortService) {
+                        // filtering and sorting
+                        this.filterService.initFilters(this.viewModelListObservable);
+                        this.sortService.initSorting(this.filterService.outputObservable);
+                        listObservable = this.sortService.outputObservable;
+                    } else if (this.filterService) {
+                        // only filter service
+                        this.filterService.initFilters(this.viewModelListObservable);
+                        listObservable = this.filterService.outputObservable;
+                    } else if (this.sortService) {
+                        // only sorting
+                        this.sortService.initSorting(this.viewModelListObservable);
+                        listObservable = this.sortService.outputObservable;
+                    } else {
+                        // none of both
+                        listObservable = this.viewModelListObservable;
+                    }
                 }
-                return listObservable;
+
+                return listObservable ? listObservable : [];
             })
             .create();
 
@@ -392,6 +398,13 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
             this.scrollToPreviousPosition(this.listStorageKey);
             this.restoreSearchQuery(this.listStorageKey);
         }
+    }
+
+    /**
+     * Stop the change detection
+     */
+    public ngOnDestroy(): void {
+        this.cd.detach();
     }
 
     /**
