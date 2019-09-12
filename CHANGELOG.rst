@@ -2,57 +2,102 @@
  CHANGELOG of OpenSlides
 =========================
 
-https://openslides.org/
+https://openslides.com
 
-Version 3.0 (unreleased)
+Version 3.0 (2019-09-13)
 ========================
+`Milestone <https://github.com/OpenSlides/OpenSlides/milestones/3.0>`_
 
-Core:
- - Changed personal settings.py, updated to channels2, complete rework of
-   startup and caching system, dropped support for Geiss [#3796, #3789].
- - Dropped support for Python 3.5 [#3805].
- - Added a websocket protocol for server client communication using
-   JSON schema [#3807, #3949].
- - Changed URL schema [#3798].
- - Enabled docs for using OpenSlides with Gunicorn and Uvicorn in big
-   mode [#3799, #3817].
- - Changed format for elements send via autoupdate [#3926].
- - Fixed autoupdate system for related objects [#4140, #4201].
- - Add a change-id system to get only new elements [#3938].
- - Switch from Yarn back to npm [#3964].
- - Added password reset link (password reset via email) [#3914, #4199].
- - Added global history mode [#3977, #4141, #4369, #4373, #4767].
- - Projector refactoring [4119, #4130].
- - Fixed logo configuration if logo file is deleted [#4374].
+General (Client):
+ - OpenSlides client completely rewritten, based on Angular 8 and Material Design.
+ - OpenSlides is now a Progressive Web App (PWA).
+ - New browser caching via IndexedDB (one cache store for all browser tabs).
+ - New list views optimized with virtual scrolling (improved performance for long lists).
+ - New global quick search using by shortcut 'Alt+Shift+F'.
+ - New built-in design themes for customizing user interface.
+ - New update notification if OpenSlides static files are updated.
+ - New config option for pdf page size (DIN A4 or A5).
+ - Added TinyMCE 5 editor (switched from CKEditor caused by changed license).
+ - Switched from yarn/gulp to npm.
+ - Improved pdf gerneration with progress bar and cancel option.
+ - Translations available for EN, DE, RU and CS.
+
+General (Server):
+ - New websocket protocol for server client communication using JSON schema.
+ - New change-id system to send only updated elements to client.
+ - New global history mode (useable for admin group only).
+ - Updated to Channels 2.
+ - Dropped support for Python 3.5.
+ - Dropped support for Geiss.
+ - Complete rework of startup and caching system. Dropped restricted data cache.
+ - Changed URL schema.
+ - Changed personal settings.py.
+ - Changed format for elements send via autoupdate.
+ - Changed projector concept.
+ - Compressed autoupdates before sending to clients (reduced traffic).
+ - Fixed autoupdate system for related objects.
+ - Fixed logo configuration if logo file is deleted.
+ - Added several bulk views for motions and users (one request for updating multiple selected elements).
+ - Added docs for using OpenSlides in 'big mode' with Gunicorn and Uvicorn.
+ - Added docs for configure OpenSlides in settingy.py.
+ - Dropped chat functionality.
+ - Server performance improvements.
 
 Agenda:
- - Added viewpoint to assign multiple items to a new parent item [#4037].
+ - Agenda items are now optional (for motions, elections and mediafiles). New config to set default behavior.
+ - New drag&drop view to sort agenda items.
+ - New config option: only present participants can be added to list of speakers.
+ - New config option to hide number of speakers on projector.
 
 Motions:
- - Option to customly sort motions [#3894].
- - Added support for adding a statute [#3894].
- - Added new permission to manage metadata, i. e. set motion state, set and
-   follow recommendation, manage submitters and supporters, change motion
-   category, motion block and origin and manage motion polls [#3913].
- - Added new permission to create amendments [#4128].
- - Added new flag to motion state to control access restrictions for different
-   users. Added new permission to see motions in some internal state
-   [#4235, #4518, #4521].
- - Allowed submitters to set state of new motions in complex and customized
-   workflow. Changed default workflows. No migration provided [#4236, #4703].
- - Added multi select action to manage submitters, categories, motion blocks,
-   tags, states and recommendations [#4037, #4132, #4702].
- - Added timestampes for motions [#4134].
- - New config option to set reason as required field [#4232].
- - Added subcategories and altered behaviour of motion numbering in
-   categories: Motions of subcategories are also numbered, and parents of
-   amendments needs to be in the numbered category or any subcategory [#4756].
+ - New call list for custom sort of motions.
+ - New tile layout view with all categories (each category a tile).
+ - New statute motions with managing statute paragraphs.
+ - New permission to manage metadata (state, recommendation, submitters and supporters, category,
+   motion block and polls).
+ - New permission to create amendments.
+ - New permission to see motions in internal states.
+ - New access restrictions definable for each motion state in workflow.
+ - New 'internal' option for motion blocks.
+ - New sorting view for categories to create subcategories.
+ - New custom comment fields for all motions (read/write access can be managed via permission groups).
+ - New motion history (each action is stored in global OpenSlides history which can be restored any time,
+   replaced old motion version and log features).
+ - New XLSX export (docx support is dropped).
+ - New navigation for next/previous motion in detail view (shortcut: 'Alt+Shift+Left/Right').
+ - New multi select actions.
+ - New timestampes for motions (for sorting by creation date and last modified).
+ - New config option to set reason as required field.
+ - New config option to change multiple paragraphs with an amendment.
+ - New config option to hide motion text on projector.
+ - New config option to show sequential number.
+ - New config option to show all motions which are referred to a special motion.
+ - New config option to show submitters and recommendation in table of contents of PDF.
+ - New config options to control identifier generation - number of digits and blanks (moved from settings.py).
+ - Improved PDF export (optional with toc, page numbers, date, comments and meta information)
+ - Improved motion numbering in (sub)categories: Motions of subcategories are also numbered, and parents of
+   amendments needs to be in the numbered category or any subcategory.
+ - Improved projection layout of motion blocks.
+ - Changed default workflows: Allowed submitters to set state of new motions in complex and customized workflow.
+   No migration provided.
+ - Change CSV import to add tags.
 
 User:
- - Added new admin group which grants all permissions. Users of existing group
-   'Admin' or 'Staff' are move to the new group during migration [#3859].
- - Added new permission to set its own password [#4131].
- - Added gender field [#4124].
+ - New admin group which grants all permissions. Users of existing group 'Admin' or 'Staff' are move to the
+   new group during migration.
+ - New gender field.
+ - New password forget/reset function via email.
+ - New permission to change own password.
+ - New config option for sender name and reply email address (From address is defined in settings.py).
+
+Mediafiles:
+ - New support for (sub)folders and permission groups.
+
+Projector:
+ - New views to list, manage and control created OpenSlides projectors.
+ - New projector queue (add slide to queue), all projected slides are logged.
+ - New chyron for current speaker.
+ - New color settings for each projector.
 
 
 Version 2.3 (2018-09-20)

@@ -7,18 +7,15 @@ What is OpenSlides?
 
 OpenSlides is a free, web based presentation and assembly system for
 managing and projecting agenda, motions and elections of an assembly. See
-https://openslides.org/ for more information.
-
-
-Requirements
-============
-
-The OpenSlides server runs everywhere where Python is running (for example on
-GNU/Linux, Mac or Windows). For the OpenSlides client a current webbrowser is required.
+https://openslides.com for more information.
 
 
 Installation
 ============
+
+The OpenSlides server runs everywhere where Python is running (for example on
+GNU/Linux, Mac or Windows). For the OpenSlides client a current web browser is required.
+
 
 1. Installation on GNU/Linux or Mac OS X
 ----------------------------------------
@@ -66,7 +63,7 @@ This installs the latest stable version. To install a specific (beta)
 version use ``openslides==x.y``.
 
 You can also use the package from the `OpenSlides website
-<https://openslides.org/>`_. Download latest OpenSlides release as
+<https://openslides.com/>`_. Download latest OpenSlides release as
 compressed tar archive and run::
 
     $ pip install openslides-x.y.tar.gz
@@ -110,9 +107,40 @@ instances of OpenSlides::
 2. Installation on Windows
 --------------------------
 
-Download the latest portable version of OpenSlides for Windows from
-`OpenSlides website <https://openslides.org/>`_ which does not require any
-install steps. Simply unzip the downloaded file and run ``openslides.exe``.
+Follow the instructions above (1. Installation on GNU/Linux or Mac OS X) but care
+of the following variations.
+
+To get Python download and run the latest `Python 3.7 32-bit (x86) executable
+installer <https://www.python.org/downloads/windows/>`_. Note that the 32-bit
+installer is required even on a 64-bit Windows system. If you use the 64-bit
+installer, step 1c of the instruction might fail unless you installed some
+packages manually.
+
+In some cases you have to install `MS Visual C++ 2015 build tools
+<https://www.microsoft.com/en-us/download/details.aspx?id=48159>`_ before you
+install the required python packages for OpenSlides (unfortunately Twisted
+needs it).
+
+To setup and activate the virtual environment in step 1b use::
+
+    > .virtualenv\Scripts\activate.bat
+
+All other commands are the same as for GNU/Linux and Mac OS X.
+
+
+3. Installation with Docker
+---------------------------
+
+The installation instruction for (1) and (2) described a way to use OpenSlides in a
+'small mode' with max 10 concurrent clients. To install OpenSlides for big assemblies
+('big mode') you have to setup some additional components and configurations.
+
+The easiest way to run the OpenSlides 'big mode' environment (with PostgreSQL, Redis
+and NGINX) with Docker Compose: use our docker compose suite. Follow the instruction in
+the `openslides-doccker-compose Repository <https://github.com/OpenSlides/openslides-docker-compose>`_.
+
+To install and configure all components of our 'big mode' manually you can read the
+`big-mode-instruction <https://github.com/OpenSlides/OpenSlides/blob/master/DEVELOPMENT.rst#openslides-in-big-mode>`_
 
 
 Configuration
@@ -124,56 +152,12 @@ find out about all configurations, especially when using OpenSlides for big
 assemblies.
 
 
-Using the Dockerfile
-====================
-
-You can either pull the image ``openslides/openslides`` or build it yourself
-(via `docker build -t openslides/openslides .`). You have all prequistes installed
-it to start a quick server. To see how it should be used to setup an
-production environment, see `openslides-docker
-<https://github.com/OpenSlides/openslides-docker>`_.
-
-You can start a quick-setup (not for production purposes, only local testing) with:
-
-    $ docker run -v /path/to/save/something:/app/personal_data -p 4200:4200 openslides/openslides /bin/bash -c "python manage.py createsettings && python manage.py migrate && (python manage.py runserver & (cd client && npm start))"
-
-
 Development
 ===========
 
-If you want to contribute to OpenSlides, have a look at `OpenSlides website
-<https://openslides.org/>`_ and write us an email. There is also an
-`instruction to install the development version
+To setup a development environment for OpenSlides follow the instruction of
+`DEVELOPMENT.rst
 <https://github.com/OpenSlides/OpenSlides/blob/master/DEVELOPMENT.rst>`_.
-
-
-Installation for big assemblies
-===============================
-
-The installation steps described above install OpenSlides in a way that
-does NOT support hundreds of concurrent clients. To install OpenSlides for
-big assemblies some variables have to be changed in the OpenSlides settings
-file (usually called settings.py).
-
-The configuration values that have to be altered are:
-
-* CHANNEL_LAYERS
-* DATABASES
-* SESSION_ENGINE
-* REDIS_ADDRESS
-
-You should use a webserver like Apache HTTP Server or nginx to serve the
-static and media files as proxy server in front of your OpenSlides
-interface server. You also should use a database like PostgreSQL and Redis
-as channels backend, cache backend and session engine. Finally you should
-use gunicorn with uvicorn as interface server.
-
-Please see the respective section in the `DEVELOPMENT.rst
-<https://github.com/OpenSlides/OpenSlides/blob/master/DEVELOPMENT.rst>`_ and:
-
-* https://channels.readthedocs.io/en/latest/deploying.html
-* https://github.com/sebleier/django-redis-cache
-* https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
 
 Used software
