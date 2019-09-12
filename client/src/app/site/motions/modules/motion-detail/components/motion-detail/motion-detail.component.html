@@ -725,7 +725,7 @@
                         {{ 'Line' | translate }} {{ paragraph.lineFrom }} - {{ paragraph.lineTo - 1 }}
                     </span>
                 </h3>
-                <editor [formControlName]="'text_' + paragraph.paragraphNo" [init]="tinyMceSettings" required></editor>
+                <editor [formControlName]="'text_' + paragraph.paragraphNo" [init]="tinyMceSettings"></editor>
                 <div
                     *ngIf="
                         contentForm.get('text_' + paragraph.paragraphNo).invalid &&

@@ -601,6 +601,10 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
             this.subscriptions.push(
                 this.repo.getViewModelObservable(motionId).subscribe(motion => {
                     if (motion) {
+                        if (motion.isParagraphBasedAmendment()) {
+                            this.contentForm.get('text').clearValidators();
+                            this.contentForm.get('text').updateValueAndValidity();
+                        }
                         const title = motion.getTitle();
                         super.setTitle(title);
                         this.motion = motion;
@@ -685,7 +689,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
 
                 paragraphsToChoose.forEach((paragraph: ParagraphToChoose, paragraphNo: number): void => {
                     if (formMotion.amendment_paragraphs[paragraphNo] !== null) {
-                        this.contentForm.addControl('text_' + paragraphNo, new FormControl('', Validators.required));
+                        this.contentForm.addControl('text_' + paragraphNo, new FormControl(''));
 
                         contentPatch.selected_paragraphs.push(paragraph);
                         contentPatch.text = formMotion.amendment_paragraphs[paragraphNo]; // Workaround as 'text' is required from the backend
