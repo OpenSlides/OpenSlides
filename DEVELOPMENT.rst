@@ -172,9 +172,11 @@ README.md using following command::
 OpenSlides in big mode
 ======================
 
-In the so called big mode you should use OpenSlides with Redis, PostgreSQL and
-a webserver like Apache HTTP Server or NGINX as proxy server in front of your
-OpenSlides interface server.
+To install OpenSlides for big assemblies (in 'big mode') you have to setup some
+additional components and configurations. In the 'big mode' you should use a webserver
+like NGINX to serve the static and media files as proxy server in front of your OpenSlides
+interface server. You should also use a database like PostgreSQL. Use Redis as channels backend,
+cache backend and session engine. Finally you should use gunicorn with uvicorn as interface server.
 
 
 1. Install and configure PostgreSQL and Redis
