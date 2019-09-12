@@ -106,8 +106,13 @@ export class SiteComponent extends BaseComponent implements OnInit {
         overlayService.setSpinner(true, translate.instant('Loading data. Please wait...'));
 
         this.operator.getViewUserObservable().subscribe(user => {
-            this.username = user ? user.short_name : translate.instant('Guest');
-            this.isLoggedIn = !!user;
+            if (!operator.isAnonymous) {
+                this.username = user ? user.short_name : '';
+                this.isLoggedIn = true;
+            } else {
+                this.username = translate.instant('Guest');
+                this.isLoggedIn = false;
+            }
         });
 
         offlineService.isOffline().subscribe(offline => {
