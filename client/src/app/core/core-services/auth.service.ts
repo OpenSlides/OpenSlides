@@ -48,7 +48,9 @@ export class AuthService {
         };
         const response = await this.http.post<WhoAmI>(environment.urlPrefix + '/users/login/', user);
         earlySuccessCallback();
+        await this.OpenSlides.shutdown();
         await this.operator.setWhoAmI(response);
+        await this.OpenSlides.afterLoginBootup(response.user_id);
         await this.redirectUser(response.user_id);
         return response;
     }

@@ -380,7 +380,7 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
         } catch (e) {
             this.raiseError(e);
         } finally {
-            this.overlayService.setSpinner(false);
+            this.overlayService.hideSpinner();
         }
     }
 

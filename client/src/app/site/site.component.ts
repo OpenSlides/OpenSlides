@@ -103,7 +103,10 @@ export class SiteComponent extends BaseComponent implements OnInit {
         private overlayService: OverlayService
     ) {
         super(title, translate);
-        overlayService.setSpinner(true, translate.instant('Loading data. Please wait...'));
+        overlayService.showSpinner(
+            translate.instant('Loading data. Please wait...'),
+            !(operator.guestsEnabled && operator.isAnonymous)
+        );
 
         this.operator.getViewUserObservable().subscribe(user => {
             if (!operator.isAnonymous) {
@@ -253,6 +256,9 @@ export class SiteComponent extends BaseComponent implements OnInit {
      * Function to log out the current user
      */
     public logout(): void {
+        if (this.operator.guestsEnabled) {
+            this.overlayService.showSpinner(null, true);
+        }
         this.authService.logout();
         this.overlayService.logout();
     }

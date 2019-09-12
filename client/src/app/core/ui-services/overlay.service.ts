@@ -5,6 +5,9 @@ import { Observable, Subject } from 'rxjs';
 
 import { largeDialogSettings } from 'app/shared/utils/dialog-settings';
 import { SuperSearchComponent } from 'app/site/common/components/super-search/super-search.component';
+import { DataStoreUpgradeService } from '../core-services/data-store-upgrade.service';
+import { OpenSlidesService } from '../core-services/openslides.service';
+import { OperatorService } from '../core-services/operator.service';
 
 /**
  * Component to control the visibility of components, that overlay the whole window.
@@ -26,28 +29,66 @@ export class OverlayService {
     private spinner: Subject<{ isVisible: boolean; text?: string }> = new Subject();
 
     /**
-     * Boolean, whether appearing of the spinner should be prevented next time.
+     * Flag, that indicates, if the upgrade has checked.
      */
-    private preventAppearingSpinner = false;
+    private upgradeChecked = false;
+
+    /**
+     * The current user.
+     */
+    private user = null;
+
+    /**
+     * Flag, whether the app has booted.
+     */
+    private hasBooted = false;
 
     /**
      *
      * @param dialogService Injects the `MatDialog` to show the `super-search.component`
      */
-    public constructor(private dialogService: MatDialog) {}
+    public constructor(
+        private dialogService: MatDialog,
+        private operator: OperatorService,
+        OpenSlides: OpenSlidesService,
+        upgradeService: DataStoreUpgradeService
+    ) {
+        // Subscribe to the current user.
+        operator.getViewUserObservable().subscribe(user => {
+            if (user) {
+                this.user = user;
+                this.checkConnection();
+            }
+        });
+        // Subscribe to the booting-step.
+        OpenSlides.booted.subscribe(isBooted => {
+            this.hasBooted = isBooted;
+            this.checkConnection();
+        });
+        // Subscribe to the upgrade-mechanism.
+        upgradeService.upgradeChecked.subscribe(upgradeDone => {
+            this.upgradeChecked = upgradeDone;
+            this.checkConnection();
+        });
+    }
 
     /**
-     * Function to change the visibility of the `global-spinner.component`.
+     * Function to show the `global-spinner.component`.
      *
-     * @param isVisible flag, if the spinner should be shown.
      * @param text optional. If the spinner should show a message.
-     * @param preventAppearing optional. Wether to prevent showing the spinner the next time.
+     * @param forceAppearing optional. If the spinner must be shown.
      */
-    public setSpinner(isVisible: boolean, text?: string, forceAppearing?: boolean, preventAppearing?: boolean): void {
-        if (!this.preventAppearingSpinner || forceAppearing) {
-            setTimeout(() => this.spinner.next({ isVisible, text }));
+    public showSpinner(text?: string, forceAppearing?: boolean): void {
+        if (!this.isConnectionStable() || forceAppearing) {
+            setTimeout(() => this.spinner.next({ isVisible: true, text }));
         }
-        this.preventAppearingSpinner = preventAppearing;
+    }
+
+    /**
+     * Function to hide the `global-spinner.component`.
+     */
+    public hideSpinner(): void {
+        setTimeout(() => this.spinner.next({ isVisible: false }));
     }
 
     /**
@@ -79,12 +120,33 @@ export class OverlayService {
     }
 
     /**
+     * Checks, if the connection is stable.
+     * This relates to `appStable`, `booted` and `user || anonymous`.
+     *
+     * @returns True, if the three booleans are all true.
+     */
+    public isConnectionStable(): boolean {
+        return this.upgradeChecked && this.hasBooted && (!!this.user || this.operator.isAnonymous);
+    }
+
+    /**
+     * Function to check, if the app is stable and, if true, hide the spinner.
+     */
+    private checkConnection(): void {
+        if (this.isConnectionStable()) {
+            this.hideSpinner();
+        }
+    }
+
+    /**
      * Function to reset the properties for the spinner.
      *
      * Necessary to get the initial state, if the user logs out
      * and still stays at the website.
      */
     public logout(): void {
-        this.preventAppearingSpinner = false;
+        this.hasBooted = false;
+        this.user = null;
+        this.upgradeChecked = false;
     }
 }
