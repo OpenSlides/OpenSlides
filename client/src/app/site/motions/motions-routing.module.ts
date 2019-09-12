@@ -53,6 +53,11 @@ const routes: Routes = [
         data: { basePerm: 'motions.can_create' }
     },
     {
+        path: 'new-amendment',
+        loadChildren: () => import('./modules/motion-detail/motion-detail.module').then(m => m.MotionDetailModule),
+        data: { basePerm: 'motions.can_create_amendments' }
+    },
+    {
         path: 'amendments',
         loadChildren: () => import('./modules/amendment-list/amendment-list.module').then(m => m.AmendmentListModule),
         data: { basePerm: 'motions.can_see' }
