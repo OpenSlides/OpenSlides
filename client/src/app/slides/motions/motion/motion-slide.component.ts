@@ -8,7 +8,7 @@ import { ChangeRecommendationRepositoryService } from 'app/core/repositories/mot
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { DiffLinesInParagraph, DiffService, LineRange } from 'app/core/ui-services/diff.service';
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
-import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change';
+import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/motions/view-unified-change';
 import { ChangeRecoMode, LineNumberingMode, MotionTitleInformation } from 'app/site/motions/models/view-motion';
 import { IBaseScaleScrollSlideComponent } from 'app/slides/base-scale-scroll-slide-component';
 import { BaseMotionSlideComponent } from '../base/base-motion-slide';
@@ -331,9 +331,12 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
             case ChangeRecoMode.Original:
                 return this.lineNumbering.insertLineNumbers(motion.text, this.lineLength, this.highlightedLine);
             case ChangeRecoMode.Changed:
+                const changeRecommendations = this.getAllTextChangingObjects().filter(
+                    change => change.getChangeType() === ViewUnifiedChangeType.TYPE_CHANGE_RECOMMENDATION
+                );
                 return this.diff.getTextWithChanges(
                     motion.text,
-                    this.getAllTextChangingObjects(),
+                    changeRecommendations,
                     this.lineLength,
                     this.highlightedLine
                 );

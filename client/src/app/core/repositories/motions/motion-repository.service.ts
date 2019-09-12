@@ -17,7 +17,7 @@ import { TreeIdNode } from 'app/core/ui-services/tree.service';
 import { Motion } from 'app/shared/models/motions/motion';
 import { MotionPoll } from 'app/shared/models/motions/motion-poll';
 import { Submitter } from 'app/shared/models/motions/submitter';
-import { ViewUnifiedChange } from 'app/shared/models/motions/view-unified-change';
+import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/motions/view-unified-change';
 import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewCategory } from 'app/site/motions/models/view-category';
@@ -577,7 +577,15 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
                 case ChangeRecoMode.Original:
                     return this.lineNumbering.insertLineNumbers(targetMotion.text, lineLength, highlightLine);
                 case ChangeRecoMode.Changed:
-                    return this.diff.getTextWithChanges(targetMotion.text, changes, lineLength, highlightLine);
+                    const changeRecommendations = changes.filter(
+                        change => change.getChangeType() === ViewUnifiedChangeType.TYPE_CHANGE_RECOMMENDATION
+                    );
+                    return this.diff.getTextWithChanges(
+                        targetMotion.text,
+                        changeRecommendations,
+                        lineLength,
+                        highlightLine
+                    );
                 case ChangeRecoMode.Diff:
                     let text = '';
                     const changesToShow = changes.filter(change => {
