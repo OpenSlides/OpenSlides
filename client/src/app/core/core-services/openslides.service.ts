@@ -98,7 +98,12 @@ export class OpenSlidesService {
         if (!this.redirectUrl || !this.redirectUrl.includes('/login/')) {
             // Goto login, if the user isn't on a subpage like
             // legal notice or reset passwort view.
-            this.router.navigate(['/login']);
+            // If other routing requests are active (e.g. to `/` or `/error`)
+            // wait for the authguard to finish to navigate to /login. This
+            // redirect is more important than the other ones.
+            setTimeout(() => {
+                this.router.navigate(['/login']);
+            });
         }
     }
 
