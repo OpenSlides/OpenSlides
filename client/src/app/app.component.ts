@@ -2,7 +2,7 @@ import { ApplicationRef, Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
-import { auditTime, filter, take } from 'rxjs/operators';
+import { filter, take } from 'rxjs/operators';
 
 import { ConfigService } from './core/ui-services/config.service';
 import { ConstantsService } from './core/core-services/constants.service';
@@ -17,7 +17,6 @@ import { PrioritizeService } from './core/core-services/prioritize.service';
 import { RoutingStateService } from './core/ui-services/routing-state.service';
 import { ServertimeService } from './core/core-services/servertime.service';
 import { ThemeService } from './core/ui-services/theme.service';
-import { ViewUser } from './site/users/models/view-user';
 
 declare global {
     /**
@@ -47,16 +46,6 @@ declare global {
 })
 export class AppComponent {
     /**
-     * Member to hold the state of `stable`.
-     */
-    private isStable: boolean;
-
-    /**
-     * Member to hold the user.
-     */
-    private user: ViewUser;
-
-    /**
      * Master-component of all apps.
      *
      * Inits the translation service, the operator, the login data and the constants.
@@ -79,11 +68,11 @@ export class AppComponent {
         appRef: ApplicationRef,
         servertimeService: ServertimeService,
         router: Router,
-        private operator: OperatorService,
+        operator: OperatorService,
         loginDataService: LoginDataService,
         constantsService: ConstantsService, // Needs to be started, so it can register itself to the WebsocketService
         themeService: ThemeService,
-        private overlayService: OverlayService,
+        overlayService: OverlayService,
         countUsersService: CountUsersService, // Needed to register itself.
         configService: ConfigService,
         loadFontService: LoadFontService,
@@ -115,31 +104,6 @@ export class AppComponent {
                 take(1)
             )
             .subscribe(() => servertimeService.startScheduler());
-
-        // Subscribe to hide the spinner if the application has changed.
-        appRef.isStable
-            .pipe(
-                filter(s => s),
-                auditTime(1000)
-            )
-            .subscribe(stable => {
-                // check the stable state only once.
-                if (!this.isStable && stable) {
-                    this.isStable = true;
-                    this.checkConnectionProgress();
-                }
-            });
-        // subscribe, to get the user.
-        operator.getViewUserObservable().subscribe(user => {
-            // check the user only once
-            if ((!this.user && user) || operator.isAnonymous) {
-                this.user = user;
-                this.checkConnectionProgress();
-                // if the user is logging out, remove this user.
-            } else if (user === null) {
-                this.user = user;
-            }
-        });
     }
 
     /**
@@ -191,15 +155,5 @@ export class AppComponent {
         Number.prototype.modulo = function(n: number): number {
             return ((this % n) + n) % n;
         };
-    }
-
-    /**
-     * Function to check if the user is existing and the app is already stable.
-     * If both conditions true, hide the spinner.
-     */
-    private checkConnectionProgress(): void {
-        if ((this.user || this.operator.isAnonymous) && this.isStable) {
-            this.overlayService.setSpinner(false, null, false, true);
-        }
     }
 }

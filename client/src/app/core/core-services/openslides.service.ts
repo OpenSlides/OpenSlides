@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { BehaviorSubject } from 'rxjs';
+
 import { AutoupdateService } from './autoupdate.service';
 import { ConstantsService } from './constants.service';
 import { DataStoreService } from './data-store.service';
@@ -21,13 +23,16 @@ export class OpenSlidesService {
     public redirectUrl: string;
 
     /**
+     * Subject to hold the flag `booted`.
+     */
+    public readonly booted = new BehaviorSubject(false);
+
+    /**
      * Saves, if OpenSlides is fully booted. This means, that a user must be logged in
      * (Anonymous is also a user in this case). This is the case after `afterLoginBootup`.
      */
-    private _booted = false;
-
-    public get booted(): boolean {
-        return this._booted;
+    public get isBooted(): boolean {
+        return this.booted.value;
     }
 
     /**
@@ -113,7 +118,7 @@ export class OpenSlidesService {
         }
         await this.setupDataStoreAndWebSocket();
         // Now finally booted.
-        this._booted = true;
+        this.booted.next(true);
     }
 
     /**
@@ -139,7 +144,7 @@ export class OpenSlidesService {
      */
     public async shutdown(): Promise<void> {
         await this.websocketService.close();
-        this._booted = false;
+        this.booted.next(false);
     }
 
     /**

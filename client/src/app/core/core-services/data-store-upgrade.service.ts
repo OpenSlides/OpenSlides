@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 
+import { BehaviorSubject } from 'rxjs';
+
 import { AutoupdateService } from './autoupdate.service';
 import { ConstantsService } from './constants.service';
 import { StorageService } from './storage.service';
@@ -27,6 +29,11 @@ const SCHEMA_VERSION = 'SchemaVersion';
 })
 export class DataStoreUpgradeService {
     /**
+     * Notify, when upgrade has checked.
+     */
+    public readonly upgradeChecked = new BehaviorSubject(false);
+
+    /**
      * @param autoupdateService
      * @param constantsService
      * @param storageService
@@ -48,6 +55,7 @@ export class DataStoreUpgradeService {
     }
 
     public async checkForUpgrade(serverVersion: SchemaVersion): Promise<boolean> {
+        this.upgradeChecked.next(false);
         console.log('Server schema version:', serverVersion);
         const clientVersion = await this.storageService.get<SchemaVersion>(SCHEMA_VERSION);
         await this.storageService.set(SCHEMA_VERSION, serverVersion);
@@ -77,6 +85,7 @@ export class DataStoreUpgradeService {
         } else {
             console.log('\t-> No upgrade needed.');
         }
+        this.upgradeChecked.next(true);
         return doUpgrade;
     }
 }

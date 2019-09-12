@@ -53,6 +53,11 @@ export class LoginMaskComponent extends BaseViewComponent implements OnInit, OnD
     public operatorSubscription: Subscription | null;
 
     /**
+     * The message, that should appear, when the user logs in.
+     */
+    private loginMessage = 'Loading data. Please wait...';
+
+    /**
      * Constructor for the login component
      *
      * @param authService Authenticating the user
@@ -136,11 +141,12 @@ export class LoginMaskComponent extends BaseViewComponent implements OnInit, OnD
     public async formLogin(): Promise<void> {
         this.loginErrorMsg = '';
         try {
+            this.overlayService.showSpinner(this.translate.instant(this.loginMessage), true);
             await this.authService.login(this.loginForm.value.username, this.loginForm.value.password, () => {
-                this.overlayService.setSpinner(true, this.translate.instant('Loading data. Please wait...'));
                 this.clearOperatorSubscription(); // We take control, not the subscription.
             });
         } catch (e) {
+            this.overlayService.hideSpinner();
             this.loginForm.setErrors({
                 notFound: true
             });
@@ -166,6 +172,7 @@ export class LoginMaskComponent extends BaseViewComponent implements OnInit, OnD
      * Guests (if enabled) can navigate directly to the main page.
      */
     public guestLogin(): void {
+        this.overlayService.showSpinner(this.translate.instant(this.loginMessage));
         this.authService.guestLogin();
     }
 }
