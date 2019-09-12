@@ -84,6 +84,12 @@ export class MotionExportDialogComponent implements OnInit {
     public votingResultButton: MatButtonToggle;
 
     /**
+     * To deactivate the speakers button.
+     */
+    @ViewChild('speakersButton', { static: false })
+    public speakersButton: MatButtonToggle;
+
+    /**
      * Constructor
      * Sets the default values for the lineNumberingMode and changeRecoMode and creates the form.
      * This uses "instant" over observables to prevent on-fly-changes by auto update while
@@ -134,8 +140,10 @@ export class MotionExportDialogComponent implements OnInit {
         // XLSX cannot have "content"
         if (format === ExportFileFormat.XLSX) {
             this.disableControl('content');
+            this.changeStateOfButton(this.speakersButton, false);
         } else {
             this.enableControl('content');
+            this.changeStateOfButton(this.speakersButton, true);
         }
 
         if (format === ExportFileFormat.CSV || format === ExportFileFormat.XLSX) {
@@ -144,12 +152,10 @@ export class MotionExportDialogComponent implements OnInit {
             this.disableControl('pdfOptions');
 
             // remove the selection of "votingResult"
-            let metaInfoVal: string[] = this.exportForm.get('metaInfo').value;
-            if (metaInfoVal) {
-                metaInfoVal = metaInfoVal.filter(info => {
-                    return info !== 'polls';
-                });
-                this.exportForm.get('metaInfo').setValue(metaInfoVal);
+            if (format === ExportFileFormat.CSV) {
+                this.disableMetaInfoControl('polls', 'speakers');
+            } else {
+                this.disableMetaInfoControl('polls');
             }
             this.votingResultButton.disabled = true;
         }
@@ -159,6 +165,20 @@ export class MotionExportDialogComponent implements OnInit {
             this.enableControl('crMode');
             this.enableControl('pdfOptions');
             this.votingResultButton.disabled = false;
+        }
+    }
+
+    /**
+     * Function to change the state of the property `disabled` of a given button.
+     *
+     * Ensures, that the button exists.
+     *
+     * @param button The button whose state will change.
+     * @param nextState The next state the button will assume.
+     */
+    private changeStateOfButton(button: MatButtonToggle, nextState: boolean): void {
+        if (!!button) {
+            button.disabled = nextState;
         }
     }
 
@@ -193,6 +213,19 @@ export class MotionExportDialogComponent implements OnInit {
                 return this.crMode.Original;
             default:
                 return null;
+        }
+    }
+
+    /**
+     * Function to deactivate at least one field of the meta-info.
+     *
+     * @param fields All fields to deactivate.
+     */
+    private disableMetaInfoControl(...fields: string[]): void {
+        let metaInfoVal: string[] = this.exportForm.get('metaInfo').value;
+        if (metaInfoVal) {
+            metaInfoVal = metaInfoVal.filter(info => !fields.includes(info));
+            this.exportForm.get('metaInfo').setValue(metaInfoVal);
         }
     }
 

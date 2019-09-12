@@ -31,6 +31,7 @@ export type InfoToExport =
     | 'origin'
     | 'tags'
     | 'polls'
+    | 'speakers'
     | 'id'
     | 'allcomments';
 
