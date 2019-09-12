@@ -1100,7 +1100,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         if (mode === 'paragraph') {
             this.router.navigate(['./create-amendment'], { relativeTo: this.route });
         } else {
-            this.router.navigate(['./motions/new'], {
+            this.router.navigate(['./motions/new-amendment'], {
                 relativeTo: this.route.snapshot.params.relativeTo,
                 queryParams: { parent: this.motion.id || null }
             });
