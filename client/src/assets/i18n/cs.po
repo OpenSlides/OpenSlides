@@ -5,11 +5,11 @@ msgid ""
 msgstr ""
 "Last-Translator: fri, 2019\n"
 "Language-Team: Czech (https://www.transifex.com/openslides/teams/14270/cs/)\n"
-"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: cs\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
+"mime-version: 1.0\n"
 
 msgid "%num% emails were send sucessfully."
 msgstr "%num% elektronických dopisů bylo úspěšně odesláno."
@@ -177,6 +177,9 @@ msgstr "Jeden hlas pro uchazeče"
 msgid "Amendment"
 msgstr "Pozměňovací návrh"
 
+msgid "Amendment list (PDF)"
+msgstr ""
+
 msgid "Amendment text"
 msgstr "Text pozměňovacího návrhu"
 
@@ -188,6 +191,9 @@ msgstr "Pozměňovací návrhy"
 
 msgid "Amendments can change multiple paragraphs"
 msgstr "Pozměňovací návrhy mohou změnit více odstavců"
+
+msgid "Amendments to"
+msgstr ""
 
 msgid "An email with a password reset link was send!"
 msgstr "Byl poslán elektronický dopis s odkazem na obnovení hesla!"
@@ -524,6 +530,9 @@ msgstr "Změněná verze"
 msgid "Changed version in line"
 msgstr "Změněná verze v řádku"
 
+msgid "Changes"
+msgstr ""
+
 msgid "Check for updates"
 msgstr "Zkontrolovat aktualizace"
 
@@ -607,6 +616,9 @@ msgstr "Počítat činné uživatele"
 
 msgid "Countdown"
 msgstr "Odpočítávání"
+
+msgid "Countdown and traffic light"
+msgstr ""
 
 msgid "Countdown description"
 msgstr "Popis odpočítávání"
@@ -756,6 +768,9 @@ msgstr "Vypnuto"
 msgid "Disabled (no percents)"
 msgstr "Vypnuto (žádná procenta)"
 
+msgid "Display type"
+msgstr ""
+
 msgid "Divergent:"
 msgstr "Rozdílný"
 
@@ -770,6 +785,9 @@ msgstr "Nezapoměňte uložit své změny!"
 
 msgid "Do you really want to exit this page?"
 msgstr "Opravdu chcete opustit tuto stránku?"
+
+msgid "Do you really want to go ahead?"
+msgstr ""
 
 msgid "Do you really want to save your changes?"
 msgstr "Opravdu chcete uložit své změny?"
@@ -867,6 +885,11 @@ msgstr "Ukončit projev"
 msgid "Enter duration in seconds. Choose 0 to disable warning color."
 msgstr ""
 "Zadejte dobu trvání v sekundách. Zvolte 0 pro vypnutí upozorňující barvy."
+
+msgid ""
+"Enter number of the next shown speakers. Choose -1 to show all next "
+"speakers."
+msgstr ""
 
 msgid "Enter participant number"
 msgstr "Zadat číslo účastníka"
@@ -1007,6 +1030,9 @@ msgstr "Text na první straně"
 msgid "Front page title"
 msgstr "Název první strany"
 
+msgid "Fullscreen"
+msgstr ""
+
 msgid "Gender"
 msgstr "Pohlaví"
 
@@ -1072,6 +1098,9 @@ msgstr "Skrýt okno s popisnými informacemi na promítacím přístroji"
 
 msgid "Hide more text"
 msgstr "Skrýt více textu"
+
+msgid "Hide motion text on projector"
+msgstr ""
 
 msgid "Hide password"
 msgstr "Skrýt heslo"
@@ -1509,6 +1538,9 @@ msgstr "Žádné odstavce předpisu"
 msgid "No tags"
 msgstr "Žádné značky"
 
+msgid "No users with email {0} found."
+msgstr ""
+
 msgid "No."
 msgstr "Č."
 
@@ -1556,6 +1588,9 @@ msgstr "Nejmenší počet číslic pro identifikátor"
 msgid "Number of persons to be elected"
 msgstr "Počet osob ke zvolení"
 
+msgid "Number of the next speakers to be shown on the projector"
+msgstr ""
+
 msgid "Number set"
 msgstr "Číslo stanoveno"
 
@@ -1586,6 +1621,9 @@ msgstr "Byl úspěšně odeslán jeden elektronický dopis."
 msgid "One vote per candidate"
 msgstr "Jeden hlas pro uchazeče"
 
+msgid "Only countdown"
+msgstr ""
+
 msgid "Only for internal notes."
 msgstr "Jen pro vnitřní poznámky."
 
@@ -1594,6 +1632,9 @@ msgstr "Pouze hlavní body pořadu jednání"
 
 msgid "Only present participants can be added to the list of speakers"
 msgstr "Jen přítomní účastníci mohou být přidáni do seznamu řečníků"
+
+msgid "Only traffic light"
+msgstr ""
 
 msgid "Open"
 msgstr "Otevřít"
@@ -1606,6 +1647,9 @@ msgstr "Otevřít seznam řečníků"
 
 msgid "Open projection dialog"
 msgstr "Otevřít dialog pro promítání"
+
+msgid "Open requests to speak"
+msgstr ""
 
 msgid "OpenSlides Theme"
 msgstr "Vzhled OpenSlides"
@@ -2153,6 +2197,9 @@ msgstr "Řadit"
 msgid "Sort agenda"
 msgstr "Řadit pořad jednání"
 
+msgid "Sort by identifier"
+msgstr ""
+
 msgid "Sort categories"
 msgstr "Řadit obory činnosti"
 
@@ -2401,6 +2448,9 @@ msgid ""
 msgstr ""
 "Všechny vybrané návrhy budou přesunuty pod nebo za následující návrh ve "
 "vyvolávacím seznamu:"
+
+msgid "This will reset all made changes and sort the call list."
+msgstr ""
 
 msgid "This will send an update notification to all active clients"
 msgstr "Toto pošle oznámení o aktualizaci všem činným klientům"

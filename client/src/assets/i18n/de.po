@@ -635,6 +635,9 @@ msgstr "Aktive Nutzer zählen"
 msgid "Countdown"
 msgstr "Countdown"
 
+msgid "Countdown and traffic light"
+msgstr "Countdown und Ampel"
+
 msgid "Countdown description"
 msgstr "Countdown-Beschreibung"
 
@@ -788,6 +791,9 @@ msgstr "Deaktiviert"
 msgid "Disabled (no percents)"
 msgstr "Deaktiviert (keine Prozente)"
 
+msgid "Display type"
+msgstr "Anzeigeformat"
+
 msgid "Divergent:"
 msgstr "abweichend:"
 
@@ -802,6 +808,9 @@ msgstr "Vergessen Sie nicht Ihre Änderungen zu speichern!"
 
 msgid "Do you really want to exit this page?"
 msgstr "Wollen Sie diese Seite wirklich verlassen?"
+
+msgid "Do you really want to go ahead?"
+msgstr "Wollen Sie die Aktion wirklich fortsetzen?"
 
 msgid "Do you really want to save your changes?"
 msgstr "Wollen Sie wirklich Ihre Änderungen speichern?"
@@ -1047,6 +1056,9 @@ msgstr "Text der Startseite"
 
 msgid "Front page title"
 msgstr "Titel der Startseite"
+
+msgid "Fullscreen"
+msgstr "Vollbild"
 
 msgid "Gender"
 msgstr "Geschlecht"
@@ -1639,6 +1651,9 @@ msgstr "Eine E-Mail wurde erfolgreich versandt."
 msgid "One vote per candidate"
 msgstr "Eine Stimme pro Kandidat/in"
 
+msgid "Only countdown"
+msgstr "Nur Countdown"
+
 msgid "Only for internal notes."
 msgstr "Nur für interne Notizen."
 
@@ -1647,6 +1662,9 @@ msgstr "Nur Haupt-Tagesordnungspunkte"
 
 msgid "Only present participants can be added to the list of speakers"
 msgstr "Nur anwesende Teilnehmende können zur Redeliste hinzugefügt werden"
+
+msgid "Only traffic light"
+msgstr "Nur Ampel"
 
 msgid "Open"
 msgstr "Öffnen"
@@ -1659,6 +1677,9 @@ msgstr "Redeliste öffnen"
 
 msgid "Open projection dialog"
 msgstr "Projektionsdialog öffnen"
+
+msgid "Open requests to speak"
+msgstr "Offene Wortmeldungen"
 
 msgid "OpenSlides Theme"
 msgstr "OpenSlides-Design-Theme"
@@ -2207,6 +2228,9 @@ msgstr "Sortieren"
 msgid "Sort agenda"
 msgstr "Tagesordnung sortieren"
 
+msgid "Sort by identifier"
+msgstr "Nach Bezeichner sortieren"
+
 msgid "Sort categories"
 msgstr "Sachgebiete sortieren"
 
@@ -2462,6 +2486,11 @@ msgid ""
 msgstr ""
 "Alle ausgewählten Anträge unter oder nach dem folgenden Antrag in der "
 "Aufrufliste verschieben:"
+
+msgid "This will reset all made changes and sort the call list."
+msgstr ""
+"Alle noch nicht gespeicherten Änderungen werden zurückgesetzt und die "
+"Aufrufliste wird neu sortiert."
 
 msgid "This will send an update notification to all active clients"
 msgstr ""

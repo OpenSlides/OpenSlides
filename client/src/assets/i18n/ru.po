@@ -182,6 +182,9 @@ msgstr "Всегда один из вариантов на одного канд
 msgid "Amendment"
 msgstr "Поправка"
 
+msgid "Amendment list (PDF)"
+msgstr "Список поправок (PDF)"
+
 msgid "Amendment text"
 msgstr "Текст поправки"
 
@@ -193,6 +196,9 @@ msgstr "Поправки"
 
 msgid "Amendments can change multiple paragraphs"
 msgstr "Поправки могут изменить несколько параграфов"
+
+msgid "Amendments to"
+msgstr "Поправки к"
 
 msgid "An email with a password reset link was send!"
 msgstr "Отправлено электронное письмо со ссылкой для сброса пароля!"
@@ -538,6 +544,9 @@ msgstr "Измененная версия"
 msgid "Changed version in line"
 msgstr "Измененная версия в строке"
 
+msgid "Changes"
+msgstr "Изменения"
+
 msgid "Check for updates"
 msgstr "проверить наличие обновлений"
 
@@ -622,6 +631,9 @@ msgstr "Считать активных пользователей"
 
 msgid "Countdown"
 msgstr "Обратный отсчет"
+
+msgid "Countdown and traffic light"
+msgstr ""
 
 msgid "Countdown description"
 msgstr "Описание обратного отсчета"
@@ -775,6 +787,9 @@ msgstr "Отключено"
 msgid "Disabled (no percents)"
 msgstr "Отключено (без процентов)"
 
+msgid "Display type"
+msgstr ""
+
 msgid "Divergent:"
 msgstr "Отклоняющийся:"
 
@@ -789,6 +804,9 @@ msgstr "Не забудьте сохранить свои изменения!"
 
 msgid "Do you really want to exit this page?"
 msgstr "Вы действительно хотите выйти из этой страницы?"
+
+msgid "Do you really want to go ahead?"
+msgstr ""
 
 msgid "Do you really want to save your changes?"
 msgstr "Вы действительно хотите сохранить свои изменения?"
@@ -886,6 +904,13 @@ msgstr "Конец речи"
 msgid "Enter duration in seconds. Choose 0 to disable warning color."
 msgstr ""
 "Введите время в секундах. Выберите 0, чтобы отключить предупреждающий цвет."
+
+msgid ""
+"Enter number of the next shown speakers. Choose -1 to show all next "
+"speakers."
+msgstr ""
+"Введите номер следующего отображаемого спикера. Выберите -1, чтобы показать "
+"всех следующих спикеров."
 
 msgid "Enter participant number"
 msgstr "Введите номер участника"
@@ -1025,6 +1050,9 @@ msgstr "Текст главной страницы"
 msgid "Front page title"
 msgstr "Название главной страницы"
 
+msgid "Fullscreen"
+msgstr ""
+
 msgid "Gender"
 msgstr "Пол"
 
@@ -1090,6 +1118,9 @@ msgstr "Скрыть поле метаинформации на проектор
 
 msgid "Hide more text"
 msgstr "Скрыть больше текста"
+
+msgid "Hide motion text on projector"
+msgstr "Скрыть текст заявления на проекторе"
 
 msgid "Hide password"
 msgstr "Скрыть пароль"
@@ -1528,7 +1559,7 @@ msgid "No tags"
 msgstr "Нет тегов"
 
 msgid "No users with email {0} found."
-msgstr ""
+msgstr "Пользователи с адресом электронной почтой {0} не найдены."
 
 msgid "No."
 msgstr "Нет."
@@ -1579,6 +1610,10 @@ msgstr "Количество минимальных цифр для иденти
 msgid "Number of persons to be elected"
 msgstr "Количество лиц, которые должны быть избраны"
 
+msgid "Number of the next speakers to be shown on the projector"
+msgstr ""
+"Количество следующих спикеров, которые будут отображаться на проекторе"
+
 msgid "Number set"
 msgstr "Набор номера"
 
@@ -1609,6 +1644,9 @@ msgstr "Одно электронное письмо было отправлен
 msgid "One vote per candidate"
 msgstr "Один голос за кандидата"
 
+msgid "Only countdown"
+msgstr ""
+
 msgid "Only for internal notes."
 msgstr "Только для внутренних примечаний."
 
@@ -1618,6 +1656,9 @@ msgstr "Только основные пункты повестки дня"
 msgid "Only present participants can be added to the list of speakers"
 msgstr ""
 "Только присутствующие участники могут быть добавлены в список спикеров."
+
+msgid "Only traffic light"
+msgstr ""
 
 msgid "Open"
 msgstr "Открыто"
@@ -1630,6 +1671,9 @@ msgstr "Открыть список спикеров"
 
 msgid "Open projection dialog"
 msgstr "Открыть диалог проекции"
+
+msgid "Open requests to speak"
+msgstr ""
 
 msgid "OpenSlides Theme"
 msgstr "Тема OpenSlides"
@@ -2176,6 +2220,9 @@ msgstr "Сортировать"
 msgid "Sort agenda"
 msgstr "Сортировать повестку дня"
 
+msgid "Sort by identifier"
+msgstr ""
+
 msgid "Sort categories"
 msgstr "Сортировать категории"
 
@@ -2426,6 +2473,9 @@ msgid ""
 msgstr ""
 "Это переместит все выбранные заявления под или после следующего заявления в "
 "списке вызовов:"
+
+msgid "This will reset all made changes and sort the call list."
+msgstr ""
 
 msgid "This will send an update notification to all active clients"
 msgstr "Это отправит уведомление об обновлении всем активным клиентам"

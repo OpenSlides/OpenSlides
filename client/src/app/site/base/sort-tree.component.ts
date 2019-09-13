@@ -71,7 +71,7 @@ export abstract class SortTreeViewComponent<V extends BaseViewModel> extends Bas
      */
     public constructor(
         title: Title,
-        public translate: TranslateService,
+        protected translate: TranslateService,
         matSnackBar: MatSnackBar,
         protected promptService: PromptService
     ) {

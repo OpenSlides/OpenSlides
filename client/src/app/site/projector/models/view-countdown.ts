@@ -1,3 +1,4 @@
+import { _ } from 'app/core/translate/translation-marker';
 import { Countdown } from 'app/shared/models/core/countdown';
 import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-model';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
@@ -46,16 +47,16 @@ export class ViewCountdown extends BaseProjectableViewModel<Countdown> implement
             slideOptions: [
                 {
                     key: 'fullscreen',
-                    displayName: 'Fullscreen',
+                    displayName: _('Fullscreen'),
                     default: false
                 },
                 {
                     key: 'displayType',
-                    displayName: 'Displaytype',
+                    displayName: _('Display type'),
                     choices: [
-                        { value: 'onlyCountdown', displayName: 'Only countdown' },
-                        { value: 'countdownAndTimeIndicator', displayName: 'Countdown and time-indicator' },
-                        { value: 'onlyTimeIndicator', displayName: 'Only time indicator' }
+                        { value: 'onlyCountdown', displayName: _('Only countdown') },
+                        { value: 'countdownAndTimeIndicator', displayName: _('Countdown and traffic light') },
+                        { value: 'onlyTimeIndicator', displayName: _('Only traffic light') }
                     ],
                     default: 'onlyCountdown'
                 }
