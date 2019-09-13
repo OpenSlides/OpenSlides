@@ -113,7 +113,7 @@ export class MotionXlsxExportService {
                         propertyHeader = 'Motion block';
                         break;
                     case 'speakers':
-                        propertyHeader = 'List of next speakers';
+                        propertyHeader = 'Open requests to speak';
                         break;
                     default:
                         propertyHeader = property.charAt(0).toUpperCase() + property.slice(1);

@@ -88,7 +88,7 @@ export class CallListComponent extends SortTreeViewComponent<ViewMotion> impleme
      */
     public constructor(
         title: Title,
-        translate: TranslateService,
+        protected translate: TranslateService,
         matSnackBar: MatSnackBar,
         private motionRepo: MotionRepositoryService,
         private motionCsvExport: MotionCsvExportService,
@@ -263,7 +263,7 @@ export class CallListComponent extends SortTreeViewComponent<ViewMotion> impleme
      */
     public async sortMotionsByIdentifier(): Promise<void> {
         const title = this.translate.instant('Do you really want to go ahead?');
-        const text = this.translate.instant('This will reset all made changes and sort the tree...');
+        const text = this.translate.instant('This will reset all made changes and sort the call list.');
         if (await this.promptService.open(title, text)) {
             this.forceSort.emit('identifier');
         }

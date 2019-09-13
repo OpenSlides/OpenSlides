@@ -96,6 +96,7 @@ _('Hidden item');
 // agenda misc strings
 _('Only main agenda items');
 _('Topics');
+_('Open requests to speak');
 
 // Motions config strings
 // subgroup general

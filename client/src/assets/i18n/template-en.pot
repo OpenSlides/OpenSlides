@@ -600,6 +600,9 @@ msgstr ""
 msgid "Countdown"
 msgstr ""
 
+msgid "Countdown and traffic light"
+msgstr ""
+
 msgid "Countdown description"
 msgstr ""
 
@@ -736,6 +739,9 @@ msgstr ""
 msgid "Disabled (no percents)"
 msgstr ""
 
+msgid "Display type"
+msgstr ""
+
 msgid "Divergent:"
 msgstr ""
 
@@ -749,6 +755,9 @@ msgid "Do not forget to save your changes!"
 msgstr ""
 
 msgid "Do you really want to exit this page?"
+msgstr ""
+
+msgid "Do you really want to go ahead?"
 msgstr ""
 
 msgid "Do you really want to save your changes?"
@@ -983,6 +992,9 @@ msgid "Front page text"
 msgstr ""
 
 msgid "Front page title"
+msgstr ""
+
+msgid "Fullscreen"
 msgstr ""
 
 msgid "Gender"
@@ -1568,6 +1580,9 @@ msgstr ""
 msgid "One vote per candidate"
 msgstr ""
 
+msgid "Only countdown"
+msgstr ""
+
 msgid "Only for internal notes."
 msgstr ""
 
@@ -1575,6 +1590,9 @@ msgid "Only main agenda items"
 msgstr ""
 
 msgid "Only present participants can be added to the list of speakers"
+msgstr ""
+
+msgid "Only traffic light"
 msgstr ""
 
 msgid "Open"
@@ -1587,6 +1605,9 @@ msgid "Open list of speakers"
 msgstr ""
 
 msgid "Open projection dialog"
+msgstr ""
+
+msgid "Open requests to speak"
 msgstr ""
 
 msgid "OpenSlides Theme"
@@ -2130,6 +2151,9 @@ msgstr ""
 msgid "Sort agenda"
 msgstr ""
 
+msgid "Sort by identifier"
+msgstr ""
+
 msgid "Sort categories"
 msgstr ""
 
@@ -2352,6 +2376,9 @@ msgstr ""
 msgid ""
 "This will move all selected motions under or after the following motion in "
 "the call list:"
+msgstr ""
+
+msgid "This will reset all made changes and sort the call list."
 msgstr ""
 
 msgid "This will send an update notification to all active clients"
