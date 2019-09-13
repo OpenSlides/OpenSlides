@@ -123,19 +123,8 @@ export class MotionPollService extends PollService {
         if (!baseNumber) {
             return undefined;
         }
-        let result: number;
         const calc = PollMajorityMethod.find(m => m.value === method);
-        if (calc && calc.calc) {
-            result = calc.calc(baseNumber);
-        } else {
-            result = null;
-        }
-        // rounding up, or if a integer was hit, adding one.
-        if (result % 1 !== 0) {
-            return Math.ceil(result);
-        } else {
-            return result + 1;
-        }
+        return calc && calc.calc ? calc.calc(baseNumber) : null;
     }
 
     /**

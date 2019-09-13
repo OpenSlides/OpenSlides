@@ -34,32 +34,35 @@ export interface MajorityMethod {
 }
 
 /**
+ * Function to round up the passed value of a poll.
+ *
+ * @param value The calculated value of 100%-base.
+ * @param addOne Flag, if the result should be increased by 1.
+ *
+ * @returns The necessary value to get the majority.
+ */
+export const calcMajority = (value: number, addOne: boolean = false) => {
+    return Math.ceil(value) + (addOne ? 1 : 0);
+};
+
+/**
  * List of available majority methods, used in motion and assignment polls
  */
 export const PollMajorityMethod: MajorityMethod[] = [
     {
         value: 'simple_majority',
         display_name: 'Simple majority',
-        calc: base => {
-            const q = base * 0.5;
-            return Number.isInteger(q) ? q + 1 : Math.ceil(q);
-        }
+        calc: base => calcMajority(base * 0.5, true)
     },
     {
         value: 'two-thirds_majority',
         display_name: 'Two-thirds majority',
-        calc: base => {
-            const q = (base / 3) * 2;
-            return Number.isInteger(q) ? q + 1 : Math.ceil(q);
-        }
+        calc: base => calcMajority((base / 3) * 2)
     },
     {
         value: 'three-quarters_majority',
         display_name: 'Three-quarters majority',
-        calc: base => {
-            const q = (base / 4) * 3;
-            return Number.isInteger(q) ? q + 1 : Math.ceil(q);
-        }
+        calc: base => calcMajority((base / 4) * 3)
     },
     {
         value: 'disabled',
