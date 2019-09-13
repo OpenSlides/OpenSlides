@@ -80,14 +80,6 @@ export class AgendaListComponent extends BaseListViewComponent<ViewItem> impleme
         {
             prop: 'info',
             width: '15%'
-        },
-        {
-            prop: 'speaker',
-            width: this.badgeButtonWidth
-        },
-        {
-            prop: 'menu',
-            width: this.singleButtonWidth
         }
     ];
 
@@ -95,10 +87,6 @@ export class AgendaListComponent extends BaseListViewComponent<ViewItem> impleme
         {
             columnName: 'menu',
             permission: 'agenda.can_manage'
-        },
-        {
-            columnName: 'speaker',
-            permission: 'agenda.can_see_list_of_speakers'
         }
     ];
 

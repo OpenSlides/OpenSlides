@@ -7,6 +7,10 @@
     [repo]="workflowRepo"
     [columns]="tableColumnDefinition"
     listStorageKey="workflow"
+    [allowProjector]="false"
+    [hiddenInMobile]="['menu']"
+    [showListOfSpeakers]="false"
+    [filterProps]="filterProps"
     (dataSourceChange)="onDataSourceChange($event)"
 >
     <!-- Name column -->

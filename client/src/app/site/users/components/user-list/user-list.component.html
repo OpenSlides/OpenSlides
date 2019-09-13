@@ -20,8 +20,9 @@
     [sortService]="sortService"
     [columns]="tableColumnDefinition"
     [filterProps]="filterProps"
+    [showListOfSpeakers]="false"
     [multiSelect]="isMultiSelect"
-    [hiddenInMobile]="['group']"
+    [hiddenInMobile]="['group', 'presence']"
     listStorageKey="user"
     [(selectedRows)]="selectedRows"
     (dataSourceChange)="onDataSourceChange($event)"
@@ -101,7 +102,33 @@
             <span translate>Present</span>
         </mat-checkbox>
     </div>
+
+    <!-- Menu -->
+    <div *pblNgridCellDef="'menu'; row as user" class="cell-slot fill">
+        <button
+            mat-icon-button
+            [disabled]="isMultiSelect"
+            [matMenuTriggerFor]="singleItemMenu"
+            (click)="$event.stopPropagation()"
+            [matMenuTriggerData]="{ user: user }"
+        >
+            <mat-icon>more_vert</mat-icon>
+        </button>
+    </div>
 </os-list-view-table>
+
+<!-- Menu for mobile entries -->
+<mat-menu #singleItemMenu="matMenu">
+    <ng-template matMenuContent let-user="user">
+        <os-projector-button [object]="user" [menuItem]="true"></os-projector-button>
+
+        <!-- Presence -->
+        <button mat-menu-item (click)="setPresent(user)">
+                <mat-icon color="accent"> {{ user.is_present ? 'check_box' : 'check_box_outline_blank' }} </mat-icon>
+                <span translate>Present</span>
+            </button>
+    </ng-template>
+</mat-menu>
 
 <mat-menu #userMenu="matMenu">
     <div *ngIf="!isMultiSelect">

@@ -34,15 +34,27 @@
         <span class="os-amount-chip" matTooltip="{{ 'Motions' | translate }}">{{ block.motions.length }}</span>
     </div>
 
-    <!-- Speaker column-->
-    <div *pblNgridCellDef="'speaker'; row as block; rowContext as rowContext" class="fill">
-        <os-speaker-button
-            [object]="block"
+    <!-- Menu -->
+    <div *pblNgridCellDef="'menu'; row as block" class="cell-slot fill">
+        <button
+            mat-icon-button
             [disabled]="isMultiSelect"
-            (click)="saveScrollIndex('motionBlock', rowContext.identity)"
-        ></os-speaker-button>
+            [matMenuTriggerFor]="singleItemMenu"
+            (click)="$event.stopPropagation()"
+            [matMenuTriggerData]="{ block: block }"
+        >
+            <mat-icon>more_vert</mat-icon>
+        </button>
     </div>
 </os-list-view-table>
+
+<!-- Menu for mobile entries -->
+<mat-menu #singleItemMenu="matMenu">
+    <ng-template matMenuContent let-block="block">
+        <os-projector-button [object]="block" [menuItem]="true"></os-projector-button>
+        <os-speaker-button [object]="block" [menuItem]="true"></os-speaker-button>
+    </ng-template>
+</mat-menu>
 
 <!-- Template for new motion block dialog -->
 <ng-template #newMotionBlockDialog>

@@ -15,9 +15,11 @@
 <os-list-view-table
     [repo]="repo"
     [allowProjector]="false"
+    [showListOfSpeakers]="false"
     [columns]="tableColumnDefinition"
     [filterProps]="filterProps"
     listStorageKey="category"
+    [hiddenInMobile]="['menu']"
     (dataSourceChange)="onDataSourceChange($event)"
 >
     <!-- Title -->

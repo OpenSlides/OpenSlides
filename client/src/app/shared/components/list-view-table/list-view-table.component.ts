@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 
 import { columnFactory, createDS, PblDataSource, PblNgridComponent } from '@pebula/ngrid';
-import { PblColumnDefinition, PblNgridColumnSet } from '@pebula/ngrid/lib/table';
+import { PblColumnDefinition, PblColumnFactory, PblNgridColumnSet } from '@pebula/ngrid/lib/table';
 import { PblNgridDataMatrixRow } from '@pebula/ngrid/target-events';
 import { Observable } from 'rxjs';
 
@@ -112,7 +112,7 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
      * Current state of the multi select mode.
      */
     @Input()
-    private multiSelect = false;
+    public multiSelect = false;
 
     /**
      * If a Projector column should be shown (at all)
@@ -151,6 +151,9 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
     @Input()
     public columns: PblColumnDefinition[] = [];
 
+    /**
+     * Properties to filter for
+     */
     @Input()
     public filterProps: string[];
 
@@ -165,6 +168,18 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
      */
     @Input()
     public showFilterBar = true;
+
+    /**
+     * If the menu should always be shown
+     */
+    @Input()
+    public alwaysShowMenu = false;
+
+    /**
+     * If the speaker tab should appear
+     */
+    @Input()
+    public showListOfSpeakers = true;
 
     /**
      * Inform about changes in the dataSource
@@ -188,9 +203,14 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
     public columnSet: PblNgridColumnSet;
 
     /**
+     * To dynamically recreate the columns
+     */
+    public columnFactory: PblColumnFactory;
+
+    /**
      * Check if mobile and required semaphore for change detection
      */
-    private isMobile: boolean;
+    public isMobile: boolean;
 
     /**
      * Search input value
@@ -206,22 +226,38 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
     /**
      * Most, of not all list views require these
      */
-    private get defaultColumns(): PblColumnDefinition[] {
+    private get defaultStartColumns(): PblColumnDefinition[] {
         const columns = [
             {
                 prop: 'selection',
                 label: '',
-                width: this.columnMinWidth
-            }
-        ];
-
-        if (this.allowProjector && this.operator.hasPerms('core.can_manage_projector')) {
-            columns.push({
+                width: '40px'
+            },
+            {
                 prop: 'projector',
                 label: '',
                 width: this.columnMinWidth
-            });
-        }
+            }
+        ];
+        return columns;
+    }
+
+    /**
+     * End columns
+     */
+    private get defaultEndColumns(): PblColumnDefinition[] {
+        const columns = [
+            {
+                prop: 'speaker',
+                label: '',
+                width: '40px'
+            },
+            {
+                prop: 'menu',
+                label: '',
+                width: '40px'
+            }
+        ];
 
         return columns;
     }
@@ -256,22 +292,42 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
     public get hiddenColumns(): string[] {
         let hidden: string[] = [];
 
-        if (this.multiSelect) {
-            hidden.push('projector');
-        } else {
+        if (!this.multiSelect) {
             hidden.push('selection');
         }
 
-        if (this.isMobile && this.hiddenInMobile && this.hiddenInMobile.length) {
-            hidden = hidden.concat(this.hiddenInMobile);
+        if (!this.alwaysShowMenu && !this.isMobile) {
+            hidden.push('menu');
         }
 
+        // hide the projector columns
+        if (
+            this.multiSelect ||
+            this.isMobile ||
+            !this.allowProjector ||
+            !this.operator.hasPerms('core.can_manage_projector')
+        ) {
+            hidden.push('projector');
+        }
+
+        // hide the speakers in mobile
+        if (this.isMobile || !this.operator.hasPerms('agenda.can_see_list_of_speakers') || !this.showListOfSpeakers) {
+            hidden.push('speaker');
+        }
+
+        // hide all columns with restrictions
         if (this.restricted && this.restricted.length) {
             const restrictedColumns = this.restricted
                 .filter(restriction => !this.operator.hasPerms(restriction.permission))
                 .map(restriction => restriction.columnName);
             hidden = hidden.concat(restrictedColumns);
         }
+
+        // define columns that are hidden in mobile
+        if (this.isMobile && this.hiddenInMobile && this.hiddenInMobile.length) {
+            hidden = hidden.concat(this.hiddenInMobile);
+        }
+
         return hidden;
     }
 
@@ -390,7 +446,7 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
         // the constructor of this class
         this.columnSet = columnFactory()
             .default({ width: this.columnMinWidth })
-            .table(...this.defaultColumns, ...this.columns)
+            .table(...this.defaultStartColumns, ...this.columns, ...this.defaultEndColumns)
             .build();
 
         // restore scroll position

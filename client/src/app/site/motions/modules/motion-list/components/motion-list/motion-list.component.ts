@@ -16,7 +16,7 @@ import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.
 import { OsFilterOptionCondition } from 'app/core/ui-services/base-filter-list.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { OverlayService } from 'app/core/ui-services/overlay.service';
-import { ColumnRestriction } from 'app/shared/components/list-view-table/list-view-table.component';
+import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { infoDialogSettings, largeDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseListViewComponent } from 'app/site/base/base-list-view';
 import { ViewCategory } from 'app/site/motions/models/view-category';
@@ -114,10 +114,6 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
             prop: 'state',
             width: '20%',
             minWidth: 160
-        },
-        {
-            prop: 'speaker',
-            width: this.badgeButtonWidth
         }
     ];
 
@@ -138,16 +134,6 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
     public workflows: ViewWorkflow[] = [];
     public categories: ViewCategory[] = [];
     public motionBlocks: ViewMotionBlock[] = [];
-
-    /**
-     * Columns that demand certain permissions
-     */
-    public restrictedColumns: ColumnRestriction[] = [
-        {
-            columnName: 'speaker',
-            permission: 'agenda.can_see_list_of_speakers'
-        }
-    ];
 
     /**
      * Define extra filter properties
@@ -214,7 +200,8 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
         public multiselectService: MotionMultiselectService,
         public perms: LocalPermissionsService,
         private motionExport: MotionExportService,
-        private overlayService: OverlayService
+        private overlayService: OverlayService,
+        public vp: ViewportService
     ) {
         super(titleService, translate, matSnackBar, storage);
         this.canMultiSelect = true;

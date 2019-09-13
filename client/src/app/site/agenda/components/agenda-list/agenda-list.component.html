@@ -20,6 +20,7 @@
     [multiSelect]="isMultiSelect"
     [restricted]="restrictedColumns"
     [hiddenInMobile]="['info']"
+    [alwaysShowMenu]="true"
     [filterProps]="filterProps"
     listStorageKey="agenda"
     [(selectedRows)]="selectedRows"
@@ -58,23 +59,11 @@
         </div>
     </div>
 
-    <!-- Speaker -->
-    <div *pblNgridCellDef="'speaker'; row as item; rowContext as rowContext" class="cell-slot fill">
-        <os-speaker-button [disabled]="isMultiSelect"></os-speaker-button>
-
-        <os-speaker-button
-            [object]="item.contentObjectData"
-            [disabled]="isMultiSelect"
-            (click)="saveScrollIndex('agenda', rowContext.identity)"
-        ></os-speaker-button>
-    </div>
-
     <!-- Menu -->
     <div *pblNgridCellDef="'menu'; row as item" class="cell-slot fill">
         <button
             mat-icon-button
             [disabled]="isMultiSelect"
-            *osPerms="'agenda.can_manage'"
             [matMenuTriggerFor]="singleItemMenu"
             (click)="$event.stopPropagation()"
             [matMenuTriggerData]="{ item: item }"
@@ -187,36 +176,45 @@
 
 <mat-menu #singleItemMenu="matMenu">
     <ng-template matMenuContent let-item="item">
-        <!-- Done check -->
-        <button mat-menu-item (click)="onDoneSingleButton(item)">
-            <mat-icon color="accent"> {{ item.closed ? 'check_box' : 'check_box_outline_blank' }} </mat-icon>
-            <span translate>Done</span>
-        </button>
+        <!-- Mobile entries -->
+        <div *ngIf="vp.isMobile">
+            <os-projector-button [object]="item.contentObject" [menuItem]="true"></os-projector-button>
+            <os-speaker-button [object]="item.contentObjectData" [menuItem]="true"></os-speaker-button>
+        </div>
 
-        <!-- Edit button -->
-        <button mat-menu-item (click)="openEditInfo(item, $event)">
-            <mat-icon>edit</mat-icon>
-            <span translate>Edit details</span>
-        </button>
+        <!-- Agenda entries -->
+        <div *osPerms="'agenda.can_manage'">
+            <!-- Done check -->
+            <button mat-menu-item (click)="onDoneSingleButton(item)">
+                <mat-icon color="accent"> {{ item.closed ? 'check_box' : 'check_box_outline_blank' }} </mat-icon>
+                <span translate>Done</span>
+            </button>
 
-        <!-- Delete Button -->
-        <button
-            mat-menu-item
-            (click)="removeFromAgenda(item)"
-            *ngIf="item.contentObjectData.collection !== 'topics/topic'"
-        >
-            <mat-icon>remove</mat-icon>
-            <span translate>Remove from agenda</span>
-        </button>
+            <!-- Edit button -->
+            <button mat-menu-item (click)="openEditInfo(item, $event)">
+                <mat-icon>edit</mat-icon>
+                <span translate>Edit details</span>
+            </button>
 
-        <button
-            mat-menu-item
-            class="red-warning-text"
-            (click)="deleteTopic(item)"
-            *ngIf="item.contentObjectData.collection === 'topics/topic'"
-        >
-            <mat-icon>delete</mat-icon>
-            <span translate>Delete</span>
-        </button>
+            <!-- Delete Button -->
+            <button
+                mat-menu-item
+                (click)="removeFromAgenda(item)"
+                *ngIf="item.contentObjectData.collection !== 'topics/topic'"
+            >
+                <mat-icon>remove</mat-icon>
+                <span translate>Remove from agenda</span>
+            </button>
+
+            <button
+                mat-menu-item
+                class="red-warning-text"
+                (click)="deleteTopic(item)"
+                *ngIf="item.contentObjectData.collection === 'topics/topic'"
+            >
+                <mat-icon>delete</mat-icon>
+                <span translate>Delete</span>
+            </button>
+        </div>
     </ng-template>
 </mat-menu>

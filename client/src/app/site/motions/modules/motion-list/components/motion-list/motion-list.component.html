@@ -47,9 +47,8 @@
         [sortService]="sortService"
         [columns]="tableColumnDefinition"
         [multiSelect]="isMultiSelect"
-        [restricted]="restrictedColumns"
         [filterProps]="filterProps"
-        [hiddenInMobile]="['state']"
+        [hiddenInMobile]="['identifier', 'state']"
         listStorageKey="motion"
         [(selectedRows)]="selectedRows"
         (dataSourceChange)="onDataSourceChange($event)"
@@ -84,6 +83,10 @@
 
                     <!-- The title -->
                     <span class="motion-list-title">
+                        <span *ngIf="vp.isMobile && motion.identifier">
+                            {{ motion.identifier }}
+                            <span>&middot;</span>
+                        </span>
                         {{ motion.title }}
                     </span>
                 </div>
@@ -156,16 +159,28 @@
             </div>
         </div>
 
-        <!-- Speaker column-->
-        <div *pblNgridCellDef="'speaker'; row as motion; rowContext as rowContext" class="fill">
-            <os-speaker-button
-                [object]="motion"
+        <!-- Menu -->
+        <div *pblNgridCellDef="'menu'; row as motion" class="cell-slot fill">
+            <button
+                mat-icon-button
                 [disabled]="isMultiSelect"
-                (click)="saveScrollIndex('motion', rowContext.identity)"
-            ></os-speaker-button>
+                [matMenuTriggerFor]="singleItemMenu"
+                (click)="$event.stopPropagation()"
+                [matMenuTriggerData]="{ motion: motion }"
+            >
+                <mat-icon>more_vert</mat-icon>
+            </button>
         </div>
     </os-list-view-table>
 </ng-template>
+
+<!-- Menu for mobile entries -->
+<mat-menu #singleItemMenu="matMenu">
+    <ng-template matMenuContent let-motion="motion">
+        <os-projector-button [object]="motion" [menuItem]="true"></os-projector-button>
+        <os-speaker-button [object]="motion" [menuItem]="true"></os-speaker-button>
+    </ng-template>
+</mat-menu>
 
 <ng-template #tiles>
     <os-grid-layout>
