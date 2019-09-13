@@ -33,7 +33,11 @@
 
         <!-- Projector column -->
         <div *pblNgridCellDef="'projector'; row as viewModel" class="fill ngrid-lg">
-            <os-projector-button class="projector-button" [object]="getProjectable(viewModel)" (changeEvent)="viewUpdateEvent()"></os-projector-button>
+            <os-projector-button
+                class="projector-button"
+                [object]="getProjectable(viewModel)"
+                (changeEvent)="viewUpdateEvent()"
+            ></os-projector-button>
         </div>
 
         <!-- No Results -->
@@ -42,6 +46,16 @@
         </div>
 
         <!-- Slot transclusion for the individual cells -->
-        <ng-content class="ngrid-lg" select=".cell-slot"></ng-content>
+        <div #contentWrapper>
+            <ng-content class="ngrid-lg" select=".cell-slot"></ng-content>
+        </div>
+
+        <!-- Speaker -->
+        <div *pblNgridCellDef="'speaker'; row as viewModel; rowContext as rowContext" class="fill">
+            <os-speaker-button
+                [object]="viewModel.contentObjectData ? viewModel.contentObjectData : viewModel"
+                [disabled]="multiSelect"
+            ></os-speaker-button>
+        </div>
     </pbl-ngrid>
 </mat-drawer-container>

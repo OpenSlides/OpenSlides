@@ -120,7 +120,8 @@ export class UserListComponent extends BaseListViewComponent<ViewUser> implement
             width: '15%'
         },
         {
-            prop: 'infos'
+            prop: 'infos',
+            width: this.singleButtonWidth
         },
         {
             prop: 'presence',

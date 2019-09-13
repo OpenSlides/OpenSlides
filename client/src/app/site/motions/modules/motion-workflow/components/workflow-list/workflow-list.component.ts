@@ -42,6 +42,11 @@ export class WorkflowListComponent extends BaseListViewComponent<ViewWorkflow> i
     ];
 
     /**
+     * Define extra filter properties
+     */
+    public filterProps = ['name', 'states'];
+
+    /**
      * Constructor
      *
      * @param titleService Sets the title
