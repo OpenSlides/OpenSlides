@@ -1,13 +1,140 @@
-#countdown {
-    font-weight: bold;
-    display: inline-block;
-    text-align: right;
+@import '~assets/styles/media-queries.scss';
+@import '~assets/styles/fonts.scss';
 
-    &.warning_time {
-        color: #ed940d;
+.countdown-time-wrapper {
+    $margin: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &.warning-time {
+        $color: #ed940e;
+        color: $color;
+
+        .time-indicator-wrapper #timeIndicator {
+            background: $color;
+        }
     }
 
-    &.negative {
-        color: #cc0000;
+    &.negative-time {
+        $color: #c00;
+        color: $color;
+
+        .time-indicator-wrapper #timeIndicator {
+            background: $color;
+        }
+    }
+
+    .time-indicator-wrapper {
+        text-align: left;
+        &.only-time-indicator {
+            width: 100%;
+            text-align: right;
+            #timeIndicator {
+                $size: 60px;
+                width: $size;
+                height: $size;
+            }
+        }
+
+        #timeIndicator {
+            $size: 50px;
+            width: $size;
+            height: $size;
+            display: inline-block;
+            background: green;
+            border-radius: 50%;
+        }
+    }
+
+    .countdown-wrapper {
+        width: 170px;
+        text-align: right;
+        position: relative;
+        height: 100%;
+
+        &:not(.only-countdown) {
+            margin-left: 10px;
+            $size: 60px;
+            font-size: $size;
+            line-height: $size;
+        }
+
+        &.only-countdown {
+            width: 100%;
+            line-height: 100%;
+            text-align: center;
+        }
+
+        #countdown {
+            font-weight: bold;
+            text-align: center;
+        }
+    }
+
+    &.stretch-to-fill-parent {
+        .time-indicator-wrapper {
+            width: 30%;
+            #timeIndicator {
+                width: auto;
+                height: auto;
+                margin-left: $margin;
+            }
+        }
+        .countdown-wrapper {
+            width: 70%;
+            #countdown {
+                position: absolute;
+                right: 0;
+                margin-right: $margin;
+            }
+        }
+
+        .time-indicator-wrapper {
+            &.only-time-indicator {
+                width: 100%;
+                text-align: center;
+                #timeIndicator {
+                    padding: 0 0 70% 70%;
+                }
+            }
+            &:not(.only-time-indicator) {
+                #timeIndicator {
+                    padding: 0 0 65% 65%;
+                }
+            }
+        }
+        .countdown-wrapper.only-countdown {
+            margin: 0 50px;
+            width: calc(100% - 100px);
+            #countdown {
+                $size: 300px;
+                line-height: $size;
+                font-size: $size;
+                bottom: calc(50% - 150px);
+            }
+        }
+
+        @include set-breakpoint-lower(xs) {
+            .countdown-wrapper:not(.only-countdown) {
+                #countdown {
+                    $size: 210px;
+                    font-size: $size;
+                    line-height: $size;
+                    bottom: calc(50% - 105px);
+                }
+            }
+        }
+
+        @include set-breakpoint-upper(xs) {
+            .countdown-wrapper:not(.only-countdown) {
+                #countdown {
+                    $size: 230px;
+                    line-height: $size;
+                    font-size: $size;
+                    bottom: calc(50% - 115px);
+                }
+            }
+        }
     }
 }

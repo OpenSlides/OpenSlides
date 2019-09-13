@@ -48,6 +48,16 @@ export class ViewCountdown extends BaseProjectableViewModel<Countdown> implement
                     key: 'fullscreen',
                     displayName: 'Fullscreen',
                     default: false
+                },
+                {
+                    key: 'displayType',
+                    displayName: 'Displaytype',
+                    choices: [
+                        { value: 'onlyCountdown', displayName: 'Only countdown' },
+                        { value: 'countdownAndTimeIndicator', displayName: 'Countdown and time-indicator' },
+                        { value: 'onlyTimeIndicator', displayName: 'Only time indicator' }
+                    ],
+                    default: 'onlyCountdown'
                 }
             ],
             projectionDefaultName: 'countdowns',
