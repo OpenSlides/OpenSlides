@@ -20,7 +20,7 @@ with open('requirements/big_mode.txt') as requirements_big_mode:
 setup(
     name='openslides',
     author=openslides_author,
-    author_email='support@openslides.org',
+    author_email='support@openslides.com',
     description=openslides_description,
     license=openslides_license,
     long_description=long_description,
