@@ -1,7 +1,6 @@
 import asyncio
 from typing import Any
 
-from channels_redis.core import ConnectionPool
 from django.conf import settings
 
 from . import logging
@@ -14,14 +13,16 @@ try:
 except ImportError:
     use_redis = False
 else:
+    from channels_redis.core import ConnectionPool
+
     # set use_redis to true, if there is a value for REDIS_ADDRESS in the settings
     redis_address = getattr(settings, "REDIS_ADDRESS", "")
     use_redis = bool(redis_address)
     if use_redis:
         logger.info(f"Redis address {redis_address}")
 
-pool = ConnectionPool({"address": redis_address})
-counter = 0
+    pool = ConnectionPool({"address": redis_address})
+    counter = 0
 
 
 class RedisConnectionContextManager:
