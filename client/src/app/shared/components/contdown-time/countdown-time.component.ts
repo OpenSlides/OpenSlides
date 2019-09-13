@@ -23,6 +23,36 @@ export class CountdownTimeComponent implements OnDestroy {
     public warningTime: number;
 
     /**
+     * Boolean, whether the countdown will be displayed in a fullscreen-mode.
+     */
+    @Input()
+    public fullscreen = false;
+
+    /**
+     * Passing a specific display-type will decide, whether either only the time-indicator
+     * or only the countdown or both of them are displayed.
+     *
+     * @param displayType A string, that contains the preferred display-type.
+     */
+    @Input()
+    public set displayType(displayType: string) {
+        this.showTimeIndicator = displayType === 'countdownAndTimeIndicator' || displayType === 'onlyTimeIndicator';
+        this.showCountdown = displayType === 'onlyCountdown' || displayType === 'countdownAndTimeIndicator';
+    }
+
+    /**
+     * Boolean to decide, if the time-indicator should be displayed.
+     * Defaults to `false`.
+     */
+    public showTimeIndicator = false;
+
+    /**
+     * Boolean to decide, if the countdown should be displayed.
+     * Defaults to `true`.
+     */
+    public showCountdown = true;
+
+    /**
      * The amount of seconds to display
      */
     public seconds: number;

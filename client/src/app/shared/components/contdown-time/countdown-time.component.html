@@ -1,9 +1,25 @@
 <div
-    id="countdown"
+    class="countdown-time-wrapper"
     [ngClass]="{
-        negative: seconds <= 0,
-        warning_time: seconds <= warningTime && seconds > 0
+        'negative-time': seconds <= 0,
+        'warning-time': seconds <= warningTime && seconds > 0,
+        'stretch-to-fill-parent': fullscreen
     }"
 >
-    {{ time }}
+    <div
+        *ngIf="showTimeIndicator"
+        class="time-indicator-wrapper"
+        [ngClass]="{ 'only-time-indicator': !showCountdown && showTimeIndicator }"
+    >
+        <div id="timeIndicator"></div>
+    </div>
+    <div
+        *ngIf="showCountdown"
+        class="countdown-wrapper"
+        [ngClass]="{ 'only-countdown': showCountdown && !showTimeIndicator }"
+    >
+        <span id="countdown">
+            {{ time }}
+        </span>
+    </div>
 </div>
