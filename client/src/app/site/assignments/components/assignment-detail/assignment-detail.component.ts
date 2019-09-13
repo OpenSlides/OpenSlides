@@ -290,15 +290,11 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
      */
     private patchForm(assignment: ViewAssignment): void {
         this.assignmentCopy = assignment;
-        this.assignmentForm.patchValue({
-            title: assignment.title || '',
-            tags_id: assignment.assignment.tags_id || [],
-            attachments_id: assignment.assignment.attachments_id || [],
-            phase: assignment.phase, // todo default: 0?
-            description: assignment.assignment.description || '',
-            poll_description_default: assignment.assignment.poll_description_default,
-            open_posts: assignment.assignment.open_posts || 1
+        const contentPatch: { [key: string]: any } = {};
+        Object.keys(this.assignmentForm.controls).forEach(control => {
+            contentPatch[control] = assignment[control];
         });
+        this.assignmentForm.patchValue(contentPatch);
     }
 
     /**
@@ -387,10 +383,10 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
         } else {
             super.setTitle('New election');
             this.newAssignment = true;
+            this.editAssignment = true;
             // TODO set defaults?
             this.assignment = new ViewAssignment(new Assignment());
-            this.patchForm(this.assignment);
-            this.setEditMode(true);
+            this.assignmentCopy = new ViewAssignment(new Assignment());
         }
     }
 
@@ -444,9 +440,9 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
     }
 
     public updateAssignmentFromForm(): void {
-        this.repo.patch({ ...this.assignmentForm.value }, this.assignmentCopy).then(() => {
-            this.editAssignment = false;
-        }, this.raiseError);
+        this.repo
+            .patch({ ...this.assignmentForm.value }, this.assignmentCopy)
+            .then(() => (this.editAssignment = false), this.raiseError);
     }
 
     /**
