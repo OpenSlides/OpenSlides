@@ -141,6 +141,7 @@ export class LoginMaskComponent extends BaseViewComponent implements OnInit, OnD
     public async formLogin(): Promise<void> {
         this.loginErrorMsg = '';
         try {
+            this.overlayService.logout(); // Ensures displaying spinner, if logging in
             this.overlayService.showSpinner(this.translate.instant(this.loginMessage), true);
             await this.authService.login(this.loginForm.value.username, this.loginForm.value.password, () => {
                 this.clearOperatorSubscription(); // We take control, not the subscription.
