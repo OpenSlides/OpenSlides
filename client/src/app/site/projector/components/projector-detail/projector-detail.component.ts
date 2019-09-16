@@ -1,11 +1,12 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
+import { timer } from 'rxjs';
 
 import { ProjectorService } from 'app/core/core-services/projector.service';
 import { CountdownRepositoryService } from 'app/core/repositories/projector/countdown-repository.service';
@@ -37,7 +38,8 @@ import { ViewProjector } from '../../models/view-projector';
 @Component({
     selector: 'os-projector-detail',
     templateUrl: './projector-detail.component.html',
-    styleUrls: ['./projector-detail.component.scss']
+    styleUrls: ['./projector-detail.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProjectorDetailComponent extends BaseViewComponent implements OnInit {
     /**
@@ -88,7 +90,8 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
         private messageRepo: ProjectorMessageRepositoryService,
         private currentListOfSpeakersSlideService: CurrentListOfSpeakersSlideService,
         private currentSpeakerChyronService: CurrentSpeakerChyronSlideService,
-        private durationService: DurationService
+        private durationService: DurationService,
+        private cd: ChangeDetectorRef
     ) {
         super(titleService, translate, matSnackBar);
 
@@ -111,6 +114,8 @@ export class ProjectorDetailComponent extends BaseViewComponent implements OnIni
                 }
             });
         });
+
+        this.subscriptions.push(timer(0, 500).subscribe(() => this.cd.detectChanges()));
     }
 
     /**

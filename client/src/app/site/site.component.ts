@@ -103,10 +103,7 @@ export class SiteComponent extends BaseComponent implements OnInit {
         private overlayService: OverlayService
     ) {
         super(title, translate);
-        overlayService.showSpinner(
-            translate.instant('Loading data. Please wait...'),
-            !(operator.guestsEnabled && operator.isAnonymous)
-        );
+        overlayService.showSpinner(translate.instant('Loading data. Please wait...'));
 
         this.operator.getViewUserObservable().subscribe(user => {
             if (!operator.isAnonymous) {
