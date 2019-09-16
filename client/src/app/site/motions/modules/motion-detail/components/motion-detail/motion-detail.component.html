@@ -464,10 +464,7 @@
 <ng-template #contentTemplate>
     <form class="motion-content" [formGroup]="contentForm" (keydown)="onKeyDown($event)">
         <!-- Toolbar with text controls and buttonf for managing the (modified) final version-->
-        <div
-            class="motion-text-toolbar-wrapper"
-            *ngIf="!editMotion && !motion.isStatuteAmendment()"
-        >
+        <div class="motion-text-toolbar-wrapper" *ngIf="!editMotion && !motion.isStatuteAmendment()">
             <!-- Line Number and Diff buttons -->
             <div class="motion-text-controls">
                 <mat-form-field class="motion-goto-line" *ngIf="highlightedLineOpened">
@@ -858,34 +855,43 @@
 
 <ng-template #paragraphBasedAmendment>
     <section class="text-holder">
-        <div class="alert alert-info" *ngIf="this.getAmendmentParagraphs(showAmendmentContext).length === 0">
-            <span translate>No changes at the text.</span>
-        </div>
-        <div
-            *ngFor="let paragraph of this.getAmendmentParagraphs(showAmendmentContext)"
-            class="motion-text motion-text-diff amendment-view"
-            [class.line-numbers-none]="isLineNumberingNone()"
-            [class.line-numbers-inline]="isLineNumberingInline()"
-            [class.line-numbers-outside]="isLineNumberingOutside()"
-            [class.amendment-context]="showAmendmentContext"
-        >
-            <!-- TODO: everything here is required for PDF as well. Should be in a service -->
-            <h3
-                *ngIf="paragraph.diffLineTo === paragraph.diffLineFrom + 1 && !showAmendmentContext"
-                class="amendment-line-header"
+        <!-- If the array exists, we do not have an error -->
+        <div *ngIf="motion.diffLines">
+            <!-- <div class="alert alert-info" *ngIf="getAmendmentParagraphs(showAmendmentContext).length === 0"> -->
+            <div class="alert alert-info" *ngIf="motion.diffLines.length === 0">
+                <span translate>No changes at the text.</span>
+            </div>
+            <div
+                *ngFor="let paragraph of motion.diffLines"
+                class="motion-text motion-text-diff amendment-view"
+                [class.line-numbers-none]="isLineNumberingNone()"
+                [class.line-numbers-inline]="isLineNumberingInline()"
+                [class.line-numbers-outside]="isLineNumberingOutside()"
+                [class.amendment-context]="showAmendmentContext"
             >
-                {{ 'Line' | translate }} {{ paragraph.diffLineFrom }}:
-            </h3>
-            <h3
-                *ngIf="paragraph.diffLineTo !== paragraph.diffLineFrom + 1 && !showAmendmentContext"
-                class="amendment-line-header"
-            >
-                {{ 'Line' | translate }} {{ paragraph.diffLineFrom }} - {{ paragraph.diffLineTo - 1 }}:
-            </h3>
+                <!-- TODO: everything here is required for PDF as well. Should be in a service -->
+                <h3
+                    *ngIf="paragraph.diffLineTo === paragraph.diffLineFrom + 1 && !showAmendmentContext"
+                    class="amendment-line-header"
+                >
+                    {{ 'Line' | translate }} {{ paragraph.diffLineFrom }}:
+                </h3>
+                <h3
+                    *ngIf="paragraph.diffLineTo !== paragraph.diffLineFrom + 1 && !showAmendmentContext"
+                    class="amendment-line-header"
+                >
+                    {{ 'Line' | translate }} {{ paragraph.diffLineFrom }} - {{ paragraph.diffLineTo - 1 }}:
+                </h3>
 
-            <div class="paragraphcontext" [innerHtml]="sanitizedText(paragraph.textPre)"></div>
-            <div [innerHtml]="sanitizedText(paragraph.text)"></div>
-            <div class="paragraphcontext" [innerHtml]="sanitizedText(paragraph.textPost)"></div>
+                <div class="paragraphcontext" [innerHtml]="sanitizedText(paragraph.textPre)"></div>
+                <div [innerHtml]="sanitizedText(paragraph.text)"></div>
+                <div class="paragraphcontext" [innerHtml]="sanitizedText(paragraph.textPost)"></div>
+            </div>
+        </div>
+        <div *ngIf="!motion.diffLines">
+            <span class="red-warning-text" translate>
+                There is an error with this amendment. Please manually edit it.
+            </span>
         </div>
     </section>
 
