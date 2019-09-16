@@ -1325,21 +1325,24 @@ export class DiffService {
             throw new Error('Invalid call - extractRangeByLineNumbers expects a string as first argument');
         }
 
+        const fragment = this.htmlToFragment(htmlIn);
+
+        if (toLine === null || isNaN(toLine)) {
+            const internalLineMarkers = fragment.querySelectorAll('OS-LINEBREAK'),
+                lastMarker = <Element>internalLineMarkers[internalLineMarkers.length - 1];
+            if (lastMarker) {
+                toLine = parseInt(lastMarker.getAttribute('data-line-number'), 10);
+            } else {
+                toLine = fromLine;
+            }
+        }
+
         const cacheKey = fromLine + '-' + toLine + '-' + this.lineNumberingService.djb2hash(htmlIn),
             cached = this.diffCache.get(cacheKey);
-
         if (cached) {
             return cached;
         }
-
-        const fragment = this.htmlToFragment(htmlIn);
-
         this.insertInternalLineMarkers(fragment);
-        if (toLine === null) {
-            const internalLineMarkers = fragment.querySelectorAll('OS-LINEBREAK'),
-                lastMarker = <Element>internalLineMarkers[internalLineMarkers.length - 1];
-            toLine = parseInt(lastMarker.getAttribute('data-line-number'), 10);
-        }
 
         const fromLineNode = this.getLineNumberNode(fragment, fromLine),
             toLineNode = toLine ? this.getLineNumberNode(fragment, toLine) : null,
