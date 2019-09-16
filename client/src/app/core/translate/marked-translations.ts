@@ -267,7 +267,7 @@ _('Recommendation label');
 _('Allow support');
 _('Allow create poll');
 _('Allow submitter edit');
-_('Set identifier');
+_('Do not set identifier');
 _('Show state extension field');
 _('Show recommendation extension field');
 _('Show amendment in parent motion');

@@ -106,7 +106,7 @@ export class WorkflowDetailComponent extends BaseViewComponent implements OnInit
         { name: 'Allow support', selector: 'allow_support', type: 'check' },
         { name: 'Allow create poll', selector: 'allow_create_poll', type: 'check' },
         { name: 'Allow submitter edit', selector: 'allow_submitter_edit', type: 'check' },
-        { name: 'Set identifier', selector: 'dont_set_identifier', type: 'check' },
+        { name: 'Do not set identifier', selector: 'dont_set_identifier', type: 'check' },
         { name: 'Show state extension field', selector: 'show_state_extension_field', type: 'check' },
         {
             name: 'Show recommendation extension field',
