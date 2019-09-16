@@ -245,12 +245,20 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
             foreignViewModel: ViewMotion,
             afterSetRelation: (motion: ViewMotion, foreignViewModel: ViewMotion | null) => {
                 if (foreignViewModel) {
-                    motion.diffLines = this.getAmendmentParagraphs(motion, this.motionLineLength, false);
+                    try {
+                        motion.diffLines = this.getAmendmentParagraphs(motion, this.motionLineLength, false);
+                    } catch (e) {
+                        console.warn('Error with motion or amendment ', motion);
+                    }
                 }
             },
             afterDependencyChange: (motion: ViewMotion, parent: ViewMotion) => {
                 if (motion.parent) {
-                    motion.diffLines = this.getAmendmentParagraphs(motion, this.motionLineLength, false);
+                    try {
+                        motion.diffLines = this.getAmendmentParagraphs(motion, this.motionLineLength, false);
+                    } catch (e) {
+                        console.warn('Error with motion or amendment: ', motion);
+                    }
                 }
             }
         });
