@@ -4,7 +4,7 @@
         <h2 translate>Election</h2>
     </div>
 
-    <div *ngIf="data.data && data.data.description" [innerHTML]="data.data.description"></div>
+    <div *ngIf="data.data && data.data.description" [innerHTML]="data.data.description | trust: 'html'"></div>
 
     <h3 translate>Candidates</h3>
     <ul *ngIf="data.data.assignment_related_users && data.data.assignment_related_users.length">

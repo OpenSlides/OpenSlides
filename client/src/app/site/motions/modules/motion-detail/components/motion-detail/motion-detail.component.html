@@ -655,7 +655,7 @@
                 ></os-motion-detail-original-change-recommendations>
                 <div
                     *ngIf="!isLineNumberingOutside() || !isRecoMode(ChangeRecoMode.Original)"
-                    [innerHTML]="sanitizedText(getFormattedTextPlain())"
+                    [innerHTML]="getFormattedTextPlain() | trust: 'html'"
                 ></div>
             </div>
             <os-motion-detail-diff
@@ -693,7 +693,7 @@
         <div
             class="motion-text line-numbers-none"
             *ngIf="!editMotion && motion.isStatuteAmendment()"
-            [innerHTML]="getFormattedStatuteAmendment()"
+            [innerHTML]="getFormattedStatuteAmendment() | trust: 'html'"
         ></div>
 
         <!-- The HTML Editor for motions and traditional amendments -->
@@ -755,7 +755,7 @@
             >
                 <span translate>Reason</span>&nbsp;<span *ngIf="reasonRequired && editMotion">*</span>
             </h3>
-            <div class="motion-text" *ngIf="!editMotion"><div [innerHtml]="sanitizedText(motion.reason)"></div></div>
+            <div class="motion-text" *ngIf="!editMotion" [innerHtml]="motion.reason | trust: 'html'"></div>
 
             <!-- The HTML Editor -->
             <editor
@@ -883,9 +883,10 @@
                     {{ 'Line' | translate }} {{ paragraph.diffLineFrom }} - {{ paragraph.diffLineTo - 1 }}:
                 </h3>
 
-                <div class="paragraphcontext" [innerHtml]="sanitizedText(paragraph.textPre)"></div>
-                <div [innerHtml]="sanitizedText(paragraph.text)"></div>
-                <div class="paragraphcontext" [innerHtml]="sanitizedText(paragraph.textPost)"></div>
+                <!-- TODO: Seems to be directly duplicated in the slide -->
+                <div class="paragraphcontext" [innerHtml]="paragraph.textPre | trust: 'html'"></div>
+                <div [innerHtml]="paragraph.text | trust: 'html'"></div>
+                <div class="paragraphcontext" [innerHtml]="paragraph.textPost | trust: 'html'"></div>
             </div>
         </div>
         <div *ngIf="!motion.diffLines">

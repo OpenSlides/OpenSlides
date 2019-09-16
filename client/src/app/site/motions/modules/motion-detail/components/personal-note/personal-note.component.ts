@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
-import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
+import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
@@ -46,7 +46,6 @@ export class PersonalNoteComponent extends BaseViewComponent {
      * @param personalNoteService
      * @param formBuilder
      * @param pdfService
-     * @param sanitizer
      */
     public constructor(
         title: Title,
@@ -54,8 +53,7 @@ export class PersonalNoteComponent extends BaseViewComponent {
         matSnackBar: MatSnackBar,
         private personalNoteService: PersonalNoteService,
         formBuilder: FormBuilder,
-        private pdfService: MotionPdfExportService,
-        private sanitizer: DomSanitizer
+        private pdfService: MotionPdfExportService
     ) {
         super(title, translate, matSnackBar);
         this.personalNoteForm = formBuilder.group({
@@ -101,16 +99,5 @@ export class PersonalNoteComponent extends BaseViewComponent {
      */
     public printPersonalNote(): void {
         this.pdfService.exportPersonalNote(this.motion.personalNote, this.motion);
-    }
-
-    /**
-     * Sanitize the text to be safe.
-     *
-     * @param text to be sanitized.
-     *
-     * @returns SafeHtml
-     */
-    public sanitizeText(text: string): SafeHtml {
-        return this.sanitizer.bypassSecurityTrustHtml(text);
     }
 }

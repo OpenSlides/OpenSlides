@@ -4,7 +4,7 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -22,7 +22,7 @@ import { WorkflowRepositoryService } from 'app/core/repositories/motions/workflo
 import { TagRepositoryService } from 'app/core/repositories/tags/tag-repository.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { DiffLinesInParagraph, DiffService, LineRange } from 'app/core/ui-services/diff.service';
+import { DiffLinesInParagraph, LineRange } from 'app/core/ui-services/diff.service';
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
 import { PersonalNoteService } from 'app/core/ui-services/personal-note.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
@@ -398,12 +398,10 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
      * @param mediafileRepo Mediafile Repository
      * @param DS The DataStoreService
      * @param configService The configuration provider
-     * @param sanitizer For making HTML SafeHTML
      * @param promptService ensure safe deletion
      * @param pdfExport export the motion to pdf
      * @param personalNoteService: personal comments and favorite marker
      * @param linenumberingService The line numbering service
-     * @param diffService The diff service
      * @param categoryRepo Repository for categories
      * @param viewModelStore accessing view models
      * @param categoryRepo access the category repository
@@ -433,12 +431,10 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         private changeRecoRepo: ChangeRecommendationRepositoryService,
         private statuteRepo: StatuteParagraphRepositoryService,
         private configService: ConfigService,
-        private sanitizer: DomSanitizer,
         private promptService: PromptService,
         private pdfExport: MotionPdfExportService,
         private personalNoteService: PersonalNoteService,
         private linenumberingService: LinenumberingService,
-        private diffService: DiffService,
         private categoryRepo: CategoryRepositoryService,
         private userRepo: UserRepositoryService,
         private notifyService: NotifyService,
@@ -862,17 +858,6 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     }
 
     /**
-     * Called from the template to make a HTML string compatible with [innerHTML]
-     * (otherwise line-number-data-attributes would be stripped out)
-     *
-     * @param {string} text
-     * @returns {SafeHtml}
-     */
-    public sanitizedText(text: string): SafeHtml {
-        return this.sanitizer.bypassSecurityTrustHtml(text);
-    }
-
-    /**
      * If `this.motion` is an amendment, this returns the list of all changed paragraphs.
      *
      * @param {boolean} includeUnchanged
@@ -883,33 +868,12 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     }
 
     /**
-     * If `this.motion` is an amendment, this returns a specified line range from the parent motion
-     * (e.g. to show the contect in which this amendment is happening)
-     *
-     * @param from the line number to start
-     * @param to the line number to stop
-     * @returns safe html strings
-     */
-    public getParentMotionRange(from: number, to: number): SafeHtml {
-        const parentMotion = this.repo.getViewModel(this.motion.parent_id);
-        const str = this.diffService.extractMotionLineRange(
-            parentMotion.text,
-            { from, to },
-            true,
-            this.lineLength,
-            this.highlightedLine
-        );
-        return this.sanitizer.bypassSecurityTrustHtml(str);
-    }
-
-    /**
      * get the diff html from the statute amendment, as SafeHTML for [innerHTML]
      *
      * @returns safe html strings
      */
-    public getFormattedStatuteAmendment(): SafeHtml {
-        const diffHtml = this.repo.formatStatuteAmendment(this.statuteParagraphs, this.motion, this.lineLength);
-        return this.sanitizer.bypassSecurityTrustHtml(diffHtml);
+    public getFormattedStatuteAmendment(): string {
+        return this.repo.formatStatuteAmendment(this.statuteParagraphs, this.motion, this.lineLength);
     }
 
     public getChangesForDiffMode(): ViewUnifiedChange[] {

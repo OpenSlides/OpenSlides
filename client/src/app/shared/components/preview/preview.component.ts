@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { SearchProperty } from 'app/core/ui-services/search.service';
 import { BaseViewModel } from 'app/site/base/base-view-model';
@@ -45,26 +44,13 @@ export class PreviewComponent implements OnDestroy {
 
     /**
      * Default constructor
-     *
-     * @param sanitizer DomSanitizer
      */
-    public constructor(private sanitizer: DomSanitizer, private cd: ChangeDetectorRef) {}
+    public constructor(private cd: ChangeDetectorRef) {}
 
     /**
      * detach the change detection
      */
     public ngOnDestroy(): void {
         this.cd.detach();
-    }
-
-    /**
-     * Function to sanitize any text to show html.
-     *
-     * @param text The text to sanitize.
-     *
-     * @returns {SafeHtml} The sanitized text as `HTML`.
-     */
-    public sanitize(text: string): SafeHtml {
-        return this.sanitizer.bypassSecurityTrustHtml(text);
     }
 }

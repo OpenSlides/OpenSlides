@@ -84,7 +84,7 @@
     <div *pblNgridCellDef="'summary'; row as motion" class="cell-slot fill">
         <a class="detail-link" [routerLink]="motion.getDetailStateURL()"></a>
         <div class="innerTable">
-            <div class="motion-text" [innerHtml]="sanitizeText(getAmendmentSummary(motion))"></div>
+            <div class="motion-text" [innerHtml]="getAmendmentSummary(motion) | trust: 'html'"></div>
         </div>
     </div>
 

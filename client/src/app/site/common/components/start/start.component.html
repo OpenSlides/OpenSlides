@@ -8,6 +8,6 @@
     <div class="app-content">
         <h1>{{ welcomeTitle | translate }}</h1>
 
-        <div [innerHTML]="welcomeText"></div>
+        <div [innerHTML]="welcomeText | trust: 'html'"></div>
     </div>
 </mat-card>

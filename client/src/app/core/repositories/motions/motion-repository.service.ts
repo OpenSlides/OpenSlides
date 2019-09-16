@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
@@ -51,12 +50,7 @@ export interface ParagraphToChoose {
     /**
      * The raw HTML of this paragraph.
      */
-    rawHtml: string;
-
-    /**
-     * The HTML of this paragraph, wrapped in a `SafeHtml`-object.
-     */
-    safeHtml: SafeHtml;
+    html: string;
 
     /**
      * The first line number
@@ -186,7 +180,6 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
      * @param mapperService Maps collection strings to classes
      * @param dataSend sending changed objects
      * @param httpService OpenSlides own Http service
-     * @param sanitizer DOM Sanitizer
      * @param lineNumbering Line numbering for motion text
      * @param diff Display changes in motion text as diff.
      * @param personalNoteService service fo personal notes
@@ -201,7 +194,6 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
         relationManager: RelationManagerService,
         config: ConfigService,
         private httpService: HttpService,
-        private readonly sanitizer: DomSanitizer,
         private readonly lineNumbering: LinenumberingService,
         private readonly diff: DiffService,
         private operator: OperatorService
@@ -713,8 +705,7 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
             const affected: LineNumberRange = this.lineNumbering.getLineNumberRange(paragraph);
             return {
                 paragraphNo: index,
-                safeHtml: this.sanitizer.bypassSecurityTrustHtml(paragraph),
-                rawHtml: this.lineNumbering.stripLineNumbers(paragraph),
+                html: this.lineNumbering.stripLineNumbers(paragraph),
                 lineFrom: affected.from,
                 lineTo: affected.to
             };

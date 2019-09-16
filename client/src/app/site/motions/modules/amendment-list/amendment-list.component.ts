@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatDialog, MatSnackBar } from '@angular/material';
-import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -94,7 +94,6 @@ export class AmendmentListComponent extends BaseListViewComponent<ViewMotion> im
         public motionSortService: MotionSortListService,
         public amendmentSortService: AmendmentSortListService,
         public amendmentFilterService: AmendmentFilterListService,
-        private sanitizer: DomSanitizer,
         private dialog: MatDialog,
         private motionExport: MotionExportService,
         private linenumberingService: LinenumberingService,
@@ -162,9 +161,5 @@ export class AmendmentListComponent extends BaseListViewComponent<ViewMotion> im
     public exportAmendmentListPdf(): void {
         const parentMotion = this.parentMotionId ? this.motionRepo.getViewModel(this.parentMotionId) : undefined;
         this.pdfExport.exportAmendmentList(this.dataSource.filteredData, parentMotion);
-    }
-
-    public sanitizeText(text: string): SafeHtml {
-        return this.sanitizer.bypassSecurityTrustHtml(text);
     }
 }

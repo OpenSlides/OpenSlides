@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
+import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
@@ -65,7 +65,6 @@ export class MotionCommentsComponent extends BaseViewComponent {
      * @param formBuilder Form builder to handle text editing
      * @param operator service to get the sections
      * @param pdfService service to export a comment section to pdf
-     * @param sanitizer to sanitize the inner html text
      * @param titleService set the browser title
      * @param translate the translation service
      * @param matSnackBar showing errors and information
@@ -75,7 +74,6 @@ export class MotionCommentsComponent extends BaseViewComponent {
         private formBuilder: FormBuilder,
         private operator: OperatorService,
         private pdfService: MotionPdfExportService,
-        private sanitizer: DomSanitizer,
         titleService: Title,
         translate: TranslateService,
         matSnackBar: MatSnackBar
@@ -188,16 +186,5 @@ export class MotionCommentsComponent extends BaseViewComponent {
      */
     public pdfExportSection(section: ViewMotionCommentSection): void {
         this.pdfService.exportComment(section, this.motion);
-    }
-
-    /**
-     * Sanitize the text to be safe.
-     *
-     * @param text to be sanitized.
-     *
-     * @returns SafeHtml
-     */
-    public sanitizeText(text: string): SafeHtml {
-        return this.sanitizer.bypassSecurityTrustHtml(text);
     }
 }

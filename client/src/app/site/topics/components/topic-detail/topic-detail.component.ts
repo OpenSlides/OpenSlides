@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
@@ -81,8 +81,7 @@ export class TopicDetailComponent extends BaseViewComponent {
         private repo: TopicRepositoryService,
         private promptService: PromptService,
         private operator: OperatorService,
-        private itemRepo: ItemRepositoryService,
-        private sanitizer: DomSanitizer
+        private itemRepo: ItemRepositoryService
     ) {
         super(title, translate, matSnackBar);
         this.getTopicByUrl();
@@ -240,17 +239,5 @@ export class TopicDetailComponent extends BaseViewComponent {
         if (event.key === 'Escape') {
             this.setEditMode(false);
         }
-    }
-
-    /**
-     * Function to sanitize text.
-     * Necessary to render styles etc. correctly.
-     *
-     * @param text which will be sanitized.
-     *
-     * @returns safeHtml which can be displayed whithout loss.
-     */
-    public sanitizedText(text: string): SafeHtml {
-        return this.sanitizer.bypassSecurityTrustHtml(text);
     }
 }
