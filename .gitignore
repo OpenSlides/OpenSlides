@@ -79,3 +79,6 @@ client/package-lock.json
 # System Files
 client/.DS_Store
 client/Thumbs.db
+
+# ignore individual cypress files (use the template)
+cypress.json
