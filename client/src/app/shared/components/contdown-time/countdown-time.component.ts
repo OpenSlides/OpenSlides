@@ -36,6 +36,9 @@ export class CountdownTimeComponent implements OnDestroy {
      */
     @Input()
     public set displayType(displayType: string) {
+        if (!displayType) {
+            displayType = 'onlyCountdown';
+        }
         this.showTimeIndicator = displayType === 'countdownAndTimeIndicator' || displayType === 'onlyTimeIndicator';
         this.showCountdown = displayType === 'onlyCountdown' || displayType === 'countdownAndTimeIndicator';
     }
