@@ -97,7 +97,7 @@
         <os-projector-button [object]="itemListSlide" [menuItem]="true"></os-projector-button>
 
         <!-- Current list of speakers -->
-        <button mat-menu-item routerLink="speakers">
+        <button mat-menu-item *osPerms="'agenda.can_see_list_of_speakers'" routerLink="speakers">
             <mat-icon>mic</mat-icon>
             <span translate>Current list of speakers</span>
         </button>
