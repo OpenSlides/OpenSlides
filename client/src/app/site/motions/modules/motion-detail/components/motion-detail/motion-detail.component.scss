@@ -141,15 +141,12 @@ span {
     }
 
     .desktop-right {
-        display: grid;
-
-        min-width: calc(70% - 90px);
-
-        mat-card {
-            display: inline;
-            margin: 0px 40px 10px 10px;
+        .os-form-card {
+            margin-bottom: 20px;
         }
+
         .os-card {
+            display: grid;
             max-width: 900px;
             min-width: 400px;
             margin-left: 0 !important;
