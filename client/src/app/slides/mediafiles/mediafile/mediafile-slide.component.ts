@@ -12,7 +12,7 @@ import { MediafileSlideData } from './mediafile-slide-data';
 })
 export class MediafileSlideComponent extends BaseSlideComponent<MediafileSlideData, MediafileProjectorElement> {
     public get url(): string {
-        return `${this.data.data.media_url_prefix}/${this.data.data.path}`;
+        return `${this.data.data.media_url_prefix}${this.data.data.path}`;
     }
 
     public get zoom(): number {
