@@ -233,6 +233,7 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
                 label: '',
                 width: '40px'
             },
+
             {
                 prop: 'projector',
                 label: '',
@@ -250,7 +251,7 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
             {
                 prop: 'speaker',
                 label: '',
-                width: '40px'
+                width: this.columnMinWidth
             },
             {
                 prop: 'menu',
