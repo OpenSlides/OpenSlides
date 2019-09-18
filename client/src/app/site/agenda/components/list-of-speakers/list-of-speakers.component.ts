@@ -164,10 +164,12 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
         if (this.isCurrentListOfSpeakers) {
             this.projectors = this.projectorRepo.getViewModelList();
             this.updateClosProjector();
-            this.projectorRepo.getViewModelListObservable().subscribe(newProjectors => {
-                this.projectors = newProjectors;
-                this.updateClosProjector();
-            });
+            this.subscriptions.push(
+                this.projectorRepo.getViewModelListObservable().subscribe(newProjectors => {
+                    this.projectors = newProjectors;
+                    this.updateClosProjector();
+                })
+            );
         } else {
             const id = +this.route.snapshot.url[this.route.snapshot.url.length - 1].path;
             this.setListOfSpeakersId(id);
@@ -226,6 +228,7 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
                     this.setListOfSpeakersId(listOfSpeakers.id);
                 }
             });
+        this.subscriptions.push(this.projectorSubscription);
     }
 
     /**
@@ -247,7 +250,10 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
 
         this.closSubscription = this.listOfSpeakersRepo.getViewModelObservable(id).subscribe(listOfSpeakers => {
             if (listOfSpeakers) {
-                super.setTitle(listOfSpeakers.getTitle() + ` - ${this.translate.instant('List of speakers')}`);
+                const title = this.isCurrentListOfSpeakers
+                    ? 'Current list of speakers'
+                    : listOfSpeakers.getTitle() + ` - ${this.translate.instant('List of speakers')}`;
+                super.setTitle(title);
                 this.viewListOfSpeakers = listOfSpeakers;
                 const allSpeakers = this.viewListOfSpeakers.speakers.sort((a, b) => a.weight - b.weight);
                 this.speakers = allSpeakers.filter(speaker => speaker.state === SpeakerState.WAITING);
