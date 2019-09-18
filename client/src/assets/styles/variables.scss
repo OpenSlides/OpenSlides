@@ -1,0 +1,22 @@
+// define mobile desktop breakpoints
+$bp-phone: 500px;
+$bp-desktop: 960px;
+
+// reusable mixins to easily style phone and desktop
+@mixin phone {
+    @media (max-width: #{$bp-phone}) {
+        @content;
+    }
+}
+
+@mixin tablet {
+    @media (min-width: #{$bp-phone}) and (max-width: #{$bp-desktop - 1px}) {
+        @content;
+    }
+}
+
+@mixin desktop {
+    @media (min-width: #{$bp-desktop}) {
+        @content;
+    }
+}
