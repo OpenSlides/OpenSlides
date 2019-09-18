@@ -29,7 +29,7 @@
             <!-- recommendation referencing motions -->
             <h2 *ngIf="data.data.recommendation_referencing_motions">
                 <span translate>Referring motions</span>:
-                <span *ngFor="let titleInformation of data.data.recommendation_referencing_motions; let last = last">
+                <span *ngFor="let titleInformation of referencingMotions; let last = last">
                     {{ getIdentifierOrTitle(titleInformation) }}<span *ngIf="!last">,</span>
                 </span>
             </h2>

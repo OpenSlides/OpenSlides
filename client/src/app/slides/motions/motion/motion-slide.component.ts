@@ -54,6 +54,11 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
      */
     public allChangingObjects: ViewUnifiedChange[];
 
+    /**
+     * Reference to all referencing motions to store sorted by `identifier`.
+     */
+    public referencingMotions = [];
+
     private _data: SlideData<MotionSlideData>;
 
     @Input()
@@ -65,6 +70,12 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
         this.crMode = value.element.mode || 'original';
 
         this.textDivStyles.width = value.data.show_meta_box ? 'calc(100% - 250px)' : '100%';
+
+        if (value.data.recommendation_referencing_motions) {
+            this.referencingMotions = value.data.recommendation_referencing_motions.sort((a, b) =>
+                a.identifier.localeCompare(b.identifier)
+            );
+        }
 
         this.recalcUnifiedChanges();
     }
