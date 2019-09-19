@@ -26,7 +26,7 @@
             <mat-card>
                 <mat-card-title>{{ statuteParagraph.title }}</mat-card-title>
                 <mat-card-content>
-                    <div [innerHTML]="statuteParagraph.text"></div>
+                    <div [innerHTML]="statuteParagraph.text | trust: 'html'"></div>
                 </mat-card-content>
             </mat-card>
             <mat-action-row>

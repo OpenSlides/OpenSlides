@@ -67,7 +67,7 @@
                 [attr.data-change-id]="changedTitle.getChangeId()"
             >
                 <div class="bold">{{ 'Changed title' | translate }}:</div>
-                <div [innerHTML]="getFormattedTitleDiff()"></div>
+                <div [innerHTML]="getFormattedTitleDiff() | trust: 'html'"></div>
             </div>
         </div>
     </div>
@@ -122,7 +122,7 @@
                 [class.line-numbers-inline]="isLineNumberingInline()"
                 [class.line-numbers-outside]="isLineNumberingOutside()"
                 [attr.data-change-id]="change.getChangeId()"
-                [innerHTML]="getDiff(change)"
+                [innerHTML]="getDiff(change) | trust: 'html'"
             ></div>
         </div>
     </div>

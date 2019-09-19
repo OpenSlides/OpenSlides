@@ -1,5 +1,4 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
@@ -114,7 +113,6 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
         translate: TranslateService,
         motionRepo: MotionRepositoryService,
         private changeRepo: ChangeRecommendationRepositoryService,
-        private sanitizer: DomSanitizer,
         private lineNumbering: LinenumberingService,
         private diff: DiffService
     ) {
@@ -258,17 +256,6 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
     }
 
     /**
-     * Called from the template to make a HTML string compatible with [innerHTML]
-     * (otherwise line-number-data-attributes would be stripped out)
-     *
-     * @param {string} text
-     * @returns {SafeHtml}
-     */
-    public sanitizedText(text: string): SafeHtml {
-        return this.sanitizer.bypassSecurityTrustHtml(text);
-    }
-
-    /**
      * Extracts a renderable HTML string representing the given line number range of this motion
      *
      * @param {string} motionHtml
@@ -308,10 +295,9 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
         return this.changeRepo.getTitleWithChanges(this.data.data.title, this.getTitleChangingObject(), this.crMode);
     }
 
-    public getFormattedTitleDiff(): SafeHtml {
+    public getFormattedTitleDiff(): string {
         const change = this.getTitleChangingObject();
-        const diff = this.changeRepo.getTitleChangesAsDiff(this.data.data.title, change);
-        return this.sanitizer.bypassSecurityTrustHtml(diff);
+        return this.changeRepo.getTitleChangesAsDiff(this.data.data.title, change);
     }
 
     /**
@@ -430,9 +416,8 @@ export class MotionSlideComponent extends BaseMotionSlideComponent<MotionSlideDa
      *
      * @returns safe html strings
      */
-    public getFormattedStatuteAmendment(): SafeHtml {
-        let diffHtml = this.diff.diff(this.data.data.base_statute.text, this.data.data.text);
-        diffHtml = this.lineNumbering.insertLineBreaksWithoutNumbers(diffHtml, this.lineLength, true);
-        return this.sanitizer.bypassSecurityTrustHtml(diffHtml);
+    public getFormattedStatuteAmendment(): string {
+        const diffHtml = this.diff.diff(this.data.data.base_statute.text, this.data.data.text);
+        return this.lineNumbering.insertLineBreaksWithoutNumbers(diffHtml, this.lineLength, true);
     }
 }

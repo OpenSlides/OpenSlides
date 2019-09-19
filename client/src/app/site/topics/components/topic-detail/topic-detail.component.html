@@ -32,7 +32,7 @@
     <div>
         <span *ngIf="!editTopic">
             <!-- Render topic text as HTML -->
-            <div [innerHTML]="sanitizedText(topic.text)"></div>
+            <div [innerHTML]="topic.text | trust: 'html'"></div>
         </span>
     </div>
 

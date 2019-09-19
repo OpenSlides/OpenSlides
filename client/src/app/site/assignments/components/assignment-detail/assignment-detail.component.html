@@ -76,7 +76,7 @@
         <div *ngIf="assignment">
             <div
                 *ngIf="assignment.assignment.description"
-                [innerHTML]="getSanitizedText(assignment.assignment.description)"
+                [innerHTML]="assignment.assignment.description | trust: 'html'"
             ></div>
         </div>
         <div class="meta-info-grid">

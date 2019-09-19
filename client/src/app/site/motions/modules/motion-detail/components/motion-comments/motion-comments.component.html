@@ -11,7 +11,7 @@
 
         <ng-container class="meta-text-block-content">
             <ng-container *ngIf="!isCommentEdited(section)">
-                <div *ngIf="comments[section.id]" [innerHTML]="sanitizeText(comments[section.id].comment)"></div>
+                <div *ngIf="comments[section.id]" [innerHTML]="comments[section.id].comment | trust: 'html'"></div>
                 <div class="no-content" *ngIf="!comments[section.id] || !comments[section.id].comment" translate>
                     No comment
                 </div>

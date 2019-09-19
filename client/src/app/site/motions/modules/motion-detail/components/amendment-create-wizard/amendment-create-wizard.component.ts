@@ -158,7 +158,7 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
         });
         this.contentForm.addControl(
             'text_' + paragraph.paragraphNo,
-            new FormControl(paragraph.rawHtml, Validators.required)
+            new FormControl(paragraph.html, Validators.required)
         );
         this.contentForm.patchValue({
             selectedParagraphs: [paragraph]
@@ -195,7 +195,7 @@ export class AmendmentCreateWizardComponent extends BaseViewComponent {
 
             this.contentForm.addControl(
                 'text_' + paragraph.paragraphNo,
-                new FormControl(paragraph.rawHtml, Validators.required)
+                new FormControl(paragraph.html, Validators.required)
             );
             this.contentForm.patchValue({
                 selectedParagraphs: newParagraphs

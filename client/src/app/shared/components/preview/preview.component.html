@@ -27,13 +27,13 @@
             <mat-card class="os-card" *ngIf="entry.value !== '' && !entry.blockProperties">
                 <div class="key-part">{{ entry.key | translate }}</div>
                 <div *ngIf="!entry.trusted">{{ entry.value }}</div>
-                <div *ngIf="entry.trusted" [innerHTML]="sanitize(entry.value)"></div>
+                <div *ngIf="entry.trusted" [innerHTML]="entry.value | trust: 'html'"></div>
             </mat-card>
             <mat-card class="os-card" *ngIf="entry.blockProperties">
                 <div *ngFor="let property of entry.blockProperties">
                     <div class="key-part">{{ property.key | translate }}</div>
                     <div *ngIf="!property.trusted">{{ property.value }}</div>
-                    <div *ngIf="property.trusted" [innerHTML]="sanitize(property.value)"></div>
+                    <div *ngIf="property.trusted" [innerHTML]="property.value | trust: 'html'"></div>
                 </div>
             </mat-card>
         </div>

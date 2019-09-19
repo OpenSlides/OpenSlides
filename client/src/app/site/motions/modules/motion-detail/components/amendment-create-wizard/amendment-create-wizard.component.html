@@ -12,7 +12,11 @@
     <!-- Next-button -->
     <div class="extra-controls-slot">
         <div *ngIf="matStepper.selectedIndex === 0">
-            <button mat-button [disabled]="contentForm.value.selectedParagraphs.length === 0" (click)="matStepper.next()">
+            <button
+                mat-button
+                [disabled]="contentForm.value.selectedParagraphs.length === 0"
+                (click)="matStepper.next()"
+            >
                 <span class="upper" translate>Next</span>
             </button>
         </div>
@@ -48,7 +52,7 @@
                         [checked]="isParagraphSelected(paragraph)"
                     >
                     </mat-radio-button>
-                    <div class="paragraph-text motion-text" [innerHTML]="paragraph.safeHtml"></div>
+                    <div class="paragraph-text motion-text" [innerHTML]="paragraph.html | trust: 'html'"></div>
                 </section>
             </div>
         </mat-step>

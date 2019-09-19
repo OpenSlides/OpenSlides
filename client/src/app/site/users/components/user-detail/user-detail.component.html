@@ -315,7 +315,7 @@
         <!-- About me -->
         <div *ngIf="user.about_me">
             <h4 translate>About me</h4>
-            <div [innerHTML]="sanitizedText(user.about_me)"></div>
+            <div [innerHTML]="user.about_me | trust: 'html'"></div>
         </div>
 
         <!-- Username -->

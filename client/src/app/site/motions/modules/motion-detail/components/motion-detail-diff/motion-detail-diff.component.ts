@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
+import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
@@ -81,7 +81,6 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
      * @param title
      * @param translate
      * @param matSnackBar
-     * @param sanitizer
      * @param diff
      * @param recoRepo
      * @param dialogService
@@ -93,7 +92,6 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
         title: Title,
         protected translate: TranslateService, // protected required for ng-translate-extract
         matSnackBar: MatSnackBar,
-        private sanitizer: DomSanitizer,
         private diff: DiffService,
         private recoRepo: ChangeRecommendationRepositoryService,
         private dialogService: MatDialog,
@@ -157,9 +155,8 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
      * Returns the diff string from the motion to the change
      * @param {ViewUnifiedChange} change
      */
-    public getDiff(change: ViewUnifiedChange): SafeHtml {
-        const html = this.diff.getChangeDiff(this.motion.text, change, this.lineLength, this.highlightedLine);
-        return this.sanitizer.bypassSecurityTrustHtml(html);
+    public getDiff(change: ViewUnifiedChange): string {
+        return this.diff.getChangeDiff(this.motion.text, change, this.lineLength, this.highlightedLine);
     }
 
     /**
@@ -253,9 +250,9 @@ export class MotionDetailDiffComponent extends BaseViewComponent implements Afte
         return this.changes.find((obj: ViewUnifiedChange) => obj.isTitleChange());
     }
 
-    public getFormattedTitleDiff(): SafeHtml {
+    public getFormattedTitleDiff(): string {
         const change = this.getTitleChangingObject();
-        return this.sanitizer.bypassSecurityTrustHtml(this.recoRepo.getTitleChangesAsDiff(this.motion.title, change));
+        return this.recoRepo.getTitleChangesAsDiff(this.motion.title, change);
     }
 
     /**
