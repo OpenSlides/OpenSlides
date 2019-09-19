@@ -1,3 +1,5 @@
+@import '~assets/styles/variables.scss';
+
 .full-width {
     width: 100%;
 }
@@ -5,21 +7,21 @@
 .meta-info-grid {
     display: grid;
     grid-column-gap: 30px;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: 1fr;
 
     .number-of-elected {
         grid-column: 1;
     }
 
     .current-phase {
-        grid-column: 2;
+        grid-column: 1;
     }
 
-    // will display the container under the one declared above on small screen
-    @media only screen and (max-width: 960px) {
-        grid-template-columns: 1fr;
+    @include desktop {
+        grid-template-columns: 1fr 2fr;
+
         .current-phase {
-            grid-column: 1;
+            grid-column: 2;
         }
     }
 }
@@ -29,12 +31,12 @@
 }
 
 .candidates-list {
-    padding-top: 10px;
+    padding: 10px 25px 0 25px;
 }
 
 .add-candidates {
     .search-field {
-        padding-top: 15px;
+        padding: 15px 25px 0 25px;
         width: auto;
 
         .search-bar {
@@ -42,19 +44,6 @@
             .mat-form-field {
                 width: 100%;
             }
-        }
-    }
-}
-
-@media only screen and (max-width: 960px) {
-    .candidates-list {
-        // TODO: same as .waiting-list in list-of-speakers
-        padding: 10px 25px 0 25px;
-    }
-
-    .add-candidates {
-        .search-field {
-            padding: 15px 25px 0 25px;
         }
     }
 }

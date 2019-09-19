@@ -53,6 +53,9 @@ $narrow-spacing: (
 /** Load projector specific SCSS values */
 @import './assets/styles/projector.scss';
 
+/** Load global scss variables and device mixing */
+@import './assets/styles/variables.scss';
+
 .general-theme {
     @include os-global-spinner-theme($openslides-general-theme);
 }
@@ -125,6 +128,7 @@ $narrow-spacing: (
 
     .mat-toolbar.sticky-toolbar {
         border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        height: 64px;
     }
 
     .mat-drawer-inner-container {
@@ -611,7 +615,10 @@ button.mat-menu-item.selected {
 }
 
 .content-container {
-    margin: 0 65px;
+    margin: 0 15px;
+    h1 {
+        font-size: 30px;
+    }
 }
 
 /**
@@ -619,9 +626,12 @@ button.mat-menu-item.selected {
  * Depending in mobile-mode and desktop mode we need to subtract different values
  * from 100vh
  */
-// no os-sort-filter-bar
 .virtual-scroll-full-page {
     height: calc(100vh - 64px);
+}
+
+.virtual-scroll-with-head-bar {
+    height: calc(100vh - 129px);
 }
 
 /** css hacks https://codepen.io/edge0703/pen/iHJuA */
@@ -629,10 +639,6 @@ button.mat-menu-item.selected {
     display: inline-block;
     line-height: 150%;
     width: -webkit-fill-available;
-}
-// with os-sort-filter-bar
-.virtual-scroll-with-head-bar {
-    height: calc(100vh - 129px);
 }
 
 .ngrid-hide-head {
@@ -645,34 +651,13 @@ button.mat-menu-item.selected {
 }
 
 /** media queries */
-
-/* medium to small */
-@media only screen and (max-width: 960px) {
-    .virtual-scroll-full-page {
-        height: calc(100vh - 64px);
-    }
-
-    .virtual-scroll-with-head-bar {
-        height: calc(100vh - 125px);
-    }
-}
-
-/* medium */
-@media only screen and (min-width: 500px) and (max-width: 960px) {
+@include desktop {
     .content-container {
         margin: 0 25px;
-    }
-    .content-container h1 {
-        font-size: 30px;
-    }
-}
-/* small */
-@media only screen and (max-width: 500px) {
-    .content-container {
-        margin: 0 15px;
-    }
-    .content-container h1 {
-        font-size: 30px;
+
+        h1 {
+            font-size: 30px;
+        }
     }
 }
 

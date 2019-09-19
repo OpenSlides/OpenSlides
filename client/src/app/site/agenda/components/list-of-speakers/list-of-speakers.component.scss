@@ -1,3 +1,5 @@
+@import '~assets/styles/variables.scss';
+
 .los-title {
     margin-left: 25px;
 }
@@ -14,17 +16,18 @@
     .finished-speaker-grid {
         display: grid;
         width: 100%;
-        grid-template-areas: 'number name time controls';
         grid-gap: 5px;
-        grid-template-columns: 30px 1fr min-content min-content;
+
+        grid-template-areas:
+            'number name controls'
+            'number time controls';
+        grid-template-columns: 30px 1fr min-content;
     }
 
-    @media only screen and (max-width: 960px) {
+    @include desktop {
         .finished-speaker-grid {
-            grid-template-areas:
-                'number name controls'
-                'number time controls';
-            grid-template-columns: 30px 1fr min-content;
+            grid-template-areas: 'number name time controls';
+            grid-template-columns: 30px 1fr min-content min-content;
         }
     }
 
