@@ -13,11 +13,13 @@ import { AmendmentSortListService } from '../../services/amendment-sort-list.ser
 import { StorageService } from 'app/core/core-services/storage.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
 import { LinenumberingService } from 'app/core/ui-services/linenumbering.service';
+import { OverlayService } from 'app/core/ui-services/overlay.service';
 import { ItemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { largeDialogSettings } from 'app/shared/utils/dialog-settings';
 import { BaseListViewComponent } from 'app/site/base/base-list-view';
 import { MotionExportDialogComponent } from '../shared-motion/motion-export-dialog/motion-export-dialog.component';
 import { MotionExportInfo, MotionExportService } from '../../services/motion-export.service';
+import { MotionMultiselectService } from '../../services/motion-multiselect.service';
 import { MotionPdfExportService } from '../../services/motion-pdf-export.service';
 import { MotionSortListService } from '../../services/motion-sort-list.service';
 import { ViewMotion } from '../../models/view-motion';
@@ -92,12 +94,14 @@ export class AmendmentListComponent extends BaseListViewComponent<ViewMotion> im
         private route: ActivatedRoute,
         public motionRepo: MotionRepositoryService,
         public motionSortService: MotionSortListService,
+        public motionMultiSelectService: MotionMultiselectService,
         public amendmentSortService: AmendmentSortListService,
         public amendmentFilterService: AmendmentFilterListService,
         private dialog: MatDialog,
         private motionExport: MotionExportService,
         private linenumberingService: LinenumberingService,
-        private pdfExport: MotionPdfExportService
+        private pdfExport: MotionPdfExportService,
+        private overlayService: OverlayService
     ) {
         super(titleService, translate, matSnackBar, storage);
         super.setTitle('Amendments');
@@ -153,6 +157,15 @@ export class AmendmentListComponent extends BaseListViewComponent<ViewMotion> im
                     this.isMultiSelect ? this.selectedRows : this.dataSource.filteredData
                 )
             );
+    }
+
+    /**
+     * Function to await the promises. Afterwards it will hide the spinner.
+     *
+     * @param action The promise to await.
+     */
+    public async multiselectWrapper(action: Promise<void>): Promise<void> {
+        action.then(() => this.overlayService.hideSpinner(), this.raiseError);
     }
 
     /**

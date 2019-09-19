@@ -1,0 +1,85 @@
+<button
+    mat-menu-item
+    [disabled]="!selectedMotions.length"
+    (click)="action.emit(multiselectService.bulkSetFavorite(selectedMotions))"
+>
+    <mat-icon>star</mat-icon>
+    <span translate>Set favorite</span>
+</button>
+<button
+    mat-menu-item
+    [disabled]="!selectedMotions.length"
+    (click)="action.emit(multiselectService.setStateOfMultiple(selectedMotions))"
+>
+    <mat-icon>label</mat-icon>
+    <span translate>Set status</span>
+</button>
+<button
+    *ngIf="recommendationEnabled"
+    [disabled]="!selectedMotions.length"
+    mat-menu-item
+    (click)="action.emit(multiselectService.setRecommendation(selectedMotions))"
+>
+    <mat-icon>report</mat-icon>
+    <!-- TODO: better icon -->
+    <span translate>Set recommendation</span>
+</button>
+<button
+    mat-menu-item
+    [disabled]="!selectedMotions.length"
+    *ngIf="categories.length"
+    (click)="action.emit(multiselectService.setCategory(selectedMotions))"
+>
+    <mat-icon>category</mat-icon>
+    <!-- TODO: icon -->
+    <span translate>Set category</span>
+</button>
+<button
+    mat-menu-item
+    *ngIf="motionBlocks.length"
+    [disabled]="!selectedMotions.length"
+    (click)="action.emit(multiselectService.setMotionBlock(selectedMotions))"
+>
+    <mat-icon>widgets</mat-icon>
+    <!-- TODO: icon -->
+    <span translate>Set motion block</span>
+</button>
+
+<button
+    mat-menu-item
+    [disabled]="!selectedMotions.length"
+    (click)="action.emit(multiselectService.changeSubmitters(selectedMotions))"
+>
+    <mat-icon>person_add</mat-icon>
+    <!-- TODO: icon -->
+    <span translate>Add/remove submitters</span>
+</button>
+<button
+    mat-menu-item
+    *ngIf="tags.length"
+    [disabled]="!selectedMotions.length"
+    (click)="action.emit(multiselectService.changeTags(selectedMotions))"
+>
+    <mat-icon>bookmarks</mat-icon>
+    <!-- TODO: icon -->
+    <span translate>Add/remove tags</span>
+</button>
+
+<ng-content></ng-content>
+
+<ng-container *osPerms="'motions.can_manage'">
+    <button mat-menu-item [disabled]="!selectedMotions.length" (click)="openExportDialog()">
+        <mat-icon>archive</mat-icon>
+        <span translate>Export selected motions</span>
+    </button>
+    <mat-divider></mat-divider>
+    <button
+        mat-menu-item
+        class="red-warning-text"
+        [disabled]="!selectedMotions.length"
+        (click)="action.emit(multiselectService.delete(selectedMotions))"
+    >
+        <mat-icon>delete</mat-icon>
+        <span translate>Delete</span>
+    </button>
+</ng-container>

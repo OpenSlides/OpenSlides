@@ -362,13 +362,7 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
      * @param multiselectPromise The promise returned by multiselect actions.
      */
     public async multiselectWrapper(multiselectPromise: Promise<void>): Promise<void> {
-        try {
-            await multiselectPromise;
-        } catch (e) {
-            this.raiseError(e);
-        } finally {
-            this.overlayService.hideSpinner();
-        }
+        multiselectPromise.then(() => this.overlayService.hideSpinner(), this.raiseError);
     }
 
     /**
