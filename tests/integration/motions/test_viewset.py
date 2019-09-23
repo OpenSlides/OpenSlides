@@ -576,6 +576,17 @@ class UpdateMotion(TestCase):
         self.assertEqual(motion.title, "test_title_aeng7ahChie3waiR8xoh")
         self.assertEqual(motion.identifier, "test_identifier_jieseghohj7OoSah1Ko9")
 
+    def test_patch_as_anonymous_without_manage_perms(self):
+        config["general_system_enable_anonymous"] = True
+        guest_client = APIClient()
+        response = guest_client.patch(
+            reverse("motion-detail", args=[self.motion.pk]),
+            {"identifier": "test_identifier_4g2jgj1wrnmvvIRhtqqPO84WD"},
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        motion = Motion.objects.get()
+        self.assertEqual(motion.identifier, "1")
+
     def test_patch_empty_text(self):
         response = self.client.patch(
             reverse("motion-detail", args=[self.motion.pk]), {"text": ""}, format="json"
