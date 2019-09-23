@@ -20,6 +20,44 @@ export class UserFilterListService extends BaseFilterListService<ViewUser> {
      */
     protected storageKey = 'UserList';
 
+    /**
+     * FilterDefinitions for `UserList` as class-member.
+     */
+    private staticFilterOptions: OsFilter[] = [
+        {
+            property: 'is_present',
+            label: 'Presence',
+            options: [
+                { condition: true, label: this.translate.instant('Is present') },
+                { condition: false, label: this.translate.instant('Is not present') }
+            ]
+        },
+        {
+            property: 'is_active',
+            label: this.translate.instant('Active'),
+            options: [
+                { condition: true, label: 'Is active' },
+                { condition: false, label: this.translate.instant('Is not active') }
+            ]
+        },
+        {
+            property: 'is_committee',
+            label: this.translate.instant('Committee'),
+            options: [
+                { condition: true, label: 'Is a committee' },
+                { condition: false, label: this.translate.instant('Is not a committee') }
+            ]
+        },
+        {
+            property: 'isLastEmailSend',
+            label: this.translate.instant('Last email send'),
+            options: [
+                { condition: true, label: this.translate.instant('Got an email') },
+                { condition: false, label: this.translate.instant("Didn't get an email") }
+            ]
+        }
+    ];
+
     private userGroupFilterOptions: OsFilter = {
         property: 'groups_id',
         label: 'Groups',
@@ -53,40 +91,6 @@ export class UserFilterListService extends BaseFilterListService<ViewUser> {
      * @returns the filter definition
      */
     protected getFilterDefinitions(): OsFilter[] {
-        const staticFilterOptions: OsFilter[] = [
-            {
-                property: 'is_present',
-                label: 'Presence',
-                options: [
-                    { condition: true, label: this.translate.instant('Is present') },
-                    { condition: false, label: this.translate.instant('Is not present') }
-                ]
-            },
-            {
-                property: 'is_active',
-                label: this.translate.instant('Active'),
-                options: [
-                    { condition: true, label: 'Is active' },
-                    { condition: false, label: this.translate.instant('Is not active') }
-                ]
-            },
-            {
-                property: 'is_committee',
-                label: this.translate.instant('Committee'),
-                options: [
-                    { condition: true, label: 'Is a committee' },
-                    { condition: false, label: this.translate.instant('Is not a committee') }
-                ]
-            },
-            {
-                property: 'isLastEmailSend',
-                label: this.translate.instant('Last email send'),
-                options: [
-                    { condition: true, label: this.translate.instant('Got an email') },
-                    { condition: false, label: this.translate.instant("Didn't get an email") }
-                ]
-            }
-        ];
-        return staticFilterOptions.concat(this.userGroupFilterOptions);
+        return this.staticFilterOptions.concat(this.userGroupFilterOptions);
     }
 }

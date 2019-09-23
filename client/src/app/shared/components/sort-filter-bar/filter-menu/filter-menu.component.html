@@ -14,6 +14,7 @@
                     <div *ngFor="let option of filter.options">
                         <div *ngIf="isFilter(option)">
                             <mat-checkbox
+                                [disabled]="!option.filteredItemsLength || option.filteredItemsLength === 0"
                                 [ngClass]="option.isChild ? 'filter-child' : ''"
                                 [checked]="option.isActive"
                                 (change)="service.toggleFilterOption(filter.property, option)"

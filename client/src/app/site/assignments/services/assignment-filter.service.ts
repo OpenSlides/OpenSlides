@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { OpenSlidesStatusService } from 'app/core/core-services/openslides-status.service';
 import { StorageService } from 'app/core/core-services/storage.service';
-import { BaseFilterListService, OsFilter, OsFilterOption } from 'app/core/ui-services/base-filter-list.service';
+import { BaseFilterListService, OsFilter } from 'app/core/ui-services/base-filter-list.service';
 import { AssignmentPhases, ViewAssignment } from '../models/view-assignment';
 
 /**
@@ -18,6 +18,19 @@ export class AssignmentFilterListService extends BaseFilterListService<ViewAssig
     protected storageKey = 'AssignmentList';
 
     /**
+     * FilterDefinitions for `AssignmentList` as class-member.
+     */
+    private assignmentFilterOptions: OsFilter[] = [
+        {
+            label: 'Phase',
+            property: 'phase',
+            options: AssignmentPhases.map(ap => {
+                return { label: ap.display_name, condition: ap.value, isActive: false };
+            })
+        }
+    ];
+
+    /**
      * Constructor. Activates the phase options subscription
      *
      * @param store StorageService
@@ -31,21 +44,6 @@ export class AssignmentFilterListService extends BaseFilterListService<ViewAssig
      * @returns the filter definition
      */
     protected getFilterDefinitions(): OsFilter[] {
-        return [
-            {
-                label: 'Phase',
-                property: 'phase',
-                options: this.createPhaseOptions()
-            }
-        ];
-    }
-
-    /**
-     * Creates options for assignment phases
-     */
-    private createPhaseOptions(): OsFilterOption[] {
-        return AssignmentPhases.map(ap => {
-            return { label: ap.display_name, condition: ap.value, isActive: false };
-        });
+        return this.assignmentFilterOptions;
     }
 }

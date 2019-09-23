@@ -36,6 +36,7 @@ export type OsFilterOptions = (OsFilterOption | string)[];
 export interface OsFilterOption {
     label: string;
     condition: OsFilterOptionCondition;
+    filteredItemsLength?: number;
     isActive?: boolean;
     isChild?: boolean;
     children?: OsFilterOption[];
@@ -189,6 +190,53 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
     }
 
     /**
+     * This function checks all filters to see, if a filter would clear the whole data.
+     *
+     * @param definitions Optional filter-array. If definitions are passed, it will loop
+     * over the given definitions, otherwise over `getFilterDefinitions()`.
+     *
+     * @returns The updated array of `OsFilter`.
+     */
+    private checkFilterLength(definitions?: OsFilter[]): OsFilter[] {
+        const nextDefinitions = definitions || this.getFilterDefinitions();
+        for (const filter of nextDefinitions) {
+            const nextOptions = filter.options
+                .filter(option => typeof option !== 'string')
+                .map(option => this.checkFilterLengthHelper(filter, option as OsFilterOption));
+            filter.options = nextOptions;
+        }
+        return nextDefinitions;
+    }
+
+    /**
+     * Helper-function to see the possible remaining number of elements.
+     *
+     * @param filter The filter containing the property, the given option is within.
+     * @param option The filtering option, that is checked.
+     *
+     * @returns An updated `OsFilterOption`.
+     */
+    private checkFilterLengthHelper(filter: OsFilter, option: OsFilterOption): OsFilterOption {
+        const itemPasses = this.inputData.filter(
+            item =>
+                this.checkFilterIncluded(item, filter.property, option) &&
+                this.activeFilters
+                    .filter(activeFilter => activeFilter.property !== filter.property)
+                    .every(activeFilter => this.checkIncluded(item, activeFilter))
+        );
+        const nextOption = option;
+        nextOption.filteredItemsLength = itemPasses.length;
+        if (option.children && option.children.length) {
+            const nextChildren = [];
+            for (const child of option.children) {
+                nextChildren.push(this.checkFilterLengthHelper(filter, child));
+            }
+            nextOption.children = nextChildren;
+        }
+        return nextOption;
+    }
+
+    /**
      * Recreates the filter stack out of active filter definitions
      */
     private activeFiltersToStack(): void {
@@ -269,7 +317,7 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
                 }
             }
 
-            this.filterDefinitions = newDefinitions;
+            this.filterDefinitions = this.checkFilterLength(newDefinitions);
             this.storeActiveFilters();
         }
     }
@@ -296,13 +344,15 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
                     return {
                         condition: model.id,
                         label: model.getTitle(),
+                        filteredItemsLength: 0,
                         isChild: !!model.parent,
                         children:
                             model.children && model.children.length
                                 ? model.children.map(child => {
                                       return {
                                           label: child.getTitle(),
-                                          condition: child.id
+                                          condition: child.id,
+                                          filteredItemsLength: 0
                                       };
                                   })
                                 : undefined
@@ -358,6 +408,9 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
 
         this.outputSubject.next(filteredData);
         this.activeFiltersToStack();
+        if (!!this.inputData) {
+            this.filterDefinitions = this.checkFilterLength();
+        }
     }
 
     /**
@@ -406,7 +459,9 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
 
                 if (filterOption.children && filterOption.children.length) {
                     for (const child of filterOption.children) {
-                        this.addFilterOption(filterProperty, child);
+                        if (child.filteredItemsLength !== 0) {
+                            this.addFilterOption(filterProperty, child);
+                        }
                     }
                 }
             }
@@ -472,14 +527,14 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
                 continue;
                 // active option. The item is included if it passes this test
             } else if (option.isActive) {
-                if (this.checkFilterIncluded(item, filter, option)) {
+                if (this.checkFilterIncluded(item, filter.property, option)) {
                     return true;
                 }
                 // if a null filter is set, the item needs to not pass all inactive filters
             } else if (
                 nullFilter &&
                 (item[filter.property] !== null || item[filter.property] !== undefined) &&
-                this.checkFilterIncluded(item, filter, option)
+                this.checkFilterIncluded(item, filter.property, option)
             ) {
                 passesNullFilter = false;
             }
@@ -494,14 +549,14 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
      * Checks an item against a single filter option.
      *
      * @param item A BaseModel to be checked
-     * @param filter The parent filter
+     * @param filterProperty The property of the parent filter
      * @param option The option to be checked
      * @returns true if the filter condition matches the item
      */
-    private checkFilterIncluded(item: V, filter: OsFilter, option: OsFilterOption): boolean {
-        if (item[filter.property] === undefined || item[filter.property] === null) {
+    private checkFilterIncluded(item: V, filterProperty: string, option: OsFilterOption): boolean {
+        if (item[filterProperty] === undefined || item[filterProperty] === null) {
             return false;
-        } else if (Array.isArray(item[filter.property])) {
+        } else if (Array.isArray(item[filterProperty])) {
             const compareValueCondition = (value, condition): boolean => {
                 if (value === condition) {
                     return true;
@@ -510,7 +565,7 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
                 }
                 return false;
             };
-            for (const value of item[filter.property]) {
+            for (const value of item[filterProperty]) {
                 if (Array.isArray(option.condition)) {
                     for (const condition of option.condition) {
                         if (compareValueCondition(value, condition)) {
@@ -525,18 +580,18 @@ export abstract class BaseFilterListService<V extends BaseViewModel> {
             }
         } else if (Array.isArray(option.condition)) {
             if (
-                option.condition.indexOf(item[filter.property]) > -1 ||
-                option.condition.indexOf(item[filter.property].id) > -1
+                option.condition.indexOf(item[filterProperty]) > -1 ||
+                option.condition.indexOf(item[filterProperty].id) > -1
             ) {
                 return true;
             }
-        } else if (typeof item[filter.property] === 'object' && 'id' in item[filter.property]) {
-            if (item[filter.property].id === option.condition) {
+        } else if (typeof item[filterProperty] === 'object' && 'id' in item[filterProperty]) {
+            if (item[filterProperty].id === option.condition) {
                 return true;
             }
-        } else if (item[filter.property] === option.condition) {
+        } else if (item[filterProperty] === option.condition) {
             return true;
-        } else if (item[filter.property].toString() === option.condition) {
+        } else if (item[filterProperty].toString() === option.condition) {
             return true;
         }
         return false;

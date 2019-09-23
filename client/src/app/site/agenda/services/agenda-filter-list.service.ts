@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { OpenSlidesStatusService } from 'app/core/core-services/openslides-status.service';
 import { StorageService } from 'app/core/core-services/storage.service';
-import { BaseFilterListService, OsFilter, OsFilterOption } from 'app/core/ui-services/base-filter-list.service';
+import { BaseFilterListService, OsFilter } from 'app/core/ui-services/base-filter-list.service';
 import { ItemVisibilityChoices } from 'app/shared/models/agenda/item';
 import { ViewItem } from '../models/view-item';
 
@@ -21,6 +21,28 @@ export class AgendaFilterListService extends BaseFilterListService<ViewItem> {
     protected storageKey = 'AgendaList';
 
     /**
+     * FilterDefinitions as class-member.
+     */
+    private agendaFilterDefinitions: OsFilter[] = [
+        {
+            label: 'Visibility',
+            property: 'type',
+            options: ItemVisibilityChoices.map(choice => ({
+                condition: choice.key as number,
+                label: choice.name
+            }))
+        },
+        {
+            label: 'Status',
+            property: 'closed',
+            options: [
+                { label: this.translate.instant('Open items'), condition: false },
+                { label: this.translate.instant('Closed items'), condition: true }
+            ]
+        }
+    ];
+
+    /**
      * Constructor. Also creates the dynamic filter options
      *
      * @param store
@@ -34,21 +56,7 @@ export class AgendaFilterListService extends BaseFilterListService<ViewItem> {
      * @returns the filter definition
      */
     protected getFilterDefinitions(): OsFilter[] {
-        return [
-            {
-                label: 'Visibility',
-                property: 'type',
-                options: this.createVisibilityFilterOptions()
-            },
-            {
-                label: 'Status',
-                property: 'closed',
-                options: [
-                    { label: this.translate.instant('Open items'), condition: false },
-                    { label: this.translate.instant('Closed items'), condition: true }
-                ]
-            }
-        ];
+        return this.agendaFilterDefinitions;
     }
 
     /**
@@ -58,17 +66,5 @@ export class AgendaFilterListService extends BaseFilterListService<ViewItem> {
      */
     protected preFilter(viewItems: ViewItem[]): ViewItem[] {
         return viewItems.filter(item => item.type !== undefined);
-    }
-
-    /**
-     * helper function to create options for visibility filters
-     *
-     * @returns a list of choices to filter from
-     */
-    private createVisibilityFilterOptions(): OsFilterOption[] {
-        return ItemVisibilityChoices.map(choice => ({
-            condition: choice.key as number,
-            label: choice.name
-        }));
     }
 }
