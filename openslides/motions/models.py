@@ -408,7 +408,11 @@ class Motion(RESTModelMixin, AgendaItemWithListOfSpeakersMixin, models.Model):
     def is_submitter(self, user):
         """
         Returns True if user is a submitter of this motion, else False.
+        Anonymous users cannot be submitters.
         """
+        if isinstance(user, AnonymousUser):
+            return False
+
         return self.submitters.filter(user=user).exists()
 
     def is_supporter(self, user):
