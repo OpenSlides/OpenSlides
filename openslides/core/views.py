@@ -146,6 +146,39 @@ class ProjectorViewSet(ModelViewSet):
         projector.elements = [{"name": "core/clock", "stable": True}]
         projector.save()
 
+    def update(self, *args, **kwargs):
+        """
+        Updates the projector.
+        Informs about changed projectors due to changes in projection defaults:
+        Collects all former projectors that were assigned to new projection defaults
+        during the update.
+        """
+        projector = self.get_object()
+
+        # old_pd_ids and new_pd_ids (see below) are for detecting changed projectiondefaults.
+        old_pd_ids = set([default.id for default in projector.projectiondefaults.all()])
+
+        # maps all projection defaults to their projectors. So we can find out later the
+        # old projectors to changes projection defaults.
+        old_pd_projector_mapping = {
+            pd.id: pd.projector_id for pd in ProjectionDefault.objects.all()
+        }
+
+        response = super().update(*args, **kwargs)
+
+        # calculate changed projection defaults
+        new_pd_ids = set([default.id for default in projector.projectiondefaults.all()])
+        changed_pd_ids = list(new_pd_ids - old_pd_ids)
+        inform_changed_data(ProjectionDefault.objects.filter(pk__in=changed_pd_ids))
+
+        # Find *old* projector ids for the changed defaults
+        affected_projector_ids = [
+            old_pd_projector_mapping[pd_id] for pd_id in changed_pd_ids
+        ]
+        inform_changed_data(Projector.objects.filter(pk__in=affected_projector_ids))
+
+        return response
+
     def destroy(self, *args, **kwargs):
         """
         REST API operation for DELETE requests.
