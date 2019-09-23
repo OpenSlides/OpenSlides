@@ -24,7 +24,8 @@ export abstract class BaseViewComponent extends BaseComponent implements OnDestr
     protected subscriptions: Subscription[];
 
     /**
-     * Constructor for bas elist views
+     * Constructor for base list views
+     *
      * @param titleService the title serivce, passed to the base component
      * @param translate the translate service, passed to the base component
      * @param matSnackBar the snack bar service. Needed for showing errors.
@@ -96,12 +97,10 @@ export abstract class BaseViewComponent extends BaseComponent implements OnDestr
      * executes the life cycle again
      */
     protected cleanSubjects(): void {
-        if (this.subscriptions.length > 0) {
-            for (const sub of this.subscriptions) {
-                sub.unsubscribe();
-            }
-            this.subscriptions = [];
+        for (const sub of this.subscriptions) {
+            sub.unsubscribe();
         }
+        this.subscriptions = [];
     }
 
     /**
