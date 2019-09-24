@@ -37,8 +37,6 @@ export class ProjectorButtonComponent implements OnInit, OnDestroy {
         return this._object;
     }
 
-    public isProjected = false;
-
     @Input()
     public set object(obj: Projectable | ProjectorElementBuildDeskriptor) {
         if (isProjectable(obj) || isProjectorElementBuildDeskriptor(obj)) {
@@ -78,17 +76,11 @@ export class ProjectorButtonComponent implements OnInit, OnDestroy {
      * Initialization function
      */
     public ngOnInit(): void {
-        this.isProjected = this.checkIsProjected();
-
         this.projectorRepoSub = this.projectorRepo
             .getGeneralViewModelObservable()
             .pipe(distinctUntilChanged())
             .subscribe(() => {
-                const isProjected = this.checkIsProjected();
-                if (this.isProjected !== isProjected) {
-                    this.isProjected = isProjected;
-                    this.changeEvent.next();
-                }
+                this.changeEvent.next();
             });
     }
 

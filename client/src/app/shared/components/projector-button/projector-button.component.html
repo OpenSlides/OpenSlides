@@ -1,19 +1,19 @@
 <ng-container *osPerms="'core.can_manage_projector'">
     <button
         type="button"
-        *ngIf="!text && !menuItem"
+        class="projector-active"
         mat-mini-fab
         (click)="onClick($event)"
-        [ngClass]="isProjected ? 'projector-active' : 'projector-inactive'"
+        *ngIf="!text && !menuItem && checkIsProjected()"
     >
         <mat-icon>videocam</mat-icon>
     </button>
     <button
         type="button"
-        *ngIf="text && !menuItem"
-        mat-button
+        class="projector-inactive"
+        mat-mini-fab
         (click)="onClick($event)"
-        [ngClass]="isProjected ? 'projector-active' : 'projector-inactive'"
+        *ngIf="!text && !menuItem && !checkIsProjected()"
     >
         <mat-icon>videocam</mat-icon>
         {{ text | translate }}
@@ -23,7 +23,7 @@
         *ngIf="menuItem"
         mat-menu-item
         (click)="onClick()"
-        [ngClass]="isProjected ? 'projector-active' : 'projector-inactive'"
+        [ngClass]="checkIsProjected() ? 'projector-active' : 'projector-inactive'"
     >
         <mat-icon>videocam</mat-icon>
         {{ text || 'Project' | translate }}
