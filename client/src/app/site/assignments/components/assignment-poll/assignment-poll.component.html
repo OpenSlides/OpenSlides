@@ -109,7 +109,7 @@
                                 <span *ngIf="vote.value !== 'Votes'"
                                     >{{ pollService.getLabel(vote.value) | translate }}:</span
                                 >
-                                {{ pollService.getSpecialLabel(vote.weight) }}
+                                {{ pollService.getSpecialLabel(vote.weight) | translate }}
                                 <span *ngIf="!pollService.isAbstractOption(poll, option, vote.value)"
                                     >({{ pollService.getPercent(poll, option, vote.value) }}%)</span
                                 >
