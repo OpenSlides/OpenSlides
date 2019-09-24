@@ -34,7 +34,7 @@ export class ProjectionDialogService {
      *
      * @param obj The projectable.
      */
-    public async openProjectDialogFor(obj: Projectable | ProjectorElementBuildDeskriptor): Promise<void> {
+    public async openProjectDialogFor(obj: Projectable | ProjectorElementBuildDeskriptor): Promise<object> {
         let descriptor: ProjectorElementBuildDeskriptor;
         if (isProjectable(obj)) {
             descriptor = obj.getSlide(this.configService);
@@ -55,10 +55,12 @@ export class ProjectionDialogService {
             const [action, projectors, projectorElement]: ProjectionDialogReturnType = response;
             if (action === 'project') {
                 this.projectorService.projectOnMultiple(projectors, projectorElement);
+                return { fullscreen: projectorElement.fullscreen, displayType: projectorElement.displayType };
             } else if (action === 'addToPreview') {
                 projectors.forEach(projector => {
                     this.projectorService.addElementToPreview(projector, projectorElement);
                 });
+                return null;
             }
         }
     }

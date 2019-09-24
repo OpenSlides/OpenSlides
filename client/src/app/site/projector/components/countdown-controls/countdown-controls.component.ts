@@ -4,6 +4,7 @@ import { Title } from '@angular/platform-browser';
 
 import { TranslateService } from '@ngx-translate/core';
 
+import { StorageService } from 'app/core/core-services/storage.service';
 import { CountdownRepositoryService } from 'app/core/repositories/projector/countdown-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { ProjectionDialogService } from 'app/core/ui-services/projection-dialog.service';
@@ -45,6 +46,11 @@ export class CountdownControlsComponent extends BaseViewComponent {
     public warningTime: number;
 
     /**
+     * The key to storage.
+     */
+    private storageKey = 'projectorElementOptions';
+
+    /**
      * Constructor
      *
      * @param titleService
@@ -61,7 +67,8 @@ export class CountdownControlsComponent extends BaseViewComponent {
         private repo: CountdownRepositoryService,
         private configService: ConfigService,
         private promptService: PromptService,
-        private projectionDialogService: ProjectionDialogService
+        private projectionDialogService: ProjectionDialogService,
+        private storage: StorageService
     ) {
         super(titleService, translate, matSnackBar);
 
@@ -110,7 +117,9 @@ export class CountdownControlsComponent extends BaseViewComponent {
      * Brings the projection dialog
      */
     public onBringDialog(): void {
-        this.projectionDialogService.openProjectDialogFor(this.countdown);
+        this.projectionDialogService
+            .openProjectDialogFor(this.countdown)
+            .then(options => this.storeSettings(options), null);
     }
 
     /**
@@ -122,5 +131,14 @@ export class CountdownControlsComponent extends BaseViewComponent {
         if (await this.promptService.open('Are you sure?', content)) {
             this.repo.delete(this.countdown).then(() => {}, this.raiseError);
         }
+    }
+
+    /**
+     * Stores the options for a projector in the local-storage.
+     *
+     * @param element The configured options for projector
+     */
+    private storeSettings(element: object): void {
+        this.storage.set(this.storageKey, element);
     }
 }
