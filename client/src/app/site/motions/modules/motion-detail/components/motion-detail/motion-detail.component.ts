@@ -859,6 +859,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
 
     /**
      * If `this.motion` is an amendment, this returns the list of all changed paragraphs.
+     * TODO: Cleanup: repo function could be injected part of the model, to have easier access
      *
      * @param {boolean} includeUnchanged
      * @returns {DiffLinesInParagraph[]}
