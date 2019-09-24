@@ -9,6 +9,8 @@ allowed_tags = [
     "span",
     "blockquote",  # text layout
     "strike",
+    "del",
+    "ins",
     "strong",
     "u",
     "em",
