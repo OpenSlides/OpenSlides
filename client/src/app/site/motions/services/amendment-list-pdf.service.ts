@@ -57,7 +57,8 @@ export class AmendmentListPdfService {
                 text: amendment.submittersAsUsers.toString()
             },
             {
-                text: this.renderDiffLines(amendment)
+                // requires stack cause this can be an array
+                stack: this.renderDiffLines(amendment)
             },
             {
                 text: recommendationText
