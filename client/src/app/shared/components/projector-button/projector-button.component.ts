@@ -4,9 +4,10 @@ import { Subscription } from 'rxjs';
 import { distinctUntilChanged } from 'rxjs/operators';
 
 import { ProjectorService } from 'app/core/core-services/projector.service';
+import { StorageService } from 'app/core/core-services/storage.service';
 import { ProjectorRepositoryService } from 'app/core/repositories/projector/projector-repository.service';
 import { ProjectionDialogService } from 'app/core/ui-services/projection-dialog.service';
-import { Projector } from 'app/shared/models/core/projector';
+import { IdentifiableProjectorElement, Projector } from 'app/shared/models/core/projector';
 import {
     isProjectable,
     isProjectorElementBuildDeskriptor,
@@ -71,7 +72,8 @@ export class ProjectorButtonComponent implements OnInit, OnDestroy {
     public constructor(
         private projectorRepo: ProjectorRepositoryService,
         private projectionDialogService: ProjectionDialogService,
-        private projectorService: ProjectorService
+        private projectorService: ProjectorService,
+        private storage: StorageService
     ) {}
 
     /**
@@ -104,7 +106,7 @@ export class ProjectorButtonComponent implements OnInit, OnDestroy {
      *
      * @param event  the click event
      */
-    public onClick(event?: Event): void {
+    public async onClick(event?: Event): Promise<void> {
         if (event) {
             event.stopPropagation();
         }
@@ -115,8 +117,11 @@ export class ProjectorButtonComponent implements OnInit, OnDestroy {
                     // remove the projected object
                     this.projectorService.removeFrom(this.projector, this.object);
                 } else {
+                    const projectorElement = this.getProjectorElement(
+                        await this.storage.get<object>('projectorElementOptions')
+                    );
                     // instantly project the object
-                    this.projectorService.projectOn(this.projector, this.object);
+                    this.projectorService.projectOn(this.projector, projectorElement || this.object);
                 }
             } else {
                 // open the projection dialog
@@ -138,5 +143,18 @@ export class ProjectorButtonComponent implements OnInit, OnDestroy {
         return this.projector
             ? this.projectorService.isProjectedOn(this.object, this.projector)
             : this.projectorService.isProjected(this.object);
+    }
+
+    /**
+     * @param options The previous configured options of a projector.
+     */
+    private getProjectorElement(options: object): IdentifiableProjectorElement | null {
+        let element = null;
+        if (isProjectable(this.object)) {
+            element = this.object.getSlide().getBasicProjectorElement(options);
+        } else if (isProjectorElementBuildDeskriptor(this.object)) {
+            element = this.object.getBasicProjectorElement(options);
+        }
+        return Object.assign(element, options);
     }
 }
