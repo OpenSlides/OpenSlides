@@ -9,8 +9,8 @@
         ></os-rounded-input>
         <button mat-icon-button [matMenuTriggerFor]="filterMenu"><mat-icon>filter_list</mat-icon></button>
         <mat-menu #filterMenu="matMenu">
-            <button mat-menu-item (click)="setSearchStringForID()">
-                <mat-icon>{{ !!searchStringForID ? 'checked' : '' }}</mat-icon>
+            <button mat-menu-item (click)="setSearchStringForId()">
+                <mat-icon>{{ !!searchStringForId ? 'checked' : '' }}</mat-icon>
                 ID
             </button>
             <mat-divider></mat-divider>
