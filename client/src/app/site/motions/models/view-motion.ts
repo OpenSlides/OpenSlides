@@ -40,6 +40,11 @@ export enum ChangeRecoMode {
     ModifiedFinal = 'modified_final_version'
 }
 
+export enum AmendmentType {
+    Amendment = 1,
+    Parent
+}
+
 export const verboseChangeRecoMode = {
     original: 'Original version',
     changed: 'Changed version',
@@ -338,6 +343,34 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
 
     public set diffLines(value: DiffLinesInParagraph[]) {
         this._diffLines = value;
+    }
+
+    /**
+     * Determine if a motion has a parent at all
+     */
+    public get hasParent(): boolean {
+        return !!this.parent_id;
+    }
+
+    /**
+     * Determine if a motion has amenments
+     */
+    public get hasAmendments(): boolean {
+        return !!this.amendments && !!this.amendments.length;
+    }
+
+    /**
+     * Determine if the motion has parents, is a parent of neither
+     */
+    public get amendmentType(): number {
+        if (this.hasAmendments) {
+            return AmendmentType.Parent;
+        } else if (this.hasParent) {
+            return AmendmentType.Amendment;
+        } else {
+            // not any amendment
+            return 0;
+        }
     }
 
     /**

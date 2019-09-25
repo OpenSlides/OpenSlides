@@ -17,7 +17,7 @@ import {
     OsFilterOptions
 } from 'app/core/ui-services/base-filter-list.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { ViewMotion } from '../models/view-motion';
+import { AmendmentType, ViewMotion } from '../models/view-motion';
 
 /**
  * Filter description to easier parse dynamically occurring workflows
@@ -94,6 +94,15 @@ export class MotionFilterListService extends BaseFilterListService<ViewMotion> {
         options: [
             { condition: true, label: this.translate.instant('Has speakers') },
             { condition: false, label: this.translate.instant('Has no speakers') }
+        ]
+    };
+
+    public AmendmentFilterOption: OsFilter = {
+        property: 'amendmentType',
+        label: 'Amendment',
+        options: [
+            { condition: AmendmentType.Amendment, label: this.translate.instant('Is amendment') },
+            { condition: AmendmentType.Parent, label: this.translate.instant('Has amendment') }
         ]
     };
 
@@ -226,9 +235,14 @@ export class MotionFilterListService extends BaseFilterListService<ViewMotion> {
             filterDefinitions.push(this.hasSpeakerOptions);
         }
 
+        if (this.showAmendmentsInMainTable) {
+            filterDefinitions.push(this.AmendmentFilterOption);
+        }
+
         if (!this.operator.isAnonymous) {
             filterDefinitions = filterDefinitions.concat(this.personalNoteFilterOptions);
         }
+
         return filterDefinitions;
     }
 
