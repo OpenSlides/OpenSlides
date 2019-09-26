@@ -806,6 +806,9 @@ msgstr "Nicht entscheiden"
 msgid "Do not forget to save your changes!"
 msgstr "Vergessen Sie nicht Ihre Änderungen zu speichern!"
 
+msgid "Do not set identifier"
+msgstr "Bezeichner nicht setzen"
+
 msgid "Do you really want to exit this page?"
 msgstr "Wollen Sie diese Seite wirklich verlassen?"
 
@@ -1093,6 +1096,9 @@ msgstr "Gruppen mit Schreibberechtigungen"
 msgid "Guest"
 msgstr "Gast"
 
+msgid "Has amendments"
+msgstr "Hat Änderungsanträge"
+
 msgid "Has no speakers"
 msgstr "Keine Wortmeldungen vorhanden"
 
@@ -1244,6 +1250,9 @@ msgstr "Ist aktiv"
 
 msgid "Is already projected"
 msgstr "ist bereits projiziert"
+
+msgid "Is amendment"
+msgstr "Ist ein Änderungsantrag"
 
 msgid "Is committee"
 msgstr "Ist Gremium"
@@ -2116,9 +2125,6 @@ msgstr "Favorit markieren"
 msgid "Set hidden"
 msgstr "Versteckt setzen"
 
-msgid "Set identifier"
-msgstr "Bezeichner setzen"
-
 msgid "Set internal"
 msgstr "Intern setzen"
 
@@ -2443,6 +2449,11 @@ msgstr ""
 
 msgid "There are no items left to chose from"
 msgstr "Es sind keine Einträge ausgewählt."
+
+msgid "There is an error with this amendment. Please edit it manually."
+msgstr ""
+"In diesem Änderungsantrag ist ein Fehler. Bitte bearbeiten Sie den Text "
+"manuell."
 
 msgid "This change collides with another one."
 msgstr "Diese Änderung kollidiert mit einer anderen."

@@ -754,6 +754,9 @@ msgstr ""
 msgid "Do not forget to save your changes!"
 msgstr ""
 
+msgid "Do not set identifier"
+msgstr ""
+
 msgid "Do you really want to exit this page?"
 msgstr ""
 
@@ -1030,6 +1033,9 @@ msgstr ""
 msgid "Guest"
 msgstr ""
 
+msgid "Has amendments"
+msgstr ""
+
 msgid "Has no speakers"
 msgstr ""
 
@@ -1179,6 +1185,9 @@ msgstr ""
 msgid "Is already projected"
 msgstr ""
 
+msgid "Is amendment"
+msgstr ""
+
 msgid "Is committee"
 msgstr ""
 
@@ -1267,6 +1276,9 @@ msgid "Login as guest"
 msgstr ""
 
 msgid "Logout"
+msgstr ""
+
+msgid "Main motion and line number"
 msgstr ""
 
 msgid "Mark as elected"
@@ -2040,9 +2052,6 @@ msgstr ""
 msgid "Set hidden"
 msgstr ""
 
-msgid "Set identifier"
-msgstr ""
-
 msgid "Set internal"
 msgstr ""
 
@@ -2347,6 +2356,9 @@ msgid "The users %user% have no email, so the invitation emails could not be sen
 msgstr ""
 
 msgid "There are no items left to chose from"
+msgstr ""
+
+msgid "There is an error with this amendment. Please edit it manually."
 msgstr ""
 
 msgid "This change collides with another one."

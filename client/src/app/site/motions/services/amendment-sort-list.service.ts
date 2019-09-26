@@ -21,12 +21,12 @@ export class AmendmentSortListService extends MotionSortListService {
     private amendmentSortOptions: OsSortingOption<ViewMotion>[] = [
         {
             property: 'parentAndLineNumber',
-            label: 'Main motion and line number'
+            label: this.translate.instant('Main motion and line number')
         }
     ];
 
     public constructor(
-        translate: TranslateService,
+        protected translate: TranslateService,
         store: StorageService,
         OSStatus: OpenSlidesStatusService,
         config: ConfigService
