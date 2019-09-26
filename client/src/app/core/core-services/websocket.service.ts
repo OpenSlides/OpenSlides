@@ -156,7 +156,8 @@ export class WebsocketService {
     /**
      * The websocket.
      */
-    private websocket: WebSocket;
+    private websocket: WebSocket | null;
+    private websocketId: string | null;
 
     /**
      * Subjects for types of websocket messages. A subscriber can get an Observable by {@function getOberservable}.
@@ -208,8 +209,14 @@ export class WebsocketService {
      * Uses NgZone to let all callbacks run in the angular context.
      */
     public async connect(options: ConnectOptions = {}, retry: boolean = false): Promise<void> {
+        const websocketId = Math.random()
+            .toString(36)
+            .substring(7);
+        this.websocketId = websocketId;
+
         if (this.websocket) {
-            await this.close();
+            this.websocket.close();
+            this.websocket = null;
         }
 
         if (!retry) {
@@ -244,17 +251,20 @@ export class WebsocketService {
         // connection established. If this connect attept was a retry,
         // The error notice will be removed and the reconnectSubject is published.
         this.websocket.onopen = (event: Event) => {
+            if (this.websocketId !== websocketId) {
+                return;
+            }
             this.zone.run(() => {
                 this.retryCounter = 0;
 
                 if (this.shouldBeClosed) {
-                    this.dismissConnectionErrorNotice();
+                    this.offlineService.goOnline();
                     return;
                 }
 
                 this._connectionOpen = true;
                 if (retry) {
-                    this.dismissConnectionErrorNotice();
+                    this.offlineService.goOnline();
                     this._retryReconnectEvent.emit();
                 } else {
                     this._noRetryConnectEvent.emit();
@@ -268,22 +278,31 @@ export class WebsocketService {
         };
 
         this.websocket.onmessage = (event: MessageEvent) => {
+            if (this.websocketId !== websocketId) {
+                return;
+            }
             this.zone.run(() => {
                 this.handleMessage(event.data);
             });
         };
 
         this.websocket.onclose = (event: CloseEvent) => {
+            if (this.websocketId !== websocketId) {
+                return;
+            }
             this.zone.run(() => {
-                this.onclose(event.code === 1000);
+                this.onclose();
             });
         };
 
         this.websocket.onerror = (event: ErrorEvent) => {
+            if (this.websocketId !== websocketId) {
+                return;
+            }
             // place for proper error handling and debugging.
             // Required to get more information about errors
             this.zone.run(() => {
-                console.warn('Websocket is on Error state. Error: ', event);
+                console.warn('WS error event:', event);
             });
         };
     }
@@ -354,24 +373,19 @@ export class WebsocketService {
     }
 
     /**
-     * Simulates an abnormal close.
-     */
-    public simulateAbnormalClose(): void {
-        if (this.websocket) {
-            this.websocket.close();
-        }
-        this.onclose(false);
-    }
-
-    /**
      * Closes the connection error notice
      */
-    private onclose(normalClose: boolean): void {
-        this.websocket = null;
+    private onclose(): void {
+        if (this.websocket) {
+            this.websocketId = null; // set to null, so now further events will be
+            // registered with the line below.
+            this.websocket.close(); // Cleanup old connection
+            this.websocket = null;
+        }
         this._connectionOpen = false;
         // 1000 is a normal close, like the close on logout
         this._closeEvent.emit();
-        if (!this.shouldBeClosed && !normalClose) {
+        if (!this.shouldBeClosed) {
             // Do not show the message snackbar on the projector
             // tests for /projector and /projector/<id>
             const onProjector = this.router.url.match(/^\/projector(\/[0-9]+\/?)?$/);
@@ -399,21 +413,26 @@ export class WebsocketService {
         }
     }
 
-    private dismissConnectionErrorNotice(): void {
-        this.offlineService.goOnline();
-    }
-
     /**
      * Closes the websocket connection.
      */
     public async close(): Promise<void> {
         this.shouldBeClosed = true;
-        this.dismissConnectionErrorNotice();
+        this.offlineService.goOnline();
         if (this.websocket) {
             this.websocket.close();
             this.websocket = null;
             await this.closeEvent.pipe(take(1)).toPromise();
         }
+    }
+
+    /**
+     * Simulates an abnormal close.
+     *
+     * Internally does not set `shouldBeClosed`, so a reconnect is forced.
+     */
+    public simulateAbnormalClose(): void {
+        this.onclose();
     }
 
     /**

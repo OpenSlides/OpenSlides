@@ -32,7 +32,7 @@ export class ServertimeService {
      * Starts the scheduler to sync with the server.
      */
     public startScheduler(): void {
-        this.scheduleNextRefresh(0);
+        this.scheduleNextRefresh(0.1);
     }
 
     /**
