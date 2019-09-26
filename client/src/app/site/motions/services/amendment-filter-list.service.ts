@@ -90,7 +90,7 @@ export class AmendmentFilterListService extends MotionFilterListService {
      * Function to define a new storage key by parent id
      */
     private updateStorageKey(): void {
-        if (!!this._parentMotionId) {
+        if (this._parentMotionId) {
             this.storageKey = `${this.keyPrefix}_parentId_${this._parentMotionId}`;
         } else {
             this.storageKey = this.keyPrefix;
@@ -104,7 +104,7 @@ export class AmendmentFilterListService extends MotionFilterListService {
      */
     protected preFilter(motions: ViewMotion[]): ViewMotion[] {
         return motions.filter(motion => {
-            if (!!this._parentMotionId) {
+            if (this._parentMotionId) {
                 return motion.parent_id === this._parentMotionId;
             } else {
                 return !!motion.parent_id;

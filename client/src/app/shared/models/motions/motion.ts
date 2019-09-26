@@ -9,6 +9,40 @@ export interface MotionComment {
     read_groups_id: number[];
 }
 
+export interface MotionWithoutNestedModels extends BaseModelWithAgendaItemAndListOfSpeakers<Motion> {
+    id: number;
+    identifier: string;
+    title: string;
+    text: string;
+    reason: string;
+    amendment_paragraphs: string[] | null;
+    modified_final_version: string;
+    parent_id: number;
+    category_id: number;
+    category_weight: number;
+    motion_block_id: number;
+    origin: string;
+    supporters_id: number[];
+    comments: MotionComment[];
+    workflow_id: number;
+    state_id: number;
+    state_extension: string;
+    state_required_permission_to_see: string;
+    statute_paragraph_id: number;
+    recommendation_id: number;
+    recommendation_extension: string;
+    tags_id: number[];
+    attachments_id: number[];
+    polls: MotionPoll[];
+    weight: number;
+    sort_parent_id: number;
+    created: string;
+    last_modified: string;
+    change_recommendations_id: number[];
+
+    sorted_submitter_ids: number[];
+}
+
 /**
  * Representation of Motion.
  *
@@ -20,35 +54,7 @@ export class Motion extends BaseModelWithAgendaItemAndListOfSpeakers<Motion> {
     public static COLLECTIONSTRING = 'motions/motion';
 
     public id: number;
-    public identifier: string;
-    public title: string;
-    public text: string;
-    public reason: string;
-    public amendment_paragraphs: string[];
-    public modified_final_version: string;
-    public parent_id: number;
-    public category_id: number;
-    public category_weight: number;
-    public motion_block_id: number;
-    public origin: string;
     public submitters: Submitter[];
-    public supporters_id: number[];
-    public comments: MotionComment[];
-    public workflow_id: number;
-    public state_id: number;
-    public state_extension: string;
-    public state_required_permission_to_see: string;
-    public statute_paragraph_id: number;
-    public recommendation_id: number;
-    public recommendation_extension: string;
-    public tags_id: number[];
-    public attachments_id: number[];
-    public polls: MotionPoll[];
-    public weight: number;
-    public sort_parent_id: number;
-    public created: string;
-    public last_modified: string;
-    public change_recommendations_id: number[];
 
     public constructor(input?: any) {
         super(Motion.COLLECTIONSTRING, input);
@@ -57,7 +63,7 @@ export class Motion extends BaseModelWithAgendaItemAndListOfSpeakers<Motion> {
     /**
      * returns the motion submitters user ids
      */
-    public get sorted_submitters_id(): number[] {
+    public get sorted_submitter_ids(): number[] {
         return this.submitters
             .sort((a: Submitter, b: Submitter) => {
                 return a.weight - b.weight;
@@ -65,3 +71,5 @@ export class Motion extends BaseModelWithAgendaItemAndListOfSpeakers<Motion> {
             .map((submitter: Submitter) => submitter.user_id);
     }
 }
+
+export interface Motion extends MotionWithoutNestedModels {}

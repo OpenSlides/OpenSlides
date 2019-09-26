@@ -312,7 +312,7 @@ export class MotionPdfService {
         // category
         if (motion.category && (!infoToExport || infoToExport.includes('category'))) {
             let categoryText = '';
-            if (!!motion.category.parent) {
+            if (motion.category.parent) {
                 categoryText = `${motion.category.parent.toString()}\n${this.translate.instant(
                     'Subcategory'
                 )}: ${motion.category.toString()}`;

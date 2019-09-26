@@ -32,6 +32,7 @@ import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewPersonalNote } from 'app/site/users/models/view-personal-note';
 import { ViewUser } from 'app/site/users/models/view-user';
 import { BaseIsAgendaItemAndListOfSpeakersContentObjectRepository } from '../base-is-agenda-item-and-list-of-speakers-content-object-repository';
+import { NestedModelDescriptors } from '../base-repository';
 import { CollectionStringMapperService } from '../../core-services/collection-string-mapper.service';
 import { DataSendService } from '../../core-services/data-send.service';
 import { LinenumberingService, LineNumberRange } from '../../ui-services/linenumbering.service';
@@ -95,21 +96,6 @@ const MotionRelations: RelationDefinition[] = [
         foreignViewModel: ViewMotionBlock
     },
     {
-        type: 'nested',
-        ownKey: 'submitters',
-        foreignViewModel: ViewSubmitter,
-        foreignModel: Submitter,
-        order: 'weight',
-        relationDefinition: [
-            {
-                type: 'M2O',
-                ownIdKey: 'user_id',
-                ownKey: 'user',
-                foreignViewModel: ViewUser
-            }
-        ]
-    },
-    {
         type: 'M2M',
         ownIdKey: 'supporters_id',
         ownKey: 'supporters',
@@ -138,9 +124,38 @@ const MotionRelations: RelationDefinition[] = [
         foreignIdKey: 'parent_id',
         ownKey: 'amendments',
         foreignViewModel: ViewMotion
+    },
+    // TMP:
+    {
+        type: 'M2O',
+        ownIdKey: 'parent_id',
+        ownKey: 'parent',
+        foreignViewModel: ViewMotion
     }
     // Personal notes are dynamically added in the repo.
 ];
+
+const MotionNestedModelDescriptors: NestedModelDescriptors = {
+    'motions/motion': [
+        {
+            ownKey: 'submitters',
+            foreignViewModel: ViewSubmitter,
+            foreignModel: Submitter,
+            order: 'weight',
+            relationDefinitionsByKey: {
+                user: {
+                    type: 'M2O',
+                    ownIdKey: 'user_id',
+                    ownKey: 'user',
+                    foreignViewModel: ViewUser
+                }
+            },
+            titles: {
+                getTitle: (viewSubmitter: ViewSubmitter) => (viewSubmitter.user ? viewSubmitter.user.getTitle() : '')
+            }
+        }
+    ]
+};
 
 /**
  * Repository Services for motions (and potentially categories)
@@ -198,7 +213,17 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
         private readonly diff: DiffService,
         private operator: OperatorService
     ) {
-        super(DS, dataSend, mapperService, viewModelStoreService, translate, relationManager, Motion, MotionRelations);
+        super(
+            DS,
+            dataSend,
+            mapperService,
+            viewModelStoreService,
+            translate,
+            relationManager,
+            Motion,
+            MotionRelations,
+            MotionNestedModelDescriptors
+        );
         config.get<SortProperty>('motions_motions_sorting').subscribe(conf => {
             this.sortProperty = conf;
             this.setConfigSortFn();
@@ -207,54 +232,6 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
         config.get<number>('motions_line_length').subscribe(lineLength => {
             this.motionLineLength = lineLength;
         });
-    }
-
-    /**
-     * Adds the personal note custom relation to the relation definitions.
-     * Also adds the parent relation here to get access to methods in this repo.
-     */
-    protected groupRelationsByCollections(): void {
-        this.relationDefinitions.push({
-            type: 'custom',
-            foreignViewModel: ViewPersonalNote,
-            setRelations: (motion: Motion, viewMotion: ViewMotion) => {
-                viewMotion.personalNote = this.getPersonalNoteForMotion(motion);
-            },
-            updateDependency: (viewMotion: ViewMotion, viewPersonalNote: ViewPersonalNote) => {
-                const personalNoteContent = viewPersonalNote.getNoteContent(this.collectionString, viewMotion.id);
-                if (!personalNoteContent) {
-                    return false;
-                }
-
-                viewMotion.personalNote = personalNoteContent;
-                return true;
-            }
-        });
-        this.relationDefinitions.push({
-            type: 'M2O',
-            ownIdKey: 'parent_id',
-            ownKey: 'parent',
-            foreignViewModel: ViewMotion,
-            afterSetRelation: (motion: ViewMotion, foreignViewModel: ViewMotion | null) => {
-                if (foreignViewModel) {
-                    try {
-                        motion.diffLines = this.getAmendmentParagraphs(motion, this.motionLineLength, false);
-                    } catch (e) {
-                        console.warn('Error with motion or amendment ', motion);
-                    }
-                }
-            },
-            afterDependencyChange: (motion: ViewMotion, parent: ViewMotion) => {
-                if (motion.parent) {
-                    try {
-                        motion.diffLines = this.getAmendmentParagraphs(motion, this.motionLineLength, false);
-                    } catch (e) {
-                        console.warn('Error with motion or amendment: ', motion);
-                    }
-                }
-            }
-        });
-        super.groupRelationsByCollections();
     }
 
     public getTitle = (titleInformation: MotionTitleInformation) => {
@@ -321,13 +298,44 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
         return this.translate.instant(plural ? 'Motions' : 'Motion');
     };
 
-    protected createViewModelWithTitles(model: Motion, initialLoading: boolean): ViewMotion {
-        const viewModel = super.createViewModelWithTitles(model, initialLoading);
+    protected createViewModelWithTitles(model: Motion): ViewMotion {
+        const viewModel = super.createViewModelWithTitles(model);
 
         viewModel.getIdentifierOrTitle = () => this.getIdentifierOrTitle(viewModel);
         viewModel.getProjectorTitle = () => this.getAgendaSlideTitle(viewModel);
 
         return viewModel;
+    }
+
+    protected extendRelations(): void {
+        this.relationDefinitions.push({
+            type: 'custom',
+            ownKey: 'personalNote',
+            get: (motion: Motion, viewMotion: ViewMotion) => {
+                return this.getPersonalNoteForMotion(motion);
+            },
+            getCacheObjectToCheck: (viewMotion: ViewMotion) => this.getPersonalNote()
+        });
+        this.relationDefinitions.push({
+            type: 'custom',
+            ownKey: 'diffLines',
+            get: (motion: Motion, viewMotion: ViewMotion) => {
+                if (viewMotion.parent) {
+                    return this.getAmendmentParagraphs(viewMotion, this.motionLineLength, false);
+                }
+            },
+            getCacheObjectToCheck: (viewMotion: ViewMotion) => viewMotion.parent
+        });
+        super.extendRelations();
+    }
+
+    /**
+     * @returns the personal note for the operator.
+     */
+    private getPersonalNote(): ViewPersonalNote | null {
+        return this.viewModelStoreService.find(ViewPersonalNote, pn => {
+            return pn.user_id === this.operator.user.id;
+        });
     }
 
     /**
@@ -341,9 +349,7 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
             return;
         }
 
-        const personalNote = this.viewModelStoreService.find(ViewPersonalNote, pn => {
-            return pn.userId === this.operator.user.id;
-        });
+        const personalNote = this.getPersonalNote();
         if (!personalNote) {
             return;
         }
@@ -735,7 +741,7 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
         const motion = amendment.parent;
         const baseParagraphs = this.getTextParagraphs(motion, true, lineLength);
 
-        return amendment.amendment_paragraphs
+        return (amendment.amendment_paragraphs || [])
             .map(
                 (newText: string, paraNo: number): DiffLinesInParagraph => {
                     if (newText !== null) {
@@ -779,7 +785,7 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
         const motion = amendment.parent;
         const baseParagraphs = this.getTextParagraphs(motion, true, lineLength);
 
-        return amendment.amendment_paragraphs
+        return (amendment.amendment_paragraphs || [])
             .map(
                 (newText: string, paraNo: number): ViewMotionAmendedParagraph => {
                     if (newText === null) {

@@ -12,7 +12,7 @@ export class Topic extends BaseModelWithAgendaItemAndListOfSpeakers<Topic> {
     public text: string;
     public attachments_id: number[];
 
-    public constructor(input?: any) {
+    public constructor(input?: Partial<Topic>) {
         super(Topic.COLLECTIONSTRING, input);
     }
 }

@@ -80,8 +80,7 @@ export class ProjectorRepositoryService extends BaseRepository<ViewProjector, Pr
      * Creates a new projector. Adds the clock as default, stable element
      */
     public async create(projectorData: Partial<Projector>): Promise<Identifiable> {
-        const projector = new Projector();
-        projector.patchValues(projectorData);
+        const projector = new Projector(projectorData);
         projector.elements = [{ name: 'core/clock', stable: true }];
         return await this.dataSend.createModel(projector);
     }

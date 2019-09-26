@@ -220,7 +220,7 @@ export class CategoryDetailComponent extends BaseViewComponent implements OnInit
         const title = this.translate.instant('Are you sure you want to renumber all motions of this category?');
         const content = this.selectedCategory.getTitle();
         if (await this.promptService.open(title, content)) {
-            await this.repo.numberMotionsInCategory(this.selectedCategory).then(null, this.raiseError);
+            await this.repo.numberMotionsInCategory(this.selectedCategory).catch(this.raiseError);
         }
     }
 }

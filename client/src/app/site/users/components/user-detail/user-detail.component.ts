@@ -5,12 +5,13 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { TranslateService } from '@ngx-translate/core';
+import { BehaviorSubject } from 'rxjs';
 
 import { OperatorService } from 'app/core/core-services/operator.service';
 import { GroupRepositoryService } from 'app/core/repositories/users/group-repository.service';
 import { UserRepositoryService } from 'app/core/repositories/users/user-repository.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
-import { genders, User } from 'app/shared/models/users/user';
+import { genders } from 'app/shared/models/users/user';
 import { OneOfValidator } from 'app/shared/validators/one-of-validator';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { UserPdfExportService } from '../../services/user-pdf-export.service';
@@ -42,11 +43,6 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
     public editUser = false;
 
     /**
-     * Set new Password
-     */
-    public newPassword = false;
-
-    /**
      * True if a new user is created
      */
     public newUser = false;
@@ -64,7 +60,7 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
     /**
      * Contains all groups, except for the default group.
      */
-    public groups: ViewGroup[];
+    public readonly groups: BehaviorSubject<ViewGroup[]> = new BehaviorSubject<ViewGroup[]>([]);
 
     /**
      * Hold the list of genders (sexes) publicly to dynamically iterate in the view
@@ -100,67 +96,71 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
         private groupRepo: GroupRepositoryService
     ) {
         super(title, translate, matSnackBar);
-        // prevent 'undefined' to appear in the ui
-        const defaultUser: any = {};
-        // tslint:disable-next-line
-        [
-            'username',
-            'title',
-            'first_name',
-            'last_name',
-            'gender',
-            'structure_level',
-            'number',
-            'about_me',
-            'email',
-            'comment',
-            'default_password'
-        ].forEach(property => {
-            defaultUser[property] = '';
-        });
-        this.user = new ViewUser(new User(defaultUser));
-        if (route.snapshot.url[0] && route.snapshot.url[0].path === 'new') {
-            super.setTitle('New participant');
-            this.newUser = true;
-            this.setEditMode(true);
-        } else {
-            this.route.params.subscribe(params => {
-                this.loadViewUser(params.id);
-
-                // will fail after reload - observable required
-                this.ownPage = this.opOwnsPage(Number(params.id));
-
-                // observe operator to find out if we see our own page or not
-                this.operator.getUserObservable().subscribe(newOp => {
-                    if (newOp) {
-                        this.ownPage = this.opOwnsPage(Number(params.id));
-                    }
-                });
-            });
-        }
         this.createForm();
 
-        this.groups = this.groupRepo.getViewModelList().filter(group => group.id !== 1);
         this.groupRepo
             .getViewModelListObservable()
-            .subscribe(groups => (this.groups = groups.filter(group => group.id !== 1)));
+            .subscribe(groups => this.groups.next(groups.filter(group => group.id !== 1)));
     }
 
     /**
      * Init function.
      */
     public ngOnInit(): void {
-        this.makeFormEditable(this.editUser);
+        if (this.route.snapshot.url[0] && this.route.snapshot.url[0].path === 'new') {
+            super.setTitle('New participant');
+            this.newUser = true;
+            this.setEditMode(true);
+        } else {
+            this.route.params.subscribe(params => {
+                this.subscriptions.push(
+                    this.repo.getViewModelObservable(+params.id).subscribe(user => {
+                        // ensures edition cannot be interrupted by autoupdate
+                        if (user && !this.editUser) {
+                            const title = user.getTitle();
+                            super.setTitle(title);
+                            this.user = user;
+                        }
+                    })
+                );
+
+                // observe operator to find out if we see our own page or not
+                this.subscriptions.push(
+                    this.operator.getUserObservable().subscribe(() => {
+                        this.ownPage = this.operator.user && this.operator.user.id === +params.id;
+                    })
+                );
+            });
+        }
     }
 
     /**
-     * Checks, if the given user id matches with the operator ones.
-     *
-     * @param userId The id to check, if it's the operator
-     * @returns If the user is the operator
+     * initialize the form with default values
      */
-    public opOwnsPage(userId: number): boolean {
-        return this.operator.user && this.operator.user.id === userId;
+    public createForm(): void {
+        this.personalInfoForm = this.formBuilder.group(
+            {
+                username: [''],
+                title: [''],
+                first_name: [''],
+                last_name: [''],
+                gender: [''],
+                structure_level: [''],
+                number: [''],
+                about_me: [''],
+                groups_id: [''],
+                is_present: [true],
+                is_committee: [false],
+                email: ['', Validators.email],
+                last_email_send: [''],
+                comment: [''],
+                is_active: [true],
+                default_password: ['']
+            },
+            {
+                validators: OneOfValidator.validation('username', 'first_name', 'last_name')
+            }
+        );
     }
 
     /**
@@ -169,10 +169,10 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
      *
      * actions might be:
      * - delete         (deleting the user) (users.can_manage and not ownPage)
-     * - seeName        (title, 1st, last) (user.can_see_name or ownPage)
-     * - seeOtherUsers  (title, 1st, last) (user.can_see_name)
+     * - seeName        (title, first, last) (user.can_see_name or ownPage)
+     * - seeOtherUsers  (title, first, last) (user.can_see_name)
      * - seeExtra       (checkboxes, comment) (user.can_see_extra_data)
-     * - seePersonal    (mail, username, about) (user.can_see_extra_data or ownPage)
+     * - seePersonal    (mail, username, about, gender, structure level) (user.can_see_extra_data or ownPage)
      * - manage         (everything) (user.can_manage)
      * - changePersonal (mail, username, about) (user.can_manage or ownPage)
      * - changePassword (user.can_change_password)
@@ -206,60 +206,6 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
     }
 
     /**
-     * Loads a user from users repository
-     * @param id the required ID
-     */
-    public loadViewUser(id: number): void {
-        this.repo.getViewModelObservable(id).subscribe(newViewUser => {
-            // repo sometimes delivers undefined values
-            // also ensures edition cannot be interrupted by autoupdate
-            if (newViewUser && !this.editUser) {
-                const title = newViewUser.getTitle();
-                super.setTitle(title);
-                this.user = newViewUser;
-                // personalInfoForm is undefined during 'new' and directly after reloading
-                if (this.personalInfoForm) {
-                    this.patchFormValues();
-                }
-            }
-        });
-    }
-
-    /**
-     * initialize the form with default values
-     */
-    public createForm(): void {
-        this.personalInfoForm = this.formBuilder.group(
-            {
-                username: [''],
-                title: [''],
-                first_name: [''],
-                last_name: [''],
-                gender: [''],
-                structure_level: [''],
-                number: [''],
-                about_me: [''],
-                groups_id: [''],
-                is_present: [true],
-                is_committee: [false],
-                email: ['', Validators.email],
-                last_email_send: [''],
-                comment: [''],
-                is_active: [true],
-                default_password: ['']
-            },
-            {
-                validators: OneOfValidator.validation('username', 'first_name', 'last_name')
-            }
-        );
-
-        // patch the form only for existing users
-        if (!this.newUser) {
-            this.patchFormValues();
-        }
-    }
-
-    /**
      * Loads values that require external references
      * And allows async reading
      */
@@ -273,56 +219,22 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
 
     /**
      * Makes the form editable
-     * @param editable
      */
-    public makeFormEditable(editable: boolean): void {
-        if (this.personalInfoForm) {
-            const formControlNames = Object.keys(this.personalInfoForm.controls);
-            const allowedFormFields = [];
+    public updateFormControlsAccesibility(): void {
+        const formControlNames = Object.keys(this.personalInfoForm.controls);
 
-            if (this.isAllowed('manage')) {
-                // editable content with manage rights
-                allowedFormFields.push(
-                    this.personalInfoForm.get('username'),
-                    this.personalInfoForm.get('title'),
-                    this.personalInfoForm.get('first_name'),
-                    this.personalInfoForm.get('last_name'),
-                    this.personalInfoForm.get('email'),
-                    this.personalInfoForm.get('gender'),
-                    this.personalInfoForm.get('structure_level'),
-                    this.personalInfoForm.get('number'),
-                    this.personalInfoForm.get('groups_id'),
-                    this.personalInfoForm.get('comment'),
-                    this.personalInfoForm.get('is_present'),
-                    this.personalInfoForm.get('is_active'),
-                    this.personalInfoForm.get('is_committee'),
-                    this.personalInfoForm.get('about_me')
-                );
-            } else if (this.isAllowed('changePersonal')) {
-                // changeable personal data
-                // FIXME: Own E-Mail and Password is hidden (server?)
-                allowedFormFields.push(
-                    this.personalInfoForm.get('username'),
-                    this.personalInfoForm.get('email'),
-                    this.personalInfoForm.get('gender'),
-                    this.personalInfoForm.get('about_me')
-                );
-            }
+        // Enable all controls.
+        formControlNames.forEach(formControlName => {
+            this.personalInfoForm.get(formControlName).enable();
+        });
 
-            // treatment for the initial password field
-            if (!editable || this.newUser) {
-                allowedFormFields.push(this.personalInfoForm.get('default_password'));
-            }
-
-            if (editable) {
-                allowedFormFields.forEach(formElement => {
-                    formElement.enable();
-                });
-            } else {
-                formControlNames.forEach(formControlName => {
+        // Disable not permitted controls
+        if (!this.isAllowed('manage')) {
+            formControlNames.forEach(formControlName => {
+                if (!['username', 'email', 'about_me'].includes(formControlName)) {
                     this.personalInfoForm.get(formControlName).disable();
-                });
-            }
+                }
+            });
         }
     }
 
@@ -364,18 +276,14 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
             this.raiseError(this.translate.instant(hint));
             return;
         }
+
         try {
             if (this.newUser) {
-                await this.repo.create(this.personalInfoForm.value).then(() => {
-                    this.newUser = false;
-                    this.router.navigate([`./users/`]);
-                }, this.raiseError);
+                await this.repo.create(this.personalInfoForm.value);
+                this.router.navigate([`./users/`]);
             } else {
-                // TODO (Issue #3962): We need a waiting-State, so if autoupdates come before the response,
-                // the user is also updated.
                 await this.repo.update(this.personalInfoForm.value, this.user);
                 this.setEditMode(false);
-                this.loadViewUser(this.user.id);
             }
         } catch (e) {
             this.raiseError(e);
@@ -388,7 +296,11 @@ export class UserDetailComponent extends BaseViewComponent implements OnInit {
      */
     public setEditMode(edit: boolean): void {
         this.editUser = edit;
-        this.makeFormEditable(edit);
+        this.updateFormControlsAccesibility();
+
+        if (!this.newUser && edit) {
+            this.patchFormValues();
+        }
 
         // case: abort creation of a new user
         if (this.newUser && !edit) {

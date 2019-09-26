@@ -46,7 +46,7 @@ export class MotionExportService {
         if (!exportInfo) {
             return;
         }
-        if (!!exportInfo.format) {
+        if (exportInfo.format) {
             if (exportInfo.format === ExportFileFormat.PDF) {
                 try {
                     this.pdfExport.exportMotionCatalog(data, exportInfo);

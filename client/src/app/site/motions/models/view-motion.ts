@@ -2,7 +2,7 @@ import { _ } from 'app/core/translate/translation-marker';
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { DiffLinesInParagraph } from 'app/core/ui-services/diff.service';
 import { SearchProperty, SearchRepresentation } from 'app/core/ui-services/search.service';
-import { Motion, MotionComment } from 'app/shared/models/motions/motion';
+import { Motion, MotionComment, MotionWithoutNestedModels } from 'app/shared/models/motions/motion';
 import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
 import { TitleInformationWithAgendaItem } from 'app/site/base/base-view-model-with-agenda-item';
 import { BaseViewModelWithAgendaItemAndListOfSpeakers } from 'app/site/base/base-view-model-with-agenda-item-and-list-of-speakers';
@@ -71,174 +71,24 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
         return this._model;
     }
 
-    public get category(): ViewCategory | null {
-        return this._category;
-    }
-
-    public get state(): ViewState | null {
-        return this._state;
-    }
-
-    public get recommendation(): ViewState | null {
-        return this._recommendation;
-    }
-
-    public get submitters(): ViewSubmitter[] {
-        return this._submitters || [];
-    }
-
     public get submittersAsUsers(): ViewUser[] {
-        return this.submitters.map(submitter => submitter.user);
-    }
-
-    public get supporters(): ViewUser[] {
-        return this._supporters || [];
-    }
-
-    /**
-     * TODO: Where is this needed. Try to avoid this..
-     */
-    public set supporters(users: ViewUser[]) {
-        this._supporters = users;
-        this._model.supporters_id = users.map(user => user.id);
-    }
-
-    public get motion_block(): ViewMotionBlock | null {
-        return this._motion_block;
-    }
-
-    public get attachments(): ViewMediafile[] {
-        return this._attachments || [];
-    }
-
-    public get tags(): ViewTag[] {
-        return this._tags || [];
-    }
-
-    public get parent(): ViewMotion | null {
-        return this._parent;
-    }
-
-    public get amendments(): ViewMotion[] {
-        return this._amendments || [];
-    }
-
-    public get identifier(): string {
-        return this.motion.identifier;
-    }
-
-    public get title(): string {
-        return this.motion.title;
+        return (this.submitters || []).map(submitter => submitter.user);
     }
 
     public get identifierOrTitle(): string {
         return this.identifier ? this.identifier : this.title;
     }
 
-    public get text(): string {
-        return this.motion.text;
-    }
-
-    public get reason(): string {
-        return this.motion.reason;
-    }
-
-    public get modified_final_version(): string {
-        return this.motion.modified_final_version;
-    }
-
-    public set modified_final_version(value: string) {
-        if (this.motion) {
-            this.motion.modified_final_version = value;
-        }
-    }
-
-    public get weight(): number {
-        return this.motion.weight;
-    }
-
-    public get sort_parent_id(): number {
-        return this.motion.sort_parent_id;
-    }
-
-    public get category_id(): number {
-        return this.motion.category_id;
-    }
-
-    public get category_weight(): number {
-        return this.motion.category_weight;
-    }
-
-    public get sorted_submitters_id(): number[] {
-        return this.motion.sorted_submitters_id;
-    }
-
-    public get supporters_id(): number[] {
-        return this.motion.supporters_id;
-    }
-
-    public get workflow(): ViewWorkflow {
-        return this._workflow;
-    }
-
-    public get workflow_id(): number {
-        return this.motion.workflow_id;
-    }
-
-    public get changeRecommendations(): ViewMotionChangeRecommendation[] {
-        return this._changeRecommendations;
-    }
-
-    public get change_recommendations_id(): number[] {
-        return this.motion.change_recommendations_id;
-    }
-
-    public get state_id(): number {
-        return this.motion.state_id;
-    }
-
-    public get recommendation_id(): number {
-        return this.motion.recommendation_id;
-    }
-
-    public get statute_paragraph_id(): number {
-        return this.motion.statute_paragraph_id;
-    }
-
     public get possibleRecommendations(): ViewState[] {
         return this.workflow ? this.workflow.states.filter(state => state.recommendation_label !== undefined) : null;
     }
 
-    public get origin(): string {
-        return this.motion.origin;
+    public get agenda_type(): number | null {
+        return this.item ? this.item.type : null;
     }
 
-    public get agenda_type(): number {
-        return this.agendaItem ? this.agendaItem.type : null;
-    }
-
-    public get motion_block_id(): number {
-        return this.motion.motion_block_id;
-    }
-
-    public get speakerAmount(): number {
+    public get speakerAmount(): number | null {
         return this.listOfSpeakers ? this.listOfSpeakers.waitingSpeakerAmount : null;
-    }
-
-    public get parent_id(): number {
-        return this.motion.parent_id;
-    }
-
-    public get amendment_paragraphs(): string[] {
-        return this.motion.amendment_paragraphs ? this.motion.amendment_paragraphs : [];
-    }
-
-    public get tags_id(): number[] {
-        return this.motion.tags_id;
-    }
-
-    public get attachments_id(): number[] {
-        return this.motion.attachments_id;
     }
 
     /**
@@ -332,20 +182,6 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
     }
 
     /**
-     * getter to access diff lines
-     */
-    public get diffLines(): DiffLinesInParagraph[] {
-        if (!this.parent_id) {
-            throw new Error('No parent No diff');
-        }
-        return this._diffLines;
-    }
-
-    public set diffLines(value: DiffLinesInParagraph[]) {
-        this._diffLines = value;
-    }
-
-    /**
      * Determine if a motion has a parent at all
      */
     public get hasParent(): boolean {
@@ -357,20 +193,6 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
      */
     public get hasAmendments(): boolean {
         return !!this.amendments && !!this.amendments.length;
-    }
-
-    /**
-     * Determine if the motion has parents, is a parent of neither
-     */
-    public get amendmentType(): number {
-        if (this.hasAmendments) {
-            return AmendmentType.Parent;
-        } else if (this.hasParent) {
-            return AmendmentType.Amendment;
-        } else {
-            // not any amendment
-            return 0;
-        }
     }
 
     /**
@@ -386,19 +208,6 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
     public static COLLECTIONSTRING = Motion.COLLECTIONSTRING;
     protected _collectionString = Motion.COLLECTIONSTRING;
 
-    protected _category?: ViewCategory;
-    protected _submitters?: ViewSubmitter[];
-    protected _supporters?: ViewUser[];
-    protected _workflow?: ViewWorkflow;
-    protected _state?: ViewState;
-    protected _recommendation?: ViewState;
-    protected _motion_block?: ViewMotionBlock;
-    protected _attachments?: ViewMediafile[];
-    protected _tags?: ViewTag[];
-    protected _parent?: ViewMotion;
-    protected _amendments?: ViewMotion[];
-    protected _changeRecommendations?: ViewMotionChangeRecommendation[];
-    protected _diffLines?: DiffLinesInParagraph[];
     public personalNote?: PersonalNoteContent;
 
     // This is set by the repository
@@ -412,7 +221,7 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
      * @return The lines of the amendment
      */
     public getChangeLines(): string {
-        if (!!this.diffLines) {
+        if (this.diffLines) {
             return this.diffLines
                 .map(diffLine => {
                     if (diffLine.diffLineTo === diffLine.diffLineFrom + 1) {
@@ -521,7 +330,7 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
      * specified by amendment_paragraphs-array
      */
     public isParagraphBasedAmendment(): boolean {
-        return this.amendment_paragraphs.length > 0;
+        return this.amendment_paragraphs && this.amendment_paragraphs.length > 0;
     }
 
     public getSlide(configService: ConfigService): ProjectorElementBuildDeskriptor {
@@ -554,11 +363,22 @@ export class ViewMotion extends BaseViewModelWithAgendaItemAndListOfSpeakers<Mot
             getDialogTitle: this.getAgendaSlideTitle
         };
     }
-
-    /**
-     * Duplicate this motion into a copy of itself
-     */
-    public copy(): ViewMotion {
-        return new ViewMotion(this._model);
-    }
 }
+
+interface TIMotionRelations {
+    category?: ViewCategory;
+    submitters: ViewSubmitter[];
+    supporters?: ViewUser[];
+    workflow?: ViewWorkflow;
+    state?: ViewState;
+    recommendation?: ViewState;
+    motion_block?: ViewMotionBlock;
+    attachments?: ViewMediafile[];
+    tags?: ViewTag[];
+    parent?: ViewMotion;
+    amendments?: ViewMotion[];
+    changeRecommendations?: ViewMotionChangeRecommendation[];
+    diffLines?: DiffLinesInParagraph[];
+}
+
+export interface ViewMotion extends MotionWithoutNestedModels, TIMotionRelations {}

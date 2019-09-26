@@ -507,7 +507,7 @@ export class PdfDocumentService {
      * Cancel the pdf generation
      */
     private cancelPdfCreation(): void {
-        if (!!this.pdfWorker) {
+        if (this.pdfWorker) {
             this.pdfWorker.terminate();
             this.pdfWorker = null;
         }

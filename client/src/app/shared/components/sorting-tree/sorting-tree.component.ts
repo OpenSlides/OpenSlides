@@ -633,7 +633,7 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
                 break;
 
             case Direction.RIGHT:
-                if (!!possibleParent) {
+                if (possibleParent) {
                     const nextLevel = this.nextNode.level + direction.steps;
                     if (nextLevel <= possibleParent.level) {
                         this.placeholderLevel = nextLevel;
@@ -646,7 +646,7 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
                 break;
 
             case Direction.NOWAY:
-                if (!!possibleParent) {
+                if (!possibleParent) {
                     if (this.nextNode.level <= possibleParent.level + 1) {
                         this.placeholderLevel = this.nextNode.level;
                     } else {
@@ -678,7 +678,7 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
             case Direction.UPWARDS:
                 for (let i = 0; i < steps; ++i) {
                     const parent = this.getExpandedParentNode(this.osTreeData[currentPosition - 1]);
-                    if (!!parent) {
+                    if (parent) {
                         currentPosition = parent.position;
                     } else {
                         break;
@@ -693,7 +693,7 @@ export class SortingTreeComponent<T extends Identifiable & Displayable> implemen
                 currentPosition -= 1;
                 for (let i = 0; i < steps; ++i) {
                     const parent = this.getExpandedParentNode(this.osTreeData[currentPosition]);
-                    if (!!parent) {
+                    if (parent) {
                         currentPosition = parent.position - 1;
                     } else {
                         break;

@@ -90,12 +90,10 @@ export class AssignmentPollDialogComponent {
      */
     public submit(): void {
         const error = this.data.options.find(dataoption => {
-            for (const key of this.optionPollKeys) {
+            this.optionPollKeys.some(key => {
                 const keyValue = dataoption.votes.find(o => o.value === key);
-                if (!keyValue || keyValue.weight === undefined) {
-                    return true;
-                }
-            }
+                return !keyValue || keyValue.weight === undefined;
+            });
         });
         if (error) {
             this.matSnackBar.open(

@@ -14,31 +14,8 @@ export interface TopicTitleInformation extends TitleInformationWithAgendaItem {
  * Provides "safe" access to topic with all it's components
  * @ignore
  */
-export class ViewTopic extends BaseViewModelWithAgendaItemAndListOfSpeakers implements TopicTitleInformation {
+export class ViewTopic extends BaseViewModelWithAgendaItemAndListOfSpeakers<Topic> implements TopicTitleInformation {
     public static COLLECTIONSTRING = Topic.COLLECTIONSTRING;
-    protected _collectionString = Topic.COLLECTIONSTRING;
-
-    private _attachments?: ViewMediafile[];
-
-    public get topic(): Topic {
-        return this._model;
-    }
-
-    public get attachments(): ViewMediafile[] {
-        return this._attachments || [];
-    }
-
-    public get attachments_id(): number[] {
-        return this.topic.attachments_id;
-    }
-
-    public get title(): string {
-        return this.topic.title;
-    }
-
-    public get text(): string {
-        return this.topic.text;
-    }
 
     /**
      * Formats the category for search
@@ -81,3 +58,8 @@ export class ViewTopic extends BaseViewModelWithAgendaItemAndListOfSpeakers impl
         return this.attachments && this.attachments.length > 0;
     }
 }
+interface ITopicRelations {
+    attachments: ViewMediafile[];
+}
+
+export interface ViewTopic extends Topic, ITopicRelations {}

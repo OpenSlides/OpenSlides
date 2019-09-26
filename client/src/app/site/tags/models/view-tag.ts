@@ -22,10 +22,6 @@ export class ViewTag extends BaseViewModel<Tag> implements TagTitleInformation, 
         return this._model;
     }
 
-    public get name(): string {
-        return this.tag.name;
-    }
-
     public formatForSearch(): SearchRepresentation {
         return { properties: [{ key: 'Name', value: this.name }], searchValue: [this.name] };
     }
@@ -34,3 +30,4 @@ export class ViewTag extends BaseViewModel<Tag> implements TagTitleInformation, 
         return `/tags`;
     }
 }
+export interface ViewTag extends Tag {}

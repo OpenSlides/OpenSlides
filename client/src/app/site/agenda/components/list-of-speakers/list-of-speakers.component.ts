@@ -417,9 +417,7 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
      */
     public closeSpeakerList(): Promise<void> {
         if (!this.viewListOfSpeakers.closed) {
-            return this.listOfSpeakersRepo
-                .update({ closed: true }, this.viewListOfSpeakers)
-                .then(null, this.raiseError);
+            return this.listOfSpeakersRepo.update({ closed: true }, this.viewListOfSpeakers).catch(this.raiseError);
         }
     }
 
@@ -428,9 +426,7 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
      */
     public openSpeakerList(): Promise<void> {
         if (this.viewListOfSpeakers.closed) {
-            return this.listOfSpeakersRepo
-                .update({ closed: false }, this.viewListOfSpeakers)
-                .then(null, this.raiseError);
+            return this.listOfSpeakersRepo.update({ closed: false }, this.viewListOfSpeakers).catch(this.raiseError);
         }
     }
 

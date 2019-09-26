@@ -18,44 +18,8 @@ export class ViewSpeaker extends BaseViewModel<Speaker> {
     public static COLLECTIONSTRING = Speaker.COLLECTIONSTRING;
     protected _collectionString = Speaker.COLLECTIONSTRING;
 
-    private _user?: ViewUser;
-
     public get speaker(): Speaker {
         return this._model;
-    }
-
-    public get user(): ViewUser | null {
-        return this._user;
-    }
-
-    public get id(): number {
-        return this.speaker.id;
-    }
-
-    public get user_id(): number {
-        return this.speaker.user_id;
-    }
-
-    public get weight(): number {
-        return this.speaker.weight;
-    }
-
-    public get marked(): boolean {
-        return this.speaker.marked;
-    }
-
-    /**
-     * @returns an ISO datetime string or null
-     */
-    public get begin_time(): string | null {
-        return this.speaker.begin_time;
-    }
-
-    /**
-     * @returns an ISO datetime string or null
-     */
-    public get end_time(): string | null {
-        return this.speaker.end_time;
     }
 
     /**
@@ -82,7 +46,10 @@ export class ViewSpeaker extends BaseViewModel<Speaker> {
         return this.user ? this.user.gender : '';
     }
 
-    public getTitle = () => {
-        return this.name;
+    public getListTitle = () => {
+        return this.getTitle();
     };
+}
+export interface ViewSpeaker extends Speaker {
+    user?: ViewUser;
 }

@@ -19,21 +19,8 @@ export class ViewMotionBlock extends BaseViewModelWithAgendaItemAndListOfSpeaker
     public static COLLECTIONSTRING = MotionBlock.COLLECTIONSTRING;
     protected _collectionString = MotionBlock.COLLECTIONSTRING;
 
-    private _motions?: ViewMotion[];
-
     public get motionBlock(): MotionBlock {
         return this._model;
-    }
-    public get motions(): ViewMotion[] {
-        return this._motions || [];
-    }
-
-    public get title(): string {
-        return this.motionBlock.title;
-    }
-
-    public get internal(): boolean {
-        return this.motionBlock.internal;
     }
 
     /**
@@ -67,3 +54,8 @@ export class ViewMotionBlock extends BaseViewModelWithAgendaItemAndListOfSpeaker
         };
     }
 }
+
+interface IMotionBLockRelations {
+    motions?: ViewMotion[];
+}
+export interface ViewMotionBlock extends MotionBlock, IMotionBLockRelations {}

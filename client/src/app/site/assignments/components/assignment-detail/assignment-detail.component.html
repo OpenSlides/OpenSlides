@@ -36,11 +36,11 @@
 
         <!-- Add/remove to/from agenda -->
         <div *osPerms="'agenda.can_manage'">
-            <button mat-menu-item (click)="addToAgenda()" *ngIf="assignment && !assignment.agendaItem">
+            <button mat-menu-item (click)="addToAgenda()" *ngIf="assignment && !assignment.item">
                 <mat-icon>add</mat-icon>
                 <span translate>Add to agenda</span>
             </button>
-            <button mat-menu-item (click)="removeFromAgenda()" *ngIf="assignment && assignment.agendaItem">
+            <button mat-menu-item (click)="removeFromAgenda()" *ngIf="assignment && assignment.item">
                 <mat-icon>remove</mat-icon>
                 <span translate>Remove from agenda</span>
             </button>
@@ -241,7 +241,6 @@
                         matInput
                         placeholder="{{ 'Title' | translate }}"
                         formControlName="title"
-                        [value]="assignmentCopy.title || ''"
                     />
                     <mat-error>{{ 'The title is required' | translate }}</mat-error>
                 </mat-form-field>
@@ -287,7 +286,6 @@
                         matInput
                         placeholder="{{ 'Default comment on the ballot paper' | translate }}"
                         formControlName="poll_description_default"
-                        [value]="assignmentCopy.assignment.poll_description_default || ''"
                     />
                 </mat-form-field>
             </div>

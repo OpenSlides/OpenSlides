@@ -16,85 +16,9 @@ export interface UserTitleInformation {
 
 export class ViewUser extends BaseProjectableViewModel<User> implements UserTitleInformation, Searchable {
     public static COLLECTIONSTRING = User.COLLECTIONSTRING;
-    protected _collectionString = User.COLLECTIONSTRING;
-
-    private _groups: ViewGroup[];
 
     public get user(): User {
         return this._model;
-    }
-
-    public get groups(): ViewGroup[] {
-        return this._groups;
-    }
-
-    public get username(): string {
-        return this.user.username;
-    }
-
-    public get title(): string {
-        return this.user.title;
-    }
-
-    public get first_name(): string {
-        return this.user.first_name;
-    }
-
-    public get last_name(): string {
-        return this.user.last_name;
-    }
-
-    public get email(): string {
-        return this.user.email;
-    }
-
-    public get gender(): string {
-        return this.user.gender;
-    }
-
-    public get structure_level(): string {
-        return this.user.structure_level;
-    }
-
-    public get number(): string {
-        return this.user.number;
-    }
-
-    public get groups_id(): number[] {
-        return this.user.groups_id;
-    }
-
-    /**
-     * Required by the input selector
-     */
-    public set groupIds(ids: number[]) {
-        if (this.user) {
-            this.user.groups_id = ids;
-        }
-    }
-
-    public get default_password(): string {
-        return this.user.default_password;
-    }
-
-    public get comment(): string {
-        return this.user.comment;
-    }
-
-    public get is_present(): boolean {
-        return this.user.is_present;
-    }
-
-    public get is_active(): boolean {
-        return this.user.is_active;
-    }
-
-    public get is_committee(): boolean {
-        return this.user.is_committee;
-    }
-
-    public get about_me(): string {
-        return this.user.about_me;
     }
 
     public get is_last_email_send(): boolean {
@@ -154,3 +78,8 @@ export class ViewUser extends BaseProjectableViewModel<User> implements UserTitl
         };
     }
 }
+interface IUserRelations {
+    groups: ViewGroup[];
+}
+
+export interface ViewUser extends User, IUserRelations {}

@@ -11,46 +11,15 @@ export interface ViewModelConstructor<T extends BaseViewModel> {
 }
 
 /**
- * Base class for view models. alls view models should have titles.
+ * Base class for view models.
  */
-export abstract class BaseViewModel<M extends BaseModel = any> implements Displayable, Identifiable, Collection {
-    public get id(): number {
-        return this._model.id;
-    }
-
-    /**
-     * force children of BaseModel to have a collectionString.
-     *
-     * Has a getter but no setter.
-     */
-    protected _collectionString: string;
-
-    /**
-     * returns the collectionString.
-     *
-     * The server and the dataStore use it to identify the collection.
-     */
-    public get collectionString(): string {
-        return this._collectionString;
-    }
-
+export abstract class BaseViewModel<M extends BaseModel = any> {
     /**
      * @returns the element id of the model
      */
     public get elementId(): string {
-        return `${this.collectionString}:${this.id}`;
+        return this._model.elementId;
     }
-
-    public getTitle: () => string;
-    public getListTitle: () => string;
-
-    /**
-     * Returns the verbose name.
-     *
-     * @param plural If the name should be plural
-     * @returns the verbose name of the model
-     */
-    public getVerboseName: (plural?: boolean) => string;
 
     /**
      * @param collectionString
@@ -64,8 +33,25 @@ export abstract class BaseViewModel<M extends BaseModel = any> implements Displa
     public getModel(): M {
         return this._model;
     }
-
     public toString(): string {
         return this.getTitle();
     }
+    public toJSON(): M {
+        return this.getModel();
+    }
+    public getUpdatedModel(update: Partial<M>): M {
+        return this.getModel().getUpdatedVersion(update);
+    }
+}
+export interface BaseViewModel<M extends BaseModel = any> extends Displayable, Identifiable, Collection {
+    getTitle: () => string;
+    getListTitle: () => string;
+
+    /**
+     * Returns the verbose name.
+     *
+     * @param plural If the name should be plural
+     * @returns the verbose name of the model
+     */
+    getVerboseName: (plural?: boolean) => string;
 }

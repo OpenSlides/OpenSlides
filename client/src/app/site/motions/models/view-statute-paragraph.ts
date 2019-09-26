@@ -23,18 +23,6 @@ export class ViewStatuteParagraph extends BaseViewModel<StatuteParagraph>
         return this._model;
     }
 
-    public get title(): string {
-        return this.statuteParagraph.title;
-    }
-
-    public get text(): string {
-        return this.statuteParagraph.text;
-    }
-
-    public get weight(): number {
-        return this.statuteParagraph.weight;
-    }
-
     public formatForSearch(): SearchRepresentation {
         return { properties: [{ key: 'Title', value: this.getTitle() }], searchValue: [this.getTitle()] };
     }
@@ -43,3 +31,4 @@ export class ViewStatuteParagraph extends BaseViewModel<StatuteParagraph>
         return '/motions/statute-paragraphs';
     }
 }
+export interface ViewStatuteParagraph extends StatuteParagraph {}

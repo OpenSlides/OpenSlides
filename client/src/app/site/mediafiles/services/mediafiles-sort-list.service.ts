@@ -27,7 +27,7 @@ export class MediafilesSortListService extends BaseSortListService<ViewMediafile
             label: this.translate.instant('Type')
         },
         {
-            property: 'size',
+            property: 'filesize',
             label: this.translate.instant('Size')
         }
     ];

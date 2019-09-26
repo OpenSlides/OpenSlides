@@ -18,20 +18,20 @@ export class User extends BaseModel<User> {
     public title: string;
     public first_name: string;
     public last_name: string;
-    public gender: string;
+    public gender?: string;
     public structure_level: string;
     public number: string;
     public about_me: string;
     public groups_id: number[];
     public is_present: boolean;
     public is_committee: boolean;
-    public email: string;
+    public email?: string;
     public last_email_send?: string; // ISO datetime string
-    public comment: string;
-    public is_active: boolean;
-    public default_password: string;
+    public comment?: string;
+    public is_active?: boolean;
+    public default_password?: string;
 
-    public constructor(input?: any) {
+    public constructor(input?: Partial<User>) {
         super(User.COLLECTIONSTRING, input);
     }
 }

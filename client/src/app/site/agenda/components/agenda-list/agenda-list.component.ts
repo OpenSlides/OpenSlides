@@ -98,7 +98,7 @@ export class AgendaListComponent extends BaseListViewComponent<ViewItem> impleme
     /**
      * Define extra filter properties
      */
-    public filterProps = ['itemNumber', 'comment', 'getListTitle'];
+    public filterProps = ['item_number', 'comment', 'getListTitle'];
 
     /**
      * The usual constructor for components
@@ -205,7 +205,7 @@ export class AgendaListComponent extends BaseListViewComponent<ViewItem> impleme
     public async onAutoNumbering(): Promise<void> {
         const title = this.translate.instant('Are you sure you want to number all agenda items?');
         if (await this.promptService.open(title)) {
-            await this.repo.autoNumbering().then(null, this.raiseError);
+            await this.repo.autoNumbering().catch(this.raiseError);
         }
     }
 
@@ -213,7 +213,7 @@ export class AgendaListComponent extends BaseListViewComponent<ViewItem> impleme
      * Click handler for the done button in the dot-menu
      */
     public async onDoneSingleButton(item: ViewItem): Promise<void> {
-        await this.repo.update({ closed: !item.closed }, item).then(null, this.raiseError);
+        await this.repo.update({ closed: !item.closed }, item).catch(this.raiseError);
     }
 
     /**
@@ -233,7 +233,7 @@ export class AgendaListComponent extends BaseListViewComponent<ViewItem> impleme
         const title = this.translate.instant('Are you sure you want to remove this entry from the agenda?');
         const content = item.contentObject.getTitle();
         if (await this.promptService.open(title, content)) {
-            await this.repo.removeFromAgenda(item).then(null, this.raiseError);
+            await this.repo.removeFromAgenda(item).catch(this.raiseError);
         }
     }
 
@@ -244,7 +244,7 @@ export class AgendaListComponent extends BaseListViewComponent<ViewItem> impleme
         const title = this.translate.instant('Are you sure you want to delete this topic?');
         const content = item.contentObject.getTitle();
         if (await this.promptService.open(title, content)) {
-            await this.topicRepo.delete(item.contentObject).then(null, this.raiseError);
+            await this.topicRepo.delete(item.contentObject).catch(this.raiseError);
         }
     }
 
@@ -295,7 +295,7 @@ export class AgendaListComponent extends BaseListViewComponent<ViewItem> impleme
     public async setAgendaType(agendaType: number): Promise<void> {
         try {
             for (const item of this.selectedRows) {
-                await this.repo.update({ type: agendaType }, item).then(null, this.raiseError);
+                await this.repo.update({ type: agendaType }, item).catch(this.raiseError);
             }
         } catch (e) {
             this.raiseError(e);

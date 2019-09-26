@@ -289,7 +289,7 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
         const localCategories = new Set<ViewCategory>();
 
         for (const motion of motions) {
-            if (!motion.category_id) {
+            if (!motion.category) {
                 motionsWithoutCategory++;
             } else {
                 localCategories.add(motion.category.oldestParent);
@@ -429,7 +429,7 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
                     };
                     // TODO: "only update if different" was another repo-todo
                     if (!Object.keys(partialUpdate).every(key => partialUpdate[key] === undefined)) {
-                        await this.motionRepo.update(partialUpdate, motion).then(null, this.raiseError);
+                        await this.motionRepo.update(partialUpdate, motion).catch(this.raiseError);
                     }
                 }
             });

@@ -113,11 +113,6 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
     private _assignment: ViewAssignment;
 
     /**
-     * Copy instance of the assignment that the user might edit
-     */
-    public assignmentCopy: ViewAssignment;
-
-    /**
      * Check if the operator is a candidate
      *
      * @returns true if they are in the list of candidates
@@ -288,7 +283,6 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
      * @param assignment
      */
     private patchForm(assignment: ViewAssignment): void {
-        this.assignmentCopy = assignment;
         const contentPatch: { [key: string]: any } = {};
         Object.keys(this.assignmentForm.controls).forEach(control => {
             contentPatch[control] = assignment[control];
@@ -299,11 +293,11 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
     /**
      * Save the current state of the assignment
      */
-    public saveAssignment(): void {
+    public async saveAssignment(): Promise<void> {
         if (this.newAssignment) {
             this.createAssignment();
         } else {
-            this.updateAssignmentFromForm();
+            await this.updateAssignmentFromForm();
         }
     }
 
@@ -312,21 +306,21 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
      * TODO: directly open poll dialog?
      */
     public async createPoll(): Promise<void> {
-        await this.repo.addPoll(this.assignment).then(null, this.raiseError);
+        await this.repo.addPoll(this.assignment).catch(this.raiseError);
     }
 
     /**
      * Adds the operator to list of candidates
      */
     public async addSelf(): Promise<void> {
-        await this.repo.addSelf(this.assignment).then(null, this.raiseError);
+        await this.repo.addSelf(this.assignment).catch(this.raiseError);
     }
 
     /**
      * Removes the operator from list of candidates
      */
     public async removeSelf(): Promise<void> {
-        await this.repo.deleteSelf(this.assignment).then(null, this.raiseError);
+        await this.repo.deleteSelf(this.assignment).catch(this.raiseError);
     }
 
     /**
@@ -337,7 +331,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
     public async addUser(userId: number): Promise<void> {
         const user = this.userRepo.getViewModel(userId);
         if (user) {
-            await this.repo.changeCandidate(user, this.assignment, true).then(null, this.raiseError);
+            await this.repo.changeCandidate(user, this.assignment, true).catch(this.raiseError);
         }
     }
 
@@ -347,7 +341,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
      * @param candidate A ViewAssignmentUser currently in the list of related users
      */
     public async removeUser(candidate: ViewAssignmentRelatedUser): Promise<void> {
-        await this.repo.changeCandidate(candidate.user, this.assignment, false).then(null, this.raiseError);
+        await this.repo.changeCandidate(candidate.user, this.assignment, false).catch(this.raiseError);
     }
 
     /**
@@ -385,7 +379,6 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
             this.editAssignment = true;
             // TODO set defaults?
             this.assignment = new ViewAssignment(new Assignment());
-            this.assignmentCopy = new ViewAssignment(new Assignment());
         }
     }
 
@@ -414,7 +407,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
      * @param value the phase to set
      */
     public async onSetPhaseButton(value: number): Promise<void> {
-        this.repo.update({ phase: value }, this.assignment).then(null, this.raiseError);
+        this.repo.update({ phase: value }, this.assignment).catch(this.raiseError);
     }
 
     public onDownloadPdf(): void {
@@ -438,10 +431,13 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
         }
     }
 
-    public updateAssignmentFromForm(): void {
-        this.repo
-            .patch({ ...this.assignmentForm.value }, this.assignmentCopy)
-            .then(() => (this.editAssignment = false), this.raiseError);
+    public async updateAssignmentFromForm(): Promise<void> {
+        try {
+            await this.repo.patch({ ...this.assignmentForm.value }, this.assignment);
+            this.editAssignment = false;
+        } catch (e) {
+            this.raiseError(e);
+        }
     }
 
     /**
@@ -482,7 +478,7 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
      * (triggered on an autoupdate of either users or the assignment)
      */
     private filterCandidates(): void {
-        if (!this.assignment || !this.assignment.candidates) {
+        if (!this.assignment || !this.assignment.candidates.length) {
             this.filteredCandidates.next(this.availableCandidates.getValue());
         } else {
             this.filteredCandidates.next(
@@ -499,14 +495,14 @@ export class AssignmentDetailComponent extends BaseViewComponent implements OnIn
     public onSortingChange(listInNewOrder: ViewAssignmentRelatedUser[]): void {
         this.repo
             .sortCandidates(listInNewOrder.map(relatedUser => relatedUser.id), this.assignment)
-            .then(null, this.raiseError);
+            .catch(this.raiseError);
     }
 
     public addToAgenda(): void {
-        this.itemRepo.addItemToAgenda(this.assignment).then(null, this.raiseError);
+        this.itemRepo.addItemToAgenda(this.assignment).catch(this.raiseError);
     }
 
     public removeFromAgenda(): void {
-        this.itemRepo.removeFromAgenda(this.assignment.agendaItem).then(null, this.raiseError);
+        this.itemRepo.removeFromAgenda(this.assignment.item).catch(this.raiseError);
     }
 }

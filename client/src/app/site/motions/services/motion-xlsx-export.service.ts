@@ -147,11 +147,11 @@ export class MotionXlsxExportService {
             data.push(
                 ...properties.map(property => {
                     const motionProp = motion[property];
-                    if (property === 'speakers') {
+                    /*if (property === 'speakers') {
                         return motion.listOfSpeakers && motion.listOfSpeakers.waitingSpeakerAmount > 0
                             ? motion.listOfSpeakers.waitingSpeakerAmount
                             : '';
-                    }
+                    }*/
                     if (!motionProp) {
                         return '';
                     }

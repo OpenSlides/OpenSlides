@@ -1,12 +1,11 @@
-import { BaseModel, ModelConstructor } from 'app/shared/models/base/base-model';
+import { BaseModel } from 'app/shared/models/base/base-model';
 import { BaseViewModel, ViewModelConstructor } from 'app/site/base/base-view-model';
 
 // All "standard" relations.
 export type RelationDefinition<VForeign extends BaseViewModel = BaseViewModel> =
     | NormalRelationDefinition<VForeign>
     | ReverseRelationDefinition<VForeign>
-    | NestedRelationDefinition<VForeign>
-    | CustomRelationDefinition<VForeign>
+    | CustomRelationDefinition
     | GenericRelationDefinition<VForeign>;
 
 interface BaseRelationDefinition<VForeign extends BaseViewModel> {
@@ -39,8 +38,6 @@ interface BaseNormalRelationDefinition<VForeign extends BaseViewModel> extends B
      * the model and view model. E.g. `category_id` in a motion.
      */
     ownIdKey: string;
-
-    afterDependencyChange?: (ownViewModel: BaseViewModel, foreignViewModel: BaseViewModel) => void;
 }
 
 /**
@@ -58,19 +55,16 @@ interface NormalM2MRelationDefinition<VForeign extends BaseViewModel>
     extends BaseNormalRelationDefinition<VForeign>,
         BaseOrderedRelation<VForeign> {
     type: 'M2M';
-    afterSetRelation?: (ownViewModel: BaseViewModel, foreignViewModels: BaseViewModel[]) => void;
 }
 
 interface NormalO2MRelationDefinition<VForeign extends BaseViewModel>
     extends BaseNormalRelationDefinition<VForeign>,
         BaseOrderedRelation<VForeign> {
     type: 'O2M';
-    afterSetRelation?: (ownViewModel: BaseViewModel, foreignViewModels: BaseViewModel[]) => void;
 }
 
 interface NormalM2ORelationDefinition<VForeign extends BaseViewModel> extends BaseNormalRelationDefinition<VForeign> {
     type: 'M2O';
-    afterSetRelation?: (ownViewModel: BaseViewModel, foreignViewModel: BaseViewModel | null) => void;
 }
 
 export type NormalRelationDefinition<VForeign extends BaseViewModel = BaseViewModel> =
@@ -131,29 +125,6 @@ export function isReverseRelationDefinition(obj: RelationDefinition): obj is Rev
     return (relation.type === 'M2O' || relation.type === 'O2M' || relation.type === 'M2M') && !!relation.foreignIdKey;
 }
 
-/**
- * Nested relations in the REST-API. For the most values see
- * `NormalRelationDefinition`.
- */
-export interface NestedRelationDefinition<VForeign extends BaseViewModel> extends BaseOrderedRelation<VForeign> {
-    type: 'nested';
-    ownKey: string;
-
-    /**
-     * The nested relations.
-     */
-    relationDefinition?: RelationDefinition[];
-
-    /**
-     * The matching model for the foreignViewModel.
-     */
-    foreignModel: ModelConstructor<BaseModel>;
-}
-
-export function isNestedRelationDefinition(obj: RelationDefinition): obj is NestedRelationDefinition<BaseViewModel> {
-    return obj.type === 'nested';
-}
-
 interface GenericRelationDefinition<VForeign extends BaseViewModel = BaseViewModel> {
     type: 'generic';
 
@@ -180,21 +151,19 @@ export function isGenericRelationDefinition(obj: RelationDefinition): obj is Gen
 /**
  * A custom relation with callbacks with things todo.
  */
-interface CustomRelationDefinition<VForeign extends BaseViewModel> {
+interface CustomRelationDefinition {
     type: 'custom';
-    foreignViewModel: ViewModelConstructor<VForeign>;
 
     /**
-     * Called, when the view model is created from the model.
+     * The key to access the custom relation.
      */
-    setRelations: (model: BaseModel, viewModel: BaseViewModel) => void;
+    ownKey: string;
 
-    /**
-     * Called, when the dependency was updated.
-     */
-    updateDependency: (ownViewModel: BaseViewModel, foreignViewModel: VForeign) => boolean;
+    get: (model: BaseModel, viewModel: BaseViewModel) => any;
+
+    getCacheObjectToCheck: (viewModel: BaseViewModel) => BaseViewModel | null;
 }
 
-export function isCustomRelationDefinition(obj: RelationDefinition): obj is CustomRelationDefinition<BaseViewModel> {
+export function isCustomRelationDefinition(obj: RelationDefinition): obj is CustomRelationDefinition {
     return obj.type === 'custom';
 }
