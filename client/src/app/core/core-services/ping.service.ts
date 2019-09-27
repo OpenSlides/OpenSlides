@@ -1,6 +1,4 @@
-import { ApplicationRef, Injectable } from '@angular/core';
-
-import { first, take } from 'rxjs/operators';
+import { Injectable } from '@angular/core';
 
 import { ConstantsService } from './constants.service';
 import { Deferred } from '../promises/deferred';
@@ -21,37 +19,25 @@ export class PingService {
      */
     private pingInterval: any;
 
-    private intervalTime: number;
+    private intervalTime = 30000;
 
-    private timeoutTime: number;
+    private timeoutTime = 5000;
 
     private lastLatency: number | null = null;
 
-    public constructor(
-        private websocketService: WebsocketService,
-        private appRef: ApplicationRef,
-        private constantsService: ConstantsService
-    ) {
+    public constructor(private websocketService: WebsocketService, private constantsService: ConstantsService) {
         this.setup();
     }
 
     private async setup(): Promise<void> {
         const gotConstants = new Deferred();
-        const isStable = new Deferred();
 
-        this.constantsService
-            .get<OpenSlidesSettings>('Settings')
-            .pipe(take(1))
-            .subscribe(settings => {
-                this.intervalTime = settings.PING_INTERVAL || 30000;
-                this.timeoutTime = settings.PING_TIMEOUT || 5000;
-                gotConstants.resolve();
-            });
-        this.appRef.isStable.pipe(first(s => s)).subscribe(() => {
-            isStable.resolve();
+        this.constantsService.get<OpenSlidesSettings>('Settings').subscribe(settings => {
+            this.intervalTime = settings.PING_INTERVAL || 30000;
+            this.timeoutTime = settings.PING_TIMEOUT || 5000;
+            gotConstants.resolve();
         });
-
-        await Promise.all([gotConstants, isStable]);
+        await gotConstants;
 
         // Connects the ping-pong mechanism to the opening and closing of the connection.
         this.websocketService.closeEvent.subscribe(() => this.stopPing());
