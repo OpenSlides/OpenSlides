@@ -27,6 +27,10 @@ import { BaseProjectableViewModel } from 'app/site/base/base-projectable-view-mo
 import { BaseViewModel } from 'app/site/base/base-view-model';
 import { BaseViewModelWithContentObject } from 'app/site/base/base-view-model-with-content-object';
 
+export interface CssClassDefinition {
+    [key: string]: boolean;
+}
+
 /**
  * To hide columns via restriction
  */
@@ -182,6 +186,37 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
     public showListOfSpeakers = true;
 
     /**
+     * Fix value for the height of the rows in the virtual-scroll-list.
+     */
+    @Input()
+    public vScrollFixed = 110;
+
+    /**
+     * Option to apply additional classes to the virtual-scrolling-list.
+     */
+    @Input()
+    public set cssClasses(values: CssClassDefinition) {
+        this._cssClasses = values;
+    }
+
+    /**
+     * Returns the list of classes, that are applied to the virtual-scrolling-list.
+     * Already prepared for the `[ngClass]`-property.
+     *
+     * `Warning: The defaultClasses will overwrite custom classes with the same key.`
+     *
+     * @returns An object looking like `{ [key: string]: boolean }`.
+     */
+    public get cssClasses(): CssClassDefinition {
+        const defaultClasses = {
+            'virtual-scroll-with-head-bar ngrid-hide-head': this.showFilterBar,
+            'virtual-scroll-full-page': !this.showFilterBar,
+            multiselect: this.multiSelect
+        };
+        return Object.assign(this._cssClasses, defaultClasses);
+    }
+
+    /**
      * Inform about changes in the dataSource
      */
     @Output()
@@ -222,6 +257,11 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
      * Otherwise the `DataSource` will be empty, if there is a query stored in the local-storage.
      */
     private initialLoading = true;
+
+    /**
+     * Private variable to hold all classes for the virtual-scrolling-list.
+     */
+    private _cssClasses: CssClassDefinition = {};
 
     /**
      * Most, of not all list views require these
@@ -450,6 +490,9 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
             .table(...this.defaultStartColumns, ...this.columns, ...this.defaultEndColumns)
             .build();
 
+        // Sets the row height.
+        this.changeRowHeight();
+
         // restore scroll position
         if (this.listStorageKey) {
             this.scrollToPreviousPosition(this.listStorageKey);
@@ -565,6 +608,13 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
         this.getScrollIndex(key).then(index => {
             this.ngrid.viewport.scrollToIndex(index);
         });
+    }
+
+    /**
+     * This function changes the height of the row for virtual-scrolling in the relating `.scss`-file.
+     */
+    private changeRowHeight(): void {
+        document.documentElement.style.setProperty('--pbl-height', this.vScrollFixed + 'px');
     }
 
     /**

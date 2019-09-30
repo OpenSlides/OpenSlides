@@ -15,6 +15,7 @@
 
 <os-list-view-table
     [repo]="repo"
+    [vScrollFixed]="64"
     [filterService]="filterService"
     [columns]="tableColumnDefinition"
     [multiSelect]="isMultiSelect"
@@ -36,7 +37,14 @@
         ></a>
         <div [ngStyle]="{ 'margin-left': item.level * 25 + 'px' }">
             <os-icon-container [icon]="item.closed ? 'check' : null" size="large">
-                {{ item.getListTitle() }}
+                <div>
+                    <div>
+                        {{ item.getListTitle() }}
+                    </div>
+                    <div *ngIf="showSubtitle" class="subtitle">
+                        {{ item.getSubtitle() }}
+                    </div>
+                </div>
             </os-icon-container>
         </div>
     </div>
@@ -51,10 +59,6 @@
                 <os-icon-container icon="access_time">
                     {{ durationService.durationToString(item.duration, 'h') }}
                 </os-icon-container>
-            </div>
-
-            <div *ngIf="item.comment" class="spacer-top-5">
-                <os-icon-container icon="comment">{{ item.comment }}</os-icon-container>
             </div>
         </div>
     </div>

@@ -47,6 +47,7 @@ export abstract class BaseViewModelWithAgendaItemAndListOfSpeakers<
     public getAgendaSlideTitle: () => string;
     public getAgendaListTitle: () => string;
     public getAgendaListTitleWithoutItemNumber: () => string;
+    public getAgendaSubtitle: () => string;
     public getListOfSpeakersTitle: () => string;
     public getListOfSpeakersSlideTitle: () => string;
 

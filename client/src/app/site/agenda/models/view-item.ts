@@ -46,6 +46,8 @@ export class ViewItem extends BaseViewModelWithContentObject<Item, BaseViewModel
         return this.item.level;
     }
 
+    public getSubtitle: () => string | null;
+
     /**
      * Gets the string representation of the item type
      * @returns The visibility for this item, as defined in {@link itemVisibilityChoices}

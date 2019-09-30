@@ -13,15 +13,11 @@
     <!-- vScrollFixed="110" -->
     <!-- vScrollAuto () -->
     <pbl-ngrid
-        [ngClass]="{
-            'virtual-scroll-with-head-bar ngrid-hide-head': showFilterBar,
-            'virtual-scroll-full-page': !showFilterBar,
-            multiselect: multiSelect
-        }"
+        [ngClass]="cssClasses"
+        [vScrollFixed]="vScrollFixed"
         cellTooltip
         [showHeader]="!showFilterBar"
         matCheckboxSelection="selection"
-        vScrollFixed="110"
         [dataSource]="dataSource"
         [columns]="columnSet"
         [hideColumns]="hiddenColumns"

@@ -45,6 +45,11 @@ export class AgendaListComponent extends BaseListViewComponent<ViewItem> impleme
     public isNumberingAllowed: boolean;
 
     /**
+     * A boolean, that decides, if the optional subtitles should be shown.
+     */
+    public showSubtitle: boolean;
+
+    /**
      * Helper to check main button permissions
      *
      * @returns true if the operator can manage agenda items
@@ -146,6 +151,7 @@ export class AgendaListComponent extends BaseListViewComponent<ViewItem> impleme
         this.config
             .get<boolean>('agenda_enable_numbering')
             .subscribe(autoNumbering => (this.isNumberingAllowed = autoNumbering));
+        this.config.get<boolean>('agenda_show_subtitle').subscribe(showSubtitle => (this.showSubtitle = showSubtitle));
     }
 
     /**

@@ -47,6 +47,11 @@ export interface IBaseViewModelWithAgendaItem<M extends BaseModelWithAgendaItem 
     getAgendaListTitle: () => string;
 
     /**
+     * @return an optional subtitle for the agenda.
+     */
+    getAgendaSubtitle: () => string | null;
+
+    /**
      * @return the agenda title with the verbose name of the content object
      */
     getAgendaListTitleWithoutItemNumber: () => string;
@@ -106,6 +111,15 @@ export abstract class BaseViewModelWithAgendaItem<M extends BaseModelWithAgendaI
      */
     public getCSVExportText(): string {
         return '';
+    }
+
+    /**
+     * @override The base-method from `IBaseViewModelWithAgendaItem`.
+     *
+     * @returns Defaults to `null`.
+     */
+    public getAgendaSubtitle(): string | null {
+        return null;
     }
 
     public abstract getDetailStateURL(): string;

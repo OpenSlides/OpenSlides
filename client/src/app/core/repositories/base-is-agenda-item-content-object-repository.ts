@@ -85,6 +85,17 @@ export abstract class BaseIsAgendaItemContentObjectRepository<
     }
 
     /**
+     * Overrides the base function. Returns an optional subtitle.
+     *
+     * @param titleInformation The information about the underlying model.
+     *
+     * @returns A string as subtitle. Defaults to `null`.
+     */
+    public getAgendaSubtitle(titleInformation: T): string | null {
+        return null;
+    }
+
+    /**
      * Function to return the title without item-number, in example used for pdf-creation.
      *
      * @param titleInformation The title information.
@@ -110,6 +121,7 @@ export abstract class BaseIsAgendaItemContentObjectRepository<
         viewModel.getAgendaListTitle = () => this.getAgendaListTitle(viewModel);
         viewModel.getAgendaListTitleWithoutItemNumber = () => this.getAgendaListTitleWithoutItemNumber(viewModel);
         viewModel.getAgendaSlideTitle = () => this.getAgendaSlideTitle(viewModel);
+        viewModel.getAgendaSubtitle = () => this.getAgendaSubtitle(viewModel);
         return viewModel;
     }
 }
