@@ -36,7 +36,7 @@
             *ngIf="!isMultiSelect"
         ></a>
         <div [ngStyle]="{ 'margin-left': item.level * 25 + 'px' }">
-            <os-icon-container [icon]="item.closed ? 'check' : null" size="large">
+            <os-icon-container [noWrap]="true" [icon]="item.closed ? 'check' : null" size="large">
                 <div>
                     <div>
                         {{ item.getListTitle() }}
@@ -60,6 +60,9 @@
                     {{ durationService.durationToString(item.duration, 'h') }}
                 </os-icon-container>
             </div>
+        </div>
+        <div *ngIf="item.comment" class="align-right">
+            <os-icon-container [matTooltip]="item.comment" icon="comment"></os-icon-container>
         </div>
     </div>
 
