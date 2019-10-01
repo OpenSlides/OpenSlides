@@ -217,7 +217,12 @@ def handle_changed_elements(elements: Iterable[Element]) -> None:
         # Send projector
         channel_layer = get_channel_layer()
         await channel_layer.group_send(
-            "projector", {"type": "projector_changed", "data": projector_data}
+            "projector",
+            {
+                "type": "projector_changed",
+                "data": projector_data,
+                "change_id": change_id,
+            },
         )
 
     if elements:

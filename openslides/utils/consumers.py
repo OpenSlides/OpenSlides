@@ -190,6 +190,8 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
         The projector has changed.
         """
         all_projector_data = event["data"]
+        change_id = event["change_id"]
+
         projector_data: Dict[int, Dict[str, Any]] = {}
         for projector_id in self.listen_projector_ids:
             data = all_projector_data.get(projector_id, [])
@@ -199,4 +201,19 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
                 self.projector_hash[projector_id] = new_hash
 
         if projector_data:
-            await self.send_json(type="projector", content=projector_data)
+            await self.send_projector_data(projector_data, change_id=change_id)
+
+    async def send_projector_data(
+        self,
+        data: Dict[int, Dict[str, Any]],
+        change_id: Optional[int] = None,
+        in_response: Optional[str] = None,
+    ) -> None:
+        """
+        Sends projector data to the consumer.
+        """
+        if change_id is None:
+            change_id = await element_cache.get_current_change_id()
+
+        content = {"change_id": change_id, "data": data}
+        await self.send_json(type="projector", content=content, in_response=in_response)
