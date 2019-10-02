@@ -96,14 +96,12 @@ export class ItemRepositoryService extends BaseHasContentObjectRepository<
      *
      * @returns An optional subtitle as `string`. Defaults to `null`.
      */
-    public getSubtitle = (titleInformation: ItemTitleInformation) => {
-        if (titleInformation.contentObject) {
-            return titleInformation.contentObject.getAgendaSubtitle();
+    public getSubtitle = (viewItem: ViewItem) => {
+        if (viewItem.contentObject) {
+            return viewItem.contentObject.getAgendaSubtitle();
         } else {
-            const repo = this.collectionStringMapperService.getRepository(
-                titleInformation.contentObjectData.collection
-            ) as BaseIsAgendaItemContentObjectRepository<any, any, any>;
-            return repo.getAgendaSubtitle(titleInformation.title_information);
+            // The subtitle is not present in the title_information yet.
+            return null;
         }
     };
 

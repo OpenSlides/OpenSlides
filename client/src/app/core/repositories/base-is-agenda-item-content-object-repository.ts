@@ -87,11 +87,10 @@ export abstract class BaseIsAgendaItemContentObjectRepository<
     /**
      * Overrides the base function. Returns an optional subtitle.
      *
-     * @param titleInformation The information about the underlying model.
-     *
+     * @param viewModel The model to get the subtitle from.
      * @returns A string as subtitle. Defaults to `null`.
      */
-    public getAgendaSubtitle(titleInformation: T): string | null {
+    public getAgendaSubtitle(viewModel: V): string | null {
         return null;
     }
 

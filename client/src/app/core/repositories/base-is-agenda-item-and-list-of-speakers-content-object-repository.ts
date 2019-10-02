@@ -59,14 +59,7 @@ export abstract class BaseIsAgendaItemAndListOfSpeakersContentObjectRepository<
         return numberPrefix + this.getTitle(titleInformation) + ' (' + this.getVerboseName() + ')';
     }
 
-    /**
-     * Overwrites the base function.
-     *
-     * @param titleInformation The information about the model.
-     *
-     * @returns {string | null} An optional subtitle. `Null`, if it returns no subtitle, otherwise `string`.
-     */
-    public getAgendaSubtitle(titleInformation: T): string | null {
+    public getAgendaSubtitle(viewModel: V): string | null {
         return null;
     }
 

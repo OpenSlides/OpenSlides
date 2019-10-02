@@ -287,17 +287,23 @@ export class MotionRepositoryService extends BaseIsAgendaItemAndListOfSpeakersCo
         const numberPrefix = titleInformation.agenda_item_number ? `${titleInformation.agenda_item_number} · ` : '';
         // Append the verbose name only, if not the special format 'Motion <identifier>' is used.
         if (titleInformation.identifier) {
-            return numberPrefix + this.translate.instant('Motion') + ' ' + titleInformation.identifier;
+            return `${numberPrefix}${this.translate.instant('Motion')} ${titleInformation.identifier} · ${
+                titleInformation.title
+            }`;
         } else {
-            return numberPrefix + titleInformation.title + ' (' + this.getVerboseName() + ')';
+            return `${numberPrefix}${titleInformation.title} (${this.getVerboseName()})`;
         }
     };
 
     /**
      * @override The base function and returns the submitters as optional subtitle.
      */
-    public getAgendaSubtitle = (model: ViewMotion) => {
-        return model.submittersAsUsers.join(', ');
+    public getAgendaSubtitle = (motion: ViewMotion) => {
+        if (motion.submittersAsUsers && motion.submittersAsUsers.length) {
+            return `${this.translate.instant('by')} ${motion.submittersAsUsers.join(', ')}`;
+        } else {
+            return null;
+        }
     };
 
     /**
