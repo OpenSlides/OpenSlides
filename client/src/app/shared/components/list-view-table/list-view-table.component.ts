@@ -11,10 +11,11 @@ import {
     ViewEncapsulation
 } from '@angular/core';
 
-import { columnFactory, createDS, PblDataSource, PblNgridComponent } from '@pebula/ngrid';
+import { columnFactory, createDS, DataSourcePredicate, PblDataSource, PblNgridComponent } from '@pebula/ngrid';
 import { PblColumnDefinition, PblColumnFactory, PblNgridColumnSet } from '@pebula/ngrid/lib/table';
 import { PblNgridDataMatrixRow } from '@pebula/ngrid/target-events';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
+import { distinctUntilChanged } from 'rxjs/operators';
 
 import { OperatorService, Permission } from 'app/core/core-services/operator.service';
 import { StorageService } from 'app/core/core-services/storage.service';
@@ -223,9 +224,14 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
     public dataSourceChange = new EventEmitter<PblDataSource<V>>();
 
     /**
-     * test data source
+     * Table data source
      */
     public dataSource: PblDataSource<V>;
+
+    /**
+     * Observable to the raw data
+     */
+    private dataListObservable: Observable<V[]>;
 
     /**
      * Minimal column width
@@ -253,15 +259,14 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
     public inputValue: string;
 
     /**
-     * Flag to indicate, whether the table is loading the first time or not.
-     * Otherwise the `DataSource` will be empty, if there is a query stored in the local-storage.
-     */
-    private initialLoading = true;
-
-    /**
      * Private variable to hold all classes for the virtual-scrolling-list.
      */
     private _cssClasses: CssClassDefinition = {};
+
+    /**
+     * Collect subsciptions
+     */
+    private subs: Subscription[] = [];
 
     /**
      * Most, of not all list views require these
@@ -273,7 +278,6 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
                 label: '',
                 width: '40px'
             },
-
             {
                 prop: 'projector',
                 label: '',
@@ -391,85 +395,33 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
         });
     }
 
-    public ngOnInit(): void {
-        // Create ans observe dataSource
+    public async ngOnInit(): Promise<void> {
+        this.getListObservable();
+        await this.restoreSearchQuery();
+        this.createDataSource();
+        this.changeRowHeight();
+        this.scrollToPreviousPosition();
+        this.cd.detectChanges();
+    }
+
+    /**
+     * Stop the change detection
+     */
+    public ngOnDestroy(): void {
+        this.cd.detach();
+        for (const sub of this.subs) {
+            sub.unsubscribe();
+        }
+        this.subs = [];
+    }
+
+    /**
+     * Function to create the DataSource
+     */
+    private createDataSource(): void {
         this.dataSource = createDS<V>()
-            .onTrigger(() => {
-                let listObservable: Observable<V[]>;
-                if (this.repo && this.viewModelListObservable) {
-                    if (this.filterService && this.sortService) {
-                        // filtering and sorting
-                        this.filterService.initFilters(this.viewModelListObservable);
-                        this.sortService.initSorting(this.filterService.outputObservable);
-                        listObservable = this.sortService.outputObservable;
-                    } else if (this.filterService) {
-                        // only filter service
-                        this.filterService.initFilters(this.viewModelListObservable);
-                        listObservable = this.filterService.outputObservable;
-                    } else if (this.sortService) {
-                        // only sorting
-                        this.sortService.initSorting(this.viewModelListObservable);
-                        listObservable = this.sortService.outputObservable;
-                    } else {
-                        // none of both
-                        listObservable = this.viewModelListObservable;
-                    }
-                }
-
-                return listObservable ? listObservable : [];
-            })
+            .onTrigger(() => (this.dataListObservable ? this.dataListObservable : []))
             .create();
-
-        const filterPredicate = (item: V): boolean => {
-            if (!this.inputValue) {
-                return true;
-            }
-
-            if (this.inputValue) {
-                // filter by ID
-                const trimmedInput = this.inputValue.trim().toLowerCase();
-                const idString = '' + item.id;
-                const foundId =
-                    idString
-                        .trim()
-                        .toLowerCase()
-                        .indexOf(trimmedInput) !== -1;
-                if (foundId) {
-                    return true;
-                }
-
-                // custom filter predicates
-                if (this.filterProps && this.filterProps.length) {
-                    for (const prop of this.filterProps) {
-                        if (item[prop]) {
-                            let propertyAsString = '';
-                            // If the property is a function, call it.
-                            if (typeof item[prop] === 'function') {
-                                propertyAsString = '' + item[prop]();
-                            } else if (item[prop].constructor === Array) {
-                                propertyAsString = item[prop].join('');
-                            } else {
-                                propertyAsString = '' + item[prop];
-                            }
-
-                            if (!!propertyAsString) {
-                                const foundProp =
-                                    propertyAsString
-                                        .trim()
-                                        .toLowerCase()
-                                        .indexOf(trimmedInput) !== -1;
-
-                                if (foundProp) {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        };
-
-        this.dataSource.setFilter(filterPredicate);
 
         // inform listening components about changes in the data source
         this.dataSource.onSourceChanged.subscribe(() => {
@@ -490,21 +442,51 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
             .table(...this.defaultStartColumns, ...this.columns, ...this.defaultEndColumns)
             .build();
 
-        // Sets the row height.
-        this.changeRowHeight();
+        this.dataSource.setFilter(this.getFilterPredicate());
 
-        // restore scroll position
-        if (this.listStorageKey) {
-            this.scrollToPreviousPosition(this.listStorageKey);
-            this.restoreSearchQuery(this.listStorageKey);
+        // refresh the data source if the filter changed
+        if (this.filterService) {
+            this.subs.push(
+                this.filterService.outputObservable.pipe(distinctUntilChanged()).subscribe(() => {
+                    this.dataSource.refresh();
+                })
+            );
+        }
+
+        // refresh the data source if the sorting changed
+        if (this.sortService) {
+            this.subs.push(
+                this.sortService.outputObservable.subscribe(() => {
+                    this.dataSource.refresh();
+                })
+            );
         }
     }
 
     /**
-     * Stop the change detection
+     * Determines and sets the raw data as observable lists according
+     * to the used search and filter services
      */
-    public ngOnDestroy(): void {
-        this.cd.detach();
+    private getListObservable(): void {
+        if (this.repo && this.viewModelListObservable) {
+            if (this.filterService && this.sortService) {
+                // filtering and sorting
+                this.filterService.initFilters(this.viewModelListObservable);
+                this.sortService.initSorting(this.filterService.outputObservable);
+                this.dataListObservable = this.sortService.outputObservable;
+            } else if (this.filterService) {
+                // only filter service
+                this.filterService.initFilters(this.viewModelListObservable);
+                this.dataListObservable = this.filterService.outputObservable;
+            } else if (this.sortService) {
+                // only sorting
+                this.sortService.initSorting(this.viewModelListObservable);
+                this.dataListObservable = this.sortService.outputObservable;
+            } else {
+                // none of both
+                this.dataListObservable = this.viewModelListObservable;
+            }
+        }
     }
 
     /**
@@ -512,6 +494,58 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
      */
     public viewUpdateEvent(): void {
         this.cd.markForCheck();
+    }
+
+    /**
+     * @returns the filter predicate object
+     */
+    private getFilterPredicate(): DataSourcePredicate {
+        return (item: V): boolean => {
+            if (!this.inputValue) {
+                return true;
+            }
+
+            // filter by ID
+            const trimmedInput = this.inputValue.trim().toLowerCase();
+            const idString = '' + item.id;
+            const foundId =
+                idString
+                    .trim()
+                    .toLowerCase()
+                    .indexOf(trimmedInput) !== -1;
+            if (foundId) {
+                return true;
+            }
+
+            // custom filter predicates
+            if (this.filterProps && this.filterProps.length) {
+                for (const prop of this.filterProps) {
+                    if (item[prop]) {
+                        let propertyAsString = '';
+                        // If the property is a function, call it.
+                        if (typeof item[prop] === 'function') {
+                            propertyAsString = '' + item[prop]();
+                        } else if (item[prop].constructor === Array) {
+                            propertyAsString = item[prop].join('');
+                        } else {
+                            propertyAsString = '' + item[prop];
+                        }
+
+                        if (!!propertyAsString) {
+                            const foundProp =
+                                propertyAsString
+                                    .trim()
+                                    .toLowerCase()
+                                    .indexOf(trimmedInput) !== -1;
+
+                            if (foundProp) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        };
     }
 
     /**
@@ -557,11 +591,7 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
             this.saveSearchQuery(this.listStorageKey, filterValue);
         }
         this.inputValue = filterValue;
-        if (this.initialLoading) {
-            this.initialLoading = false;
-        } else {
-            this.dataSource.syncFilter();
-        }
+        this.dataSource.syncFilter();
     }
 
     /**
@@ -590,8 +620,8 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
      *
      * @param key The `StorageKey` for the list-view.
      */
-    public async restoreSearchQuery(key: string): Promise<void> {
-        this.inputValue = await this.store.get<string>(`query_${key}`);
+    public async restoreSearchQuery(): Promise<void> {
+        this.inputValue = await this.store.get<string>(`query_${this.listStorageKey}`);
     }
 
     /**
@@ -604,10 +634,9 @@ export class ListViewTableComponent<V extends BaseViewModel, M extends BaseModel
      * Furthermore, dynamic assigning the amount of pixels in vScrollFixed
      * does not work, tying the tables to the same hight.
      */
-    public scrollToPreviousPosition(key: string): void {
-        this.getScrollIndex(key).then(index => {
-            this.ngrid.viewport.scrollToIndex(index);
-        });
+    public async scrollToPreviousPosition(): Promise<void> {
+        const scrollIndex = await this.getScrollIndex(this.listStorageKey);
+        this.ngrid.viewport.scrollToIndex(scrollIndex);
     }
 
     /**
