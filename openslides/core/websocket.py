@@ -179,9 +179,7 @@ class ListenToProjectors(BaseWebsocketClientMessage):
             for projector_id, data in projector_data.items():
                 consumer.projector_hash[projector_id] = hash(str(data))
 
-            await consumer.send_json(
-                type="projector", content=projector_data, in_response=id
-            )
+            await consumer.send_projector_data(projector_data, in_response=id)
 
 
 class PingPong(BaseWebsocketClientMessage):

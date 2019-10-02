@@ -19,6 +19,21 @@ interface AllProjectorData {
 }
 
 /**
+ * Received data from server.
+ */
+interface ProjectorWebsocketMessage {
+    /**
+     * The `change_id` of the current update.
+     */
+    change_id: number;
+
+    /**
+     * The necessary new projector-data.
+     */
+    data: AllProjectorData;
+}
+
+/**
  * This service handles the websocket connection for the projector data.
  * Each projector instance registers itself by calling `getProjectorObservable`.
  * A projector should deregister itself, when the component is destroyed.
@@ -44,19 +59,28 @@ export class ProjectorDataService {
     private readonly updateProjectorDataDebounceSubject = new Subject<void>();
 
     /**
+     * Holds the current change id to check, if the update contains new content or a deprecated one.
+     */
+    private currentChangeId = 0;
+
+    /**
      * Constructor.
      *
      * @param websocketService
      */
     public constructor(private websocketService: WebsocketService) {
         // Dispatch projector data.
-        this.websocketService.getOberservable('projector').subscribe((update: AllProjectorData) => {
-            Object.keys(update).forEach(_id => {
+        this.websocketService.getOberservable('projector').subscribe((update: ProjectorWebsocketMessage) => {
+            if (this.currentChangeId > update.change_id) {
+                return;
+            }
+            Object.keys(update.data).forEach(_id => {
                 const id = parseInt(_id, 10);
                 if (this.currentProjectorData[id]) {
-                    this.currentProjectorData[id].next(update[id] as ProjectorData);
+                    this.currentProjectorData[id].next(update.data[id] as ProjectorData);
                 }
             });
+            this.currentChangeId = update.change_id;
         });
 
         // The service need to re-register, if the websocket connection was lost.
