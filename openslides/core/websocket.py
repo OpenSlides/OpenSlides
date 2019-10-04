@@ -1,5 +1,6 @@
 from typing import Any, Dict, Optional
 
+from ..utils import logging
 from ..utils.auth import async_has_perm
 from ..utils.constants import get_constants
 from ..utils.projector import get_projector_data
@@ -9,6 +10,9 @@ from ..utils.websocket import (
     BaseWebsocketClientMessage,
     ProtocollAsyncJsonWebsocketConsumer,
 )
+
+
+logger = logging.getLogger(__name__)
 
 
 class NotifyWebsocketClientMessage(BaseWebsocketClientMessage):
@@ -64,6 +68,18 @@ class NotifyWebsocketClientMessage(BaseWebsocketClientMessage):
                 in_response=id,
             )
         else:
+            # Some logging
+            name = content.get("name", "<unknown name>")
+            users = content.get("users", [])
+            if users is True:
+                users = "all"
+            else:
+                users = ", ".join(users)
+            reply_channels = ", ".join(content.get("replyChannels", []))
+            logger.info(
+                f"Got notify '{name}' from {consumer.channel_name} users={users} reply_channels={reply_channels}"
+            )
+
             # Forward to all other active site consumers to handle the notify message.
             await consumer.channel_layer.group_send(
                 "site",
