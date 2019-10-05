@@ -15,16 +15,19 @@
             </a>
             <!-- Controls under the projector preview -->
             <div *osPerms="'core.can_manage_projector'" class="control-group projector-controls">
-                <!-- scale up -->
-                <button type="button" mat-icon-button (click)="scale(scrollScaleDirection.Up)">
-                    <mat-icon>zoom_in</mat-icon>
-                </button>
                 <!-- scale down -->
-                <button type="button" mat-icon-button (click)="scale(scrollScaleDirection.Down)">
+                <button type="button" mat-icon-button (click)="scale(scrollScaleDirection.Down)"
+                    matTooltip="{{ 'Zoom out' | translate }}">
                     <mat-icon>zoom_out</mat-icon>
                 </button>
+                <!-- scale up -->
+                <button type="button" mat-icon-button (click)="scale(scrollScaleDirection.Up)"
+                    matTooltip="{{ 'Zoom in' | translate }}">
+                    <mat-icon>zoom_in</mat-icon>
+                </button>
                 <!-- reset button -->
-                <button type="button" mat-icon-button (click)="scale(scrollScaleDirection.Reset)">
+                <button type="button" mat-icon-button (click)="scale(scrollScaleDirection.Reset)"
+                    matTooltip="{{ 'Reset' | translate }}">
                     <mat-icon>refresh</mat-icon>
                 </button>
                 <!-- scaling indicator -->
@@ -70,7 +73,8 @@
                     <mat-icon>arrow_downward</mat-icon>
                 </button>
                 <!-- reset button -->
-                <button type="button" mat-icon-button (click)="scroll(scrollScaleDirection.Reset)">
+                <button type="button" mat-icon-button (click)="scroll(scrollScaleDirection.Reset)"
+                    matTooltip="{{ 'Reset' | translate }}">
                     <mat-icon>refresh</mat-icon>
                 </button>
                 <!-- scroll indicator -->
