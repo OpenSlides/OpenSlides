@@ -169,6 +169,16 @@ export class ListOfSpeakersRepositoryService extends BaseHasContentObjectReposit
     }
 
     /**
+     * Readds the last speaker to the list of speakers
+     *
+     * @param listOfSpeakers the list of speakers to modify
+     */
+    public async readdLastSpeaker(listOfSpeakers: ViewListOfSpeakers): Promise<void> {
+        const restUrl = this.getRestUrl(listOfSpeakers.id, 'readd_last_speaker');
+        await this.httpService.post(restUrl);
+    }
+
+    /**
      * Marks all speakers for a given user
      *
      * @param userId {@link User} id of the user
@@ -207,7 +217,10 @@ export class ListOfSpeakersRepositoryService extends BaseHasContentObjectReposit
      * @param listOfSpeakersId id of the list of speakers
      * @param method the desired speaker action
      */
-    private getRestUrl(listOfSpeakersId: number, method: 'manage_speaker' | 'sort_speakers' | 'speak'): string {
+    private getRestUrl(
+        listOfSpeakersId: number,
+        method: 'manage_speaker' | 'sort_speakers' | 'speak' | 'readd_last_speaker'
+    ): string {
         return `/rest/agenda/list-of-speakers/${listOfSpeakersId}/${method}/`;
     }
 }

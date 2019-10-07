@@ -1,10 +1,10 @@
 <div cdkDropList [cdkDropListDisabled]="!enable" (cdkDropListDropped)="drop($event)">
-    <div class="line" *ngIf="!array.length">
+    <div class="line" *ngIf="!sortedItems.length">
         <span translate>No data</span>
     </div>
     <div
         [ngClass]="isSelectedRow(i) ? 'backgroundColorSelected line' : 'backgroundColorLight line'"
-        *ngFor="let item of array; let i = index"
+        *ngFor="let item of sortedItems; let i = index"
         cdkDrag
         (click)="onItemClick($event, i)"
         (cdkDragStarted)="dragStarted(i)"

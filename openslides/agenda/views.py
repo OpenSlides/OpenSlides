@@ -290,7 +290,13 @@ class ListOfSpeakersViewSet(
             result = has_perm(self.request.user, "agenda.can_see_list_of_speakers")
             # For manage_speaker requests the rest of the check is
             # done in the specific method. See below.
-        elif self.action in ("update", "partial_update", "speak", "sort_speakers"):
+        elif self.action in (
+            "update",
+            "partial_update",
+            "speak",
+            "sort_speakers",
+            "readd_last_speaker",
+        ):
             result = has_perm(
                 self.request.user, "agenda.can_see_list_of_speakers"
             ) and has_perm(self.request.user, "agenda.can_manage_list_of_speakers")
@@ -344,7 +350,7 @@ class ListOfSpeakersViewSet(
             # Try to add the user. This ensurse that a user is not twice in the
             # list of coming speakers.
             try:
-                Speaker.objects.add(user, list_of_speakers)
+                speaker = Speaker.objects.add(user, list_of_speakers)
             except OpenSlidesError as e:
                 raise ValidationError({"detail": str(e)})
 
@@ -520,3 +526,32 @@ class ListOfSpeakersViewSet(
 
         # Initiate response.
         return Response({"detail": "List of speakers successfully sorted."})
+
+    @detail_route(methods=["POST"])
+    def readd_last_speaker(self, request, pk=None):
+        """
+        Special view endpoint to re-add the last finished speaker to the list of speakers.
+        """
+        list_of_speakers = self.get_object()
+
+        # Retrieve speaker which spoke last and next speaker
+        ordered_speakers = list_of_speakers.speakers.order_by("-end_time")
+        if len(ordered_speakers) == 0:
+            raise ValidationError({"detail": "There is no last speaker at the moment."})
+
+        last_speaker = ordered_speakers[0]
+        if last_speaker.end_time is None:
+            raise ValidationError({"detail": "There is no last speaker at the moment."})
+
+        next_speaker = list_of_speakers.get_next_speaker()
+        new_weight = 1
+        # if there is a next speaker, insert last speaker before it
+        if next_speaker:
+            new_weight = next_speaker.weight - 1
+
+        # reset times of last speaker and prepend it to the list of active speakers
+        last_speaker.begin_time = last_speaker.end_time = None
+        last_speaker.weight = new_weight
+        last_speaker.save()
+
+        return Response()

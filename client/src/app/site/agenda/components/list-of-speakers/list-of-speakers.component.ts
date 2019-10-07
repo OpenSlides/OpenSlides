@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
@@ -15,6 +15,7 @@ import { UserRepositoryService } from 'app/core/repositories/users/user-reposito
 import { ConfigService } from 'app/core/ui-services/config.service';
 import { DurationService } from 'app/core/ui-services/duration.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
+import { SortingListComponent } from 'app/shared/components/sorting-list/sorting-list.component';
 import { BaseViewComponent } from 'app/site/base/base-view';
 import { ProjectorElementBuildDeskriptor } from 'app/site/base/projectable';
 import { ViewProjector } from 'app/site/projector/models/view-projector';
@@ -33,10 +34,18 @@ import { SpeakerState, ViewSpeaker } from '../../models/view-speaker';
     styleUrls: ['./list-of-speakers.component.scss']
 })
 export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit {
+    @ViewChild(SortingListComponent, { static: false })
+    public listElement: SortingListComponent;
+
     /**
      * Determine if the user is viewing the current list if speakers
      */
     public isCurrentListOfSpeakers = false;
+
+    /**
+     * Holds whether the list is in sort mode or not
+     */
+    public isSortMode = false;
 
     /**
      * Holds the view item to the given topic
@@ -297,14 +306,25 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
     }
 
     /**
-     * React to manual in the sorting order.
-     * Informs the repo about changes in the order
-     * @param listInNewOrder Contains the newly ordered list of ViewSpeakers
+     * send the current order of the sorting list to the server
      */
-    public onSortingChange(listInNewOrder: ViewSpeaker[]): void {
-        // extract the ids from the ViewSpeaker array
-        const userIds = listInNewOrder.map(speaker => speaker.id);
-        this.listOfSpeakersRepo.sortSpeakers(this.viewListOfSpeakers, userIds).then(null, this.raiseError);
+    public onSaveSorting(): void {
+        if (this.isSortMode) {
+            this.isSortMode = false;
+            this.listOfSpeakersRepo
+                .sortSpeakers(this.viewListOfSpeakers, this.listElement.sortedItems.map(el => el.id))
+                .catch(this.raiseError);
+        }
+    }
+
+    /**
+     * Restore old order on cancel
+     */
+    public onCancelSorting(): void {
+        if (this.isSortMode) {
+            this.isSortMode = false;
+            this.listElement.restore();
+        }
     }
 
     /**
@@ -339,9 +359,14 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
      * @param speaker The speaker clicked on.
      */
     public onMarkButton(speaker: ViewSpeaker): void {
-        this.listOfSpeakersRepo
-            .markSpeaker(this.viewListOfSpeakers, speaker, !speaker.marked)
-            .then(null, this.raiseError);
+        this.listOfSpeakersRepo.markSpeaker(this.viewListOfSpeakers, speaker, !speaker.marked).catch(this.raiseError);
+    }
+
+    /**
+     * Removes the last finished speaker from the list an re-adds him on pole position
+     */
+    public readdLastSpeaker(): void {
+        this.listOfSpeakersRepo.readdLastSpeaker(this.viewListOfSpeakers).catch(this.raiseError);
     }
 
     /**
@@ -351,11 +376,16 @@ export class ListOfSpeakersComponent extends BaseViewComponent implements OnInit
      * the operator themself is removed
      */
     public async onDeleteButton(speaker?: ViewSpeaker): Promise<void> {
-        try {
-            await this.listOfSpeakersRepo.delete(this.viewListOfSpeakers, speaker ? speaker.id : null);
-            this.filterUsers();
-        } catch (e) {
-            this.raiseError(e);
+        const title = this.translate.instant(
+            'Are you sure you want to delete this speaker from this list of speakers?'
+        );
+        if (await this.promptService.open(title)) {
+            try {
+                await this.listOfSpeakersRepo.delete(this.viewListOfSpeakers, speaker ? speaker.id : null);
+                this.filterUsers();
+            } catch (e) {
+                this.raiseError(e);
+            }
         }
     }
 
