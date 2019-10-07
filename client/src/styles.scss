@@ -655,6 +655,10 @@ button.mat-menu-item.selected {
     }
 }
 
+.cdk-column-menu {
+    padding: 0 16px 0 0 !important;
+}
+
 /** media queries */
 @include desktop {
     .content-container {
@@ -824,8 +828,8 @@ button.mat-menu-item.selected {
 
 .ellipsis-overflow {
     @extend .one-line;
-    padding-right: 3px;
-    margin-right: 3px;
+    padding-right: 0px;
+    margin-right: 0px;
 }
 
 .nowrap {

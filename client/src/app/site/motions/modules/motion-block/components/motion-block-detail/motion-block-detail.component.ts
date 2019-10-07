@@ -12,6 +12,7 @@ import { StorageService } from 'app/core/core-services/storage.service';
 import { ItemRepositoryService } from 'app/core/repositories/agenda/item-repository.service';
 import { MotionBlockRepositoryService } from 'app/core/repositories/motions/motion-block-repository.service';
 import { MotionRepositoryService } from 'app/core/repositories/motions/motion-repository.service';
+import { ConfigService } from 'app/core/ui-services/config.service';
 import { PromptService } from 'app/core/ui-services/prompt.service';
 import { ViewportService } from 'app/core/ui-services/viewport.service';
 import { ColumnRestriction } from 'app/shared/components/list-view-table/list-view-table.component';
@@ -56,11 +57,6 @@ export class MotionBlockDetailComponent extends BaseListViewComponent<ViewMotion
             width: 'auto'
         },
         {
-            prop: 'state',
-            width: '30%',
-            minWidth: 60
-        },
-        {
             prop: 'recommendation',
             label: this.translate.instant('Recommendation'),
             width: '30%',
@@ -81,6 +77,11 @@ export class MotionBlockDetailComponent extends BaseListViewComponent<ViewMotion
             permission: 'motions.can_manage'
         }
     ];
+
+    /**
+     * Value of the config variable `motions_show_sequential_numbers`
+     */
+    public showSequential: boolean;
 
     /**
      * The form to edit blocks
@@ -111,6 +112,7 @@ export class MotionBlockDetailComponent extends BaseListViewComponent<ViewMotion
         titleService: Title,
         protected translate: TranslateService,
         matSnackBar: MatSnackBar,
+        private configService: ConfigService,
         private route: ActivatedRoute,
         private router: Router,
         protected repo: MotionBlockRepositoryService,
@@ -142,6 +144,10 @@ export class MotionBlockDetailComponent extends BaseListViewComponent<ViewMotion
                 }
             })
         );
+        // load config variables
+        this.configService
+            .get<boolean>('motions_show_sequential_numbers')
+            .subscribe(show => (this.showSequential = show));
     }
 
     /**
