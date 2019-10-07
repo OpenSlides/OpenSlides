@@ -60,17 +60,27 @@ interface InfoDialog {
     /**
      * The motion block id
      */
-    motionBlock: number;
+    motion_block_id: number;
 
     /**
      * The category id
      */
-    category: number;
+    category_id: number;
 
     /**
      * The motions tag ids
      */
-    tags: number[];
+    tags_id: number[];
+
+    /**
+     * The id of the state
+     */
+    state_id: number;
+
+    /**
+     * The id of the recommendation
+     */
+    recommendation_id: number;
 }
 
 /**
@@ -97,6 +107,11 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
      * String to define the current selected view.
      */
     public selectedView: MotionListviewType;
+
+    /**
+     * The motion, the user has currently selected in the quick-edit-dialog.
+     */
+    public selectedMotion: ViewMotion = null;
 
     /**
      * Columns to display in table when desktop view is available
@@ -394,46 +409,48 @@ export class MotionListComponent extends BaseListViewComponent<ViewMotion> imple
      * Opens a dialog to edit some meta information about a motion.
      *
      * @param motion the ViewMotion whose content is edited.
-     * @param ev a MouseEvent.
      */
     public async openEditInfo(motion: ViewMotion): Promise<void> {
-        if (!this.isMultiSelect && this.perms.isAllowed('change_metadata')) {
-            // The interface holding the current information from motion.
-            this.infoDialog = {
-                title: motion.title,
-                motionBlock: motion.motion_block_id,
-                category: motion.category_id,
-                tags: motion.tags_id
-            };
-
-            // Copies the interface to check, if changes were made.
-            const copyDialog = { ...this.infoDialog };
-
-            const dialogRef = this.dialog.open(this.motionInfoDialog, infoDialogSettings);
-
-            dialogRef.keydownEvents().subscribe((event: KeyboardEvent) => {
-                if (event.key === 'Enter' && event.shiftKey) {
-                    dialogRef.close(this.infoDialog);
-                }
-            });
-
-            // After closing the dialog: Goes through the fields and check if they are changed
-            // TODO: Logic like this should be handled in a service
-            dialogRef.afterClosed().subscribe(async (result: InfoDialog) => {
-                if (result) {
-                    const partialUpdate = {
-                        category_id: result.category !== copyDialog.category ? result.category : undefined,
-                        motion_block_id: result.motionBlock !== copyDialog.motionBlock ? result.motionBlock : undefined,
-                        tags_id:
-                            JSON.stringify(result.tags) !== JSON.stringify(copyDialog.tags) ? result.tags : undefined
-                    };
-                    // TODO: "only update if different" was another repo-todo
-                    if (!Object.keys(partialUpdate).every(key => partialUpdate[key] === undefined)) {
-                        await this.motionRepo.update(partialUpdate, motion).catch(this.raiseError);
-                    }
-                }
-            });
+        if (this.isMultiSelect || !this.perms.isAllowed('change_metadata')) {
+            return;
         }
+
+        this.selectedMotion = motion;
+        // The interface holding the current information from motion.
+        this.infoDialog = {
+            title: motion.title,
+            motion_block_id: motion.motion_block_id,
+            category_id: motion.category_id,
+            tags_id: motion.tags_id,
+            state_id: motion.state_id,
+            recommendation_id: motion.recommendation_id
+        };
+
+        const dialogRef = this.dialog.open(this.motionInfoDialog, infoDialogSettings);
+        dialogRef.keydownEvents().subscribe((event: KeyboardEvent) => {
+            if (event.key === 'Enter' && event.shiftKey) {
+                dialogRef.close(this.infoDialog);
+            }
+        });
+
+        const result: InfoDialog = await dialogRef.afterClosed().toPromise();
+        if (result) {
+            delete result.title; // Do not update the title!
+
+            try {
+                await this.motionRepo.patch(result, motion);
+                if (result.state_id !== motion.state_id) {
+                    await this.motionRepo.setState(motion, result.state_id);
+                }
+                if (result.recommendation_id !== motion.recommendation_id) {
+                    await this.motionRepo.setRecommendation(motion, result.recommendation_id);
+                }
+            } catch (e) {
+                this.raiseError(e);
+            }
+        }
+
+        this.selectedMotion = null;
     }
 
     /**
