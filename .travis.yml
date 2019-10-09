@@ -1,36 +1,54 @@
 dist: xenial
 sudo: true
 
+cache:
+  - directories:
+      - $HOME/.cache/pip
+      - client/node_modules
+
 matrix:
   include:
-    - language: python
-      name: "Server: Tests Python 3.6"
-      cache:
-        pip: true
+    - stage: "Dependencies"
+      name: "Installing dependencies for python"
+      language: python
       python:
         - "3.6"
+      cache:
+        pip: true
       install:
         - python --version
         - pip install --upgrade setuptools pip
         - pip install --upgrade --requirement requirements/development.txt
         - pip install --upgrade .[big_mode]
         - pip freeze
+      script: skip
+
+    - name: "Installing npm dependencies"
+      language: node_js
+      node_js: "10.9"
+      cache:
+        - directories:
+            - "client/node_modules"
+      before_install:
+        - npm install -g @angular/cli@~8.0.6
+        - ng --version
+        - cd client
+      install:
+        - npm install
+      script: skip
+    - stage: "Run tests"
+      name: "Server: Tests Python 3.6"
+      language: python
+      python:
+        - "3.6"
       script:
         - mypy openslides/ tests/
         - pytest --cov --cov-fail-under=75
 
-    - language: python
-      name: "Server: Tests Python 3.7"
-      cache:
-        pip: true
+    - name: "Server: Tests Python 3.7"
+      language: python
       python:
         - "3.7"
-      install:
-        - python --version
-        - pip install --upgrade setuptools pip
-        - pip install --upgrade --requirement requirements/development.txt
-        - pip install --upgrade .[big_mode]
-        - pip freeze
       script:
         - flake8 openslides tests
         - isort --check-only --diff --recursive openslides tests
@@ -38,18 +56,10 @@ matrix:
         - mypy openslides/ tests/
         - pytest --cov --cov-fail-under=75
 
-    - language: python
-      name: "Server: Tests Startup Routine Python 3.7"
-      cache:
-        pip: true
+    - name: "Server: Tests Startup Routine Python 3.7"
+      language: python
       python:
         - "3.7"
-      install:
-        - python --version
-        - pip install --upgrade setuptools pip
-        - pip install --upgrade --requirement requirements/development.txt
-        - pip install --upgrade .[big_mode]
-        - pip freeze
       script:
         - set -e
         - python manage.py createsettings
@@ -57,110 +67,59 @@ matrix:
         - python manage.py runserver --noreload & (sleep 15 && kill $(ps aux | grep 'manage.py runserver' | head -n -1 | awk '{print $2}'))
         - set +e
 
-    - language: node_js
-      name: "Client: Linting"
-      node_js:
-        - "10.9"
-      cache:
-        directories:
-          - node_modules
-      before_install:
-        - npm install -g @angular/cli@~8.0.6
-        - ng --version
-        - cd client
-      install:
-        - npm install
+    - name: "Client: Linting"
+      language: node_js
+      node_js: "10.9"
       script:
+        - cd client
         - npm run lint-check
 
-    - language: node_js
-      name: "Client: Code Formatting Check"
-      node_js:
-        - "10.9"
-      cache:
-        directories:
-          - node_modules
-      before_install:
-        - npm install -g @angular/cli@~8.0.6
-        - ng --version
-        - cd client
-      install:
-        - npm install
+    - name: "Client: Code Formatting Check"
+      language: node_js
+      node_js: "10.9"
       script:
+        - cd client
         - npm list --depth=0 || cat --help
         - npm run prettify-check
 
-    - language: node_js
-      name: "Client: Testing"
-      node_js:
-        - "10.9"
+    - name: "Client: Testing"
+      language: node_js
+      node_js: "10.9"
       apt:
         sources:
           - google-chrome
         packages:
           - google-chrome-stable
-      cache:
-        directories:
-          - node_modules
       services:
         - xvfb
-      before_install:
+      install:
+        - cd client
         - export CHROME_BIN=/usr/bin/google-chrome
         - export DISPLAY=:99.0
-        - npm install -g @angular/cli@~8.0.6
-        - ng --version
-        - cd client
-      install:
-        - npm install
       script:
         - ng test --watch=false
 
-    - language: node_js
-      name: "Client: Build"
-      node_js:
-        - "10.9"
-      cache:
-        directories:
-          - node_modules
-      before_install:
-        - npm install -g @angular/cli@~8.0.6
-        - ng --version
-        - cd client
-      install:
-        - npm install
+    - name: "Client: Build"
+      language: node_js
+      node_js: "10.9"
       script:
+        - cd client
         - npm run build-debug
 
-    - language: node_js
-      name: "Client: Production Build (ES5)"
-      node_js:
-        - "10.9"
-      cache:
-        directories:
-          - node_modules
-      before_install:
-        - npm install -g @angular/cli@~8.0.6
-        - ng --version
+    - name: "Client: Production Build (ES5)"
+      language: node_js
+      node_js: "10.9"
+      install:
         - cd client
         - sed -i '/\"target\"/c\\"target\":\"es5\",' tsconfig.json
-      install:
-        - npm install
       script:
         - npm run build
 
-    - language: node_js
-      name: "Client: Production Build (ES2015)"
-      node_js:
-        - "10.9"
-      cache:
-        directories:
-          - node_modules
-      before_install:
-        - npm install -g @angular/cli@~8.0.6
-        - ng --version
+    - name: "Client: Production Build (ES2015)"
+      language: node_js
+      node_js: "10.9"
+      install:
         - cd client
         - echo "Firefox ESR" > browserslist
-      install:
-        - npm install
       script:
         - npm run build
