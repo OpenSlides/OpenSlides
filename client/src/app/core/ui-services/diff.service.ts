@@ -1333,7 +1333,6 @@ export class DiffService {
         }
 
         const fragment = this.htmlToFragment(htmlIn);
-
         this.insertInternalLineMarkers(fragment);
         if (toLine === null) {
             const internalLineMarkers = fragment.querySelectorAll('OS-LINEBREAK'),
@@ -1363,6 +1362,7 @@ export class DiffService {
         fromChildTraceAbs.shift();
         const previousHtml = this.serializePartialDomToChild(fragment, fromChildTraceAbs, false);
         toChildTraceAbs.shift();
+
         const followingHtml = this.serializePartialDomFromChild(fragment, toChildTraceAbs, false);
 
         let currNode: Node = fromLineNode,
@@ -1552,54 +1552,38 @@ export class DiffService {
      * @returns {Node[]}
      */
     public replaceLinesMergeNodeArrays(nodes1: Node[], nodes2: Node[]): Node[] {
-        if (nodes1.length === 0) {
-            return nodes2;
-        }
-        if (nodes2.length === 0) {
-            return nodes1;
+        if (nodes1.length === 0 || nodes2.length === 0) {
+            return nodes1.length ? nodes1 : nodes2;
         }
 
-        const out = [];
-        for (let i = 0; i < nodes1.length - 1; i++) {
-            out.push(nodes1[i]);
-        }
-
-        const lastNode = nodes1[nodes1.length - 1],
-            firstNode = nodes2[0];
+        const out: Node[] = nodes1.slice(0, -1);
+        const lastNode: Node = nodes1[nodes1.length - 1];
+        const firstNode: Node = nodes2[0];
         if (lastNode.nodeType === TEXT_NODE && firstNode.nodeType === TEXT_NODE) {
-            const newTextNode = lastNode.ownerDocument.createTextNode(lastNode.nodeValue + firstNode.nodeValue);
+            const newTextNode: Text = lastNode.ownerDocument.createTextNode(lastNode.nodeValue + firstNode.nodeValue);
             out.push(newTextNode);
         } else if (lastNode.nodeName === firstNode.nodeName) {
-            const lastElement = <Element>lastNode,
-                newNode = lastNode.ownerDocument.createElement(lastNode.nodeName);
-            for (let i = 0; i < lastElement.attributes.length; i++) {
-                const attr = lastElement.attributes[i];
+            const lastElement: Element = lastNode as Element;
+            const newNode: HTMLElement = lastNode.ownerDocument.createElement(lastNode.nodeName);
+
+            for (const attr of Array.from(lastElement.attributes)) {
                 newNode.setAttribute(attr.name, attr.value);
             }
 
             // Remove #text nodes inside of List elements (OL/UL), as they are confusing
-            let lastChildren, firstChildren;
+            let lastChildren: Node[];
+            let firstChildren: Node[];
             if (lastElement.nodeName === 'OL' || lastElement.nodeName === 'UL') {
-                lastChildren = [];
-                firstChildren = [];
-                for (let i = 0; i < firstNode.childNodes.length; i++) {
-                    if (firstNode.childNodes[i].nodeType === ELEMENT_NODE) {
-                        firstChildren.push(firstNode.childNodes[i]);
-                    }
-                }
-                for (let i = 0; i < lastElement.childNodes.length; i++) {
-                    if (lastElement.childNodes[i].nodeType === ELEMENT_NODE) {
-                        lastChildren.push(lastElement.childNodes[i]);
-                    }
-                }
+                lastChildren = Array.from(lastElement.childNodes).filter(child => child.nodeType === ELEMENT_NODE);
+                firstChildren = Array.from(firstNode.childNodes).filter(child => child.nodeType === ELEMENT_NODE);
             } else {
-                lastChildren = lastElement.childNodes;
-                firstChildren = firstNode.childNodes;
+                lastChildren = Array.from(lastElement.childNodes);
+                firstChildren = Array.from(firstNode.childNodes);
             }
 
-            const children = this.replaceLinesMergeNodeArrays(lastChildren, firstChildren);
-            for (let i = 0; i < children.length; i++) {
-                newNode.appendChild(children[i]);
+            const children = this.replaceLinesMergeNodeArrays(lastChildren, firstChildren) as Node[];
+            for (const child of children) {
+                newNode.appendChild(child);
             }
 
             out.push(newNode);
@@ -1612,11 +1596,7 @@ export class DiffService {
             }
         }
 
-        for (let i = 1; i < nodes2.length; i++) {
-            out.push(nodes2[i]);
-        }
-
-        return out;
+        return out.concat(nodes2.slice(1, nodes2.length));
     }
 
     /**
@@ -1755,7 +1735,8 @@ export class DiffService {
             this.removeCSSClass(forgottenSplitClasses[i], 'os-split-after');
         }
 
-        return this.serializeDom(mergedFragment, true);
+        const replacedHtml = this.serializeDom(mergedFragment, true);
+        return replacedHtml;
     }
 
     /**
