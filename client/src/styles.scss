@@ -162,9 +162,8 @@ $narrow-spacing: (
 }
 
 .pbl-ngrid-cell {
-    position: relative;
-
     .fill {
+        position: relative;
         display: inherit;
         height: 100%;
         width: 100%;
