@@ -16,6 +16,7 @@
         "build": "npm run ng-high-memory -- build --prod",
         "build-debug": "npm run ng-high-memory -- build",
         "test": "ng test",
+        "test-silently": "npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox",
         "lint-check": "ng lint",
         "lint-write": "ng lint --fix",
         "e2e": "ng e2e",
