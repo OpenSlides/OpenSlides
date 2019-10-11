@@ -854,7 +854,14 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
     public getFormattedTextPlain(): string {
         // Prevent this.allChangingObjects to be reordered from within formatMotion
         const changes: ViewUnifiedChange[] = Object.assign([], this.getAllTextChangingObjects());
-        return this.repo.formatMotion(this.motion.id, this.crMode, changes, this.lineLength, this.highlightedLine);
+        const formatedText = this.repo.formatMotion(
+            this.motion.id,
+            this.crMode,
+            changes,
+            this.lineLength,
+            this.highlightedLine
+        );
+        return formatedText;
     }
 
     /**
