@@ -37,52 +37,7 @@ matrix:
         - npm install
       script: skip
     - stage: "Run tests"
-      name: "Server: Tests Python 3.6"
-      language: python
-      python:
-        - "3.6"
-      script:
-        - mypy openslides/ tests/
-        - pytest --cov --cov-fail-under=75
-
-    - name: "Server: Tests Python 3.7"
-      language: python
-      python:
-        - "3.7"
-      script:
-        - flake8 openslides tests
-        - isort --check-only --diff --recursive openslides tests
-        - black --check --diff --target-version py36 openslides tests
-        - mypy openslides/ tests/
-        - pytest --cov --cov-fail-under=75
-
-    - name: "Server: Tests Startup Routine Python 3.7"
-      language: python
-      python:
-        - "3.7"
-      script:
-        - set -e
-        - python manage.py createsettings
-        - python manage.py migrate
-        - python manage.py runserver --noreload & (sleep 15 && kill $(ps aux | grep 'manage.py runserver' | head -n -1 | awk '{print $2}'))
-        - set +e
-
-    - name: "Client: Linting"
-      language: node_js
-      node_js: "10.9"
-      script:
-        - cd client
-        - npm run lint-check
-
-    - name: "Client: Code Formatting Check"
-      language: node_js
-      node_js: "10.9"
-      script:
-        - cd client
-        - npm list --depth=0 || cat --help
-        - npm run prettify-check
-
-    - name: "Client: Testing"
+      name: "Client: Testing"
       language: node_js
       node_js: "10.9"
       apt:
@@ -97,14 +52,7 @@ matrix:
         - export CHROME_BIN=/usr/bin/google-chrome
         - export DISPLAY=:99.0
       script:
-        - ng test --watch=false
-
-    - name: "Client: Build"
-      language: node_js
-      node_js: "10.9"
-      script:
-        - cd client
-        - npm run build-debug
+        - npm run test-silently
 
     - name: "Client: Production Build (ES5)"
       language: node_js
@@ -123,3 +71,55 @@ matrix:
         - echo "Firefox ESR" > browserslist
       script:
         - npm run build
+
+    - name: "Client: Build"
+      language: node_js
+      node_js: "10.9"
+      script:
+        - cd client
+        - npm run build-debug
+
+    - name: "Server: Tests Python 3.6"
+      language: python
+      python:
+        - "3.6"
+      script:
+        - mypy openslides/ tests/
+        - pytest --cov --cov-fail-under=75
+
+    - name: "Server: Tests Python 3.7"
+      language: python
+      python:
+        - "3.7"
+      script:
+        - flake8 openslides tests
+        - isort --check-only --diff --recursive openslides tests
+        - black --check --diff --target-version py36 openslides tests
+        - mypy openslides/ tests/
+        - pytest --cov --cov-fail-under=75
+
+    - name: "Client: Linting"
+      language: node_js
+      node_js: "10.9"
+      script:
+        - cd client
+        - npm run lint-check
+
+    - name: "Client: Code Formatting Check"
+      language: node_js
+      node_js: "10.9"
+      script:
+        - cd client
+        - npm list --depth=0 || cat --help
+        - npm run prettify-check
+
+    - name: "Server: Tests Startup Routine Python 3.7"
+      language: python
+      python:
+        - "3.7"
+      script:
+        - set -e
+        - python manage.py createsettings
+        - python manage.py migrate
+        - python manage.py runserver --noreload & (sleep 15 && kill $(ps aux | grep 'manage.py runserver' | head -n -1 | awk '{print $2}'))
+        - set +e
