@@ -1,4 +1,13 @@
-import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    ElementRef,
+    HostListener,
+    OnDestroy,
+    OnInit,
+    ViewEncapsulation
+} from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { ErrorStateMatcher } from '@angular/material/core';
@@ -69,6 +78,7 @@ import {
     selector: 'os-motion-detail',
     templateUrl: './motion-detail.component.html',
     styleUrls: ['./motion-detail.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
 export class MotionDetailComponent extends BaseViewComponent implements OnInit, OnDestroy {
@@ -444,7 +454,8 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         private itemRepo: ItemRepositoryService,
         private motionSortService: MotionSortListService,
         private motionFilterService: MotionFilterListService,
-        private routingStateService: RoutingStateService
+        private routingStateService: RoutingStateService,
+        private cd: ChangeDetectorRef
     ) {
         super(title, translate, matSnackBar);
     }
@@ -527,6 +538,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
             this.navigationSubscription.unsubscribe();
         }
         super.ngOnDestroy();
+        this.cd.detach();
     }
 
     /**
@@ -582,6 +594,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
                 return 0;
             }
         });
+        this.cd.markForCheck();
     }
 
     /**
@@ -609,6 +622,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
                         if (!this.editMotion) {
                             this.patchForm(this.motion);
                         }
+                        this.cd.markForCheck();
                     }
                 }),
 
@@ -1225,6 +1239,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
             } else {
                 this.nextMotion = null;
             }
+            this.cd.markForCheck();
         }
     }
 
