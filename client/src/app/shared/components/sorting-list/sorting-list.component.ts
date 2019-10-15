@@ -34,7 +34,7 @@ export class SortingListComponent implements OnInit, OnDestroy {
     /**
      * Sorted and returned
      */
-    public array: Selectable[];
+    public sortedItems: Selectable[];
 
     /**
      * The index of multiple selected elements. Allows for multiple items to be
@@ -105,6 +105,11 @@ export class SortingListComponent implements OnInit, OnDestroy {
     private inputSubscription: Subscription | null;
 
     /**
+     * Always stores the current items from the last update. Needed for restore and changing between live=true/false
+     */
+    private currentItems: Selectable[];
+
+    /**
      * Inform the parent view about sorting.
      * Alternative approach to submit a new order of elements
      */
@@ -118,7 +123,7 @@ export class SortingListComponent implements OnInit, OnDestroy {
      * @param translate the translation service
      */
     public constructor(protected translate: TranslateService) {
-        this.array = [];
+        this.sortedItems = [];
     }
 
     /**
@@ -141,12 +146,19 @@ export class SortingListComponent implements OnInit, OnDestroy {
      * @param newValues The new values to set.
      */
     private updateArray(newValues: Selectable[]): void {
-        if (this.array.length !== newValues.length || this.live) {
-            this.array = [];
-            this.array = newValues.map(val => val);
+        this.currentItems = newValues.map(val => val);
+        if (this.sortedItems.length !== newValues.length || this.live) {
+            this.sortedItems = newValues.map(val => val);
         } else {
-            this.array = this.array.map(arrayValue => newValues.find(val => val.id === arrayValue.id));
+            this.sortedItems = this.sortedItems.map(arrayValue => newValues.find(val => val.id === arrayValue.id));
         }
+    }
+
+    /**
+     * Restore the old order from the last update
+     */
+    public restore(): void {
+        this.sortedItems = this.currentItems.map(val => val);
     }
 
     /**
@@ -171,35 +183,35 @@ export class SortingListComponent implements OnInit, OnDestroy {
         dropBehind?: boolean
     ): void {
         if (!this.multiSelectedIndex.length) {
-            moveItemInArray(this.array, event.previousIndex, event.currentIndex);
+            moveItemInArray(this.sortedItems, event.previousIndex, event.currentIndex);
         } else {
             const before: Selectable[] = [];
             const insertions: Selectable[] = [];
             const behind: Selectable[] = [];
-            for (let i = 0; i < this.array.length; i++) {
+            for (let i = 0; i < this.sortedItems.length; i++) {
                 if (!this.multiSelectedIndex.includes(i)) {
                     if (i < event.currentIndex) {
-                        before.push(this.array[i]);
+                        before.push(this.sortedItems[i]);
                     } else if (i > event.currentIndex) {
-                        behind.push(this.array[i]);
+                        behind.push(this.sortedItems[i]);
                     } else {
                         if (dropBehind === false) {
-                            behind.push(this.array[i]);
+                            behind.push(this.sortedItems[i]);
                         } else if (dropBehind === true) {
-                            before.push(this.array[i]);
+                            before.push(this.sortedItems[i]);
                         } else {
                             Math.min(...this.multiSelectedIndex) < i
-                                ? before.push(this.array[i])
-                                : behind.push(this.array[i]);
+                                ? before.push(this.sortedItems[i])
+                                : behind.push(this.sortedItems[i]);
                         }
                     }
                 } else {
-                    insertions.push(this.array[i]);
+                    insertions.push(this.sortedItems[i]);
                 }
             }
-            this.array = [...before, ...insertions, ...behind];
+            this.sortedItems = [...before, ...insertions, ...behind];
         }
-        this.sortEvent.emit(this.array);
+        this.sortEvent.emit(this.sortedItems);
         this.multiSelectedIndex = [];
     }
 

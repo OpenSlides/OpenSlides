@@ -1,12 +1,14 @@
-<os-head-bar [nav]="false" [goBack]="true">
+<os-head-bar [nav]="false" [goBack]="true" [editMode]="isSortMode" (cancelEditEvent)="onCancelSorting()" (saveEvent)="onSaveSorting()">
     <!-- Title -->
     <div class="title-slot">
         <h2>
-            <span *ngIf="!isCurrentListOfSpeakers" translate>List of speakers</span>
-            <span *ngIf="isCurrentListOfSpeakers" translate>Current list of speakers</span>
+            <span *ngIf="!isCurrentListOfSpeakers && !isSortMode" translate>List of speakers</span>
+            <span *ngIf="isCurrentListOfSpeakers && !isSortMode" translate>Current list of speakers</span>
+            <span *ngIf="isSortMode" translate>Sort mode</span>
         </h2>
     </div>
     <div class="menu-slot" *osPerms="['agenda.can_manage_list_of_speakers', 'core.can_manage_projector']">
+        <button type="button" mat-icon-button matTooltip="{{ 'Re-add last speaker' | translate }}" (click)="readdLastSpeaker()" [disabled]="!finishedSpeakers || !finishedSpeakers.length"><mat-icon>undo</mat-icon></button>
         <button type="button" mat-icon-button [matMenuTriggerFor]="speakerMenu"><mat-icon>more_vert</mat-icon></button>
     </div>
 </os-head-bar>
@@ -77,10 +79,9 @@
     <div class="waiting-list" *ngIf="speakers && speakers.length > 0">
         <os-sorting-list
             [input]="speakers"
-            [live]="true"
+            [live]="!isSortMode"
             [count]="true"
-            [enable]="opCanManage()"
-            (sortEvent)="onSortingChange($event)"
+            [enable]="opCanManage() && isSortMode"
         >
             <!-- implicit speaker references into the component using ng-template slot -->
             <ng-template let-speaker>
@@ -154,6 +155,11 @@
 </mat-card>
 
 <mat-menu #speakerMenu="matMenu">
+    <button mat-menu-item (click)="isSortMode = true">
+        <mat-icon>sort</mat-icon>
+        <span translate>Enable sorting</span>
+    </button>
+
     <os-projector-button
         *ngIf="viewListOfSpeakers && projectors && projectors.length > 1"
         [object]="getClosSlide()"

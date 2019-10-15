@@ -216,7 +216,7 @@ export class CategoryMotionsSortComponent extends BaseViewComponent implements O
         if (this.sortSelector.multiSelectedIndex.length) {
         }
         const content = this.translate.instant('Move selected items ...');
-        const choices = this.sortSelector.array
+        const choices = this.sortSelector.sortedItems
             .map((item, index) => {
                 return { id: index, label: item.getTitle() };
             })

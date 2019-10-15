@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APIClient
 
@@ -295,6 +296,14 @@ class ManageSpeaker(TestCase):
             password="test_password_e6paev4zeeh9n",
         )
 
+    def revoke_admin_rights(self):
+        admin = get_user_model().objects.get(username="admin")
+        group_admin = admin.groups.get(name="Admin")
+        group_delegates = type(group_admin).objects.get(name="Delegates")
+        admin.groups.add(group_delegates)
+        admin.groups.remove(group_admin)
+        inform_changed_data(admin)
+
     def test_add_oneself_once(self):
         response = self.client.post(
             reverse("listofspeakers-manage-speaker", args=[self.list_of_speakers.pk])
@@ -374,12 +383,7 @@ class ManageSpeaker(TestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_add_someone_else_non_admin(self):
-        admin = get_user_model().objects.get(username="admin")
-        group_admin = admin.groups.get(name="Admin")
-        group_delegates = type(group_admin).objects.get(name="Delegates")
-        admin.groups.add(group_delegates)
-        admin.groups.remove(group_admin)
-        inform_changed_data(admin)
+        self.revoke_admin_rights()
 
         response = self.client.post(
             reverse("listofspeakers-manage-speaker", args=[self.list_of_speakers.pk]),
@@ -415,12 +419,7 @@ class ManageSpeaker(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_remove_someone_else_non_admin(self):
-        admin = get_user_model().objects.get(username="admin")
-        group_admin = admin.groups.get(name="Admin")
-        group_delegates = type(group_admin).objects.get(name="Delegates")
-        admin.groups.add(group_delegates)
-        admin.groups.remove(group_admin)
-        inform_changed_data(admin)
+        self.revoke_admin_rights()
         speaker = Speaker.objects.add(self.user, self.list_of_speakers)
 
         response = self.client.delete(
@@ -441,12 +440,7 @@ class ManageSpeaker(TestCase):
         self.assertTrue(Speaker.objects.get().marked)
 
     def test_mark_speaker_non_admin(self):
-        admin = get_user_model().objects.get(username="admin")
-        group_admin = admin.groups.get(name="Admin")
-        group_delegates = type(group_admin).objects.get(name="Delegates")
-        admin.groups.add(group_delegates)
-        admin.groups.remove(group_admin)
-        inform_changed_data(admin)
+        self.revoke_admin_rights()
         Speaker.objects.add(self.user, self.list_of_speakers)
 
         response = self.client.patch(
@@ -454,6 +448,79 @@ class ManageSpeaker(TestCase):
             {"user": self.user.pk},
         )
 
+        self.assertEqual(response.status_code, 403)
+
+    # re-add last speaker
+    def util_add_user_as_last_speaker(self):
+        speaker = Speaker.objects.add(self.user, self.list_of_speakers)
+        speaker.begin_time = timezone.now()
+        speaker.end_time = timezone.now()
+        speaker.weight = None
+        speaker.save()
+
+    def test_readd_last_speaker_no_speaker(self):
+        response = self.client.post(
+            reverse(
+                "listofspeakers-readd-last-speaker", args=[self.list_of_speakers.pk]
+            )
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_readd_last_speaker_no_last_speaker(self):
+        Speaker.objects.add(self.user, self.list_of_speakers)
+        response = self.client.post(
+            reverse(
+                "listofspeakers-readd-last-speaker", args=[self.list_of_speakers.pk]
+            )
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_readd_last_speaker_has_last_speaker_no_next_speaker(self):
+        self.util_add_user_as_last_speaker()
+
+        response = self.client.post(
+            reverse(
+                "listofspeakers-readd-last-speaker", args=[self.list_of_speakers.pk]
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+        speaker = Speaker.objects.get()
+        self.assertTrue(
+            speaker.begin_time is None
+            and speaker.end_time is None
+            and speaker.weight is not None
+        )
+
+    def test_readd_last_speaker_has_last_speaker_and_next_speaker(self):
+        self.util_add_user_as_last_speaker()
+        user2 = get_user_model().objects.create_user(
+            username="test_user_KLGHjkHJKBhjJHGGJKJn",
+            password="test_password_JHt678VbhjuGhj76hjGA",
+        )
+        Speaker.objects.add(user2, self.list_of_speakers)
+
+        response = self.client.post(
+            reverse(
+                "listofspeakers-readd-last-speaker", args=[self.list_of_speakers.pk]
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+        speaker = Speaker.objects.get(user__pk=self.user.pk)
+        self.assertTrue(
+            speaker.begin_time is None
+            and speaker.end_time is None
+            and speaker.weight is not None
+        )
+
+    def test_readd_last_speaker_no_admin(self):
+        self.util_add_user_as_last_speaker()
+        self.revoke_admin_rights()
+
+        response = self.client.post(
+            reverse(
+                "listofspeakers-readd-last-speaker", args=[self.list_of_speakers.pk]
+            )
+        )
         self.assertEqual(response.status_code, 403)
 
 
