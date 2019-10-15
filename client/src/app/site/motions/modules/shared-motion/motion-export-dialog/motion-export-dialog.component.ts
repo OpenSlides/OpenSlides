@@ -9,10 +9,15 @@ import { auditTime } from 'rxjs/operators';
 import { StorageService } from 'app/core/core-services/storage.service';
 import { MotionCommentSectionRepositoryService } from 'app/core/repositories/motions/motion-comment-section-repository.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { ChangeRecoMode, LineNumberingMode } from 'app/site/motions/models/view-motion';
 import { ViewMotionCommentSection } from 'app/site/motions/models/view-motion-comment-section';
-import { motionImportExportHeaderOrder, noMetaData } from 'app/site/motions/motion-import-export-order';
-import { ExportFileFormat, MotionExportInfo } from 'app/site/motions/services/motion-export.service';
+import {
+    ChangeRecoMode,
+    ExportFileFormat,
+    LineNumberingMode,
+    PERSONAL_NOTE_ID
+} from 'app/site/motions/motions.constants';
+import { motionImportExportHeaderOrder, noMetaData } from 'app/site/motions/motions.constants';
+import { MotionExportInfo } from 'app/site/motions/services/motion-export.service';
 
 /**
  * Dialog component to determine exporting.
@@ -24,6 +29,11 @@ import { ExportFileFormat, MotionExportInfo } from 'app/site/motions/services/mo
     encapsulation: ViewEncapsulation.None
 })
 export class MotionExportDialogComponent implements OnInit {
+    /**
+     * import PERSONAL_NOTE_ID for use in template
+     */
+    public PERSONAL_NOTE_ID = PERSONAL_NOTE_ID;
+
     /**
      * For using the enum constants from the template.
      */

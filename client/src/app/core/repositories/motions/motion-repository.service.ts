@@ -20,7 +20,7 @@ import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/moti
 import { PersonalNoteContent } from 'app/shared/models/users/personal-note';
 import { ViewMediafile } from 'app/site/mediafiles/models/view-mediafile';
 import { ViewCategory } from 'app/site/motions/models/view-category';
-import { ChangeRecoMode, MotionTitleInformation, ViewMotion } from 'app/site/motions/models/view-motion';
+import { MotionTitleInformation, ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionAmendedParagraph } from 'app/site/motions/models/view-motion-amended-paragraph';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
 import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
@@ -28,6 +28,7 @@ import { ViewState } from 'app/site/motions/models/view-state';
 import { ViewStatuteParagraph } from 'app/site/motions/models/view-statute-paragraph';
 import { ViewSubmitter } from 'app/site/motions/models/view-submitter';
 import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
+import { ChangeRecoMode } from 'app/site/motions/motions.constants';
 import { ViewTag } from 'app/site/tags/models/view-tag';
 import { ViewPersonalNote } from 'app/site/users/models/view-personal-note';
 import { ViewUser } from 'app/site/users/models/view-user';

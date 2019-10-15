@@ -3,18 +3,9 @@ import { Injectable } from '@angular/core';
 import { PdfError } from 'app/core/pdf-services/pdf-document.service';
 import { MotionCsvExportService } from './motion-csv-export.service';
 import { MotionPdfExportService } from './motion-pdf-export.service';
-import { InfoToExport } from './motion-pdf.service';
 import { MotionXlsxExportService } from './motion-xlsx-export.service';
-import { ChangeRecoMode, LineNumberingMode, ViewMotion } from '../models/view-motion';
-
-/**
- * Determine the possible file format
- */
-export enum ExportFileFormat {
-    PDF = 1,
-    CSV,
-    XLSX
-}
+import { ChangeRecoMode, ExportFileFormat, InfoToExport, LineNumberingMode } from '../motions.constants';
+import { ViewMotion } from '../models/view-motion';
 
 /**
  * Shape the structure of the dialog data

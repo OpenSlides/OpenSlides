@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { LineNumberingMode } from 'app/site/motions/models/view-motion';
+import { LineNumberingMode } from 'app/site/motions/motions.constants';
 
 /**
  * Shape of line number objects

@@ -15,25 +15,10 @@ import { ViewUnifiedChange, ViewUnifiedChangeType } from 'app/shared/models/moti
 import { getRecommendationTypeName } from 'app/shared/utils/recommendation-type-names';
 import { MotionExportInfo } from './motion-export.service';
 import { MotionPollService } from './motion-poll.service';
-import { ChangeRecoMode, LineNumberingMode, ViewMotion } from '../models/view-motion';
+import { ChangeRecoMode, InfoToExport, LineNumberingMode, PERSONAL_NOTE_ID } from '../motions.constants';
+import { ViewMotion } from '../models/view-motion';
 import { ViewMotionAmendedParagraph } from '../models/view-motion-amended-paragraph';
 import { ViewMotionChangeRecommendation } from '../models/view-motion-change-recommendation';
-
-/**
- * Type declaring which strings are valid options for metainfos to be exported into a pdf
- */
-export type InfoToExport =
-    | 'submitters'
-    | 'state'
-    | 'recommendation'
-    | 'category'
-    | 'motion_block'
-    | 'origin'
-    | 'tags'
-    | 'polls'
-    | 'speakers'
-    | 'id'
-    | 'allcomments';
 
 /**
  * Converts a motion to pdf. Can be used from the motion detail view or executed on a list of motions
@@ -817,11 +802,20 @@ export class MotionPdfService {
     private createComments(motion: ViewMotion, comments: number[]): object[] {
         const result: object[] = [];
         for (const comment of comments) {
-            const viewComment = this.commentRepo.getViewModel(comment);
-            const section = motion.getCommentForSection(viewComment);
-            if (section && section.comment) {
-                result.push({ text: viewComment.name, style: 'heading3', margin: [0, 25, 0, 10] });
-                result.push(this.htmlToPdfService.addPlainText(section.comment));
+            let name = '',
+                content = '';
+            if (comment === PERSONAL_NOTE_ID) {
+                name = this.translate.instant('Personal note');
+                content = motion && motion.personalNote && motion.personalNote.note;
+            } else {
+                const viewComment = this.commentRepo.getViewModel(comment);
+                const section = motion.getCommentForSection(viewComment);
+                name = viewComment.name;
+                content = section && section.comment;
+            }
+            if (name && content) {
+                result.push({ text: name, style: 'heading3', margin: [0, 25, 0, 10] });
+                result.push(this.htmlToPdfService.addPlainText(content));
             }
         }
         return result;

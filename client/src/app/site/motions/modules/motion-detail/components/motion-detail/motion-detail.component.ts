@@ -45,17 +45,19 @@ import { BaseViewComponent } from 'app/site/base/base-view';
 import { CreateMotion } from 'app/site/motions/models/create-motion';
 import { ViewCategory } from 'app/site/motions/models/view-category';
 import { ViewCreateMotion } from 'app/site/motions/models/view-create-motion';
-import {
-    ChangeRecoMode,
-    LineNumberingMode,
-    verboseChangeRecoMode,
-    ViewMotion
-} from 'app/site/motions/models/view-motion';
+import { ViewMotion } from 'app/site/motions/models/view-motion';
 import { ViewMotionBlock } from 'app/site/motions/models/view-motion-block';
 import { ViewMotionChangeRecommendation } from 'app/site/motions/models/view-motion-change-recommendation';
 import { ViewStatuteParagraph } from 'app/site/motions/models/view-statute-paragraph';
 import { ViewWorkflow } from 'app/site/motions/models/view-workflow';
-import { MotionEditNotification, MotionEditNotificationType } from 'app/site/motions/motion-edit-notification';
+import { MotionEditNotification } from 'app/site/motions/motion-edit-notification';
+import {
+    ChangeRecoMode,
+    LineNumberingMode,
+    MotionEditNotificationType,
+    PERSONAL_NOTE_ID,
+    verboseChangeRecoMode
+} from 'app/site/motions/motions.constants';
 import { LocalPermissionsService } from 'app/site/motions/services/local-permissions.service';
 import { MotionFilterListService } from 'app/site/motions/services/motion-filter-list.service';
 import { MotionPdfExportService } from 'app/site/motions/services/motion-pdf-export.service';
@@ -1345,7 +1347,7 @@ export class MotionDetailComponent extends BaseViewComponent implements OnInit, 
         this.pdfExport.exportSingleMotion(this.motion, {
             lnMode: this.lnMode,
             crMode: this.crMode,
-            comments: this.motion.commentSectionIds
+            comments: this.motion.commentSectionIds.concat([PERSONAL_NOTE_ID]) // export all comment fields as well as personal note
         });
     }
 

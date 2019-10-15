@@ -19,40 +19,6 @@ import { ViewState } from './view-state';
 import { ViewSubmitter } from './view-submitter';
 import { ViewWorkflow } from './view-workflow';
 
-/**
- * The line numbering mode for the motion detail view.
- * The constants need to be in sync with the values saved in the config store.
- */
-export enum LineNumberingMode {
-    None = 'none',
-    Inside = 'inline',
-    Outside = 'outside'
-}
-
-/**
- * The change recommendation mode for the motion detail view.
- */
-export enum ChangeRecoMode {
-    Original = 'original',
-    Changed = 'changed',
-    Diff = 'diff',
-    Final = 'agreed',
-    ModifiedFinal = 'modified_final_version'
-}
-
-export enum AmendmentType {
-    Amendment = 1,
-    Parent
-}
-
-export const verboseChangeRecoMode = {
-    original: 'Original version',
-    changed: 'Changed version',
-    diff: 'Diff version',
-    agreed: 'Final version',
-    modified_final_version: 'Final print template'
-};
-
 export interface MotionTitleInformation extends TitleInformationWithAgendaItem {
     title: string;
     identifier?: string;

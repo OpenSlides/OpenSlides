@@ -17,7 +17,8 @@ import {
     OsFilterOptions
 } from 'app/core/ui-services/base-filter-list.service';
 import { ConfigService } from 'app/core/ui-services/config.service';
-import { AmendmentType, ViewMotion } from '../models/view-motion';
+import { AmendmentType } from '../motions.constants';
+import { ViewMotion } from '../models/view-motion';
 
 /**
  * Filter description to easier parse dynamically occurring workflows
