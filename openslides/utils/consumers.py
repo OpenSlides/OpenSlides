@@ -3,6 +3,8 @@ from collections import defaultdict
 from typing import Any, Dict, List, Optional
 from urllib.parse import parse_qs
 
+from channels.generic.websocket import AsyncWebsocketConsumer
+
 from ..utils.websocket import WEBSOCKET_CHANGE_ID_TOO_HIGH
 from . import logging
 from .auth import async_anonymous_is_enabled
@@ -217,3 +219,16 @@ class SiteConsumer(ProtocollAsyncJsonWebsocketConsumer):
 
         content = {"change_id": change_id, "data": data}
         await self.send_json(type="projector", content=content, in_response=in_response)
+
+
+class CloseConsumer(AsyncWebsocketConsumer):
+    """ Auto-closes the connection """
+
+    groups: List[str] = []
+
+    def __init__(self, args: Dict[str, Any], **kwargs: Any) -> None:
+        logger.info(f'Closing connection to unknown websocket url {args["path"]}')
+
+    async def connect(self) -> None:
+        await self.accept()
+        await self.close()
