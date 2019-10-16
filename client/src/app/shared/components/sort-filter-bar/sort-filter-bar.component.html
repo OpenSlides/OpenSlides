@@ -23,8 +23,8 @@
     <div class="action-buttons">
         <!-- Filter button -->
         <button mat-button *ngIf="hasFilters" (click)="filterMenu.opened ? filterMenu.close() : filterMenu.open()">
-            <span class="upper" [matBadge]="filterAmount" matBadgeColor="accent" [matBadgeOverlap]="false" translate>
-                Filter
+            <span class="upper" [matBadge]="filterAmount" matBadgeColor="accent" [matBadgeOverlap]="false">
+                {{ 'Filter' | translate }}
             </span>
         </button>
 

@@ -108,6 +108,7 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { GlobalSpinnerComponent } from 'app/site/common/components/global-spinner/global-spinner.component';
 import { HeightResizingDirective } from './directives/height-resizing.directive';
 import { TrustPipe } from './pipes/trust.pipe';
+import { LocalizedDatePipe } from './pipes/localized-date.pipe';
 
 /**
  * Share Module for all "dumb" components and pipes.
@@ -256,7 +257,8 @@ import { TrustPipe } from './pipes/trust.pipe';
         OverlayComponent,
         PreviewComponent,
         NgxMaterialTimepickerModule,
-        TrustPipe
+        TrustPipe,
+        LocalizedDatePipe
     ],
     declarations: [
         PermsDirective,
@@ -302,7 +304,8 @@ import { TrustPipe } from './pipes/trust.pipe';
         OverlayComponent,
         PreviewComponent,
         HeightResizingDirective,
-        TrustPipe
+        TrustPipe,
+        LocalizedDatePipe
     ],
     providers: [
         {
@@ -317,7 +320,8 @@ import { TrustPipe } from './pipes/trust.pipe';
         SortBottomSheetComponent,
         DecimalPipe,
         ProgressSnackBarComponent,
-        TrustPipe
+        TrustPipe,
+        LocalizedDatePipe
     ],
     entryComponents: [
         SortBottomSheetComponent,
