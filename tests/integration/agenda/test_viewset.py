@@ -497,7 +497,7 @@ class ManageSpeaker(TestCase):
             username="test_user_KLGHjkHJKBhjJHGGJKJn",
             password="test_password_JHt678VbhjuGhj76hjGA",
         )
-        Speaker.objects.add(user2, self.list_of_speakers)
+        speaker2 = Speaker.objects.add(user2, self.list_of_speakers)
 
         response = self.client.post(
             reverse(
@@ -511,6 +511,7 @@ class ManageSpeaker(TestCase):
             and speaker.end_time is None
             and speaker.weight is not None
         )
+        self.assertTrue(speaker.weight < speaker2.weight)
 
     def test_readd_last_speaker_no_admin(self):
         self.util_add_user_as_last_speaker()
