@@ -535,12 +535,12 @@ class ListOfSpeakersViewSet(
         list_of_speakers = self.get_object()
 
         # Retrieve speaker which spoke last and next speaker
-        ordered_speakers = list_of_speakers.speakers.order_by("-end_time")
-        if len(ordered_speakers) == 0:
-            raise ValidationError({"detail": "There is no last speaker at the moment."})
-
-        last_speaker = ordered_speakers[0]
-        if last_speaker.end_time is None:
+        last_speaker = (
+            list_of_speakers.speakers.exclude(end_time=None)
+            .order_by("-end_time")
+            .first()
+        )
+        if not last_speaker:
             raise ValidationError({"detail": "There is no last speaker at the moment."})
 
         next_speaker = list_of_speakers.get_next_speaker()
